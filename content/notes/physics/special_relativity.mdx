@@ -1,0 +1,1032 @@
+---
+title: 'Special Relativity'
+subject: 'Physics'
+showToc: true
+---
+
+# Einstein's postulates
+
+The special theory of relativity derives from Einstein's postulates
+
+1. **The principle of relativity:** the laws of physics apply in all inertial reference system.
+2. **The principle of invariant light speed:** the speed of light in vacuum is the same for all inertial observers, regardless of the motion of the source.
+
+# Lorentz transformation
+
+<LatexFig src='/fig/lorentz_transform_hyperbola_1d.svg' alt=''
+  caption='The Lorentz transformation is analogous to a hyperbolic rotation in Minkowski spacetime.'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage[outline]{contour} % glow around text
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, angles, quotes, 
+  decorations.markings, decorations.pathmorphing}
+
+% Custom colors
+\colorlet{myred}{red!80!black}
+\colorlet{myblue}{blue!80!black}
+\colorlet{mygreen}{green!80!black}
+\colorlet{mydarkred}{red!55!black}
+\colorlet{mydarkblue}{blue!50!black}
+%\colorlet{mylightblue}{blue!60!black!30}
+\colorlet{mypurple}{blue!40!red!80!black}
+\colorlet{mydarkgreen}{green!50!black}
+\colorlet{mydarkpurple}{blue!40!red!50!black}
+%\colorlet{mylightpurple}{mydarkpurple!80!red!6}
+\colorlet{myorange}{orange!40!yellow!95!black}
+\colorlet{mydarkorange}{orange!40!yellow!85!black}
+
+% Tikz styles
+\tikzset{>=latex} % for LaTeX arrow head
+\tikzstyle{world line}=[myblue!60,line width=0.4]
+\tikzstyle{world line t}=[mypurple!60,line width=0.4]
+\tikzstyle{world line'}=[mydarkred!60,line width=0.4]
+\tikzstyle{mysmallarr}=[-{Latex[length=3,width=2]},thin]
+\tikzstyle{mydashed}=[dash pattern=on 3 off 3]
+\tikzstyle{vector}=[->,line width=1,line cap=round]
+\tikzstyle{vector'}=[vector,shorten >=1.2]
+%\tikzstyle{measure}=[{Latex[length=3,width=2]}-{Latex[length=3,width=2]},thin]
+\tikzstyle{particle}=[mygreen,line width=0.9]
+\tikzstyle{photon}=[-{Latex[length=5,width=4]},myorange,line width=0.8,decorate,
+                    decoration={snake,amplitude=1.0,segment length=5,post length=5}]
+
+\def\tick#1#2{\draw[thick] (#1) ++ (#2:0.1) --++ (#2-180:0.2)}
+\def\tickp#1#2{\draw[thick, mydarkred] (#1) ++ (#2:0.06) --++ (#2-180:0.12)}
+
+\begin{document}
+
+% Grid parameters
+\def\dx{0.5}
+\def\xmin{-4}
+\def\xmax{6}
+\def\ymin{-4}
+\def\ymax{6}
+\def\xtmax{4}
+\def\xtmin{-3}
+\def\ytmax{4}
+\def\ytmin{-3}
+
+% Lorentz tranformation parameters
+\pgfmathsetmacro{\betaScalar}{0.4}
+\pgfmathsetmacro{\lorentz}{1/sqrt(1 - \betaScalar^2)}
+
+\begin{tikzpicture}[]
+
+  % Coordinates
+  \coordinate (o) at (0, 0);
+  \coordinate (x') at ({\lorentz*(\xtmax+\dx)}, {\lorentz*\betaScalar*(\xtmax+\dx)});
+  \coordinate (-x') at ({\lorentz*(\xtmin-\dx)}, {\lorentz*\betaScalar*(\xtmin-\dx)});
+  \coordinate (y') at ({\lorentz*\betaScalar*(\ytmax+\dx)}, {\lorentz*(\ytmax+\dx)});
+  \coordinate (-y') at ({\lorentz*\betaScalar*(\ytmin-\dx)}, {\lorentz*(\ytmin-\dx)});  
+
+  \coordinate(a) at ({\lorentz*(\xtmin + \betaScalar*\ytmin)}, {\lorentz*(\ytmin + \betaScalar*\xtmin)});
+  \coordinate(b) at ({\lorentz*(\xtmax + \betaScalar*\ytmax)}, {\lorentz*(\ytmax + \betaScalar*\xtmax)});
+
+  % Boosted word line area
+  \fill[mydarkred!5] (o) -- ({\lorentz*\xtmax}, {\lorentz*\betaScalar*\xtmax}) 
+    -- (b) -- ({\lorentz*\betaScalar*\ytmax}, {\lorentz*\ytmax}) -- cycle;
+
+  \fill[mydarkred!5] (o) -- ({\lorentz*\xtmin}, {\lorentz*\betaScalar*\xtmin}) 
+    -- (a) -- ({\lorentz*\betaScalar*\ytmin}, {\lorentz*\ytmin}) -- cycle;
+
+  % Hyperbolic area
+  \fill[mydarkblue!20] plot[variable=\y, samples=50, smooth,
+    domain=0:{\lorentz*\betaScalar*\ytmax},
+  ] ({sqrt(\xtmax^2 + \y^2)}, \y) -- (o) -- (\xtmax, 0);
+
+  \fill[mydarkgreen!20] plot[variable=\x, samples=50, smooth,
+    domain=0:{\lorentz*\betaScalar*\xtmax},
+  ] (\x, {sqrt(\x^2 + \ytmax^2)}) -- (o) -- (0, \ytmax);
+
+  % World line grid
+  \draw[step=1cm, color=gray] (\xmin,\ymin) grid (\xmax,\xmax);
+
+  % World line axes
+  \draw[thick, -latex] (0, {\ymin-\dx}) -- (0, {\ymax+\dx}) node [anchor=east] {$ct$};
+  \draw[thick, -latex] ({\xmin-\dx}, 0) -- ({\xmax+\dx}, 0) node [anchor=north west] {$x$};
+
+  % Boosted world line grid
+  \foreach \i in {1,...,\xtmax}{
+    \draw[thin, mydarkred] ({\lorentz*\i}, {\lorentz*\betaScalar*\i})
+      -- ({\lorentz*(\i + \betaScalar*\ytmax)}, {\lorentz*(\ytmax + \betaScalar*\i)});
+    \draw[thin, mydarkred] ({\lorentz*\betaScalar*\i}, {\lorentz*\i})
+      -- ({\lorentz*(\xtmax + \betaScalar*\i)}, {\lorentz*(\i + \betaScalar*\xtmax)});
+  }
+
+  \foreach \i in {-1,...,\xtmin}{
+    \draw[thin, mydarkred] ({\lorentz*\i}, {\lorentz*\betaScalar*\i})
+      -- ({\lorentz*(\i + \betaScalar*\ytmin)}, {\lorentz*(\ytmin + \betaScalar*\i)});
+    \draw[thin, mydarkred] ({\lorentz*\betaScalar*\i}, {\lorentz*\i})
+      -- ({\lorentz*(\xtmin + \betaScalar*\i)}, {\lorentz*(\i + \betaScalar*\xtmin)});
+  }
+
+  % Boosted world line axes
+  \draw[thick, -latex, mydarkred]
+    (-x') -- (x') node[anchor=west] {$x'$};
+    \draw[thick, -latex, mydarkred]
+    (-y') -- (y') node[anchor=east] {$ct'$};
+
+  % Lightcone
+  \draw[thick, myorange]
+    (a) -- (b)
+    (\xmin, -\ymin) -- (-\xmin, \ymin);
+
+  % Spacelike hyberbola
+  \draw[thick, myblue] plot[variable=\y, samples=50, smooth, domain=-.9:1]
+    ({\xtmax*cosh(\y)}, {\xtmax*sinh(\y)});
+
+  \draw[very thick, mydarkblue,
+    decoration={
+      markings,
+      mark=at position 0.58 with {\arrow{latex}}
+    },
+    postaction={decorate}
+  ] plot[variable=\y, samples=50, 
+    domain=0:{\lorentz*\betaScalar*\ytmax},
+  ] ({sqrt(\xtmax^2 + \y^2)}, \y);
+
+  \node[mydarkblue, right=1] at (5,-2)
+    {\contour{white}{$s^2 = c^2t^2-x^2<0$}};
+
+  \node[mydarkblue] at (3,0.5) {\contour{mydarkblue!90!black!15}{$\dfrac{x'\phi}{2}$}};
+
+  % Timelike hyberbola
+  \draw[thick, mygreen] plot[variable=\y, samples=50, smooth, domain=-.9:1]
+    ({\ytmax*sinh(\y)}, {\ytmax*cosh(\y)});
+
+  \draw[very thick, mydarkgreen,
+    decoration={
+      markings,
+      mark=at position 0.58 with {\arrow{latex}}
+    },
+    postaction={decorate}
+  ] plot[variable=\x, samples=50, 
+    domain=0:{\lorentz*\betaScalar*\xtmax},
+  ] (\x, {sqrt(\x^2 + \ytmax^2)});
+
+  \node[mydarkgreen, left=.5] at (-0.5,\ymax)
+    {\contour{white}{$s^2 = c^2t^2-x^2>0$}};
+
+  \node[mydarkgreen] at (0.5, 3) {\contour{mygreen!90!black!15}{$\dfrac{ct'\phi}{2}$}};
+
+  % Ticks
+  \draw[dashed, mydarkblue] ({\lorentz*\xtmax}, 0) 
+    -- ({\lorentz*\xtmax}, {\lorentz*\betaScalar*\xtmax}) -- (0, {\lorentz*\betaScalar*\xtmax});
+
+  \draw[dashed, mydarkgreen] (0, {\lorentz*\ytmax}) 
+    -- ({\lorentz*\betaScalar*\ytmax}, {\lorentz*\ytmax}) -- ({\lorentz*\betaScalar*\ytmax}, 0);
+
+  \tick{\xtmax, 0}{90} node[mydarkblue, below left=.5] {\scriptsize $x'$};
+  \tick{0, \ytmax}{0} node[mydarkgreen, below left=.5] {\scriptsize $ct'$};
+
+  \tick{{\lorentz*\xtmax}, 0}{90} node[mydarkblue, below right=.5]
+    {\contour{white}{\scriptsize $x'\cosh\phi = \gamma x'$}};
+
+  \tick{{\lorentz*\betaScalar*\ytmax}, 0}{90} node[mydarkgreen, below=.5]
+    {\contour{white}{\scriptsize $ct'\sinh\phi = \gamma \beta ct'$}};
+
+  \tick{0, {\lorentz*\betaScalar*\xtmax}}{0} node[mydarkblue, above left=.5]
+    {\contour{white}{\scriptsize $x'\sinh\phi = \gamma \beta x'$}};
+
+  \tick{0, {\lorentz*\ytmax}}{0} node[mydarkgreen, above left=.5]
+    {\contour{white}{\scriptsize $ct'\cosh\phi = \gamma ct'$}};
+
+  \fill[mydarkblue] (\xtmax, 0) circle(.05);
+  \fill[mydarkblue] 
+    ({\lorentz*\xtmax}, {\lorentz*\betaScalar*\xtmax}) circle(.05);
+
+  \fill[mydarkgreen] (0, \ytmax) circle(.05);
+  \fill[mydarkgreen] 
+    ({\lorentz*\betaScalar*\ytmax}, {\lorentz*\ytmax}) circle(.05);
+
+\end{tikzpicture}
+\end{document}
+```
+</LatexFig>
+
+The Lorentz transformation (Lorentz boost) for two reference frames moving with relative velocity $v$ in $x$ direction is given by
+
+$$
+\begin{align*}
+  ct' &= \gamma \left(ct - \beta x \right) = ct \cosh\phi - x \sinh\phi \\
+  x' &= \gamma\left(x - \beta ct\right) = x \cosh\phi - ct \sinh \phi \\
+  y' &= y \\
+  z' &= z
+\end{align*}
+$$
+
+where $\beta = \frac{v}{c}$ and 
+
+$$
+  \gamma = \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}} = \frac{1}{\sqrt{1 - \beta^2}}
+$$ 
+
+is the Lorentz factor. In matrix form, the Lorentz boost is written as
+
+$$
+\begin{align*}
+  \begin{bmatrix} ct' \\ x' \\ y' \\ z' \end{bmatrix} &= \begin{bmatrix} \gamma & -\gamma\beta & 0 & 0 \\ -\gamma\beta & \gamma & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix} \cdot \begin{bmatrix} ct \\ x \\ y \\ z \end{bmatrix} = \begin{bmatrix} \cosh\phi & -\sinh\phi & 0 & 0 \\ -\sinh\phi & \cosh\phi & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix} \cdot \begin{bmatrix} ct \\ x \\ y \\ z \end{bmatrix} 
+\end{align*}
+$$
+
+The inverse Lorentz transformation (inverse Lorentz boost) is given by
+
+$$
+\begin{align*}
+  ct &= \gamma \left(ct' + \beta x \right) = ct'\cosh\phi + x'\sinh\phi \\
+  x &= \gamma\left(x' + \beta ct' \right) = x' \cosh\phi + ct \sinh\phi \\
+  y &= y' \\
+  z &= z'
+\end{align*}
+$$
+
+or in matrix form
+
+$$
+\begin{align*}
+  \begin{bmatrix} ct \\ x \\ y \\ z \end{bmatrix} &= \begin{bmatrix} \gamma & \gamma\beta & 0 & 0 \\ \gamma\beta & \gamma & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix} \cdot \begin{bmatrix} ct \\ x \\ y \\ z \end{bmatrix} = \begin{bmatrix} \cosh\phi & \sinh\phi & 0 & 0 \\ \sinh\phi & \cosh\phi & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix} \cdot \begin{bmatrix} ct \\ x \\ y \\ z \end{bmatrix} 
+\end{align*}
+$$
+
+## Derivation of the Lorentz factor
+
+For two inertial frames $S$ and $S'$ moving with relative speed $v$, the coordinate transform map $(x, t) \mapsto (x', t')$ must be linear
+
+$$
+\begin{split}
+  x' = \alpha_1 x + \alpha_2 t
+\end{split}\quad
+\begin{split}
+  t' = \alpha_1 x + \alpha_2 t
+\end{split}
+$$
+
+The frame $S'$ moves along the path $x(t) = vt$ in $S$, so that $x = vt \mapsto x' = 0$. This restricts the coefficients $\alpha_1$ and $\alpha_2$ to the form
+
+$$
+  x' = \gamma_v \left(x - vt \right)
+$$
+
+for some coefficient $\gamma_v$ that is dependent on $v$. Rotational invariance requires $\gamma_v = \gamma_{-v}$. Similarly from the perspective of $S'$ relative
+
+$$
+  x = \gamma_{-v} \left(x' + vt' \right)
+$$
+
+If time was absolute, so that $t = t'$, then we would have $\gamma = 1$ which is the case for Galilean transformations. The second postulate of special relativity requires however that the speed of light is equal in both reference frames. A light ray has thus similar trajectories in both reference frames
+
+$$
+\begin{split}
+  x = ct
+\end{split}\quad
+\begin{split}
+  x' = ct'
+\end{split}
+$$
+
+Substituing these trajectories into the coordinate transformations
+
+$$
+\begin{split}
+  ct' = \gamma (c - v)t
+\end{split}\quad
+\begin{split}
+  ct = \gamma (c - v)t'
+\end{split}
+$$
+
+Solving for $\gamma$ gives
+
+$$
+  \gamma = \frac{1}{\sqrt{1 - (v/c)^2}} = \frac{1}{\sqrt{1 - \beta^2}}
+$$
+
+which known as the Lorentz factor. In vector form, the Lorentz transformation becomes
+
+$$
+  \begin{bmatrix} ct' \\ x' \end{bmatrix} = \gamma \begin{bmatrix} 1 & -\beta \\ -\beta & 1 \end{bmatrix} \cdot \begin{bmatrix} ct \\ x \end{bmatrix}
+$$
+
+The determinant of the Lorentz transform is
+
+$$
+  \gamma^2 \begin{vmatrix} 1 & -\beta \\ -\beta & 1 \end{vmatrix} = \gamma^2 (1 - \beta^2) = 1
+$$
+
+which shows that area is preserved under the transform.
+
+## Hyperbolic rotation (rapidity)
+
+The Lorentz transformation can be intepreted as a hyperbolic rotation by introducing the rapidity $\phi$ (hyperbolic angle) defined as
+
+$$
+  \gamma = \cosh\phi
+$$
+
+The rapidity $\phi$ paramterizes hyperbolic curves according to the identity
+
+$$
+  \cosh^2\phi - \sinh^2\phi = 1
+$$
+
+Rearranging we get
+
+$$
+  \sinh\phi = \sqrt{\cosh^2\phi - 1} = \sqrt{\gamma^2 - 1} = \sqrt{\frac{1}{1 - \beta^2} - 1} = \frac{\beta}{\sqrt{1 - \beta^2}} = \gamma \beta
+$$
+
+and
+
+$$
+  \tanh\phi = \frac{\sinh\phi}{\cosh\phi} = \beta
+$$
+
+## Vector formulation
+
+Introducing the unit vector $\hat{\mathbf{n}} = \frac{\mathbf{v}}{v}$, the Lorentz transformation can be expressed as
+
+$$
+\begin{align*}
+  t' &= \gamma \left(t - \frac{v \hat{\mathbf{n}}\cdot\mathbf{r}}{c^2}\right) \\
+  \mathbf{r}' &= \mathbf{r} + \left(\gamma \right)\left(\mathbf{r} \cdot \hat{\mathbf{n}} \right)\hat{\mathbf{n}} - \gamma tv \hat{\mathbf{n}}
+\end{align*}
+$$
+
+# Geometry of relativity
+
+<LatexFig src='/fig/lorentz_transform_basis.svg' alt=''
+  caption='Lorentz transformation of the basis of Minkowski spacetime.'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\begin{document}
+
+% Scale
+\def\scl{3}
+
+% Lorentz tranformation parameters
+\pgfmathsetmacro{\betaScalar}{0.4}
+\pgfmathsetmacro{\lorentz}{1/sqrt(1 - \betaScalar^2)}
+
+\begin{tikzpicture}[]
+
+  % Coordinates
+  \coordinate (o) at (0, 0);
+
+  % Boosted worldline basis
+  \draw[very thick, red, -latex] (o) -- 
+    (\scl*\lorentz, \lorentz*\betaScalar*\scl) node[above right=1, yshift=5] {
+      \small $\mathbf{e}_{x'} \textcolor{black}{= \gamma\left(\mathbf{e}_{x} + \beta \mathbf{e}_{ct} \right)}$};
+
+  \draw[very thick, red, -latex] (o) -- 
+    (\lorentz*\betaScalar*\scl, \lorentz*\scl) node[right=1] {
+      $\mathbf{e}_{ct'} \textcolor{black}{= \gamma\left(\mathbf{e}_{ct} + \beta \mathbf{e}_{x} \right)}$};
+
+  \draw[very thin, -latex] (o) -- (\scl*\lorentz, 0);
+  \draw[very thin, -latex] (\scl*\lorentz, 0) -- (\scl*\lorentz, \lorentz*\betaScalar*\scl);
+
+  \draw[very thin, -latex] (o) -- (0, \scl*\lorentz);
+  \draw[very thin, -latex] (0, \scl*\lorentz) -- (\lorentz*\betaScalar*\scl, \lorentz*\scl);
+
+  % World line basis
+  \draw[very thick,-latex] (o) -- (\scl, 0) node[below right=1] {
+    $\mathbf{e}_{x} = \textcolor{red}{\gamma\left(\mathbf{e}_{x'} - \beta \mathbf{e}_{ct'} \right)}$};
+
+  \draw[very thick,-latex] (o) -- (0, \scl) node[left=1] {
+    $\mathbf{e}_{ct} = \textcolor{red}{\gamma\left(\mathbf{e}_{ct'} - \beta \mathbf{e}_{x'} \right)}$};
+
+  \draw[very thin, red, -latex] (o) -- (\scl*\lorentz^2, \scl*\betaScalar*\lorentz^2);
+  \draw[very thin, red, -latex] (\scl*\lorentz^2, \scl*\betaScalar*\lorentz^2) -- (\scl, 0);
+
+  \draw[very thin, red, -latex] (o) -- (\scl*\betaScalar*\lorentz^2, \scl*\lorentz^2);
+  \draw[very thin, red, -latex] (\scl*\betaScalar*\lorentz^2, \scl*\lorentz^2) -- (0, \scl);
+
+\end{tikzpicture}
+\end{document}
+```
+</LatexFig>
+
+The Lorentz transformation produces geometrical effects with peculiar physical interpretations.
+
+## Relativity of simultaneity
+
+<LatexFig src='/fig/special_relativity_simultaneity.svg' alt=''
+  caption="The event pairs (A, A'), (B, B') and (C, C') occur in different orders depending on the motion of the observer."
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\tikzset{
+  dot/.style = {circle, fill, minimum size=#1,
+                inner sep=1pt, outer sep=0pt},
+  dot/.default = 5pt % size of the circle diameter 
+}
+
+\begin{document}
+% Grid parameters
+\def\dx{0.5}
+\def\nLines{4}
+
+% Lorentz tranformation parameters
+\pgfmathsetmacro{\betaScalar}{0.4}
+\pgfmathsetmacro{\lorentz}{1/sqrt(1 - \betaScalar^2)}
+
+%\foreach \t in {0, 0.1, ..., 5}{
+  \begin{tikzpicture}[]
+    
+    % Coordinates
+    \coordinate (o) at (0, 0);
+
+    % World line grid
+    \draw[step=1cm, color=gray] (-\nLines,-\nLines) grid (\nLines,\nLines);
+
+    % World line axes
+    \draw[thick, -latex] (0, {-\nLines-\dx}) -- (0, {\nLines+\dx}) node [anchor=east] {$ct$};
+    \draw[thick, -latex] ({-\nLines-\dx}, 0) -- ({\nLines+\dx}, 0) node [anchor=north west] {$x$};
+
+    % Boosted world line grid
+    \foreach \i in {-\nLines,...,\nLines}{
+      % Forward boost
+      % x'
+      \draw[very thin, red] ({\lorentz*(\i-\betaScalar*\nLines)}, {\lorentz*(\betaScalar*\i-\nLines)})
+        -- ({\lorentz*(\i+\betaScalar*\nLines)}, {\lorentz*(\nLines + \betaScalar*\i)});
+      % ct'
+      \draw[very thin, red] ({\lorentz*(\betaScalar*\i-\nLines)}, {\lorentz*(\i - \betaScalar*\nLines)})
+        -- ({\lorentz*(\nLines+\betaScalar*\i)}, {\lorentz*(\i+\betaScalar*\nLines)});
+
+      % Backward boost
+      % x''
+      \draw[very thin, blue] ({\lorentz*(\i+\betaScalar*\nLines)}, {-\lorentz*(\nLines+\betaScalar*\i)}) 
+        -- ({\lorentz*(\i-\betaScalar*\nLines)}, {\lorentz*(\nLines-\betaScalar*\i)});
+      % ct''
+      \draw[very thin, blue] ({-\lorentz*(\betaScalar*\i+\nLines)}, {\lorentz*(\i+\betaScalar*\nLines)}) 
+        -- ({\lorentz*(\nLines-\betaScalar*\i)}, {\lorentz*(\i-\betaScalar*\nLines)});
+    }
+
+    % Boosted world line axes
+    % x'
+    \draw[very thick, red, -latex] ({-\lorentz*(\nLines+\dx)}, {-\lorentz*\betaScalar*(\nLines+\dx)}) 
+      -- ({\lorentz*(\nLines+\dx)}, {\lorentz*\betaScalar*(\nLines+\dx)}) node[right=1] {$x'$};
+    % ct'
+    \draw[very thick, red, -latex] ({-\lorentz*\betaScalar*(\nLines+\dx)}, {-\lorentz*(\nLines+\dx)}) 
+      -- ({\lorentz*\betaScalar*(\nLines+\dx)}, {\lorentz*(\nLines+\dx)}) node[above=1] {$ct'$};
+
+    % x''
+    \draw[very thick, blue, -latex] ({-\lorentz*(\nLines+\dx)}, {\lorentz*\betaScalar*(\nLines+\dx)}) 
+      -- ({\lorentz*(\nLines+\dx)}, {-\lorentz*\betaScalar*(\nLines+\dx)}) node[right=1] {$x''$};
+    % ct''
+    \draw[very thick, blue, -latex] ({\lorentz*\betaScalar*(\nLines+\dx)}, {-\lorentz*(\nLines+\dx)}) 
+      -- ({-\lorentz*\betaScalar*(\nLines+\dx)}, {\lorentz*(\nLines+\dx)}) node[above=1] {$ct''$};
+
+    % Light cone
+    \draw[very thick, myorange] ({-\lorentz*\nLines*(1+\betaScalar)}, {-\lorentz*\nLines*(1+\betaScalar)})
+      -- ({\lorentz*\nLines*(1+\betaScalar)}, {\lorentz*\nLines*(1+\betaScalar)})
+      ({-\lorentz*\nLines*(1+\betaScalar)}, {\lorentz*\nLines*(1+\betaScalar)})
+      -- ({\lorentz*\nLines*(1+\betaScalar)}, {-\lorentz*\nLines*(1+\betaScalar)});
+    
+    % Events
+    \node[dot, white, fill=black] at (-2, 0) {\small $\textbf{B}$};
+    \node[dot, white, fill=black] at (2, 0) {\small $\textbf{B}'$};
+
+    \node[dot, white, fill=red, draw=black] at ({-\lorentz*2}, {-\lorentz*\betaScalar*2}) {\small $\textbf{A}$};
+    \node[dot, white, fill=red, draw=black] at ({\lorentz*2}, {\lorentz*\betaScalar*2}) {\small $\textbf{A}'$};
+
+    \node[dot, white, fill=blue, draw=black] at ({-\lorentz*2}, {\lorentz*\betaScalar*2}) {\small $\textbf{C}$};
+    \node[dot, white, fill=blue, draw=black] at ({\lorentz*2}, {-\lorentz*\betaScalar*2}) {\small $\textbf{C}'$};
+
+  \end{tikzpicture}
+\end{document}
+```
+</LatexFig>
+
+The time difference between two reference frames can be expressed using the Lorentz transformation
+
+$$
+  \Delta t' = \gamma \left(\Delta t - \frac{v}{c^2}\Delta x \right)
+$$
+
+This shows that two events that are simultaneous in frame $S$ (satisfying $\Delta = t$) are not necessarily simulatenous in another frame $S'$.
+
+## Time dilation
+
+Time dilation arises from measuring the time component of a spacetime vector in different bases. Consider a clock stationary in the origin of the frame $S'$ that is ticking at intervals of $\Delta t'$. The ticking intervals in the stationary frame $S$ is given by the inverse Lorentz transformation ($x' = 0$)
+
+$$
+  \Delta t = \gamma \Delta t
+$$
+
+This shows that the ticking interval is longer in the stationary frame, while a moving clock runs more slowly.
+
+### Twin paradox
+
+
+## Length contraction 
+Length contraction arises from measuring the spatial component of a spacetime vector in different bases. Consider a rod of length $L'$ stationary in frame $S'$. When measuring its length $L$ in the stationary frame, the spatial components gets contracted by a factor of $\gamma^{-1}$ due to change of basis so that
+
+$$
+  L = \frac{L'}{\gamma}
+$$
+
+The rod is shortened in the rest frame.
+
+### The ladder and the barn paradox
+
+## Addition of velocities
+
+Considering a particle with velocity $u'$ in frame $S'$, which in turn moves with velocity $v$ with respect to frame $S$. In frame $S'$ the particle moves along the trajectory $x' = u't'$. The velocity of the particle in frame $S$ is
+
+$$
+\begin{align*}
+  u &= \frac{x}{t} = \frac{\gamma \left(x' + vt' \right)}{\gamma \left( t' + \frac{vx'}{c^2} \right)} \\
+  &= \frac{u' + v}{1 + \frac{u'v}{c^2}}
+\end{align*}
+$$
+
+## Invariant interval
+
+The invariant interval defines an observer-independent measure of the distance between any two events, given by
+
+$$
+  \Delta s^2 = c^2 \Delta t^2 - (\Delta x^2 + \Delta y^2 + \Delta z^2)
+$$
+
+In frame $S'$, the interval is (ignoring the $y$ and $z$ directions which are trivial)
+
+$$
+\begin{align*}
+  \Delta s^2 &= \gamma^2\left(c\Delta t' + \frac{v}{c}\Delta x' \right)^2 - \gamma^2 \left(\Delta x' + v\Delta t' \right)^2 \\
+  &= \gamma^2 \left[ c^2 \Delta t'^2 + 2v\Delta t' \Delta x + \frac{v^2}{c^2}\Delta x'^2 - \Delta x'^2 - 2v\Delta t' \Delta x' + v^2 \Delta t'^2  \right] \\
+  &= c^2 \gamma^2 \underbrace{\left(1 - \frac{v^2}{c^2} \right)}_{\gamma^{-2}} - \gamma^2 \underbrace{\left(1 - \frac{v^2}{c^2} \right)}_{\gamma^{-2}} \Delta x'^2 \\
+  &= c^2 \Delta t'^2 - \Delta x'^2
+\end{align*}
+$$
+
+showing that the metric is invariant. The invariant interval is not positive definite. The sign of $\Delta s^2$ describes different separations of events in spacetime
+
+- Events separated by $\Delta s^2 > 0$ are said to be timelike separated. Geometrically, they sit within each others light cone
+- Events separated by $\Delta s^2 < 0$ are said to be spacelike separated. Geometrically, they sit outside each others light cone.
+- Events separated by $\Delta s^2 = 0$ are said to be lightlike separated.
+
+# Relativistic mechanics
+
+Relativistic mechanics treats physical quantities as 4-vectors, which are all 4-component objects that are invariant under the Lorentz transformation.
+
+## Proper time
+
+Considering a particle at rest at the origin of frame $S'$. The invariant interval between two points on the worldline of the particle is
+
+$$
+  \Delta s^2 = c^2 \Delta t'^2
+$$
+
+The invariant interval is proportional to the time experienced by the particle. From this, the proper time is derived which for all frames is given by 
+
+$$
+  \Delta \tau = \frac{\Delta s}{c}
+$$
+
+Proper time provides a way to parametrize the trajectory of a particle in a manner that all inertial observers will agree on. The infinitisimal proper time is
+
+$$
+\begin{gather*}
+  \mathrm{d}\tau = \sqrt{\mathrm{d}t^2 - \frac{\mathrm{d}\mathbf{x}^2}{c^2}} = \mathrm{d}t\sqrt{1 - \frac{1}{c^2}\left( \frac{\mathrm{d}\mathbf{x}}{\mathrm{d}t} \right)^2} = \mathrm{d}t\sqrt{1 - \frac{v^2}{c^2}} \\
+  \implies \frac{\mathrm{d}\tau}{\mathrm{d}t} = \gamma
+\end{gather*}
+$$
+
+## 4-Velocity
+
+A general trajectory in spacetime can be parametrized by the proper time
+
+$$
+  X(\tau) = \begin{bmatrix} ct(\tau) \\ \mathbf{x}(\tau) \end{bmatrix}
+$$
+
+From this we can define the 4-velocity
+
+$$
+  U = \frac{\mathrm{d}X}{\mathrm{d}\tau} = \begin{bmatrix} c\frac{\mathrm{d}\tau}{\mathrm{d}t} \\ \frac{\mathrm{d}\mathbf{x}}{\mathrm{d}t} \end{bmatrix} = \frac{\mathrm{d}\tau}{\mathrm{d}t} \begin{bmatrix} c \\ \mathbf{u} \end{bmatrix} = \gamma \begin{bmatrix} c \\ \mathbf{u} \end{bmatrix}
+$$
+
+If the particles 4-velocity in frame $S$ is measured to $U$, then the 4-velocity in frame $S'$ is given by
+
+$$
+  U' = \Lambda U
+$$
+
+From this it follows that the inner product of $U$ is invariant
+
+$$
+  U\cdot U = U^T \eta U = \left(\frac{\mathrm{d}t}{\mathrm{d}\tau} \right)^2 \left(c^2 - u^2 \right) = \gamma^2 c^2 \underbrace{\left(1 - \frac{u^2}{c^2} \right)^2}_{\gamma^-2} = c^2 
+$$
+
+## Acceleration
+
+The 4-acceleration vector is defined by
+
+$$
+  A \equiv \frac{\mathrm{d}U}{\mathrm{d}\tau}
+$$
+
+Because $U \cdot U = c^2$, we must have that $A$ is always orthogonal to $U$ in the Minkowski sense, $A\cdot U = 0$.
+
+Consider a particle moving in frame $S$ with velocity $\mathbf{u}$. Then its acceleration in $S$ is $\mathbf{a} = \dot{\mathbf{u}}$. Since $\frac{\mathrm{d}t}{\mathrm{d}\tau} = \gamma$, the 4-acceleration depends on both $\mathbf{u}$ and $\mathbf{a}$
+
+$$
+  A = \gamma\begin{bmatrix} \dot{\gamma}c \\ \dot{\gamma}\mathbf{u} + \gamma\mathbf{a} \end{bmatrix}
+$$
+
+Suppose we sit in an inertial frame $S'$ in which the particle is instantaneously at rest at a fixed time (this will not coincide with particle's rest frame an instant later). The 4-acceleration in this frame is
+
+$$
+  A' = \begin{bmatrix} \dot 0 \\ \mathbf{a'} \end{bmatrix}
+$$
+
+which is related to $A$ by the Lorentz transformation
+
+$$
+  A = \gamma\begin{bmatrix} \dot{\gamma}c \\ \dot{\gamma}\mathbf{u} + \gamma\mathbf{a} \end{bmatrix} = \begin{bmatrix} 1 & \beta \\ \beta & \gamma \end{bmatrix} = \begin{bmatrix} 0 \\ \mathbf{a'} \end{bmatrix} = \gamma a' \begin{bmatrix} \beta \\ 1 \end{bmatrix}
+$$
+
+The accelerations are related by
+
+$$
+  a = \left(1 - \frac{u^2}{c^2} \right)^{3/2} a'
+$$
+
+For a constant $a'$, we can itegrate to get the velocity $u$ in $S$
+
+$$
+  u = \frac{a' ct}{\sqrt{c^2 + a'^2 t^2}} \implies \gamma(t) = \sqrt{1 + \frac{a'^2 t^2}{c^2}}
+$$
+
+Integrating once more, we get the position $x$ in $S$
+
+$$
+  x = \frac{c}{a'} \left(\sqrt{c^2 + a'^2 t^2} - c \right)
+$$
+
+This shows that the particle moves along a hyperbola in $S$. The particles light cone never intersects the null line $x = ct$, which forms the so-called Rindler event horizon. While accelerating, the particle can not receive any information from the spacetime beyond the null line.
+
+The proper time felt by the particle is given by
+
+$$
+  \tau = \int_0^t \frac{\mathrm{d}t}{\gamma(\tilde{t})} \int_0^t \frac{c\mathrm{d}\tilde{t}}{\sqrt{c^2 + a'^22 t^2}} = \frac{c}{a'}\sinh^{-1}\left( \frac{a't}{c} \right)
+$$
+
+## 4-Momentum
+
+The 4-momentum is defined by
+
+$$
+  P = mU = m\gamma \begin{bmatrix} c \\ \mathbf{u} \end{bmatrix} = \begin{bmatrix} mc\gamma \\ m\gamma\mathbf{u} \end{bmatrix} = \begin{bmatrix} mc\gamma \\ \mathbf{p} \end{bmatrix}
+$$
+
+where $m$ is the particle's rest mass. Notice that as the particle approaches the speed of light, the relativistic mass $m\gamma$ diverges and $\left| \mathbf{p} \right| \to\infty$, meaning that massive particles cannot break the speed of light barrier. The physical interpretation of the the time-component by Taylor expanding about $\gamma$
+
+$$
+  P^0 = \frac{mc}{\sqrt{1 - u^2/c^2}} = \frac{1}{c}\left(mc^2 + \frac{1}{2}mu^2 + \dots \right)
+$$
+
+the second terms is the non-relativistic kinetic energy of the particle, suggesting that $P^0$ represents the energy of the particle
+
+$$
+  P = \begin{bmatrix} E/c \\ \mathbf{p} \end{bmatrix}
+$$
+
+The relativistic energy of the particle is thus
+
+$$
+  E = m\gamma c^2
+$$
+
+For a stationary particle, we get the famous $E = mc^2$. The inner product of the 4-momentum is 
+
+$$
+  P\cdot P = P^T \eta P = \frac{E^2}{c^2} - \mathbf{p}^2
+$$
+
+In the rest frame of the particle, $P^T = (mc, \mathbf{0})$ and clearly
+$$
+  P\cdot P = m^2 c^2
+$$
+
+Since the inner product is invariant we get the equation
+
+$$
+  E^2 = \mathbf{p}^2 c^2 + m^2 c^4
+$$
+
+### Massless particles
+
+## Newton's laws of motion
+
+The relativistic form of Newton's laws of motion is
+
+$$
+  \frac{\mathrm{d}P^\mu}{\mathrm{d}\tau} = F^\mu
+$$
+
+where $F$ is the 4-force vector defined by
+
+$$
+  F = \begin{bmatrix} F^0 \\ \gamma\mathbf{f} \end{bmatrix}
+$$
+
+The spatial component $\mathbf{f}$ agrees with the classic Newton's laws of motion 
+
+$$
+  \frac{\mathrm{d}\mathbf{p}}{\mathrm{d}t} = \frac{\mathrm{d}\tau}{\mathrm{d}t}\frac{\mathrm{d}\mathbf{p}}{\mathrm{d}\tau} = \frac{1}{\gamma}\frac{\mathrm{d}\mathbf{p}}{\mathrm{d}\tau} = \mathbf{f}
+$$
+
+The temporal component $F^0$ is related to the power
+
+$$
+  F^0 = \frac{\mathrm{d}P^0}{\mathrm{d}\tau} = \frac{\gamma}{c}\frac{\mathrm{d}E}{\mathrm{d}t}
+$$
+
+With these definitions, we can derive an equation relating the change in energy to the work done
+
+$$
+  \frac{\mathrm{d}}{\mathrm{d}\tau} (P \cdot P) = 2P^0 \frac{\mathrm{d}P^0}{\mathrm{d}\tau} - 2\mathbf{p}\cdot\frac{\mathrm{d}\mathbf{p}}{\mathrm{d}\tau} = 2\gamma^2 m \left( \frac{\mathrm{d}E}{\mathrm{d}t} - \mathbf{u} \cdot \mathbf{f} \right) = 0
+$$
+
+# Lorentz group
+
+The coordinates of an event at point $P$ in frame $S$ can be written as a contravariant 4-vector $X^\mu$ with components
+
+$$
+  X^T = (ct, \mathbf{x}) \quad \mu = 0, 1, 2, 3
+$$
+
+The invariant distance between the origin and $P$ is given by the inner product
+
+$$
+  X\cdot X \equiv X^T \eta X = X^\mu \eta_{\mu\nu} X^{\nu} = X^\mu X_\mu = c^2 t^2 - \mathbf{x}\cdot\mathbf{x}
+$$
+
+where bilinear form $\eta$ is the Minkowski metric given by
+
+$$
+  \eta = \mathrm{diag}(1, -1, -1, -1)
+$$
+
+The Lorentz transformation of $X$ can be expressed by the linear transform $\Lambda$ such that
+
+$$
+  X'^\mu = \Lambda^\mu_\nu X^\nu
+$$
+
+The inner product is invariant under the Lorentz transformation
+
+$$
+  X' \cdot X' = (\Lambda X)^T \eta \Lambda X = X^T (\Lambda^T \eta \Lambda) X = X^T \eta X =  X \cdot X \\
+$$
+
+This is only true if
+
+$$
+  \Lambda^T \eta \Lambda = \Lambda \tag{1}
+$$
+
+This matrix equation contains the general conditions on the Lorentz transformation. The matrix $\Lambda$ has $4\times 4 = 16$ component, however both sides of the equation are symmetric, imposing $10$ constraints on the coefficients of $\Lambda$. There are there $16-10 = 6$ independent solutions.
+
+The six solutions to eq. $1$ fall into to two classes. The first three solution are of the form
+
+$$
+  \Lambda = \left[\begin{array}{c|c} 
+    1 & \begin{matrix} 0 & 0 & 0 \end{matrix} \\ \hline
+    \begin{matrix} 0 \\ 0 \\ 0 \end{matrix} & R
+  \end{array} \right]
+$$
+
+where $R$ is a $3 \times 3$ matrix. These transformations change space, but leave time intact. The conditions for $R$ given by eq. $1$ reduces to
+
+$$
+  R^T R = I
+$$
+
+which is the condition for rotation matrices. There are three such indenpendent matrices, corresponding to rotations about the three different spatial axes.
+
+The the remaining three solutions are the familiar Lorentz boosts along each of the spatial directions. The boost along the $x$ axis is given by
+
+$$
+  \Lambda = \left[\begin{array}{c|c} 
+    \begin{matrix} \gamma & -\gamma\beta \\ -\gamma\beta & \gamma \end{matrix} & \begin{matrix} 0 & 0 \\ 0 & 0 \end{matrix} \\ \hline
+    \begin{matrix} 0 & 0 \\ 0 & 0 \end{matrix} & \begin{matrix} 1 & 0 \\ 0 & 1 \end{matrix}
+  \end{array} \right]
+$$
+
+The set $\mathcal{L}$ of all transforms $\Lambda$ obeying eq. $1$ form the Lorentz group, which is an indefinite orthogonal group $\mathrm{O}(1,3)$.
+
+Taking the determinant of eq. $1$ gives
+
+$$
+  \left[\det\left( \Lambda \right) \right]^2 = 1 \implies \det\left( \Lambda \right) = \pm 1
+$$
+
+The subgroup with $\det\Lambda = 1$ is called the proper Lorentz group denoted $\mathrm{SO}(1,3)$. The Lorentz group can be further decomposed into how time is transformed. Any transform can either flip the direction of time or leave it invariant. Those transformations preserving the direction of time are called orthochronus. The group of proper orthochronus Lorentz transformations is denoted $\mathrm{SO}^+ (1, 3)$.
+
+| Intersection, $\cap$ | Antichronus<br/>$\mathcal{L}^\downarrow = \{\Lambda : \Gamma \leq -1 \}$  | Orthochronus<br/>$\mathcal{L}^\uparrow = \{\Lambda : \Gamma \geq 1 \}$  |
+|---|---|---|
+| **Proper**<br/>$\mathcal{L}_+ = \{\Lambda : \det\Lambda = 1 \}$ | Proper antichronus<br/>$\mathcal{L}_+^\downarrow = \mathcal{L}_+ \cap \mathcal{L}^\downarrow$ | Proper antichronus<br/>$\mathcal{L}_+^\uparrow = \mathcal{L}_+ \cap \mathcal{L}^\uparrow$ |
+| **Improper**<br/>$\mathcal{L}_- = \{\Lambda : \det\Lambda = -1 \}$ | Improper antichronus<br/>$\mathcal{L}_-^\downarrow = \mathcal{L}_- \cap \mathcal{L}^\downarrow$ | Improper orthochronus<br/>$\mathcal{L}_-^\uparrow = \mathcal{L}_- \cap \mathcal{L}^\uparrow$ |
+
+## Weyl representation (spinor map)
+
+In addition to 4-vectors, spacetime coordinates can alternatively be expressed as $2\times 2$ Hermitian matrices
+
+$$
+  \hat{X} = \begin{bmatrix} ct + z & x - iy \\
+      x + iy & ct - z
+  \end{bmatrix}
+$$
+
+which satisfy $\hat{X} = \hat{X}^\dagger$. The inner product of the 4-vector is now given by the determinant of the Hermitian matrix
+
+$$
+  X\cdot X = \det \hat{X} = c^2 t^2 - x^2 - y^2 - z^2
+$$
+
+Any transformation that preserves the Minkowski metric is by definition a Lorentz transformation. Such transformations can be formed by a general matrix $A \in SL(2, \mathbb{C})$ such that
+
+$$
+  \hat{X}' = A\hat{X}A^\dagger
+$$
+
+This transform preserves the Minkowski metric as
+
+$$
+  \det\hat{X}' = \det\left(A \hat{X} A^\dagger \right) = \underbrace{\det A}_{=1} \det X \underbrace{\det A^\dagger}_{=1} = \det X
+$$
+
+and therefore defines a Lorentz transformation. This shows that there is a homomorphic map between $SO^+ (1,3)$ and $SL(2,\mathbf{C})$ preserving the group structure. Although the dimensions are the same, $SL(2, \mathbb{C})$ is in some sense twice as big, since both $A$ and $-A$ both implement the same Lorentz transformation. 
+
+$$
+  SO^+ (1,3) \cong SL(2,\mathbb{C})/\mathbf{Z}_2
+$$
+
+The surjective homomorphism from $SL(2, \mathbb{C})$ to $SO^+ (1,3)$ is called the Weyl representation and is a spinor map.
+
+### Rotations
+
+Lorentz transformations performing a rotation leave time untouched. This means that $A \in SL(2, \mathbb{C})$ must map $\hat{X} = ct 1_2$ to itself, thus requiring $AA^\dagger = 1$. This means that $A$ is a unitary matrix, $A \in SU(2) \subset SL(2, \mathbb{C})$. The special unitary group is the double cover of the rotation group $SO(3)$
+
+$$
+  SO(3) \cong SU(2)/\mathbb{Z}_2
+$$
+
+For rotations about the $x$ axis, we have
+
+$$
+\begin{aligned}
+  R = \begin{bmatrix} 1 & 0 & 0 \\
+    0 & \cos\theta & \sin\theta \\
+    0 & -\sin\theta & \cos\theta
+  \end{bmatrix}
+\end{aligned}\rightleftharpoons
+\begin{aligned}
+  A = \begin{bmatrix} \cos(\theta/2) & i\sin(\theta/2) \\
+    i\sin(\theta/2) & \cos(\theta/2)
+  \end{bmatrix}
+\end{aligned}
+$$
+
+For rotations about the $y$ axis, we have 
+
+$$
+\begin{aligned}
+  R = \begin{bmatrix} \cos\theta & 1 & \sin\theta \\
+    0 & 1 & \sin\theta \\
+    -\sin\theta & 1 & \cos\theta
+  \end{bmatrix}
+\end{aligned}\rightleftharpoons
+\begin{aligned}
+  A = \pm\begin{bmatrix} \cos(\theta/2) & \sin(\theta/2) \\
+    -\sin(\theta/2) & \cos(\theta/2)
+  \end{bmatrix}
+\end{aligned}
+$$
+
+For rotations about the $z$ axis, we have 
+
+$$
+\begin{aligned}
+  R = \begin{bmatrix} \cos\theta & \sin\theta & 0\\
+    -\sin\theta & \cos\theta & 0 \\
+    0 & 0 & 1
+  \end{bmatrix}
+\end{aligned}\rightleftharpoons
+\begin{aligned}
+  A = \pm\begin{bmatrix} e^{i\theta/2} & 0 \\
+    0 & e^{-i\theta/2}
+  \end{bmatrix}
+\end{aligned}
+$$
+
+The unitary rotation matrices can be expressed more compactly in terms of Pauli matrices
+
+$$
+\begin{aligned}
+  \sigma^1 = \pm\begin{bmatrix} 0 & 1 \\
+    1 & 0
+  \end{bmatrix}
+\end{aligned}\quad
+\begin{aligned}
+  \sigma^2 = \pm\begin{bmatrix} 0 & -i \\
+    i & 0
+  \end{bmatrix}
+\end{aligned}\quad
+\begin{aligned}
+  \sigma^2 = \pm\begin{bmatrix} 1 & 0 \\
+    0 & -1
+  \end{bmatrix}
+\end{aligned}
+$$
+
+which together with unit matrix form a basis for $2\times 2$ Hermitian matrices, and have the property
+
+$$
+  \sigma^i \sigma^j = \delta^{ij} + i\epsilon^{ijk}\sigma^k
+$$
+
+In terms of Pauli matrices, a rotation by angle $\theta$ around an axis with unit vector $\hat{\mathbf{n}}$ is associated to the unitary matrix
+
+$$
+  A = \pm \exp\left(\frac{i\theta}{2}n^i \sigma^i \right)
+$$
+
+### Boosts
+
+In terms of Pauli matrices, the transformations $A \in SL(2,\mathbb{C})$ corresponding to a Lorentz boost in $\hat{\mathbf{n}}$ direction are given by
+
+$$
+  A = \pm \exp\left(\frac{i\phi}{2}n^i \sigma^i \right)
+$$
+
+These matrices are not unitary as they affect the time component.
+
+## Celestial sphere (Möbius transformation)
+
+Light reaching an observation point at a fixed time $t$ form a sphere $S^2$ on the light cone, called the celestial sphere. Any point on a light ray is, by definition, at vanishing distance from the origin when measured in the Minkowski metric. Therefore, the determinant of the $2 \times 2$ Hermitian matrix $\hat{X}$ describing this point must vanish. Such matrices take the form
+
+$$
+  \hat{X} = \xi\xi^\dagger = \begin{bmatrix} \left| \xi_1 \right|^2 & \xi_1 \xi_2^\dagger \\ \xi_2 \xi_1^\dagger & \left| \xi_2 \right|^2 \end{bmatrix}
+$$
+
+for a two-component vector $\xi$. This form ensures that the determinant is always zero
+
+$$
+  \det\hat{X} = \begin{vmatrix} \left| \xi_1 \right|^2 & \xi_1 \xi_2^\dagger \\ \xi_2 \xi_1^\dagger & \left| \xi_2 \right|^2 \end{vmatrix} = \left| \xi_1 \right|^2 \left| \xi_2 \right|^2 - \left(\xi_1 \xi_1^\dagger \right)\left(\xi_2 \xi_2^\dagger \right) = \left| \xi_1 \right|^2 \left| \xi_2 \right|^2 - \left| \xi_1 \right|^2 \left| \xi_2 \right|^2 = 0
+$$
+
+With this notation, the celestial sphere at constant time $t$ is given by
+
+$$
+  \xi^\dagger \xi = \left| \xi_1 \right|^2 + \left| \xi_2 \right|^2 = \textrm{constant}
+$$
+
+which defines a 3-dimensional sphere $S^3$. If we identify all points on $S^3$ related by $\xi \mapsto e^{i\beta}\xi$, then we get a 2-dimensional sphere $S^2$ meaning that
+
+$$
+  S^3/U(1) \cong S^2
+$$
+
+Given a complex unit 2-vector $\xi$, the map $S^3 \mapsto S^2$ can be defined as
+
+$$
+  k^i = \xi^\dagger \sigma \xi
+$$
+
+such that $k^i k^i = 1$. This map is called the Hopf map. With this notation a Lorentz transformation of $\hat{X} = \xi\xi^\dagger$ can be expressed as
+
+$$
+  \hat{X}' = \xi' \xi'^\dagger = A\xi\xi^\dagger A^\dagger
+$$
+
+this can be viewed as a transformation of $\xi$ itself. The resulting space remains the first celestial sphere written in the second observer's coordinates. The intersection of the celestial spheres can be found with the stereographic projection $S^2 \mapsto \mathbb{C} \cup \{ \infty \}$ onto the Riemannian sphere by associating each $\xi$ with a complex number $\omega \in \mathbb{C}$ given by
+
+$$
+  \omega = \frac{\xi_1}{\xi_2}
+$$
+
+which forms a celestial sphere on $\mathbb{C} \cup \{ \infty \}$. A Lorentz transformation $A \in SL(2, \mathbb{C})$ acts on $\xi$ such that
+
+$$
+  \omega' = \frac{a\omega + b}{c\omega + d} \quad A = \begin{bmatrix} a & b \\ c & d \end{bmatrix} \, \det A = ad - bc = 1
+$$
+
+This transformation on the complex plane is known as a Möbius transformation. The group of of Möbius transformations is $SL(2, \mathbb{C})$ up to a discrete $\mathbb{Z_2}$ identification. 
+
+Möbius transformations are conformal, meaning that they preserve angles. In other words, the time of flight of light eliminates the Lorentz contraction.
+
+## Spinor
+
+A Weyl spinor is a complex 2-vector $\xi$, which under a Lorentz transformation $A \in SL(2,\mathbb{C})$ changes as $\xi \mapsto A\xi$.

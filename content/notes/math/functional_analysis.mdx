@@ -1,0 +1,1322 @@
+---
+title: 'Functional Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Metric space
+
+<MathBox title='Metric space' boxType='definition'>
+A metric space $(X, d)$ consists of a set $X$ and a metric $d: X \times X \to [0, \infty)$ with the following properties for $x,y,z \in X$:
+
+1. $d(x,y) \geq 0$ and $d(x, y) = 0 \iff x = y$ (positive definitive)
+2. $d(x, y) = d(y, x)$ (symmetric)
+3. $d(x, z) \leq d(x, z) + d(z, y)$ (triangle inequality)
+</MathBox>
+
+For $X = \mathbb{R}^n$ the line segment between to points is given by the Euclidean metric $d(x, y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}$
+
+## Topology of a metric space
+
+<MathBox title='Open ball' boxType='definition'>
+Let $(X, d)$ be a metric space. The open ball about a point $x\in X$ with radius $\epsilon\in(0, \infty)$ is the set
+
+$$
+  B_\epsilon (x) := \{ y \in X \;|\; d(x, y) < \epsilon \}
+$$ 
+</MathBox>
+
+<MathBox title='Open and closed sets' boxType='definition'>
+Let $(X, d)$ be a metric space. A subset $A \subseteq X$ is open if for each $x \in A$ there is an open ball with $B_\epsilon (x) \subseteq A$. Conversely, a subset $B\subseteq X$ is closed if its complement $B^c := X \setminus A$ is open.
+<details>
+<summary>Proof</summary>
+
+To show that open balls in fact are open, consider $x\in B_{r}(x)\subseteq X$. Let $y\in B_\epsilon(x)$, and let $a = d(x, y) < r$. We need to find $s > 0$ such that $B_s(y)\subseteq B_r (x)$. If $z\in B_{r-a}(y), then $d(y, z) < r - a$, so by the triangle inequality
+
+$$
+  d(x, z) < a + (r - a) = r
+$$
+
+Thus $z\in B_r (x)$ and $B_{r - a}(y)\subseteq B_r(x)$. Hence $B_r (x)$ is open.
+</details>
+</MathBox>
+
+<MathBox title='Boundary' boxType='definition'>
+Let $(X, d)$ be a metric space. A point $x \in X$ is called a boundary point for $A \subseteq X$ if for all $\epsilon > 0$: 
+
+$$
+  B_\epsilon (x) \cap A \neq \emptyset \quad \mathrm{and} \quad  B_\epsilon (x) \cap A^c \neq \emptyset, \quad A^c = X \setminus A
+$$
+
+The set of boundary points in $A$ is denoted $\partial A$.
+</MathBox>
+
+<MathBox title='Closure' boxType='definition'>
+Let $(X, d)$ be a metric space. The closure of an open set $A\subseteq X$ is the union of the set with its boundary, $\bar{A} := A \cup \partial A$, and is always closed.
+</MathBox>
+
+<MathBox title='Induced topology' boxType='proposition'>
+Let $(X, d)$ be a metric space. The collection $\mathcal{T}_d$ of open subsets of $X$ is a topology.
+
+<details>
+<summary>Proof</summary>
+
+We show that $\mathcal{T}_d$ satisfy the axioms of topology.
+1. For any $x\in X$, there is $\epsilon > 0$ such that $B_\epsilon (x)\subseteq X$, hence $X$ is open. Also, $\emptyset$ is open by definition. That is, $X, \emptyset\in\mathcal{T}_d$
+2. Let $\{U_i \subseteq X\}_{i\in I}$ be a collection of open sets in $X$ for an arbitrary index set $I$. For any $x\in U = \bigcup_{i\in I} U_i$, clearly $x\in U_j$ for some $j\in I$. Since $U_j$ is open, there is $\epsilon > 0$ such that $B_\epsilon(x)\subseteq U_j\subseteq U$. Hence, $U$ is also open and $\mathcal{T}_d$ is closed under arbitrary unions.
+3. Let $\{U_i \subseteq X\}_{i\in I}$ be a finite collection of open sets in $X$ for a finite index set $I$. Trivially, if $U=\bigcap_{i\in I} U_i = \emptyset$, then $U$ is open. For any $x\in U$, clearly $x\in U_i$ for every $i\in I$. For each $i\in I$ there is $\epsilon_i > 0$ such that $B_{\epsilon_i}(x)\subseteq U_i$. Take $\epsilon = \min\{ \epsilon_i \}_{i\in I} > 0$. Since $I$ is finite, $B_\epsilon(x) \subseteq B_{\epsilon_i}(x)\subseteq U_i$ for each $i\in I$. Hence $B_\epsilon(x)\subseteq U$, so $U$ is open and $\mathcal{T}_d$ is closed under finite intersection.  
+</details>
+</MathBox>
+
+<MathBox title='Metric spaces are Hausdorff' boxType='proposition'>
+A metric space $(X, d)$ is a Hausdorff space.
+
+<details>
+<summary>Proof</summary>
+
+Consider distinct point $x, y\in X$ with $r = d(x, y) > 0$. Note that $B_{\frac{r}{2}}(x)$ and $B_{\frac{r}{2}}(y)$ are open and contain $x$ and $y$, respectively. Suppose that $z\in B_{\frac{r}{2}}(x)\cap B_{\frac{r}{2}}(y)$. Applying the triangle inequlity
+
+$$
+  d(x, y) \leq d(x, z) + d(z, y) < \frac{r}{2} + \frac{r}{2} = r
+$$
+
+creates a contradiction. Hence $B_{\frac{r}{2}}(x) \cap B_{\frac{r}{2}}(y) = \emptyset$ (disjoint). Since $x$ and $y$ are arbitrarily chosen, we conclude that $(X, d)$ is a Hausdorff space.
+</details>
+</MathBox>
+
+## Convergence
+
+<MathBox title='Convergent sequence' boxType='definition'>
+Let $(X, d)$ be a metric space. A sequence $\left( x_n \in X \right)_{n \in \mathbb{N}}$ of points in $X$ is convergent if there is $\tilde{x}\in X$ with 
+
+$$
+  \forall \epsilon > 0 \quad \exists N \in \mathbb{N} \quad \forall n \geq N : d\left(x_n, \tilde{x} \right) < \epsilon
+$$
+
+A limit is denoted $x_n \xrightarrow{n\to\infty} \tilde{x}$ or $\lim_{n\to\infty} x_n = \tilde{x}$. Equivalently this can be stated as
+
+$$
+  x_n \xrightarrow{n\to\infty} \tilde{x} \iff d(x_n, \tilde{x})\xrightarrow{n\to\infty} 0
+$$
+</MathBox>
+
+<MathBox title='Uniqueness of limits' boxType='proposition'>
+Let $(X, d)$ be a metric space, and let $\left( x_n \in X \right)_{n \in \mathbb{N}}$ be a sequence of points in $X$. If $x_n \xrightarrow{n\to\infty} x$ and $x_n \xrightarrow{n\to\infty} y$ for $x,y\in X$, then $x = y$. 
+
+<details>
+<summary>Proof</summary>
+
+Let $\epsilon > 0$, then
+
+$$
+\begin{gather*}
+  \exists M \in \mathbb{N} \; \forall n \geq M: \; d(x_n, x) < \frac{\epsilon}{2} \\
+  \exists N \in \mathbb{N} \; \forall n \geq N: \; d(x_n, y) < \frac{\epsilon}{2}
+\end{gather*}
+$$
+
+Let $n \geq \max(N, \tilde{N})$, and apply the triangle inequality
+
+$$
+  d(x, y) \leq d(x, x_n) + d(x_n, y) < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+$$
+
+Hence $d(x, y) \xrightarrow{n\to\infty} 0$ implying $x = y$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $(X, d)$ be a metric space. A subset $A \subseteq X$ is closed if and only if for every convergent sequence $\left(a_n \in A \right)_{n \in \mathbb{N}}$ of points in $A$, the limit is in $A$, i.e. $\lim_{n\to\infty} a_n \in A$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $A$ is closed and that $\left(a_n \in A \right)_{n \in \mathbb{N}}$ is a sequence of points in $A$ such that $a_n \xrightarrow{n\to\infty} x \in X$. Suppose that $x\in A^c$. Since $A^c$ is open, $x^n \in A^c$ for sufficiently large $n$, giving a contradiction. Hence $x\in A$. Conversely, suppose that $A$ is not closed. Then $A^c$ is not open and there exists $x\in A^c$ with the property that every neighbourhood of $x$ has points in $A$. Note that for each $n\in\mathbb{N}$ there exist $x_n \in B_{\frac{1}{n}}(x)$ with $x_n \in A$. However, clearly $x_n \xrightarrow{n\to\infty} x$, giving a contraction.
+</details>
+</MathBox>
+
+## Completeness (Cauchy sequence)
+
+<MathBox title='Cauchy sequence' boxType='definition'>
+Let $(X, d)$ be a metric space. A sequence $\left( x_n \in X \right)_{n \in \mathbb{N}}$ is called a Cauchy sequence if 
+
+$$
+  \forall \epsilon > 0 \; \exists N \in \mathbb{N}: \forall n, m \geq N: \; d(x_n, x_m) < \epsilon
+$$
+
+A metric space is complete if all Cauchy sequences converge.
+</MathBox>
+
+<MathBox title='Convergent sequences are Cauchy' boxType='proposition'>
+Let $(X, d)$ be a metric space. If a sequence $\left( x_n \in X \right)_{n \in \mathbb{N}}$ converges, then the sequence is Cauchy.
+<details>
+<summary>Proof</summary>
+
+Assume that the sequence $\left( x_n \in X \right)_{n\in\mathbb{N}}$ converges to $x\in X$. Let $\epsilon > 0$, then there exists $N\in\mathbb{N}$ such that $d(x_n, x) < \frac{\epsilon}{2}$ for every $n \geq N$. If $m, n > N$, then by the triangle inequality
+
+$$
+  d(x_m, x_n) \leq d(x_m, x) + d(x_n, x) < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+$$
+
+Hence $\left( x_n \right)_{n\in\mathbb{N}}$ is Cauchy.
+</details>
+</MathBox>
+
+<MathBox title='Complete sets are closed' boxType='proposition'>
+Let $(X, d)$ be a metric space. A complete set $A\subseteq X$ is also closed.
+
+<details>
+<summary>Proof</summary>
+
+Assume that the sequence $\left( a_n \in A \right)_{n\in\mathbb{N}}$ converges to $x \in X$. Then $\left( a_n \in A \right)_{n \in \mathbb{N}}$ is a Cauchy sequence, and by completeness $x\in A$. Hence $A$ is closed.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $(X, d)$ be a metric space, and let $\left( x_n \in X \right)_{n\in\mathbb{N}}$ be a Cauchy sequence. If there is a subsequence $\left( x_{n_k} \right)_{k\in\mathbb{N}}$ with $x_{n_k}\xrightarrow{k\to\infty} x \in X$, then $x_n \xrightarrow{n\to\infty} x$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that the subsequence $\left( x_{n_k} \in A \right)_{k\in\mathbb{N}}$ converges to $x \in X$. Let $\epsilon > 0$, then there exists $j\in\mathbb{N}$ such that $d\left(x_{n_k}, x) < \frac{\epsilon}{2}$. Since $\left( x_n \right)_{n\in\mathbb{N}}$ is Cauchy, there exists $N\in\mathbb{N}$ such that for $d(x_m, x_n) < \frac{\epsilon}{2}$ for $m, n \geq N$. Choose $k\in\mathbb{N}$ such that $k \geq j$ and $n_k \geq N$. By the triangle inequality
+
+$$
+  d(x_m, x) \leq d\left(x_m, x_{n_k} \right) + d\left(x_{n_k}, x \right) \leq \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+$$
+
+Hence $x_n \xrightarrow{n\to\infty} x$.
+</details>
+</MathBox>
+
+## Continuity
+
+<MathBox title='Continuity' boxType='definition'>
+Given two metric spaces $(X, d_X)$ and $(Y, d_Y)$, a function $f: X \to Y$ is continuous if $f^{-1}[B] \subseteq X$ is open for all open sets $B \subseteq Y$. A function $f$ is called sequentially continuous if for all $\tilde{x} \in X$ and $\left( x_n \right)_{n \in \mathbb{N}} \subseteq X$ with $x_n \xrightarrow{n\to\infty} \tilde{x}$ holds $f(x_n) \xrightarrow{n\to\infty} f(\tilde{x})$. For metric spaces, the two continuity concepts are equivalent. 
+</MathBox>
+
+### Uniform continuity
+
+<MathBox title='Point-wise continuity' boxType='definition'>
+Given two metric spaces $(X, d_X)$ and $(Y, d_Y)$, a function $f: X \to Y$ is continuous at $x\in X$ if
+
+$$
+  \forall \epsilon > 0 \; \exists \delta > 0 : y\in X \land d_X(x, y) < \delta \implies d_Y(f(x), f(y)) < \epsilon
+$$
+
+<details>
+<summary>Proof</summary>
+
+The definition of point-wise continuity is equivalent with the topoligical definition of continuity. Suppose that $f$ is continuous at $x$. For $\epsilon > 0$, the open ball $B_{d_Y}(f(x), \epsilon)$ is a neighbourhood of $f(x)$ and hence $U = f^{-1}\left[ B_{d_Y}(f(x), \epsilon) \right]$ is a neighbourhood of $x$. Thus there exists $\delta > 0$ such that $B_{d_Y}(x, \delta) \subseteq U$. Conversely, suppose that $V$ is a neighbourhood of $f(x)$. Then there exists $\epsilon > 0$ such that $B_{d_Y}(f(x), \epsilon)\subseteq V$. By assumption, there exists $\delta > 0$ such that if $y\in B_{d_X}(x, \delta)$, then $f(y) \in B_{d_Y}(f(x), \epsilon)\subseteq V$. Hence $f^{-1}[V]$ is a neighbourhood of $x$.
+</details>
+</MathBox>
+
+<MathBox title='Uniform continuity' boxType='definition'>
+Given two metric spaces $(X, d_X)$ and $(X, d_Y)$, a map $f: X \to Y$ is uniformly continuous if for all $\epsilon > 0$ there exists a $\delta > 0$ such that for every $x, y \in X$ with $d_X(x, y) < \delta$, we have that $d_Y (f(x), f(y)) < \epsilon$. If $f$ is uniformly continuous, then $f$ is continuous (on $X$).
+</MathBox>
+
+### Equicontinuity
+
+<MathBox title='Equicontinuity' boxType='definition'>
+Let $F \subseteq C(X, Y)$ be a family of continuous maps from $X$ to $Y$. Then $F$ is uniformly equicontinuous if for all $\epsilon > 0$, there exists a $\delta > 0$ such that $d_Y (f(x), f(y)) < \epsilon$ for all $f \in F$ and all $x, y \in X$ such that $d_X (x, y) < \delta$. Equivalently 
+
+$$
+  \sup_{f \in F} d_Y (f(x), f(y)) \xrightarrow{d_X (x, y)\to 0} 0
+$$
+</MathBox>
+
+### Hölder continuity
+
+<MathBox title='Hölder continuity' boxType='definition'>
+Given two metric spaces $\left( X, d_X \right)$ and $\left( Y, d_Y \right)$, a function $f: X\to Y$ is called Hölder continuous with exponent $\alpha\in(0,\infty)$ if there is $C\in(0, \infty)$ such that, for all $x, \tilde{x}\in X$
+
+$$
+  d_Y\left( f(x), f\left(\tilde{x}\right) \right) \leq Cd_X\left( x, \tilde{x} \right)^\alpha
+$$
+
+For any $\alpha > 0$, the Hölder condition implies that $f$ is uniformly continuous. If $\alpha = 1$, then function satisfies the Lipschitz condition.
+</MathBox>
+
+<MathBox title='Contraction' boxType='definition'>
+Given two metric spaces $\left( X, d_X \right)$ and $\left( Y, d_Y \right)$, a function $f: X\to Y$ is a contraction if there is $C\in(0, 1)$ such that, for all $x, \tilde{x}\in X$
+
+$$
+  d_Y\left( f(x), f\left(\tilde{x}\right) \right) \leq Cd_X\left( x, \tilde{x} \right)
+$$
+
+Contractions have Hölder exponent $\alpha = 1$, and are thus uniformly continuous.
+</MathBox>
+
+<MathBox title='Banach fixed-point theorem' boxType='theorem'>
+Let $\left( X, d \right)$ be a complete metric space. Then any contraction $f:X\to X$ has a unique fixed point. That is, there exists $x*\in X$ with $f(x*) = x*$. Alternatively, let $x_0\in X$ and recursively define $x_n = f(x_{n-1})$ for $n\in\mathbb{N}$. Then $x_n \xrightarrow{n\to\infty} x*$.  
+</MathBox>
+
+### Lipschitz continuity
+
+<MathBox title='Lipschitz continuity' boxType='definition'>
+Given two metric spaces $\left( X, d_X \right)$ and $\left( Y, d_Y \right)$, a function $f: X\to Y$ is called Lipschitz continuous if there exists $C\in (0, \infty)$ such that, for all $x, \tilde{x}\in X$
+
+$$
+  d_Y\left( f(x), f\left(\tilde{x}\right) \right) \leq Cd_X\left( x, \tilde{x} \right)
+$$
+
+The Lipschitz condition ensures uniform continuity, as it corresponds with a Hölder exponent $\alpha > 0$.
+</MathBox>
+
+## Compactness and boundedness
+
+<MathBox title='Bounded set' boxType='definition'>
+Let $(X, d)$ be a metric space. A subset $A \subseteq X$ is bounded if there exists $r > 0$ such that $d(x, y) \leq r$ for all $x, y \in X$. The diameter of $A$ is defined as
+
+$$
+  \mathrm{diam}(A) := \inf\left\{ r > 0 \;|\; d(x, y) < r \; \forall x,y \in A \right\}
+$$
+
+So $A$ is bounded if and only if $\mathrm{diam}(A) < \infty$.
+</MathBox>
+
+<MathBox title='Totally bounded set' boxType='definition'>
+Let $(X, d)$ be a metric space. A subset $A \subseteq X$ is totally bounded if for every $r > 0$ there is a finite cover of $A$ with open balls of radius $r$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $(X, d)$ be a metric space. If $A \subseteq X$ is totally bounded, then $A$ is bounded.
+<details>
+<summary>Proof</summary>
+
+If $A$ is totally bounded, there exists a finite cover of $A$ with open unit balls (radius $1$). Let $C$ denote the center of the balls, and let $c = \max\{ d(u, v) \;|\; u, v\in C \}$ be the maximum distance between two centers. Since $C$ is finite, $c<\infty$. Now let $x, y\in A$. Since the balls cover $A$, there exists $u, v\in C$ with $x\in B_1(u)$ and $y\in B_1(v)$. By the triangle inequality
+
+$$
+  d(x, y) \leq d(x, u) + d(u, v) + d(v, y) \leq 2 + c
+$$
+
+This shows that $\mathrm{diam}(A) < \infty$, hence $A$ is bounded.
+</details>
+</MathBox>
+
+<MathBox title='Compact set' boxType='definition'>
+Let $(X, d)$ be a metric space. A subset $A \subseteq X$ is (sequentially) compact if for each sequence $\left( x_n \right)_{n \in \mathbb{N}} \subseteq A$ there is a convergent subsequence $\left( x_{n_k} \right)_{k \in \mathbb{N}}$ with $\tilde{x} := \lim_{k\to\infty} x_{n_k} \in A$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If a subspace $A \subseteq X$ is compact, then it is also closed and bounded.
+
+<details>
+<summary>Proof</summary> 
+
+Let $A \subseteq X$ be compact and let $\left( x_n \right)_{n \in \mathbb{N}} \subseteq A$ be convergent with limit $\tilde{x} \in X$. Because $A$ is compact, there is a convergent subsequence $\left( x_{n_k} \right)_{k \in \mathbb{N}}$ with limit $\tilde{\tilde{x}} \in A$. Furthermore, since limits are unique, then $\tilde{x} = \tilde{\tilde{x}} \in A$. This shows that $A$ is closed.
+
+Proving that compactness implies boundedness can be done by contraposition. Assuming that $A$ is not bounded, then for a given $a \in A$, there are $x_n \in A$ with $d(a, x_n) > n$. For any subsequence $\left( x_{n_k} \right)_{k \in \mathbb{N}}$ and any point $b \in A$ we have
+
+$$
+\begin{gather*}
+  n_k < d(a, x_{n_k}) \leq d(a, b) + d(b, x_{n_k}) \\
+  \implies n_k - d(a, b) \leq d(b,  x_{n_k}) \\
+  \implies \lim_{k \to \infty} d(b,  x_{n_k}) \neq 0 \quad \forall b \in A
+\end{gather*}
+$$
+
+Hence, $A$ is not compact. 
+</details>
+</MathBox>
+
+<MathBox title='Heine-Borel theorem' boxType='theorem'>
+
+Let $A\subseteq\mathbb{R}^n$ be subset of Euclidean space. Then $A$ is compact if and only if $A$ is closed and bounded.
+
+</MathBox>
+
+## Isometry
+
+<MathBox title='Isometry' boxType='definition'>
+Let $(X, d_X)$ and $(Y, d_Y)$ be two metric spaces. A function $f: X \to Y$ is called an isometry if for any $a, b \in X$
+
+$$
+  d_Y \left( f(a), f(b) \right) = d_X \left(a, b \right)
+$$
+
+That is, $f$ preserves distance. The metric spaces $(X, d_X)$ and $(Y, d_Y)$ are isometric if there exists a bijective isometry $f:X\to Y$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $(X, d_X)$ and $(Y, d_Y)$ be two metric spaces, and consider a function $f:X\to Y$. If function $f$ is isometric, then $f$ is injective and Lipschitz continuous.
+<details>
+<summary>Proof</summary> 
+
+By definition, an isometry $f$ is Hölder continuous with $\alpha = 1$ and $C = 1$, and hence $f$ is also Lipschitz continuous. To show injectivity, note that for any $x, y\in X$ with $x \neq y$, then $d_Y(f(x), f(y)) = d(x, y) > 0$. Hence $f(x)\neq f(y)$, showing that $f$ is injective (one-to-one). 
+</details>
+</MathBox>
+
+<MathBox title='Isometry is an equivalence relation' boxType='proposition'>
+Isometry is an equivalence relation on metric spaces that satisifies, for metric spaces $(X, d_X)$, $(Y, d_Y)$ and $(Z, d_Z)$
+1. reflexivity: $X$ is isometric to $X$
+2. symmetry: if $X$ is isometric to $Y$, then $Y$ is isometric to $X$
+3. transitivity: if $X$ is isometric to $Y$ and $Y$ is isometric to $Z$, then $X$ is isometric to $Z$
+<details>
+<summary>Proof</summary> 
+
+1. The identity function $\mathrm{id}:X\to X$ is an isometry from $X$ to $X$.
+2. if $X$ is isometric to $Y$, there is a bijective isometry $f:X\to Y$ with an isometric inverse $f^{-1}: Y\to X$. Hence $Y$ is isometric to $X$.
+3. if $X$ is isometric to $Y$ and $Y$ is isometric to $Z$, there are two bijective isometries $f: X\to Y$ and $g:Y\to Z$. Then the composition $g\circ f: X\to Z$ is an isometry from $X$ to $Z$.
+</details>
+</MathBox>
+
+# Normed space
+
+<MathBox title='Normed space' boxType='definition'>
+Let $\mathbb{F} \in \{\mathbb{R}, \mathbb{C} \}$ be a field of numbers and let $X$ be a $\mathbb{F}$-vector space. A map $\lVert\cdot\rVert : X \mapsto [0, \infty)$ is called a norm if it satisfies
+
+1. $\lVert x \rVert = 0 \iff x = 0$ (positive definitive)
+2. $\lVert \lambda x \rVert = |\lambda| \lVert x \rVert, \quad \lambda \in \mathbb{F}$ (absolutely homogenous)
+3. $\lVert x + y \rVert \leq \lVert x \rVert + \lVert y \rVert$ (triangle inequality)
+
+The pair $(X, \lVert\cdot\rVert)$ is called a normed space. The norm $\lVert \cdot \rVert$ induces a metric by
+
+$$
+  d_{\lVert \cdot \rVert}(x, y) := \lVert x - y \rVert
+$$
+
+which makes the normed space $(X, \lVert\cdot\rVert)$ into a metric space $(X, d_{\lVert\cdot\rVert})$.
+</MathBox>
+
+The norm $\lVert \cdot \rVert$ is a continuous map. Considering the sequence $\left( x_n \right)_{n\in\mathbb{N}} \subseteq X$ with limit $\tilde{x} \in X$, then by the triangle inequality
+
+$$
+\begin{gather*}
+  \lVert x_n \rVert = \lVert \left(x_n - \tilde{x}\right) + \tilde{x} \rVert \leq \lVert x_n - \tilde{x} \rVert + \lVert \tilde{x} \rVert = d \left(x_n, \tilde{x} \right) + \lVert \tilde{x} \rVert \\
+  \implies \lim_{n\to\infty} \lVert x_n \rVert \leq \lVert \tilde{x} \rVert
+\end{gather*}
+$$
+
+Conversely,
+
+$$
+\begin{gather*}
+  \lVert \tilde{x} \rVert = \lVert \left(\tilde{x} - x_n \right) + x_n \rVert \leq \lVert \tilde{x} - x_n \rVert + \lVert x_n \rVert = d(\tilde{x}, x_n) +  \lVert x_n \rVert \\
+  \implies \lVert \tilde{x} \rVert \leq \lim_{n\to\infty}  \lVert x_n \rVert
+\end{gather*}
+$$
+
+<MathBox title='Banach space' boxType='definition'>
+A normed space $(X,\lVert\cdot\rVert)$ is called a Banach space if $\left(X, d_{\lVert \cdot \rVert} \right)$ is a complete metric space. A Banach space is a complete normed space.
+</MathBox>
+
+## Linear operators
+
+<MathBox title='Linear operator' boxType='definition'>
+Let $(X, \lVert \cdot \rVert_X)$ and $(Y, \lVert \cdot \rVert_Y)$ be two normed spaces. An operator $T: X \to Y$ is linear if it is closed under addition and scalar multiplication
+
+$$
+\begin{gather*}
+  T(x + \tilde{x}) = Tx + T\tilde{x} \\
+  T(\lambda x) = \lambda T x
+\end{gather*}
+$$
+
+for all $x, \tilde{x} \in X$ and $\lambda \in \mathbb{F}$. The operator norm of $T$ is defined as
+
+$$
+  \lVert T \rVert = \lVert T \rVert_{X\to Y} := \sup\left\{ \left. \frac{\lVert T_X \rVert_Y}{\lVert X \rVert_X} \right| x \neq 0 \in X \right\}
+$$
+</MathBox>
+
+### Bounded operators
+
+<MathBox title='Bounded operator' boxType='definition'>
+Let $T$ be a linear operator. If there exists some $M > 0$ such that $\lVert T x \rVert_Y \leq M\lVert x \rVert_X  < \infty$ for all $x \in X$, then $T$ is a bounded operator with operator norm $M$. The set of all linear and bounded operators $T: X \to Y$ is denoted $\mathcal{B}(X, Y)$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A linear normed operator is bounded if and only if and only if it is continuous.
+
+<details>
+<summary>Proof</summary> 
+
+Suppose that $T$ is bounded. Then for a sequence $\left(x_n \right)_{n\in\mathbb{N}} \subseteq X$ with limit $\tilde{x} \in X$ we have
+
+$$
+  \lVert Tx_n - T\tilde{x} \rVert_Y = \lVert T(x_n - \tilde{x}) \rVert_Y \leq M \lVert x_n - \tilde{x} \rVert_X \xrightarrow{n\to\infty} 0
+$$
+
+which shows that $T$ is continuous. Conversly, suppose that $T$ is continuous. Then there exists $\delta > 0$ such that $\lVert Tx \rVert_Y < 1$ for all $x \in X$ with $\lVert x \rVert_X < \delta$, thus
+
+$$
+  \lVert Tx \rVert_Y = \left\lVert \frac{\lVert x \rVert}{\delta} T\left( \delta \frac{x}{\lVert x \rVert} \right) \right\rVert = \frac{\lVert x \rVert}{\delta} \left\lVert T\left( \delta \frac{x}{\lVert x \rVert} \right) \right\rVert \leq \frac{\lVert x \rVert}{\delta} < \infty
+$$
+</details>
+</MathBox>
+
+### Compact operators
+
+<MathBox title='Compact operator' boxType='definition'>
+A bounded linear operator $T: X \to Y$ is called compact if $T\left[ B_1 (0) \right] \in Y$ is a compact set.
+</MathBox>
+
+### Isomorphism
+
+<MathBox title='Isomorphism' boxType='definition'>
+A map linear and bijective map $f: X \to Y$ is an isometric isomorphism if $\lVert f(x) \rVert_Y = \lVert x \rVert_X$ for any $x \in X$.
+</MathBox>
+
+### Uniform boundedness principle
+
+<MathBox title='Banach-Steinhaus theorem' boxType='theorem'>
+Let $X$ and $Y$ be normed spaces, where $X$ is also a Banach space. For every subset $\mathcal{M} \subseteq \mathcal{B}(X, Y)$, then $\mathcal{M}$ is bounded pointwise on $X$ if and only if $\mathcal{M}$ is uniformly bounded. Pointwise boundedness implies that for all $x\in X$ there is a $C_x \geq 0$ such that $\lVert Tx \rVert_Y \leq C_x$, while uniformly boundedness implies that for all $T \in \mathcal{M}$ there is a $C \geq 0$ such that $\lVert T \rVert_{X \to Y} \leq C$.
+</MathBox>
+
+### Open mapping theorem
+
+<MathBox title='Banach-Schauder theorem' boxType='theorem'>
+Let $X$ and $Y$ be Banach spaces, and $T \in \mathcal{B}(X, Y)$ a bounded linear operator $T: X \to Y$. The operator $T$ is surjective if and only if $T$ is an open map.
+</MathBox>
+
+### Bounded inverse theorem
+
+<MathBox title='Bounded inverse theorem' boxType='theorem'>
+Let $X$ and $Y$ be Banach spaces, and $T \in \mathcal{B}(X, Y)$ a bounded linear operator $T: X \to Y$. If $T$ is bijective then $T^{-1} \in \mathcal{B}(X, Y)$, i.e. continuous.
+</MathBox>
+
+### Neumann series
+
+<MathBox title='Neumann series' boxType='definition'>
+A Neumann series is a geometric series for an operator $T$
+
+$$
+  \sum_{k=0}^\infty T^k
+$$
+
+where $T^k = T^{k-1} \circ T$. If $T$ is a bounded linear operator on a normed space $X$, and the Neumann series converges in the operator norm then $I - T$ is invertible with the inverse as the series
+
+$$
+  (I - T)^{-1} = \sum_{k=0}^\infty
+$$
+
+In analogy to a geometric series $\sum_{k=0}^n = x^k = 1 - x^{n+1}$, we have that
+
+$$
+  \lim_{n\to\infty} (I - T)\sum_{k=0}^\infty T^k = \lim_{n\to\infty} \left(\sum_{k=0}^\infty T^k - \sum_{k=1}^\infty T^{k + 1} \right) = \lim_{n\to\infty} I - T^{n + 1} = I
+$$
+
+Convergence is guaranteed when $X$ is a Banach space with $\lVert T \rVert < 1$.
+</MathBox>
+
+## Dual space
+
+<MathBox title='Dual space' boxType='definition'>
+The dual space $X'$ of a normed space $X$ is the space of all continuous (bounded) linear operators (functionals) $\ell : X \to \mathbb{F}$. 
+</MathBox>
+
+<MathBox title='Dual spaces are Banach spaces' boxType='proposition'>
+Let $X'$ be the dual space of a normed space $X$. The dual space itself is a normed space $\left(X', \lVert \cdot \rVert_{X \to \mathbb{F}}\right)$, which is also a Banach space.
+
+<details>
+<summary>Proof</summary> 
+
+Let $\left( \ell_k \right)_{k\in\mathbb{N}} \subseteq X'$ be a Cauchy sequence, i.e.
+
+$$
+  \forall \epsilon > 0 \quad \exists N \in \mathbb{N} \quad \forall n, m \geq N : \lVert \ell_n - \ell_m \rVert_{X\to\mathbb{F}} < \epsilon
+$$
+
+Since the operator norm $\lVert \cdot \rVert_{X\to\mathbb{F}}$ is defined by a supremum, we know that for all $x \in X$ with $x\neq 0$
+
+$$
+\begin{gather*}
+  \frac{1}{\lVert x \rVert_X} \left| \ell_n - \ell_m \right| \leq \lVert \ell_n - \ell_m \rVert_{X\to\mathbb{F}} < \epsilon \\
+  \left| \ell_n - \ell_m \right| < \epsilon \lVert x \rVert_X
+\end{gather*}
+$$
+
+Hence, $\left( \ell_k (x) \right)_{k\in\mathbb{N}} \subseteq \mathbb{F}$ is a Cauchy sequence for all $x \in X$, with the limit
+
+$$
+  \ell(x) := \lim_{k\to\infty} \ell_k (x)
+$$
+
+We then have to show that $\ell: X \to \mathbb{F}$ is linear and bounded and that $\lVert \ell_k - \ell \rVert_{X \to \mathbb{F}} \xrightarrow{k\to\infty} 0$. Boundedness follows from the Cauchy property of $\left( \ell_k \right)_{k\in\mathbb{N}}$:
+
+$$
+\begin{gather*}
+  \lVert \ell_n \rVert_{X\to\mathbb{F}} \overset{\triangle}{\leq} \underbrace{\lVert \ell_n - \ell_N \rVert_{X\to\mathbb{F}}}_{< \epsilon} + \underbrace{\lVert \ell_N \rVert_{X\to\mathbb{F}}}_{:= C} \leq \epsilon + C \quad \forall n\geq N \\
+  \implies \left| \ell(x) \right| = \left| \lim_{k\to\infty} \ell_k (x) \right| = \lim_{k\to\infty} \left| \ell_k (x) \right| \leq \lim_{k\to\infty} \underbrace{\lVert \ell_{k} \rVert_{X\to\mathbb{F}}}_{\leq \tilde{C}} \lVert x \rVert_X \\
+  \implies \lVert \ell \rVert_{X\to\mathbb{F}} = \frac{1}{\lVert x \rVert_X} \left| \ell(x) \right| \leq \tilde{C} < \infty
+\end{gather*}
+$$
+
+To show the convergence of the operator norm $\lVert \cdot \rVert_{X\to\mathbb{F}}$, we have the for $\epsilon > 0$ there is a $N \in \mathbb{N}$ such that for all $n, m \geq N$
+
+$$
+\begin{gather*}
+  \frac{1}{\lVert x \rVert_X} \left| \ell_n (x) - \ell_m (x) \right| < \epsilon \\
+  \implies \sup_{\overset{x\in X}{x\neq 0}} \frac{1}{\lVert x \rVert_X}  \left| \ell_n (x) - \lim_{m\to\infty} \ell_m (x) \right| = \sup_{\overset{x\in X}{x\neq 0}} \frac{1}{\lVert x \rVert_X}  \left| \ell_n (x) - \ell (x) \right| \leq \epsilon \\
+  \implies \lVert \ell_n - \ell \rVert_{X\to\mathbb{F}} \leq \epsilon
+\end{gather*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Hahn-Banach theorem' boxType='theorem'>
+Let $\left(X, \lVert \cdot \rVert_X \right)$ be a normed space, $U \subset X$ a subspace and $\ell \in U^*$ a continuous linear functional on $U$. Then there exists a linear functional $\tilde{\ell} \in X^*$ that extends $\ell$ with $\tilde{\ell}(u) = \ell(u)$ for all $u \in U$ and $\lVert \tilde{\ell} \rVert_{X^*} = \lVert \ell \rVert_{U^*}$.
+</MathBox>
+
+## Arzelà-Ascoli theorem
+
+<MathBox title='Arzelà-Ascoli theorem' boxType='theorem'>
+Consider the Banach space $\left(C([a, b]), \lVert \cdot \rVert_\infty \right)$ of continuous functions on an interval $I = [a, b] \in \mathbb{R}$ with the supremum norm $\lVert f \rVert_\infty := \sup \left\{ |f(t)| \;|\; t\in[a, b] \right\}$. A subset $F \in C([a, b])$ is compact if and only if $F$ is closed, bounded and uniformly equicontinuous.
+</MathBox>
+
+## Lebesgue space ($L^p$)
+
+<MathBox title='$L^p$ space' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space and suppose that $f: X\to\mathbb{R}$ is measurable. For $p\in(0,\infty)$ we define the $p$-norm
+
+$$
+  \lVert f \rVert_p := \left( \int_X |f|^p \;\mathrm{d}\mu \right)^{1/p}
+$$
+
+and for $p=\infty$ we define the essential supremum norm
+
+$$
+  \lVert f \rVert_\infty := \inf\{b\in[0,\infty] : |f|\overset{\textrm{a.e.}}{\leq} b \}
+$$
+
+The function $f$ is called $p$-integrable if $\lVert f\rVert_p < \infty$. The set of all $p$-integrable functions is denoted
+
+$$
+  L^p (X,\mathcal{A},\mu) := \{ f:X\to\mathbb{R}: \lVert f\rVert_p < \infty \} \subseteq \mathcal{M}(X,\mathbb{R})
+$$
+
+and is called a Lebesgue space. Here $\mathcal{M}(X,\mathbb{R})$ denotes the collection of all measurable functions from $X$ into $\mathbb{R}$.
+</MathBox>
+
+<MathBox title='$L^p$ space are normed vector spaces' boxType='proposition'>
+For $p\in[1,\infty]$, let $\mathcal{L}^p = \{[f] : f\in L^p \}$ and define $\lVert[f]\rVert_p = \lVert f \rVert_p$ for $f\in\mathcal{M}(X,\mathbb{R})$ where $\mathcal{M}(X,\mathbb{R})$ is the collection of measurable functions $f:X\to\mathbb{R}$. Then $\mathcal{L}^p \subseteq\mathcal{M}\setminus\equiv$ and $\lVert\cdot\rVert$ is a norm on $\mathcal{L}^p$ that satisfies for $f,g\in L^p$ and $c\in\mathcal{R}$
+1. $\lVert f\rVert_p \geq 0$ and $\lVert f\rVert_p = 0$ if and only if $f\equiv 0$ (positive definite)
+2. $\lVert cf\rVert_p = |c|\cdot\lVert f\rVert_p$ (absolutely homogenous)
+3. $\lVert f+g\rVert_p \leq \lVert f\rVert_p + \lVert p\rVert_p$ (triangle inequality)
+
+For every $p\in[0,\infty]$, the Lebesgue space $L^p$ is a Banach space.
+<details>
+<summary>Proof</summary> 
+
+That $\mathcal{L}^p \subseteq\mathcal{M}\setminus\equiv$ follows immediately from that $L^p\subseteq\mathcal{M}$. It remains to show that $\lVert\cdot\rVert_p$ satisfies the norm properties.
+1. The predicate $\lVert f\rVert_p \geq 0$ follows from the definitions. For the second part, we first consider the case $p\in(0,\infty)$. Trivially, $\lVert 0\rVert_p = 0$. Conversely, if $\lVert f\rVert_p = 0$ then $\int_X \lVert f\rVert^p\;\mathrm{d}\mu = 0$ and hence $|f|^p \overset{\textrm{a.e.}}{=} 0$ and $f \overset{\textrm{a.e.}}{=} 0$. For the case $p = \infty$, it follows trivially that $\lVert 0\rVert_\infty = 0$. Conversely, suppose that $\lVert f\rVert_\infty = 0$. Then for each $n\in\mathbb{N}$ there exists $b_n\in[0,\infty)$ with $b_n \xrightarrow{n\to\infty}0$ and $|f\overset{\textrm{a.e.}\leq b_n$, resulting in $f\overset{\textrm{a.e.}}{=}0$.
+2. For $p\in(0,\infty)$ we have
+
+$$
+\begin{gather*}
+  \lVert cf\rVert^p \int_X |cf|^p\;\mathrm{d}\mu = |c|^p \int_X |f|^p\;\mathrm{d}\mu = |c|^p\cdot\lVert f\rVert^p \\
+  \iff \lVert cf\rVert = |c|\cdot\lVert f\rVert_p
+\end{gather*}
+$$
+
+For $p=\infty$, the result is trivially true if $c=0$. For $c\neq 0$, note that $b\in[0,\infty]$ is an essential bound of $|f|$ if and only iff $|c|b$ is an essential bound of $|cf|$.
+3. This follows from the Minkowski inequality.
+</details>
+</MathBox>
+
+### Hölder's inequality
+
+<MathBox title='Conjugate indices' boxType='definition'>
+Two indices $p,q\in(1,\infty)$ are called conjugate if $\frac{1}{p} + \frac{1}{q} = $. Note that
+
+$$
+  q = \frac{p}{p-1} = \frac{1}{1 - 1/p}
+$$
+
+so that $q\uparrow\infty$ as $p\downarrow 1$. Hence $1$ and $\infty$ are conjugate indices.
+</MathBox>
+
+<MathBox title="Young's inequality" boxType='theorem'>
+If $x, y\in(0, \infty)$ and $p, q\in(1,\infty)$ are conjugate indices, then 
+
+$$
+  xy \leq \frac{1}{p}x^p + \frac{1}{q}y^q
+$$
+
+Equality occurs if and only if $x^p = y^p$
+
+<details>
+<summary>Proof</summary>
+
+Fix $y\geq 0$ and define $f:(0,\infty)\to\mathbb{R}$ by
+
+$$
+\begin{align*}
+  f(x) &= \frac{x^p}{p} + \frac{y^q}{q} - xy \quad x\geq 0 \\
+  f'(x) &= x^{p-1} - y \\
+  f''(x) &= (p-1)x^{p-2}
+\end{align*}
+$$
+
+Solving for $f'(x) = 0$ shows that $f$ has a minimum at $x_0 = y^{1/(p-1)} = y^{q/p}$ as $f''(x_0) > 0$. Noticing that $q = \frac{p}{p-1}$, we get
+
+$$
+\begin{align*}
+  f(x_0) &= \frac{y^{p/(p-1)}}{p} + \frac{y^q}{q} - y^{1/(p-1)}y \\
+  &= y^q \left(\frac{1}{p} + \frac{1}{q}) - y^q \\
+  &= y^q - y^q = 0
+\end{align*}
+$$
+
+Since $x_0$ is a minima it follows that $xy\leq \frac{x^p}{p} + \frac{y^q}{p}$. 
+</details>
+</MathBox>
+
+<MathBox title="Hölder's inequality" boxType='theorem'>
+Suppose that $f,g:X\to\mathbb{R}$ are measurable on $(X,\mathcal{A},\mu)$ and that $p$ and $q$ are conjugate indices. Then
+
+$$
+  \lVert fg\rVert_1 = \int_X |fg|\,\mathrm{d}\mu\leq\lVert f \rVert_p \cdot \lVert g \rVert_q
+$$
+
+If $(X,\mathcal{P}(X),\#)$ is a discrete measure, Hölder's inequality reduces to
+
+$$
+  \lVert xy \rVert_1 = \left(\sum_{i\in X} |x_i + y_i| \right) \leq \lVert x \rVert_p \cdot \lVert y \rVert_q
+$$
+
+<details>
+<summary>Proof</summary>
+
+The result follows trivially if $\lVert f\rVert_p = \infty$ or $\lVert g\rVert_\infty = \infty$, so assume that $f\in L^p$ and $g\in L^q$. For the case $p = 1$ and $q = \infty$, note that $|g|\overset{\mu\textrm{-a.e.}{\leq}}\lVert g\rVert_\infty$, hence
+
+$$
+  \int_X |fg|\,\mathrm{d}\mu = \int_X |f|\cdot|g|\,\mathrm{d}\mu \leq\lVert g\rVert_\infty \int_X |f|\,\mathrm{d}\mu = \lVert f\rVert_1 \cdot \lVert g\rVert_\infty
+$$
+
+Consider the case where $p,q\in(1,\infty)$. By positive definiteness, the result holds if $\lVert f\rVert_p = 0$ or $\lVert g\rVert_q = 0$, so assume that $\lVert f\rVert_p\geq 0$ and $\lVert g\rVert_q\geq 0$. By Young's inequality
+
+$$
+  |fg|\leq\frac{1}{p}|f|^p + \frac{1}{q}|g|^q
+$$
+
+Suppose first that $\lVert f\rVert_p = \lVert g\rVert_q = 1$. From the increasing monotonicity and linearity properties of the integral
+
+$$
+  \int_X |fg|\,\mathrm{d}\mu\leq \frac{1}{p}\int_X |f|^p \,\mathrm{d}\mu + \frac{1}{q}\int_X |g|^q \,\mathrm{d}\mu = \frac{1}{p} + \frac{1}{q} = 1
+$$
+
+For the general case where $\lVert f\rVert_p > 0$ and $\lVert g\rVert_q > 0$, let $f_1 = \frac{f}{\lVert f\rVert_p}$ and $g_1 = \frac{g}{\lVert g\rVert_q}$. Then $\lVert f_1\rVert_p = \lVert g_1\rVert_q = 1$ and $\lVert f_1g_1\rVert_q\leq 1$. By the scaling property of the norm
+
+$$
+  \lVert f_1g_1\rVert_1 = \frac{\lVert fg\rVert_1}{\lVert f\rVert_q\cdot\lVert g\rVert_q}\leq 1
+$$
+</details>
+</MathBox>
+
+### Minkowski's inequality
+
+Minkowski's inequality produces the triangle inequality for the $p$-norm and establishes that $L^p$-spaces are normed vector spaces.
+
+<MathBox title="Minkowski's inequality" boxType='theorem'>
+Suppose that $f,g:X\to\mathbb{R}$ are measurable on $(X,\mathcal{A},\mu)$ and that $p\in[1,\infty]$. Then
+
+$$
+  \lVert f + g\rVert_p = \left(\int_X |f + g|^p \;\mathrm{d}\mu\right)^{1/p} \leq \lVert f \rVert_p + \lVert g \rVert_p
+$$
+
+If $(X,\mathcal{P}(X),\#)$ is a discrete measure, Minkowski's inequality reduces to
+
+$$
+  \lVert x + y \rVert_p = \left(\sum_{i\in X} |x_i + y_i|^p\right)^{1/p} \leq \lVert x \rVert_p + \lVert y \rVert_p \quad
+$$
+
+<details>
+<summary>Proof</summary>
+
+The result is trivial if $\lVert f\rVert_p = \infty$ or $\lVert g\rVert_\infty = \infty$, so assume that $f,g\in L^p$. When $p = 1$, the result is the triangle inequality
+
+$$
+\begin{align*}
+  \lVert f + g\rVert_p &= \int_X |f + g|\,\mathrm{d}\mu \leq\int_X (|f| + |g|)\,\mathrm{d}\mu \\
+  & = \int_X |f|\,\mathrm{d}\mu + \int_X |g|\,\mathrm{d}\mu = \lVert f\rVert_1 + \lVert g\rVert_1
+\end{align*}
+$$
+
+For the case $p = \infty$, note that if $a,b\in[0,\infty]$ are an essential bounds for $f$ and $g$, respectively, then $a+b$ is an essential bound for $f + g$. Hence $\lVert f + g\Vert_\infty \leq\lVert f\rVert_\infty + \lVert g\rVert_\infty$.
+
+Consider the case where $p\in(1,\infty)$ and let $q$ be the conjugate index to $p$. Then
+
+$$
+\begin{align*}
+  |f+g|^p &= |f+g|^{p-1}\cdot|f+g| \leq |f+g|^{p-1}(|f|+|g|) \\
+  &= |f+g|^{p-1}\cdot|f| + |f+g|^{p-1}\cdot|g|
+\end{align*}
+$$
+
+Integrating over $X$ gives
+
+$$
+  \lVert f + g\rVert_p^p \leq \int_X |f+g|^{p-1}|f|\,\mathrm{d}\mu + \int_X |f+g|^{p-1}|g|\,\mathrm{d}\mu
+$$
+
+By Hölder's inequality
+
+$$
+\begin{align*}
+  \int_X |f+g|^{p-1}|f|\,\mathrm{d}\mu &\leq \left\lVert |f+g|^{p-1} \right\rVert_q \cdot \lVert f\rVert_p \\
+  \int_X |f+g|^{p-1}|g|\,\mathrm{d}\mu &\leq \left\lVert |f+g|^{p-1} \right\rVert_q \cdot \lVert g\rVert_p
+\end{align*}
+$$
+
+Combining the inequalities gives
+
+$$
+  \lVert f + g\rVert_p^p \leq \left\lVert |f+g|^{p-1} \right\rVert_q (\lVert f\rVert_p + \lVert g\rVert_p)
+$$
+
+Since $\frac{1}{q} = \frac{p-1}{p}$ we get
+
+$$
+\begin{align*}
+  \left\lVert |f+g|^{p-1} \right\rVert_q &= \left(\int_X |f+g|^{p-1}q \,\mathrm{d}\mu \right)^{1/q} \\
+  &= \left(\int_X |f+g|^p \,\mathrm{d}\mu \right)^{(p-1)/p} = \lVert f+g \rVert_p^{p-1}
+\end{align*}
+$$
+
+Hence we get
+
+$$
+\begin{gather*}
+  \lVert f+g \rVert_p^p = \lVert f+g \rVert_p^{p-1}\left(\lVert f\rVert_p + \lVert g\rVert_p \right) \\
+  \iff \lVert f + g\rVert_p \leq \lVert f \rVert_p + \lVert g \rVert_p
+\end{gather*}
+$$
+
+**Discrete case:**
+For $p = 1$, the ordinary triangle inequality applies
+
+$$
+  \lVert x + y \rVert_1 = \sum_{j=1}^\infty \left| x_j + y_j \right| \leq \sum_{j=1}^\infty \left| x_j \right| + \left| y_j \right| = \lVert x \rVert_1 + \lVert y \rVert_1
+$$
+
+For $p \in (1, \infty)$, we note $q = \frac{p}{p-1}$
+
+$$
+\begin{align*}
+  \lVert x + y \rVert_p^p &= \sum_{j=1}^\infty \left| x_j + y_j \right|^p = \lim_{n\to\infty} \sum_{j=1}^n \left| x_j + y_j \right|^p \\
+  &\leq \lim_{n\to\infty} \sum_{j=1}^n \left(\left| x_j \right| + \left| y_j \right| \right)^p
+\end{align*}
+$$
+
+The summand can be written as
+
+$$
+\begin{align*}
+  \left(\left| x_j \right| + \left| y_j \right| \right)^p &= \left(\left| x_j \right| + \left| y_j \right| \right) \left(\left| x_j \right| + \left| y_j \right| \right)^{p-1} \\
+  &= \left| x_j \right| \left(\left| x_j \right| + \left| y_j \right| \right)^{p - 1} = \left| y_j \right| \left(\left| x_j \right| + \left| y_j \right| \right)^{p-1} \\
+  &\equiv a_j b_j + c_j b_j
+\end{align*}
+$$
+
+Applying Hölder's inequality $\lVert a b \rVert_1 + \lVert c b \rVert_1 \leq \lVert a \rVert_p \cdot \lVert b \rVert_{q} + \lVert c \rVert_p \cdot \lVert b \rVert_{q}$ with
+
+$$
+  \lVert b \rVert_{q} = \left( \sum_{j=1}^n \left| \left( \left| x_j \right| + \left| y_j \right| \right)^{p-1} \right|^{q} \right)^{\frac{1}{q}} = \left( \sum_{j=1}^n\left( \left| x_j \right| + \left| y_j \right| \right)^p \right)^{\frac{1}{q}}
+$$
+
+We get
+
+$$
+\begin{align*}
+  \sum_{j=1}^n \left(\left| x_j \right| + \left| y_j \right| \right)^p &\leq \lVert a \rVert_p \cdot \lVert b \rVert_{q} + \lVert c \rVert_p \cdot \lVert b \rVert_{q} \\
+  &= \left( \lVert a \rVert_p + \lVert c \rVert_p \right) \left( \sum_{j=1}^n \left( \left| x_j \right| + \left| y_j \right| \right)^p \right)^{\frac{1}{q}} \\
+  \implies \left( \sum_{j=1}^n \left( \left| x_j \right| + \left| y_j \right| \right)^p \right)^{1 - \frac{1}{q}} &= \left( \sum_{j=1}^n \left( \left| x_j \right| + \left| y_j \right| \right)^p \right)^{\frac{1}{p}} \\
+  &\leq \lVert a \rVert_p + \lVert c \rVert_p = \left( \sum_{j=1}^n \left| x_j \right|^p \right)^{\frac{1}{p}} + \left( \sum_{j=1}^n \left| y_j \right|^p \right)^{\frac{1}{p}}
+\end{align*}
+$$
+
+In the limit $n \to \infty$ we retrieve the Minkowski inequality.
+</details>
+</MathBox>
+
+### Sequence space ($\ell^p$)
+
+Discrete measure spaces $(X,\mathcal{P}(X),\#)$ gives a special case for $L^p$ called sequence spaces. For a measurable function $x:X\to\mathbb{R}$ we introduce the notation $x_i = x(i)$.
+
+<MathBox title='Sequence space' boxType='definition'>
+Let $(X,\mathcal{P}(X),\#)$ be a discrete measure space and let $x:X\to\mathbb{R}$ be measurable. For $p \in [1, \infty)$, we define the $p$-norm
+
+$$
+  \lVert x \rVert_p := \left( \sum_{i\in X} |x_i|^p \right)^(1/p)
+$$
+
+and for $p=\infty$ we define $\lVert x\rVert_\infty = \sup\{x_i \;|\; i\in X\}$. The Lebesgue space takes the form
+
+$$
+  L^p(X,\mathcal{P}(X),\#) = \left\{ (x_i)_{i\in X} \in\mathbb{R}^n : \lVert p \rVert_p < \infty\right\}
+$$
+
+When $X = \mathbb{N}$ the $L^p$ space is usually denoted $\ell^p$.
+</MathBox>
+
+<MathBox title='Sequence spaces are Banach spaces' boxType='definition'>
+The normed space $\left( \ell^p, \lVert \cdot \rVert_p \right)$ is a Banach space.
+
+<details>
+<summary>Proof</summary> 
+
+To show the completeness of $\left( \ell^p, \lVert \cdot \rVert_p \right)$ we consider a Cauchy sequence $\left( x^{(k)} \right)_{k \in \mathbb{N}}$ in $\ell^p$. 
+
+$$
+\begin{align*}
+  x^{(1)} &= \left( x_1^{(1)}, x_2^{(1)}, \dots \right) \\
+  x^{(2)} &= \left( x_1^{(2)}, x_2^{(2)}, \dots \right) \\
+  \vdots
+\end{align*}
+$$
+
+The elementwise difference between two points is
+
+$$
+  \left\lvert x_m^{(k)} - x_m^{(l)} \right\rvert^p \leq \sum_{n=1}^\infty \left\lvert x_n^{(k)} - x_n^{(l)} \right\rvert^p = \lVert x^{k} - x^{l} \rVert_p^p
+$$
+
+Because $\left( x^{(k)} \right)_{k \in \mathbb{N}}$ is a Cauchy sequence, it follows that $\forall \epsilon > 0 \; \exists N \in \mathbb{N}:\; \left\lVert x^{(k)} - x^{(l)} \right\rVert^p$. Hence, $\left( x_m^{(k)} \right)_{k \in \mathbb{N}}$ is a Cauchy sequence in $\mathbb{F}$ converging to a limit $\tilde{x}_m \in \mathbb{F}$. This suggests that $\left( x^{(k)} \right)_{k \in \mathbb{N}}$ converges to a limit $\tilde{x} := \left( \tilde{x}_i \right)_{i \in \mathbb{N}}$, which we will now show.
+
+Let $\epsilon > 0$ and choose $K \in \mathbb{N}$ such that $\forall k, l \geq K:\; \left\lVert x^{(k)} - x^{(l)} \right\rVert_p < \epsilon'$
+
+$$
+\begin{align*}
+  \left\lVert x^{(k)} - \tilde{x} \right\rVert_p^p &= \sum_{n=1}^\infty \left\lvert x^{(k)} - \tilde{x} \right\rvert^p = \lim_{N \to \infty} \sum_{n=1}^N \left\lvert x^{(k)} - \tilde{x} \right\rvert^p \\
+  &= \lim_{N \to \infty} \lim_{l\to\infty} \sum_{n=1}^N \left\lvert x^{(k)} - x^{(l)} \right\rvert^p \leq (\epsilon')^p
+\end{align*}
+$$
+
+Thus $\forall k \geq K: \left\lVert x^{(k)} - \tilde{x} \right\rVert_p \leq \epsilon' < \epsilon$, since $\epsilon'$ can be choosen arbitrarily small. Furthermore, it follows that $\tilde{x} = \left(\tilde{x} - x^{(k)} \right) + x^{(k)} \in \ell^p$ since both $\tilde{x} - x^{(k)}$ and $x^{(k)}$ are in $\ell^p$ and $\ell^p$ is a vector space and thus closed under addition.
+</details>
+</MathBox>
+
+<MathBox title='Isomorphism of $\ell^p$-dual space' boxType='proposition'>
+The dual space of $\ell^p (\mathbb{N})$ has a natural isomorphism with $\ell^q (\mathbb{N})$ where $q$ is the Hölder conjugate satisfying $\frac{1}{p} + \frac{1}{q} = 1$. This isomorphism associates $x \in \ell^q$ with the functional $T: \ell^q(\mathbb{N}) \to \ell^p (\mathbb{N})^*$ given by
+
+$$
+\begin{gather*}
+  (Tx)(y) := \sum_{j=1}^\infty x_j y_j \quad \forall y \in \ell^p (\mathbb{N}) \\
+  x \mapsto \langle \bar{x}, \cdot \rangle_{\ell^2 (\mathbb{N})}
+\end{gather*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since the inner product by definition is linear in its second argument, it follows that $T$ is linear. By Hölder's inequality we have
+
+$$
+  \lvert (Tx)(y) \rvert \leq \lim_{n\to\infty} \sum_{j=1}^n \left| y_j x_j \right| \leq \lVert y \rVert_p \cdot \lVert x \rVert_q < \infty
+$$
+
+which shows that $Tx$ is bounded for all $x \in \ell^q(\mathbb{N})$, hence it is well-defined. The operator norm for $T$ is
+
+$$
+\begin{gather*}
+  \lVert Tx \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} = \sup\left\{ \left| (Tx)(y) \right| \;|\; \lVert y \rVert_p = 1 \right\} \leq \sup\left\{ \lVert y \rVert_p \cdot \lVert x \rVert_q \;|\; \lVert y \rVert_p = 1 \right\} \leq \lVert x \rVert_q \\
+  \implies \lVert T \rVert = \frac{\lVert Tx \rVert_{\ell^p (\mathbb{N})}}{\lVert x \rVert_q} \leq 1
+\end{gather*}
+$$
+
+Let $y' \in \ell^p (\mathbb{N})^*$ and define $x_j := y'(e_j)$ and $x := \left( x_j \right)_{j \in \mathbb{N}}$ with $e_j = \left(\delta_{jk}\right)_{k\in\mathbb{N}}$ (unit sequence). To prove that $T$ is surjective, we need to show that $x \in \ell^q (\mathbb{N})$ and $Tx = y'$.
+
+$$
+\begin{align*}
+  \sum_{j=1}^n \left| x_j \right|^{q} &= \sum_{j=1}^n x_j t_j \quad\quad t_j = \begin{cases} \frac{\left| x_j \right|^q}{x_j}, & x_j \neq 0 \\ 0, & x = 0 \end{cases} \\
+  &= \sum_{j=1}^n t_j y'(e_j) = y'\sum_{j=1}^n t_j e_j \\
+  &\leq \lVert y' \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} \lVert \sum_{j=1}^n t_j e_j \rVert_p = \lVert y' \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} \left( \sum_{j=1}^n \left| t_j \right|^p \right)^{1/p}
+\end{align*}
+$$
+
+since
+
+$$
+  \left| t_j \right|^p = \left(\frac{\left| x_j \right|^q}{\left| x_j \right|}\right)^p = \left| x_j \right|^{(q - 1)p} = \left| x_j \right|^q
+$$
+
+we get
+
+$$
+\begin{gather*}
+  \sum_{j=1}^n \left| x_j \right|^{q} \leq \lVert y' \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} \left( \sum_{j=1}^n \left| x_j \right|^q \right)^{1/p} \\
+  \implies \left( \sum_{j=1}^n \left| x_j \right|^{q} \right)^{1 - 1/p} = \left( \sum_{j=1}^n \left| x_j \right|^{q} \right)^{1/q} \leq \lVert y' \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} \\
+  \xRightarrow{n\to\infty} \lVert x \rVert_q \leq \lVert y' \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F}} \implies x \in \ell^q (\mathbb{N})
+\end{gather*}
+$$
+
+For $y \in \ell^p (\mathbb{N})$ we have
+
+$$
+\begin{gather*}
+\begin{aligned}
+  (Tx - y')(y) &= (Tx - y')\left(\lim_{n\to\infty} \sum_{j=1}^n y_j e_j \right) \\
+  &= \lim_{n\to\infty} (Tx - y') \left(\sum_{j=1}^n y_j e_j \right) \\
+  &= \lim_{n\to\infty} \sum_{j=1}^n y_j (Tx - y')(e_j) = 0
+\end{aligned} \\
+  \implies Tx = y'
+\end{gather*}
+$$
+
+To prove that $T$ is injective and thus bijective, it suffices to show that $T$ is isometric. We already know that 
+
+$$
+  \lVert Tx \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F})} \leq \lVert x \rVert_q \leq \lVert y \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F})}
+$$
+
+At the same time $\lVert Tx \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F})} = \lVert y \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F})}$, so that $\lVert Tx \rVert_{\ell^p (\mathbb{N}) \to \mathbb{F})} = \lVert x \rVert_q$ which shows that $T$ is ismotric.
+</details>
+</MathBox>
+
+# Inner product space
+
+<MathBox title='Inner product space' boxType='definition'>
+Let $\mathbb{F} \in \{\mathbb{R}, \mathbb{C} \}$ be a field of numbers and let $X$ be a $\mathbb{F}$-vector space. A map $\langle \cdot, \cdot \rangle : X \times X \to \mathbb{F}$ is called an inner product if it satisfies
+
+1. Positive definitive $\langle x, x \rangle \geq 0 \quad \forall x \in X$ and $\langle x, x \rangle = 0 \iff x = 0$
+2. Conjugate symmetry
+    - $\langle x, y \rangle = \langle y, x\rangle$ for $\mathbb{F} = \mathbb{R}$
+    - $\langle x, y \rangle = \overline{\langle y, x \rangle}$ for $\mathbb{F} = \mathbb{C}$
+3. Linearity in the 2nd argument:
+    - $\langle x, y_1 + y_2\rangle = \langle x, y_1 \rangle + \langle x, y_2 \rangle$
+    - $\langle x, \lambda y \rangle = \lambda \langle x, y \rangle, \quad \lambda \in \mathbb{F}$
+4. Conjugate linearity in the 1st argument
+    - $\langle \lambda x, y \rangle = \bar{\lambda} \langle x, y \rangle, \quad \lambda \in \mathbb{F}$
+    
+If $\langle \cdot, \cdot \rangle$ is an inner product, then $\lVert x \rVert_{\langle \cdot, \cdot \rangle} = \sqrt{\langle x, x \rangle}$ defines a norm. 
+</MathBox>
+
+The inner product $\langle \cdot, \cdot \rangle$ is a continuous map. Considering the sequence $\left( x_n \right)_{n\in\mathbb{N}}$ with limit $\tilde{x} \in X$ and a fixed $x_0 \in X$, then by the Cauchy-Schwartz inequality
+
+$$
+  \lvert \langle x_0, x_n \rangle - \langle x_0, \tilde{x} \rangle \rvert = \lvert \langle x_0, x_n - \tilde{x} \rangle \rvert \leq \lVert x_0 \rVert \cdot \lVert x_n - \tilde{x} \rVert \xrightarrow{n\to\infty} 0 \implies f(x_n) \xrightarrow{n\to\infty} f(\tilde{x}).
+$$
+
+## Hilbert space
+
+<MathBox title='Hilbert space' boxType='definition'>
+If $\left(X, \lVert \cdot \rVert_{\langle \cdot, \cdot \rangle} \right)$ defines a Banach space, then $\left(X, \langle \cdot, \cdot \rangle \right)$ is called a Hilbert space 
+</MathBox>
+
+## $\ell^2$-space
+
+The set of square summable sequences $\ell^2 (\mathbb{N}, \mathbb{F})$ endowed with the inner product  
+
+$$
+  \langle x, y \rangle = \sum_{i=1}^\infty \bar{x}_i y_i
+$$
+
+is a Hilbert space because $\ell^p$ is a Banach space. The map $\langle \cdot, \cdot \rangle: \ell^2 \times \ell^2 \to \mathbb{F}$ is indeed an inner product because it satisfies
+
+1. positivity: 
+$$
+\begin{gather*}
+  \langle x, x \rangle = \sum_{i=1}^\infty \bar{x}_i x_i = \sum_{i=1}^\infty \lvert x_i \rvert^2 \geq 0 \\
+  \langle x, x \rangle = 0 \implies \lvert x_i \rvert^2 = 0\; \forall i \in \mathbb{N} \implies x = 0
+\end{gather*}
+$$
+
+2. conjugate symmetry:
+$$
+  \overline{\langle y, x \rangle} = \sum_{i=1}^\infty \overline{\bar{y}_i x_i} = \sum_{i=1}^\infty y_i \bar{x}_i = \langle x, y \rangle
+$$
+
+3. linearity in the 2nd argument: 
+$$
+  \langle x, \alpha y + \beta z \rangle = \sum_{i=1}^\infty \bar{x}_i \left(\alpha y_i + \beta z_i \right) = \alpha \sum_{i=1}^\infty \bar{x}_i y_i + \beta \sum_{i=1}^\infty \bar{x}_i z_i = \alpha \langle x, y \rangle + \beta \langle x, z \rangle
+$$
+
+## Cauchy-Schwarz inequality
+
+<MathBox title='Cauchy-Scharz inequality' boxType='theorem'>
+Let $\left(X, \langle \cdot, \cdot \rangle \right)$ be an inner product space with norm $\lVert x \rVert = \sqrt{\langle x, x \rangle}$. Then for all $x, y \in X$
+
+$$
+  \lvert \langle x, y \rangle \rvert \leq \lVert x \rVert \cdot \lVert y \rVert
+$$
+
+where the equality holds if and only if $x$ and $y$ are linearly dependent, ie. $y = \lambda x$. The triangle inequality follows from the Cauchy-Schwarz inequality
+
+$$
+\begin{align*}
+  \lVert x + y \rVert^2 &= \langle x + y, x + y \rangle = \lVert x \rVert^2 + 2\lvert \langle x, y \rangle \rvert + \lVert y \rVert^2 \\
+  &\leq \lVert x \rVert^2 + 2\lVert x \rVert \cdot \lVert y \rVert + \lVert y \rVert^2 = \left( \lVert x \rVert + \lVert y \rVert \right)^2
+\end{align*}
+$$
+
+Taking the square root we obtain the triangle inequality $\lVert x + y \rVert \leq \lVert x \rVert + \lVert y \rVert$.
+
+<details>
+<summary>Proof</summary> 
+
+Considering the non-trivial case $x \neq 0$, we define the unit vector $\hat{x} := \frac{x}{\lVert x \rVert}$ and take the orthogonal projection of $y$ onto $\hat{x}$ (parallel component) given by $y_\parallel = \langle \hat{x}, y \rangle \hat{x}$. The Cauchy-Schwarz inequality can be obtained from taking the norm of the orthogonal component $y_\perp = y - y_\parallel$
+
+$$
+\begin{align*}
+  0 \leq \lVert y_\perp \rVert^2 &= \lVert y - y_\parallel \rVert^2 = \langle y - \langle \hat{x}, y \rangle \hat{x}, y - \langle \hat{x}, y \rangle \hat{x} \rangle \\
+  &= \langle y - \langle \hat{x}, y  \rangle \hat{x}, y \rangle - \langle y - \langle \hat{x}, y  \rangle \hat{x}, \langle \hat{x}, y  \rangle \hat{x} \rangle \\
+  &= \langle y, y \rangle - \langle \langle \hat{x}, y  \rangle \hat{x}, y \rangle - \langle y,  \langle \hat{x}, y  \rangle \hat{x} \rangle + \langle \langle \hat{x}, y  \rangle \hat{x}, \langle \hat{x}, y  \rangle \hat{x}  \rangle \\
+  &= \lVert y \rVert^2 - \overline{\langle \hat{x}, y \rangle}\langle \hat{x}, y \rangle - \langle \hat{x}, y \rangle \overline{\langle \hat{x}, y \rangle}  + \lvert \langle \hat{x}, y  \rangle \rvert^2 \underbrace{\lVert \hat{x} \rVert^2}_{=1} \\
+  &= \lVert y \rVert^2 - \lvert \langle \hat{x}, y  \rangle \rvert^2
+\end{align*}
+$$
+
+rearranging the inequality we get
+
+$$
+\begin{gather*}
+  \lVert y \rVert^2 \geq \lvert \langle \hat{x}, y  \rangle \rvert^2 = \left\lvert \left\langle \frac{x}{\lVert x \rVert}, y  \right\rangle \right\rvert^2 = \frac{1}{\lVert x \rVert^2} \lvert \langle x, y \rangle \rvert^2 \\
+  \implies \lvert \langle x, y \rangle \rvert \leq \lVert x \rVert \cdot \lVert y \rVert
+\end{gather*}
+$$
+</details>
+</MathBox>
+
+## Orthogonality
+
+<MathBox title='Orthogonality' boxType='definition'>
+Let $\left(X, \langle \cdot, \cdot \rangle \right)$ be an inner product space. Two vectors $x, y \in X$ are orthogonal if $\langle x, y \rangle = 0$, denoted $x \perp y$. Two sets $U, V \in X$ are orthogonal, denoted $U \perp V$, if $u \perp v$ for all $u \in U$ and $v \in V$. The orthogonal component of a set $U \subseteq X$ is
+
+$$
+  U^\perp = \left\{ x \in X | \langle x, u \rangle = 0 \; \forall u\in U \right\}
+$$
+</MathBox>
+
+If $x \perp y$, then the triangle inequlity reduces to the Pytagorean theorem
+
+$$
+\begin{align*}
+  \lVert x + y \rVert^2 &= \langle x + y, x + y \rangle = \lVert x \rVert^2 + 2\lvert \langle x, y \rangle \rvert + \lVert y \rVert^2 \\
+  &= \lVert x \rVert^2 + \lVert y \rVert^2
+\end{align*}
+$$
+
+<MathBox title='Orthogonal components' boxType='proposition'>
+Let $(X, \langle\cdot,\cdot\rangle)$ be an inner product space and let $U^\perp$ be the orthogonal component of $U\subseteq X$. Then $U^perp$ is closed. 
+
+<details>
+<summary>Proof</summary>
+
+This is proved by considering a sequence $\left( x_n \right)_{n\in\mathbb{N}} \subseteq U^\perp$ showing that the limit $\tilde{x} \in X$ is also in $U^\perp$. It follows that for all $u \in U$
+
+$$
+  \langle x_n, u \rangle = 0 \implies \lim_{n\to\infty} \langle x_n, u \rangle = 0 \implies \langle \tilde{x}, u \rangle = 0 \implies \tilde{x}\in U^\perp
+$$
+
+Hence, $U^\perp$ is closed. Here we applied the continuity property of the inner product resulting in $\langle x_n, 0 \rangle \xrightarrow{n\to\infty} \langle \tilde{x}, u \rangle$.
+
+If $U \subseteq V$ then $U^\perp \supseteq V^\perp$. For $x \in V^\perp$ we have $\langle x, v \rangle = 0$ for all $v \in V$. Because $U \subseteq V$, we have $\langle x, u \rangle = 0$ for all $u \in U$. This implies that $x \in U^\perp$, hence $U^\perp \supseteq V^\perp$. 
+</details>
+</MathBox>
+
+## Riesz representation theorem
+
+<MathBox title='Riesz representation theorem' boxType='theorem'>
+For each continuous linear functional $\ell: X \to \mathbb{F}$ there is exactly one $x_\ell \in X$ such that $\ell(x) = \langle x_\ell, x \rangle$ for all $x \in X$ and $\lVert \ell \rVert = \lVert x_\ell \rVert_X$.
+
+<details>
+<summary>Proof</summary>
+
+To prove the existence of $x_\ell$ we consider the kernel of $\ell$ defined as $\ker(\ell) := \{ x \in X | \ell(x) = 0 \}$. In the trivial case $\ker (\ell) = X$ it follows that $x_\ell = 0$, so we assume $\ker(\ell) \neq X$. Evidently $\ell$ is continuous because $\ker(\ell) = \ell^{-1}(\{ 0 \})$. Thus $\ker(\ell)$ is a closed subset of $X$. Consider $\hat{x} \in \ker(\ell)^\perp$ with $\lVert \hat{x} \rVert_X = 1$ and set $x_\ell := \overline{\ell(\hat{x})}\hat{x}$, then
+
+$$
+\begin{align*}
+  \ell(x) &= \ell\left(x - \frac{\ell(x)}{\ell(\hat{x})}\hat{x} + \frac{\ell(x)}{\ell(\hat{x})}\hat{x} \right) = \ell\left(x - \frac{\ell(x)}{\ell(\hat{x})}\hat{x} \right) + \ell\left( \frac{\ell(x)}{\ell(\hat{x})}\hat{x} \right) \\
+  &= \ell(x) - \frac{\ell(x)}{\ell(\hat{x})} \ell(\hat{x}) + \ell(\lambda \hat{x}) \\
+  &= \lambda \ell(\hat{x}) \langle \hat{x}, \hat{x} \rangle = \lambda \langle \overline{\ell(\hat{x})}\hat{x}, \hat{x} \rangle = \langle x_\ell, \lambda\hat{x} - x + x\rangle \\
+  &= \langle x_\ell, \lambda \hat{x} - x \rangle + \langle x_\ell, x \rangle \\
+  &= \langle x_\ell, x \rangle
+\end{align*}
+$$
+
+To prove the uniqueness of $x_\ell$, we assume $x_\ell, \tilde{x} \in X$ fulfil 
+
+$$
+\begin{align*}
+  \ell(x) = \langle x_\ell, x \rangle = \langle \tilde{x}_\ell, x \rangle \\
+  \implies \langle x_\ell - \tilde{x}_\ell, x \rangle = 0, \; \forall x \in X \\
+  \implies \langle x_\ell - \tilde{x}_\ell, x_\ell - \tilde{x}_\ell \rangle = 0
+\end{align*}
+$$
+
+Because the inner product is positive definitive we conclude that $x_\ell = \tilde{x}_\ell$.
+
+To prove that the operator norm is $\lVert \ell \rVert = \lVert x_\ell \rVert$, we have
+
+$$
+  \lVert \ell \rVert = \sup\left\{ \lvert \ell(x) \rvert \; | \; \lVert x \rVert_X = 1 \right\} = \sup\{ \underbrace{\lvert \langle x_\ell, x\rangle \rvert}_{\leq \lVert x_\ell \rVert_X \cdot \lVert x \rVert_X }\; | \; \lVert x \rVert_X \leq 1 \} \leq \lVert x_\ell \rVert
+$$
+
+Similarly
+
+$$
+  \lVert \ell \rVert \geq \left\lvert \ell \left( \frac{x_\ell}{\lVert x_\ell \rVert} \right) \right\rvert = \left\lvert \left\langle x_\ell, \frac{x_\ell}{\lVert x_\ell \rVert} \right\rangle \right\rvert = \lVert x_\ell \rVert
+$$
+
+Hence, we conclude that $\lVert \ell \rVert = \lVert x_\ell \rVert$.
+</details>
+</MathBox>
+
+# Spectral theory
+
+<MathBox title='Spectrum and resolvent set' boxType='definition'>
+Let $X$ be a complex Banach space and $T: X \to X$ be a bounded linear operator. The spectrum of $T$ is defined by
+
+$$
+  \sigma(T) := \left\{ \lambda \in \mathbb{C} \;|\; (T - \lambda I) \textrm{ not bijective}  \right\}
+$$
+
+The resolvent set of $T$ is defined by
+
+$$
+  \rho(T) := \left\{ \lambda \in \mathbb{C} \;|\; (T - \lambda I) \textrm{ bijective and } (T - \lambda I)^{-1} \textrm{ bounded}  \right\}
+$$
+
+The bounded inverse theorem implies that $\sigma(T) = \mathbb{C}\setminus \rho(T)$. The spectrum can be split into disjoint sets $\sigma(T) = \sigma_p(T) \cup \sigma_c(T) \cup \sigma_r(T)$ where
+
+- Point spectrum (eigenvalues): $\sigma_p(T) := \left\{ \lambda \in \mathbb{C} \;|\; (T - \lambda I) \textrm{ not injective}  \right\}$
+- Continuous spectrum: $\sigma_c(T) := \left\{ \lambda \in \mathbb{C} \;|\; (T - \lambda I) \textrm{ injective and not surjective with } \overline{\mathrm{Ran}(T - \lambda I)} = X \right\}$
+- Residual spectrum: $\sigma_c(T) := \left\{ \lambda \in \mathbb{C} \;|\; (T - \lambda I) \textrm{ injective and not surjective with } \overline{\mathrm{Ran}(T - \lambda I)} \neq X \right\}$
+</MathBox>
+
+<MathBox title='Properties of spectra and resolvent sets' boxType='proposition'>
+The spectrum $\sigma(T)$ and the resolvent $\rho(T)$ has the following properties
+1. The resolvent $\rho(T)$ is open, while the spectrum $\sigma(T)$ is closed
+2. The map $\rho(T): \to \mathcal{B}(X)$ given by $\lambda \mapsto (T - \lambda)^{-1}$ is analytical, i.e. it can be locally expressed as a Taylor series
+3. The inverse of the distance of any $\lambda \in \rho(T)$ to the spectrum, written $d(\lambda, \sigma(T))$, satisfies
+
+$$
+  \lVert (T - \lambda)^{-1} \rVert \geq \frac{1}{d(\lambda, \sigma(T))}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The first property can be shown by choosing $\lambda_0 \in \rho(T)$ and setting $c := \lVert (T - \lambda_0)^{-1} \rVert$ and $\epsilon := \frac{1}{c}$. Consider any $\lambda \in \mathbb{C}$ with $\left| \lambda - \lambda_0 \right| < \epsilon$, then
+
+$$
+  T - \lambda = (T - \lambda_0) - (\lambda - \lambda_0) = (T - \lambda_0) \left( I - (\lambda - \lambda_0)(T - \lambda_0)^{-1} \right) = (T - \lambda_0) (I - S)
+$$
+
+Furthermore, $\lVert S \rVert = \lVert \lambda - \lambda_0 \rVert \cdot \lVert (T - \lambda_0)^{-1} \rVert < \epsilon c = 1$. This implies that $I - S$ is a convergent Neumann series, and thus invertible. Since, $T - \lambda$ is product a two invertible operators, it is also invertible. This shows that $\lambda \in \rho(T)$, meaning that $\rho(T)$ is open. Thus, $\sigma(T)$ is closed.
+
+The second property follows from the results above, by writing out the inverse of $T - \lambda$
+
+$$
+\begin{align*}
+  (T - \lambda)^{-1} &= (I - S)^{-1} (T - \lambda)^{-1} = \sum_{k=0}^\infty S^k (T - \lambda_0)^{-1} \\
+  &= \sum_{k=0}^\infty (\lambda - \lambda_0 )^k (T - \lambda_0)^{-k} (T - \lambda_0)^{-1} \\
+  &= \sum_{k=0}^\infty (T - \lambda_0)^{-(k + 1)} (\lambda - \lambda_0)^k
+\end{align*}
+$$
+
+which takes the form of a Taylor series.
+
+The third property also follows from the results above as
+
+$$
+  |\lambda - \lambda_0 | \geq \epsilon \implies \frac{1}{| \lambda - \lambda_0 |} \leq C = \lVert (T - \lambda)^{-1} \rVert
+$$
+
+Hence, we get
+
+$$
+  \frac{1}{d(\lambda, \sigma(T))} = \frac{1}{\inf_{\lambda \in \sigma(T)} | \lambda - \lambda_0 |} = \sup_{\lambda \in \sigma(T)} \frac{1}{| \lambda - \lambda_0 |} \leq \lVert (T - \lambda)^{-1} \rVert
+$$
+</details>
+</MathBox>
+
+## Spectral radius
+
+<MathBox title='Properties of spectra and spectral radi' boxType='proposition'>
+Let $X$ be a complex Banach space and $T: X \to X$ be a bounded linear operator. The spectrum $\sigma(T)$ has the following properties
+
+1. $\sigma(T) \subseteq \mathbb{C}$ is compact (closed and bounded).
+2. $\sigma(T) \neq \emptyset$ for $X \neq \{ 0 \}$
+3. $r(T) := \sup_{\lambda\in\sigma(T)}|\lambda| = \lim_{k\to\infty} \lVert T^k \rVert^{1/k} = \inf_{k\in\mathbb{N}} \lVert T^k \rVert^{1/k} \leq \lVert T \rVert < \infty$
+
+where $r(T)$ denotes the spectral radius. 
+
+<details>
+<summary>Proof</summary>
+
+The boundedness implied by the first and last property can be proved by choosing $\lambda \in \mathbb{C}$ with $|\lambda| > \lVert T \rVert$ and consider $\frac{T}{\lambda}$ as a Neumann series
+
+$$
+\begin{gather*}
+  \left( I - \frac{T}{\lambda} \right)^{-1} = \sum_{k=0}^\infty \left( \frac{T}{\lambda} \right)^k \\
+  \implies (T - \lambda)^{-1} = -\frac{1}{\lambda} \left(I - \frac{T}{\lambda} \right)^{-1} = -\frac{1}{\lambda} \sum_{k=0}^\infty \left( \frac{T}{\lambda} \right)^k \\
+  \sup_{\lambda \in \sigma(T)} |\lambda | \leq \lVert T \rVert
+\end{gather*}
+$$
+
+which shows that $\sigma(T)$ is bounded. 
+
+The second property can be proved by contraposition, assuming $\sigma(T) = \emptyset \implies \rho(T) = \mathbb{C}$. Recall that the map $\rho(T) \to \mathcal{B}(X)$ given by $\lambda \mapsto (T - \lambda)^{-1}$ is analytic. Thus, we can take any linear functional $\ell \in \mathcal{B}(X)^*$ and apply it on the map above resulting in the map $f_\ell: \mathbb{C} \to \mathbb{C}$ given by $\lambda \mapsto \ell\left[ (T - \lambda)^{-1} \right]$. Then for any $\lambda \geq \lVert T \rVert$ we have
+
+$$
+  \left| f_\ell(\lambda) \right| \leq \lVert \ell \rVert \cdot \lVert (T - \lambda)^{-1} \rVert \leq \lVert \ell \rVert \frac{1}{|\lambda|}\sum_{k=0}^\infty \left\lVert \frac{T}{\lambda} \right\rVert^k \leq \frac{\lVert \ell \rVert}{\lVert T \rVert}
+$$
+
+which shows that $f_\ell$ is a bounded entire function. Applying Liouville's theorem implies that $f_\ell$ is constant. We can then proceed to calculate this constant for $\lambda_0 = 0$
+
+$$
+  f_\ell (0) = \ell(T^{-1})
+$$
+
+This should hold for all $\lambda \in \mathbb{C}$
+
+$$
+  f_\ell (\lambda) = \ell\left[ (T - \lambda)^{-1} \right] = \ell\left( \sum_{k=0}^\infty (T - \lambda_0)^{-(k + 1) (\lambda - \lambda_0)^k} \right) = \sum_{k=0}^\infty \ell \left( T^{-(k+1)} \right)\lambda^k
+$$
+
+Consequently $\ell\left(T^{-2}\right) = 0$ for all $\ell \in \mathcal{B}(X)^*$. By the Hahn-Banach theorem, we must have $T^{-2} = 0$, but this implies that $X = \{ 0 \}$ since $T$ is bijective. Hence $\sigma(T) \neq \emptyset$ for  $X \neq \{0\}$.
+</details>
+</MathBox>
+
+## Adjoint operators
+
+<MathBox title='Adjoint operator' boxType='definition'>
+Let $X$ be a Hilbert space and $T: X \to X$ a bounded linear operator. The adjoint operator of $T$, denoted $T^\dagger: X \to X$, satisfies
+
+$$
+  \langle y, Tx \rangle = \langle T^* y, x \rangle \quad \forall x, y \in X
+$$
+
+A bounded linear operator $T$ is called
+1. self-adjoint if $T^* = T$
+2. skew-adjoint if $T^* = -T$
+3. normal if $T^* T = T T^*$
+
+If $T$ is normal then the spectral radius of $T$ is equal to the operator norm, i.e. $r(T) = \lVert T \rVert$.
+</MathBox>
+
+## Compact operators
+
+Let $\left(X ,\lVert \cdot \rVert_X\right)$ and $\left(X ,\lVert \cdot \rVert_X\right)$ be normed spaces. A bounded linear operator $T: X \to Y$ is called compact if $\overline{T\left[\mathcal{B}_1(0)\right]}$ is compact.
+
+<MathBox title='' boxType='proposition'>
+Suppose $\left(X ,\lVert \cdot \rVert_X\right)$ is a Banach space, and $T: X \to X$ a compact operator, then
+1. $\sigma(T)$ is a countable set
+2. $\dim(X) = \infty \implies 0 \in \sigma(T)$
+3. $\sigma(T)\setminus\{0\}$ could be empty or finite. Otherwise $\sigma(T)\setminus\{0\} = \{ \lambda_n \}_{n\in\mathbb{N}}$ with no accumulation points other than $0$.
+4. Each $\lambda\in\sigma(T)\setminus\{0\}$ is an eigenvalue of $T\left(\lambda \in \sigma(T)\setminus\{0\}\right)$ with $\dim\left(\mathrm{Ker}(T - \lambda) \right)$
+</MathBox> 
+
+## Example: $\ell^p$
+
+Consider the sequence space $X = \ell^p (\mathbb{N})$. For $\left\{ \lambda_j \right\}_{j\in\mathbb{N}} \subset \mathbb{C}$ with $\sup_{j\in\mathbb{N}}\left| \lambda_j \right| < \infty$ we define a bounded linear operator $T:\ell^p (\mathbb{N}) \to \ell^p (\mathbb{N})$ given by $(Tx)_j := \lambda_j x_j$. Evidently, the $\lambda_j$ are eigenvalues with corresponding eigenvectors $e_j$ as unit sequences, and the set $\left\{ \lambda_j \right\}_{j\in\mathbb{N}} \subset \mathbb{C}$ forms the point spectrum of $T$
+
+$$
+  \left\{ \lambda_j \right\}_{j\in\mathbb{N}} = \sigma_p (T) \subseteq \sigma (T)
+$$
+
+Because $\sigma_p (T)$ is infinite it can have accumulation points $\mu \in \mathbb{C}$ with $\mu \in \overline{\sigma_p (T)}$ such that $T - \mu I$ is injective. It can be shown that $T - \mu I$ is not surjective.
+
+Assuming by contradiction that $T - \mu I$ is surjective, implying that it is also bijective. By the bounded inverse theorem, the inverse $(T - \mu I)^{-1}$ is therefore bounded with operator norm
+
+$$
+  \lVert (T - \mu I)^{-1} \rVert \geq \lVert (T - \mu I)^{-1} e_j \rVert_{\ell^p (\mathbb{N})} = \lVert (\lambda_j - \mu I)^{-1} e_j \rVert_{\ell^p (\mathbb{N})} = \frac{1}{\left| \lambda_j - \mu \right|}
+$$
+
+Since $\mu$ is an accumulation point we can find a subsequence such that the resulting fraction goes to infinity, so that $(T - \mu I)^{-1}$ cannot be bounded. Thus, by contradiction $T - \mu I$ is not surjective. The spectrum of $T$ becomes
+
+$$
+  \sigma (T) = \underbrace{\left\{ \lambda_j \right\}_{j\in\mathbb{N}}}_{\sigma_p (T)} \cup \left\{ \mu \in \mathbb{C} \;|\; \mu \notin \left\{ \lambda_j \right\}_{j\in\mathbb{N}} \wedge \mu \in \overline{\left\{ \lambda_j \right\}_{j\in\mathbb{N}}} \right\} = \sigma_p(T) \cup \sigma_c(T)
+$$

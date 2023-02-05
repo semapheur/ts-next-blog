@@ -1,0 +1,2713 @@
+---
+title: 'Measure Theory'
+subject: 'Mathematics'
+showToc: true
+---
+
+# $\sigma$-algebra (measure space)
+
+<MathBox title='Ring and algebra of sets' boxType='definition'>
+Let $X$ be a set and $\mathcal{P}(X)$ the power set of $X$. A collection $\mathcal{F}\subseteq\mathcal{P}(X)$ of subsets of $X$ is a ring of sets if it satisfies
+- $\emptyset\in\mathcal{F}$
+- closed under difference: $A, B\in\mathcal{F} \implies A\setminus B \in\mathcal{F}$
+- closed under finite unions: $\{A_i\}_{i=1}^{n\in\mathbb{N}}\subseteq\mathcal{F}\implies\bigcup_{i=1}^{n\in\mathbb{N}} A_i \in\mathcal{F}$
+  - equivalently closed under finite intersections: $\{A_i\}_{i=1}^{n\in\mathbb{N}}\subseteq\mathcal{F}\bigcap_{i=1}^{n\in\mathbb{N}} A_i \in\mathcal{F}$ 
+
+If the ring $\mathcal{F}$ contains $X$, it is an algebra (field) of sets. Since $X = \emptyset^C$, the algebra $\mathcal{F}$ is closed under complements, i.e. $A\in\mathcal{A}\implies A^c=X\setminus A \in\mathcal{A}$.
+</MathBox>
+
+<MathBox title='Semi-ring and semi-algebra of sets' boxType='definition'>
+Let $X$ be a set and $\mathcal{P}(X)$ the power set of $X$. A collection $\mathcal{S}\subseteq\mathcal{P}(X)$ of subsets of $X$ is a semi-ring of sets if it satisfies
+- $\emptyset\in\mathcal{S}$
+- closed under intersection: $A, B\in\mathcal{S}\implies A\cap B\in\mathcal{S}$.
+- differences are partitioned by finite, disjoint unions: $A,B\in\mathcal{S}\implies A\setminus B = \bigcup_{i=1}^{n\in\mathbb{N}} C_i$ for some finite, disjoint collection $\{C_i\}_{i=1}^{n\in\mathbb{N}}\subseteq\mathcal{S}$
+
+The semi-ring $\mathcal{S}$ is a semi-algebra of sets if complements are partitioned by finite, disjoint unions, i.e. $A\in\mathcal{S}\implies A^c = X\setminus A = \bigcup_{i=1}^{n\in\mathbb{N}} C_i$ for some finite, disjoint collection $\{C_i\}_{i=1}^{n\in\mathbb{N}}$.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $\mathcal{A}$ is a semi-algebra of subsets of $X$. Then the collection $\mathcal{A}^*$ of finite, disjoint unions of sets in $\mathcal{A}$ is an algebra.
+<details>
+<summary>Proof</summary>
+
+Suppose that $A, B\in\mathcal{A}*$. Then for finite index sets $I, J$ there exist finite, disjoint collections $\{A_i\}_{i\in I}\subseteq\mathcal{A}$ and $\{B_j\}_{j\in J}\subseteq\mathcal{A}$ such that $A = \bigcup_{i\in I} A_i$ and $B = \bigcup_{j\in J} B_j$. Thus
+
+$$
+  A\cap B = \bigcup_{(i, j)\in I\times J} (A_i \cap B_j)
+$$
+
+However, $\{A_i \cap B_j \}_{(i, j)\in I\times J}$ is a finite, disjoint collection of sets in $\mathcal{A}$, so $A\cap B\in\mathcal{A}*$, i.e. $\mathcal{A}*$ is closed under finite intersections. Suppose $A\in\mathcal{A}*$, so that there exists a finite, disjoint collection $\{A_i\}_{i\in I}$ such that $A = \bigcup_{i\in I} A_i$ giving $A^c = \bigcup_{i\in I} A_i^c$ by DeMorgan's law. However, $A_i^c \in\mathcal{A}*$ by definition of a semi-algebra, and since $\mathcal{A}*$ is closed under finite intersections, it follows that $A^c\in\mathcal{A}*$.
+</details>
+</MathBox>
+
+<MathBox title='$\sigma$-ring and $\sigma$-algebra of sets' boxType='definition'>
+Let $X$ be a set and $\mathcal{P}(X)$ the power set of $X$. A collection $\mathcal{A}\subseteq\mathcal{P}(X)$ of subsets of $X$ is a $\sigma$-ring of sets if it has the following properties
+- $\emptyset \in \mathcal{A}$
+- closed under difference: $A,B \in\mathcal{A}\implies A\setminus B \in\mathcal{A}$
+- closed under countable unions: $\{A_i\}_{i\in I\subseteq\mathbb{N}}\subseteq\mathcal{A} \implies\bigcup_{i\in I} A_i \in\mathcal{A}$
+  - equivalently closed under countable intersections: $\{A_i\}_{i\in I\subseteq\mathbb{N}}\subseteq\mathcal{A} \implies\bigcap_{i\in I} A_i \in\mathcal{A}$
+
+If the $\sigma$-ring $\mathcal{A}$ contains $X$, it is a $\sigma$-algebra. Since $X = \emptyset^c$, the $\sigma$-algebra $\mathcal{A}$ is closed under complements, i.e. $A\in\mathcal{A}\implies A^c = X\setminus A\in\mathcal{A}$. The elements of the $\sigma$-algebra $\mathcal{A}$ are called measurable sets. The pair $(X, \mathcal{A})$ is called a measurable space.
+<details>
+<summary>Proof</summary>
+
+To show that $\mathcal{A}$ is closed under countable intersection, consider a countable index set $I$. If $A_i \in\mathcal{A}$ for each $i\in I$, then $A_i^c\in\mathcal{A}$ and $\bigcup_{i\in I}A_i^c \in\mathcal{A}$. Applying DeMorgan's law gives $\left( \bigcup_{i\in I} A_i^c \right)^c = \bigcap_{i\in I} A_i \in\mathcal{A}$.
+</details>
+</MathBox>
+
+<MathBox title='Example: Collection of finite and co-finite subsets' boxType='example'>
+Suppose that $X$ is an infinite set. The collection of finite and co-finite subsets of $X$ defined below is an algebra of subsets of $X$, but not a $\sigma$-algebra:
+
+$$
+  \mathcal{F} := \{ A\subseteq X \;|\; A\textrm{ is finite or }A^c\textrm{ is finite}\}
+$$
+<details>
+<summary>Proof</summary>
+
+Trivially, $X\in\mathcal{F}$ since $X^c = \emptyset$ is finite. If $A\in\mathcal{F}$ then $A^c\in\mathcal{F}$ by symmetry of the definition. Suppose that $A,B\in\mathcal{F}$. If $A$ and $B$ are both finite, then $A\cup B$ is finite. If $A^c$ or $B^c$ is finite, then $(A\cup B)^c = A^c \cap B^c$ is finite. In either case, $A\cup B\in\mathcal{F}$. Thus, $\mathcal{F}$ is an algebra of subsets of $X$.
+
+Since $X$ is infinite, it contains a countably infinite subset $\{x_n\}_{n\in\mathbb{N}}$. Let $A_n = \{x_{2n}\}$ for some $n\in\mathbb{N}$. Then $A_n$ is finite and $A_n\in\mathcal{F}$ for each $n\in\mathbb{N}$. Let $E = \bigcup_{n\in\mathbb{N}} A_n = \{x_{2n}\}_{n\in\mathbb{N}}$. Then $E$ is infinite by construction, but so is $\{x_{2n+1}\}_{n\in\mathbb{N}} \subseteq E^c$. Hence $E\notin\mathcal{F}$, showing that $\mathcal{F}$ is not a $\sigma$-algebra.
+</details>
+</MathBox>
+
+<MathBox title='Example' boxType='example'>
+Consider a finite set $X = \{ (x_i)_{i=1}^n \}$. The $\sigma$-algebra generated by an arbitrary singleton subset $\mathcal{M} = \{\{ x_j \}\} = \{ X_j \}$ for $1 \leq j \leq n$ is 
+
+$$
+  \sigma(\mathcal{M}) = \left\{ \emptyset, \{ x_j \}, \{ (x_i)_{i=1, i\neq j}^n \}, \{ (x_i)_{i=1}^n \} \right\} = \left\{ \emptyset, X_j, X_j^c, X \right\}
+$$
+
+The $\sigma$-algebra generated by a arbitrary subset of singletons $\mathcal{M} = \left\{ \left(\{ x_j \} \right)_{j\geq 1}^{m \leq n} \right\} = \left\{ \left(X_j \right)_{j\geq 1}^{m\leq n} \right\}$ is
+
+$$
+  \sigma(\mathcal{M}) = \left\{ \emptyset,\; \left(X_j \right)_{j\geq 1}^{m\leq n},\; \left(X_j^c \right)_{j\geq 1}^{m\leq n},\; \bigcup_{j\geq 1}^{m\leq n} X_j,\; X \right\}
+$$
+</MathBox>
+
+## Construction
+
+Trivially, the power set $\mathcal{P}(X)$ is the largest $\sigma$-algebra of $X$. The power set if often the appropriate $\sigma$-algebra if $X$ is countable. However, if $X$ is uncountable, $\mathcal{P}(X)$ becomes too large for a useful $\sigma$-algebra. In such cases, we want to construct a $\sigma$-algebra that contains certain basic sets, as shown in the following results.
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $X$ be a set and $I$ an index set. If $\mathcal{A}_i$ is a $\sigma$-algebra of $X$ for each $i\in I$, then $\mathcal{A} = \bigcap_{i\in I} \mathcal{A}_i$ is also a $\sigma$-algebra of $X$.
+<details>
+<summary>Proof</summary>
+
+First, $X\in\mathcal{A}_i$ for each $i\in I$ so $X\in\mathcal{A}$. If $A\in\mathcal{A}$, then $A\in\mathcal{A}_i$ for each $i\in I$ and hence $A^c\in\mathcal{A}_i$ for each $i\in I$. Thus, $A^c\in\mathcal{A}$. Finally, if $J$ is a countable index set and $A_j\in\mathcal{A}$ for each $j\in J$, then $A_j \in\mathcal{A}_i$ for each $i\in I$ and $j\in J$. Then $\bigcup_{j\in J} A_j \in\mathcal{A}_i$ for each $i\in I$ and hence $\bigcup_{j\in J} A_j \in\mathcal{A}$. 
+</details>
+</MathBox>
+
+<MathBox title='$\sigma$-algebra generated by an arbitrary collection' boxType='proposition'>
+Let $X$ be a set and $\mathcal{B}\subseteq\mathcal{P}(X)$ a collection of subsets of $X$. The $\sigma$-algebra generated by $\mathcal{B}$ is defined as
+
+$$
+  \sigma(\mathcal{B}) := \bigcup \{ \mathcal{A} \;|\; \mathcal{A}\textrm{ is a }\sigma\textrm{-algebra of X and }\mathcal{B}\subseteq\mathcal{A} \}
+$$
+
+If $\mathcal{B}$ is countable, then $\sigma(\mathcal{B})$ is called countably generated. The $\sigma$-algebra $\sigma(\mathcal{B})$ is the smallest $\sigma$-algebra containing $\mathcal{B}$, satisfying
+1. $\mathcal{B}\subseteq\sigma(\mathcal{B})$
+2. if $\mathcal{A}$ is a $\sigma$-algebra of $X$ and $\mathcal{B}\subseteq\mathcal{A}$, then $\sigma(\mathcal{B})\subseteq\mathcal{A}$.
+</MathBox>
+
+We may generate a $\sigma$-algebra from a collection of subsets in the following way. Suppose that $S$ is a set and $\mathcal{A} = \{ A_i \}_{i=1}^{n\mathbb{N}}$ is a collection of $n$ subsets of $S$ (not necessarily disjoint). Introducing a bit sequence $x = (x_i)_{i=1}^n \in \{0, 1\}$, let $B_x = \bigcap_{i=1}^n A_i^{x_i}$ where $A_i^1 = A_i$ and $A_i^0 = A_i^c$. In the setting above
+1. $\mathcal{B} := \left\{ B_x \;|\; x \in\{0, 1\}^n \right\}$ partitions $S$.
+2. $A_i = \bigcup\left\{ B_x \;|\; x\in\{0, 1 \}^n,\; x_i = 1 \right\}$ for $i\in\{1, 2, \dots n\}$.
+3. $\sigma(\mathcal{A}) = \sigma(\mathcal{B}) = \left\{ \bigcup_{x\in J} B_x \;|\; J\subseteq \{0, 1\}^n \right\}$
+
+<details>
+<summary>Proof</summary>
+
+1. Suppose that $x, y\in\{0, 1\}^n$ and that $x\neq y$. Without loss of generality, suppose that $x_j = 0$ while $x_j = 1$ for some $j\in\{1, 2, \dots, n\}$. Then $B_x\subseteq A_j^c$ and $B_y\subseteq A_j$, so $B_x$ and $B_y$ are disjoint. Suppose that $s\in S$ and construct $x\in\{0, 1\}^n$ by $x_i = 1$ if $s\in A_i$ and $x_i = 0$ if $s\notin A_i$ for each $i\in\{1,2,\dots,n\}$. Then by definition $s\in B_x$, showing that $\mathcal{B}$ partitions $S$.
+2. Fix $i\in\{1,2,\dots, n\}$. If $x\in\{0, 1\}^n$ and $x_i = 1$ then $B_x\subseteq A_i$. Thus $\bigcup\left\{ B_x \;|\; x\in\{0, 1\}^n,\; x_i = 1 \right\} \subseteq A_i$. Conversely, suppose $s\in A_i$ and define $y\in\{0, 1\}^n$ by $y_j = 1$ if $s\in A_j$ and $y_j = 0$ if $s\notin A_j$ for each $j\in\{1,2,\dots,n \}$. Then $y_i = 1$ and $s\in B_y$ and hence $s\in \bigcup\left\{ B_x \;|\; x\in\{0, 1\}^n,\; x_i = 1 \right\}$ 
+3. Clearly, every $\sigma$-algebra of $S$ that contains $\mathcal{A}$ must also contain $\mathcal{B}$, and every $\sigma$-algebra of $S$ that contains $\mathcal{B}$ must also contain $\mathcal{A}$. It follows that $\sigma(\mathcal{A}) = \sigma(\mathcal{B})$.
+</details>
+
+<MathBox title='$\sigma$-algebra generated by a singleton of a subset' boxType='proposition'>
+Let $X$ be a set and consider a subset $A\subseteq X$. Then $\sigma\{A\} = \{\emptyset, A, A^c, X\}$.
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{A} = \{\emptyset, A, A^c, X \}$. Clearly, $\mathcal{S}$ is an algebra as each element has a complement and
+
+$$
+\begin{align*}
+  X &= A\cup A^c = A\cup X = A^c \cup X = X\cup X = \emptyset\cup X \\
+  A &= A\cup\emptyset = A\cup A \\
+  A^c &= A^c\cup\emptyset = A^c \cup A^c \\
+  \emptyset &= \emptyset \cup \emptyset
+\end{align*}
+$$
+
+Since $\mathcal{A}$ is finite, it is a $\sigma$-algebra. Obviously, for any $\sigma$-algebra $\mathcal{B}$ with $A\in\mathcal{B}$ then $\mathcal{A}\subseteq\mathcal{B}$. Hence $\mathcal{A} = \sigma\{A\}$
+</details>
+</MathBox>
+
+<MathBox title='$\sigma$-algebra generated by a countable partition' boxType='proposition'>
+Let $X$ be a set, and let $\mathcal{A} = \{A_i \}_{i\in I}$ be a countable partition of $X$ into nonempty subsets. Then $\sigma(\mathcal{A})$ is the collection of all unions of sets in $\mathcal{A}$
+
+$$
+  \sigma(\mathcal{A}) = \left\{ \bigcup_{j\in J} A_j \mid| J\subseteq I \right\}
+$$
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{S} = \left\{ \bigcup_{j\in J} A_j \mid| J\subseteq I \right\}$. Note that $X = \bigcup_{i\in I} A_i$ so $X\in\mathcal{S}$. Suppose, that $B\in\mathcal{S}$. Then $B = \bigcup_{j\in J} A_j$ for some $J\subseteq I$, and $B^c = \bigcup_{j\in J^c} A_j$ so $B^c\in\mathcal{S}$. Suppose that $B_k\in\mathcal{S}$ for $k\in K$ where $K$ is a countable index set. Then for each $k\in K$ there exists $J_k\subseteq I$ such that $B_k = \bigcup_{j\in J_k} A_j$. However, then $\bigcup_{k\in K} B_k = \bigcup_{k\in K}\bigcup_{j\in J_k} A_j = \bigcup_{j\in J} A_j \in\mathcal{S}$ where $J = \bigcup_{k\in K} J_k$. Hence $\mathcal{S}$ is a $\sigma$-algebra of $X$.
+
+Note that $\mathcal{A}\subseteq\mathcal{S}$. If $\mathcal{T}$ is a $\sigma$-algebra of $X$ with $\mathcal{A}\subseteq\mathcal{T}$, then clearly $\bigcup_{j\in J} A_j \in\mathcal{T}$ for every $J\subseteq I$. Hence $\mathcal{S}\subseteq\mathcal{T}$ so $\mathcal{S} = \sigma(\mathcal{A})$.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $X$ be a set, and let $\mathcal{B}$ be a nonempty collection of subsets of $S$. Then
+
+$$
+  \sigma(\mathcal{B}) = \{ A\subseteq X \;|\; A\in\mathcal{C}\textrm{for some countable }\mathcal{C}\subseteq\mathcal{B} \}
+$$
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{S}$ denote the collection on the right. We first show that $\mathcal{S}$ is a $\sigma$-algebra. For any $B\in\mathcal{B}$ then $X\in\sigma\{B\}$ so $X\in\mathcal{S}$. Let $A\in\mathcal{S}$ so that $A\in\sigma(\mathcal{C})$ for some countable $\mathcal{C}\subseteq\mathcal{B}$. Then $A^c\in\sigma(\mathcal{C})$ so $A^c \in\mathcal{S}$. Suppose that $A_i\in\mathcal{S}$ for $i$ in a countable index $I$. For each $i\in I$, there exists a countable $\mathcal{C}_i\subseteq\mathcal{B}$ such that $\sigma(\mathcal{C}_i)$. However, then $\bigcup_{i\in I}\mathcal{C}_i$ is also countable and $\bigcup_{i\in I} A_i \in \sigma\left( \bigcup_{i\in I}\mathcal{C}_i \right)$. Hence $\bigcup_{i\in I} A_i \in\mathcal{S}$.
+
+Finally, we show that $\mathcal{S} = \sigma(\mathcal{B})$. If $B\in\mathcal{B}$ then $B\in\sigma\{B\}$ so $B\in\mathcal{S}$. Hence $\sigma(\mathcal{B})\subseteq\mathcal{S}$. Conversely, if $A\in\sigma(\mathcal{C})$, then trivially $A\in \sigma(\mathcal{B})$. Hence $\mathcal{S}\subseteq\sigma(\mathcal{B})$ so $\sigma(\mathcal{B}) = \mathcal{S}$.
+</details>
+</MathBox>
+
+<MathBox title='$\sigma$-algebra on a subset' boxType='proposition'>
+Suppose that $(X, \mathcal{A})$ is a measurable space, and consider a subset $R\subseteq S$. Let $\mathcal{R} := \{ A\cap R \;|\; A\in\mathcal{A} \}$. Then
+1. $\mathcal{R}$ is a $\sigma$-algebra of subsets of $R$
+2. if $R\in\mathcal{A}$ then $\mathcal{R} = \{ B\in\mathcal{A} \;|\; B\subseteq R\}$
+<details>
+<summary>Proof</summary>
+
+1. Note that $X\in\mathcal{A}$ and $X\cap R = R$ so $R\in\mathcal{R}$. Next, suppose that $B\in\mathcal{R}$. Then there exists $A\in\mathcal{A}$ such that $B = A\cap R$. However, $A^c\in\mathcal{A}$ and $R\setminus B = R\cap B^c = R\cap A^c$ so $R\setminus B\in\mathcal{R}$. Finally, suppose that $B_i\in\mathcal{R}$ for $i$ in a countable index set $I$. For each $i\in I$ there exists $A_i \in\mathcal{A}$ such that $B_i = A_i \cap R$. However, then $\bigcup_{i\in I} A_i \in\mathcal{A}$ and $\bigcup_{i\in I} B_i = \left(\bigcup_{i\in I} A_i \right)\cap R$, so $\bigcup_{i\in I} B_i\in\mathcal{R}$.
+2. Suppose that $R\in\mathcal{S}$. Then $A\cap R\in\mathcal{A}$ for every $A\in\mathcal{A}$, and $A\cap R\subseteq R$. Conversely, if $B\in\mathcal{A}$ and $B\subseteq R$ then $B = B\cap R$ so $B\in\mathcal{R}$.
+</details>
+</MathBox>
+
+<MathBox title='Example: Collection of countable and co-countable subsets' boxType='example'>
+Suppose that $X$ is a nonempty set. Consider the collection of countable and co-countable subsets of $X$ defined by
+
+$$
+  \mathcal{C} := \{ A\subseteq X \;|\; A\textrm{ is countable or }A^c\textrm{ is countable} \}
+$$
+
+Then:
+1. $\mathcal{C}$ is a $\sigma$-algebra
+2. $\mathcal{C} = \sigma\{\{x\} \;|\; x\in X \}$
+
+If $X$ is itself countable, then $\mathcal{C} = \mathcal{P}(X)$. Otherwise, if $X$ is uncountable, then there exists $A\subseteq X$ such that $A$ and $A^c$ are uncountable. Thus $A\notin\mathcal{C}$, but $A = \bigcup_{x\in A} \{x\}$ with $\{x\}\in\mathcal{C}$. Thus, $\mathcal{C}$ is not closed under general unions.
+<details>
+<summary>Proof</summary>
+
+1. Since $S^c = \emptyset$ is countable, then $S\in\mathcal{C}$. If $A\in\mathcal{C}$ then $A^c\in\mathcal{C}$ by the symmetry of the definition. Suppose that $A_i\in\mathcal{C}$ for each $i$ in a countable index set $I$. If $A_i$ is countable for each $i\in I$, then $\bigcup_{i\in i} A_i$ is countable. If $A_j^c$ is countable for some $j\in I$, then $\left( \bigcup_{i\in I} A_i \right)^c = \bigcap_{i\in I} A_i^c \subseteq A_j^c$ is countable. In either case, $\bigcup_{i\in I} A_i \in\mathcal{C}$.
+2. Let $\mathcal{D} = \sigma\{\{x \;|\; x\in X\}\}$. Clearly $\{x\}\in\mathcal{C}$ for $x\in X$. Hence $\mathcal{D}\subseteq\mathcal{C}$. Conversely, suppose that $A\in\mathcal{C}$. If $A$ is countable, then $A = \bigcup_{x\in A} \{x\}\in\mathcal{D}$. If $A^c$ is countable, then by identical argument, $A^c\in\mathcal{D}$ so $A\in\mathcal{D}$. Hence $\mathcal{C} = \sigma\{\{x\} \;|\; x\in X \}$ 
+</details>
+</MathBox>
+
+## Borel $\sigma$-algebra
+
+<MathBox title='Borel $\sigma$-algebra' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. The Borel $\sigma$-algebra on $X$ is the $\sigma$ generated by the topology (open sets): 
+
+$$
+  \mathcal{B}(X) := \sigma(\mathcal{T})
+$$
+
+The pair $(X, \sigma(\mathcal{T}))$ is called a Borel measurable space.
+</MathBox>
+
+<MathBox title='Subsets of Borel $\sigma$-algebras' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a topological space and consider a countable index set $I$. Then
+1. If $A_i$ is open for each $i\in I$, then $\bigcap_{i\in I} A_i \in\sigma(\mathcal{T})$. Such sets are called $G_\delta$ sets.
+2. If $A_i$ is closed for each $i\in I$, then $\bigcup_{i\in I} A_i \in\sigma(\mathcal{T})$. Such sets are called $F_\sigma$ sets.
+3. If $(X, \mathcal{T})$ is Hausdorff, then $\{x\}\in\mathcal{T}$ for every $x\in X$. In general, $A\in\sigma(\mathcal{T}$ for every countable $A\subseteq X$.
+</MathBox>
+
+<MathBox title='Base Borel $\sigma$-algebra' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a topological space with a countable base $\mathcal{B}$. Then $\sigma(\mathcal{B}) = \sigma(\mathcal{T})$
+<details>
+<summary>Proof</summary>
+
+Since $\mathcal{B}\subseteq\mathcal{T}$ it follows trivially that $\sigma(\mathcal{B})\subseteq\sigma(\mathcal{T})$. Conversely, if $A\in\mathcal{A}$, there exists a collection of sets $\mathcal{B}$ whose union is $A$. Since $\mathcal{B}$ is countable, $A\in\sigma(\mathcal{B})$.
+</details>
+</MathBox>
+
+### Euclidean space
+
+<MathBox title='Example: Semi-ring of sets generating the Borel $\sigma$-algebra for $\mathbb{R}$' boxType='example'>
+Each of the following semi-ring of sets generate $\mathcal{B}(\mathbb{R})$
+1. $\mathcal{I}_1 = \{I\subseteq\mathbb{R} \;|\; I\textrm{ is an interval}\}$
+2. $\mathcal{I}_2 = \{(a, b]\;|\; a,b\in\mathbb{R},\; a<b\}$
+3. $\mathcal{I}_3 = \{(-\infty, b]\;|\; b\in\mathbb{R}\}$
+<details>
+<summary>Proof</summary>
+
+The proof involves showing that each set in any one of the collections is in the $\sigma$-algebra of any other collection. Let $\mathcal{A} = \sigma(\mathcal{I})$ for $i\in\{1,2,3\}$
+1. Clearly $\mathcal{I}_2\subseteq\mathcal{I}_1$ and $\mathcal{I}_3\subseteq\mathcal{I}_1$ so $\mathcal{A}_2\subseteq\mathcal{A}_1$ and $\mathcal{A}_3\subseteq\mathcal{A}_1$.
+2. If $a, b\in\mathbb{R}$ with $a\leq b$ then 
+
+$$
+\begin{align*}
+  [a,b] &= \bigcap_{n=1}^\infty (a-\frac{1}{n},b]\in\mathcal{I}_2 \\
+  (a,b) &= \bigcup_{n=1}^\infty (a, b-\frac{1}{n}\in\mathcal{I}_2 \\
+  [a,b) &= \bigcup_{n=1}^\infty [a, b-\frac{1}{n}]\in\mathcal{I}_2
+\end{align*}
+$$
+
+Thus, all bounded intervals are in $\mathcal{I}_2$. Furthermore, 
+
+$$
+\begin{align*}
+  [a,\infty) &= \bigcup_{n=1}^\infty [a, a+n)\in\mathcal{I}_2 \\
+  (a,\infty) &= \bigcup_{n=1}^\infty (a, a+n)\in\mathcal{I}_2 \\
+  (-\infty, a] &= \bigcup_{n=1}^\infty (a-n, a]\in\mathcal{I}_2 \\
+  (-\infty, a) $= \bigcup_{n=1}^\infty (a-n, a)\in\mathcal{I}_2
+\end{align*}
+$$
+
+Of course $\mathbb{R}\in\mathcal{I}_2$ so $I\in\mathcal{I}_2$ for every interval $I$. Thus $\mathcal{A}_1\subseteq\mathcal{A}_2$ and from the previous result it follows that $\mathcal{A}_2 = \mathcal{A}_1$.
+
+3. If $a,b\in\mathcal{R}$ with $a <b$ then $(a, b] = (-\infty, b]\setminus (-\infty, a]$ so $(a, b]\in\mathcal{I}_3$. Thus $\mathcal{A}_2\subseteq\mathcal{A}_1$. From the previous results it follows that $\mathcal{A}_3 = \mathcal{A}_1$.
+</details>
+</MathBox>
+
+The standard Borel $\sigma$-algebra $\mathcal{B}(\mathbb{R})$ can also be constructed from $\sigma$-algebras that are generated by countable partitions. One such example involves dyadic rationals with partitions
+
+$$
+  \mathcal{D}_n = \left\{\left(\frac{j}{2^n},\frac{j+1}{2^n}\right) \;|\; j\in\mathbb{Z} \right\}\quad n\in\mathbb{N}
+$$
+
+For each $n\in\mathbb{N}$, the collection $\mathcal{D}_n$ partitions $\mathbb{R}$ into intervals of equal size $\frac{1}{2^n}$, so $\mathcal{E}_n = \sigma(\mathcal{D}_n)$ consists of unions of sets in $\mathcal{D}_n$. Every set $\mathcal{D}_n$ is the union of two sets in $\mathcal{D}_{n+1}$ implying $\mathcal{E}_n\subseteq\mathcal{E}_{n+1}$. The Borel $\sigma$-algebra on $\mathbb{R}$ is given by $\mathcal{B}(\mathbb{R}) = \sigma\left(\bigcup_{n\in\mathbb{N}\mathcal{E}} \right) = \sigma\left(\bigcup_{n\in\mathbb{N}\mathcal{D}} \right)$. 
+
+## Measurable functions
+
+<MathBox title='Measurable function' boxType='definition'>
+Let $(X, \mathcal{A})$ and $(Y, \mathcal{B})$ be two measurable spaces. A function $f:X\to Y$ is measurable if $f^{-1}[B]\in\mathcal{A}$ for every $B\in\mathcal{B}$.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X, \mathcal{A}_X)$ and $(Y, \mathcal{A}_Y)$ be two measurable spaces with $\mathcal{A}_Y = \sigma(\mathcal{B})$ for a collection $\mathcal{B}$ of subsets of $\mathcal{Y}$. Then $f:X\to Y$ is measurableif and only if$f^{-1}[B]\in\mathcal{A}_X$ for every $B\in\mathcal{B}$.
+<details>
+<summary>Proof</summary>
+
+If $f:X\to Y$ is measurable, then the condition in the proposition holds trivially since $\mathcal{B}\subseteq\mathcal{A}_Y$. Conversely, suppose that $f^{-1}[B]\in\mathcal{A}_X$ for every $B\in\mathcal{B}$, and let $\mathcal{U} = \{ A\in\mathcal{A}_Y \;|\; f^{-1}[A]\in\mathcal{A}_X \}$. Then $Y \in U$ since $f^{-1}[Y] = X \in\mathcal{A}_X$. If $A\in \mathcal{U}$ then $f^{-1}[A^c] = \left( f^{-1}[A] \right)^c \in\mathcal{A}_X$, so $A^c\in \mathcal{U}$. If $A_i \in \mathcal{U}$ for $i$ in a countable index set $I$, then $f^{-1}\left[\bigcup_{i\in I} A_i \right] = \bigcup_{i\in I} f^{-1} [A_i] \in\mathcal{A}_X$, and hence $\bigcup_{i\in I} A_i \in \mathcal{U}$. Thus $\mathcal{U}$ is a $\sigma$-algebra of $\mathcal{A}_Y$. However, $\mathcal{B}\subseteq\mathcal{U}$ by assumption, so $\mathcal{A}_Y = \sigma(\mathcal{B})\subseteq\mathcal{U}$. Since $\mathcal{U}\subseteq\mathcal{A}_Y$ by definition, then $\mathcal{U} = \mathcal{A}_Y$ and hence $f$ is measurable.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$ be two topological spaces with the the Borel $\sigma$-algebras $\sigma(\mathcal{T}_X)$ and $\sigma(\mathcal{T}_Y)$, respectively. If $f:X\to Y$ is continuous, then $f$ is measurable.
+<details>
+<summary>Proof</summary>
+
+If $V\in\mathcal{T}_Y$ then $f^{-1}[V] \in\mathcal{T}_X \subseteq \sigma(\mathcal{T}_X)$. Hence $f$ is measurable by the previous proposition.
+</details>
+</MathBox>
+
+<MathBox title='Measurability is preserved under composition' boxType='proposition'>
+Let $(X, \mathcal{A}_X)$, $(Y, \mathcal{A}_Y)$ and $(Z, \mathcal{A}_Z)$ be measurable spaces. If $f:X\to Y$ and $g: Y\to Z$ are measurable, then the composition $g\circ f: X\to Z$ is measurable.
+<details>
+<summary>Proof</summary>
+
+If $A\in\mathcal{A}_Y$ then $g^{-1}[A]\in\mathcal{A}_X$ since $g$ is measurable, and hence $(g\circ f)^{-1}[A] = f^{-1}[g^{-1}[A]] \in\mathcal{A}_X$ since $f$ is measurable.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $X$ has $\sigma$-algebras $\mathcal{A}_X$ and $\mathcal{B}_X$ with $\mathcal{B}_X\subseteq\mathcal{A}_X$, and that $Y$ has $\sigma$-algebra $\mathcal{A}_Y$ and $\mathcal{B}_Y$ with $\mathcal{B}_Y\subseteq\mathcal{A}_Y$. If $f:X\to Y$ is measurable with respect to $\mathcal{B}_X$ and $\mathcal{B}_Y$, then $f$ is measurable with repsect to $\mathcal{A}_X$ and $\mathcal{A}_Y$.
+<details>
+<summary>Proof</summary>
+
+If $A\in\mathcal{A}_Y$ then $A\in\mathcal{B}Y$. Hence $f^{-1}[A]\in\mathcal{B}_Y$ so $f^{-1}[A]\in\mathcal{A}_X$.
+</details>
+</MathBox>
+
+<MathBox title='$\sigma$-algebra generated by measurable functions' boxType='proposition'>
+Suppose that $X$ is a set and $(Y, \mathcal{A}_Y)$ is a measurable space. Consider a function $f:X\to Y$ and define $\sigma(f) = \{ f^{-1}[A] \;|\; A\in\mathcal{A}_Y \}$. Then
+1. $\sigma(f)$ is a $\sigma$-algebra on $X$.
+2. $\sigma(f)$ is the smallest $\sigma$-algebra on $X$ that makes $f$ measurable.
+
+This can be generated to an arbitrary collection of functions on $X$. Suppose that $\left(Y_i, \mathcal{A}_{Y_i}\right)$ is a measurable space for each $i$ in an index set $I$. The $\sigma$-algebra generated by the collection of functions $f_i: X\to Y_i$ for each $i\in I$ is
+
+$$
+  \sigma\{f_i \}_{i\in I} = \sigma\{\sigma(f_i) \}_{i\in I} = \sigma\left\{ f_i^{-1}(A) \;|\; A\in\mathcal{A}_{Y_i} \right\}_{i\in I}
+$$
+
+This is the smallest $\sigma$-algebra on $X$ that makes $f_i$ measurable for each $i\in I$.
+<details>
+<summary>Proof</summary>
+
+1. First $X\in\sigma(f)$ since $Y\in\mathcal{A}_Y$ and $f^{-1}[Y] = X$. If $B\in\sigma(f)$ then $B = f^{-1}[A]$ for some $A\in\mathcal{A}_Y$. However, then $A^c \in\mathcal{A}_Y$ so $B^c = f^{-1}[A^c]\in\sigma(f)$. Finally, suppose that $B_i\in\sigma(f)$ for $i$ in a countable index set $I$. Then for each $i\in I$, there exists $A_i\in\mathcal{A}_Y$ such that $B_i = f^{-1}[A_i]$. However, then $\bigcup_{i\in I} A_i\in\mathcal{A}_Y$ and $\bigcup_{i\in I} B_i = f^{-1}\left( \bigcup_{i\in I} A_i \right)$. Hence $\bigcup_{i\in I} B_i\in\sigma(f)$.
+2. If $\mathcal{A}_X$ is a $\sigma$-algebra on $X$ and $f$ is measurable with respect to $\mathcal{A}_X$ and $\mathcal{A}_Y$, then by definition $f^{-1}[A]\in\mathcal{A}_X$ for every $A\in\mathcal{A}_Y$ so $\sigma(f)\subseteq\mathcal{A}_X$.
+</details>
+</MathBox>
+
+### Characteristic function
+
+For the measurable spaces $(\Omega, \mathcal{A})$ and $\left(\mathbb{R}, \mathcal{B}(\mathbb{R})\right)$, the characteristic (indicator) function
+
+$$
+  \chi_A : \Omega \mapsto \mathbb{R}, \quad \chi_A (\omega) := \begin{cases} 1, \quad \omega \in A \\ 0, \quad \omega \notin A \end{cases}
+$$
+
+is a measurable map with preimages
+
+$$
+\begin{gather*}
+  \chi_A^{-1}(\emptyset) = \emptyset \quad \chi_A^{-1}(\mathbb{R}) = \Omega \\
+  \chi_A^{-1}\left(\{ 1 \}\right) = \emptyset \quad \chi_A^{-1}\left(\{ 0 \}\right) = A^c
+\end{gather*}
+$$
+
+The integral of a characteristic function $\chi_A$ is defined as the measure of $A$
+
+$$
+  I\left( \chi_A \right) := \mu(A)
+$$
+
+## Product sets
+<MathBox title='Product $\sigma$-algebra' boxType='definition'>
+Suppose that $(X_1, \mathcal{A}_1)$ and $(X_2, \mathcal{A}_2)$ are measurable spaces. The product $\sigma$-algebra on $X_1 \times X_2$ is
+
+$$
+  \mathcal{A}_1\otimes\mathcal{A}_2 = \sigma\{ A_1\times A_2 \;|\; A_1\in\mathcal{A}_1,\; A_2\in\mathcal{A}_2 \}
+$$
+
+In the general case, suppose that $(X_i, \mathcal{A}_i)$ is a measurable space for each $i$ in an index set $I$. The $\sigma$-algebra on the product set $\prod_{i\in I} X_i$ is
+
+$$
+  \sigma\left\{ \prod_{i\in I} A_i \;|\; A_i\in\mathcal{A}_i\textrm{for each }i\in I\textrm{ and }A_i = X_i\textrm{ for all but finitely many }i\in I \right\}
+$$
+</MathBox>
+
+The product $\sigma$ algebra is the smallest $\sigma$-algebra that makes projections measurable.
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $(X_1, \mathcal{A}_1)$ and $(X_2, \mathcal{A}_2)$ are measurable spaces. Then $\mathcal{A}_1\otimes\mathcal{A}_2 = \sigma\{p_1, p_2 \}$, where $p_1: X_1\times X_2\to X_1$ and $p_2: X_1\times X_2\to X_2$ are projections given by
+$$
+  p_1(x_1, x_2) = x_1 \quad p_2(x_1, x_2) = x_2, \quad (x_1, x_2)\in X_1 \times X_2 
+$$
+
+In the general case, suppose that $(X_i, \mathcal{A}_i)$ is a measurable space for each $I$ in an index set $I$. Then the product $\sigma$-algebra on $\prod_{i\in I} X_i$ is $\mathcal{A} = \sigma\{ p_i \}_{i\in I}$.
+<details>
+<summary>Proof</summary>
+
+If $A_1 \in\mathcal{A}_1$ then $p_1^{-1}[A_1] = A_1\times X_2\in \mathcal{X_1}\otimes\mathcal{X_2}$. Similarly, if $A_2\in\mathcal{A}_2$ then $p_2^{-1}[A_2] = X_1\times A_2\in\mathcal{A_1}\otimes\mathcal{A_2}$. Thus $p_1$ and $p_2$ are measurable, so $\sigma\{p_1, p_2\}\subseteq\mathcal{A}_1\otimes\mathcal{A}_2$. Conversely, if $A_1\in\mathcal{A}_1$ and $A_2\mathcal{A}_2$ then $A_1\times A_2 = p_1^{-1}[A_1]\cap p_2^{-1}[A_2]\in \sigma\{p_1, p_2\}$. Since sets of this form generate the product $\sigma$-algebra, it follows that $\mathcal{A}_1\otimes\mathcal{A}_2 \subseteq\sigma\{p_1, p_2\}$.
+
+In the general case, let $j\in I$ and $A\in\mathcal{A}_j$. Then $p_j^{-1}[A] = \prod_{i\in I} A_i \in\mathcal{A}$ where $A_i = X_i$ for $i\neq j$ and $A_j = A$. Thus $p_j$ is measurable so that $\sigma\{ p_i \}_{i\in I}\subseteq\mathcal{A}$. Conversely, consider a product set $\prod_{i\in I} A_i$ where $A_i = X_i$ except for finitely many $i\in J\subseteq I$. Then $\prod_{i\in I} A_i = \bigcap_{j\in J} p_j^{-1}[A_j]\in \sigma\{p_i\}_{i\in I}$. Since product sets of this form generate $\mathcal{A}$, it follows that $\mathcal{A}\subseteq \sigma\{p_i \}_{i\in I}$.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $(W,\mathcal{A}_W)$, $(X_1,\mathcal{A}_1)$ and $(X_2, \mathcal{A}_2)$ are measurable spaces, and that $X_1 \times X_2$ is given the product $\sigma$-algebra $\mathcal{A}_1 \otimes\mathcal{A}_2$. Consider the function $f:W\to X_1\times X_2$ given by $f(u) = (f_1(u), f_2(u))$ for $u\in\mathbb{R}$ where $f_1:W\to X_1$ and $f_2:W\to X_2$ are coordinate functions. Then $f$ is measurableif and only if$f_1$ and $f_2$ are measurable.
+
+In the general case, suppose that $(X_i, \mathcal{A}_i)$ is a measurable space for each $I$ in an index set $I$, and suppose that $\prod_{i\in I} X_i$ is given the product $\sigma$-algebra. Consider the function $f:W\to \prod{i\in I} X_i$ where $f_i W\to X_i$ for $i\in I$ denote the $i$th coordinate function of $f$, so that $f_i(u) = [f(u)]_i$ for $u\in\mathbb{R}$. Then $f$ is measurableif and only if$f_i$ is measurable for each $i\in I$.
+<details>
+<summary>Proof</summary>
+
+Note that $f_1 = p_1\circ f$ and $f_2 = p_2\circ f$. If $f$ is measurable, then $f_1$ and $f_2$ are compositions of measurable functions, and are thus measurable. Conversely, suppose that $f_1$ and $f_2$ are measurable. If $A\in\mathcal{S}$ and $B\in\mathcal{T}$, then $f^{-1}[A\times B] = f_1^{-1}[A]\cap f_2^{-1}[B]\in\mathcal{R}$. Since products of measurable sets generate $\mathcal{S}\otimes\mathcal{T}$, it follows that $f$ is measurable.
+
+In the general case, suppose that $f$ is measurable. For $i\in I$ note that $f_i = \p_i \circ f$ is a composition of measurable functions, and hence is measurable. Conversely, suppose that $f_i$ is measurable for each $i\in I$. To show the measurability of $f$, we need only consider inverse images of sets that generate the product $\sigma$-algebra. Thus, suppose that $A_j\in \mathcal{A}_j$ for $j\in J$ where $J\subseteq I$ is finite, and let $A_i = X_i$ for $i\in I\setminus J$. Then $f^{-1}\left[\prod_{i\in I} A_i \right] = \bigcap_{j\in J} f_j^{-1}[A_j]\in\mathcal{A}_W$. This set is in $\mathcal{A}_W$ since the intersection is over a finite index set.
+</details>
+</MathBox>
+
+<MathBox title='Cross sections are measurable' boxType='proposition'>
+Suppose that $(X_1,\mathcal{A}_1)$ and $(X_2,\mathcal{A}_2)$ are measurable spaces, and that $X_1 \times X_2$ is given the product $\sigma$-algebra $\mathcal{A}_1\otimes\mathcal{A}_2$. Then:
+1. For $x_1\in X_1$ the function $1_{x_1}: X_2 \to X_1\times X_2$, defined by $1_{x_1}(x_2) = (x_1, x_2)$ for $x_2\in X_2$, is measurable
+2. For $x_2\in X_2$ the function $2_{x_2}: X_1 \to X_1\times X_2$, defined by $2_{x_2}(x_1) = (x_1, x_2)$ for $x_1\in X_1$, is measurable 
+
+Suppose that $A\in\mathcal{A}_1\otimes\mathcal{A}_2$, then
+3. $\{x_2 \in\mathcal{X_2} \;|\; (x_1, x_2)\in A,\; x_1\in X_1 \}\in\mathcal{A}_2$ 
+4. $\{x_1 \in\mathcal{X_1} \;|\; (x_1, x_2)\in A,\; x_2\in X_2 \}\in\mathcal{A}_1$
+
+Consider another measurable space $(Y, \mathcal{A}_Y)$ and suppose that $f: X_1\times X_2\to Y$ is measurable. Then
+5. The function $x_2\mapsto f(x_1, x_2)$ from $X_2$ to $Y$ is measurable for each $x_1\in X_1$.
+6. The function $x_1\mapsto f(x_1, x_2)$ from $X_1$ to $Y$ is measurable for each $x_2\in X_2$.
+
+In the general case, suppose that $(X_i, \mathcal{A}_i)$ is a measurable space for each $i$ in an index set $I$ with at least two elements. For $j\in I$ and $u\in X_j$, define the function $j_u:\prod_{i\in I\setminus\{j\}}\to\prod_{i\in I} X_i$ by $j_u(x) = y$ where $y_i = x_i$ for $i\neq j$ and $y_j = u$. Then $j_u$ is measurable with respect to the product $\sigma$-algebras. If $A\subseteq\prod_{i\in I} X_i$, then $j_u^{-1}[A]$ is the cross section of $A$ in coordinate $j$ at $u$.
+<details>
+<summary>Proof</summary>
+
+Let $A_1\in\mathcal{A}_1$ and $A_2\in\mathcal{A}_2$, then
+1. For $x_1\in X_1$, it follows that $1_{x_1}^{-1}[A_1\times A_2]\in\mathcal{A}_2$, i.e. $1_{x_1}$ is measurable, since
+
+$$
+  1_{x_1}^{-1}[A_1\times A_2] = \begin{cases} A_2, &\quad x\in A_1 \\ \emptyset, &\quad x\notin A_1 \end{cases}
+$$
+
+2. For $x_2\in X_2$, it follows that $2_{x_2}^{-1}[A_1\times A_2]\in\mathcal{A}_1$, i.e. $2_{x_2}$ is measurable, since
+
+$$
+  2_{x_2}^{-1}[A_1\times A_2] = \begin{cases} A_1, &\quad x\in A_2 \\ \emptyset, &\quad x\notin A_2 \end{cases}
+$$
+
+Since $1_{x_1}$ and $2_{x_2}$ are measurable it follows that
+3. $1_{x_1}^{-1}[A] = \{ x_2\in X_2 \;|\; (x_1, x_2)\in A,\; x_1\in X_1 \}\in\mathcal{A}_2$
+4. $2_{x_2}^{-1}[A] = \{ x_1\in X_1 \;|\; (x_1, x_2)\in A,\; x_2\in X_2 \}\in\mathcal{A}_1$
+
+Note that the function $x_2\mapsto f(x_1, x_2)$ is just $f\circ 1_{x_1}$ and that the function $x_2\mapsto f(x_1, x_2)$ is just $f\circ 2_{x_2}$. Both functions are compostions of measurable functions, and are thus measurable themselves.
+
+In the general case, suppose that $A_i \in \mathcal{A}_i$ for $i\in I$ with $A_i = X_i$ for all but finitely many $i\in I$. Then $j_u^{-1}\left[\prod_{i\in I} A_i \right] = \prod_{i\in I\setminus\{j\}} A_i$ if $u\in A_j$, otherwise the preimage is $\emptyset$. In either case, $j_u^{-1}\left[\prod_{i\in I} A_i \right]$ is in the product $\sigma$-algebra on $\prod_{i\in I\setminus\{j\}} X_i$.
+</details>
+</MathBox>
+
+## Special set structures
+
+<MathBox title='System generated by a collection' boxType='definition'>
+Let $X$ be a set, and consider the collections $\mathcal{A}$ and $\mathcal{B}$ of subsets of $X$. The system $\mathcal{A}$ generated by $\mathcal{B}$ is the smallest system containing $\mathcal{B}$ with the following properties
+1. $\mathcal{A}\subseteq\mathcal{B}$
+2. if $\mathcal{C}$ is a system and $\mathcal{B}\subseteq\mathcal{C}$ then $\mathcal{A}\subseteq\mathcal{C}$.
+</MathBox>
+
+<MathBox title='$\pi$- and $\lambda$-systems' boxType='definition'>
+Let $X$ be a set and $\mathcal{A}\subseteq \mathcal{P}(X)$ a collection of subsets of $X$. Then
+- $\mathcal{A}$ is a $\pi$-system if $\mathcal{A}$ is closed under finite intersections: $A, B\in\mathcal{A}\implies A\cap B\mathcal{A}$
+- $\mathcal{A}$ is a $\lambda$-system if it is closed under complements and countable disjoint unions:
+    1. If $A\in\mathcal{A}$ then $A^c\in\mathcal{A}$
+    2. If $A_i\in\mathcal{A}$ for $i$ in a countable index set $I$ and $A_i \cap A_j = \emptyset$ for $i\neq j$ then $\bigcup_{i\in I} A_i \in\mathcal{A}$
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+If $\mathcal{A}$ is a $\pi$-system and a $\lambda$-system on a set $X$, then $\mathcal{A}$ is also a $\sigma$-algebra on $X$.
+<details>
+<summary>Proof</summary>
+
+Note that $X\in\mathcal{A}$. If $A\in\mathcal{A}$, then $A^c\in\mathcal{A}$ by the definition of a $\lambda$-system. Thus, all that is left to show is closure under countable unions. Suppose that $(A_n)_{n\in\mathbb{N}}$ is a sequence of sets in $\mathcal{A}$. Then $A_i^c \in\mathcal{A}$ for each $i\in\mathbb{N}$. Since $\mathcal{A}$ is also a $\pi$-system, it follows that for each $n\in\mathbb{N}$, then $B_n = A_n \cap \left(\bigcap_{i=1}^{n-1} A_i^c \right)\in\mathcal{A}$ (by convention $B_1 = A_1$). However, the sequence $(B_n)_{n\in\mathbb{N}}$ is disjoint and has the same union as $(A_n)_{n\in\mathbb{N}}$. Hence $\bigcup_{n\in\mathbb{N}} A_n = \bigcup_{n\in\mathbb{N}} B_n \in\mathcal{A}$.
+</details>
+</MathBox>
+
+<MathBox title="Dynkin's $\pi$-$\lambda$ theorem" boxType='theorem'>
+Let $X$ be a set. Suppose that $\mathcal{A}$ is a $\pi$-system of subsets of $X$, $\mathcal{B}$ is a $\lambda$-system of subsets of $X$, and $\mathcal{A}\subseteq\mathcal{B}$. Then $\sigma(\mathcal{A})\subseteq\mathcal{B}$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{L}$ denote the $\lambda$-system generated by $\mathcal{A}$. Then $\mathcal{A}\subseteq\mathcal{A}\subseteq\mathcal{B}$. For $A\in\mathcal{L}$, let $\mathcal{L}_A = \{ B\subseteq X \;|\; B\cap A\in\mathcal{L} \}$. We will show that $\mathcal{L}_A$ is a $\lambda$-system. Note that $X\cap A = A\in\mathcal{L}$ and thus $X\in\mathcal{L}_A$. Next, suppose that $B_1, B_2 \in\mathcal{L}_A$ and that $B_1\subseteq B_2$. Then $B_1 \cap A\in\mathcal{L}$ and $B_2\cap A\in\mathcal{L}$ and $B_1\cap A\subseteq B_2\cap A$. Thus $(B_2\setminus B_1)\cap A = (B_2\cap A)\setminus (B_1\cap A)\in\mathcal{L}$, so that $B_2\setminus B_1 \in\mathcal{L}_A$. Finally, suppose that $\{B_i\}_{i\in I\}$ is a countable, disjoint collection of sets in $\mathcal{L}_A$. Then $B_i \cup A\in\mathcal{L}$ for each $i\in I$, and $\{B_i\cap A\}_{i\in I}$ is also a disjoint collection. Thus, $\bigcup_{i\in I}(B_i\cap A) = \left(\bigcup_{i\in I} B_i \right) \cap A\in\mathcal{L}$, resulting in $\bigcup_{i\in I} B_i \in\mathcal{L}_A$.
+
+Next, fix $A\in\mathcal{A}$. If $B\in\mathcal{A}$, then $A\cup B\in\mathcal{A}$, so $A\cup B\in\mathcal{L}$, and hence $B\in\mathcal{L}_A$. However, $\mathcal{L}$ is the smallest $\lambda$-system containing $\mathcal{A}$, so we have shown that $\mathcal{L}\subseteq\mathcal{L}_A$ for every $A\in\mathcal{A}$. Now fix $B\in\mathcal{L}$. If $A\in\mathcal{A}$, then $B\in\mathcal{L}_A$ so $A\cap B\in\mathcal{L}$ and therefore $A\in\mathcal{L}_B$. Since $\mathcal{L}$ is the smallest $\lambda$-system containing $\mathcal{A}$, it follows that $\mathcal{L}\subseteq\mathcal{L}_B$ for every $\mathcal{L}$. Finally, let $B, C\in\mathcal{L}$. Then $C\in\mathcal{L}_B$ and hence $B\cap C\in\mathcal{L}$. It follows that $\mathcal{L}$ is a $\pi$-system, as well as a $\lambda$-system. By the proposition above, $\mathcal{L}$ is a $\sigma$-algebra. However, $\mathcal{A}\subseteq\mathcal{L}$, and hence $\sigma(\mathcal{A})\subseteq\mathcal{L}$.
+</details>
+</MathBox>
+
+<MathBox title='Monotone class' boxType='definition'>
+Let $X$ be a set and $\mathcal{A}\subseteq \mathcal{P}(X)$ a collection of subsets of $X$. Then $\mathcal{A}$ is a monotone class if it is close under increasing unions and decreasing intersections:
+1. If $(A_n)_{n\in \mathbb{N}}$ is an increasing sequence of sets in $X$, i.e. $A_n \subseteq A_{n+1}$, then $\bigcup_{n\in\mathbb{N}} A_n \in\mathcal{A}$.
+2. If $(A_n)_{n\in \mathbb{N}}$ is a decreasing sequence of sets in $X$, i.e. $A_{n+1} \subseteq A_n$, then $\bigcap_{n\in\mathbb{N}} A_n \in\mathcal{A}$.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+If $\mathcal{A}$ is a monotone class and an algebra on a set $X$, then $\mathcal{A}$ is a $\sigma$-algebra on $X$.
+<details>
+<summary>Proof</summary>
+
+All that is needed is to prove closure under countable unions. Thus, suppose that $A_i\in\mathcal{A}$ for $i\in\mathbb{N}$. Then $B_n = \bigcup_{i=1}^{n\in\mathbb{N}} A_i \in\mathcal{A}$ since $\mathcal{A}$ is an algebra. The sequence $(B_n)_{n\in\mathbb{N}}$ is increasing, so $\bigcup_{n\in\mathbb{N}} B_n \in\mathcal{A}$, since $\mathcal{A}$ is a monotone class. However, $\bigcup_{n\in\mathbb{N}} B_n = \bigcup_{i\in\mathbb{N}} A_i \in\mathcal{A}$, showing that $\mathcal{A}$ is closed under countable unions.
+</details>
+</MathBox>
+
+<MathBox title='Relationship between $\lambda$ systems and monotone classes' boxType='proposition'>
+Suppose that $\mathcal{A}$ is a collection of subsets of a set $X$. Then
+1. If $\mathcal{A}$ is a $\lambda$-system, then $\mathcal{A}$ is a monotone class and is closed under proper set difference, i.e. if $A, B\in\mathcal{A}$ and $A\subseteq B$, then $B\setminus A\in\mathcal{A}$.
+2. If $\mathcal{A}$ is a monotone class, is closed under proper set difference, and contains $X$, then $\mathcal{A}$ is a $\lambda$-system.
+<details>
+<summary>Proof</summary>
+
+1. Suppose that $\mathcal{A}$ is a $\lambda$-system, and consider $A, B\in\mathcal{A}$ with $A\subseteq B$. Then $B^c\in\mathcal{A}$ and $A$ and $B^c$ are disjoint, so $A\cup B^c\in\mathcal{A}$. However, then $(A\cup B^c)^c = B\cap A^c = B\setminus A\in\mathcal{A}$. Hence, $\mathcal{A}$ is closed under proper set difference. Next, suppose that $(A_n)_{n\in\mathbb{N}}$ is an increasing sequence of sets in $\mathcal{A}$. Let $B_1 = A_1$ and $B_n = A_n \setminus A_{n-1}$ for $n\in\mathbb{N}\setminus\{1\}$. Then $B_i\in\mathcal{A}$ for each $i\in\mathbb{N}$. However, the sequence $(B_n)_{n\in\mathbb{N}}$ is disjoint and has the same union as $(A_n)_{n\in\mathbb{N}}$. Hence $\bigcup_{i\in\mathbb{N}} A_i = \bigcup_{i\in\mathbb{N}} B_i\in\mathcal{A}$. Finally, suppose that $(A_n)_{n\in\mathbb{N}}$ is a decreasing sequence of sets in $\mathcal{A}$. Then $A_i^c \in\mathcal{A}$ for each $i\in\mathbb{N}$ and $\left(A_n^c\right)_{n\in\mathbb{N}}$ is increasing. Hence $\bigcup_{i\in\mathbb{I}} A_i^c \in\mathcal{A}$ and therefore $\left(\bigcup_{i\in\mathbb{N}} A_i^c \right)^c = \bigcap_{i\in\mathbb{N}} A_i\in\mathcal{A}$.
+2. Suppose that $\mathcal{A}$ is a monotone class, is closed under proper set difference, and $X\in\mathcal{A}$. If $A\in\mathcal{A}$, then trivially $A\subseteq X$ so $A^c = X\setminus A\in\mathcal{A}$. Next, suppose that $A, B\in\mathcal{A}$ are disjoint. Then $A^c\in\mathcal{A}$ and $B\subseteq A^c$, so $A^c\setminus B = A^c \cap B^c\in\mathcal{A}$. Hence $A\cup B = (A^c\cap B^c)^c\in\mathcal{A}$, i.e. $\mathcal{A}$ is closed under finite, disjoint unions. Finally, suppose that $(A_n)_{n\in\mathbb{N}}$ is a disjoint sequence of sets in $\mathcal{A}$. Since $\mathcal{A}$ is closed under finite, disjoint unions, it follows that $B_n = \bigcup_{i=1}^{n\in\mathbb{N}} A_i \in\mathcal{A}$. However, the sequence $(B_n)_{n\in\mathbb{N}}$ is increasing, and hence $\bigcup_{n\in\mathbb{N}} B_n = \bigcup_{i\in\mathbb{N}} A_i \in\mathcal{A}$. 
+</details>
+</MathBox>
+
+<MathBox title='Monotone class theorem' boxType='theorem'>
+Suppose that $\mathcal{A}$ is an algebra, $\mathcal{M}$ is a monotone class, and $\mathcal{A}\subseteq\mathcal{M}$. Then $\sigma(\mathcal{A})\subseteq\mathcal{M}$.
+<details>
+<summary>Proof</summary>
+
+First, let $m(\mathcal{A})$ denote the monotone class generated by $\mathcal{A}$. The outline of the proof is to show that $m(\mathcal{A})$ is an algebra, and hence a $\sigma$-algebra. It then follows that $\sigma(\mathcal{A})\subseteq m(\mathcal{A})\subseteq\mathcal{M}$. To show that $m(\mathcal{A})$ is an algebra, we first show that it is closed under complements and the under simple union.
+
+Since $m(\mathcal{A})$ is a monotone class, the collection $m*(\mathcal{A}) = \{ A\subseteq X \;|\; A^c\in m(\mathcal{A}) \}$ is also a monotone class. Moreover, $\mathcal{A}\subseteq m*(\mathcal{A})$ so it follows that $m(\mathcal{A})\subseteq m*(\mathcal{A})$. Hence, if $A\in m(\mathcal{A})$ then $A\in m*(\mathcal{A})$ so $A^c\in m(\mathcal{A})$. Thus, $m(\mathcal{A})$ is closed under complements.
+
+Let $\mathcal{M}_1 = \{ A\subseteq X \;|\; A\cup B\in m(\mathcal{A})\; \forall B\in\mathcal{A} \}$. Then $\mathcal{M}_1$ is a monotone class and $\mathcal{A}\subseteq\mathcal{M}_1$ so $m(\mathcal{A})\subseteq\mathcal{M}_1$. Next, let $\mathcal{M}_2 = \{ A\subseteq X \;|\; A\cup B\in m(\mathcal{A})\; \forall B\in m(\mathcal{A}) \}$. Then $\mathcal{M}_2$ is also a monotone class. Let $A\in\mathcal{A}$. If $B\in m(\mathcal{A})$ then $B\in\mathcal{M}_1$ and hence $A\cup B\in m(\mathcal{A})$. Thus, $A\in\mathcal{M}_2$ and it follows that $\mathcal{A}\subseteq\mathcal{M}_2$ and $m(\mathcal{A})\subseteq\mathcal{M}_2$. Finally, let $A, B\in m(\mathcal{A})$. Then $A\in\mathcal{M}_2$ so $A\cup B\in m(\mathcal{A})$ and therefore $m(\mathcal{A})$ is closed under simple union.
+</details>
+</MathBox>
+
+# Measure
+
+<MathBox title='Measure' boxType='definition'>
+Let $(X, \mathcal{A})$ be a measurable space. A measure on $\mathcal{A}$ is a function $\mu:\mathcal{A}\to\mathbb{R}* = \mathbb{R}\cup\{-\infty,\infty\}$ satisfying
+- $\mu(\emptyset) = 0$
+- countable additivity ($\sigma$-additivity): If $\{A_i}_{i\in I\subseteq\mathbb{N}}$ is a countable, pairwise disjoint collection of sets in $\mathcal{A}$ then 
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \sum_{i\in I} \mu(A_i)
+$$
+
+The triple $(X, \mathcal{A}, \mu)$ is called a measure space. If $\mu(A)\geq 0$ for all $A\in\mathcal{A}$, then $\mu$ is a positive measure, i.e. $\mu:\mathcal{A}\to[0,\infty]$. If $\mu(X)\lessgtr\pm\infty$, the measure $\mu$ is finite. In the special case $\mu(X) = 1$, then $\mu$ is a probability measure.
+
+Two measures are said to be of the same type if neither takes the values $\pm\infty$. Being of the same type is an equivalence relation on the collection of measures $(X,\mathcal{A})$.
+</MathBox>
+
+<MathBox title='Infinity rule' boxType='proposition'>
+Let $\mu$ be a measure on $(X, \mathcal{A})$. Then either $\mu(A)>-\infty$ or $\mu(A)<\infty$ for all $A\in\mathcal{A}$. 
+
+<details>
+<summary>Proof</summary>
+
+Suppose that there exists $A,B\in\mathcal{A}$ with $\mu(A) = \infty$ and $\mu(B) = -\infty$. Then $A = (A\cap B)\cup (A\setminus B)$ and the sets in the union are disjoint. By the additivity assumption $\mu(A) = \mu(A\cup B)+\mu(A\setminus B)$. Similarly, $\mu(B) = \mu(A\cap B)+\mu(B\setminus A)$. The only way that both of these equations make sense is for $\mu(A\setminus B) = \infty$, $\mu(B\setminus A)=-\infty$ and $\mu(A\cap B)\in\mathbb{R}$. However, then $\mu(A\Delta B) = \mu(A\setminus B) + \mu(B\setminus A)$ is undefined, which is a contradiction.
+</details>
+</MathBox>
+
+<MathBox title='Properties of measures' boxType='proposition'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space, and consider $A, B\in\mathcal{A}$. The measure $\mu$ has the following properties 
+
+1. difference rule: $\mu(B) = \mu(A\cap B) + \mu(B\setminus A)$
+2. If $A\subseteq B$ then
+  a. $\mu(B) = \mu(A) + \mu(B\setminus A)$
+  b. $\mu(A)\leq\mu(B)$
+
+It follows that $\mu$ is an increasing function with respect to the subset partial order $\subseteq$ on $\mathcal{A}$ and the ordinary order $\leq$ on $[0,\infty]$. 
+<details>
+<summary>Proof</summary>
+
+1. Note that $B = (A\cap B)\cup(B\setminus A)$, where the sets in the union are disjoint.
+2a. Note that $A\cap B = A$. Property (2b) follows directly from (2a). 
+</details>
+</MathBox>
+
+<MathBox title='Subadditive property' boxType='proposition'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space, and consider a countable collection $\{A_i \in\mathcal{A}\}_{i\in I}$. The measure $\mu$ satisfies Boole's inequality
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right)\leq \sum_{i\in I}\mu(A_i)
+$$
+<details>
+<summary>Proof</summary>
+
+Assume that $I = \mathbb{N}$ and let $B_1 = A_1$ and $B_i = A_i \setminus \left(\bigcup_{j=1}^{i-1} A_j \right)$ for $i\in\mathbb{N}\setminus\{1\}$. Then $\{B_i\}_{i\in I\}$ is a disjoint collection of sets in $\mathcal{A}$ with the same union as $\{A_i\}_{i\in I\}$. Since $B_i\subseteq A_i$ for each $i$ it follows that $\mu(B_i)\leq\mu(A_i)$. Hence
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \mu\left(\mu_{i\in I} B_i \right) = \sum_{i\in I} \mu(B_i) \leq \sum_{i\in I} \mu(A_i)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Inclusion-exclusion formula' boxType='theorem'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space, and consider a countable collection $\{A_i \in\mathcal{A}\}_{i\in I}$. If $|I| = n$ and $A_i <\infty$ for each $i\in I$, then $\mu$ satisfies the inclusion-exclusion formula
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \sum_{k=1}^n (-1)^{k-1} \sum_{J\subseteq I,\; |J| = k} \mu\left(\bigcap_{j\in J} A_j \right)
+$$
+<details>
+<summary>Proof</summary>
+
+The inclusion-exclusion formula can be proved by induction. In the base case $n=2$, note that $A_1 \cup A_2 = A_1 \cup (A_2\setminus A_1)$. The union on the right is disjoint, so using additivity and the difference rule gives
+
+$$
+  \mu(A_1 \cup A_2) = \mu(A_1) + \mu(A_2\setminus A_1) = \mu(A_1) + \mu(A_2) - \mu(A_1\cap A_2)
+$$
+
+Suppose that the formula holds for a given $n\in\mathbb{N}$ and consider the case $n+1$. Then
+
+$$
+  \bigcup_{i=1}^{n+1} A_i = \left(\bigcup_{i=1}^n A_i \right) \cup \left[A_{n+1} \setminus \left(\bigcup_{i=1}^n A_i \right) \right]
+$$
+
+where the right union is disjoint. Using additivity, the difference rule and distributive rule gives
+
+$$
+  \mu\left(\bigcup_{i=1}^{n+1} A_i\right) = \mu\left(\bigcup_{i=1}^n A_i\right) + \mu\left(A_{n+1}) - \mu\left(\bigcup_{i=1}^n A_{n+1} \cap A_i \right)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Inclusion-exclusion corollary' boxType='corollary'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space and consider a countable collection $\{A_i\}_{i\in I}\subseteq\mathcal{A}$ with $\mu(A_i)<\infty$ for each $i\in I$ and $\mu(A_i\cap A_j) = 0$ for distinct $i,j\in I$. Then the inclusion-exclusion formula simplifies to
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \sum_{i\in I}\mu(A_i)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assuming without loss of generality that $I=\mathbb{N}$. For $n\in\mathbb{N}$ the inclusion-exclusion formula gives
+
+$$
+  \mu\left(\bigcup_{i=1}^n A_i \right) = \sum_{i=1}^n \mu(A_i)
+$$
+
+By the continuity theorem for increasing collections $\lim_{n\to\infty} \mu\left(\bigcup_{i=1}^n A_i \right) = \mu\left(\bigcup_{i=1}^\infty A_i \right)$. Likewise, $\lim_{n\to\infty} \sum_{i=1}^n \mu(A_i) = \sum_{i=1}^\infty \mu(A_i)$ by the definition of a non-negative infinite series.
+</details>
+</MathBox>
+
+<MathBox title='Continuity theorem' boxType='proposition'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space, and consider a sequence of sets $\(A_i \in\mathcal{A}\)_{i\in \mathbb{N}}$ in $\mathcal{A}$.
+1. If the sequence is increasing, i.e. $A_n\subseteq A_{n+1}$, then $\mu\left(\bigcup_{i\in\mathbb{N}} \right) = \lim_{n\to\infty} \mu(A_n)$
+2. If the sequence is decreasing, i.e. $A_{n+1}\subseteq A_n$, and $\mu(A_1)\in\mathbb{R}$ then $\mu\left(\bigcap_{i\in\mathbb{N}} \right) = \lim_{n\to\infty} \mu(A_n)$
+
+<details>
+<summary>Proof</summary>
+
+1. Note that if $\mu(A_k) = \pm\infty$ for some $k\in\mathbb{N}$ then $\mu(A_n) = \pm\infty$ for $n\geq k$ and $\mu\left(\bigcup_{i\in\mathbb{N}} A_i \right) = \pm\infty$. Conversely, suppose that $\mu(A_i)\in\mathbb{R}$ for each $i\in\mathbb{N}$ and let $B_1 = A_1$ and $B_i = A_i\setminus A_{i-1}$ for $i\mathbb{N}\setminus\{1\}$. Then $(B_i)_{i\in\mathbb{N}}$ is a disjoint sequence with the same union as $(A_i)_{i\in\mathbb{N}}$. Also, $\mu(B_1) = \mu(A_1)$ and by the difference rule $\mu(B_i) = \mu(A_i) - \mu(A_{i-1})$ for $i\in\mathbb{N}\setminus\{1\}$ giving
+
+$$
+\begin{align*}
+  \mu\left(\bigcup_{i\in\mathbb{N}} A_i \right) &= \mu\left(\bigcup_{i\in\mathbb{N}} B_i \right) = \sum_{i\in\mathbb{N}}\mu(B_i) \\
+  &= \lim_{n\to\infty}\sum_{i=1}^n \mu(B_i) = \lim_{n\to\infty} \left(\mu(A_i) + \sum_{i=2}^n \left[\mu(A_i) - \mu(A_{i-1}) \right]\right= \\
+  &= \lim_{n\to\infty} \mu(A_n)
+\end{align*}
+$$
+
+2. Note that $A_1\setminus A_n$ is increasing in $n$. Using the continuity result for increasing sets gives
+
+$$
+\begin{align*}
+  \mu\left(\bigcap_{i\in\mathbb{N}} A_i \right) &= \mu\left[A_1\setminus \bigcup_{i\in\mathbb{N}} \left(A_1\setminus A_i \right) \right] = \mu(A_1) - \mu\left[ \bigcup_{i\in\mathbb{N}} (A_1\setminus A_n) \right] \\
+  &= \mu(A_1) - \lim_{n\to\infty} \mu(A_1\setminus A_n) = \mu(A_1) - \lim_{n\to\infty}\left[\mu(A_1) -\mu(A_n) \right] \\
+  &= \lim_{n\to\infty} \mu(A_n)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Example: Dirac measure' boxType='example'>
+The Dirac measure is given by
+
+$$
+  \delta_p (A) := \begin{cases} 1, \quad p \in A \\ 0, \quad p \notin A \end{cases}
+$$
+</MathBox>
+
+## $\sigma$-finite measures
+
+<MathBox title='$\sigma$-finiteness' boxType='definition'>
+A measure space $(X, \mathcal{A}, \mu)$ is called $\sigma$-finite if there is a countable collection $\{A_i\}_{i\in I}\subseteq\mathcal{A}$ with $\bigcup_{i\in I} A_i = X$ and $\mu(A_i)<\infty$ for each $i\in I$.
+
+Alternatively, $\sigma$-finiteness can be defined in terms of a collection $\mathcal{B}\subseteq\mathcal{A}$. The measure $\mu$ is $\sigma$-finite on $\mathcal{B}$ is there exists a countable collection $\{B_i\}_{i\in I}\subseteq\mathcal{B}$ such that $\mu(B_i)<\infty$ for each $i\in I$ and $\bigcup_{i\in I}B_i = X$.
+</MathBox>
+
+<MathBox title='Properties of $\sigma$-finite measures' boxType='example'>
+Let $(X, \mathcal{A}, \mu)$ be a $\sigma$-finite measure space. Then
+1. there exists an increasing sequence satisfying the $\sigma$-finite definition
+2. there exists a disjoint sequence satisfying the $\sigma$-finite definition
+<details>
+<summary>Proof</summary>
+
+Since $(X, \mathcal{A}, \mu)$ is $\sigma$-finite there exists a countable collection $\left{A_n\}_{n\in\mathbb{N}}\subseteq\mathcal{A}$ such that $A_n<\infty$ for each $n\in\mathbb{N}$ and $X = \bigcup_{n\in\mathbb{N}}A_n$.
+
+1. Let $B_n = \bigcup_{i=1}^n A_i$. Then $B_i \in \mathcal{A}$ for $n\in\mathbb{N}$ and $(B_n)_{n\in\mathbb{N}}$ is increasing. Moreover, $\mu(B_n)\leq\sum_{i=1}^n \mu(A_i) <\infty$ and for $n\in\mathbb{N}$ and $\bigcup_{i\in\mathbb{N}} B_n = \bigcup_{i\in\mathbb{N}} A_n = X$.
+2. Let $C_1 = A_1$ and $C_n = A_n\setminus \bigcup_{i=1}^{n-1} A_i$ for $n\in\mathbb{N}\setminus\{1\}$. Then $C_n\in\mathcal{A}$ for each $n\in\mathbb{N}$ and $(C_n)_{n\in\mathbb{N}}$ is disjoint. Moreover, $C_n\subseteq A_n$ so $\mu(C_n)\leq\mu(A_n)<\infty$ and $\bigcup_{n\in\mathbb{N}} C_n = \bigcup_{n\in\mathbb{N}} A_n = X$. 
+</details>
+</MathBox>
+
+## Atoms
+
+<MathBox title='Atom' boxType='definition'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space. An atom of the space is a set $A\in\mathcal{A}$ satisfying
+1. $\mu(A)>0$
+2. If $B\in\mathcal{A}$ and $B\subseteq A$ then either $\mu(B) = \mu(A)$ or $\mu(B) = 0$.
+
+A measure space that has no atoms is called *non-atomic* or *diffuse*.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that the measure space $(X, \mathcal{A}, \mu)$ has an atom with $\mu(A) = \infty$. Then the space is not $\sigma$-finite.
+
+<details>
+<summary>Proof</summary>
+
+Let $\{A_i\}_{i\in I\}\subseteq\mathcal{A}$ be a countable disjoint collection that partitions $X$. Then $\{A\cap A_i\}_{i\in I}$ partitions $A$. Since $\mu(A) = \sum_{i\in I} \mu(A\cap A_i)$ we must have $\mu(A\cap A_i)>0$ for some $i\in I$. Since $A$ is an atom and $A\cap A_i\subseteq A$ it follows that $\mu(A\cap A_i) = \infty$, hence $\mu(A_i)=\infty$. 
+</details>
+</MathBox>
+
+## Constructions
+
+<MathBox title='Measures as differences of positive measures' boxType='proposition'>
+Suppose that $\mu$ and $\nu$ are positive measures on $(X, \mathcal{A})$ and that at least one of them is finite. Then $\delta = \mu-\nu$ is a measure.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $\nu$ is a finite measure; the proof when $\mu$ is finite is analogous. First, $\delta(\emptyset) = \mu(\emptyset)-\nu(\emptyset)$. Next, suppose that $\{A_i\}_{i\in I}$ is a countable, disjoint collection of sets in $\mathcal{A}$ and let $A = \bigcup_{i\in I} A_i$. Then
+
+$$
+  \delta(A) = \mu(A) - \nu(A) = \sum_{i\in I}\mu(A_i) - \sum_{i\in I}\nu(A_i)
+$$
+
+Since $\nu(A_i)<\infty$ for $i\in I$, we can combine terms to get
+
+$$
+  \delta(A) = \sum_{i\in I}\left[\mu(A_i) - \nu(A_i) \right] = \sum_{i\in I}\delta(A_i)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Measures are closed under scalar multiplication' boxType='proposition'>
+If $\mu$ is a measure on $(X, \mathcal{A})$ and $c\in\mathbb{R}$, then $c\mu$ is also a measure on $(X,\mathcal{A})$. If $\mu$ is ($\sigma$-)finite then $c\mu$ is also ($\sigma$-)finite.
+<details>
+<summary>Proof</summary>
+
+Clearly $c\mu:\mathcal{A}\to\mathbb{R}*$ and $(c\mu)(\emptyset) = c\mu(\emptyset) = 0$. If $\{A_i\}_{i\in I}\subseteq\mathcal{A}$ is countable disjoint collection then
+
+$$
+  (c\mu)\left(\bigcup_{i\in I} A_i \right) = c\mu\left(\bigcup_{i\in I} A_i \right) = c\sum_{i\in I} \mu(A_i) = \sum_{i\in I} c\mu(A_i)
+$$
+
+Since $\mu(A)<\infty$if and only if$(c\mu)(A)<\infty$ for $A\in\mathcal{A}$, the ($\sigma$-)finiteness property is trivially preserved.
+</details>
+</MathBox>
+
+<MathBox title='Measures are closed under addition' boxType='proposition'>
+If $\mu_i$ is a measure on $(X, \mathcal{A})$ for each $i$ in a countable index set $I$ then $\mu = \sum_{i\in I}\mu_i$ is also a measure on $(X,\mathcal{A})$. If $I$ is finite and $\mu_i$ is ($\sigma$-)finite for each $i\in I$ then $\mu$ is ($\sigma$-)finite.
+<details>
+<summary>Proof</summary>
+
+Clearly $\mu:\mathcal{A}\to\mathbb{R}*$ and $\mu(\emptyset) = \sum_{i\in I}\mu_i(\emptyset) = 0$. If $\{A_j\}_{j\in J}\subseteq\mathcal{A}$ is a countable disjoint collection then
+
+$$
+  \mu\left(\bigcup_{j\in J} A_j \right) =  \sum_{i\in I} \mu_i\left(\bigcup_{j\in J} A_j \right) = \sum_{i\in I}\sum_{j\in J}\mu_i(A_j) = \sum_{j\in J}\sum_{i\in I}\mu_i(A_j) = \sum_{j\in J}\mu(A_j)
+$$
+
+Suppose that $I$ is finite. 
+1. If $\mu_i$ is finite for each $i\in I$ then $\mu(X) = \sum_{i\in I} \mu_i (X) \lessgtr\pm\infty$ so $\mu$ is finite. 
+2. Suppose that $\mu_i$ is $\sigma$-finite for each $i\in I$. Then for each $i\in I$, there exists a collection $\mathcal{A}_i = \{A_{ij}\}_{j\in\mathbb{N}}\subseteq\mathcal{A}$ such that $\bigcup_{j\in\mathbb{N}} A_i,j = X$ and $\mu_i(A_{i,j})\lessgtr\pm\infty$ for each $j\in\mathbb{N}$. Let $B_j = \bigcap_{i\in I} A_{i, j}$ so that $B_j\in\mathcal{A}$ for each $j\in\mathbb{N}$ and
+
+$$
+  \bigcup_{j\in\mathbb{N}} B_j = \bigcup_{j\in\mathbb{N}}\bigcap_{i\in I} A_{i,j} = \bigcap_{i\in I}\bigcup_{j\in\mathbb{N}} A_{i,j} = \bigcap_{i\in I} X = X
+$$
+
+Moreover
+
+$$
+  \mu(B_j) = \sum_{i\in I}\mu_i(B_j) \leq \sum_{i\in I}\mu_i (A_{i, j})<\infty
+$$
+
+so $\mu$ is $\sigma$-finite.
+</details>
+</MathBox>
+
+<MathBox title='Measures are preserved under change of variables' boxType='proposition'>
+Suppose that $(X,\mathcal{A},\mu)$ is a measure space, $(Y,\mathcal{B})$ is a measurable space and that $f:X\to Y$ is a measurable. Then $\nu$ defined as follows is a positive measure on $(Y, \mathcal{A}_Y)$
+
+$$
+  \nu(B) = \mu\left(f^{-1}[B] \right),\quad B\in\mathcal{B}
+$$
+
+If $\mu$ is finite, then $\nu$ is finite. The same is not necessarily true if $\mu$ is $\sigma$-finite.
+
+<details>
+<summary>Proof</summary>
+
+Clearly $\nu:\mathcal{B}\to[0,\infty]$ is positive definitive. Recall that preimages preserve all set operations. First $\f^{-1}[\emptyset] = \emptyset$ so $\nu(\emptyset) = 0$. If $\{B_i\}_{i\in I}\subseteq\mathcal{B}$ is a countable disjoint collection then $\left\{ f^{-1}(B_i) \right\}_{i\in I}\subseteq\mathcal{A}$ is a countable disjoint collection, and $f^{-1}\left[\bigcup_{i\in I} B_i \right] = \bigcup_{i\in I}f^{-1}[B_i]$ giving
+
+$$
+\begin{align*}
+  \nu\left( \bigcup_{i\in I} B_i \right) &= \mu\left(f^{-1}\left[\bigcup_{i\in I} B_i \right]\right) = \mu\left(\bigcup_{i\in I} f^{-1}[B_i] \right) \\
+  &= \sum_{i\in I}\mu\left(f^{-1}[B_i] \right) = \sum_{i\in I}\nu(B_i)
+\end{align*}
+$$
+
+If $\mu$ is finite then $\nu(Y) = \mu\left(f^{-1}[X] \right = \mu(X)<\infty$ so $\nu$ is finite.
+</details>
+</MathBox>
+
+<MathBox title='Measures constructed on countably generated $\sigma$-algebras' boxType='proposition'>
+Suppose that $(X,\mathcal{A})$ is a measurable space and suppose that $\mathcal{B} = \{ A_i\}_{i\in I}$ is a countable partition of $X$ with $\mathcal{A} = \sigma(\mathcal{B})$. For $i\in I$, define $\mu(A_i)\in\mathbb{R}*$ arbitrarily. For $A = \bigcup_{j\in J} A_j$ where $J\subseteq I$, define $mu(A) = \sum_{j\in J}\mu(A_j)$, which is a measure on $(X,\mathcal{A})$ with the following properties
+1. The atoms of the measure are the sets of the form $A=\bigcup_{j\in J} A_j$ where $J\subseteq I$ and where $\mu(A_j) > 0$ for one and only one $j\in J$
+2. If $\mu(A_i)\lessgtr\pm\infty$ for $i\in I$ and $I$ is finite then $\mu$ is finite
+3. If $\mu(A_i)\lessgtr\pm\infty$ for $i\in I$ and $I$ is countably infinite then $\mu$ is $\sigma$-finite
+
+<details>
+<summary>Proof</summary>
+
+First, we prove that $\mu(A) = \sum_{j\in J}\mu(A_j)$ defines a positive measure on $(X,\mathcal{A}$. Recall that every $A\in\mathcal{A}$ has a unique representation of the form $\bigcup_{j\in J} A_j$ where $J\subseteq I$. In particular $J=\emptyset$ gives $A = \emptyset$. The sum over an empty index set is $0$ so $\mu(\emptyset)=\emptyset$. Suppose that $\{B_k \}_{k\in K}\mathcal{A}$ is a countable, disjoint collection. Then there exists a disjoint collection $\{J_k \substeq I \}_{k\in K}$ such that $B_k = \bigcup_{j\in J_k} A_j$ giving
+
+$$
+  \mu\left(\bigcup_{k\in K} B_k \right) = \mu\left(\bigcup_{k\in K}\bigcup_{j\in J_k} A_j \right) = \sum_{k\in K}\sum_{j\in J_k} \mu(A_j) = \sum_{k\in K}\mu(B_k)
+$$
+
+Next, we prove the properties of $\mu$
+1. The subsets of $A$ that are in $\mathcal{A}$ are $\bigcup_{k\in K} A_k$ where $K\subseteq J$. Hence $A$ is an atomif and only if$\mu(A_j) > 0$ for one and only one $j\in J$.
+2. If $I$ is finite and $\mu(A_i)<\infty$ for $i\in I$, then $\mu(X) = \sum_{i\in I}\mu(A_i)<\infty$, so $\mu$ is finite.
+3. If $I$ is countably infinite and $\mu(A_i)<\infty$ for $i\in I$, then $\mathcal{B}$ satisfies the condition for $\mu$ to be $\sigma$-finite.
+</details>
+</MathBox>
+
+## Decomposition
+
+### Hahn decomposition
+<MathBox title='Lemma' boxType='lemma'>
+Let $(X,\mathcal{A},\mu)$ be a measure space. If $A\in\mathcal{A}$ and $0\leq\mu(A)<\infty$ there exists $P\in\mathcal{A}$ with $P\subseteq A$ such that $P$ is positive for $\mu$ and $\mu(P)\geq\mu(A)$.
+
+<details>
+<summary>Proof</summary>
+
+The proof is recursive, and works by succesibely removing sets of negative measure from $A$. For the initialization step, let $A_0 = A$. Trivially, $A_0\subseteq A$ and $\mu(A_0)\geq\mu(A)$. For the recursive step, suppose that $A_n\in\mathcal{A}$ has been defined with $A_n\subseteq A$ and $\mu(A_n)\geq\mu(A)$. If $A_n$ is positive for $\mu$, let $P=A_n$. Otherwise let $a_n = \inf\{\mu(B) \;|\; B\in\mathcal{A},\, B\subseteq A_n,\, \mu(B)<0\} < 0$, which exists since $A_n$ is not positive. Let 
+
+$$
+  b_n = \begin{cases} \frac{a_n}{2},\quad -\infty<a_n<0 \\ 1,\quad &a_n=-\infty \end{cases}
+$$
+
+Since $b_n>a_n$ by definition of the infimum, there exists $B_n\subseteq A$ with $\mu(B_n)\leq b_n$. Let $A_{n+1} = A_n\setminus B_n$. Then $A_{n+1}\subseteq A_n\subseteq A$ and
+
+$$
+  \mu(A_{n+1}) = \mu(A_n) - \mu(B_n)\geq\mu(A_n) - b_n \geq\mu(A_n) \geq\mu(A)
+$$
+
+If the recursive process terminates after a finite number of steps, $P$ is well defined, i.e. $\mu(P)\geq 0$. Otherwise, we have a disjoint sequence of sets $(B_n)_{n\in\mathbb{N}}$. Let $P = A\setminus\bigcup_{n\in\mathbb{N}}B_n$. Then $P\subseteq A$ and by countable additivity and the difference rule
+
+$$
+  \mu(P) = \mu(A) - \sum_{n\in\mathbb{N}} \mu(B_n) \geq \mu(A) - \sum_{n\in\mathbb{N}} b_n\geq \mu(A)
+$$
+
+Suppose that $B\subseteq P$ and $\mu(B)<0$, then $B\subseteq A_n$ and by definition $a_n\leq\mu(B)$ for every $n\in\mathbb{N}$. If follows that $b_n\leq\frac{1}{2}\mu(B)$ or $b_n = -1$ for every $n\in\mathbb{N}$. Hence $\sum_{n\in\mathbb{N}} b_n = -\infty$ and therefore $\mu(P) = \infty$, which is a contradiction since $\mu(A)<\infty$. Hence we must have $\mu(B)\geq 0$ and thus $P$ is positive for $\mu$. 
+</details>
+</MathBox>
+
+<MathBox title='Hahn decomposition theorem' boxType='theorem'>
+Let $(X,\mathcal{A},\mu)$ be a measure space. There exists $P\in\mathcal{A}$ such that $P$ is positive for $\mu$ and $P^c$ is negative for $\mu$. The pair $(P,P^c)$ is a Hahn decomposition of $X$. If $(Q, Q^c)$ is another Hahn decomposition of $X, then $P\Delta Q$ is null for $\mu$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose first that $\mu<\infty$. The proof is recursive. For the initialization step, let $P_0 = \emptyset$. Trivially, $P_0$ is positive for $\mu$. For the recursive step, suppose that $P_n\in\mathcal{A}$ is positive for $\mu$. If $P_n^c$ is negative for $\mu$, let $P = P_n$. Otherwise let $a_n = \sup\{\mu(A) \;|\; A\in\mathcal{A},\, A\subseteq P_n^c\}>0$, which exists since $P_n^c$ is not negative for $\mu$. Let 
+
+$$
+  b_n = \begin{cases} \frac{a_n}{2},\quad 0<a_n<\infty \\ 1,\quad &a_n=\infty \end{cases}
+$$
+
+Since $b_n < a_n$ by definition of the supremum, there exists $B_n\in\mathcal{A}$ with $B_n\subseteq P_n^c$ and $\mu(B_n)\geq b_n >0$. By the previous lemma, there exists $A_n\in\mathcal{A}$ with 
+- $A_n\subseteq B_n$
+- $\mu(A_n)\geq 0$
+- $\mu(A_n)\geq\mu(B_n)$
+
+Let $P_{n+1} = P_n\cup A$. Then $P_{n+1}\in\mathcal{A}$ is positive for $\mu$. If the recursion terminates after finite number of steps, then $P$ is well defined and $(P,P^c)$ is a Hahn decomposition. Otherwise, we have a disjoint sequence of sets $(A_n)_{n\in\mathbb{N}}$ in $\mathcal{A}$, each positive for $\mu$. Let $P = \bigcup_{n\in\mathbb{N}} A_n$, then $P\in\mathcal{A}$ is positive for $\mu$ by closure of positive sets. Suppose that $A\subseteq P^c$. If $\mu(A) > 0$ then $\mu(A)\leq a_n$ for every $n\in\mathbb{N}$. Hence $b_n \geq \frac{1}{2}\mu(A)$ or $b_n = 1$ for every $n\in\mathbb{N}$. However, it follows that
+
+$$
+  \mu(P) = \sum_{n\in\mathbb{N}} \mu(A_n)\geq\sum_{n\in\mathbb{N}}\mu(B_n)\geq\sum_{n\in\mathbb{N}}b_n = \infty
+$$
+
+which is a contradiction. It follows that $\mu(A)\leq 0$ such that $P^c$ is negative for $\mu$ and hence $(P, P^c)$ is a Hahn decomposition.
+
+Suppose that $(Q,Q^c)$ is another Hahn decomposition of $X$. Then $P\cap Q^c$ and $Q\cap P^c$ are both positive and negative for $\mu$ and hence are null for $\mu$. Consequently, $P\Delta Q = (P\cap Q^c)\cup(Q\cap P^c)$ is null for $\mu$.
+
+Finally, suppose that $\mu$ takes the value $\infty$. Then $\mu$ does not take the value $-\infty$ by the infinity rule and hence $-\mu$ does not take the value $\infty$. By our proof, there exists a unique Hahn decomposition $(P,P^c)$ for $-\mu$. However, then $(P^c, P)$ is a Hahn decomposition for $\mu$.
+</details>
+</MathBox>
+
+### Jordan decomposition
+
+<MathBox title='Jordan decomposition theorem' boxType='theorem'>
+Suppose that $\mu:\mathcal{A}\to\mathbb{R}*$ is a measure on $(X,\mathcal{A},\mu)$. Then $\mu$ can be decomposed uniquely in the form $\mu = \mu_+ - \mu_-$ where $\mu_+$ and $\mu_-$ are positive measures, of which at least one is finite, and with the property that if $(P,P^c)$ is any Hahn decomposition of $X$, then $P^c$ is a null set of $\mu_+$ and $P$ is a null set of $\mu_-$. The pair $(\mu_+,\mu_-)$ is the Jordan composition of $\mu$.
+
+<details>
+<summary>Proof</summary>
+
+Let $(P,P^c)$ be a Hahn decomposition of $X$ relative to $\mu$. Define $\mu_+(A) = \mu(A\cap P)$ and $\mu_-(A) = \mu(A\cap P^c)$ for $A\in\mathcal{A}$. Then $\mu_+$ and $\mu_-$ are positive measures and $\mu = \mu_+ - \mu_-$. Moreover, since $\mu$ cannot take both $\infty$ and $-\infty$ as values by the infinity rule, one of these two positive measures is finite.
+
+Suppose that $(Q,Q^c)$ is any arbitrary Hahn decomposition. If $A\subseteq Q^c$, then $\mu_+(A) = \mu(P\cap A) = 0$ since $P\cap Q^c$ is a null set of $\mu$ by the Hahn decomposition theorem. Similarly, if $A\subseteq Q$, then $\mu_-(A) = \mu(P^c\cap A) = 0$ since $P^c\cap Q$ is a null set of $\mu$.
+
+Suppose that $\mu = \nu_+ - \nu_-$ is another decomposition with the same properties. If $A\in\mathcal{A}$ then $\mu_+(A) = \mu(A\cap P) = \left[\nu_+(A\cap P) - \nu_-(A\cap P) \right] = \nu_+(A\cap P)$. Likewise, $\nu_+(A) = \nu_+(A\cap P) + \nu_+(A\cap P^c) = \nu_+(A\cap P)$. Hence $\nu_+ = \mu_+$ and therefore also $\nu_- = \mu_-$.
+</details>
+</MathBox>
+
+<MathBox title='Variation measures' boxType='definition'>
+Suppose that the measure $\mu$ has Jordan decomposition $\mu = \mu_+ - \mu_-$. The following can be defined for $A\in\mathcal{A}$
+1. The positive measure $\mu_+$ is called the *positive variation measure* of $\mu$.
+  - $\mu_+(A) = \sup\{\mu(B)\;|\; B\in\mathcal{A},\,B\subseteq A\}$
+2. The positive measure $\mu_+$ is called the *negative variation measure* of $\mu$.
+  - $\mu_-(A) = -\inf\{\mu(B)\;|\; B\in\mathcal{A},\,B\subseteq A\}$
+3. The positive measure $|\mu| = \mu_+ + \mu_-$ is called the *total variation measure* of $\mu$.
+  - $|\mu| = \sup\left\{\sum_{i=1}^{n\in\mathbb{N}}\mu(A_i)\;|\; A=\bigcup_{i=1}^{n\in\mathbb{N}} A_i\}$
+4. $\lVert\mu\rVert = |\mu(X)|$ is the total variation of $\mu$.
+  - $\lVert\mu\rVert = \sup\left\{\sum_{i=1}^{n\in\mathbb{N}}\mu(A_i)\;|\; X=\bigcup_{i=1}^{n\in\mathbb{N}} A_i\}$
+</MathBox>
+
+<MathBox title='Properties of total variation measures' boxType='proposition'>
+Suppose that $\mu$ and $\nu$ are measures of the same type and that $c\in\mathbb{R}$. then
+1. $|\mu| = 0 \iff \mu = 0$
+2. $|c\mu| = |c|\cdot|\mu|$
+3. $|\mu + \nu| \leq |\mu| + |\nu|$
+
+<details>
+<summary>Proof</summary>
+
+1. Since $\mu_+$, $\mu_-$ and $|\mu| = \mu_+ + \mu_-$ are positive measures, $|\mu| = 0$if and only if$\mu_+ = \mu_- = 0$if and only if$\mu_0$.
+2. If $c>0$ then $(c\mu)_+ = c\mu_+$ and $(c\mu)_- = c\mu_-$. If $c<0$ then $(c\mu)_+ = -c\mu_-$ and $(c\mu)_- = -c\mu_+$. Trivially, if $c=0$ then $(c\mu)_+ = (c\mu)_- = 0$. In all cases
+
+$$
+  |c\mu| = (c\mu)_+ + (c\mu)_- = |c|(\mu_+ + \mu_-) = |c|\cdot|\mu|
+$$
+3. Recall that $(\mu + \nu)_+\leq \mu_+ + \nu_-$ and $(\mu + \nu)_-\leq\mu_- + \nu_-$ giving
+
+$$
+\begin{align*}
+  |\mu + \nu| &= (\mu+\nu)_+ + (\mu+\nu)_- \leq (\mu_+ + \nu_+) + (\mu_- + \nu_-) \\
+  &= (\mu_+ + \mu_-) + (\nu_+ +\nu_-) = |\mu| + |\nu|
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Total variation defines a norm on the vector space of finite measures' boxType='theorem'>
+The total variation $\lVert\cdot\rVert = |\cdot|(X)$ defines a norm on the vector space of finite measures on $(X,\mathcal{A})$, satisfying for $c\in\mathbb{R}$ and $\mu,\nu:\mathcal{A}\to\mathbb{R}*$ of the same type
+1. Positive definiteness: $\lVert\mu\rVert\geq 0$ and $\lVert\mu\rVert = 0 \iff \mu = 0$
+2. Scalability: $\lVert c\mu\rVert =  |c|\cdot\lVert\mu\rVert$
+3. Triangle inequality: $\lVert\mu + \nu\rVert \leq \lVert\mu\rVert + \lVert\nu\rVert$
+
+<details>
+<summary>Proof</summary>
+
+1. Positive definiteness follows trivially from the fact that $|\mu|$ is a positive measure. Moreover $\lVert\mu\rVert = |\mu(X)| = 0$if and only if$|\mu| = 0$. By the zero property of total variation measures, $|\mu| = 0$if and only if$\mu = 0$.
+2. By the scaling property of total variation measures, $\lVert c\mu\rVert$ = |c\mu(X) = |c|\cdot|\mu(X)| = |c|\cdot\lVert\mu\rVert$
+3. By the triangle inequality of total variation measures, $\lVert\mu+\nu\rVert = |\mu+\nu|(X)\leq |\mu|(X) + |\nu|(X) = \lVert\mu\rVert + \lVert\nu\rVert$
+</details>
+</MathBox>
+
+<MathBox title='Metric properties of total variation' boxType='theorem'>
+Let $\mathcal{M}$ be the collection of finite measures on $(X,\mathcal{A})$. The function $d:\mathcal{M}\times\mathcal{M}\to[0,\infty)$ given by $(\mu,\nu)\mapsto\lVert\mu-\nu\rVert$ defines a metric on $\mathcal{M}$ satisfying for $\mu,\nu,\rho\in\mathcal{M}$ and $c\in\mathbb{R}$
+1. Positive definiteness: $\lVert\mu - \nu\rVert\geq 0$ and $\lVert\mu-\nu\rVert = 0\iff \lVert\mu\rVert = \lVert\nu\rVert$
+2. Symmetry: \lVert\mu-\nu\rVert = \lVert\nu-\mu\rVert 
+3. Triangle inequality: $\lVert\mu-\rho\rVert\leq\lVert\mu-\nu\rVert + \lVert\nu-\rho\rVert$
+</MathBox>
+
+<MathBox title='Metric convergence criterion' boxType='proposition'>
+Let $\mathcal{M}$ be the collection of finite measures on $(X,\mathcal{A})$. Suppose that $\mu_n\in\mathcal{M}$ for $n\in\mathbb{N}$ and $\mu\in\mathcal{M}$. We say that $\mu_n\xrightarrow{n\to\infty}\mu$ in total variation if $\lVert\mu_n - \mu\rVert\xrightarrow{n\to\infty} 0$.
+</MathBox>
+
+## Borel measure
+<MathBox title='Borel measure' boxType='definition'>
+Suppose that $(X,\mathcal{T})$ is a topological space and let $\mathcal{A} = \sigma(\mathcal{T})$ be the Borel $\sigma$-algebra. A positive measure $\mu$ on $(X,\mathcal{A})$ is a Borel measure such that $(X,\mathcal{A},\mu)$ is a Borel measure space.
+</MathBox>
+
+<MathBox title='Support' boxType='definition'>
+Suppose that $(X,\mathcal{A}, \mu)$ is a Borel measure space. The support of $\mu$ is defined as
+
+$$
+  \mathrm{supp}(\mu):=\{x\in X \;|\; \mu(U)>0\textrm{ for every open neighbourhood }U\textrm{ of }x \}
+$$
+
+The set $\mathrm{supp}(\mu)$ is closed.
+<details>
+<summary>Proof</summary>
+
+Let $A=\mathrm{supp}(\mu)$. For $x\in A^c$, there exists an open neighbourhood $V_x$ of $x$ such that $\mu(V_x) = 0$. If $y\in V_x$, then $V_x$ is also an open neighbourhood of $y$, so $y\in A^c$. Hence $V_x\subseteq A^c$ for every $x\in A^c$ and so $A^c$ is open.
+</details>
+</MathBox>
+
+<MathBox title='Regularity of measures' boxType='definition'>
+Suppose that $(X,\mathcal{A}, \mu)$ is a Borel measure space. The following regularity terms can be defined for $\mu$ where $A\in\mathcal{A}$
+1. $\mu$ is inner regular if $\mu(A) = \sup\{\mu(C) \;|\; C\textrm{ is compact and }C\subseteq A\}$
+2. $\mu$ is outer regular if $\mu(A) = \inf\{\mu(U) \;|\; U\textrm{ is open and }A\subseteq U\}$
+3. $\mu$ is regular if it is both inner regular and outer regular
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $(X,\mathcal{A}, \mu)$ is a Borel measure space corresponding to a locally compact topology with a countable basis. Then the space is $\sigma$-finite.
+<details>
+<summary>Proof</summary>
+
+Since $X$ is a locally compact topological space with a countable basis, $X = \bigcup_{i\in I} C_i$ where $\{C_i\}_{i\in I}$ is a countable collection of compact sets. Since $\mu$ is a Borel measure, $\mu(C_i)<\infty$ and hence $\mu$ is $\sigma$-finite.
+</details>
+</MathBox>
+
+## Special sets and equivalence
+
+<MathBox title='Special sets' boxType='definition'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space. A set $A\in\mathcal{A}$ is called
+- a positive set for $\mu$ if $\mu(B)\geq 0$
+- a negative set for $\mu$ if $\mu(B)\leq 0$
+- a null set for $\mu$ if $\mu(B) = 0$
+- a support set for $\mu$ if $A^c$ is a null set
+for every $B\in\mathcal{A}$ with $B\subseteq A$. 
+</MathBox>
+
+<MathBox title='Almost everywhere predicate' boxType='definition'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space. A property $P$ is said to hold almost everywhere in $X$ if there is a set $N\in\mathcal{A}$ with $\mu(N) = 0$ and all $x\in X\setminus N$ have the property $P$.
+</MathBox>
+
+<MathBox title='Closure of special sets under countable unions' boxType='propositionn'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space, and suppose that $\{A_i\}_{i\in I}$ is a countable collection of sets in $\mathcal{A}$. Then for $i\in I$
+1. if $A_i$ is positive for $\mu$ then $\bigcup_{i\in I} A_i$ is positive for $\mu$
+2. if $A_i$ is negative for $\mu$ then $\bigcup_{i\in I} A_i$ is negative for $\mu$
+3. if $A_i$ is null for $\mu$ then $\bigcup_{i\in I} A_i$ is null for $\mu$
+
+<details>
+<summary>Proof</summary>
+
+We will show $(1)$; the proofs for $(2)$ and $(3)$ are analogous. Without loss of generality, we can suppose that $I=\mathbb{N}_+$. Let $A=\bigcup_{n\in\mathbb{N}} A_n$. Let $B_1 = A_1$ and $B_n = A_n\setminus \left(\bigcup_{i=1}^{n-1} A_i \right)$ for $n\in\mathbb{N}\setminus\{1\}$. Then $\{B_n\}_{n\in\mathbb{N}}$ is a countable, disjoint collection in $\mathcal{A}$ and $\bigcup_{n\in\mathbb{N}} B_n = A$. Any subset $C\subseteq A$ has the disjoint partition $C = \bigcup_{n\in\mathbb{N}} (C\cap B_n)$. By countable additivity $\mu(C) = \sum_{n\in\mathbb{N}} \mu(C\cap B_n)$. However, since $C\cap B_n\subseteq B_n\subseteq A_n$, it follows that $\mu(C\cap B_n)\geq 0$ for $n\in\mathbb{N}$. Hence $\mu(C)\geq 0$ and $\bigcup_{n\in\mathbb{N}}A_n$ is positive for $\mu$. 
+</details>
+</MathBox>
+
+<MathBox title='Closure of special sets under non-zero scaling' boxType='propositionn'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space. For $A\in\mathcal{A}$ and $c\in\mathbb{R}$ the following properties hold for special sets 
+1. If $c>0$ then $A$ is positive (negative) for $\mu$if and only if$A$ is positive (negative) for $c\mu$.
+2. If $c<0$ then $A$ is negative (positive) for $\mu$if and only if$A$ is negative (positive) for $c\mu$.
+3. If $c\neq 0$ then $A$ is null for $\mu$if and only if$A$ is null for $c\mu$.
+</MathBox>
+
+<MathBox title='Closure of special sets under countable addition' boxType='propositionn'>
+Suppose that $\mu_i$ is a measure on $(X,\mathcal{A})$ for each $i$ in a countable index set $I$, and that $\mu=\sum_{i\in I}\mu_i$ is a well-defined measure on $(X,\mathcal{A})$. For $A\in\mathcal{A}$ and every $i\in I$ the following properties hold for special sets 
+1. If $A$ is positive for $\mu_i$ then $A$ is positive for $\mu$.
+2. If $A$ is negative for $\mu_i$ then $A$ is negative for $\mu$.
+3. If $A$ is null for $\mu_i$ then $A$ is null for $\mu$.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space and let $\mathcal{D} = \{A\in\mathcal{A} \;|\; \mu(A) = 0 \lor \mu(A^c) = 0\}$ be the collection of null and co-null sets. Then $\mathcal{D}$ is a sub $\sigma$-algebra of $\mathcal{A}$.
+<details>
+<summary>Proof</summary>
+
+Trivially $X\in\mathcal{D}$ since $S^c = \emptyset$ and $\mu(emptyset) = 0$. If $A\in\mathcal{A}$, then $A^c\in\mathcal{D}$ by the symmetry of the definition. Consider a countable collection $\{A_i\}_{i\in I}\subseteq\mathcal{D}$. If $\mu(A_i) = 0$ for every $i\in I$, then $\mu\left(\bigcup_{i\in I} A_i \right)\leq\sum_{i\in I}\mu(A_i) = 0$ by the subadditive property. Conversely, if $\mu(A_j^c) = 0$ for some $j\in I$, then $\mu\left[\left(\bigcup_{i\in I} A_i \right)^c \right] = \mu\left(\bigcap_{i\in I} A_i^c\right)\leq\mu(A_j^c) = 0$. In either case $\bigcup_{i\in I} A_i \in\mathcal{D}$.
+</details>
+</MathBox>
+
+<MathBox title='Measure space set equivalence' boxType='definition'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space. Two sets $A, B\in\mathcal{A}$ are equivalent if 
+
+$$
+  \mu(A\Delta B) = \mu\left[(A\setminus B)\cup(B\setminus A)\right] = \mu(A\setminus B) + \mu(B\setminus A) = 0 
+$$
+
+denoted $A\equiv B$. The relation $\equiv$ is an equivalence relation on $\mathcal{A}$ satisfying for $A,B,C\in\mathcal{A}$
+1. Reflexivity: $A\equiv A$
+2. Symmetry: $A\equiv B\implies B\equiv A$
+3. Transitivity: $A\equiv B \land B\equiv A \implies A\equiv C$
+
+<details>
+<summary>Proof</summary>
+
+1. Trivially $A\Delta A = \emptyset$
+2. Trivially $A\Delta B = B\Delta A$
+3. Note that $A\setminus C \subseteq (A\setminus B)\cup(B\setminus C)$ so that $\mu(A\setminus C)\leq \mu(A\setminus B) + \mu(B\setminus C) = 0$. By a symmetric argument $\mu(C\setminus A) = 0$ giving $\mu(A\Delta C) = 0$.
+</details>
+</MathBox>
+
+Given a measure space $(X,\mathcal{A},\mu)$, the equivalence relation $A\equiv B$ for $A,B\in\mathcal{A}$ predicates that $x\in A \iff x\in B$ is true for almost every $x\in X$.
+
+<MathBox title='Properties of null set equivalence' boxType='proposition'>
+Let $(X,\mathcal{A}, \mu)$ be a measure space. The following properties hold the equivalence relation $\equiv$ on $\mathcal{A}$
+1. If $A, B\in\mathcal{A}$ and $A\equiv B$ then 
+  a. $A^c \equiv B^c$
+  b. \mu(A) = \mu(B)
+2. If $\mu(A) = 0$ then $A\equiv B$if and only if$\mu(B) = 0$
+  a. If $\mu(A^c) = 0$ then $A\equiv B$if and only if$\mu(B^c) = 0$
+3. If $A_i, B_i\in\mathcal{A}$ and $A_i \equiv B_i$ for $i$ in a countable index set $I$. Then
+  a. $\bigcup_{i\in I} A_i &\equiv\bigcup_{i\in I} B_i$
+  b. $\bigcap_{i\in I} A_i &\equiv\bigcap_{i\in I} B_i$
+
+<details>
+<summary>Proof</summary>
+
+1a. Note that $A^c\setminus B^c = B\setminus A$ and $B^c \setminus A^c = A\setminus B$ hence $A^c\Delta B^c = A\Delta B$
+1b. Note that $A = (A\cap B)\cup (A\setminus B)$. If $A\equiv B$, then $\mu(A) = \mu(A\cap B)$. By a symmetric argument $\mu(B) = \mu(A\cap B)$.
+2. Suppose that $\mu(A) = 0$ and $A\equiv B$ then $\mu(B) = \mu(A) = 0$. Conversely, not that $A\setminus B\subseteq A$ and $B\setminus A\subseteq B$ so if $\mu(A) = \mu(B) = 0$ then $\mu(A\Delta B)\leq\mu(A)+\mu(B) = 0$, hence $A\equiv B$. Part $2a$ follows from a similar argument.
+3. Note that
+
+$$
+\begin{align*}
+  \left(\bigcup_{i\in I} A_i \right)\Delta\left(\bigcup_{i\in I} B_i \right) &\subseteq \bigcup_{i\in I}\left(A_i\Delta B_i \right) \\
+  \left(\bigcap_{i\in I} A_i \right)\Delta\left(\bigcap_{i\in I} B_i \right) &\subseteq \bigcup_{i\in I}\left(A_i\Delta B_i \right)
+\end{align*}
+$$
+
+Moreover
+
+$$
+  \mu\left[\bigcup_{i\in I}\left(A_i\Delta B_i \right) \right]\leq\sum_{i\in I}\mu(A_i\Delta B_i) = 0
+$$
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space. Two sets $A, B\in\mathcal{A}$ are equivalent, i.e. $A\equiv B$,if and only if$\mathbf{1}_A \equiv\mathbf{1}_B$.
+<details>
+<summary>Proof</summary>
+
+Note that $\{x\in X \;|\; \mathbf{1}_A (x)\neq \mathbf{1}_B (x) \} = A\Delta B$.
+</details>
+</MathBox>
+
+
+## Function spaces
+
+<MathBox title='Equivalence of measurable functions' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ and $(Y,\mathcal{B},\nu)$ be measure spaces. Two measurable functions $f, g: X\to Y$ are equivalent if $\mu\{x\in X \;|\; f(x)\neq g(x) \} = 0$, denoted $f\equiv g$. Note that if $f$ and $g$ are measurable functions, then $(f,g):X\to Y\times Y$ is measurable with respect to the usual product $\sigma$-algebra $\mathcal{B}\otimes\mathcal{B}$. Then $\{ x\in X \;|\; f(x)\neq g(x) \} = \{ x\in X \;|\; (f(x), g(x))\in D \}^c\in\mathcal{A}$ where $D = \{(y, y) \;|; y\in Y \}\in\mathcal{B}\otimes\mathcal{B}$ is the diagonal set.
+
+The relation $\equiv$ is an equivalence relation on the collection of measurable functions from $X$ to $Y$. That is, for measurable $f,g,h:X\to Y$
+1. Reflexivity: $f\equiv f$
+2. Symmetry: $f\equiv g \implies g\equiv f$
+3. Transitivity: $f\equiv g\land g\equiv h\implies f\equiv h$
+
+<details>
+<summary>Proof</summary>
+
+Reflexivity and symmetry hold trivially. To show transitivity, note that $f(x) = g(x)$ and $g(x) = h(x)$ implies $f(x) = h(x)$ for $x\in X$. Negating this statement gives
+
+$$
+  \{x\in X \;|\; f(x)\neq h(x) \}\subseteq \{x\in X \;|\; f(x)\neq g(x) \}\cup\{x\in X \;|\; g(x)\neq h(x) \}
+$$
+
+Since $f\equiv g$ and $g\equiv h$, the two sets on the right have zero measure. Hence $f\equiv h$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of equivalent measurable functions' boxType='proposition'>
+Let $(X,\mathcal{A}), (Y,\mathcal{B})$ and $(Z,\mathcal{C})$ be measurable spaces. The following properties hold for equivalent measurable functions
+1. Suppose that $f, g: X\to Y$ are measurable and $f\equiv g$. Then $f^{-1}[B] \equiv g^{-1}[B]$.
+2. Suppose that $h:Y\to Z$ is measurable. If $f\equiv g$ then $h\circ f\equiv h\circ g$
+<details>
+<summary>Proof</summary>
+
+1. Note that $f^{-1}[B]\Delta g^{-1}[B]\subseteq \{x\in X \;|\; f(x)\neq g(x)\}$
+2. Note that $\{ x\in X \;|\; h[f(x)] \neq h[g(x)]\}\subseteq \{x\in X\;|\; f(x)\neq g(x)\}$
+</details>
+</MathBox>
+
+<MathBox title='The quotient of the space measurable functions is a vector space' boxType='proposition'>
+Let $\mathcal{M}$ be the collection of measurable functions $f:X\to\mathbb{R}$, which is a vector space. Recall that two measurable functions $f, g\in\mathcal{M}$ are equivalent, denoted $f\equiv g$, if $f\overset{\textrm{a.e.}}g$. Let $[f]$ be the equivalent class of $f$ under $\equiv$. The quotient space $\mathcal{M}\setminus\equiv$ is a vector space under the operations defined by, for $f,g\in\mathcal{M}\setminus\equiv$ and $c\in\mathbb{R}$ 
+1. addition: $[f] + [g] = [f + g]$
+2. scalar multiplication: $c[f] = [cf]$
+
+<details>
+<summary>Proof</summary>
+
+For simpler notation, we drop the special notation for equivalence classes.
+
+We must show that the definitions of addition and scalar multiplication do not depend on particular representatives of an equivalence class. The remaining properties of a vector space are inherited from $\mathcal{M}$. Therefore, we must show that if $f_1\equiv f_2$ and $g_1\equiv g_2$, and if $c\in\mathbb{R}$ then 
+1. $f_1 + g_1 \equiv f_2 + g_2$
+2. $cf_1 \equiv cf_2$
+
+For the first problem, note that $(f_1, g_1)$ and $(f_2, g_2)$ are measurable functions from $X$ to $\mathbb{R}^2$. Moreover, $(f_1, g_1)\equiv(f_2, g_2)$ since
+
+$$
+  \{x\in X \;|\; (f_1(x), g_1(x)) \neq (f_2(x), g_2(x))\} = \{x\in X\;|\; f_1(x) \neq f_2(x)\}\cup\{x\in X\;|\; g_1(x) \neq g_2(x)\}
+$$
+
+However, the function $(x, y)\mapsto x + y$ from $\mathbb{R}^2$ into $\mathbb{R}$ is measurable and from the composition property of equivalent functions, it follows that $f_1 + g_1 \equiv f_2 + g_2$. Similarly for second problem, the function $a\mapsto ca$ from $\mathbb{R}$ into $\mathbb{R}$ is measurable and it follows from the composition property that $cf_1\equiv cf_2$. 
+</details>
+</MathBox>
+
+## Relation on measures
+
+<MathBox title='Relations on measures' boxType='definition'>
+Consider the two measures $\mu,\nu : \mathcal{A}\mapsto\mathbb{R}*$ on the measurable space $(X, \mathcal{A})$. Then we define the following relations
+- $\nu$ is absolutely continuous with respect to $\mu$, denoted $\nu\ll\mu$, if every null set of $\mu$ is also a null set of $\nu$, i.e. $\mu(A)=0 \implies\nu(A)=0,\;\forall A \in\mathcal{A}$. 
+- $\mu$ and $\nu$ are mutually singular, denoted $\mu\perp\nu$, if there exists $A \in\mathcal{A}$ with $\mu(A) = 0$ and $\nu(A^c) = 0$.
+
+Equivalently, $\nu\ll\mu$ if every support set of $\mu$ is a support set of $\nu$ and $\mu\perp\nu$ if $\mu$ and $\nu$ have disjoint support sets. The equivalence class of a measure $\mu$ is denoted $[\mu]$.
+</MathBox>
+
+<MathBox title='Equivalence of absolute continuous measures' boxType='proposition'>
+Suppose that $\mu,\nu,\rho$ are measures on $(X,\mathcal{A})$. The absolute continuity relation has the following properties
+1. Reflexivity: $\mu\ll\mu$
+2. Transitivity: $\mu\ll\nu\land\nu\ll\rho\implies\mu\ll\rho$
+
+If additionally $\mu\ll\nu$ and $\nu\ll\mu$ the measures $\mu$ and $\nu$ are equivalent, denoted $\mu\equiv\nu$. The relation $\equiv$ defines an equivalence relation on the collection of measures on $(X,\mathcal{A})$ satisfying
+1. Reflexivity: $\mu\equiv\mu$ 
+2. Symmetry: $\mu\equiv\nu\implies\nu\equiv\mu$
+3. Transitivity: $\mu\equiv\nu\land\nu\equiv\rho\implies\mu\equiv\rho$
+
+Thus, $\mu$ and $\nu$ are equivalent if they have the same null sets and thus the same support sets.
+</MathBox>
+
+<MathBox title='Partial order on measures' boxType='proposition'>
+Suppose that $\mu$ and $\nu$ are measures on $(X,\mathcal{A})$ with equivalence classes $[\mu]$ and $[\nu]$, respectively. If $\mu\ll\nu$ the relation $[\mu]\leq[\nu]$ defines a partial order on the collection of equivalence classes. If $\mu,\nu,\rho$ are measures on $(X,\mathcal{A})$, the partial order $\leq$ satisfies
+1. Reflexivity: $[\mu]\leq[\mu]$
+2. Anti-symmetry: $[\mu]\leq[\nu]\land[\nu]\leq[\mu]\implies[\mu]=[\nu]$
+3. Transitivity: $[\mu]\leq[\nu]\land[\nu]\leq[\rho]\implies[\mu]\leq[\rho]$
+</MathBox>
+
+<MathBox title='Properties of mutual singularity' boxType='proposition'>
+Suppose that $\mu$ and $\nu$ are measures on $(X,\mathcal{A})$. The mutual singularity relation has the following properties
+1. Symmetry: $\mu\perp\nu\implies\nu\perp\mu$
+2: $\mu\perp\mu\iff\mu=0$
+
+<details>
+<summary>Proof</summary>
+
+1. The symmetry property is trivial from the symmetry of the definition.
+2. Note that $X$ is null for $0$ and $\emptyset$ is null for $0$, so $0\perp 0$. Conversely, suppose that $\mu$ is a measure $\mu\perp\mu$. Then there exists $A\in\mathcal{A}$ such that $A$ is null for $\mu$ and $A^c$ is null for $\mu$. In this case, $X = A\cup A^c$ is null for $\mu$ so $\mu(B) = 0$ for every $B\in\mathcal{A}$.
+</details>
+</MathBox>
+
+<MathBox title='Absolute continuity and mutual singularity are preserved under non-zero scaling' boxType='proposition'>
+Suppose that $\mu$ and $\nu$ are measures on $(X,\mathcal{A})$ and that $a,b\in\mathbb{R}\setminus\{0\}$. Then
+1. $\nu\ll\mu \iff a\nu\ll b\mu$
+2: $\nu\perp\mu \iff a\nu\perp b\mu$
+
+<details>
+<summary>Proof</summary>
+
+Recall that if $c\neq 0$, then $A\in\mathcal{A}$ is null for $\mu$if and only if$A$ is null for $c\mu$.
+</details>
+</MathBox>
+
+<MathBox title='Absolute continuity and mutual singularity are preserved under countable addition' boxType='proposition'>
+Suppose that $\mu$ and $\nu_i$ are measures on $(X,\mathcal{A})$ for each $i$ in a countable index set $I$. If $\nu=\sum_{i\in I}\nu_i$ is a well-defined measure then
+1. $\nu_i \ll\mu \;\forall i\in I \implies \nu\ll\mu$
+2: $\nu_i \perp\mu \;\forall i\in I \implies \nu\perp\mu$
+
+<details>
+<summary>Proof</summary>
+
+Recall that if $A\in\mathcal{A}$ is null for $\nu_i$ for every $i\in I$, then $A$ is null for $\nu = \sum_{i\in I}\nu_i$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of absolute continuity and mutual singularity' boxType='proposition'>
+Suppose that $\mu$, $\nu$ and $\rho$ are measures on $(X,\mathcal{A})$. Then
+1. $\nu\ll\mu\land\mu\perp\rho\implies\nu\perp\rho$
+2. $\nu\ll\mu\land\nu\perp\mu\implies\nu=0$ 
+
+<details>
+<summary>Proof</summary>
+
+1. Since $\mu\perp\rho$ there exists $A\in\mathcal{A}$ such that $A$ is null for $\mu$ and $A^c$ is null for $\rho$. However, $\nu\ll\mu$ so $A$ is null for $\nu$. Hence $\nu\perp\rho$.
+2. Applying $(1)$ with $\rho = \nu$ gives $\nu\perp\nu$ and hence $\nu = 0$ by the zero property of mutual singularity.
+</details>
+</MathBox>
+
+## Completion
+
+<MathBox title='Complete measure space' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space, and let $\mathcal{N} = \{A\in\mathcal{A}\;|\; \mu(A) = 0\}$ be the collection of null sets. The measure space is complete if $A\in\mathcal{N}$ and $B\subseteq A$ imply $B\in\mathcal{A}$ (and hence $B\in\mathcal{N}$).
+</MathBox>
+
+<MathBox title='Equivalence relation on power sets' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space, and let $\mathcal{N} = \{A\in\mathcal{A}\;|\; \mu(A) = 0\}$ be the collection of null sets. For $A, B\subseteq X$, define $A\equiv B$if and only ifthere exists $N\in\mathcal{N}$ such that $A\Delta B \subseteq N$. Then $\equiv$ is an equivalence relation on $\mathcal{P}(S)$ satisfying for $A,B,C\subseteq X$
+1. Reflexivity: $A\equiv A$
+2. Symmetry: $A\equiv B\implies B\equiv A$
+3. Transitivity: $A\equiv B\land B\equiv C\implies A\equiv C$
+
+<details>
+<summary>Proof</summary>
+
+1. Trivially $A\Delta A = \emptyset\in\mathcal{N}$.
+2. Suppose that $A\Delta B\subseteq N\in\mathcal{N}$. Then $B\Delta A = A\Delta B\subseteq N$
+3. Suppose that $A\Delta B\subseteq N_1$ and $B\Delta C\subseteq N_2$ where $N_1, N_2\in\mathcal{N}$. Then $A\Delta C\subseteq (C\Delta B)\cup(B\Delta C)\subseteq N_1 \cup N_2\in\mathcal{N}$.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X,\mathcal{A})$ be a measurable space and consider the collection $\mathcal{A}_0 = \{ A\subseteq X \;|\; A\equiv B\textrm{ for some }B\in\mathcal{A}\}$. Then $\mathcal{A}_0$ is a $\sigma$-algebra of subsets of $X$, and in fact is the $\sigma$-algebra generated by $\mathcal{A}\cup\{A\subseteq X\;|\; A\equiv\emptyset\}$.
+<details>
+<summary>Proof</summary>
+
+Note that if $A\in\mathcal{A}$ then $A\equiv A$ so $A\in\mathcal{A}_0$. In particular, $X\in\mathcal{A}_0$ and $\emptyset\in\mathcal{A}$ so if $A\equiv\emptyset$ then $A\in\mathcal{A}_0$. Suppose that $A\in\mathcal{A}_0$ so that $A\equiv B$ for some $B\mathcal{A}$. Then $B^c\in\mathcal{A}$ and $A^c\equiv B^c$ so $A^c\in\mathcal{A}_0$. Suppose that $A_i\in\mathcal{A}_0$ for $i$ in a countable index set $I$. Then for each $i\in I$ there exists $B_i\in\mathcal{A}$ such that $A_i\equiv B_i$. However, then $\bigcup_{i\in I} B_i\in\mathcal{A}$ and $\bigcup_{i\in I} A_i \equiv\bigcup_{i\in I} B_i$, so $\bigcup_{i\in I} A_i\in\mathcal{A}_0$. Therefore $\mathcal{A}_0$ is a $\sigma$-algebra on $X$.
+
+Finally, suppose that $\mathcal{B}$ is a $\sigma$-algebra on $X$ and that $\mathcal{A}\cup\{A\subseteq X \;|\; A\equiv\emptyset \}\subseteq\mathcal{B}$. We need to show that $\mathcal{A}_0 \subseteq\mathcal{B}$. Suppose that $A\in\mathcal{A}_0$, then there is a $B\in\mathcal{A}$ such that $A\equiv B$. However, $B\in\mathcal{B}$ and $A\Delta B\in\mathcal{B}$ so $A\cap B = B\setminus(A\Delta B)\in\mathcal{B}$. Moreover, $A\setminus B\in\mathcal{B}$ so $A=(A\cap B)\cup(A\setminus B)\in\mathcal{B}$.
+</details>
+</MathBox>
+
+<MathBox title='Completion of measure spaces' boxType='proposition'>
+Let $(X,\mathcal{A},\mu)$ be a $\sigma$-finite measure space and suppose that $A\in\mathcal{A}_0$ so that $A\equiv B$ for some $B\in\mathcal{A}$. Define $\mu_0(A) = \mu(B)$. Then
+1. $\mu_0$ is well defined
+2. $\mu_0(A) = \mu(A)$ for $A\in\mathcal{A}$
+3. $\mu_0$ is a positive measure on $\mathcal{A}_0$
+
+The measure space $(X,\mathcal{A}_0,\mu_0)$ is complete and is called the completion of $(X,\mathcal{A},\mu)$.
+
+<details>
+<summary>Proof</summary>
+
+1. Suppose that $A\in\mathcal{A}_0$ and that $A\equiv B_1$ and $A\equiv B_2$ where $B_1, B_2\in\mathcal{A}$. Then $B_1\equiv B_2$ by transitivity so that $\mu(B_1) = \mu(B_2)$. Thus, $\mu_0$ is well defined.
+2. If $A\in\mathcal{A}$ then $A\equiv A$ by reflexivity so $\mu_0(A) = \mu(A)$.
+3. Trivially $\mu_0(A)\geq 0$ for $A\in\mathcal{A}$. It remains to show the countable additivity property. Since the measure space is $\sigma$-finite, there exists a countable disjoint collection $\{C_i\}_{i\in I}\subseteq\mathcal{A}$ such that $X=\bigcup_{i\in I} C_i$ and $\mu(C_i)<\infty$ for each $i\in I$. Suppose first that $A\in\mathcal{A}_0$ so that there exists $B\in\mathcal{A}$ with $B\equiv A$. Then
+
+$$
+  \mu_0(A) = \mu_0\left[ \bigcup_{i\in I} (A\cap C_i) \right] = \mu\left[\bigcup_{i\in I} (B\cap C_i) \right] = \sum_{i\in I}\mu(B\cap C_i) = \sum_{i\in I}\mu_0(A\cap C_i)
+$$
+
+Suppose that $(A_n)_{n\in\mathbb{N}}$ is a sequence of pairwise disjoint sets in $\mathcal{A}_0$ so that there exists a sequence $(B_n)_{n\in\mathbb{N}}$ of sets in $\mathcal{A}$ such that $A_n\equiv B_n$ for each $n\in\mathbb{N}$. For a fixed $i\in I$
+
+$$
+\begin{align*}
+  \mu_0\left[\bigcup_{n\in\mathbb{N}} (A_n\cap C_i)\right] &= \mu_0\left[\bigcup_{n\in\mathbb{N}} (B_n\cap C_i)\right] = \mu\left[\bigcup_{n\in\mathbb{N}} (B_n\cap C_i)\right] \\
+  &\overset{\textrm{IEC}}{=} \sum_{n\in\mathbb{N}} \mu(B_n\cap C_i) = \sum_{n\in\mathbb{N}}\mu_0(A_n\cap C_i)
+\end{align*}
+$$
+
+Where we have used the inclusion-exclusion corollary (IEC), since the sequence $(B_n)_{n\in\mathbb{N}}$ is not necessarily disjoint. Combining the previous results gives
+
+$$
+\begin{align*}
+  \mu_0\left(\bigcup_{n\in\mathbb{N}} A_n \right) &= \sum_{i\in I}\mu_0\left[\left(\bigcup_{n\in\mathbb{N}} A_n \right)\cap C_i \right] = \sum_{i\in I}\mu_0\left(\bigcup_{n\in\mathbb{N}} A_n\cap C_i \right) \\
+  &= \sum_{i\in I}\sum_{n\in\mathbb{N}}\mu_0(A_n\cap C_i) = \sum_{n\in\mathbb{N}}\sum_{i\in I}\mu_0(A_n\cap C_i) = \sum_{n\in\mathbb{N}}\mu_0(A_n)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+## Carathéodory's extension theorem
+
+<MathBox title='Pre-measure' boxType='definition'>
+Let $X$ be a set and $\mathcal{A}\subseteq\mathcal{P}(X)$ an algebra over $X$. A pre-measure on $\mathcal{A}$ is a function $\mu:\mathcal{A}\to[0, \infty]$ satisfying
+- $\mu(\emptyset) = 0$
+- countable additivity: If $\{A_i\}_{i\in I\subseteq\mathbb{N}}$ is a countable, pairwise disjoint collection of sets in $\mathcal{A}$ and if $\bigcup_{i\in I}A_i \in\mathcal{A}$ then 
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \sum_{i\in I} \mu(A_i)
+$$
+
+The union of any countably infinite collection of subsets of $X$ is not necessarily in $\mathcal{A}$.
+</MathBox>
+
+Given the similar definitions, a pre-measure shares many of the basic properties of a positive measure on a $\sigma$-algebra.
+
+<MathBox title='$\sigma$-finite pre-measure' boxType='definition'>
+A pre-measure $\mu$ on an algebra $\mathcal{A}$ over a set $X$ is $\sigma$-finite if there exists a sequence of sets $(A_n)_{n\in\mathbb{N}}$ in $\mathcal{A}$ such that $\bigcup_{n\in\mathbb{N}} A_n = X$ and $\mu(A_n)<\infty$ for each $n\in\mathbb{N}$. Such a sequence is called a $\sigma$-finite sequence for $\mu$.
+</MathBox>
+
+<MathBox title="Carathéodory's extension theorem" boxType='theorem'>
+Let $\mathcal{F}$ be an algebra over a set $X$. A pre-measure $\mu:\mathcal{F}\to[0,\infty]$ on $\mathcal{F}$ can be extended to a measure on $\mathcal{A} = \sigma(\mathcal{F})$. That is, there exists a measure $\mu':\sigma(\mathcal{F})\to[0,\infty]$ such that $\mu'|_\mathcal{F} = \mu$ (the restriction of $\mu'$ to $\mathcal{F}$ coincides with $\mu$). If $\mu$ is $\sigma$-finite, then $\mu'$ is unique.
+<details>
+<summary>Proof sketch</summary>
+
+Recall that for any $A\subseteq X$, a cover of $A$ is a countable collection $\{A_i\}_{i\in I}\subseteq\mathcal{F}$ such that $A\subseteq\bigcup$. First, extend $\mu$ to an outer measure $\mu*$ on $\mathcal{P}(X)$ by 
+
+$$
+  \mu*(A) = \inf\left\{ \sum_{i\in I} \mu(A_i) \;|\; A\subseteq\bigcup_{i\in I} A_i \right\}
+$$
+
+Any $A\subseteq X$ is measurable if for every $B\subseteq X$
+
+$$
+  \mu*(B) = \mu*(B\cap A) + \mu*(B\setminus A)
+$$
+
+That is, $A$ is measurable if $\mu*$ is additive with respect to the partition of $B$ induced by $\{A, A^c\}$ for every $B\subseteq X$. Let $\mathcal{M}$ denote the collection of measurable subsets of $X$. The proof is finished by showing that $\mathcal{F}\subseteq\mathcal{M}$, $\mathcal{M}$ is a $\sigma$-algebra over $X$ and $\mu*$ is a measure on $\mathcal{M}$. It follows that $\sigma(\mathcal{F}) = \mathcal{A}\subseteq\mathcal{M}$, and hence $\mu*$ is a measure on $\mathcal{A}$ that extends $\mu$.
+</details>
+</MathBox>
+
+<MathBox title='Uniqueness of $\sigma$-finite measures' boxType='theorem'>
+Let $(X,\mathcal{A})$ be a measurable space and suppose that $\mathcal{B}$ is a $\pi$-system with $\mathcal{A}=\sigma(\mathcal{B})$. If $\mu_1$ and $\mu_2$ are measures on $\mathcal{A}$ and are $\sigma$-finite on $\mathcal{B}$, and if $\mu_1(A)=\mu_2(A)$ for all $A\in\mathcal{B}$, then $\mu_1(A) = \mu_2(A)$ for all $A\in\mathcal{A}$.
+<details>
+<summary>Proof</summary>
+
+Suppose that $B\in\mathcal{B}$ and that $\mu_1(B) = \mu_2(B)<\infty$. Let $\mathcal{L}_B = \{A\in\mathcal{A}\;|\;\mu_1(A\cap B) = \mu_2(A\cap B)\}$. Then $X\in\mathcal{L}_B$ since $B = (X\cap B)$ and $\mu_1(B) =\mu_2(B)$. If $A\in\mathcal{L}_B$ then $\mu_1(A\cap B)=\mu_2(A\cap B)$ so 
+
+$$
+  \mu_1(A^c\cap B) = \mu_1(B) - \mu_1(A\cap B) = \mu_2(B) - \mu_2(A\cap B) = \mu_2(A^c\cap B) 
+$$
+
+and thus $A^c\in\mathcal{L}_B$. Finally, suppose that $\{A_j\}_{j\in J}\subseteq\mathcal{L}_B$ is a countable, disjoint collection. Then $\mu_1(A_j\cap B) = \mu_2(A_j\cap B)$ for each $j\in J$ such that
+
+$$
+\begin{align*}
+  \mu_1\left[\left(\bigcup_{j\in J} A_j \right)\cap B \right] &= \mu_1\left(\bigcup_{j\in J} (A_j\cap B)\right) = \sum_{j\in J}\mu_1(A_j\cap B) \\
+  &= \sum_{j\in J}\mu_2(A_j\cap B) = \mu_2\left(\bigcup_{j\in J} (A_j\cap B) \right) \\
+  &= \mu_2\left[\left(\bigcup_{j\in J}A_j \right)\cap B \right]
+\end{align*}
+$$
+
+Therefore $\bigcup_{j\in J} A_j\in\mathcal{L}_B$, and so $\mathcal{L}_B$ is a $\lambda$-system. By assumption, $\mathcal{B}\subseteq\mathcal{L}_B$ and therefore by the $\pi-\lambda$ theorem, $\mathcal{A} = \sigma(\mathcal{B}\subseteq\mathcal{L}_B$.
+
+By assumption there exists $B_i\in\mathcal{B}$ with $\mu_1(B_i) = \mu_2(B_i)<\infty$ for each $i\in\mathbb{N}$ and $X=\bigcup_{i\in\mathbb{N}} B_i$. If $A\in\mathcal{A}$, then the inclusion-exclusion formula can be applied To
+
+$$
+  \mu_k\left[\left(\bigcup_{i\in\mathbb{N}} B_i \right)\cap A \right] = \mu_k\left[\bigcup_{i\in\mathbb{N}} (A\cap B_i) \right] \quad k\in\{1,2\}
+$$
+
+However, the inclusion-exclusion formula only has terms of the form $\mu_k\left[\bigcap_{j\in J} (A\cap B_j) \right] = \mu_k\left[A\cap \left(\bigcap_{j\in J} B_j \right)\right]$ where $J\subseteq \{i\}_{i=1}^n$. Since $\mathcal{B}$ is a $\pi$-system $\bigcap_{j\in J}B_j\in\mathcal{B}$, so $\mu_1\left[\bigcap_{j\in J} (A\cap B_j) \right] = \mu_2\left[A\cap \left(\bigcap_{j\in J} B_j \right)\right]$. It follows that for each $n\in\mathbb{N}$
+
+$$
+  \mu_1\left[\left(\bigcup_{i=1}^n B_i \right)\cap A \right] = \mu_2\left[\left(\bigcup_{i=1}^n B_i \right)\cap A \right]
+$$
+
+Finally, taking the limit $n\to\infty$ and using the continuity theorem for increasing sets gives $\mu_1(A) = \mu_2(A)$
+</details>
+</MathBox>
+
+<MathBox title='Extension theorem' boxType='theorem'>
+Let $\mathcal{B}$ be a semi-algebra over a set $X$, and suppose that $\mathcal{A}$ is an algebra over $X$ generated by $\mathcal{B}$. A function $\mu:\mathcal{B}\to[0,\infty]$ can be uniquely extended to a measure on $\mathcal{A}$if and only if$\mu$ satisfies the consistency conditions
+1. if $\emptyset\in\mathcal{B}$ then $\mu(\emptyset)=0$
+2. finite additivity: if $\{B_i\}_{i\in I}\subseteq\mathcal{B}$ is a finite, disjoint collection of subsets and $B=\bigcup_{i\in I}B_i\in\mathcal{B}$ then $\mu(B) = \sum_{i\in I}\mu(B_i)$
+3. countable subadditivity: if $B\in\mathcal{B}$ and $B\subseteq\bigcup_{i\in I} B_i$ where $\{B_i\}_{i\in I}\subseteq\mathcal{B}$ is a countable collection, then $\mu(B)\leq\sum_{i\in I}\mu(B_i)$
+</MathBox>
+
+### Lebesgue-Stieltjes measure
+
+This section uses the following compact notations for right and left limits of a function $f:\mathbb{R}\to\mathbb{R}$
+
+$$
+  f(x^+) = \lim_{s\downarrow x} f(t) \quad f(x^-) = \lim_{s\uparrow x} f(t)
+$$
+
+<MathBox title='Distribution function' boxType='definition'>
+A function $f:\mathbb{R}\to\mathbb{R}$ that satisfies the following properties is a distribution function on $\mathbb{R}$
+- $f$ is increasing: if $x\leq y$ then $f(x)\leq f(y)$
+- $f$ is right-continuous: $\lim_{t\downarrow x} f(t) = f(x^+) = f(x)$ for all $x\in\mathbb{R}$ 
+</MathBox>
+
+<MathBox title='Lebesgue-Stieltjes measure' boxType='definition'>
+Let $\mathcal{I}$ be a semi-algebra (collection of bounded intervals) in $\mathbb{R}$ that generates a Borel $\sigma$-algebra on $\mathbb{R}$, i.e. $\sigma(\mathcal{I}) = \mathcal{B}(\mathbb{R})$. Suppose that $\mu:\mathcal{I}\to[0,\infty]$ is a pre-measure on $\mathcal{I}$ given by $\mu_f(I) := f(b) - f(a)$ for a distribution function $f:\mathbb{R}\to\mathbb{R}$ and a left-open interval $I = (a, b]\in\mathcal{I}$. By Carathéodory's theorem there is a unique extension $\mu'_f:\mathcal{B}(\mathbb{R})\to[0,\infty]$ called the Lebesgue-Stieltjes measure.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f$ is a distribution function on $\mathbb{R}$, and suppose that $\mathcal{I}$ is a collection of subsets of $\mathbb{R}$ consisting of intervals of the form, for $a, b\in\mathbb{R}$ and $a\leq b$
+- $(a,b]$
+- $(-\infty, a]$
+- $(a, \infty)$
+
+The collection $\mathcal{I}$ is a semi-algebra because
+- if $A, B\in\mathcal{I}$ then $A\cap B\in\mathcal{I}$
+- if $A\in\mathcal{I}$ then $A^c$ is the union of a finite number (one or two) of sets in $\mathcal{I}$
+
+Define $\mu$ on $\mathcal{I}$ by 
+- $\mu(a, b] = f(b) - f(a)$
+- $\mu(-\infty, a] = f(a) - f(-\infty)$
+- $\mu(a,\infty) = f(\infty) - f(a)$
+
+To show that $\mu$ can be extended to a measure on $\mathcal{B}(\mathbb{R})$, we first note that empty sets of $\mathcal{I}$ are intervals of the form $(a, a]$ for $a\in\mathbb{R}$, which by definition gives $\mu(\emptyset) = 0$. Next, $\mu$ is finitely additive on $\mathcal{I}$. If $\{A_i\}_{i\in I}$ is a finite, disjoint collection of sets in $\mathcal{I}$ with $\bigcup_{i\in I} A_i\in\mathcal{I}$ then
+
+$$
+  \mu\left(\bigcup_{i\in I} A_i \right) = \sum_{i\in I}\mu(A_i)
+$$
+
+Next, $\mu$ is countably subadditive on $\mathcal{I}$. If $A\in\mathcal{I}$ and $A\subseteq\bigcup_{i\in I}A_i$ where $\{A_i\}_{i\in I}$ is a countable collection of sets in $\mathcal{I}$ then
+
+$$
+  \mu(A)\leq\sum_{i\in I}\mu(A_i)
+$$
+
+Finally, $\mu$ is clearly $\sigma$-finite on $\mathcal{I}$ since $\mu(a, b]<\infty$ for $a, b\in\mathbb{R}$ with $a\leq b$, and $\mathbb{R}$ is a countable, disjoint union of intervals of this form. Hence, it follows from Carathéodory's theorem that $\mu$ can be extended uniquely to a measure on $\mathcal{B}(\mathbb{R}) = \sigma(\mathcal{I})$
+</details>
+</MathBox>
+
+Several special cases of Lebesgue-Stieltjes measures exist
+- The Lebesgue measure is obtained if $f$ is the identity function, i.e. $f(x) = x$, giving $\mu_f((a, b]) := b - a$
+- The Dirac measure is obtained if $f$ is the indicator function
+
+<MathBox title='Existence of distribution function generating a Lebesgue-Stieltjes measure' boxType='proposition'>
+Suppose that $\mu$ is a positive measure on $(\mathbb{R},\mathcal{B}(\mathbb{R}))$ with the property that $\mu(A)<\infty$ if $A$ is bounded. Then there exists a distribution function that generates $\mu$.
+
+<details>
+<summary>Proof</summary>
+
+Define $f$ on $\mathbb{R}$ by
+
+$$
+  f(x) = \begin{cases} \mu(0,\infty],\quad &x\geq 0 \\ -\mu(x,\infty],\quad &x<0 \end{cases}
+$$
+
+Then $f:\mathbb{R}\to\mathbb{R}$ by the assumption on $\mu$ and it remains to show that $f$ is increasing and right-continuous. By the increasing property of positive measures it follows that
+- if $0\leq x\leq y$ then $\mu(0, x]\leq\mu(0,y]$
+- if $x\leq y\leq 0$ then $\mu(x,0]\geq\mu(y,0]\iff -\mu(0,x]\leq-\mu(y,0]$
+- if $x\leq 0\leq y$ then $-\mu(x,0]\leq 0$ and $\mu(0,y]\geq 0$
+
+Thus, it follows that $f$ is also increasing. For the right-continuity, consider a sequence $(x_n)_{n\in\mathbb{N}}$ in $\mathbb{R}$ with $x_n \overset{n\to\infty}{\downarrow} x$, then
+- if $x\geq 0$ then $\mu(0,x_n]\overset{n\to\infty}{\downarrow}\mu(0, x]$ by continuity of decreasing sets
+- if $x<0$ then $\mu(x_n,0]\overset{n\to\infty}\mu(x,0]$ by continuity of increasing sets
+
+In both cases, $f(x_n)\overset{n\to\infty}{\downarrow} f(x)$. Hence, $f$ is a distribution function, and it remains to show that it generates $\mu$. Let $a, b\in\mathbb{R}$ with $a\leq b$, then 
+- if $a\geq 0$ then $\mu(a,b] = \mu(0,b] - \mu(0,a] = f(b) - f(a)$ by the difference property of a positive measure
+- if $b\leq 0$ then $\mu(a, b] = \mu(a, 0] - \mu(b, 0]$ = -f(a) + f(b)
+- if $a\leq 0$ and $b\geq 0$ then $\mu(a,b] = \mu(a,0] + \mu(0, b] = -f(a) + f(b)$
+</details>
+</MathBox>
+
+<MathBox title='Properties of Lebesgue-Stieltjes measure' boxType='proposition'>
+Suppose that $f:\mathbb{R}\to\mathbb{R}$ is a distribution function and $\mu$ is the positive measure on $(\mathbb{R},\mathcal{B}(\mathbb{R}))$ associated with $f$. The following properties hold for $a, b\in\mathbb{R}$ with $a< b$
+1. $\mu[a, b] = f(b) - f(a^-)$
+2. $\mu\{a\} = f(a) - f(a^-)$
+3. $\mu(a,b) = f(b^-) - f(a)$
+4. $\mu[a,b) = f(b^-) - f(a^-)$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $(x_n)_{n\in\mathbb{N}}$ is a sequence of distinct points in $\mathbb{R}$
+1. If $x_n\overset{n\to\infty}{\uparrow} a$ then $(x_n, b]\overset{n\to\infty}{\uparrow}[a, b]$ so $\mu(x_n,b]\overset{n\to\infty}{\uparrow}\mu[a,b]$. However, $\mu(x_n, b] = f(b) - f(x_n) \xrightarrow{n\to\infty} f(b) - f(a^-)$
+2. This follows from $(1)$ by taking $a = b$.
+3. If $x_n\overset{n\to\infty}{\uparrow} b$ then $(a, x_n]\overset{n\to\infty}{\uparrow}(a, b)$ so $\mu(a,x_n]\overset{n\to\infty}{\uparrow}\mu(a,b)$. However, $\mu(a, x_n] = f(x_n) - f(a) \xrightarrow{n\to\infty} f(b^-) - f(a)$
+4. From $(1)$ and $(2)$ and the difference rule
+
+$$
+  \mu[a, b) = \mu[a, b] - \mu\{b\} = f(b) - f(a^-) - \left[f(b) - f(b^-)\right] = f(b^-) - f(a^-)
+$$
+</details>
+</MathBox>
+
+Note that a distribution function $f:\mathbb{R}\to\mathbb{R}$ is continuous at $x\in\mathbb{R}$if and only if$\mu\{x\} = 0$. In particular, $\mu$ is continuous measureif and only if$f$ is continuous on $\mathbb{R}$. On the other hand, $f$ is discontinuous at $x\mathbb{R}$if and only if$\mu\{x\}>0$, so that $\mu$ has an atom at $x$. That is, $\mu$ is a discrete measureif and only if$f$ is a step function.
+
+<MathBox title='n-fold Lebesgue measure' boxType='definition'>
+For $n\in\mathbb{N}$, let $(\mathbb{R}^n, \mathcal{B}(\mathbb{R}^n))$ be the $n$-dimensional Euclidean measurable space where $\mathcal{B}(\mathbb{R}^n) = \sigma\left\{ \prod_{i=1}^n I_i \;|\; I_i \in\mathcal{I} \right\}$ and $\mathcal{I}$ is a semi-ring of bounded intervals in $\mathbb{R}$. The $n$-fold Lebesgue measure $\lambda_n:\mathcal{B}(\mathbb{R}^n)\to[0,\infty]$ is given by
+
+$$
+  \lambda_n\left(\prod_{i=1}^n I_i \right) = \prod_{i=1}^n \mathrm{length}(I_i)
+$$
+
+The measure space $(\mathbb{R}^n,\mathcal{B}(\mathbb{R}^n),\lambda_n)$ is regular. That is for $A\in\mathcal{B}(\mathbb{R}^n)$
+- $\lambda_n(A) = \sup\{\lambda_n(C) \;|\; C\textrm{ is compact and }C\subseteq A \}$ (inner regularity)
+- $\lambda_n(A) = \inf\{\lambda_n(U) \;|\; U\textrm{ is open and }A\subseteq U \}$ (outer regularity)
+</MathBox>
+
+<MathBox title='Properties of Lebesgue measure' boxType='proposition'>
+Suppose that $A\in\mathcal{B}(\mathbb{R}^n)$. The Lebesgue measure $\lambda_n$ has the following properties
+- translation invariance: if $x\in\mathbb{R}^n$ then $\lambda_n(A + x) = \lambda_n(A)$
+- dilation property: if $c\in(0,\infty)$ then $\lambda_n(cA) = c^n\lambda_n(A)$
+- scaling property: if $T$ is an $n\times n$ matrix then $\lambda_n(TA) = |\det(T)|\lambda_n(A)$
+</MathBox>
+
+## Density functions
+
+<MathBox title='Density function' boxType='definition'>
+Suppose that $\mu$ is $\sigma$-finite measure on $(X,\mathcal{A})$, and that $f:X\to\mathbb{R}$ is a measurable function whose integral with respect to $\mu$ exist. If $A\in\mathcal{A}$, the function $\nu$ defined by
+
+$$
+  \nu(A) = \int_A f\,\mathrm{d}\mu
+$$
+
+is a $\sigma$-finite measure on $(X,\mathcal{A})$ that is absolutely continuous with respect to $\mu$, i.e. $\nu\ll\mu$. The function $f$ is a density function of $\nu$ relative to $\mu$. The follow three special cases of $f$ are the most important
+1. If $f$ is non-negative then $\nu$ is a positive measure since $\nu(A)\geq 0$
+2. If $f$ is integrable, then $\nu$ is a finite measure since $\nu(A)\in\mathbb{R}$
+3. If $f$ is non-negative and $\int_X f\,\mathrm{d}\mu = 1$, then $\nu$ is a probability measure since $\nu(X) = 1$. In this case, $f$ is a probability density function.
+</MathBox>
+
+<MathBox title='Uniqueness of density functions' boxType='proposition'>
+Suppose that $\nu$ is $\sigma$-finite measure on $(X,\mathcal{A},\mu)$ with density function $f$ relative to $\mu$. Then $g:X\to\mathbb{R}$ is a density function of $\nu$ relative to $\mu$if and only if$f \overset{\mu\textrm{-a.e.}}{=} g$.  
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f,g:X\to\mathbb{R}$ are measurable functions whose integrals relative to $\mu$ exist. If $g \overset{\mu\textrm{-a.e.}}{=} f$ on $X$ then $\int_A f\,\mathrm{d}\mu = \int_A g\,\mathrm{d}\mu$ for every $A\in\mathcal{A}$. Therefore, if $f$ is a density function for $\nu$ relative to $\mu$, then so is $g$. Conversely, if $\int_A f\,\mathrm{d}\mu = \int_A g\,\mathrm{d}\mu$ for every $A\in\mathcal{A}$, it follows that $f \overset{\mu\textrm{-a.e.}}{=} g$ since $\mu$ is $\sigma$-finite.
+
+</details>
+</MathBox>
+
+<MathBox title="Lebesgue's decomposition theorem" boxType='theorem'>
+Let $\mu$ be a $\sigma$-finite measure on $(X, \mathcal{A})$. If $\nu$ is $\sigma$-finite measure on $(X,\mathcal{A})$ with density function $f$ relative to $\mu$, then $\nu$ can be uniquely decompose as $\nu = \nu_c + \nu_s$ where $\nu_c\ll\mu$ and $\nu_s\perp\mu$.
+</MathBox>
+
+<MathBox title='Radon-Nikodym theorem' boxType='theorem'>
+Let $\mu, \nu$ be two $\sigma$-finite measures on a measure space $(X, \mathcal{A})$. If $\nu\ll\mu$, then there is a density function $f:X\to\mathbb{R}$ with
+
+$$
+  \nu(A) = \int_A f \;\mathrm{d}\mu, \; \forall A \in\mathcal{A}
+$$
+
+The function $f$ is commonly written $\frac{\mathrm{d}\nu}{\mathrm{d}\mu}$ and is called the Radon-Nikodym derivative.
+
+<details>
+<summary>Proof</summary>
+
+This proves both the Lebesgue decomposition and the Radon-Nikodym theorems as the result are inextricably linked.
+
+**Positive finite measures**
+Suppose that $\mu$ and $\mu$ are finite, positive measures. Let $\mathcal{F}$ denote the collection of measurable functions $g:X\to[0,\infty)$ with $\int_A g\,\mathrm{d}\mu\leq\nu(A)$ for all $A\in\mathcal{A}$. Note that $\mathcal{F}\neq\emptyset$ since the constant function $0$ is in $\mathcal{F}$. The proof works by finding a maximal element of $\mathcal{F}$ and using this function as the density function of the absolutely continuous part of $\mu$.
+
+Our first step is to show that $\mathcal{F}$ is closed under the max operator. Let $g_1,g_2\in\mathcal{F}$. For $A\in\mathcal{A}$, let $A_1 = \{x\in A\;|\; g_1(x)\geq g_2(x)\}$ and $A_2 = \{x\in A\;|\; g_1(x)<g_2(x)\}$. Then $A_1,A_2\in\mathcal{A}$ partition $A$ such that
+
+$$
+\begin{align*}
+  \int_A \max\{g_1,g_2}\,\mathrm{d}\mu = \int_{A_1} \max\{g_1,g_2}\,\mathrm{d}\mu + \int_{A_2} \max\{g_1,g_2}\,\mathrm{d}\mu \\
+  &= \int_{A_1} g_1\,\mathrm{d}\mu + \int_{A_2} g_2\,\mathrm{d}\mu \leq \nu(A_1) + \nu(A_2) = \nu(A)
+\end{align*}
+$$
+
+Hence $\max\{g_1,g_2\}\in\mathcal{F}$.
+
+Our next step is to show that $\mathcal{F}$ is closed with respect to increasing limits. Suppose that $(g_n\in\mathcal{F})_{n\in\mathbb{N}}$ is an increasing sequence on $X$ and let $g = \lim_{n\to\infty} g_n$. Then $g:X\to[0,\infty]$ is measurable, and by the monotone convergence theorem $\int_A g\,\mathrm{d}\mu = \lim_{n\to\infty}\int_A g_n\,\mathrm{d}\mu$ for every $A\in\mathcal{A}$. However, $\int_A g_n\,\mathrm{d}\mu\leq\nu(A)$ for every $n\in\mathbb{N}$ so $\int_A g\,\mathrm{d}\mu\leq\nu(A)$. In particular, $\int_X g\,\mathrm{d}\mu\leq\nu(X)<\infty$ so $g<\infty$ almost everywhere on $X$ with respect to $\mu$. Thus, by redefining $g$ on a $\mu$-null set if necessary, $g<\infty$ on $X$. Hence $g\in\mathcal{F}$.
+
+Let $\alpha=\{\int_X g\,\mathrm{d}\mu\;|\; g\in\mathcal{F}\}$. Note that $\alpha\leq\nu(X)<\inft$. By definition of the supremum there exist $g_n\in\mathcal{F}$ such that $\int_X g_n\,\mathrm{d}\mu>\alpha - \frac{1}{n}$ for each $n\in\mathbb{N}$. Let $f_n = \max\{g_i\}_{i=1}^n$. Then $f_n\in\mathcal{F}$ and $f_n$ is increasing in $n$ on $X$. Hence $f=\lim_{n\to\infty} f_n\in\mathcal{F}$ and by the monotone convergence theorem $\int_X f\,\mathrm{d}\mu = \lim_{n\to\infty}\int_X f_n\,\mathrm{d}\mu$. However, $\int_X f_n\,\mathrm{d}\mu\geq\int_X g_n\,\mathrm{d}\mu > \alpha-\frac{1}{n}$ for each $n\in\mathbb{N}$ and hence $\int_X f\,\mathrm{d}\mu\geq\alpha$.
+
+Define $\nu_c(A) = \int_A f\,\mathrm{d}\mu$ and $\nu(A) = \nu(A) - \nu_c(A)$ for $A\in\mathcal{A}$. Then $\nu_c$ and $\nu_s$ are positive finite measures and by definition $\nu_c\ll\mu$ and has density function $f$. The next step is to show that $\nu_s$ is singular with respect to $\mu$. For $n\in\mathbb{N}$ let $(P_n,P_n^c)$ denote a Hahn decomposition of the measure $\nu_s - \frac{1}{n}\mu$. Then
+
+$$
+\begin{align*}
+  \int_A \left(f + \frac{1}{n}\chi_{P_n} \right)\,\mathrm{d}\mu &= \nu_c(A) + \frac{1}{n}\mu(P_n\cap A) \\
+  &= \nu(A) - \left[\nu_s(A) - \frac{1}{n}\mu(P_n\cap A)\right]
+\end{align*}
+$$
+
+However, $\nu_s(A)-\frac{1}{n}\mu(P_n\cap A)\geq \nu_s(A\cap P_n) - \frac{1}{n}\mu(A\cap P_n)\geq 0$ since $\nu_s$ is a positive measure and $P_n$ is positive for $\nu_s - \frac{1}{n}\mu$. Thus we have $\int_A\left(f + \frac{1}{n}\chi_{P_n} \right)\,\mathrm{d}\mu\leq\nu(A)$ for every $A\in\mathcal{A}$, so $f + \frac{1}{n}\chi_{P_n}\in\mathcal{F}$ for every $n\in\mathbb{N}$. If $\mu(P_n)>0$ then $\int_X \left(f+\frac{1}{n}\chi_{P_n}\right)\,\mathrm{d}\mu = \alpha + \frac{1}{n}\mu(P_n)>\alpha$, which contradicts the definition of $\alpha$. Hence, we must have $\mu(P_n) = 0$ for every $n\in\mathbb{N}$. Let $P=\bigcup_{n\in\mathbb{N}} P_n$, then $\mu(P) = 0$. If $\nu_s(P^c) - \frac{1}{n}\mu(P^c)>0$ for sufficiently large $n$. This is a contraction since $P^c \subseteq P_n^c$, which is negative for $\nu_s - \frac{1}{n}\mu$ for every $n\in\mathbb{N}$. Hence, we must have $\nu_s(P^c) = 0$, so $\mu$ and $\nu_s$ are mutually singular.
+
+**Positive $\sigma$-finite measures**
+Suppose that $\mu$ and $\nu$ are $\sigma$-finite, positive measures. Then there exists a countable partition $\{X_i \in\mathcal{A}\}_{i\in I}$ of $X$ where $\mu(X_i)<\infty$ and $\nu(X_i)<\infty$ for every $i\in I$. Let $\mu_i(A) = \mu(A\cap X_i)$ and $\nu_i(A) = \nu(A\cap X_i)$ for $i\in I$. Then $\mu_i$ and $\nu_i$ are finite, positive measures for $i\in I$ and $\mu=\sum_{i\in I}\mu_i$ and $\nu=\sum_{i\in I}\nu_i$. From the last result, there exists a measurable function $f_i:X\to[0,\infty)$ such that $\nu_i = \nu_{i,c} + \nu_{i,s}$ where $\nu_{i,c}(A) = \int_A f_i\,\mathrm{d}\mu$ for $A\in\mathcal{A}$ and $\nu_{i,s}\perp\mu$. Let $f=\sum_{i\in I}\chi_{A_i} f_i$, then $f:X\to[0,\infty)$ is measurable. Define $\nu_c(A) = \int_A f\,\mathrm{d}\mu$ and $\nu_s(A) = \nu(A) - \nu_c(A)$ for $A\in\mathcal{A}$. Note that $\nu_c=\sum_{i\in I}\nu_{i,c}$ and $\nu_s=\sum_{i\in I}\nu_{i,s}$. Then $\nu_c\ll\mu$ with density function $f$ and $\nu_s\perp\mu$.
+
+**General $\sigma$-finite measures**
+Suppose that $\nu$ is a $\sigma$-finite measure. By the Jordan decomposition theorem, $\nu = \nu_+ - \nu_-$ where $\nu_+$ and $\nu_-$ are $\sigma$-finite, positive measures, of which at least one is finite. By the last result, there exists measurable functions $f_+,f_-:X\to[0,\infty)$ such that 
+- $\nu_+ = \nu_{+,c} + \nu_{+,s}$ where $\nu_{+,c}(A) = \int_A f_+\,\mathrm{d}\mu$ for $A\in\mathcal{A}$ and $\nu_{+,s}\perp\mu$
+- $\nu_- = \nu_{-,c} + \nu_{-,s}$ where $\nu_{-,c}(A) = \int_A f_-\,\mathrm{d}\mu$ for $A\in\mathcal{A}$ and $\nu_{-,s}\perp\mu$
+
+For $A\in\mathcal{A}$ let
+- $f = f_+ - f_-$
+- $\nu_c(A) = \int_A f\,\mathrm{d}\mu$
+- $\nu_s(A) = \nu(A) - \nu_c(A)$
+
+Then $\nu = \nu_c + \nu_s$ and $\nu_s = \nu_{+,s} + \nu_{-,s}\perp\mu$.
+
+**Uniqueness**
+Suppose that $\nu = \nu_{c,1}+\nu_{s,1} = \nu_{c,2}+\nu_{s,2}$ where $\nu_{c,i}\ll\mu$ and $\nu_{s,i}\perp\mu$ for $i\in\{1,2\}$. Then $\nu_{c,1} - \nu_{c,2} = \nu_{s,2} - \nu_{s,1}$. However, $\nu_{c,1}-\nu_{c,2}\ll\mu$ and $\nu_{s,2}-\nu_{s,1}\perp\mu$. By the zero propert of absolute continuity and singularity, it follows that $\nu_{c,1} - \nu_{c,2} = \nu_{s,2} - \nu_{s,1} = 0$.
+</details>
+</MathBox>
+
+<MathBox title='Corollary' boxType='corollary'>
+Suppose that $\nu$ is a positive measure on $(X,\mathcal{A},\mu)$ with $\nu\ll\mu$, and that $\nu$ has a density function $f = f^+ - f^-$ relative to $\mu$. If $P = \{x\in X\;|\; f(x)\geq 0\}$ then
+1. A Hahn decomposition of $\nu$ is $(P, P^c)$
+2. The Jordan composition of $\nu$ is $\nu = \nu_+ - \nu_$ where $\nu_+ (A) = \int_A f^+ \,\mathrm{d}\mu$ and $\nu_-(A) = \int_A f^-\,\mathrm{d}\mu$ for $A\in\mathcal{A}$
+
+<details>
+<summary>Proof</summary>
+
+Note that $P^c = \{x\in X\;|\; f(x)<0\}$. 
+1. Suppose that $A\in\mathcal{A}$. If $A\subseteq P$ then $f(x)>0$ for $x\in A$ and hence $\nu(A) = \int_A f\,\mathrm{d}\mu\geq 0$. If $A\subseteq P^c$ then $\nu(A) = \int_A f\,\mathrm{d}\mu\leq 0$.
+2. This follows directly from $(1)$ and the Jordan decomposition theorem since $\nu_+(A) = \nu(A\cap P)$ and $\nu_-(A) = -\nu(A\cap P^c)$ for $A\in\mathcal{A}$. Note that $f^+ = \chi_{P}f$ and $f^- = -\chi_{P^c}f$.
+</details>
+</MathBox>
+
+<MathBox title='Change of variables' boxType='theorem'>
+Suppose that $\nu$ is a positive measure on $(X,\mathcal{A},\mu)$ with $\nu\ll\mu$, and that $\nu$ has a density function $f$ relative to $\mu$. If $g:X\to\mathbb{R}$ is a measurable function whose integral relative to $\nu$ exists, then
+
+$$
+  \int_X g\,\mathrm{d}\nu = \int_X gf\,\mathrm{d}\nu
+$$
+
+In differential notation this is written $\mathrm{d}\nu = f,\mathrm{d}\mu$.
+<details>
+<summary>Proof</summary>
+
+**Non-negative simple functions**
+Suppose that $g = \sum_{i\in I}a_i\chi_{A_i}$ is a non-negative simple function where $I$ is a finite index set, $a_i\in[0,\infty)$ and for $i\in I$ and $\{A_i\}_{i\in I}$ is a disjoint collection of sets in $\mathcal{A}$. Then $\int_X g\,\mathrm{d}\mu = \sum_{i\in I} a_i\nu(A_i)$. However $\nu(A_i) = \int_{A_i} f\,\mathrm{d}\mu = \int_X \chi_{A_i}f\,\mathrm{d}\mu$ for each $i\in I$ so
+
+$$
+  \int_X g\,\mathrm{d}\mu = \sum_{i\in I}a_i \int_X \chi_{A_i} f\,\mathrm{d}\mu = \int_X\left(\sum_{i\in I} a_i\chi_{A_i} \right)f\,\mathrm{d}\mu = \int_X gf\,\mathrm{d}\mu
+$$
+
+**Non-negative functions**
+Suppose that $g:X\to[0,\infty)$ is measurable. There exists an increasing sequence of non-negative simple functions $(g_n)_{n\in\mathbb{N}}$ on $X$ with $g_n\xrightarrow{n\to\infty}g$. Since $f$ is non-negative, $g_n f$ is increasing in $n$ on $X$ and $g_n f\xrightarrow{n\to\infty} gf$. By the last result $\int_X g_n\,\mathrm{d}\nu = \int_X g_n f\,\mathrm{d}\mu$ for each $n\in\mathbb{N}$. By the monotone convergence theorem $\int_X g_n\,\mathrm{d}\nu\xrightarrow{n\to\infty}\int_X g\,\mathrm{d}\nu$ and $\int_X g_n f\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X gf\,\mathrm{d}\mu$. Hence $\int_X g\,\mathrm{d}\nu = \int_X gf\,\mathrm{d}\mu$.
+
+**General functions**
+Suppose that $g:X\to\mathbb{R}$ is a measurable functions whose integral exists relative to $\nu$. Note that $g = g^+ - g^-$. By the previous result, 
+- $\int_X g^+\,\mathrm{d}\nu = \int_X g^+ f\,\mathrm{d}\mu$
+- $\int_X g^-\,\mathrm{d}\nu = \int_X g^- f\,\mathrm{d}\mu$
+of which at least one is finite. By the additive property
+
+$$
+\begin{align*}
+  \int_X g\,\mathrm{d}\mu &= \int_X g^+\,\mathrm{d}\nu - \int_X g^-\,\mathrm{d}\nu = \int_X g^+ f\,\mathrm{d}\mu - \int_X g^- f\,\mathrm{d}\mu \\
+  &= \int_X (g^+ - g^-)f\,\mathrm{d}\mu = \int_X gf\,\mathrm{d}\mu
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Density function rules' boxType='proposition'>
+Suppose that $\nu$ is positive measure on $(X,\mathcal{A},\mu)$ with $\nu\ll\mu$, and that $\nu$ has density functions $f$ relative to $\mu$. 
+1. Scalar multiplication rule: If $c\in\mathbb{R}$, then $c\nu$ has density function $cf$ relative to $\mu$.
+2. Sum rule: if $\rho$ is a positive measure of same type as $\nu$ with $\rho\ll\mu$ and density function $g$ relative to $\mu$. Then $\nu + \rho$ has density function $f + g$ relative to $\mu$ 
+3. Chain rule: if $\rho$ is a positive measure with $\rho\ll\nu$ and density function $g$ relative to $\nu$. Then $\rho$ has density function $gf$ relative to $\mu$.
+4: Inverse rule: if $\mu\ll\nu$ so that $\nu\equiv\mu$ then $\mu$ has density function $1/f$ with respect to $\nu$.
+
+<details>
+<summary>Proof</summary>
+
+Let $A\in\mathcal{A}$.
+1. $\int_A cf\,\mathrm{d}\mu = c\int_A f\,\mathrm{d}\mu = c\nu(A)$.
+2. $\int_A (f + g)\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu + \int_A g\,\mathrm{d}\mu = \nu(A) + \rho(A)$
+3. This follows from the change of variable theorem: $\rho(A) = \int_A g\,\mathrm{d}\nu = \int_A gf\,\mathrm{d}\mu$
+4. Let $f$ be a density function of $\nu$ relative to $\mu$ and let $Z = \{x\in X\;|\; f(x) = 0\}$. Then $\nu(Z) = \int_Z f\,\mathrm{d}\mu = 0$ so $Z$ is a null set of $\nu$ and consequently a null set of $\mu$. Thus, we can assume that $f\neq 0$ on $X$. Let $g$ be a density function of $\mu$ relative to $\nu$. Since $\mu\ll\nu\ll\mu$, it follows from the the chain rule that $fg$ is a density function of $\mu$ with respect to $\mu$. Clearly, the constant function $1$ is also a density of $\mu$ with respect to itselt, resulting in $fg = 1$ almost everywhere on $X$. Thus $1/f$ is a density function $\mu$ relative to $\nu$.
+</details>
+</MathBox>
+
+## Image measure and substitution formula
+
+<MathBox title='Image measure' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ and $(Y,\mathcal{B},\nu)$ be two measure spaces, and $h:X\to Y$ a measurable map. The measure of a set $B \subset\mathcal{B}$ is given by
+
+$$
+  \nu(B) = \mu\left(h^{-1}[B]\right) = \left(\mu \circ h^{-1}\right)(B) = \left(\mu * h^{-1}\right)(B)
+$$
+
+which is called an image measure.
+</MathBox>
+
+<MathBox title='Substitution formula' boxType='theorem'>
+The image measure gives a substitution formula for a measurable function $g:Y\to\mathbb{R}$:
+
+$$
+\begin{gather*}
+  \int_Y g \;\mathrm{d}(h*\mu) = \int_X g \circ h \;\mathrm{d}\mu \\
+  \int_Y g(y) \;\mathrm{d}\left(\mu \circ h^{-1} \right) = \int_X g(h(x)) \mathrm{d}\mu(x), \quad y = h(x)
+\end{gather*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+In the simplest case, $g = \chi_C$ (indicator function) with $C \subseteq Y$ so that 
+
+$$
+  \int_Y \chi_C \;\mathrm{d}(h*\mu) = (h*\mu)(C) = \mu\left( h^{-1}(C) \right) 
+$$
+
+and
+
+$$
+  \int_X \chi_C \circ h \;\mathrm{d}\mu = \int_X \chi_C (h(X)) \mathrm{d}\mu(x) = \int_X \chi_{h^{-1}(C)} \;\mathrm{d}\mu = \mu\left( h^{-1}(C) \right)
+$$
+
+Let $g$ be a simple function of the form $g = \sum_{i=1}^n \alpha_i \chi_{C_i}$
+
+$$
+\begin{align*}
+  \int_Y \sum_{i=1}^n \alpha_i \chi_{C_i} \mathrm{d}(h*\mu) &= \sum_{i=1}^n \alpha_i \int_Y \chi_{C_i} \mathrm{d}(h*\mu) = \sum_{i=1}^n \alpha_i \int_X \chi_{C_i}(h(x))\mathrm{d}\mu(x) \\
+  &= \int_X \left(\sum_{i=1}^n \alpha_i \chi_{C_i} \right)(h(x)) \mathrm{d}\mu(x) \\
+  &= \int_X g \circ h \;\mathrm{d}\mu
+\end{align*}
+$$
+
+In the general case, let $g: Y \to [0, \infty)$ be measurable. Then for simple functions $\tilde{s}$, the Lebesgue integral is
+
+$$
+\begin{align*}
+  \int_Y g \;\mathrm{d}(h*\mu) &= \sup\left\{ \int_Y \tilde{s} \mathrm{d}\mathrm{d}(h*\mu) \;|\; \tilde{s}: Y \to [0, \infty), \tilde{s} \leq g \right\} \\
+  &= \sup\left\{ \int_X \tilde{s} \circ h \mathrm{d}\mu \;|\; \tilde{s}: Y \to [0, \infty), \tilde{s}\circ h \leq g \circ h \right\} \\
+  &= \sup\left\{ \int_X s \mathrm{d}\mu \;|\; s: X \to [0, \infty), s \leq g \circ h \right\} \\
+  &= \int_X g \circ h \;\mathrm{d}\mu
+\end{align*}
+$$
+</details>
+</MathBox>
+
+## Product measure
+
+<MathBox title='Product measure' boxType='proposition'>
+Suppose that $(X,\mathcal{A},\mu)$ and $(Y,\mathcal{B},\nu)$ are $\sigma$-finite measure spaces. Then there exists a unique $\sigma$-finite measure $\mu\otimes\nu$ on the product space $(X\times Y, \mathcal{A}\otimes\mathcal{B})$ such that for $A\in\mathcal{A}$ and $B\in\mathcal{B}$
+
+$$
+  (\mu\otimes\nu)(A\times B) = \mu(A)\nu(B)
+$$
+
+The triple $(X\times Y,\mathcal{A}\otimes\mathcal{B},\mu\otimes\nu)$ is the product measure associated with $(X,\mathcal{A},\mu)$ and $(Y,\mathcal{B},\nu)$.
+
+In the general case, suppose that $(X_i, \mathcal{A}_i, \mu_i)$ is a $\sigma$-finite measure space for $\{i\}_{i=1}^{n\in\mathbb{N}}$. Let $X = \prod_{i=1}^n S_i$ and $\mathcal{A} = \otimes_{i=1}^n \mathcal{A}_i$. Then there exists a unique $\sigma$-finite measure on $(X,\mathcal{A})$ satisfying
+
+$$
+  \mu\left(\prod_{i=1}^n A_i \right) = \prod_{i=1}^n \mu_i(A_i),\quad $A_i\in\mathcal{A}_i$
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the collection $\mathcal{C} = \{A\times B\;|\;A\in\mathcal{X},B\in\mathcal{B}\}$ is a semi-algebra. Define $\rho:\mathcal{B}\to[0,\infty)$ by $\rho(A\times B)=\mu(A)\nu(B)$. The consistency conditions hold, so $\rho$ can be extended to a measure on the algebra $\mathcal{D}$ generated by $\mathcal{C}$. The algebra $\mathcal{D}$ is the collection of all finite, disjoint unions of products of measurable sets. We will now show that the extended measure $\rho$ is $\sigma$-finite on $\mathcal{D}$. Since $\mu$ is $\sigma$-finite, there exists an increasing sequence $(A_n)_{n\in\mathbb{N}}$ of sets in $\mathcal{A}$ with $\mu(A_n)<\infty$ and $\bigcup_{n\in\mathbb{N}} A_n = X$. Similarly, there exists an increasing sequence $(B_n)_{n\in\mathbb{N}}$ of sets in $\mathcal{B}$ with $\nu(B_n)<\infty$ and $\bigcup_{n\in\mathbb{N}}B_n = Y$. Then $\rho(A_n \times B_n) <\infty$ and since the sequences are increasing $\bigcup_{(i,j)\in\mathbb{N}^2} A_i\times B_j = X\times Y$. By Caratheodory's theorem, $\rho$ can be uniquely extended to a measure on $\sigma(\mathcal{D}) = \mathcal{A}\otimes\mathcal{B}$.
+</details>
+</MathBox>
+
+<MathBox title='Measures of cross sections form measurable functions' boxType='proposition'>
+Suppose that $(X,\mathcal{A},\mu)$ and $(Y,\mathcal{B},\nu)$ are $\sigma$-finite measure spaces. If $C\in\mathcal{A}\otimes\mathcal{B}$ then
+1. $x\mapsto\nu(C_x = \{y\in Y\;|\; (x,y)\in C\})$ is a measurable function $f:X\to[0,\infty]$
+2. $y\mapsto\mu(C^y = \{x\in X\;|\; (x,y)\in C\})$ is a measurable function $f:T\to[0,\infty]$
+
+<details>
+<summary>Proof</summary>
+
+1. Consider the case where the measure spaces are finite. Let $\mathcal{R}=\{A\times B\;|\; A\in\mathcal{A},B\in\mathcal{B}\}$ denote the set of measurable rectangles. Let $\mathcal{C} = \{C\in\mathcal{A}\otimes\mathcal{B}\;|\; x\mapsto\nu(C_x)\textrm{ is measurable}\}$. If $A\times B\in\mathcal{R}$, then $A\times B\in\mathcal{C}$ since $\nu\left[(A\times B)_x \right] = \nu(B)\mathbf{1}_A(x)$. Next, suppose $C\in\mathcal{C}$, then $(C^c)_x = (C_x)^c$ giving $\nu\left[(C^c)_x \right] = \nu(Y) - \nu(C_x)$ and this a measurable function of $x\in X$, hence $C^c\in\mathcal{C}$. Next, suppose that $\{C_i\}_{i\in I}$ is a countable, disjoint collection of set in $\mathcal{C}$, and let $C = \bigcup_{i\in I} C_i$. Then $\left\{ (C_i)_x \right\}_{i\in I}$ is a countable, disjoint collection of sets in $\mathcal{Y}$ and $C_x = \bigcup_{i\in I} (C_i)_x$. Thus, $\nu(C_x) = \sum_{i\in I} \nu\{(C_i)_x\}$, which is a measurable function of $x\in X$, hence $C\in\mathcal{C}$. It follows that $\mathcal{C}$ is a $\lambda$-system that contains $\mathcal{R}$, which in turn is a $\pi$-system. By Dynkin's $\pi$-$\lambda$ theorem, $\mathcal{A}\otimes\mathcal{B} = \sigma(\mathcal{R})\subseteq\mathcal{C}$, thus $\mathcal{C}=\mathcal{A}\otimes\mathcal{B}$.
+
+Consider the general case where the measure spaces are $\sigma$-finite. There exists a countable, increasing sequence of sets $(C_n \in \mathcal{A}\otimes\mathcal{B})_{n\in\mathbb{N}}$ with $(\mu\otimes\nu)(C_n)<\infty$. If $C\in\mathcal{A}\otimes\mathcal{B}$, then $C\cap C_n$ is increasing in $n\in\mathbb{N}$ and $C = \bigcup_{n\in\mathbb{N}} (C\cap C_n)$. This, $(C\cap C_n)_x$ is increasing for $x\in X$ and $C_x = \bigcup_{n\in\mathbb{N}} (C\cap C_n)_x$. It follows that $\nu(C_x) = \lim_{n\to\infty} \nu\left[(C\cap C_n)_x\right]$. However $x\mapsto\nu\left[(C\cap C_n)_x \right]$ is a measurable function of $x\in X$ for each $n\in\mathbb{N}$ by the previous argument, so $x\mapsto\nu(C_x)$ is a measurable function of $x\in X$.
+2. This follows from symmetry.
+</details>
+</MathBox>
+
+## Outer measure
+
+<MathBox title='Outer measure' boxType='definition'>
+A map $\varphi: P(X) \to [0, \infty]$ is called an outer measure if it satisfies
+1. $\varphi(\emptyset) = 0$
+2. Monotonicity: $A \subseteq B \implies \varphi(A) \leq \varphi(B)$ 
+3. $\sigma$-subadditivity: for $(A_n)_{n\in\mathbb{N}} \in P(X) \implies \varphi\left( \bigcup_{n\in\mathbb{N}} A_n \right) \leq \sum_{n\in\mathbb{N}} \varphi(A_n)$
+
+A set $A \in P(X)$ is called $\varphi$-measurable if for all $Q \in P(X)$ we have
+
+$$
+  \varphi(Q) = \phi(Q \cap A) + \phi(Q \cap A^c)
+$$
+
+The collection of $\varphi$-measurable sets $\mathcal{A}_\varphi$ is a $\sigma$-algebra and the map $\mu: \mathcal{A}_\varphi \to [0, \infty]$ with $\mu(A) := \varphi(A)$ is a measure.
+
+<details>
+<summary>Proof</summary>
+
+Verifying that $\mathcal{A}_\varphi$ is a $\sigma$-algebra is straightforward
+- To show that $\emptyset \in \mathcal{A}_\varphi$ we verify that $\emptyset$ is $\varphi$-measurable
+$$
+  \varphi(Q) = \phi(\underbrace{Q \cap \emptyset}_{\emptyset}) + \phi(Q \cap \emptyset^c) = \varphi{Q} \implies \emptyset \in \mathcal{A}_\varphi
+$$
+- To show that $X \in \mathcal{A}_\varphi$ we verify that $X$ is $\varphi$-measurable
+$$
+  \varphi(Q) = \phi(Q \cap X) + \phi(\underbrace{Q \cap X^c}_{\emptyset}) = \varphi{Q} \implies X \in \mathcal{A}_\varphi
+$$
+- To show that $\mathcal{A}_\varphi$ is closed under complement we have for any $A \in \mathcal{A}_\varphi$
+$$
+  \varphi(Q) = \phi(Q \cap A) + \phi(Q \cap A^c) = \phi(Q \cap A^c) + \phi\left(Q \cap \underbrace{(A^c)^c}_{A}\right) \implies A^c \in \mathcal{A}_\varphi
+$$
+- To show that $\mathcal{A}_\varphi$ is closed under union we apply the sub-additivity for any $A, B \in \mathcal{A}_\varphi$
+$$
+\begin{gather*}
+\begin{aligned}
+    \varphi(Q) &= \varphi(Q \cap A) + \varphi(\overbrace{Q \cap A}^{\tilde{Q}}) = \varphi(Q \cap A) + \varphi\left(\tilde{Q} \cap B \right) + \left(\tilde{Q} \cap B^c \right) \\
+    &\geq \varphi\left( (Q \cap A) \cup \left(\tilde{Q} \cap B \right) \right) + \left(\tilde{Q} \cap B^c \right) \\
+    &= \varphi\left( (Q \cap A) \cup \left(\left(Q \cap A^c \right) \cap B \right) \right) + \left(\left(Q \cap A^c \right) \cap B^c \right) \\
+    &= \varphi\left( Q \cap (A \cup B) \right) + \varphi\left(Q \cap \left(A \cup B \right)^c \right) 
+\end{aligned} \\
+    \implies A \cup B \in \mathcal{A}_\varphi
+\end{gather*}
+$$
+</details>
+</MathBox>
+
+### Hausdorff measure
+
+<MathBox title='Countable $\delta$ cover' boxType='definition'>
+Let $(X, d)$ be a metric space. If $A\subseteq S$ and $\delta\in(0,\infty)$, then a countable $\delta$ cover of $A$ is a countable cover $\mathcal{B}$ of $A$ such that $\mathrm{diam}(B) < \delta$ for each $B\in\mathcal{B}$.
+</MathBox>
+
+<MathBox title='Hausdorff measure' boxType='definition'>
+Let $(X, d)$ be a metric space, and consider a subset $A\subseteq X$. For $\delta\in(0, \infty)$ and $k\in[0, \infty)$, define
+
+$$
+  H_\delta^k (A) := \inf\left\{ \sum_{B\in\mathcal{B}} \left[ \mathrm{diam}(B) \right]^k \;|\; \bigcup_{B\in\mathcal{B}} B \supseteq A,\; \mathrm{diam}(B) < \delta \right\}
+$$
+
+where $\mathcal{B}$ is a countable $\delta$ cover of $A$. The $k$-dimensional Hausdorff measure of $A$ is
+
+$$
+  H^k (A) = \sup_{\delta > 0} H_\delta^k (A) = \lim_{\delta\to 0} H_\delta^k (A)
+$$
+
+The Hausdorff dimension of $A$ is
+
+$$
+  \mathrm{dim}_H (A) := \inf\left\{ k\in[0, \infty] \;|\; H^k(A) = 0 \right\}
+$$
+</MathBox>
+
+# Lebesgue integral
+
+## Simple function
+
+<MathBox title='Simple function' boxType='definition'>
+
+Let $(X, \mathcal{A})$ be a measurable space and suppose that $\{A_i\}_{i\in I}\subseteq\mathcal{A}$ is a finite collection of measurable sets partitioning $X$. A simple function $f:X\to\mathbb{R}$ is a finite linear combination of indicator functions on $\{A_i\}_{i\in I}$
+
+$$
+  f(x) = \sum_{i\in I} c_i \chi_{A_i}(x)\; c_i\in\mathbb{R}\forall i\in I
+$$
+
+If $\mathrm{Ran}(f) = \{c_i\}_{i\in I}\subset\mathbb{R}$ is a set of distinct values with $A_i = \{x\in X \;|\; f(x) = a_i \}$, then the linear combination is called a canonical representation of $f$.
+
+<details>
+<summary>Proof</summary>
+
+Note that a simple function $f$ is measurable since $A_i\in\mathcal{A}$ for each $i\in I$. Since $I$ is finite, $f$ has finite range. Specifically, the range of $f$ consists of the distinct $a_i$ for $i\in I$ with $A_i\neq\emptyset$. 
+
+It can be shown that the canonical representation of a simple function is unique. First, suppose that $f:X\to\mathbb{R}$ is simple. By definition the range of $f$ is a finite set of distinct real numbers of the form $\mathrm{Ran}(f) = \{a_i\}_{i\in I\}\subset\mathbb{R}$. It follows that $I$ is a finite index set and that $\{A_i = f^{-1}[a_i]\}_{i\in I}\subseteq\mathcal{A}$ is a collection of measurable sets partitioning $X$. Thus, $f$ can be represented as $f = \sum_{i\in I}a_i \chi_{A_i}$. Conversely, suppose that $f$ has a representation of this form. Then $\mathrm{Ran}(f) = \{a_i\}_{i\in I}$ and $A_i = f^{-1}[a_i]$, so the representation is unique.
+</details>
+</MathBox>
+
+<MathBox title='Properties of simple functions' boxType='proposition'>
+Let $(X, \mathcal{A})$ be a measurable space and suppose that $f = \sum_{i\in I} a_i\chi_{A_i}$ and $g = \sum_{j\in J} b_j\chi_{B_j}$ are simple functions on $X$. The following properties hold
+
+1. $f + g$ is simple with representation $f + g = \sum_{(i,j)\in I\times J} (a_i + b_j)\chi_{A_i\cap B_j}$
+2. $fg$ is simple with representation $fg = \sum_{(i,j)\in I\times J} (a_i b_j)\chi_{A_i\cap B_j}$
+3. if $c\in\mathbb{R}$ then $cf$ is simple with representation $cf = \sum_{i\in I} ca_i\chi_{A_i}$
+
+<details>
+<summary>Proof</summary>
+
+Since $f$ and $g$ are measurable, so are $f+g$, $fg$ and $cf$. Moreover, since $f$ and $g$ have finite range, so do $f+g$, $fg$ and $cf$. Note that $I\times J$ is finite and that $\{A_i\cap B_j\}_{(i,j)\in I\times J}$ is a collection of sets that partition $X$, such that the representation of $f+g$ and $fg$ are well-defined.
+</details>
+</MathBox>
+
+<MathBox title='Simple functions are closed under composition' boxType='proposition'>
+Let $(X, \mathcal{A})$ and $(Y, \mathcal{B})$ be measurable spaces and suppose that $f:X\to Y$ is measurable. If $g:Y\to\mathbb{R}$ is a simple function with representation $g = \sum_{i\in I}b_i\chi_{B_i}$ then $g\circ f$ is a simple function on $X$ with representation $g\circ f=\sum_{i\in I}b_i\chi_{f^{-1}[B_i]}$.
+
+<details>
+<summary>Proof</summary>
+
+Note that $g\circ f:X\to\mathbb{R}$ and $\mathrm{Ran}(g\circ f)\subseteq\mathrm{Ran}(g)$ so $g\circ f$ has finite range. Since $f$ is measurable, it follows that $\{f^{-1}[B_i]\}_{i\in I}$ is a measurable partition of $X$. Finally, if $x\in f^{-1}[B_i]$ for $i\in I$, then $f(x)\in B_i$ such that $g[f(x)] = b_i$.
+</details>
+</MathBox>
+
+<MathBox title='Lebesgue integral of simple functions' boxType='definition'>
+Let $(X, \mathcal{A}, \mu)$ be a measure space. The Lebesgue integral of a nonnegative simple function $f = \sum_{i\in I} a_i \chi_{A_i}$ with $a_i\geq 0$ for $i\in I$ is defined as
+
+$$
+  I(f) = \int_X f(x)\,\mathrm{d}\mu(x) = \sum_{i\in I} a_i\mu(A_i)
+$$
+
+<details>
+<summary>Proof</summary>
+
+To prove that the definition is consistent, we must show that all representations of $f$ have the same integral value. Let $\{b_j \}_{j\in J}$ denote the set of distinct elements among the numbers $a_i$ where $i\in I$ and $A_i\neq\emptyset$. For $j\in J$, let $I_j = \{i\in I \;|\; a_i = b_j \}$ and let $B_j = \bigcup_{i\in I_j} A_i$. Thus $f = \sum_{j\in J} b_j\chi_{B_j}$ is the canonical reperesentation. We note that
+
+$$
+  \sum_{i\in I} a_i \mu(A_i) = \sum_{j\in J}\sum_{i\in I_j} a_i \mu(A_i) = \sum_{j\in J}b_j\sum_{i\in I_j}\mu(A_i) = \mu_{j\in J}b_j\mu(B_j)
+$$
+
+Thus, all representations of $f$ have the same integral value.
+</details>
+</MathBox>
+
+<MathBox title='Integral properties of simple functions' boxType='proposition'>
+Suppose that $f$ and $g$ are non-negative simple functions on a measure space $(X,\mathcal{A},\mu)$, and that $c\in[0,\infty)$. Then
+1. additivity: $\int_X (f+g)\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu$
+2. scalability: $\int_X cf\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu$
+3. increasing monotonicity: if $f\leq g$ on $X$ then $\int_X f\,\mathrm{d}\mu \leq \int_X g\,\mathrm{d}\mu$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f = \sum_{i\in I} a_i\chi_{A_i}$ and $g = \sum_{j\in J} b_j\chi_{B_j}$.
+
+1. Recall that $f + g = \sum_{(i,j)\in I\times J} (a_i + b_j)\chi_{A_i\cap B_j}$. Note that $\{ A_i \cap B_j \}_{j\in J}$ is a partition of $A_i$ for each $i\in I$, and similarly $\{A_i\cap B_j\}_{i\in I}$ is a partition of $B_j$ for each $j\in J$. Therefore
+
+$$
+\begin{align*}
+  \int_X (f+g)\;\mathrm{d}\mu &= \sum_{(i,j)\in I\times J} (a_i + b_j)\mu(A_i\cap B_j) \\
+  &= \sum_{i\in I}\sum_{j\in J} a_i\mu(A_i\cap B_j) + \sum_{j\in J}\sum_{i\in I}b_j \mu(A_i\cap B_j) \\
+  &= \sum_{i\in I} a_i \mu(A_i \cap B) + \sum_{j\in J} b_j \mu(B_j \cap A) \\
+  &= \sum_{i\in I} a_i \mu(A_i) + \sum_{j\in J} b_j \mu(B_j) = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu
+\end{align*}
+$$
+
+2. Recall that $cf = \sum_{i\in I}ca_i\chi_{A_i}$ so
+
+$$
+  \int_X cf\mathrm{d}\mu = \sum_{i\in I}ca_i\mu(A_i) = c\sum_{i\in I}a_i \mu(A_i) = c\int_X f\,\mathrm{d}\mu
+$$
+
+3. Note that $g - f$ is a non-negative simple function and $g = f + (g - f)$. By the additive property
+
+$$
+  \int_X g\mathrm{d}\mu = \int_X f,\mathrm{d}\mu + \int_X (g - f)\,\mathrm{d}\mu \geq \int_X f\,\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+<MathBox title='Monotone convergence theorem for simple functions' boxType='theorem'>
+Suppose that $f$ is a non-negative simple function on a measure space $(X,\mathcal{A},\mu)$ and that $(A_n)_{n\in \mathbb{N}}$ is an increasing sequence of sets in $\mathcal{A}$ with $A = \bigcup_{n=1}^\infty A_n$. Then
+
+$$
+  \int_X \chi_{A_n}f\,\mathrm{d}\mu \xrightarrow{n\to\infty} \int_X \chi_{A}f\,\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f = \sum_{i\in I} b_i\chi_{B_i}$. Then $\chi_{A_n}f = \sum_{i\in I}b_i\chi_{A_n}\chi_{B_i} = \sum_{i\in I} b_i\chi_{A_n\cap B_i}$ and similarly $\chi_A f = \sum_{i\in I}b_i \chi_{A\cap B_i}$. However, for each $i\in I$, $B_i \cap A_n$ is increasing in $n\in\mathbb{N}$ and $\bigcup_{n\in\mathbb{N}} (B_i\cap A_n) = B_i \cap A$. By the continuity theorem for positive measures $\mu(B_i\cap A_n)\xrightarrow{n\to\infty}\mu(B_i\cap A}$ for each $i\in I$. Since $I$ is finite
+
+$$
+  \int_{A_n} f\,\mathrm{d}\mu = \sum_{i\in I}b_i\mu(A_n\cap B_i)\xrightarrow{n\to\infty}\sum_{i\in I}b_i\mu(A\cap B_i) = \int_A f\,\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+## Non-negative functions
+
+<MathBox title='Non-negative function as a limit of non-negative simple functions' boxType='theorem'>
+Let $(X, \mathcal{A})$ be a measurable space and suppose that $f:X\to[0,\infty)$ is measurable. Then there exists an increasing sequence $(f_n)_{n\in\mathbb{N}}$ of nonnegative simple functions on $X$ with $f_n \xrightarrow{n\to\infty} f$.
+
+<details>
+<summary>Proof</summary>
+
+For $n\in\mathbb{N}$ and $k\in\{1, 2,\dots, n2^n\}$ let $I_{n,k} = \left[\frac{k-1}{2^n}, \frac{k}{2^n} \right)$ and $I_n = [n,\infty)$. Note that
+1. $\{I_{n,k} \;|\; k = 1,\dots,n2^n \}\cup\{I_n\}$ is a partition of $[0,\infty)$ 
+2. $I_{n,k} = I_{n+1,2k-1} \cup I_{n+1,2k}$
+3. $I_n = \left( \bigcup_{k=n2^{n+1}+1}^{(n+1)2^{n+1}} I_{n+1} \right)\cup I_{n+1}$
+
+The $n$th partition divides the interval $[0,n)$ into $n2^n$ subintervals of length $\frac{1}{2^n}$. Thus, $(2)$ follows because the $(n+1)$th partition divides the interval $[n,n+1)$ into subintervals of length $\frac{1}{2^{n+1}}$.
+
+Let $A_{n,k} = f^{-1}[I_{n,k}]$ and $A_n = f^{-1}[I_n]$ for $n\in\mathbb{N}$ and $k\in\{1,2,\dots,n2^2\}$. Since inverse images preserve set operations it follows that
+1. $\{A_{n,k} \;|\; k = 1,\dots,n2^n \}\cup\{A_n\}$ is a partition of $X$ 
+2. $A_{n,k} = A_{n+1,2k-1} \cup A_{n+1,2k}$
+3. $A_n = \left( \bigcup_{k=n2^{n+1}+1}^{(n+1)2^{n+1}} A_{n+1} \right)\cup A_{n+1}$
+
+Since $f$ is measurable it follows that $A_n\in\mathcal{A}$ and $A_{n,k}\in\mathcal{A}$ for each $n$ and $k$. Define the simple function
+
+$$
+  f_n = \sum_{k=1}^{n2^n}\frac{k-1}{2^n}\chi_{A_{n,k}} + n\chi_{A_n}
+$$
+
+such that $0\leq f_n\leq f$ for each $n\in\mathbb{N}$. To show convergence, fix $x\in X$. If $n > f(x)$ then $|f(x)-f_n(x)|\leq 2^{-n}$ and hence $f_n(x)\xrightarrow{n\to\infty} f(x)$. It remains to show that $f_n$ is increasing in $n$. Let $x\in X$ and $n\in\mathbb{N}$. If $x\in A_{n,k}$ for some $k\in\{1,2,\dots n2^n\}$, then $f_n(x) = \frac{k-1}{2^n}$. However, either
+
+$$
+  f_{n+1}(x) = \frac{2k-2}{2^{n+1}} \quad f_{n+1}(x) = \frac{2k-1}{2^{n+1}}
+$$
+
+If $x\in A_n$, then $f_n(x) = n$. However, either $f_{n+1}(x) = \frac{k-1}{2^{n+1}}$ for some $k\in\{n2^{n+1} + 1,\dots, (n+1)2^{n+1}\}$ or $f_{n+1}(x) = n+1$. In all cases, $f_{n+1}(x)\geq f_n(x)$.
+</details>
+</MathBox>
+
+<MathBox title='Lebesgue integral of non-negative functions' boxType='definition'>
+Let $(X, \mathcal{A},\mu)$ be a measure space. The Lebesgue integral of a non-negative measurable function $f: X\to [0,\infty)$ is defined as
+
+$$
+\begin{gather*}
+  \int_X f (x) \,\mathrm{d}\mu (x) := \sup \left\{ \int_X h\,\mathrm{d}\mu \; | \; h \in \mathcal{S}^+ , \; h \leq f \right\} \\
+  \mathcal{S}^+ := \left\{ h: X\to\mathbb{R} \; | \; h = \sum_{i=1}^n c_i \chi_{A_i}(x), \; c_i \geq 0 \right\}
+\end{gather*}
+$$
+</MathBox>
+
+<MathBox title='Monotonicity property for non-negative functions' boxType='theorem'>
+If $f,g:X\to[0,\infty)$ are measurable and $f\leq g$ on $(X,\mathcal{A},\mu)$ then $\int_X f\,\mathrm{d}\mu\leq\int_X g\,\mathrm{d}\mu$
+
+<details>
+<summary>Proof</summary>
+
+Note that $\{h \;|\; h\in\mathcal{S}^+ \textrm{ and } 0\leq h\leq f \}\subseteq\{ h \;|\; h\in\mathcal{S}^+ \textrm{ and } 0\leq h\leq g \}$. Therefore
+
+$$
+  \int_X f\,\mathrm{d}\mu = \sup\left\{ \int_X h\,\mathrm{d}\mu \;|\; h\in\mathcal{S}^+ \textrm{ and } 0\leq h\leq f \right\} \leq \sup\left\{ \int_X h\,\mathrm{d}\mu \;|\; h\in\mathcal{S}^+ \textrm{ and } 0\leq h\leq g \right\} = \int_{X} g\,\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+<MathBox title='Monotone convergence theorem for non-negative functions' boxType='theorem'>
+Let $(X, \mathcal{A},\mu)$ be a measure space and suppose that $f_n:X\to[0,\infty)$ is measurable for each $n\in\mathbb{N}$ and that the sequence $(f_n)_{n\in\mathbb{N}}$ is increasing. Then
+
+$$
+  \int_X \lim_{n\to\infty} f_n\,\mathrm{d}\mu = \lim_{n\to\infty}\int_X f_n\,\mathrm{d}\mu
+$$
+
+As a direct result, it follows that $\int_X f_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X f\,\mathrm{d}\mu$ for a measurable function $f:X\to[0,\infty)$ with $f_n\xrightarrow{n\to\infty} f$.
+
+<details>
+<summary>Proof</summary>
+
+Let $f=\lim_{n\to\infty} f_n$. By the monotonicity property, note that $\int_X f_n \mathrm{d}\mu$ is increasing in $n\in\mathbb{N}$ and hence has a limit $c\in\mathbb{R}* = \mathbb{R}\cup\{-\infty,\infty}$. Note that $f_n\leq f$ on $X$ for $n\in\mathbb{N}$ so by the monotonicity property $\int_X f_n\,\mathrm{d}\mu\leq\int_X f\,\mathrm{d}\mu$ for $n\in\mathbb{N}$. Letting $n\to\infty$ gives $c\leq\int_X f\,\mathrm{d}\mu$. To show that $c\geq\int_X f\,\mathrm{d}\mu$ we need to show that $c\geq\int_X g\,\mathrm{d}\mu$ for every simple function $g$ with $0\leq g\leq f$. Fix $a\in(0,1)$ and let $A_n =\{x\in X \;|\; f_n(x)\geq ag(x) \}$. Since $f_n$ is increasing in $n$ it follows that $A_n\subseteq A_{n+1}$. Moreover, since $f_n\xrightarrow{n\to\infty} f$ on $X$ and $g\leq f$ on $X$, then $\bigcup_{n\in\mathbb{N}} A_n = X$. However, $ag\leq f_n$ on $A_n$ so
+
+$$
+  a\int_X \chi_{A_n}g\mathrm{d}\mu = \int_X a\chi_{A_n} g\,\mathrm{d}\mu\leq\int_X \chi_{A_n} f_n\;\mathrm{d}\mu\leq\int_X f_n\,\mathrm{d}\mu
+$$
+
+Letting $n\to\infty$ in the extreme parts of the inequality and using the monotone convergence theorem for simple functions, we have $a\int_X g\,\mathrm{d}\mu\leq c$ for every $a\in(0,1)$. Finally, letting $a\uparrow 1$ gives $\int_X g\,\mathrm{d}\mu\leq c$.
+</details>
+</MathBox>
+
+<MathBox title='Linearity property for non-negative functions' boxType='proposition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space and suppose that $f,g:X\to[0,\infty)$ are measurable, and that $c\in[0,\infty)$. Then
+1. additivity: $\int_X (f+g)\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu$
+2. scalability: $\int_X cf\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu$
+
+<details>
+<summary>Proof</summary>
+
+1. Let $(f_n)_{n\in\mathbb{N}}$ and $(g_n)_{n\in\mathbb{N}}$ be increasing sequences of non-negative simple function with $f_n\xrightarrow{n\to\infty}f$ and $g_n\xrightarrow{n\to\infty}g$. It follows that $(f_n + g_n)_{n\in\mathbb{N}}$ is also an increasing sequence of simple functions and $f_n + g_n \xrightarrow{n\to\infty} f + g$. By the monotone convergence theorem
+- $\int_X f_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X f\,\mathrm{d}\mu$
+- $\int_X g_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X g\,\mathrm{d}\mu$
+- $\int_X (f_n+g_n)\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X (f+g)\,\mathrm{d}\mu$
+
+Furthermore, $\int_X (f_n + g_n)\,\mathrm{d}\mu = \int_X f_n\,\mathrm{d}\mu + \int_X g_n\,\mathrm{d}\mu$ for each $n\in\mathbb{N}$. Then in the limit $n\to\infty$
+
+$$
+  \int_X (f+g)\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu
+$$
+
+2. Note that $(cf_n)_{n\in\mathbb{N}}$ is an increasing sequence of non-negative simple functions with $cf_n\xrightarrow{n\to\infty} cf$. By the monotone convergence theorem, $\int_X cf_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X cf\,\mathrm{d}\mu$. However, $\int_X cf_n\,\mathrm{d}\mu = c\int_X f_n \,\mathrm{d}\mu$ for each $n\in\mathbb{N}$ and in the limit $n\to\infty$ we get
+
+$$
+  \int_X cf\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+## General functions
+
+Note that a measurable function $f:X\to\mathbb{R}$ on a measure space $(X,\mathcal{A},\mu)$ can be decomposed into positive and negative parts, i.e. $f = f^+ - f^-$ where 
+
+$$
+  f^+(x) = \max\{f(x), 0\}\quad f^-(x) = \max\{-f(x), 0\}
+$$
+
+Note that $|f| = f^+ + f^-$.
+
+<MathBox title='Lebesgue integral of general functions' boxType='definition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space. The Lebesgue integral of a measurable function $f:X\to\mathbb{R}$ is defined as
+
+$$
+  \int_X f \;\mathrm{d}\mu := \int_X f^+ \;\mathrm{d}\mu - \int_X f^- \;\mathrm{d}\mu
+$$
+
+The restriction of the integral to a set $A\in\mathcal{A}$ is defined as
+
+$$
+  \int_A f\,\mathrm{d}\mu = \int_X \chi_A f\,\mathrm{d}\mu
+$$
+
+If $(\mu_+,\mu_-)$ is a Jordan composition of $\mu$ then
+
+$$
+  \int_X f\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu_+ - \int_X f\,\mathrm{d}\mu_-
+$$
+</MathBox>
+
+<MathBox title='Lebesgue integrability' boxType='proposition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space. A measurable function $f:X\to\mathbb{R}$ is integrableif and only if$\int_X |f|\,\mathrm{d}\mu$. As a direct result, if $f$ is integrable and $A\in\mathcal{A}$, then the integral of $f$ over $A$ exists.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f$ is integrable. Recall that $|f| = f^+ + f^-$. By the additive property for non-negative functions, $\int_X |f|\,\mathrm{d}\mu = \int_X f^+\,\mathrm{d}\mu + \int_X f^-\,\mathrm{d}\mu <\infty$. Conversely, suppose that $\int_X |f|\,\mathrm{d}\mu<\infty$. Then $f^+\leq|f|$ and $f^-\leq|f|$ and by the monotonicity property for non-negative functions $\int_X f^+\,\mathrm{d}\mu\leq\int_X |f|\,\mathrm{d}\mu<\infty$ and $\int_X f^-\,\mathrm{d}\mu\leq\int_X |f|,\mathrm{d}\mu<\infty$.
+
+To prove the direct result, note that $(\chi_A f)^+ = \chi_A f^+$ and $(\chi_A f)^- = \chi_A f^-$. Moreover, $\chi_A f^+ \leq f^+$ and $\chi_A f^-\leq f^-$. If $\int_X f\,\mathrm{d}\mu$ exists, then either $\int_X f^+\,\mathrm{d}\mu<\infty$ or $\int_X f^-\,\mathrm{d}\mu$. By the monotonicity property, it follows that either $\int_X \chi_A f^+\,\mathrm{d}\mu <\infty$ or $\int_X \chi_A f^-\,\mathrm{d}\mu$, hence $\int_A f\,\mathrm{d}\mu$ exists.
+</details>
+</MathBox>
+
+<MathBox title='Lemma' boxType='lemma'>
+If $f,g:X\to[0,\infty)$ are measurable on $(X,\mathcal{A},\mu)$ then $\int_X (f-g)\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu - \int_X g\,\mathrm{d}\mu$.
+
+<details>
+<summary>Proof</summary>
+
+First, suppose that $\int_X f\,\mathrm{d}\mu<\infty$ and $\int_X g\,\mathrm{d}\mu<\infty$. Note that $(f-g)^+ \leq f$ and $(f-g)^-\leq g$. By the monotonicity property for non-negative functions
+- $\int_X (f-g)^+\,\mathrm{d}\mu\leq\int_X f\,\mathrm{d}\mu<\infty$
+- $\int_X (f-g)^-\,\mathrm{d}\mu\leq\int_X g\,\mathrm{d}\mu<\infty$
+Thus $f - g$ is integrable. Furthermore, 
+
+$$
+\begin{gather*}
+  f-g = (f-g)^+ - (f-g)^- \\
+  f + (f - g)^- = g + (f - g)^+
+\end{gather*}
+$$
+
+All the four functions in the last equation are non-negative. By the additive property for non-negative functions
+
+$$
+  \int_X f\,\mathrm{d}\mu + \int_X (f-g)^-\,\mathrm{d}\mu = \int_X g\,\mathrm{d}\mu  + \int_X (f - g)^+\,\mathrm{d}\mu
+$$
+
+All of these integrals are finite, resulting in
+
+$$
+  \int_X (f-g)\,\mathrm{d}\mu &= \int_X (f-g)^+\,\mathrm{d}\mu - \int_X (f-g)^-\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu
+$$
+
+Next, suppose that $\int_X f\,\mathrm{d}\mu = \infty$ and $\int_X g\,\mathrm{d}\mu<\infty$. Then $f-g\leq (f-g)^+$ and hence $f \leq (f-g)^+ + g$. The order and additive properties for non-negative functions give
+
+$$
+  \infty = \int_X f\,\mathrm{d}\mu \leq \int_X (f-g)^+\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu
+$$
+
+Since $\int_X g\,\mathrm{d}\mu<\infty$ we must have $\int_X (f-g)^+\,\mathrm{d}\mu = \infty$. On the other hand, $(f-g)^- \leq g$ so $\int_X (f-g)^-\,\mathrm{d}\mu\leq\int_X g\,\mathrm{d}\mu<\infty$. Hence $\infty = \int_X (f-g)\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu - \int_X g\,\mathrm{d}\mu$.
+
+Finally, suppose that $\int_X f\,\mathrm{d}\mu<\infty$ and $\int_X g\,\mathrm{d}\mu=\infty$. By the same argument in the previous case, we have 
+
+$$
+\begin{aligned}
+  \int_X (g - f)^+\,\mathrm{d}\mu=\infty \\
+  \iff\int_X (f-g)^+\,\mathrm{d}\mu<\infty
+\end{aligned}\quad
+\begin{aligned}
+  \int_X (g-f)^-\,\mathrm{d}\mu<\infty \\
+  \iff\int_X (f-g)^-\,\mathrm{d}\mu=\infty
+\end{aligned}
+$$
+
+Hence, $-\infty = \int_X (f-g)\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu - \int_X g\,\mathrm{d}\mu$
+</details>
+</MathBox>
+
+<MathBox title='Properties of Lebesgue integrals' boxType='proposition'>
+Let $(X,\mathcal{A},\mu)$ be a measure space and suppose that $f,g:X\to[0,\infty)$ are measurable, and that $c\in[0,\infty)$. Then
+1. additivity: $\int_X (f+g)\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu$
+2. scalability: $\int_X cf\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu$
+3. increasing monotonicity: if $f\overset{a.e.}{\leq} g$ on $X$ then $\int_X f\,\mathrm{d}\mu\leq\int_X g\,\mathrm{d}\mu$
+4. positive definiteness: if $f\overset{a.e.}{\geq} 0$ on $X$ then $\int_X f\,\mathrm{d}\mu$
+  a. $\int_X f\,\mathrm{d}\mu = 0$if and only if$f\overset{a.e.}{=}0$ on $X$
+5. null property: if $A\in\mathcal{A}$ with $\mu(A)=0$ then $\int_A f\,\mathrm{d}\mu = 0$
+6. equality property: if $f\overset{a.e.}{=}g$ on $X$ then $\int_X f\,\mathrm{d}\mu = \int_X g\,\mathrm{d}\mu$
+7. absolute value inequality: $\left| \int_X f\,\mathrm{d}\mu \right|\leq\int_X |f|\,\mathrm{d}\mu$. If $f$ is integrable, the equality holdsif and only if$f\overset{a.e.}{\geq}0$ or $f\overset{a.e.}{\leq}0$ on $X$.
+
+<details>
+<summary>Proof</summary>
+
+**1. Additivity** 
+Note that $f + g = (f^+ - f^-) + (g^+ - g^-) = (f^+ + g^+) - (f^- + g^-)$ where the last two functions in the parenthesis are non-negative. By the previous lemma and the additivity property for non-negative functions
+
+$$
+\begin{align*}
+  \int_X (f+g)\,\mathrm{d}\mu = \int_X (f^+ + g^+)\,\mathrm{d}\mu - \int_X (f^- + g^-)\,\mathrm{d}\mu \\
+  &= \left( \int_X f^+ \,\mathrm{d}\mu + \int_X g^+ \,\mathrm{d}\mu \right) - \left( \int_X f^- \,\mathrm{d}\mu + \int_X g^- \,\mathrm{d}\mu \right)
+\end{align*}
+$$
+
+assuming that either both integrals in the first parenthesis are finite or both integrals in the second parenthesis are finite. The terms can be rearrange to get
+
+$$
+\begin{align*}
+  \int_X (f+g)\,\mathrm{d}\mu = \left( \int_X f^+ \,\mathrm{d}\mu - \int_X f^- \,\mathrm{d}\mu \right) - \left( \int_X g^+ \,\mathrm{d}\mu - \int_X g^- \,\mathrm{d}\mu \right) \\
+  &= \int_X f\,\mathrm{d}\mu + \int_X g\,\mathrm{d}\mu  
+\end{align*}
+$$
+
+**2. Scaling property**
+Note that if $c\geq 0$ then $(cf)^+ = cf^+$ and $(cf)^- = cf^-$. Using the scaling property for non-negative functions
+
+$$
+\begin{align*}
+  \int_X cf\,\mathrm{d}\mu &= \int_X (cf)^+\,\mathrm{d}\mu - \int_X (cf)^-\,\mathrm{d}\mu = \int_X cf^+\,\mathrm{d}\mu - \int_X cf^-\,\mathrm{d}\mu \\
+  &= c\int_X f^+\,\mathrm{d}\mu - c\int_X f^-\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu
+\end{align*}
+$$
+
+Conversely, if $c<0$, then $(cf)^+ = -cf^-$ and $(cf)^- = -cf^+$. Using the scaling property for non-negative functions
+
+$$
+\begin{align*}
+  \int_X cf\,\mathrm{d}\mu &= \int_X (cf)^+\,\mathrm{d}\mu - \int_X (cf)^-\,\mathrm{d}\mu = \int_X -cf^-\,\mathrm{d}\mu - \int_X -cf^+\,\mathrm{d}\mu \\
+  &= c\int_X f^+\,\mathrm{d}\mu - c\int_X f^-\,\mathrm{d}\mu = c\int_X f\,\mathrm{d}\mu
+\end{align*}
+$$
+
+**3. Increasing monotonicity** 
+Note that $g = f+(g-f)$ and $g-f\overset{a.e.}{\geq} 0$ on $X$. If $\int_X f\,\mathrm{d}\mu = -\infty$ then trivially $\int_X f\,\mathrm{d}\mu\leq\int_X g\,\mathrm{d}\mu$. Otherwise $\int_X (g-f)\,\mathrm{d}\mu\geq 0$ and therefore 
+
+$$
+  \int_X g\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu + \int_X (g-f)\,\mathrm{d}\mu\geq\int_X f\,\mathrm{d}\mu
+$$
+
+**4. Positive definiteness** 
+Let $A = \{x\in X \;|\; f(x)\geq 0\}$. Then $A\in\mathcal{A}$ and $\mu(A^c) = 0$. By addivitiy of disjoint sets we have
+
+$$
+  \int_X f\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu + \int_{A^c} f\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu \geq 0
+$$
+
+*4a*
+Note that if $\mu(A) = 0$ then clearly $\int_X f\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu + \int_{A^c} f\,\mathrm{d}\mu = 0$. In the opposite case, let $B_n = \{x\in X\;|\; f(x)\geq\frac{1}{n}\}$ for $n\in\mathbb{N}$ and $B = \{x\in X\;|\; f(x)>0\}$. Then $B_n$ is increasing in $n$ and $\bigcup_{n\in\mathbb{N}} B_n = B$. If $\mu(B) > 0$ then $\mu(B_n) > 0$ for some $n\in\mathbb{N}$. However, $f\geq \frac{1}{n}\chi_{B_n}$ on $A$, so by increasing monotonicity
+
+$$
+  \int_X f\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu\geq \int_A \frac{1}{n}\chi_{B_n}\,\mathrm{d}\mu = \frac{1}{n}\mu(B_n) > 0.
+$$
+
+**5. Null property**
+First, suppose that $g$ is a non-negative simple function with $g = 0$ on $A^c$. Then $g$ has the representation $g = \sum_{i\in I}a_i \chi_{A_i}$ where $a_i\in(0,\infty)$ and $A_i\subseteq A$ for $i\in I$. However, $\mu(A_i) = 0$ for each $i\in I$ and so $\int_X g\,\mathrm{d}\mu = \sum_{i\in I}a_i \mu(A_i) = 0$.
+
+Next, suppose that $f:X\to[0,\infty)$ is measurable. If $g$ is a non-negative simple function with $g\leq\chi_{A} f$, then $g = 0$ on $A^c$ and by $(1)$ it follows that $\int_X g\,\mathrm{d}\mu = 0$. Hence
+
+$$
+  \int_A f\,\mathrm{d}\mu = \int_X \chi_A f\,\mathrm{d}\mu
+$$
+
+Suppose that $f:X\to\mathbb{R}$ is measurable. Then $\int_A f\,\mathrm{d}\mu = \int_A f^+\,\mathrm{d}\mu - \int_A f^-\,\mathrm{d}\mu$. Both integrals on the right are $0$ by $(2)$.
+
+**6. Equality property**
+Note that $f = g$if and only if$f^+ = g^+$ and $f^- = g^-$. Let $A = \{x\in X \;|\; f^+(x) = g^+(x) \}$. Then $A\in\mathcal{A}$ and $\mu(A^c) = 0$. By the additive property
+
+$$
+\begin{align*}
+  \int_X f^+\,\mathrm{d}\mu &= \int_A f^+\,\mathrm{d}\mu + \int_{A^c} f^+\,\mathrm{d}\mu = \int_A g^+\,\mathrm{d}\mu + 0 \\
+  &= \int_A g^+\,\mathrm{d}\mu + \int_{A^c} g^+\,\mathrm{d}\mu = \int_X g^+\,\mathrm{d}\mu
+\end{align*}
+$$
+
+By the same argument, $\int_X f^-\,\mathrm{d}\mu = \int_X g^-\,\mathrm{d}\mu$ resulting in $\int_X f\,\mathrm{d}\mu = \int_X g\,\mathrm{d}\mu$
+
+**7. Absolute value inequality**
+Note that $-|f|\leq f\leq|f|$ on $X$. The integrals of all three functions exists and by increasing monotonicity and scalability
+
+$$
+  -\int_X |f|\,\mathrm{d}\mu\leq\int_X f\,\mathrm{d}\mu\leq\int_X |f|\,\mathrm{d}\mu
+$$
+
+The equality holdsif and only if$f\overset{\textrm{a.e.}}{=}-|f|\leq 0$ or $f\overset{\textrm{a.e.}}{=}|f|\geq 0$ on $X$.
+</details>
+</MathBox>
+
+<MathBox title='Additive property for disjoint domains' boxType='proposition'>
+Suppose that $f:X\to\mathbb{R}$ is measurable and integrable on $(X,\mathcal{A},\mu)$, and that $A,B\in\mathcal{A}$ are disjoint. Then
+
+$$
+  \int_{A\cup B} f\,\mathrm{d}\mu = \int_A f\,\mathrm{d}\mu + \int_B f\,\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that $\chi_{A\cup B} = \chi_A + \chi_B$. By the additive property
+
+$$
+\begin{align*}
+  \int_{A\cup B} f\,\mathrm{d}\mu &= \int_X \chi_{A\cup B} f\,\mathrm{d}\mu = \int_X \left(\chi_A f + \chi_B f\right)\,\mathrm{d}\mu \\
+  &= \int_X \chi_A f\,\mathrm{d}\mu + \int_X \chi_B f\,\mathrm{d}\mu \\
+  &= \int_A f\,\mathrm{d}\mu + \int_B f\,\mathrm{d}\mu
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Change of variables theorem' boxType='theorem'>
+Suppose that $u:X\to\mathbb{R}$ is measurable and integrable on $(X,\mathcal{A},\mu)$. If $f:Y\to\mathbb{R}$ is measurable on $(Y,\mathcal{B},\nu)$ then
+
+$$
+  \int_Y f\,\mathrm{d}\nu = \int_X (f\circ u)\,\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary>
+
+First, suppose that $f$ is a non-negative simple function on $T$ with the representation $f = \sum_{i\in I} b_i\chi_{B_i}$ where $I$ is a finite index set, $\{B_i\}_{i\in I}\subseteq\mathcal{B}$ is a measurable partition of $Y$, and $b_i \in[0,\infty)$ for $i\in I$. Recall that $f\circ u$ is a non-negative simple function on $X$ with representation $f\circ u = \sum_{i\in I}b_i \chi_{u^{-1}[B_i]}$. Hence
+
+$$
+  \int_Y f\,\mathrm{d}\nu = \sum_{i\in I}b_i \nu(B_i) = \sum_{i\in I}b_i\mu\left[u^{-1}[B_i] \right] = \int_X (f\circ u)\,\mathrm{d}\mu
+$$
+
+Next, suppose that $f:Y\to[0,\infty)$ is measurable, so that $f\circ u:X\to[0,\infty)$ is also measurable. There exists an increasing sequence $(f_n)_{n\in\mathbb{N}}$ of non-negative simple functions on $Y$ with $f_n\xrightarrow{n\to\infty} f$. Then $(f_n\circ u)_{n\in\mathbb{N}}$ is an increasing sequence of simple functions on $X$ with $f_n\circ u\xrightarrow{n\to\infty}f\circ u$. By the last result $\int_Y f_n\,\mathrm{d}\nu = \int_X (f_n\circ u)\,\mathrm{d}\mu$ for each $n\in\mathbb{N}$. By the monotone convergence theorem
+- $\int_Y f_n\,\mathrm{d}\nu\xrightarrow{n\to\infty} \int_Y f\,\mathrm{d}\nu$
+- $\int_X (f_n\circ u)\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X (f\circ u)\,\mathrm{d}\mu$
+
+We conclude that $\int_Y f\,\mathrm{d}\nu = \int_X (f\circ u)\,\mathrm{d}\mu$.
+
+Finally, suppose that $f:Y\to\mathbb{R}$ is measurable, so that $f\circ u:X\to\mathbb{R}$ is also measurable. Note that $(f\circ u)^+ = f^+\circ u$ and $(f\circ u)^- = f^-\circ u$. By the last result
+
+$$
+\begin{align*}
+  \int_Y f^+\,\mathrm{d}\nu &= \int_X (f^+\circ u)\,\mathrm{d}\mu = \int_X (f\circ u)^+\,\mathrm{d}\mu \\
+  \int_Y f^-\,\mathrm{d}\nu &= \int_X (f^-\circ u)\,\mathrm{d}\mu = \int_X (f\circ u)^-\,\mathrm{d}\mu
+\end{align*}
+$$
+
+Assuming that at least one the integrals in the equations is finite, we have
+
+$$
+\begin{align*}
+  \int_Y f\,\mathrm{d}\nu &= \int_Y f^+\,\mathrm{d}\nu - \int_Y f^-\,\mathrm{d}\nu = \int_X (f\circ u)^+\,\mathrm{d}\mu - \int_X (f\circ u)^-\,\mathrm{d}\mu \\
+  &= \int_X (f\circ u)\,\mathrm{d}\mu
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Discrete spaces
+
+<MathBox title='Lebesgue integral on discrete spaces' boxType='proposition'>
+Let $(X,\mathcal{P}(X),\#)$ be a discrete measure space where $# \equiv |\cdot|$ is the counting measure. The Lebesgue integral of $f:X\to\mathbb{R}$ becomes
+
+$$
+  \int_X f\,\mathrm{d}# = \sum_{x\in X} f(x)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For notational simplicity let $\chi_x = \chi_{\{x\}}$.
+
+First, suppose that $X$ is finite. In this case, every function $f:X\to\mathbb{R}$ is simple and has the representation $f = \sum_{x\in X} f(x)\chi_x$. The result follows from the definition of Lebesgue integration of simple functions.
+
+Next, suppose that $X$ is countable infinite and $f:X\to[0,\infty)$. Let $(A_n)_{n\in\mathbb{N}}$ be an increasing sequence of finite subsets of $X$ with $\bigcup_{n\in\mathbb{N}} A_n = X$. Define $f_n = \sum_{x\in A_n} f(x)\chi_x$. Then $(f_n)_{n\in\mathbb{N}}$ is an increasing sequence of simple functions with $f_n\xrightarrow{n\to\infty} f$. Thus
+
+$$
+  \int_X f\,\mathrm{d}# = \lim_{n\to\infty}\int_X f_n \,\mathrm{d}# = \lim_{n\to\infty}\sum_{x\in A_n} f(x) = \sum_{x\in X} f(x)
+$$
+
+Finally, consider the general case where $X$ is countable and $f:X\to\mathbb{R}$. In this case, the result follows from the definition of the integral as
+
+$$
+  \int_X f\,\mathrm{d}# = \int_X f^+\,\mathrm{d}# - \int_X f^-\,\mathrm{d}# = \sum_{x\in X} f^+(x) - \sum_{x\in X} f^-(x) = \sum_{x\in X} f(x)
+$$
+</details>
+</MathBox>
+
+### Integral inequalities
+
+<MathBox title="Jensen's inequality" boxType='theorem'>
+Suppose $\varphi:\mathbb{R}\to\mathbb{R}$ is convex, that is forall $\lambda \in (0, 1)$
+
+$$
+  \lambda\varphi(x) + (1 - \lambda)\varphi(y)\geq\varphi(\lambda x + (1 - \lambda)y) 
+$$
+
+If $\mu$ is a measure and $f$ and $\varphi(f)$ are integrable, then
+
+$$
+  \varphi\left(\int f\;\mathrm{d}\mu\right) \leq \int\varphi(f)\;\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $c = \int f\;\mathrm{d}\mu$ and let $\ell(x) = ax + b$ be a linear function such that $\ell(c) = \varphi(c)$ and $\varphi(x)\geq\ell(x)$. To see that such a function exists, recall that convexity implies
+
+$$
+  \lim_{h\downarrow 0}\frac{\varphi(c) - \varphi(c - h)}{h}\leq \lim_{h\downarrow 0}\frac{\varphi(c + h) - \varphi(c)}{h}
+$$
+
+If we let $a$ be any number between the two limits and let $\ell(x) = a(x - c) + \varphi(c)$, then $\ell$ has the desired properties. Since $\varphi(x) \geq \ell(x)$ we get
+
+$$
+  \int\varphi(f)\;\mathrm{d}\mu\geq\int\ell(f)\;\mathrm{d}\mu = \int(af + b)\;\mathrm{d}\mu = a\int f\;\mathrm{d}\mu + b = \ell\left(\int f\;\mathrm{d}\mu\right) = \varphi\left(\int f\;\mathrm{d}\mu\right)
+$$
+</details>
+</MathBox>
+
+## Convergence properties
+
+<MathBox title='Monotone convergence theorem' boxType='theorem'>
+Suppose that $f_n:X\to\mathbb{R}$ is measurable and integrable on $(X,\mathcal{A},\mu)$ for each $n\in\mathbb{N}$. If $(f_n)_{n\in\mathbb{N}}$ is increasing $X$ and $\int_X f_1\,\mathrm{d}\mu > -\infty$, or $(f_n)_{n\in\mathbb{N}}$ is decreasing on $X$ and $\int_X f_1\,\mathrm{d}\mu<\infty$ then
+
+$$
+  \int_X \lim_{n\to\infty} f_n\,\mathrm{d}\mu = \lim_{n\to\infty}\int_X f_n\,\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary> 
+
+Let $f(x) = \lim_{n\to\infty} f_n(x)$ for $x\in X$.
+
+**Increasing functions**
+Suppose that $f_n$ is increasing in $n\in\mathbb{N}$. If $\int_X f_1\,\mathrm{d}\mu = \infty$ then by increasing monotonicity, $\int_X f_n\,\mathrm{d}\mu = \infty$ for all $n\in\mathbb{N}$ and $\int_X f\,\mathrm{d}\mu = \infty$. In this case, the monotone converge theorem trivially holds.
+
+Conversely, suppose that $f_1$ is integrable. Let $g_n = f_n - f_1$ for $n\in\mathbb{N}$ and let $g = f-f_1$. Then $g_n$ is non-negative and increasing in $n$ on $X$, and $g_n\xrightarrow{n\to\infty} g$. By the monotone convergence theorem for non-negative functions $\int_X g_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X g\,\mathrm{d}\mu$. However, since $\int_X f_1\,\mathrm{d}\mu$ is finite,
+- $\int_X g_n\,\mathrm{d}\mu = \int_X g_n\,\mathrm{d}\mu - \int_X f_1\,\mathrm{d}\mu$
+- $\int_X g\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu - \int_X f_1\,\mathrm{d}\mu$
+
+Since $\int_X f_1\,\mathrm{d}\mu$ is finite, it follows that $\int_X \lim_{n\to\infty} f_n \;\mathrm{d}\mu = \lim_{n\to\infty}\int_X f_n \;\mathrm{d}\mu$.
+
+**Decreasing functions**
+Suppose that $f_n$ is decreasing in $n\in\mathbb{N}$. Note that $-f_n$ satisfy the criteria of the monotone converge theorem for increasing functions and hence $\int_X \lim_{n\to\infty} -f_n\,\mathrm{d}\mu = \lim_{n\to\infty} -\int_X f_n\,\mathrm{d}\mu$. By the scaling property, $\int_X \lim_{n\to\infty}f_n \;\mathrm{d}\mu = \lim_{n\to\infty}\int_X f_n \;\mathrm{d}\mu$.
+</details>
+</MathBox>
+
+<MathBox title="Fatou's lemma" boxType='lemma'>
+Let $f_n : X\to[0, \infty]$ be measurable on $(X,\mathcal{A},\mu)$ for all $n \in \mathbb{N}$, then
+
+$$
+  \int_X \liminf_{n \to \infty} f_n \;\mathrm{d}\mu \leq \liminf_{n \to \infty} \int_X f_n \;\mathrm{d}\mu 
+$$
+
+where $\liminf_{n \to \infty} f_n : X \to [0, \infty]$ is given by
+
+$$
+  g(x) := \left( \liminf_{n \to \infty} f_n \right)(x) := \lim_{n \to \infty} \left(\inf_{k\geq n} f_k (x) \right) = \lim_{n \to \infty} g_n (x) \in [0, \infty]
+$$
+
+<details>
+<summary>Proof</summary>
+
+Evidently $g_n$ is monotonically increasing for each $n\in\mathbb{N}$, thus by the monotone convergence theorem
+
+$$
+  \int_X \lim_{n\to\infty} g_n \;\mathrm{d}\mu = \lim_{n\to\infty} \int_X g_n \; \mathrm{d}\mu = \liminf_{n\to \infty} \int_X g_n \;\mathrm{d}\mu
+$$
+
+Furthermore, because $g_n \leq f_n$ the increasing monotonicity property gives
+
+$$
+  \int_X g_n \;\mathrm{d}\mu \leq \int_X f_n \;\mathrm{d}\mu
+$$
+
+Resulting in
+
+$$
+  \int_X \lim_{n\to\infty} f_n \;\mathrm{d}\mu \leq \lim_{n\to \infty}\inf \int_X f_n \;\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+<MathBox title="Lebesgue's dominated convergence theorem" boxType='lemma'>
+Suppose that $f_n : X \to \mathbb{R}$ be measurable on $(X,\mathcal{A},\mu)$ for all $n\in\mathbb{N}$, and that $\lim_{n\to\infty} f_n$ exists on $X$. If there is a $\mu$-integrable $g:X\to[0,\infty)$ with $|f_n| \leq g$ for $n\in\mathbb{N}$, then
+
+$$
+  \int_X \lim_{n\to\infty} f_n \;\mathrm{d}\mu = \lim_{n\to\infty} \int_X f_n \;\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary> 
+
+Because $|f_n| \leq g$ the increasing monotonicity gives
+
+$$
+  \int_X \left| f_n \right| \;\mathrm{d}\mu \leq \int_X g \;\mathrm{d}\mu < \infty
+$$
+
+showing that $f_n$ is integrable for $n\in\mathbb{N}$. Let $f = \lim_{n\to\infty} f_n$. Then $f$ is measurable, and by increasing monotonicity
+
+$$
+  \int_X|f|\,\mathrm{d}\mu < \int_X g\,\mathrm{d}\mu <\infty
+$$
+
+so $f$ is integrable.
+
+For $n\in\mathbb{N}$, let $u_n = \inf\{f_k\}_{k\geq n}$ and let $v_n = \sup\{f_k \}_{k\geq n}$. Then
+- $u_n\leq f_n\leq v_n$ for $n\in\mathbb{N}$
+- $u_n$ is increasing in $n$ and $u_n \xrightarrow{n\to\infty} f$ 
+- $v_n$ is decreasing in $n$ and $v_n \xrightarrow{n\to\infty} f$
+
+Moreover, 
+- $\int_X u_1\,\mathrm{d}\mu \geq -\int_X g\,\mathrm{d}\mu>-\infty$ and by the monotone convergence theorem $\int_X u_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X f\,\mathrm{d}\mu$ 
+- $\int_X v_1\,\mathrm{d}\mu < \int_X g\,\mathrm{d}\mu <\infty$ and by the monotone convergence theorem $\int_X v_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X f\,\mathrm{d}\mu$
+
+By increasing monotonicity
+
+$$
+  \int_X u_n\,\mathrm{d}\mu\leq\int_X f_n\,\mathrm{d}\mu\leq\int_X v_n\,\mathrm{d}\mu
+$$
+
+and by the squeezing theorem for limits
+
+$$
+  \int_X \lim_{n\to\infty} f_n \;\mathrm{d}\mu = \lim_{n\to\infty} \int_X f_n \;\mathrm{d}\mu
+$$
+</details>
+</MathBox>
+
+<MathBox title='Corollary' boxType='corollary'>
+Let $f_n : X \to \mathbb{R}$ be measurable on $(X,\mathcal{A},\mu)$ for all $n\in\mathbb{N}$, and suppose that $\sum_{n\in\mathbb{N}} |f_n|$ is integrable. Then
+
+$$
+  \int_X \sum_{n\in\mathbb{N}} f_n\,\mathrm{d}\mu = \sum_{n\in\mathbb{N}}\int_X f_n\,\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary> 
+
+The assumption that $g = \sum_{i\in\mathbb{N}}|f_i|$ is integrable implies that $g\overset{\textrm{a.e.}}{<}\infty$ on $X$. In turn, this means that $\sum_{i\in\mathbb{N}}f_i$ is absolutely convergent almost everywhere on $X$. Let $f(x) = \sum_{i\in\mathbb{N}} f_i(x)$ if $g(x)<\infty$, and for completeness, let $f(x) = 0$ if $g(x) = \infty$. Let $g_n = \sum_{i=1}^n f_i$, then $g_n\xrightarrow{n\to\infty} f$ almost everywhere on $X$ and $|g_n|\leq g$ on $X$. By the dominated convergence theorem $\int_X g_n\,\mathrm{d}\mu\xrightarrow{n\to\infty}\int_X f\,\mathrm{d}\mu$. Since $g_n$ is a finite, the additive property gives $\int_X g_n\,\mathrm{d}\mu = \sum_{i=1}^n\int_X f_i\,\mathrm{d}\mu$, which in turn converges to $\int_X g_n \,\mathrm{d}\mu \xrightarrow{n\to\infty}\sum_{i\in\mathbb{N}}\int_X f_i\,\mathrm{d}\mu = \int_X f\,\mathrm{d}\mu$.
+</details>
+</MathBox>
+
+<MathBox title='Bounded convergence theorem' boxType='theorem'>
+Let $f_n : X \to \mathbb{R}$ be measurable on $(X,\mathcal{A},\mu)$ for all $n\in\mathbb{N}$, and suppose that there exists $A\in\mathcal{A}$ such that
+- $\mu(A)<\infty$
+- $\lim_{n\to\infty} f_n$ exists on $A$
+- $|f_n|$ is bounded on $A$
+
+Then
+
+$$
+  \int_A \lim_{n\to\infty} f_n \;\mathrm{d}\mu = \lim_{n\to\infty} \int_A f_n \;\mathrm{d}\mu
+$$
+
+<details>
+<summary>Proof</summary> 
+
+Suppose that $|f_n|$ is bounded in $n\in\mathbb{N}$ on $A$ by $c\in(0,\infty)$. The constant $c$ is integrable on $A$ since $\int_A c\,\mathrm{d}\mu = c\mu(A)<\infty$ and $|f_n|\leq c$ on $A$. Therefore, the result follows from the dominated convergence theorem.
+</details>
+</MathBox>
+
+## Product spaces
+
+<MathBox title="Fubini's theorem" boxType='theorem'>
+Let $(X\times Y, \mathcal{A}\otimes\mathcal{B},\mu\otimes\nu)$ be a product measure. If $f:X\times Y\to\mathbb{R}$ is measurable then
+
+$$
+  \int_{X\times Y} f(x,y)\,\mathrm{d}(\mu\otimes\nu)(x,y) = \int_X\int_Y f(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) = \int_Y\int_X f(x,y)\,\mathrm{d}\mu(x)\mathrm{d}\nu(y)
+$$
+
+As a special case, if $C\in\mathcal{A}\otimes\mathcal{B}$, then
+
+$$
+  (\mu\otimes\nu)(C) = \int_X \nu(C_x)\,\mathrm{d}\mu(x) = \int_Y \mu(C^y)\,\mathrm{d}\nu(y)
+$$
+
+where $C_x = \{y\in Y\;|\; (x,y)\in C\}$ for $x\in X$ and $C^y = \{x\in X\;|\; (x,y)\in C\}$ for $y\in Y$. 
+
+<details>
+<summary>Proof</summary> 
+
+We will show the equality with the first iterated integral
+
+$$
+  \int_{X\times Y} f(x,y)\,\mathrm{d}(\mu\otimes\nu)(x,y) = \int_X\int_Y f(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) 
+$$
+
+The equality with the second iterated integral follows by symmetry.
+
+**Indicator functions**
+1. Suppose that $f = \chi_{A\times B}$ where $A\in\mathcal{A}$ and $B\in\mathcal{B}$. The equation holds by definition of the product measure, since the double integral is $(\mu\otimes\nu)(A\times B)$ and the iterated integral is
+
+$$
+  \int_X\int_Y \chi_{A\times B}(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) = \int_X\int_Y \chi_A(x)\chi_B(y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) = \int_X \chi_A(x) \nu(B)\,\mathrm{d}\mu = \mu(A)\nu(B)
+$$
+
+2. Suppose that $f = \chi_C$ where $C\in\mathcal{A}\otimes\mathcal{B}$. The double integral is $(\mu\otimes\nu)(C)$, and defines the measure $\mu\otimes\nu$ as a function of $C\in\mathcal{A}\otimes\mathcal{B}$. On the other, the iterated integral is
+
+$$
+  \int_X\int_Y \chi_C(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) = \int_X\int_Y \chi_{C_x}(y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x) = \int_X \nu(C_x)\,\mathrm{d}\mu
+$$
+
+where $C_x = \{y\in Y\;|\; (x,y)\in C\}$ is the cross-section of $C$ at $x\in X$. Recall that $x\mapsto\nu(C_x)$ is a non-negative, measurable function of $x$, so $C\mapsto\int_X\nu(C_x)\,\mathrm{d}\mu(x)$ makes sense. Moreover, as a function of $C\in\mathcal{A}\otimes\mathcal{B}$, this integral also forms a measur: if $\{C_i\}_{i\in I}$ is a countable, disjoint collection of sets in $\mathcal{A}\otimes\mathcal{B}$, them $\{C_x^i\}_{i\in I}$ is a countable, disjoint collection of sets in $\mathcal{B}$. Cross-sections preserve set operations, so if $C = \bigcup_{i\in I}C^i$ then $C_x = \bigcup_{i\in I}C_x^i$. By the additivity of the measure $\nu$ and the integral we get
+
+$$
+  \int_X \nu(C_x)\,\mathrm{d}\mu(x) = \int_X\nu\left(\bigcup_{i\in I} C_x^i \right)\,\mathrm{d}\mu(x) = \int_X\sum_{i\in I}\nu(C_x^i)\,\mathrm{d}\mu(x) = \sum_{i\in I}\int_X\nu(C_x^i)\,\mathrm{d}\mu(x)
+$$
+
+In summary, the double integral and the iterated integral define positive measures on $\mathcal{A}\otimes\mathcal{B}$. By $(1)$, these measures correspond with measurable rectangles. By uniqueness theorem, they must be the same. Thus, the double integral and the iterated integral agree with integrand $f = \chi_C$ for every $C\in\mathcal{A}\otimes\mathcal{B}$.
+
+**Simple functions**
+3. Suppose $f = \sum_{i\in I} c_i\chi_{C_i}$ is a non-negative simple function on $X\times Y$. This, $I$ is a finite index set, $c_i\in[0,\infty)$ for $i\in I$ and $\{C_i\}_{i\in I}$ is a disjoint collection of sets in $\mathcal{A}\otimes\mathcal{B}$. The double integral and the iterated integral satisfy the linearity property, and hence by $(2)$, agree with integrand $f$.
+ 
+**Non-negative functions**
+4. Suppose that $f:X\times Y\to[0,\infty)$ is measurable. Then there exists an increasing sequence of non-negative simple functions $(g_n)_{n\in\mathbb{N}}$ on $X\times Y$ such that $g_n\xrightarrow{n\to\infty} f$. By the monotone convergence theorem, $\int_{X\times Y} g_n\,\mathrm{d}(\mu\otimes\nu)\xrightarrow{n\to\infty}\int_{X\times Y} f\,\mathrm{d}(\mu\otimes\nu)$. For a fixed $x\in X$, the function $y\mapsto g_n(x, y)$ is increasing in $n$ on $Y$ and converges to $f(x, y)$ in the limit $n\to\infty$. Applying the monotone convergence theorem gives
+
+$$
+  \int_Y g_n(x,y)\,\mathrm{d}\nu(y) \xrightarrow{n\to\infty}\int_Y f(x,y)\,\mathrm{d}\nu(y)
+$$
+
+Likewise, $x\mapsto \int_Y g_n(x,y)\,\mathrm{d}\nu(y)$ is measurable and is increasing in $n$ on $S$. By the monotone convergence theorem
+
+$$
+  \int_X\int_Y g_n(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x)\xrightarrow{n\to\infty}\int_X\int_Y f(x,y)\,\mathrm{d}\nu(y)\mathrm{d}\mu(x)
+$$
+
+By $(3)$, the double integral and iterated integral agree with integrand $g_n$ for each $n\in\mathbb{N}$. It follows that the double integral and iterated integral agree with integrand $f$.
+
+**General functions**
+5. Suppose that $f:X\times Y\to\mathbb{R}$ is measurable. By $(4)$, the double integral and the iterated integral agree with integrands $f^+$ and $f^-$. Assuming that at least one of these is finite, then by the additive property, the integrals agree with integrand $f = f^+ - f^-$.
+</details>
+</MathBox>
+
+<MathBox title='Corollary' boxType='corollary'>
+Suppose that $g:X\to\mathbb{R}$ and $h:Y\to\mathbb{R}$ are measurable on $(X\times Y,\mathcal{A}\otimes\mathcal{B},\mu\otimes\nu)$, and are either non-negative or integrable with respect to $\mu$ and $\nu$, respectively. Then
+
+$$
+  \int_{X\times Y} g(x)h(y)\,\mathrm{d}(\mu\otimes\nu)(x,y) = \left(\int_X g(x)\,\mathrm{d}\mu(x) \right)\left(\int_X h(y)\,\mathrm{d}\nu(y) \right)
+$$
+</MathBox>
+
+<MathBox title="Cavalieri's principle" boxType='theorem'>
+Let $(X\times Y,\mathcal{A}\otimes\mathcal{B},\mu\otimes\nu)$ be a product measure space, and consider $C, D\in\mathcal{A}\otimes\mathcal{B}$. If $\nu(C_x) = \nu(D_x)$ for all $x\in X$, or $\mu(C^y) = \mu(D^y)$ for all $y\in Y$ then
+
+$$
+  (\mu\otimes\nu)(C) = (\mu\otimes\nu)(D)
+$$
+
+where
+- $C_x = \{ y \in Y \;|\; (x, y) \in C \}$ and $D_x = \{ y \in Y \;|\; (x, y) \in D \}$ for $x\in X$
+- $C^y = \{ x \in X \;|\; (x, y) \in C \}$ and $D^y = \{ x \in X \;|\; (x, y) \in D \}$ for $y\in Y$
+</MathBox>
+
+## Relation to Riemann integral on $\mathbb{R}$
+
+Consider the one-dimensional Euclidean space $(\mathbb{R},\mathcal{B}(\mathbb{R}),\lambda)$ where $\lambda$ is the Lebesgue measure. This section shows that Lebesgue integration generalizes Riemann integration.
+
+<MathBox title='Riemann integral' boxType='definition'>
+Consider a function $f:[a,b]\to\mathbb{R}$ where $a,b\in\mathbb{R}$ with $a< b$, and define the following
+1. A partition $\mathcal{A} = \{A\}_{i\in I}$ of $[a,b]$ is a finite collection of disjoint subintervals whose union is $[a, b]$.
+2. The norm of a partition $\mathcal{A}$ is $\lVert A \rVert = \max\{\lambda(A_i)\}_{i\in I}$, the length of the largest subinterval of $\mathcal{A}$
+3. A set of points $B = \{x_i\}_{i\in I}$ where $x_i\in A_i$ for each $i\in I$ is said to be associated with the partition $\mathcal{A}$
+
+The Riemann sum of $f$ corresponding to a partition $\mathcal{A}$ and a set $B$ associated with $\mathcal{A}$ is
+
+$$
+  R(f,\mathcal{A}, B) = \sum_{i\in I}f(x_i)\lambda(A_i)
+$$
+
+Note that the Riemann sum is simply the integral of the simple function $g = \sum_{i\in I} f(x_i)\chi_{A_i}$, which takes the form of a step function since $A_i$ is an interval for each $i\in I$. Furthermore, $\lambda(A_i)$ is simply the length of the subinterval $A_i$.
+
+The function $f$ is Riemann integrable on $[a,b]$ if there exits $r\in\mathbb{R}$ with the property that for every $\epsilon>0$ there exists $\delta>0$ such that if $\mathcal{A}$ is a partition of $[a,b]$ with $\lVert A\rVert <\delta$, then $|r - R(f,\mathcal{A},B)|<\epsilon$ for every set of points $B$ associated with $\mathcal{A}$. In this case, the Riemann integral of $f$ on $[a,b]$ is defined by
+
+$$
+  \int_a^b f(x)\,\mathrm{d}x = r
+$$
+
+The function $f$ is Riemann integrable on $[a,b]$if and only if$f$ is bounded on $[a,b]$ and $f$ is continuous almost everywhere on $[a,b]$.
+</MathBox>
+
+<MathBox title='Lebesgue integrability implies Riemann integrability' boxType='theorem'>
+If $f:[a,b]\to\mathbb{R}$ is Riemann integrable on $[a,b]$ then $f$ is Lebesgue integrable on $[a,b]$ and
+
+$$
+  \int_{[a,b]}f\,\mathrm{d}\lambda = \int_a^b f(x)\,\mathrm{d}x
+$$
+</MathBox>

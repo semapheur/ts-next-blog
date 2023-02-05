@@ -1,0 +1,548 @@
+---
+title: 'Vector analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Curvilinear coordinates
+
+| System | $q_1$ | $q_2$ | $q_3$ | $h_1$ | $h_2$ | $h_3$ |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| Cartesian | $x$ | $y$ | $z$ | $1$ | $1$ | $1$ | 
+| Spherical | $r$ | $\theta$ | $\phi$ | $1$ | $r$ | $r\sin\theta$ |
+| Cylindrical | $s$ | $\phi$ | $z$ | $1$ | $s$ | $1$ |
+
+Consider the 3-dimensional Euclidean space. In Cartesian coordinates the position of a point $P$ is given by
+
+$$
+  \mathbf{r} = x_1 \mathbf{e}_1 + x_2 \mathbf{e}_2 + x_3 \mathbf{e}_3
+$$
+
+where $\mathbf{e}_i := \frac{\partial\mathbf{r}}{\partial x_i}$ are the standard basis vectors. The point $P$ can also be defined by curviliner coordinates $q_i$ that are related to the Cartesian coordinates by the functions
+
+$$
+\begin{split}
+  x_1 = f_1(q_1, q_2, q_3) 
+\end{split}\quad
+\begin{split}
+  x_2 = f_2(q_1, q_2, q_3) 
+\end{split}\quad
+\begin{split}
+    x_3 = f_3(q_1, q_2, q_3) 
+\end{split}
+$$
+
+Assuming that the curvilinear coordinate system is orthogonal, its basis vectors $\mathbf{h}_i := \frac{\partial\mathbf{r}}{\partial q_i}$ are mutually perpendicular such that
+
+$$
+  \mathbf{h_i}\cdot\mathbf{h_j} = \delta_{ij} = \begin{cases} 1 \quad i = j \\ 0 \quad i \neq j  \end{cases}
+$$
+
+The norm of the basis vectors are given by $\left| \mathbf{h}_i \right| = \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}$. An orthonormal basis $\{\mathbf{b}_i \}_{i=1}^3$ can thus be formed by setting
+
+$$
+  {\mathbf{b}}_i = \frac{\mathbf{h_i}}{h_i} \quad h_j := \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}
+$$
+
+The total differential change in $\mathbf{r}$ is then given by 
+
+$$
+  \mathrm{d}\mathbf{r} = \sum_{i=1}^3 \left(\frac{\partial\mathbf{r}}{\partial q_i}\right)\mathrm{d}q_i = \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i
+$$
+
+From the total differential change we can form the differential volume element by
+
+$$
+  \mathrm{d}V = \prod_{i=1}^3 \left(\mathrm{d}\mathbf{r} \right)_i = h_1 h_2 h_3 \;\mathrm{d}q_1\;\mathrm{d}q_2\;\mathrm{d}q_3
+$$
+
+and differential surface elements by
+
+$$
+  \mathrm{d}\mathbf{a}_i = (\mathrm{d}\mathbf{r})_j \cdot (\mathrm{d}\mathbf{r})_k \mathbf{b}_i = h_j h_k \;\mathrm{d}q_j\;\mathrm{d}q_k \mathbf{b}_i
+$$
+
+## Gradient
+
+Consider a scalar function $f(q_i) : \mathbb{R}^3 \to\mathbb{R}$. The total derivative of $f$ is given by
+
+$$
+  \mathrm{d}f := \nabla f \cdot\mathrm{d}\mathbf{r} = \sum_{i=1}^3 \frac{\partial f}{\partial q_i}\mathrm{d}q_i
+$$
+
+Evaluating the inner product $\nabla f\cdot \mathrm{d}\mathbf{r}$ we get
+
+$$
+  \mathrm{d}f = \nabla f \cdot\mathrm{d}\mathbf{r} = \nabla f \cdot \left( \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i \right) = \sum_{i=1}^3 h_i \left( \nabla f \cdot\mathbf{b}_i \right)\mathrm{d}q_i
+$$
+
+Equating the terms of $\mathrm{d}f$ we see that
+
+$$
+  \nabla f \cdot \mathbf{b}_i = \frac{1}{h_i}\frac{\partial f}{\partial q_i}
+$$
+
+and hence the gradient of $f$ wrt. to the curvilinear coordinates is given by
+
+$$
+  \nabla f = \sum_{i=1}^3 \left(\nabla f \cdot \mathbf{b}_i \right)\mathbf{b}_i = \sum_{i=1}^3 \frac{1}{h_i}\frac{\partial f}{\partial q_i}\mathbf{b}_i
+$$
+
+## Divergence
+
+Suppose $\mathbf{A}: \mathbb{R}^3 \to\mathbb{R}^3$ is a vector field with components $\mathbf{A} = \sum_{i=1}^3 A_i\mathbf{b}_i$. The divergence of $\mathbf{A}$ can be derived by writing out
+
+$$
+\begin{align*}
+  \nabla\cdot\mathbf{A} &= \nabla\cdot\left( A_1 \mathbf{b}_1 + A_2 \mathbf{b}_2 + A_3 \mathbf{b}_3 \right) \\
+  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} + h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} + h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} \right) + \nabla\cdot\left( h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} \right) + \nabla\cdot\left( h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right)
+\end{align*}
+$$
+
+Setting $f:= h_j h_k A_i$ and $\mathbf{v}:= \frac{\mathbf{b}_i}{h_j h_k}$, each divergence term takes the form $\nabla\cdot(f\mathbf{v})$ allowing us to apply the identity
+
+$$
+  \nabla\cdot(f\mathbf{v}) = \mathbf{v}\cdot\nabla f + f\nabla\cdot\mathbf{v}
+$$
+
+It can be further shown that $\nabla\cdot\mathbf{v} = \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) = 0$, by recalling that $\nabla q_i = \frac{\mathbf{b}_i}{h_i}$ and $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$ where $\varepsilon_{ijk}$ is the Levi-Civita symbol, so that
+
+$$
+  \nabla q_j \times\nabla q_k = \frac{\mathbf{b}_j \times\mathbf{b}_k}{h_j h_k} = \frac{\mathbf{b}_i}{h_j h_k}
+$$
+
+Taking the divergence of the left hand side, we may use the identity
+
+$$
+  \nabla\cdot(\mathbf{u}\times\mathbf{v}) = \mathbf{v}\cdot(\nabla\times\mathbf{u}) - \mathbf{u}\cdot(\nabla\times\mathbf{v})
+$$
+
+with $\mathbf{u}:= \nabla q_j$ and $\mathbf{v}:= q_k$. However, because gradients are curl free, i.e. $\nabla\times(\nabla f) = \mathbf{0}$ we conclude that
+
+$$
+\begin{align*}
+  \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) &= \nabla\cdot\left(\nabla q_j \times\nabla q_k\right) \\
+  &= \nabla q_k \left(\nabla \times \nabla q_j \right) - \nabla q_j \cdot\left( \nabla\times \nabla q_k \right) \\
+  &= 0
+\end{align*}
+$$
+
+It therefore follows that
+
+$$
+  \nabla\left( h_j h_k A_i \frac{\mathbf{b}_i}{h_j h_k} \right) = \frac{\mathbf{b}_i}{h_j h_k}\cdot \nabla(h_j h_k A_i) = \frac{1}{h_i h_j h_k}\frac{\partial}{\partial q_i}\left( h_j h_k A_i \right)
+$$
+
+where we have used that $\mathbf{q}_i \cdot \nabla f = \frac{1}{h_i}\frac{\partial f}{\partial q_i}$. In conclusion, the divergence of $\mathbf{A}$ wrt. curvilinear coordinates is given by
+
+$$
+  \nabla\cdot\mathbf{A} := \frac{1}{h_1 h_2 h_3}\left[\frac{\partial}{\partial q_1}\left(h_2 h_3 A_1\right) + \frac{\partial}{\partial q_2}\left(h_1 h_3 A_2\right) + \frac{\partial}{\partial q_3}\left(h_1 h_2 A_3\right)\right]
+$$
+
+## Curl
+
+The curl of $\mathbf{A}$ can be derived by writing out
+
+$$
+\begin{align*}
+  \nabla\times\mathbf{A} &= \nabla\times\left(\sum_{i=1}^3 A_i \mathbf{b}_i \right) \\
+  &= \nabla\times\left(\sum_{i=1}^3 h_i A_i \frac{\mathbf{b}_i}{h_i} \right) \\
+  &= \sum_{i=1}^3 \nabla\times\left(h_i A_i \frac{\mathbf{b}_i}{h_i} \right)
+\end{align*}
+$$
+
+Setting $f:= h_i A_i$ and $\mathbf{v} = \frac{\mathbf{b}_i}{h_i}$, each curl term takes the form $\nabla\times (f\mathbf{v})$, allowing us to apply the identity
+
+$$
+  \nabla\times(f\mathbf{v}) = -\mathbf{v}\times\nabla f + f\nabla\times\mathbf{v}
+$$
+
+Since $\nabla\times\left(\frac{\mathbf{b}_i}{h_i}\right) = \nabla\times\left(\nabla q_i \right) = 0$, we are left with
+
+$$
+  \nabla\times\mathbf{A} = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\nabla\left(h_i A_i\right) = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\left[\sum_{j=1}^3 \frac{1}{h_j}\frac{\partial}{\partial q_j}\left( h_i A_i \right)\mathbf{b}_j \right] 
+$$
+
+Applyting the relation $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$, we conclude that
+
+$$
+  \nabla\times\mathbf{A} = \frac{\mathbf{q}_1}{h_2 h_3}\left[\frac{\partial}{\partial q_2}\left(h_3 A_3 \right) - \frac{\partial}{\partial q_3}\left(h_2 A_2 \right)\right] + \frac{\mathbf{q}_2}{h_1 h_3}\left[\frac{\partial}{\partial q_3}\left(h_1 A_1 \right) - \frac{\partial}{\partial q_1}\left(h_3 A_3 \right)\right] + \frac{\mathbf{q}_3}{h_1 h_2}\left[\frac{\partial}{\partial q_1}\left(h_2 A_2 \right) - \frac{\partial}{\partial q_2}\left(h_1 A_1 \right)\right]
+$$
+
+## Laplacian
+
+The Laplacian of a scalar function $f:\mathbb{R}^3 \to\mathbb{R}$ is defined as the divergence of $\nabla f$. Using the results for the gradient and dirvergence in curvilinear coordinates, we find that
+
+$$
+\begin{align*}
+  \nabla^2 f &:= \nabla\cdot\left(\nabla f \right) = \nabla\cdot\left(\sum_{i=1}^3 \frac{1}{h_1}\frac{\partial f}{\partial q_i}\mathbf{b}_i \right) \\
+  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3} + \frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3} + \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3}\right)  + \nabla\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3}\right) + \nabla\cdot\left( \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \frac{\mathbf{b_1}}{h_2 h3}\cdot\left(\frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\mathbf{b_2}}{h_1 h3}\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \right) + \frac{\mathbf{b_3}}{h_1 h2}\cdot\left(\frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \right) \\
+  &= \frac{1}{h_1 h_2 h_3}\left[ \frac{\partial}{\partial q_1}\left( \frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\partial}{\partial q_2}\left( \frac{h_1 h_3}{h_2}\frac{\partial f}{\partial q_2} \right) + \frac{\partial}{\partial q_3}\left( \frac{h_1 h_2}{h_3}\frac{\partial f}{\partial q_3} \right) \right]
+\end{align*}
+$$
+
+# Paths and curves
+
+<MathBox title='Path and curve' boxType='definition'>
+A continuous function $\alpha: I\subseteq\mathbb{R}\to\mathbb{R}^n$ is called a path. The image of $\alpha$ is called a curve $C$
+
+$$
+  C = \{ \mathbf{x}\in\mathbb{R}^n \;|\; \mathbf{x} = \alpha(t)\; t\in I \}
+$$
+
+We say that $\alpha$ is a parametrization of the curve. We often refer to the input variable $t\in I$ as time, so that $\alpha(t)$ describes the position of a moving object at time $t$. 
+</MathBox>
+
+## Lines
+
+Given a point $\mathbf{a}\in\mathbb{R}^n$ and a non-zero vector $\mathbf{v}\in\mathbb{R}$, the line through $\mathbf{a}$ and parallel to $\mathbf{v}$ is parametrized by $\alpha: \mathbb{R}\to\mathbb{R}^n$ where
+
+$$
+  \alpha(t) = \mathbf{a} + t\mathbf{v}
+$$
+
+## Calculus
+
+### Derivative
+<MathBox title='Derivative of paths' boxType='definition'>
+Given a path $\alpha: I\to\mathbb{R}^n$ the derivative of $\alpha$ is defined by
+
+$$
+\begin{align*}
+  \alpha'(t) &= \lim_{h\to 0} \frac{\alpha(t + h) - \alpha(t)}{h} \\
+  &= \lim_{h\to 0} \frac{1}{h}\left( \left[ x_1(t + h), x_2(t + h),\dots,x_n(t + h) \right] - \left[ x_1(t), x_2(t),\dots,x_n(t) \right]\right) \\
+  &= \lim_{h\to 0} \left( \frac{x_1(t+h) - x_1(t)}{h}, \frac{x_2(t+h) - x_2(t)}{h},\dots,\frac{x_n(t+h) - x_n(t)}{h} \right) \\
+  &= \left( x_1'(t), x_2'(t),\dots, x_n'(t) \right)
+\end{align*}
+$$
+
+provided the limit exists. The derivative is also called the velocity $\mathbf{v}(t) := \alpha'(t) = \frac{\mathrm{d}\alpha}{\mathrm{d}t}$ of $\alpha$. The norm of $\mathbf{v}$ is called the speed $v$ of $\alpha$ and is defined as
+
+$$
+  v(t) := \lVert \mathbf{v}(t) \rVert
+$$
+</MathBox>
+
+<MathBox title='Product rules' boxType='proposition'>
+If $\alpha, \beta: I\to\mathbb{R}^n$ are differentiable paths and $f:I\to\mathbb{R}$ a differentiable function, the following product rules hold
+
+- Dot product rule: $(\alpha\cdot\beta)' = \alpha'\cdot\beta + \alpha\cdot\beta'$
+  - In the special case $\alpha = \beta$ we get $(\alpha\cdot\beta)' = (\lVert\alpha\rVert^2)' = 2\alpha \alpha\cdot\alpha'$
+- Cross product rule: For $\alpha, \beta: I\to\mathbb{R}^3: $(\alpha\times\beta)' = \alpha'\times\beta + \alpha\times\beta'$
+- Scalar multiplication: $(f\alpha)' = f'\alpha + f\alpha'$
+
+<details>
+<summary>Proof</summary>
+
+**Dot product rule**
+Note that $\alpha\cdot\beta : \mathbb{R}^n \timesmathbb{R}^n \to\mathbb{R}$ is real-valued, so that its derivative is given by
+
+$$
+  (\alpha\cdot\beta)' = \lim_{h\to 0} \frac{1}{h}\left[\alpha(t + h)\cdot\beta(t + h) - \alpha(t)\cdot\beta(t)\right]
+$$
+
+The quotient can be rewritten as
+
+$$
+\begin{align*}
+  \frac{1}{h}\left[\alpha(t + h)\cdot\beta(t + h) - \alpha(t)\cdot\beta(t)\right] &= \frac{1}{h}\left[\alpha(t + h)\cdot\beta(t + h) - \alpha(t)\cdot\beta(t + h) \\
+  &\quad +\alpha(t)\cdot\beta(t + h) - \alpha(t)\cdot\beta(t) \right] \\
+  &= \frac{\alpha(t + h) - \alpha(t)}{h}\cdot\beta(t + h) + \alpha(t)\cdot\frac{\beta(t + h) - \beta(t)}{h}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Arclength
+<MathBox title='Arclength' boxType='definition'>
+The arclength of a differentiable path $\alpha: [a, b]\to\mathbb{R}^n$ is defined as
+
+$$
+  s(t) := \int_a^b v(t)\;\mathrm{d}t = \int_a^b \lVert\mathbf{v}(t)\rVert\;\mathrm{d}t
+$$
+</MathBox>
+
+## Frenet-Serret formula
+
+<MathBox title='Frenet vectors' boxType='definition'>
+Let $C$ be a curve in $\mathbb{R}^3$ parametrized by the differentiable path $\alpha: I\to\mathbb{R}^3$. Then, the following vectors can be defined
+
+- the unit tangent vector: $\mathbf{T}(t) = \frac{1}{\lVert\alpha'(t)\rVert}\alpha'(t)$ if $\alpha'(t) \neq \mathbf{0}$
+- the principal normal vector: $\mathbf{N}(t) = \frac{1}{\lVert\mathbf{T}'\rVert}\mathbf{T}'(t)$ if $\mathbf{T}'(t) \neq \mathbf{0}$
+- the binormal vector: $\mathbf{B}(t) = \mathbf{T}(t)\times\mathbf{N}(t)$
+
+The vectors are called the Frenet vectors of $\alpha$.
+</MathBox>
+
+<MathBox title='Lemma' boxType='lemma'>
+The derivative of the the binormal vector $\mathbf{B}'$ is always a scalar multiple of the principal normal $\mathbf{N}$, i.e. $\mathbf{B}'(t) = c(t)\mathbf{N}(t)$ where $c(t):\mathbb{R}\to\mathbb{R}$ is a scalar function.
+
+<details>
+<summary>Proof</summary>
+
+If suffices to show that $\mathbf{B}'$ is orthogonal to (a) $\mathbf{B}$ and (b) $\mathbf{T}$. The only vectors orthogonal to both are precisely the scalar multiples of $\mathbf{N}$.
+
+(a) Since $\mathbf{B}$ is a unit vector, $\lVert \mathbf{B} \rVert$ is constant. Hence $\mathbf{B}$ and its derivative $\mathbf{B}'$ are always orthogonal.
+
+(b) By definition $\mathbf{B} = \mathbf{T}\times\mathbf{N}$, so using the cross product rule
+$$
+\begin{align*}
+  \mathbf{B}' &= (\mathbf{T}\times\mathbf{N})' = \mathbf{T}'\times\mathbf{N} + \mathbf{T}\times\mathbf{N}' \\
+  &= \left(\lVert\mathbf{T}'\rVert\mathbf{N}\right)\times\mathbf{N} + \mathbf{T}\times\mathbf{N}' = \\
+  &= \mathbf{T}\times\mathbf{N}'
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Curvature and torsion' boxType='definition'>
+Let $C$ be a curve in $\mathbb{R}^3$ parametrized by the differentiable path $\alpha: I\to\mathbb{R}^3$. Then, the curvature $\kappa$ of $C$ is defined as
+
+$$
+    \kappa(t) := \frac{\lVert \mathbf{T}(t) \rVert}{v(t)} = \frac{\lVert \mathbf{T}(t) \rVert}{\lVert \alpha'(t) \rVert}
+$$
+
+Given that $\mathbf{B}'(t) = c(t)\mathbb{N}$, the torsion $\tau$ of $C$ is defined as
+
+$$
+    \tau(t) := -\frac{c(t)}{v(t)}
+$$
+</MathBox>
+
+<MathBox title='Frenet-Serret formulas' boxType='proposition'>
+Let $\alpha:I\to\mathbb{R}^3$ be a differentiable path with speed $v$, Frenet vectors $(\mathbf{T}, \mathbf{N}, \mathbf{B})$, curvature $\kappa$ and torsion $\tau$. Assume that $v\neq 0$ and $\mathbf{T}' \neq\mathbf{0}$ so that the Frenet vectors are defined for all $t$. Then
+
+$$
+\begin{aligned}
+  \mathbf{T}' &= \kappa v\mathbf{N} \\
+  \mathbf{N}' &= -\kappa v \mathbf{T} + \tau v\mathbf{B} \\
+  \mathbf{B}' &= -\tau v\mathbf{N}
+\end{aligned}\quad
+\begin{aligned}
+  \begin{bmatrix} \mathbf{T}' \\ \mathbf{N}' \\ \mathbf{B}' \end{bmatrix} = \begin{bmatrix} 
+      0 & \kappa & 0 \\ 
+      -\kappa & 0 & \tau \\
+      0 & -\tau & 0
+  \end{bmatrix} \cdot \begin{bmatrix} \mathbf{T} \\ \mathbf{N} \\ \mathbf{B} \end{bmatrix}
+\end{aligned}\quad
+$$
+
+<details>
+<summary>Proof</summary>
+
+The first equation follows from the definitions $\mathbf{N} = \frac{1}{\lVert\mathbf{T}\rVert}\mathbf{T}'$ and $\kappa = \frac{\lVert\mathbf{T}'\rVert}{v}$, giving
+
+$$
+  \mathbf{T}' = \lVert\mathbf{T}'\rVert\mathbf{N} = \kappa v\mathbf{N}
+$$
+
+For the third equation, we know that $\tau = -\frac{c}{v}$ such that
+
+$$
+  \mathbf{B}' = c\mathbf{N} = -\tau v\mathbf{N}
+$$
+
+The second equation follows from the cross product of $\mathbf{N} = \mathbf{B}\times\mathbf{N}$ and the first and third equations
+
+$$
+\begin{align*}
+  \mathbf{N}' &= (\mathbf{B}\times\mathbf{T})' = \mathbf{B}'\times\mathbf{T} + \mathbf{B}\times\mathbf{T}' \\
+  &= -\tau v\mathbf{N}\times\mathbf{T} + \mathbf{B}\times(\kappa v\mathbf{N}) = -\tau v(\underbrace{\mathbf{N}\times\mathbf{T}}_{=-\mathbf{B}}) + \kappa v(\underbrace{\mathbf{B} + \mathbf{N}}_{-\mathbf{T}}) \\
+  &= -\kappa v \mathbf{T} + \tau v\mathbf{B}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='$v\kappa\tau theorem$' boxType='theorem'>
+Let $\alpha,\beta :I\to\mathbb{R}^3$ be differentiable paths with nonzero $v$ and $\mathbf{T}'$ so that the Frenet vectors are defined for all $t$. Then either path can be translated and rotated so that it fits exactly on top of the otherif and only ifthey have the same speed $v$, curvature $\kappa$ and torsion $\tau$. In this case, the two paths are said to be congruent to each other. 
+
+<details>
+<summary>Proof</summary>
+
+**Translations and rotations preserve $v, \kappa, \tau$**
+Suppose a path $\alpha:I\to\mathbb{R}^3$ is translated by a constant $\mathbf{c}\in\mathbb{R}^3$ to obtain a new path $\beta(t) = \alpha(t) + \mathbb{c}$. Then $\beta'(t) = \alpha'(t)$, so $\alpha$ and $\beta$ have the same velocity and therefore the same speed. It follows that $\beta$ and $\alpha$ have the same Frenet vectors and thus the same curvature and torsion. Hence, speed, curvature and torsion are preserved under translations.
+
+Suppose $\alpha$ is rotated in $\mathbb{R}^3$ to obtain a new path $\beta(t) = R(\alpha(t) + \mathbf{c})$ where $R$ is a rotation matrix such that $RR^T = I$. Then intuitively, the velocities $\alpha'$ and $\beta'$ are related by the same rotation, and so are the Frenet vectors. The matrix $Q$ whose rows are the Frenet vectors also transforms as $Q\mapsto QR$ such that
+
+$$
+  \frac{\mathrm{d}(QR)}{\mathrm{d}t}(QM)^T = \frac{\mathrm{d}Q}{\mathrm{d}t}RR^T Q^T = \frac{\mathrm{d}Q}{\mathrm{d}t} Q^T
+$$
+
+Hence the entries $\kappa$ and $\tau$ of $\frac{\mathrm{d}Q}{\mathrm{d}t}Q^T$ (Frenet-Serret formulas) are preserved under rotations. 
+
+**Paths with same $v, \kappa, \tau$ are congruent
+Suppose the paths $\alpha, \beta$ have the same speed, curvature and tension. The two paths are congruent if one can be rigidly moved to the other through translation and rotation. Consider a point $a\in I$. We first translate $\alpha$ by a constant vector $\mathbf{c} = \beta(a) - \alpha(a)$ to get a new path $\gamma(t) = \alpha(t) + \mathbf{d}$ such that $\gamma(a) = \beta(a) =: \mathbf{x}_0$. As a translate, the $v,\kappa,\tau$ of $\gamma$ are preserved. 
+
+The unit tangents  to $\gamma$ and $\beta$ at $\mathbf{x}_0$ may not be equal, but $\gamma$ can be rotated until they are. Next, $\gamma$ can be rotated again about this tangent direction until the principal normals align at $\mathbf{x}_0$. The binormals are automatically the same, since they are the cross products of the unit tangents and the principal normal. Under these transformations, the final path $\tilde{\alpha}$ satisfies the following three conditions
+- $\tilde{\alpha}(a) = \beta(a) = \mathbf{x}_0$
+- $\tilde{\alpha}$ and $\beta$ have the same Frenet vectors at $\mathbf{x}_0$
+- $\tilde{\alpha}$ and $\beta$ have the same speed, curvature and torsion for all $t$
+
+To complete the proof, it remains to show that $\tilde{\alpha} = \beta$ using the Frenet-Serret formulas. We denote the Frenet vectors of $\tilde{\alpha}$ by $\left(\tilde{\mathbf{T}}, \tilde{\mathbf{N}}, \tilde{\mathbf{B}}\right)$ and those of $\beta$ by $\left(\mathbf{T}, \mathbf{N}, \mathfb{B}\right)$. Using similar notation, we further have $\tilde{v} = v$, $\tilde{\kappa}= \kappa$ and $\tilde{\tau} = \tau$ by construction. Let $\tau$ be the angle between $\tilde{\mathbf{T}}$ and $\mathbf{T}$. Then 
+
+$$
+  \tilde{\mathbf{T}}(t)\cdot\mathbf{T}(t) = \lVert\tilde{\mathbf{T}}(t)\rVert \cdot \lVert\mathbf{T}(t)\rVert\cos\theta = \cos\theta \begin{cases} = 1 \quad \theta = 0 \iff \tilde{\mathbf{T}}(t) = \mathbf{T}(t) \\ \leq 1, \quad \textrm{otherwise}
+$$
+
+Noting the same for $\tilde{\mathbf{N}}(t)\cdot\mathbf{N}(t)$ and $\tilde{\mathbf{B}}(t)\cdot\mathbf{B}(t)$, we may define $f:I\to\mathbb{R}$ by
+
+$$
+  f(t) = \tilde{\mathbf{T}}(t)\cdot\mathbf{T}(t) + \tilde{\mathbf{N}}(t)\cdot\mathbf{N}(t) + \tilde{\mathbf{B}}(t)\cdot\mathbf{B}(t) \begin{cases} 
+      = 3 \quad \iff \tilde{\mathbf{T}}(t) = \mathbf{T}(t), \tilde{\mathbf{N}}(t) = \mathbf{N}(t), \tilde{\mathbf{B}}(t) = \mathbf{B}(t) \\
+      \leq 3 \quad \textrm{otherwise}
+  \end{cases}
+$$
+
+Note that by construction $f(a) = 3$. Differentiating $f$ and using the Frenet-Serret formulas gives
+
+$$
+\begin{align*}
+  f' &= \left(\tilde{\mathbf{T}}'\cdot\mathbf{T} + \tilde{\mathbf{T}}\cdot\mathbf{T}' \right) + \left(\tilde{\mathbf{N}}'\cdot\mathbf{N} + \tilde{\mathbf{N}}\cdot\mathbf{N}' \right) + \left(\tilde{\mathbf{B}}'\cdot\mathbf{B} + \tilde{\mathbf{B}}\cdot\mathbf{B}' \right) \\
+  &= \left(\kappa v\tilde{\mathbf{N}}\cdot\mathbf{T} + \tilde{\mathbf{T}}\cdot\kappa v \mathbf{N} \right) + \left[\left(-\kappa v \tilde{\mathbf{T}} + \tau v\tilde{\mathbf{B}}\right)\cdot\mathbf{N} + \tilde{\mathbf{N}}\cdot\left(-\kappa v\mathbf{T} + \tau\mathbf{B}\right)\right] \\
+  &\quad + \left[\left(-\tau v\tilde{\mathbf{N}})\cdot\mathbf{B} + \tilde{\mathbf{B}}\cdot\left(-\tau v \mathbf{N}\right)\right] \\
+  &= \kappa v \left[\left(\tilde{\mathbf{N}}\cdot\mathbf{T} - \tilde{\mathbf{N}}\cdot\mathbf{T} \right) + \left(\tilde{\mathbf{T}}\cdot\mathbf{N} - \tilde{\mathbf{T}}\cdot\mathbf{N}\right)\right] + \tau v \left[\left(\tilde{\mathbf{B}}\cdot\mathbf{N}\right) - \left(\tilde{\mathbf{B}}\cdot\mathbf{N}\right) + \left(\tilde{\mathbf{N}}\cdot\mathbf{B} - \tilde{\mathbf{N}}\cdot\mathbf{B}\right) \right] \\
+  &= 0
+\end{align*}
+$$
+
+Hence $f$ is a constant function. Since $f(a) = 3$ it follows that $f(t) = 3$ for all $t$. This implies that $\tilde{\mathbf{T}}(t) = \mathbf{T}(t)$ for all $t$. By the definition of the unit tangent, this gives
+
+$$
+  \frac{\tilde{\alpha}'(t)}{v(t)} = \frac{\beta'(t)}{v(t)} \iff \tilde{\alpha}'(t) = \beta'(t) \; \forall t
+$$
+
+Consequently $\tilde{a}$ and $\beta$ differ by a constant vector. Since $\tilde{a}(a) = \beta(a) = \mathbf{x}_0$ this constant is zero, giving $\tilde{\alpha}(t) = \beta(t)$ for all $t$.
+</details>
+</MathBox>
+
+# Scalar fields
+
+## Graphs and level sets
+
+<MathBox title='Graph' boxType='definition'>
+Let $f:A\subset \mathbb{R}^n \to\mathbb{R}$ be a scalar function. The graph of $f$ is the set
+
+$$
+  \left\{ \left(x_i \right)_{i=0}^{n+1} \in\mathbb{R}^{n+1} \;|\; \left(x_i \right)_{i=1}^n \in A \textrm{ and } x_{n+1} = f(x_1,x_2,\dots,x_n) \right\}
+$$
+</MathBox>
+
+<MathBox title='Level set' boxType='definition'>
+Let $f:A\subset \mathbb{R}^n \to\mathbb{R}$ be a scalar function. For a given $c \in f[A] \subseteq\mathbb{R}$, its corresponding level set is the set of all points in the domain at which $f$ has a value of $c$, i.e. $\{\mathbf{x}\in A : f(\mathbf{x}) = c \}$. For functions of two variables, level sets are also called level curves and, for functions of three variables, level surfaces.
+</MathBox>
+
+## Open sets
+
+<MathBox title='Open ball' boxType='definition'>
+Consider a point $\mathbf{a}\in\mathbb{R}^n$ and assume $r > 0$. The open ball centered at $\mathbf{a}$ and with radius $r$ is defined as
+$$
+  \mathcal{B}(\mathbf{a}, r) = \left\{ \mathbf{x}\in\mathbb{R} \;|\; \lVert \mathbf{x} - \mathbf{a} \rVert < r \right\}
+$$
+</MathBox>
+
+Consider a subset $U\subseteq\mathbb{R}^n$. The subset is called 
+- open if, given any point $\mathbf{a}\in U$, there exists a positive real number $r$ such that $\mathcal{B}(\mathbf{a}, r)\subset U$
+- closed if its complement $U^c = \mathbb{R}^n \backslash U = \{\mathbf{x}\in\mathbb{R}^n \;|\; \mathbf{x}\not\in U\}$ is open.
+
+## Continuity
+
+<MathBox title='Continuous scalar field' boxType='definition'>
+Let $f: U\subseteq\mathbb{R}^n \to\mathbb{R}$ be a scalar field and consider a point $\mathbf{a}\in U$. Then, $f$ is called continuous at $\mathbf{a}$ if, given any open ball $\mathcal{B}(f(\mathbf{a}), \epsilon)$ about $f(\mathbf{a})$, there exists an open ball $\mathcal{B}(\mathbf{a}, \delta)$ about $\mathbf{a}$ such that
+
+$$
+  f\left[\mathcal{B}(\mathbf{a}, \delta)\right] \subset \mathcal{B}\left[f(\mathbf{a}), \epsilon\right]
+$$
+
+Equivalently, writing out the definition of the open ball, $f$ is continuous at $\mathbf{a}$ if, given any $\epsilon > 0$, there is a $\delta > 0$ such that
+
+$$
+  \lVert\mathbf{x} - \mathbf{a}\rVert < \delta : |f(\mathbf{x}) - f(\mathbf{a}) | < \epsilon
+$$
+
+The function $f$ is simply called continuous if it is continuous at every point of its domain $U$.
+</MathBox>
+
+<MathBox title='Properties of continuous scalar fields' boxType='proposition'>
+Let $f, g: U\to\mathbb{R}$ be a scalar fields defined on an open set $U\subseteq\mathbb{R}^n$. If $f$ and $g$ are continuous at a point $\mathbf{a}\in U$, then so are
+- the sum $f + g$
+- $cf$ for any scalar $c\in\mathbb{R}$
+- the product $fg$
+- the quotient $f/g$, assuming $g(\mathbf{a})\neq 0$
+
+<details>
+<summary>Proof</summary>
+
+**Sum**
+Given $\epsilon > 0$, we need to find $\delta > 0$ such that 
+
+$$
+  \mathbf{x}\in\mathcal{B}_\delta (\mathbf{a}) \implies \left|\left[f(\mathbf{x}) + g(\mathbf{x})\right] - \left[f(\mathbf{a}) + g(\mathbf{a})\right]\right| < \epsilon 
+$$
+
+The absolute values of the $f$ and $g$ contributions can be separated by applying the triangle inequality
+
+$$
+\begin{align*}
+  \left|\left[f(\mathbf{x}) + g(\mathbf{x})\right] - \left[f(\mathbf{a}) + g(\mathbf{a})\right]\right| &= \left|\left[f(\mathbf{x}) - f(\mathbf{a})\right] + \left[g(\mathbf{x}) - g(\mathbf{a})\right]\right| \\
+  &\overset{\triangle}{\leq} \left|f(\mathbf{x}) - f(\mathbf{a})\right| + \left|g(\mathbf{x}) - g(\mathbf{a})\right|
+\end{align*}
+$$
+
+Since $f$ and $g$ are continuous at $\mathbf{a}$, then given any $\epsilon_f = \epsilon_g = \frac{\epsilon}{2}$, there are $\delta_f > 0$ and $\delta_g > 0$ such that 
+
+$$
+\begin{align*}
+  \left|f(\mathbf{x}) - f(\mathbf{a})\right| < \epsilon_f \land \mathbf{x}\in\mathcal{B}_{\delta_f}(\mathbf{a}) \\
+  \left|g(\mathbf{x}) - g(\mathbf{a})\right| < \epsilon_g \land \mathbf{x}\in\mathcal{B}_{\delta_g}(\mathbf{a})
+\begin{align*}
+$$
+
+Taking $\delta = \min\{\delta_f, \delta_g\}$, we get that
+
+$$
+  \mathbf{x}\in\mathcal{B}_\delta (\mathbf{a}) \implies \left|\left[f(\mathbf{x}) + g(\mathbf{x})\right] - \left[f(\mathbf{a}) + g(\mathbf{a})\right]\right| < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+$$
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose $U\subseteq\mathbb{R}^n$ and $V\subseteq\mathbb{R}$ are open sets, and let $f:U\to\mathbb{R}$ and $g:V\to\mathbb{R}$ be functions such that $f(\mathbf{x})\in V$ for all $\mathbf{x}\in U$. This guarantees that the composition $g\circ f:U\to\mathbb{R}$ is defined. If $f$ and $g$ are continuous, so is the composition $f\circ g$.
+
+<details>
+<summary>Proof</summary>
+
+Consider a point $\mathbf{a}\in U$ and let $\epsilon > 0$ be given. Since $g$ is continuous at the point $f(\mathbf{a})$, there is a $\delta' > 0$ such that
+
+$$
+  g\left(\mathcal{B}_{\delta'}\left[f(\mathbf{a})\right]\left) \subset \mathcal{B}_\epsilon \left(g[f(\mathbf{a})]\right)
+$$
+
+Since $f$ is continuous at $\mathbf{a}$, treating $\delta'$ as the given input, there is a $\delta > 0$ such that
+
+$$
+  f\left[\mathcal{B}_\delta (\mathbf{a}) \right] \subset \mathcal{B}_{\delta'} \left[ f(\mathbf{a})\right]
+$$
+
+Linking these two steps gives
+
+$$
+  (g\circ f)\left[\mathcal{B}_\delta (\mathbf{a}) \right] = g\left(f\left[\mathcal{B}_\delta (\mathbf{a})\right]\right) \subset g\left(\mathcal{B}_{\delta'}\left[f(\mathbf{a})\right]\left) \subset \mathcal{B}_\epsilon \left(g[f(\mathbf{a})]\right)
+$$
+
+</details>
+</MathBox>
+
+## Differential calculus
+
+## Integral calculus
+
+# Vector fields
+
+# Vector-valued functions
+
+
+

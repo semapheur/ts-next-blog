@@ -1,0 +1,975 @@
+---
+title: 'Complex Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# The complex plane
+
+## Neighbourhoods
+
+An $\varepsilon$ neighbourhood of a complex number $z_0 \in\mathbb{C}$, also called an $\varepsilon$-ball, is an open subset of all points lying inside a circle centered at $z_0$ and with radius $\varepsilon > 0$
+
+$$
+  \mathcal{B}_\epsilon (z_0) = \left\{ z \in\mathbb{C} : \left| z - z_0 \right| < \varepsilon \right\}
+$$
+
+The closed $\epsilon$ neighbourhood of $z_0$ is the closure of $\mathcal{B}_\epsilon$, including the boundary points 
+
+$$
+  \bar{\mathcal{B}}_\epsilon (z_0) = \left\{ z \in\mathbb{C} : \left| z - z_0 \right| < \varepsilon \right\}
+$$
+
+## Riemann sphere
+
+<LatexFig width={50} src='/fig/riemann_sphere.svg' alt=''
+  caption='Riemann sphere.'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{3d}
+
+% Set 3D plot view angle
+\tdplotsetmaincoords{75}{75}
+
+\begin{document}
+
+\begin{tikzpicture}[tdplot_main_coords]
+    
+  % Shaded ball (not working in svg)
+  \shade[ball color=lightgray, opacity=0.5] (0,0,0) circle (1cm);
+
+  % Great circles
+  \draw[blue] (0,0,0) circle (1cm);
+
+  \tdplotsetrotatedcoords{90}{0}{0};
+  \draw[dashed, tdplot_rotated_coords, red] (1,0,0) arc (0:180:1);
+  \draw[tdplot_rotated_coords, red] (1,0,0) arc (0:-180:1);
+
+  \tdplotsetrotatedcoords{90}{90}{0};
+  \draw[dashed, tdplot_rotated_coords, green] (1,0,0) arc (0:180:1);
+  \draw[tdplot_rotated_coords, green] (1,0,0) arc (0:-180:1);
+
+  % Points
+  \draw[fill=black] (0, 0, 1) circle (0.03cm) node[anchor=south] {\scriptsize $\infty$};
+  \draw[fill=black] (0, 0, -1) circle (0.03cm) node[anchor=north] {\scriptsize $0$};
+
+  \draw[fill=black] (0, 1, 0) circle (0.03cm) node[anchor=west] {\scriptsize $1$};
+  \draw[fill=black] (0, -1, 0) circle (0.03cm) node[anchor=east] {\scriptsize $-1$};
+
+  \draw[fill=black] (1, 0, 0) circle (0.03cm) node[anchor=north west] {\scriptsize $i$};
+  \draw[fill=black] (-1, 0, 0) circle (0.03cm) node[anchor=south east] {\scriptsize $-i$};
+
+\end{tikzpicture}
+%}
+
+\end{document}
+```
+</LatexFig>
+
+The extended complex plane is obtained by including an infinite point to the complex plane
+
+$$
+  \bar{\mathbb{C}} = \mathbb{C} \cup \{\infty\}
+$$
+
+The extended complex plane is also called the Riemann sphere, as it can be projected onto a sphere with one of the poles representing $\infty$.
+
+### Classification of points
+
+Consider a subset of the complex plane $S \subseteq \mathbb{C}$. A point $z_0 \in\mathbb{C}$ is classified as
+1. an interior point of $S$ whenever there is some neighbourhood of $z_0$ containing only points of $S$
+2. an exterior point $S$ when there exists a neighbourhood of it containing no points of $S$
+3. a boundary point of $S$ all of whose neighbourhoods contain at least one point in $S$ and one point outside $S$
+
+A point $z \in\mathbb{C}$ is called an interior point of a subset $S\subseteq \mathbb{C}$
+
+## Topological space
+
+A subset of the complex plane, $S \subseteq \mathbb{C}$ is called open if every point $z \in S$ is covered by an $\epsilon$-ball $\mathcal{B}_\epsilon (z) \subseteq S$
+
+$$
+  \forall z \in S \quad\exists\epsilon > 0 : \mathcal{B}_\epsilon (z) \in S
+$$
+
+A subset $S$ is closed if it contains all of its boundary points
+
+$$
+  \partial S \subseteq S
+$$
+
+# Complex functions
+
+Let $f: S \to \mathbb{C}$ be a complex function given by $z = x + iy \mapsto w = u + iv$. It follows that $f(z) = w$ can be expressed in terms of a pair of real-valued functions of the real variables $(x, y) \in\mathbb{R}^2$
+
+$$
+  f(z) =  u(x, y) + iv(x, y)
+$$
+
+Using the polar form $z = re^{i\phi}$, we write
+
+$$
+  f(z) = u(r, \phi) + iv(r, \phi)
+$$
+
+## Continuity
+
+A complex function $f:\mathbb{C}\to\mathbb{C}$ is continuous at $z_0 \in\mathbb{C}$ if for all sequences $\left( z_n \right)_{n\in\mathbb{N}} \subseteq\mathbb{C}$
+
+$$
+  z_n \xrightarrow{n\to\infty} z_0 \implies f(z_n) \xrightarrow{n\to\infty} f(z_0)
+$$
+
+## Uniform convergence
+
+A sequence of complex functions $\left(f_n\right)_{n\in\mathbb{N}}$ with $f_n : U \to\mathbb{C}$ is uniformly convergent to $f: U \to\mathbb{C}$ if
+
+$$
+  \lVert f_n - f \rVert_\infty := \sup_{z\in U} \left| f_n (z) - f(z) \right| \xrightarrow{n\to\infty} 0
+$$
+
+# Complex series 
+
+## Power series
+
+<MathBox title='Complex power series' boxType='definition'>
+A complex power series is a complex function $f:D\to\mathbb{C}$ defined by
+
+$$
+  f(z) = \sum_{n=0}^\infty a_n \left(z - z_0\right)^n \quad D := \left\{ z\in\mathbb{C} \;|\; f(z)\textrm{ is convergent} \right\}
+$$
+</MathBox>
+
+There is a maximal $r\in [0, \infty) \cup \{\infty\}$ such that
+- $B_r (z_0) \subseteq D$ for $r\in [0, \infty)$
+- $\mathbb{C} = D$ for $r = \infty$
+
+and for $z\in \mathbb{C}\backslash \overline{B_r(z_0)}$ the power series is divergent.
+
+<MathBox title='Cauchy-Hadamard theorem' boxType='theorem'>
+The radius of convergence for a complex power series $f(z) = \sum_{n=0} a_k (z - z_0)^k$ is given by
+
+$$
+  \frac{1}{r} = \limsup_{k\to\infty} \sqrt[k]{\left| a_k \right| } \in [0, \infty) \cup \{\infty \}
+$$
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $f: \mathcal{B}_r (z_0) \to\mathbb{C}$ be a power series $f(z) \sum_{n=0}^\infty a_n \left(z - z_0\right)^n$, then
+
+1. $f$ is uniformly convergent on $\overline{\mathcal{B}_c (z_0)}$ with $c < r$.
+2. $\sum_{n=0}^\infty a_n n \left(z - z_0\right)^{n-1}$ is uniformly convergent on $\overline{\mathcal{B}_c (z_0)}$ with $c < r$.
+
+<details>
+<summary>Proof</summary>
+
+Assume $z_0 = 0$. To prove the first result let $f_n : \overline{\mathcal{B}_c (0)}\to\mathbb{C}$ be a sequnce of functions $f_n (z) = \sum_{k=0}^n = a_k z^k$. We show that $f_n$ converges uniformly to $f$
+
+$$
+\begin{align*}
+  \lVert f - f_n \rVert_\infty &= \sup_{z\in\overline{\mathcal{B}_c (0)}} \left| \sum_{k=n+1}^\infty a_k z^k \right| = \sup_{z\in\overline{\mathcal{B}_c (0)}} \lim_{N\to\infty} \left| \sum_{k=n+1}^N a_k z^k \right| \\
+  &\overset{\triangle}{\leq} \sup_{z\in\overline{\mathcal{B}_c (0)}} \lim_{N\to\infty} \sum_{k=n+1}^N \left| a_k \right| \cdot \left| z \right|^k \\
+  &\leq \sum_{k=n+1}^\infty \left| a_k \right| c^k
+\end{align*}
+$$
+
+We know that $f\left( \tilde{r} \right) = \sum_{k=0}^\infty a_k \tilde{r}^k$ is convergent for $c < \tilde{r} < r$. Hence there is a bound $B$ with 
+
+$$
+  \left| a_k \tilde{r}^k \right| \leq B \iff B \geq \left| a_k \right| \tilde{r}^k = \left| a_k \right| c^k \left(\frac{\tilde{r}}{c}\right)^k = \left| a_k \right| q^{-1}
+$$
+
+Since $q < 1$,
+
+$$
+  \lVert f - f_n \rVert_\infty \leq \sum_{k=n+1}^\infty \left| a_k \right| c^k \leq B \sum_{k=n+1}^\infty q^k \xrightarrow{n\to\infty} 0
+$$
+
+To prove the second result, we write
+
+$$
+  \sum_{k=1}^\infty a_k k z^{k+1} = \sum_{k=1}^\infty b_{k-1}z^{k-1}
+$$
+
+The radius of convergence for this power series is given by the Cauchy-Hadamard
+
+$$
+  \limsup_{k} \sqrt[k]{\left| a_{k+1} \right| (k + 1)} = r
+$$
+
+It then follows that the sequence of functions $f_n : \overline{\mathcal{B}_c (0)}\to\mathbb{C}$ with $f_n = \sum_{k=0}^n a_k k z^k$ converges uniformly to $\tilde{f}(z) = \sum_{k=0}^\infty a_k k z^k$ using the same approach as for the first result.
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'> 
+A power series $f: \mathcal{B}_r (z_0) \to\mathbb{C}$ and $f(z) = \sum_{n=0}^\infty a_n \left(z - z_0\right)^n$ is differentiable with
+
+$$
+  f'(z) = \sum_{k=1}^\infty a_k k (z - z_0)^{k-1}
+$$
+
+This means that the power series is holomorphic on $\mathcal{B}_r (z_0)$.
+
+<details>
+<summary>Proof</summary>
+
+Assume $z_0 = 0$ and define 
+
+$$
+\begin{gather*}
+  \tilde{f}(z) := \sum_{k=1}^\infty a_k k z^k \\
+  p_N (z) := \sum_{k=0}^N a_k z^k \\
+  q_N (z) := \sum_{k=N+1}^\infty a_k z^k
+\end{gather*}
+$$
+
+We then need to show that $\tilde{f}(z) = f'(z) = \frac{f(z + h) - f(z)}{h}$
+
+$$
+\begin{align*}
+  \left| \frac{f(z+h) - f(z)}{h} - \tilde{f}(z) \right| &= \left| \frac{\left(p_N + q_N \right)(z + h) - \left(p_N + q_N\right)(z)}{h} - \tilde{f}(z) \right| \\
+  &\overset{\triangle}{\leq} \left| \frac{p_N (z + h) - p_N (z)}{h} - p'_N (z) \right| + \left| p'_N (z) - \tilde{f}(z) \right| + \left| \frac{q_N (z + h) - q_N (z)}{h} \right|
+\end{align*}
+$$
+
+In the limit $h \to 0$, the first absolute term vanishes, while in the limit $N\to\infty$ then $p'_N(z)$ converges pointwisely to $\tilde{f}(z)$ and thus the second absolute term vanishes. Writing out the third term
+
+$$
+\begin{align*}
+  \left| \frac{\sum_{k=N+1}^\infty a_k (z + h)^k - \sum_{k=N+1}^\infty a_k z^k}{h} \right| &\overset{\triangle}{\leq} \sum_{k=N+1}^\infty \left|a_k \right| \cdot \left| \frac{(z + h)^k - z^k}{h} \right| \\
+  &= \sum_{k=N+1}^\infty \left| a_k \right| \cdot \left| \frac{1 - \left(\frac{z }{z + h}\right)^k}{1 - \frac{z}{z + h}} \right| \\
+  &\leq \sum_{k=N+1}^\infty \left| a_k \right| \sum_{j=0}^{k+1} \left| \left(\frac{z}{z + h}\right)^j \right| \\
+  &= \leq \sum_{k=N+1}^\infty \left| a_k \right| \tilde{r}^{k-1} k \quad \tilde{r} \geq z + h \xrightarrow{N\to\infty} 0
+\end{align*}
+$$
+
+Where we have used the formula for geometric sums $\frac{1 - q^k}{1 - q} = \sum_{j=0}^{k-1} q^j$. Hence we conclude
+
+$$
+  \lim_{h\to 0} \left| \frac{f(z + h) - f(z)}{h} - \tilde{f}(z) \right| = 0 \implies f'(z) = \tilde{f}(z)
+$$
+</details>
+</MathBox>
+
+### Laurent series
+
+Suppose $f: \mathcal{B}_r (0) \to\mathbb{C}$ is a power series $f(z) = \sum_{k=0}^\infty a_k z^k$ with radius of convergence $r\in[0, \infty]$. Then $f$ is divergent for $w\in\mathbb{C}$ with $|w| > r$. However, the power series $w \mapsto \sum_{k=0}^\infty a_k \left(\frac{1}{w}\right)^k$ is convergent for $\left|\frac{1}{w}\right| < r \iff |w| > \frac{1}{r}$, i.e. on $\mathbb{C} \backslash \overline{B_{1/r}(0)}$. 
+
+A Laurent series is formed by combining
+- $z \mapsto \sum_{k=0}^\infty a_k z^k$ with radius of convergence $r_1$
+- $z \mapsto \sum_{k=-1}^{-\infty} b_k z^k$ with radius of convergence $r_2$
+
+<MathBox title='Laurent series' boxType='definition'>
+A Laurent series $f(z) = \sum_{n=-\infty}^\infty a_k (z - z_0)^k$ is a pair of two series
+
+- $z \mapsto \sum_{n=0}^\infty a_n (z - z_0)^n$ with radius of convergence $R \in [0, \infty]$
+- $z \mapsto \sum_{n=-1}^{-\infty} a_n (z - z_0)^n$ with radius of convergence $r$, known as the principal part.
+
+The coefficient $a_{-1}$ is called the residue of the Laurent series.
+</MathBox>
+
+The Laurent series $f(z) = \sum_{n=-\infty}^\infty a_k (z - z_0)^k$ with inner radius of convergence $r$ and outer radius of convergence $R$ is holomorphic on the annulus $A = \left\{ z \in\mathbb{C} \;|\; r < \left| z - z_0 \right| < R \right\}$
+
+### Singularities
+
+<MathBox title='Isolated singularity' boxType='definition'>
+Let $f:U\to\mathbb{C}$ be holomorphic and $z_0 \not\in U$. If there there is a $\varepsilon > 0$ with $\mathcal{B}_\epsilon (z_0) \backslash \{ z_0 \} \subseteq U$, then $z_0$ is called an isolated singularity of $f$. 
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+At isolated singularities, there is always a local Laurent series.
+</MathBox>
+
+There are three cases for isolated singularities for a Laurent series $f(z) = \sum_{n=-\infty}^\infty a_n (z - z_0)^n$
+1. removable singularity: $\forall n < 0: a_n = 0$ (vanishing principal part)
+2. pole: $\exists N \in\mathbb{Z}_- \quad \forall n < N: a_n = 0$ (finite principal part)
+3. essential singularity: $\forall N \in\mathbb{Z}_- \quad \exists n \leq N : a_n \neq 0$ (infinite principal part)
+
+<MathBox title='Pole' boxType='definition'>
+If the principal part of a Laurent series, $\sum_{n=-1}^{-\infty} a_n (z - z_0)^n$, is finite, then there is a $N \in\mathbb{Z}_-$ such that $a_n = =0$ for all $n < N$ and $a_N \neq 0$. In this case, then $f$ has a pole of order $|N|$ at $z_0$. A pole of order $1$ is usually called a simple pole.
+</MathBox>
+
+# Complex differentiation
+
+<MathBox title='Complex derivative' boxType='proposition'>
+Given a complex function $f: U \to \mathbb{C}$ defined on an open domain $U \subseteq \mathbb{C}$, the (complex) derivative of $f$ at $z_0 \in\mathbb{C}$ is defined as the limit (differential quotient)
+
+$$
+  f'(z_0) := \Delta_{f, z_0} (z_0) = \lim_{z\to z_0} \frac{f(z) - f(z_0)}{z - z_0}
+$$
+
+If this limit exists, then $f$ is said to be complex differentiable at $z_0$. This means that for all sequences $\left( z_n \right)_{n\in\mathbb{N}} \subseteq U \backslash \{ z_0 \}$ with $z_n \xrightarrow{n\to \infty} z_0$, the sequence $\frac{f(z_n) - f(z_0)}{z_n - z_0}$ converge to the same limit. The existence of the differential quotient allows for a linear approximation of $f$ at $z_0$ given by
+
+$$
+  f(z) = f(z_0) + (z - z_0) \Delta_{f, z_0} (z) \quad \forall z\in U
+$$
+</MathBox>
+
+By taking the limit $z = x + iy \to z_0 = x_0 + iy_0$ in the real or imaginary direction, the differential quotient of $f$ at $z_0$ becomes a partial derivative. In the first case, the imaginary part is fixed, i.e. $z = x + y_0$, so that $z \to z_0 \iff x \to x_0$, resulting in
+
+$$
+  \Delta_{f, z_0} (z) = \lim_{x+ iy_0 \to x_0 + iy_0} \frac{f(z) - f(z_0)}{(x + iy_0) - (x_0 - iy_0)} = \lim_{x \to x_0} \frac{f(z)}{(x - x_0)} = \frac{\partial f(z)}{\partial x}
+$$
+
+In the second case, the real part is fixed, i.e. $z = x_0 + iy$, so that $z \to z_0 \iff iy \to iy_0$, resulting in
+
+$$
+\begin{align*}
+  \Delta_{f, z_0} (z) &= \lim_{x_0 + iy \to x_0 + iy_0} \frac{f(z) - f(z_0)}{(x_0 + iy) - (x_0 - iy_0)} \\
+  &= \lim_{iy \to iy_0} \frac{f(z)}{i(y - y_0)} = \frac{1}{i}\frac{\partial f(z)}{\partial y} = -i\frac{\partial f(z)}{\partial y}
+\end{align*}
+$$
+
+## Holomorphic functions
+
+<MathBox title='Holomorphic functions' boxType='definition'> 
+A complex function $f: U \to \mathbb{C}$ defined on an open domain $U\subseteq {C}$ is holomorphic on $U$ if it is differentiable at every $z_0 \in U$. If $U = \mathbb{C}$, the holomorphic function is called entire.
+
+<details>
+<summary>Proof</summary>
+
+Assume $z_0 = 0$ and define 
+
+$$
+\begin{gather*}
+  \tilde{f}(z) := \sum_{k=1}^\infty a_k k z^k \\
+  p_N (z) := \sum_{k=0}^N a_k z^k \\
+  q_N (z) := \sum_{k=N+1}^\infty a_k z^k
+\end{gather*}
+$$
+
+We then need to show that $\tilde{f}(z) = f'(z) = \frac{f(z + h) - f(z)}{h}$
+
+$$
+\begin{align*}
+  \left| \frac{f(z+h) - f(z)}{h} - \tilde{f}(z) \right| &= \left| \frac{\left(p_N + q_N \right)(z + h) - \left(p_N + q_N\right)(z)}{h} - \tilde{f}(z) \right| \\
+  &\overset{\triangle}{\leq} \left| \frac{p_N (z + h) - p_N (z)}{h} - p'_N (z) \right| + \left| p'_N (z) - \tilde{f}(z) \right| + \left| \frac{q_N (z + h) - q_N (z)}{h} \right|
+\end{align*}
+$$
+
+In the limit $h \to 0$, the first absolute term vanishes, while in the limit $N\to\infty$ then $p'_N(z)$ converges pointwisely to $\tilde{f}(z)$ and thus the second absolute term vanishes. Writing out the third term
+
+$$
+\begin{align*}
+  \left| \frac{\sum_{k=N+1}^\infty a_k (z + h)^k - \sum_{k=N+1}^\infty a_k z^k}{h} \right| &\overset{\triangle}{\leq} \sum_{k=N+1}^\infty \left|a_k \right| \cdot \left| \frac{(z + h)^k - z^k}{h} \right| \\
+  &= \sum_{k=N+1}^\infty \left| a_k \right| \cdot \left| \frac{1 - \left(\frac{z }{z + h}\right)^k}{1 - \frac{z}{z + h}} \right| \\
+  &\leq \sum_{k=N+1}^\infty \left| a_k \right| \sum_{j=0}^{k+1} \left| \left(\frac{z}{z + h}\right)^j \right| \\
+  &= \leq \sum_{k=N+1}^\infty \left| a_k \right| \tilde{r}^{k-1} k \quad \tilde{r} \geq z + h \xrightarrow{N\to\infty} 0
+\end{align*}
+$$
+
+Where we have used the formula for geometric sums $\frac{1 - q^k}{1 - q} = \sum_{j=0}^{k-1} q^j$. Hence we conclude
+
+$$
+  \lim_{h\to 0} \left| \frac{f(z + h) - f(z)}{h} - \tilde{f}(z) \right| = 0 \implies f'(z) = \tilde{f}(z)
+$$
+</details>
+</MathBox>
+
+### Cauchy-Riemann equations
+
+<MathBox title='Cauchy-Riemann equations' boxType='theorem'>
+A complex function $f: \mathbb{U} \to\mathbb{C}$ given by $f(z) = u(x, y) + iv(x,y)$ has a complex derivative $f'(z)$if and only ifits real and imaginary parts are continuously differentiable and satisfy the Cauchy-Riemann equations
+
+$$
+\begin{aligned}
+  \frac{\partial u}{\partial x} = \frac{\partial v}{\partial y} \\
+  u_x = v_y
+\end{aligned}\quad 
+\begin{aligned}
+  \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x} \\
+  u_y = -v_x
+\end{aligned}
+$$
+
+In this case, the complex derivative of $f$ is given by
+
+$$
+  f'(z) = u_x + iv_x = v_y - iu_y
+$$
+
+<details>
+<summary>Proof</summary> 
+
+Suppose $f: \mathbb{C} \to \mathbb{C}$ is differentiable at $z_0 = x_0 + iy_0 \in \mathbb{C}$. The linear approximation of $f$ at $z_0$ is
+
+$$
+\begin{align*}
+  f(z) &= f(z_0) + (z - z_0) \Delta_{f, z_0} (z) \\
+  &= u(x_0, y_0) + iv(x_0, y_0) + \left[(x - x_0) + i(y - y_0) \right]  \Delta_{f, z_0} (z) \\
+  &= u(x_0, y_0) + (x - x_0) \Delta_{f, z_0} (z) + i\left[v(x_0, y_0) + (y - y_0) \Delta_{f, z_0} (z) \right] \\
+\end{align*}
+$$
+
+Differentiating in the real and imaginary directions yield the partial derivatives $\frac{\partial f(z)}{\partial x}$ and $-i\frac{\partial f(z)}{\partial y}$, resulting in
+
+$$
+\begin{aligned}
+  f'(z_0) &= \frac{\partial}{\partial x} u(x, y) + \frac{\partial}{\partial x} iv(x, y) \\
+  &= u_x (x, y) + i v_x (x, y)
+\end{aligned}\quad
+\begin{aligned}
+  f'(z_0) &= -i\frac{\partial}{\partial x} u(x, y) - i\frac{\partial}{\partial y} iv(x, y) \\
+  &= v_y (x, y) - iu_x (x, y)
+\end{aligned}
+$$
+
+Since $f$ is differentiable at $z_0$, the derivatives along the two axes must be equal, thus satisfying
+
+$$
+\begin{aligned}
+  u_x = v_y
+\end{aligned}\quad 
+\begin{aligned}
+  u_y = -v_x
+\end{aligned}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose $f:\mathbb{U}\to\mathbb{C}$ with $f(x + iy) = u(x, y) + iv(x, y)$ is holomorphic on $U$. Then both $u$ and $v$ solves Laplace's equation
+
+$$
+  \nabla^2 u := \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0 \qquad \nabla^2 v := \frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2} = 0
+$$
+</MathBox>
+
+### Wirtinger derivatives
+
+The Wirtinger derivatives are defined as the following first order linear partial differential operators
+
+$$
+\begin{aligned}
+  \frac{\partial}{\partial z} = \frac{1}{2}\left(\frac{\partial}{\partial x} - i\frac{\partial}{\partial y} \right)
+\end{aligned}\quad
+\begin{aligned}
+  \frac{\partial}{\partial \bar{z}} = \frac{1}{2}\left(\frac{\partial}{\partial x} + i\frac{\partial}{\partial y} \right)
+\end{aligned}
+$$
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose that $f: \mathbb{C} \to \mathbb{C}$ is holomorphic. Then $\frac{\partial f}{\partial z} = f'(z)$ and $\frac{\partial f}{\partial \bar{z}} = 0$.
+
+<details>
+<summary>Proof</summary>
+
+Consider the holomorphi function $f(x + iy) = u(x, y) + iv(x, y)$. Applying the first Wirtinger derivative gives
+
+$$
+\begin{align*}
+  \frac{\partial f}{\partial z} &= \frac{1}{2}\left( \frac{\partial f}{\partial x} - i\frac{\partial f}{\partial y} \right) = \frac{1}{2}\left\{ \frac{\partial}{\partial x}\left[u(x, y) + iv(x, y)\right] - i\frac{\partial}{\partial y} \left[ u(x,y) + iv(x,y) \right] \right\} \\
+  &= \frac{1}{2}( u_x + iv_x - iu_y + v_y ) = \frac{1}{2}[u_x + \underbrace{v_y}_{=u_x} + i( v_x - \underbrace{u_y}_{=-v_x} ) ] \\
+  &= \frac{1}{2}\left[ u_x + u_x + i\left(v_x + v_x\right)\right] = u_x + iv_x \\
+  &= f'(z)
+\end{align*}
+$$
+
+Applying the second Wirtinger derivative gives
+
+$$
+\begin{align*}
+  \frac{\partial f}{\partial \bar{z}} &= \frac{1}{2}\left( \frac{\partial f}{\partial x} + i\frac{\partial f}{\partial y} \right) = \frac{1}{2}\left\{ \frac{\partial}{\partial x}\left[u(x, y) + iv(x, y)\right] + i\frac{\partial}{\partial y} \left[ u(x,y) + iv(x,y) \right] \right\} \\
+  &= \frac{1}{2}( u_x + iv_x + iu_y - v_y ) = \frac{1}{2}[u_x - \underbrace{v_y}_{=u_x} + i(v_x + \underbrace{u_y}_{=-v_x} ) ] \\
+  &= \frac{1}{2}\left[ u_x - u_x + i\left(v_x - v_x\right)\right] \\
+  &= 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+# Complex integration
+
+## Integrals on real intervals
+
+<MathBox title='Complex integral on a real interval' boxType='definition'>
+Consider the continuous map $\gamma: [a, b] \subseteq\mathbb{R}\to\mathbb{C}$. The complex integral of $\gamma$ on the interval $[a, b]$ is defined by Riemann integrals of the real and imaginary parts of $\gamma$ 
+
+$$
+  \int_a^b \gamma(t)\;\mathrm{d}t := \int_a^b \Re[\gamma(t)]\;\mathrm{d}t + i \int_a^b \Im[\gamma(t)]\;\mathrm{d}t
+$$
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $\gamma : [a, b] \to\mathbb{C}$ be continuous, then
+$$
+  \left| \int_a^b \gamma(t)\;\mathrm{d}t \right| \leq \int_a^b | \gamma(t)|\;\mathrm{d}t
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assume $0\neq \int_a^b \gamma(t) \;\mathrm{d}t := w \in\mathbb{C}$ and define $c:= \frac{w}{|w|} = 1$. Then
+
+$$
+  \int_a^b \Re\left[c^{-1} \gamma(t)\right] \;\mathrm{d} = \int_a^b c^{-1} \gamma(t) \;\mathrm{d}t = c^{-1}\int_a^b \gamma(t) \;\mathrm{d}t = |w| \in \mathbb{R}
+$$
+
+We know that 
+
+$$
+  \left| \Re \left[c^{-1}\gamma(t) \right] \right| \leq \left| c^{-1} \gamma(t) \right| = \left| c^{-1} \right| \cdot |\gamma(t) | = |\gamma (t) | 
+$$
+
+so that
+
+$$
+  \int_a^b \left| \Re \left[c^{-1}\gamma(t) \right] \right|\;\mathrm{d}t \leq \int_a^b | \gamma(t) | \;\mathrm{d}t
+$$
+
+furthermore we know that
+
+$$
+  \left| \int_a^b \gamma(t)\;\mathrm{d}t \right| = \left| \int_a^b \Re \left[c^{-1}\gamma(t) \right] \;\mathrm{d}t \right| \leq \int_a^b \left| \Re \left[c^{-1}\gamma(t) \right] \right|
+$$
+
+and we obtain the desired result
+
+$$
+  \left| \int_a^b \gamma(t)\;\mathrm{d}t \right| \leq \int_a^b | \gamma(t)|\;\mathrm{d}t
+$$
+</details>
+</MathBox>
+
+<MathBox title='Example' boxType='example'> 
+Consider the map $\gamma: [0, 2\pi]$ given by $\gamma(t) = e^{it}$ tracing out a circle in the complex plane. The complex integral is given by
+
+$$
+\begin{align*}
+  \int_0^{2\pi} e^{it}\;\mathrm{d}t &= \int_0^{2\pi} \cos(t)\;\mathrm{d}t + i \int_0^{2\pi}\sin(t)\;\mathrm{d}t \\
+  &= \left. \sin(t) \right|_0^{2\pi} + \left. i[-\cos(t)] \right|_0^{2\pi} = \left. -i\cos(t) + \sin(t) \right|_0^{2\pi} \\
+  &= \left. \frac{1}{i}\left[\cos(t) + i\sin(t)\right] \right|_0^{2\pi} = \left. -i e^{it} \right|_0^{2\pi}
+\end{align*}
+$$
+</MathBox>
+
+## Contour integrals
+
+<MathBox title='Complex contour integral' boxType='definition'>
+Consider a parametrized curve $\gamma: [a, b]\subseteq{R}\to\mathbb{C}$ that is continuously differentiable with $\gamma': [a, b]\to\mathbb{C}$. For a continuous function $f: U \to\mathbb{C}$ with $\mathrm{Ran}(\gamma) \subseteq U$, we define the contour integral of $f$ over $\gamma$ by
+
+$$
+  \int_\gamma f(z) \;\mathrm{d}z := \int_a^b f[\gamma(t)]\cdot \gamma'(t) \;\mathrm{d}t
+$$
+
+The contour integral can be generalized to apply for piecewise continuously differentiable $\gamma$. In this case, there are $\left(a_i\right)_1^{n} \in [a, b]$ such that $\gamma |_{[a_i, a_{i+1}]}$ is continuously differentiable and we define
+
+$$
+  \int_\gamma f(z) \;\mathrm{d}z := \sum_{i=1}^n \int_{\gamma |_{[a_i, a_{i+1}}} f(z) \;\mathrm{d}z
+$$
+
+If $\gamma(a) = \gamma(b)$, then $\gamma$ is called a closed curve and we write
+
+$$
+  \oint_\gamma f(z) \mathrm{d}z
+$$
+</MathBox>
+
+Writing $\gamma(t) = x(t) + iy(t)$ with $\gamma'(t) = \frac{\mathrm{d}x}{\mathrm{d}t} + i\frac{\mathrm{d}y}{\mathrm{d}t}$, the complex function takes the form $f[\gamma(t)] = f[x(t) + iy(t)] = u[x(t),y(t)] + iv[x(t),y(t)]$ and the contour integral can be expressed as
+
+$$
+\begin{align*}
+  \int_\gamma f(x + iy) \mathrm{d}z &= \int_\gamma (u + iv) (\mathrm{d}x + i\mathrm{d}y) \\
+  &= \int_\gamma u \mathrm{d}x - \int_\gamma v \mathrm{d}y + i\left(\int_\gamma v \mathrm{d}x + \int_\gamma u \mathrm{d}y \right) \\
+  &= \int_a^b u \frac{\mathrm{d}x}{\mathrm{d}t} \mathrm{d}t - \int_a^b v \frac{\mathrm{d}y}{\mathrm{d}t} \mathrm{d}t + i \left( \int_a^b v \frac{\mathrm{d}x}{\mathrm{d}t} \mathrm{d}t + \int_a^b u \frac{\mathrm{d}y}{\mathrm{d}t} \mathrm{d}t \right)
+\end{align*}
+$$
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $f, g: U\to\mathbb{C}$ be continuous and $\gamma:[a, b]\to\mathbb{C}$ piecewise continuously differentiable, then
+
+1. $\int_\gamma \left[ a f(z) + b g(z) \right]\;\mathrm{d}z = a\int_\gamma f(z)\;\mathrm{d}z + b\int_\gamma g(z)\;\mathrm{d}z \quad \forall a,b \in \mathbb{C}$
+2. reversing the orientation of $\gamma$ with $\gamma^- (t) := \gamma(-t+a+b)$, then $\int_{\gamma^-} f(z)\;\mathrm{d}z = -\int_\gamma f(z)\;\mathrm{d}z$
+</MathBox>
+
+### Winding number
+
+<MathBox title='Winding number' boxType='definition'>
+The winding number of a curve $\gamma: [a, b]\to\mathbb{C}$ around $z_0\in\mathbb{C}$ ($z_0 \not\in\mathrm{Ran}(\gamma)$) is defined by
+
+$$
+  \mathrm{wind}(\gamma, z_0) := \frac{1}{2\pi i}\int_\gamma \frac{1}{z - z_0}\;\mathrm{d}z
+$$
+</MathBox>
+
+Winding numbers give an alternative definition for the exterior and interior parts of a closed curve $\gamma: I\to\mathbb{C}$
+
+<MathBox title='Exterior and interior parts of a closed curve' boxType='definition'>
+Suppose $\gamma: [a, b]\to\mathbb{C}$ is a closed curve. The extorior and interior parts of $\gamma$ is defined as
+
+$$
+\begin{align*}
+  \mathrm{Ext}(\gamma)&:= \left\{ z_0 \in\mathbb{C}\backslash\mathrm{Ran}(\gamma) \;|\; \mathrm{wind}(\gamma, z_0) = 0 \right\} \\
+  \mathrm{Int}(\gamma)&:= \left\{ z_0 \in\mathbb{C}\backslash\mathrm{Ran}(\gamma) \;|\; \mathrm{wind}(\gamma, z_0) \neq 0 \right\}
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+If a curve $\gamma$ around $z_0$ is closed, then $\mathrm{wind}(\gamma, z_0) \in\mathbb{Z}$.
+
+<details>
+<summary>Proof</summary>
+
+Without loss of generality, we assume $z_0 = 0$ and $\gamma:[a, b]\to\mathbb{C}$ is closed. The integral over $\gamma$ can be simplified by using the polar form $\gamma(t) = \rho(t)e^{i\varphi(t)}$. Because $\gamma$ is closed, we have $\gamma(b) = \gamma(a)$ implying that
+
+$$
+  \rho(b) = \rho(a) \quad \varphi(b) = \varphi(a) + 2\phi k \; k\in\mathbb{Z} 
+$$
+
+Computing the integral over $\gamma$ gives
+
+$$
+\begin{align*}
+  \oint_\gamma \frac{1}{z}\;\mathrm{d}z &= \int_a^b \frac{1}{\gamma(t)}\gamma'(t)\;\mathrm{d}t = \int_a^b \frac{1}{\rho(t)e^{i\varphi(t)}}\left(\rho(t)e^{i\varphi(t)} + \rho(t) i\varphi'(t)e^{i\varphi(t)}\right)\;\mathrm{d}t \\
+  &= \int_a^b \frac{\rho'(t)}{\rho(t)}\;\mathrm{d}t + i\int_a^b \varphi'(t)\;\mathrm{d}t \\
+  &= \underbrace{\left.\ln\left[\rho(t)\right]\right|_a^b}_{0} + \varphi(t)|_a^b \\
+  &= i2\pi k
+\end{align*}
+$$
+
+showing that $\mathrm{wind}(\gamma, 0) = k \in\mathbb{Z}$.
+</details>
+</MathBox>
+
+### Antiderivative
+
+<MathBox title='Complex antiderivative' boxType='definition'>
+Let $f: U \to\mathbb{C}$ be a complex function defined on an open set $U\subseteq\mathbb{C}$. A holomorphic function $F: U \to\mathbb{C}$ is called an antiderivative (primitive) of $f$ if $F' = f$.
+
+If $f: U\to\mathbb{C}$ has an antiderivative $F: U\to\mathbb{C}$, and $\gamma: [a, b] \to U$, then
+
+$$
+  \int_\gamma f(z)\;\mathrm{d}z = \left.F[\gamma(t)]\right|_a^b = F[\gamma(b)] - F[\gamma(a)]
+$$
+
+If $\gamma$ is closed then
+
+$$
+  \oint_\gamma f(z)\;\mathrm{d}z = 0
+$$
+
+<details>
+<summary>Proof</summary> 
+
+Applying the chain rule $\frac{\mathrm{d}}{\mathrm{d}t}\left(F\circ \gamma)(t) = F'[\gamma(t)]\cdot \gamma'(t)$ we get
+
+$$
+\begin{align*}
+  \int_\gamma f(z) \;\mathrm{d}z &= \int_a^b f[\gamma(t)]\cdot \gamma'(t) \;\mathrm{d}t \\
+  &= \int_a^b \frac{\mathrm{d}}{\mathrm{d}t}\left(F\circ \gamma)(t)\;\mathrm{d}t \\
+  &= \left(F\circ\gamma)(t)\right|_a^b = F[\gamma(b)] - F[\gamma(a)]
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $f: D\to\mathbb{C}$ be holomorphic on a domain (open and path-connected) $D\subseteq\mathbb{C}$. If $\oint_\gamma f(z)\;\mathrm{d}z = 0$ for all closed curves $\gamma$, then $f$ has an antiderivative.
+
+<details>
+<summary>Proof</summary> 
+
+Consider a curve $\gamma_z: [0, 1]\to D$ with $\gamma_z(0) = z_0$ and $\gamma_z(1) = z$. Define the contour integral
+
+$$
+  F(z) := \int_{\gamma_z} f(\zeta)\;\mathrm{d}\zeta
+$$
+
+The function $F$ is well-defined if it is invariant of the curves between $z_0, z\in D$. Consider a second curve $\tilde{gamma}_z: [0, 1]\to D$ with $\tilde{\gamma}_z (0) = z_0$ and $\tilde{\gamma}_z (1) = 1$. Reversing the curve, denoted by $\tilde{\gamma}_z^-$ and combining it with $\gamma_z$ forms a closed loop such that
+
+$$
+\begin{gather*}
+  0 = \oint_{\tilde{\gamma}_z^- + \gamma_z} f(\zeta)\;\mathrm{d}\zeta = \int_{\gamma_z} f(\zeta)\;\mathrm{d}\zeta - \int_{\tilde{\gamma}_z} f(\zeta)\;\mathrm{d}\zeta \\
+  \implies \int_{\gamma_z} f(\zeta)\mathrm{d}\zeta = \int_{\tilde{\gamma}_z} f(\zeta)\mathrm{d}\zeta
+\end{gather*}
+$$
+
+Hence, $F(z)$ is well defined. It remains to show that $F$ is the antiderivative of $f$. For some $z\in D$ and $\tilde{z}\in\mathcal{B}_\varepsilon(z)$ we have that
+
+$$
+\begin{align*}
+  \left| \frac{F(\tilde{z}) - F(z)}{\tilde{z} - z} - f(z) \right| &= \left| \frac{F(\tilde{z}) - F(z) - f(z)\left(\tilde{z} - z\right)}{\left(\tilde{z} - z \right)} \right| \\
+  &= \frac{1}{\left|\tilde{z} - z\right|}\cdot\left| \int_{\gamma_\tilde{z}} f(\zeta)\;\mathrm{d}\zeta - \int_{\gamma_z} f(\zeta)\;\mathrm{d}\zeta - f(z)(\tilde{z} - z)\right| \\
+  &= \frac{1}{\left|\tilde{z} - z\right|}\cdot\left| \int_{\gamma_{z\tilde{z}}} f(\zeta)\;\mathrm{d}\zeta - f(z)\int_{\gamma_{z\tilde{z}}}\mathrm{d}\zeta \right| = \frac{1}{\left|\tilde{z} - z\right|}\cdot\left| \int_{\gamma_{z\tilde{z}}} f(\zeta)\;\mathrm{d}\zeta - \int_{\gamma_{z\tilde{z}}}f(z)\;\mathrm{d}\zeta \right| \\
+  &= \frac{1}{\left|\tilde{z} - z\right|}\cdot\left| \int_{\gamma_{z\tilde{z}}} \left[f(\zeta) - f(z)\right]\;\mathrm{d}\zeta \right| \\
+  &\leq \frac{1}{\left|\tilde{z} - z\right|}\max_{\zeta\in\mathrm{Ran}(\gamma_{z\tilde{z}})}\left| f(\zeta) - f(z) \right| \cdot \underbrace{\lVert \gamma_{z\tilde{z}} \rVert}_{=\left| \tilde{z} - z \right|} \\
+  &\leq \max_{\zeta\in\mathcal{B}_\varepsilon(z)}\left| f(\zeta) - f(z) \right| \xrightarrow{\varepsilon\to 0} 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Estimation lemma
+
+<MathBox title='Length of complex curves' boxType='definition'>
+Suppose $\gamma: [a, b]\to\mathbb{C}$ is continuously differentiable. The length of $\gamma$ is defined as
+
+$$
+  L_\gamma = \int_a^b \left| \gamma'(t) \right| \;\mathrm{d}t
+$$
+</MathBox>
+
+<MathBox title='Estimation lemma' boxType='lemma'>
+Suppose $f: U\to\mathbb{C}$ is continuous and $\gamma: [a, b]\to\mathbb{C}$ is continuously differentiable. Then 
+
+$$
+  \left| \int_\gamma f(z) \mathrm{d}z \right| \leq \max_{z\in\mathrm{Ran}(\gamma)} \left| f(z) \right| \cdot L_\gamma
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \left| \int_\gamma f(z) \mathrm{d}z \right| &= \left| \int_a^b f[\gamma(t)]\gamma'(t)\;\mathrm{d}t \right| \leq \int_a^b \left| f[\gamma(t)]\gamma'(t)\right|\;\mathrm{d}t \\
+  &= \int_a^b \left| f[\gamma(t)] \right| \cdot \left| \gamma'(t)\right|\;\mathrm{d}t \leq \sup_{z\in\mathrm{Ran}(\gamma)} \left|f(z)\right| \cdot \int_a^b \left| \gamma'(t) \right| \;\mathrm{d}t \\
+  &= \max_{z\in\mathrm{Ran}(\gamma)} \left| f(z) \right| \cdot L_\gamma
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Goursat's integral theorem
+
+<MathBox title="Goursat's integral theorem" boxType='theorem'>
+Suppose $\gamma: [a, b]\to D$ is a closed curve where the image is a triangle whose inner part lies in $D\subseteq\mathbb{C}$. Then for a holomorphic function $f:D\to\mathbb{C}$ 
+
+$$
+  \oint_\gamma f(z)\;\mathrm{d}z = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+The basic idea for the proof is that the triangular curve $\gamma$ can be decomposed into four smaller triangles by making detours back and forth between the middle points of the triangle's side. The contour integral along $\gamma$ can be thus be written
+
+$$
+  \oint_\gamma f(z)\;\mathrm{d}z = \sum_{j=1}^4 \oint_{\gamma_j} f(z)\;\mathrm{d}z
+$$
+
+Applying the triangle inequality, we have that
+
+$$
+  \left| \oint_\gamma f(z)\;\mathrm{d}z \right| \leq 4\left|\oint_{\gamma_j} f(z)\;\mathrm{d}z \right|
+$$
+
+where $\gamma_j$ is the triangular curve with the maximal contour integral. Repeating the process $n$ times we can write
+
+$$
+  \left| \oint_\gamma f(z)\;\mathrm{d}z \right| \leq 4^n \left|\oint_{\gamma^{(n)}} f(z)\;\mathrm{d}z \right|
+$$
+
+where $\gamma^{(n)}$ is the triangular curve with the maximal contour integral for the $n$-th step. Repeating the process infinitely, we notice that $\lim_{n\to\infty}\gamma^{(n)} = z_0 \in D$. A holomorphic function $f:D\to\mathbb{C}$ is differentiable at $z_0$ with the linearization
+
+$$
+  f(z) = f(z_0) + f'(z_0)(z - z_0) + \underbrace{\varphi(z)}_{=:\psi(z)(z - z_0)}
+$$
+
+where $\varphi(z)$ is the remainder function with $\lim_{z\to z_0} \frac{\varphi(z)}{z - z_0} = 0 \iff \lim_{z\to z_0} \psi(z) = 0$. Because $f$ is holomorphic, the linear term $f(z_0) + f'(z_0)(z - z_0)$ vanishes when taking the contour integral along a closed curve about $z_0$. Hence, we get that
+
+$$
+\begin{align*}
+  \left| \oint_{\gamma^{(n)}} f(z)\;\mathrm{d}z \right| &= \left| \oint_{\gamma^{(n)}} \varphi(z)\;\mathrm{d}z \right| \leq \max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|\varphi(z)| \cdot \lVert\gamma^{(n)}\rVert \\
+  &= \leq \max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|\psi(z)| \cdot \max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|z - z_0|\cdot\lVert\gamma^{(n)}\rVert
+\end{align*}
+$$
+
+Setting $\lVert \gamma \rVert = r$ it follows that $\lVert \gamma^{(n)} \rVert = \frac{r}{2^n}$ such that
+
+$$
+\begin{align*}
+  \left| \oint_\gamma f(z)\;\mathrm{d}z \right| &\leq 4^n\cdot \left| \oint_{\gamma^{(n)}} f(z)\;\mathrm{d}z \right| \\
+  &\leq 4^n \max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|\psi(z)| \cdot \underbrace{\max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|z - z_0|}_{r/2^n}\cdot\underbrace{\lVert\gamma^{(n)}\rVert}_{r/2^n} \\
+  &\leq r^2 \max_{z\in\mathrm{Ran}\left(\gamma^{(n)}\right)}|\psi(z)| \xrightarrow{n\to\infty} 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Cauchy's integral theorem
+
+<MathBox title="Cauchy's integral theorem" boxType='theorem'>
+Let $f: D\to\mathbb{C}$ be holomorphic and let $\gamma:[a,b]\to \mathbb{C}$ be a closed curve such that $\mathrm{Int}(\gamma)\cup\mathrm{Ran}(\gamma)\subseteq D$. Then
+
+$$
+  \oint_\gamma f(z)\;\mathrm{d}z = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title="Cauchy's integral formula" boxType='theorem'>
+Consider an open set $D\subset\mathbb{C}$ with $\overline{B_r\left( z_0 \right)}\subseteq D$. Let $f: D\to\mathbb{C}$ be holomorphic and let $\gamma:[a,b]\to \mathbb{C}$ be a closed curve forming the boundary $\partial \mathcal{B}_r\left(z_0\right)$ with $\mathrm{wind}\left(\gamma, z_0 \right) = 1$. Then, for all $z\in\mathcal{B}_r\left(z_0\right)$
+
+$$
+  f(z) = \frac{1}{2\pi i}\int_{\partial\mathcal{B}_r\left(z_0 \right)} \frac{f(\zeta)}{\zeta - z}\;\mathrm{d}\zeta 
+$$
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+A holomorphic function $f: D\to\mathbb{C}$ is a power series in $\mathcal{B}_r(z_0)$
+
+$$
+  f(z) = \sum_{k=0}^{\infty} a_k (z - z_0)^k \quad a_k = \frac{1}{k!}f^{(k)}(z_0)
+$$
+
+Let $f: D\to\mathbb{C}$ be holomorphic. Then $f^{(n)}(z)$ exists for all $z\in D$ and $n\in\mathbb{N}$, and is given by Cauchy's integral formula
+
+$$
+  f^{(n)}(z) = \frac{n!}{2\pi i}\oint_{\partial\mathcal{B}_r(z_0)}\frac{f(\zeta)}{(\zeta - z)^{n+1}}\mathrm{d}\zeta \quad \forall z\in\mathcal{B}_r{z_0} \subseteq D
+$$
+
+This implies that $f$ is a power series in $\mathcal{B}_r(z_0)$ given by
+
+$$
+  f(z) = \sum_{k=0}^{\infty} a_k (z - z_0)^k \quad a_k = \frac{1}{k!}f^{(k)}(z_0)
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Cauchy's integral formula we have
+
+$$
+\begin{align*}
+  2\pi i f(z) &= \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{\zeta - z}\mathrm{d}\zeta \\
+  &= \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{\zeta - z_0 + z_0 - z}\mathrm{d}\zeta \\
+  &= \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{\zeta - z_0}\frac{1}{1 - \frac{z - z_0}{\zeta - z_0}}\mathrm{d}\zeta
+\end{align*}
+$$
+
+Setting $q := \frac{z - z_0}{\zeta - z_0}$ we note that
+
+$$
+  |q| := \frac{\overbrace{|z - z_0 |}^{< r}}{\underbrace{|\zeta - z_0|} = r} < 1
+$$
+
+Such that we may form the geometric series $\sum_{k=0}^\infty q^ k = \frac{1}{1 - q}$
+
+$$
+\begin{align*}
+  2\pi i f(z) = \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{\zeta - z_0} \sum_{k=0}^\infty q^k \mathrm{d}\zeta \\
+  &= \sum_{k=0}^\infty \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{\zeta - z_0} \left( \frac{z - z_0}{\zeta - z_0} \right)^k \mathrm{d}\zeta \\
+  &= \sum_{k=0}^\infty \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{(\zeta - z_0)^{k+1}} \left( z - z_0\right)^k \mathrm{d}\zeta
+\end{align*}
+$$
+
+This shows that $f$ can be written as a power series for $z \in \mathcal{B}_r (z_0) \subseteq D$
+
+$$
+  f(z) = \sum_{k=0}^\infty a_k (z - z_0)^k \quad a_k = \frac{1}{2\pi i} \oint_{\partial\mathcal{B}_r (z_0)} \frac{f(\zeta)}{(\zeta - z_0)^{k+1}} \mathrm{d}\zeta
+$$
+</details>
+</MathBox>
+
+### Liouville's theorem
+<MathBox title="Cauchy's inequalities" boxType='proposition'>
+Let $f: D\to\mathbb{C}$ be a holomorphic function and let $\mathcal{B}_r(z_0) \subseteq D$ be a closed disk. Then there is an upper bound for the $n$th derivative of $f$ at $z_0$ given by
+
+$$
+  \left|f^{(n)}(z_9)\right| \leq \frac{n!}{r^n} \sup_{z\in\partial\mathcal{B}_r (z_0)} |f(z)|
+$$
+
+<details>
+<summary>Proof</summary>
+
+Applying Cauchy's integral formula on the parametrized curve $\zeta(t) = re^{it} + z_0$ for $t\in[0, 2\pi]$ along $\partial\mathcal{B}_r(z_0)$
+
+$$
+\begin{align*}
+  \left|f^{(n)}(z_0)\right| &= \left| \frac{n!}{2\pi i}\oint_{\partial\mathcal{B}_r(z_0)} \frac{f(\zeta)}{\left(\zeta - z_0 \right)^{n+1}}\mathrm{d}\zeta \right| \\
+  &= \left| \frac{n!}{2\pi i}\int_0^{2\pi} \frac{f\left(re^{it} + z_0\right)}{\left(re^{it} \right)^{n+1}}rie^{it}\;\mathrm{d}t \right| \\
+  &= \left| \frac{n!}{2\pi r^n} \int_0^{2\pi} f\left(re^{it} + z_0 \right)e^{-itn}\;\mathrm{d}t \right| \\
+  \leq \frac{n!}{2\pi r^n} \int_0^{2\pi} \left| f\left(re^{it} + z_0 \right) \right|\;\mathrm{d}t \\
+  \leq \frac{n!}{r^n} \sup_{z\in\partial\mathcal{B}_r\left( z_0 \right)}|f(z)|
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Liouville's theorem" boxType='theorem'>
+Every bounded entire function $f:\mathbb{C}\to\mathbb{C}$ with $\sup_{z\in\mathbb{C}}|f(z)|\leq M$, is constant.
+
+<details>
+<summary>Proof</summary>
+
+Applying Cauchy's inequality for the first derivative of a bounded entire function $f$ yields
+
+$$
+  \left|f'(z_0)\right| \leq \frac{M}{r} \quad \forall r>0, \;z_0\in\mathbb{C}
+$$
+
+Since the inequality holds for arbitrarily large $r$, we must have
+
+$$
+  f'(z_0) = 0 \quad z_0\in\mathbb{C}
+$$
+
+Hence, $f$ is constant.
+</details>
+</MathBox>
+
+### Identity theorem
+
+<MathBox title='Identity theorem' boxType='theorem'>
+Suppose $f, g: D\to\mathbb{C}$ are holomorphic and $D$ is a connected open domain. Then the following are equivalent
+1. the set $M = \{z\in D \;|\; f(z) = g(z) \}$ has an accumulation point in $D$
+2. $f = g$.
+3. there is a $c\in D$ with $f^{(n)}(c) = g^{(n)}(c)$ for all $n\in\mathbb{N}$.
+
+<details>
+<summary>Proof</summary>
+
+The theorem can be equivalently stated in terms of the function $h:= f - g$ with the following equivalence relations
+1. the set $M = \{z\in D \;|\; h(z) = 0 \}$ has an accumulation point in $D$
+2. $h = 0$.
+3. there is a $c\in D$ with $h^{(n)}(c) = 0$ for all $n\in\mathbb{N}$.
+
+The proposition (1) $\implies$ (2) is trivial.
+
+**(1) $\implies$ (3)**
+The proposition $(1) \implies (3)$ can be shown by contraposition. Assume that for each $c\in D$ there is a minimal $m$ with $h^{(n)}(c) \neq 0$ and
+
+$$
+  h(z) = \sum_{k=m}^\infty \frac{h^{(k)}(c)}{k!}(z - c)^k
+$$
+
+such that $h(z)\neq 0$ in a neighbourhood around $c$, i.e. for $z\in U\backslash\{c\}$. Then $U\backslash\{c\}\cap M = \emptyset$, proving the proposition.
+
+**(3) $\implies$ (2)**
+Define the set $A_k := \{ z\in D \;|\; h^{(k)}(z) = 0 \}$, which is closed because it is the preimage of a closed set. Then the intersections $A:= \bigcap_{k=0}^\infty A_k \neq\emptyset$ is also closed. However, it can be shown that $A$ is open at the same time using the Taylor series expansion of $h$ at a point $c\in A$. This expansion holds for an open disk around $c$ inside $A$, implying that $A$ is open. In this case, we must have $A = D$ since $D$ is connected.
+</details>
+</MathBox>
+
+### Residue theorem
+
+<MathBox title='Residue' boxType='definition'>
+Let $f: D\to\mathbb{C}$ be holomorphic and let $z_0$ be an isolated singularity of $f$. If $\overline{B_\epsilon (z_0)}\backslash\{z_0\} \subseteq D$, then the residue of $f$ at $z_0$ is defined by
+
+$$
+  \mathrm{Res}(f, z_0) := \frac{1}{2\pi i} \oint_{\partial B_\epsilon (z_0)} f(z)\;\mathrm{d}z
+$$
+</MathBox>
+
+<MathBox title='Residue for poles' boxType='theorem'>
+Let $f: D\to\mathbb{C}$ be holomorphic and let $z_0$ be an isolated singularity of $f$. If $f$ has a pole of order $N\in\mathbb{N}$ at $z_0$, then
+
+$$
+  \mathrm{Res}(f, z_0) = \frac{1}{(N-1)!}\lim_{z\to z_0} \left(\frac{\mathrm{d}}{\mathrm{d}z}\right)^{N-1} (z - z_0)^N f(z)
+$$
+</MathBox>
+
+<MathBox title='Residue theorem' boxType='theorem'>
+Let $f: D\to\mathbb{C}$ be holomorphic on a open domain $D\subseteq\mathbb{C}$. If $\{ z_j \}_{j=1}^{n\in\mathbb{N}}$ are isolated singularities of $f$, and $\gamma:[a,b]\to D$ is a closed curve encompassing the singularities, i.e. $\mathrm{int}(\gamma)\subseteq D\cup \{ z_j \}_{j=1}^{n\in\mathbb{N}}$, then
+
+$$
+  \oint_\gamma f(z)\;\mathrm{d}z = 2\pi i \sum_{j=1}^n \mathrm{wind}(\gamma, z_j)\cdot \mathrm{Res}(f, z_j)
+$$
+</MathBox>

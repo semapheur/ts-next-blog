@@ -1,0 +1,481 @@
+---
+title: 'Number Sets'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Natural numbers ($\mathbb{N}$)
+
+Using set theory, the natural numbers $\mathbb{N}_0$ can be constructed recursively by letting $0 := \{\} = \emptyset \in \mathbb{N}$ and $n + 1 = n \cup \{ n \}$ for each $n \in \mathbb{N}_0$ such that $n = \{ i \}_{i=0}^{n-1}$, i.e. $n$ is a set of length $n$. In this way, every $n\in\mathbb{N}_0$ has a successor, which can be formulated using the successor map $s: \mathbb{N}_0 \to \mathbb{N}_0$ given by $n \mapsto n\cup\{ n\} \equiv n + 1$. The set of natural numbers $\mathbb{N}_0$ is then defined as the smallest set that
+1. contains $0$
+2. is closed under the successor map $s$
+
+This definition requires that $s$ satisfies
+1. $s$ is injective (every element has a unique successor)
+2. $0 \notin \mathrm{Ran}(s) = s[\mathbb{N}_0]$ ($0$ is not a successor to any $n\in\mathbb{N}_0$)
+3. if $M \subseteq \mathbb{N}_0$ with $0 \in M$ and $s[M] \subseteq M$, then $M = \mathbb{N}_0$ ($\mathbb{N}_0$ is the smallest possible infinite set)
+
+## Addition
+
+Addition of natural numbers is a map $\mathbb{N}_0 \times \mathbb{N}_0 \to \mathbb{N}_0$ given by $(m, n) \mapsto m +n$. Formally, this can be defined recursively using the successor map
+
+$$
+  m + 0 := m \quad m + s(n) := s(m + n)
+$$
+
+Which is a well-defined map by Dedekind's principle of recursive definition. Addition of natural numbers obeys the following properties
+- commutativity: $m + n = n + m$
+- associativity: $k + (m + n) = (k + m) + n$
+
+<details>
+<summary>Proof</summary>
+
+Associativity can be proved by mathematical induction with the predicate $P(n)$ given by
+
+$$
+  \forall k,m \in \mathbb{N}_0: (k + m) + n = k + (m + n)
+$$
+
+The base case $P(0)$ is trivially shown. For all $k, m \in \mathbb{N}_0$ we have
+
+$$
+\begin{gather*}
+  (k + m) + 0 = k + \underbrace{(m + 0)}_{m} \\
+  \iff k + m = k + m
+\end{gather*}
+$$
+
+In the induction step, we assume that $P(n)$ is true for all $n\in\mathbb{N}_0$. To prove $P(n) \implies P(n+1)$ we need to show that for all $k, m \in \mathbb{N}_0$
+
+$$
+  (k + m) + (n + 1) = k + \left(m + (n + 1)\right) \\
+$$
+
+From the recursive definition of addition (RD), we alread know that $m + (n + 1) = (m + n) + 1$. This can be used to rewrite the left-hand
+
+$$
+\begin{align*}
+  (k + m) + (n + 1) &\overset{\mathrm{RD}}{=} \left((k + m) + n\right) + 1 \\
+  &\overset{P(n)}{=} \left(k + (m + n)\right) + 1 \\
+  &\overset{\mathrm{RD}}{=} k + \left((m + n) + 1\right) \\
+  &\overset{\mathrm{RD}}{=} k + \left(m + (n + 1)\right)
+\end{align*}
+$$
+
+which shows that $P(n + 1)$ is true.
+</details>
+
+## Multiplication
+
+Multiplication of natural numbers is a map $\mathbb{N}_0 \times \mathbb{N}_0 \mapsto \mathbb{N}_0$ given by $(n, m) \mapsto n \cdot m$. Formally, this can be defined recursively using the successor map
+
+$$
+  0 \cdot m := 0 \quad (n + 1)\cdot m := (n \cdot m) + m
+$$
+
+Which is a well-defined map by Dedekind's principle of recursive definition. Multiplication of natural numbers obeys the following properties
+1. commutativity: $n\cdot m = m \cdot n$
+2. associativity: $n\cdot(m\cdot k) = (n\cdot m)\cdot k$
+3. neutral element: $1 \cdot m = m$
+
+Addition and multiplication are connected through the distrutive law
+
+$$
+  n \cdot (m + k) = n \cdot m + n \cdot k
+$$
+
+<details>
+<summary>Proof</summary>
+
+Distributivity can be proved by mathematical induction setting the predicate $P(n): n \cdot (m + k) = n \cdot m + n \cdot k$.
+
+The base case $P(0)$ is trivially shown. For all $k,m\in\mathbb{N}_0$ we have
+
+- LHS: $0 \cdot (m + k) = 0$
+- RHS: $0 \cdot m + 0 \cdot n = 0 + 0 = 0$
+
+In the induction step, we assume that $P(n)$ is true for all $n\in\mathbb{N}_0$. To prove $P(n) \implies P(n+1)$ we need to show that for all $k, m \in \mathbb{N}_0$
+
+$$
+  (n + 1) \cdot (m + k) = (n + 1)\cdot m + (n + 1)\cdot k
+$$
+
+Using the recursive definition of multiplication, we can rewrite the left-hand side as
+
+$$
+\begin{align*}
+  (n + 1) \cdot (m + k) &= n\cdot(m + k) + (m + k) \\
+  &\overset{P(n)}{=} n\cdot m + n \cdot k + m + k = n \cdot + (n\cdot k + m) + k \\
+  &= n\cdot m + (m + n\cdot k) + k = (n \cdot m + m) + (n \cdot k + k) \\
+  &= (n + 1)\cdot m + (n + 1)\cdot k
+\end{align*}
+$$
+
+which shows that $P(n + 1)$ is true.
+</details>
+
+## Ordering
+
+For two natural numbers $m, n \in \mathbb{N}$ we have that $m \leq m$, i.e. $m$ is less than or equal to $n$, if there is a $k$ such that $n = m + k$. We also have that $m < n$, i.e. $m$ is (strictly) less than $n$, if $m \leq n \land m \neq n$. Ordering of natural numbers has the following properties for all $l, m, n \in \mathbb{N}_0$
+1. reflexivity: $n \leq n$
+2. anti-symmetry: $m \leq n \land n \leq m \implies n = m$
+3. transitivity: $m \leq l \land l \leq n \implies m \leq n$
+
+<details>
+<summary>Proof</summary>
+
+**Transitivity** 
+Assume $m \leq l$ and $l \leq n$, then theres is a $k_1\in\mathbb{N}_0$ such that $l = m + k_1$ and there is a $k_2 \in \mathbb{N}_0$ such that $n = l + k_2$. Therefore we have
+
+$$
+  n = l + k_2 = (m + k_1) + k_2 = n + \underbrace{(k_1 + k_2)}_{=: k \in \mathbb{N}_0} = m + k
+$$
+
+This shows that there is a $k \in \mathbb{N}_0$ such that $n = m + k$, which by definition implies that $m \leq n$.
+</details>
+
+## Dedekind's principle of recursive definition
+
+For a set $A$, $a\in A$ and $h: A \to A$, then there exists a unique map $f: \mathbb{N}_0 \to A$ with $f(0) = a$ and $f(s(n)) = h(f(n))$
+
+## Mathematical induction
+
+Let $P(n)$ be a property for natural numbers $n \in \mathbb{N}$ (predicate). Then $P(n)$ is true for all $n \in \mathbb{N}_0$ if 
+1. $P(0)$ is true (base case)
+2. $\forall n \in \mathbb{N}_0: P(n) \implies P(n+1)$ is true (induction step)
+
+# Integers ($\mathbb{Z}$)
+
+The integers can be constructed as the equivalence classes of ordered pairs of natural numbers, $(a, b) \in \mathbb{N}_0^2$, representing the substraction $a - b$ (without explicitly defining subtraction). This can be formulated by an equivalence relation $\sim$ obeying
+
+$$
+  (x,y) \sim (a,b) \iff x + b = a + y \quad(\iff x - y = a - b)
+$$
+
+The set of integers $\mathbb{Z}$ is then defined as the quotient set imposed by this equivalence relation
+
+$$
+  \mathbb{Z} := \mathbb{N}_0^2 / \sim = \left\{ [(a, b)]_\sim | (a, b) \in \mathbb{N}_0^2 \right\}
+$$
+
+By relabeling the equivalence classes as $[(n, 0)]_\sim =: n_\mathbb{Z}$ and $[(0, n)]_\sim =: (-n)_\mathbb{Z}$, we get the familiar form for the integers $\mathbb{Z} := \{ n \}_{n=-\infty}^\infty$.
+
+## Addition
+
+Addition of integers can be defined in terms of addition of natural numbers within equivalence classes
+
+$$
+  [(a, b)]_\sim + [(c, d)]_\sim := [(a + c), b + d)]_\sim
+$$
+
+<details>
+<summary>Proof</summary>
+
+To prove that this definition of addition of well-defined, consider $\left(\tilde{a}, \tilde{b} \right) \sim (a, b)$ and $\left(\tilde{c}, \tilde{d}\right) \sim (c, d)$. We then need to show that $\left(\tilde{a} + \tilde{c}, \tilde{b} + \tilde{d} \right) \sim (a + c, b + d)$. By definition we have that
+
+$$
+\begin{gather*}
+  \left(\tilde{a}, \tilde{b}\right) \sim (a, b) \iff \tilde{a} + b = a + \tilde{b} \\
+  \left(\tilde{c}, \tilde{d}\right) \sim (c, d) \iff \tilde{c} + d = c + \tilde{d}
+\end{gather*}
+$$
+
+Combining the equations we get
+
+$$
+\begin{gather*}
+  \tilde{a} + b + \tilde{c} = a + \tilde{b} + c + \tilde{d} \\
+  \iff \tilde{a} + \tilde{b} + b + d = a + c + \tilde{b} + \tilde{d}
+\end{gather*}
+$$
+
+which we recognize as the definition for the equivalence relation
+
+$$
+  \left( \tilde{a} + \tilde{c}, \tilde{b} + \tilde{d} \right) \sim (a + c, b + d)
+$$
+
+</details>
+
+The integers together with addition, $(\mathbb{Z}, +)$, forms an Abelian group satisfying
+1. commutativity
+2. associativity
+3. existence of neutral element $0 \in \mathbb{Z}$: $m + 0_\mathbb{Z} = 0$
+4. existence of inverse elements: $\forall m \in \mathbb{Z} \; \exists \tilde{m}\in\mathbb{Z}: m + \tilde{m} = 0$
+
+## Multiplication
+
+Multiplication of integers in terms of equivalence classes represents the distributive product $(a - b)\cdot (c - d) = (ac + bd) - (ad + bc)$, which can be reflected with the following definition.
+
+$$
+  [(a, b)]_\sim \cdot [(c, d)]_\sim := [(a\cdot c + b \cdot d, a\cdot d + b \cdot c)]_\sim
+$$
+
+Multiplication of integers satisfy the following properties
+1. commutativity
+2. associativity
+3. distributivity
+4. existence of the neutral element $0 \in \mathbb{Z}$ such that $m \cdot 0_\mathbb{Z} = 0$
+
+# Rational numbers ($\mathbb{Q}$)
+
+The rational numbers can be constructed as the equivalence classes of ordered pairs of integers, $(a, b) \in \mathbb{Z} \times \mathbb{Z}\backslash\{0\}$, representing the division $a/b$ (without explicitly defining division). This can be formulated by an equivalence relation $\sim$ obeying
+
+$$
+  (x,y) \sim (a,b) \iff x \cdot b = a \cdot y \quad\left(\iff \frac{x}{y} = \frac{a}{b}\right)
+$$
+
+The set of rational numbers $\mathbb{Z}$ is then defined as the quotient set imposed by this equivalence relation
+
+$$
+  \mathbb{Q} := \left(\mathbb{Z} \times \mathbb{Z}\backslash\{0\}\right)/\sim = \left\{ [(a, b)]_\sim \;|\; (a, b) \in \mathbb{Z} \times \mathbb{Z}\backslash\{0\} \right\}
+$$
+
+We get the familiar form for the rational numbers by relabelling the equivalence classes as $[(a, b)]_\sim =: \left(\frac{a}{b}\right)_\mathbb{Q}$ and $[(n, 1)]_\sim := n_\mathbb{Q} = n_\mathbb{Z}$. Using this notation, we can write
+
+$$
+  \mathbb{Q} := \left\{ \frac{a}{b} \;\middle|\; a \in \mathbb{Z},\; b \in \mathbb{Z}\backslash\{0\} \right\}
+$$
+
+The set of rational numbers forms a field satisfying
+1. $(\mathbb{Q}, +)$ is an Abelian group
+2. $(\mathbb{Q}\backslash\{0\}, \cdot)$ is an Abelian group
+3. distributive law
+
+## Multiplication
+
+Multiplication of rational numbers is defined as
+
+$$
+  [(a, b)]_\sim \cdot [(c, d)]_\sim := [(a \cdot c, b \cdot d)]_\sim \iff \frac{a}{b}\cdot \frac{c}{d} = \frac{a\cdot b}{c\cdot b}
+$$
+
+The rational numbers together with multiplication, $(\mathbb{Q}\backslash\{0\}, \cdot)$ forms an Abelian group satisfying
+1. commutativity
+2. associativity
+3. existence of the neutral element $1 \in \mathbb{Q}$ such that $q \cdot 1_\mathbb{Q}\backslash\{0\} = q$
+4. existence of inverse elements: $\forall \frac{a}{b} \in \mathbb{Q}\backslash\{0\} \; \exists \frac{b}{a}\in\mathbb{Q}\backslash\{0\}: \frac{a}{b} \cdot \frac{b}{a} = 1_\mathbb{Q}$
+
+## Addition
+
+Addition of rational numbers is defined as
+
+$$
+\begin{align*}
+  \frac{a}{b} + \frac{c}{d} :=& \frac{a\cdot d + c \cdot b}{b\cdot d} \\
+  =& \left( \frac{a\cdot d}{1} + \frac{c\cdot b}{1} \right)\frac{1}{b\cdot d} \\
+  =& \frac{a\cdot d}{1}\cdot\frac{1}{b\cdot d} + \frac{c\cdot b}{1}\cdot\frac{1}{b\cdot d} \\
+  =& \frac{a}{b}\cdot\frac{d}{d} + \frac{c}{d}\cdot\frac{b}{b}
+\end{align*}
+$$
+
+The rational numbers together with addition, $(\mathbb{Q}, +)$ forms an Abelian group satisfying
+1. commutativity
+2. associativity
+3. existence of the neutral element $0 \in \mathbb{Q}$ such that $q + 0_\mathbb{Q} = q$
+4. existence of inverse elements: $\forall q \in \mathbb{Q} \quad \exists \tilde{q} \in\mathbb{Q}\backslash\{0\}: q + \tilde{q} = 0_\mathbb{Q}$
+
+## Ordering
+
+For two rational numbers $\frac{a}{b}, \frac{c}{d} \in \mathbb{Q}$ with $b, d > 0$ we have that 
+
+$$
+    \frac{a}{b} \leq \frac{c}{d} \iff a\cdot d \leq c \cdot b
+$$
+
+Ordering of rational numbers has the following properties for all $q, r, s \in \mathbb{Q}$
+1. reflexivity: $q \leq q$
+2. anti-symmetry: $q \leq r \land r \leq q \implies q = r$
+3. transitivity: $q \leq s \land s \leq r \implies q \leq r$
+4. Archimedean property: for all $q, \epsilon \in \mathbb{Q}$ with $q, \epsilon > 0$ there is a $n\in\mathbb{N}_0$ such that $n\cdot \epsilon > q$
+
+# Real numbers ($\mathbb{R}$)
+
+## Rational Cauchy sequence
+
+<MathBox title='Rational Cauchy sequence' boxType='definition'>
+A rational sequence $\left( x_n \right)_{n\in\mathbb{N}}$ with $x_n \in \mathbb{Q}$ is called Cauchy if
+
+$$
+  \forall \epsilon \in \mathbb{Q} \quad \exists N\in\mathbb{N} \quad n,m \in \mathbb{N} : \left( \epsilon > 0 \; \land \; n, m \geq N \; \implies \left| x_n - x_m \right| < \epsilon \right)
+$$
+
+or in short
+
+$$
+  \forall \epsilon > 0 \; \exists N\in\mathbb{N} \; \forall n, m \geq N: \; \left| x_n - x_m \right| < \epsilon
+$$
+</MathBox>
+
+<MathBox title='Rational convergent sequence' boxType='definition'>
+A rational sequence $\left( x_n \right)_{n\in\mathbb{N}}$ is convergent if 
+
+$$
+  \exists a \in \mathbb{Q} \quad \forall \epsilon > 0 \quad \exists N \in\mathbb{N} \quad \forall n \geq N : \left| x_n - a \right| < \epsilon
+$$
+
+In this case, $a$ is the limit of $\left( x_n \right)_{n\in\mathbb{N}}$.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+A rational convergent sequence is also Cauchy.
+<details>
+<summary>Proof</summary>
+
+Suppose $\left( x_n \right)_{n\in\mathbb{N}}$ is a convergent sequence with limit $a$, let $\epsilon > 0$. For convenience we set $\epsilon' := \frac{\epsilon}{2} > 0$. Since $\left( x_n \right)_{n\in\mathbb{N}}$ is convergent, there is a $N \in \mathbb{N}$ such that
+
+$$
+  \forall n\geq N: \left| x_n - a \right| < \epsilon'
+$$
+
+Therefore for all $n, m \geq N$ we have
+
+$$
+  \left| x_n - x_m \right| = \left| x_n - a + a - x_m \right| \overset{\triangle}{\leq} \underbrace{\left| x_n - a \right|}_{<\epsilon'} + \underbrace{\left| a - x_m \right|}_{<\epsilon'} < 2\epsilon' = \epsilon
+$$
+
+Hence, $\left(x_n \right)_{n\in\mathbb{N}}$ is also a Cauchy sequence. 
+</details>
+</MathBox>
+
+## Axiomatic definition
+
+A non-empty set $\mathbb{R}$ together with the operations addition, multiplication and ordering is called the real numbers if it satisfies
+1. $(\mathbb{R}, +, 0)$ is an Abelian group
+2. $(\mathbb{R}\backslash\{0\}, \cdot, 1)$ is an Abelian group
+3. Distributive law: $a\cdot(b + c) = a\cdot b + a\cdot c$ for $a,b,c\in\mathbb{R}$
+4. Archimedean order ($\geq$ defines a total order compatible with $+$ and $\cdot$, and satisfying the Archimedean property)
+5. Completeness axiom: Every Cauchy sequence is a convergent sequence (completion of $\mathbb{Q}$)
+
+## Construction from the rational numbers (completion)
+
+The real numbers can be constructed as a completion of the rational numbers wrt. the metric $d(x,y) = |x - y|\; \forall x,y \in\mathbb{Q}$ by letting all Cauchy sequences converge. The set of all Cauchy sequences on the rational numbers is denoted
+$$
+  \mathcal{C} := \left\{ \left(x_n \right)_{n\in\mathbb{N}} \;|\; \forall n \in \mathbb{N} : x_n \in \mathbb{Q} \textrm{ and } \left(x_n \right)_{n\in\mathbb{N}} \textrm{ is a Cauchy sequence} \right\}
+$$
+
+For two Cauchy sequences $(a_n)_{n\in\mathbb{N}}, (b_n)_{n\in\mathbb{N}}$ we can define an equivalence relation on $\mathcal{C}$ by
+$$
+  (a_n)_{n\in\mathbb{N}} \sim (b_n)_{n\in\mathbb{N}} :\iff (a_n - b_n)_{n\in\mathbb{N}} \xrightarrow{n\to\infty} 0
+$$
+
+From this equivalence relation, we can construct equivalence classes uniquely representing all points on the real number line
+$$
+  \left[ \left(x_n \right)_{n\in\mathbb{N}} \right]_\sim := \left\{ \left(a_n \right)_{n\in\mathbb{N}} | \left(a_n \right)_{n\in\mathbb{N}} \sim \left(x_n \right)_{n\in\mathbb{N}} \right\}
+$$
+
+<MathBox title='Real numbers' boxType='definition'>
+The real numbers is the set 
+$$
+  \mathbb{R} := \mathcal{C}\backslash\sim := \left\{ \left[ \left(x_n \right)_{n\in\mathbb{N}} \right]_\sim \middle| \left(x_n \right)_{n\in\mathbb{N}} \in \mathcal{C} \right\}
+$$
+
+together with the operations
+- Addition
+$$
+  \left[ \left(a_n \right)_{n\in\mathbb{N}} \right]_\sim + \left[ \left(b_n \right)_{n\in\mathbb{N}} \right]_\sim := \left[ \left(a_n + b_n \right)_{n\in\mathbb{N}} \right]_\sim
+$$
+- Multiplication
+$$
+  \left[ \left(b_n \right)_{n\in\mathbb{N}} \right]_\sim \cdot \left[ \left(b_n \right)_{n\in\mathbb{N}} \right]_\sim := \left[ \left(a_n \cdot b_n \right)_{n\in\mathbb{N}} \right]_\sim
+$$
+- Ordering
+$$
+  \left[ \left(a_n \right)_{n\in\mathbb{N}} \right]_\sim < \left[ \left(b_n \right)_{n\in\mathbb{N}} \right]_\sim :\iff \exists \delta > 0 \quad \exists N \in\mathbb{N} \quad \forall n\geq N: \delta < b_n - a_n
+$$
+</MathBox>
+
+## Extended real numbers
+
+<MathBox title='Extended real numbers' boxType='proposition'>
+The extended real number line include the infinite points and is denoted $\mathbb{R}* = \mathbb{R}\cup\{-\infty, \infty\}$. In the extended topology of $\mathbb{R}*$ the following is defined for $a\in\mathbb{R}$
+- $(a,\infty]$ is an open neighbourhood of $\infty$
+- $[-\infty, a)$ is an open neighbourhood of $-\infty$
+
+This topology results in the two-point compactification of $\mathbb{R}$.
+</MathBox>
+
+<MathBox title='Arithmetic on extended real numbers' boxType='proposition'>
+The following arithmetic rules are defined for the extended real numbers $\mathbb{R}*$
+1. if $a\in(0,\infty]$ then $a\cdot\infty = \infty$ and $a\cdot(-\infty) = -\infty$
+2. if $a\in[-\infty,0)$ then $a\cdot\innfty = -\infty$ and $a\cdot(-\infty) = \infty$
+3. $0\cdot\infty = 0$ and $0\cdot(-\infty) = 0$
+4. if $a\in\mathbb{R}$ then $a+\infty = \infty$ and $a+(-\infty) = -\infty$
+5. $\infty + \infty = \infty$ and $-\infty + (-\infty) = -\infty$
+
+Note that $\infty - \infty$ is not defined
+</MathBox>
+
+# Complex numbers ($\mathbb{C}$)
+
+A complex number is an ordered pair of real numbers of the form  $\mathbb{C} \ni z = x + iy := (x, y) \in \mathbb{R}\times\mathbb{R}$ where
+
+- $x = \Re(z)$ is the real part
+- $y = \Im(z)$ is the imaginary part
+- $i = \sqrt{-1}$ is the imaginary unit satisfying $i^2 = -1$
+
+The following rules for addition and multiplication are imposed on complex numbers
+
+- Addition (real and imaginary parts added separately): $z + w = (x + iy) + (u + iv) = (x + u) + i(y + v)$
+    - Identical to vector addition in $\mathbb{R}^2$
+- Multiplication (distributive): $z \cdot w = (x + iy) \cdot (u + iv) = xu + iyu + ixv + \underbrace{i^2}_{=-1} y v = (xu - yv) + i(yu + xv)$
+    - In particular: $i^2 = i\cdot i = (0 + i)\cdot (0 + i) = (0 \cdot 0 - 1\cdot 1) + i(0\cdot 1 + 1\cdot 0) = -1$
+
+The set of complex numbers $\mathbb{C}$ defines an unordered field where the operations of addition and mulitiplication satisfy the following
+- Associativity, distributivity and commutativity
+- Additive and multiplicative identities
+- Additive and multiplicative inverses
+- There is no Archimedean order
+
+This implies that
+- $(\mathbb{C}, +, 0)$ is an Abelian group
+- $(\mathbb{C} \backslash \{ 0 \}, \cdot, 1)$ is an Abelian group
+
+## Operations on complex numbers
+
+### Absolute value (modulus)
+The absolute value of a complex number $z = x + iy$ is given by its length (Euclidean norm)
+
+$$
+  |z| := \sqrt{x^2 + y^2} = \sqrt{\Re(z)^2 + \Im(z)^2}
+$$
+
+### Complex conjugation
+The complex conjugate of a complex number $z = x + iy$ is given by $\bar{z} = x - iy$. Geometrically, the complex conjugate reflect a complex number about the real axis, i.e. $\Im\left(\bar{z}\right) = -\Im(z)$. Conjugating twice gives the original complex number, i.e. $\bar{\bar{z}} = z$. The product of a complex number and its conjugate gives the square of its length
+
+$$
+  z\cdot\bar{z} = (x + iy)\cdot(x - iy) = x^2 + ixy - ixy - i^2y^2 = x^2 + y^2 = |z|^2
+$$
+
+The real and imaginary parts of a complex number can be extracted using the conjugation
+
+$$
+  \Re(z) = \frac{z + \bar{z}}{2} \quad \Im(z) = \frac{z - \bar{z}}{2}
+$$
+
+Conjugation distributes over the basic complex arithmetic operations
+
+$$
+\begin{gather*}
+  \overline{z \pm w} = \bar{z} \pm \bar{w} \\
+  \overline{z \cdot w} = \bar{z} \cdot \bar{w} \\
+  \overline{z/w} = \bar{z}/\bar{w}
+\end{gather*}
+$$
+
+## Polar representation
+In addition to its Cartesian representation, $z = x + iy$, a complex number can be represented in a polar form
+
+$$
+  z = r(\cos\phi + i \sin\phi) = re^{i\phi}
+$$
+
+where $r = |z|$ is the absolute value of $z$ and $\phi := \arg(z) = \{ \mathrm{Arg}(z) + 2\pi n | n \in \mathbb{Z} \}$ is the argument of $z$ giving the angle of $z$ wrt. the positive real axis. The principal argument $\mathrm{Arg}(z) \in [0, 2\pi)$ can be calculated using the tangent half-angle formula 
+
+$$
+  \mathrm{Arg}(z) = \mathrm{Arg}(x + iy) = \begin{cases} 
+      2\arctan\left( \frac{y}{\sqrt{x^2 + y^2} + x} \right) &\quad x > 0,\, y \geq 0 \\
+      \pi &\quad x < 0,\, y = 0 \\
+      \textrm{undefined} &\quad x = 0,\, y = 0
+  \end{cases}
+$$

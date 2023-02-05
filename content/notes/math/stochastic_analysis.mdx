@@ -1,0 +1,182 @@
+---
+title: 'Stochastic Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Stochastic processes
+
+## Martingale
+
+A martingale is a stochastic process for which the conditional expectation of the next value is equal to the present value.
+
+<MathBox title='Martingale' boxType='definition'>
+Let 
+- $(\Omega, \mathcal{A}, \mathbb{P})$ be a probability space
+- $\mathscr{F} = \left( \mathcal{F}_t \right)_{t \in T}$ be a filtration of $\mathcal{A}$ for an ordered index set $T$
+
+A stochastic process $\left\{ X_t \right\}_{t\in T}$ is called a martingale wrt. $\mathscr{F}$ if for all $t\in T$
+- $\mathrm{E}\left[\left| X_t \right|\right] < \infty$
+- $X_t$ is $\mathcal{F}_t$ measurable, i.e. $X_t \in\mathcal{F}_t$
+- discrete case: $\mathrm{E}\left[ X_{t+1} | \mathscr{F}_t \right] = X_t$
+- continuous case: $\mathrm{E}\left[ X_{t} | \mathscr{F}_s \right] = X_s$ for $s < t$
+
+Similarly, it is said to be a supermartingale (respectively, submartingale) if for every $n$
+
+$$
+\begin{gather*}
+  \mathrm{E}\left[ X_{t+1} | \mathscr{F}_t \right] \leq(\geq) X_t \\
+  \mathrm{E}\left[ X_{t} | \mathscr{F}_s \right] \leq(\geq) X_s \quad s < t
+\end{gather*}
+$$
+</MathBox>
+
+The most basic examples of martingales are sums of independent, mean zero random variables. Let $(Y_n)_{n\geq 0}$ be such a sequence, then the sequence of partial sums
+
+$$
+  X_n = \sum_{j=1}^n Y_j
+$$
+
+is a martingale relative to the natural filtration of $Y_n$. This can be shown using the linearity and stability properties and the independence law for conditional expectation
+
+$$
+\begin{align*}
+  E\left( X_{n+1} | \mathscr{F}_n \right) &= E\left( X_n + Y_{n+1} | \mathscr{F}_n \right) = E\left( X_n | \mathscr{F}_n \right) + E\left( Y_{n+1} | \mathscr{F}_n \right) \\
+  &= X_n + \mathrm{E}\left[ Y_{n+1} \right] \\
+  &= X_n
+\end{align*}
+$$
+
+## Martingale difference sequence
+
+A martingale $\{X_n\}_{n\geq 0}$ relative to a filtration $\mathscr{F}_n$ may be decomposed as a partial sum
+
+$$
+  X_n = X_0 + \sum_{j=1}^n \xi_j
+$$
+
+where $\left\{\xi_n \right\}$ is the martingale difference sequence defined as
+
+$$
+  \xi_n = X_n - X_{n-1}
+$$
+
+which satisfies for all $n \geq 0$
+
+$$
+  E\left( \xi_{n+1} | \mathscr{F}_n \right) = E\left( X_{n+1} - X_n | \mathscr{F}_n \right) = E\left( X_{n+1} | \mathscr{F}_n \right) - E\left( X_n | \mathscr{F}_n \right) = 0
+$$
+
+For all $n \geq 0$ we have
+
+$$
+\begin{align*}
+  \mathrm{E}\left[X_n \right] &= \mathrm{E}\left[ E(X_n | \mathscr{F}_n)  \right] = \mathrm{E}\left[ E\left(X_0 + \sum_{j=1}^n + \xi_j \middle| \mathscr{F}_n \right)  \right] \\
+  &= \mathrm{E}\left[ E\left(X_0 | \mathscr{F}_n \right) + \sum_{j=1}^n E\left( \xi_j | \mathscr{F}_n \right) \right] \\
+  &= \mathrm{E}\left[X_0 \right]
+\end{align*}
+$$
+
+If $\mathrm{E}\left[X_n^2 \right] < \infty$ for some $n \geq 1$, then for $j \leq n$ the random variables $\xi_j$ are square-integrable and uncorrelated giving
+
+$$
+  \mathrm{E}\left[X_n^2 \right] = \mathrm{E}\left[X_0^2 \right] + \sum_{j=1}^n \mathrm{E}\left[\xi_j^2 \right]
+$$
+
+### Martingale transform
+
+Let $\{X_n\}_{n\geq 0}$ be a martingale relative to a filtration $\mathscr{F}_n$. The martingale difference sequence associated with the martingale $X_n$ is defined as
+
+$$
+  \xi_n = X_n - X_{n-1}
+$$
+
+A predictable sequence $\{Z_n\}_{n\geq 1}$ relative to the filtration $\mathscr{F}_n$ is a sequence of random variables such that for every $n$ the random variable is measurable relative to $\mathscr{F}_{n-1}$. The martingale transform $\left\{ (Z \cdot X)_n \right\}_{n\geq 0}$ is defined by
+
+$$
+  E\left( X_n + Y_{n+1} | \mathscr{F}_n \right) = X_0 + \sum_{j=1}^n Z_j \xi_j
+$$
+
+Assume that the predictable sequence $\{Z_n\}_{n\geq 1}$ consists of bounded random variables. Then the martingale transform $\left\{ (Z \cdot X)_n \right\}_{n\geq 0}$ is itself a martingale
+
+$$
+\begin{align*}
+  E\left( (Z\cdot X)_{n+1} | \mathscr{F}_n \right) &= (Z\cdot X)_n + E\left( Z_{n+1} \xi_{n+1} | \mathscr{F}_n \right) \\
+  &= (Z\cdot X)_n + Z_{n+1}E\left( \xi_{n+1} | \mathscr{F}_n \right) \\
+  &= (Z\cdot X)_n
+\end{align*}
+$$
+
+Let $(Z_j)_{j\geq 0}$ be a predictable sequence of bounded nonnegative random variables. Then the submartingale transform $\{ Z \cdot X \}_{n\geq 0}$ (respectively, supermartingale) is defined by
+
+$$
+  (Z \cdot X)_n = Z_0 X_0 + \sum_{k=1}^n Z_k \xi_k
+$$
+
+which is also a submartingale. If $0 \leq Z_n \leq 1$ for each $n \geq 0$, then
+
+$$
+  E(Z \cdot X)_n \leq \mathrm{E}[X_n]
+$$
+
+To show that $(Z\cdot X)_n$ is a submartingale, if suffices to verify that the differences $Z_j \xi_j$ constitute a submartingale difference sequence
+
+$$
+\begin{gather*}
+  E\left( Z_j \xi_j | \mathscr{F}_{j-1} \right) = Z_j E\left( \xi_j | \mathscr{F}_{j-1} \right) \\
+  \implies E\left( Z_j \xi_j \right) \leq \mathrm{E}\left[ \xi_j \right]
+\end{gather*}
+$$
+
+### Doob's optional sampling theorem
+
+Doob's theorem states that stopping a martingale at random time $\tau$ does not alter the martingale property, provided the decision about when to stop is solely based on information available up to $\tau$. 
+
+<MathBox title="Doob's optional sampling theorem" boxType='theorem'>
+Let $\{X_n\}_{n\geq \mathbb{Z}^+}$ be a martingale relative to a filtration $\mathscr{F}_n$ and let $\tau$ be a stopping time. Then the stopped sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ is a martingale. Consequently, for any $n \in \mathbb{N}$
+
+$$
+  \mathrm{E}\left[ X_{\tau \land n} \right] = \mathrm{E}\left[ X_0 \right]
+$$
+</MathBox>
+
+<details>
+<summary>Proof</summary> 
+
+The sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ may be represented as a transform of the sequence $\{X_n\}_{n\geq \mathbb{Z}^+}$
+
+$$
+\begin{gather*}
+  X_{\tau \land n} = (Z\cdot X)_n \\
+  Z_n = \begin{cases} 1, &\quad \tau \geq n \\ 0, &\quad \tau < n \end{cases}
+\end{gather*}
+$$
+
+The transform is easily verified
+
+$$
+\begin{align*}
+  (Z\cdot X)_n &= X_0 + \sum_{j=1}^n Z_j \left( X_j - X_{j - 1} \right) \\
+  &= X_0 + \sum_{j=1}^{\tau \land n} \left( X_j - X_{j - 1} \right) \\
+  &= X_{\tau \land n}
+\end{align*}
+$$
+</details>
+
+<MathBox title='Wald identities' boxType='proposition'>
+Let $S_n = \sum_{i=1}^n \xi_i$, then the following identities hold: 
+- First identity: if $\mathrm{E}\left[ |\xi_i | \right] < \infty$ and $\mathrm{E}\left[ \tau \right] < \infty$ then $ \mathrm{E}[|S_\tau|] < \infty$ and  
+$$
+  \mathrm{E}[S_\tau] = \mathrm{E}[\tau] \cdot \mathrm{E}[\xi_k]
+$$
+- Second identity: if $\mathrm{E}\left[ \xi_i \right] = 0$ and $\sigma^2 = \mathrm{E}\left[ \xi_i^2 \right] < \infty$ then 
+$$
+  \mathrm{E}[S_\tau^2] = \sigma^2 \mathrm{E}[\tau]
+$$
+- Third identity: assume that $\mathrm{E}\left[ e^{\theta \xi_1} \right] = e^{-\psi(\theta)} < \infty$, then for every bounded stopping time
+$$
+  \mathrm{E}\left[ \theta S_\tau - \tau \psi(\theta) \right] = 1
+$$
+</MathBox>
+
+## Brownian motion

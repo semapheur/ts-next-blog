@@ -1,0 +1,638 @@
+---
+title: 'Manifolds'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Topological space
+
+Topological spaces are an abstraction of metric spaces. 
+
+<MathBox title='Topological space' boxType='definition'>
+Let $X$ be a set with power set $\mathcal{P}(X)$. A topology on $X$ is a collection $\mathcal{T}\subseteq\mathcal{P}(X)$ of subsets of $X$, called open subsets, satisfying
+
+- $\emptyset, X \in \mathcal{T}$
+- $\mathcal{T}$ is closed under arbitrary union: $\mathcal{A}\subseteq\mathcal{T}\implies\bigcup A \in \mathcal{T}$
+- $\mathcal{T}$ is closed under finite intersection: $\mathcal{A}\subseteq\mathcal{T} \land \mathcal{A}\textrm{ is finite } \implies \bigcap \mathcal{A} \in \mathcal{T}$
+
+The pair $(X, \mathcal{T})$ is called a topological space. A subset $C\subseteq X$ is called closed in $(X,\mathcal{T})$ if its complement is open, i.e. $X\setminus C \in\mathcal{T}$. Note that $X$ and $\emptyset$ are both open and closed.
+</MathBox>
+
+A topology can similarly be constructed from collections of closed sets, as captured in the following proposition.
+<MathBox title='Closed set topology' boxType='proposition'>
+Given a set $X$, then $\mathcal{C}\subseteq\mathcal{P}(X)$ is the collection of closed sets for a topology on $X$ iff
+1. $\emptyset, X \in \mathcal{X}$
+2. $\mathcal{C}$ is closed under arbitrary intersection: $\mathcal{A}\subseteq\mathcal{C}\implies\bigcap A \in \mathcal{C}$
+3. $\mathcal{C}$ is closed under finite union: $\mathcal{A}\subseteq\mathcal{C} \land \mathcal{A}\textrm{ is finite } \implies \bigcup \mathcal{A} \in \mathcal{C}$
+<details>
+<summary>Proof</summary>
+
+Note that $\mathcal{T} = \{ U^c \;|\; U\in\mathcal{C} \}$ defines a collection of open sets that satsify the axioms of a topology
+1. since $\emptyset, X\in\mathcal{T}$ and $\emptyset = X^c$, then $\emptyset, X\in\mathcal{C}$
+2. for an arbitrary collection $\mathcal{A}\subseteq\mathcal{T}$ we know that $\bigcup\mathcal{A}\in\mathcal{T}$. Taking the complement of the union and applying DeMorgan's law gives
+$$
+  \left( \bigcup\mathcal{A} \right)^c &= \bigcap \left\{ A^c \;|\; A\in\mathcal{A} \right\} \in\mathcal{C}
+$$
+2. for an arbitrary collection $\mathcal{A}\subseteq\mathcal{T}$, then $\bigcup\mathcal{A}\in\mathcal{T}$. Noting that $\mathcal{A}^c = \{A^c \;|\; A\in\mathcal{A}\subseteq\mathcal{T}\}\subseteq\mathcal{C}$. Applying DeMorgan's law shows that $\mathcal{C}$ is closed under arbitrary intersection
+$$
+  \left( \bigcup\mathcal{A} \right)^c = \bigcap \left\{ A^c \;|\; A\in\mathcal{A} \right\} = \bigcap \mathcal{A}^c \in\mathcal{C}
+$$
+3. for a finite collection $\mathcal{A}\subseteq\mathcal{T}$, then $\bigcap\mathcal{A}\in\mathcal{T}$. Noting that $\mathcal{A}^c = \{A^c \;|\; A\in\mathcal{A}\subseteq\mathcal{T}\}\subseteq\mathcal{C}$. Applying DeMorgan's law shows that $\mathcal{C}$ is closed under finite union
+$$
+  \left( \bigcap\mathcal{A} \right)^c = \bigcup \left\{ A^c \;|\; A\in\mathcal{A} \right\} = \bigcup \mathcal{A}^c \in\mathcal{C}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Neighbourhood' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a point $x\in X$. A neighbourhood of $x$ is a subset $V\subseteq X$ that includes an open set $U\subseteq X$ containing $x$, i.e.
+
+$$
+  x \in U\subseteq V\subseteq X
+$$
+
+The neighbourhood $V$ need not be open.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose $(X,\mathcal{T})$ is a topological space. A set $U\subseteq X$ is openif and only if$U$ is a neighbourhood of every $x\in U$.
+<details>
+<summary>Proof</summary>
+
+If $U$ is open, then it is clearly a neighbourhood of every $x\in U$. Conversely, suppose $U$ is a neighbourhood of every $x\in U$. Then by definition, for every $x\in U$ there is an open set $\x \in U_x \subseteq U$. Then $\bigcup_{x\in U} U_x = U$ is also open.
+</details>
+</MathBox>
+
+<MathBox title='Closure' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a subset $S\subseteq X$. The closure of $S$, denoted $\mathrm{cl}(S) \equiv \overline{S}$ is the intersection of all closed subsets of $X$ containing $S$
+
+$$
+  \overline{S} := \left\{\bigcap C \subseteq X \;|\; C\textrm{ is closed and }S\subseteq C \right\}
+$$
+
+This is the smallest closed set containing $S$.
+1. $\overline{S}$ is closed
+2. $S\subseteq\overline{S}$
+3. if $C$ is closed and $S\subseteq C$ then $\overline{S}\subseteq C$
+</MathBox>
+
+<MathBox title='Interior' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a subset $S\subseteq X$. Then $p\in S$ is called an interior point of $S$if and only ifthere is an open set $U\in\mathcal{T}$ such that $p\in U$ and $U \subseteq S$. The interior of $S$, denoted $\mathrm{int}(S) \equiv S^0$, is the set of all interior points of $S$. Equivalently, $\mathrm{Int}(S)$, is defined as the union of all open subsets of $X$ contained in $S$.
+
+$$
+  \mathrm{int}(S) := \left\{\bigcup U\subseteq X \;|\; U\textrm{ is open and }U\subseteq S \right\}
+$$
+
+This set is the largest open subset of $S$:
+1. $\mathrm{int}(S)$ is open
+2. $\mathrm{int}(S)\subseteq S$
+3. if $U$ is open and $U\subseteq S$, then $U\subseteq\mathrm{int}(S)$
+</MathBox>
+
+<MathBox title='Exterior' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a subset $S\subseteq X$. Then $p\in S$ is called an extorior point of $S$if and only ifthere is an open set $U \in \mathcal{T}$ such that $p \in U$ and $U \subseteq X\setminus S$. The extorior of $S$, denoted $\mathrm{ext}(S)$, is the set of all extorior points of $S$. Equivalently, $\mathrm{ext}(S)$ is the is the union of all open subsets of $X$ contained in $X \setminus S$, i.e. disjoint from $S$.
+
+$$
+  \mathrm{ext}(S) := \left\{\bigcup U\subseteq X \;|\; U\textrm{ is open and }U\subseteq X\setminus S \right\}
+$$
+
+This is the largest open set disjoint from $S$. The exterior is the interior of of the complement of $S$
+
+$$
+  \mathrm{ext}(S) = \mathrm{int}(X\setminus S) = X\setminus\overline{S}
+$$
+</MathBox>
+
+<MathBox title='Boundary' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a subset $S\subseteq X$. Then $p\in S$ is called a boundary point of $S$if and only iffor all open sets $U \in \mathcal{T}$ with $p \in U$ then $U \cap S \neq \emptyset$ and $U \cap (X\setminus S) \neq \emptyset$. The boundary of $S$, denoted $\partial S$, is the set off all boundary points of $S$. Equivalently
+
+$$
+  \partial S := \overline{S}\setminus\mathrm{int}(S)
+$$
+</MathBox>
+
+<MathBox title='Derived set' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space, and consider a subset $S\subseteq X$. Then $p\in S$ is an accumulation point of $S$if and only iffor all open sets $U \in \mathcal{T}$ with $p \in U$ then $U\setminus \{ p \} \cap S \neq \emptyset$. The derived set of $S$, denoted $S'$, is the set of all accumulation points of $S$.
+</MathBox>
+
+## Partial order
+
+<MathBox title='Topological partial order' boxType='definition'>
+Suppose that $X$ is a set, and that $\mathcal{S}$ and $\mathcal{T}$ are topologies on $X$. If $\mathcal{S}\subseteq\mathcal{T}$, then $\mathcal{T}$ is finer than $\mathcal{S}$, and $\mathcal{S}$ is coarser than $\mathcal{T}$. *Coarser than* ($\subseteq$) defines a partial order on the collection of topologies on $X$. That is, if $\mathcal{R}, \mathcal{S}, \mathcal{T}$ are topologies on $X$, then this partial order has the following properties
+1. reflexivity: $\mathcal{R}$ is coarser than $\mathcal{R}$
+2. anti-symmetry: if $\mathcal{R}$ is coarser than $\mathcal{S}$, and $\mathcal{S}$ is coarser than $\mathcal{R}$, then $\mathcal{R} = \mathcal{S}$
+3. transitivity: if $\mathcal{R}$ is coarser than $\mathcal{S}$ and $\mathcal{S}$ is coarser that $\mathcal{T}$, then $\mathcal{R}$ is coarser than $\mathcal{T}$
+</MathBox>
+
+## Separation
+
+Separation properties refer to the ability to separate points or sets with disjoint open sets. Separated spaces are known as Hausdorff spaces.
+
+<MathBox title='Hausdorff space (separated space)' boxType='definition'>
+A topological space $(X, \mathcal{T})$ is called a Hausdorff space if for every pair of distinct points $p, q \in X$, there exist disjoint open subsets $U, V \subseteq X$, ie. $U \cap V = \emptyset$ such that $p \in U$ and $q \in V$. A Hausdorff space guarantees the uniqueness of limits of sequences.
+</MathBox>
+
+<MathBox title='Regular space' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. A closed set $A\subseteq X$ and a point $x\in A^c$ can be separated if there exist disjoint open sets $U, V\in\mathcal{T}$ with $A\subseteq U$ and $x\in V$. If every nonempty closed set $A$ and point $x\in A^c$ can be separated, then $(X, \mathcal{T})$ is called a regular space. 
+</MathBox>
+
+## Basis
+
+<MathBox title='Base' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. A collection of open subsets $\mathcal{B}\subseteq\mathcal{T}$ is called a basis (base) of $\mathcal{T}$ if every set in $\mathcal{T}$ can be written as a union of sets in $\mathcal{B}$
+
+$$
+  \forall T\in\mathcal{T}: \bigcup_{i \in I} B_i \subseteq\mathcal{B} = T
+$$
+
+where $I$ is an index set.
+</MathBox>
+
+<MathBox title='Base properties' boxType='proposition'>
+Let $X$ be a nonempty set. A collection of open subsets $\mathcal{B}\subseteq\mathcal{P}(X)$ is a base for a topology on $X$ iff
+1. $X = \bigcup\mathcal{B}$
+2. if $A,B\in\mathcal{B}$ and $x\in A\cap B$, there exists $C\in\mathcal{B}$ with $x\in C\subseteq A\cap B$
+
+The second condition can be more weakly stated as
+2. if $A, B\in\mathcal{B}$, then $A\cap B\in\mathcal{B}$
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathcal{B}$ is a base for a topology on $X$. Since $X$ is open, $X$ is a union of sets in $\mathcal{B}$. Since every set in $\mathcal{B}$ is a subset of $X$, we must have $X=\bigcup\mathcal{B}$. Suppose that $A,B\in\mathcal{B}$ and that $x\in A\cap B$. Since $A\cap B$ is open, it's a union of sets in $\mathcal{B}$. The point $x$ must be in one of those sets, so there exists $C\in\mathcal{B}$ with $x\in C\subseteq A\cap B$.
+</details>
+</MathBox>
+
+A neighbourhood basis at $p \in X$ is a collection $\mathcal{B}_p$ of neighbourhoods of $p$ such that every neighbourhood of $p$ contains at least one $B \in \mathcal{B}_p$.
+
+A topological set $(X, \mathcal{T})$ is first-countable if there is a countable neighbourhood basis at each point, and second-countable if there is a countable basis of $\mathcal{T}$. Since a countable basis of $\mathcal{T}$ contains a countable neighbourhood basis at each point, second-countability implies first-countability. A set is called countable if it admits a bijection with the set of natural numbers.
+
+### Examples
+
+For a topological space $(X, \mathcal{T})$ induced by a metric $(X, d)$, the basis of $\mathcal{T}$ is
+
+$$
+  \mathcal{B} = \{ B_\varepsilon (x) | x \in X, \, \varepsilon > 0 \}
+$$
+
+## Compactness (finite covers)
+
+<MathBox title='Cover' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. A cover of $X$ is a collection of subsets $\mathcal{C} = \{ U_i \}_{i\in I}$, for some index set $I$, whose union is the whole space $X$, i.E
+
+$$
+  \bigcup \mathcal{C} = \bigcup_{i\in I} U_i = X
+$$
+
+The collection $\mathcal{C}$ is said to cover a subspace $A\subseteq X$ if
+
+$$
+  A \subseteq \bigcup \mathcal{C} = \bigcup_{i\in I} U_i
+$$
+
+We call $\mathcal{C}$ an open cover if all its members are open subsets, i.e. $\mathcal{C}\subseteq\mathcal{T}$, and we call $\mathcal{C}$ a closed cover if all its members are closed subsets. A subcover of $\mathcal{C}$ is a subset of $\mathcal{C}$ that still covers $X$
+</MathBox>
+
+<MathBox title='Compact set' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. A subset $C\subseteq X$ is called compact if any open cover of $C$ has a finite subcover. That is, if $\mathcal{A}\in\mathcal{T}$ covers $C$, i.e. with $C\subseteq\bigcap\mathcal{A}$, then there exists a finite $\mathcal{B}\subseteq\mathcal{A}$ with $C\subseteq\mathcal{B}$. A topological space $X$ is locally compact if every point $x\in X$ has a compact neighbourhood.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a topological space, and let $C\subseteq X$ be compact. If $B\subseteq C$ is closed, then $B$ is also compact.
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathcal{A}$ is an open cover of $B$. Since $B$ is closed, then $B^c$ is open, so $\mathcal{A}\cup \{B^c\}$ is an open cover of $C$. Since $C$ is compact, this last collection has a finite subcover of $C$, which is also a finite subscover of $B$. Hence $B$ is also compact.
+</details>
+</MathBox>
+
+<MathBox title='Compactness is preserved under finite unions' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a topological space, and let $C_i \subseteq X$ be compact for each $i$ in a finite index set $I$. Then $C = \bigcup_{i\in I} C_i$ is compact.
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathcal{A}$ is an open cover of $C$. Trivially, $\mathcal{A}$ is also an open cover of $C_i$ for each $i\in I$. Hence there exists a finite subcover $\mathcal{A}_i \subseteq\mathcal{A}$ of $C_i$ for each $i\in I$. Then $\bigcup_{i\in I} \mathcal{A}_i$ is also a finite cover of $C$.
+</details>
+</MathBox>
+
+<MathBox title='Compactness properties of Hausdorff spaces' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a Hausdorff space, then the following properties hold
+1. if $C\subseteq X$ is compact, then $C$ is closed, ie. $C^c = X \setminus C \in \mathcal{T}$
+2. if $x\in X$, $C\subseteq X$ is compact, and $x\notin C$, then there exist disjoint open sets $U$ and $V$ with $x\in U$ and $C\subseteq V$
+3. if $x\in X$ and $A$ is a neighbourhood of $x$ with $\partial A$ compact, then there exists a closed neighbourhood $B$ of $x$ with $B\subseteq A$
+<details>
+<summary>Proof</summary>
+
+**Property 1:** We will show that $C^c = X\setminus C$ is open, so fix $x\in C^c$. Since $C$ is Hausdorff, each $y\in C$ can be separated from $x$, meaning there are disjoint open sets $U_y, V_y\in\mathcal{T}$ with $x\in U_y$ and $y\in V_y$. Trivially, the collection $\{ V_y \;|\; y\in C\}$ form an open cover of $C$
+
+$$
+  C \subseteq \bigcup_{y \in C} V_y
+$$
+
+Since $C$ is compact, it has a finite subscover and hence there is a finite subset $B\subseteq C$ such that $\{ V_y \;|\; y\in B \}$ covers $C$. But then $U = \bigcap_{y\in B} U_y$ is open (since $B$ is finite) and disjoint from $\bigcup_{y\in B} V_y$. Thus, $U$ is also disjoint from $C$. To summarize, $U$ is open and $x\in U\subseteq C^c$
+
+**Property 2:** For each $y\in C$ there exist disjoint open sets $U_y$ and $V_y$ with $x\in U_y$ and $y\in V_y$. Trivially, the collection $\{V_y \;|\; y\in C\}$ is an open cover of $C$, and by compactness there exists a finite subset $B\subseteq C$ such that $\{V_y \;|\; y\in B\}$ covers $C$. Thus, let $U = \bigcap_{y\in B} U_y$ and $V = \bigcup_{y\in B} V_y$. Then $U$ is open, since $B$ is finite, and $V$ is open. Moreover $U$ and $V$ are disjoint, and $x\in U$ and $C\subseteq V$.
+
+**Property 3:** By property $(2)$, there exists disjoint open sets $U$ and $V$ with $x\in U$ and $\partial A\subseteq V$. Hence $\overline{U}$ and $\partial A$ are disjoint. Let $B = \overline{A\cap U}$. Note that $B$ is closed, and is a neighbourhood of $x$ since $U$ and $A$ are neighbourhoods of $x$. Moreover
+
+$$
+\begin{align*}
+  B &\subseteq \overline{A}\cap\overline{U} \\
+  &= [A\cup \partial A]\cap\overline{U} \\
+  &= [A\cap\overline{U}] \cup \underbrace{[\partial A \cap\overline{U}]}_{=\emptyset} \\
+  &= A\cap\overline{U} \subseteq A
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Compactness properties of Hausdorff spaces' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a locally compact Hausdorff space. If $x\in X$ and $A$ is a neighbourhood of $x$, then there exists a compact neighbourhood $B$ of $x$ with $B\subseteq A$.
+<details>
+<summary>Proof</summary>
+
+Since $X$ is locally compact, there exists a compact neighbourhood $C$ of $x$. Hence $A\cap C$ is a neighbourhood of $x$. Moreover, $\partial(A\cap C)\subseteq C$ is closed and hence compact. We know that there exists a closed neighbourhood $B$ of $x$ with $B\subseteq A\cap C$. Since $B$ is closed and $B\subseteq C$, it is also compact. Additionally we have $B\subseteq A$.  
+</details>
+</MathBox>
+
+## Connectivity
+
+<MathBox title='Connected and disconnected spaces' boxType='definition'>
+A topological space $(X, \mathcal{T})$ is disconnected if there exists disjoint nonempty subsets $A, B \subseteq X$ such that $X = A \cup B$ and $\overline{A}\cap B = A \cap \overline{B} = \emptyset$. Otherwise $X$ is connected, which is equivalently trueif and only ifthe only subsets of $X$ that are both open and closed are $\emptyset$ and $X$ itself.
+</MathBox>
+
+A connected subset of $X$ is a subset that is connected space when endowed with the subspace topology. A maximal connected subset of $X$ (that is not containing in any larger connected subset) is called a (connected) component of $X$. 
+
+<MathBox title='Path-connected spaces' boxType='definition'>
+A path in $X$ from $p \in X$ to $q \in X$ is a continuous map $f: I = [0, 1] \to X$ such that $f(0) = p$ and $f(1) = q$. If there exists a path in $X$ for every pair $p, q \in X$, then $X$ is path-connected. The path components of $X$ are its maximal path-connected subsets.
+</MathBox>
+
+<MathBox title='Properties of (path-)connected spaces' boxType='definition'>
+Let $X$ and $Y$ be topological spaces.
+1. If $F:X \to Y$ is continuous and $X$ is connected, then $F(X)$ is also connected.
+2. Every connected subset of $X$ is contained in a single component of $X$.
+3. A union of connected subspaces of $X$ with a point in common is connected.
+4. The components of $X$ are disjoint nonempty closed subsets whose union is $X$, and thus they form a partition of $X$.
+5. If $S \subseteq X$ is both open and closed, then $S$ is a union of components of $X$.
+6. Every finite product of connected spaces is connected.
+7. Every quotient space of a connected space is connected.
+</MathBox>
+
+A topological space is locally path-connected if it admits a basis of path-connected open subsets.
+
+<MathBox title='Properties of locally path-connected spaces' boxType='definition'>
+Let $X$ be a topological space.
+1. The components of $X$ are open in $X$.
+2. The path components of $X$ are equal to its components.
+3. $X$ is connectedif and only ifit is path-connected.
+4. Every open subset of $X$ is locally path-connected.
+</MathBox>
+
+## Countability axioms
+
+<MathBox title='Dense set' boxType='definition'>
+Suppose $(X,\mathcal{T})$ is a topological space. A set $D\subseteq X$ is dense if $U\subseteq D$ is nonempty for every nonempty $U\subseteq\mathcal{T}$. Equivalently, $D$ is dense if every neighbourhood of a point $x\in X$ contains an element of $D$. A set $S$ is said to be nowhere dense in $X$ if $\overline{S}$ contains no nonempty open subset.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Suppose $(X,\mathcal{T})$ is a topological space. A set $D\subseteq X$ is denseif and only if$\overline{D} = X$
+<details>
+<summary>Proof</summary>
+
+Suppose that $D$ is dense. Since $\overline{D}$ is closed, then $\overline{D}^c$ is open. If this set is nonempty, it must contain a point in $D$. This is a constradiction since $D\subseteq\overline{D}$. Conversely, suppose that $\overline{D} = X$, and suppose that $U$ is a nonempty open set. Then $U^c$ is closed and $U^c \neq X$. If $D\cap U = \emptyset$, then $D\subseteq U^c$. But then $\overline{D}\subseteq U^c$ so $\overline{D}\neq X$.
+</details>
+</MathBox>
+
+<MathBox title='Countability axioms' boxType='axiom'>
+A topological space $(X,\mathcal{T})$ is called
+1. separable if there exists a countable dense subset
+2. first-countable if each point $x\in X$ has a countable neighbourhood basis
+3. second-countable if the topology $\mathcal{T}$ has a countable base
+</MathBox>
+
+<MathBox title='Countability relations' boxType='proposition'>
+Let $(X,\mathcal{T})$ be a topological space, then the following properties hold
+1. if $X$ is second countable, then it is separable
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathcal{B} = \{U_i\}_{i\in I}$ is a base for $\mathcal{T}$, where $I$ is a countable index set. Select $x_i\in U_i$ for each $i\in I$, and let $D = \{ x_i \}_{i\in I}$, which is clearly countable. If $U$ is open and nonempty, then $U = \bigcup_{j\in J} U_j$ for some $J\subseteq I$. But then $\{x_j \}_{j\in J} \subseteq U$, so $D$ is dense.
+</details>
+</MathBox>
+
+## Convergence
+
+<MathBox title='Convergent sequence' boxType='definition'>
+Let $(X, \mathcal{T})$ be a topological space. A sequence $\left( x_n \in X \right)_{n \in \mathbb{N}}$ of points in $X$ is said to converge to a point $x\in X$,if and only iffor each neighbourhood $U$ of $x$ there is a $N \in \mathbb{N}$ such that $x_n \in U$ for all $n \geq N$. This convergence is denoted $x_n \xrightarrow{n\to \infty} x$.
+</MathBox>
+
+Unlike metric spaces, where neighbourhoods can be made arbitrarily small, the limit of a sequence in a topological space is not necessarily unique. This is only the case if points in the space can be separated, meaning that the space is Hausdorff.
+
+<MathBox title='Uniqueness of limits' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a Hausdorff space. If $\left( x_n \in X \right)_{n\in\mathbb{N}}$ is a sequence of points in $X$ with $x_n \xrightarrow{n\to \infty} x$ and $x_n \xrightarrow{n\to \infty} y$, then $x = y$.
+<details>
+<summary>Proof</summary>
+
+If $x\neq y$, there exists disjoint neighbourhoods $A$ and $B$ of $x$ and $y$, respectively. There exist $M, N \in\mathbb{N}$ such that $x_n \in A$ for all $n \geq M$ and $x_n \in B$ for all $n\geq N$. However, if $n \geq\max\{M, N\}$, then $x_n \in A$ and $x_n \in B$, giving a contradiction.
+</details>
+</MathBox>
+
+## Continuity
+
+Continuity of functions is one of the most important concepts of topology. The idea is that if two points are close together in the domain, the functional values should be close together in the range. In topology, this is expressed through preservation of openness between the domain and range spaces. A continuous function has the property that the preimage of an open set (in the range space) is also open (in the domain space).
+
+<MathBox title='Open function' boxType='definition'>
+Let $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$ be topological spaces. A map $f: X \to Y$ is called open if it sends open sets $A \subseteq X$ to open sets $f[A] \subseteq Y$.
+</MathBox>
+
+<MathBox title='Continuous function' boxType='definition'>
+Let $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$ be topological spaces. A function $f: X\to Y$ is continuous if $f^{-1}[U]\in\mathcal{T}_X$ is open for every open $U \in\mathcal{T}_Y$. The function $f$ is locally continuous at a point $x\in X$ if $f^{-1}[B]$ is a neighbourhood of $x$ whenever $B$ is a neigbourhood of $f(x)\in Y$. Given a subset $A\subseteq X$, the function $f$ is continuous on $A$ if $f$ is continuous at each $x\in A$.
+
+If $f$ is bijective and $f^{-1}: Y \to X$ is continuous, then $f$ is also open. The continuity of $f^{-1}$ implies that for all open sets $A \subseteq X$, then $\left( f^{-1} \right)^{-1}[A] = f[A] \subseteq Y$ is also open.
+</MathBox>
+
+<MathBox title='Proposition' boxType='proposition'>
+Let $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$ be two topoligical spaces. A function $f: X\to Y$ is continuousif and only if$f$ is continuous at each $x\in X$.
+<details>
+<summary>Proof</summary>
+
+Suppose that $f$ is continuous. Let $x\in X$ and let $B$ be a neigbourhood of $f(x)$. Then there exists an open set $V\subseteq T$ with $f(x)\in V\subseteq B$. However, then $f^{-1}[V]\in\mathcal{T}_X$ is open in $X$, and $x\in f^{-1}[V]\subseteq f^{-1}[B]$, so $f^{-1}[B]$ is a neighbourhood of $x$. Hence $f$ is continuous at $x$.
+
+Conversely, suppose that $f$ is continuous at each $x\in X$, and suppose that $V\in\mathcal{T}_Y$. If $V$ contains no points in the range of $f$, then $f^{-1}[V] = \emptyset\in\mathcal{T}_X$. Otherwise, there exists $x\in X$ with $f(x)\in V$. However, then $V$ is a neighbourhood of $f(x)$, so $U = f^{-1}[V]$ is a neighbourhood of $x$. Let $y\in U$. Then $f(y)\in V$ also, so $U$ is also a neighbourhood of $y$, hence $U\in\mathcal{T}$.
+</details>
+</MathBox>
+
+<MathBox title='Continuity preserves limits' boxType='proposition'>
+Let $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$ be two topoligical spaces, and consider a continuous function $f: X\to Y$. If $\left( x_n \in X \right)_{n\in\mathbb{N}}$ is a sequence of points in $X$ with $x_n \xrightarrow{n\to \infty} x$, then $f(x_n) \xrightarrow{n\to \infty} f(x)$.
+<details>
+<summary>Proof</summary>
+
+Suppose that $V\subseteq Y$ with $f(x)\in V$. Then $f^{-1}[V]$ is open in $X$ and $x\in f^{-1}[V]$. Hence there exists $N\in\mathbb{N}$ such that $x_n \in f^{-1}[V]$ for every $n\geq M$. However, then $f(x_n)\in V$ for every $n\geq N$ meaning $f(x_n) \xrightarrow{n\to \infty} f(x)$. 
+</details>
+</MathBox>
+
+<MathBox title='Composition preserves continuity' boxType='proposition'>
+Let $(X, \mathcal{T}_X)$, $(Y, \mathcal{T}_Y)$ and $(Z, \mathcal{T}_Z)$ be three topoligical spaces. If $f: X\to Y$ and $g: Y\to Z$ are continuous, then $g\circ f: X\to Z$ is continuous.
+<details>
+<summary>Proof</summary>
+
+If $A$ is open in $Z$, then $g^{-1}[A]$ is open in $Y$ and therefore $f^{-1}\left[g^{-1}[A] \right] = \left(f^{-1}\circ g^{-1} \right)(A)$ is open in $X$. Noting $(g\circ f)^{-1} = f^{-1}\circ g^{-1}$.
+</details>
+</MathBox>
+
+### Homeomorphism
+
+<MathBox title='Homeomorphism' boxType='definition'>
+Given two topological spaces $(X, \mathcal{T}_X)$ and $(Y, \mathcal{T}_Y)$, a continuous bijection $f: X \mapsto Y$ with a continuous inverse is called a homeomorphism. When such a function exists, the topoligical spaces $X$ and $Y$ are homeomorphic. A continuous map is called a local homeomorphism if every point $p \in X$ has a neighbourhood $U \subseteq X$ such that $f(U)$ is open in $Y$ and $f$ restricts to a homeomorphism from $U$ to $f(U)$.
+</MathBox>
+
+<MathBox title='Properties of homeomorphisms' boxType='proposition'>
+For topological spaces $(X, \mathcal{T}_X)$, $(Y, \mathcal{T}_Y)$ and $(Z, \mathcal{T}_Z)$, then
+1. $X$ is homeomorphic to $X$ (reflexivity)
+2. if $X$ is homeomorphic to $Y$, then $Y$ is homeomorphic to $X$ (symmetry)
+3. if $X$ is homeomorphic to $Y$, and $Y$ is homeomorphic to $Z$, then $X$ is homeomorphic to $Z$ (transitivity)
+<details>
+<summary>Proof</summary>
+
+1. The identity function $\mathrm{id}: X\to X$ defined by $\mathrm{id}(x) = x$ for $x\in S$ is a homeomorphism from $S$ to itself.
+2. If $f: X\to Y$ is a homeomorphism from $(X, \mathcal{T}_X)$ to $(Y, \mathcal{T}_Y)$, then $f$ is continuous bijection and hence $f^{-1}: Y\to X$ is a homeomorphism from $(Y, \mathcal{T}_Y)$ to $(X, \mathcal{T}_X)$.
+3. If $f: X\to Y$ is a homeomorphism from $(X, \mathcal{T}_X)$ to $(Y, \mathcal{T}_Y)$, and $g: Y\to Z$ is homeomorphism from $(Y, \mathcal{T}_Y)$ to $(Z, \mathcal{T}_Z)$, then $g\circ f: X\to Z$ is homemorphism from $(X, \mathcal{T}_X)$ to $(Z, \mathcal{T}_Z)$.
+</details>
+</MathBox>
+
+### Sequential continuity
+
+A map $f: X \mapsto Y$ is called sequential continuous if for all $x \in X$ such that $\left( x_n \right)_{n \in \mathbb{N}}$ with $x_n \xrightarrow{n\to \infty} x$, then $\left( f(x_n) \right)_{n \in \mathcal{N}} \subseteq Y$ is convergent with $f(x_n) \xrightarrow{n\to \infty} f(x)$.
+
+## Subspace
+
+A subspace of the topological space $(X, \mathcal{U})$ is a subset $A \subseteq X$ with the topology given by $\left\{ A \cap U | U \in \mathcal{U} \right\}$
+
+## Product topology
+
+<MathBox title='Product topology' boxType='definition'>
+Let $\left\{ \left(X_i, \mathcal{T}_{i}\right) \right\}_{i\in I}$ be a collection of topological spaces, where $I$ is an index set. The product space denoted $\prod_{i\in I} (X_i, \mathcal{T}_i)$ consists of the product space $\prod_{i\in I} X_i$ with a topology given by the basis
+
+$$
+  \mathcal{B} := \left\{ \prod_{i\in I} U_i \;|\; U_i \in\mathcal{T}_i \textrm{ and }U_i = X_i \textrm{ for all but a finite number of }i\in I \right\}
+$$
+<details>
+<summary>Proof</summary>
+
+Trivially, $\prod_{i\in I} X_i = \bigcup\mathcal{B}$. Given $\prod_{i\in I} A_i \in\mathcal{B}$, $\prod_{i\in I} B_i \in\mathcal{B}$, then 
+
+$$
+  \left($\prod_{i\in I} A_i \in\mathcal{B}$\right) \cap \left( $\prod_{i\in I} B_i \in\mathcal{B}$ \right) = \prod_{i, j \in I} A_i \cap B_j \in\mathcal{B}
+$$
+
+Hence, $\mathcal{B}$ is a well defined base for the product topology.
+</details>
+</MathBox>
+
+<MathBox title='Projections are continuous' boxType='proposition'>
+Let $\prod_{i\in I} (X_i, \mathcal{T}_i)$ be a product space. The projections $p_j : \prod_{i\in I} (X_i,\mathcal{T}_i)\to X_j$ defined by $p_j (x) = x_j$ are continuous functions.
+<details>
+<summary>Proof</summary>
+
+If $U$ is open in $X_j$, then $p_j^{-1}[U] = \prod_{i\in I} A_i$ where $A_i = X_i$ for $i\in I$ with $i\neq j$ and $A_j = U$, so this preimage is open in the product space.
+</details>
+</MathBox>
+
+## Quotient space
+
+Let $(X, \mathcal{T})$ be a topological space, and consider an equivalence relation $\sim$ on $X$. The quotient space wrt to the equivalence relation is the set $X /{\sim}$ with the quotient topology.
+
+An equivalence on the set $X$ is a subset $E$ of the set $X \times X = \left\{ \left( x_1, x_2 \right) | x_1, x_2 \in X \right\}$ satisfying
+
+1. reflexivity: $\left( x, x \right) \in E \, \forall x \in E$ or $x \sim x$
+2. symmetry: $\left( x, y \right) \in E \Rightarrow \left( y, x \right)$ or $x \sim y \implies y \sim x$
+3. transivity: If $\left( x, y \right) \in E$ and $\left( y, z \right) \in E$ then $\left( x, z \right) \in E$, or $x \sim y \wedge y \sim x \implies x \sim z$
+
+If $\sim$ is an equivalence relation on $X$, then for each $x \in X$, the equivalence class of $x$ is defined as the subset 
+
+$$
+  [x]_\sim := \left\{ y \in X | x \sim y \right\}
+$$
+
+The set of all equivalence classes is a partition of $X$ into a collection of nonempty, mutually disjoint subsets, defined as 
+
+$$
+  X /{\sim} := \left\{ [x]_\sim | x \in X \right\}
+$$
+
+Given the surjective quotient map $p: X \mapsto X /{\sim}$ with $x \mapsto [x]_\sim$, commonly known as a canonical projection. The quotient topology $\hat{\mathcal{T}}$ on $X / \sim$ is defined by declaring a subset $U \subseteq X /{\sim}$ to be openif and only if$p^{-1}[U] \subset X$ is open, ie.
+
+$$
+  p^{-1} [U] \in \mathcal{T} \iff U \in \hat{\mathcal{T}}
+$$
+
+### Projective space
+
+A projective space $P^n (\mathbb{R})$ is the set  of 1-dimensional subspaces of $\mathbb{R}^{n+1}$. It is defined as the quotient space $P^n := \mathbb{S}^n \setminus \sim$ with the equivalence relation $x \sim y :\iff (x = y \textrm{ or } x = -y)$ and where 
+
+$$
+  \mathbb{S}^n := \{ x \in \mathbb{R}^{n+1} \,|\, \lVert x \rVert = 1 \}
+$$
+
+is the $n$-dimensional sphere. To show that $P^n (\mathbb{R})$ is a Hausdorff space we consider $[x]_\sim , [y]_\sim \in P^n (\mathbb{R})$ with $[x]_\sim \neq [y]_\sim$. We then take the open neighbourhoods $U, V \in \mathbb{S}^n$ of $x$ and $y$ respectively with
+
+$$
+\begin{aligned}
+  U \cap V &= \emptyset \\
+  -U \cap -V &= \emptyset 
+\end{aligned}\quad
+\begin{aligned}
+  -U \cap V &= \emptyset \\
+  U \cap -V &= \emptyset 
+\end{aligned}
+$$
+
+Considering $\hat{U}:= q[u]$ where $q: \mathbb{S}^n \mapsto \mathbb{S}^n \setminus \sim$ is the canonical projection. Taking the preimage we see that 
+
+$$
+  q^{-1}\left[\hat{U}\right] = U \cup -U \in \mathcal{T} \implies \hat{U} \in \hat{\mathcal{T}}
+$$
+
+hence, $\hat{U}$ is open. In the same manner it can be shown that $\hat{V}:= q[v] \in \hat{\mathcal{T}}$ is open. We can now show that
+
+$$
+  q^{-1}\left[ \hat{U} \cap \hat{V} \right] = q^{-1}\left[\hat{U}\right] \cap q^{-1}\left[\hat{V}\right] = (U \cup -U) \cap (V \cup -V) = \emptyset
+$$
+
+since $q$ is surjective we conclude that $\hat{U} \cap \hat{V} = \emptyset$ which proves that $P^n (\mathbb{R})$ is a Hausdorff space.
+
+### Möbius strip
+
+The Möbius strip can be defined as the square $X = [0, 1] \times (-1,1) \in \mathbb{R} \times \mathbb{R}$ with the equivalence relation $(0, s) \sim (1, -s) \implies x \neq \pm y$.
+
+## Metrizable spaces
+<MathBox title='Projections are continuous' boxType='proposition'>
+Let $(X, \mathcal{T})$ be a topological space. If there exists a metric $d$ on $X$ such that $\mathcal{T} = \mathcal{T}_d$, i.e. the topology induced by $d$, then $(X, \mathcal{T})$ is called metrizable.
+</MathBox>
+
+<MathBox title='Equivalence of metrics' boxType='definition'>
+Let $X$ be a set. Metrics $d$ and $e$ on $X$ are equivalent, denoted $d\equiv e$ if $\mathcal{T}_d = \mathcal{T}_e$. The relation $\equiv$ is an equivalence relation on the collection of metrics on $X$ satisfying (for metrics $d,e,f$ on $X$):
+1. reflexivity: $d\equiv d$
+2. symmetry: $d\equiv e \implies e\equiv d$
+3. transitivity: $d\equiv e \land e\quiv f \implies d\equiv f$
+</MathBox>
+
+<MathBox title='Partial order of metrics' boxType='proposition'>
+Let $X$ be a set with metrics $d$ and $e$. Then $\mathcal{T}_e$ is finer than $\mathcal{T}_d$, i.e. $\mathcal{T}_d \subseteq \mathcal{T}_e$,if and only ifevery open ball relative to $d$ contains an open ball relative to $e$.
+</MathBox>
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathcal{T}_d \subseteq \mathcal{T}_e$, i.e. $\mathcal{T}_e$ is finer than $\mathcal{T}_d$. For each $x\in X$ and $a > 0$, the open ball $B_d(x, a)$ at $x$ is in $\mathcal{T}_d$ and hence also in $\mathcal{T}_e$. Thus, there exists $b > 0$ such that $B_e(x, b)\subseteq B_d(x, a)$. Conversely, suppose that every open ball relative to $d$ contains an open ball relative to $e$. Consider an arbitrary open set $U\in\mathcal{T}_d$. For each $x\in U$, there is $a > 0$ such that $B_d(x, a)\subseteq U$. Thus, there is $b > 0$ such that $B_e(x, b)\subseteq B_d(x, e)\subseteq U$. Hence $U\in\mathcal{T}_e$ showing that $\mathcal{T}_d\subseteq\mathcal{T}_e$
+</details>
+
+<MathBox title='Urysohn metrization theorem' boxType='theorem'>
+A topological space $(X, \mathcal{T})$ is metrizable if it is a regular, second-countable, Hausdorff space.
+</MathBox>
+
+# Manifolds
+
+## Topological manifolds
+An $n$-dimensional topological manifold $M$ is a Hausdorff topological space $(X, \mathcal{T})$ with a second-countable basis for the topology which is locally homeomorphic to $\mathbb{R}^n$ (Euclidean space).
+
+The local homeomorphism to the Euclidean space implies that for every point $p \in M$ there is an open neighbourhood $U \in \mathcal{T}$ and a homeomorphism $h: U \rightarrow U'$ with $U' \subseteq \mathbb{R}^n$ open. The map $h$ is called a chart of $M$. The collection of charts $\left\{ \left( U_\alpha, \phi_\alpha \right) \right\}$ covering $M$, i.e. $M = \bigcup_\alpha U_\alpha$, is called an atlas.
+
+### Submanifolds
+
+Let $M$ be an $n$-dimensional manifold, then $M_0 \subseteq M$ is called a $k$-dimensional submanifold of $M$ if for all $p\in M_0$ there is a chart $(U, h)$ of $M$ with
+
+$$
+  h\left[M_0 \cap U \right] = \left(\mathbb{R}^k \times \mathbf{0}_{n-k} \right) \cup U'
+$$
+
+where $(U, h)$ is called a submanifold chart for $M_0$.
+
+### $n$-sphere
+
+An $n$-sphere is defined as (in terms of the Euclidean norm)
+
+$$
+  S^n := \left\{ x \in \mathbb{R}^{n+1} |\; \lVert x \rVert = 1 \right\}
+$$
+
+The $n$-sphere can be covered by open hemispheres given by 
+
+$$
+  U_{\pm i} := \left\{ x \in \mathbb{R}^{n+1} \middle|\; \pm x_i > 0 \right\}
+$$
+
+Homemorphic charts $h: S^2 \rightarrow \mathbb{R}^n$ can be formed by removing the $i$-th component
+
+$$
+\begin{gather*}
+  h_{\pm i}: \left(x_1,\dots, x_i, \dots, x_{n+1} \right) \mapsto \left(x_1, \dots, x_{i-1}, x_{i+1}, \dots, x_{n+1} \right) \\
+  h_{\pm i}^{-1}: \left(x_1, \dots, x_{i-1}, x_{i+1}, \dots, x_{n+1} \right) \mapsto \left(x_1, \dots, x_{i-1}, \pm\sqrt{1 - \lVert x \rVert^2}, x_{i+1}, \dots, x_{n+1} \right)
+\end{gather*}
+$$
+
+The collection $\left( U_{\pm i}, h_{\pm i} \right)_{i \in \{1, 2, \dots, n+1 \}}$ defines an atlas on $S^n$. This shows that $S^n$ is an $n$-dimensional manifold.
+
+### Projective space
+
+Recall that the projective space is defined as $P^n (\mathbb{R}) := S^n / \sim$ with the equivalence relation $x\sim y :\iff x=\pm y$. The canonical projection $q: S^{n} \rightarrow S^n / \sim$ is given by $x \mapsto [x]_\sim$,  The projective space can be covered by open sets
+
+$$
+  V_i := \left\{ [x]_\sim \in P^n (\mathbb{R}) \;|\; x_i \neq 0 \right\}
+$$
+
+The pre-image of $V_i$ under $q$ is given by 
+
+$$
+  q^{-1}\left[ V_i \right] = U_{+i} \cup U_{-i}
+$$
+
+where $U_{\pm i} := \left\{ x \in \mathbb{R}^{n+1} \middle|\; \pm x_i > 0 \right\}$ are open hemispheres. Homeomorphic charts $h_i : V_i \rightarrow V'_i \subseteq \mathbb{R}^n$ can be formed by taking the slopes wrt the $i$-component
+
+$$
+\begin{gather*}
+  h_i\left( [x]_\sim \right) = \left( \frac{x_1}{x_i}, \dots, \frac{x_{i-1}}{x_i},\frac{x_{i+1}}{x_i}, \dots, \frac{x_{n+1}}{x_i} \right) \\
+  h^{-1}\left(x'_i \right) = \frac{1}{\sqrt{1 + \left(x'_i \right)^2}}\left( x'_1, \dots, x'_{i-1}, 1, x'_{i+1}, \dots, x'_{n} \right)
+\end{gather*}
+$$
+
+## Smooth manifolds
+
+Let $M$ be a topological $n$-manifold, and let $(U, \phi)$ and $(V, \psi)$ be two charts on $M$. If $U \cap V \neq \emptyset$, we may define the chart transformation $\omega := \psi \circ \phi^{-1} : \phi(U \cap V) \subseteq \mathbb{R}^n \mapsto \psi(U \cap V) \subseteq \mathbb{R}^n$. The two charts $\phi$ and $\psi$ are called $C^k$-smoothly compatible if $\omega$ is a $C^k$-diffeomorphism.
+
+An atlas $\mathcal{A} = \left\{ (U_i, \alpha_i)_{i\in I \subseteq \mathbb{N}} \right\}$ on $M$ is called a $C^k$-atlas (smooth atlas) if any two charts are $C^k$-smoothly compatible. A smooth atlas $\mathcal{A}$ is maximal (complete) if it is not properly contained in any larger smooth atlas. A smooth structure on $M$ is a maximal smooth atlas.
+
+A smooth (differentiable) manifold $(M, \mathcal{A})$ is a topological manifold $M$ equipped with a maximal $C^k$-smooth atlas $\mathcal{A}$, called a smooth structure. 
+
+### Smooth maps (diffeomorphisms)
+
+<MathBox title='Diffeomorphism' boxType='theorem'>
+Let $U \subseteq \mathbb{R}^n$ and $U \subseteq \mathbb{R}^m$ be open subsets of Euclidean space. A function $f: U \rightarrow V$ is $k$-times continuously differentiable, i.e. $f \in C^k$, if all partial derivatives of $f$ up to the $k$-th order exist and are continuous. For $k=\infty$, $f$ is called smooth or infinitely differentiable. If $f$ is bijective with a differentiable inverse map, it is called a diffeomorphism, which by definition is a homeomorphism.
+</MathBox>
+
+### Regular value theorem
+
+Let $f: U \subseteq \mathbb{R}^n \to \mathbb{R}^m$ be a continuously differentiable function, i.e. $f\in C^1$. Then
+1. $x\in U$ is called a critical point of $f$ if $\mathrm{d}f_x$ is not surjective, or $J_f(x)$ has rank less than $m$.
+2. $c \in f[U]$ is called a regular value of $f$ is $f^{-1}[\{c\}]$ does not contain any critical points.
+
+<MathBox title='Regular value theorem' boxType='theorem'>
+Let $f: U \subseteq \mathbb{R}^n \to \mathbb{R}^m$ be a continuously differentiable function, i.e. $f\in C^\infty$, with $n \geq m$. If $c$ is a regular value of $f$, then $f^{-1}[\{c\}]$ is an $(n - m)$-dimensional submanifold of $\mathbb{R}^n$.
+</MathBox>
+
+## Riemannian manifolds
+
+A Riemannian metric $g$ on $M$ is a smooth symmetric covariant $2$-tensor field (bilinear form) on $M$ that is positive definitive at each point. A Riemannian manifold $(M, g)$ is a smooth manifold $M$ endowed with a Riemannian metric $g$.
+
+### Riemannian metric
+
+If $g$ is a Riemannian metric on $M$, then for each $p \in M$, the $2$-tensor $g_p$ is an inner product on $T_p M$. In any smooth local coordinates $\left( x^i \right)$, a Riemannian metric can be written
+
+$$
+\begin{align*}
+  g &= g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j \\
+  &= \frac{1}{2} \left( g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ji} \mathrm{d}x^i \otimes \mathrm{d}x^j  \right) \\
+  &= \frac{1}{2} \left( g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ij} \mathrm{d}x^j \otimes \mathrm{d}x^i  \right) \\
+  &= g_{ij} \mathrm{d}x^i \mathrm{d}x^j 
+\end{align*}
+$$
+
+where $(g_{ij})$ is a symmetric positive definitive matrix of smooth functions.
