@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/ts-next-blog',
   experimental: {
     appDir: true,
   },
