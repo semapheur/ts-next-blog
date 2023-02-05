@@ -3,8 +3,8 @@
 const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig = {
-  assetPrefix: isProd ? '/ts-next-blog' : '',
-  basePath: '/ts-next-blog',
+  //assetPrefix: isProd ? '/ts-next-blog' : '',
+  //basePath: '/ts-next-blog',
   experimental: {
     appDir: true,
   },
