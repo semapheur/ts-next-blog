@@ -16,6 +16,7 @@ module.exports = {
       colors: {
         primary: 'rgb(var(--color-primary) / <alpha-value>)',
         secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        accent: 'rgb(var(--color-accent) / <alpha-value>)',
         'text': 'rgb(var(--color-text) / <alpha-value>)',
         axiom: 'rgb(var(--color-axiom) / <alpha-value>)',
         theorem: 'rgb(var(--color-theorem) / <alpha-value>)',
@@ -146,7 +147,15 @@ module.exports = {
           'perspective': value,
         })
       }, {
-        values: theme('perspectiveValues'), supportsNegativeValues: true
+        values: theme('perspective'), supportsNegativeValues: true
+      })
+      // Perspective origin
+      matchUtilities({
+        'perspective-origin': (value) => ({
+          'perspective-origin': value,
+        })
+      }, {
+        values: theme('perspectiveOrigin'), supportsNegativeValues: true
       })
     }),
   ],

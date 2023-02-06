@@ -117,9 +117,11 @@ export default function Landscape() {
   }, [size])
   
   return (
-    <div ref={wrapRef} className='h-full w-full relative transform-style-3d z-[-1]'
+    <div ref={wrapRef} className='relative h-full transform-style-3d z-[-1]'
     >
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full translate-z-[-5px] scale-[6]'>
+      <svg xmlns='http://www.w3.org/2000/svg' 
+        className='h-full w-full origin-top-left translate-z-[-5px] scale-[6]'
+      >
         <defs>
           <filter id='starsky'>
             <feTurbulence baseFrequency='.2' />
@@ -128,36 +130,38 @@ export default function Landscape() {
         </defs>
         <rect width='100%' height='100%' filter='url(#starsky)'/>
       </svg>
-      <div className='h-full w-full absolute inset-0 opacity-0 dark:opacity-100
-        transition-opacity delay-[2s] duration-1000 translate-z-[-5px] scale-[6]
+      <div className='absolute inset-0 h-full w-full 
+        origin-top-left translate-z-[-5px] scale-[6]
+        opacity-0 dark:opacity-100 transition-opacity delay-[2s] duration-1000 
         bg-[linear-gradient(rgba(0,11,22,0.1)40%,rgba(13,98,245,1)80%,rgba(57,167,255,1)100%)]'
       />
-      <div className='h-full w-full absolute inset-0 bg-[length:100%_200%] bg-bottom 
-        dark:bg-top dark:opacity-0 translate-z-[-5px] scale-[6]
+      <div className='absolute inset-0 h-full w-full 
+        origin-top-left translate-z-[-5px] scale-[6] 
+        bg-[length:100%_200%] bg-bottom dark:bg-top dark:opacity-0
         [transition:opacity_2s_ease-in,background-position_1s_ease-out]
         bg-[radial-gradient(circle_at_50%_60%,rgba(242,248,247,1)0%,rgba(249,249,28,1)3%,rgba(247,214,46,1)8%,rgba(248,200,95,1)12%,rgba(201,165,132,1)30%,rgba(115,130,133,1)51%,rgba(46,97,122,1)85%,rgba(24,75,106,1)100%)]'
       />
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full absolute inset-0
-        translate-z-[-4px] scale-[5]'
+      <svg xmlns='http://www.w3.org/2000/svg' 
+        className='absolute inset-0 h-full w-full origin-top-left translate-z-[-4px] scale-[5]'
       >
         <path ref={hill5Ref} className='fill-amber-900 dark:fill-stone-200'/>
       </svg>
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full absolute inset-0
-        translate-z-[-3px] scale-[4]'
+      <svg xmlns='http://www.w3.org/2000/svg' 
+        className='absolute inset-0 h-full w-full origin-top-left translate-z-[-3px] scale-[4]'
       >
         <path ref={hill4Ref} className='fill-amber-700 dark:fill-stone-300'/>
       </svg>
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full absolute inset-0
-        translate-z-[-2px] scale-[3]'
+      <svg xmlns='http://www.w3.org/2000/svg' 
+        className='absolute inset-0 h-full w-full origin-top-left translate-z-[-2px] scale-[3]'
       >
         <path ref={hill3Ref} className='fill-amber-500 dark:fill-stone-400'/>
       </svg>
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full absolute inset-0
-        translate-z-[-1px] scale-[2]'
+      <svg xmlns='http://www.w3.org/2000/svg' 
+        className='absolute inset-0 h-full w-full origin-top-left translate-z-[-1px] scale-[2]'
       >
         <path ref={hill2Ref} className='fill-amber-300 dark:fill-stone-500'/>
       </svg>
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full absolute inset-0'>
+      <svg xmlns='http://www.w3.org/2000/svg' className='absolute inset-0 h-full w-full'>
         <path ref={hill1Ref} className='fill-amber-100 dark:fill-stone-600'/>
       </svg>
     </div>)
