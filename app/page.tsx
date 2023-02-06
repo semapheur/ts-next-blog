@@ -14,7 +14,7 @@ const Wave = dynamic(() => import('components/WaveFooter'), {
 
 export default function Home() {
   return (
-    <main className='absolute top-0 h-screen w-screen perspective-[1px] perspective-origin-[top_left]
+    <main className='absolute top-0 h-screen w-screen perspective-[1px] perspective-origin-[bottom_left]
       overflow-y-auto overflow-x-hidden scroll-smooth'
     >
       <Landscape/>
