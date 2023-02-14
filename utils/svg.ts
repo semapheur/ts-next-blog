@@ -1,5 +1,31 @@
 import Vector from 'utils/vector'
 
+export function setAttributes(element: Element, attributes: {[key: string]: string}) {
+  for (let k of Object.keys(attributes)) {
+    element.setAttribute(k, attributes[k])
+  }    
+}
+
+export function addChildElement(
+  parent: Element | string, 
+  tagName: string, 
+  attributes: {[key:string]: string}
+) { 
+    if (typeof parent === 'string') {
+      parent = document.getElementById(parent) 
+    }
+    const element = document.createElementNS('http://www.w3.org/2000/svg', tagName)
+    setAttributes(element, attributes)
+    parent.appendChild(element)
+  }
+
+export function removeElementsByClass(baseElement: Element, className: string) {
+  const elements = baseElement.getElementsByClassName(className)
+  while (elements.length > 0) {
+    elements[0].parentNode.removeChild(elements[0])
+  }
+}
+
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   
   let d = ''

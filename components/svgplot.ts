@@ -2,19 +2,7 @@ import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
 import Vector from 'utils/vector'
-
-function setAttributes(element: Element, attributes: {[key: string]: string}) {
-  for (let k of Object.keys(attributes)) {
-    element.setAttribute(k, attributes[k])
-  }    
-}
-
-function removeElementsByClass(baseElement: Element, className: string) {
-  const elements = baseElement.getElementsByClassName(className)
-  while (elements.length > 0) {
-    elements[0].parentNode.removeChild(elements[0])
-  }
-}
+import { setAttributes, removeElementsByClass, addChildElement } from 'utils/svg'
 
 type SvgPlots = {
   [key: string] : {
@@ -63,8 +51,8 @@ export class SVGPlot {
     this.svgElement.appendChild(this.svgDefs)
 
     // Create group elements
-    this.addChildElement(this.svgElement, 'g', {id: 'grid-group'})
-    this.addChildElement(this.svgElement, 'g', {id: 'axis-group'})
+    addChildElement(this.svgElement, 'g', {id: 'grid-group'})
+    addChildElement(this.svgElement, 'g', {id: 'axis-group'})
 
     this.plotGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     const gAttr = {
@@ -74,7 +62,7 @@ export class SVGPlot {
     setAttributes(this.plotGroup, gAttr)
     this.svgElement.appendChild(this.plotGroup)
 
-    this.addChildElement(this.svgElement, 'g', {id: 'pointer-group'})
+    addChildElement(this.svgElement, 'g', {id: 'pointer-group'})
 
     // Transform matrix
     this.setTransform(width, height)
@@ -108,12 +96,6 @@ export class SVGPlot {
     const element = document.createElementNS(this.xmlns, tagName)
     setAttributes(element, attributes)
     this.svgElement.appendChild(element)
-  }
-
-  private addChildElement(parent: Element, tagName: string, attributes: {[key:string]: string}) {
-    const element = document.createElementNS(this.xmlns, tagName)
-    setAttributes(element, attributes)
-    parent.appendChild(element)
   }
 
   public resize(width: number, height: number) {
@@ -176,16 +158,16 @@ export class SVGPlot {
       fill: 'rgba(var(--color-text) / 1)'
     }
     const pointer = document.getElementById('pointer-group')
-    this.addChildElement(pointer, 'text', attr)
+    addChildElement(pointer, 'text', attr)
 
     let path = {
       id: 'x-pointer', d: '',
       stroke: 'rgba(var(--color-text) / 1)', 'stroke-width': '1px', 'stroke-dasharray': '5px',
       opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
     }
-    this.addChildElement(pointer, 'path', path)
+    addChildElement(pointer, 'path', path)
     path['id'] = 'y-pointer'
-    this.addChildElement(pointer, 'path', path)
+    addChildElement(pointer, 'path', path)
 
     const coordsOnMoveBound = this.coordsOnMoveHandler.bind(this)
     this.addBoundHandler('mousedown', coordsOnMoveBound)
@@ -484,12 +466,12 @@ export class SVGPlot {
       x1: '0', y1: `${this.translate.y}`, x2: '100%', y2: `${this.translate.y}`,
       stroke: 'rgba(var(--color-text) / 1)', 'stroke-width': '0.3',
     }
-    this.addChildElement(pattern, 'line', line)
+    addChildElement(pattern, 'line', line)
 
     line['class'] = 'y-axis',
     line['x1'] = `${this.translate.x}`, line['y1'] = '0'
     line['x2'] = `${this.translate.x}`, line['y2'] = '100%'
-    this.addChildElement(pattern, 'line', line)
+    addChildElement(pattern, 'line', line)
 
     this.svgDefs.appendChild(pattern)
 
@@ -501,7 +483,7 @@ export class SVGPlot {
     }
 
     const axis = document.getElementById('axis-group')
-    this.addChildElement(axis, 'rect', rect)
+    addChildElement(axis, 'rect', rect)
 
     // Ticks
     this.ticks()
@@ -572,13 +554,13 @@ export class SVGPlot {
       x1: '0', y1: '0', x2: `${this.gridSize.x}`, y2: '0',
       stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': `${1/this.scale.y}`,
     }
-    this.addChildElement(pattern, 'line', line)
+    addChildElement(pattern, 'line', line)
 
     // Vertical line
     line['class'] = 'x-grid',
     line['x2'] = '0', line['y2'] = `${this.gridSize.y}`
     line['stroke-width'] = `${1/this.scale.x}`
-    this.addChildElement(pattern, 'line', line)
+    addChildElement(pattern, 'line', line)
 
     this.svgDefs.appendChild(pattern)
 
@@ -588,7 +570,7 @@ export class SVGPlot {
       fill: 'url(#grid-pattern)', 'vector-effect': 'non-scaling-stroke'
     }
     const grid = document.getElementById('grid-group')
-    this.addChildElement(grid, 'rect', rect)
+    addChildElement(grid, 'rect', rect)
   }
 
   public transformGrid() {
@@ -713,7 +695,7 @@ export class SVGPlot {
       'stroke-width': '2px', 'vector-effect': 'non-scaling-stroke'
       //'stroke-width': `${1/((this.transform[0] + this.transform[3])/2)}`
     }
-    this.addChildElement(document.getElementById('plot-group'), 'path', attr)
+    addChildElement(document.getElementById('plot-group'), 'path', attr)
 
     this.plots[fn] = {
       yBounds: [yMin, yMax],

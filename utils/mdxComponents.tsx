@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import { MDXComponents } from 'mdx/types';
 
-import MathBox from 'components/MathBox';
-import LatexFig from 'components/LatexFig';
+import ChessFig from 'components/ChessFig';
 import Codeblock from 'components/Codeblock';
+import LatexFig from 'components/LatexFig';
+import MathBox from 'components/MathBox';
 
 export const mdxComponents: MDXComponents = {
 	img: (props) => (
@@ -11,5 +12,5 @@ export const mdxComponents: MDXComponents = {
 		<Image {...props} loading='lazy' />
 	),
 	pre: Codeblock,
-	MathBox, LatexFig
+	MathBox, LatexFig, ChessFig
 };
