@@ -51,10 +51,10 @@ const [activeTheme, setActiveTheme] = useDarkMode();
     <button className='relative cursor-pointer after:absolute 
 			after:text-sm after:px-1
 			after:right-[110%] after:top-[50%] after:translate-y-[-50%]
-			after:min-w-max after:rounded after:content-[attr(aria-label)]  
-			after:bg-secondary after:text-text after:opacity-0 
+			after:min-w-max after:rounded
+			after:bg-secondary after:text-text 
 			after:shadow-md after:transition-opacity 
-			after:hover:opacity-100 after:hover:scale-100' 
+			hover:after:content-[attr(aria-label)]' 
 			aria-label={`Switch to ${inactiveTheme} theme`} 
 			onClick={() => setActiveTheme(inactiveTheme)}
 		>

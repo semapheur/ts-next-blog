@@ -21,12 +21,12 @@ export default function MobileNav({width, bar, gap, height, children}: Props) {
   } as CSSProperties
 
   return (
-    <div className='h-full flex flex-col justify-center items-center gap-4'>
+    <div className='h-full grid grid-rows-[1fr_auto] place-items-center'>
       <input key='input.hamburger' type='checkbox' id='hamburger'
         className='peer hidden'
       />
       <label key='label.hamburger' style={style} htmlFor='hamburger'
-        className='peer mt-auto w-[var(--width)] h-[var(--height)]
+        className='peer w-[var(--width)] h-[var(--height)]
           flex md:hidden flex-col justify-center gap-[var(--gap)]
           bg-transparent cursor-pointer
           before:w-full before:h-[var(--bar)] before:content-[""] 
@@ -40,8 +40,9 @@ export default function MobileNav({width, bar, gap, height, children}: Props) {
           peer-checked:after:-translate-y-[var(--shift)]
           peer-checked:after:-rotate-45'
       />
-      <nav key='nav.header' className='hidden flex-col md:flex md:flex-row 
-        gap-2 md:gap-8 peer-checked:flex'
+      <nav key='nav.header' className='h-0 flex flex-col gap-2 overflow-hidden
+        md:h-full md:flex md:flex-row md:gap-8
+        peer-checked:h-min'
       >
         {children}
       </nav>
