@@ -26,7 +26,7 @@ export default function Header() {
             </Link>
           ))}
         </MobileNav>
-        <div className='flex items-center gap-2 min-w-min'>
+        <div className='h-full flex items-center gap-2'>
           <ThemeToggle key='theme' />
           <SearchHeader key='search' />
         </div>
