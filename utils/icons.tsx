@@ -43,34 +43,3 @@ export function ClipboardCheckIcon({className='w-6 h-6'}: Props) {
       <path strokeLinecap='round' strokeLinejoin='round' d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' />
     </svg>)
 }
-
-export function King() {
-
-  return (
-    <svg xmlns='http://www.w3.org/2000/svg' width='45' height='45'>
-      <g fill='none' fillRule='evenodd' stroke='#000' strokeWidth={1.5} 
-        strokeLinecap='round' strokeLinejoin='round' 
-        strokeMiterlimit={4} strokeDasharray='none' strokeOpacity={1}
-      >
-        <path strokeLinejoin='miter'
-          d='M22.5,11.63L22.5,6' 
-        />
-        <path fill='#000' strokeLinecap='butt' strokeLinejoin='miter'
-          d='M22.5,25C22.5,2527,17.525.5,14.5C25.5,14.524.5,1222.5,12C20.5,1219.5,14.519.5,14.5C18,17.522.5,2522.5,25'
-        />
-        <path fill='#000' stroke='#000'
-          d='M12.5,37C18,40.527,40.532.5,37L32.5,30C32.5,3041.5,25.538.5,19.5C34.5,1325,1622.5,23.5L22.5,27L22.5,23.5C20,1610.5,136.5,19.5C3.5,25.512.5,3012.5,30L12.5,37'
-        />
-        <path stroke='#000' strokeLinejoin='miter'
-          d='M20,8L25,8'
-        />
-        <path fill='none' stroke='#fff'
-          d='M32,29.5C32,29.540.5,25.538.03,19.85C34.15,1425,1822.5,24.5L22.5,26.6L22.5,24.5C20,1810.85,146.97,19.85C4.5,25.513,29.513,29.5'
-        />
-        <path fill='none' stroke='#fff'
-          d='M12.5,30C18,2727,2732.5,30M12.5,33.5C18,30.527,30.532.5,33.5M12.5,37C18,3427,3432.5,37'
-        />
-      </g>
-    </svg>
-  )
-}
