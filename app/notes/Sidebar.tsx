@@ -12,10 +12,10 @@ function Toggle() {
         className='peer/toggle hidden'
       />
       <label key={'label.sidebar'} htmlFor='sidebar-toggle' 
-        className='w-10 h-10 absolute top-1/2 left-full z-[1]
+        className='w-10 h-10 absolute bottom-[10%] left-full z-[1]
           flex items-center cursor-pointer md:hidden
-          bg-primary rounded-r-full shadow-trb
-          dark:shadow-black/50
+          bg-primary/50 backdrop-blur-sm rounded-r-full shadow-trb
+          dark:shadow-black/50 -ml-2 peer-checked/toggle:ml-0
           after:w-1/3 after:h-1/3 
           after:border-text after:hover:border-secondary
           after:border-b-2 after:border-r-2

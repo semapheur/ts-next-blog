@@ -25,6 +25,9 @@ module.exports = {
         definition: 'rgb(var(--color-definition) / <alpha-value>)',
         example: 'rgb(var(--color-example) / <alpha-value>)',
       },
+      maxWidth: {
+        'read': '65ch'
+      },
       boxShadow: {
         'trb': '2px 0 2px 1px rgba(0 0 0 / 0.1)',
         'tlb': '-2px 0 2px 1px rgba(0 0 0 / 0.1)',
