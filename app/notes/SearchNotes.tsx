@@ -53,7 +53,7 @@ export default function SearchNotes() {
           }
         </div>
       </div>
-      <div className='flex justify-center h-full overflow-y-scroll'>
+      <div className='hidden lg:flex justify-center h-full overflow-y-scroll'>
         <Preview slug={preview} key='preview'/>
       </div>
     </>

@@ -26,6 +26,7 @@ module.exports = {
         example: 'rgb(var(--color-example) / <alpha-value>)',
       },
       boxShadow: {
+        'trb': '2px 0 2px 1px rgba(0 0 0 / 0.1)',
         'inner-l': 'inset 2px 0 4px 0px rgba(0 0 0 / 0.1)',
         'glow-sm': '0px 9px 30px rgba(0 0 0 / 0.1)'
       },
