@@ -69,8 +69,10 @@ export default async function NotePage({params: {subject, slug}}: Props) {
   })
 
   return (
-    <main className='grid grid-cols-[3fr_1fr] w-full bg-primary shadow-inner-l dark:shadow-black/50'>
-      <div key={'div'} className='h-full flex justify-center overflow-y-scroll'>
+    <main className='relative grid grid-cols-[1fr_auto] w-full 
+      bg-primary shadow-inner-l dark:shadow-black/50'
+    >
+      <div key='div.note' className='h-full flex justify-center overflow-y-scroll'>
         <article className='prose dark:prose-invert py-8'>
           <h1 className='text-center text-5xl font-extrabold'>
             {frontmatter?.title}
@@ -78,7 +80,7 @@ export default async function NotePage({params: {subject, slug}}: Props) {
           {content}
         </article>
       </div>
-      {frontmatter?.showToc && <Toc key={'toc'} headings={headings}/>}
+      {frontmatter?.showToc && <Toc key='toc.note' headings={headings}/>}
     </main>
   )
 }
