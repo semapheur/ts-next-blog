@@ -5,7 +5,7 @@ const Landscape = dynamic(() => import('components/Landscape'), {
   ssr: false,
   loading: () => <div className='h-full flex justify-center'><Loader width='10%'/></div>
 })
-const Morph = dynamic(() => import('components/MorphTitle'), {
+const Greet = dynamic(() => import('components/Greeting'), {
   ssr: false,
 })
 const Wave = dynamic(() => import('components/WaveFooter'), {
@@ -18,7 +18,7 @@ export default function Home() {
       overflow-y-auto overflow-x-hidden scroll-smooth'
     >
       <Landscape/>
-      <Morph/>
+      <Greet/>
       <Wave/>
     </main>
   )

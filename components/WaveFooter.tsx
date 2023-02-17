@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useCallback, useEffect, useRef } from 'react'
+import { GithubIcon } from 'utils/icons'
 
 import { drawCurve, ValueNoise } from 'utils/noise'
 import { svgCatmullRom } from 'utils/svg'
@@ -24,11 +26,12 @@ export default function WaveFooter() {
     // Wave
     let a = new Vector(0, 0.2 * height)
     let b = new Vector(width, 0.2 * height)
+    let points = Math.ceil(width / 64)
 
-    let curve = drawCurve(a, b, valNoise, 30, 0.2*height, 1/10, offsetRef.current, 5)
+    let curve = drawCurve(a, b, valNoise, points, 0.2*height, 1/10, offsetRef.current, 5)
     let d = svgCatmullRom(curve, 1) + `L${width},${height}L0,${height}Z`
     wave.setAttribute('d', d)
-    offsetRef.current += 0.01
+    offsetRef.current += 0.02
 
     requestRef.current = requestAnimationFrame(animate)
   }, [])
@@ -39,7 +42,7 @@ export default function WaveFooter() {
   }, [animate])
   
   return (
-    <footer className='h-40 bg-amber-100 dark:bg-stone-600' ref={wrapRef}>
+    <footer className='relative h-40 bg-amber-100 dark:bg-stone-600' ref={wrapRef}>
       <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full'>
         <defs>
           <linearGradient id='ocean' gradientTransform='rotate(90)'>
@@ -49,6 +52,12 @@ export default function WaveFooter() {
         </defs>
         <path ref={waveRef} fill='url(#ocean)'/>
       </svg>
+      <Link href='https://github.com/semapheur/ts-next-blog' 
+        className='absolute bottom-[10%] left-1/2'
+      >
+        <GithubIcon className='w-10 h-10 fill-primary'/>
+
+      </Link>
     </footer>
   )
 }

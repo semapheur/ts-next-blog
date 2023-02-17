@@ -35,6 +35,24 @@ module.exports = {
         'glow-sm': '0px 9px 30px rgba(0 0 0 / 0.1)'
       },
       keyframes: {
+        textstroke: {
+          '0%': {
+            'stroke-dasharray': '0 50%',
+          },
+          '45%': {
+            'stroke-dasharray': '50% 0'
+          },
+          '90%': {
+            'stroke-dasharray': '0 50%',
+            'opacity': '1'
+          },
+          '91%': {
+            'opacity': '0',
+          },
+          '100%': {
+            'opacity': '0',
+          },
+        },
         draw: {
           to: { 'stroke-dashoffset': 0 },
         },
@@ -95,6 +113,7 @@ module.exports = {
         },
       },
       animation: { // name|duration|easing|delay|iteration|direction|fill|state
+        textstroke: 'textstroke 10s linear infinite',
         draw: 'draw 2s linear infinite',
         morph: 'morph 250ms forwards 2 alternate',
         blink: 'blink 1.5s steps(2) infinite',

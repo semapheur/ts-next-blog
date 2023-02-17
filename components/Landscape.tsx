@@ -70,8 +70,12 @@ export default function Landscape() {
       new Vector(0.9*w, 0.6*h),
       new Vector(w, 0.5*h)
     ]
-    hill = drawMountain(wp, [10, 30, 30, 10], 
-      [1, 2, 2, 1])
+    let sparse = Math.ceil(w/64)
+    let dense = sparse*2
+    hill = drawMountain(wp, 
+      [sparse, dense, dense, sparse], 
+      [1, 2, 2, 1]
+    )
     d = svgCatmullRom(hill, 0.7) + `L${w},${h}L0,${h}Z`
     hill2.setAttribute('d', d)
 
@@ -83,8 +87,12 @@ export default function Landscape() {
       new Vector(0.8*w, 0.6*h),
       new Vector(w, 0.5*h)
     ]
-    hill = drawMountain(wp, [10, 20, 20, 10], 
-      [1, 3, 3, 1])
+    sparse = Math.ceil(w/128)
+    dense = sparse*2
+    hill = drawMountain(wp, 
+      [sparse, dense, dense, sparse], 
+      [1, 3, 3, 1]
+    )
     d = svgCatmullRom(hill, 0.7) + `L${w},${h}L0,${h}Z`
     hill3.setAttribute('d', d)
 
@@ -96,7 +104,9 @@ export default function Landscape() {
       new Vector(0.9*w, 0.5*h),
       new Vector(w, 0.4*h)
     ]
-    hill = drawMountain(wp, [10, 15, 15, 10], 
+    sparse = Math.ceil(w/256)
+    dense = sparse*2
+    hill = drawMountain(wp, [sparse, dense, dense, sparse], 
       [3, 3, 3, 3])
     d = svgCatmullRom(hill, 0.7) + `L${w},${h}L0,${h}Z`
     hill4.setAttribute('d', d)
@@ -104,12 +114,15 @@ export default function Landscape() {
     // Hill 5
     wp = [
       new Vector(0, 0.7*h),
-      new Vector(0.35*w, 0.7*h),
+      new Vector(0.3*w, 0.7*h),
       new Vector(0.5*w, 0.5*h),
-      new Vector(0.65*w, 0.7*h),
+      new Vector(0.7*w, 0.7*h),
       new Vector(w, 0.7*h)
     ]
-    hill = drawMountain(wp, [10, 100, 100, 10], 
+    sparse = Math.ceil(w/128)
+    dense = sparse*8
+    hill = drawMountain(wp, 
+      [sparse, dense, dense, sparse], 
       [1, 1, 1, 1])
     d = svgCatmullRom(hill, 0.7) + `L${w},${h}L0,${h}Z`
     hill5.setAttribute('d', d)
