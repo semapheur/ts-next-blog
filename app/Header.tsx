@@ -18,7 +18,7 @@ export default function Header() {
         <Link key='logo' href='/' className='text-text hover:text-secondary text-4xl leading-none'>
           Γ
         </Link>
-        <MobileNav width='1.75rem' bar='0.4rem' gap='0.5rem'> 
+        <MobileNav width='1.75rem' bar='0.25rem' gap='0.5rem'> 
           {nav.map((n) => (
             <Link key={n.url} href={n.url} className='text-2xl text-text hover:text-secondary'>
                 {n.title}
