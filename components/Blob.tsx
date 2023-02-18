@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef } from 'react'
-import {createNoise2D} from 'simplex-noise'
+import { createNoise2D } from 'simplex-noise'
 import { svgCatmullRom } from 'utils/svg'
 
 import Vector from 'utils/vector' 
@@ -30,7 +30,7 @@ function noiseOffset(points: Vector[]): Vector[] {
   const result = Array<Vector>(points.length)
 
   for (let i in points) {
-    const offset = points[i].coords().map(() => Math.random() * 1000)
+    const offset = points[i].map(() => Math.random() * 1000)
     result[i] = new Vector(...offset)
   }
   return result

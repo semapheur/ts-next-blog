@@ -1,69 +1,68 @@
-export default class Vector {
-  public components: number[]
-  public readonly dimension: number
+export default class Vector extends Array<number> {
+  //public components: number[]
+  //public readonly dimension: number
 
   constructor(...components: number[]) {
-    this.components = components
-    this.dimension = components.length
+    super(...components)
+    //this.components = components
+    //this.dimension = components.length
+
+    const test = this[1]
   }
 
   get x(): number {
-    return this.components[0]
+    return this[0]
   }
   set x(newX: number) {
-    this.components[0] = newX
+    this[0] = newX
   }
 
   get y(): number {
-    return this.components[1]
+    return this[1]
   }
   set y(newY: number) {
-    this.components[1] = newY
+    this[1] = newY
   }
 
   get z(): number {
-    return this.components[2]
+    return this[2]
   }
   set z(newZ: number) {
-    this.components[2] = newZ
+    this[2] = newZ
   }
 
   get norm() : number {
     return Math.sqrt(this.dot(this))
   }
 
-  public coords(): number[] {
-    return Array<number>(...this.components)
-  }
-
   public coord(i: number): number {
-    return this.components[i]
+    return this[i]
   }
 
   public equal(...vectors: Vector[]): boolean {
     for (const v of vectors) {
-      if (this.dimension !== v.dimension) return false
-      for (let i in this.components) {
-        if (this.components[i] !== v.components[i]) return false
+      if (this.length !== v.length) return false
+      for (let i in this) {
+        if (this[i] !== v[i]) return false
       }
     }
     return true
   }
 
   public add(...vectors: Vector[]): Vector|null {
-    const components = this.coords()
+    const components = [...this]
 
     for (const v of vectors) {
-      if (this.dimension !== v.dimension) return null
+      if (this.length !== v.length) return null
       for (let i in components) {
-        components[i] += v.components[i]
+        components[i] += v[i]
       }
     }
     return new Vector(...components)
   }
 
   public addScalar(scalar: number): Vector {
-    const components = this.coords()
+    const components = [...this]
 
     for (let i in components) {
       components[i] += scalar
@@ -72,19 +71,19 @@ export default class Vector {
   }
 
   public subtract(...vectors: Vector[]): Vector|null {
-    const components = this.coords()
+    const components = [...this]
 
     for (const v of vectors) {
-      if (this.dimension !== v.dimension) return null
+      if (this.length !== v.length) return null
       for (let i in components) {
-        components[i] -= v.components[i]
+        components[i] -= v[i]
       }
     }
     return new Vector(...components)
   }
 
   public scale(...scalars: number[]): Vector {
-    const components = this.coords()
+    const components = [...this]
 
     for (let s of scalars) {
       for (let i in components) {
@@ -103,21 +102,21 @@ export default class Vector {
   }
 
   public dot(vector: Vector): number|null {
-    if (this.dimension !== vector.dimension) return null
+    if (this.length !== vector.length) return null
 
     let dot = 0
-    for (let i in this.components) {
-      dot += this.components[i] * vector.components[i]
+    for (let i in this) {
+      dot += this[i] * vector[i]
     }
     return dot
   }
 
   public cross(vector: Vector): Vector|null {
-    if (this.dimension !== 3 || this.dimension !== vector.dimension) {
+    if (this.length !== 3 || vector.length !== 3) {
       return null
     }
-    const [x1, y1, z1] = this.components
-    const [x2, y2, z2] = vector.components
+    const [x1, y1, z1] = [...this]
+    const [x2, y2, z2] = [...this]
     
     return new Vector(
       y1 * z2 - z1 * y2,
@@ -127,19 +126,19 @@ export default class Vector {
   }
 
   public outer(vector: Vector): Vector[] {
-    const result = Array<Vector>(this.dimension).fill(
-      new Vector(...vector.coords())
+    const result = Array<Vector>(this.length).fill(
+      new Vector(...vector)
     ).map((v, i) => {
-      return v.scale(this.components[i])
+      return v.scale(this[i])
     })
     return result;
   }
 
   public multiply(...vectors: Vector[]): Vector[]|null {
-    if (this.dimension !== vectors.length) return null;
+    if (this.length !== vectors.length) return null;
     
     return [...vectors].map((v, i) => {
-      return v.scale(this.components[i])
+      return v.scale(this[i])
     })
   }
 
@@ -148,11 +147,11 @@ export default class Vector {
       delimiter = ','
     }
 
-    return this.coords().join(delimiter)
+    return this.join(delimiter)
   }
 
   public toArray(): number[] {
-    return [...this.components]
+    return [...this]
   }
 
   public static distance(a: Vector, b: Vector): number {
