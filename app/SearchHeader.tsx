@@ -27,7 +27,7 @@ export default function SearchBar() {
     <div className='relative'>
       <SearchBoxCompact query={query} onChange={handleChange}/>
       {(query && result) && 
-        <div className='hidden peer-focus-within:block absolute top-8 left-4 px-2 bg-primary border z-[99]'>
+        <div className='hidden peer-focus-within:block absolute top-8 left-4 px-2 bg-primary border z-[1]'>
           <h4 className='text-text'>
             {`${result.length} results`}
           </h4>

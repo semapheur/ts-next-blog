@@ -53,10 +53,9 @@ export default function WaveFooter() {
         <path ref={waveRef} fill='url(#ocean)'/>
       </svg>
       <Link href='https://github.com/semapheur/ts-next-blog' 
-        className='absolute bottom-[10%] left-1/2'
+        className='absolute bottom-[10%] left-1/2 -translate-x-1/2'
       >
         <GithubIcon className='w-10 h-10 fill-primary'/>
-
       </Link>
     </footer>
   )

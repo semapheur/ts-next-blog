@@ -48,13 +48,13 @@ const [activeTheme, setActiveTheme] = useDarkMode();
 	if (!hasMounted) return null;
 
   return (
-    <button className='relative cursor-pointer after:absolute 
-			after:text-sm after:px-1
-			after:right-[110%] after:top-[50%] after:translate-y-[-50%]
-			after:min-w-max after:rounded
-			after:bg-secondary after:text-text 
-			after:shadow-md after:transition-opacity 
-			hover:after:content-[attr(aria-label)]' 
+    <button className='relative cursor-pointer before:absolute 
+			before:text-sm before:px-1
+			before:right-[110%] before:top-1/2 before:-translate-y-1/2
+			before:min-w-max before:rounded
+			before:bg-text/50 before:text-primary before:border-secondary
+			before:shadow-md before:backdrop-blur-sm
+			hover:before:content-[attr(aria-label)]' 
 			aria-label={`Switch to ${inactiveTheme} theme`} 
 			onClick={() => setActiveTheme(inactiveTheme)}
 		>
