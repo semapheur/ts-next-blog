@@ -106,7 +106,7 @@ function wrap(svgText: SVGTextElement, width: number) {
     svgText.appendChild(tspan)
     setAttributes(tspan, {x: '50%', dy: `${i * lineHeight}px`})
     tspan.textContent = words[i]
-    console.log(width)
+
     if (tspan.getBBox().width > width) {
       svgText.setAttribute('textLength', '90%')
     }
@@ -120,7 +120,7 @@ export default function Greeting() {
   useEffect(() => {
     if (!textRef.current || !wrapRef.current) return
     
-    const timeout = setInterval(() => {
+    const interval = setInterval(() => {
       textRef.current.textContent = words.get(randomKey(words))
       wrap(
         textRef.current, 
@@ -129,11 +129,11 @@ export default function Greeting() {
       textRef.current.classList.add('animate-textstroke')
 
       setTimeout(() => {
-          textRef.current.classList.remove('animate-textstroke')
-        }, 9100)
-      }, 9500)
+        textRef.current.classList.remove('animate-textstroke')
+      }, 9100)
+    }, 9500)
 
-    return () => clearInterval(timeout)
+    return () => clearInterval(interval)
   }, [])
 
   return (
