@@ -1395,9 +1395,10 @@ $$
 
 ## Generating functions
 
+### Probability generating functions
+
 In the following discussion $N:\Omega\to\mathbb{N}$ is random variable taking values in $\mathbb{N}$. 
 
-### Probability generating functions
 <MathBox title='Probability generating function (PGF)' boxType='definition'>
 The probability generating function $P$ of $N$ is defined by
 
@@ -1432,14 +1433,58 @@ Differentiating $k$ times gives
 
 $$
 \begin{gather*}
-  P^{(k)}(t) = \sum_{n=0}^\infty n^{(n)}f(n)t^{n-k} \\
+  P^{(k)}(t) = \sum_{n=k}^\infty n^{(n)}f(n)t^{n-k} \\
   \implies P^{(k)}(0) = k^{(k)}f(k) = k!f(k)
 \end{gather*}
 $$
 </details>
 </MathBox>
 
+<MathBox title='Factorial moments of PGF' boxType='proposition'>
+Suppose that the radius of convergence is $r > 1$. Then $P^{(k)} = \mathbb{E}\left( N^{(k)}\right)$ for $k\in\mathbb{N}$. In particular, $N$ has finite moments of all orders. The expectation and variance of $N$ are given by:
+
+1. $\mathbb{E}(N) = P'(1)$
+2. $\mathrm{Var}(N) = P''(1) + P'(1)[1 - P'(1)]$
+
+<details>
+<summary>Proof</summary>
+
+Recall that
+
+$$
+  P^{(k)}(t) = \sum_{n=k}^\infty n^{(n)}f(n)t^{n-k},\quad t\in(-r, r)
+$$
+
+If $r > 1$ then $P^{(k)}(1) = \sum_{n=k}^{\infty} n^{(k)}f(n) = \mathbb{E}\left(N^{(k)}\right). Using this rule the expectation and variance of $N$ are calculated as
+
+1. $\mathbb{E}(N) = \mathbb{E}\left( N^{(1)} \right) = P'(1)$
+2. $\mathbb{E}(N^2) = \mathbb{E}[N(N-1)] + \mathbb{E}(N) = \mathbb{E}\left(N^{(n)}\right) + \mathbb{E}(N) = P''(1) + P'(1). From $(1)$ the variance becomes $\mathrm{Var}(N) = P''(1) + P'(1) - [P'(1)]^2$
+</details>
+</MathBox>
+
+<MathBox title='PGF of independent variables' boxType='proposition'>
+Suppose that $N_1$ and $N_2$ are random variables taking values in $\mathbb{N}$, with probability generating functions $P_1$ and $P_2$ having radii of convergence $r_1$ and $r_2$, respectively. Then the probability generating function $P$ of $N_1 + N_2$ is given by
+
+$$
+  P(t) = P_1(t)P_2(t)
+$$
+
+for $|t| < r_1 \wedge r_2$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the expected product of independent variable is the product of the expected values
+
+$$
+  P(t) = \mathbb{E}\left( t^{N_1 + N_2} \right) = \mathbb{E}\left( t^{N_1}t^{N_2} \right) = \mathbb{E}\left(t^{N_1}\right)\mathbb{E}\left( t^{N_2} \right) = P_1(t) P_2(t),\quad |t| < r_1 \wedge r_2
+$$
+</details>
+</MathBox>
+
 ### Moment generating functions
+
+In the following discussion suppose that $X:\Omega\to\mathbb{R}$, i.e. $X$ is real-valued random variable, with probability density function $f$.
 
 <MathBox title='Moment generating function (MGF)' boxType='definition'>
 The moment generating function of a random variable $X:\Omega\to\mathbb{R}$ is defined by
@@ -1449,12 +1494,110 @@ $$
 $$
 </MathBox>
 
+<MathBox title='MGF in terms of pdf' boxType='proposition'>
+Suppose that $X$ has moment generating function $M$ that is finite in an open interval $I$ about $0$. Then $X$ ha moments of all orders and
+
+$$
+  M(t) = \int_{-\infty}^\infty e^{tx} f(x)\,\mathrm{d}x
+$$
+</MathBox>
+
+Recall that the two-sided Laplace transform of $f$ is given by
+
+$$
+  \mathcal{L}\{f\}(t) = \int_{-\infty}^\infty e^{-xt}f(x)\,\mathrm{d}x
+$$
+
+The moment generating function of $X$ is thus a Laplace transform of the probability density function $f$ at $-t$, i.e. $M(t) = \mathcal{L}\{f\}(-t)$.
+
 <MathBox title='' boxType='proposition'>
 Suppose that $X$ has moment generating function $M$ that is finite in an open interval $I$ about $0$. Then $X$ ha moments of all orders and
 
 $$
   M(t) = \sum_{n=0}^\infty \frac{\mathbb{E}(X^n)}{n!}t^n,\quad t\in I
 $$
+
+In particular $M^{(n)}(0) = \mathbb{E}(X^n)$.
+
+<details>
+<summary>Proof</summary>
+
+By Fubini's theorem, the expected value operator can be interchanged with the infinite series for the exponential function
+
+$$
+  M(t) = \mathbb{E}\left(e^{tX}\right) = \mathbb{E}\left( \sum_{n=0}^\infty \frac{X^n}{n!}t^n \right) = \sum_{n=0}^\infty \frac{\mathbb{E}(X^n)}{n!}t^n,\quad t\in I
+$$
+</details>
+</MathBox>
+
+In combinatorial terms, the moment generating function is the exponential generating function of the sequence of moments. Thus, a random variable that does not have finite moments of all orders cannot have a finite moment generating function. Even when a random variables does have moments of all orders, the moment generating function may not exist.
+
+<MathBox title='MGF of linear transformation' boxType='proposition'>
+Suppose that $X$ has moment generating function $M$ and that $a,b\in\mathbb{R}$. The moment generating function $N$ of $Y = a + bX$ is given by
+
+$$
+  N(t) = e^{at}M(bt),\quad t\in\mathbb{R}
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+  \mathbb{E}\left( e^{t(a + bX)} \right) = \mathbb{E}\left( e^{ta}e^{tbX} \right) = e^{ta}\mathbb{E}\left( e^{(tb)X} \right) = e^{at}M(bt)
+$$
+
+for $t\in\mathbb{R}$.
+</details>
+</MathBox>
+
+<MathBox title='MGF independent random variables' boxType='proposition'>
+Suppose that $X_1$ and $X_2$ are independent real-valued random variables with moment generating functions $M_1$ and $M_2$, respectively. The moment generating function $M$ of $Y = X_1 + X_2$ is given by
+
+$$
+  M(t) = M_1(t)M_2(t),\quad t\in\mathbb{R}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the expected product of independent variables is the product of the expected values. 
+
+$$
+  \mathbb{E}\left( e^{t(X_1 + X_2)} \right) = \mathbb{E}\left( e^{tX_1}e^{tX_2} \right) = \mathbb{E}\left( e^{tX_1}\right)\mathbb{E}\left( e^{tX_2}\right) = M_1(t) M_2(t),\quad t\in\mathbb{R}
+$$
+
+for $t\in\mathbb{R}$.
+</details>
+</MathBox>
+
+<MathBox title='MGF in terms of PGF' boxType='proposition'>
+Suppose that $X:\Omega\to\mathbb{N}$ with probability generating function $P$ having radius of convergence $r$. The moment generating function $M$ of $X$ is given by
+
+$$
+  M(t) = P(e^t),\quad t<\ln{r}
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+  M(t) = \mathbb{E}(e^{tX}) = \mathbb{E}\left[(e^t)^X\right] = P(e^t),\quad e^t < r
+$$
+</details>
+</MathBox>
+
+<MathBox title='Chernoff bounds' boxType='proposition'>
+If $X$ has moment generating function $M$ then
+
+1. $\mathbb{P}(X\geq x)\leq e^{-tx}M(t)$ for $t > 0$
+2. $\mathbb{P}(X\leq x)\leq e^{-tx}M(t)$ for $t < 0$
+
+<details>
+<summary>Proof</summary>
+
+1. From Markov's inequality $\mathbb{P}(X\geq x) = \mathbb{P}\left(e^tX \leq e^tx\right) \leq e^{-tx}\mathbb{E}\left(e^{tX}\right) = e^{-tx} M(t)$ if $t>0$.
+2. Similarly, $\mathbb{P}(X\leq x) = \mathbb{P}\left(e^tX \geq e^tx\right) \leq e^{-tx} M(t)$ if $t>0$.
+</details>
 </MathBox>
 
 ### Characteristic functions
@@ -1464,6 +1607,50 @@ Suppose that $X$ has moment generating function $M$ that is finite in an open in
 
 $$
   \chi(t) := \mathbb{E}\left(e^{itX}\right) = \mathbb{E}\left[\cos(tX)\right] +i\mathbb{E}\left[\sin(tX)]\right],\quad t\in\mathbb{R}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $X$ has a continuous distribution on $\mathbb{R}$ with probability density function $f$ and characteristic function $\chi$ then
+
+$$
+  \chi(t) = \int_{-\infty}^\infty e^{itx}f(x)\,\mathrm{d}x,\quad t\in\mathbb{R}
+$$
+</MathBox>
+
+Recall that the Fourier transform of $f$ is given by
+
+$$
+  \mathcal{F}\{f\}(t) = \int_{-\infty}^\infty e^{-itx}f(x)\,\mathrm{d}x
+$$
+
+The characteristic function of $X$ is thus a Fourier transform of the probability density function $f$ at $-t$, i.e. $\chi(t) = \mathcal{F}\{f\}(-t)$.
+
+<MathBox title='Inversion formula' boxType='proposition'>
+Suppose that $X$ has characteristic function $\chi$. If $a,b\in\mathbb{R}$ and $a<b$ then
+
+$$
+  \int_{-n}^n \frac{e^{-iat} - e^{-ibt}}{2\pi it}\chi(x)\,\mathrm{d}t \xrightarrow{n\to\infty} \mathbb{P}(a < X < b) + \frac{1}{2}\left[\mathbb{P}(X = b) -  \mathbb{P}(X = a)\right]
+$$
+
+If $X$ has a continuous distribution on $\mathbb{R}$ with probability density function $f$ and characteristic function $\chi$ then
+
+$$
+  f(x) = \frac{1}{2\pi} \int_{-\infty}^\infty e^{-itx}\chi(t)\,\mathrm{d}t
+$$
+</MathBox>
+
+<MathBox title='Inversion formula' boxType='proposition'>
+Suppose that $X$ has characteristic function $\chi$. If $n\in\mathbb{N}$ and $\mathbb{E}(|X^n|)<\infty$ then
+
+$$
+  \chi(t) = \sum_{k=0}^n \frac{\mathbb{E}(X^k)}{k!}(it)^k + o(t^n)
+$$
+
+where $\frac{o(t^n)}{t^n} \xrightarrow{t\to\infty} 0$. In particular 
+
+$$
+  \chi^{(n)}(0) = i^n\mathbb{E}(X^n)
 $$
 </MathBox>
 
