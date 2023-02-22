@@ -1261,25 +1261,24 @@ Hence $\mathbb{P}(Y=c) = 1$.
 
 # Expectation
 
-The expected value, called expectation, of a real-valued random variable gives a measures of the center of the variables' distribution.
+The expected value, called expectation, of a real-valued random variable gives a measures of the center of the variables' distribution. In the following discussion, let $(\Omega, \mathcal{F}, \mathbb{P})$ and $(S,\mathcal{S},\mathbb{P})$ be probability spaces, and $X: \Omega\to S$ a random variable.
 
 <MathBox title='Expectation' boxType='definition'>
-Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and $X: \Omega\to\mathbb{R}$ a random variable with $X \geq 0$. The expectation of $X$ is defined as the Lebesgue integral
+The expectation of $X$ is defined as the Lebesgue integral
 
 $$
   \mathrm{E}[X] \equiv \mathbb{E}(X) := \int_{\Omega} X \;\mathrm{d}\mathbb{P}
 $$
+
+In particular:
+1. If $S$ is finite, then the expectation reduces to the simple function $\mathbb{E}(X) = \sum_{x\in S} x\mathbb{P}(X = x)$
+2. If $S\subseteq[0,\infty)$, then $\mathbb{E}(X) = \sup\{\mathbb{E}(Y) : Y\textrm{ has finite range and }0\leq Y \leq X \}$
+3. For general $S\subseteq\mathbb{R}$, then $\mathbb{E}(X) = \mathbb{E}(X^+) - \mathbb{E}(X^-)$ as long as the right side is not of the form $\infty - \infty$. Here $X_+ := \max(X, 0)$ and $X_- := \max(-X, 0)$ denote the positive and negative part of $X$, respectively.
+4. If $A\in\subseteq\mathcal{F}$ then $\mathbb{E}(X;A) = \mathbb{E}(X\mathbf{1}_A)$ assuming that the expected value on the right exists. 
 </MathBox>
 
-To extend the definition for general $X$, we let $X_+ := \max(X, 0)$ be the positive part and $X_- := \max(-X, 0)$ be the negative part of $X$. If $\mathbb{E}(|X|) = \mathbb{E}(X_+) + \mathbb{E}(X_-) < \infty$ we let
-
-$$
-  \mathbb{E}(X) = \mathbb{E}(X_+) + \mathbb{E}(X_-)
-$$
-
-The set of all absolutely integrable random variables on $(\Omega, \mathcal{F}, \mathbb{P})$ is denoted $L^1 (\Omega, \mathcal{F}, \mathbb{P})$.
-
-**Properties:** Let $X, Y : \Omega\to \mathbb{R}$ be random variables with $\mathbb{E}(|X|), \mathbb{E}(|Y|)\leq\infty$.
+<MathBox title='Properties of expected values' boxType='proposition'>
+Let $X, Y : \Omega\to\mathbb{R}$ be random variables with $\mathbb{E}(|X|), \mathbb{E}(|Y|)\leq\infty$.
 - Linearity: $\mathbb{E}(aX + bY) = a\mathbb{E}(X) + b\mathbb{E}(Y)$ for all $a, b \in \mathbb{R}$
 - Monotonicity: If $X \overset{a.s}{\leq} Y$, i.e. $\mathbb{P}\left( \{ \omega\in\Omega | X(\omega) \leq Y(\omega) \} \right) = 1$, then $\mathbb{E}(X) \leq \mathbb{E}(Y)$
 - If $X, Y$ are independent, then $\mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y)$
@@ -1287,6 +1286,15 @@ The set of all absolutely integrable random variables on $(\Omega, \mathcal{F}, 
 - Jensen's inequality: If $\varphi:\mathbb{R}\to\mathbb{R}$ is convex, then $\mathbb{E}\left[\varphi(X)\right]\geq\varphi\left[\mathbb{E}(X)\right]$
   - Two useful special cases are $\left|\mathbb{E}(X)\right| < \mathbb{E}(|X|)$ and $\left[\mathbb{E}(X)\right]^2 \leq \mathbb{E}\left(X^2\right)$
 - Hölder's inequality: If $p, q\in[1, \infty]$ with $\frac{1}{p} + \frac{1}{q}$, then $\mathbb{E}(|XY|) \leq \lVert X\rVert_p \cdot \lVert Y\rVert_q = \left[\mathbb{E}(|X|^p)\right]^{1/p} \left[\mathbb{E}(|X|^q)\right]^{1/q}$
+</MathBox> 
+
+<MathBox title='Change of variables theorem' boxType='theorem'>
+Suppose that $P$ is the probability distribution of $X$. If $g:S\to\mathbb{R}$ is measurable then, assuming that the expected value exists
+
+$$
+  \mathbb{E}[g(X)] = \int_\Omega g[X(\omega)]\,\mathrm{d}\mathbb{P}(\omega) = \int_S g(x)\,\mathrm{d}P(x)
+$$
+</MathBox> 
 
 ## Law of the unconscious statistician
 
@@ -1455,21 +1463,21 @@ $$
   P^{(k)}(t) = \sum_{n=k}^\infty n^{(n)}f(n)t^{n-k},\quad t\in(-r, r)
 $$
 
-If $r > 1$ then $P^{(k)}(1) = \sum_{n=k}^{\infty} n^{(k)}f(n) = \mathbb{E}\left(N^{(k)}\right). Using this rule the expectation and variance of $N$ are calculated as
+If $r > 1$ then $P^{(k)}(1) = \sum_{n=k}^{\infty} n^{(k)}f(n) = \mathbb{E}\left(N^{(k)}\right)$. Using this rule, the expectation and variance of $N$ are calculated as
 
 1. $\mathbb{E}(N) = \mathbb{E}\left( N^{(1)} \right) = P'(1)$
-2. $\mathbb{E}(N^2) = \mathbb{E}[N(N-1)] + \mathbb{E}(N) = \mathbb{E}\left(N^{(n)}\right) + \mathbb{E}(N) = P''(1) + P'(1). From $(1)$ the variance becomes $\mathrm{Var}(N) = P''(1) + P'(1) - [P'(1)]^2$
+2. $\mathbb{E}(N^2) = \mathbb{E}[N(N-1)] + \mathbb{E}(N) = \mathbb{E}\left(N^{(n)}\right) + \mathbb{E}(N) = P''(1) + P'(1)$. From $(1)$ the variance becomes $\mathrm{Var}(N) = P''(1) + P'(1) - [P'(1)]^2$
 </details>
 </MathBox>
 
 <MathBox title='PGF of independent variables' boxType='proposition'>
-Suppose that $N_1$ and $N_2$ are random variables taking values in $\mathbb{N}$, with probability generating functions $P_1$ and $P_2$ having radii of convergence $r_1$ and $r_2$, respectively. Then the probability generating function $P$ of $N_1 + N_2$ is given by
+Suppose that $(N_i)_{i=1}^{n\in\mathbb{N}} :\Omega\to\mathbb{N}$ are independent random variables valued in $\mathbb{N}$ with probability generating functions $P_i$ having radii of convergence $r_i$. Then the probability generating function $P$ of $N = \sum_{i=1}^n N_i$ is given by
 
 $$
-  P(t) = P_1(t)P_2(t)
+  P(t) = \prod_{i=1}^n P_i(t)
 $$
 
-for $|t| < r_1 \wedge r_2$
+for $|t| < \bigwedge_{i=1}^n r_i$
 
 <details>
 <summary>Proof</summary>
@@ -1477,7 +1485,7 @@ for $|t| < r_1 \wedge r_2$
 Recall that the expected product of independent variable is the product of the expected values
 
 $$
-  P(t) = \mathbb{E}\left( t^{N_1 + N_2} \right) = \mathbb{E}\left( t^{N_1}t^{N_2} \right) = \mathbb{E}\left(t^{N_1}\right)\mathbb{E}\left( t^{N_2} \right) = P_1(t) P_2(t),\quad |t| < r_1 \wedge r_2
+  P(t) = \mathbb{E}\left( t^{\sum_{i=1}^n N_i} \right) = \mathbb{E}\left( \prod_{i=1}^n t^{N_i}\right) = \prod_{i=1}^n \mathbb{E}\left(t^{N_i}\right) = \prod_{i=1}^n P_i(t),\quad |t| < \bigwedge_{i=1}^n r_i
 $$
 </details>
 </MathBox>
@@ -1494,7 +1502,7 @@ $$
 $$
 </MathBox>
 
-<MathBox title='MGF in terms of pdf' boxType='proposition'>
+<MathBox title='MGF in terms of PDF' boxType='proposition'>
 Suppose that $X$ has moment generating function $M$ that is finite in an open interval $I$ about $0$. Then $X$ ha moments of all orders and
 
 $$
@@ -1550,11 +1558,11 @@ for $t\in\mathbb{R}$.
 </details>
 </MathBox>
 
-<MathBox title='MGF independent random variables' boxType='proposition'>
-Suppose that $X_1$ and $X_2$ are independent real-valued random variables with moment generating functions $M_1$ and $M_2$, respectively. The moment generating function $M$ of $Y = X_1 + X_2$ is given by
+<MathBox title='MGF of independent random variables' boxType='proposition'>
+Suppose that $(X_i)_{i=1}^{n\in\mathbb{N}} :\Omega\to\mathbb{R}$ are independent real-valued random variables with moment generating functions $M_i$. The moment generating function $M$ of $X = \sum_{i=1}^n X_i$ is given by
 
 $$
-  M(t) = M_1(t)M_2(t),\quad t\in\mathbb{R}
+  M(t) = \prod_{i=1}^n M_i(t),\quad t\in\mathbb{R}
 $$
 
 <details>
@@ -1563,7 +1571,7 @@ $$
 Recall that the expected product of independent variables is the product of the expected values. 
 
 $$
-  \mathbb{E}\left( e^{t(X_1 + X_2)} \right) = \mathbb{E}\left( e^{tX_1}e^{tX_2} \right) = \mathbb{E}\left( e^{tX_1}\right)\mathbb{E}\left( e^{tX_2}\right) = M_1(t) M_2(t),\quad t\in\mathbb{R}
+  M(t) = \mathbb{E}\left( e^{t\sum_{i=1}^n X_i)} \right) = \mathbb{E}\left( \prod_{i=1}^n e^{tX_i} \right) = \prod_{i=1}^n \mathbb{E}\left( e^{tX_i}\right) = \prod_{i=1}^n M_i(t),\quad t\in\mathbb{R}
 $$
 
 for $t\in\mathbb{R}$.
@@ -1652,6 +1660,54 @@ where $\frac{o(t^n)}{t^n} \xrightarrow{t\to\infty} 0$. In particular
 $$
   \chi^{(n)}(0) = i^n\mathbb{E}(X^n)
 $$
+</MathBox>
+
+<MathBox title='Characteristic function under linear transform' boxType='proposition'>
+Suppose that $X$ has characteristic function $\chi$ and that $a,b\in\mathbb{R}$. The characteristic function $\psi$ of $Y = a + bX$ is given by $\psi(t) = e^{iat}\chi(bt)$ for $t\in\mathbb{R}$.
+
+<details>
+<summary>Proof</summary>
+
+$$
+  \psi(t) = \mathbb{E}\left( e^{it(a + bX)} \right) = \mathbb{E}\left(e^{ita}e^{itbX}\right) = e^{ita}\mathbb{E}\left( e^{i(tb)X} \right) = e^{iat}\chi(bt)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Characteristic function of independent random variables' boxType='proposition'>
+Suppose that $(X_j)_{j=1}^{n\in\mathbb{N}} :\Omega\to\mathbb{R}$ are independent real-valued random variables with characteristic functions $\chi_j$. The moment generating function $\chi$ of $X = \sum_{j=1}^n X_j$ is given by
+
+$$
+  \chi(t) = \prod_{j=1}^n \chi_i(t),\quad t\in\mathbb{R}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the expected product of independent variables is the product of the expected values. 
+
+$$
+  \chi(t) = \mathbb{E}\left( e^{it\sum_{j=1}^n X_j)} \right) = \mathbb{E}\left( \prod_{j=1}^n e^{itX_j} \right) = \prod_{j=1}^n \mathbb{E}\left( e^{itX_j}\right) = \prod_{j=1}^n \chi_j(t),\quad t\in\mathbb{R}
+$$
+
+for $t\in\mathbb{R}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $X$ has moment generating function $M$ that satisfies $M(t) < \infty$ for $t$ in an open interval $I$ about $0$. Then the characteristic function $\chi$ of $X$ satisfies 
+
+$$
+  \chi(t) = M(it),\quad t\in I
+$$
+
+</MathBox>
+
+<MathBox title='Continuity theorem' boxType='theorem'>
+Suppose that $(X_n :\Omega\to\mathbb{R})_{n\in\mathbb{N}}$ is a sequence of real-valued random variables with characteristic function $\chi_i$.
+
+1. If the distribution of $X_n$ converges to the distribution of a random variable $X\xrightarrow{n\to\infty} X$ and $X$ has characteristic function $\chi$, then $\chi_{n}(t)\xrightarrow{n\to\infty} \chi(t)$ for all $t\in\mathbb{R}$
+2. If $\chi_n(t)\xrightarrow{n\to\infty}\chi(t)$ for $t$ in an open interval about $0$, and if $\chi$ is continuous at $0$, then $\chi$ is the characteristic function of a random variable $X$, and the distribution of $X_n\xrightarrow{n\to\infty} X$. 
 </MathBox>
 
 # Hurst exponential

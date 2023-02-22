@@ -73,7 +73,7 @@ export default async function NotePage({params: {subject, slug}}: Props) {
       bg-primary shadow-inner-l dark:shadow-black/50'
     >
       <div key='div.note' className='h-full flex justify-center overflow-y-scroll'>
-        <article className='max-w-full md:max-w-read overflow-x-scroll
+        <article className='max-w-full md:max-w-read
           prose prose-stone prose-sm md:prose-base dark:prose-invert 
           py-8 px-2 md:px-0'
         >

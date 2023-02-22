@@ -98,7 +98,7 @@ export default function Toc({headings}: Props) {
 			<aside className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  
 				lg:static lg:translate-x-0 lg:translate-y-0
 				hidden lg:block peer-checked:block
-				max-h-full h-min md:min-w-max p-4 overflow-y-scroll 
+				max-h-full h-min md:min-w-max p-4 md:m-4 overflow-y-scroll 
 				bg-primary/50 rounded-md shadow-md dark:shadow-black/50 backdrop-blur-sm'
 			>
 				<div key='div.toc' className='flex justify-start gap-x-1 border-b border-b-text'>
