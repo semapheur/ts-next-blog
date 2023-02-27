@@ -1259,7 +1259,9 @@ Hence $\mathbb{P}(Y=c) = 1$.
 </details>
 </MathBox>
 
-# Expectation
+# Moments of random variables
+
+## Expected value
 
 The expected value, called expectation, of a real-valued random variable gives a measures of the center of the variables' distribution. In the following discussion, let $(\Omega, \mathcal{F}, \mathbb{P})$ and $(S,\mathcal{S},\mathbb{P})$ be probability spaces, and $X: \Omega\to S$ a random variable.
 
@@ -1334,6 +1336,33 @@ $$
 $$
 </MathBox>
 
+<MathBox title="Markov's inequality" boxType='theorem'>
+If $X$ is a nonnegative random variable then
+
+$$
+  \mathbb{P}(X\geq x) \leq\frac{\mathbb{E}(X)}{x},\quad x>0
+$$
+
+As a direct corollary, if $X$ is a real-valued random variable and $k\in(0,\infty)$, then
+
+$$
+  \mathbb{P}(|X|\geq x) \leq\frac{\mathbb{E}\left(|X|^k \right)}{x^k},\quad x>0
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $x > 0$, note that $x\cdot\mathbf{1}(X\geq x)\leq X$. Taking the expected value gives $x\mathbb{P}(X\geq x)\leq\mathbb{E}(X)$.
+
+For $k\geq 0$, the function $x\mapsto x^k$ is strictly increasing on $[0,\infty)$. Applying Markov's inequality gives
+
+$$
+  \mathbb{P}(|X|\geq x) = \mathbb{P}\left(|X|^k \geq x^k) \leq\frac{\mathbb{E}\left(|X|^k \right)}{x^k}
+$$
+
+</details>
+</MathBox> 
+
 ## Variance
 
 <MathBox title='Variance and standard deviation' boxType='definition'>
@@ -1367,7 +1396,6 @@ $$
 $$
 
 </details>
-
 </MathBox> 
 
 Recall that the second moment of $X$ about $a\in\mathbb{R}$ is $\mathbb{E}\left[ (X-a)^2 \right]$. Thus, the variance is the second moment of $X$ about the mean $\mu_X = \mathbb{E}(X)$, or equivalently, the second central moment of $X$. In general, the second moment of $X$ about $a\in\mathbb{R}$ represents the mean square error if $a$ is an estimate of $X$. 
@@ -1383,6 +1411,64 @@ $$
   \end{cases}
 \end{gather*}
 $$
+
+<MathBox title='Properties of variance' boxType='proposition'>
+1. Positive definiteness: $\mathrm{var}(X) \geq 0$ and $\mathrm{var}(X) = 0$ if and only if $\mathbb{P}(X = c) = 1$ for some constant $c = \mathbb{E}(X)$.
+2. Variance of linear combinations: If $a,b\in\mathbb{R}$
+  a. $\mathrm{var}(a + bX) = b^2\mathrm{var}(X)$
+  b: $\mathrm{sd}(a + bX) = |b|\mathrm{var}(X)$
+
+<details>
+<summary>Proof</summary>
+
+Let $\mu = \mathbb{E}(X)$
+
+1. These results follows from the positive property of expected value. Evidently, $(X - \mu)^2 \geq 0$ with probability $1$ so $\mathbb{E}\left[(X -\mu)^2\right]\geq 0$. Additionally, $\mathbb{E}\left[(X -\mu)^2\right] = 0$ if and only if $\mathbb{P}(X = \mu) = 1$.
+2. By linearity, $\mathbb{E}(a + bX) = a + b\mu$, giving
+$$
+\begin{align*}
+  \mathrm{var}(a + bX) &= \mathbb{E}\left([(a + bX) - (a + b\mu)]^2 \right) \\
+  &= \mathbb{E}\left[b^2(X - \mu)^2\right] = b^2\mathrm{var}(X)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Standard score' boxType='definition'>
+Suppose that $X$ is a random variable with mean $\mu$ and variance $\sigma^2$. The *standard score* of $X$ is defined as the random variable
+
+$$
+  Z := \frac{X - \mu}{\sigma}
+$$
+
+with $\mathbb{E}(Z) = \frac{1}{\sigma}[\mathbb{E}(X) - \mu] = 0$ and $\mathrm{var}(X) = \frac{1}{\sigma^2}\mathrm{var}(X) = 1$.
+</MathBox> 
+
+The standard score of $X$ measures the distance from $\mathbb{E}(X)$ to $X$ in terms of standard deviations.
+
+<MathBox title='' boxType='proposition'>
+Let $Z$ denote the standard score of $X$, and suppose that $Y = a + bX$ where $a,b\in\mathbb{R}$ and $b\neq 0$. Then
+1. If $b > 0$, the standard score of $Y$ is $Z$
+2. If $b < 0$, the standard score of $Y$ is $-Z$
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbb{E} = a + b\mathbb{E}(X)$ and $\mathrm{sd}(Y) = |b|\mathrm{sd}(X)$, then
+
+$$
+  \frac{Y - \mathbb{E}}{\mathrm{sd}(Y)} = \frac{b}{|b|}\frac{X - \mathbb{E}(X)}{\mathrm{sd}(X)} 
+$$
+</details>
+</MathBox> 
+
+<MathBox title='Coefficient of variation' boxType='definition'>
+Suppose that $X$ is a random variable with $\mathrm{E}(X) \neq 0$. The coefficient of variation is the ratio of the standard deviation to the mean
+
+$$
+  \mathrm{cv}(X) := \frac{\mathrm{sd}}{\mathbb{E}(X)}
+$$
+</MathBox> 
 
 <MathBox title="Chebyshev's inequalities" boxType='proposition'>
 Suppose that $X$ is a real-valued random variable with mean $\mu_X = \mathbb{E}(X)\in\mathbb{R}$ and standard deviation $\sigma_X = \mathrm{sd}(X)\in(0,\infty)$
@@ -1402,8 +1488,14 @@ $$
 <details>
 <summary>Proof</summary>
 
-</details>
+Chebyshev's first inequality can be proved by applying Markov's inequality to the random variable $Y = (X - \mu_X)^2$ with $\mathbb{E}(Y) = \left[(X - \mu_X)^2 \right] = \sigma_X^2$
 
+$$
+  \mathbb{P}(|X - \mu|\geq t) = \frac{\mathbb{E}\left[ (X - \mu_X)^2 \right]}{t^2} = \frac{\sigma_X^2}{t^2}
+$$
+
+Chebyshev's second inequality follows by substituting $t = k\sigma$.
+</details>
 </MathBox> 
 
 ## Covariance
