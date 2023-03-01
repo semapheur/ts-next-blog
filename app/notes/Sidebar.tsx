@@ -12,8 +12,8 @@ function Toggle() {
         className='peer/toggle hidden'
       />
       <label key={'label.sidebar'} htmlFor='sidebar-toggle' 
-        className='w-10 h-10 absolute bottom-[10%] left-full z-[1]
-          flex items-center cursor-pointer md:hidden
+        className='w-10 h-10 absolute bottom-[10%] left-full
+          flex items-center cursor-pointer md:hidden z-[1]
           bg-primary/50 backdrop-blur-sm rounded-r-full shadow-trb
           dark:shadow-black/50 -ml-2 peer-checked/toggle:ml-0
           after:w-1/3 after:h-1/3 
@@ -28,9 +28,11 @@ function Toggle() {
 
 export default function Sidebar({noteDetails}: Props) {
   return (
-    <div className='relative w-auto'>
+    <div className='absolute top-0 left-0 h-full z-[1]
+      bg-primary/50 backdrop-blur shadow-lg md:relative w-auto'
+    >
       <Toggle/>
-      <nav key={'nav.sidebar'} className='w-0 md:min-w-max bg-primary
+      <nav key={'nav.sidebar'} className='w-0 md:min-w-max bg-primary/50
         peer-checked/toggle:w-max transition-transform overflow-x-hidden'
       >
         {Object.entries(noteDetails).map(([subject, notes]) => (

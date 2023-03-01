@@ -24,7 +24,7 @@ export default async function NotesLayout({
   const details = await iterNotes(getNoteDetails);
 
   return (
-    <div className='flex h-full min-h-0'>
+    <div className='relative flex h-full min-h-0'>
       <Sidebar noteDetails={details} />
       {children}
     </div>

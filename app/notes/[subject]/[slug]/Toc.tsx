@@ -62,7 +62,7 @@ function Toggle() {
 				className='peer hidden'
 			/>
 			<label key='label.toc' htmlFor='toc-toggle' 
-				className='w-10 h-10 -mr-2 pr-1 absolute top-[10%] right-0 z-50
+				className='w-10 h-10 -mr-2 pr-1 absolute top-[10%] right-0 z-[1]
 				grid place-items-center cursor-pointer lg:hidden
 				bg-primary/50 backdrop-blur-sm rounded-l-full shadow-tlb
 				dark:shadow-black/50'
