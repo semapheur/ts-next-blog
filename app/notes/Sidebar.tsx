@@ -29,7 +29,7 @@ function Toggle() {
 export default function Sidebar({noteDetails}: Props) {
   return (
     <div className='absolute top-0 left-0 h-full z-[1]
-      bg-primary/50 backdrop-blur shadow-lg md:relative w-auto'
+      bg-primary/50 backdrop-blur shadow-r dark:shadow-black/50 md:relative w-auto'
     >
       <Toggle/>
       <nav key={'nav.sidebar'} className='w-0 md:min-w-max bg-primary/50

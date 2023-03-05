@@ -1,11 +1,12 @@
 import dynamic from 'next/dynamic'
-import {compileMDX} from 'next-mdx-remote/rsc'
+import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'fs';
 import path from 'path';
 
 import { markdownHeadings, remarkPlugins, rehypePlugins } from 'utils/mdxParse';
 import { mdxComponents } from 'utils/mdxComponents';
 import Loader from 'components/Loader';
+import { NoteMatter } from 'utils/types';
 
 const Toc = dynamic(() => import('./Toc'), {
   ssr: false,
@@ -72,18 +73,20 @@ export default async function NotePage({params: {subject, slug}}: Props) {
     <main className='relative grid grid-cols-[1fr_auto] w-full 
       bg-primary shadow-inner-l dark:shadow-black/50'
     >
-      <div key='div.note' className='h-full flex justify-center overflow-y-scroll'>
+      <>
+        <div key='div.note' className='h-full flex justify-center overflow-y-scroll'>
         <article className='max-w-full md:max-w-read
           prose prose-stone prose-sm md:prose-base dark:prose-invert 
           py-8 px-2 md:px-0'
         >
           <h1 className='text-center text-5xl font-extrabold'>
-            {frontmatter?.title}
+            {(frontmatter as NoteMatter)?.title}
           </h1>
           {content}
         </article>
       </div>
       {frontmatter?.showToc && <Toc key='toc.note' headings={headings}/>}
+      </>
     </main>
   )
 }

@@ -29,6 +29,7 @@ module.exports = {
         'read': '65ch'
       },
       boxShadow: {
+        'r': '3px 0 2px -1px rgba(0 0 0 / 0.1)',
         'trb': '2px 0 2px 1px rgba(0 0 0 / 0.1)',
         'tlb': '-2px 0 2px 1px rgba(0 0 0 / 0.1)',
         'inner-l': 'inset 2px 0 4px 0px rgba(0 0 0 / 0.1)',

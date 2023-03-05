@@ -7,7 +7,8 @@ export type MDXPost<T> = {
 
 export type NoteMatter = {
   slug: string,
-  title: string
+  title: string,
+  showToc: boolean
 }
 
 export type NoteDetails = {
