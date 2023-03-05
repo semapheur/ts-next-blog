@@ -8,7 +8,7 @@ import useSWR, {Fetcher} from 'swr';
 import SearchBox from 'components/SearchBox';
 import { SearchResult } from 'pages/api/searchnotes';
 
-const Preview = dynamic(() => import('./PreviewNotes'), {ssr: false});
+const Preview = dynamic(() => import('./PreviewNotes'), {ssr: false})
 
 const searchFetcher: Fetcher<SearchResult, string> = async (query) => {
   return await fetch(`/api/searchnotes?q=${query}`).then(res => res.json());

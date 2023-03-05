@@ -13,8 +13,10 @@ export default function Codeblock({className, children, ...props}: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    setCopied(true);
-    navigator.clipboard.writeText(preRef.current.textContent);
+    if (!preRef.current) return
+
+    setCopied(true)
+    navigator.clipboard.writeText(preRef.current.textContent!)
     setTimeout(() => {
       setCopied(false)
     }, 2000)

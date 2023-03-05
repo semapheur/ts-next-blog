@@ -5,7 +5,7 @@ type Size = {
   width: number
 }
 
-export default function useResizeObserver<T extends Element>(target: RefObject<T> | T | null): Size {
+export default function useResizeObserver<T extends Element>(target: RefObject<T> | T | null): Size|null {
   const [size, setSize] = useState<Size|null>(null)
   const observerRef = useRef<ResizeObserver>()
 
@@ -22,7 +22,7 @@ export default function useResizeObserver<T extends Element>(target: RefObject<T
 		}
     const element = target && 'current' in target ? target.current : target
 
-    if (!element) return null
+    if (!element) return
     
     observerRef.current = new ResizeObserver(observerCallback)
     const {current: observer} = observerRef

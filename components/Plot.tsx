@@ -9,9 +9,20 @@ import Split from './Split'
 import { CrossIcon } from 'utils/icons'
 import Tex from './Tex'
 
-const PlotContext = createContext<[
-  Map<number, Partial<PlotFields>>, 
-  Dispatch<SetStateAction<Map<number, Partial<PlotFields>>>>] | null>(null)
+type PlotState = {
+  plots: Map<number, Partial<PlotFields>>,
+  setPlots: Dispatch<SetStateAction<Map<number, Partial<PlotFields>>>>
+}
+
+const PlotContext = createContext<PlotState|undefined>(undefined)
+
+function usePlotContext() {
+  const context = useContext(PlotContext)
+  if (!context) {
+    throw new Error('usePlotContext must be used within a Plot Component')
+  }
+  return context
+}
 
 const formValues: PlotFields = {
   fn: '', 
@@ -44,9 +55,11 @@ type PlotInputProps = {
 function PlotInput({index, values, handleAddPlot, 
   handleChangeFn, handleChangeColor, handleDelPlot}: PlotInputProps) 
 {
-  const formRef = useRef<HTMLFormElement>()
+  const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
+    if (!formRef.current) return
+
     if (!validateFunction(values.fn)) {
       formRef.current.classList.add('bg-red-100.dark:bg-red-400')
     } else {
@@ -86,7 +99,7 @@ function PlotInput({index, values, handleAddPlot,
 function Panel() {
   const [plotForms, setPlotForms] = useState<PlotFields[]>([
     {...formValues, color: randomColor()}])
-  const [plots, setPlots] = useContext(PlotContext)
+  const {plots, setPlots} = usePlotContext()
   
   const addPlot = (i: number, e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -188,8 +201,9 @@ function Panel() {
 
 export default function Plot() {
   const [plots, setPlots] = useState(new Map<number, PlotFields>)
+  const contextValue: PlotState = {plots, setPlots}
   const wrapRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGPlot>(null)
+  const svgRef = useRef<SVGPlot|null>(null)
   const size = useResizeObserver(wrapRef)
 
   useEffect(() => {
@@ -207,10 +221,10 @@ export default function Plot() {
   }, []);
 
   useEffect(() => {
-    if (size) {
-      svgRef.current.resize(size.width, size.height);
-      svgRef.current.fitViewToPlots()
-    }
+    if (!svgRef.current || !size) return
+
+    svgRef.current.resize(size.width, size.height);
+    svgRef.current.fitViewToPlots()
   }, [size]);
 
   useEffect(() => {
@@ -221,7 +235,7 @@ export default function Plot() {
 
   return (
     <Split className='' split='row' defaultSizes={[0.2, 0.8]} minSizes={[100, 500]}>
-      <PlotContext.Provider value={[plots, setPlots]}>
+      <PlotContext.Provider value={contextValue}>
         <Panel/>
       </PlotContext.Provider>
       <div ref={wrapRef}
@@ -243,7 +257,7 @@ function convertPlots(plots: Map<number, PlotFields>) {
 function reorderMap(i: number, plots: Map<number, Partial<PlotFields>>) {
   for (let k of plots.keys()) {
     if (k > i) {
-      let value = plots.get(k)
+      let value = plots.get(k)!
       plots.delete(k)
       plots.set(k-1, value)
     }

@@ -82,7 +82,7 @@ export class SVGPlot {
       }
     }
     // Remove svg
-    this.svgElement.parentNode.removeChild(this.svgElement)
+    this.svgElement.parentNode?.removeChild(this.svgElement)
   }
 
   private addBoundHandler(event: string, handler: EventListenerOrEventListenerObject) {
@@ -120,8 +120,8 @@ export class SVGPlot {
 
   private setTransform(width?: number, height?: number) {
 
-    if (!width) width = parseFloat(this.svgElement.getAttribute('width'))
-    if (!height) height = parseFloat(this.svgElement.getAttribute('height'))
+    if (!width) width = parseFloat(this.svgElement.getAttribute('width')!)
+    if (!height) height = parseFloat(this.svgElement.getAttribute('height')!)
 
     const viewLength = [
       this.viewPoints[1][0] - this.viewPoints[0][0],
@@ -143,8 +143,10 @@ export class SVGPlot {
     )
   }
 
-  private mouseCoords(svg: SVGSVGElement, event: MouseEvent): Vector {
+  private mouseCoords(svg: SVGSVGElement, event: MouseEvent): Vector|null {
     const ctm = svg.getScreenCTM()
+    if (!ctm) return null
+
     return new Vector(
       (event.clientX - ctm.e) / ctm.a,
       (event.clientY - ctm.f) / ctm.d
@@ -158,6 +160,7 @@ export class SVGPlot {
       fill: 'rgba(var(--color-text) / 1)'
     }
     const pointer = document.getElementById('pointer-group')
+    if (!pointer) return null
     addChildElement(pointer, 'text', attr)
 
     let path = {
@@ -184,32 +187,35 @@ export class SVGPlot {
     }
 
     const svgCoord = this.mouseCoords(this.svgElement, event)
+    if (!svgCoord) return
     const drawCoord = this.svgToDrawCoord(svgCoord)
     
     const pointer = document.getElementById('coord-pointer')
+    if (!pointer) return
     pointer.setAttribute('x', `${svgCoord.x + 15}`)
     pointer.setAttribute('y', `${svgCoord.y + 20}`)
     
     pointer.innerHTML = `(${coordText(drawCoord.x, 'x')}, ${coordText(-drawCoord.y, 'y')})`
 
     const xLine = document.getElementById('x-pointer')
+    if (!xLine) return
     xLine.setAttribute('d', `M${svgCoord.x},${this.translate.y}L${svgCoord.x},${svgCoord.y}`)
 
     const yLine = document.getElementById('y-pointer')
+    if (!yLine) return
     yLine.setAttribute('d', `M${this.translate.x},${svgCoord.y}L${svgCoord.x}, ${svgCoord.y}`)
   }
 
-    private panOnDragHandler(event: MouseEvent, dragButton: number = 1) {
-
-    if (event.button !== dragButton) {
-      return
-    }
+  private panOnDragHandler(event: MouseEvent, dragButton: number = 1) {
+    if (event.button !== dragButton) return
+    
     // Click coordinates
     let oldCoords = this.mouseCoords(this.svgElement, event)
-
+  
     // Pan on drag
     const panOnMoveHandler = (move: MouseEvent) => {
       let newCoords = this.mouseCoords(this.svgElement, move)
+      if (!newCoords || !oldCoords) return
       let dist = {
         x: (oldCoords.x - newCoords.x) / this.scale.x,
         y: (oldCoords.y - newCoords.y) / this.scale.y
@@ -247,6 +253,7 @@ export class SVGPlot {
         y: this.viewPoints[1][1] - this.viewPoints[0][1]
     }
     const svgCoord = this.mouseCoords(this.svgElement, event)
+    if (!svgCoord) return
     const drawCoord = {
         x: (svgCoord.x - this.translate.x) / this.scale.x,
         y: (svgCoord.y - this.translate.y) / this.scale.y
@@ -277,9 +284,11 @@ export class SVGPlot {
 
     // Click coordinates
     let clickCoords = this.mouseCoords(this.svgElement, event)
+    if (!clickCoords) return
 
     // Coverage rectangle
     const pointer = document.getElementById('pointer-group')
+    if (!pointer) return
     const path = document.createElementNS(this.xmlns, 'path')
     let attr = {
       id: 'zoom-rect',
@@ -288,41 +297,44 @@ export class SVGPlot {
     setAttributes(path, attr)
     pointer.appendChild(path)
 
-    let dragCoords: Vector
+    let dragCoords: Vector|null
 
     // Draw coverage rectangle on drag
     const rectOnMoveHandler = (move: MouseEvent) => {
       dragCoords = this.mouseCoords(this.svgElement, move)
+      if (!dragCoords || !clickCoords) return
       const d = `M${clickCoords.x},${clickCoords.y} L${dragCoords.x},${clickCoords.y} ${dragCoords.x},${dragCoords.y} ${clickCoords.x},${dragCoords.y}Z`
       path.setAttribute('d', d)
     }
     const rectOnMoveBound = rectOnMoveHandler.bind(this)
 
-      // Resize on mouseup
-      const onMouseUp = () => {
-        path.parentNode.removeChild(path)
+    // Resize on mouseup
+    const onMouseUp = () => {
+      if (!clickCoords || !dragCoords) return
 
-        const svgTopLeft = new Vector(
-            Math.min(clickCoords.x, dragCoords.x),
-            Math.min(clickCoords.y, dragCoords.y)
-        )
-        const topLeft = this.svgToDrawCoord(svgTopLeft)
+      path.parentNode!.removeChild(path)
 
-        const svgBottomRight = new Vector(
-            Math.max(clickCoords.x, dragCoords.x),
-            Math.max(clickCoords.y, dragCoords.y)
-        )
-        const bottomRight = this.svgToDrawCoord(svgBottomRight)
+      const svgTopLeft = new Vector(
+        Math.min(clickCoords.x, dragCoords.x),
+        Math.min(clickCoords.y, dragCoords.y)
+      )
+      const topLeft = this.svgToDrawCoord(svgTopLeft)
 
-        this.viewPoints = [
-            [topLeft.x, topLeft.y],
-            [bottomRight.x, bottomRight.y]
-        ]
-        this.transformView()
+      const svgBottomRight = new Vector(
+        Math.max(clickCoords.x, dragCoords.x),
+        Math.max(clickCoords.y, dragCoords.y)
+      )
+      const bottomRight = this.svgToDrawCoord(svgBottomRight)
 
-        // Cleanup event handlers
-        this.svgElement.removeEventListener('mouseup', onMouseUp)
-        this.svgElement.removeEventListener('mousemove', rectOnMoveBound)
+      this.viewPoints = [
+        [topLeft.x, topLeft.y],
+        [bottomRight.x, bottomRight.y]
+      ]
+      this.transformView()
+
+      // Cleanup event handlers
+      this.svgElement.removeEventListener('mouseup', onMouseUp)
+      this.svgElement.removeEventListener('mousemove', rectOnMoveBound)
     }
     this.svgElement.addEventListener('mouseup', onMouseUp)
     this.svgElement.addEventListener('mousemove', rectOnMoveBound)
@@ -334,47 +346,48 @@ export class SVGPlot {
     this.svgElement.addEventListener('mousedown', resizeOnDragBound)
   }
 
-    public fitViewToPlots(fn?: string, offset: number = 0.1) {
+  public fitViewToPlots(fn?: string, offset: number = 0.1) {
 
-        let yMin: number, yMax: number
-        if (fn) {
-            yMin = this.plots[fn].yBounds[0]
-            yMax = this.plots[fn].yBounds[1]
-        } else {
-            yMin = this.viewPoints[0][1]
-            yMax = this.viewPoints[1][1]
+    let yMin: number, yMax: number
+    if (fn) {
+      yMin = this.plots[fn].yBounds[0]
+      yMax = this.plots[fn].yBounds[1]
+    } else {
+      yMin = this.viewPoints[0][1]
+      yMax = this.viewPoints[1][1]
 
-            for (let fn in this.plots) {
-                if (this.plots[fn].yBounds[0] > yMin) yMin = this.plots[fn].yBounds[0]
-                if (this.plots[fn].yBounds[1] < yMax) yMax = this.plots[fn].yBounds[1]
-            }
-        }
-        const newViewPoints = [
-            [this.viewPoints[0][0], yMin - offset],
-            [this.viewPoints[1][0], yMax + offset]
-        ]
-        if (newViewPoints !== this.viewPoints) this.viewPoints = newViewPoints
-        this.transformView()
+      for (let fn in this.plots) {
+        if (this.plots[fn].yBounds[0] > yMin) yMin = this.plots[fn].yBounds[0]
+        if (this.plots[fn].yBounds[1] < yMax) yMax = this.plots[fn].yBounds[1]
+      }
     }
+    const newViewPoints = [
+      [this.viewPoints[0][0], yMin - offset],
+      [this.viewPoints[1][0], yMax + offset]
+    ]
+    if (newViewPoints !== this.viewPoints) this.viewPoints = newViewPoints
+    this.transformView()
+  }
 
-    private transformView(pan = false) {
+  private transformView(pan = false) {
 
-        this.setTransform()
-        this.transformGrid()
-        this.transformAxis()
-        this.plotGroup.setAttribute('transform', this.transformMatrix())
+    this.setTransform()
+    this.transformGrid()
+    this.transformAxis()
+    this.plotGroup.setAttribute('transform', this.transformMatrix())
 
-        if (!pan) {
-            this.redrawPlots()
-        } 
-    }
+    if (!pan) {
+      this.redrawPlots()
+    } 
+  }
     
   private ticks(redraw = false) {
 
     const axis = document.getElementById('axis-group')
+    if (!axis) return
     const svgSize = {
-      x: parseFloat(this.svgElement.getAttribute('width')),
-      y: parseFloat(this.svgElement.getAttribute('height')),
+      x: parseFloat(this.svgElement.getAttribute('width')!),
+      y: parseFloat(this.svgElement.getAttribute('height')!),
     }
     if (redraw) {
       removeElementsByClass(axis, 'tick-text')
@@ -483,6 +496,7 @@ export class SVGPlot {
     }
 
     const axis = document.getElementById('axis-group')
+    if (!axis) return
     addChildElement(axis, 'rect', rect)
 
     // Ticks
@@ -492,9 +506,11 @@ export class SVGPlot {
 
   private transformAxis() {
     const pattern = document.getElementById('axis-pattern')
+    if (!pattern) return
 
     // x axis
     let line = pattern.getElementsByClassName('x-axis')[0]
+    
     let xAttr = {y1: `${this.translate.y}`, y2: `${this.translate.y}`}
     setAttributes(line, xAttr)
 
@@ -518,14 +534,16 @@ export class SVGPlot {
       if (base > 2 && base < 5) return 5 * 10**power
 
       if (base > 5) return 10**(power + 1)
+
+      return null
     }
     const min = [
-        minScreenLength/this.scale.x,
-        minScreenLength/this.scale.y
+      minScreenLength/this.scale.x,
+      minScreenLength/this.scale.y
     ]
     this.gridSize = new Vector(
-        intervalLength(min[0]),
-        intervalLength(min[1])
+      intervalLength(min[0])!,
+      intervalLength(min[1])!
     )
   }
 
@@ -570,6 +588,7 @@ export class SVGPlot {
       fill: 'url(#grid-pattern)', 'vector-effect': 'non-scaling-stroke'
     }
     const grid = document.getElementById('grid-group')
+    if (!grid) return
     addChildElement(grid, 'rect', rect)
   }
 
@@ -577,6 +596,7 @@ export class SVGPlot {
     this.gridIntervals()
 
     const pattern = document.getElementById('grid-pattern')
+    if (!pattern) return
     const attr = {
       patternTransform: this.transformMatrix(),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
@@ -668,7 +688,7 @@ export class SVGPlot {
 
     const viewWidth = this.viewPoints[1][0] - this.viewPoints[0][0]
 
-    if (!points) points = parseInt(this.svgElement.getAttribute('width'))
+    if (!points) points = parseInt(this.svgElement.getAttribute('width')!)
 
     const domain = Vector.linspace(this.viewPoints[0][0] - viewWidth, this.viewPoints[1][0] + viewWidth, points*3).toArray()
 
@@ -695,7 +715,9 @@ export class SVGPlot {
       'stroke-width': '2px', 'vector-effect': 'non-scaling-stroke'
       //'stroke-width': `${1/((this.transform[0] + this.transform[3])/2)}`
     }
-    addChildElement(document.getElementById('plot-group'), 'path', attr)
+    const plot = document.getElementById('plot-group')
+    if (!plot) return
+    addChildElement(plot, 'path', attr)
 
     this.plots[fn] = {
       yBounds: [yMin, yMax],
@@ -706,7 +728,8 @@ export class SVGPlot {
   public deletePlot(fn: string) {
     if (fn in this.plots) {
       const path = document.getElementById(fn)
-      path.parentNode.removeChild(path)
+      if (!path) return
+      path.parentNode?.removeChild(path)
       delete this.plots[fn]
     }
   }
@@ -714,6 +737,7 @@ export class SVGPlot {
   public changeColor(fn: string, color: string) {
     if (fn in this.plots) {
       const path = document.getElementById(fn)
+      if (!path) return
       path.setAttribute('stroke', color)
       this.plots[fn].color = color
     }
@@ -752,7 +776,8 @@ export class SVGPlot {
       )
       if (redraw) {
         const path = document.getElementById(fn)
-        path.parentNode.removeChild(path)
+        if (!path) return
+        path.parentNode?.removeChild(path)
         const clr = this.plots[fn].color
         this.plot(fn, clr, true)
       }

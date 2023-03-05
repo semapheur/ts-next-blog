@@ -22,7 +22,7 @@ export default function useScrollspy(elements: HTMLElement[], options?: Options)
 
 		for (let e of entries) {
 			const id = e.target.getAttribute('id')
-			if (e.intersectionRatio > 0) {
+			if (e.intersectionRatio > 0 && id) {
 				active.push(id)
 				observer.unobserve(e.target)
 			}
@@ -35,9 +35,9 @@ export default function useScrollspy(elements: HTMLElement[], options?: Options)
 	// Memoize options for IntersectionObserver
 	const optionsMemo = useMemo(() => {
 		return {
-			root: options.root ?? null,
-			rootMargin: options.rootMargin ?? '0px 0px 0px 0px',
-			threshold: options.threshold ?? 0
+			root: options?.root ?? null,
+			rootMargin: options?.rootMargin ?? '0px 0px 0px 0px',
+			threshold: options?.threshold ?? 0
 		}
 	}, [options])
 

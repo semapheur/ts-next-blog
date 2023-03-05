@@ -109,7 +109,7 @@ export default class Chess {
 
       switch (char.toLowerCase()) {
         case 'p': case 'n': case 'b': case 'r': case 'q': case 'k': {
-          const piece = this.CharToPiece.get(char)
+          const piece = this.CharToPiece.get(char)!
           this.placePiece(piece.type, piece.color, square);
           square++
           break

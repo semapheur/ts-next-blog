@@ -1,13 +1,7 @@
 export default class Vector extends Array<number> {
-  //public components: number[]
-  //public readonly dimension: number
-
+ 
   constructor(...components: number[]) {
     super(...components)
-    //this.components = components
-    //this.dimension = components.length
-
-    const test = this[1]
   }
 
   get x(): number {
@@ -32,10 +26,13 @@ export default class Vector extends Array<number> {
   }
 
   get norm() : number {
-    return Math.sqrt(this.dot(this))
+    return Math.sqrt(this.dot(this)!)
   }
 
-  public coord(i: number): number {
+  public coord(i: number): number|undefined {
+    if (i > this.length) {
+      throw new Error(`Index ${i} is out of bounds on [0, ${this.length-1}]`)
+    }
     return this[i]
   }
 
@@ -49,11 +46,12 @@ export default class Vector extends Array<number> {
     return true
   }
 
-  public add(...vectors: Vector[]): Vector|null {
+  public add(...vectors: Vector[]): Vector {
     const components = [...this]
-
     for (const v of vectors) {
-      if (this.length !== v.length) return null
+      if (this.length !== v.length) {
+        throw new Error('Addition of vectors with different dimensions is not defined')
+      }
       for (let i in components) {
         components[i] += v[i]
       }
@@ -70,11 +68,13 @@ export default class Vector extends Array<number> {
     return new Vector(...components)
   }
 
-  public subtract(...vectors: Vector[]): Vector|null {
+  public subtract(...vectors: Vector[]): Vector {
     const components = [...this]
 
     for (const v of vectors) {
-      if (this.length !== v.length) return null
+      if (this.length !== v.length) {
+        throw new Error('Substraction of vectors with different dimensions is not defined')
+      }
       for (let i in components) {
         components[i] -= v[i]
       }
@@ -98,11 +98,13 @@ export default class Vector extends Array<number> {
   }
 
   public normalize(): Vector {
-    return this.scale(1/this.norm)
+    return this.scale(1 / this.norm)
   }
 
-  public dot(vector: Vector): number|null {
-    if (this.length !== vector.length) return null
+  public dot(vector: Vector): number {
+    if (this.length !== vector.length) {
+      throw new Error('Dot product of vectors with different dimensions is not defined')
+    }
 
     let dot = 0
     for (let i in this) {
@@ -111,9 +113,9 @@ export default class Vector extends Array<number> {
     return dot
   }
 
-  public cross(vector: Vector): Vector|null {
+  public cross(vector: Vector): Vector {
     if (this.length !== 3 || vector.length !== 3) {
-      return null
+      throw new Error('Cross product is only defined for 3-dimensional vectors')
     }
     const [x1, y1, z1] = [...this]
     const [x2, y2, z2] = [...this]
@@ -134,8 +136,10 @@ export default class Vector extends Array<number> {
     return result;
   }
 
-  public multiply(...vectors: Vector[]): Vector[]|null {
-    if (this.length !== vectors.length) return null;
+  public multiply(...vectors: Vector[]): Vector[] {
+    if (this.length !== vectors.length) {
+      throw new Error('Elementwise multiplication of vectors with different dimensions is not definedd')
+    }
     
     return [...vectors].map((v, i) => {
       return v.scale(this[i])
@@ -155,13 +159,23 @@ export default class Vector extends Array<number> {
   }
 
   public static distance(a: Vector, b: Vector): number {
+    if (a.length !== b.length) {
+      throw new Error('Distance of vectors with different dimensions is not defined')
+    }
+
     return a.subtract(b).norm
   }
 
-  public static add(a: Vector[], b: Vector[]): Vector[]|null {
-    if (a.length !== b.length) return null;
+  public static add(a: Vector[], b: Vector[]): Vector[] {
+    if (a.length !== b.length) {
+      throw new Error('Elementwise addition of vectors is not defined')
+    }
 
-    return [...a].map((v, i) => { return v.add(b[i]) })
+    const result = Array.from(a)
+    for (let i=0; i < result.length; i++) {
+      result[i] = result[i].add(b[i])
+    }
+    return result
   }
 
   public static linspace(start: number, stop: number, steps: number): Vector {
@@ -175,31 +189,37 @@ export default class Vector extends Array<number> {
   }
 
   public static line(a: Vector, b: Vector, numPoints: number): Vector[] {
-  const line = Array<Vector>(numPoints)
-  line[0] = a;
-  line[line.length - 1] = b
+    if (a.length !== b.length) {
+      throw new Error('Endpoints of a line must have same dimension')
+    }
 
-  const step = 1/numPoints
-  for (let t = 1; t < line.length - 1; t++) {
-    line[t] = a.scale(1 - t * step).add(b.scale(t * step))
-  }
-  return line
+    const line = Array<Vector>(numPoints)
+    line[0] = a;
+    line[line.length - 1] = b
+
+    const step = 1/numPoints
+    for (let t = 1; t < line.length - 1; t++) {
+      line[t] = a.scale(1 - t * step).add(b.scale(t * step))!
+    }
+    return line
 }
 }
 
-export class Vectors {
-  public components: Vector[]
-  public readonly length: number
+export class Curve extends Array<Vector> {
 
   constructor(...vectors: Vector[]) {
-    this.components = vectors
-    this.length = vectors.length
+    for (let i=0; i < vectors.length-1; i++) {
+      if (vectors[i].length !== vectors[i+1].length) {
+        throw new Error('Points in a curve must have common dimension')
+      }
+    }
+    super(...vectors)
   }
 
-  public add(points: Vectors): this {
+  public add(points: Curve): this|null {
     if (this.length !== points.length) return null
-    for (let p in this.components) {
-      this.components[p].add(points.components[p])
+    for (let p in this) {
+      this[p].add(points[p])
     }
     return this
   }

@@ -13,7 +13,7 @@ function circlePoints(radius: number, numPoints: number, origin: Vector): Vector
   return points.map((p,i) => {
     const theta = i * angleStep
     const point = new Vector(Math.cos(theta), Math.sin(theta))
-    return p.add(point.scale(radius))
+    return p.add(point.scale(radius)) as Vector
   })
 }
 
@@ -62,15 +62,17 @@ type Props = {
 }
 
 export default function Blob({className}: Props) {
-  const requestRef = useRef<number>(null)
+  const requestRef = useRef<number>()
   const pathRef = useRef<SVGPathElement>(null)
   const pointsRef = useRef<Vector[]>(points)
   const offsetsRef = useRef<Vector[]>(offsets)
   const hueOffsetRef = useRef<number>(0)
-  const stopRef1 = useRef<SVGStopElement>();
-  const stopRef2 = useRef<SVGStopElement>()
+  const stopRef1 = useRef<SVGStopElement>(null);
+  const stopRef2 = useRef<SVGStopElement>(null)
 
   const animate: FrameRequestCallback = useCallback((time: number) => {
+    if (!pathRef.current) return 
+
     const path = pathRef.current
     path.setAttribute('d', svgCatmullRom(pointsRef.current, 1, true))
 
@@ -102,7 +104,7 @@ export default function Blob({className}: Props) {
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(requestRef.current)
+    return () => cancelAnimationFrame(requestRef.current as number)
   }, [animate])
   
   return (

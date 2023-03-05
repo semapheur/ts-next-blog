@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { drawHill, ValueNoise } from 'utils/noise';
 import { brownianBridge } from 'utils/random';
 import { svgCatmullRom } from 'utils/svg';
-import Vector from 'utils/vector';
+import Vector, { Curve } from 'utils/vector';
 
 const colorMatrix = [
   '0 0 0 9 -4',
@@ -16,7 +16,7 @@ const colorMatrix = [
 
 const valNoise = new ValueNoise(2011, 256)
 
-function drawMountain(wayPoints: Vector[], numPoints: number[], amplitude: number[]) {
+function drawMountain(wayPoints: Curve, numPoints: number[], amplitude: number[]): Curve {
   const result: Vector[] = []
 
   for (let i = 0; i < wayPoints.length-1; i++) {
@@ -27,7 +27,7 @@ function drawMountain(wayPoints: Vector[], numPoints: number[], amplitude: numbe
     }
     result.push(...segment)
   }
-  return result
+  return new Curve(...result)
 }
 
 export default function Landscape() {
@@ -42,7 +42,13 @@ export default function Landscape() {
 
   useEffect(() => {
 
-    if (!size) return
+    if (!size || 
+      !hill1Ref.current || 
+      !hill2Ref.current || 
+      !hill3Ref.current || 
+      !hill4Ref.current || 
+      !hill5Ref.current
+    ) return
 
     const {height: h, width: w} = size
 
@@ -53,23 +59,23 @@ export default function Landscape() {
     const hill5 = hill5Ref.current
     
     // Hill 1
-    let wp = [
+    let wp = new Curve(
       new Vector(0, 0.8*h),
       new Vector(0.5*w, 0.9*h),
       new Vector(w, 0.8*h)
-    ]
+    )
     let hill = drawHill(wp, valNoise, [5, 5], [0.03*h, 0.03*h], [10, 10], [0,0], [1, 1])
     let d = svgCatmullRom(hill, 0.7) + `L${w},${h}L0,${h}Z`
     hill1.setAttribute('d', d)
 
     // Hill 2
-    wp = [
+    wp = new Curve(
       new Vector(0, 0.5*h),
       new Vector(0.1*w, 0.6*h),
       new Vector(0.5*w, 0.85*h),
       new Vector(0.9*w, 0.6*h),
       new Vector(w, 0.5*h)
-    ]
+    )
     let sparse = Math.ceil(w/64)
     let dense = sparse*2
     hill = drawMountain(wp, 
@@ -80,13 +86,13 @@ export default function Landscape() {
     hill2.setAttribute('d', d)
 
     // Hill 3
-    wp = [
+    wp = new Curve(
       new Vector(0, 0.6*h),
       new Vector(0.2*w, 0.6*h),
       new Vector(0.5*w, 0.80*h),
       new Vector(0.8*w, 0.6*h),
       new Vector(w, 0.5*h)
-    ]
+    )
     sparse = Math.ceil(w/128)
     dense = sparse*2
     hill = drawMountain(wp, 
@@ -97,13 +103,13 @@ export default function Landscape() {
     hill3.setAttribute('d', d)
 
     // Hill 4
-    wp = [
+    wp = new Curve(
       new Vector(0, 0.4*h),
       new Vector(0.1*w, 0.5*h),
       new Vector(0.5*w, 0.75*h),
       new Vector(0.9*w, 0.5*h),
       new Vector(w, 0.4*h)
-    ]
+    )
     sparse = Math.ceil(w/256)
     dense = sparse*2
     hill = drawMountain(wp, [sparse, dense, dense, sparse], 
@@ -112,13 +118,13 @@ export default function Landscape() {
     hill4.setAttribute('d', d)
 
     // Hill 5
-    wp = [
+    wp = new Curve(
       new Vector(0, 0.7*h),
       new Vector(0.3*w, 0.7*h),
       new Vector(0.5*w, 0.5*h),
       new Vector(0.7*w, 0.7*h),
       new Vector(w, 0.7*h)
-    ]
+    )
     sparse = Math.ceil(w/128)
     dense = sparse*8
     hill = drawMountain(wp, 

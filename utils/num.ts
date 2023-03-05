@@ -2,12 +2,11 @@ export function sum(arr: number[], start?: number, stop?: number): number {
 
   if (!start) start = 0
 
-  if (typeof stop === undefined || stop >= arr.length) {
-    console.log(stop)
+  if (typeof stop === undefined || stop! >= arr.length) {
     stop = arr.length - 1
   }
   let sum = 0
-  for (let i = start; i <= stop; i++) {
+  for (let i = start; i <= stop!; i++) {
     sum += arr[i]
   }
   return sum

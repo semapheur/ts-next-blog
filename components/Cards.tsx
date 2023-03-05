@@ -19,6 +19,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(function Card({children}, ref
   const cardRef = useForwardRef<HTMLDivElement>(ref)
 
   const handleTilt = (e: MouseEvent) => {
+    if (!cardRef.current) return
 
     const rect = cardRef.current.getBoundingClientRect()
     
@@ -31,6 +32,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(function Card({children}, ref
     cardRef.current.style.transform = `perspective(${rect.width}px) rotateX(${rotateY}deg) rotateY(${rotateX}deg) scale3d(1,1,1)`
   }
   const resetTilt = (e: MouseEvent) => {
+    if (!cardRef.current) return
+
     const rect = cardRef.current.getBoundingClientRect()
     cardRef.current.style.transform = `perspective(${rect.width}px) rotateX(0deg) rotateY(0deg)`
   }

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 async function copyCode(block: HTMLPreElement, button: HTMLButtonElement) {
   let code = block.querySelector('code');
+  if (!code) return
   let text = code.innerText;
 
   await navigator.clipboard.writeText(text);

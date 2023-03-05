@@ -3,10 +3,18 @@ import Vector from 'utils/vector'
 function catmullRomSpline(
   p0: Vector, p1: Vector, p2: Vector, p3: Vector,
   numPoints: number, alpha: number = 0.5 
-) {
+): Vector[] 
+{
+  if (
+    p0.length !== p1.length || 
+    p1.length !== p2.length ||
+    p2.length !== p3.length
+  ) {
+    throw new Error ('Spline points must have same dimension')
+  }
 
   function tj(ti: number, pi: Vector, pj: Vector) {
-    return ti + Vector.distance(pj, pi)**alpha
+    return ti + Vector.distance(pj, pi)!**alpha
   }
 
   const t0 = 0.0

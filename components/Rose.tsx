@@ -29,7 +29,7 @@ function roseGeometry(p5: p5Type) {
     p5.background(230, 50, 15)
     p5.orbitControl(4, 4)
 
-    const v = [];
+    const v: Array<Array<p5Type.Vector>> = [];
     //const v = Array<Array<p5Type.Vector>>(rows).fill(
     //  Array<p5Type.Vector>(cols).fill(p5.createVector(0,0,0)));
 

@@ -6,7 +6,7 @@ type Checker = {
   light: string,
 }
 
-function squareToCoord(square: string | number): [number, number] {
+function squareToCoord(square: string | number): [number, number] | null {
   
   if (typeof square === 'number') {
     const x = square % 8
@@ -372,6 +372,7 @@ export class SVGChess {
     // Chess board
     addChildElement(this.svgElement, 'g', {id: 'board-group'})
     const boardGroup = document.getElementById('board-group')
+    if (!boardGroup) return
     const boardRect = {x: '0', y: '0', width: '8', height: '8',
       fill: 'url(#checker-pattern)'
     }
@@ -384,10 +385,12 @@ export class SVGChess {
   public placePiece(piece: string, square: string | number) {
     const scale = (1/45).toString()
     const coord = squareToCoord(square)
+    if (!coord) return
     const transform = `translate(${coord[0]},${coord[1]}) scale(${scale}) `
 
     const element = drawPiece(piece, transform)
     const pieces = document.getElementById('pieces-group')
+    if (!pieces) return
     pieces.appendChild(element)
   }
 

@@ -11,7 +11,7 @@ import Vector from 'utils/vector'
 const valNoise = new ValueNoise(2011, 256)
 
 export default function WaveFooter() {
-  const requestRef = useRef<number>(null)
+  const requestRef = useRef<number|null>(null)
   const offsetRef = useRef<number>(0)
   const wrapRef = useRef<HTMLElement>(null)
   const waveRef = useRef<SVGPathElement>(null)
@@ -19,6 +19,8 @@ export default function WaveFooter() {
   const animate: FrameRequestCallback = useCallback((time: number) => {
     const wrap = wrapRef.current
     const wave = waveRef.current
+
+    if (!wrap || !wave) return
 
     const height = wrap.getBoundingClientRect().height
     const width = wrap.getBoundingClientRect().width
@@ -38,7 +40,7 @@ export default function WaveFooter() {
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(requestRef.current)
+    return () => cancelAnimationFrame(requestRef.current!)
   }, [animate])
   
   return (

@@ -16,6 +16,8 @@ export default function Tex({errorColor, math, children, block, renderError, ...
   const [state, setState] = useState<{[key: string]: string | ReactElement }>({innerHtml: ''})
 
   useEffect(() => {
+    if (!content) return
+    
     try {
       const innerHtml = KaTeX.renderToString(content, {
         displayMode: !!block,

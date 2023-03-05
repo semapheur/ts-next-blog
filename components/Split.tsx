@@ -4,10 +4,12 @@ import useEventListener from 'hooks/useEventListener'
 import React, { CSSProperties, forwardRef, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import {findAllIndices, sum} from 'utils/num'
 
+type SizeFormat = string | string[] | number[]
+
 type SplitProps = {
   split: 'row' | 'column',
   className: string,
-  defaultSizes?: string | string[] | number[],
+  defaultSizes?: SizeFormat,
   minSizes: number[],
   children: ReactNode[]
 }
@@ -190,7 +192,7 @@ export default function Split(props: SplitProps) {
   )
 }
 
-function setDefaultSizes(defaultSizes: string | string[] | number[], panes: number, splitSize: number): number[] {
+function setDefaultSizes(defaultSizes: SizeFormat|undefined, panes: number, splitSize: number): number[] {
   
   function relativeSizes(sizes: number[], total: number, ceil: number) {
 

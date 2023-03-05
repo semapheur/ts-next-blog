@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function ChessFig({fen, caption}: Props) {
-  const wrapRef = useRef<HTMLDivElement>()
+  const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGChess>()
 
   useEffect(() => {

@@ -98,8 +98,8 @@ function wrap(svgText: SVGTextElement, width: number) {
 
   const lineHeight = svgText.getBBox().height
   
-  const words = svgText.textContent.split(/(?<=\)?)\s(?=\)?)/)
-  svgText.removeChild(svgText.firstChild)
+  const words = svgText.textContent!.split(/(?<=\)?)\s(?=\)?)/)
+  svgText.removeChild(svgText.firstChild!)
   
   for (let i = 0; i < words.length; i++) {
     let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
@@ -114,22 +114,23 @@ function wrap(svgText: SVGTextElement, width: number) {
 }
 
 export default function Greeting() {
-  const wrapRef = useRef<HTMLDivElement>()
-  const textRef = useRef<SVGTextElement>()
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<SVGTextElement>(null)
 
   useEffect(() => {
-    if (!textRef.current || !wrapRef.current) return
     
     const interval = setInterval(() => {
-      textRef.current.textContent = words.get(randomKey(words))
+      if (!textRef.current || !wrapRef.current) return
+
+      textRef.current.textContent = words.get(randomKey(words))!
       wrap(
-        textRef.current, 
-        wrapRef.current.getBoundingClientRect().width
+        textRef.current!, 
+        wrapRef.current!.getBoundingClientRect().width
       )
-      textRef.current.classList.add('animate-textstroke')
+      textRef.current!.classList.add('animate-textstroke')
 
       setTimeout(() => {
-        textRef.current.classList.remove('animate-textstroke')
+        textRef.current!.classList.remove('animate-textstroke')
       }, 9100)
     }, 9500)
 

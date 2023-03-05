@@ -9,14 +9,14 @@ import { MDXPost } from 'utils/types';
 
 export default async function handler<T>(req: NextApiRequest, res: NextApiResponse<MDXPost<T>>) {
 
-    const query = req.query.q.toString(); //.split('/')
+  const query = req.query.q!.toString(); //.split('/')
 
-    const filePath = path.join(process.cwd(), 'content', 'notes', query + '.mdx');
-    const post = fs.readFileSync(filePath)
-    const {content} = matter(post);
-    const result = await serializeMDX<T>(content) as MDXPost<T>;
+  const filePath = path.join(process.cwd(), 'content', 'notes', query + '.mdx');
+  const post = fs.readFileSync(filePath)
+  const {content} = matter(post);
+  const result = await serializeMDX<T>(content) as MDXPost<T>;
 
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json(result);
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
 }
