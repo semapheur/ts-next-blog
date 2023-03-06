@@ -10,8 +10,18 @@ import { NoteMatter } from 'utils/types';
 
 const Toc = dynamic(() => import('./Toc'), {
   ssr: false,
-  loading: () => <div className='h-full flex justify-center'><Loader width='10%'/></div>
+  loading: () => (
+    <div className='w-10 h-10 lg:w-full lg:h-full 
+      absolute lg:static top-[10%] right-0 z-[1] lg:z-auto
+      grid place-items-center cursor-pointer lg:hidden
+      bg-primary/50 backdrop-blur-sm lg:backdrop-blur-none
+      -mr-2 pr-1 lg:mr-0 lg:pr-0 rounded-l-full lg:rounded-none
+      shadow-tlb dark:shadow-black/50 lg:shadow-none'>
+      <Loader width='75%'/>
+    </div>
+  )
 })
+
 
 type Params = {
   subject: string,
