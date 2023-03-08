@@ -22,7 +22,6 @@ const Toc = dynamic(() => import('./Toc'), {
   )
 })
 
-
 type Params = {
   subject: string,
   slug: string
