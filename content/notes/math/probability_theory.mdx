@@ -476,7 +476,7 @@ $$
   \mathbb{P}\{\omega\in\Omega\;|\; X_n(\omega)\xrightarrow{n\to\infty} X(\omega)\} = 1
 $$
 
-Convergence with probability $1$ (almost surely) is called strong convergence. A weaker convergence criteria is that $X_n\xrightarrow{n\to\infty}X$ *in probability* if
+Convergence with probability $1$ (almost surely) is called strong convergence. A weaker convergence criteria is that $X_n\xrightarrow[\textrm{i.p.}]{n\to\infty} X$ *in probability* if
 
 $$
   \forall\epsilon>0: \mathbb{P}\left[d(X_n,X)>\epsilon\right]\xrightarrow{n\to\infty} 0
@@ -1666,7 +1666,7 @@ $$
 ## Conditional moments
 
 <MathBox title='Conditional expectation' boxType='definition'>
-Suppose that $X\in L^1(\Omega,\mathcal{F},\mathbb{P})$ an integrable random variable with $\mathbb{E}(|X|) < \infty$, and let $\mathcal{G}\subseteq\mathcal{F}$ be a sub-$\sigma$-algebra of $\mathcal{F}$. The conditional expectation of $X$ given $\mathcal{G}$ is a $\mathcal{G}$-measurable random variable $\mathbb{E}(X|\mathcal{G})$ satisfying
+Suppose that $X\in L^1(\Omega,\mathcal{F},\mathbb{P})$ is an integrable random variable with $\mathbb{E}(|X|) < \infty$, and let $\mathcal{G}\subseteq\mathcal{F}$ be a sub-$\sigma$-algebra of $\mathcal{F}$. The conditional expectation of $X$ given $\mathcal{G}$ is a $\mathcal{G}$-measurable random variable $\mathbb{E}(X|\mathcal{G})$ satisfying
 
 $$
 \begin{gather*}
@@ -1680,6 +1680,8 @@ The second condition can be equivalently reformulated as
 $$
   \mathbb{E}[\mathbb{E}(X|\mathcal{G})\mathbf{1}_A] = \mathbb{E}(X\mathbf{1}A)\quad \forall A\in\mathcal{G}
 $$
+
+If $X\in L^2(\Omega,\mathcal{F},\mathbb{P})$ is square integrable, then the conditional expectation $\mathbb{E}(X|\mathcal{G})$ is defined as the orthogonal projection of $X$ onto the closed subspace $L^2(\Omega,\mathcal{F},\mathbb{P})$. The orthogonal projection $\mathbb{E}(X|\mathcal{G})$ minimizes the squared difference $\mathbb{E}(X - Y^2$ among all random variables $Y\in L^2(\Omega,\mathcal{G},\mathbb{P})$.
 
 <details>
 <summary>Proof</summary>
@@ -2410,3 +2412,93 @@ In the limit $\lambda \to 0$, there exists $\xi \in [0, 1]$ such that
 $$
   \min_{(A, B) \in \mathbb{R}^2} \int_0^1 \left[ \Phi H(t) + Ae^{t/\sqrt{\lambda}} + Be^{-t/\sqrt{\lambda}} - H(t) \right]^2 \mathrm{d}t \leq 4\lambda^2 H''(\xi)^2 + \mathcal{O}(\lambda^2)
 $$
+
+# Random samples
+
+<MathBox title='Law of large numbers' boxType='theorem'>
+Let $(X_i)_{i=1}^{n\in\mathbb{N})$ be a sequence of independent and identically distributed integrable random variables with expected value $\mathbb{E}(X_i) = \mu$. Suppose that $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$.
+
+**Weak law of large numbers (Kinchin's law):** The sample average $\bar{X}_i$ converges in probability to $\mu$, i.e. $\bar{X}_n \xrightarrow[\textrm{i.p.}]{n\to\infty} \mu$, or for every $\varepsilon > 0$
+
+$$
+\begin{gather*}
+  \lim_{n\to\infty} \mathbb{P}\left(|\bar{X}_n - \mu| < \varepsilon \right) = 1 \\
+  \iff \lim_{n\to\infty} \mathbb{P}\left(|\bar{X}_n - \mu| > \varepsilon \right) = 0
+\end{gather*}
+$$
+
+**Strong law of large numbers (Kolmogorov's law):** The sample average $\bar{X}_i$ converges almost surely to $\mu$, i.e. $\bar{X}_n \xrightarrow[\textrm{a.s.}]{n\to\infty}_ \mu$, or
+
+$$
+  \mathbb{P}\left(\lim_{n\to\infty} \bar{X}_n = \mu \right) = 1
+$$
+
+<details>
+<summary>Proof</summary>
+
+The weak law follows from Chebyshev's inequality
+
+$$
+  \mathbb{P}\left(|\bar{X}_n - \mu| > \varepsilon \right)\leq\frac{\mathrm{var}(\bar{X}_n)}{\varepsilon^2} = \frac{\sigma^2}{n\varepsilon^2} \xrightarrow{n\to\infty} 0
+$$
+
+The strong law is proved in three major steps. The first step is to show that with probability $1$ that $\bar{X}_{n^2} \xrightarrow{n\to\infty}\mu$. From Chebyshev's inequality,
+
+$$
+  \mathbb{P}\left(|\bar{X}_{n^2} - \mu| > \varepsilon \right)\leq\frac{\mathrm{var}(\bar{X}_n)}{\varepsilon^2} = \left(\frac{\sigma}{n\varepsilon}\right)^2 \xrightarrow{n\to\infty} 0
+$$
+
+Since $\sum_{n\mathbb{N}} \left(\frac{\sigma}{n\varepsilon}\right)^2 < \infty$, it follows from the first Borelli-Cantelli lemma that for every $\varepsilon > 0$
+
+$$
+  \mathbb{P}\left(|\bar{X}_{n^2} - \mu| > \varepsilon \textrm{ for infinitely many }n\in\mathbb{N}_+ \right) = 0
+$$
+
+From Boole's inequality it follows that for some rational $\varepsilon > 0$
+
+$$
+  \mathbb{P}\left(|\bar{X}_{n^2} - \mu| > \varepsilon \textrm{ for infinitely many }n\in\mathbb{N}_+ \right \right) = 0
+$$
+
+showing that $\bar{X}_{n^2}$ converges almost surely to $\mu$.
+
+In the second step, we show that if the underlying sampling variable is nonnegative, so that $\mathbb{P}(X\geq 0) = 1$, then $\bar{X}_n\xrightarrow[\textrm{a.s.}]{n\to\infty}\mu$. Let $Y_n = \sum_{i=1}^n X_i$ so that $\bar{X}_n = Y_n / n$. Note first that $Y_n$ is almost surely increasing in $n$. For $n\in\mathbb{N}$ be the unique positive integer such that $k_n^2 \leq n < (k_n + 1)^2$. From the increasing propery it follows that (almost surely)
+
+$$
+  \frac{Y_{k_n^2}}{(k_n + 1)^2} \leq \frac{Y_n}{n} \leq \frac{Y_{(k_n + 1)^2}}{k_n^2}
+$$
+
+From the first step
+
+$$
+  \frac{Y_{k_n^2}}{(k_n + 1)^2} = \frac{Y_{k_n^2}}{k_n^2}\frac{k_n^2}{(k_n + 1)^2} \xrightarrow[\textrm{a.s.}]{n\to\infty}\mu
+$$
+
+Similarly,
+
+$$
+  \frac{Y_{(k_n + 1)^2}}{k_n^2} = \frac{Y_{(k_n + 1)^2}}{(k_n + 1)^2}\frac{(k_n + 1)^2}{k_n^2} \xrightarrow[\textrm{a.s.}]{n\to\infty}\mu
+$$
+
+By the squeeze theorem for limits it follows that $\bar{X}_n = Y_{n}/n \xrightarrow[\textrm{a.s.}]{n\to\infty}\mu$.
+
+Finally, we relax the condition that the underlying sampling variable is $X$ is nonnegative. From step two, it follows that
+
+$$
+\begin{align*}
+  \frac{1}{n}\sum_{i=1}^n X_i^+ &\xrightarrow[\textrm{a.s.}]{n\to\infty} \mathbb{E}(X^+) \\
+  \frac{1}{n}\sum_{i=1}^n X_i^- &\xrightarrow[\textrm{a.s.}]{n\to\infty} \mathbb{E}(X^-)
+\end{align*}
+$$
+
+From the linearity of expected value
+
+$$
+\begin{align*}
+  \frac{1}{n}\sum_{i=1}^n X_i &= \frac{1}{n}\sum_{i=1}^n \left(X_i^+ - X_i^+\right) \\
+  &= \frac{1}{n}\sum_{i=1}^n X_i^+ - \frac{1}{n}\sum_{i=1}^n X_i^- \\
+  &\xrightarrow[\textrm{a.s.}]{n\to\infty} \mathbb{E}(X^+) - \mathbb{E}(X^+) = \mathbb{E}(X^+ - X^-) = \mathbb{E}(X) = \mu
+\end{align*}
+$$
+</details>
+</MathBox>
