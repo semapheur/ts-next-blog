@@ -2510,7 +2510,7 @@ Suppose that $\mathbf{X} = (X_n)_{n\in\mathbb{N}}$ is a sequence of independent,
 </MathBox>
 
 <MathBox title='Properties of partial sum processes' boxType='proposition'>
-Let $\mathbf{Y} = (Y_n)_{n\in\mathbb{N}^+}$ be a partial sum process for the underlying random sequence $\mathbf{X} = (X_n)_{n\in\mathbb{N}}$ with mean $\mu$ and variance $\sigma^2$. If $m, n\in\mathbb{N}$ with $m\leq n$ then
+Let $\mathbf{Y} = (Y_n)_{n\in\mathbb{N}^+}$ be a partial sum process for a sample variable $X$ with mean $\mu$, variance $\sigma^2$ and probability density function $f$. If $m, n\in\mathbb{N}$ with $m\leq n$ then
 
 1. $Y_n - Y_m$ has the same distribution as $Y_{n-m}$, implying that $\mathbf{Y}$ has stationary increments
 2. if $(n_i)_{i\in\mathbb{N}}$ is an increasing sequence then $(Y_{n_i} - Y_{n_{i-i}})_{i\in\mathbb{N}}$ is a sequence of independent random variables, implying that $\mathbb{Y}$ has independent increments
@@ -2519,7 +2519,16 @@ Let $\mathbf{Y} = (Y_n)_{n\in\mathbb{N}^+}$ be a partial sum process for the und
 5. $\mathrm{cov}(Y_m, Y_n) = m\sigma^2$
 6. $\mathrm{cor}(Y_m, Y_n) = \sqrt{\frac{m}{n}}$
 7. $\mathbb{E}(Y_m Y_n) = m\sigma^2 + mn\mu^2$
-8. If $\mathbb{X}$ has moment generating function $G$, then $Y_n$ has moment generating function $G^n$
+8. the probability density function of $Y_n$ is the convolution power of $f$ of order $n$, i.e. $f^{*n}$
+  a. if $(n_i)_{i=1}^{k\in\mathbb{N}}$ is a strictly increasing sequence then $(Y_{n_i})_{i=1}^{k\in\mathbb{N}}$ has joint probability density function for $\mathbf{y} = (y_i)_{i=1}^{k\in\mathbb{N}} \in\mathbb{R}^k$
+
+$$
+\begin{align*}
+  f_{n_1, n_2,\dots,n_k} (\mathbf{y}) &= f^{*n_1}(y_1)\prod_{i=2}^k f^{*(n_i - n_{i-1})}(y_i - y_{i-1})
+\end{align*}
+$$
+
+8. if $\mathbb{X}$ has moment generating function $G$, then $Y_n$ has moment generating function $G^n$
 
 <details>
 <summary>Proof</summary>
@@ -2563,6 +2572,68 @@ $$
   \mathbb{E}(Y_m Y_n) = \mathrm{cov}(Y_m, Y_n) + \mathbb{E}(Y_m)\mathbb{E}(Y_n) = m\sigma^2 + m\mu n\mu
 $$
 
-7. This follows from the fact that the generating function of a sum of independent variables is the product of the generating functions of the terms.
+8. The probability density function (PDF) of a sum of independent variables is the convolution of the PDFs of the terms.
+
+9. This follows from the fact that the generating function of a sum of independent variables is the product of the generating functions of the terms.
+</details>
+</MathBox>
+
+## Central limit theorem
+
+<MathBox title='Central limit theorem'>
+Let $\mathbf{Y}$ be a partial sum process of a sample variable $X$ with mean $\mu$, variance $\sigma^2$ and characteristic function
+
+$$
+  \chi_n (t) = \mathbb{E}\left[\exp\left(it\frac{X - \mu}{\sigma} \right)\right],\quad t\in\mathbb{R}
+$$
+
+Define the common standard score 
+
+$$
+  Z_n = \frac{Y_n - n\mu}{\sqrt{n}\sigma} = \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}}
+$$
+
+with characteristic function
+
+$$
+  \chi_n (t) = \mathbb{E}(e^{itZ_n}),\quad t\in\mathbb{R}
+$$
+
+In the limit $n\to\infty$, the distribution of $Z_n$ converges to the standard normal distribution, i.e.
+
+$$
+  \lim_{n\to\infty} \chi_n (t) = e^{-t^2/2}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Noting that
+
+$$
+  Z_n &= \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} = \sum_{i=1}^n \frac{X_i - \mu}{\sqrt{n}\sigma}
+$$
+
+we may rewrite
+
+$$
+\begin{align*}
+  \chi_n (t) &= \mathbb{E}\left[\exp\left(itZ_n\right)\right] = \mathbb{E}\left[\exp\left(i\frac{t}{\sqrt{n}}\sum_{i=1}^n \frac{X_i - \mu}{\sigma} \right)\right] \\
+  &= \mathbb{E}\left[\prod_{i=1}^n\exp\left(i\frac{t}{\sqrt{n}} \frac{X_i - \mu}{\sigma} \right)\right] = \prod_{i=1}^n \mathbb{E}\left[\exp\left(i\frac{t}{\sqrt{n}} \frac{X_i - \mu}{\sigma} \right)\right] \\
+  &= \chi^n \left(\frac{t}{\sqrt{n}}\right)
+\end{align*}
+$$
+
+Noting that $\chi(0)=1$, $\chi'(0)=0$, $\chi''(0) = -1$, the second order Taylor expansion of $chi\left(\frac{t}{\sqrt{n}}\right)$ about $t=0$ is
+
+$$
+  \chi\left(\frac{t}{\sqrt{n}}\right) = 1 - \frac{t^2}{2n} + o\left(\frac{t^2}{n} \right)
+$$
+
+In the limit $n\to\infty$, the higher order terms $o\left(\frac{t^2}{n}\right)$ vanish and noting that $e^x = \lim_{n\to\infty} \left(1 + \frac{x_n}{n} \right)^n$, we get
+
+$$
+  \lim_{n\to\infty} \chi^n \left(\frac{t}{\sqrt{n}}\right) = e^{-\frac{t^2}{2}}
+$$
 </details>
 </MathBox>
