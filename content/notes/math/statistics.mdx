@@ -222,7 +222,7 @@ $$
 
 ## Central limit theorem
 
-<MathBox title='Central limit theorem'>
+<MathBox title='Central limit theorem' boxType='theorem'>
 Let $\mathbf{Y}$ be a partial sum process of a sample variable $X$ with mean $\mu$, variance $\sigma^2$ and characteristic function
 
 $$
@@ -278,6 +278,28 @@ $$
   \lim_{n\to\infty} \chi^n \left(\frac{t}{\sqrt{n}}\right) = e^{-\frac{t^2}{2}}
 $$
 </details>
+</MathBox>
+
+## Sample moments
+
+### Sample mean
+
+<MathBox title='Sample mean' boxType='definition'>
+Suppose that $\mathbf{x}\in S\subseteq\mathbb{R}^n$ is a sample of size $n\in\mathbb{N}^+$ from a real-valued variable. The *sample mean* is simply the arithmetic average of the sample values
+
+$$
+  m \equiv \bar{x} := \frac{1}{n}\sum_{i=1}^n x_i
+$$
+</MathBox>
+
+### Sample variance
+
+<MathBox title='Sample mean' boxType='definition'>
+Suppose that $\mathbf{x}\in S\subseteq\mathbb{R}^n$ is a sample of size $n\in\mathbb{N}^+$ from a real-valued variable. The *sample variance* is defined as the mean square deviation
+
+$$
+  s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - m)^2
+$$
 </MathBox>
 
 # Point estimation
@@ -367,26 +389,142 @@ $$
 
 ## The method of moments
 
+Consider a statistical experiment with an observable real random value $X$. The distribution of $X$ has $k$ unknown real parameters $\boldsymbol{\theta} = (\theta_i)_{i=1}^k\in\Theta\subseteq\mathbb{R}^k$. Repeating the experiment $n$ times generates a random sample of size $n$ from the distribution of $X$ in the form $\mathbf{X} = (X_i)_{i=1}^n$. Thus, $\mathbf{X}$ is a sequence of independent random variables, each with the distribution of $X$. 
+
+The method of moments is a technique fro constructing estimators of the parameters that is based on matching the sample moments with the corresponding distribution moments. The $j$-th moment of $X$ about $0$ is a function of $\boldsymbol{\theta}$
+
+$$
+  \mu^{(j)}(\boldsymbol{\theta}) = \mathbb{E}(X^j),\quad j\in\mathbb{N}^+
+$$
+
+where $\mu^{(1)}(\boldsymbol{\theta})$ is just the mean of $X$. The $j$-th sample moment about $0$ takes the form
+
+$$
+  M^{(j)}(\mathbf{X}) = \frac{1}{n}\sum_{i=1}^n X_i^j
+$$
+
+where $M^{(1)}(\mathbf{X})$ is the sample mean $\bar{X}_n$.
+
+To construct the method of moments estimators $\mathbf{W} = (W_i)_{i=1}^k$ for the parameters $\boldsymbol{\theta} = (\theta_i)_{i=1}^k$ respectively, we consider the equations
+
+$$
+  \mu^{(j)}(\mathbf{W}) = M^{(j)}(\mathbf{X})
+$$
+
+consecutively for $j$ until we are able to solve for $\mathbf{W}$ in terms of $M^{(j)}$.
+
 ## Maximum likelihood estimator
 
 <MathBox title='Likelihood function' boxType='definition'>
-Suppose that $\mathbf{X}\in S$ is an observable random variable for a statistical experiment, depending on an unknown parameter $\theta\in\Theta$. Let $f_\theta$ denote the probability density function of $\mathbf{X}$ for $\theta$. The likelihood function at $\mathbf{x}\in S$ is the function $L_\mathbf{x}:\Theta\to[0,\infty)$ given by
+Suppose that $\mathbf{X}\in S$ is an observable random variable for a statistical experiment, depending on unknown parameters $\boldsymbol{\theta} = (\theta_i)_{i=1}^{k\in\mathbb{N}}\in\Theta\subseteq\mathbb{R}^k$. Let $f_\boldsymbol{\theta}$ denote the probability density function of $\mathbf{X}$ for $\boldsymbol{\theta}$. The likelihood function at $\mathbf{x}\in S$ is the function $L_\mathbf{x}:\Theta\to[0,\infty)$ given by
 
 $$
-  L_\mathbf{x} (\theta) = f_\theta(\mathbf{x})
+  L_\mathbf{x} (\boldsymbol{\theta}) = f_\boldsymbol{\theta}(\mathbf{x})
 $$
 
 The logarithm of the likelihood function, called log-likelihood function, at $\mathbf{x}\in S$ is the function $\ln L_\mathbf{x}$ given by
 
 $$
-  \ln L_\mathbf{x}(\theta) = \ln f_\theta(\mathbf{x})
+  \ln L_\mathbf{x}(\boldsymbol{\theta}) = \ln f_\boldsymbol{\theta}(\mathbf{x})
 $$
 
 The likelihood function is the function obtained by reversing the roles of $\mathbf{x}$ and $\theta$ in the probability density function, i.e. we view $\theta$ as the variable and $\mathbf{x}$ as the given information.
 </MathBox>
 
 <MathBox title='Maximum likelihood estimator' boxType='definition'>
-Suppose that the maximum value of $L_\mathbf{x}$ or $\ln L_\mathbf{x}$ occurs at $u(\mathbf{x})\in\Theta$ for each $\mathbf{x}\in S$. Then the statistic $u(\mathbf{X})$ is a *maximus likelihood estimator* of $\theta$.
+Suppose that the maximum value of $L_\mathbf{x}$ or $\ln L_\mathbf{x}$ occurs at $u(\mathbf{x})\in\Theta$ for each $\mathbf{x}\in S$. Then the statistic $u(\mathbf{X})$ is a *maximum likelihood estimator* of $\boldsymbol{\theta}$. If $L_\mathbf{x}$ is differentiable, we can find this point by solving
+
+$$
+  \frac{\partial}{\partial\theta_i}L_\mathbf{x}(\boldsymbol{\theta}) = 0
+$$
+
+or equivalently
+
+$$
+  \frac{\partial}{\partial\theta_i}\ln L_\mathbf{x}(\boldsymbol{\theta}) = 0
+$$
+
+The most important special case is when the sample is a random sample of an observable real random variable $X$. Suppose that $\mathbf{X} = (X_i)_{i=1}^n \in S\subseteq\mathbb{R}^n$ is random sample of size $n$ from the distribution of $X$ with probability density function $f_\boldsymbol{\theta}$. The likelihood and log-likelihood functions for $\mathbf{x}\in S$ are
+
+$$
+\begin{align*}
+  L_\mathbf{x} (\boldsymbol{\theta}) &= \prod_{i=1}^n f_\boldsymbol{\theta} (x_i) \\
+  \ln L_\mathbf{x} (\boldsymbol{\theta}) &= \sum_{i=1}^n \ln f_\boldsymbol{\theta} (x_i)
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title='Reparametrized likelihood function' boxType='definition'>
+Suppose that $h:\Theta\to\Lambda$ and let $\boldsymbol{\lambda} = h(\boldsymbol{\theta})$ denote the new parameter. Define the likelihood function for $\lambda$ at $\mathbf{x}\in S$ by
+
+$$
+  \hat{L}_\mathbf{x}(\boldsymbol{\lambda}) = \max\left\{ L_\mathbf{x}(\boldsymbol{\theta}) \;|\; \boldsymbol{\theta}\in h^{-1}(\boldsymbol{\lambda}) \right\},\quad \boldsymbol{\lambda}\in\Lambda
+$$
+
+If $v(\mathbf{x})\in\Lambda$ maximized $\hat{L}_\mathbf{x}$ for each $\mathbf{x}\in S$ then $V = v(\mathbf{X})$ is a maximum likelihood estimator of $\lambda$. Conversely, if $U = u(\mathbf{x})\in\Theta$ is a maximum likelihood estimator for $\boldsymbol{\theta}$, then $V = h(U)$ is a maximum likelihood estimator for $\boldsymbol{\lambda}$. This is known as the invariance property.
+</MathBox>
+
+## Bayesian estimator
+
+Consider a statistical experiment with an observable random variable $\mathbf{X}\in S$, whose distribution depends on parameters $\boldsymbol{\theta}\in T$. *Bayesian analysis* models the parameters $\boldsymbol{\theta}$ with a random variable $\boldsymbol{\Theta}$ that has a specified distribution on the parameter space $T$. This distribution is called the *prior distribution* of $\boldsymbol{\Theta}$ and reflects knowledge of the parameters $\boldsymbol{\theta}$ before sampling data. After observing $\mathbf{X} = \mathbf{x}\in S$, Bayes' theorem is used to compute the conditional distribution of $\boldsymbol{\Theta}$ given $\mathbf{X} = \mathbf{x}$. This distribution is called the *posterior distribution* of $\boldsymbol{\Theta}$ and reflects updated inferences of $\boldsymbol{\theta}$ given new information.
+
+<MathBox title='Posterior distribution' boxType='definition'>
+Let $\mathbf{X}\in S$ be an observable random variable with probability density function $f$. Suppose that the *prior distrubution* of $\boldsymbol{\Theta}$ on $T$ has probability density function $h$, and that given $\boldsymbol{\Theta} = \boldsymbol{\theta}\in T$, the conditional probability density function of $\mathbf{X}$ on $S$ is $f(\cdot|\boldsymbol{\theta})$. Then the probability density function of the posterior distribution of $\boldsymbol{\Theta}$ given $\mathbf{X} = \mathbf{x}\in S$ is
+
+$$
+  h(\boldsymbol{\theta}|\mathbf{x}) = \frac{h(\boldsymbol{\theta})f(\mathbf{x}|\boldsymbol{\theta})}{f(\mathbf{x})}
+$$
+
+where the unconditional probability function $f$ is defined as follows, in the discrete and continuous cases, respectively
+
+$$
+\begin{align*}
+  f(\mathbf{x}) &= \sum_{\boldsymbol{\theta}\in T} h(\boldsymbol{\theta})f(\mathbf{x}|\boldsymbol{\theta}) \\
+  f(\mathbf{x}) &= \int_T h(\boldsymbol{\theta})f(\mathbf{x}|\boldsymbol{\theta})\,\mathrm{d}\boldsymbol{\theta}
+\end{align*}
+$$
+
+The most import and common special case occurs when $\mathbf{X} = (X_i)_{i=1}^{n\in\mathbb{N}}$ is a random sample of size $n$ from the distribution of an obervable random variable $X$. If $X$ is real-valued and has probability density function $g(\cdot|\boldsymbol{\theta})$ for a given $\boldsymbol{\theta}\in T$. In this case, $S=\mathbb{R}^n$ and the probability function $f(\cdot|\boldsymbol{\theta})$ of $\mathbf{X}$ given $\boldsymbol{\theta}$ is
+
+$$
+  f(\mathbf{x}|\boldsymbol{\theta}) = \prod_{i=1}^n g(x_i|\boldsymbol{\theta})
+$$
+
+<details>
+<summary>Details</summary>
+
+Note that the joint probability density function of $(\mathbf{X},\boldsymbol{\Theta})$ is a mapping on $f: S\times T\to [0, \infty)$ given by
+
+$$
+  (\mathbf{x}, \boldsymbol{\theta})\mapsto h(\boldsymbol{\theta})f(\mathbf{x}|\boldsymbol{\theta})
+$$
+
+The function $f(\mathbf{x})$ is the marginal probability density function of $\mathbf{X}$. 
+</details>
+</MathBox>
+
+If the parameter space has finite measure $c$, then one possible prior distribution is the uniform distribution on $T$. If $\theta\in T\subseteq\mathbb{R}$ the probability density function is given by $h(\theta) = \frac{1}{c}$. This distribution reflects no prior knowledge about the parameter, and is called the *non-informative* prior distribution.
+
+<MathBox title='Bayesian estimator' boxType='definition'>
+Suppose that $\theta\in T\subseteq\mathbb{R}$ is a real-valued parameter for an observable random variable $\mathbf{X}$. The conditional expected value $\mathbb{E}(\theta|\mathbf{X})$ is the Bayesian estimator for $\theta$, which takes the form, in the discrete and continuous cases, respectively
+
+$$
+\begin{align*}
+  \mathbb{E}(\theta|\mathbf{X} &= \mathbf{x}) &= \sum_{\theta\in T} \theta h(\theta|\mathbf{x}) \\
+  \mathbb{E}(\theta|\mathbf{X} &= \int_T \theta h(\tehta|\mathbf{x})\,\mathrm{d}\boldsymbol{\theta}
+\end{align*}
+$$
+
+The definitions of bias and mean square get conditioned on $\Theta = \theta\in T$. If $U$ is a Bayesian estimator for $\theta$ then
+
+1. The *bias* of $\mathrm{bias}(U|\theta) = \mathbb{E}(U-\theta|\Theta = \theta)$
+2. The *mean square error* of $U$ is $\mathrm{mse}(U|\theta) = \mathbb{E}\left[(U-\theta)^2 | \Theta = \theta \right] = \mathrm{var}(U|\theta) + \mathrm{bias}^2(U|\theta)$
+</MathBox>
+
+<MathBox title='Properties of Bayesian estimators' boxType='proposition'>
+Let $\mathbf{U} = (U_n)_{n\in\mathbb{N}^+}$ be a sequence of Baysian estimators of $\theta\in T\subseteq\mathbb{R}$. Then
+1. $\mathbf{U}$ is *asymptotically unbiased* if $\mathrm{bias}(U_n|\theta)\xrightarrow{n\to\infty} 0$
+2. $\mathbf{U}$ is *mean-square consistent* if $\mathrm{mse}(U_n|\theta)\xrightarrow{n\to\infty} 0$
 </MathBox>
 
 # Time series analysis

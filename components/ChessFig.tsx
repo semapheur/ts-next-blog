@@ -19,7 +19,7 @@ export default function ChessFig({fen, caption}: Props) {
       svgRef.current.boardPosition(fen)
       
     };
-  }, []);
+  }, [fen]);
   
   return (
     <figure className='relative'>
