@@ -303,6 +303,140 @@ $$
 	\mathbf{I} = \iiint_\mathcal{V} \rho(x, y, z)\left(\lVert \mathbf{r}_k \rVert^2 \mathbf{E}_3 - \mathbf{r} \otimes \mathbf{r} \right)\mathrm{d}x\,\mathrm{d}y\,\mathrm{d}z
 $$
 
+## Free fall
+
+Consider an object with mass $m$ free falling in uniform gravitational field with acceleration $g$. Neglecting air resistance the equation of motion for the object is (assuming it is falling in negative $y$ direction)
+
+$$
+	m\ddot{y}(t) = -mg \iff \ddot{y} = -g
+$$
+
+Integrating the differential equation twice and assuming the object has initial speed $v_0$ and position $y_0$, we otain the kinematic equations
+
+$$
+\begin{align*}
+	v_y(t) &\equiv \dot{y}(t) = v_{y0} - gt \\
+	y(t) &= v_{y0} t + x_0 - \frac{1}{2}gt^2
+\end{align*}
+$$
+
+Introducing a constant velocity $v_{x0}$ in the $x$ direction, perpendicular to the gravitational field, the kinematic equations for the object become
+
+$$
+\begin{align*}
+	\mathbf{v}(t) &= v_{x0}\hat{\mathbf{x}} + (v_{y0} - gt)\hat{\mathbf{y}} \\
+	\mathbf{x}(t) &= v_{x0}t\hat{\mathbf{x}} + (v_{y0} t + x_0 - \frac{1}{2}gt^2)\hat{\mathbf{y}}
+\end{align*}
+$$
+
+Assuming the object is launched from an angle $\theta$ relative to the $x$ axis with speed $v_0$, its initial velocity becomes $\mathbf{v} = v_0\cos(\theta)\hat{\mathbf{x}} + v_0\sin(\theta)\hat{\mathbf{0}}$. The kinematic equations take the form
+
+$$
+\begin{align*}
+	\mathbf{v}(t) &= \dot{\mathbf{x}}(t) = v_0\cos(\theta)\hat{\mathbf{x}} + (v_0\sin(\theta)- gt)\hat{\mathbf{y}} \\
+	\mathbf{x}(t) &= v_0\cos(\theta)t\hat{\mathbf{x}} + (v_0\cos(\theta) t + x_0 - \frac{1}{2}gt^2)\hat{\mathbf{y}}
+\end{align*}
+$$
+
+Eliminating $t$ from the displacement functions gives
+
+$$
+	y(x) = \tan(\theta)x - \frac{g}{2v_0^2\cos^2(\theta)}\x^2
+$$
+
+### Object falling through a fluid 
+
+An object falling through a fluid experiences a drag force counteracting the gravitational force. The drag equation is given by
+
+$$
+	F_{\mathrm{d}} = \frac{1}{2}\rho v^2 c_{\mathrm{d}} A
+$$
+
+where
+- $\rho$ is the mass density of the fluid
+- $v$ is the flow velocity relative to the object
+- $A$ is the cross sectional area
+- $c_{\mathrm{d}}$ is the drag coefficient
+
+Setting $k = \frac{1}{2}\rho c_{\mathrm{d}} A$, the equation of motion for the object is (assuming constant fluid density and drag coefficient)
+
+$$
+	m\ddot{y} = k\dot{y}^2 - mg
+$$
+
+Since the drag force is proportional to the square velocity, i.e. $F_{\mathrm{d}} \prop v^2$, the object will keep accelaration until it reaches equilibrium at a time $t = T$. At equilibrium the net force is zero and the object reaches its terminal velocity $v_T = \lim_{t\to\infty} v_y (t)$ which found by solving
+
+$$
+\begin{gather*}
+	mg - \frac{1}{2}\rho v_T^2 A c_{\mathrm{d}} = 0 \\
+	v_T = \sqrt{\frac{2mg}{\rho c_{\mathrm{d}}A}} = \sqrt{\frac{mg}{k}}
+\end{gather*}
+$$
+
+The differential equation can be separated with respect to velocity $v_y(t) = \dot{y}$
+
+$$
+\begin{gather*}
+	\ddot{y} = \frac{k}{m}\dot{y}^2 - g \\
+	\frac{\ddot{y}}{-g + \frac{k}{m}\dot{x}^2} = 1 \\
+	\frac{\ddot{y}}{1 - \frac{k}{mg}\dot{x}^2} = -g \\
+	\frac{\dot{v}_y}{1 - \frac{v_y^2}{v_T^2}} = -g \\
+	\frac{\mathrm{d}v_y}{1 - \frac{v_y^2}{v_T^2}} = -g\,\mathrm{d}t
+\end{align*}
+$$
+
+Substituting $u = \frac{v_y}{v_T}$ and splitting the left integrand
+
+$$
+	\frac{1}{1 - u^2} = \frac{1}{(1 + u)(1 - u)} = \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)}
+$$
+
+The left integral can now be solved
+
+$$
+\begin{align*}
+	\int \left( \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)} \right)\,\mathrm{d}\u = \frac{1}{2}\ln(1+u) - \frac{1}{2}\ln(1 - u) \\
+	&= \frac{1}{2}\ln\left(\frac{1 + u}{1 - u} \right) \\
+\end{align*}
+$$
+
+Substituting into the differential equation 
+
+$$
+\begin{align*}
+	\frac{1}{2}\ln\left(\frac{1+u}{1-u} \right) &= -\frac{gt}{v_T} + A \\
+	\frac{1+u}{1-u} &= Be^{-2gt/v_T} \\
+	1 + u &= Be^{-2gt/v_T}(1 - u) \\
+	u &= \frac{Be^{-2gt/v_T} - 1}{Be^{-2gt/v_T} + 1} \\
+	v_y(t) = v_T \frac{Be^{-2gt/v_T} - 1}{Be^{-2gt/v_T} + 1}
+\end{align*}
+$$
+
+It remains to solve for the integration constant $B$, assuming initial velocity $v_y (0) = -v_0$
+
+$$
+\begin{gather*}
+	-v_0 = v_T \frac{B-1}{B+2} \\
+	B = \frac{v_T + v_0}{v_T - v_0}
+\end{gather*}
+$$
+
+If the object starts from rest $v_0 = 0$ then $B = 1$, and the velocity simplifies to
+
+$$
+	v_y (t) = v_T \frac{e^{-2gt/v_T} - 1}{e^{-2gt/v_T} + 1} = v_T \tanh{\frac{gt}{v_T}}
+$$
+
+Taking the derivative and integrating gives the kinematic equations
+
+$$
+\begin{align*}
+	a_y (t) &= g\left[1 - \tanh^2\left( \frac{gt}{v_T} \right)\right] \\
+	v_y (t) &= v_T \frac{e^{-2gt/v_T} - 1}{e^{-2gt/v_T} + 1} = v_T \tanh{\frac{gt}{v_T}} \\
+	y(t) &= y_0 - \frac{v_T}{gt}\ln\left[\cosh\left(\frac{gt}{v_T} \right) \right]
+\end{align*}
+$$
+
 ## Motion of a simple planar pendulum
 
 Consider a pendulum consisting of an object with mass $m$ attached to a rigid massless rod of length $l$. In polar coordinates, the objects' acceleration is
