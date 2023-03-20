@@ -303,50 +303,184 @@ $$
 	\mathbf{I} = \iiint_\mathcal{V} \rho(x, y, z)\left(\lVert \mathbf{r}_k \rVert^2 \mathbf{E}_3 - \mathbf{r} \otimes \mathbf{r} \right)\mathrm{d}x\,\mathrm{d}y\,\mathrm{d}z
 $$
 
-## Free fall
+## Projectile motion
 
-Consider an object with mass $m$ free falling in uniform gravitational field with acceleration $g$. Neglecting air resistance the equation of motion for the object is (assuming it is falling in negative $y$ direction)
+Consider a projectile with mass $m$ subject that is launched in the $xy$-plane at an angle $\theta$ relative to the $x$-axis, and with the following initial values.
+
+- position: $\mathbf{r}_0 = x_0\hat{\mathbf{x}} + y_0\hat{\mathbf{y}}$
+- velocity: $\mathbf{v}_0 = v_0 \cos(\theta)\hat{\mathbf{x}} + v_0 \sin(\theta)\hat{\mathbf{y}}$
+
+Neglecting drag, the net force acting on the projectile is the gravitational force
+
+$$
+	\mathbf{F} = -mg\hat{\mathbf{y}}
+$$
+
+The equation of motion for the projectile in $\hat{\mathbf{y}}$-direction is
 
 $$
 	m\ddot{y}(t) = -mg \iff \ddot{y} = -g
 $$
 
-Integrating the differential equation twice and assuming the object has initial speed $v_0$ and position $y_0$, we otain the kinematic equations
+Assuming that the gravitational field is uniform, the gravitational acceleration $g$ is constant. Hence the kinetic equations for object are
 
 $$
 \begin{align*}
-	v_y(t) &\equiv \dot{y}(t) = v_{y0} - gt \\
-	y(t) &= v_{y0} t + x_0 - \frac{1}{2}gt^2
-\end{align*}
+	\mathbf{v}(t) &= v_0\cos(\theta)\hat{\mathbf{x}} + (v_0\sin(\theta) - gt)\hat{\mathbf{y}} \\
+	\mathbf{r}(t) &= [x_0 + v_0\cos(\theta)t]\hat{\mathbf{x}} + \left[y_0 + v_0\sin(\theta) t - \frac{1}{2}gt^2\right]\hat{\mathbf{y}}
+\end{align*} 
 $$
 
-Introducing a constant velocity $v_{x0}$ in the $x$ direction, perpendicular to the gravitational field, the kinematic equations for the object become
+Eliminating $t$ from the position component functions gives
+
+$$
+	y(x) = \tan(\theta)x - \frac{g}{2v_0^2\cos^2(\theta)}x^2
+$$
+
+### Drag forces
+
+Drag is a friction force resisting the motion of an object moving in a fluid. Assuming an isotropic fluid, we expect that the magnitude of the drag force should only depend on the relative speed $v$ of the object. If the object is symmetrical, we expect the direction of the force to be opposite of motion, i.e.
+
+$$
+	\mathbf{F}_{\mathrm{d}} = -f(v)\hat{\mathbf{v}}
+$$
+
+Under these assumption, the general form of the drag force is a Taylor series expansion
+
+$$
+	F_{\mathrm{d}} = \sum_{i=1}^\infty k_0 \left(\frac{v}{v_s}\right)^i
+$$
+
+where $v_s$ is the speed of sound. For low speeds, $v\ll v_s$, the drag force approximates to its linear and quadratic term
+
+$$
+	f(v) = bv + kv^2
+$$
+
+At low speeds, the fluid tends to flow smoothly in what is known as laminar flow. In this regime, the linear drag term dominates. At higher speeds, the fluid flow becomes turbulent and the quadratric drag dominates.
+
+### Projectile motion with linear drag
+
+For spherical objects, linear drag is given by Stokes' law
+
+$$
+	F_{\mathrm{d}} = 6\pi\eta r v
+$$
+
+where
+- $\eta$ is the dynamic viscosity
+- $r$ is the radius of the object
+- $v$ is the flow velocity relative to the object
+
+Setting $b = 6\pi\eta r$, the net force acting on the projectile is, noting that $\hat{\mathbf{v}} = \frac{\mathbf{v}}{|\mathbf{v}|}$
 
 $$
 \begin{align*}
-	\mathbf{v}(t) &= v_{x0}\hat{\mathbf{x}} + (v_{y0} - gt)\hat{\mathbf{y}} \\
-	\mathbf{x}(t) &= v_{x0}t\hat{\mathbf{x}} + (v_{y0} t + x_0 - \frac{1}{2}gt^2)\hat{\mathbf{y}}
+	\mathbf{F} &= -b|\mathbf{v}| \frac{\mathbf{v}}{|\mathbf{v}|} - mg\hat{\mathbf{y}} \\
+	&= -b\mathbf{v} - mg\hat{\mathbf{y}}
 \end{align*}
 $$
 
-Assuming the object is launched from an angle $\theta$ relative to the $x$ axis with speed $v_0$, its initial velocity becomes $\mathbf{v} = v_0\cos(\theta)\hat{\mathbf{x}} + v_0\sin(\theta)\hat{\mathbf{0}}$. The kinematic equations take the form
+The equations of motions in $x$ and $y$ directions take the form of coupled differential equations
 
 $$
 \begin{align*}
-	\mathbf{v}(t) &= \dot{\mathbf{x}}(t) = v_0\cos(\theta)\hat{\mathbf{x}} + (v_0\sin(\theta)- gt)\hat{\mathbf{y}} \\
-	\mathbf{x}(t) &= v_0\cos(\theta)t\hat{\mathbf{x}} + (v_0\cos(\theta) t + x_0 - \frac{1}{2}gt^2)\hat{\mathbf{y}}
+	m\ddot{x} &= -b\dot{x} \\
+	m\ddot{y} &= k\dot{y} - mg
 \end{align*}
 $$
 
-Eliminating $t$ from the displacement functions gives
+The $x$-equation can be transformed into a first order ODE by substituting $v_x = \dot{x}$. The resulting equation can be solved by separation
 
 $$
-	y(x) = \tan(\theta)x - \frac{g}{2v_0^2\cos^2(\theta)}\x^2
+\begin{align*}
+	\dot{v}_x &= -\frac{b}{m}v_x \\
+	\int \frac{\mathrm{d}v_x}{v_x} &=  \int-\frac{b}{m}\,\mathrm{d}t \\
+	\ln v_x &= -\frac{b}{m}t + A \\
+\end{align*}
 $$
 
-### Object falling through a fluid 
+The initial condition $v_x(t=0) = v_0\cos(\theta)$ gives $A = \ln (v_0\cos\theta)$.
 
-An object falling through a fluid experiences a drag force counteracting the gravitational force. The drag equation is given by
+$$
+\begin{align*}
+	\ln v_x &= \ln (v_0\cos\theta) - \frac{b}{m}t \\
+	\ln\frac{v_x}{v_0\cos\theta} &= -\frac{b}{m}t \\
+	\frac{v_x}{v_0\cos\theta} &= e^{-\frac{b}{m}t} \\
+	v_x(t) &= v_0\cos(\theta) e^{-\frac{b}{m}t}
+\end{align*}
+$$
+
+Integrating agains gives the $x$-position
+
+$$
+\begin{align*}
+	\frac{\mathrm{d}x}{\mathrm{d}t} &= v_0\cos(\theta) e^{-\frac{b}{m}t} \\
+	\int \mathrm{d}x &= \int v_0\cos(\theta) e^{-\frac{b}{m}t}\,\mathrm{d}t \\
+	x &= -\frac{m}{b}v_0\cos(\theta)e^{-\frac{b}{m}t} + B
+\end{align*}
+$$
+
+The initial condition $x(t=0) = x_0$ gives $B = x_0 + \frac{m}{b}v_0$.
+
+In $y$ direction, the projectile will keep accelerating until reaching its terminal speed $v_\infty = \lim_{t\to\infty} \dot{y}$ when the drag and gravitational forces even out
+
+$$
+	mg = bv_\infty
+$$
+
+Inserting this into the $y$ equation and substituting $v_y = \dot{y}$ gives the first order ODE
+
+$$
+	\dot{v}_y = -\frac{b}{m}(v_y - v_\infty)
+$$
+
+The equation can be further simplified by substituting $u = (v_y - v_\infty)$, noting that $\dot{u} = \dot{v}_y$
+
+$$
+\dot{u} = -\frac{b}{m}u
+$$
+
+which is solved in the same way as the $x$-equation, noting that $u_0 = v_0\sin\theta - v_\infty$
+
+$$
+\begin{align*}
+	u(t) &= u_0 e^{-\frac{b}{m}t} \\
+	v_y(t) - v_\infty &= (v_0\sin\theta - v_\infty) e^{-\frac{b}{m}t} \\
+	v_y (t) &= v_\infty\left(1 -  e^{-\frac{b}{m}t}\right) + v_0\sin(\theta) e^{-\frac{b}{m}t}
+\end{align*}
+$$
+
+Integrating again gives the $y$-position
+
+$$
+\begin{align*}
+	\frac{\mathrm{d}y}{\mathrm{d}t} &= v_\infty + (v_0\sin\theta - v_\infty)e^{-\frac{b}{m}t} \\
+	\int\mathrm{d}y &= \int \left[ v_\infty + (v_0\sin\theta - v_\infty)e^{-\frac{b}{m}t} \right]\mathrm{d}t \\
+	y &= v_\infty t - \frac{m}{b}(v_0\sin\theta - v_\infty)e^{-\frac{b}{m}t} + C
+\end{align*}
+$$
+
+The initial condition $y(t=0) = y_0$ gives
+
+$$
+	C = y_0 + \frac{m}{b}(v_0\sin\theta - v_\infty)
+$$
+
+Putting it all together, the kinematic equations are
+
+$$
+\begin{align*}
+	\mathbf{v}(t) &= v_0\cos(\theta) e^{-\frac{b}{m}t}\hat{\mathbf{x}} \\
+	&\quad + \left[v_\infty\left(1 -  e^{-\frac{b}{m}t}\right) + v_0\sin(\theta) e^{-\frac{b}{m}t}\right]\hat{\mathbf{y}} \\
+	\mathbf{r}(t) &= \left[x_0 + \frac{m}{b}v_0\cos(\theta)\left(1 - e^{-\frac{b}{m}t} \right)\right]\hat{\mathbf{x}} \\
+	&\quad + \left[y_0 + v_\infty t - \frac{m}{b}(v_0\sin\theta - v_\infty)\left(1 - e^{-\frac{b}{m}t}\right)\right]\hat{\mathbf{y}}
+\end{align*}
+$$
+
+### Projectile motion with quadratic drag 
+
+Quadratic drag is given by
 
 $$
 	F_{\mathrm{d}} = \frac{1}{2}\rho v^2 c_{\mathrm{d}} A
@@ -358,45 +492,66 @@ where
 - $A$ is the cross sectional area
 - $c_{\mathrm{d}}$ is the drag coefficient
 
-Setting $k = \frac{1}{2}\rho c_{\mathrm{d}} A$, the equation of motion for the object is (assuming constant fluid density and drag coefficient)
+Setting $k = \frac{1}{2}\rho c_{\mathrm{d}} A$, the net force acting on the projectile is
+
+$$
+\begin{align*}
+	\mathbf{F} &= -k|\mathbf{v}|^2 \hat{\mathbf{v}} + mg\hat{\mathbf{y}} \\
+	&= -k|\mathbf{v}|\mathbf{v} - mg\hat{\mathbf{y}}
+\end{align*}
+$$
+
+The equations of motions in $x$ and $y$ directions take the form of coupled differential equations
+
+$$
+\begin{align*}
+	m\ddot{x} &= -k\sqrt{\dot{x}^2 + \dot{y}^2}\dot{x} \\
+	m\ddot{y} &= k\sqrt{\dot{x}^2 + \dot{y}^2}\dot{y} - mg
+\end{align*}
+$$
+
+The equations can be solved numerically. An analytical solution can be found for a purely vertical motion in which case the equations of motion reduce to
 
 $$
 	m\ddot{y} = k\dot{y}^2 - mg
 $$
 
-Since the drag force is proportional to the square velocity, i.e. $F_{\mathrm{d}} \prop v^2$, the object will keep accelaration until it reaches equilibrium at a time $t = T$. At equilibrium the net force is zero and the object reaches its terminal velocity $v_T = \lim_{t\to\infty} v_y (t)$ which found by solving
+At equilibrium, the projectile reaches its terminal velocity $v_\infty = \lim_{t\to\infty} v_y (t)$ which found by solving
 
 $$
 \begin{gather*}
-	mg - \frac{1}{2}\rho v_T^2 A c_{\mathrm{d}} = 0 \\
-	v_T = \sqrt{\frac{2mg}{\rho c_{\mathrm{d}}A}} = \sqrt{\frac{mg}{k}}
+	mg - \frac{1}{2}\rho v_\infty^2 A c_{\mathrm{d}} = 0 \\
+	v_\infty = \sqrt{\frac{2mg}{\rho c_{\mathrm{d}}A}} = \sqrt{\frac{mg}{k}}
 \end{gather*}
 $$
 
-The differential equation can be separated with respect to velocity $v_y(t) = \dot{y}$
+The equation can be transformed into a first order ODE by substituting $v_y(t) = \dot{y}$
 
 $$
-\begin{gather*}
-	\ddot{y} = \frac{k}{m}\dot{y}^2 - g \\
-	\frac{\ddot{y}}{-g + \frac{k}{m}\dot{x}^2} = 1 \\
-	\frac{\ddot{y}}{1 - \frac{k}{mg}\dot{x}^2} = -g \\
-	\frac{\dot{v}_y}{1 - \frac{v_y^2}{v_T^2}} = -g \\
-	\frac{\mathrm{d}v_y}{1 - \frac{v_y^2}{v_T^2}} = -g\,\mathrm{d}t
+\begin{align*}
+	\ddot{y} &= \frac{k}{m}\dot{y}^2 - g \\
+	\frac{\ddot{y}}{-g + \frac{k}{m}\dot{y}^2} &= 1 \\
+	\frac{\ddot{y}}{1 - \frac{k}{mg}\dot{y}^2} &= -g \\
+	\frac{\dot{v}_y}{1 - \left(v_y/v_\infty\right)^2} &= -g \\
+	\frac{\mathrm{d}v_y}{1 - \left(v_y/v_\infty\right)^2} &= -g\,\mathrm{d}t
 \end{align*}
 $$
 
-Substituting $u = \frac{v_y}{v_T}$ and splitting the left integrand
+Substituting $u = \frac{v_y}{v_\infty}$ and splitting the left integrand
 
 $$
-	\frac{1}{1 - u^2} = \frac{1}{(1 + u)(1 - u)} = \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)}
+\begin{align*}
+	\frac{1}{1 - u^2} &= \frac{1}{(1 + u)(1 - u)} \\
+	&= \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)}
+\end{align*}
 $$
 
 The left integral can now be solved
 
 $$
 \begin{align*}
-	\int \left( \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)} \right)\,\mathrm{d}\u = \frac{1}{2}\ln(1+u) - \frac{1}{2}\ln(1 - u) \\
-	&= \frac{1}{2}\ln\left(\frac{1 + u}{1 - u} \right) \\
+	\int \left( \frac{1}{2(1 + u)} + \frac{1}{2(1 - u)} \right)\,\mathrm{d}u &= \frac{1}{2}\ln(1+u) - \frac{1}{2}\ln(1 - u) \\
+	&= \frac{1}{2}\ln\left(\frac{1 + u}{1 - u} \right)
 \end{align*}
 $$
 
@@ -404,11 +559,11 @@ Substituting into the differential equation
 
 $$
 \begin{align*}
-	\frac{1}{2}\ln\left(\frac{1+u}{1-u} \right) &= -\frac{gt}{v_T} + A \\
-	\frac{1+u}{1-u} &= Be^{-2gt/v_T} \\
-	1 + u &= Be^{-2gt/v_T}(1 - u) \\
-	u &= \frac{Be^{-2gt/v_T} - 1}{Be^{-2gt/v_T} + 1} \\
-	v_y(t) = v_T \frac{Be^{-2gt/v_T} - 1}{Be^{-2gt/v_T} + 1}
+	\frac{1}{2}\ln\left(\frac{1+u}{1-u} \right) &= -\frac{gt}{v_\infty} + A \\
+	\frac{1+u}{1-u} &= Be^{-2gt/v_\infty} \\
+	1 + u &= Be^{-2gt/v_\infty}(1 - u) \\
+	u &= \frac{Be^{-2gt/v_\infty} - 1}{Be^{-2gt/v_\infty} + 1} \\
+	v_y(t) &= v_\infty \frac{Be^{-2gt/v_\infty} - 1}{Be^{-2gt/v_\infty} + 1}
 \end{align*}
 $$
 
@@ -416,24 +571,24 @@ It remains to solve for the integration constant $B$, assuming initial velocity 
 
 $$
 \begin{gather*}
-	-v_0 = v_T \frac{B-1}{B+2} \\
-	B = \frac{v_T + v_0}{v_T - v_0}
+	-v_0 = v_\infty \frac{B-1}{B+2} \\
+	B = \frac{v_\infty + v_0}{v_\infty - v_0}
 \end{gather*}
 $$
 
 If the object starts from rest $v_0 = 0$ then $B = 1$, and the velocity simplifies to
 
 $$
-	v_y (t) = v_T \frac{e^{-2gt/v_T} - 1}{e^{-2gt/v_T} + 1} = v_T \tanh{\frac{gt}{v_T}}
+	v_y (t) = v_\infty \frac{e^{-2gt/v_\infty} - 1}{e^{-2gt/v_\infty} + 1} = v_\infty \tanh{\frac{gt}{v_\infty}}
 $$
 
 Taking the derivative and integrating gives the kinematic equations
 
 $$
 \begin{align*}
-	a_y (t) &= g\left[1 - \tanh^2\left( \frac{gt}{v_T} \right)\right] \\
-	v_y (t) &= v_T \frac{e^{-2gt/v_T} - 1}{e^{-2gt/v_T} + 1} = v_T \tanh{\frac{gt}{v_T}} \\
-	y(t) &= y_0 - \frac{v_T}{gt}\ln\left[\cosh\left(\frac{gt}{v_T} \right) \right]
+	a_y (t) &= g\left[1 - \tanh^2\left( \frac{gt}{v_\infty} \right)\right] \\
+	v_y (t) &= v_\infty \frac{e^{-2gt/v_\infty} - 1}{e^{-2gt/v_\infty} + 1} = v_\infty \tanh{\frac{gt}{v_\infty}} \\
+	y(t) &= y_0 - \frac{v_\infty}{gt}\ln\left[\cosh\left(\frac{gt}{v_\infty} \right) \right]
 \end{align*}
 $$
 
