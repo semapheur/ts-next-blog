@@ -1,8 +1,17 @@
-import {Inter} from '@next/font/google';
+import {Inter} from 'next/font/google';
 import './globals.css'
 import Header from './Header'
 import StyledComponentsRegistry from 'components/StyledComponentsRegistry';
 
+// Metadata
+export const metadata = {
+  title: 'Gelik blog',
+  icons: {
+    icon: '/favicon.ico'
+  }
+}
+
+// Font
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin']
@@ -33,11 +42,7 @@ export default function RootLayout({
   }
 `
   return (
-    <html lang="en" className={inter.variable}>
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
+    <html lang='en' className={inter.variable}>
       <head />
       <body className='flex flex-col h-full w-full bg-primary'>
         <script dangerouslySetInnerHTML={{__html: setInitialTheme}}/>
@@ -48,4 +53,3 @@ export default function RootLayout({
     </html>
   )
 }
-
