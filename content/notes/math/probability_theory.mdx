@@ -1631,34 +1631,306 @@ $$
   &= \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{Y}
 \end{align*}
 $$
-
 </details>
 </MathBox>
 
-<MathBox title='Properties of covariance' boxType='definition'>
+<MathBox title='Properties of covariance' boxType='proposition'>
 1. Symmetry: $\mathrm{cov}(X,Y) = \mathrm{cov}(Y,X)$
 2. Covariance generalizes variance: $\mathrm{cov}(X,X) = \mathbb{E}([X-\mathbb{E}(X)][X-\mathbb{E}(X)]) = \mathbb{E}([X - \mathbb{E}]^2) = \mathrm{var}X$
-3. Bilinearity: If $V, W, X, Y$ are random variables and $a,b,c,d$ are real constants then
-$$
-  \mathrm{cov}(aV + bW, cX + bY) = ac\mathrm{cov}(V, X) + ad\mathrm{cov}(V, Y) + bc\mathrm{cov}(W, X) + bd\mathrm{cov}(W, Y)
-$$
-  a. In the general case, suppose that $(X_i)_{i=1}^{n\in\mathbb{N}}$ and $(Y_i)_{i=1}^{m\in\mathbb{N}}$ are sequences of random variables, and that $(a_i)_{i=1}^{n\in\mathbb{N}}$ and $(b_i)_{i=1}^{m\in\mathbb{N}}$ are constants. Then
+3. If $X$ and $Y$ are independent, then they are uncorrelated, i.e. $\mathrm{cov}(X,Y) = 0$.
+4. Bilinearity: If $X, Y, Z$ are random variables and $a,b$ are real constants then
+  a. $\mathrm{cov}(aX + bY, Z) = a\mathrm{cov}(X, Z) + b\mathrm{cov}(Y, Z)$
+  b. $\mathrm{cov}(X, aY + bZ) = a\mathrm{cov}(X, Y) + b\mathrm{cov}(X, Z)$
+  c. In the general case, suppose that $(X_i)_{i=1}^{n\in\mathbb{N}}$ and $(Y_i)_{i=1}^{m\in\mathbb{N}}$ are sequences of random variables, and that $(a_i)_{i=1}^{n\in\mathbb{N}}$ and $(b_i)_{i=1}^{m\in\mathbb{N}}$ are constants. Then
 $$
   \mathrm{cov}\left( \sum_{i=1}^n a_i X_i, \sum_{j=1}^m b_j Y_j \right) = \sum_{i=1}^n\sum_{j=1}^m a_i b_j \mathrm{cov}(X_i, X_j)
 $$
-4. If $X$ and $Y$ are independent, then they are uncorrelated, i.e. $\mathrm{cov}(X,Y) = 0$.
-
 
 <details>
-<summary>Details</summary>
+<summary>Proof</summary>
+
+1. This follows trivially from the definition.
+2. Let $\mu = \mathbb{E}(X)$. Then $\mathrm{cov}(X, X) = \mathbb{E}\left[(X - \mu)^2 \right] = \mathrm{var}(X)$.
+3. If $X$ and $Y$ are independent then $\mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y)$
+4a. 
+$$
+\begin{align*}
+  \mathrm{cov}(aX + bY, Z) &= \mathbb{E}[(aX + bY)Z] - \mathbb{E}(aX + bY)\mathbb{E}(Z) \\
+  &= \mathbb{E}(aXZ + bYZ) - [a\mathbb{E}(X) + b\mathbb{E}(Y)]\mathbb{E}(Z) \\
+  &= a[\mathbb{E}(XZ) - \mathbb{E}(X)\mathbb{E}(Z)] + b[\mathbb{E}(YZ) - \mathbb{E}(Y)\mathbb{E}(Z)] \\
+  &= a\mathrm{cov}(X, Z) + b\mathrm{cov}(Y, Z)
+\end{align*}
+$$
+4b.
+$$
+\begin{align*}
+  \mathrm{cov}(X, aY + bZ) &= \mathbb{E}[X(aY + bZ)] - \mathbb{E}(X)\mathbb{E}(aY + bZ) \\
+  &= \mathbb{E}(aXY + bXZ) - \mathbb{E}(X)[a\mathbb{E}(Y) + b\mathbb{E}(Z)] \\
+  &= a[\mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y)] + b[\mathbb{E}(XZ) - \mathbb{E}(X)\mathbb{E}(Z)] \\
+  &= a\mathrm{cov}(X, Y) + b\mathrm{cov}(X, Z)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Properties of correlation' boxType='proposition'>
+1. Symmetry: $\mathrm{cor}(X,Y) = \mathrm{cor}(Y,X)$
+2. The correlation between $X$ and $Y$ is the covariance of corresponding standard scores
+$$
+\begin{align*}
+  \mathrm{cor}(X, Y) &= \mathrm{cov}\left(\frac{X - \mathbb{E}(X)}{\mathrm{sd}(X)}, \frac{Y - \mathbb{E}(Y)}{\mathrm{sd}(Y)} \right) \\
+  &= \mathbb{E}\left( \frac{X - \mathbb{E}(X)}{\mathrm{sd}(X)}\frac{Y - \mathbb{E}(Y)}{\mathrm{sd}(Y)} \right)
+$$
+3. If $a, b\in\mathbb{R}$ and $b\neq 0$ then:
+  a. $\mathrm{cor}(a + bX, Y) = \mathrm{cor}(X, Y)$ if $b > 0$
+  b. $\mathrm{cor}(a + bX, Y) = -\mathrm{cor}(X, Y)$ if $b < 0$
+
+<details>
+<summary>Proof</summary>
+
+1. This follows trivially from the definition.
+2. From the definitions and linearity of expected value
 
 $$
-\begin{align}
-  \mathrm{cov}(X,Y) &= \mathbf{E}([X-\mathbf{E}(X)][Y-\mathbf{E}(Y)]) \\
-  &= \mathbf{E}(XY - X\mathbf{E}[Y] - \mathbf{E}[X]Y + \mathbf{E}[X]\mathbf{E}[Y]) \\
-  &= \mathbf{E}(XY) - \mathbf{E}(X)\mathbf{E}(Y) - \mathbf{E}(X)\mathbf{E}(Y) \\
-  &= \mathbf{E}(XY) - \mathbf{E}(X)\mathbf{Y}
-\end{align}
+\begin{align*}
+  \mathrm{cor}(X, Y) &= \frac{\mathrm{cov}(X, Y)}{\mathrm{sd}(X)\mathrm{sd}(Y)} \\
+  &= \frac{\mathbb{E}([X - \mathbb{E}(X)][Y - \mathbb{E}(Y)])}{\mathrm{sd}(X)\mathrm{sd}(Y)} \\
+  &= \mathbb{E}\left( \frac{X - \mathbb{E}(X)}{\mathrm{sd}(X)}\frac{Y - \mathbb{E}(Y)}{\mathrm{sd}(Y)} \right)
+\end{align*}
+$$
+
+3. Let $Z$ denote the standard score of $E$. If $b > 0$, the standard score of $a + bX$ is also $Z$. If $b < 0$, the standard score of $a + bX$ is $-Z$. The result follows from $(2)$. 
+</details>
+</MathBox>
+
+<MathBox title='Variance of a sum' boxType='proposition'>
+If $(X_i)_{i=1}^{n\in\mathbb{N}}$ is a sequence of real-valued random variables then
+
+$$
+\begin{align*}
+  \mathrm{var}\left(\sum_{i=1}^n X_i \right) &= \sum_{i=1}^n \sum_{j=1}^n \mathrm{cov}(X_i, X_j) \\
+  &= \sum_{i=1}^n \mathrm{var}(X_i) + \sum_{\{(i, j): i<j\}} \mathrm{cov}(X_i, X_j)
+\end{align*}
+$$
+
+If all $X_i$ are pairwise uncorrelated for each $i$, then this reduces to
+
+$$
+  \mathrm{var}\left(\sum_{i=1}^n X_i) = \sum_{i=1}^n \mathrm{var}(X_i)
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \mathrm{var}\left( \sum_{i=1}^n X_i) &= \mathrm{cov}\left(\sum_{i=1}^n X_i, \sum_{j=1}^n X_j \right) \\
+  &= \sum_{i=1}^j \sum_{j=1}^n \mathrm{cov}(X_i, X_j)
+\end{align*}
+$$
+
+The result follows since $\mathrm{cov}(X_i, X_i) = \mathrm{var}(X_i)$ for each $i$ and $\mathrm{cov}(X_i, X_j) = \mathrm{cov}(X_j, X_i)$ for $i\neq j$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $X$ and $Y$ are real-valued random variables then 
+
+1. $\mathrm{var}(X + Y) + \mathrm{var}(X - Y) = 2[\mathrm{var}(X) + \mathrm{var}(Y)]$
+2. If $\mathrm{var}(X) = \mathrm{var}(Y)$ then $X + Y$ and $X - Y$ are uncorrelated.
+
+<details>
+<summary>Proof</summary>
+
+1. From the variance of a sum with $n=2$ we get
+
+$$
+\begin{align*}
+  \mathrm{var}(X + Y) &= \mathrm{var}(X) + \mathrm{var}(Y) + 2\mathrm{cov}(X, Y) \\
+  \mathrm{var}(X - Y) &= \mathrm{var}(X) + \mathrm{var}(-Y) + 2\mathrm{cov}(X, -Y) \\
+  &= \mathrm{var}(X) + \mathrm{var}(Y) - 2\mathrm{cov}(X, Y)
+\end{align*}
+$$
+
+Adding the variances gives the result.
+
+2. From linearity and symmetry of covariance we get
+
+$$
+\begin{align*}
+  \mathrm{cov}(X + Y, X - Y) &= \mathrm{var}(X, X) - \mathrm{cov}(X, Y) + \mathrm{cov}(Y, X) - \mathrm{cov}(Y, Y) \\
+  &= \mathrm{var}(X) - \mathrm{var}(Y)
+\end{align*}
+$$
+
+If $X + Y$ and $X - Y$ are uncorrelated then $\mathrm{var}(X) = \mathrm{var}(Y)$. 
+</details>
+</MathBox>
+
+### The best linear predictor
+
+Consider two random variables $X$ and $Y$, where $X$ is observable while $Y$ is not. One way to estimate $Y$ is to find the linear function from observed values of $X$ that is closest to $Y$ in mean square sense. The best linear predictor for $Y$ is a linear function of $X$ that shares the same expected value as $Y$, and whose covariance with $X$ is same as that of $Y$.
+
+<MathBox title='Criteria of the linear predictor' title='proposition'>
+Let $X$ and $Y$ be real-valued random variables. The random variable
+
+$$
+  L(Y|X) := \mathbb{E}(Y) + \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}[X - \mathbb{E}(X)]
+$$
+
+is the only linear function of $X$ that satisfies
+
+1. $\mathbb{E}[L(X|Y)] = \mathbb{E}(Y)$
+2. $\mathrm{cov}[X, L(Y|X)] = \mathrm{cov}(X, Y)$
+  a. Equivalently, $\mathrm{cov}[Y - L(Y|X), U] = 0$ for every linear function $U$ of $X$
+
+<details>
+<summary>Proof</summary>
+
+1. By linearity of the expected value
+$$
+\begin{align*}
+  \mathbb{E}[L(Y|X)] &= \mathbb{E}(Y) + \frac{\mathrm{var}(X, Y)}{\mathrm{var}(X)}[\mathbb{E}(X) - \mathbb{E}(X)]
+  &= \mathbb{E}(Y)
+\end{align*}
+$$
+
+2. By linearity of covariance
+$$
+\begin{align*}
+  \mathrm{cov}[X, L(Y|X)] &= \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}\mathrm{cov}(X, X) \\
+  &= \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}\mathrm{var}(X) = \mathrm{cov}(X, Y)
+\end{align*}
+$$
+2a. Suppose that $U = a + bX$, where $a, b\in\mathbb{R}$, then
+$$
+\begin{align*}
+  \mathrm{cov}[Y - L(Y|X), U] &= b\mathrm{cov}[Y - L(Y|X), X] \\
+  &= b\left(\mathrm{cov}(Y, X) - \mathrm{cov}[L(Y|X), X]\right) = 0
+\end{align*}
+$$
+
+Conversely, to show the uniquenes of $L(Y|X)$, suppose that $U = a + bX$ satisfies 
+1. $\mathbb{E}(U) = \mathbb{E}(Y)$
+2. $\mathrm{cov}(X, U) = \mathrm{cov}(X, Y)$
+  a. Equivalently, $\mathrm{cov}(Y - U, V) = 0$ for every linear function $V$ of $X$ 
+
+The second equality gives 
+
+$$
+\begin{align*}
+  \mathrm{cov}(X, Y) &= \mathrm{cov}(X, a + bX)= b\mathrm{cov}(X, X) = b\mathrm{var}(X) \\
+  b &= \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}
+\end{align*}
+$$
+
+The first equation gives
+
+$$
+\begin{align*}
+  \mathbb{E}(Y) &= \mathbb{E}(a + bX) = a + b\mathbb{E}(X) =  \\
+  a &= \mathbb{E}(Y) - b\mathbb{E}(X) = \mathbb{E}(Y) - \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}\mathbb{E}(X)
+\end{align*}
+$$
+
+Hence $U = \mathbb{E}(Y) + \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}[X - \mathbb{E}(X)] = L(Y|X)$. Equivalently, by letting $V =  X$, then from equation $(2a)$ we get
+
+$$
+\begin{align*}
+  \mathrm{cov}(Y - U, X) &= 0 \\
+  \mathrm{cov}(U, X) = \mathrm{cov}(Y, X)
+\end{align*}
+$$
+
+Hence $U = L(Y|X)$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of the linear predictor' title='proposition'>
+The linear predictor $L(Y|X)$ has the following properties for random variables $X, Y, Z$ and constants $a, b$
+
+1. $\mathrm{var}[L(Y|X)] = \frac{\mathrm{cov}^2(X, Y)}{\mathrm{var}(X)}$
+2. $\mathrm{cov}[L(Y|X), Y] = \frac{\mathrm{cov}^2(X, Y)}{\mathrm{var}(X)}$
+3. Linearity: $L(aY + bZ|X) = aL(Y|X) + bL(Z|X)$
+
+<details>
+<summary>Proof</summary>
+
+1. 
+$$
+\begin{align*}
+  \mathrm{var}[L(Y|X)] &= \left[\frac{\mathrm{cov}(X, Y)^2}{\mathrm{var}(X)}\right]^2 \mathrm{var}(X) \\
+  &= \frac{\mathrm{cov}^2(X, Y)}{\mathrm{var}(X)}
+\end{align*}
+$$
+
+2. 
+$$
+\begin{align*}
+  \mathrm{cov}[L(Y|X), Y] &= \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}\mathrm{cov}(X, Y) \\
+  &= \frac{\mathrm{cov}^2(X, Y)}{\mathrm{var}(X)}
+\end{align*}
+$$
+
+3. This follows from linearity of expected value and covariance
+$$
+\begin{align*}
+  L(aY + bZ|X) &= \mathbb{E}(aY + bZ) + \frac{\mathrm{cov}(X, aY + bZ)}{\mathrm{var}(X)}[X - \mathbb{E}(X)] \\
+  &= a\left(\mathbb{Y} + \frac{\mathrm{cov}(X, Y)}{\mathrm{var}(X)}[X - \mathbb{E}(X)] \right) + b\left(\mathbb{Z} + \frac{\mathrm{cov}(X, Z)}{\mathrm{var}(X)}[X - \mathbb{E}(X)] \right) \\
+  &= aL(Y|X) + bL(Z|X)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Best linear predictor' title='proposition'>
+The linear predictor $L(Y|X)$ is the linear function of $X$ that is closest to $Y$ in the mean square sense, i.e. for any linear function $U$ of $X$
+
+$$
+  \mathbb{E}\left( [Y - L(Y|X)]^2 \right) \leq \mathbb{E}[(Y - U)^2]
+$$
+
+Equality holds if and only if $U = L(Y|X)$ with probability $1$. The mean square error when $L(Y|X)$ is used as a predictor of $Y$ is
+
+$$
+  \mathbb{E}\left([Y - L(Y|X)]^2 \right) = \mathbb{var}(Y)\left[1 - \cor^2(X, Y) \right]
+$$
+
+Since the mean square error $\mathbb{E}\left([Y - L(Y|X)]^2 \right) \geq 0$, it follows that $\mathrm{cor}^2 (X, Y) \leq 1$. The sign of $\mathrm{cor}(X, Y)$ corresponds with sign of the slope in $L(Y|X)$.
+
+<details>
+<summary>Proof</summary>
+
+For clearer notation, we abbreviate $L(Y|X)$ by $L$. Suppose that $U$ is a linear function of $X$. Then
+
+$$
+\begin{align*}
+  \mathbb{E}\left[(Y - U)^2 \right] &= \mathbb{E}\left([(Y - L)(L - U)]^2\right) \\
+  &= \mathbb{E}\left[(Y - L)^2 \right] + 2\mathbb{E}[(Y - L)(L - U)] + \mathbb{E}\left[(L - U)^2\right]
+\end{align*}
+$$
+
+Noting that $Y - L$ has mean $0$, we recognize the middle term as $\mathrm{cov}(Y - L, L - U)$. Since $L$ and $U$ are linear functions of $X$, then so is $L- U$, and $\mathrm{cov}(Y - L, L - U) = 0$. Hence
+
+$$
+\begin{align*}
+  \mathbb{E}\left[(Y - U)^2 \right] &= \mathbb{E}\left[(Y - L)^2 \right] + \mathbb{E}\left[(L - U)^2\right] \\
+  &\geq \mathbb{E}\left[(Y - L)^2\right]
+\end{align*}
+$$
+
+Equality holds if and only if $\mathbb{E}\left[(L - U)^2\right] = 0$, if and only if $\mathbb{P}(L = U) = 1$.
+
+Again, since $Y - L$ has mean $0$
+
+$$
+\begin{align*}
+  \mathbb{E}\left[(Y - L)^2 \right] &= \mathrm{var}(Y - L) \\
+  &= \mathrm{var}(Y) - 2\mathrm{cov}(L, Y) + \mathrm{var}(L) \\
+  &= \mathrm{var}(Y) - \frac{\mathrm{cov}^2(X, Y)}{\mathrm{var}(X)} \\
+  &= \mathrm{var}(Y)\left[1 - \frac{\mathrm{cov}^2 (X, Y)}{\mathrm{var}(X)\mathrm{var}(Y)} \right] \\
+  &= \mathrm{var}(Y)\left[1 - \mathrm{cor}^2(X, Y) \right]
+\end{align*}
 $$
 </details>
 </MathBox>
