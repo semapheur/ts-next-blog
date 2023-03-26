@@ -1969,7 +1969,7 @@ $$
 ## Conditional moments
 
 <MathBox title='Conditional expectation' boxType='definition'>
-Suppose that $X\in\mathcal{L}^1(\Omega,\mathcal{F},\mathbb{P})$ is an integrable random variable with $\mathbb{E}(|X|) < \infty$, and let $\mathcal{G}\subseteq\mathcal{F}$ be a sub-$\sigma$-algebra of $\mathcal{F}$. The conditional expectation of $X$ given $\mathcal{G}$ is a $\mathcal{G}$-measurable random variable $\mathbb{E}(X|\mathcal{G})$ satisfying
+Suppose that $X\in\mathcal{L}_1(\Omega,\mathcal{F},\mathbb{P})$ is an integrable random variable with $\mathbb{E}(|X|) < \infty$, and let $\mathcal{G}\subseteq\mathcal{F}$ be a sub $\sigma$-algebra of $\mathcal{F}$. The conditional expectation of $X$ given $\mathcal{G}$ is a $\mathcal{G}$-measurable random variable $\mathbb{E}(X|\mathcal{G})$ satisfying
 
 $$
 \begin{gather*}
@@ -2003,11 +2003,43 @@ $$
 </details>
 </MathBox>
 
-For a countably generated $\mathcal{G} = \sigma(Y)$ when $Y$ is a discrete variable, such that the space $\Omega$ is partitioned into disjoint sets $\Omega = \bigcup_n G_n$, the conditional expectation of a random variable $X$ given $\mathcal{G}$ is
+For a countably generated $\mathcal{G} = \sigma(Y)$ when $Y$ is a discrete variable, such that the space $\Omega$ is partitioned into disjoint sets $\Omega = \bigcup_n G_n$, the conditional expectation of a random variable $X$ given $ \sigma(Y)$ is
 
 $$
   \mathbb{E}[X|\sigma(Y)] \overset{a.s.}{=} \sum_n \frac{\mathbb{E}(Y\mathbf{1}_{X=x_n})}{\mathbb{P}(X=x_n)}\mathbf{1}_{X=x_n} =\sum_n \frac{\mathbb{E}(X\mathbf{1}_{G_n})}{P(G_n)}\mathbf{1}_{G_n}
 $$
+
+Suppose that $X:\Omega\to S\subseteq\mathbb{R}$ and $Y:\Omega\to T\subseteq\mathbb{R}^n$ are Lebesgue-measurable random variables and that $(X,Y)$ has a joint continuous distribution with probability density function $f$. Then $Y$ has probability density function $h$ given by
+
+$$
+  h(y) = \int_S f(x,y)\mathrm{d}x,\quad y\in T
+$$
+
+Assuming $h(y) > 0$ for $y\in T$, a conditional probability density function of $X$ given $Y=y$ is defined by
+
+$$
+  g(x|y) = \frac{f(x,y)}{h(y)}
+$$
+
+If $\mathbb{E}(|X|)< \infty$, the conditional expectation of $X$ given $\sigma(Y)$ is
+
+$$
+  \mathbb{E}(X|Y) := \mathbb{E}[X|\sigma(Y)] = \int_S xg(x|\sigma(Y)),\mathrm{d}x
+$$
+
+<details>
+<summary>Proof</summary>
+
+We first show that the integral is measurable with respect to $\sigma(Y)$. Since $y\mapsto \int_S xg(x|y)\,\mathrm{d}x$ is measurable as a function from $T$ into $\mathbb{R}$, the random variable $\int_x g(x|Y)\,\mathrm{d}x$ is a measurable function of $Y$ and so is measurable with respect to $\sigma(Y)$. Next suppose that $B\in\sigma(Y)$. Then $B = \{Y\in A\}$ for some $A\in\mathcal{F}$. Then
+
+$$
+  \mathbb{E}\left[\mathbf{1}_B \int_S xg(x|Y)\,\mathrm{d}x \right] &= \mathbb{E}\left[\mathbf{1}_{Y\in A} \int_S xg(x|Y)\,\mathrm{d}x \right] \\
+  &= \mathbb{E}\left[\mathbf{1}_{Y\in A} \int_S x\frac{f(x,y)}{h(y)}\,\mathrm{d}x \right] \\
+  &= \int_A \int_S x\frac{f(x, y)}{h(y)}h(y)\,\mathrm{d}x\,\mathrm{d}y \\
+  &= \int_{S\times A} xf(x,y)\mathrm{d}(x,y) \\
+  &= \mathbb{E}(\mathbf{1}_{Y\in A}X) = \mathbb{E}(\mathbf{1}_B X)
+$$
+</details>
 
 <MathBox title='Properties of conditional expectation' boxType='proposition'>
 Suppose that $X, Y:\Omega\to\mathbb{R}$ are integrable random variables
@@ -2229,6 +2261,290 @@ $$
 $$
 
 Hence, we obtain $\liminf_{n\to\infty}\mathbb{E}\left(X_n|\mathcal{G}\right)\geq\mathbb{E}(X|\mathcal{G})$ and $\limsup_{n\to\infty}\mathbb{E}\left(X_n|\mathcal{G}\right)\leq\mathbb{E}(X|\mathcal{G})$
+</details>
+</MathBox>
+
+### Relation to conditional probability
+
+<MathBox title='Conditional probability' boxType='definition'>
+Let $(\Omega,\mathcal{F},\mathbb{P})$ be a probability space and suppose that $\mathcal{G}$ is a sub $\sigma$-algebra of $\mathcal{F}$. The conditional probability of an event $A\in\mathcal{F}$ given $\mathcal{G}$ can be defined as a special case of conditional expectation
+
+$$
+  \mathbb{P}(A|\mathcal{G}) = \mathbb{E}(\mathbb{1}_A|\mathcal{G})
+$$
+
+The conditional probability $\mathbb{P}(A|\mathcal{G})$ is characterized by the following properties
+1. $\mathbb{P}(A|\mathcal{G})$ is measurable with respect to $\mathcal{G}$
+2. If $B\in\mathcal{G}$ then $\mathbb{E}[\mathbb{P}(A|\mathcal{G})\mathbf{1}_B] = \mathbb{P}(A\cap B)$
+  a. Equivalently, if $U$ is measurable with respect to $\mathcal{G}$ and $\mathbb{E}(|U|)< \infty$ then $\mathbb{E}[U\mathbb{P}(A|\mathcal{G})] = \mathbb{E}(U\mathbf{1}_A)$
+
+<details>
+<summary>Proof</summary>
+
+For the second property, note that 
+
+$$
+\begin{align*}
+  \mathbb{E}[\mathbf{1}_B\mathbb{P}(A|\mathcal{G})] &= \mathbb{E}[\mathbf{1}_B\mathbb{E}(\mathbf{1}_A|\mathcal{G})] \\
+  &= \mathbb{E}(\mathbf{1}_A\mathbf{1}_B) = \mathbb{E}(\mathbf{1}_{A\cap B}) \\
+  &= \mathbb{P}(A\cap B)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Probability of an event by conditioning' boxType='proposition'>
+If $A\in\mathcal{F}$ then $\mathbb{P}(A) = \mathbb{E}[\mathbb{P}(A|\mathcal{G})]$.
+
+<details>
+<summary>Proof</summary>
+
+This follows from the mean property of condtional expectation since 
+
+$$
+\begin{align*}
+  \mathbb{E}[\mathbb{P}(A|\mathcal{G})] &= \mathbb{E}[\mathbb{E}(\mathbf{1}_A | \mathcal{G})] \\
+  &= \mathbb{E}(\mathbf{1_A}) = \mathbb{P}(A)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Conditional axioms of probability' boxType='axiom'>
+The following axioms hold for conditional probability
+
+1. $\mathbb{P}(A|\mathcal{G})\geq 0$ for every $A\in\mathcal{F}$
+2. $\mathbb{P}(\Omega|\mathcal{G}) = 1$
+3. If $\{A_i \}_{i\in I}$ is a countable disjoint subset of $\mathcal{F}$, then
+
+$$
+  \mathbb{P}\left(\bigcup_{i\in I} A_i |\mathcal{G}) = \sum_{i\in I}\mathbb{P}(A_i |\mathcal{G})
+$$
+ 
+<details>
+<summary>Proof</summary>
+
+1. This follows from the positive definiteness of conditional expectation.
+2. This is trivial since $\mathbf{1}_{\Omega} = 1$.
+3. Note that $\sum_{i\in I} \mathbb{P}(A_i |\mathcal{G})$ is $\mathcal{G}$-measurable since each term in the sum has this property. Let $B\in\mathcal{G}$, then
+
+$$
+\begin{align*}
+  \mathbb{E}\left[\sum_{i\in I} \mathbb{P}(A_i |\mathcal{G})\mathbf{1}_B \right] &= \sum_{i\in I}\mathbb{E}[\mathbb{P}(A_i |\mathcal{G})\mathbf{1}_B] \\
+  &= \sum_{i\in I}\mathbb{P}(A_i \cap B) = \mathbb{P}\left(B \cap\bigcup_{i\in I} A_i \right)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Conditional Bayes' theorem" boxType='theorem'>
+Suppose that $A\in\mathcal{G}$ and $B\in\mathcal{F}$, then
+
+$$
+  \mathbb{P}(A|B) = \frac{\mathbb{E}[\mathbb{P}(B|\mathcal{G})\mathbf{1}_A]}{\mathbb{E}[\mathbb{E}(B|\mathcal{G})]}
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \frac{\mathbb{E}[\mathbb{P}(B|\mathcal{G})\mathbf{1}_A]}{\mathbb{E}[\mathbb{E}(B|\mathcal{G})]} &= \frac{\mathbb{E}[\mathbb{E}(\mathbf{1}_B|\mathcal{G})\mathbf{1}_A]}{\mathbb{E}[\mathbb{E}(\mathbf{1}_B)|\mathcal{G}]} \\
+  &= \frac{\mathbb{E}(\mathbb{1}_A\mathbb{1}_B)}{\mathbb{P}(B)} = \frac{\mathbb{P}(A\cap B)}{\mathbb{P}(B)}
+\end{align*}
+$$
+
+</details>
+</MathBox>
+
+### Best predictor
+
+<MathBox title='' boxType='proposition'>
+Suppose that $X, U\in\mathcal{L}_1(\Omega,\mathcal{F},\mathbb{P})$ are random variables with $\mathbb{E}(|X|)< \infty$ and $\mathbb{E}(|XU|)< \infty$, and that $U$ is measurable with respect to $\mathcal{G}$. Then $X - \mathbb{E}(X|\mathcal{G})$ and $U$ are uncorrelated.
+
+<details>
+<summary>Proof</summary>
+
+Note that $X - \mathbb{E}(X|\mathcal{G})$ has mean $0$ by the mean property of conditional expectation. Computing the covariance of $X - \mathbb{E}(X|\mathcal{G})$ and $U$
+
+$$
+\begin{align*}
+  \mathrm{cov}[X - \mathbb{E}(X|\mathcal{G}), U] &= \mathbb{E}(U[X - \mathbb{E}(X|\mathcal{G})]) \\
+  &= \mathbb{E}(UX) - \mathbb{E}[U\mathbb{E}(X|\mathcal{G})] \\
+  &= \mathbb{E}(UX) - \mathbb{E}(UX) = 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Conditional expecation as best predictor' boxType='theorem'>
+Suppose that $X\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ is a square integrable random variable with $\mathbb{E}(X^2)< \infty$. The conditional expectation $\mathbb{E}(X|\mathcal{G})$ is the closest random variable to $X$ in mean square sense (best predictor). That is, for any $U\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ that is $\mathcal{G}$-measurable:
+
+$$
+  \mathbb{E}\left[X - \mathbb{E}(X|\mathcal{G})\right]^2 \leq\mathbb{E}\left[(X - U)^2 \right]
+$$
+
+Equality holds if and only if $\mathbb{P}[U = \mathbb{E}(X|\mathcal{G})] = 1$, i.e. $U \equiv\mathbb{E}(X|\mathcal{G})$
+
+<details>
+<summary>Proof</summary>
+
+Note that 
+
+$$
+\begin{align*}
+  \mathbb{E}\left[(X - U)^2\right] &= \mathbb{E}\left([X -\mathbb{E}(X|\mathcal{G}) + \mathbb{E}(X|\mathcal{G}) - U]^2 \right) \\
+  &= \mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})^2] \right) + 2\mathbb{E}([X - \mathbb{E}(X|\mathcal{G})][\mathbb{E}(X|\mathcal{G}) - U]) + \mathbb{E}\left([\mathbb{E}(X|\mathcal{G}) - U]^2 \right)
+\end{align*}
+$$
+
+Since $X - \mathbb{E}(X|\mathcal{G})$ has mean $0$, the middle term is 
+
+$$
+  2\mathrm{cov}[X - \mathbb{E}(X|\mathcal{G}), \mathbb{E}(X|\mathcal{G}) - U]
+$$
+
+Since $\mathbb{E}(X|\mathcal{G}) - U$ is $\mathcal{G}$-measurable, this covariance is $0$ by the proposition above. Hence
+
+$$
+\begin{align*}
+  \mathbb{E}\left[(X - U)^2 \right] = \mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})]^2 \right) + \mathbb{E}\left([\mathbb{E}(X|\mathcal{G}) - U]^2 \right) \\
+  &\geq \mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})]^2\right)
+\end{align*}
+$$
+
+Equality holds if and only if $\mathbb{E}\left([\mathbb{E}(X|\mathcal{G}) - U]^2 \right) = 0$ if and only if $\mathbb{P}[U = \mathbb{E}(X|\mathcal{G})] = 1$.
+</details>
+</MathBox>
+
+### Conditional variance
+
+<MathBox title='Conditional covariance' boxType='definition'>
+Suppose that $X\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ is a square integrable random variable with $\mathbb{E}(X^2) < \infty$, and let $\mathcal{G}\subseteq\mathcal{F}$ be a sub-$\sigma$-algebra of $\mathcal{F}$. The conditional variance of $X$ given $\mathcal{G}$ is
+
+$$
+\begin{align*}
+  \mathrm{var}(X|\mathcal{G}) &= \mathbb{E}\left( [X - \mathbb{E}(X|\mathcal{G})]^2 | \mathcal{G} \right) \\
+  &= \mathbb{E}\left(X^2 |\mathcal{G} \right) - \mathbb{E}(X|\mathcal{G})^2
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Expanding the square in the definition and using basic properties of conditional expectation gives
+
+$$
+\begin{align*}
+  \mathrm{var}(X|\mathcal{G}) &= \mathbb{E}\left(X^2 - 2X\mathbb{E}(X|\mathcal{G}) + [\mathbb{E}(X|\mathcal{G})]^2 |\mathcal{G} \right) \\
+  &= \mathbb{E}\left(X^2 |\mathcal{G}\right) - 2\mathbb{E}[X\mathbb{E}(X|\mathcal{G})|\mathcal{G}] + \mathbb{E}\left([\mathbb{E}(X|\mathcal{G})]^2 |\mathcal{G} \right) \\
+  &= \mathbb{E}\left(X^2 |\mathcal{G} \right) - 2\mathbb{E}(X|\mathcal{G})\mathbb{E}(X|\mathcal{G}) + [\mathbb{E}(X|\mathcal{G})]^2 \\
+  &= \mathbb{E}\left(X|\mathcal{G} \right) - [\mathbb{E}(X|\mathcal{G})]^2
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Conditional variance identities' boxType='proposition'>
+Suppose that $X\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ is a square integrable random variable with $\mathbb{E}(X^2) < \infty$. Then
+
+1. $\mathrm{var}(X) = \mathbb{E}[\mathrm{var}(X|\mathcal{G})] + \mathrm{var}[\mathbb{E}(X|\mathcal{G})]$
+2. $\mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})]^2 \right) = \mathrm{var}(X) - \mathrm{var}[\mathbb{E}(X|\mathcal{G})]$
+
+<details>
+<summary>Proof</summary>
+
+1. Taking the expected value of the conditional variance formula gives
+$$
+  \mathbb{E}[\mathrm{var}(X|\mathcal{G})] = \mathbb{E}(X^2) - \mathbb{E}\left[\mathbb{E}(X|\mathcal{G})^2 \right]
+$$
+
+Writing out the terms
+
+$$
+\begin{align*}
+  \mathbb{E}(X) &= \mathrm{var}(X) + \mathbb{E}(X)^2 \\
+  \mathbb{E}\left[\mathbb{E}(X|\mathcal{G})^2\right] &= \mathrm{var}[\mathbb{E}(X|\mathcal{G})] + \mathbb{E}[\mathbb{E}(X|\mathcal{G})]^2 \\
+  &= \mathrm{var}[\mathbb{E}(X|\mathcal{G})] + \mathbb{E}(X)^2
+\end{align*}
+$$
+
+$$
+  \mathbb{E}[\mathrm{var}(X|\mathcal{G})] = \mathrm{var}(X) \mathrm{var}[\mathbb{E}(X|\mathcal{G})]
+$$
+
+2. 
+$$
+\begin{align*}
+  \mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})]^2 \right) &= \mathbb{E}[\mathrm{var}(X|\mathcal{G})] \\
+  &= \mathrm{var}(X) - \mathrm{var}[\mathbb{E}(X|\mathcal{G})]
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Conditional covariance
+
+<MathBox title='Conditional covariance' boxType='definition'>
+Suppose that $X, Y\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ are square integrable random variables with $\mathbb{E}(X^2),\mathbb{E}(Y^2) < \infty$. Let $\mathcal{G}\subseteq\mathcal{F}$ be a sub $\sigma$-algebra of $\mathcal{F}$. The conditional variance of $X$ and $Y$ given $\mathcal{G}$ is
+
+$$
+\begin{align*}
+  \mathrm{var}(X, Y|\mathcal{G}) &= \mathbb{E}\left([X - \mathbb{E}(X|\mathcal{G})][Y - \mathbb{E}(Y|\mathcal{G})]|\mathcal{G} \right) \\
+  &= \mathbb{E}(XY|\mathcal{G}) - \mathcal{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G})
+\end{align*}
+$$
+
+The conditional covariance generalizes conditional variance as
+
+$$
+  \mathrm{cov}(X,X|\mathcal{G}) = \mathrm{var}(X|\mathcal{G})
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \mathrm{cov}(X,Y|\mathcal{G}) &= \mathbb{E}\left(XY - X\mathbb{E}(Y|\mathcal{G}) - Y\mathbb{E}(X|\mathcal{G}) + \mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G}) |\mathcal{G} \right) \\
+  &= \mathbb{E}(XY|\mathcal{G}) - \mathbb{E}[X\mathbb{E}(Y|\mathcal{G})|\mathcal{G}] - \mathbb{E}[Y\mathbb{E}(X|\mathcal{G})|\mathcal{G}] + \mathbb{E}[\mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G})|\mathcal{G}] \\
+  &= \mathbb{E}(XY|\mathcal{G}) - \mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G}) - \mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G}) + \mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G}) \\
+  &= \mathbb{E}(XY|\mathcal{G}) - \mathcal{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Covariance by conditioning' boxType='proposition'>
+Suppose that $X,Y\in\mathcal{L}_2(\Omega,\mathcal{F},\mathbb{P})$ are square integrable random variables, then
+
+$$
+  \mathrm{cov}(X, Y) = \mathbb{E}[\mathrm{cov}(X,Y|\mathcal{G})] + \mathrm{cov}[\mathbb{E}(X|\mathcal{G}),\mathbb{E}(Y|\mathcal{G})]
+$$
+
+<details>
+<summary>Proof</summary>
+
+Taking the expected value of the conditional covariance gives
+$$
+  \mathbb{E}[\mathrm{cov}(X,Y|\mathcal{G})] = \mathbb{E}(XY) - \mathbb{E}[\mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G})]
+$$
+
+Note that $\mathbb{E}(XY) = \mathrm{cov}(X,Y) + \mathbb{E}(X)\mathbb{E}(Y)$ and similarly
+
+$$
+\begin{align*}
+  \mathbb{E}[\mathbb{E}(X|\mathcal{G})\mathbb{E}(Y|\mathcal{G})] &= \mathrm{cov}[\mathbb{E}(X|\mathcal{G}),\mathbb{E}(Y|\mathcal{G})] + \mathbb{E}[\mathbb{E}(X|\mathcal{G})]\mathbb{E}[\mathbb{E}(Y|\mathcal{G})] \\
+  &= \mathrm{cov}[\mathbb{E}(X|\mathcal{G}),\mathbb{E}(Y|\mathcal{G})] + \mathbb{E}(X)\mathbb{E}(Y)
+\end{align*}
+$$
+
+Substituting gives
+
+$$
+  \mathbb{E}[\mathrm{cov}(X,Y|\mathcal{G})] = \mathrm{cov}(X,Y) - \mathrm{cov}[\mathbb{E}(X|\mathcal{G}),\mathbb{E}(Y|\mathcal{G})]
+$$
+
 </details>
 </MathBox>
 
