@@ -1842,12 +1842,12 @@ $$
 $$
 \begin{gather*}
 \begin{aligned}
-    \varphi(Q) &= \varphi(Q \cap A) + \varphi(\overbrace{Q \cap A}^{\tilde{Q}}) = \varphi(Q \cap A) + \varphi\left(\tilde{Q} \cap B \right) + \left(\tilde{Q} \cap B^c \right) \\
-    &\geq \varphi\left( (Q \cap A) \cup \left(\tilde{Q} \cap B \right) \right) + \left(\tilde{Q} \cap B^c \right) \\
-    &= \varphi\left( (Q \cap A) \cup \left(\left(Q \cap A^c \right) \cap B \right) \right) + \left(\left(Q \cap A^c \right) \cap B^c \right) \\
-    &= \varphi\left( Q \cap (A \cup B) \right) + \varphi\left(Q \cap \left(A \cup B \right)^c \right) 
+  \varphi(Q) &= \varphi(Q \cap A) + \varphi(\overbrace{Q \cap A}^{\tilde{Q}}) = \varphi(Q \cap A) + \varphi\left(\tilde{Q} \cap B \right) + \left(\tilde{Q} \cap B^c \right) \\
+  &\geq \varphi\left( (Q \cap A) \cup \left(\tilde{Q} \cap B \right) \right) + \left(\tilde{Q} \cap B^c \right) \\
+  &= \varphi\left( (Q \cap A) \cup \left(\left(Q \cap A^c \right) \cap B \right) \right) + \left(\left(Q \cap A^c \right) \cap B^c \right) \\
+  &= \varphi\left( Q \cap (A \cup B) \right) + \varphi\left(Q \cap \left(A \cup B \right)^c \right) 
 \end{aligned} \\
-    \implies A \cup B \in \mathcal{A}_\varphi
+  \implies A \cup B \in \mathcal{A}_\varphi
 \end{gather*}
 $$
 </details>
@@ -1877,6 +1877,340 @@ The Hausdorff dimension of $A$ is
 $$
   \mathrm{dim}_H (A) := \inf\left\{ k\in[0, \infty] \;|\; H^k(A) = 0 \right\}
 $$
+</MathBox>
+
+# Kernels
+
+<MathBox title='Kernel' boxType='definition'>
+Suppose that $(S,\mathcal{S})$ and $(T, \mathcal{T})$ are measurable spaces. A kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ is a function $K:S\times\mathcal{T}\to[0,\infty]$ such that
+
+1. $x\mapsto K(x, A)$ is a measurable function from $S$ into $[0,\infty]$ for each $A\in\mathcal{T}$
+2. $A\mapsto K(x, A)$ is a positive measure on $\mathcal{T}$ for each $x\in S$
+
+If $(T,\mathcal{T}) = (S, \mathcal{S})$, then $K$ is a kernel on $(S,\mathcal{S})$.
+
+There are several classes of kernels, with the most important listet below.
+1. $K$ is $\sigma$-finite if the measure $K(x,\cdot)$ is $\sigma$-finite for every $x\in S$.
+2. $K$ is finite if $K(x, T)< \infty$ for every $x\in S$.
+3. $K$ is bounded if $K(x, T)$ is bounded in $x\in S$
+4. $K$ is a probability kernel (stochastic) if $K(x, T) = 1$ for every $x\in S$
+
+Define the supremum norm $\lVert K \rVert = \sup\{ K(x, T) \;|\; x\in S \}$, so that $\lVert K \rVert < \infty$ if $K$ is a bounded kernel and $\lVert K \rVert = 1$ if $K$ is a probability kernel.
+</MathBox>
+
+<MathBox title='Kernel integral operators' boxType='definition'>
+Suppose that $K$ is a kernel from $(S,\mathcal{S})$ to $(T, \mathcal{T})$.
+
+1. If $\mu$ is a positive measure on $(S,\mathcal{S})$, then $\mu K$ defined as follows is a positive measure on $(T,\mathcal{T})$
+
+$$
+  \mu K(A) = \int_S K(x, A)\,\mathrm{d}\mu(x),\quad A\in\mathcal{T}
+$$
+
+2. If $f:T\to\mathbb{R}$ is measurable, then $Kf: S\to\mathbb{R}$ defined as follows is measurable (assuming that the integral exists in $\mathbb{R}$)
+
+$$
+  Kf(x) = \int_T K(x, \mathrm{d}y)f(y),\quad x\in S
+$$
+
+<details>
+<summary>Proof</summary>
+
+1. Clearly $\mu K(A)\geq 0$ for $A\in\mathcal{T}$. Suppose that $\{A_j\}_{j\in J}$ is a countable collection of disjoint sets in $\mathcal{T}$ and $A = \bigcup_{j\in J} A_j$, then
+
+$$
+\begin{align*}
+  \mu K(A) &= \int_S K(x, A)\,\mathrm{d}\mu(x) = \int_S \left(\sum_{j\in J} K(x, A_j) \right)\,\mathrm{d}\mu(x) \\
+  &= \sum_{j\in J} \int_S K(x, A_j)\,\mathrm{d}\mu(x) = \sum_{j\in J} \mu K(A_j)
+\end{align*}
+$$
+
+2. The measurability of $Kf$ follows from the measurability of $f$ and $x\mapsto K(x, A)$ for $A\in\mathcal{S}$, and from basic properties of the integral.
+</details>
+</MathBox>
+
+A kernel transforms measures on $(S, \mathcal{S})$ into measures on $(T,\mathcal{T})$, and transforms certain measurable functions from $T$ to $\mathbb{R}$ into measurable functions from $S$ to $\mathbb{R}$.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $K$ is a kernel from $(S,\mathcal{S})$ to $(T, \mathcal{T})$ and that $f:T\to\mathbb{R}$ is bounded, i.e. $f \in\mathcal{B}(T,\mathbb{R})$
+
+1. If $K$ is finite then $Kf$ is defined and $\lVert Kf \rVert = \lVert K \rVert \cdot \lVert f \rVert$.
+2. If $K$ is bounded then $Kf\in\mathcal{B}(T,\mathbb{R})$.
+
+<details>
+<summary>Proof</summary>
+
+1. If $K$ is finite then for $x\in S$
+
+$$
+\begin{align*}
+  K|f|(x) &= \int_T K(x,\mathrm{d}y)|f(y)| \\
+  &\leq \int_T K(x, \mathrm{d}y)\lVert f \rVert \\
+  &= \lVert f \rVert K(x, T) < \infty
+\end{align*}
+$$
+
+This shows that $f$ is integrable with respect to $K(x,\cdot)$ for each $x\in S$, thus $Kf$ is defined. Furthermore
+
+$$
+  |Kf(x)| \leq K|f|(x) \leq \lVert f \rVert K(x, T) \leq \lVert f \rVert\cdot\lVert K \rVert
+$$
+
+Thus $\lVert Kf \rVert \leq \rVert\cdot\lVert K \rVert$. Moreover, equality holds when $f = \mathbf{1}_T$.
+
+2. If $K$ is bounded then $\lVert K \rVert < \infty$ so from $(1)$ we have $\lVert Kf \rVert < \infty$.
+</details>
+</MathBox>
+
+<MathBox title='Identity kernel' boxType='definition'>
+The identity kernel $I$ on the measurable space $(S,\mathcal{S})$ is defined by $I(x, A) = \mathbf{1}(x\in A)$ for $x\in S$ and $A\in\mathcal{S}$. From the indentity kernel, $x\mapsto I(x, A)$ is the indicator function of $A\in\mathcal{S}$, while $A\mapsto I(x, A)$ is the point mass at $x\in S$. 
+
+1. If $\mu$ is a positive measure on $(S,\mathcal{S})$ then $\mu I = \mu$.
+2. If $f:S\to\mathbb{R}$ is measurable, then $If = f$
+</MathBox>
+
+## Construction of kernels
+
+<MathBox title='Linear combinations of kernels' boxType='proposition'>
+Suppose that $K$ and $L$ are kernels from $(S,\mathcal{S})$ to $(T,\mathcal{T})$, and that $c\in[0,\infty). Then $cK$ and $K + L$ defined below are also kernels from $(S,\mathcal{S})$ to $(T,\mathcal{T})$.
+
+1. $(cK)(x, A) = cK(x, A)$ for $x\in S$ and $A\in\mathcal{T}$
+2. $(K + L)(x, A) = K(x, A) + L(x, A)$ for $x\in S$ and $A\in\mathcal{T}$
+
+If $K$ and $L$ are $\sigma$-finite (or finite or bounded) then $cK$ and $K + L$ are $\sigma$ are $\sigma$-finite (or finite or bounded), respectively.
+
+<details>
+<summary>Proof</summary>
+
+1. Since $x\mapsto K(x, A)$ is measurable for $A\in\mathcal{T}$, so is $x\mapsto cK(x, A)$. Since $A\mapsto K(x, A)$ is a positive measure on $(T,\mathcal{T})$ for $x\in S$, so is $A\mapsto cK(x, A)$ since $c\geq 0$.
+
+2. Since $x\mapsto K(x, A) and $x\mapsto L(x, A) are measurable for $A\in\mathcal{T}$, so is $x\mapsto K(x,A) + L(x, A)$. Since $A\mapsto K(x, A)$ and $A\mapsto L(x, A)$ are positive measures on $(T,\mathcal{T})$ for $x\in S$, so is $A\mapsto K(x, A) + L(x, A)$.
+</details>
+</MathBox>
+
+<MathBox title='Product of kernels' boxType='proposition'>
+Suppose that $K$ is a kernel from $(R,\mathcal{R})$ to $(S,\mathcal{S})$ and that $L$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$. Then $KL$ defined as follows is a kernel from $(R,\mathcal{R})$ to $(T,\mathcal{T})$
+
+$$
+  KL(x, A) = \int_S K(x, \mathrm{d}y)L(y, A),\quad x\in R, A\in\mathcal{T}
+$$
+
+The kernel $KL$ has the following properties
+1. If $K$ finite and $L$ is bounded then $KL$ is finite.
+2. If $K$ and $L$ are bounded then $KL$ is bounded, then $KL$ is bounded.
+3. If $K$ and $L$ are stochastic, then $KL$ is stochastic.
+
+If $K$ is a kernel on $(R,\mathcal{R})$, then $K^n = \prod_{i=1}^n K$ for $n\in\mathbb{N}$ is the $n$-fold power of $K$. By convention, $K^0 = I$, the identity kernel on $S$.
+
+<details>
+<summary>Proof</summary>
+
+The measurability of $x\mapsto (KL)(x, A)$ for $A\in\mathcal{T}$ follows from basic properties of the integral. For the second property, fix $x\in R$. Clearly $KL(x, A)\geq 0$ for $A\in\mathcal{T}$. Suppose that $\{A_j\}_{j\in J}$ is a countable collection of disjoint sets in $\mathcal{T}$ and $A = \bigcup_{j\in J} A_j$, then
+
+$$
+\begin{align*}
+  KL(x, A) &= \int_S K(x, \mathrm{d}y)L(x, A) \\
+  &= \int_S K(x, \mathrm{d}y)\left( \sum_{j\in J} L(y, A_j) \right) \\
+  &= \sum_{j\in J} \int_S K(x, \mathrm{d}y)L(y, A_j) \\
+  &= \sum_{j\in J} KL(x, A_j)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Associative properties for kernels' boxType='proposition'>
+Suppose that $K$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$, $\mu$ is a positive measure on $(S,\mathcal{S})$, $c\in[0,\infty)$ and $f:T\to\mathbb{R}$ is measurable. Then the following associative properties hold
+
+1. $c(\mu K) = (c\mu)K$
+2. $c(Kf) = (cK)f$
+3. $(\mu K)f = \mu(Kf)$
+
+<details>
+<summary>Proof</summary>
+
+1. The common measure on $(T, \mathcal{T})$  is (for $A\in\mathcal{T}$)
+$$
+  c\muK(A) = c\int_S K(x, A),\mathrm{d}\mu(x)
+$$
+2. The common function from $S$ to $\mathbb{R}$ is (assuming that the integral exists for $x\in S$)
+$$
+  cKf(x) = c\int_S K(x,\mathrm{d}y)f(y)
+$$
+3. The common real number is (assuming that the integral exists)
+$$
+  \mu Kf = \int_S \mathrm{d}\mu(x)\int_T K(x,\mathrm{d}y)f(y)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Associative properties for product kernels' boxType='proposition'>
+Suppose that $K$ is a kernel from $(R,\mathcal{R})$ to $(S,\mathcal{S})$, $L$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ and $M$ is a kernel from $(T,\mathcal{T})$ to $(U,\mathcal{U})$. Suppose also that $\mu$ is a positive measure on $(R,\mathcal{R})$, $c\in[0,\infty)$ and $f:T\to\mathbb{R}$ is measurable. Then the following associative properties hold
+
+1. (\mu K)L = \mu(KL)$
+2. $K(Lf) = (KL)f$
+3. $c(KL) = (cK)L$
+4. (KL)M = K(LM)
+
+<details>
+<summary>Proof</summary>
+
+1. The common measure on $(T, \mathcal{T})$ is(for $A\in\mathcal{T}$)
+$$
+  \muKL(A) = \int_R \mathrm{d}\mu(x)\int_S K(x, \mathrm{d}y)L(y, A)
+$$
+2. The common function from $R$ to $\mathbb{R}$ is (assuming that the integral exists for $x\in S$)
+$$
+  KLf(x) = \int_S K(x,\mathrm{d}y) \int_T L(y,\mathrm{d}z)f(y),\quad x\in R
+$$
+3. The common kernel from $(R,\mathcal{R})$ to $(T,\mathcal{T})$ is (for $x\in R$ and $A\in\mathcal{A}$)
+$$
+  cKL(x, A) = c\int_S K(x,\mathrm{d}y)L(y, A)
+$$
+4. The common kernel from $(R,\mathcal{R})$ to $(U,\mathcal{U})$ is (for $x\in R$ and $A\in\mathcal{U}$)
+$$
+  KLM(x, A) = \int_S K(x,\mathrm{d}y) \int_T L(y,\mathrm{d}z)M(z, A)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Distributive properties for kernel sums' boxType='proposition'>
+Suppose that $K$ and $L$ are kernels from $(R,\mathcal{R})$ to $(S,\mathcal{S})$ and that $M$ and $N$ are kernels from $(S,\mathcal{S})$ to $(T,\mathcal{T})$. Suppose also that $\mu$ is a positive measure on $(R, \mathcal{R})$, and $f:S\to\mathbb{R}$ is measurable. Then the following distributive properties hold
+
+1. $(K+L)M = KM + LM$
+2. $K(M + N) = KM + KN$
+3. $\mu(K + L) = \mu K + \mu L$
+4. $(K + L)f = Kf + Lf$
+
+Suppose that $\nu$ is a positive measure on $(R,\mathcal{R})$ and that $g:S\to\mathbb{R}$ is measurable. Then
+5. $(\mu + \nu)K = \mu K + \nu K$
+6. $K(f + g) = Kf + Kg$
+7. $\mu(f + g) = \mu f + \mu g$
+8. $(\mu + \nu)f = \mu f + \nu f$
+
+<details>
+<summary>Proof</summary>
+
+1. The common measure on $(T, \mathcal{T})$ is(for $A\in\mathcal{T}$)
+$$
+  \muKL(A) = \int_R \mathrm{d}\mu(x)\int_S K(x, \mathrm{d}y)L(y, A)
+$$
+2. The common function from $R$ to $\mathbb{R}$ is (assuming that the integral exists for $x\in S$)
+$$
+  KLf(x) = \int_S K(x,\mathrm{d}y) \int_T L(y,\mathrm{d}z)f(y),\quad x\in R
+$$
+3. The common kernel from $(R,\mathcal{R})$ to $(T,\mathcal{T})$ is (for $x\in R$ and $A\in\mathcal{A}$)
+$$
+  cKL(x, A) = c\int_S K(x,\mathrm{d}y)L(y, A)
+$$
+4. The common kernel from $(R,\mathcal{R})$ to $(U,\mathcal{U})$ is (for $x\in R$ and $A\in\mathcal{U}$)
+$$
+  KLM(x, A) = \int_S K(x,\mathrm{d}y) \int_T L(y,\mathrm{d}z)M(z, A)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Linear transformation' boxType='proposition'>
+If $K$ is a bounded kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ and $f:T\to\mathbb{R}$ is measurable, then $f\mapsto Kf$ is a bounded, linear transformation from $\mathcal{B}(T, \mathbb{R})$ to $\mathcal{B}(S,\mathbb{R})$ and $\lVert K \rVert$ is the norm of the transformation
+</MathBox>
+
+<MathBox title='Fixed points of kernel operators' boxType='definition'>
+Suppose that $K$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$.
+1. A positive measure $\mu$ on $(S,\mathcal{S})$ such that $\mu K = \mu$ is said to be invariant for $K$.
+2. A measurable function $f:T\to\mathbb{R}$ such that $Kf = f$ is said to invariant for $K$.
+
+In terms of spectral theory, an invariant measure is a left eigenvector of the kernel, while an invariant function is a right eigenvector of the kernel, both corresponding to the eigenvalue $1$.
+</MathBox>
+
+## Kernel density functions
+
+<MathBox title='Kernel density function' boxType='definition'>
+Suppose that $(S,\mathcal{S},\lambda)$ and $(T,\mathcal{T},\mu)$ are measure spaces, and that $S\times T$ is given the product $\sigma$-algebra $\mathcal{S}\otimes\mathcal{T}$. If $k:S\times T\to[0,\infty)$ is measurable, then the function $K$ is defined as follows is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$
+
+$$
+  K(x, A) = \int_A k(x,y)\,\mathrm{d}\mu(x),\quad x\in S, A\in\mathcal{T}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The measurability of $x\mapsto K(x, A) = \int_A k(x,y)\,\mathrm{d}\mu(y)$ for $A\in\mathcal{T}$ follows from basic properties of the integral. The fact that $A\mapsto K(x, A) = \int_A k(x,y)\,\mathrm{d}\mu(y)$ also follows from basic properties of the integral. In fact, $y\mapsto k(x,y)$ is the density of this measure with respect to $\mu$.
+</details>
+</MathBox>
+
+<MathBox title='Right and left operators from a kernel function' boxType='definition'>
+Suppose that $(S,\mathcal{S},\lambda)$ and $(T,\mathcal{T},\mu)$ are measure spaces, and that $K$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ with kernel function $k$. The following operators can be formed from $K$
+
+1. If $f:T\to\mathbb{R}$ is measurable, then the function defined as follows is also measurable
+$$
+  Kf(x) = \int_S k(x,y)f(y)\,\mathrm{d}\mu(y),\quad x\in S
+$$
+2. If $f:S\to\mathbb{R}$ is measurable, then the function $fK:T\to\mathbb{R}$ defined as follows is also measurable
+$$
+  fK(y) = \int_S f(x)k(x,y)\,\mathrm{d}\lambda(x),\quad y\in T
+$$
+
+If $k:S\times S\to[0,\infty)$ is measurable, then $K$ operates on the left and on the right with measurable functions $f:S\to\mathbb{R}$
+
+$$
+\begin{align*}
+  fK(y) &= \int_S f(x)k(x,y)\,\mathrm{d}\lambda(x),\quad y\in S \\
+  Kf(x) &= \int_S k(x,y)f(y)\,\mathrm{d}\lambda(y),\quad x\in S
+\end{align*}
+$$
+
+In this case, $k: S\times S\to[0, \infty)$ is symmetric if $k(x,y) = k(y,x)$ for all $(x,y)\in S^2$.
+
+<details>
+<summary>Proof</summary>
+
+1. This follows since the function $y\mapsto k(x, y)$ is the density of the measure $A\mapsto K(x,A)$ with respect to $\mu$
+
+$$
+  Kf(x) = \int_S K(x,\mathrm{d}y)f(y) = \int_S k(x,y)f(y)\,\mathrm{d}\mu(y),\quad x\in S
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $(S,\mathcal{S},\lambda)$ and $(T,\mathcal{T},\mu)$ are measure spaces, and that $K$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ with kernel function $k$. Suppose also that $f:S\to[0,\infty)$ is measurable, and let $\rho$ denote the measure on $(S,\mathcal{S})$ that has density $f$ with respect to $\lambda$. Then $fK$ is the density of the measure $\rho K$ with respect to $\mu$.
+
+<details>
+<summary>Proof</summary>
+
+Applying an interchance of integrals for $A\in\mathcal{T}$
+
+$$
+\begin{align*}
+  \rho K(A) &= \int_S K(x, A)\,\mathrm{d}\rho(x) = \int_S f(x)K(x, B)\,\mathrm{d}\mu(x) \\
+  &= \int_S f(x)\left[\int_A k(x, y)\,\mathrm{d}\mu(y) \right]\mathrm{d}\lambda(x) \\
+  &= \int_A \left[\int_S f(x)k(x,y)\,\mathrm{d}\lambda(x) \right]\mathrm{d}\mu(y) \\
+  &= \int_A fK(y)\,\mathrm{d}\mu(y)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Product kernel density functions' boxType='definition'>
+Suppose that $(R,\mathcal{R},\lambda)$, $(S,\mathcal{S},\mu)$ and $(T,\mathcal{T},\rho)$ are measure spaces, and that $K$ is a kernel from $(R,\mathcal{R})$ to $(S,\mathcal{S})$ with kernel function $k$ and $L$ is a kernel from $(S,\mathcal{S})$ to $(T,\mathcal{T})$ with kernel function $l$. Then the kernel $KL$ from $(R,\mathcal{R})$ to $(T,\mathcal{T})$ has density $kl$ given by
+
+$$
+  kl(x,z) = \int_S k(x,y)l(y,z)\,\mathrm{d}\mu(y),\quad (x,z)\in R\times T
+$$
+
+<details>
+<summary>Proof</summary>
+
+Applying an interchange of integrals via Fubini's theorem for $x\in R$ and $A\in\mathcal{T}$
+
+$$
+\begin{align*}
+  KL(x, A) &= \int_S K(x, \mathrm{d}y)L(y, A) = \int_S k(x,y)L(y, A)\,\mathrm{d}\mu(y) \\
+  &= \int_S k(x, y)\left[\int_A l(y, z)\,\mathrm{d}\rho(y) \right]\mathrm{d}\mu(y) \\
+  &= \int_A \left[\int_S k(x,y)l(y,z)\,\mathrm{d}\mu(y) \right]\mathrm{d}\rho(z) \\
+  &= \int_A kl(x,z)\,\mathrm{d}\mu(z)
+\end{align*}
+$$
+</details>
 </MathBox>
 
 # Lebesgue integral
