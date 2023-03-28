@@ -1292,6 +1292,14 @@ Hence $\mathbb{P}(Y=c) = 1$.
 
 # Moments of random variables
 
+<MathBox title='Moment' boxType='definition'>
+If $a\in\mathbb{R}$ and $n\in\mathbb{N}$, the moment of $X$ about $a$ of order $n$ is defined as
+
+$$
+  \mathbb{E}\left[(X - a)^n \right]
+$$
+</MathBox>
+
 ## Expected value
 
 The expected value (mean) of a real-valued random variable gives a measures of the center of the variables' distribution. In the following discussion, let $(\Omega, \mathcal{F}, \mathbb{P})$ and $(S,\mathcal{S},\mathbb{P})$ be probability spaces, and $X: \Omega\to S$ a random variable.
@@ -1312,14 +1320,30 @@ Depending on $S$ the expected value can take the following forms:
 
 <MathBox title='Properties of expectation' boxType='proposition'>
 Let $X, Y : \Omega\to\mathbb{R}$ be random variables with $\mathbb{E}(|X|), \mathbb{E}(|Y|)\leq\infty$.
-- Linearity: $\mathbb{E}(aX + bY) = a\mathbb{E}(X) + b\mathbb{E}(Y)$ for all $a, b \in \mathbb{R}$
-- Positivity: If $\mathbb{P}(X\geq 0) 1$ then $\mathbb{E}(X) \geq 0$ and $\mathbb{E}(X) = 0$ if and only if $\mathbb{P}(X=0) = 1$
-- Monotonicity: If $X \overset{a.s}{\leq} Y$, i.e. $\mathbb{P}\left( X\leq Y \right) = 1$, then $\mathbb{E}(X) \leq \mathbb{E}(Y)$
-- If $\mathbb{P}(X = Y)$, then $\mathbb{E}(X) = \mathbb{E}(Y)$
-- If $X, Y$ are independent, then $\mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y)$
-- Absolute value inequality: $|\mathbb{E}(X)| \leq \mathbb{E}(|X|)$
+- Linearity: $\mathbb{E}(aX + bY) = a\mathbb{E}(X) + b\mathbb{E}(Y)$ for all $a, b \in \mathbb{R}$.
+- Positivity: If $\mathbb{P}(X\geq 0) 1$ then $\mathbb{E}(X) \geq 0$ and $\mathbb{E}(X) = 0$ if and only if $\mathbb{P}(X=0) = 1$.
+- Monotonicity: If $X \overset{a.s}{\leq} Y$, i.e. $\mathbb{P}\left( X\leq Y \right) = 1$, then $\mathbb{E}(X) \leq \mathbb{E}(Y)$.
+- If $\mathbb{P}(X = Y)$, then $\mathbb{E}(X) = \mathbb{E}(Y)$.
+- If $X, Y$ are independent, then $\mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y)$.
+- If $X$ is symmetric about $a\in\mathbb{R}$, then $\mathbb{E}(X) = a$.
+- Absolute value inequality: $|\mathbb{E}(X)| \leq \mathbb{E}(|X|)$.
   - If $\mathbb{E}(X)$ is finite, the equality holds if and only if $\mathbb{P}(X\geq 0) = 1$ or $\mathbb{P}(X\leq 0) = 1$.
-- Hölder's inequality: If $p, q\in[1, \infty]$ with $\frac{1}{p} + \frac{1}{q}$, then $\mathbb{E}(|XY|) \leq \lVert X\rVert_p \cdot \lVert Y\rVert_q = \left[\mathbb{E}(|X|^p)\right]^{1/p} \left[\mathbb{E}(|X|^q)\right]^{1/q}$
+- Hölder's inequality: If $p, q\in[1, \infty]$ with $\frac{1}{p} + \frac{1}{q}$, then $\mathbb{E}(|XY|) \leq \lVert X\rVert_p \cdot \lVert Y\rVert_q = \left[\mathbb{E}(|X|^p)\right]^{1/p} \left[\mathbb{E}(|X|^q)\right]^{1/q}$.
+
+<details>
+<summary>Proof</summary>
+
+**Symmetry property:** By assumption, the distribution of $X - a$ is the same as the distribution of $a - X$ giving 
+
+$$
+\begin{align*}
+  \mathbb{E}(a - X) &= \mathbb{E}(X - a) \\
+  a - \mathbb{E}(X) &= \mathbb{E}(X) - a \\
+  2\mathbb{E}(X) &= 2a \\
+  \mathbb{E}(X) &= a
+\end{align*}
+$$
+</details>
 </MathBox> 
 
 <MathBox title='Change of variables theorem' boxType='theorem'>
@@ -1581,6 +1605,11 @@ $$
 \end{align*}
 $$
 
+Depending on the sign of its skewness, a distribution $X$ is called
+1. Positively skewed if $\matrm{skew}(X)> 0$.
+2. Negatively skewed if $\matrm{skew}(X)< 0$.
+3. Unskewed if $\matrm{skew}(X) = 0$.
+
 <details>
 <summary>Details</summary>
 
@@ -1596,7 +1625,35 @@ $$
 </details>
 </MathBox>
 
+<MathBox title='Properties of skewness' boxType='proposition'>
+Let $X$ be a real-valued random variable with $\mathbb{E}(X) = \mu$ and $\mathrm{var}(X) = \sigma^2$.
+1. If the distribution of $X$ is symmetric $\mathrm{skew}(X)$.
+2. If $a\in\mathbb{R}$ and $b\in\mathbb{R}\setminus\{0\}$
+  a. $\mathrm{skew}(a + bX) = \mathrm{skew}(X) if $b > 0$
+  b. $\mathrm{skew}(a + bX) = -\mathrm{skew}(X) if $b < 0$
+
+<details>
+<summary>Proof</summary>
+
+1. Recall that if $X$ is symmetric about $a\in\mathbb{R}$ then $\mathbb{E}(X) = a$, such that $\skew(X) = \frac{\mathbb{E}\left[(X - a)^3 \right]}{\sigma^3}$. By symmetry and linearity
+
+$$
+  \mathbb{E}[(X - a)^3] = \mathbb{E}[(a - X)^3] = -\mathbb{E}[(X - a)^3]
+$$
+
+It follows that $\mathbb{E}[(X - a)^3] = 0$.
+
+2. Let $Z = \frac{X - \mu}{\sigma}$, the standard score of $X$. Recall that the standard score of $a + bX$ is
+  a. $Z$ if $b > 0$
+  b. $-Z$ if $b < 0$
+
+The result follows since skewness is defined in terms of an odd power of $Z$.
+</details>
+</MathBox>
+
 ## Kurtosis
+
+Kurtosis is a measure of the fatness in the tails of a distribution.
 
 <MathBox title='Kurtosis' boxType='definition'>
 Let $X$ be a random variable with mean $\mu$ and variance $\sigma^2$. The kurtosis of $X$ is the fourth moment of the standard score of $X$
@@ -1620,6 +1677,22 @@ $$
   &= \mathbb{E}(X^4) - 4\mu\mathbb{E}(X^3) + 6\mu^2\sigma^2 + 3\mu^4
 \end{align*}
 $$
+</details>
+</MathBox>
+
+<MathBox title='Invariance under linear transformations' boxType='proposition'>
+If $a\in\mathbb{R}$ and $b\in\mathbb{R}\setminus\{0\}$, then $\mathrm{kurt}(a + bX) = \mathrm{kurt}(X)$
+  a. $\mathrm{skew}(a + bX) = \mathrm{skew}(X) if $b > 0$
+  b. $\mathrm{skew}(a + bX) = -\mathrm{skew}(X) if $b < 0$
+
+<details>
+<summary>Proof</summary>
+
+Let $Z = \frac{X - \mu}{\sigma}$, the standard score of $X$. Recall that the standard score of $a + bX$ is
+1. $Z$ if $b > 0$
+2. $-Z$ if $b < 0$
+
+The result follows since kurtosis is defined in terms of an even power of $Z$.
 </details>
 </MathBox>
 
@@ -2851,6 +2924,71 @@ Suppose that $(X_n :\Omega\to\mathbb{R})_{n\in\mathbb{N}}$ is a sequence of real
 
 1. If the distribution of $X_n$ converges to the distribution of a random variable $X\xrightarrow{n\to\infty} X$ and $X$ has characteristic function $\chi$, then $\chi_{n}(t)\xrightarrow{n\to\infty} \chi(t)$ for all $t\in\mathbb{R}$
 2. If $\chi_n(t)\xrightarrow{n\to\infty}\chi(t)$ for $t$ in an open interval about $0$, and if $\chi$ is continuous at $0$, then $\chi$ is the characteristic function of a random variable $X$, and the distribution of $X_n\xrightarrow{n\to\infty} X$. 
+</MathBox>
+
+## Uniformly integrable random variables
+
+<MathBox title='' boxType='proposition'>
+If $X$ is a random variable, then $\mathbb{E}(|X|) < \infty$ if and only if $\mathbb{E}\left(|X|\mathbf{1}_{|X|\geq x} \right)\xrightarrow{\to\infty} 0$.
+
+<details>
+<summary>Proof</summary>
+
+Note $|X|\mathbf{1}_{|X|\leq x}$ is nonnegative, increasing in $x\in[0,\infty)$ and $|X|\mathbf{1}_{|X|\leq x}\xrightarrow{x\to\infty} |X|$. From the monotone convergence theorem, $\mathbb{E}\left(|X|\mathbf{1}_{|X|\leq x} \right)\xrightarrow{x\to\infty}\mathbb{E}(|X|)$. Furthermore
+
+$$
+  \mathbb{E}(|X|) = \mathbb{E}(|X|\mathbf{1}_{|X|\leq x}) + \mathbb{E}(|X|\mathbf{1}_{|X| > x})
+$$
+
+If $\mathbb{E}(|X|) < \infty$ then taking limits shows that $\mathbb{E}(|X|\mathbf{1}_{|X|> x})\xrightarrow{x\to\infty} 0$. Since $\mathbb{E}\left(|X|\mathbf{1}_{|X|\leq x}\right)\leq x$, then $\mathbb{E}\left(|X|\mathbf{1}_{|X| > x} \right) = \infty$ if $\mathbf{E}(|X|) = \infty$.
+</details>
+</MathBox>
+
+<MathBox title='Uniformly integrable random variable' boxType='definition'>
+Suppose that $I$ is an index set, which is not necessarily countable, and that $\mathbf{X} = \{X_i \}_{i\in I}$ is a collection of random variables. The collection $\mathbf{X}$ is *uniformly integrable* if for each $\varepsilon > 0$ there exists $x > 0$ such that for all $i\in I$
+
+$$
+  \mathbb{E}\left(|X_i|\mathbf{1}_{|X_i| > x}\right) < \varepsilon
+$$
+
+Equivalently $\mathbb{E}\left(|X_i|\mathbf{1}_{|X_i| > x}\right)\xrightarrow{x\to\infty} 0$ uniformly in $i\in I$.
+</MathBox>
+
+<MathBox title='Conditions for uniform integrability' boxType='proposition'>
+Suppose that $(\Omega,\mathcal{F},\mathbb{P})$ is a probability space. The collection $\mathbf{X}$ is uniformly integrable if and only if
+
+1. $\{\mathbb{E}(|X_i|)\}_{i\in I}$ is bounded.
+2. For each $\varepsilon > 0$ there exists $\delta > 0$ such that if $A\in\mathcal{F}$ and $\mathbb{P}(A) < \delta$, then $\mathbb{E}(|X_i|\mathbf{1}_A) < \varepsilon$ for all $i\in I$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathbb{X}$ is uniformly integrable. With $\varepsilon = 1$ there exists $x > 0$ such that $\mathbb{E}\left(|X_i|\mathbf{1}_{|X_i| > x}\right) < 1$ for all $i\in I$. Thus
+
+$$
+\begin{align*}
+  \mathbb{E}(|X_i|) &= \mathbb{E}(|X_i|\mathbf{1}_{|X_i|\leq x}) + \mathbb{E}(|X_i|\mathbf{1}_{|X_i| > x}) \\
+  &= x + 1
+\end{align*}
+$$
+
+showing that $\mathbb{E}(|X|)$ is bounded. Next, for $\varepsilon > 0$ there exist $x > 0$ such that $\mathbb{E}(|X_i|\mathbf{1}_{|X_i| > x}) < \frac{\varepsilon}{2}$ for all $i\in I$. Let $\delta = \frac{\varepsilon}{2x}$. If $A\in\mathcal{F}$ and $\mathbb{P}(A) < \delta$, then
+
+$$
+\begin{align*}
+  \mathbb{E}\left(|X_i| \right) &= \mathbb{E}\left(|X_i|\mathbf{1}_{A \cap \{|X|\leq x\}} \right) + \mathbb{E}\left(|X_i|\mathbf{1}_{A \cap \{|X| > x\}} \right) \\
+  &\leq x\mathbb{P}(A) + \mathbb{E}\left(|X_i|\mathbf{1}_{|X| > x} \right) < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon 
+\end{align*}
+$$
+
+Conversely, suppose that condition $(1)$ and $(2)$ hold. By $(1)$, there exists $c > 0$ such that $\mathbb{E}(|X_i|)\leq c$ for all $i\in I$. Let $\varepsilon > 0$, then by $(2)$ there exists $\delta > 0$ such that if $A\in\mathcal{F}$ with $\mathbb{P}(A) < \delta$, then $\mathbb{E}(|X_i|\mathbf{1}_A) < \varepsilon$ for all $i\in I$. Next, by Markov's inequality
+
+$$
+  \mathbb{P}(|X_i| > x) \leq\frac{\mathbb{E}(|X_i|)}{x}\leq \frac{c}{x}
+$$
+
+Pick $x> 0$ such that $\frac{c}{x} < \infty$, then $\mathbb{P}(|X_i| > x) < \delta$ for each $i\in I$. Then for each $j\in I$, we have $\mathbb{E}(|X_i|\mathbf{1}_{|X_j| > x) < \varepsilon$ for all $i\in I$ and so in particular $\mathbb{E}(|X_i|\mathbf{1}_1 > x) < \infty$ for all $i \in I$. Hence $\mathbf{X}$ is uniformly integrable.
+</details>
 </MathBox>
 
 # Vector spaces of random variables
