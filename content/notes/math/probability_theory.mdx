@@ -829,6 +829,10 @@ $$
 $$
 </details>
 
+<MathBox title='Continuous probability measure' boxType='definition'>
+A probability measure on a sample space $(\Omega,\mathcal{F})$ is continuous if $\mathbb{P}(\{\omega\}) = 0$ for all $\omega\in\Omega$.
+</MathBox>
+
 <MathBox title='Construction of continuous probability measure' boxType='proposition'>
 Let $(\Omega, \mathcal{F})$ be a sample space with $\Omega\subseteq\mathbb{R}^n$. Consider a function $g: \Omega\to [0, \infty)$, then $\mu$ defined by $\mu(A) = \int_A g(x)\mathrm{d}x$ for $A\in\Omega$ is a positive measure on $\Omega$. If $0<\mu(\Omega)<\infty$ then a probability measure on $(\Omega, \mathcal{F})$ can be defined as
 
@@ -852,18 +856,26 @@ $$
 ## Cumulative distribution function (CDF)
 
 <MathBox title='Cumulative distribution function' boxType='proposition'>
-Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and $X: \Omega \to \mathbb{R}$ a random variable. The cumulative distribution function for $X$ is defined as
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and $X: \Omega\to\mathbb{R}$ a random variable. The cumulative distribution function for $X$ is the function $F_X:\mathbb{R}\to [0, 1]$ defined as
 
 $$
-\begin{gather*}
-  F_X : \mathbb{R} \to [0, 1]\\
   F_X(x) := \mathbb{P}_X \left((-\infty, x]\right) = P(X \leq x)
-\end{gather*}
 $$
+
+Let $f_X$ denote the probability density function of $X$. If $X$ has a discrete distribution on a countable subset $S\subseteq\mathbb{R}$, then
+1. $F_X(x) = \sum_{t\in S, t\leq x} f_X(x)$ for $x\in\mathbb{R}$
+2. $f_X(x) = F_X(x) - F_X(x^-)$ for $x\in S$
+
+If $X$ has a continuous distribution on $\mathbb{R}$, then
+1. $F_X(x) = \int_{-\infty}^x f_X(t),\mathrm{d}t$
+2. $f_X(x) = F_X'(x)$ if $f_X$ is continuous at $x$
 </MathBox>
 
 <MathBox title='Properties of cumulative distribution functions' boxType='proposition'>
 Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and $X: \Omega \to \mathbb{R}$ a random variable. The cumulative distribution function $F_X$ has the following properties:
+- Monotonically increasing: if $x \leq y$ then $F_X(x) \leq F_X(y)$
+- Right continuity: $\lim_{t \downarrow x} F_X (t) = F_X{x}$.
+  - $\lim_{t \uparrow x} F_X (t) = \mathbb{P}_X \left((-\infty, x)\right) = P(X < x)$
 - Limits
 $$
 \begin{gather*}
@@ -871,9 +883,134 @@ $$
   \lim_{x\to \infty} F_X(x) = 1
 \end{gather*}
 $$
-- Monotonically increasing $x_1 < x_2 \implies F_X(x_1) \leq F_X(x_2)$
-- Right continuity: $\lim_{x \to x_0} F_X (x) = F_X{x_0}$.
 </MathBox>
+
+The right and left limits of a cumulative distribution function $F$ at $x\in\mathbb{R}$ are usually abbreviated as
+
+$$
+\begin{align*}
+  F(x^+) &:= \lim_{t\downarrow x} F(t) \\
+  F(x^-) &:= \lim_{t\uparrow x} F(t)
+\end{align*}
+$$
+
+<MathBox title='' boxType='proposition'>
+Suppose that $F_X$ is the cumulative distribution function of a real-valued random variable $X$. If $a,b\in\mathbb{R}$ with $a < b$ then
+1. $\mathbb{P}(X = a) = F_X (a) - F_X(a^-)$
+2. $\mathbb{P}(a < X \leq b) = F_X (b) - F_X(a)$
+3. $\mathbb{P}(a < X < b) = F_X (b^-) - F_X(a)$
+4. $\mathbb{P}(a \leq X \leq b) = F_X (b) - F_X(a^-)$
+5. $\mathbb{P}(a \leq X < b) = F_X (b^-) - F_X(a^-)$
+
+<details>
+<summary>Proof</summary>
+
+1. $\{X = a\} = \{ X\leq a \}\setminus \{ X < a \}$, so $\mathbb{P}(X = a) = \mathbb{P}(X\leq a) - \mathbb{P}(X < a) = F_X(a) - F_X(a^-)$
+2. $\{a < X \leq b\} = \{ X\leq b \}\setminus \{ X \leq a \}$, so $\mathbb{P}(a < X \leq b) = \mathbb{P}(X\leq b) - \mathbb{P}(X \leq a) = F_X(b) - F_X(a)$
+3. $\{a < X < b\} = \{ X < b \}\setminus \{ X \leq a \}$, so $\mathbb{P}(a < X < b) = \mathbb{P}(X < b) - \mathbb{P}(X \leq a) = F_X(b^-) - F_X(a)$
+4. $\{a \leq X \leq b\} = \{ X\leq b \}\setminus \{ X < a \}$, so $\mathbb{P}(a \leq X \leq b) = \mathbb{P}(X\leq b) - \mathbb{P}(X < a) = F_X(b) - F_X(a^-)$
+5. $\{a \leq X < b\} = \{ X < b \}\setminus \{ X < a \}$, so $\mathbb{P}(a \leq X < b) = \mathbb{P}(X< b) - \mathbb{P}(X < a) = F_X(b^-) - F_X(a^-)$
+</details>
+</MathBox>
+
+<MathBox title='Continuous distributions have continuous density functions' boxType='proposition'>
+If $X$ has a continuous distribution the distribution function $F_X$ is continuous.
+
+<details>
+<summary>Proof</summary>
+
+If $X$ has a continuous distribution, then by definition $\mathbb{P}(X = x) = 0$ and thus $\mathbb{P}(X < x) = \mathbb{P}(X \leq x)$. Hence the left and right limits of $F_X$ are equal, i.e. $F_X(x^-) = F_X(x^+) = F_X(x)$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $X$ has a continuous distribution on $\mathbb{R}$ that is symmetric about a point $a$, the distribution  function $F_X$ satisfies
+
+$$
+  F(a - t) = 1 - F(a + t),\quad t\in\mathbb{R}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the distribution of a real-valued random variable $X$ is symmetric about $a\in\mathbb{R}$ if the distribution of $X-a$ is the same as the distribution of $a - X$. Since $X - a$ and $a - X$ have the same distribution
+
+$$
+\begin{align*}
+  F(a-t) &= \mathbb{P}(X\leq a - t) = \mathbb{P}(X - a \leq -t) \\
+  &= \mathbb{P}(a - X \leq -t) = \mathbb{P}(X \geq a + t) \\
+  &= 1 - F(a + t)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Quantile functions
+
+<MathBox title='Quantile' boxType='definition'>
+Suppose that $X$ is a real-valued function with cumulative distribution function $F_X$. For $p\in(0, 1)$, a value of $x$ such that $F(x^-) = \mathbb{P}(X < x)\leq p$ and $F(x) = \mathbb{P}(X\leq x)\geq p$ is called a *quantile* of order $p$ for the distribution.
+
+Certain quantiles have their special names
+1. A quantile of order $1/4$ is a first quartile of the distribution.
+2. A quantile of order $1/2$ is a median of second quartile of the distribution.
+3. A quantile of order $3/4$ is a third quartile of the distribution.
+</MathBox>
+
+### Reliability
+
+<MathBox title='Right-tail distribution function' boxType='proposition'>
+Suppose that $X$ is a real-valued random variable with cumulative distribution function $F$. The function $F_c:\mathbb{R}\to[0, 1]$ defined by
+
+$$
+  F^c (x) = 1 - F(x) = \mathbb{P}(X > x)
+$$
+
+is the *right-tail distribution function* of $X$. This function has the following properties
+
+1. $F^c$ is decreasing
+2. Right continuous $\lim_{t\downarrow x} F^c (t) = F^c (x)$
+  a. $\lim_{t\uparrow x} F^c (t) = \mathbb{P}(X\geq x)$
+3. $\lim_{x\to\infty}F^c (x) = 0$
+4. $\lim_{x\to -\infty}F^c (x) = 1$
+</MathBox>
+
+<MathBox title='Reliability function' boxType='definition'>
+Suppose that $T$ represents the lifetime of device
+
+1. The right-tail distribution function $F^c$ is the reliability function of $T$.
+2. The function $h$ defined by $h(t) = \frac{f(t)}{F^c(t)}$ for $t\geq 0$ is the failure rate function of $T$
+
+The reliability function can be expressed in terms of the failure rate function by 
+
+$$
+  F^c(t) = \exp\left(-\int_0^t h(s)\,\mathrm{d}s \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+At the points of continuity of $f$ we have $\frac{\mathrm{d}}{\mathrm{d}t}F^c(t) = -f(t)$. Hence
+
+$$
+\begin{align*}
+  \int_0^t h(s)\,\mathrm{d}s = \int_0^t \frac{f(s)}{F^c(s)} \\
+  &= \int_0^t -\frac{\frac{\mathrm{d}}{\mathrm{d}t}F^c(t)}{F^c(s)},\mathrm{d}s = -\ln[F^c (t)]
+\end{align*}
+$$
+</details>
+</MathBox>
+
+Note that $F^c(t) = \mathbb{P}(T > t)$ is the probability that the device lasts at least $t$ time units. For small time interval $\mathrm{d}t$
+
+$$
+\begin{align*}
+  \mathbb{P}(t < T < t + \mathrm{d}t | T > t) = \frac{\mathbb{P}(t < T < t +\mathrm{d}t)}{\mathbb{P}(T > t)} \\
+  &\approx \frac{f(t)\mathrm{d}t}{F^c (t)} = h(t)\,\mathrm{d}t
+\end{align*}
+$$
+
+Thus $h(t)\,\mathrm{d}t$ is the approximate probability that the device will fail in the interval $(t, t+\mathrm{d}t)$, given survival up to time $t$. 
+
 
 ## Conditional probability
 
