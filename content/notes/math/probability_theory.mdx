@@ -956,6 +956,56 @@ Certain quantiles have their special names
 3. A quantile of order $3/4$ is a third quartile of the distribution.
 </MathBox>
 
+<MathBox title='Quantiles of symmetric distributions' boxType='proposition'>
+Suppose that $X$ has a continuous distribution that is symmetric about a point $a\in\mathbb{R}$. If $a + t$ is a quantile of order $p\in(0, 1)$, then $a - t$ is a quantile of order $1 - p$.
+
+<details>
+<summary>Proof</summary>
+
+If $a + t$ is a quantile of order $p$, then (since $X$ has a continuous distribution) $F(a + t) = p$. Since $X$ has a symmetric distribution, $F(a - t) = 1 - F(a + t) = 1 - p$, so $a - t$ is a quantile of order $1 - p$.
+</details>
+</MathBox>
+
+<MathBox title='Quantile function' boxType='definition'>
+The quantile function $F_X^{-1}:[0,1]\to\mathbb{R}$ of a real-valued random variable $X$ with distribution function $F_X:\mathbb{R}\to[0,1]$ is defined by
+
+$$
+  F_X^{-1}(p) = \min\{ x\in\mathbb{R} \;|\; F_X(x) \geq p \},\quad p\in(0, 1)
+$$
+
+<details>
+<summary>Details</summary>
+
+Since $F_X$ is right continuous and increasing, $\{ x\in\mathbb{R} \;|\; F_X(x) \}$ is an interval of the form $[a, \infty)$. Thus, the mininum of the set is $a$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of quantile function' boxType='proposition'>
+The quantile function $F_X^{-1}$ of a real-valued random variable $X$ has the following properties for $p\in(0,1)$
+
+1. $F_X^{-1}$ is increasing on $(0, 1)$
+2. $[F_X^{-1}[F(x)]\leq x$ for any $x\in\mathbb{R}$ with $F_X(x) < 1$
+  a. $F_X^{-1}(p)$ is a quantile of order $p$
+  b. If $x$ is a quantile of order $p$, then $F^{-1}(p)\leq x$
+3. $F_X[F_X^{-1}(p)]\geq p$
+4. Right-continuity: $F_X^{-1}(p^-) = F^{-1}(p)$
+  a. $F_X^{-1}(p^+) = \inf\{ x\in\mathbb{R} \;|\; F_X(x) > p \}$
+5. $F_X^{-1}(p) \leq x$ if and only if $p\leq F(x)$.
+
+<details>
+<summary>Details</summary>
+
+1. If $p,q\in(0,1)$ with $p\leq q$, then $\{ x\in\mathbb{R} \;|\; F_X(x) \geq q\}\subseteq \{ x\in\mathbb{R} \;|\; F_X(x) \geq p \}$
+2. By definition $F_X^{-1}[F_X(x)]$ is the smallest $y\in\mathbb{R}$ with $F_X(y)\geq F_X(x)$
+  a. If $x < F_X^{-1}(p)$, then $F_X[x] < p$ implying $F_X [F_X^{-1}(p)^-]$. Hence, $F_X^{-1}(p)$ is a quantile of order $p$.
+  b. Suppose that $x$ is a quantile of order $p$. Then $F_X(x) \geq p$ so by definition $F_X^{-1}(p) \leq p$.
+3. By definition $F_X^{-1}(p)$ is a value $y\in\mathbb{R}$ satisfying $F_X(y)\geq p$
+4. This follows from the fact that $F_X$ is right continuous.
+  a. This follows from the fact that $F_X$ has limits from the left.
+5. Suppose that $F_X^{-1}(p) < x$. Since $F_X$ is increasing $F_X[F_X^{-1}(p)]\leq F(x)$. However, $p\leq F_X[F_X^{-1}(p)]$ so $p\leq F_X(x)$. Conversely, suppose that $p\leq F(x)$. Since $F_X^{-1}$ is increasing $F_X^{-1}(p)\leq F_X^{-1}[F(x)]$. However, $F_X^{-1}[F_X(x)]\leq x$, so $F_X^{-1}(p)\leq x$.
+</details>
+</MathBox>
+
 ### Reliability
 
 <MathBox title='Right-tail distribution function' boxType='proposition'>
@@ -1011,6 +1061,363 @@ $$
 
 Thus $h(t)\,\mathrm{d}t$ is the approximate probability that the device will fail in the interval $(t, t+\mathrm{d}t)$, given survival up to time $t$. 
 
+### Simulations
+
+Recall that for $n\in\mathbb{N}_+$, the standard measure of the size of set $A\subseteq\mathbb{R}^n$ is given by Lebesgue measure
+
+$$
+  \lambda_n (A) \int_A 1\,\mathrm{d}x
+$$
+
+If $S\subseteq\mathbb{R}^n$ with $0< \lambda_n(S) < \infty$, the uniform distribution on $S$ is the continuous distribution with constant probability density function $f$ defined by $f(x) = \frac{1}{\lambda_n(S)}$.
+
+The standard uniform distribution can be transformed into almost any other distribution on $\mathbb{R}$. This is particularly important for simulations. Conversely, any continuous distribution supported on an interval of $\mathbb{R}$ can be transformed into the standard uniform distribution.
+
+<MathBox title='Random quantile function' boxType='proposition'>
+Let $F$ be a distribution function for a distribution on $\mathbb{R}$, and let $F^{-1}$ denote the quantile function. Suppose that $U$ has the standard uniform distribution. Then $X = F^{-1}(U)$ has distribution function $F$.
+
+<details>
+<summary>Proof</summary>
+
+The critical property satisfied by the quantile function (regardless of the type of distribution) is $F^{-1}(p) \leq x$ if and only if $p\leq F(x)$ for $p\in(0,1)$ and $x\in\mathbb{R}$. Hence
+
+$$
+  \mathbb{P}(X\leq x) = \mathbb{P}\left[F^{-1}(U)leq x\right] = \mathbb{P}[U\leq F(x)] = F(x)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $F$ be a distribution function for a distribution on $\mathbb{R}$. Suppose that $X$ has a continuous distribution on an interval $S\subseteq\mathbb{R}$. Then $U = F(X)$ has the standard uniform distribution.
+
+<details>
+<summary>Proof</summary>
+
+For $u\in(0,1)$ recall that $F^{-1}(u)$ is a quantile of order $u$. Since $X$ has a continuous distribution
+
+$$
+  \mathbb{P}(U \geq u) = \mathbb{P}[F(X)\geq u] = \mathbb{P}\left[X\geq F^{-1}(u) \right] = 1 - F[F^{-1}(u)] = 1 - u
+$$
+</details>
+</MathBox>
+
+## Transformation of random variables
+
+<MathBox title='Transformed random variable' boxType='definition'>
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and let $X:\Omega\to S$ be a random variable. If $r:S\to T$ is a function from $(S,\mathcal{S})$ to $(T,\mathcal{T})$, then $Y = r(X)$ is a new random variable taking values in $T$. If $B\in\mathcal{T}$, then
+
+$$
+  \mathbb{P}(Y\in B) = \mathbb{P}[r(X)\in B] = \mathbb{P}[X\in r^{-1}(B)]
+$$
+
+where $r^{-1}(B) = \{ x\in S \;|\; r(x)\in B\}$.
+</MathBox>
+
+<MathBox title='CDF of transformed random variables' boxType='proposition'>
+Let $X$ be a real-valued random variable with probability density function $f$. Suppose that $Y = r(X)$ is a transformed real-valued random variable. The cumulative distribution function of $Y$ is given by
+
+$$
+  G(y) = \int_{r^{-1}(-\infty, y]} f(x)\,\mathrm{d}x
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from the definition of $f$ as a probability density function of $X$. For $y\in\mathbb{R}$
+
+$$
+\begin{align*}
+  G(y) &= \mathbb{P}(Y\leq y) = \mathbb{P}[r(X)\in (-\infty,y]] \\
+  &= \mathbb{P}\left[X\in r^{-1}(-\infty, y] \right] \\
+  &= \int_{r^{-1}(-\infty, y]} f(x)\,\mathrm{d}x
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Change of variable formula' boxType='theorem'>
+Suppose that the random variable $\mathbf{X}$ has a continuous distribution in $S\subseteq\mathbb{R}^n$ given by a probability density function $f$. Let $\mathbf{Y} = r(\mathbf{X})$ where $r:S\to T\subseteq\mathbb{R}^n$ is a differentiable function from $S$ to $T$. The probability density function $g$ of $\mathbf{Y}$ is given by
+
+$$
+  g(\matbf{y}) = f(\mathbf{x})\left|\det\left(\frac{\mathrm{d}\mathbf{x}}{\mathrm{d}\mathbf{y}} \right) \right|,\quad \mathbf{y}\in T
+$$
+
+where $\frac{\mathrm{d}\mathbf{x}}{\mathrm{d}\mathbf{y}}$ is the $n\times n$ matrix of first partial derivatives of $\mathbf{x} = r^{-1}(\mathbf{y})$, i.e.
+
+$$
+  \left( \frac{\mathrm{d}\mathbf{x}}{\mathrm{d}\mathbf{y}} \right)_{ij} = \frac{\partial x_i}{\partial y_j}
+$$
+
+In the single variate case $n=1$, this reduces to for $x = r^{-1}(y)$
+
+$$
+  g(y) = f\left[r^{-1}(y)] \left| \frac{\mathrm{d}}{\mathrm{d}y} r^{-1} \right| = f(x)\left| \frac{\mathrm{d}x}{\mathrm{d}y} \right|
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $B\in\mathcal{T}$ then
+
+$$
+\begin{align*}
+  \mathbb{P}(\mathcal{Y}\in B) &= \mathbb{P}[r(\mathbf{X})\in B] = \mathbb{P}\left[ \mathbf{X}\in r^{-1}(B) \right] \\
+  &= \int_{r^{-1}(B)} f(\mathbf{X})\,\mathrm{d}\mathbf{x}
+\end{align*}
+$$
+
+Changing variables $\mathbf{x} = r^{-1}(\mathbf{y})$, and using the the chain rule $\mathrm{d}\mathbf{x} =\left|\mathrm{det}\left(\frac{\mathrm{d}\mathbf{x}}{\mathrm{d}\mathbf{y}} \right)\right|$ gives
+
+$$
+  \mathbf{P}(\mathbf{Y}\in B) = \int_B f[r^{-1}(\mathbf{y})]\left|\mathrm{det}\left(\frac{\mathrm{d}\mathbf{x}}{\mathrm{d}\mathbf{y}} \right)\right|\,\mathrm{d}\mathbf{y} = \int_B g(\mathbf{y})\,\mathrm{d}\mathbf{y}
+$$
+
+showing that $g(\mathbf{y})$ is a probability density function for $\mathbf{Y}$.
+</details>
+</MathBox>
+
+<MathBox title='Linear tranformation' boxType='proposition'>
+Suppose that the random variable $\mathbf{X}$ has a continuous distribution in $S\subseteq\mathbb{R}^n$ given by a probability density function $f$. Let $\mathbf{Y} = \mathbf{a} + \mathbf{B}\mathbf{Y}$ be a random variable taking values in $T = \{\mathbf{a} + \mathbf{B}\mathbf{x} \;|\; \mathbf{x}\in S\}\subseteq\mathbb{R}^n$ where $\mathbf{a}\in\mathbb{R}^n$ and $\mathbf{B}$ is an invertible $n\times n$ matrix. The probability density function $g$ of $\mathbf{Y}$ is given by
+
+$$
+  g(\mathbf{y}) = \frac{1}{|\det(\mathbf{B})}f\left[ B^{-1}(\mathbf{y} - \mathbf{a}\right],\quad \mathbf{y}\in T
+$$
+
+In the single variate case $n=1$, this reduces to
+
+$$
+  g(y) = \frac{1}{|b|}f\left( \frac{y - a}{b} \right),\quad y\in T\subseteq\mathbb{R}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The linear transformation $\mathbf{y} = \mathbf{a} + \mathbf{B}\mathbf{x}$ is bijective in $\mathbb{R}$ with the inverse $\mathbf{x} = \mathbf{B}^{-1}(\mathbf{y} - \mathbf{a})$. The Jacobian of the inverse transformation is the constant function $\det{\mathbf{B}^{-1}} = \frac{1}{\det(\mathbf{B})}$.
+</details>
+</MathBox>
+
+### Sum transformations
+
+<MathBox title='PDF of sum of random variables' boxType='proposition'>
+Let $X$ and $Y$ be random variables taking values in $R\subseteq\mathbb{R}$ and $S\subseteq\mathbb{R}$, respectively, so that $(X, Y)$ takes values in a subset of $R\times S$. Suppose that $(X, Y)$ has a probability density function $f$ and consider the random variable $Z = X + Y$ taking values $T = \{z\in\mathbb{R} \;|\; z = x + y, (x,y)\in R\times S \}$. For $z\in T$, let $D_z = \{ x\in R \;|\; z - x\in S\}$.
+
+1. If $(X, Y)$ has a discrete distribution, then $Z = X + Y$ has a discrete distribution with probability density function $u$ given by
+$$
+  u(z) = \sum_{x\in D_z} f(x, z - x)
+$$
+2. If $(X, Y$ has a continuous distribution then $Z = X + Y$ has a continuous distribution with probability density function $u$ given by
+$$
+  u(z) = \int_{D_z} f(x, z - x)\,\mathrm{d}x
+$$
+
+<details>
+<summary>Proof</summary>
+
+1. $\mathbb{P}(Z = z) = \mathbb{P}(X = x, Y = z - x \textrm{ for some }x\in D_z\} = \sum_{x\in D_z} f(x, z - x)$
+2. For $A\subseteq T$, let $C = \{(u,v)\in R\times S \;|\; u + v \in A \}$ then
+
+$$
+  \mathbb{P}(Z\in A) = \mathbb{P}(X + Y\in A) = \int_C f(u, v)\,\mathrm{d}(u, v)
+$$
+
+Use the change of variables $x = u$, $z = u + v$. Then the inverse transformation is $u = x$, $v = z - x$ and the Jacobian is $1$. Using the change of variables theorem gives
+
+$$
+  \mathbb{P}(Z\in A) = \int_{D_z \times A} f(x, z - x)\,\mathrm{d}(x, z) = \int_A \int_{D_z} f(x, z - x)\,\mathrm{d}x,\mathrm{d}y
+$$
+
+It follows that $Z$ has probability density function $z\mapsto \int_{D_z} f(x, z - x)\,\mathrm{d}x$.
+</details>
+</MathBox>
+
+<MathBox title='Convolution of random variables' boxType='proposition'>
+Let $X$ and $Y$ be independent real-valued random variables with probability density functions $g$ and $h$, respectively
+
+1. If $X$ and $Y$ have discrete distributions then $Z = X + Y$ has a discrete distribution with probability density function $g*h$ given by
+$$
+  (g*h)(z) = \sum_{x\in D_z} g(x)h(z - x),\quad z\in T
+$$
+
+If $X$ and $Y$ take values in $\mathbb{N}$, this simplifies to
+$$
+  (g*h)(z) = \sum_{x=0}^z g(x)h(z - x),\quad z\in\mathbb{N}
+$$
+
+2. If $X$ and $Y$ have continuous distributions then $Z = X + Y$ has a continuous distribution with probability density function $g*h$ given by
+$$
+  (g*h)(z) = \int_{D_z} g(x)h(z - x)\,\mathrm{d}x,\quad z\in T
+$$
+
+If $X$ and $Y$ take values in $[0,\infty)$, this simplifies to
+$$
+  (g*h)(z) = \int_0^z g(x)h(z - x)\,\mathrm{d}x,\quad z\in T
+$$
+
+In both cases, the probability density function $g*h$ is called the convolution of $g$ and $h$, which satisfies
+- Commutativity: $g * h = h * g$, which follows from commutativity of addition of random variables, i.e. $X + Y = Y + X$
+- Associativity: $(f*g)*h = f*(g*h)$, which follows from associativity of addition of random variables, i.e. $(X + Y) + Z = X + (Y + Z)$
+
+<details>
+<summary>Proof</summary>
+
+Since $X$ and $Y$ are independent, $(X, Y)$ has probability density function $f(x, y) = g(x)h(y)$.
+1. If $X$ and $Y$ take values in $\mathbb{N}$, then $D_z = \{i \}_{i=0}^{z\in\mathbb{N}}$.
+2. If $X$ and $Y$ take values in $[0,\infty)$, then $D_z = [0, z]$ for $z\in [0, \infty)$.
+</details>
+</MathBox>
+
+If $\mathbf{X} = (X_i)_{i=1}^{n\in\mathbb{N}}$ is a sequence of independent and indentically distributed real-valued random variables, with common probability density function $f$, then $Y_n = \sum_{i=1}^n X_i$ has probability density function $f^{*n}$, the $n$-fold convolution power of $f$. In statistical terms, $\mathbf{X}$ corresponds to sampling from the common distribution. By convention, $Y_0 = 0$, so naturally we take $f^{*0} = \delta$. When appropriately scaled and centered, then by the central limit theorem $Y_n$ converges to the standard normal distribution as $n\to\infty$.
+
+### Product and quotient transformations
+
+<MathBox title='PDF of products and quotients of random variables' boxType='proposition'>
+Suppose that $(X, Y)$ has a continuous distribution on $\mathbb{R}^2$ with probability density function $f$.
+
+1. The random variable $V = XY$ has probability density function
+$$
+  v\mapsto\int_{-\infty}^\infty f(x, v/x)\frac{1}{|x|}\,\mathrm{d}x
+$$
+
+2. The random variable $W = \frac{Y}{X}$ has probability density function
+$$
+  w\mapsto\int_{-\infty}^\infty f(x,wx)|x|\,\mathrm{d}x
+$$
+
+In the special case when $X$ and $Y$ are independent, having probability density functions $g$ and $h$, respectively then
+3. The random variable $V = XY$ has probability density function
+$$
+  v\mapsto\int_{-\infty}^\infty g(x)h(v/x)\frac{1}{|x|}\,\mathrm{d}x
+$$
+4. The random variable $W = \frac{Y}{X}$ has probability density function
+$$
+  w\mapsto\int_{-\infty}^\infty g(x)h(wx)|x|\,\mathrm{d}x
+$$
+
+<details>
+<summary>Proof</summary>
+
+We introduce the auxiliary variable $U = X$ so that we have bivariate transformations.
+
+1. Applying the transformations $u = x$, $v = xy$ with inverses $x = u$, $y = \frac{v}{u}$ gives first derivative matrix
+
+$$
+  \frac{\partial(x,y)}{\partial(u,v)} = \begin{bmatrix} 
+    1 & 0 \\
+    -v/u^2 & 1/u
+ \end{bmatrix}
+$$
+
+with Jacobian $\frac{1}{u}$. Using the change of variables theorem, the joint probability density function of $(U, V)$ is $(u, v)\mapsto f(u, v/u)\frac{1}{|v|}$. Hence the probability density function of $V$ is
+
+$$
+  v\mapsto\int_{-\infty}^\infty f(x, v/x)\frac{1}{|x|}\,\mathrm{d}x
+$$
+
+2. Applying the transformations $u = x$, $w = \frac{y}{x}$ with inverses $x = u$, $y = uw$ gives the first derivative matrix
+
+$$
+  \frac{\partial(x,y)}{\partial(u,v)} = \begin{bmatrix} 
+    1 & 0 \\
+    w & u
+ \end{bmatrix}
+$$
+
+with Jacobian $u$. Using the change of variables theorem, the joint probability density function of $(U, W)$ is $(u, w)\mapsto f(u, uw)|u|$. Hence the probability density function of $W$ is
+
+$$
+  w\mapsto\int_{-\infty}^\infty g(x)h(wx)|x|\,\mathrm{d}x
+$$
+
+In the special case when $X$ and $Y$ are independent, the joint probability density function of $(X, Y)$ is $f(x,y) = g(x)h(y)$.
+</details>
+</MathBox>
+
+### Minimum and maximum tranformations
+
+<MathBox title='CDF of minimum and maximum of random variables' boxType='proposition'>
+Suppose that $(X_i)_{i=1}^{n\in\mathbb{N}}$ is a sequence of independent real-valued random variables and that $X_i$ has cumulative distribution function $F_i$.
+
+1. The maximum transformation $V = \max\{ X_i\}_{i=1}^n$ has distribution function $H$ given by $H(x) = \prod_{i=1}^n F_i (x)$ for $x\in\mathbb{R}$.
+2. The maximum transformation $U = \min\{X_i\}_{i=1}^n$ has distribution function $G$ given by $G(x) = 1 - \prod_{i=1}^n [1 - F_i(x)]$ for $x\in\mathbb{R}$.
+
+In the special case when the $X_i$ are indentically distributed with common density function $F$, then
+3. $V = \max\{X_i\}_{i=1}^n$ has distribution function $H$ given by $H(x) = F^n (x)$
+4. $U = \min\{X_i\}_{i=1}^n$ has distribution function $G$ given by $G(x) = 1 - [1 - F(x)]^n$
+
+If the $X_i$ have a common continuous distribution with a probability density function $f$, then
+5. $V = \max\{X_i\}_{i=1}^n$ has probability density function $h$ given by $h(x) = nF^{n-1}f(x)$
+6. $U = \min\{X_i\}_{i=1}^n$ has probability density function $g$ given by $g(x) = n[1 - F(x)]^{n-1} f(x)$
+
+<details>
+<summary>Proof</summary>
+
+1. Since $V$ is the maximum of the variables, $\{V\leq x\} = \{ X_i \leq x \}_{i=1}^n$. Hence, by independence
+
+$$
+  H(x) = \mathbb{P}(V\leq x) = \prod_{i=1}^n \mathbb{P}(X_i\leq x) = \prod_{i=1}^n F_i(x)
+$$
+
+2. Since $U$ is the minimum of the variables, $\{U < x \} = \{ X_i > x\}_{i=1}^n$. Hence, by independence
+
+$$
+\begin{align*}
+  G(x) &= \mathbb{P}(U \leq x) = 1 - \mathbb{P}(U > x) = 1 - \prod_{i=1}^n \mathbb{P}(X_i > x)
+  &= 1 - \prod_{i=1}^n [1 - F_i (x)] 
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Sign and absolute value transformations
+
+<MathBox title='Absolute value of random variable' boxType='proposition'>
+Suppose that $X$ has a continuous distribution on $\mathbb{R}$ with distribution function $F$ and probability density function $f$. Let $|X|:\mathbb{R}\to[0,\infty)$ be the absolute value transformation of $X$. Then for $y\in[0,\infty)$
+
+1. $|X|$ has distribution function $G$ given by $G(y) = F(y) - F(-y)$.
+2. $|X|$ has probability density function $g$ given by $g(y) = f(y) + f(-y)$
+
+<details>
+<summary>Proof</summary>
+
+1. $\mathbb{P}(|X| \leq y) = \mathbb{P}(-y \leq X \leq y) = F(y) - F(-y)$
+2. $g(y) = G'(y) = [F(y) - F(-y)]' = f(y) + f(-y)$
+</details>
+</MathBox>
+
+<MathBox title='Sign and absolute value of symmetrically distributed random variable' boxType='proposition'>
+Suppose that $X$ has a continuous distribution on $\mathbb{R}$ that is symmetric about $0$, and suppose that $X$ has distribution function $F$ and probability density function $f$. Then
+
+1. $|X|$ has distribution function $G$ given by $G(y) = 2F(y) - 1$ for $y\in[0,\infty)$.
+2. $|X|$ has probability density function $g$ given by $g(y) = 2f(y)$ for $y\in[0,\infty)$
+3. $\mathrm{sgn}(X)$ is uniformly distributed on $\{-1, 1\}$.
+4. $|X|$ and $\mathrm{sgn}(X)$ are independent.
+
+Recall that the sign function on $\mathbb{R}$ is defined as
+
+$$
+  \mathrm{sgn}(x) = \begin{cases}
+    -1,\quad &x< 0\\
+    0,\quad &x=0 \\
+    1,\quad x> 0
+  \end{cases}
+$$
+<details>
+<summary>Proof</summary>
+
+1. By symmetry $F(-y) = 1 - F(y)$ for $y > 0$. Hence $G(y) = F(y) - F(-y) = 2F(y) - 1$
+2. $g(y) = G'(y) = [2F(y) - 1]' = 2f(y)$
+3. Note that $\mathbb{P}[\mathrm{sgn}(X) = 1] = \mathbb{P}(X > 0) = \frac{1}{2}$ and $\mathbb{P}[\mathrm{sgn}(X) = -1] = \frac{1}{2}$
+4. If $A\subseteq (0,\infty)$ then
+
+$$
+\begin{align*}
+  \mathbb{P}\left[ |X|\in A,\mathrm{sgn}(X) = 1\right] &= \mathbb{P}(X\in A) \\
+  &= \int_A f(x)\,\mathrm{d}x = \frac{1}{2}\int_A 2f(x)\,\mathrm{d}x \\
+  &= \mathbb{P}[\mathrm{sgn}(X) = 1]\mathbb{P}(|X|\in A)
+\end{align*}
+$$
+</details>
+</MathBox>
 
 ## Conditional probability
 
@@ -1516,7 +1923,7 @@ The expected value (mean) of a real-valued random variable gives a measures of t
 The expected of $X$ is defined as the Lebesgue integral
 
 $$
-  \mathrm{E}[X] \equiv \mathbb{E}(X) := \int_{\Omega} X \;\mathrm{d}\mathbb{P}
+  \mathrm{E}[X] \equiv \mathbb{E}(X) := \int_{\Omega} X \,\mathrm{d}\mathbb{P}
 $$
 
 Depending on $S$ the expected value can take the following forms:
@@ -1706,7 +2113,7 @@ $$
   &= \mathbb{E}\left[ X^2 - 2\mathbb{E}(X)\cdot X + \mathbb{E}(X)^2  \right] \\
   &= \mathbb{E}\left(X^2 \right) - \mathbb{E}\left[ 2 \mathbb{E}(X)\cdot X \right] + \mathbb{E}\left[\mathbb{E}(X)^2 \right] \\
   &= \mathbb{E}\left(X^2 \right) - 2 \mathbb{E}(X) \mathbb{E}(X) + \mathbb{E}\left[\mathbb{E}(X)^2 \right] \\
-  &= \mathbb{E}\left(X^2 \right) - 2 \mathbb{E}(X)^2 + \mathbb{E}(X)^2 \underbrace{\int_\Omega 1 \;\mathrm{d}P}_{=P(\Omega) = 1} \\
+  &= \mathbb{E}\left(X^2 \right) - 2 \mathbb{E}(X)^2 + \mathbb{E}(X)^2 \underbrace{\int_\Omega 1 \,\mathrm{d}P}_{=P(\Omega) = 1} \\
   &= \mathbb{E}\left(X^2 \right) - \mathbb{E}(X)^2 
 \end{align*}
 $$
@@ -2264,13 +2671,13 @@ If $X\in \mathcal{L}^2(\Omega,\mathcal{F},\mathbb{P})$ is square integrable, the
 The existence of $\mathbb{E}(X|\mathcal{G})$ can be established with the Radon-Nikodym theorem. Assuming $X\geq 0$, we define the finite $\sigma$-measure for $G\in\mathcal{G}$
 
 $$
-  \mu(G) = \int_G X\;\mathrm{d}\mathbb{P} := \mathbb{E}(X\cdot\mathbf{1}_G)
+  \mu(G) = \int_G X\,\mathrm{d}\mathbb{P} := \mathbb{E}(X\cdot\mathbf{1}_G)
 $$
 
 By construction $P(G) = \mathbb{P}(X\in G) = 0 \implies \mu(X) = 0$, so that $\mu$ is absolutely continuous with respect to $P$, i.e. $\mu\ll P$. By the Radon-Nikodym theorem, there is a random variable $Y\in\mathcal{G} = \frac{\mathrm{d}\mu}{\mathrm{d}\mathbb{P}} := \mathbb{E}(X|\mathcal{G})$, giving
 
 $$
-  \int_G X\;\mathrm{d}\mathbb{P} = \int_G \mathbb{E}(X|\mathcal{G})\;\mathrm{d}\mathbb{P} \quad \forall G\in\mathcal{G}
+  \int_G X\,\mathrm{d}\mathbb{P} = \int_G \mathbb{E}(X|\mathcal{G})\,\mathrm{d}\mathbb{P} \quad \forall G\in\mathcal{G}
 $$
 
 To show equivalence of the defining properties, first note that $(2a)$ implies $(2)$ since $Z = \mathbf{1}_A$ is $\mathcal{G}$-measurable if $A\in\mathcal{G}$. The converse, i.e $(2)$ implies $(2a)$ can be shown by bootstrapping. If $Z = \mathbf{1}_A$ for some $A\in\mathcal{G}$, then trivially $\mathbb{E}[Z\mathbb{E}(X|\mathcal{G})] = \mathbb{E}(ZX)$. Next, suppose that $Z$ is a $\mathcal{G}$-measurable simple random variable of the form $Z = \sum_{i\in I} a_i \mathbf{1}_{A_i}$ where $I$ is a finite index set, $a_i \geq 0$ and $A_i \in\mathcal{G}$ for $i \in I$. Then
