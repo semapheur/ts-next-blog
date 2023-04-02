@@ -4,7 +4,7 @@ subject: 'Mathematics'
 showToc: true
 ---
 
-# Logic
+# Binary logic
 
 A logical statement (proposition) is a statement that is either true ($\color{green}{T}$) or false ($\color{red}{F}$).
 
@@ -43,7 +43,7 @@ A logical statement (proposition) is a statement that is either true ($\color{gr
 | $\color{red}{F}$ | $\color{green}{T}$ | $\color{green}{T}$ |
 | $\color{red}{F}$ | $\color{red}{F}$ | $\color{green}{T}$ |
 
-- biconditional ( if and only if ): $A \leftrightarrow B$. The double arrow $\iff$ means that the conditional $\leftrightarrow$ gives a tautology, as in $A \leftrightarrow B \iff (A \to B) \land (B \to A)$
+- biconditional (if and only if): $A \leftrightarrow B$. The double arrow $\iff$ means that the conditional $\leftrightarrow$ gives a tautology, as in $A \leftrightarrow B \iff (A \to B) \land (B \to A)$
 
 | $A$ | $B$ | $A \leftrightarrow B$ |
 |:-:|:-:|:-:|
@@ -63,3 +63,155 @@ A logical statement (proposition) is a statement that is either true ($\color{gr
 - Contraposition $A \to B \iff \neg B \to \neg A$
 - Chain syllogism: If $A \to B$ true and $B \to C$ true, then $A \to C$ true
 - Reductio ad absurdum: If $A \to B$ true and $A \to \neg B$, then $\neg A$ true
+
+# Probabilistic logic
+
+Probabilistic logic extends binary logic operators with probabilistic expressions.
+
+| Binary logic | Probabilistic logic |
+| --- | --- |
+| $A\land B$ (conjunction/and) | $P(A\land B) = P(A)P(B)$ (product) |
+| $A\lor B$ (disjunction/or) | $P(A\lor B) = P(A) + P(B) - P(A)P(B)$ (coproduct) |
+| $A\veebar B$ (exclusive or) | $P(A\not\equiv B) = P(A)[1 - P(B)] + [1 - P(A)]P(B)$ (inequivalence) |
+| $A\to B, A \vdash B$ (modus ponens) | $P(A\Vert B) = P(A)P(B|A) + P\left(\bar{A}\right)P\left(B|\bar{A}\right)$ (deduction) |
+| $A\to B\therefore \neg B\to\neg A$ (modus tollens) | $P\left(A\bar{\Vert} B \right) = P(A)P(A|B) + P\left(\bar{A}\right) P\left( A|\bar{B} \right)$ (abduction) |
+
+# Subjective logic
+
+Subjective logic extends probabilistic logic by introducing a notion of uncertainty to probability values.
+
+## Subjective opinion
+
+The subjective logic formalism is defined on a discrete (finite or countably infinite) sample space $(\Omega,\mathcal{P}(\Omega))$, where 
+- $\Omega$ is an outcome space
+- $\mathcal{P}(\Omega) = 2^\Omega$, the power set of $\Omega$, is an event space, which is formally a $\sigma$-algebra
+
+Arguments in subjective logic are called subjected opinions, commonly shortened as opinion. An opinion expresses a subjetive belief about the truth of a state $X$, which can be represented as function $X:\Omega\to S$ mapping to a discrete state space $(S,\mathcal{P}(S))$, called a frame of discerment. An opinion contains a probability estimate (expected value) for the state value of $X$ combined with a degree of uncertainty of this estimate. Formally, a subjective opinion of a source $A$ on $X$ is described by a composite function
+
+$$
+  \omega_X^A = (b_X, u_X, a_X)
+$$ 
+
+where
+- $b_X:\mathcal{R}(\Omega)\to[0,1]$ is a belief mass distribution over the possible state values of $X$, defined on the reduced power set $\mathcal{R}(\Omega) = \mathcal{R}(\Omega) := \mathcal{P}(\Omega)\setminus\{\Omega, \emptyset \}$
+- $u_X\in[0,1]$ is the uncertainty mass, assigning an uncertainty degree to the expected value of $E$
+- $a_X:\Omega\to[0,1]$ is the prior probability distribution (base rate) over the possible state values of $X$
+
+The belief and uncertainty mass distributions satisfy
+
+$$
+  u_X + \sum_{E\in\mathcal{R}(\Omega)} b_X(E) = 1
+$$
+
+meaning that $b_X$ is allowed to be sub-additive, i.e. for any countable collection of disjoint sets $\{E_i\}_{i\in I}\subseteq\mathcal{P}(\Omega)$ then $b_X\left(\bigcup_{i\in I} E_i \right) \neq \sum_{i\in I} b_X(E_i)$. If $u_X = 0$, the belief mass distribution becomes additive, satisfying $\sum_{E\in\mathcal{R}(\Omega)} b_X(E) = 1$. In this case, the opinion is dogmatic and corresponds to traditional probability.
+
+The base rate function $a_X$ defines a probability density function on $\Omega$ satisfying
+- $a_X(x)\geq 0$ for $x\in\Omega$
+- $\sum_{x\in\Omega} a_X(x) = 1$
+
+When $\Omega$ is finite with cardinality $|\Omega|=n\in\mathbb{N}_+}$, the default base rate for each outcome in $\Omega$ is $1/n$, in which case the base rate function is the discrete uniform distribution.
+
+The sample space $(\Omega,\mathcal{P}(\Omega))$ has a probability measure $p_X:\mathcal{P}(\Omega)\to[0,1]$
+that assigns base rates to the events of $\mathcal{P}(\Omega)$, satisfying
+
+- $p_X(E)\geq 0$ for every event $E\in\mathcal{P}(\Omega)$
+- $p_X(\Omega) = 1$
+- $p_X left(\bigcup_{i\in\mathbb{N}} E_i \right) = \sum_{i\in\mathbb{N}} p_X(E_i)$ for any countable collection of disjoint sets $\{A_i\}_{i\in\mathbb{N}} \subseteq \mathcal{F}$
+
+The probability measure is related to the base rate function as follows
+
+$$
+  a_X (x) = p_X (\{ x\})\,quad
+$$
+
+The base rate of an event $E\in\mathcal{P}(\Omega)$ is thus given by
+
+$$
+  p_X (E) = \sum_[e\in E] a_X(e)
+$$
+
+| | **Binomial**</br>$|\Omega| = 2$</br>$\Omega = \mathcal{R}(\Omega)$ | **Multinomial**</br>$|\Omega| > 2$</br>Focal elements $x = \Omega$ | **Hyper**</br>$|\Omega| = 2$</br>Focal elements $x\in\mathcal{R}(\Omega)$ |
+| --- | :-: | :-: | :-: |
+| **Uncertain**</br>$u_X > 0$ | **Uncertain binomial opinion**</br>Beta PDF | **Uncertain multinomial opinion**</br>Dirichlet PDF over $\Omega$ | **Uncertain hyper opinion**</br>Dirichlet PDF over $\mathcal{R}(\Omega)$ |
+| **Dogmatic**</br>$u_X = 0$ | **Dogmatic binomial opinion**</br>Scalar probability | **Dogmatic multinomial opinion**</br>Probabilities on $\Omega$ | **Dogmatic hyper opinion**</br>Probabilitiese on $\mathcal{R}(\Omega)$ | 
+
+### Binomial opinions
+
+Let $\Omega = \{x, \bar{x} \}$ be a binary outcome space. In this case, the state variable $X:\Omega\to\Omega$ can simply be choosen as the identity function. A binomial opinion about the truth of state value $X\in\{x,\bar{x}\}$ is represented by the ordered quadruple
+
+$$
+  \omega_X = (b_X, d_X, u_X, a_X)\in [0,1]^4
+$$
+
+where
+- $b_X$ (belief): the belief mass in support of $X$ being true
+- $d_X$ (disbelief): the belief mass in support of $X$ being false (or $\bar{X}$ being true)
+- $u_X$ (uncertainty): the amount of committed belief mass
+- $a_X$ (base rate): the a priori probability in the absence of committed belief mass
+
+The components satisfy $b_X + d_X + u_X = 1$. The probability estimate (expected value) for the opinion is
+
+$$
+  E[X] = b_x + a_X + u_X
+$$
+
+A binomial opinion can be represented by a beta probability density function $B:[0,1]\to[0,\infty)$ on the probability estimate $p_X$, given by
+
+$$
+  B(p_X; \alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)}(p_x)^{\alpha-1}(1 - p_x)^{\beta - 1},\quad \alpha,\beta > 0
+$$
+
+note that $p_X \neq 0$ if $\alpha < 1$ and $p_X \neq$. Given observations $(r_X, s_X)$, where $r_X$ is the amount of positive evidence and $s_X$ is the amount of negative evidence for $X$, the strength parameters $\alpha$ and $\beta$ can be expressed as
+
+$$
+  \alpha = r_X + a_X W\quad \beta = s_X + (1 - a_X)W
+$$
+
+where $W$ is the non-informative prior weight. Usually, we set $W = 2$, which ensures that the prior beta PDF, i.e. when $(r_X, s_X) = (0,0)$, with default base rate $a_X = 1/2$ is the uniform PDF. The expected value of the beta PDF is
+
+$$
+  E[p_X] = \frac{\alpha}{\alpha + \beta} = \frac{r_X + a_X W}{r_X + s_X + W}
+$$
+
+To ensure equivalence between the binomial opinion and the beta PDF, we require that their expected values are equal
+
+$$
+  b_X + a_X u_X = \frac{r_X + a_X W}{r_X + s_X + W} = \frac{\alpha}{\alpha + \beta}
+$$
+
+The transformations $(b_X, d_X, u_X, a_X)\mapsto (\alpha, \beta)$ are
+
+$$
+\begin{align*}
+  \alpha &= \frac{2b_X}{u_X} + 2a_X \\
+  \beta &= \frac{2d_X}{u_X} + 2(1 - a_X)
+\end{align*}
+$$
+
+The transformations $(r_X, s_X, W) \mapsto (b_X, d_X, u_X, a_X)$ are
+
+$$
+\begin{align*}
+  b_X &= \frac{r_X}{r_X + s_X + W} \\
+  d_X &= \frac{s_X}{r_X + s_X + W} \\
+  u_X &= \frac{W}{r_X + s_X + W}
+\end{align*}
+$$
+
+## Subjective logic operators
+
+| Subjective logic operator | Operator notation | Binary logic |
+| --- | --- | --- |
+| Addition | $\omega_{X\cup Y}^A = \omega_X^A + \omega_Y^A$ | Union |
+| Subtraction | $\omega_{X\setminus Y}^A = \omega_X^A - \omega_Y^A$ | Difference |
+| Multiplication | $\omega_{X\land Y}^A = \omega_X^A \cdot \omega_Y^A$ | Conjunction (and) |
+| Division | $\omega_{X\bar{\land} Y}^A = \omega_X^A / \omega_Y^A$ | Unjunction (un-and) |
+| Comultiplication | $\omega_{X\lor Y}^A = \omega_X^A \sqcup \omega_Y^A$ | Disjunction (or) |
+| Codivision | $\omega_{X\bar{\lor} Y}^A = \omega_X^A \bar{\sqcup} \omega_Y^A$ | Undisjunction (un-or) |
+| Complement | $\omega_{\bar{X}}^A = \neg\omega_X^A$ | Negation (not) |
+| Deduction | $\omega_{X\Vert Y}^A = \omega_{X|Y}^A \circledcirc \omega_Y^A$ | Modus ponens |
+| Abduction | $\omega_{X\bar{\Vert} Y}^A = \omega_{X|Y}^A \tilde{\circledcirc} \left(a_X, \omega_Y^A \right$ | Modus tollens |
+| Subjective Bayes' theorem | $\omega_{X\tilde{|} Y}^A = \omega_{X|Y}^A \tilde{\phi} a_X$ | Contraposition |
+| Transitivity/discounting | $\omega_{X\Vert Y}^{A;B} = \omega_B^A \otimes \omega_X^B$ | |
+| Cumulative fusion | $\omega_X^{A\diamond B} = \omega_X^A \oplus \omega_X^B$ | |
+| Constraint fusion | $\omega_X^{A \& B} = \omega_X^A \odot \omega_X^B$ | |
