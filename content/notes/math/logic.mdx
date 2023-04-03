@@ -73,8 +73,8 @@ Probabilistic logic extends binary logic operators with probabilistic expression
 | $A\land B$ (conjunction/and) | $P(A\land B) = P(A)P(B)$ (product) |
 | $A\lor B$ (disjunction/or) | $P(A\lor B) = P(A) + P(B) - P(A)P(B)$ (coproduct) |
 | $A\veebar B$ (exclusive or) | $P(A\not\equiv B) = P(A)[1 - P(B)] + [1 - P(A)]P(B)$ (inequivalence) |
-| $A\to B, A \vdash B$ (modus ponens) | $P(A\Vert B) = P(A)P(B|A) + P\left(\bar{A}\right)P\left(B|\bar{A}\right)$ (deduction) |
-| $A\to B\therefore \neg B\to\neg A$ (modus tollens) | $P\left(A\bar{\Vert} B \right) = P(A)P(A|B) + P\left(\bar{A}\right) P\left( A|\bar{B} \right)$ (abduction) |
+| $A\to B, A \vdash B$ (modus ponens) | $P(A\Vert B) = P(A)P(B\vert A) + P\left(\bar{A}\right)P\left(B\vert\bar{A}\right)$ (deduction) |
+| $A\to B\therefore \neg B\to\neg A$ (modus tollens) | $P\left(A\bar{\Vert} B \right) = P(A)P(A\vert B) + P\left(\bar{A}\right) P\left( A\vert\bar{B} \right)$ (abduction) |
 
 # Subjective logic
 
@@ -109,14 +109,14 @@ The base rate function $a_X$ defines a probability density function on $\Omega$ 
 - $a_X(x)\geq 0$ for $x\in\Omega$
 - $\sum_{x\in\Omega} a_X(x) = 1$
 
-When $\Omega$ is finite with cardinality $|\Omega|=n\in\mathbb{N}_+}$, the default base rate for each outcome in $\Omega$ is $1/n$, in which case the base rate function is the discrete uniform distribution.
+When $\Omega$ is finite with cardinality $|\Omega|=n\in\mathbb{N}_+$, the default base rate for each outcome in $\Omega$ is $1/n$, in which case the base rate function is the discrete uniform distribution.
 
 The sample space $(\Omega,\mathcal{P}(\Omega))$ has a probability measure $p_X:\mathcal{P}(\Omega)\to[0,1]$
 that assigns base rates to the events of $\mathcal{P}(\Omega)$, satisfying
 
 - $p_X(E)\geq 0$ for every event $E\in\mathcal{P}(\Omega)$
 - $p_X(\Omega) = 1$
-- $p_X left(\bigcup_{i\in\mathbb{N}} E_i \right) = \sum_{i\in\mathbb{N}} p_X(E_i)$ for any countable collection of disjoint sets $\{A_i\}_{i\in\mathbb{N}} \subseteq \mathcal{F}$
+- $p_X \left(\bigcup_{i\in I} E_i \right) = \sum_{i\in I} p_X(E_i)$ for any countable collection of disjoint sets $\{A_i\}_{i\in I} \subseteq \mathcal{F}$
 
 The probability measure is related to the base rate function as follows
 
@@ -127,13 +127,13 @@ $$
 The base rate of an event $E\in\mathcal{P}(\Omega)$ is thus given by
 
 $$
-  p_X (E) = \sum_[e\in E] a_X(e)
+  p_X (E) = \sum_{e\in E} a_X(e)
 $$
 
-| | **Binomial**</br>$|\Omega| = 2$</br>$\Omega = \mathcal{R}(\Omega)$ | **Multinomial**</br>$|\Omega| > 2$</br>Focal elements $x = \Omega$ | **Hyper**</br>$|\Omega| = 2$</br>Focal elements $x\in\mathcal{R}(\Omega)$ |
+| | **Binomial**<br/>$\lvert\Omega\rvert = 2$<br/>$\Omega = \mathcal{R}(\Omega)$ | **Multinomial**<br/>$\lvert\Omega\rvert > 2$<br/>Focal elements $x = \Omega$ | **Hyper**<br/>$\lvert\Omega\rvert = 2$<br/>Focal elements $x\in\mathcal{R}(\Omega)$ |
 | --- | :-: | :-: | :-: |
-| **Uncertain**</br>$u_X > 0$ | **Uncertain binomial opinion**</br>Beta PDF | **Uncertain multinomial opinion**</br>Dirichlet PDF over $\Omega$ | **Uncertain hyper opinion**</br>Dirichlet PDF over $\mathcal{R}(\Omega)$ |
-| **Dogmatic**</br>$u_X = 0$ | **Dogmatic binomial opinion**</br>Scalar probability | **Dogmatic multinomial opinion**</br>Probabilities on $\Omega$ | **Dogmatic hyper opinion**</br>Probabilitiese on $\mathcal{R}(\Omega)$ | 
+| **Uncertain**<br/>$u_X > 0$ | **Uncertain binomial opinion**<br/>Beta PDF | **Uncertain multinomial opinion**<br/>Dirichlet PDF over $\Omega$ | **Uncertain hyper opinion**<br/>Dirichlet PDF over $\mathcal{R}(\Omega)$ |
+| **Dogmatic**<br/>$u_X = 0$ | **Dogmatic binomial opinion**<br/>Scalar probability | **Dogmatic multinomial opinion**<br/>Probabilities on $\Omega$ | **Dogmatic hyper opinion**<br/> on $\mathcal{R}(\Omega)$ | 
 
 ### Binomial opinions
 
@@ -152,7 +152,7 @@ where
 The components satisfy $b_X + d_X + u_X = 1$. The probability estimate (expected value) for the opinion is
 
 $$
-  E[X] = b_x + a_X + u_X
+  \mathrm{E}[X] = b_x + a_X + u_X
 $$
 
 A binomial opinion can be represented by a beta probability density function $B:[0,1]\to[0,\infty)$ on the probability estimate $p_X$, given by
@@ -170,7 +170,7 @@ $$
 where $W$ is the non-informative prior weight. Usually, we set $W = 2$, which ensures that the prior beta PDF, i.e. when $(r_X, s_X) = (0,0)$, with default base rate $a_X = 1/2$ is the uniform PDF. The expected value of the beta PDF is
 
 $$
-  E[p_X] = \frac{\alpha}{\alpha + \beta} = \frac{r_X + a_X W}{r_X + s_X + W}
+  \mathbf{E}[p_X] = \frac{\alpha}{\alpha + \beta} = \frac{r_X + a_X W}{r_X + s_X + W}
 $$
 
 To ensure equivalence between the binomial opinion and the beta PDF, we require that their expected values are equal
@@ -209,9 +209,9 @@ $$
 | Comultiplication | $\omega_{X\lor Y}^A = \omega_X^A \sqcup \omega_Y^A$ | Disjunction (or) |
 | Codivision | $\omega_{X\bar{\lor} Y}^A = \omega_X^A \bar{\sqcup} \omega_Y^A$ | Undisjunction (un-or) |
 | Complement | $\omega_{\bar{X}}^A = \neg\omega_X^A$ | Negation (not) |
-| Deduction | $\omega_{X\Vert Y}^A = \omega_{X|Y}^A \circledcirc \omega_Y^A$ | Modus ponens |
-| Abduction | $\omega_{X\bar{\Vert} Y}^A = \omega_{X|Y}^A \tilde{\circledcirc} \left(a_X, \omega_Y^A \right$ | Modus tollens |
-| Subjective Bayes' theorem | $\omega_{X\tilde{|} Y}^A = \omega_{X|Y}^A \tilde{\phi} a_X$ | Contraposition |
+| Deduction | $\omega_{X\Vert Y}^A = \omega_{X\vert Y}^A \circledcirc \omega_Y^A$ | Modus ponens |
+| Abduction | $\omega_{X\bar{\Vert} Y}^A = \omega_{X\vert Y}^A \tilde{\circledcirc} \left(a_X, \omega_Y^A \right)$ | Modus tollens |
+| Subjective Bayes' theorem | $\omega_{X\tilde{\vert} Y}^A = \omega_{X\vert Y}^A \tilde{\phi} a_X$ | Contraposition |
 | Transitivity/discounting | $\omega_{X\Vert Y}^{A;B} = \omega_B^A \otimes \omega_X^B$ | |
 | Cumulative fusion | $\omega_X^{A\diamond B} = \omega_X^A \oplus \omega_X^B$ | |
 | Constraint fusion | $\omega_X^{A \& B} = \omega_X^A \odot \omega_X^B$ | |
