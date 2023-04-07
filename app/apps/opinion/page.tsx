@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const Ternary = dynamic(() => import('components/Ternary'), {
+const Ternary = dynamic(() => import('components/TernaryPlot'), {
   ssr: false}
 )
 

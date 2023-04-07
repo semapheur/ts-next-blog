@@ -53,6 +53,9 @@ export class SVGPlot {
     // Create group elements
     addChildElement(this.svgElement, 'g', {id: 'grid-group'})
     addChildElement(this.svgElement, 'g', {id: 'axis-group'})
+    
+    // Transform matrix
+    this.setTransform(width, height)
 
     this.plotGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     const gAttr = {
@@ -63,9 +66,6 @@ export class SVGPlot {
     this.svgElement.appendChild(this.plotGroup)
 
     addChildElement(this.svgElement, 'g', {id: 'pointer-group'})
-
-    // Transform matrix
-    this.setTransform(width, height)
 
     // Add functionality
     this.coordsOnMove()
@@ -115,7 +115,7 @@ export class SVGPlot {
       this.scale.x, 0, 0, this.scale.y, 
       this.translate.x, this.translate.y
     ]
-    return `matrix(${matrix.join(' ')})`
+    return `matrix(${matrix.join(',')})`
   }
 
   private setTransform(width?: number, height?: number) {
@@ -500,9 +500,8 @@ export class SVGPlot {
     addChildElement(axis, 'rect', rect)
 
     // Ticks
-    this.ticks()
-    
-  } 
+    this.ticks() 
+  }
 
   private transformAxis() {
     const pattern = document.getElementById('axis-pattern')

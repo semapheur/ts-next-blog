@@ -3,7 +3,7 @@
 import {useEffect, useRef} from 'react'
 import { SVGTernaryPlot } from './svgternary'
 
-export default function Ternary() {
+export default function TernaryPlot() {
 
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGTernaryPlot|null>(null)
@@ -14,6 +14,7 @@ export default function Ternary() {
     if (!svgRef.current && wrapper) {
       
       svgRef.current = new SVGTernaryPlot(wrapper)
+      svgRef.current.grid()
       
       //return () => {
       //  svgRef.current.cleanup()

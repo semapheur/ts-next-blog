@@ -29,7 +29,6 @@ export function removeElementsByClass(baseElement: Element, className: string) {
 }
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
-  
   let d = ''
   for (let i in points) {
     if (shift) {
@@ -41,6 +40,15 @@ export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   if (loop) { d+= 'z'}
   
   return d.replace('L', 'M')
+}
+
+export function svgPoly(points: Vector[]): string {
+  let p = Array<string>(points.length)
+
+  for (let i in points) {
+    p[i] = points[i].print()
+  }
+  return p.join(' ')
 }
 
 export function svgCatmullRom(points: Vector[], tension=1, loop=false, close=''): string 

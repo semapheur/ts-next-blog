@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const Plot = dynamic(() => import('components/Plot'), {
+const Plot = dynamic(() => import('components/InteractivePlot'), {
   ssr: false}
 )
 

@@ -199,7 +199,7 @@ function Panel() {
     }</div>)
 }
 
-export default function Plot() {
+export default function InteractivePlot() {
   const [plots, setPlots] = useState(new Map<number, PlotFields>)
   const contextValue: PlotState = {plots, setPlots}
   const wrapRef = useRef<HTMLDivElement>(null)

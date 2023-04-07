@@ -146,11 +146,7 @@ export default class Vector extends Array<number> {
     })
   }
 
-  public print(delimiter?: string): string {
-    if (!delimiter) {
-      delimiter = ','
-    }
-
+  public print(delimiter: string = ','): string {
     return this.join(delimiter)
   }
 
