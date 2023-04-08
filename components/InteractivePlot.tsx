@@ -214,9 +214,9 @@ export default function InteractivePlot() {
       svgRef.current.axes()
       svgRef.current.grid()
       
-      //return () => {
-      //  svgRef.current.cleanup()
-      //}
+      return () => {
+        svgRef.current?.cleanup()
+      }
     };
   }, []);
 

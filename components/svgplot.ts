@@ -2,7 +2,7 @@ import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
 import Vector from 'utils/vector'
-import { setAttributes, removeElementsByClass, addChildElement } from 'utils/svg'
+import { setAttributes, removeElementsByClass, addChildElement, mouseCoords } from 'utils/svg'
 
 type SvgPlots = {
   [key: string] : {
@@ -82,7 +82,7 @@ export class SVGPlot {
       }
     }
     // Remove svg
-    this.svgElement.parentNode?.removeChild(this.svgElement)
+    //this.svgElement.parentNode?.removeChild(this.svgElement)
   }
 
   private addBoundHandler(event: string, handler: EventListenerOrEventListenerObject) {
@@ -143,24 +143,13 @@ export class SVGPlot {
     )
   }
 
-  private mouseCoords(svg: SVGSVGElement, event: MouseEvent): Vector|null {
-    const ctm = svg.getScreenCTM()
-    if (!ctm) return null
-
-    return new Vector(
-      (event.clientX - ctm.e) / ctm.a,
-      (event.clientY - ctm.f) / ctm.d
-    )
-  }
-
   private coordsOnMove() {
     const attr = {
       id: 'coord-pointer',
       'font-size': '0.75em',
       fill: 'rgba(var(--color-text) / 1)'
     }
-    const pointer = document.getElementById('pointer-group')
-    if (!pointer) return null
+    const pointer = document.getElementById('pointer-group')!
     addChildElement(pointer, 'text', attr)
 
     let path = {
@@ -169,11 +158,12 @@ export class SVGPlot {
       opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
     }
     addChildElement(pointer, 'path', path)
+
     path['id'] = 'y-pointer'
     addChildElement(pointer, 'path', path)
 
     const coordsOnMoveBound = this.coordsOnMoveHandler.bind(this)
-    this.addBoundHandler('mousedown', coordsOnMoveBound)
+    this.addBoundHandler('mousemove', coordsOnMoveBound)
     this.svgElement.addEventListener('mousemove', coordsOnMoveBound)
   }
 
@@ -186,23 +176,20 @@ export class SVGPlot {
       return coord.toFixed(2)
     }
 
-    const svgCoord = this.mouseCoords(this.svgElement, event)
+    const svgCoord = mouseCoords(this.svgElement, event)
     if (!svgCoord) return
     const drawCoord = this.svgToDrawCoord(svgCoord)
     
-    const pointer = document.getElementById('coord-pointer')
-    if (!pointer) return
+    const pointer = document.getElementById('coord-pointer')!
     pointer.setAttribute('x', `${svgCoord.x + 15}`)
     pointer.setAttribute('y', `${svgCoord.y + 20}`)
     
     pointer.innerHTML = `(${coordText(drawCoord.x, 'x')}, ${coordText(-drawCoord.y, 'y')})`
 
-    const xLine = document.getElementById('x-pointer')
-    if (!xLine) return
+    const xLine = document.getElementById('x-pointer')!
     xLine.setAttribute('d', `M${svgCoord.x},${this.translate.y}L${svgCoord.x},${svgCoord.y}`)
 
-    const yLine = document.getElementById('y-pointer')
-    if (!yLine) return
+    const yLine = document.getElementById('y-pointer')!
     yLine.setAttribute('d', `M${this.translate.x},${svgCoord.y}L${svgCoord.x}, ${svgCoord.y}`)
   }
 
@@ -210,11 +197,11 @@ export class SVGPlot {
     if (event.button !== dragButton) return
     
     // Click coordinates
-    let oldCoords = this.mouseCoords(this.svgElement, event)
+    let oldCoords = mouseCoords(this.svgElement, event)
   
     // Pan on drag
     const panOnMoveHandler = (move: MouseEvent) => {
-      let newCoords = this.mouseCoords(this.svgElement, move)
+      let newCoords = mouseCoords(this.svgElement, move)
       if (!newCoords || !oldCoords) return
       let dist = {
         x: (oldCoords.x - newCoords.x) / this.scale.x,
@@ -227,7 +214,7 @@ export class SVGPlot {
 
       this.transformView(true)
 
-      oldCoords = this.mouseCoords(this.svgElement, move)
+      oldCoords = mouseCoords(this.svgElement, move)
     }
     const panOnMoveBound = panOnMoveHandler.bind(this)
 
@@ -252,7 +239,7 @@ export class SVGPlot {
         x: this.viewPoints[1][0] - this.viewPoints[0][0],
         y: this.viewPoints[1][1] - this.viewPoints[0][1]
     }
-    const svgCoord = this.mouseCoords(this.svgElement, event)
+    const svgCoord = mouseCoords(this.svgElement, event)
     if (!svgCoord) return
     const drawCoord = {
         x: (svgCoord.x - this.translate.x) / this.scale.x,
@@ -283,12 +270,11 @@ export class SVGPlot {
     if (event.button !== dragButton) return
 
     // Click coordinates
-    let clickCoords = this.mouseCoords(this.svgElement, event)
+    let clickCoords = mouseCoords(this.svgElement, event)
     if (!clickCoords) return
 
     // Coverage rectangle
-    const pointer = document.getElementById('pointer-group')
-    if (!pointer) return
+    const pointer = document.getElementById('pointer-group')!
     const path = document.createElementNS(this.xmlns, 'path')
     let attr = {
       id: 'zoom-rect',
@@ -301,7 +287,7 @@ export class SVGPlot {
 
     // Draw coverage rectangle on drag
     const rectOnMoveHandler = (move: MouseEvent) => {
-      dragCoords = this.mouseCoords(this.svgElement, move)
+      dragCoords = mouseCoords(this.svgElement, move)
       if (!dragCoords || !clickCoords) return
       const d = `M${clickCoords.x},${clickCoords.y} L${dragCoords.x},${clickCoords.y} ${dragCoords.x},${dragCoords.y} ${clickCoords.x},${dragCoords.y}Z`
       path.setAttribute('d', d)
@@ -383,8 +369,8 @@ export class SVGPlot {
     
   private ticks(redraw = false) {
 
-    const axis = document.getElementById('axis-group')
-    if (!axis) return
+    const axis = document.getElementById('axis-group')!
+
     const svgSize = {
       x: parseFloat(this.svgElement.getAttribute('width')!),
       y: parseFloat(this.svgElement.getAttribute('height')!),
@@ -495,8 +481,7 @@ export class SVGPlot {
       'vector-effect': 'non-scaling-stroke'
     }
 
-    const axis = document.getElementById('axis-group')
-    if (!axis) return
+    const axis = document.getElementById('axis-group')!
     addChildElement(axis, 'rect', rect)
 
     // Ticks
@@ -504,8 +489,7 @@ export class SVGPlot {
   }
 
   private transformAxis() {
-    const pattern = document.getElementById('axis-pattern')
-    if (!pattern) return
+    const pattern = document.getElementById('axis-pattern')!
 
     // x axis
     let line = pattern.getElementsByClassName('x-axis')[0]
@@ -586,16 +570,14 @@ export class SVGPlot {
       class: 'grid-rect', width: '100%', height: '100%',
       fill: 'url(#grid-pattern)', 'vector-effect': 'non-scaling-stroke'
     }
-    const grid = document.getElementById('grid-group')
-    if (!grid) return
+    const grid = document.getElementById('grid-group')!
     addChildElement(grid, 'rect', rect)
   }
 
   public transformGrid() {
     this.gridIntervals()
 
-    const pattern = document.getElementById('grid-pattern')
-    if (!pattern) return
+    const pattern = document.getElementById('grid-pattern')!
     const attr = {
       patternTransform: this.transformMatrix(),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
@@ -714,8 +696,8 @@ export class SVGPlot {
       'stroke-width': '2px', 'vector-effect': 'non-scaling-stroke'
       //'stroke-width': `${1/((this.transform[0] + this.transform[3])/2)}`
     }
-    const plot = document.getElementById('plot-group')
-    if (!plot) return
+    const plot = document.getElementById('plot-group')!
+  
     addChildElement(plot, 'path', attr)
 
     this.plots[fn] = {

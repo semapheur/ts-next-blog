@@ -15,10 +15,11 @@ export default function TernaryPlot() {
       
       svgRef.current = new SVGTernaryPlot(wrapper)
       svgRef.current.grid()
+      svgRef.current.axis()
       
-      //return () => {
-      //  svgRef.current.cleanup()
-      //}
+      return () => {
+        svgRef.current?.cleanup()
+      }
     };
   }, []);
 

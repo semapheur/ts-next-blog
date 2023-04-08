@@ -28,6 +28,20 @@ export function removeElementsByClass(baseElement: Element, className: string) {
   }
 }
 
+export function mouseCoords(
+  svg: SVGSVGElement | SVGGeometryElement, 
+  event: MouseEvent
+): Vector|null 
+{
+  const ctm = svg.getScreenCTM()
+  if (!ctm) return null
+
+  return new Vector(
+    (event.clientX - ctm.e) / ctm.a,
+    (event.clientY - ctm.f) / ctm.d
+  )
+}
+
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''
   for (let i in points) {
