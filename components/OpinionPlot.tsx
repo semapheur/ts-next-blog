@@ -1,10 +1,11 @@
 'use client'
 
-import {useEffect, useRef} from 'react'
-import { SVGTernaryPlot } from './svgternary'
+import {useEffect, useRef, useState} from 'react'
+import SVGTernaryPlot, {ternary$, TernaryValue} from './svgternary'
 
-export default function TernaryPlot() {
+export default function OpinionPlot() {
 
+  const [value, setValue] = useState<TernaryValue>()
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGTernaryPlot|null>(null)
   //const size = useResizeObserver(wrapRef)
@@ -16,12 +17,19 @@ export default function TernaryPlot() {
       svgRef.current = new SVGTernaryPlot(wrapper)
       svgRef.current.grid()
       svgRef.current.axis()
+
+      const sub = ternary$.subscribe(setValue)
       
       return () => {
         svgRef.current?.cleanup()
+        sub?.unsubscribe()
       }
     };
   }, []);
+
+  useEffect(() => {
+    console.log(value)
+  }, [value]);
 
   return (
     <div ref={wrapRef}

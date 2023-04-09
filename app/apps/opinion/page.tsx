@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic'
 
-const Ternary = dynamic(() => import('components/TernaryPlot'), {
+const Opinion = dynamic(() => import('components/OpinionPlot'), {
   ssr: false}
 )
 
 export default function page() {
   return (
-    <Ternary/>
+    <Opinion/>
   )
 }
