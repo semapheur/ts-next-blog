@@ -29,7 +29,7 @@ export function removeElementsByClass(baseElement: Element, className: string) {
 }
 
 export function mouseCoords(
-  svg: SVGSVGElement | SVGGeometryElement, 
+  svg: SVGSVGElement | SVGGElement | SVGGeometryElement, 
   event: MouseEvent
 ): Vector|null 
 {

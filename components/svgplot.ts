@@ -285,17 +285,19 @@ export class SVGPlot {
 
     let dragCoords: Vector|null
 
+    this.svgElement.addEventListener('mouseup', endDrag.bind(this))
+    this.svgElement.addEventListener('mousemove', onDrag.bind(this))
+
     // Draw coverage rectangle on drag
-    const rectOnMoveHandler = (move: MouseEvent) => {
-      dragCoords = mouseCoords(this.svgElement, move)
+    function onDrag(event: MouseEvent) {
+      dragCoords = mouseCoords(this.svgElement, event)
       if (!dragCoords || !clickCoords) return
       const d = `M${clickCoords.x},${clickCoords.y} L${dragCoords.x},${clickCoords.y} ${dragCoords.x},${dragCoords.y} ${clickCoords.x},${dragCoords.y}Z`
       path.setAttribute('d', d)
     }
-    const rectOnMoveBound = rectOnMoveHandler.bind(this)
 
     // Resize on mouseup
-    const onMouseUp = () => {
+    function endDrag() {
       if (!clickCoords || !dragCoords) return
 
       path.parentNode!.removeChild(path)
@@ -319,11 +321,9 @@ export class SVGPlot {
       this.transformView()
 
       // Cleanup event handlers
-      this.svgElement.removeEventListener('mouseup', onMouseUp)
-      this.svgElement.removeEventListener('mousemove', rectOnMoveBound)
+      this.svgElement.removeEventListener('mouseup', endDrag)
+      this.svgElement.removeEventListener('mousemove', onDrag)
     }
-    this.svgElement.addEventListener('mouseup', onMouseUp)
-    this.svgElement.addEventListener('mousemove', rectOnMoveBound)
   }
 
   private resizeOnDrag() {

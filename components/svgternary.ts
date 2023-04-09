@@ -1,4 +1,4 @@
-import { setAttributes, svgPoly, mouseCoords ,addChildElement } from 'utils/svg'
+import { setAttributes, svgPoly, mouseCoords, addChildElement } from 'utils/svg'
 import Vector from 'utils/vector'
 
 const SIN60 = Math.sqrt(3) / 2
@@ -7,26 +7,47 @@ const TAN30 = Math.sqrt(3) / 3
 export class SVGTernaryPlot {
   private xmlns: string = 'http://www.w3.org/2000/svg'
   private margin: number = 0.1
-  private side: number 
+  private side: number
   private translate = new Vector(0, 0)
-  private axisColors: string[] = ['red', 'green', 'blue']
+  private colors = {
+    axis: {a: 'red', b: 'green', c: 'blue'},
+    director: 'orange',
+    point: 'black'
+  }
+  private value = {
+    point: [1/3, 1/3, 1/3],
+    director: 0.5
+  }
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
-  private boundHandlers: {[event: string]: EventListenerOrEventListenerObject[]} = {}
-  
+  private boundHandlers: { [event: string]: EventListenerOrEventListenerObject[] } = {}
+
   constructor(
     container: HTMLDivElement,
     size?: number,
     margin?: number,
-    axisColors?: string[]) 
-  {
+    axisColors?: string[],
+    directorColor?: string,
+    pointColor?: string) {
     // Get SVG dimensions from container if not provided
     const rect = container.getBoundingClientRect()
     if (!size) size = Math.min(rect.width, rect.height)
 
     if (margin) this.margin = margin
 
-    if (axisColors) this.axisColors = axisColors
+    if (axisColors) {
+      this.colors.axis.a = axisColors[0]
+      this.colors.axis.b = axisColors[1]
+      this.colors.axis.c = axisColors[2]
+    }
+
+    if (directorColor) {
+      this.colors.director = directorColor
+    }
+
+    if (pointColor) {
+      this.colors.point = pointColor
+    }
 
     // Create SVG element
     this.svgElement = document.createElementNS(this.xmlns, 'svg') as SVGSVGElement
@@ -45,7 +66,7 @@ export class SVGTernaryPlot {
 
     // Transform matrix
     this.setTransform(size)
-    
+
     // Creat group element
     const ternary = document.createElementNS(this.xmlns, 'g') as SVGGElement
     let gAttr = {
@@ -55,13 +76,15 @@ export class SVGTernaryPlot {
     setAttributes(ternary, gAttr)
     this.svgElement.appendChild(ternary)
 
-    addChildElement(ternary, 'g', {id: 'grid-group'})
-    addChildElement(ternary, 'g', {id: 'axis-group'})
-    addChildElement(ternary, 'g', {id: 'director-group'})
-    addChildElement(ternary, 'g', {id: 'pointer-group'})
-    
+    addChildElement(ternary, 'g', { id: 'grid-group' })
+    addChildElement(ternary, 'g', { id: 'axis-group' })
+    addChildElement(ternary, 'g', { id: 'director-group' })
+    addChildElement(ternary, 'g', { id: 'plot-group' })
+    addChildElement(ternary, 'g', { id: 'pointer-group' })
+
     this.drawTriangle()
     this.director()
+    this.point()
 
     // Add functionality
     this.coordsOnMove()
@@ -80,7 +103,7 @@ export class SVGTernaryPlot {
 
   private transformMatrix() {
     const matrix = [
-      1, 0, 0, -1, 
+      1, 0, 0, -1,
       this.translate.x, this.translate.y
     ]
     return `matrix(${matrix.join(',')})`
@@ -97,12 +120,12 @@ export class SVGTernaryPlot {
     this.translate.y = size * (1 - this.margin)
   }
 
-  private drawTriangle(stroke='black') {
+  private drawTriangle(stroke = 'black') {
 
     const vertices = [
       new Vector(0, 0),
       new Vector(this.side, 0),
-      new Vector(this.side/2, this.side * SIN60),
+      new Vector(this.side / 2, this.side * SIN60),
     ]
     const triangle = svgPoly(vertices)
     const attr = {
@@ -114,7 +137,7 @@ export class SVGTernaryPlot {
     const grid = document.getElementById('grid-group')!
     addChildElement(grid, 'polygon', attr)
   }
-  
+
   public grid(division: number = 10) {
     const gridUnit = this.side / division
 
@@ -150,46 +173,80 @@ export class SVGTernaryPlot {
 
   public axis() {
     const axis = document.getElementById('axis-group')!
-    
+
     // a (bottom-left)
     let line = {
-      x1: `${(3/4) * this.side}`, y1: `${this.side * SIN60/2}`, 
+      x1: `${(3 / 4) * this.side}`, y1: `${this.side * SIN60 / 2}`,
       x2: '0', y2: '0',
-      stroke: this.axisColors[0], 'stroke-width': '1',
+      stroke: this.colors.axis.a, 'stroke-width': '1',
     }
     addChildElement(axis, 'line', line)
 
     // b (bottom-right)
     line = {
-      x1: `${this.side / 4}`, y1: `${this.side * SIN60/2}`, 
+      x1: `${this.side / 4}`, y1: `${this.side * SIN60 / 2}`,
       x2: `${this.side}`, y2: '0',
-      stroke: this.axisColors[1], 'stroke-width': '1',
+      stroke: this.colors.axis.b, 'stroke-width': '1',
     }
     addChildElement(axis, 'line', line)
 
     // c (vertical)
     line = {
-      x1: `${this.side / 2}`, y1: '0', 
+      x1: `${this.side / 2}`, y1: '0',
       x2: `${this.side / 2}`, y2: `${this.side * SIN60}`,
-      stroke: this.axisColors[2], 'stroke-width': '1',
+      stroke: this.colors.axis.c, 'stroke-width': '1',
     }
     addChildElement(axis, 'line', line)
   }
 
-  public director() {
+  private projector() {
+    return this.value.point[1] + this.value.director * this.value.point[2]
+  }
+
+  public point(value?: number[]) {
+    if (value) {
+      if (value.length !== 3) {
+        throw new Error('Point value must be a triple.')
+      }
+      this.value.point = value
+    }
+
+    const svgCoord = this.ternaryToSvgCoord(this.value.point)
+    const plot = document.getElementById('plot-group')!
+    const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
+    circle.style.cursor = 'move'
+    const attr = {
+      id: 'plot-point', cx: `${svgCoord.x}`, cy: `${svgCoord.y}`, r: '1%',
+      fill: this.colors.point
+    }
+    setAttributes(circle, attr)
+    plot.appendChild(circle)
+
+    const line = {
+      id: 'plot-projector', x1: `${svgCoord.x}`, y1: `${svgCoord.y}`,
+      x2: `${this.projector() * this.side}`, y2: '0', stroke: this.colors.point, 'stroke-width': '1',
+      'stroke-dasharray': '5'
+    }
+    addChildElement(plot, 'line', line)
+  }
+
+  public director(value?: number) {
+    if (value) this.value.director = value
+
     const director = document.getElementById('director-group')!
     const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
     circle.style.cursor = 'ew-resize'
     const attr = {
-      id: 'director-point', cx: `${this.side / 2}`, cy: '0', r: '1%',
-      fill: 'orange'
+      id: 'director-point', cx: `${this.side * this.value.director}`, cy: '0', r: '1%',
+      fill: this.colors.director
     }
     setAttributes(circle, attr)
     director.appendChild(circle)
 
     const line = {
       id: 'director-line', x1: `${this.side / 2}`, y1: `${this.side * SIN60}`,
-      x2: `${this.side / 2}`, y2: '0', stroke: 'orange', 'stroke-width': '1',
+      x2: `${this.side * this.value.director}`, y2: '0', 
+      stroke: this.colors.director, 'stroke-width': '1',
       'stroke-dasharray': '5'
     }
     addChildElement(director, 'line', line)
@@ -199,32 +256,44 @@ export class SVGTernaryPlot {
     circle.addEventListener('mousedown', dragDirectorBound)
   }
 
-  public dragDirectorHandler() {
-    const ternary = <unknown>document.getElementById('ternary-polygon')! as SVGPolygonElement
-    const point = document.getElementById('director-point')!
-    const line = document.getElementById('director-line')!
+  private dragDirectorHandler() {
+    let dragged = true
 
-    ternary.addEventListener('mousemove', onDrag)
-    ternary.addEventListener('mouseup', endDrag)
+    const point = document.getElementById('director-point')!
+    const director = document.getElementById('director-line')!
+    const projector = document.getElementById('plot-projector')
+
+    this.svgElement.addEventListener('mousemove', onDrag.bind(this))
+    this.svgElement.addEventListener('mouseup', endDrag.bind(this))
 
     function onDrag(event: MouseEvent) {
+      if (!dragged) return
+
       event.preventDefault()
-      const svgCoord = mouseCoords(ternary, event)
+      const svgCoord = mouseCoords(this.svgElement, event)
 
       if (!svgCoord) return
+
+      svgCoord.x -= this.translate.x
+      svgCoord.y += this.translate.y
+
       if (svgCoord.x < 0 || svgCoord.x > this.side) return
 
       point.setAttribute('cx', `${svgCoord.x}`)
-      line.setAttribute('x2', `${svgCoord.x}`)
+      director.setAttribute('x2', `${svgCoord.x}`)
+      projector?.setAttribute('x2', `${this.projector() * this.side}`)
+
+      this.value.director = svgCoord.x / this.side
     }
 
     function endDrag() {
-      ternary.removeEventListener('mouseup', endDrag)
-      ternary.removeEventListener('mousemove', onDrag)
+      dragged = false
+      this.svgElement.removeEventListener('mousemove', onDrag)
+      this.svgElement.removeEventListener('mouseup', endDrag)
     }
   }
 
-  private ternaryCoord(svgCoord: Vector): number[] {
+  private svgToTernaryCoord(svgCoord: Vector): number[] {
     const a = 1 - (svgCoord!.x + svgCoord!.y * TAN30) / this.side
     const b = (svgCoord!.x - svgCoord!.y * TAN30) / this.side
     const c = svgCoord!.y / (this.side * SIN60)
@@ -232,8 +301,15 @@ export class SVGTernaryPlot {
     return [a, b, c]
   }
 
+  private ternaryToSvgCoord(coord: number[]): Vector {
+    return new Vector(
+      this.side * (coord[1] + coord[2] * SIN60 * TAN30), 
+      coord[2] * (this.side * SIN60)
+    )
+  }
+
   private coordsOnMove() {
-    
+
     const pointer = document.getElementById('pointer-group')!
 
     // Coordinate pointer text
@@ -248,17 +324,17 @@ export class SVGTernaryPlot {
     // Coordinate pointer lines
     let path = {
       id: 'a-pointer', d: '',
-      stroke: this.axisColors[0], 'stroke-width': '1px', 'stroke-dasharray': '5px',
+      stroke: this.colors.axis.a, 'stroke-width': '1px', 'stroke-dasharray': '5px',
       opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
     }
     addChildElement(pointer, 'path', path)
 
     path['id'] = 'b-pointer'
-    path['stroke'] = this.axisColors[1]
+    path['stroke'] = this.colors.axis.b
     addChildElement(pointer, 'path', path)
 
     path['id'] = 'c-pointer'
-    path['stroke'] = this.axisColors[2]
+    path['stroke'] = this.colors.axis.c
     addChildElement(pointer, 'path', path)
 
     const coordsOnMoveBound = this.coordsOnMoveHandler.bind(this)
@@ -268,20 +344,20 @@ export class SVGTernaryPlot {
   }
 
   private coordsOnMoveHandler(event: MouseEvent) {
-    
-    function inTriangle(svgCoord: Vector|null, side: number): boolean {
+
+    function inTriangle(svgCoord: Vector | null, side: number): boolean {
       if (!svgCoord) return false
 
       if (
-        svgCoord.y < 0 || 
+        svgCoord.y < 0 ||
         svgCoord.y > side * SIN60
       ) return false
 
       if (
-        svgCoord.x < svgCoord.y * TAN30 || 
+        svgCoord.x < svgCoord.y * TAN30 ||
         svgCoord.x > side - svgCoord.y * TAN30
       ) return false
-      
+
       return true
     }
 
@@ -290,7 +366,7 @@ export class SVGTernaryPlot {
     const svgCoord = mouseCoords(ternary, event)
     if (!inTriangle(svgCoord, this.side)) return
 
-    const coord = this.ternaryCoord(svgCoord!)
+    const coord = this.svgToTernaryCoord(svgCoord!)
 
     const pointer = document.getElementById('coord-pointer')!
     pointer.setAttribute('x', `${svgCoord!.x + 15}`)
