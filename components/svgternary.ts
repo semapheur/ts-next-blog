@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import { BehaviorSubject } from 'rxjs'
 import { setAttributes, svgPoly, mouseCoords, addChildElement } from 'utils/svg'
 import Vector from 'utils/vector'
@@ -81,7 +82,6 @@ export default class SVGTernaryPlot {
 
     this.drawTriangle()
     this.director()
-    this.point()
 
     // Add functionality
     this.coordsOnMove()
@@ -98,8 +98,28 @@ export default class SVGTernaryPlot {
     //this.svgElement.parentNode?.removeChild(this.svgElement)
   }
 
-  private setPoint(point: number[]) {
+  public getSvg(): SVGSVGElement {
+    return this.svgElement
+  }
+
+  public getValue(): TernaryValue {
+    return this.value
+  }
+
+  public observeValue(setValue: Dispatch<SetStateAction<TernaryValue>>) {
+    this.svgElement.addEventListener('mousemove', onMouseOver.bind(this))
+
+    function onMouseOver() {
+      setValue(this.value)
+    }
+  }
+
+  private setValue(point: number[], director: number) {
+    if (point.length !== 3) {
+      throw new Error('Point value must be a triple.')
+    }
     this.value.point = point
+    this.value.director = director
   }
 
   private setColors(axis?: string[], director?: string, point?: string) {
@@ -254,7 +274,7 @@ export default class SVGTernaryPlot {
   private dragPointHandler() {
     let dragged = true
 
-    const ternary = <unknown>document.getElementById('ternary-polygon')! as SVGPolygonElement
+    //const ternary = <unknown>document.getElementById('ternary-polygon')! as SVGPolygonElement
     const point = document.getElementById('plot-point')!
     const projector = document.getElementById('plot-projector')!
 
@@ -274,9 +294,9 @@ export default class SVGTernaryPlot {
       if (!this.inTriangle(svgCoord)) return
 
       setAttributes(point, {cx: `${svgCoord!.x}`, cy: `${svgCoord!.y}`})
-      this.setPoint(this.svgToTernaryCoord(svgCoord))
+      this.value.point = this.svgToTernaryCoord(svgCoord)
       setAttributes(projector, {x1: `${svgCoord!.x}`, y1: `${svgCoord!.y}`, x2: `${this.projector() * this.side}`})
-
+      
       ternary$.next(this.value)
     }
 

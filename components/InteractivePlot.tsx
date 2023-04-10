@@ -217,21 +217,21 @@ export default function InteractivePlot() {
       return () => {
         svgRef.current?.cleanup()
       }
-    };
-  }, []);
+    }
+  }, [])
 
   useEffect(() => {
     if (!svgRef.current || !size) return
 
     svgRef.current.resize(size.width, size.height);
     svgRef.current.fitViewToPlots()
-  }, [size]);
+  }, [size])
 
   useEffect(() => {
     if (svgRef.current) {
       svgRef.current.updatePlots(convertPlots(plots))
     }
-  }, [plots]);
+  }, [plots])
 
   return (
     <Split className='' split='row' defaultSizes={[0.2, 0.8]} minSizes={[100, 500]}>

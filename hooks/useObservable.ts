@@ -1,12 +1,11 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {BehaviorSubject} from 'rxjs'
+import useSubscription from './useSubscription';
 
-export default function useObservable<T>(initialState: T) {
-  const [observable] = useState(new BehaviorSubject<T>(initialState))
-
-  const handleNext = (value: T) => {
-    observable.next(value)
-  }
-
-  return [observable, handleNext]
+export default function useObservable<T>(source$: BehaviorSubject<T>, initialValue?: T) {
+  const [value, setValue] = useState<T>(initialValue ?? source$.getValue())
+ 
+  useSubscription(source$, (v: T) => setValue(v))
+ 
+  return value
 }
