@@ -1,21 +1,45 @@
-import { Dispatch, SetStateAction } from 'react';
-import { BehaviorSubject } from 'rxjs'
+import { action, computed, makeObservable, observable } from 'mobx';
 import { setAttributes, svgPoly, mouseCoords, addChildElement } from 'utils/svg'
 import Vector from 'utils/vector'
 
-export type TernaryValue = {
-  point: number[];
-  director: number;
-}
+const SIN60 = Math.sqrt(3) / 2
+const TAN30 = Math.sqrt(3) / 3
+
 const initialTernaryValue = {
   point: [1/3, 1/3, 1/3],
   director: 0.5
 }
 
-const SIN60 = Math.sqrt(3) / 2
-const TAN30 = Math.sqrt(3) / 3
 
-export const ternary$ = new BehaviorSubject<TernaryValue>(initialTernaryValue)
+type TernaryValue = {
+  point: number[],
+  director: number
+}
+
+export class TernaryStore {
+  public point: number[]
+  public director: number
+
+  constructor(point?: number[], director?: number) {
+    if (point) this.point = point
+    if (director) this.director = director
+
+    makeObservable(this, {
+      point: observable,
+      director: observable,
+      setPoint: action,
+      setDirector: action,
+    })
+  }
+
+  public setPoint(point: number[]) {
+    this.point = point
+  }
+
+  public setDirector(director: number) {
+    this.director = director
+  }
+}
 
 export default class SVGTernaryPlot {
   private xmlns: string = 'http://www.w3.org/2000/svg'
@@ -81,7 +105,6 @@ export default class SVGTernaryPlot {
     addChildElement(ternary, 'g', { id: 'pointer-group' })
 
     this.drawTriangle()
-    this.director()
 
     // Add functionality
     this.coordsOnMove()
@@ -104,22 +127,6 @@ export default class SVGTernaryPlot {
 
   public getValue(): TernaryValue {
     return this.value
-  }
-
-  public observeValue(setValue: Dispatch<SetStateAction<TernaryValue>>) {
-    this.svgElement.addEventListener('mousemove', onMouseOver.bind(this))
-
-    function onMouseOver() {
-      setValue(this.value)
-    }
-  }
-
-  private setValue(point: number[], director: number) {
-    if (point.length !== 3) {
-      throw new Error('Point value must be a triple.')
-    }
-    this.value.point = point
-    this.value.director = director
   }
 
   private setColors(axis?: string[], director?: string, point?: string) {
@@ -240,7 +247,7 @@ export default class SVGTernaryPlot {
     return this.value.point[1] + this.value.director * this.value.point[2]
   }
 
-  public point(value?: number[]) {
+  public point(value?: number[], store?: TernaryStore) {
     if (value) {
       if (value.length !== 3) {
         throw new Error('Point value must be a triple.')
@@ -266,12 +273,12 @@ export default class SVGTernaryPlot {
     }
     addChildElement(plot, 'line', line)
 
-    const dragPointBound = this.dragPointHandler.bind(this)
+    const dragPointBound = this.dragPointHandler.bind(this, store)
     this.addBoundHandler('mousedown', dragPointBound)
     circle.addEventListener('mousedown', dragPointBound)
   }
 
-  private dragPointHandler() {
+  private dragPointHandler(store?: TernaryStore) {
     let dragged = true
 
     //const ternary = <unknown>document.getElementById('ternary-polygon')! as SVGPolygonElement
@@ -296,8 +303,8 @@ export default class SVGTernaryPlot {
       setAttributes(point, {cx: `${svgCoord!.x}`, cy: `${svgCoord!.y}`})
       this.value.point = this.svgToTernaryCoord(svgCoord)
       setAttributes(projector, {x1: `${svgCoord!.x}`, y1: `${svgCoord!.y}`, x2: `${this.projector() * this.side}`})
-      
-      ternary$.next(this.value)
+
+      if (store) store.setPoint(this.value.point)
     }
 
     function endDrag() {
@@ -307,7 +314,7 @@ export default class SVGTernaryPlot {
     }
   }
 
-  public director(value?: number) {
+  public director(value?: number, store?: TernaryStore) {
     if (value) this.value.director = value
 
     const director = document.getElementById('director-group')!
@@ -328,12 +335,12 @@ export default class SVGTernaryPlot {
     }
     addChildElement(director, 'line', line)
 
-    const dragDirectorBound = this.dragDirectorHandler.bind(this)
+    const dragDirectorBound = this.dragDirectorHandler.bind(this, store)
     this.addBoundHandler('mousedown', dragDirectorBound)
     circle.addEventListener('mousedown', dragDirectorBound)
   }
 
-  private dragDirectorHandler() {
+  private dragDirectorHandler(store?: TernaryStore) {
     let dragged = true
 
     const point = document.getElementById('director-point')!
@@ -361,6 +368,8 @@ export default class SVGTernaryPlot {
       projector?.setAttribute('x2', `${this.projector() * this.side}`)
 
       this.value.director = svgCoord.x / this.side
+
+      if (store) store.setDirector(this.value.director)
     }
 
     function endDrag() {
