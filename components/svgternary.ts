@@ -1,15 +1,9 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { setAttributes, svgPoly, mouseCoords, addChildElement } from 'utils/svg'
 import Vector from 'utils/vector'
 
 const SIN60 = Math.sqrt(3) / 2
 const TAN30 = Math.sqrt(3) / 3
-
-const initialTernaryValue = {
-  point: [1/3, 1/3, 1/3],
-  director: 0.5
-}
-
 
 type TernaryValue = {
   point: number[],
@@ -51,23 +45,27 @@ export default class SVGTernaryPlot {
     director: 'orange',
     point: 'black'
   }
-  private value: TernaryValue = initialTernaryValue
+  private value: TernaryValue
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
   private boundHandlers: { [event: string]: EventListenerOrEventListenerObject[] } = {}
 
   constructor(
     container: HTMLDivElement,
+    initialValue?: TernaryValue,
     size?: number,
     margin?: number,
     axisColors?: string[],
     directorColor?: string,
-    pointColor?: string) {
+    pointColor?: string,
+  ) {
     // Get SVG dimensions from container if not provided
     const rect = container.getBoundingClientRect()
     if (!size) size = Math.min(rect.width, rect.height)
 
     if (margin) this.margin = margin
+
+    if (initialValue) this.value = initialValue
 
     this.setColors(axisColors, directorColor, pointColor)
 

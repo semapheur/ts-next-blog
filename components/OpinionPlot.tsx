@@ -22,23 +22,18 @@ class OpinionStore extends TernaryStore {
       probability: computed
     })
   }
-
   get belief() {
     return this.point[1]
   }
-
   get disbelief() {
     return this.point[0]
   }
-
   get uncertainty() {
     return this.point[2]
   }
-
   get baseRate() {
     return this.director
   }
-
   get probability() {
     return this.point[1] + this.point[2] * this.director
   }
@@ -51,39 +46,44 @@ const opinion = new OpinionStore(
 
 function OpinionPlot() {
   
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGTernaryPlot|null>(null)
+  const ternaryWrapRef = useRef<HTMLDivElement>(null)
+  const ternaryRef = useRef<SVGTernaryPlot|null>(null)
+  const plotWrapRef = useRef<HTMLDivElement>(null)
   //const size = useResizeObserver(wrapRef)
 
   useEffect(() => {
-    const wrapper = wrapRef.current
-    if (!svgRef.current && wrapper) {
+    const wrapper = ternaryWrapRef.current
+    if (!ternaryRef.current && wrapper) {
       
-      svgRef.current = new SVGTernaryPlot(wrapper)
-      svgRef.current.grid()
-      svgRef.current.axis()
-      svgRef.current.director(undefined, opinion)
-      svgRef.current.point(undefined, opinion)
+      ternaryRef.current = new SVGTernaryPlot(wrapper, initialTernaryValue)
+      ternaryRef.current.grid()
+      ternaryRef.current.axis()
+      ternaryRef.current.director(undefined, opinion)
+      ternaryRef.current.point(undefined, opinion)
       
       return () => {
-        svgRef.current?.cleanup()
+        ternaryRef.current?.cleanup()
       }
     }
   }, [])
 
   return (
     <div className='h-full flex'>
-      <div ref={wrapRef}
-        className='h-full w-1/2 bg-primary shadow-inner-l dark:shadow-black/50'
+      <div ref={ternaryWrapRef}
+        className='relative h-full w-1/2 bg-primary shadow-inner-l dark:shadow-black/50'
+      >
+        <ul className='absolute right-2 top-2 p-2 rounded-md shadow'>
+          <b>Opinion</b>
+          <li><b>Belief: </b>{opinion.belief.toFixed(2)}</li>
+          <li><b>Disbelief: </b>{opinion.disbelief.toFixed(2)}</li>
+          <li><b>Uncertainty: </b>{opinion.uncertainty.toFixed(2)}</li>
+          <li><b>Base rate: </b>{opinion.baseRate.toFixed(2)}</li>
+          <li><b>Probability: </b>{opinion.probability.toFixed(2)}</li>
+        </ul>
+      </div>
+      <div ref={plotWrapRef}
+        className='' 
       />
-      <ul>
-        <b>Opinion</b>
-        <li><b>Belief: </b>{opinion.belief.toFixed(2)}</li>
-        <li><b>Disbelief: </b>{opinion.disbelief.toFixed(2)}</li>
-        <li><b>Uncertainty: </b>{opinion.uncertainty.toFixed(2)}</li>
-        <li><b>Base rate: </b>{opinion.baseRate.toFixed(2)}</li>
-        <li><b>Probability: </b>{opinion.probability.toFixed(2)}</li>
-      </ul>
     </div>
   )
 }

@@ -1,5 +1,15 @@
 import Vector from 'utils/vector'
 
+export function setSvgTransform(
+  svgRoot: SVGSVGElement, 
+  svgEl: SVGGElement | SVGGeometryElement,
+  matrix: DOMMatrix
+) {
+  svgEl.transform.baseVal.initialize(
+    svgRoot.createSVGTransformFromMatrix(matrix)
+  )
+}
+
 export function setAttributes(element: Element, attributes: {[key: string]: string}) {
   for (let k of Object.keys(attributes)) {
     element.setAttribute(k, attributes[k])
@@ -28,7 +38,7 @@ export function removeElementsByClass(baseElement: Element, className: string) {
   }
 }
 
-export function mouseCoords(
+export function mousePosition(
   svg: SVGSVGElement | SVGGElement | SVGGeometryElement, 
   event: MouseEvent
 ): Vector|null 
@@ -41,6 +51,14 @@ export function mouseCoords(
     (event.clientY - ctm.f) / ctm.d
   )
 }
+
+export function transformMatrix() {
+    const matrix = [
+      this.scale.x, 0, 0, this.scale.y, 
+      this.translate.x, this.translate.y
+    ]
+    return `matrix(${matrix.join(',')})`
+  }
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''

@@ -68,6 +68,12 @@ export default class Vector extends Array<number> {
     return new Vector(...components)
   }
 
+  public addScalarInplace(scalar: number) {
+    for (let i in this) {
+      this[i] += scalar
+    }
+  }
+
   public subtract(...vectors: Vector[]): Vector {
     const components = [...this]
 
@@ -99,6 +105,18 @@ export default class Vector extends Array<number> {
 
   public normalize(): Vector {
     return this.scale(1 / this.norm)
+  }
+
+  public diff(): number | Vector {
+    if (this.length === 2) {
+      return this[1] - this[0]
+    }
+
+    const result = Array<number>(this.length - 1)
+    for (let i = 0; i < this.length - 1; i++) {
+      result[i] = this[i + 1] - this[i] 
+    }
+    return new Vector(...result)
   }
 
   public dot(vector: Vector): number {
