@@ -223,7 +223,7 @@ export default function InteractivePlot() {
   useEffect(() => {
     if (!svgRef.current || !size) return
 
-    svgRef.current.resize(size.width, size.height);
+    svgRef.current.resize(size.width, size.height)
     svgRef.current.fitViewToPlots()
   }, [size])
 

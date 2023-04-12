@@ -4,7 +4,7 @@ import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
 import Vector from 'utils/vector'
-import { setAttributes, removeElementsByClass, addChildElement, mousePosition, setSvgTransform } from 'utils/svg'
+import { setAttributes, removeElementsByClass, addChildElement, mousePosition, setSvgTransform, EventStore} from 'utils/svg'
 
 type SvgPlots = {
   [key: string] : {
@@ -16,10 +16,6 @@ type SvgPlots = {
 type ViewRange = {
   x: Vector,
   y: Vector
-}
-
-type EventListenerStore = {
-  [event: string]: [Element, EventListenerOrEventListenerObject][]
 }
 
 export class SVGPlot {
@@ -36,7 +32,7 @@ export class SVGPlot {
   }
   private gridSize = new Vector(1, 1)
   private plots: SvgPlots = {}
-  private eventListeners: EventListenerStore = {}
+  private eventListeners: EventStore = {}
 
   constructor(container: HTMLDivElement, margin?: Vector,
     width?: number, height?: number, viewBox?: string, 
@@ -121,7 +117,6 @@ export class SVGPlot {
       viewBox: viewBox,
     }
     setAttributes(this.svgElement, attr)
-    this.setFrameTransform(undefined, width, height)
     this.transformView()
   }
     

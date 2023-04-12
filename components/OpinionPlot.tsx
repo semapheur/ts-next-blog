@@ -61,9 +61,9 @@ function OpinionPlot() {
       ternaryRef.current.director(undefined, opinion)
       ternaryRef.current.point(undefined, opinion)
       
-      return () => {
-        ternaryRef.current?.cleanup()
-      }
+      //return () => {
+      //  ternaryRef.current?.cleanup()
+      //}
     }
   }, [])
 

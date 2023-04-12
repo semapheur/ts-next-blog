@@ -1,5 +1,9 @@
 import Vector from 'utils/vector'
 
+export type EventStore = {
+  [event: string]: [Element, EventListenerOrEventListenerObject][]
+}
+
 export function setSvgTransform(
   svgRoot: SVGSVGElement, 
   svgEl: SVGGElement | SVGGeometryElement,
