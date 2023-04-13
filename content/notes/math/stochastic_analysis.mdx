@@ -10,6 +10,78 @@ To review, a stochastic process on a probability space $(\Omega,\mathcal{F},\mat
 
 A filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$ is an increasing collection of sub $\sigma$-algebra of $\mathcal{F}$, encoding the information available at time $t$. A stochastic process $\mathbf{X}$ is adapted to a filtration $\mathscr{F}$ if $X_t$ is measurable with respect to $\mathcal{F}_t$ for each $t\in T$. 
 
+## Markov process
+
+A Markov process is a stochastic process with the property that the probability of a future event dependens only on the present state, i.e. the future is independent of the past.
+
+| | Countable (discrete) state space | Continuous or general state space |
+|---|---|---|
+| **Discrete-time** $T=\mathbb{N}$ | discrete-time Markov chain | Markov process on a measurable space |
+| **Continuous-time** $T=[0,\infty)$ | continuous-time Markov chain | Continuous stochastic process with the Markov property |
+
+<MathBox title='Markov process' boxType='definition'>
+A stochastic process $\mathbf{X}$ is a *Markov process* if it satisfies the Markov property
+
+$$
+  \mathbb{P}(X_{s+t}\in A|\mathcal{F}_s) = \mathbb{P}(X_{s+t}\in A|X_s)
+$$
+
+for all $s,t\in T$ and $A\in\mathcal{S}$.
+
+In particular, a Markov process $\mathbf{X}$ is *time homogeneous* (stationary) if
+
+$$
+  \mathbb{P}(X_{s+t}\in A | X_s = x) = \mathbb{P}(X_t\in A | X_0 = x)
+$$
+</MathBox>
+
+<MathBox title='Markov property in terms of conditional expectation' boxType='proposition'>
+Let $\mathcal{B}$ denote the collection of bounded, measurable functions $f: S\to\mathbb{R}$. A stochastic process $\mathbf{X}$ is a *Markov process* if and only if
+
+$$
+  \mathbb{E}(f_{s+t}|\mathcal{F}_s) = \mathbb{E}(X_{s+t}|X_s)
+$$
+
+for all $s,t\in T$ and $f\in\mathcal{B}$.
+
+<details>
+<summary>Proof</summary>
+
+By letting $f = \mathbf{1}_A$ for $A\in\mathcal{S}$ then $\mathbb{E}[\mathbf{1}_A(X_{x+t})] = \mathbb{P}(X_{x+s}\in A)$. Thus the conditional expectation formulation is equivalent with the Markov property.
+
+</details>
+</MathBox>
+
+<MathBox title='Adapted Markov process' boxType='proposition'>
+Suppose that the stochastic process $\mathbf{X}$ is adapted to the filtration $\mathsc{F}$, and $\mathscr{F}\subseteq\mathscr{G}$, i.e. $\mathscr{G}$ is finer than $\mathscr{F}$. If $\mathbf{X}$ is a Markov process relative to $\mathscr{G}$, then $\mathbf{X}$ is a Markov process relative to $\mathscr{F}$.
+
+In particular, if $\mathbf{X}$ is a Markov process, then $\mathbf{X}$ satisfies the Markov property relative to the natural filtration $\mathcal{F}^0$
+
+<details>
+<summary>Proof</summary>
+
+Note $\mathbf{X}$ is adapted to $\mathscr{G}$, since $\mathbf{X}$ is adapted to $\mathscr{F}$ and $\mathscr{F}\subseteq\mathbf{G}$. If $s,t\in T$ and $f\in\mathcal{B}$ then
+
+$$
+\begin{align*}
+  \mathbb{E}[f(X_{t+s})|\mathcal{F}_s] &= \mathbb{E}\left(\mathbb{E}[f(X_{s+t})|\mathcal{G}_s] | \mathcal{F}_s \right) \\
+  &= \mathbb{E}\left( \mathbb{E}[f(X_{s+t})|X_s]|\mathcal{F}_s \right) \\
+  &= \mathbb{E}[f(X_{s+t})|X_s]
+\end{align*}
+$$
+
+The first equalit is a basic property of conditional expected value. The second uses the fact that $\mathbf{X}$ is Markov relative to $\mathscr{G}$, and the third follows since $X_s$ is measurable with respec to $\mathcal{F}_s$
+</details>
+</MathBox>
+
+
+<MathBox title='Feller process' boxType='definition'>
+A Markov process $\mathbf{X}$ is a *Feller process* if it satisfies
+1. Continuity in space: For $t\in T$ and $y\in S$, the distribution of $X_t$ given $X_0 = x$ converges to the distribution of $X_t$ given $X_0 = y$ as $x\to y$.
+2. Continuity in time: Given $X_0 = x$ for $x\in S$, then $X_t \xrightarrow{t\downarrow 0} x$ in probability.
+</MathBox>
+
+
 ## Martingale
 
 A martingale is a stochastic process for which the conditional expectation of the next value is equal to the present value.
