@@ -413,78 +413,66 @@ export default class SVGTernaryPlot {
   }
 
   private crosshair() {
+    const crosshair = document.getElementById('crosshair-group')!
 
-    const onMouseEnterBound = onMouseEnter.bind(this)
-    this.storeEventListener('mouseenter', this.frameGroup, onMouseEnterBound)
-
-    function onMouseEnter(event: MouseEvent) {
-
-      const svgPos = mousePosition(this.frameGroup, event)
-      if (!svgPos || !this.inTriangle(svgPos)) return
-
-      const crosshair = document.getElementById('crosshair-group')!
-
-      // Coordinate crosshair text
-      const attr = {
-        id: 'crosshair-text',
-        'font-size': '0.75em',
-        fill: 'rgba(var(--color-text) / 1)',
-        transform: 'scale(1, -1)'
-      }
-      addChildElement(crosshair, 'text', attr)
-
-      // Coordinate crosshair lines
-      let path = {
-        id: 'crosshair-line-a', d: '',
-        stroke: this.colors.axis.a, 'stroke-width': '1px', 'stroke-dasharray': '5px',
-        opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
-      }
-      addChildElement(crosshair, 'path', path)
-
-      path['id'] = 'crosshair-line-b'
-      path['stroke'] = this.colors.axis.b
-      addChildElement(crosshair, 'path', path)
-
-      path['id'] = 'crosshair-line-c'
-      path['stroke'] = this.colors.axis.c
-      addChildElement(crosshair, 'path', path)
-
-      this.frameGroup.addEventListener('mousemove', onMouseMove.bind(this))
-      this.frameGroup.addEventListener('mouseleave', onMouseLeave.bind(this))
+    // Coordinate crosshair text
+    const attr = {
+      id: 'crosshair-text',
+      'font-size': '0.75em',
+      fill: 'rgba(var(--color-text) / 1)',
+      transform: 'scale(1, -1)'
     }
+    addChildElement(crosshair, 'text', attr)
+
+    // Coordinate crosshair lines
+    let path = {
+      id: 'crosshair-line-a', d: '',
+      stroke: this.colors.axis.a, 'stroke-width': '1px', 'stroke-dasharray': '5px',
+      opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
+    }
+    addChildElement(crosshair, 'path', path)
+
+    path['id'] = 'crosshair-line-b'
+    path['stroke'] = this.colors.axis.b
+    addChildElement(crosshair, 'path', path)
+
+    path['id'] = 'crosshair-line-c'
+    path['stroke'] = this.colors.axis.c
+    addChildElement(crosshair, 'path', path)
+
+    const onMouseMoveBound = onMouseMove.bind(this)
+    this.storeEventListener('mousemove', this.frameGroup, onMouseMoveBound)
 
     function onMouseMove(event: MouseEvent) {
 
-      // Get ternary coordinates
       const svgPos = mousePosition(this.frameGroup, event)
-      if (!this.inTriangle(svgPos)) return
-
-      const coord = this.svgToTernaryPosition(svgPos!)
+      if (!svgPos) return
 
       const text = document.getElementById('crosshair-text')!
-      text.setAttribute('x', `${svgPos!.x + 15}`)
-      text.setAttribute('y', `${-svgPos!.y + 20}`)
-      text.innerHTML = `(${coord[0].toFixed(2)}, ${coord[1].toFixed(2)}, ${coord[2].toFixed(2)})`
-
       const aLine = document.getElementById('crosshair-line-a')!
-      aLine.setAttribute('d', `M${(1 - coord[0]) * this.side / 2},${(1 - coord[0]) * this.side * SIN60}L${svgPos!.print()}`)
-
       const bLine = document.getElementById('crosshair-line-b')!
-      bLine.setAttribute('d', `M${coord[1] * this.side},0L${svgPos!.print()}`)
-
       const cLine = document.getElementById('crosshair-line-c')!
-      cLine.setAttribute('d', `M${this.side - svgPos!.y * TAN30},${svgPos!.y}L${svgPos!.print()}`)
-    }
 
-    function onMouseLeave() {
-      for (let i of ['text', 'line-a', 'line-b', 'line-c']) {
-        const el = document.getElementById(`crosshair-${i}`)
-        el?.remove()
+      if (this.inTriangle(svgPos)) {
+        const coord = this.svgToTernaryPosition(svgPos)
+
+        text.setAttribute('x', `${svgPos!.x + 15}`)
+        text.setAttribute('y', `${-svgPos!.y + 20}`)
+        text.innerHTML = `(${coord[0].toFixed(2)}, ${coord[1].toFixed(2)}, ${coord[2].toFixed(2)})`
+
+        aLine.setAttribute('d', `M${(1 - coord[0]) * this.side / 2},${(1 - coord[0]) * this.side * SIN60}L${svgPos!.print()}`)
+        bLine.setAttribute('d', `M${coord[1] * this.side},0L${svgPos!.print()}`)
+        cLine.setAttribute('d', `M${this.side - svgPos!.y * TAN30},${svgPos!.y}L${svgPos!.print()}`)
+      } else {
+        text.setAttribute('x', '')
+        text.setAttribute('y', '')
+        text.innerHTML = ''
+
+        aLine.setAttribute('d', '')
+        bLine.setAttribute('d', '')
+        cLine.setAttribute('d', '')
       }
-      this.frameGroup.removeEventListener('mousemove', onMouseMove.bind(this))
-      this.frameGroup.removeEventListener('mouseleave', onMouseLeave.bind(this))
     }
-
   }
 
   private storeEventListener(
