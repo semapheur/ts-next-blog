@@ -1,0 +1,700 @@
+---
+title: 'Stochastic Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Stochastic processes
+
+To review, a stochastic process on a probability space $(\Omega,\mathcal{F},\mathbb{P})$ is a collection of random variables $\mathbf{X}:=\{X_t: \Omega\to S\}_{t\in T}$, with state space $(S,\mathcal{S})$ and index space $(T,\mathcal{T})$.
+
+A filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$ is an increasing collection of sub $\sigma$-algebra of $\mathcal{F}$, encoding the information available at time $t$. A stochastic process $\mathbf{X}$ is adapted to a filtration $\mathscr{F}$ if $X_t$ is measurable with respect to $\mathcal{F}_t$ for each $t\in T$. 
+
+## Markov process
+
+A Markov process is a stochastic process with the property that the probability of a future event dependens only on the present state, i.e. the future is independent of the past.
+
+| | Countable (discrete) state space | Continuous or general state space |
+|---|---|---|
+| **Discrete-time** $T=\mathbb{N}$ | discrete-time Markov chain | Markov process on a measurable space |
+| **Continuous-time** $T=[0,\infty)$ | continuous-time Markov chain | Continuous stochastic process with the Markov property |
+
+<MathBox title='Markov process' boxType='definition'>
+A stochastic process $\mathbf{X}$ is a *Markov process* if it satisfies the Markov property
+
+$$
+  \mathbb{P}(X_{s+t}\in A|\mathcal{F}_s) = \mathbb{P}(X_{s+t}\in A|X_s)
+$$
+
+for all $s,t\in T$ and $A\in\mathcal{S}$.
+
+In particular, a Markov process $\mathbf{X}$ is *time homogeneous* (stationary) if
+
+$$
+  \mathbb{P}(X_{s+t}\in A | X_s = x) = \mathbb{P}(X_t\in A | X_0 = x)
+$$
+</MathBox>
+
+<MathBox title='Markov property in terms of conditional expectation' boxType='proposition'>
+Let $\mathcal{B}$ denote the collection of bounded, measurable functions $f: S\to\mathbb{R}$. A stochastic process $\mathbf{X}$ is a *Markov process* if and only if
+
+$$
+  \mathbb{E}(f_{s+t}|\mathcal{F}_s) = \mathbb{E}(X_{s+t}|X_s)
+$$
+
+for all $s,t\in T$ and $f\in\mathcal{B}$.
+
+<details>
+<summary>Proof</summary>
+
+By letting $f = \mathbf{1}_A$ for $A\in\mathcal{S}$ then $\mathbb{E}[\mathbf{1}_A(X_{x+t})] = \mathbb{P}(X_{x+s}\in A)$. Thus the conditional expectation formulation is equivalent with the Markov property.
+
+</details>
+</MathBox>
+
+<MathBox title='Markov property is preserved under coarser filtrations' boxType='proposition'>
+Suppose that the stochastic process $\mathbf{X}$ is adapted to the filtration $\mathscr{F}$, and $\mathscr{F}\subseteq\mathscr{G}$, i.e. $\mathscr{G}$ is finer than $\mathscr{F}$. If $\mathbf{X}$ is a Markov process relative to $\mathscr{G}$, then $\mathbf{X}$ is a Markov process relative to $\mathscr{F}$.
+
+In particular, if $\mathbf{X}$ is a Markov process, then $\mathbf{X}$ satisfies the Markov property relative to the natural filtration $\mathcal{F}^0$
+
+<details>
+<summary>Proof</summary>
+
+Note $\mathbf{X}$ is adapted to $\mathscr{G}$, since $\mathbf{X}$ is adapted to $\mathscr{F}$ and $\mathscr{F}\subseteq\mathbf{G}$. If $s,t\in T$ and $f\in\mathcal{B}$ then
+
+$$
+\begin{align*}
+  \mathbb{E}[f(X_{t+s})|\mathcal{F}_s] &= \mathbb{E}\left(\mathbb{E}[f(X_{s+t})|\mathcal{G}_s] | \mathcal{F}_s \right) \\
+  &= \mathbb{E}\left( \mathbb{E}[f(X_{s+t})|X_s]|\mathcal{F}_s \right) \\
+  &= \mathbb{E}[f(X_{s+t})|X_s]
+\end{align*}
+$$
+
+The first equalit is a basic property of conditional expected value. The second uses the fact that $\mathbf{X}$ is Markov relative to $\mathscr{G}$, and the third follows since $X_s$ is measurable with respec to $\mathcal{F}_s$
+</details>
+</MathBox>
+
+<MathBox title='Feller process' boxType='definition'>
+A Markov process $\mathbf{X}$ is a *Feller process* if it satisfies
+1. Continuity in space: For $t\in T$ and $y\in S$, the distribution of $X_t$ given $X_0 = x$ converges to the distribution of $X_t$ given $X_0 = y$ as $x\to y$.
+2. Continuity in time: Given $X_0 = x$ for $x\in S$, then $X_t \xrightarrow{t\downarrow 0} x$ in probability.
+</MathBox>
+
+## Martingale
+
+A martingale is a stochastic process for which the conditional expectation of the next value is equal to the present value.
+
+<MathBox title='Martingale' boxType='definition'>
+A stochastic process $\mathbf{X}$ is a *martingale* with respect to a filtration $\mathscr{F}$ if $\mathbb{E}(X_t|\mathcal{F}_s) = X_s$ for all $s, t\in T$ with $s\leq t$.
+
+If the equality in the martingale conditions does not hold, then for  for all $s, t\in T$ with $s\leq t$, the process $\mathbf{X}$ is (with respect to $\mathscr{F}$)
+1. *sub-martingale* $\mathbb{E}(X_t|\mathcal{F}_s) \geq X_s$ for all $s, t\in T$ with $s\leq t$.
+2. *super-martingale* $\mathbb{E}(X_t|\mathcal{F}_s) \leq X_s$ for all $s, t\in T$ with $s\leq t$.
+
+If $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is discrete, then for all $n\in\mathbb{N}$ the process $\mathbf{X}$ is (with respect to $\mathscr{F}$)
+1. martingale if and only if $\mathbb{E}(X_{n+1}|\mathcal{F}_n) = X_n$
+2. sub-martingale if and only if $\mathbb{E}(X_{n+1}|\mathcal{F}_n) \geq X_n$
+3. super-martingale if and only if $\mathbb{E}(X_{n+1}|\mathcal{F}_n) \leq X_n$
+
+<details>
+<summary>Details</summary>
+
+To show the bicondationality in the discrete case, suppose that $k,n\in\mathbb{N}$ with $k< n$. Then $k\leq n - 1$ so $\mathcal{F}_k\subseteq\mathcal{F}_{n-1}$ and hence
+
+$$
+\begin{align*}
+  \mathbb{E}(X_n | \mathcal{F}_k) &= \mathbb{E}[\mathbb{E}(X_n|\mathcal{F}_{n-1})] \\
+  &= \mathbb{E}(X_{n-1}|\mathcal{F}_k)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+In gambling terms, martingale, sub-martingale and super-martingale processes are abstractions of fair, favourable or unfair games (from the gambler's perspective).
+
+<MathBox title='Martingales are preserved under coarser filtrations' boxType='proposition'>
+Suppose that the stochastic process $\mathbf{X}$ is adapted to the filtration $\mathscr{F}$, and $\mathscr{F}\subseteq\mathscr{G}$, i.e. $\mathscr{G}$ is finer than $\mathscr{F}$. If $\mathbf{X}$ is a (sub/super-)martingale relative to $\mathscr{G}$, then $\mathbf{X}$ is a (sub/super-)martingale process relative to $\mathscr{F}$.
+
+In particular, if $\mathbf{X}$ is a (sub/super-)martingale relative to some filtration, then $\mathbf{X}$ is also a (sub/super-)martingale relative to the natural filtration $\mathcal{F}^0$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $s,t\in T$ with $s\leq t$. Note that $\mathbf{X}$ is adapted to $\mathscr{G}$, since $\mathbf{X}$ is adapted to $\mathscr{F}$ and $\mathscr{F}\subseteq\mathscr{G}$. Appyling the tower and monotonicity of conditional expected value we have that
+
+1. If $\mathbf{X}$ is a martingale with respect to $\mathscr{G}$ then
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t | \mathcal{F_s}) &= \mathbb{E}[\mathbb{E}(X_t|\mathcal{G}_s)|\mathcal{F}_s] \\
+  &= \mathbb{E}(X_s|\mathcal{F_s}) = X_s
+\end{align*}
+$$
+
+2. If $\mathbf{X}$ is a sub-martingale with respect to $\mathscr{G}$ then
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t | \mathcal{F_s}) &= \mathbb{E}[\mathbb{E}(X_t|\mathcal{G}_s)|\mathcal{F}_s] \\
+  &\geq \mathbb{E}(X_s|\mathcal{F_s}) = X_s
+\end{align*}
+$$
+
+3. If $\mathbf{X}$ is a super-martingale with respect to $\mathscr{G}$ then
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t | \mathcal{F_s}) &= \mathbb{E}[\mathbb{E}(X_t|\mathcal{G}_s)|\mathcal{F}_s] \\
+  &\leq \mathbb{E}(X_s|\mathcal{F_s}) = X_s
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Linear properties of martingales' boxType='proposition'>
+For the processes $\mathbf{X} = \{X_t \}_{t\in T}$ and $\mathbf{Y} = \{Y\}_{t\in T}$, let $\mathbf{X} + \mathbf{Y} = \{ X_t + Y_t \}_{t\in T}$.
+
+1. If $\mathbf{X}$ and $\mathbf{Y}$ are (sub/super-)martingales with respect to $\mathscf{F}$ then $\mathbf{X}+\mathbf{Y}$ is a (sub/super-)martingale with respect to $\mathscr{F}$.
+
+For the constant $c\in\mathbb{R}$, let $c\mathbf{X} = \{ cX_t \}_{t\in T}$.
+
+2. If $\mathbf{X}$ is a martingale with respect to $\mathscr{F}$, then $c\mathbf{X}$ is also a martingale with respect to $\mathscr{F}$.
+3. If $\mathbf{X}$ is a sub-martingale with respect to $\mathscr{F}$, then $c\mathbf{X}$ is a sub-martingale if $c > 0$, a super-martingale if $c < 0$, and a martingale if $c = 0$.
+4. If $\mathbf{X}$ is a super-martingale with respect to $\mathscr{F}$, then $c\mathbf{X}$ is a super-martingale if $c > 0$, a sub-martingale if $c < 0$, and a martingale if $c = 0$.
+
+The linearity properties implies that the collection of martingales with respect to a fixed filtration $\mathscr{F}$ forms a vector space.
+
+<details>
+<summary>Proof</summary>
+
+The additive property (1) follows from the additive property of conditional expectation. Note that $\mathbb{E}(|X_t + Y_t|)\leq\mathbb{E}(|X_t|) + \mathbb{E}(|Y_t|) < \infty$ for $t\in T$. For $s, t\in T$ with $s\leq t$ we have
+
+$$
+  \mathbb{E}(X_t + Y_t | \mathcal{F}_s) = \mathbb{E}(X_t|\mathcal{F}_s) + \mathbb{E}(Y_t |\mathcal{F}_s)
+$$
+
+The scalar properties (2, 3, 4) follows from the scalar property of conditional expectation. Note that $\mathbb{E}(|cX_t|) = |c|\mathbb{E}(|X_t|)\leq\infty$. For $s, t\in T$ with $s\leq t$ we have
+
+$$
+  \mathbb{E}(cX_t | \mathcal{F}_s) = c\mathbb{E}(X_t | \mathcal{F}_s)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that the process $\mathbf{X}$ takes values in an interval $S\subseteq\mathbb{R}$ and that $g:S\to\mathbb{R}$ is convex with $\mathbb{E}[|g(X_t)|]< \infty$ for $t\in T$. Then $g(\mathbf{X}) = \{g(X_t)\}_{t\in T}$ is a sub-martingale with respect to $\mathscr{F}$ if either
+
+1. $\mathbf{X}$ is a martingale.
+2. $\mathbf{X}$ is a sub-martingale and $g$ is also increasing.
+
+Since $x \mapsto |x|^k$ is convex on $\mathbb{R}$ for $k\in[1,\infty)$, it follows that $|\mathbf{X}|^k = \{|X_t|^k \}_{t\in T}$ is a sub-martingale if $\mathbf{X}$ is a martingale and $\mathbb{E}\left(|X_t|^k \right)< \infty$ for $t\in T$. 
+
+In particular, if $\mathbf{X}$ is a sub-martingale, then $\mathbf{X}^+ = \{X_t^+\}_{t\in T}$ is also a sub-martingale since $x\mapsto x^+ = \max\{x, 0\}$ is increasing and convex on $\mathbb{R}$.
+
+<details>
+<summary>Proof</summary>
+
+Let $s,t\in T$ with $s\leq t$. Since $g$ is convex, it follows from Jensen's inequlity that
+
+$$
+  \mathbb{E}[g(X_t)|\mathcal{F}_s] \geq g[\mathbb{E}(X_t|\mathcal{F}_s)]
+$$
+
+1. Since $\mathbf{X}$ is a martingale, then $\mathbb{E}(X_t | \mathscr{F}_s) = X_s$ and substituting into the inequality above sbows that $g(\mathbf{X})$ is sub-martingale
+
+$$
+  \mathbb{E}[g(X_t)|\mathcal{F_s}] \geq g(X_s) 
+$$
+
+2. Since $\mathbf{X}$ is a sub-martingale, then $\mathbb{E}(X_t |\mathcal{F}_t) \geq X_s$. Since $g$ is also increasing, then $g[\mathbb{E}(X_t|\mathcal{F}_s)]\geq g(X_s)$. Substituting into the inequlity above shows that $g(\mathbf{X})$ is a sub-martingale
+
+$$
+  \mathbb{E}[g(X_t)|\mathcal{F}_s] \geq g(X_s)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in[0,\infty)}$ is a continuous-time process adapted to $\mathscr{F} = \{ \mathcal{F}_t\}_{t\in[0,\infty)}$. Let $\{ t_n\}_{n\in\mathbb{N}}\subset [0,\infty)$ be a strictly increasing sequence of time points with $t_0$ and define $Y_n = X_{t_n}$ nad $\mathcal{G}_n = \mathcal{F}_{t_n}$ for $n\in\mathbb{N}$. If $\mathbf{X}$ is a (sub/super)-martingale with respect to $\mathscr{F}$, then $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}}$ is a (sub/super-martingale) with respect to $\mathscr{G}$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\{t_n\}_{n\in\mathbb{N}}$ is increasing, $\mathscr{G}$ is a discrete-time filtration. Next, $\mathbb{E}(|Y_n|) = \mathbb{E}(|X_{t_n}|) < \infty$. Finally, suppose that $\mathbf{X}$ is a martingale and $n, k\in \mathbb{N}$ with $k< n$. Then $t_k < t_n$ so
+
+$$
+  \mathbb{E}(Y_n | \mathcal{G}_k) = \mathbb{E}(X_{t_n} | \mathcal{F}_{t_k}) = X_{t_k} = Y_k
+$$
+
+Hence $\mathbf{Y}$ is also a martingale. The proof is analogous for sub- and super-martingales, but with inequalities replacing the second equality above.
+</details>
+</MathBox>
+
+### Martingale transform
+
+<MathBox title='Martingale transform' boxType='proposition'>
+Suppose that the discrete process $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is adapted to the filtration $\mathscr{F} = \{\mathcal{F}_n\}_{n\in\mathbb{N}}$ and that $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}_+}$ is predictable relative to $\mathscr{F}$, i.e. $Y_n$ is measurable to $\mathcal{F}_{n-1}$ for $n\in\mathbb{N}_+$. The transform of $\mathbf{X}$ by $\mathbf{Y}$ is the process $\mathbf{Y}\cdot\mathbf{X}$ defined by
+
+$$
+  (\mathbf{Y}\cdot\mathbf{X})_n = X_0 + \sum_{k=1}^n Y_k (X_k - X_{k-1})
+$$
+
+1. If $\mathbf{X}$ is a martingale relative to $\mathscr{F}$ then $\mathbf{Y}\cdot\mathbf{X}$ is also a martingale relative to $\mathscr{F}$.
+2. If $\mathbf{X}$ is sub-martingale relative to $\mathscr{F}$ and $\mathbf{Y}$ is non-negative, then $\mathbf{Y}\cdot\mathbf{X}$ is also a sub-martingale relative to $\mathscr{F}$.
+3. If $\mathbf{X}$ is a super-martingale relative to $\mathscr{F}$ and $\mathbf{Y}$ is non-negative, then $\mathbf{Y}\cdot\mathbf{X}$ is also a super-martingale relative to $\mathscr{F}$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $|Y_n|\leq c\in(0,\infty)$ for $n\in\mathbb{N}$, then
+
+$$
+\begin{align*}
+  \mathbb{E}\left[|(\mathbf{Y}\cdot\mathbf{X})_n| \right] \leq \mathbb{E}(|X_0|) \\
+  &\quad + c\sum_{k=1}^n \left[\mathbb{E}(|X_k|) + \mathbb{E}(|X_{k+1}|) \right] \\
+  &< \infty
+\end{align*}
+$$
+
+Since $(\mathbf{Y}\cdot\mathbf{X})_n$, $Y_{n+1}$ and $X$ are measurable with respect to $\mathcal{F}_n$ for $n\in\mathbb{N}$, it follows that
+
+$$
+\begin{align*}
+  \mathbb{E}\left[ (\mathbf{Y}\cdot\mathbf{X})_{n+1} |\mathcal{F}_{n} \right] &= \mathbb{E}\left[(\mathbf{Y}\cdot\mathbf{X})_n + Y_{n+1}(X_{n+1} - X_n)|\mathcal{F}_n \right] \\
+  &= (\mathbf{Y}\cdot\mathbf{X})_n + Y_{n+1}\mathbb{E}(X_{n+1} - X_n |\mathcal{F}_n) \\
+  &= (\mathbf{Y}\cdot\mathbf{X})_n + Y_{n+1}\left[\mathbb{E}(X_{n+1}|\mathcal{F}_n) - X_n \right]
+\end{align*}
+$$
+</details>
+</MathBox>
+
+Let $\{X_n\}_{n\geq 0}$ be a martingale relative to a filtration $\mathscr{F}_n$. The martingale difference sequence associated with the martingale $X_n$ is defined as
+
+$$
+  \xi_n = X_n - X_{n-1}
+$$
+
+A predictable sequence $\{Z_n\}_{n\geq 1}$ relative to the filtration $\mathscr{F}_n$ is a sequence of random variables such that for every $n$ the random variable is measurable relative to $\mathscr{F}_{n-1}$. The martingale transform $\left\{ (Z \cdot X)_n \right\}_{n\geq 0}$ is defined by
+
+$$
+  E\left( X_n + Y_{n+1} | \mathscr{F}_n \right) = X_0 + \sum_{j=1}^n Z_j \xi_j
+$$
+
+Assume that the predictable sequence $\{Z_n\}_{n\geq 1}$ consists of bounded random variables. Then the martingale transform $\left\{ (Z \cdot X)_n \right\}_{n\geq 0}$ is itself a martingale
+
+$$
+\begin{align*}
+  E\left( (Z\cdot X)_{n+1} | \mathscr{F}_n \right) &= (Z\cdot X)_n + E\left( Z_{n+1} \xi_{n+1} | \mathscr{F}_n \right) \\
+  &= (Z\cdot X)_n + Z_{n+1}E\left( \xi_{n+1} | \mathscr{F}_n \right) \\
+  &= (Z\cdot X)_n
+\end{align*}
+$$
+
+Let $(Z_j)_{j\geq 0}$ be a predictable sequence of bounded nonnegative random variables. Then the submartingale transform $\{ Z \cdot X \}_{n\geq 0}$ (respectively, supermartingale) is defined by
+
+$$
+  (Z \cdot X)_n = Z_0 X_0 + \sum_{k=1}^n Z_k \xi_k
+$$
+
+which is also a submartingale. If $0 \leq Z_n \leq 1$ for each $n \geq 0$, then
+
+$$
+  E(Z \cdot X)_n \leq \mathrm{E}[X_n]
+$$
+
+To show that $(Z\cdot X)_n$ is a submartingale, if suffices to verify that the differences $Z_j \xi_j$ constitute a submartingale difference sequence
+
+$$
+\begin{gather*}
+  E\left( Z_j \xi_j | \mathscr{F}_{j-1} \right) = Z_j E\left( \xi_j | \mathscr{F}_{j-1} \right) \\
+  \implies E\left( Z_j \xi_j \right) \leq \mathrm{E}\left[ \xi_j \right]
+\end{gather*}
+$$
+
+### Doob decomposition
+
+<MathBox title='Doob decomposition theorem' boxType='theorem'>
+Suppose that the discrete process $\mathbf{X} = \{ X_n\}_{n\in\mathbb{N}}$ is adapted to the filtration $\mathscr{F} = \{\mathcal{F}_n\}_{n\in\mathbb{N}}$. Then there is a unique decomposition $\mathbf{X} = \mathbf{Y} + \mathbf{Z}$ where $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}}$ is a martingale relative to $\mathscr{F}$ and $\mathbf{Z} = \{Z_n\}_{n\in\mathbb{N}}$ is predictable relative to $\mathscr{F}$.
+
+1. If $\mathbf{X}$ is a sub-martingale relative to $\mathscr{F}$, then $\mathbf{Z}$ is increasing.
+2. If $\mathbf{X}$ is a super-martingale relative to $\mathscr{F}$, then $\mathbf{Z}$ is decreasing.
+
+<details>
+<summary>Proof</summary>
+
+Define $Z_0 = 0$ and for $n\in\mathbb{N}_+$
+
+$$
+  Z_n = \sum_{k=1}^n \left[\mathbb{E}(X_k | \mathcal{F}_{k-1} - X_{k-1} \right]
+$$
+
+Then $Z_n$ is measurable with respect to $\mathcal{F}_{n-1}$ for $n\in\mathbb{N}_+$, so $\mathbf{Z}$ is predictable with respect to $\mathscr{F}$. Define for $n\in\mathbb{N}_+$
+
+$$
+\begin{align*}
+  Y_n &= X_n - Z_n \\
+  &= X_n - \sum_{k=1}^n \left[\mathbb{E}(X_k | \mathcal{F}_{k-1} - X_{k-1} \right]
+\end{align*}
+$$
+
+Then $\mathbb{E}(|Y_n|) < \infty$ and trivially $X_n = Y_n + Z_n$ for $n\in\mathbb{N}$. Next we show that $\mathbf{Y}$ is martingale
+
+$$
+  \mathbb{E}(Y_{n+1}|\mathcal{F}_n) &= \mathbb{E}(X_{n+1}|\mathcal{F}_n) - Z_{n+1} \\
+  &= \mathbb{E}(X_{n+1}|\mathcal{F}_n) - \sum_{k=1}^{n+1} \left[\mathbb{E}(X_k | \mathcal{F}_{k-1} - X_{k-1} \right] \\
+  &= X_n - \sum_{k=1}^n \left[\mathbb{E}(X_k |\mathcal{F}_{k-1}) - X_{k-1} \right] = Y_n
+$$
+
+It remains to prove the uniqueness of the decomposition. Suppose that $\mathbf{X}$ has the decomposition in terms of $\mathbf{Y}$ and $\mathbf{Z}$ given in the theorem. Since $\mathbf{Y}$ is a martingale and $\mathbf{Z}$ is predictable
+
+$$
+\begin{align*}
+  \mathbb{E}(X_n - X_{n-1} | \mathcal{F}_{n-1}) &= \mathbb{E}(Y_n | \mathcal{F}_{n-1}) - \E(Y_{n-1} | \mathcal{F}_{n-1}) + \E(Z_n | \mathcal{F}_{n-1}) - \E(Z_{n-1} | \mathcal{F}_{n-1}) \\ 
+  &= Y_{n-1} - Y_{n-1} + Z_n - Z_{n-1} \\
+  &= Z_n - Z_{n-1}, \quad n \in \mathbb{N}_+
+\end{align*}
+$$
+
+Since $Z_0 = 0$, then $\mathbf{X}$ uniquely determines $\mathbf{Z}$. Finally, since $Y_n = X_n - Z_n$ for $n\in\mathbb{N}$, then $\mathbf{X}$ also uniquely determines $\mathbf{Z}$.
+
+1. If $\mathbf{X}$ is a sub-martingale, then $\mathbb{E}(X_n|\mathcal{F}_{n-1}) - X_{n-1} \geq 0$ for $n\in\mathbb{N}_+$ so $\mathbf{Z}$ is increasing.
+2. If $\mathbf{X}$ is a super-martingale, then $\mathbb{E}(X_n|\mathcal{F}_{n-1}) - X_{n-1} \leq 0$ for $n\in\mathbb{N}_+$ so $\mathbf{Z}$ is decreasing.
+</details>
+</MathBox>
+
+### Doob's optional sampling theorem
+
+Doob's theorem states that stopping a martingale at random time $\tau$ does not alter the martingale property, provided the decision about when to stop is solely based on information available up to $\tau$. 
+
+<MathBox title="Doob's optional sampling theorem" boxType='theorem'>
+Let $\{X_n\}_{n\geq \mathbb{Z}^+}$ be a martingale relative to a filtration $\mathscr{F}_n$ and let $\tau$ be a stopping time. Then the stopped sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ is a martingale. Consequently, for any $n \in \mathbb{N}$
+
+$$
+  \mathrm{E}\left[ X_{\tau \land n} \right] = \mathrm{E}\left[ X_0 \right]
+$$
+</MathBox>
+
+<details>
+<summary>Proof</summary> 
+
+The sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ may be represented as a transform of the sequence $\{X_n\}_{n\geq \mathbb{Z}^+}$
+
+$$
+\begin{gather*}
+  X_{\tau \land n} = (Z\cdot X)_n \\
+  Z_n = \begin{cases} 1, &\quad \tau \geq n \\ 0, &\quad \tau < n \end{cases}
+\end{gather*}
+$$
+
+The transform is easily verified
+
+$$
+\begin{align*}
+  (Z\cdot X)_n &= X_0 + \sum_{j=1}^n Z_j \left( X_j - X_{j - 1} \right) \\
+  &= X_0 + \sum_{j=1}^{\tau \land n} \left( X_j - X_{j - 1} \right) \\
+  &= X_{\tau \land n}
+\end{align*}
+$$
+</details>
+
+<MathBox title='Wald identities' boxType='proposition'>
+Let $S_n = \sum_{i=1}^n \xi_i$, then the following identities hold: 
+- First identity: if $\mathrm{E}\left[ |\xi_i | \right] < \infty$ and $\mathrm{E}\left[ \tau \right] < \infty$ then $ \mathrm{E}[|S_\tau|] < \infty$ and  
+$$
+  \mathrm{E}[S_\tau] = \mathrm{E}[\tau] \cdot \mathrm{E}[\xi_k]
+$$
+- Second identity: if $\mathrm{E}\left[ \xi_i \right] = 0$ and $\sigma^2 = \mathrm{E}\left[ \xi_i^2 \right] < \infty$ then 
+$$
+  \mathrm{E}[S_\tau^2] = \sigma^2 \mathrm{E}[\tau]
+$$
+- Third identity: assume that $\mathrm{E}\left[ e^{\theta \xi_1} \right] = e^{-\psi(\theta)} < \infty$, then for every bounded stopping time
+$$
+  \mathrm{E}\left[ \theta S_\tau - \tau \psi(\theta) \right] = 1
+$$
+</MathBox>
+
+## Examples
+
+### Constant sequence
+
+<MathBox title='Martingale conditions for partial sums' boxType='definition'>
+Suppose that $X$ is a random variable that is measurable with respect to $\mathcal{F}_0\in\mathscr{F}$, and with $\mathbb{E}(|X|) < \infty$. Let $X_t = X$ for $t\in T$. Then the constant sequence process $\mathbf{X} = \{ X_t \}_T$ is a martingale with respect to $\mathscr{F}$.
+
+<details>
+<summary>Proof</summary>
+
+Since $X$ is measurable with respect to $\mathcal{F}_0$, it is measurable with respect to $\mathcal{F}_t$ for all $t\in T$. Thus $\mathbb{X}$ is adapted to $\mathscr{F}$. If $s,t\in T$ with $s\leq t$, then
+
+$$
+  \mathbb{E}(X_t |\mathcal{F}_s) = \mathbb{E}(X | \mathcal{F}_s) = X = X_s
+$$
+</details>
+</MathBox>
+
+### Lévy process
+
+Lévy processes are characterized by stationary and independent increments.
+
+<MathBox title='Independent and stationary increments' boxType='definition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a process adapted to $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$. Then for all $s,t\in T$ with $s\leq t$, the process $\mathbf{X}$ is said to have
+1. *Independent increments* if $X_t - X_s$ is independent of $\mathcal{F}_s$
+2. *Stationary increments* if $X_t - X_s$ has the same distribution as $X_{t-s} - X_0$
+
+Processes with independent and stationary increments are random walk processes. In continuous time, such processes are known as Lévy processes.
+</MathBox>
+
+<MathBox title='Martingale conditions for processes with independent increments' boxType='definition'>
+Suppose that the continuous process $\mathbf{X} = \{X_t\}_{t\in [0,\infty]}$ has independent increments, and let $m(t) = \mathbb{E}(X_t)$ for $t\in T$. Then $\mathbf{X}$ is
+1. Martingale if $m$ is constant.
+2. Sub-martingale if $m$ is increasing.
+3. Super-martingale if $m$ is decreasing.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $s,t\in[0,\infty)$ with $s< t$. Then
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t | \mathcal{F}_s) &= \mathbb{E}\left[X_s + (X_t - X_s) |\mathcal{F}_s \right] \\
+  &= \mathbb{E}(X_s |\mathcal{F}_s ) + \mathbb{E}(X_t - X_s |\mathcal{F}_s)
+\end{align*}
+$$
+
+Since $X_s$ is measurable to $\mathcal{F}_s$ and $X_t - X_s$ is independent of $\mathcal{F}_s$, we obtain
+
+$$
+\begin{align*}
+   \mathbb{E}(X_t | \mathcal{F}_s) &= \mathbb{E}(X_s |\mathcal{F}_s ) + \mathbb{E}(X_t - X_s |\mathcal{F}_s) \\
+   &= X_s + \mathbb{E}(X_t - X_s) = X_s + m(t) - m(s)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Second moment martingale for processes with independent increments' boxType='definition'>
+Suppose that the process $\mathbf{X} = \{X_t\}_{t\in T}$ has independent increments with constant mean function, and with $\mathrm{var}(X_t) < \infty$ for $t\in T$. Let 
+
+$$
+  Y_t = X_t^2 - \mathrm{var}(X_t)\quad t\in T
+$$
+
+Then $\mathbf{Y} = \{Y_t\}$ is a martingale.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $s,t\in T$ with $s< t$. Note that $\mathbb{E}(Y_t|\mathcal{F}_s) = \mathbb{E}(X_t^2 | \mathcal{F}_s) -\mathrm{var}(X_t)$. Rewriting $X_t^2$ as
+
+$$
+\begin{align*}
+  X_t^2 &= [(X_t - X_s) + X_s]^2 \\
+  &= (X_t - X_s)^2 + 2(X_t - X_s)X_s + X_s^2 
+\end{align*}
+$$
+
+Since $X_t - X_s$ is independent of $\mathcal{F}_s$, $X_s$ is measurable with respect to $\mathcal{F}_s$ and $\mathbb{E}(X_t - X_s) = 0$, it follows that
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t^2 | \mathcal{F}_s) &= \mathbb{E}[(X_t - X_s)^2] + 2X_s \mathbb{E}(X_t - X_s) + X_s^2 \\
+  &= \mathbb{E}[(X_t - X-s)^2] + X_s^2
+\end{align*}
+$$
+
+Since $X_t - X_s$ also has mean $0$
+
+$$
+\begin{align*}
+  \mathrm{var}(X_t) &= \mathrm{var}[(X_t - X_s) + X_s] \\
+  &= \mathrm{var}(X_s) + \mathrm{var}(X_t - X_s)^2 \\
+  &= \mathrm{var}(X_s) + \mathbb{E}[(X_t - X_s)^2]
+\end{align*}
+$$
+
+Combining the results gives
+
+$$
+  \mathbb{E}(Y_t | \mathcal{F}_s) = X_s^2 - \mathrm{var}(X_s) = Y_s
+$$
+</details>
+</MathBox>
+
+<MathBox title='Martingale conditions for random walks' boxType='definition'>
+Suppose that the process $\mathbf{X} = \{X_t\}_{t\in T}$ has stationary, independent increments, and let $a = \mathbb{E}(X_1 - X_0)$. Then $\mathbf{X}$ is
+1. Martingale if $a=0$.
+2. Sub-martingale if $a\geq 0$.
+3. Super-martingale if $a\leq 0$.
+
+<details>
+<summary>Proof</summary>
+
+Note that for a process with stationary, independent increments, the mean function reduces to $m(t) = \mathbb{E}(X_0) + at$ for $t\in T$. Follwing the same argument as for processes with independent increments, we get
+
+$$
+  \mathbb{E}(X_t | \mathcal{F}_s) = X_s + a(t - s)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Second moment martingale for random walks' boxType='definition'>
+Suppose that the process $\mathbf{X} = \{X_t\}_{t\in T}$ has independent increments with $\mathbb{E}(X_0) = \mathbb{E}(X_1)$ and $b^2 = \mathbb{E}\left(X_1^2\right) < \infty$. Let
+
+$$
+  Y_t = X_t^2 - \mathrm{var}(X_0) - b^2 t,\quad t\in T
+$$
+
+Then $\mathbf{Y} = \{Y_t\}$ is a martingale.
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbb{E}(X_0) = \mathbb{E}(X_1)$, then $\mathbf{X}$ has constant mean function. Note that $\mathrm{var}(X_t) = \mathrm{var}(X_0) + b^2 t$. Following the same argument as for second order martingales for processes with independent increments, we obtain
+
+$$
+\begin{align*}
+  \mathbb{E}(Y_s|\mathcal{F}_s) &= X_s - \mathrm{var}(X_s) \\
+  &= X_s - \mathrm{var}(X_0) - b^2 t = Y_s
+\end{align*}
+$$
+</details>
+</MathBox>
+
+#### Partial sums
+
+In discrete time, a process with independent increments reduces to a partial sum process.
+
+<MathBox title='Martingale conditions for partial sums' boxType='definition'>
+Suppose that $\mathbf{V} = \{V_n\}_{n\in\mathbb{N}}$ is a sequence of random variables with $\mathbb{E}(|V_n|) < \infty$, and let
+
+$$
+  X_n = \sum_{k=0}^n V_n
+$$
+
+Then $\mathbf{X} = \{X_n\}$ is a partial sum process associated with $\mathbf{V}$. For $n\in\mathbb{N}$, the process $\mathbf{X}$ is called
+1. sub-martingale if $\mathbb{E}(V_n)\geq 0$
+2. super-martingale if $\mathbb{E}(V_n)\leq 0$
+3. martingale if $\mathbb{E}(V_n) = 0$
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{F}_n = \sigma\{X_i \}_{i=0}^{n\in\mathbb{N}} = \sigma\{V_i\}_{i=0}^{n\in\mathbb{N}}$. Note first that
+
+$$
+  \mathbb{E}(|X_n|) \leq \sum_{k=0}^n \mathbb{E}(|V_k|) < \infty
+$$
+
+Next
+
+$$
+\begin{align*}
+  \mathbb{E}(X_{n+1}|\mathcal{F}_n) &= \mathbb{E}(X_n + V_{n+1}|\mathcal{F}_n) \\
+  &= \mathbb{E}(X_n|\mathcal{F}_n) + \mathbb{E}(V_{n+1}|\mathcal{F}_n) \\
+  &= X_n + \mathbb{E}(V_{n+1})
+\end{align*}
+$$
+
+The last equality holds since $X_n$ is measurable with respect to $\mathcal{F}_N$ and $V_{n+1}$ is independent of $\mathcal{F}_n$.
+</details>
+</MathBox>
+
+<MathBox title='Second moment martingale' boxType='definition'>
+Let $\mathbf{X}$ be a partial sum process associated with $\mathbf{V}$. Suppose that $\mathbb{E}(V_k) = 0$ for $k\in\mathbb{N}_+$ and $\mathrm{var}(V_k) < \infty$ for $k\in\mathbb{N}$, and let 
+
+$$
+  Y_n = X_n^2 - \mathrm{var}(X_n)
+$$
+
+Then $\mathbf{Y} = \{ Y_n\}_{n\in\mathbb{N}}$ is a martingale with respect to $\mathbf{X}$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{F}_n = \sigma\{X_i \}_{i=0}^{n\in\mathbb{N}}$. Since $\mathbf{V}$ is independent, note that
+
+$$
+  \mathrm{var}(X_n) = \mathrm{var}\left( \sum_{k=0}^n V_k \right) = \sum_{k=0}^n \mathrm{var}(V_k)
+$$
+
+Since $\mathbb{E}(V_k) = 0$, then $\mathrm{var}(V_k) = \mathbb{E}(V_k^2)$. In particular, $\mathbb{E}(|Y_n|) < \infty$ for $n\in\mathbb{N}$. Next
+
+$$
+\begin{align*}
+  \mathbb{E}(Y_{n+1}|\mathcal{F}_n) &= \mathbb{E}[X_{n+1}^2 - \mathrm{var}(X_{n+1}|\mathcal{F}_n)] \\
+  &= \mathbb{E}\left[(X_n + V_{n+1})^2 - \mathrm{var}(X_{n+1})|\mathcal{F}_n \right] \\
+  &= \mathbb{E}\left[ X_n^2 + 2X_n V_{n+1} + V_{n+1}^2 - \mathrm{var}(X_{n+1})|\mathcal{F}_n \right] \\
+  &= X_n^2 + 2X_n\mathbb{E}(V_{n+1}) + \mathbb{E}(V_{n+1}^2) - \mathrm{var}(X_{n+1})
+\end{align*}
+$$
+
+Next
+
+$$
+\begin{align*}
+  \mathbb{E}(X_{n+1}|\mathcal{F}_n) &= \mathbb{E}(X_n + V_{n+1}|\mathcal{F}_n) \\
+  &= \mathbb{E}(X_n|\mathcal{F}_n) + \mathbb{E}(V_{n+1}|\mathcal{F}_n) \\
+  &= X_n + \mathbb{E}(V_{n+1})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+#### Difference sequence
+
+<MathBox title='Martingale difference sequence' boxType='definition'>
+Suppose that $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is a discrete process adapted to $\mathscr{F}$. Let $V_0 = X_0$ and $V_n = X_n - X_{n-1}$ for $n\in\mathbb{N}$. The process $\mathbf{V} = \{ V_n\}_{n\in\mathbb{N}}$ is the martingale difference sequence associated with $\mathbb{X}$ such that for $n\in\mathbb{N}$
+
+$$
+  X_n = \sum_{k=0}^n V_k
+$$
+</MathBox>
+
+<MathBox title='Properties of martingale difference sequence' boxType='definition'>
+Let $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ be a discrete process adapted to $\mathscr{F} = \{\mathcal{F}_n\}_{n\in\mathbb{N}}$. Suppose that $\mathbf{V} = \{V_n\}_{n\in\mathbb{N}}$ is the martingale difference sequence associate with $\mathbf{X}$. Then
+1. $\mathbb{V}$ is adapted to $\mathscr{F}$.
+2. $\mathbb{E}(V_n|\mathcal{F}_k) = 0$ for $k,n\in\mathbb{N}$ with $k< n$.
+3. $\mathbb{E}(V_n) = 0$ for $n\in\mathbb{N}_+$
+4. If $\mathrm{var}(X_n) < \infty$ for $n\in\mathbb{N}$, then $\mathbf{V}$ is an uncorrelated sequence and
+
+$$
+  \mathrm{var}(X_n) = \sum_{k=0}^n \mathrm{var}(V_k) = \mathrm{var}(X_0) + \sum_{k=1}^n \mathbb{E}\left(V_k^2\right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+1. Obviously, $V_0 = X_0$ is measurable with respect to $\mathcal{F}_0$. For $n\in\mathbb{N}_+$, then $X_n$ and $X_{n-1}$ and thus $V_n$ are measurable with respect to $\mathcal{F}_n$. Hence $\mathbf{V}$ is adapted to $\mathscr{F}$.
+2. Let $k\in\mathbb{N}$. By the martingale and adapted properties
+
+$$
+\begin{align*}
+  \mathbb{E}\left( V_{k+1} | \mathcal{F}_k \right) &= \mathbb{E}(X_{k+1}|\mathcal{F}_k) - \mathbb{E}(X_k | \mathcal{F}_k) \\
+  &= X_k - X_k = 0
+\end{align*}
+$$
+
+By the tower property of conditional expectation
+
+$$
+  \mathbb{E}\left( V_{k+1} | \mathcal{F}_k \right) = \mathbb{E}[\mathbb{E}(V_{k+2}|\mathcal{F}_{k+1})|\mathcal{F}_k] = 0
+$$
+
+The result follows from induction.
+3. Since $\mathbf{X}$ is a martingale, it has constant mean. Hence $\mathbb{E}(V_n) = \mathbb{E}(X_n) - \mathbb{E}(X_{n-1}) = 0$ for $n\in\mathbb{N}_+$.
+4. Let $k,n\in\mathbb{N}$ with $k< n$. To show that $V_k$ and $V_n$ are uncorrelated, we just have to show that $\mathbb{E}(V_k V_n) = 0$ since $\mathbb{E}(V_n) = 0$. By $(3)$
+
+$$
+\begin{align*}
+  \mathbb{E}(V_k V_n) &= \mathbb{E}[\mathbb{E}(V_k V_n |\mathcal{F}_k)] \\
+  &= \mathbb{E}[V_k\mathbb{E}(V_n|\mathcal{F}_k)] = 0
+\end{align*}
+$$
+
+To prove the formula for $\mathrm{var}(X_n)$, note that the variance of a sum of uncorrelated variables is the sum of the variances. Since $V_k$ has mean $0$, then $\mathrm{var}(V_k) = \mathbb{E}(V_k^2)$ for $k\in\mathbb{N}_+$. Hence it follows that
+
+$$
+  \mathrm{var}(X_n) = \sum_{k=0}^n \mathrm{var}(V_k) = \mathrm{var}(X_0) + \sum_{k=1}^n \mathbb{E}\left(V_k^2\right)
+$$
+</details>
+</MathBox>
