@@ -5,6 +5,7 @@ type Props = {
 }
 
 function cap(text: string): string {
+  if (!text) return 'Error'
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 

@@ -23,13 +23,13 @@ export default function SearchBar() {
   const {data: result} = useSWR(query, searchFetcher)
 
   return (
-    <div className='relative'>
+    <div className='group relative'>
       <SearchBoxCompact query={query} onChange={handleChange}/>
       {(query && result) && 
         <nav 
-          className='hidden peer-focus-within:block hover:block
+          className='hidden peer-focus-within:block hover:block delay-200
             absolute top-8 left-4 px-2 
-            bg-primary rounded backdrop-blur-sm z-[1]'
+            bg-primary/50 rounded backdrop-blur-sm z-[1]'
         >
           <h4 className='text-text'>
             {`${result.length} results`}
