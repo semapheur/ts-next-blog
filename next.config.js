@@ -36,7 +36,7 @@ const securityHeaders = [
 
 const nextConfig = {
   //assetPrefix: isProd ? '/ts-next-blog' : '',
-  //basePath: '/ts-next-blog',
+  basePath: '/',
   reactStrictMode: true,
   experimental: {
     appDir: true,

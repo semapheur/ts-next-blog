@@ -130,7 +130,7 @@ export default function Greeting() {
       textRef.current!.classList.add('animate-textstroke')
 
       setTimeout(() => {
-        textRef.current!.classList.remove('animate-textstroke')
+        textRef.current?.classList.remove('animate-textstroke')
       }, 9100)
     }, 9500)
 
