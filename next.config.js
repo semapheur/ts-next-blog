@@ -9,8 +9,6 @@ const ContentSecurityPolicy = `
   font-src 'self';  
 `
 
-//child-src example.com;
-
 const securityHeaders = [
   { key: 'X-DNS-Prefetch-Control', value: 'on' },
   { 
@@ -38,9 +36,6 @@ const nextConfig = {
   //assetPrefix: isProd ? '/ts-next-blog' : '',
   basePath: '',
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
   async headers() {
     return [
       {
