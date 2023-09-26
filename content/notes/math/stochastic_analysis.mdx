@@ -32,9 +32,7 @@ $$
   \mathbb{P}(X_{s+t}\in A|\mathcal{F}_s) = \mathbb{P}(X_{s+t}\in A|X_s)
 $$
 
-for all $s,t\in T$ and $A\in\mathcal{S}$.
-
-In particular, a Markov process $\mathbf{X}$ is *time homogeneous* (stationary) if
+for all $s,t\in T$ and $A\in\mathcal{S}$. In particular, a Markov process $\mathbf{X}$ is *time homogeneous* (stationary) if
 
 $$
   \mathbb{P}(X_{s+t}\in A | X_s = x) = \mathbb{P}(X_t\in A | X_0 = x)
@@ -92,14 +90,58 @@ A Markov process $\mathbf{X}$ is a *Feller process* if it satisfies
 2. Continuity in time: Given $X_0 = x$ for $x\in S$, then $X_t \xrightarrow{t\downarrow 0} x$ in probability. This means that $\mathbb{P}[X_t \in U | X_0 = x] \xrightarrow{t\downarrow 0}$ for every neighbourhood $U$ of $x$.
 </MathBox>
 
+Note that if $S$ is discrete, the first Feller property is always satisfied, and if $T$ is discrete, the second Feller property is always satisfied. In partical, every discrete-time Markov chain is a Feller process.
+
+### Strong Markov process (stopping time)
+
+Strong Markov processes arise with stopping times. Recall that random time is a random variable $\tau:\Omega\to T_\infty$ on $(\Omega,\mathcal{F},\mathbb{P})$ where $T_\infty = T \cup \{\infty\}$ is an enlarged time space. For a filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$ filtration on $(\Omega,\mathcal{F})$, a random time $\tau$ is called a stopping time relative to $\mathscr{F}$ if $\{\tau\leq t\}\in\mathcal{F}_t$ for each $t\in T$. For any stopping time $\tau$ on $\Omega$ we can define
+
+$$
+  \mathcal{F}_\tau = \{ A\in\mathcal{F} \;|\; A\cap \{\tau \leq t \}\in\mathcal{F}_t \; \forall t\in T \}
+$$
+
+Note that if $\mathbf{X} = \{X_t \}_{t\in T}$ is a stochastic process adapted to a filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$, then for a stopping time $\tau$ the random variable $X_\tau$ is not necessarily measurable with respect to $\mathcal{F}_\tau$. For this we require that $\mathbf{X}$ is progressively measurable relative to $\mathscr{F}$ in the sense that $\mathbf{X}:\Omega\times T_t\to S$ is measurable with respect to $\mathcal{F}_t \otimes\mathcal{T}_t$ and $\mathcal{S}$. This is always true in the discrete case and more generally if $S$ has an LCCB topology with $\mathcal{S}$ as the Borel $\sigma$-algebra, and $\mathbf{X}$ is right continuous.
+
 <MathBox title='Strong Markov process' boxType='definition'>
-A stochastic process $\mathbf{X}$ is a strong Markov process if
+The process $\mathbf{X}$ is a strong Markov process if
 
 $$
   \mathbb{E}\left[ f(X_{\tau + t})|\mathcal{F}_\tau \right] = \mathbb{E}[f(X_{\tau + t})|X_\tau]
 $$
 
-for every $t\in T$, stopping time $\tau$ and $f\in\mathcal{B}$.
+for every $t\in T$, stopping time $\tau$ and $f\in\mathcal{B}$. If a strong Markov process $\mathbf{X}$ is *time homogeneous* (stationary) then
+
+$$
+  \mathbb{E}\left[f(X_{\tau + t})|X_\tau = x\right] = \mathbb{E}\left[f(X_{\tau+t})|X_0 = x\right]
+$$
+</MathBox>
+
+For a stationary process, the strong Markov property implies the ordinary Markov process, since a fixed time $t\in T$ is trivially also a stopping time. The converse is also true in discrete time. In continuous time it depends on the continuity of $\mathbf{X}$ and the filtration $\mathscr{F}$
+
+<MathBox title='Stationarity and the strong Markov property' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is a time homogeneous Markov process in discrete time. Then $\mathbf{X}$ is a strong Markov process.
+
+If $\mathbf{X} = \{X_t \}_{t\in[0,\infty)}$ is a Feller Markov process, then $\mathbf{X}$ is a strong Markov process relative to the filtration $\mathscr{F}_+^0$, the right-continuous refinement of the natural filtration.
+</MathBox>
+
+<MathBox title='The strong Markov property is preserved under coarser filtrations' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is progressively measurable relative to the filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$ and that the filtration $\mathscr{G} = \{\mathcal{G}_t\}_{t\in T}$ is finer than $\mathscr{F}$. If $\mathbf{X}$ is a strong Markov process relative to $\mathscr{G}$ then $\mathbf{X}$ is a strong Markov process relative to $\mathscr{F}$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbf{X}$ is adapted to $\mathscr{F}$, it is also adapted to $\mathscr{G}$. Suppose that $\tau$ is a stopping time for $\mathscr{F}$ and that $t\in T$ and $f\in\mathcal{B}$. Then $\tau$ is also a stopping time for $\mathscr{G}$ and $\mathcal{F}_\tau \subseteq\mathcal{G}_\tau$. Hence
+
+$$
+\begin{align*}
+  \mathbb{E}\left[f(X_{\tau + t})|\mathcal{F}_\tau\right] &= \mathbb{E}\left(\mathbb{E}\left[f(X_{\tau + t})|\mathcal{G}_\tau\right]|\mathcal{F}_\tau \right) \\
+  &= \mathbb{E}\left(\mathbb{E}\left[f(X_{\tau + t})|X_\tau\right]|\mathcal{F}_\tau \right) \\
+  &= \mathbb{E}\left[f(X_{\tau + t})|X_\tau\right]
+\end{align*}
+$$
+
+The last equation follows since $\mathbf{X}_\tau$ is measurable with respect to $\mathcal{F}_\tau$ given that $\mathbf{X}$ is progressively measurable to $\mathscr{F}$.
+</details>
 </MathBox>
 
 ## Martingale
