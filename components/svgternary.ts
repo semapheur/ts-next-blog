@@ -1,5 +1,6 @@
-import { action, makeObservable, observable } from 'mobx';
-import { setAttributes, svgPoly, mousePosition, addChildElement, EventStore } from 'utils/svg'
+import { action, computed, makeObservable, observable } from 'mobx';
+import { setAttributes, svgPath, svgPoly, mousePosition, addChildElement, EventStore } from 'utils/svg'
+import { betaPDF } from 'utils/probability'
 import Vector from 'utils/vector'
 
 const SIN60 = Math.sqrt(3) / 2
@@ -35,6 +36,49 @@ export class TernaryStore {
   }
 }
 
+export class OpinionStore extends TernaryStore {
+  constructor(point: number[], director: number) {
+    super(point, director)
+
+    makeObservable(this, {
+      belief: computed,
+      disbelief: computed,
+      uncertainty: computed,
+      baseRate: computed,
+      probability: computed,
+      distribution: computed
+    })
+  }
+  get belief() {
+    return this.point[1]
+  }
+  get disbelief() {
+    return this.point[0]
+  }
+  get uncertainty() {
+    return this.point[2]
+  }
+  get baseRate() {
+    return this.director
+  }
+  get probability() {
+    return this.point[1] + this.point[2] * this.director
+  }
+  get distribution() {
+    const alpha = 2 * (this.belief / this.uncertainty + this.baseRate)
+    const beta = 2 * (this.disbelief / this.uncertainty + (1 - this.baseRate))
+
+    const x = Vector.linspace(0, 1, 100).toArray()
+
+    const points = Array<[number, number]>(x.length)
+
+    for (let i=0; i < x.length; i++) {
+      points[i] = [x[i], betaPDF(x[i], alpha, beta)]
+    }
+    return points
+  }
+}
+
 export default class SVGTernaryPlot {
   private xmlns: string = 'http://www.w3.org/2000/svg'
   private margin: number = 0.1
@@ -50,6 +94,7 @@ export default class SVGTernaryPlot {
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
   private eventListeners: EventStore = {}
+  private id_prefix: string = 'ternary'
 
   constructor(
     container: HTMLDivElement,
@@ -59,6 +104,7 @@ export default class SVGTernaryPlot {
     axisColors?: string[],
     directorColor?: string,
     pointColor?: string,
+    id_prefix?: string
   ) {
     // Get SVG dimensions from container if not provided
     const rect = container.getBoundingClientRect()
@@ -67,6 +113,8 @@ export default class SVGTernaryPlot {
     if (margin) this.margin = margin
 
     if (initialValue) this.value = initialValue
+
+    if (id_prefix) this.id_prefix = id_prefix
 
     this.setColors(axisColors, directorColor, pointColor)
 
@@ -91,17 +139,17 @@ export default class SVGTernaryPlot {
     // Creat group element
     this.frameGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     let gAttr = {
-      id: 'frame-group',
+      id: `${this.id_prefix}-frame-group`,
       transform: this.transformMatrix(),
     }
     setAttributes(this.frameGroup, gAttr)
     this.svgElement.appendChild(this.frameGroup)
 
-    addChildElement(this.frameGroup, 'g', { id: 'grid-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'axis-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'crosshair-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'director-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'plot-group' })
+    addChildElement(this.frameGroup, 'g', { id: `${this.id_prefix}-grid-group` })
+    addChildElement(this.frameGroup, 'g', { id: `${this.id_prefix}-axis-group` })
+    addChildElement(this.frameGroup, 'g', { id: `${this.id_prefix}-crosshair-group` })
+    addChildElement(this.frameGroup, 'g', { id: `${this.id_prefix}-director-group` })
+    addChildElement(this.frameGroup, 'g', { id: `${this.id_prefix}-plot-group` })
 
     this.drawTriangle()
 
@@ -172,12 +220,12 @@ export default class SVGTernaryPlot {
     ]
     const triangle = svgPoly(vertices)
     const attr = {
-      id: 'ternary-polygon',
-      points: triangle, fill: 'url(#grid-pattern)', stroke: stroke,
+      id: `${this.id_prefix}-polygon`,
+      points: triangle, fill: `url(#${this.id_prefix}-grid-pattern)`, stroke: stroke,
       'stroke-width': '2px', 'vector-effect': 'non-scaling-stroke'
     }
 
-    const grid = document.getElementById('grid-group')!
+    const grid = document.getElementById(`${this.id_prefix}-grid-group`)!
     addChildElement(grid, 'polygon', attr)
   }
 
@@ -186,7 +234,7 @@ export default class SVGTernaryPlot {
 
     // Pattern
     const attr = {
-      id: 'grid-pattern', patternUnits: 'userSpaceOnUse',
+      id: `${this.id_prefix}-grid-pattern`, patternUnits: 'userSpaceOnUse',
       //patternTransform: this.transformMatrix(),
       width: `${gridUnit}`, height: `${2 * SIN60 * gridUnit}`,
     }
@@ -215,7 +263,7 @@ export default class SVGTernaryPlot {
   }
 
   public axis() {
-    const axis = document.getElementById('axis-group')!
+    const axis = document.getElementById(`${this.id_prefix}-axis-group`)!
 
     // a (bottom-left)
     let line = {
@@ -256,18 +304,18 @@ export default class SVGTernaryPlot {
     }
 
     const svgPos = this.ternaryToSvgPosition(this.value.point)
-    const plot = document.getElementById('plot-group')!
+    const plot = document.getElementById(`${this.id_prefix}-plot-group`)!
     const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
     circle.style.cursor = 'move'
     const attr = {
-      id: 'plot-point', cx: `${svgPos.x}`, cy: `${svgPos.y}`, r: '1%',
+      id: `${this.id_prefix}-plot-point`, cx: `${svgPos.x}`, cy: `${svgPos.y}`, r: '1%',
       fill: this.colors.point
     }
     setAttributes(circle, attr)
     plot.appendChild(circle)
 
     const line = {
-      id: 'plot-projector', x1: `${svgPos.x}`, y1: `${svgPos.y}`,
+      id: `${this.id_prefix}-plot-projector`, x1: `${svgPos.x}`, y1: `${svgPos.y}`,
       x2: `${this.projector() * this.side}`, y2: '0', stroke: this.colors.point, 
       'stroke-width': '1', 'stroke-dasharray': '5'
     }
@@ -288,8 +336,8 @@ export default class SVGTernaryPlot {
     function onDrag(store: TernaryStore|undefined, event: MouseEvent) {
       if (!dragged) return
 
-      const point = document.getElementById('plot-point')!
-      const projector = document.getElementById('plot-projector')!
+      const point = document.getElementById(`${this.id_prefix}-plot-point`)!
+      const projector = document.getElementById(`${this.id_prefix}-plot-projector`)!
 
       event.preventDefault()
       const svgPos = mousePosition(this.svgElement, event)
@@ -320,18 +368,18 @@ export default class SVGTernaryPlot {
   public director(value?: number, store?: TernaryStore) {
     if (value) this.value.director = value
 
-    const director = document.getElementById('director-group')!
+    const director = document.getElementById(`${this.id_prefix}-director-group`)!
     const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
     circle.style.cursor = 'ew-resize'
     const attr = {
-      id: 'director-point', cx: `${this.side * this.value.director}`, cy: '0', r: '1%',
+      id: `${this.id_prefix}-director-point`, cx: `${this.side * this.value.director}`, cy: '0', r: '1%',
       fill: this.colors.director
     }
     setAttributes(circle, attr)
     director.appendChild(circle)
 
     const line = {
-      id: 'director-line', x1: `${this.side / 2}`, y1: `${this.side * SIN60}`,
+      id: `${this.id_prefix}-director-line`, x1: `${this.side / 2}`, y1: `${this.side * SIN60}`,
       x2: `${this.side * this.value.director}`, y2: '0', 
       stroke: this.colors.director, 'stroke-width': '1',
       'stroke-dasharray': '5'
@@ -361,9 +409,9 @@ export default class SVGTernaryPlot {
 
       if (svgPos.x < 0 || svgPos.x > this.side) return
 
-      const point = document.getElementById('director-point')!
-      const director = document.getElementById('director-line')!
-      const projector = document.getElementById('plot-projector')
+      const point = document.getElementById(`${this.id_prefix}-director-point`)!
+      const director = document.getElementById(`${this.id_prefix}-director-line`)!
+      const projector = document.getElementById(`${this.id_prefix}-plot-projector`)
 
       point.setAttribute('cx', `${svgPos.x}`)
       director.setAttribute('x2', `${svgPos.x}`)
@@ -413,11 +461,11 @@ export default class SVGTernaryPlot {
   }
 
   private crosshair() {
-    const crosshair = document.getElementById('crosshair-group')!
+    const crosshair = document.getElementById(`${this.id_prefix}-crosshair-group`)!
 
     // Coordinate crosshair text
     const attr = {
-      id: 'crosshair-text',
+      id: `${this.id_prefix}-crosshair-text`,
       'font-size': '0.75em',
       fill: 'rgba(var(--color-text) / 1)',
       transform: 'scale(1, -1)'
@@ -426,17 +474,17 @@ export default class SVGTernaryPlot {
 
     // Coordinate crosshair lines
     let path = {
-      id: 'crosshair-line-a', d: '',
+      id: `${this.id_prefix}-crosshair-line-a`, d: '',
       stroke: this.colors.axis.a, 'stroke-width': '1px', 'stroke-dasharray': '5px',
       opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
     }
     addChildElement(crosshair, 'path', path)
 
-    path['id'] = 'crosshair-line-b'
+    path['id'] = `${this.id_prefix}-crosshair-line-b`
     path['stroke'] = this.colors.axis.b
     addChildElement(crosshair, 'path', path)
 
-    path['id'] = 'crosshair-line-c'
+    path['id'] = `${this.id_prefix}-crosshair-line-c`
     path['stroke'] = this.colors.axis.c
     addChildElement(crosshair, 'path', path)
 
@@ -448,10 +496,10 @@ export default class SVGTernaryPlot {
       const svgPos = mousePosition(this.frameGroup, event)
       if (!svgPos) return
 
-      const text = document.getElementById('crosshair-text')!
-      const aLine = document.getElementById('crosshair-line-a')!
-      const bLine = document.getElementById('crosshair-line-b')!
-      const cLine = document.getElementById('crosshair-line-c')!
+      const text = document.getElementById(`${this.id_prefix}-crosshair-text`)!
+      const aLine = document.getElementById(`${this.id_prefix}-crosshair-line-a`)!
+      const bLine = document.getElementById(`${this.id_prefix}-crosshair-line-b`)!
+      const cLine = document.getElementById(`${this.id_prefix}-crosshair-line-c`)!
 
       if (this.inTriangle(svgPos)) {
         const coord = this.svgToTernaryPosition(svgPos)

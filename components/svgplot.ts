@@ -3,6 +3,7 @@
 import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
+import { OpinionStore } from './svgternary'
 import Vector from 'utils/vector'
 import { setAttributes, removeElementsByClass, addChildElement, mousePosition, setSvgTransform, EventStore} from 'utils/svg'
 
@@ -13,7 +14,7 @@ type SvgPlots = {
   }
 }
 
-type ViewRange = {
+export type ViewRange = {
   x: Vector,
   y: Vector
 }
@@ -34,8 +35,12 @@ export class SVGPlot {
   private plots: SvgPlots = {}
   private eventListeners: EventStore = {}
 
-  constructor(container: HTMLDivElement, margin?: Vector,
-    width?: number, height?: number, viewBox?: string, 
+  constructor(
+    container: HTMLDivElement,
+    margin?: Vector,
+    width?: number, 
+    height?: number, 
+    viewBox?: string, 
     viewRange?: ViewRange) 
   {
     // Get SVG dimensions from container if not provided
