@@ -38,7 +38,7 @@ function OpinionPlot() {
   }, [])
 
   return (
-    <div className='h-full grid grid-rows-2 lg:grid-cols-2'>
+    <div className='h-full grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2'>
       <div ref={ternaryWrapRef}
         className='relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50'
       >
