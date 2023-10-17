@@ -146,6 +146,8 @@ The last equation follows since $\mathbf{X}_\tau$ is measurable with respect to 
 
 ### Transition kernels of Markov processes
 
+The transition kernels of a time-homogeneous Markov process is the conditional distribution given the initial distribution of the process. This means that the initial distribution and the transition kernels determine the finite dimensional distributions of a Markov process.
+
 <MathBox title='Transition kernel' boxType='definition'>
 Suppose that $\mathbf{X}=\{X_t: \Omega\to S\}_{t\in T}$ is a time-homogeneous Markov process. For $t\in T$ let
 
@@ -153,7 +155,7 @@ $$
   P_t(x,A) = \mathbb{P}(X_t\in A \;|\; X_0 = x),\; x\in S, A\in\mathcal{S}
 $$
 
-Then $P_t$ is a probability kernel on $(S,\mathcal{S})$ known as the transition kernel of $\mathbf{X}$ for time $t$.
+Then $P_t$ is a probability kernel on $(S,\mathcal{S})$ known as the transition kernel of $\mathbf{X}$ for time $t$. 
 
 <details>
 <summary>Proof</summary>
@@ -161,6 +163,18 @@ Then $P_t$ is a probability kernel on $(S,\mathcal{S})$ known as the transition 
 For a fixed $t\in T$, the measurability of $x\mapsto\mathbb{P}(X_t \in A \;|\; X_0 = x)$ for $A\in\mathcal{S}$ is built into the definition of conditional probability. Additionally, $A\mapsto\mathbb{P}(X_t\in A \;|\; X_0 = x)$ is a probability measure on $\mathcal{S}$ for $x\in S$. In general, the conditional distribution of one random variable, conditioned on a value of another random variable defines a probability kernel.
 </details>
 </MathBox>
+
+The transition kernel $P_t(x,\cdot)$ of a time-homogeneous Markov process $\mathbf{X}$ at time $t$ is the conditional distribution of $X_t$ given $X_0 = x \in S$. By the time-homogeneous property, $P_t(x, \cdot)$ is also the conditional distribution of $X_{s+t}$ given $X_s = x$ for $s\in T$
+
+$$
+  P_t(x, A) = \mathbb{P}(X_{s+t}\in A | X_s = x),\; s,t\in T, x\in S, A\in\mathcal{S}
+$$
+
+Usually there is a natural reference measure $\lambda$ on $(S,\mathcal{S})$, in which case the transition kernel $P_t$ will often have a transition density with respect to $\lambda$
+
+$$
+  P_t(x, A) = \mathbb{P}(X_t \in A \;|\; X_0 = x) = \int_A p_t(x, y)\lambda(\mathrm{d}y),\; x\in S, A\in\mathcal{S}
+$$
 
 <MathBox title='Chapman-Kolmogorov equation' boxType='theorem'>
 Suppose that $\mathbf{X}=\{X_t: \Omega\to S\}_{t\in T}$ is a time-homogeneous Markov process with transition kernels $\mathbf{P} = \{ P_t \}_{t\in T}$. For $s,t\in T$ then $P_s P_t = P_{s+t}$ given by
@@ -171,6 +185,8 @@ $$
 
 <details>
 <summary>Proof</summary>
+
+Note that $P_x(x,\cdot)$ is the conditional distribution of $X_s$ given $X_0 = x \in S$. Conditioning on $X_s$ for $A\in\mathcal{S}$ gives
 
 $$
 \begin{align*}
@@ -191,6 +207,143 @@ $$
   P_{s+t}(x,A) &= \int_S P_s (x,\mathrm{d}y)P_t(y, A) = (P_s P_t)(x, A)
 $$
 </details>
+</MathBox>
+
+The set of transition kernels $\mathbf{P}$ is a semi-group. Generally, the commutative property does not hold for the product operation on kernels. However, transition kernels a of time-homogeneous Markov process are commutative, i.e. $P_s P_t = P_t P_s = P_{s+t}$ for $s,t\in T$.
+
+In discrete time, $T = \mathbb{N}$, the transition kernels of $\mathbf{X}$ are simply the powers of the one-step transition kernel. That is if $P = P_1$ then $P_n = P^n$ for $n\in\mathbb{N}$.
+
+<MathBox title='' boxType='corollary'>
+Suppose that $\lambda$ is the reference measure on $S$ and that $\mathbf{X}=\{X_t: \Omega\to S\}_{t\in T}$ is a Markov process with transition densities $\{ p_t \}_{t\in T}$. If $s,t \in T$, then $p_s p_t = p_{s+t}$
+
+$$
+  p_t (x, z) = \int_S p_s(x, x) p_t(y, z)\lambda(\mathrm{d}y),\; x, z\in S
+$$
+
+<details>
+<summary>Proof</summary>
+
+By the Chapman-Kolmogorov equation, the transition kernels of $\mathbf{X}$ satisfy $P_s P_t = P_{s+t}$. Since $P_s$ has density $p_s$, $P_t$ has density $p_t$ and $P_s P_t$ has density $p_{s + t}$ it follows from the Chapman-Kolmogorov equation that $P_{s+t}$ has density $p_s p_t$.
+</details>
+</MathBox>
+
+A kernel defines two operations:
+- operating on the left with positive measure on $(S,\mathcal{S})$
+- operating on the right with measurable, real-valued functions
+
+<MathBox title='Left transition kernel operation' boxType='proposition'>
+If $\mu_s$ is the distribution of $X_s$, then $X_{s+t}$ has distribution $\mu_{s+t} = \mu_s P_t$ for $s,t\in T$
+
+$$
+  \mu_{s+t}(A) = \int_S \mu_s(\mathrm{d}x)P_t(x, A),\; A\in\mathcal{S}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Conditioning on $X_s$ gives
+
+$$
+\begin{align*}
+  \mathbb{P}(X_{s+t}\in A) &= \mathbb{E}\left[\mathbb{P}(X_{s+t}\in A \;|\; X_s) \right] \\
+  &= \int_S \mu_s(\mathrm{d}x)\mathbb{P}(X_{s+t}\in A \;|\; X_s = x) \\
+  &= \int_S \mu_s(\mathrm{d}x)\mathbb{P}_t(x, A) \\
+  &= \mu_s P_t (A)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+If $\mathcal{P}$ denotes the collection of probability measures on $(S,\mathcal{S})$, the left operator $P_t$ maps $\mathcal{P}$ back into $\mathcal{P}$. In particular, if $X_0$ has distribution $\mu_0$ then $X_t$ has distribution $\mu_t = \mu_0 P_t$ for every $t\in T$.
+
+<MathBox title='Invariant positive measures' boxType='definition'>
+A positive measure $\mu$ on $(S, \mathcal{S})$ is invariant for $\mathbf{X}$ if $\mu P_t = \mu$ for every $t\in T$.
+</MathBox>
+
+If $\mu$ is a probability measure that is invariant for $\mathbf{X}$, and $X_0$ has distribution $\mu$, then $X_t$ also has distribution $\mu$ for every $t\in T$ making the process $\mathbf{X}$ identically distributed. In discrete time, note that if $\mu P = \mu$ then $\mu P^n = \mu$ for every $n\in \mathbb{N}$ so $\mu$ is invariant for $\mathbf{X}$
+
+<MathBox title='Right transition kernel operation' boxType='proposition'>
+Suppose that $f:S\to\mathbb{R}$. If $t\in T$ then
+
+$$
+  P_t f(x) = \int_S P_t(x, \mathrm{d}y)f(y) = \mathbb{E}[f(X_t)\;|\; X_0 = x],\; x\in S
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows directly from the definition of conditional expectation.
+</details>
+</MathBox>
+
+In particular, the right operator $P_t$ is defined on $\mathcal{B}$, the vector space of bounded, linear functions $f:S\to\mathbb{R}$, and is in fact a linear operator on $\mathcal{B}$. That is, if $f,g\in\mathcal{B}$ and $c\in\mathbb{R}$ then $P_t (f+g) = P_t f + P_t g$ and $P_t (cf) = cP_t f$. Moreover, $P_t$ is a contraction operator on $\mathcal{B}$, since $\lVert P_t f \rVert\leq \lVert f \rVert$ for $f\in\mathcal{B}$. It follows that $P_t$ is a continuous operator on $\mathcal{B}$.
+
+<MathBox title='Harmonic measurable function' boxType='definition'>
+A measurable function $f:S\to\mathbb{R}$ is harmonic for $\mathbf{X}$ is $P_t f = f$ for all $t\in T$.
+</MathBox>
+
+In discrete time, if $Pf = f$ then $P^n f = f$ for all $n\in\mathbb{N}$, making $f$ harmonic for $\mathbf{X}$.
+
+<MathBox title='Differential form of Markov distributions' boxType='proposition'>
+Suppose that $\mathbf{X} = \{ X_t \}_{t\in T}$ is a Markov process with transition operators $\mathbf{P} = \{P_t \}_{t\in T}$ and that $(t_i)_{i=1}^{n\in\mathbb{N}} \in T^n$ is strictly increasing. If $X_0$ has distribution $\mu_0$, then in differential form the distribution of $(X_i)_{i=0}^{t_n}$ is
+
+$$
+  \mu_0(\mathrm{d}x_0)P_{t_1}(x_0, \mathrm{d}x_1)\prod_{i=2}^{n} P_{t_n - t_{n-1}}(x_{n-1}, \mathrm{d}x_n)
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from induction and repeated use of the Markov property. If $t\in T$ with $t> 0$, then conditioning on $X_0$ gives for $A, B\in\mathcal{S}$
+
+$$
+\begin{align*}
+  \mathbb{P}(X_0 \in A, X_t\in B) = \int_A \mathbb{P}(X_t\in B \;|\; X_0 = x)\mu_0 (\mathrm{d}x) \\
+  &= \int_A P_t (x, B\mu(\mathrm{d}x) \\
+  &= \int_A \int_B P_t(x,\mathrm{d}y)\mu_0 (\mathrm{d}x)
+\end{align*}
+$$
+
+Hence in differential form, the distribution of $(X_0, X_t)$ is $\mu(\mathrm{d}x)P_t(x,\mathrm{d}y)$. If $s,t\in T$ with $0 < s < t$, then conditioning on $(X_0, X_s=$ and using the previous result gives for $A, B, C \in\mathcal{S}$
+
+$$
+  \mathbb{P}(X_0\in A, X_s\in B, X_t\in C) = \int_{A\times B} \mathbb{P}(X_t\in C \;|\; X_0 = x, X_s = y)\mu_0 (\mathrm{d}x) P_s(x, \mathrm{d}y)
+$$
+
+By the Markov property
+
+$$
+\begin{align*}
+  \mathbb{P}(X_t\in C \;|\; X_0 = x, X_s = y) &= \mathbb{P}(X_t \in C | X_s = y) \\
+  &= P_{t-s}(y, C) = \int_C P_{t-s}(y,\mathrm{d}z)
+\end{align*}
+$$
+
+Hence in differential form, the distribution of $(X_0, X_s, X_t)$ is $\mu_0(\mathrm{d}x)P_s(x,\mathrm{d}y)P_{t-s}(y,\mathrm{d}z})$. Continuing in this manner gives the general result.
+</details>
+</MathBox>
+
+Knowing the transition kernels and the initial distribution determines a finite set of distributions for a Markov process. From the Kolmogorov construction theorem, we know that there exists a stochastic process that has these finite dimensional distributions. This is straightforward in discrete time, however in continuous time two problems arise. First, it is not clear how to construct the transition kernels so that the Chapman-Kolmogorov equations are satisfied. Second, we want the Markov process to exhibit certain properties that go beyond the finite dimensional distributions.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{ X_t \}_{t\in T}$ is a Markov process on an LCCB state space $(S,\mathcal{S})$ with transition operators $\mathbf{P} = \{P_t \}_{t\in [0,\infty)}$. Then $\mathbf{X}$ is a Feller process if and only if
+
+1. Continuity in space: If $f\in\mathcal{C}_0$ and $t\in[0,\infty)$, then $P_t f\in\mathcal{C}_0$
+2. Continuity in time: If $f\in\mathcal{C}_0$ and $x\in S$ then $P_t f(x) \xrightarrow{t\downarrow 0} f(x)$
+
+A semi-group of probability kernels $\mathbf{P}$ satisfying these properties is called a Feller semi-group.
+</MathBox>
+
+This means that a Markov process $\mathbf{X}$ is Feller if and only if $\mathbf{P}$ is Feller. The first property means that $P_t$ is an operator on the vector space $\mathcal{C}_0$, in addition to being an operator on the larger space $\mathcal{B}$. The second condition implies a stronger form of continuity in time.
+
+Note that if $S$ is discrete, then the first property is automatically satisfied. If $T$ is discrete, then the second property is automatically satisfied.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{P} = \{P_t \}_{t\in [0,\infty)}$ is a Feller semi-group of transition operators. Then $t\mapsto P_t f$ is continuous (with respect to the supremum norm) for $f\in\mathcal{C}_0$, i.e.
+
+$$
+  \lVert P_{t+s} f - P_t f \rVert = \sup\{|P_{t+s}f(x) - P_t f(x)| : x\in S \} \xrightarrow{s\to 0} 0
+$$
 </MathBox>
 
 ## Martingale
