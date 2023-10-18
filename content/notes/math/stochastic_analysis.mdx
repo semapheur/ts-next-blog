@@ -346,6 +346,154 @@ $$
 $$
 </MathBox>
 
+#### Sampling in time
+
+<MathBox title='Time sampled Markov process gives a time-discrete Markov process' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t \}_{t\in T}$ is a Markov process with state space $(S,\mathcal{S})$ and that $(t_i)_{i=0}^{n\in\mathbb{N}}$ is an increasing sequence in $T$. Let $Y_n = X_{t_n}$, then $\mathbb{Y} = \{Y_n\}_{n\in\mathbb{N}}$ is a Markov process in discrete time.
+
+<details>
+<summary>Proof</summary>
+
+For $n\in\mathbb{N}$, let $\mathcal{G}_n = \sigma\{ Y_k \;|\; k\in\mathbb{N}, k\leq n \}$ so that $\{\mathcal{G}_n\}_{n\in\mathbb{N}}$ is the natural filtration associated with $\mathbf{Y}$. Note that $\mathcal{G}_n \subseteq \mathcal{F}_{t_n}$ and $Y_n = X_{t_n}$ is measurable with respect to $\mathcal{G}_n$ for $n\in\mathcal{N}$. Let $k, n\in\mathbb{N}$ and let $A\in\mathcal{S}$, then
+
+$$
+\begin{align*}
+  \mathbb{P}(Y_{k+n}\in A \;|\; \mathcal{G}_k) = \mathbb{P}(X_{t_{n+k}}\in A \;|\; \mathcal{G}_l) \\
+  &=  \mathbb{P}(X_{t_{n+k}}\in A \;|\; X_{t_k}) \\
+  &= \mathbb{P}(Y_{n+k}\in A \;|\; Y_k) 
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t \}_{t\in T}$ is a time-homogenous Markov process with state space $(S,\mathcal{S})$ and transition kernels $\mathbf{P} = \{P_t\}_{t\in T}$. Fix $r\in T$ with $r>0$ and define $Y_n = X_{nr}$ for $n\in\mathbb{N}$. Then $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}}$ is a time-homogenous Markov process in discrete time, with one-step transition kernel
+
+$$
+  Q(x, A) = P_r (x, A),\; x\in S, A\in\mathcal{A}
+$$
+</MathBox>
+
+#### Enlarging the sample space
+
+A non-homogeneous Markov process can be turned into a time-homogenous Markov process at the expense of enlarging the state space.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t \}_{t\in T}$ is a non-homogenous Markov process with state space $(S,\mathcal{S})$. Suppose that $\tau$ is a random variable taking values in $T$, independent of $\mathbf{X}$. Let $\tau_t = \tau + t$ and let $Y_t = (X_{\tau_t}, \tau_t)$ for $t\in T$. Then $\mathbf{Y} = \{Y_t\}_{t\in T}$ is a homogenous Markov process with state space $(S\times T, \mathcal{S} \otimes \mathcal{T})$. For $t\in T$, the transition kernel $P_t$ is given by
+
+$$
+  P_t [(x, r), A\times B] = \mathbb{P}(X_{r+t}\in A\;|\; X_r = x)\mathbf{1}(r + t\in B), (x,r)\in S\times T, A\times B\in\mathcal{S}\otimes\mathcal{T}
+$$
+
+<details>
+<summary>Proof</summary>
+
+By definition and the substitution rule
+
+$$
+\begin{align*}
+  \mathbb{P}[Y_{s+t}\in A\times B \;|\; Y_s = (x,r)] &= \mathbb{P}(X_{\tau_{s+t}}\in A, \tau_{s+t}\in B \;|\; X_{\tau_{s}} = x, \tau_s = r) \\
+  &= \mathbb{P}(X_{tau+s+t}\in A, \tau+s+t\in B \;|\; X_{\tau+s} = x, \tau+s = r) \\
+  &= \mathbb{P}(X_{r+t}\in A, r+t\in B \;|\; X_r = x, \tau+s = r)
+\end{align*}
+$$
+
+Since $\tau$ is independent of $\mathbf{X}$ the last term is
+
+$$
+  \mathbb{P}(X_{r+t}\in A, r+t\in B \;|\; X_r = x, \tau+s = r) = \mathbb{P}(X_{r+t}\in A \;|\; X_r = x)
+$$
+
+which does not depend on $s$, making $\mathbf{Y}$ time-homogenous.
+</details>
+</MathBox>
+
+Sometimes a stochastic process with weak memory can be made into a Markov process by enlarging the state space appropriately
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_n \}_{n\in\mathbb{N}}$ is a random process with state space $(S,\mathcal{S})$ in which the future depends on the last $k$ states, i.e.
+
+$$
+  \mathbb{P}(X_{n+k} \in A | \mathcal{F}_{n+k-1}) = \mathbb{P}(X_{n+2}\in A \;|\; X_n,\dots,X_{n+k}),\; A\in\mathcal{S}
+$$
+
+where $\{\mathcal{F}_n\}_{n\in\mathbb{N}}$ is the natural filtration associated with the process $\mathbf{X}$. Suppose also that the process is time-homogenous in the sense that
+
+$$
+  \mathbb{P}(X_{n+k}\in A \;|\; X_n = x_0, \dots, X_{n+k} = x_k) = Q(x_0,\dots,x_k, A)
+$$
+ 
+independently of $n\in\mathbb{N}$. Let $Y_n = (X_n+i)_{i=0}^k-1$, then $\mathbf{N} = \{Y_n\}_{n\in\mathbb{N}}$ is a time homogenous Markov process with state space $S^k, \bigotimes_{i=1}^k \matcal{S}$. The one-step transition kernel is
+
+$$
+  P[(x_i)_{i=1}^k, \bigtimes_{i=1}^k A_i] = I(x_1, A_1)Q_1(x_1, x_2, A_2)\dots Q_{k-1}(x_1,\dots,x_k, Q_k)\; x_i\in S, A_i\in\mathcal{S}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $k=2$ note that $\sigma\{Y_k \;|\; k\leq n\} = \sigma\{(X_k, X_{k+1}) \;|\; k\leq n \} = \mathcal{F}_{n+1}$ for $n\in\mathbb{N}$. Thus, the natural filtration associated with $\mathbf{Y}$ is $\{\mathcal{F}_n\}_{n\in\mathbb{N}}$. If $C\in\mathcal{S}\mathcal{S}$ then
+
+$$
+\begin{align*}
+  \mathbb{P}(Y_{n+1}\in C \;|\; \mathcal{F}_{n+1}) &= \mathbb{P}[(X_{n+1}, X_{n+2})\in C \;|\; \mathcal{F}_{n+1}] \\
+  &= \mathbb{P}[(X_{n+1}, X_{n+2})\in C \;|\; X_n, X_{n+1}] = \mathbf{P}(Y_{n+1}\in C \;|\; Y_n)
+\end{align*}
+$$
+
+by the given assumption on $\mathbf{X}$. Hence $\mathbf{Y}$ is a Markov process. Next,
+
+$$
+\begin{align*}
+  \mathbb{P}[Y_{n+1}\in A\times B \;|\; Y_n = (x,y)] &= \mathbb{P}[(X_{n+1}, X_{n+2})\in A\times B \;|\; (X_n, X_{n+1}) = (x,y)] \\
+  &= \mathbb{P}(X_{n+1}\in A, X_{n+2}\in B \;|\; X_n = x, X_{n+1} = y) \\
+  &= \mathbb{P}(y\in A, X_{n+2}\in B \;|\; X_n = x, X_{n+1} = y) \\
+  &= I(y, A)Q(x,y,B)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Examples and applications
+
+#### Recurrence relations and differential equations
+
+Markov processes can be viewed as stochastic counterparts of deterministic recurrence relations (discrete time) and differential equations (continuous time)
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_n \}_{n\in\mathbb{N}}$ is a stochastic process with state space $(S,\mathcal{S})$ satisfying the recurrence relation
+
+$$
+  X_{n+1} = g(X_n),\; n\in\mathbb{N}
+$$
+
+where $g:S\to S$ is measurable. Then $\mathbf{X}$ is a homogenous Markov process with one-step transition operator $P$ given by $Pf = g\circ g$ for a measurable function $f:S\to\mathbb{R}$
+
+<details>
+<summary>Proof</summary>
+
+Clearly $\mathbf{X}$ is determined by the initial state, and in fact $X_n = g^n (X_0)$ for $n\in\mathbb{N}$ where $g^n$ is the $n$-fold composition power of $g$. Therefore, the only possible source of randomness is in the initial state. The Markov and time homogenous properties simply follow from the trivial fact that $g^{m+n}(X_0) = g^n[g^m(X_0)]$ so that $X_{m+n} = g^n(X_m)$. That is, the state at time $m+n$ is completely determined by the state at time $m$ (regardless of the previous states) and the time increment $n$. In particular, $Pf(x) = \mathbb{E}[g(X_1)\;|\; X_0 = x] = f[g(x)]$ for measurable $f:S\to\mathbb{R}$ and $x\in S$. Note that for $n\in\mathbb{N}$, the $n$-step transition operator is given by $P^n f = f\circ g^n$.
+</details>
+</MathBox>
+
+<MathBox title='Recurrence relation' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_n \}_{t\in[0,\infty)}$ is a stochastic process with state space $(\mathbb{R},\mathcal{R})$ satisfying the first-order differential equation
+
+$$
+  \frac{\mathrm{d}}{\mathrm{d}t}X_t = g(X_t)
+$$
+
+where $g:\mathbb{R}\to\mathbb{R}$ is Lipschitz continuous. Then $\mathbf{X}$ is a Feller Markov process.
+
+<details>
+<summary>Proof</summary>
+
+Lipschitz continuity means that there exists a constant $k\in(0,\infty)$ such that $|g(y) - g(x)|\leq k|x-y|$ for $x,y\in\mathbb{R}$. This is a standard condition on $g$ that guarantees the existence of a solution to the differential equation on $[0,\infty)$. Therefore, the only source of randomness in the process comes from the initial value $X_0$. Let t\mapsto X_t(x) denote the unique solution with $X_0(x) = x$ for $x\in\mathbb{R}$. The Markov and time homogeneous properties follow from the fact that $X_{t+s}(x) = X_t(X_s(x))$ for $x,t\in[0,\infty)$ and $x\in S$. That is, the state at time $t+s$ depends only on the state at time $s$ and the time increment $t$. The Feller properties follow from the continuity of $t\mapsto X_t(x)$ and the continuity of $x\mapsto X_t(x)$. The latter is the continuous dependence on the initial value, guaranteed by the assumption on $g$. Note that the transition operator is given by $P_t f(x) = f[X_t (x)]$ for a measurable function $f:S\to\mathbb{R}$ and $x\in S$.
+</details>
+</MathBox>
+
+The deterministic process $\mathrm{d}X_t = g(X_t)\mathrm{d}t$ can be turned into a diffusion processs, with Markov property, by adding a stochastic term related to a Wiener process (Brownian motion).
+
 ## Martingale
 
 A martingale is a stochastic process for which the conditional expectation of the next value is equal to the present value.
