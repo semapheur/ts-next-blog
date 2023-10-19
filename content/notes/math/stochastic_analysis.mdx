@@ -494,6 +494,159 @@ Lipschitz continuity means that there exists a constant $k\in(0,\infty)$ such th
 
 The deterministic process $\mathrm{d}X_t = g(X_t)\mathrm{d}t$ can be turned into a diffusion processs, with Markov property, by adding a stochastic term related to a Wiener process (Brownian motion).
 
+
+## Processes with independent, stationary increments
+
+<MathBox title='Independent and stationary increments' boxType='definition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a process adapted to $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$. Then for all $s,t\in T$ with $s\leq t$, the process $\mathbf{X}$ is said to have
+1. *Independent increments* if $X_t - X_s$ is independent of $\mathcal{F}_s$
+2. *Stationary increments* if $X_t - X_s$ has the same distribution as $X_{t-s} - X_0$
+
+Processes with independent and stationary increments are random walk processes. In continuous time, such processes are known as Lévy processes, which also have a third property
+
+3. *Continuity in probability*: for any $\epsilon > 0$ and $t\geq 0$ then $\lim_{h\to 0} \mathbb{P}(|X_{t+h} - X_t|>\epsilon) = 0$
+</MathBox>
+
+Stationary increments means that the probability distribution of any increment $X_t - X_s$ depends only the length $t - s$ of the time interval. Several stochastic processes are characterized by specific distributions of their stationary increments
+- Wiener process: $X_t - X_s$ has a normal distribution with $\mathbb{E}(X_t - X_s) = 0$ and $\mathrm{Var}(X_t - X_s) = t - s$
+- Poisson process:  $X_t - X_s$ has a poisson distribution with $\mathbb{E}(X_t - X_s) = \gamma(t - s)$ where $\gamma > 0$ is the intensity of the process.
+- Cauchy process: $X_t - X_s$ has a Cauchy distribution with density $f(x, t) = \frac{1}{\pi}\frac{t}{x^2 + t^2}$
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a process with independent, stationary increments, and let $Q$ denote the distribution of $X_t - X_0$. Then
+
+$$
+  Q_s * Q_t = Q_{s+t},\; s,t\in T
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that $Q_s$ is the distribution of $X_s - X_0$, and by the stationary property, $Q_t$ is the distribution of $X_{s+t} - X_s$. By the independence property, $X_s - X_0$ and $X_{s+t} - X_s$ are independent. Hence $Q_s * Q_t$ is the distribution of $[X_s - X_0] + [X_{s+t} - X_{s}] = X_{s+t} - X_0$. By definition, this variable has distribution $Q_{s+t}$.
+</details>
+</MathBox>
+
+The collection of increment distributions $\mathbf{Q} = \{Q_t\}_{t\in T}$ forms a semi-group with convolution as the operator.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a Lévy process, and let
+
+$$
+  m(t) = \mathbb{E}(X_t) \quad v(t) = \mathrm{var}(X_t)
+$$
+
+1. If $\mu_0 = \mathbb{E}(X_0) \in\mathbb{R}$ and $\mu_1 = \mathbb{E}(X_1)\in\mathbb{R}$ then $m(t) = \mu_0 + (\mu_1 + \mu_0)t$
+2. If in addition $\sigma_0^2 = \mathrm{var}(X_0)\in (0,\infty)$ and $\sigma_1^2 = \mathrm{var}(X_1)\in (0, \infty)$ then $v(t) = \sigma_0^2 + (\sigma_1^2 + \sigma_0^2)t$
+
+<details>
+<summary>Proof</summary>
+
+Let $m_0 (t) = \mathbb{E}(X_t - X_0) = m(t) - \mu_0$ and $v_0 (t) = \mathrm{var}(X_t - X_0) = v(t) - \sigma_0^2$ denote the mean and variance functions for the centered process $\{ X_t - X_0 \}_{t\in T}$. Let $s,t\in T$
+
+1. From the additive property of expected value and the stationary property
+$$
+\begin{align*}
+  m_0 (t + s) &= \mathbb{E}(X_{t+s} - X_0) \\
+  &= \mathbb{E}[(X_{t+s} - X_s) + (X_s - X_0)] \\
+  &= \mathbb{E}(X_{t+s} - X_s) + \mathbb{E}(X_s - X_0) \\
+  &= m_0 (t) + m_0 (s)
+\end{align*}
+$$
+
+1. From the additive property of variance for independent variables and the stationary property
+$$
+\begin{align*}
+  v_0 (t + s) &= \mathrm{var}(X_{t+s} - X_0) \\
+  &= \mathrm{var}[(X_{t+s} - X_s) + (X_s - X_0)] \\
+  &= \mathrm{var}(X_{t+s} - X_s) + \mathrm{var}(X_s - X_0) \\
+  &= v_0 (t) + v_0 (s)
+\end{align*}
+$$
+
+This shows that $m_0$ and $v_0$ satisfy the Cauchy equation. By the Lévy properties there exists $a\in\mathbb{R}$ and $b^2\in(0,\infty)$ such that $m_0(t) = at$ and $v_0(t) = b^2 t$. Substituting $t=1$ gives $a = \mu_1 - \mu_0$ and $b^2 = \sigma_1^2 - \sigma_0^2$ producing the desired result.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A discrete time process $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ has independent increments if and only if there exists a sequence of independent, real-valued random variables $\mathbf{U} = (U_n)_{n\in\mathbb{N}_+} such that
+
+$$
+  X_n = \sum_{i=0}^n U_i
+$$
+
+In addition, $\mathbf{X}$ has stationary increments if and only if $(U_n)_{n\in\mathbb{N}}$ are indentically distributed.
+
+<details>
+<summary>Proof</summary>
+
+Suppose first that $\mathbf{U}$ is a sequence of independent, real-valued random variables, and define $X_n = \sum_{i=0}^n U_i$ for $n\in\mathbb{N}$. Note that $\mathcal{F}_n = \sigma\{X_i\}_{i=0}^n = \sigma\{U_i\}_{i=0}^n$. If $k, n\in\mathbb{N}$ with $k\leq n$, then $X_n - X_k = \sum_{i=k+1}^n U_i$ which is independent of $\mathcal{F}_k$ by the independence assumption on $\mathbf{U}$. Hence $\mathbf{X}$ has independent increments. Suppose in addition that  $(U_n)_{n\in\mathbb{N}}$ are identically distributed. Then the increment $X_n - X_k$ above has the same distribution as $\sum_{i=1}^{n-k} U_i = X_{n-k} - X_0$. Hence $\mathbf{X}$ has stationary increments.
+
+Conversely, suppose that $\mathbf{X}$ has independent increments. Let $U_0 = X_0$ and $U_n = X_n - X_{n-1}$ for $n\in\mathbb{N}$ such that $X_n = \sum_{i=0}^n U_i$ and $\mathcal{F}_n = \sigma\{X_i\}_{i=0}^n = \sigma\{U_i\}_{i=0}^n$. Since $\mathbf{X}$ has independent increments, $U_n$ is indepedent of $\mathcal{F}_{n-1}$ for $n\in\mathbb{N}_+$ making $(U_n)_{n\in\mathbb{N}_+}$ mutually independent. If in addition, $\mathbf{X}$ has stationary increments, $U_n = X_n - X_{n-1}$ has the same distribution as $X_1 - X_0 = U_1$ for $n\in\mathbb{N}_+$. Hence $(U_n)_{n\in\mathbb{N}}$ are identically distributed. 
+</details>
+</MathBox>
+
+### Relation to Markov processes
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a process with independent, stationary increments, and let $Q$ denote the distribution of $X_t - X_0$. Then $\mathbf{X}$ is a time-homogeneous Markov process with transition operator
+
+$$
+  P_t f(x) = \int_S f(x+y)Q_t (\mathrm{d}y),\; f\in\mathcal{B}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $X_{s+t} - X_{s}$ is independent of $\mathcal{F}_s$ it follows that
+
+$$
+  \mathbb{E}[f(X_{s+t})|\mathcal{F}_s] = \mathbb{E}[f(X_{s+t} - X_s + X_s)|\mathcal{F}_s] = \mathbb{E}[f(X_{s+t})|X_s]
+$$
+
+By the stationary property
+
+$$
+  \mathbb{E}[f(X_{s+t}|X_s = x)] = \int_S f(x+y)Q_t(\mathrm{d}y)\; x\in S
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that for positive $t\in T$ is a process with independent, the distribution $Q_t$ has probability density function $g_t$ with respect to the reference measure $\lambda$. Then the transition density is
+
+$$
+  p_t (x,y) = g_t (y - x),\; f\in\mathcal{B}
+$$
+
+By the property of $Q_t$, it follows that $g_s * g_t = g_{s+t}$.
+</MathBox>
+
+<MathBox title='Lévy processes are Feller Markov' boxType='proposition'>
+If $Q_t \xrightarrow{t\downarrow 0} Q_0$ (Lévy property) then $\mathbf{X}$ is a Feller Markov process.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{U} = (U_n)_{n\in\mathbb{N}_+}$ is a sequence of indepedent, real-valued random variables, with $(U_n)_{n\in\mathbb{N}}$ identically distributed with common distribution $Q$. Then the partial sum process $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ associated with $\mathbf{U}$ is a time homogeneous Markov process with one-step transition kernel
+
+$$
+  P(x, A) = Q(A - x),\; x\in S, A\in\mathcal{S}
+$$
+
+More generally, the $n$-step transition kernel is 
+
+$$
+  P^n (x, A) = Q^{*n}(A - x)
+$$
+
+This Markov process is known as a random walk where $U_n$ represents the distance on the real in which the process moves at time $n$. If $Q$ has probability density function $g$ with respect to the reference measure $\lambda$, the one-step transition density is
+
+$$
+  p(x, y) = g(y - x),\; x,y\in S
+$$
+</MathBox>
+
+
+
 ## Martingale
 
 A martingale is a stochastic process for which the conditional expectation of the next value is equal to the present value.
@@ -845,16 +998,6 @@ $$
 </MathBox>
 
 ### Lévy process
-
-Lévy processes are characterized by stationary and independent increments.
-
-<MathBox title='Independent and stationary increments' boxType='definition'>
-Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a process adapted to $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$. Then for all $s,t\in T$ with $s\leq t$, the process $\mathbf{X}$ is said to have
-1. *Independent increments* if $X_t - X_s$ is independent of $\mathcal{F}_s$
-2. *Stationary increments* if $X_t - X_s$ has the same distribution as $X_{t-s} - X_0$
-
-Processes with independent and stationary increments are random walk processes. In continuous time, such processes are known as Lévy processes.
-</MathBox>
 
 <MathBox title='Martingale conditions for processes with independent increments' boxType='definition'>
 Suppose that the continuous process $\mathbf{X} = \{X_t\}_{t\in [0,\infty]}$ has independent increments, and let $m(t) = \mathbb{E}(X_t)$ for $t\in T$. Then $\mathbf{X}$ is
