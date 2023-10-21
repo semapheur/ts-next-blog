@@ -484,7 +484,9 @@ $$
 </details>
 </MathBox>
 
-The potential operator defines two operator
+For a discrete-time Markov process $\mathbf{X}$, the potential kernel $R_\alpha (x, A)$ for $\alpha\in(0,1)$ can be interpreted as the expected number of times $\mathbf{X}$ visits $A\in\mathcal{S}$ starting at $x\in S$. The parameter $\alpha$ represents a discount rate of this expected value in the sense that a future vists at time $n$ has a present value of $\alpha^n$.
+
+The potential kernel $R_\alpha$ defines two operators, operating on the right on measurable functions, and on the left on positive measures. For measurable functions $f:S\to\mathbb{R}$, the right potential operator is defined as
 
 $$
 \begin{align*}
@@ -493,6 +495,8 @@ $$
   &= \sum_{n=0}^\infty \alpha^n \mathbb{E}[f(X_n)|X_0 = x]
 \end{align*}
 $$
+
+The functions $f\in\mathcal{B}$ represents the reward/cost when $\mathbf{X}$ visits $x\in S$.
 
 <MathBox title='' boxType='proposition'>
 
@@ -510,7 +514,6 @@ $$
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-
 If $\alpha\in (0,1)$, then $(1-\alpha)R_\alpha (x, \cdot)$ is the conditional distribution of $X_N$ given $X_0 = x\in S$, where $N$ is independent of $\mathbf{X}$ and has the geometric distribution on $\mathbb{N}$ with parameter $1-\alpha$.
 
 <details>
@@ -539,11 +542,117 @@ $$
 </details>
 </MathBox>
 
-Left operator
+The kernel $(1-\alpha)R_\alpha$ is a transition probability corresponding to the random time $N$ rather than the deterministic time $n\in\mathbb{N}$.
+
+For positive measures $\mu$ on $\mathcal{S}$, the left potential operator is defined as
 
 $$
   \mu R_\alpha (A) = \sum_{n=0}^\infty \alpha^n \mu P^n (A) = \sum_{n=0}^\infty \alpha^n \int_S \mu(\mathrm{d}x)P^n (x, A),\; A\in\mathcal{S} 
 $$
+
+If $X_0$ has distribution $\mu$, then $\mu P^n$ is the distribution of $X_n$ for $n\in\mathbb{N}$. In this case, $(1-\alpha)\mu R_\alpha$ is the distribution of $X_N$, where $N$ is independent of $\mathbf{X}$ and is geometrically distributed on $\mathbb{N}$ with parameter $1 - \alpha$.
+
+<MathBox title='' boxType='proposition'>
+The potential kernels $\mathbb{R} = \{ R_\alpha \}_{\alpha\in (0, 1)}$ completely determine the transition kernels $\mathbf{P} = \{P_n\}_{n\in\mathbb{N}}$.
+
+<details>
+<summary>Proof</summary>
+
+For $x\in S$ and $A\in\mathcal{A}$, the function $\alpha\mapsto R_\alpha(x, A)$ is a power series in $\alpha$ with coefficients $n\mapsto P^n(x,A)$. In combinatorial terms, $\alpha\mapsto R_\alpha(x, A)$ is the ordinary generating function of the sequence $n\mapsto P^n (x, A)$. This power series has radius of convergence at least $1$, extending the domain to $\alpha\in (-1, 1)$. Thus, we can recover the transition kernels by derivating $R_\alpha$ and evaluating at $\alpha = 0$
+
+$$
+  P^n (x, A) = \frac{1}{N!}\left. \frac{\mathrm{d}^n}{\mathrm{d}\alpha^n} R_\alpha (x, A) \right|_{\alpha = 0}
+$$
+</details>
+</MathBox>
+
+The kernels $\mathbf{R} = \{ R_\alpha \}_{\alpha\in (0,1)}$, along with the initial distribution, completely determine the finite dimensional distributions of the discrete-time Markov process $\mathbf{X}$.
+
+<MathBox title='' boxType='proposition'>
+
+If $\alpha,\beta\in (0, 1]$ and $k\in\mathbb{N}$, then (as kernels)
+
+1. P^k R_\alpha = R_\alpha P^k = \sum_{n=0}^\infty \alpha^n P^{n+k}
+2. R_\alpha R_\beta = R_\beta R_\alpha = \sum_{m=0}^\infty\sum_{n=0}^\infty \alpha^m \beta^n P^{m+n}
+3. $I + \alpha R_\alpha P = I + \alpha P R_\alpha = R_\alpha $
+
+If $\alpha\leq\beta$ then (as kernels)
+
+4. $\beta R_\beta = \alpha R_\alpha + (\beta - \alpha) R_\alpha R_\beta$
+
+If $\alpha\in (0,1)$, then as operator as on $\mathcal{B}$
+
+5. $R_\alpha = (I - \alpha P)^{-1}$
+6. $P = \frac{1}{\alpha}(1 - R_\alpha^{-1})$
+ 
+<details>
+<summary>Proof</summary>
+
+Suppose that $f\in\mathcal{B}$ is nonnegative. Since the kernels are nonnegative we can interchange sums with kernel operations.
+
+1. Evaluating $R_\alpha P^k$ directly
+$$
+  R_\alpha P^k f = \sum_{n=0}^\infty \alpha^n P^n P^k f = \sum_{n=0}^\infty \alpha^n P^{n+k} f
+$$
+
+The other direction requires an interchange
+
+$$
+  P^k R_\alpha f = P^k \sum_{n=0}^\infty \alpha^n P^n f = \sum_{n=0}^\infty \alpha^n P^k P^n f = \sum_{n=0}^\infty \alpha^n P^{n+k}f
+$$
+
+2. Only the first direction is shown as the other is similar.
+$$
+\begin{align*}
+  R_\alpha R_\beta &= \sum_{m=0}^\infty \alpha^m P^m R_\beta f \\
+  &= \sum_{m=0}^\infty \alpha^m P^m \left( \sum_{n=0}^\infty \beta^n P^n f \right) \\
+  &= \sum_{m=0}^\infty \sum_{n=0}^\infty \alpha^m \beta^n P^m P^n f \\
+  &= \sum_{m=0}^\infty \sum_{n=0}^\infty \alpha^m \beta^n P^{m+n} f
+\end{align*}
+$$
+
+3. From the 1st identity
+$$
+\begin{align*}
+  (I + \alpha R_\alpha P)f &= (I + \alpha RP_\alpha)f \\
+  &= f + \sum_{n=0}^\infty \alpha^{n + 1} P^{n+1} f \\
+  &= \sum_{n=0}^\infty \alpha^n P^n f = R_\alpha f
+\end{align*}
+$$
+
+4. Assume $\alpha < \beta$ as the case $\alpha = \beta$ is trivial. From the 2nd identity
+
+$$
+  R_\alpha R_\beta f = \sum_{j=0}^\infty \sum_{k=0} \alpha^j \beta^k P^{j+k} f
+$$
+
+Changing the sum variables to $n = j + k$ and $j$
+
+$$
+\begin{align*}
+  R_\alpha R_\beta f = \sum_{n=0}^\infty \sum_{j=0}^n \alpha^j \beta^{n-j} P^n f \\
+  &= \sum_{n=0}^\infty \sum_{j=0}^n \left( \frac{\alpha}{\beta} \right)^j \beta^n P^n f \\
+  &= \sum_{n=0}^\infty \frac{1 - \left( \frac{\alpha}{\beta} \right)^{n+1}}{1 - \frac{\alpha}{\beta}} \beta^n P^n f \\
+  &= \frac{1}{\beta - \alpha}  \beta \left( \sum_{n=0}^\infty \beta^n P^n f \right) - \alpha \left( \sum_{n=0}^\infty \alpha^n P^n f \right) \\
+  &= \frac{1}{\beta - \alpha} (\beta R_\beta f -\alpha R_\alpha f)
+\end{align*}
+$$
+
+Note that $R_\alpha f$ is finite since $\alpha < 1$.
+
+5. Since the operators are bounded, we can subtract. From the 3rd property
+
+$$
+\begin{gather*}
+  I + \alpha R_\alpha  P = R_\alpha \iff R_\alpha (I - \alpha P) = I \\
+  I + \alpha P R_\alpha = R_\alpha \iff (I - \alpha) R_\alpha = I
+\end{gather*}
+$$
+
+6. This follows from the 5th property.
+</details>
+</MathBox>
+
 
 #### Continuous time
 
