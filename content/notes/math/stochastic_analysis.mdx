@@ -865,9 +865,143 @@ $$
 </details>
 </MathBox>
 
-
-
 #### Infinitesimal generator
+
+<MathBox title='Infinitesimal generator' boxType='definition'>
+The infinitesimal generator of the Markov process $\mathbf{X}$ is the operator $G:\mathcal{D}\to\mathcal{C}_0$ defined by
+
+$$
+  Gf := \lim_{t\downarrow 0}\frac{P_t f - f}{t}
+$$
+
+on the domain $\mathcal{D}\subseteq\mathcal{C}_0$ for which the limit exists. The limit is with respect to the supremum norm such that $f\in\mathcal{D}$ and $Gf = g$ implies $f,g\in\mathcal{C}_0$ and
+
+$$
+\left\lVert \frac{P_t f - f}{t} g \right\rVert = \sup\left\{ \left| \frac{P_t f(x) - f(x)}{t} - g(x) \right|: x\in S \right\} \xrightarrow{t\downarrow 0} 0
+$$
+
+In particular
+
+$$
+  Gf(x) = \lim_{t\downarrow 0} \frac{P_t f(x) - f(x)}{t} = \lim_{t\downarrow 0}\frac{\mathbb{E}[f(X_t)\;|\;X_0 = x] - f(x)}{t},\; s\in S
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The domain $\mathcal{D}$ is a subspace of $\mathcal{C}_0$ and the generator $G$ is a linear operator on $\mathcal{D}$ satisfying
+
+1. If $f\in\mathcal{D}$ and $c\in\mathcal{R}$ then $cf\in\mathcal{D}$ and $G(cf) = cGf$.
+2. If $f,g\in\mathcal{D}$ then $f+g\in\mathcal{D}$ and $G(f+g) = Gf + Gg$
+
+<details>
+<summary>Proof</summary>
+
+These properties follows from the linearity of $P_t$ for $t\in[0,\infty)$ and basic results on convergence
+
+1. 
+$$
+  \frac{P_t(cf) - (cf)}{t} = c\frac{P_t f - f}{t} \xrightarrow{t\downarrow 0} cGf
+$$
+
+2.
+$$
+  \frac{P_t (f+g) - (f+g){t} = \frac{P_t f - f}{t} + \frac{P_t g - g}{t} \xrightarrow{t\downarrow 0} Gf + Gg
+$$
+</details>
+</MathBox>
+
+Note that $G$ is the (right) derivative at $0$ of the function $t\mapsto P_t f$. Because of the semigroup property, this differentiability property at $0$ implies differentiability at arbitrary $t\in[0,\infty)$.
+
+<MathBox title='' boxType='proposition'>
+If $f\in\mathcal{D}$ and $t\in[0,\infty)$, then $P_t f\in\mathcal{D}$ and the following derivative rules hold with respect to the supremum norm
+
+1. Kolmogorov forward equation: $P'_t f = P_t Gf$
+2. Kolmogorov backward equation: $P'_t f = GP_t f$
+
+<details>
+<summary>Proof</summary>
+
+1. By assumption
+
+$$
+  \lim_{h\downarrow 0} \frac{P_h f - f}{h} = Gf
+$$
+
+Since $P_t$ is a bounded, linear operator on $\mathcal{C}_0$, it preserves limits, giving
+
+$$
+  \lim_{h\downarrow 0}\frac{P_t P_h f - P_t}{h} = \lim_{h\downarrow 0} \frac{P_{t+h} f - P_t f}{h} = P_t G f
+$$
+
+This proves the Kolmogorov forward equation for the derivative from the right. Since $t\mapsto P_t f$ is continuous, the result is also true for the two-sided derivative.
+
+2. From the Kolmogorov forward equation
+
+$$
+  \lim_{h\to 0}\frac{P_t P_h f - P_t}{h} = \lim_{h\to 0} \frac{P_{t+h} f - P_t f}{h} = P_t G f
+$$
+
+By definition, this means that $P_t f \in\mathcal{D}$ and $GP_t f = P_t G f = P'_t f$.
+</details>
+</MathBox>
+
+Infinitesimal generators allows us to construct a Markov process with desired properties, by which the transition operators $\mathbf{P} = \{P_t\}_{t\in[0,\infty)$ are obtained from the initial value problem
+
+$$
+  P'_t = GP_t,\quad P_0 = I
+$$
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\alpha\in (0,\infty)$
+
+1. If $f\in\mathcal{D}$ then $Gf\in\mathcal{C}_0$ and $f + U_\alpha G f = \alpha U_\alpha f$
+2. If $f\in\mathcal{C}_0$ then $U_\alpha f \in\mathcal{D}$ and $f + GU_\alpha f = \alpha U_\alpha f$
+3. $U_\alpha = (\alpha I - G)^{-1}:\mathcal{C}_0\to\mathcal{D}$
+4. $G = \alpha I - U_\alpha^{-1}:\mathcal{D}\to\mathcal{C}_0$
+
+<details>
+<summary>Proof</summary>
+
+1. By definition, if $f\in\mathcal{D}$ then $Gf\in\mathcal{C}_0$. Hence using the Kolmogorov equations and integrating by parts
+
+$$
+\begin{align*}
+  f + U_\alpha G f &= f + \int_0^\infty e^{-\alpha t} GP_t f\,\mathrm{d}t = f + \int_0^\infty e^{-\alpha t} P'_t f\,\mathrm{d}t \\
+  &= \left. f - e^{-\alpha t} P_t \right_0^\infty + \alpha\int_0^\infty + \alpha\int_0^\infty e^{-\alpha t}P_t f \,\mathrm{d}t
+\end{align*}
+$$
+
+Note that $e^{-\alpha t} P_t f \xrightarrow{t\to\infty} 0$ while $P_0 f = f$. The last term is $\alpha U_\alpha f$.
+
+2. From the 1st identity and the substitution $u = s + t$
+
+$$
+\begin{align*}
+  P_t U_\alpha f &= \int_0^\infty e^{-\alpha s} P_{s+t}f\,\mathrm{d}s \\
+  &= \int_t^\infty e^{-\alpha (u - t)} P_u f\,\mathrm{d}u \\
+  &= e^{-\alpha t}\int_t^\infty e^{-\alpha u} P_u f\,\mathrm{d}u
+\end{align*}
+$$
+
+Hence
+
+$$
+  \frac{P_t U_\alpha f - U_\alpha f}{t} = \frac{1}{t}\left[ e^{-\alpha t} \int_t^\infty e^{-\alpha u} P_u f\,\mathrm{d}u - U_\alpha f \right]
+$$
+
+Adding and substracting $e^{\alpha u} U_\alpha f$ and combining integrals gives
+
+$$
+  \frac{P_t U_\alpha f - U_\alpha f}{t} = \frac{1}{t}\left[ e^{\alpha t} \int_t^\infty e^{-\alpha u} P_u f\,\mathrm{d}u - e^{\alpha t} \int_0^\infty e^{-\alpha u} P_u f\,\mathrm{d}u \right] + \frac{e^{\alpha t} - 1}{t} U_\alpha f \\
+  &= -e^{\alpha t}\frac{1}{t} \int_0^t e^{-\alpha s} P_s f\,\mathrm{d}s + \frac{e^{\alpha t} - 1}{t} U_\alpha f
+$$
+
+Since $s\mapsto P_s f$ is continuous, the first term converges to $-f$, and the second term converges to $\alpha U_\alpha f$ as $t\downarrow 0$.
+
+3. From the 1st identity we have $\alpha U_\alpha - U_\alpha G = I \iff U_\alpha (\alpha I - G) = I$, and from the 2nd identity we have $\alpha U_\alpha - GU_\alpha = I \iff (\alpha I - G)U_\alpha = I$. 
+4. This follows from the 3rd identity.
+</details>
+</MathBox>
 
 ### Examples and applications
 
