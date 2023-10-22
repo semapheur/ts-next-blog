@@ -542,7 +542,7 @@ $$
 </details>
 </MathBox>
 
-The kernel $(1-\alpha)R_\alpha$ is a transition probability corresponding to the random time $N$ rather than the deterministic time $n\in\mathbb{N}$.
+The kernel $(1-\alpha)R_\alpha$ is a transition probability kernel corresponding to the random time $N$ rather than the deterministic time $n\in\mathbb{N}$.
 
 For positive measures $\mu$ on $\mathcal{S}$, the left potential operator is defined as
 
@@ -569,7 +569,6 @@ $$
 The kernels $\mathbf{R} = \{ R_\alpha \}_{\alpha\in (0,1)}$, along with the initial distribution, completely determine the finite dimensional distributions of the discrete-time Markov process $\mathbf{X}$.
 
 <MathBox title='' boxType='proposition'>
-
 If $\alpha,\beta\in (0, 1]$ and $k\in\mathbb{N}$, then (as kernels)
 
 1. P^k R_\alpha = R_\alpha P^k = \sum_{n=0}^\infty \alpha^n P^{n+k}
@@ -690,6 +689,183 @@ $$
 The integral inside the expectation is the Lebesgue measure of $\{ t\in [0,\infty) : X_t\in A \}$
 </details>
 </MathBox>
+
+The potential kernel $U_\alpha$ defines two operators, operating on the right on functions, and left on positive measures. For measurable functions $f:S\to\mathbb{R}$, the right potential operator is defined as
+
+$$
+\begin{align*}
+  U_\alpha f(x) = \int_S U_\alpha (x, \mathrm{d}y)f(y) = \int_0^\infty e^{-\alpha t} P_t f(x)\mathrm{d}t \\
+  &= \int_0^\infty e^{-\alpha t} \int_S P_t (x,\mathrm{d}y) f(y) = \int_0^\infty e^{-\alpha t}\mathbb{E}[f(X_t)\;|\; X_0]\mathrm{d}t,\; x\in S
+\end{align*}
+$$
+
+<MathBox title='' boxType='proposition'>
+If $\alpha > 0$, then $U_\alpha (x, S) = \frac{1}{\alpha}$ for all $x\in S$. It follows that the right potential operator $U_\alpha$ is a bounded, linear operator on $\mathcal{B}$ with $\lVert U_\alpha \rVert = \frac{1}{\alpha}$. It also follows that $\alpha R_\alpha$ is a probability kernel.
+
+<details>
+<summary>Proof</summary>
+
+$$
+  U_\alpha (x, S) \int_{n=0}^\infty \alpha^n P_t (x, S)\,\mathrm{d}t = \int_{n=0}^\infty e^{-\alpha t} \mathrm{d}t = \frac{1}{\alpha}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $\alpha > 0$, then $\alpha U_\alpha (x, \cdot)$ is the conditional distribution of $X_\tau$ where $\tau$ is independent of $\mathbf{X}$ and has the exponential distribution on $[0,\infty)$ with parameter $\alpha$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\tau$ is exponentially distributed it has the probability density function $f(t) = \alpha e^{-\alpha t}$ for $t\in[0,\infty)$. Conditioning on $\tau$ gives
+
+$$
+  \mathbb{P}(X_\tau \in A \;|\; X_0 = x) = \int_0^\infty \alpha e^{-\alpha t}\mathbb{P}(X_\tau \in A \;|\; \tau = t, X_0 = x) = P_t (x, A)
+$$
+
+By the substitution rule and the assumption of independence
+
+$$
+\begin{align*}
+  \mathbb{P}(X_\tau \in A \;|\; \tau = t, X_0 = x) &= \mathbb{P}(X_t \in A \;|\; \tau = t, X_0 = x) \\
+  &= \mathbb{P}(X_t \in A \;|\; X_0 = x) = P_t (x, A)
+\end{align*}
+$$
+
+Substituting gives
+
+$$
+  \mathbb{P}(X_\tau \in A \;|\; X_0 = x) = \int_0^\infty \alpha e^{-\alpha t} P_t (x, A)\mathrm{d}t = \alpha U_\alpha (x, A)
+$$
+</details>
+</MathBox>
+
+The kernel $\alpha R_\alpha$ is a transition probability kernel corresponding to the random time $N$ rather than the deterministic time $n\in\mathbb{N}$.
+
+For positive measures $\mu$ on $\mathcal{S}$, the left potential operator is defined as
+
+$$
+\begin{align*}
+  \mu U_\alpha = \int_S \mu(\mathrm{d}x) U_\alpha (x, A) = \int_0^\infty e^{-\alpha t} \mu P_t f(x)\mathrm{d}t \\
+  &= \int_0^\infty e^{-\alpha t} \left[ \int_S \mu(\mathrm{d}x) P_t (x, A)\right] \mathrm{d}t = \int_0^\infty e^{-\alpha t}\left[ \int_S \mu(\mathrm{d}x)\mathbb{P}(X_t \in A) \right]\mathrm{d}t,\; A\in\mathcal{S}
+\end{align*}
+$$
+
+In particular, suppose that $\alpha > 0$ and that $X_0$ has distribution $\mu$. Then $\mu P_t$ is the distribution of $X_t$ for $t\in[0,\infty)$ so that $\alpha \mu U_\alpha$ is the distribution of $X_\tau$, where $\tau$ is independent of $\mathbf{X}$ and is exponentially distributed on $[0,\infty)$ with parameter $\alpha$.
+
+<MathBox title='' boxType='proposition'>
+The resolvent $\mathbf{U} = \{U_\alpha\}_{\alpha\in (0,\infty)}$ completely determines the family of transition kernels $\mathbf{P} = \{P_t\}_{t\in (0,\infty)}$
+
+<details>
+<summary>Proof</summary>
+
+Note that the function $\alpha\mapsto U_\alpha (x, A)$ on $(0,\infty)$ is the Laplace transform of the function $t\mapsto P_t (x, A)$ on $[0,\infty)$. The Laplace transform of a function determines the function completely.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\alpha, \beta, t \in [0,\infty)$. Then as kernels
+
+1. $P_t U_\alpha = U_\alpha P_t = \int_0^\infty e^{-\alpha s} P_{s+t}\mathrm{d}s$
+2. $U_\alpha U_\beta = U_\beta U_\alpha = \int_0^\infty \int_0^\infty e^{-\alpha s} e^{-\beta t} P_{s+t}\mathrm{d}s\,\mathrm{d}t$
+
+If $\alpha\leq\beta$ then as kernels
+
+3. $U_\alpha = U_\beta + (\beta -\alpha) U_\alpha U_\beta$
+
+4. If $\alpha\in (0,\infty)$ and $f\in\mathcal{C}_0$ then $U_\alpha f \in\mathcal{U}_0$.
+5. If $f\in\mathcal{C}_0$ then $\alpha U_\alpha f \xrightarrow{\alpha\to\infty} f$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $f\in\mathcal{B}$ is nonnegative. Since the integrands are nonnegative we can interchange integrals.
+
+1. Evaluating $U_\alpha P_t$ directly
+$$
+  U_\alpha P_t f = \int_0^\infty e^{-\alpha s}P_s P_t f \,\mathrm{d}s = \int_0^\infty e^{-\alpha s} P_{s+t}f\,\mathrm{d}s
+$$
+
+The 1st identity involves an interchange
+
+$$
+  P_t U_\alpha f = P_t \int_0^\infty e^{-\alpha s} P_s f\,\mathrm{d}s = \int_0^\infty e^{-\alpha s}P_t P_s f\,\mathrm{d}s = \int_0^\infty e^{-\alpha s} P_{s+t} f\,\mathrm{d}s
+$$
+
+2. Only the first direction is shown as the other is similar
+
+$$
+\begin{align*}
+  U_\alpha U_\beta f &= \int_0^\infty e^{-\alpha s} P_s U_\beta f\,\mathrm{d}s = \int_0^\infty e^{-\alpha s} P_s \int_0^\infty e^{-\beta t} P_t f\,\mathrm{d}t \\
+  &= \int_0^\infty e^{-\alpha s} \int_0^\infty e^{-\beta t}P_s P_t f\,\mathrm{d}s\,\mathrm{d}t = \int_0^\infty \int_0^\infty e^{-\alpha s} e^{-\beta t} P_{s+t} f\,\mathrm{d}s\,\mathrm{d}t
+\end{align*}
+$$
+
+3. Assume $\alpha < \beta$ as the case $\alpha = \beta$ is trivial. From the 2nd identity
+
+$$
+  U_\alpha U_\beta f = \int_0^\infty \int_0^\infty e^{-\alpha s} e^{-\beta t} P_{s+t} f\,\mathrm{d}s\,\mathrm{d}t
+$$
+
+The transformation $u = s + t, v = s$ maps $[0,\infty)^2$ one-to-one onto $\{(u,v)\in[0,\infty)^2 : u\geq v\}$. The inverse transformation is $s = v, t = u - v$ with Jacobian $-1$. This gives
+
+$$
+\begin{align*}
+  U_\alpha U_\beta f &= int_0^\infty \int_0^u e^{-\alpha v} e^{-\beta(u - v)} P_u f\,\mathrm{d}v\,\mathrm{d}u \\
+  &= \int_0^\infty \left(\int_0^u e^{(\beta - \alpha)v}\,\mathrm{d}v \right) e^{-\beta u} P_u f\,\mathrm{d}u \\
+  &= \frac{1}{\beta - \alpha}\int_0^\infty [e^{(\beta - \alpha)u}] e^{-\beta u} P_u f,\mathrm{d}u \\
+  &= \frac{1}{\beta - \alpha}\left(\int_0^\infty e^{-\alpha u} P_u f\,\mathrm{d}u -\int_0^\infty e^{-\beta u} P_u f\,\mathrm{d}u \right) \\
+  &= \frac{1}{\beta - \alpha}(U_\alpha f - U_\beta f)
+\end{align*}
+$$
+
+Note that $U_\beta f$ is finite since $\beta > 0$.
+
+4. Suppose that $f\in\mathcal{C}_0$ and that $(x_i)_{i\in\mathbb{N}}$ is a sequence in $S$. Then $P_t f\in \mathcal{C}_0$ for $t\in[0,\infty)$. Hence if $x_n \xrightarrow{n\to\infty} x \in S$ then $e^{-\alpha t}P_t f(x_n) \xrightarrow{n\to\infty} e^{-\alpha t}P_t f(x)$ for each $t\in[0,\infty)$. By the dominated convergence theorem
+
+$$
+  U_\alpha f (x_n) = \int_0^\infty e^{-\alpha t}P_t f(x_n)\,\mathrm{d}t \xrightarrow{n\to\infty} \int_0^\infty e^{-\alpha t} P_t f(x)\,\mathrm{d}t = U_\alpha f(x)
+$$
+
+Hence $U_\alpha$ is continuous. Next suppose that $x_n \xrightarrow{n\to\infty} \infty$. This means that for every compact $C\subseteq S$, there exists $m\in\mathbb{N}_+$ such that $x_n \not\in C$ for $n > m$. Then $e^{-\alpha t} P_t f(x_n) \xrightarrow{n\to\infty} 0$ for each $t\in[0,\infty)$. Again by the dominated convergence theorem
+
+$$
+  U_\alpha f(x_n) = \int_0^\infty e^{-\alpha t} P_t f(x_n)\,\mathrm{d}t \xrightarrow{n\to\infty} 0
+$$
+
+Hence $U_\alpha f \in \mathcal{C}_0$.
+
+5. Convergence is with respect to the supremum norm on $\mathcal{C}_0$. Suppose that $f\in\mathcal{C}_0$. Note first that with change of variables $s = \alpha t$
+
+$$
+  \alpha U_\alpha f = \int_0^\infty \alpha e^{-\alpha t} P_t f\,\mathrm{d}t = \int_0^\infty e^{-s} P_{s/\alpha}f\,\mathrm{d}s
+$$
+
+and hence
+
+$$
+\begin{align*}
+  |\alpha U_\alpha f - f| &= \left| \int_0^\infty e^{-s}(P_{s/\alpha} f - f)\,\mathrm{d}s \right| \\
+  \leq \int_0^\infty e^{-s} |P_{s/\alpha f - f}\,\mathrm{d}s \\
+  \leq \int_0^\infty e^{-s} \lVert P_{s/\alpha} f - f \rVert\,\mathrm{d}s
+\end{align*}
+$$
+
+It follows that
+
+$$
+  \lVert \alpha U_\alpha f - f \rVert \leq \int_0^\infty e^{-s} \lVert P_{s/\alpha} f - f \rVert\mathrm{d}s
+$$
+
+However, $\lVert P_{s\alpha} f - f \rVert \xrightarrow{\alpha\to\infty} 0$ and hence by the dominated convergence theorem
+
+$$
+  \int_0^\infty e^{-s}\lVert P_{s/\alpha} f - f \rVert\,\mathrm{d}s \xrightarrow{\alpha\to\infty} 0
+$$
+</details>
+</MathBox>
+
+
 
 #### Infinitesimal generator
 
