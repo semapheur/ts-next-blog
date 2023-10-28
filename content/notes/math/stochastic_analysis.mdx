@@ -1466,54 +1466,244 @@ Since $Z_0 = 0$, then $\mathbf{X}$ uniquely determines $\mathbf{Z}$. Finally, si
 </details>
 </MathBox>
 
-### Doob's optional sampling theorem
+### Stopping time
+
+#### Optional stopping
 
 Doob's theorem states that stopping a martingale at random time $\tau$ does not alter the martingale property, provided the decision about when to stop is solely based on information available up to $\tau$. 
 
-<MathBox title="Doob's optional sampling theorem" boxType='theorem'>
-Let $\{X_n\}_{n\geq \mathbb{Z}^+}$ be a martingale relative to a filtration $\mathscr{F}_n$ and let $\tau$ be a stopping time. Then the stopped sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ is a martingale. Consequently, for any $n \in \mathbb{N}$
+<MathBox title="Doob's optional stopping theorem" boxType='theorem'>
+Let $\mathbf{X} = \{ X_t \}_{t\in T}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $\rho, \tau \in T$ are bounded stopping times relative to $\mathscr{F}$ with $\rho\leq\tau$
 
-$$
-  \mathrm{E}\left[ X_{\tau \land n} \right] = \mathrm{E}\left[ X_0 \right]
-$$
+1. If $\mathbf{X}$ is a martingale then $\mathbb{E}(X_\tau | \mathcal{F}_p) = X_\rho$
+2. If $\mathbf{X}$ is a sub-martingale then $\mathbb{E}(X_\tau | \mathcal{F}_p) \geq X_\rho$
+3. If $\mathbf{X}$ is a super-martingale then $\mathbb{E}(X_\tau | \mathcal{F}_p) \leq X_\rho$
 
 <details>
 <summary>Proof</summary> 
 
-The sequence $\{ X_{\tau \land n} \}_{n\geq 0}$ may be represented as a transform of the sequence $\{X_n\}_{n\geq \mathbb{Z}^+}$
+**Discrete time**
+1. Suppose that $\tau\leq k\in\mathbb{N}_+$ and let $A\in\mathcal{F}_\tau$. For $j\in\mathbb{N}$ with $j\leq k$, it follows that $A\cap \{\tau = j\}\in\mathcal{F}_j$. Thus, by the martingale property
 
 $$
-\begin{gather*}
-  X_{\tau \land n} = (Z\cdot X)_n \\
-  Z_n = \begin{cases} 1, &\quad \tau \geq n \\ 0, &\quad \tau < n \end{cases}
-\end{gather*}
+  \mathbb{E}(X_k;A\cap\{\tau = j}) = \mathbb{E}(X_j;A\cap\{\tau = j}) = \mathbb{E}(X_\tau; A\cap\{\tau = j \})
 $$
 
-The transform is easily verified
+Since $k$ is an upper bound on $\tau$, the events $A\cap\{\tau = j \}$ partition $A$ for $j = 0, 1,\dots, k$. Summing the equation over $j$ gives $\mathbb{E}(X_k; A) = \mathbb{E}(X_\tau; A)$. By definition of conditional expectation $\mathbb{E}(X_k | \mathcal{F}_\tau) = X_\tau$. Since $k$ is also an upper bound for $\rho$, it follows that $\mathbb{E}(X_k | \mathcal{F}_\rho) = X_\rho$. Using the tower property we get
 
 $$
 \begin{align*}
-  (Z\cdot X)_n &= X_0 + \sum_{j=1}^n Z_j \left( X_j - X_{j - 1} \right) \\
-  &= X_0 + \sum_{j=1}^{\tau \land n} \left( X_j - X_{j - 1} \right) \\
-  &= X_{\tau \land n}
+  X_\rho &= \mathbb{E}(X_k | \mathcal{\rho}) = \mathbb{E}[\mathbb{E}(X_k | \mathcal{F}_\rho)|\mathcal{F}_\tau] \\
+  &= \mathbb{E}[\mathbb{E}(X_k|\mathcal{F}_\tau)|\mathcal{F}_\rho] = \mathbb{E}(X_\tau|\mathcal{F}_\rho)
 \end{align*}
 $$
+
+2. If $\mathbf{X}$ is a sub-martingale, then by Doob's decomposition theorem, $X_n = Y_n + Z_n$ for $n\in\mathbb{N}$ where $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}}$ is a martingale relative to $\mathscr{F}$ and $\mathbf{Z} = \{Z_n \}_{n\in\mathbb{N}}$ is increasing and is predictable relative to $\mathscr{F}$
+
+$$
+  \mathbb{E}(X_\tau | \mathcal{F}_\rho) = \mathbb{E}(Y_\tau | \mathcal{F}_\rho) + \mathbb{E}(Z_\tau | \mathcal{F}_\rho)
+$$
+
+Since $\mathbb{E}(Y_\tau | \mathcal{F}_\rho) = Y_\rho$ by the first condition and since $\mathbf{Z}$ is increasing, $\mathbb{E}(Z_\tau | \mathcal{F}_\rho) \geq\mathbb{E}(Z_\rho | \mathcal{F}_\rho) = Z_\rho$. Hence $\mathbb{E}(X_\tau | \mathcal{F}_\rho) \geq X_\rho$.
+
+3. The proof when $\mathbf{X}$ is a super-martingale is same as for when $\mathbf{X}$ is a sub-martingale, except that the process $\mathbf{Z}$ is decreasing.
+
+**Continuous time**
+
+Note that in continuous time, the proofs when $\mathbf{X}$ is a sub or super-martingale is the same as in discrete time.
+
+Suppose that $\mathbf{X}$ is a martingale. We need to show that $\mathbb{E}(X_\tau; A) = \mathbb{E}(X_\rho; A)$ for every $A\in\mathcal{F}_\rho$. Let $\rho_n = \lceil 2^n \rho \rceil / 2^n$ and $\tau_n = \lceil 2^n \tau \rceil / 2^n$ for $n\in\mathbb{N}$. The stopping times $\rho_n$ and $\tau_n$ take values in a countable set $T_n$ for each $n\in\mathbb{N}$ and $\rho_n \xrightarrow{n\to\infty}\rho$ and $\tau_n\xrightarrow{n\to\infty}\tau$. The process $\{ X_t \}_{t\in T_n}$ is a discrete-time martingale for each $n\in\mathbb{N}$. By the right continuity of $\mathbf{X}$, 
+
+$$
+  X_{\rho_n} \xrightarrow{n\to\infty} X_\rho \quad X_{\tau_n}\xrightarrow{n\to\infty}X_\tau
+$$
+
+Suppose next that $\tau\leq c$ where $c\in(0,\infty)$ so that $\rho\leq c$ also. Then $\rho_n \leq c+1$ and $\tau_n \leq c+1$ for $n\in\mathbb{N}$ so the discrete stopping times are uniformly bounded. From the discrete version of the theorem $X_{\rho_n} = \mathbb{E}(X_{c+1} | \mathcal{F}_{\rho_n})$ adn $X_{\tau_n} = \mathbb{E}(X_{c+1}|\mathcal{F}_{\tau_n})$ for $n\in\mathbb{N}$. It follows that the sequences $\{ X_{\rho_n} \}_{n\in\mathbb{N}}$ and $\{ X_{\tau_n} \}_{n\in\mathbb{N}}$ are uniformly integrable and hence $X_{\rho_n}\xrightarrow{n\to\infty} X_\rho$ and $X_{\tau_n}\xrightarrow{n\to\infty} X_\tau$ in mean as well as with probability $1$. 
+
+Let $A\in\mathcal{F}_p$. Since $\rho\leq\rho_n$, it follows that $\mathcal{F}_\rho \subseteq \mathcal{F}_{\rho_n}$ and thus $A\in\mathcal{F}_{\rho_n}$ for each $n\in\mathbb{N}$. By the theorem in discrete time
+
+$$
+  \mathbb{E}(X_{\tau_n};A) = \mathbb{E}(X_{\rho_n}; A)
+$$
+
+Letting $n\to\infty$ gives $\mathbb{E}(X_\tau;A) = \mathbb{E}(X_\rho;A)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $\mathbf{X} = \{ X_t \}_{t\in T}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $\rho, \tau \in T$ are bounded stopping times relative to $\mathscr{F}$ with $\rho\leq\tau$
+
+1. If $\mathbf{X}$ is a martingale then $\mathbb{E}(X_\tau) = \mathbb{E}(X_\rho)$
+2. If $\mathbf{X}$ is a sub-martingale then $\mathbb{E}(X_\tau ) \geq \mathbb{E}(X_\rho)$
+3. If $\mathbf{X}$ is a super-martingale then $\mathbb{E}(X_\tau) \leq \mathbb{E}(X_\rho)$
+
+<details>
+<summary>Proof</summary> 
+
+Recall that $\mathbb{E}(X_\tau) = \mathbb{E}[\mathbb{E}(X_\tau | \mathcal{F}_)]$, so the results follow directly from the Doob's optional stopping theorem.
+</details>
+</MathBox>
+
+#### Stopped martingale
+
+<MathBox title='Stopped process' boxType='definition'>
+Let $\mathbf{X} = \{ X_t \}_{t\in T}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $\tau \in T_\infty$ is a stopping time relative to $\mathscr{F}$. The stopped process $\mathbf{X}^\tau = \{X_t^\tau\}_{t\in[0,\infty)}$ is defined by
+
+$$
+  X_t^\tau = X_{t\wedge \tau} = \begin{cases} 
+    X_t,\quad t < \tau \\
+    X_\tau,\quad t\geq \tau
+  \end{cases}
+$$
+
+<details>
+<summary>Details</summary> 
+
+In continuous times, the standard assumptions ensure that $\mathbf{X}^\tau$ is a valid stochastic process and is adapted to $\mathscr{F}$. That is, $X_t^\tau$ is measurable with respect to $\mathcal{F}_t$ for each $t\in[0,\infty)$. Moreover, $\mathbf{X}^\tau$ is also right continuous and has left limits.
+</details>
+</MathBox>
+
+<MathBox title='Elementary stopping theorem' boxType='theorem'>
+Let $\mathbf{X} = \{ X_t \}_{t\in T}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $\tau \in T$ is a stopping times relative to $\mathscr{F}$
+
+1. If $\mathbf{X}$ is a martingale then so is $\mathbf{X}^\tau$
+2. If $\mathbf{X}$ is a sub-martingale then so is $\mathbf{X}^\tau$
+3. If $\mathbf{X}$ is a super-martingale then so is $\mathbf{X}^\tau$
+
+<details>
+<summary>Proof</summary> 
+
+If $s,t\in T$ with $s\leq t$ then $\tau\wedge s$ and $\tau\wedge t$ are bounded stopping times with $\tau\wedge s\leq \tau\wedge t$. The results follow directly from the optional stopping theorem.
+
+In discrete time, the theorem can be proved using the martingale transform. Suppose that $T=\mathbb{N}$ and define the process $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}_+}$ by
+
+$$
+  Y_n = \mathbf{1}(\tau\geq n) = 1 - \mathbf{1}(\tau\leq n-1)
+$$
+
+which is bounded and nonnegative. By the definition of a stopping time, $\{ \tau\leq n - 1 \}\in\mathcal{F}_{n-1}$, so the process $\mathbf{Y}$ is predictable. The transform of $\mathbf{X}$ by $\mathbf{Y}$ is
+
+$$
+\begin{align*}
+  (\mathbf{Y}\cdot\mathbf{X})_n &= X_0 + \sum_{k=1}^n Y_k(X_k - X_{k+1}) \\
+  &= X_0 + \sum_{k=1}^n \mathbf{1}(\tau\geq k)(X_k - X_{k-1})
+\end{align*}
+$$
+
+Note that 
+
+$$
+\begin{align*}
+  X_k^\tau - X_{k-1}^\tau &= \begin{cases}
+    X_k - X_{k-1}$, & $\tau \geq k$ \\
+    X_k^\tau - X_{k-1}^\tau = X_\tau - X_\tau = 0, & \tau < k
+  \end{cases} \\
+  &= \mathbf{1}(\tau\geq k)(X_k - X_{k-1})
+$$
+
+Hence
+
+$$
+\begin{align*}
+  (\mathbf{Y}\cdot\mathbf{X})_n &= X_0 + \sum_{k=1}^n (X_k^\tau - X_{k+1}^\tau) \\
+  &= X_0 + X_n^\tau - X_0^\tau = X_n^\tau
+\end{align*}
+$
+$$
+
+If $\mathbf{X}$ is a (sub/super-)martingale, then so is the transform $\mathbf{X}\cdot\mathbf{Y}=\mathbf{X}^\tau$
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $\mathbf{X} = \{ X_t \}_{t\in T}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $\tau \in T$ is a stopping times relative to $\mathscr{F}$
+
+1. If $\mathbf{X}$ is a martingale then $\mathbb{E}(X_{t\wedge\tau} = \mathbf{E}(X_0)$
+2. If $\mathbf{X}$ is a sub-martingale then $\mathbb{E}(X_{t\wedge\tau} \geq\mathbf{E}(X_0)$
+3. If $\mathbf{X}$ is a super-martingale then $\mathbb{E}(X_{t\wedge\tau} \leg\mathbf{E}(X_0)$
+</MathBox>
+
+#### Discrete time
+
+<MathBox title='' boxType='corollary'>
+Let $\mathbf{X} = \{ X_n \}_{n\in\mathbb{N}}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $|X_n|$ is bounded uniformly for $n\in\mathbb{N}$ and that the stopping time $\tau$ is finites
+
+1. If $\mathbf{X}$ is a martingale then $\mathbb{E}(X_\tau) = \mathbb{E}(X_0)$
+2. If $\mathbf{X}$ is a sub-martingale then $\mathbb{E}(X_\tau) \geq\mathbb{E}(X_0)$
+3. If $\mathbf{X}$ is a super-martingale then $\mathbb{E}(X_\tau) \leq\mathbb{E}(X_0)$
+
+<details>
+<summary>Proof</summary> 
+
+Assume that $\mathbf{X}$ is a super-martingale. The proof for a sub-martingale is similar and the result follows immediately. By the mean property for a stopped super-martingale
+
+$$
+  \mathbb{E}(X_{\tau\wedge n})\leq\mathbb{E}(X_0),\; n\in\mathbb{N}
+$$
+
+Since $\tau < \infty$ with probability $1$, then $\tau\wedge n \xrightarrow{n\to\infty} \tau$ with probability $1$. Since $|X_n|$ is bounded in $n\in T$, it follows from the bounded convergence theorem that $\mathbb{E}(X_{\tau\wedge n})\xrightarrow{n\to\infty}\mathbb{E}(X_\tau)$. Letting $n\to\infty$ in the displayed equation gives $\mathbb{E}(X_\tau)\leq\mathbb{E}(X_0)$.
 </details>
 </MathBox>
 
 <MathBox title='Wald identities' boxType='proposition'>
 Let $S_n = \sum_{i=1}^n \xi_i$, then the following identities hold: 
-- First identity: if $\mathrm{E}\left[ |\xi_i | \right] < \infty$ and $\mathrm{E}\left[ \tau \right] < \infty$ then $ \mathrm{E}[|S_\tau|] < \infty$ and  
+1. if $\mathrm{E}\left[ |\xi_i | \right] < \infty$ and $\mathrm{E}\left[ \tau \right] < \infty$ then $ \mathrm{E}[|S_\tau|] < \infty$ and  
 $$
   \mathrm{E}[S_\tau] = \mathrm{E}[\tau] \cdot \mathrm{E}[\xi_k]
 $$
-- Second identity: if $\mathrm{E}\left[ \xi_i \right] = 0$ and $\sigma^2 = \mathrm{E}\left[ \xi_i^2 \right] < \infty$ then 
+2. if $\mathrm{E}\left[ \xi_i \right] = 0$ and $\sigma^2 = \mathrm{E}\left[ \xi_i^2 \right] < \infty$ then 
 $$
   \mathrm{E}[S_\tau^2] = \sigma^2 \mathrm{E}[\tau]
 $$
-- Third identity: assume that $\mathrm{E}\left[ e^{\theta \xi_1} \right] = e^{-\psi(\theta)} < \infty$, then for every bounded stopping time
+3. assume that $\mathrm{E}\left[ e^{\theta \xi_1} \right] = e^{-\psi(\theta)} < \infty$, then for every bounded stopping time
 $$
   \mathrm{E}\left[ \theta S_\tau - \tau \psi(\theta) \right] = 1
+$$
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $\mathbf{X} = \{ X_n \}_{n\in\mathbb{N}}$ be a process relative to a filtration $\mathscr{F} = \{ \mathcal{F}_t \}_{t\in T}$. Suppose that $|X_{n+1} - X_n|$ is bounded uniformly for $n\in\mathbb{N}$ and that $\mathbb{E}(\tau) < \infty$
+
+1. If $\mathbf{X}$ is a martingale then $\mathbb{E}(X_\tau) = \mathbb{E}(X_0)$
+2. If $\mathbf{X}$ is a sub-martingale then $\mathbb{E}(X_\tau) \geq\mathbb{E}(X_0)$
+3. If $\mathbf{X}$ is a super-martingale then $\mathbb{E}(X_\tau) \leq\mathbb{E}(X_0)$
+
+<details>
+<summary>Proof</summary> 
+
+Assume that $\mathbf{X}$ is a super-martingale. The proof for a sub-martingale is similar and the result follows immediately. By the mean property for a stopped super-martingale
+
+$$
+  \mathbb{E}(X_{\tau\wedge n})\leq\mathbb{E}(X_0),\; n\in\mathbb{N}
+$$
+
+Suppose that $|X_{n+1} - X_n| \leq c$ for $c\in (0,\infty)$. Then
+
+$$
+\begin{align*}
+  |X_{\tau\wedge n - X_0}| &= \left| \sum_{k=1}^{\tau\wedge n} (X_k - X_{k-1}) \right| \\
+  &\leq \sum_{k=1}^{\tau\wedge n} |X_k - X_{k-1}| \leq c(\tau\wedge n) \leq c\tau
+\end{align*}
+$$
+
+Hence $|X_{\tau\wedge n}| \leq c\tau + |X_0|$. Since $\mathbb{E}(\tau) < \infty$ we know that $\tau < \infty$ with probability $1$, such that $\tau\wedge n \xrightarrow{n\to\infty} \tau$. Also $\mathbb{E}(c\tau + |X_0|) < \infty$ so by the dominated convergence theorem $\mathbb{E}(X_{\tau\wedge n}) \xrightarrow{n\to\infty}\mathbb{E}(X_\tau)$. Letting $n\to\infty$ in the displayed equation gives $\mathbb{E}(X_\tau)\leq\mathbb{E}(X_0)$.
+</details>
+</MathBox>
+
+<MathBox title='Wald identities' boxType='proposition'>
+Let $S_n = \sum_{i=1}^n \xi_i$, then the following identities hold: 
+1. if $\mathbb{E}\left( |\xi_i | \right) < \infty$ and $\mathbb{E}(\tau) < \infty$ then $ \mathbb{E}(|S_\tau|) < \infty$ and  
+$$
+  \mathbb{E}(S_\tau) = \mathbb{E}(\tau) \cdot \mathbb{E}(\xi_k)
+$$
+2. if $\mathbb{E}\left( \xi_i \right) = 0$ and $\sigma^2 = \mathbb{E}\left( \xi_i^2 \right) < \infty$ then 
+$$
+  \mathbb{E}(S_\tau^2) = \sigma^2 \mathbb{E}(\tau)
+$$
+3. assume that $\mathbb{E}\left( e^{\theta \xi_1} \right) = e^{-\psi(\theta)} < \infty$, then for every bounded stopping time
+$$
+  \mathbb{E}\left[ \theta S_\tau - \tau \psi(\theta) \right] = 1
 $$
 </MathBox>
 
@@ -1836,7 +2026,6 @@ Then $\mathbf{X} = \{X_n\}$ is a partial products process associated with $\math
 1. martingale if $\mathbb{E}(V_n) = 0$
 2. sub-martingale if $\mathbb{E}(V_n) \geq 1$
 3. super-martingale if $\mathbb{E}(V_n)\leq 1$
-
 
 <details>
 <summary>Proof</summary>
