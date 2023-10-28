@@ -28,7 +28,7 @@ function Toggle() {
 
 export default function Sidebar({noteDetails}: Props) {
   return (
-    <div className='absolute top-0 left-0 h-full
+    <div className='z-[1] absolute top-0 left-0 h-full
       bg-primary/50 backdrop-blur shadow-r dark:shadow-black/50 md:relative w-auto'
     >
       <Toggle/>
