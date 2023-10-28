@@ -1754,7 +1754,9 @@ If $h$ is harmonic, $\mathbb{E}[h(X_t)|\mathcal{F}_s] = h(X_s)$ such that $h(\ma
 </details>
 </MathBox>
 
-### Maximal inequalities
+### Inequalities
+
+#### Maximal inequalities
 
 <MathBox title="Markov's inequality (alternate)" boxType='proposition'>
 If $X$ is a real-valued random variable then
@@ -1972,6 +1974,183 @@ $$
 Since this holds for all $\varepsilon\in (0,x)$, it follows that $\mathbb{P}(U_\infty \geq x) \leq \frac{1}{x}\mathbb{E}(X_0)$.
 </details>
 </MathBox>
+
+#### Up-crossing inequality
+
+##### Discrete time
+The up-crossing inequality gives a bound on how much a sub/super-martingale can oscillate.
+
+<MathBox title='Up-crossing' boxType='definition'>
+Suppose that $\mathbf{x} = (x_n)_{n\in\mathbb{N}}$ is a sequence of real numbers, and that $a, b\in\mathbb{R}$ with $a < b$. Define $t_0(\mathbf{x}) = 0$ and the recursively define
+
+$$
+\begin{align*}
+  s_{k+1} (\mathbf{x}) &= \int\{n\in\mathbb{N} \;|\; n\geq t_k (\mathbf{x}), x_n \leq a\} \\
+  t_{k+1} (\mathbf{x}) &= \int\{n\in\mathbb{N} \;|\; n\geq s_{k+1} (\mathbf{x}), x_n \geq b\}
+\end{align*}
+$$
+
+1. The number of up-crossings of the interval $[a,b]$ by the sequence $\mathbf{x}$ up to time $n\in\mathbb{N}$ is
+$$
+  u_n(a,b,\mathbf{x}) = \sup\{k\in\mathbb{N} \;|\; t_k(\mathbf{x})\leq n \}
+$$
+2. The total number of up-crossings of the interval $[a,b]$ by the sequence $\mathbf{x}$ is
+$$
+  u_\infty (a,b,\mathbf{x}) = \sup\{k\in\mathbb{N} \;|\; t_k(\mathbf{x}) \}
+$$
+
+Note that if $t_k (\mathbf{x}) < \infty$, then $(x_n \;|\; n = s_k(\mathbf{x}),\dots,t_k(\mathbf{x}))$ is the $k$th up-crossing of the interval $[a, b]$ by the sequence $\mathbf{x}$.
+</MathBox>
+
+<MathBox title='Properties of up-crossings' boxType='proposition'>
+Suppose that $\mathbf{x} = (x_n)_{n\in\mathbb{N}}$ is a sequence of real numbers, and that $a, b\in\mathbb{R}$ with $a < b$.
+
+1. $u_n (a,b,\mathbf{x})$ is increasing in $n\in\mathbb{N}$
+2. $u_n (a,b,\mathbf{x})\xrightarrow{n\to\infty} u(a,b,\mathbf{x})$
+3. If $c,d\in\mathbb{R}$ with $a < c < d < b$ then $u_n (c,d,\mathbf{x}) \geq u_n(a,b,\mathbf{x})$ for $n\in\mathbb{N}$ and $u(c,d,\mathbf{x}) \geq u(a,b,\mathbf{x})$
+
+<details>
+<summary>Proof</summary>
+
+1. Note that $\{k\in\mathbb{N} \;|\; t_k(\mathbf{x}) \leq n\}\subset\{k\in\mathbb{N} \;|\; t_k(\mathbf{x}) \leq n + 1 \}$
+2. Note that $\bigcup_{n=0}^\infty \{ k\in\mathbb{N} \;|\; t_k(\mathbf{x}) \} = \{ k\in\mathbb{N} \;|\; t_k (\mathbf{x})\leq \infty \}$
+3. Every up-crossing of $[a,b]$ is also an up-crossing of $[c,d]$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Suppose that $\mathbf{x} = (x_n)_{n\in\mathbb{N}}$ is a sequence of real numbers. Then $\lim_{n\to\infty} x_n$ exists in $R^* = \mathbb{R}\cup\{-\infty, \infty\}$ if and only if $u_\infty (a,b,\mathbf{x})< \infty$ for every $a,b\in\mathbb{Q}$ with $a < b$.
+
+<details>
+<summary>Proof</summary>
+
+Proving by contraposition, the following statements are equivalent
+1. $\lim_{n\to\infty} x_n$ does not exist in $\mathbb{R}^*$
+2. $\liminf_{n\to\infty} x_n < \limsup_{n\to\infty} x_n$
+3. There exists $a,b\in\mathbb{Q}$ with $a < b$ and with $x_n \leq a$ and $x_n \geq b$ for infinitely many $n\in\mathbb{N}$
+4. There exists $a,b\in\mathbb{Q}$ with $a < b$ and $u_\infty (a, b, \mathbf{x})$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Suppose that $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is a process with respect to the filtration $\mathscr{F} = \{F_n\}_{n\in\mathbb{N}}$, and let $a,b\in\mathbb{R}$ with $a < b$. Let $U_n = u_n (a,b,\mathbf{x})$ be the random number of up-crossing of $[a,b]$ by $\mathbf{X}$ up to time $n\in\mathbb{N}$.
+
+1. If $\mathbf{X}$ is a super-martingale then
+$$
+\begin{align*}
+  \mathbb{E}(U_n) &\leq \frac{1}{b-a}\mathbb{E}[(X_n - a)^-] \\
+  &\leq \frac{1}{b-a}\left[\mathbb{E}(X_n^-) + |a|\right] \\
+  &\leq \frac{1}{b-a}\left[\mathbb{E}(|X_n|) + |a|\right]
+\end{align*}
+$$
+
+2. If $\mathbf{X}$ is a sub-martingale then
+$$
+\begin{align*}
+  \mathbb{E}(U_n) &\leq \frac{1}{b-a}\mathbb{E}[(X_n - a)^+] \\
+  &\leq \frac{1}{b-a}\left[\mathbb{E}(X_n^+) + |a|\right] \\
+  &\leq \frac{1}{b-a}\left[\mathbb{E}(|X_n|) + |a|\right]
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $\sigma_k = s_k(\mathbf{X})$ and $\tau_k = t_k(\mathbf{X})$ be the random times that define the up-crossings of $\mathbf{X}$ for $k\in\mathbb{N}$. Let $Y_k = X_{\tau_k \wedge n} - X_{\sigma_k \wedge n}$ and then define $Z_n = \sigma_{k=1}^n Y_k$. For the $k$th term $Y_k$
+
+- If $\tau_k \leq n$ then $Y_k = X_{\tau_k} - X_{\sigma_k} \geq b - a$. By definition, the first $U_n$ terms are of this form.
+- If $\sigma_k \leq n < \tau_k$ then $Y_k = X_n - X_{\sigma_k} \geq X_n - a$. There is at most one such term, with index $k = U + 1$.
+- If $\sigma_k > n$ then $Y_k = X_n - X_n = 0$
+
+Hence $Z_n \geq (b - a)U_n + (X_n - a)\mathbf{1}(\sigma_{U_n + 1} \leq n)$ and so $(b - a)U_n \leq Z_n - (X_n - a)\mathbf{1}(\sigma_{U_n + 1} \leq n)$. Note that $\sigma_k \wedge n$ and $\tau_k \wedge n$ are bounded stopping times and of course $\sigma_k \wedge n \leq \tau_k \wedge n$.
+
+1. If $\mathbf{X}$ is a super-martingale, if follows from the optional stopping theorem that
+$$
+  \mathbb{E}(Y_k) = \mathbb{E}(X_{\tau_k \wedge n}) - \mathbb{E}(X_{\sigma_k \wedge n}) \leq 0
+$$
+
+Thus $\mathbb{E}(Z_n) \leq 0$. Finally, $-(X_n - a)\mathbf{1}(\sigma_{U_n + 1} \leq n) \leq (X_n - a)^-$. Taking expected values gives
+
+$$
+  (b - a)\mathbb{E}(U_n) \leq \mathbb{E}(Z_n) + \mathbb{E}[(X_n - a)^-] \leq \mathbb{E}[(X_n - a)^-]
+$$
+
+The remaining parts of the inequality follow since $(x - a)^- \leq x^- + |a| \leq |x| + |a|$ for $x\in\mathbb{R}$
+
+**Additional details**
+On a sidenote, the process $\mathbf{Z} = \{Z_n\}_{n\in\mathbb{N}}$ can be viewed as a transform of $\mathbf{X}$ by a predictable process. Specifically, for $n\in\mathbb{N}_+$, let $I_n = 1$ if $\sigma_k < n \leq \tau_k$ for some $k\in\mathbb{N}$, and let $I_n = 0$ otherwise. Since $\sigma_k$ and $\tau_k$ are stopping times, note that $\{I_n = 1\}\in\mathcal{F}_{n-1}$ for $n\in\mathbb{N}_+$. Hence the process $\mathbf{I} = \{ I_n \}_{n\in\mathbb{N}_+}$ is predictable with respect to $\mathcal{F}$. Moreover, the transform of $\mathbf{X}$ by $\mathbf{I}$ is
+
+$$
+  (\mathbf{I}\cdot\mathbf{X})_n = \sum_{j=1}^n I_j (X_j - X_{j-1}) = \sum_{k=1}^n (X_{\tau_k \wedge n} - X_{\sigma_k \wedge n}) = Z_n
+$$
+
+Since $\mathbf{I}$ is a nonnegative process, if $\mathbf{X}$ is a (sub/super-)martingale, then $\mathbf{I}\cdot\mathbf{X}$ is also a (sub/super-)martingale.
+</details>
+</MathBox>
+
+##### Continuous time
+
+<MathBox title='Continuous up-crossings' boxType='definition'>
+Suppose that $\mathbf{x}: [0,\infty)\to\mathbb{R}$, and that $a, b\in\mathbb{R}$ with $a < b$.
+
+1. If $I\subset [0,\infty)$ is finite, define $t_0^I (\mathbf{x}) = 0$ and the recursively define
+
+$$
+\begin{align*}
+  s_{k+1}^I (\mathbf{x}) &= \int\{t\in I \;|\; t\geq t_k^I (\mathbf{x}), x_t \leq a\} \\
+  t_{k+1}^I (\mathbf{x}) &= \int\{t\in I \;|\; t\geq s_{k+1}^I (\mathbf{x}), x_n \geq b\}
+\end{align*}
+$$
+
+The number of up-crossings of the interval $[a,b]$ by the function $\mathbf{x}$ restricted to $I$ is
+
+$$
+  u_I (a, b, \mathbf{x}) = \sup\{k\in\mathbb{N} \;|\; t_k^I(\mathbf{x}) < \infty \}
+$$
+
+2. If $I\subseteq [0,\infty)$ is infinite, the number of up-crossings of the interval $[a,b]$ by $\mathbf{x}$ restricted to $I$ is
+
+$$
+  u_I(a,b,\mathbf{x}) = \sup\{u_J(a,b,\mathbf{x}) \;|\; J \textrm{ is finite and } J\subset I\}
+$$
+</MathBox>
+
+For simpler notation, let $u_t (a, b, \mathbf{x}) = u_{[0,t]}(a,b,\mathbf{x})$, the number of up-crossings of $[a,b]$ by $\mathbf{x}$ on $[0,t]$ and $u_\infty(a,b,\mathbf{x}) = u_{[0,\infty)}(a,b,\mathbf{x})$, the total number of up-crossings of $[a,b]$ by $\mathbf{x}$.
+
+<MathBox title='Properties of up-crossings' boxType='proposition'>
+Suppose that $\mathbf{x}: [0,\infty)\to\mathbb{R}$ and that $a,b\in\mathbb{R}$ with $a < b$
+
+1. If $I, J \subseteq [0,\infty)$ with $I\subseteq J$ then $u_I (a,b,\mathbf{x}) \leq u_J (a,b,\mathbf{x})$
+2. If $(I_n)_{n\in\mathbb{N}}$ is an increasing sequence of sets in $[0,\infty)$ and $J = \bigcup_{n=0}^\infty I_n$ then $u_{I_n}(a,b,\mathbf{x}) \xrightarrow{n\to\infty} u_J (a,b,\mathbf{x})$
+3. If $c,d\in\mathbb{R}$ with $a < c < d < b$ and $I\subset [0,\infty)$ then $u_I (c,d,\mathbf{x}) \geq u_I(a,b,\mathbf{x})$
+
+<details>
+<summary>Proof</summary>
+
+1. The result follows easily from the definitions if $I$ is finite (and $J$ either finite of infinite). If $I$ is infinite (and hence so is $J$), note that
+$$
+  \{ u_K (a,b,\mathbf{x}) \;|\; K \textrm{ is finite and } K\subseteq I \} \subseteq \{ u_K (a,b,\mathbf{x}) \;|\; K \textrm{ is finite and } K \subseteq J \}
+$$
+2. Since $I_n$ is increasing in $n\in\mathbb{N}$, note that if $K\subset [0,\infty)$ is finite, then $K\subseteq J$ if and only if $K\subseteq I_n$ for some $n\in\mathbb{N}$.
+3. Every up-crossing of $[a,b]$ is also an up-crossing of $[c,d]$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Suppose that $\mathbf{x}:[0,\infty)\to\mathbb{R}$. Then $\lim_{t\to\infty} x_t$ exists in $R^* = \mathbb{R}\cup\{-\infty, \infty\}$ if and only if $u_\infty (a,b,\mathbf{x})< \infty$ for every $a,b\in\mathbb{Q}$ with $a < b$.
+
+<details>
+<summary>Proof</summary>
+
+Proving by contraposition, the following statements are equivalent
+1. $\lim_{t\to\infty} x_t$ does not exist in $\mathbb{R}^*$
+2. $\liminf_{t\to\infty} x_t < \limsup_{t\to\infty} x_t$
+3. There exists $a,b\in\mathbb{Q}$ with $a < b$, and there exists $s_n, t_n\in[0,\infty)$ with $x_{s_n} \leq a$ and $x_{t_n} \geq b$ for $n\in\mathbb{N}$
+4. There exists $a,b\in\mathbb{Q}$ with $a < b$ and $u_\infty (a, b, \mathbf{x})$
+</details>
+</MathBox>
+
+
 ### Examples
 
 #### Constant sequence
