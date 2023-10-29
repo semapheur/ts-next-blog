@@ -2181,7 +2181,7 @@ Proving by contraposition, the following statements are equivalent
 </MathBox>
 
 <MathBox title='' boxType='theorem'>
-Suppose that $\mathbf{X} = \{X_t\}_{t\in[0,\infty)}$ is a process with respect to the filtration $\mathscr{F} = \{F_t\}_{t\in\}$, and let $a,b\in\mathbb{R}$ with $a < b$. Let $U_t = u_t (a,b,\mathbf{x})$ be the random number of up-crossing of $[a,b]$ by $\mathbf{X}$ up to time $t\in[0,\infty)$.
+Suppose that $\mathbf{X} = \{X_t\}_{t\in[0,\infty)}$ is a process with respect to the filtration $\mathscr{F} = \{F_t\}_{t\in[0,\infty)}$, and let $a,b\in\mathbb{R}$ with $a < b$. Let $U_t = u_t (a,b,\mathbf{x})$ be the random number of up-crossing of $[a,b]$ by $\mathbf{X}$ up to time $t\in[0,\infty)$.
 
 1. If $\mathbf{X}$ is a super-martingale the
 $$
@@ -2215,6 +2215,88 @@ Since $U_t = \sup\{ U_I \;|\; I \textrm{ is finite and } I\subset [0,t] \}$, the
 $$
   \mathbb{E}(U_t) \leq\frac{1}{b-a}\mathbb{E}[(X_t - a)^+]
 $$
+</details>
+</MathBox>
+
+### Convergence
+
+If $\mathbf{X}$ is a sub-martingale realtive to $\mathscr{F}$, the inequality condition for $s,t\in T$
+
+$$
+  \mathbb{E}(X_t | \mathcal{F}_s) \geq X_s,\; s\leq t
+$$
+
+suggests that $\mathbf{X}$ displays an increasing property. If $\mathbf{X}$ is a super-martingale, the inequality reverses suggesting that $\mathbf{X}$ displays a decreasing property. By coupling these properties with a boundedness property, then intuitively the sub/super-martingale should converge as $t\to\infty$. This is indeed the case as shown by the following theorems. 
+
+<MathBox title='First martingale convergence theorem' boxType='theorem'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a sub/super-martingale with respect to the filtration $\mathscr{F} = \{F_t\}_{t\in T}$, and that $\mathbf{E}(|X_t|)$ is bounded in $t\in T$. Then there exists a random variable $X_\infty$ that is measurable with respect to $\mathcal{F}_\infty$ such that $\mathbb{E}(|X_\infty|) < \infty$ and $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Let $T_t = \{ s\in T \;|\; s\leq t\}$. For $a,b\in\mathbb{R}$ with $a < b$, let $U_t (a,b)$ denote the number of up-crossings of the interval $[a,b]$ by the process $\mathbf{X}$ on $T_t$, and let $U_\infty(a,b)$ denote the number of up-crossings of $[a,b]$ by $\mathbf{X}$ on $T$. Recall that $U_t \stackrel{\uparrow}{t\to\infty} U_\infty$. Suppose that $\mathbb{E}(|X_t|) < c$ for $c\in (0,\infty)$. By the up-crossing inequality
+
+$$
+  \mathbb{E}[U_t(a,b)] \leq \frac{1}{b-a}\left[|a| + \mathbb{E}(|X_t|)\right] \leq \frac{|a| + c}{b - a}
+$$
+
+By the monotone convergence theorem, it follows that
+
+$$
+  \mathbb{E}[U_\infty (a,b)] < \frac{|a| + c}{b - a} < \infty
+$$
+
+Showing that $\mathbb{P}[U_\infty (a,b) < \infty] = 1$. Thus $U_\infty (a,b) < \infty$ with probability $1$ for every $a,b\in\mathbb{Q}$ with $a < b$. By our characterization of convergence in terms of up-crossings, it follows that there exists a random variable $X_\infty$ with values in $\mathbb{R}^* = \mathbb{R} \cup \{-\infty, \infty\}$ such that $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$. Note that $X$ is measurable with $\mathcal{F}_\infty$. By Fatou's lemma
+
+$$
+  \mathbb{E}(|X_\infty|) \leq \liminf{t\to\infty}\mathbb{E}(|X_t|) < \infty
+$$
+
+Hence $\mathbb{P}(X_\infty \in\mathbb{R}) = 1$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+If $\mathbf{X} = \{X_t\}_{t\in T}$ is a nonnegative super-martingale with respect to the filtration $\mathscr{F} = \{F_t\}_{t\in T}$, then there exists a random variable $X_\infty$, measurable with respect to $\mathcal{F}_\infty$ such that $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbb{X}$ is a nonnegative super-martingale $\mathbb{E}(|X_t|) = \mathbb{E}(X_t) \leq\mathbb{E}(X_0)$ for $t\in T$. Hence the first martingale convergence theorem applies.
+</details>
+</MathBox>
+
+<MathBox title='Second martingale convergence theorem' boxType='theorem'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is uniformly integrable and a sub/super-martingale relative to the filtration $\mathscr{F} = \{F_t\}_{t\in T}$, such that $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$ and in mean. If $\mathbf{X}$ is a martingale with respect to $\mathscr{F}$ then $X_t = \mathbb{E}(X_\infty | \mathcal{F}_t)$ for $t\in T$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbf{X}$ is uniformly integrable, $\mathbb{E}(|X_t|)$ is bounded in $t\in T$. By the first martingale convergence theorem, there exists $X_\infty$ that is measurable with respect to $\mathcal{F}_\infty$ such that $\mathbb{E}(|X_\infty|) < \infty$ and $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$. By the uniform integrability theorem, the convergence is also in mean, i.e. $\mathbb{E}(|X_t - X_\infty|) \xrightarrow{t\to\infty} 0$. Suppose that $\mathbf{X}$ is a martingale relative to $\mathscr{F}$. For fixed $s\in T$ we know that $\mathbb{E}(X_t | \mathcal{F}_s) \xrightarrow{t\to\infty} \mathbb{E}(X_\infty | \mathcal{F}_s)$. Since $\mathbb{E}(X_t | \mathcal{F}_s) = X_s$ for $t\geq s$ it follows that $X_s = \mathbb{E}(X_\infty | \mathcal{F}_s)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in T}$ is a sub/super-martingale with respect to the filtration $\mathscr{F} = \{F_t\}_{t\in T}$, and that $\lVert X_t \rVert_k$ is bounded in $t\in T$ for some $k\in (1,\infty)$. Then there exists a random variable $X_\infty \in L_k$ such that $X_t \xrightarrow{t\to\infty} X_\infty$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $\lVert X_t \rVert_k \leq c$ for $t\in T$ where $c\in (0,\infty)$. Since $\lVert X \rVert_1 \leq \lVert X_t \rVert_k$ then $\mathbb{E}(|X_t|)$ is bounded in $t\in T$ and the first martingale convergence theorem applies. Hence there exists $X_\infty$ measurable relative to $\mathcal{F}_\infty$ such that $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$. Equivalently, $|X_t - X_\infty|^k \xrightarrow{t\to\infty} 0$ with probability $1$.
+
+For $t\in T$ let $T_t = \{ s\in T \;|\; s\leq t \}$ and define $W_t = \sup\{|X_s| \;|\; s\in T_t \}$. By the norm version of the maximal inequality
+
+$$
+  \lVert W_t \rVert_k \leq \frac{k}{k-1}\lVert X_t \rVert_k \leq \frac{ck}{k-1}
+$$
+
+Letting $W_\infty = \sup\{ |X_s| \;|\; s\in T \}$, then by the monotone convergence theorem
+
+$$
+  \lVert W_\infty \rVert_k = \lim_{t\to\infty} \lVert W_t \rVert_k \leq \frac{ck}{k-1}
+$$
+
+Showing that $W_\infty \in L_k$. Since $|X_\infty| \leq W_\infty$ it follows that $X_\infty \in L_k$ also. Moreover, $|X_t - X_\infty|^k \leq 2^k W_\infty^k$, so applying the  
 </details>
 </MathBox>
 
