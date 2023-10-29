@@ -2644,7 +2644,7 @@ $$
   L_n = \prod_{i=1}^n \frac{g_0(X_i)}{g_i (X_i)},\; n\in\mathbb{N}
 $$
 
-known as the likelihood ratio test statistic. Small values of the test statistic are evidence in favor of the alternative hypothesis $H_1$
+known as the likelihood ratio test statistic. Small values of the test statistic are evidence in favor of the alternative hypothesis $H_1$.
 
 <MathBox title='Likelihood ratio martingale' boxType='proposition'>
 Under the alternative hypothesis $H_1$, the process $\mathbf{L} = \{ L_n \}_{n\in\mathbb{N}}$ is a martingale with respect to $\mathbf{X}$, known as the likelihood ratio martingale.
@@ -2663,14 +2663,39 @@ Using the change of variables formula for expected value under $H_1$ gives
 $$
   \mathbb{E}\left[\frac{g_0(X_{n+1})}{g_1(X_{n+1})}\mid| \mathcal{F}_n \right] = \int_S \frac{g_0(x)}{g_1(x)}g_1(x)\,\mathrm{d}\mu(x) = \int_S g_0(x)\,\mathrm{d}\mu(x) = 1
 $$
-
 </details>
 </MathBox>
+
+<MathBox title='Likelihood ratio martingale' boxType='proposition'>
+Under the alternative hypothesis $H_1$, then $L_n \xrightarrow{n\to\infty} 0$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that $H_1$ is true. Since $\mathbf{L}$ is a nonnegative martingale, the first martingale convergence theorem applies and there exists a random variable $L_\infty$ with values in $[0,\infty)$ such that $L_n \xrightarrow{n\to\infty} L_\infty$ with probability $1$. Note that
+
+$$
+  \ln{L_n} = \sum_{i=1}^n \ln\left[\frac{g_0(X_i)}{g_1(X_i)}\right]
+$$
+
+The variables $\ln\left[\frac{g_0(X_i)}{g_1(X_i)}\right]$ for $i\in\mathbb{N}_+$ are also independent and identically distributed, so let $m$ denote the common mean. The natural logarithm is concave and the martingale $\mathbf{L}$ has mean $1$, so by Jensen's inequality
+
+$$
+  m = \mathbb{E}\left(\ln\left[\frac{g_0(X_i)}{g_1(X_i)}\right]\right) < \ln\left(\mathbb{E}\left[\frac{g_0(X_i)}{g_1(X_i)}\right]\right) = \ln(1) = 0
+$$
+
+It follows that $m\in[-\infty, 0)$. By the strong law of large numbers, $\lim_{n\to\infty}\frac{1}{n}\ln(L_n) = m$ with probability $1$. Hence we must have $\lim_{n\to\infty} \ln(L_n) = -\infty$ with probability $1$. By continuity $\lim_{n\to\infty} (L_n) = \ln(L_\infty)$ with probability $1$ so $L_\infty = 0$ with probability $1$.
+</details>
+</MathBox>
+
+Small values of $L_n$ are evidence in favor of $H_1$ and the decision rule is to reject $H_0$ in favor of $H_1$ if $L_n \leq l$ for a chosen critical value $l\in (0,\infty)$. If $H_1$ is true and the sample size $n$ is sufficiently large, we will reject $H_0$. Since $\mathbf{L}$ is a mean $1$ martingale (under $H_1$), $\lim_{n\to\infty}\mathbf{E}(L_n) = 1$ even though $\lim_{n\to\infty} L_n = 0$ with probability $1$. 
 
 #### Doob's martingale
 
 <MathBox title="Doob's martingale" boxType='proposition'>
 Suppose that $\mathscr{F} = \{\mathcal{F}_t \}_{t\in T}$ is a filtration on the probability space $(\Omega,\mathcal{F},\mathbb{P})$ and that $X$ is a real-valued random variable with $\mathbb{E}(|X|)< \infty$. Define $X_t = \mathbb{E}(X|\mathcal{F}_t)$ for $t\in T$. Then $\mathbf{X} = \{ X_t \}_{t\in T}$ is a martingale with respect to $\mathscr{F}$.
+
+Note that $\mathbf{E}(|X|) < \infty$ implies that $X$ is uniformly integrable. Thus the second martingale convergence theorem states that every uniformly integrable martingale is a Doob martingale.
 
 <details>
 <summary>Proof</summary>
@@ -2690,3 +2715,110 @@ $$
 $$
 
 It follows that the sequence of Bayesian estimators $\mathbf{U} = (U_n)_{n\in\mathbb{N}_+}$ is a Doob martingale.
+
+<MathBox title='' boxType='proposition'>
+Let $\mathbf{X} = \{X_t\}_{t\in T}$ be the Doob martingale constructed from $X$ and $\mathscr{F}$. Then $X_t \xrightarrow{t\to\infty} X_\infty$ with probability $1$ and in mean, where
+
+$$
+  X_\infty = \mathbb{E}(X|\mathcal{F}_\infty)
+$$
+</MathBox>
+
+#### Density functions
+
+For the following discussion, let $(\Omega,\mathcal{F},\mathbb{P})$ be a probability space and $\mathscr{F} = \{\mathcal{F}_n\}_{n\in\mathbb{N}}$ a filtration in discrete time. Note that $\mathcal{F}_\infty = \sigma\left(\bigcup_{n=0}^\infty \mathcal{F}_n \right)$ Suppose that $\mu$ is a finite measure on the sample space $(\Omega,\mathcal{F})$. For each $n\in\mathbb{N}\cup\{\infty\}$, the restriction of $\mu$ to $\mathcal{F}_n$ is a measure on the measurable space $(\Omega,\mathcal{F}_n)$, and similarly the restriction of $\mathbb{P}$ to $\mathcal{F}_n$ is a probability measure on $(\Omega, \mathcal{F}_n)$. For simplicity, these will be referred to as $\mu$ and $\mathbb{P}$ of $\mathcal{F}_n$, respectively.
+
+Suppose now that $\mu$ is absolutely continuous relative to $\mathbb{P}$ on $\mathcal{F}_n$ for each $n\in\mathbb{N}$. This means that if $A\in\mathcal{F}_n$ and $\mathbb{P}(A) = 0$ then $\mu(B) = 0$ for every $B\in\mathcal{F}_n$ with $B\subseteq A$. By the Radon-Nikodym theorem, $\mu$ has a density function $X_n :\Omega\to\mathbb{R}$ with respect to $\mathbb{P}$ on $\mathcal{F}_n$ for each $n\in\mathbb{N}_+$, which is known as the Radon-Nikodym derivative.
+
+<MathBox title='' boxType='proposition'>
+The sequence of density functions $\mathbf{X} = \{X_n\}_{n\in\mathbb{N}}$ is a martingale relative to $\mathscr{F}$.
+
+<details>
+<summary>Proof</summary>
+
+By definition $X_n$ is measurable with respect to $\mathcal{F}_n$. Also $\mathbb{E}(|X_n|) = \lVert\mu\rVert$, i.e. the total variation of $\mu$, for each $n\in\mathbb{N}$. Since $\mu$ is a finite measure $\lVert\mu\rVert < \infty$. By definition
+
+$$
+  \mu(A) = \int_A X_n\;\mathrm{d}\mathbb{P} = \mathbb{E}(X_n; A),\; A\in\mathcal{F}_n
+$$
+
+On the other hand, if $A\in\mathcal{F}_n$ then $A\in\mathcal{F}_{n+1}$ and so $\mu(A) = \mathbb{E}(X_{n+1};A)$. Since $X_n$ is measurable with respect to $\mathcal{F}_n$ and $\mathbb{E}(X_{n+1};A) = \mathbb{E}(X_n;A)$ for all $A\in\mathcal{F}_n$, if follows that $\mathbb{E}(X_{n+1}|\mathcal{F}_n) = X_n$. Hence $\mathbf{X}$ is a martingale relative to $\mathscr{F}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+There exists a random variable $X_\infty$ such that $X_n \xrightarrow{n\to\infty} X_\infty$ with probability $1$.
+
+1. If $\mu$ is absolutely continuous with respect to $\mathbb{P}$ on $\mathcal{F}_\infty$ then $X_\infty$ is a density function of $\mu$ with respect to $\mathbb{P}$ on $\mathcal{F}_\infty$.
+2. If $\mu$ and $\mathbb{P}$ are mutually singular on $\mathcal{F}_\infty$ then $X_\infty = 0$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\mu$ is a finite measure, $\lVert\mu\rVert < \infty$ and the first martingale convergence applies. Thus, there exists a random variable $X_\infty$ measurable relative to $\mathcal{F}_\infty$ such that $X_n \xrightarrow{n\to\infty}X_\infty$.
+
+1. If $\mu$ is absolutely continuous with respect to $\mathbb{P}$ on $\mathcal{F}_\infty$, then $\mu$ has a density function $Y_\infty$ with respect to $\mathbb{P}$ on $\mathcal{F}_\infty$. It remains to show that $X_\infty = Y_\infty$ with probability $1$. By definition $Y_\infty$ is measurable with respect to $\mathcal{F}_\infty$ and
+
+$$
+  \int_A Y_\infty\;\mathrm{d}\mathbb{P} = \mathbb{E}(Y_\infty; A) = \mu(A),\; A\in\mathcal{F}_\infty
+$$
+
+Suppose that $n\in\mathbb{N}$ and $A\in\mathcal{F}_n$. By definition $\mathbb{E}(X_n;A) = \mu(A)$. Since $A\in\mathcal{F}_\infty$, then $\mathbb{E}(Y_\infty;A) = \mu(A)$. Also, since $X_n$ is measurable relative to $\mathcal{F}_n$ it follows that $X_n = \mathbb{E}(Y_\infty |\mathcal{F}_n)$, showing that $\mathbf{X}$ is the Doob martingale associated with $Y_\infty$. By the convergence property of Doob martingales $X_\infty = \mathbb{E}(X_\infty|\mathcal{F}_\infty) = Y_\infty$ with probability $1$ as $n\to\infty$.
+
+2. Suppose that $\mu$ and $\mathbb{P}$ are mutually singular on $\mathcal{F}_\infty$. Assume first that $\mu$ is a positive measure, so that $X_n$ is nonnegative for $n\in\mathbb{N}\cup{\infty}$. By the definition of mutual singularity, there exists $B\in\mathcal{F}_\infty$ such that $\mu_\infty (B) = 0$ and $\mathbb{P}_\infty(B^c) = 0$, so that $\mathbb{P}(B) = 1$. We need to show that $\mathbb{E}(X_\infty; A) \leq \mu(A)$ for every $A\in\mathcal{F}_\infty$. Let
+
+$$
+  \mathcal{M} = \{ A\in\mathcal{F}_\infty \;|\; \mathbb{E}(\mathcal{F}_\infty; A)\leq\mu(A) \}
+$$
+
+Suppose that $A\in\bigcup_{k=0}^\infty \mathcal{F}_k$ so that $A\in\mathcal{F}_k$ some $k\in\mathbb{N}$. Then $A\in\mathcal{F}_n$ for all $n\geq k$ and therefore $\mathbb{E}(X_n;A) = \mu(A)$ for all $n\geq k$. By Fatou's lemmas
+
+$$
+  \mathbb{E}(X_\infty; A) \leq\liminf_{n\to\infty} \mathbb{E}(X_n;A)\leq\mu(A)
+$$
+
+showing that $A\in\mathcal{M}$. Suppose that $\{A_n \}_{n\in\mathbb{N}}$ is an increasing or decreasing sequence in $\mathcal{M}$, and let $A_\infty = \lim_{n\to\infty} A_n$ (the union in the increasing case, and the intersection in the second case). Then $\mathbb{E}(X_\infty;A_n) \leq \mu(A_n)$ for each $n\in\mathbb{N}$. By the continuity theorems, $\mathbb{E}(X_\infty;A_n) \xrightarrow{n\to\infty}\mathbb{E}(X_\infty;A_\infty)$ and $\mu(A_n)\xrightarrow{n\to\infty}\mu(A_\infty)$. Therefore $\mathbb{E}(X_\infty; A_\infty) \leq \mu(A_\infty)$ and so $A_\infty \in\mathcal{M}$. It follows that $\mathcal{M}$ is a monotone class. Since $\mathcal{M}$ contains the algebra $\bigcup_{n=0}^\infty \mathcal{F}_n$, it follows from the monotone class theorem that $\mathcal{F}_\infty \subseteq\mathcal{M}$. In particular $B\in\mathcal{M}$, so $\mathbb{E}(X_\infty) = \mathbb{E}(X_\infty;B)\leq\mu(B) = 0$ and therefore $X_\infty = 0$ with probability $1$. If $\mu$ is a general finite measure, the by the Jordan decomposition theorem, $\mu$ can be written uniquely in the form $\mu = \mu^+ - \mu^-$ where $\mu^+$ and $\mu^-$ are finite positive measures. Moreover, $X_n^+$ is the density function of $\mu^+$ on $\mathcal{F}_n$ and $X_n^-$ is the density function of $\mu^-$ on $\mathcal{F}_n$. By the first part of the proof $X^+ = 0 = X^-$ so $X = 0$ all with probability $1$.
+</details>
+</MathBox>
+
+In certain cases, martingales can be used to give a probabilistic proof of the Radon-Nikodym theorem. Starting from a sample set $\Omega$, suppose that $\mathcal{A}_n = \{ A_i^n \}_{i\in I_n}$ is a countable partition of $\Omega$ for each $n\in\mathbb{N}$. That is, $I_n$ is countable, $A_i^n \cap A_j^n = \emptyset$ for distinct $i, j\in I_n$ and $\bigcup_{i\in I_n} A_i^n = \Omega$. Suppose also that $\mathcal{A}_{n+1}$ refines $\mathcal{A}_n$ for each $n\in\mathbb{N}$ in the sense that $A_i^n$ is a union of sets in $\mathcal{A}_{n+1}$ for each $i\in I_n$. 
+
+Let $\mathcal{F}_n = \sigma(\mathcal{A}_n)$. Thus $\mathcal{F}_n$ is generated by a countable partition, and the sets in $\mathcal{F}_n$ are of the form $\bigcup_{j\in J} A_j^n$ where $J\subseteq I_n$. By the refinement property $\mathcal{F}_n\subseteq\mathcal{F}_{n+1}$ so that $\mathscr{F} = \{\mathcal{F}_n\}_{n\in\mathbb{N}}$ is a filtration. Let $\mathcal{F} = \mathcal{F}_\infty = \sigma\left( \bigcup_{n=0}^\infty \mathcal{F}_n \right) = \sigma\left( \bigcup_{n=0}^\infty \mathcal{A}_n \right)$, forming the sample space $(\Omega,\mathcal{F})$. Suppose that $\mathbb{P}$ is a probability measure on $(\Omega,\mathcal{F})$ with the property that $\mathbb{P}(A_i^n) > 0$ for $n\in\mathbb{N}$ and $i\in I_n$. These constructions gives the probability space $(\Omega,\mathcal{F},\mathbb{P})$.
+
+Suppose that $\mu$ is a finite measure on $(\Omega,\mathcal{F})$. By assumption, the only null set for $\mathbb{P}$ on $\mathcal{F}_n$ is $\emptyset$, making $\mu$ automatically absolutely continuous with respect to $\mathbb{P}$ on $\mathcal{F}_n$.
+
+<MathBox title='' boxType='proposition'>
+The density function of $\mu$ with respect to $\mathbb{P}$ on $\mathcal{F}_n$ is the random variable $X_n$ defined by
+
+$$
+  X_n := \sum_{i\in I_n}\frac{\mu(A_i^n)}{\mathbb{P}(A_i^n)}\mathbf{1}(A_i^n)
+$$
+
+<details>
+<summary>Proof</summary>
+
+We need to show that $\mu(A) = \mathbb{E}(X_n;A)$ for each $A\in\mathcal{F}_n$. Suppose that $A = \bigcup_{j\in J} A_j^n$ where $J\subseteq I_n$, then
+
+$$
+\begin{align*}
+  \mathbb{E}(X_n;A) &= \sum_{j\in J}\mathbb{E}(X_n;A_j^n) \\
+  &= \sum_{j\in J}\frac{\mu(A_j^n)}{\mathbb{P}(A_j^n)}\mathbb{P}(A_j^n) \\
+  &= \sum_{j\in J}\mu(A_j^n) = \mu(A)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+For a concrete example, consider $\Omega = [0,1)$. For $n\in\mathbb{N}$ let
+
+$$
+  \mathcal{A}_n = \left\{ \left[\frac{j}{2^n}, \frac{j+1}{2^n} \right)\right\}_{j=0}^{2^n -1}
+$$
+
+This is the partition of $[0,1)$ into $2^n$ subintervals of equal length $1/2^n$ based on the dyadic rationals of rank $n$ or less. Note that every interval in $\mathcal{A}$ is the union of two adjacent intervals in $\mathcal{A}_{n+1}$, so the refinement property holds. Let $\mathbb{P}$ be the ordinary Lebesgue measure on $[0,1)$ so that $\mathbb{P}(A_i^n) = 1/2^n$ for $n\in\mathbb{N}$ and $i\in \{0,1,\dots,2^n-1\}$. Let $\mathcal{F}_n = \sigma(\mathcal{A}_n)$ and $\mathcal{F} = \sigma\left(\bigcup_{n=0}^\infty \mathcal{F}_n \right) = \sigma\left( \bigcup_{n=0}^\infty \mathcal{A}_n \right)$. Since the dyadic rationals are dense in $[0,1)$, it follows that $\mathcal{F}$ is the ordinary Borel $\sigma$-algebra on $[0,1)$. Thus, our probability space $(\Omega,\mathcal{F},\mathbb{P})$ is simply $[0,1)$ with the usual Euclidean structures. If $\mu$ is a finite measure on $([0,1),\mathcal{F})$ then the density function $\mu$ on $\mathcal{F}_n$ is the random variable $X_n$ whose value on the interval $\left[\frac{j}{2^n}, \frac{j+1}{2^n} \right]$ is
+
+$$
+  2^n \mu\left[\frac{j}{2^n}, \frac{j+1}{2^n}\right]
+$$
+
+If $\mu$ is absolutely continuous with respect to $\mathbb{P}$ on $\mathcal{F}$, then a density function of $\mu$ is $X = \lim_{n\to\infty} X_n$.
