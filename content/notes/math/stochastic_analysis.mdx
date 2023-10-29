@@ -2503,6 +2503,103 @@ for every $k\in\mathbb{N}_+$. Hence $M_\infty$ is a tail random variable for $\m
 </details>
 </MathBox>
 
+#### Exchangeable variables
+
+Suppose that $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is a sequence of random variables each taking values in $S$. Recall that $\mathbf{X}$ is exchangeable if for every $n\in\mathbb{N}$, every permutation of $\mathbf{X}$ has the same distribution on $(S^n,\mathcal{S}^n)$. Clearly if $\mathbf{X}$ is a sequence of indepedent, identically distributed variables, then $\mathbf{X}$ is exchangeable. Conversely, if $\mathbf{X}$ is exchangeable, by definition the variables are identically distributed, but not necessarily indepedent. On the other hand conditionally indepedent and identically distributed sequences are exchangeable.
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\Theta$ is a random variable on $(T,\mathcal{T})$. If $\mathbf{X}$ is conditionally indepedent and indentically distributed given $\Theta$, then $\mathbf{X}$ is exchangeable.
+
+<details>
+<summary>Proof</summary>
+
+Implicit in the statement is that the variables in the sequence have a regular conditional distribution $\mu_\Theta$ given $\Theta$. For every $n\in\mathbb{N}_+$, the conditional distribution of every permutation of $(X_i)_{i=1}^n$, given $\Theta$ is $\mu_\Theta^n$ on $(S^n,\mathcal{S}^n)$ where $\mu_\Theta^n$ is the $n$-fold product measure. Unconditionally, the distribution of any permutation is $B\mapsto \mathbb{E}[\mu_\Theta^n (B)]$ for $B\in\mathcal{S}^n$
+</details>
+</MathBox>
+
+<MathBox title="de Finetti's theorem" boxType='theorem'>
+Suppose that $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is an exchangeable sequence of random variables, each taking values in $\{0,1\}$. Then there exists a random variable $P$ with values in $[0,1]$ such that given $P = p\in[0,1]$, then $\mathbf{X}$ is a sequence of Bernoulli trials with success parameter $p$
+
+<details>
+<summary>Proof</summary>
+
+Recall the falling power notation $r^{(j)} = r(r-1)\cdots(r-j+1)$ for $r\in\mathbb{R}$ and $j\in\mathbb{N}$. For $n\in\mathbb{N}_+$ and $k\in\{0,1,\dots,n\}$ let
+
+$$
+  B_k^n = \left\{ (x_1, x_2, \dots, x_n)\in \{0,1\}^n \mid| \sum_{i=0}^n x_i = k \right\}
+$$
+
+That is, $B_k^n$ is the set of bit strings of length $n$ with $1$ occurring exactly $k$ time. Note that $|B_n^k| = \binom{n}{k} = n^{(k)}/k!$.
+
+$\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is an exchangeable sequence variables with values in $\{0,1\}$. For $n\in\mathbb{N}_+$ let $Y_n = \sum_{n=1}^n X_i$ and $M_n = Y_n / n$, such that $\mathbf{Y} = \{Y_n\}_{n\in\mathbb{N}_+}$ is the partial sum process associated with $\mathbf{X}$ and $\mathbf{M} = \{ M_n \}_{n\in\mathbb{N}_+}$ the sequence of sample means. Let $\mathcal{G}_n = \sigma\{Y_n, Y_{n+1},\dots \}$ and $\mathcal{G}_\infty = \bigcap_{n=0}^\infty \mathcal{G}_n$. The family of $\sigma$-algebras $\mathscr{G} = \{\mathcal{G}_n\}_{n\in\mathbb{N}_+}$ is the decreasing. The key to the proof is to find two backwards martingales and use the backwards martingale convergence theorem.
+
+Let $m\in\matbb{N}_+$ and $k\in\{0,1,\dots,m\}$. By exchangeability, the random vector $(X_i)_{i=1}^m$ given $Y_n = k$ is uniformly distributed on $B_k^m$. If $n\in\mathbb{N}_+$ and $n\leq m$, the random vector $(X_i)_{i=1}^m$ fits the hypergeometric model. Thus if $j\in\{0,1,\dots,n\}$ and $(x_i)_{i=1}^n \in B_j^n$ then
+
+$$
+  \mathbb{P}(X_1 = x_1, X_2 = x_2,\dots, X_n = x_n \;|\; Y_m = k) = \frac{k^{(j)}(m-k)^{(n-j)}}{m^{(n)}}
+$$
+
+Equivalently
+
+$$
+  \mathbb{P}(X_1 = x_1, X_2 = x_2,\dots, X_n = x_n \;|\; Y_m) = \frac{Y_m^{(j)}(m-Y_m)^{(n-j)}}{m^{(n)}}
+$$
+
+Given $Y_m$, the variables $(Y_{m+1}, Y_{m+1},\dots)$ give no additional information about the distribution of $(X_i)_{i=1}^n$ and hence
+
+$$
+\begin{align*}
+  \mathbb{P}(X_1 = x_1, X_2 = x_2,\dots, X_n = x_n|\mathcal{G}_m) &= \mathbb{E}[\mathbf{1}(X_1 = x_1, X_2 = x_2,\dots, X_n = x_n)|\mathcal{G}_m] \\
+  &= \frac{Y_m^{(j)}(m-Y_m)^{(n-j)}}{m^{(n)}}
+\end{align*}
+$$
+
+For fixed $n,j$ and $(x_i)_{i=1}^n \in B_j^n$, the conditional expected value, as a function of $m$, is a Doob backward martingale relative to $\mathscr{G}$ and hence converges to $\mathbb{P}(X_1 = x_1, X_2 = x_2,\dots, X_n = x_n|\mathcal{G}_\infty)$ as $m\to\infty$.
+
+Next we show that $\mathbf{M}$ is a backwards martingale relative to $\mathscr{G}$. Trivially, $M_n$ is measurable with respect to $\mathcal{G}_n$ and $\mathbf{E}(M_n) \leq 1$ for each $n\in\mathbb{N}$. Thus we need to show that $\mathbb{E}(M_n | \mathcal{G}_m) = M_m$ for $m,n\in\mathbb{N}_+$ with $n\leq m$. We already know that the conditional distribution of $Y_n$ given $Y_m = k$ is hypergeometric with parameters $m,k$ and $n$
+
+$$
+  P(Y_n = j|Y_m = k) = \binom{n}{j}\frac{k^{(j)}(m - k)^{(n-j)}}{m^{(n)}},\; j\in\{0,1,\dots,n\}
+$$
+
+Recall that the mean of the hypergeometric distribution is the sample size times the proportion of type $1$ object in the population, giving
+
+$$
+  \mathbb{E}(Y_n = j | Y_m = k) = \frac{1}{n}\mathbb{E}(Y_n | Y_m = k) = \frac{1}{n}n\frac{k}{m} = \frac{k}{m}
+$$
+
+Equivalently $\mathbb{E}(M_n | Y_m) = Y_m / m = M_m$. Given $Y_m$, the variables $(Y_{m+1}, Y_{m+2},\dots)$ give no additional information and so $\mathbf{E}(Y_n|\mathcal{G}_m) = Y_m$. Hence $\mathbf{M}$ is a backwards martingale relative to $\mathscr{G}$. From the backwards martingale convergence theorem there exists a random variable $P$ such that $M_n \xrightarrow{n\to\infty} P$ with probability $1$.
+
+Suppose that $n\in\mathbb{N}_+$ and $j\in\{0,1,\dots,n\}$ and that $m\in\mathbb{N}_+$ and $k_m \in \{0,1,\dots,m \}$. If $n,j$ are fixed and $\lim_{m\to\infty} k_m / m = p \in [0,1]$ then
+
+$$
+  \lim_{m\to\infty} \frac{k_m^{(j)}(m - k_m)^{(n-j)}}{m^{(n)}} = p^j (1 - p)^{n-1}
+$$
+
+Since $Y_m / m \xrightarrow{m\to\infty} P$ we get
+
+$$
+  \mathbb{P}(X_1 = x_1, X_2 = x_2,\dots,X_n = x_n|\mathcal{G}_\infty) = P^j (1 - P)^{n-j} 
+$$
+
+Since the random variable $P$ is measurable with respect to $\mathcal{G}_\infty$ then as $m\to\infty$
+
+$$
+  \mathbb{P}(X_1 = x_1, X_2 = x_2,\dots,X_n = x_n|P) = P^j (1 - P)^{n-j} 
+$$
+
+Given $P = p\in[0,1]$, it follows that $\mathbf{X}$ is a sequence of Bernoulli trials with success parameter $p$.
+</details>
+</MathBox>
+
+De Finetti's theorem states that the distribution of $n$ distinct variables in the exchangeable sequence is a mixture of the product measures. If $\mu_\theta$ is the distribution of a generic $X$ on $(S,\mathcal{S})$ given $\Theta = \theta$ and $\nu$ is the distribution of $\Theta$ on $(T,\mathcal{T})$, then the distribution $n$ of the variables on $(S^n, \mathcal{S}^n)$ is
+
+$$
+  B\mapsto \int_T \mu_\theta^n (B)\,\mathrm{d}\nu(\theta)
+$$
+
+If $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is an exchangeable sequence of random variables, each taking values in a measurable space $(S,\mathcal{S})$, then there exists a random variable $\Theta$ such that $\mathbf{X}$ is independent and indentically distributed given $\Theta$. The generalization of de Finetti's theorem is central in Bayesian statistical inference. For and exchangeable sequence of random variables (observations in a statistical experiment), there is a hidden, random parameter $\Theta$. Given $\Theta = \theta$, the variables are indepedent and identically distributed. We gain information about $\Theta$ by imposing a *prior distribution* on $\Theta$ and the updating thes, based on our observations and using Baye's theorem, to a posterior distribution.
+
 ### Examples
 
 #### Constant sequence
