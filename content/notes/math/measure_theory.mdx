@@ -1707,6 +1707,150 @@ Let $A\in\mathcal{A}$.
 </details>
 </MathBox>
 
+### Convolution
+
+<MathBox title='Local boundedness' boxType='definition'>
+A function $f:[0,\infty)\to\mathbb{R}$ is locally bounded if $f$ is measurable and bounded on $[0,t]$ for each $t\in[0,\infty)$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $G$ is a distribution function on $[0,\infty)$ and $f:[0,\infty)\to\mathbb{R}$ is locally bounded. Then $g: [0,\infty)\to\mathbb{R}$ defined by $g(t) = \int_0^t f(s)\,\mathrm{d}G(s)$ is also locally bounded.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $|f(s)|\leq C_t$ for $s\in[0,t]$ and $t\in[0,\infty)$, then
+
+$$
+  \int_0^s |f(x)|\,\mathrm{d}G(x) \leq C_t G(s) \leq C_t G(t)
+$$
+
+Hence $f$ is integrable on $[0,s]$ and the integral is bounded by $C_t G(t)$ for $s\in[0,t]$.
+</summary>
+</MathBox>
+
+<MathBox title='Convolution of density functions' boxType='definition'>
+Suppose that $f,g:[0,\infty)\to\mathbb{R}$ are locally bounded and that $H$ is a distribution function on $[0,\infty)$. The convolution of $f$ and $g$ with respect to $H$ is the function $f*g: [0,\infty)\to\mathbb{R}$ defined by
+
+$$
+  t\mapsto \int_0^t f(t-s)g(s)\,\mathrm{d}H(s)
+$$
+
+If $f, g$ are discrete density functions on a countable set $C\subseteq [0,\infty)$, and $H$ is the counting measure on $C$, then the convolution function becomes
+
+$$
+  (f*g)(t) = \sum_{s\in[0,t]} f(t - s)g(s)
+$$
+
+If $f, g$ are continuous density functions on $[0,\infty)$, and $H$ is the Lebesgue measure, then the convolution function becomes
+
+$$
+  (f*g)(t) = \int_0^t f(t - s)g(s)\,\mathrm{d}s
+$$
+</MathBox>
+
+<MathBox title='Convolution of distribution functions' boxType='definition'>
+Suppose that $f:[0,\infty)\to\mathbb{R}$ is locally bounded and that $G$ is a distribution function on $[0,\infty)$. The convolution of $f$ with $G$ is the function $f*G: [0,\infty)\to\mathbb{R}$ defined by
+
+$$
+  (f*G)(t) = \int_0^t f(t - s)\,\mathrm{d}G(s)
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $F$ and $G$ are distribution functions on $[0,\infty)$ then $F*G$ is also a distribution function on $[0,\infty)$ and $F*G = G*F$.
+
+<details>
+<summary>Proof</summary>
+
+Let $F\otimes G$ and $G\otimes F$ denote the usual product measures on $[0,\infty)^2 = [0,\infty)\times[0,\infty)$. For $t\in[0,\infty)$, let $T_t = \{(r, s)\in[0,\infty)^2 \;|\; r+s \leq t \}$, the triangular region with vertices $(0,0)$, $(t,0)$ and $(0,t)$. Then
+
+$$
+\begin{align*}
+  (F*G)(t) &= \int_0^t F(t - s)\,\mathrm{d}G(s) \\
+  &= \int_0^t \int_0^{t-s} \mathrm{d}F(r)\,\mathrm{d}G(s) = (F\otimes G)(T_t)
+\end{align*}
+$$
+
+which defines a distribution function. Specifically, if $0\leq s \leq t < \infty$ then $T_s \subseteq T_t$ so $(F*G)(s) = (F\otimes G) (T_s) \leq (F\otimes G)(T_t) = (F*G)(t)$. Hence $F*G$ is decreasing. If $t\in [0,\infty)$ and $t_n \in [0,\infty)$ for $n\in\mathbb{N}_+$ with $t_n \stackrel{\downarrow}{n\to\infty} t$, then $T_{t_n} \stackrel{\downarrow}{n\to\infty} T_t$ (in the subset sense). By the continuity property of $F\otimes G$ we have 
+
+$$
+  (F*G)(t_n) = (F\otimes G)(T_{t_n}) \stackrel{\downarrow}{n\to\infty} (F\otimes G)(T_t) = (F*G)(t)
+$$
+
+Hence, $F*G$ is continuous from the right.
+
+For the commutative property, we have $(F*G)(t) = (F\otimes G)(T_t)$ and $(G*F)(t) = (G\otimes F)(T_t)$. By the symmetry property of the triangle $T_t$ with respect to the diagonal $\{(s,s)\}_{s\in[0,\infty)}$, these are the same.
+</details>
+</MathBox>
+
+<MathBox title='Convolution properties' boxType='proposition'>
+1. Suppose that $f:[0,\infty)\to\mathbb{R}$ is locally bounded and that $G$ and $H$ are distribution functions on $[0,\infty)$. Then
+
+$$
+  (f*G)*H = f*(G*H)
+$$
+
+**Linearity**
+Suppose that $c\in\mathbb{R}$. Then
+2. $f * (G + H) = (f * G) + (f * H)$
+3. $f*(cG) = c(f*G)$
+
+Suppose that $g:[0,\infty)\to\mathbb{R}$ is locally bounded. Then
+4. $(f+g)*(H) = (f*H) + (g*H)$
+5. $(cf)*H = c(f*H)$
+
+<details>
+<summary>Proof</summary>
+
+1. For $t\in[0,\infty)$
+
+$$
+\begin{align*}
+  [(f*G)*H](t) &= \int_0^t (f*G)(t - s)\,\mathrm{d}H(s) \\
+  &= \int_0^t \int_0^{t-s} f(t-s-r)\,\mathrm{d}G(r)\,\mathrm{d}H(s) \\
+  &= [f*(G*H)](t)
+\end{align*}
+$$
+
+2.
+$$
+\begin{align*}
+  [f*(G + H)](t) &= \int_0^t f(t - s)\,\mathrm{d}(G + H)(s) \\
+  &= \int_0^t f(t - s)\,\mathrm{d}G(s) + \int_0^t f(t - s)\,\mathrm{d}H(s) \\
+  &= (f*G)(t) + (f*H)(t)
+\end{align*}
+$$
+
+3.
+$$
+\begin{align*}
+  [f*(cG)](t) &= \int_0^t f(t - s)\,\mathrm{d}(cG)(s) \\
+  &= c\int_0^t f(t - s)\,\mathrm{d}G(s) \\
+  &= c(f*G)(t)
+\end{align*}
+$$
+
+4. 
+$$
+\begin{align*}
+  [(f + g)*H](t) &= \int_0^t (f + g)(t - s)\,\mathrm{d}H(s) \\
+  &= \int_0^t f(t - s)\,\mathrm{d}H(s) + \int_0^t g(t - s)\,\mathrm{d}H(s) \\
+  &= (f*H)(t) + (g*H)(t)
+\end{align*}
+$$
+
+5. 
+$$
+\begin{align*}
+  [(cf)*H](t) &= \int_0^t cf(t - s)\,\mathrm{d}H(s) \\
+  &= c\int_0^t f(t - s)\,\mathrm{d}H(s) \\
+  &= c(f*H)(t)
+\end{align*}
+$$
+</details>
+</MathBox>
+
 ## Image measure and substitution formula
 
 <MathBox title='Image measure' boxType='definition'>
