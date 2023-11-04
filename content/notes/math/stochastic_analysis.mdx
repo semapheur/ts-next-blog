@@ -16,6 +16,277 @@ A filtration $\mathscr{F} = \{\mathcal{F}_t\}_{t\in T}$ is an increasing collect
 
 In the following discussion, $\mathcal{B}$ denotes the collection of bounded, measurable functions $f: S\to\mathbb{R}$, $\mathcal{C}$ the collection of bounded, continuous functions $f:S\to\mathbb{R}$, and $\mathcal{C}_0$ the set of continuous functions $f:S\to\mathbb{R}$ vanishing at $\infty$. The latter property means that for every $\varepsilon > 0$, there exists a compact set $K\subseteq S$ such that $|f(x)| < \varepsilon$ for $x\in K^c$. These are all vector spaces under the usual (pointwise) addition and scalar multiplication, and $\mathcal{C}_0 \subseteq\mathcal{C}\subseteq\mathcal{B}$. The norm on these spaces is the supremum norm, defined by $\lVert f \rVert = \sup\{|f(x)|:x\in S\}$ for $f\in\mathcal{B}$.
 
+## Renewal process
+
+A renewal process is a stochastic model for events occuring randomly in time. These temporal events are commonly called renewals or arrivals. A renewal process gives rise to several interrelated random processes:
+- the sequence of interarrival times
+- the sequence of arrival times
+- the counting process
+
+<MathBox title='Renewal process' boxType='definition'>
+Let $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ be a sequence of independent, identically distributed random variables representing holding times between each arrival, also called *interarrival times*. Each holding time $X_n$ takes values in $[0,\infty)$ with $\mathbb{P}(X > 0) > 0$. If the holding time $X_n$ takes values in the set $\{nd \}_{n\in\mathbb{N}}$ for some $d\in (0,\infty)$, then its distribution is called arithmetic. The time at $n$th arrival is defined as
+
+$$
+  T_n := \sum_{i=1}^n X_i
+$$
+
+The sequence $\mathbf{T} = (T_n)_{n\in\mathbb{N}}$ is the partial sum process associated with the sequence of interarrival times $\mathbf{X}$.
+
+For $t\geq 0$, let $N_t$ denote the number of arrivals in the interval $[0, t]$, i.e.
+
+$$
+  N_t = \sum_{i=1}^\infty \mathbf{1}(T_n \leq t) = \max{n\in\mathbb{N} \;|\; T_n \leq t}
+$$
+
+The random process $\mathbf{N} = \{ N_t \}_{t\geq 0}$ is called a renewal (counting) process.
+</MathBox>
+
+The counting process can be extended into a counting measure corresponding to a sequence of arrival times $\mathbf{T} = (T_n)_{n\in\mathbb{N}}$ in $[0,\infty)$. If $A$ is a (measurable) subset of $[0,\infty)$, then $N(A)$ denotes the number of the random mpoints in $A$, i.e.
+
+$$
+  N(A) = \sum_{n=1}^\infty \mathbf{1}(T_n \in A)
+$$
+
+In terms of the counting measure, $N_t = N[0,t]$ for $t\geq 0$ and $N(s - t] = N_t - N_s$ for $s\leq t$. The counting process is this a "cumulative measure function" for the counting measure, analogous to the cumulative distribution function of a probability measure.
+
+<MathBox title='Properties of arrival times' boxType='proposition'>
+Let $\mu = \mathbb{E}(X)$ denote the common mean of the interarrival times. If $m, n\in\mathbb{N}$ then
+
+1. $\mu > 0$
+2. $\mathbb{E}(T_n) = n\mu$
+3. $\mathrm{var}(T_n) = n\sigma^2$
+4. $\mathrm{cov}(T_m, T_n) = \min\{m, n\}\sigma^2$
+5. $T_n \xrightarrow{n\to\infty} \infty$ with probability $1$
+
+<details>
+<summary>Proof</summary>
+
+1. Note that if $\mu = 0$ then $\mathbb{P}(X > x) = 0$ for every $x > 0$ by Markov's inequality. This means that $\mathbb{P}(X = 0) = 1$, which contradicts the assumption that $\mathbb{P}(X > 0) > 0$.
+2. This follows from the additive property of expected value.
+3. This follows from the additive property of variance of indepedent variables.
+4. For $m\leq n$, note that $T_n = T_m + (T_n - T_m)$. Since $T_m$ and $T_n - T_m$ are independent then
+
+$$
+\begin{align*}
+  \mathrm{cov}(T_m, T_n) &= \mathrm{cov}[T_m, T_m + (T_n - T_m)] \\
+  &= \mathrm{cov}(T_m, T_m) + \mathrm{cov}(T_m, T_n - T_m) \\
+  &= \mathrm{var}(T_m) = m\sigma^2
+\end{align*}
+$$
+
+5. Since $\mathbb{P}(X > 0) > 0$, there exists $t > 0$ such that $\mathbb{P}(X > t) > 0$. By the second Borel-Cantelli lemma it follows that $X_i > t$ with probability $1$ for infinitely many $n\in\mathbb{N}_+$. Therefore $\lim_{n\to \infty} T_n = \sum_{i=1}^\infty X_i = \infty$ with probability $1$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of counting processes' boxType='proposition'>
+For $t\geq 0$ and $n\in\mathbb{N}$
+
+1. $T_n \leq t$ if and only if $N_t \geq n$. Equivalently, $T_n > t$ if and only if $N_t < n$.
+2. $N_t = n$ if and only if $T_n \leq t < T_{n+1}$
+3. $N_t + 1$ is a stopping time for the sequence of interarrival times $\mathbf{X}$
+
+The following events have probability $1$:
+4. $N_t < \infty$ for all $t\in[0,\infty)$
+5. $N_t \xrightarrow{t\to\infty} \infty $
+
+
+<details>
+<summary>Proof</summary>
+
+1. The event $\{N_t \geq n\}$ means that there are at least $n$ arrivals in $[0,t]$.
+2. The event $\{N_t \geq n\}$ means that there are exactly $n$ arrivals in $[0,t]$.
+3. Note that $N_t + 1$ takes values in $\mathbb{N}_+$, so we need to show that the event $\{N + 1 = n\}$ is measurable with respect to $\mathcal{F}_N = \sigma\{X_n\}_{n\in\mathbb{N}_+}$. From the 2nd property, $N_t + 1 = n$ if and only if $N_t = n - 1$ if and only if $T_{n-1} \leq t < T_n$. The last event is clearly measurable with respect to $\mathcal{F}_n$.
+4. The event $\{N_t \leq\infty\}$ occurs if and only if $T_n < \infty$ for all $n\in\mathbb{N}$ which also occurs with probability $1$. 
+5. The event $N_t \xrightarrow{t\to\infty} \infty$ occurs if and only if $T_n \xrightarrow{n\to\infty} \infty$, which occurs with probability $1$.
+
+$$
+\begin{align*}
+  \mathrm{cov}(T_m, T_n) &= \mathrm{cov}[T_m, T_m + (T_n - T_m)] \\
+  &= \mathrm{cov}(T_m, T_m) + \mathrm{cov}(T_m, T_n - T_m) \\
+  &= \mathrm{var}(T_m) = m\sigma^2
+\end{align*}
+$$
+
+5. Since $\mathbb{P}(X > 0) > 0$, there exists $t > 0$ such that $\mathbb{P}(X > t) > 0$. By the second Borel-Cantelli lemma it follows that $X_i > t$ with probability $1$ for infinitely many $n\in\mathbb{N}_+$. Therefore $\lim_{n\to \infty} T_n = \sum_{i=1}^\infty X_i = \infty$ with probability $1$.
+</details>
+</MathBox>
+
+### Renewal function
+
+<MathBox title='Renewal function' boxType='definition'>
+The function $M$ thath gives the expected number of arrivals up to time $t$ is known as the renewal function
+
+$$
+  M(t) = \mathbb{E}(N_t),\; t\in[0,\infty)
+$$
+</MathBox>
+
+If the renewal function $M$ is differentiable, the derivative $m = M'$ describes the renewal density where $m(t)$ gives the expected rate of arrivals per unit time at $t\in[0,\infty)$.
+
+<MathBox title='' boxType='proposition'>
+Let $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ be an sequence of interarrival times with common distribution function $F$, i.e. 
+
+$$
+  F(x) = \mathbb{P}(X \leq x),\; x\in[0,\infty)
+$$
+
+For $n\in\mathbb{N}$, the arrival time $T_n$ has the distribution function $F_n$, i.e.
+
+$$
+  F_n (t) = \mathbb{P}(T_n \leq t),\; t\in[0,\infty)
+$$
+
+The renewal function is given in terms of the interarrival distribution function by
+
+$$
+  M(t) = \sum_{n=1}^\infty F_n (t),\; t\in[0,\infty]
+$$
+
+<details>
+<summary>Proof</summary>
+
+The result follows by taking the expected value of $N_t = \sum_{n=1}^\infty \mathbf{1}(T_n \leq t)$.
+</details>
+</MathBox>
+
+<MathBox title='Renewal measure' boxType='proposition'>
+The renewal function $M$ is a positive measure on $[0,\infty)$, known as the renewal measure, given by
+
+$$
+  M(A) = \sum_{n=1}^\infty \mathbb{P}(T_n \in A),\; A\subset [0, \infty)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that $N$ is a (random) counting measure on $[0,\infty)$. If $(A_i)_{i\in\mathbb{N}_+}$ is a sequence of disjoint, measurable subsets of $[0,\infty)$ then
+
+$$
+  N\left(\bigcup_{i=1}^\infty A_i \right) = \sum_{i=1}^\infty N(A_i)
+$$
+
+Taking expected values gives
+
+$$
+  m\left(\bigcup_{i=1}^\infty A_i \right) = \sum_{i=1}^\infty m(A_i)
+$$
+
+The interchange of sum and expected value is justified since the terms are nonnegative.
+</details>
+</MathBox>
+
+### Age processes
+
+Renewal processes can be applied to model the reliability of devices.
+
+<MathBox title='Age processes' boxType='definition'>
+
+**Current life**
+The random variable
+
+$$
+  C_t = t - T_{N_t}
+$$
+
+is called the *current life* at time $t \geq 0$. This variable takes values in the interval $[0,t]$ and is the age of the device that is in service at time $t$. The random process $\mathbf{C} = (C_t)_{t\geq 0}$ is the current life process.
+
+**Remaining life**
+The random variable
+
+$$
+  R_t = T_{N_t + 1} - 1
+$$
+
+is called the *remaining life* at time $t\geq 0$. This variable takes values in the interval $(0,\infty)$ and is the time remaining until the device that is in service at time $t$ fails. The random process $\mathbf{R} = (R_t)_{t\geq 0}$ is the remaining life process.
+
+The random variable
+
+$$
+  L_t = C_t + R_t = T_{N_t + 1} - T_{N_t} = X_{N_t + 1}
+$$
+
+is called the *total life* at time $t\geq 0$. This variable takes values in $[0,\infty)$ and gives the total life of the device that is in service at time $t$. The random proces $\mathbf{L} = (L_t)_{t\geq 0}$ is the total life process.
+</MathBox>
+
+<MathBox title='Properties of age processes' boxType='proposition'>
+Suppose that $t\in[0,\infty)$, $x\in[0,t]$ and $y\in[0,\infty)$, then
+
+1. $\{R_t > y\} = \{N_{t+y} - N_t = 0\}$
+2. $\{C_t\geq x\} = \{R_{t-x} > x\} = \{N_t - N_{t-x} = 0\}$
+3. $\{C_t \geq x, R_t > y\} = \{R_{t-x} > x + y\} = \{N_{t+y} - N_{t-x} = 0\}$
+4. $\mathbb{P}(L_t > x) \geq\mathbb{P}(X > x)$ for $x\geq 0$
+
+<details>
+<summary>Proof</summary>
+
+1. The events $\{N_{t+y} - N_t = 0\}$ means that there are no arrivals in the interval $(t, t+y]$.
+2. The events $\{N_t - N_{t-x} = 0\}$ means that there are no arrivals in the interval $(t-x, t]$.
+3. The events $\{N_{t+y} - N_{t-x} = 0\}$ means that there are no arrivals in the interval $(t-x, t+x]$.
+4. Recall that if $A$ and $B$ are nested events in a probability space, i.e. $A\subseteq B$, then the events are positively correlated, i.e. $\mathbb{P}(A|B) \geq\mathbb{P}(A)$. Conditioning $\{L_t > x\}$ on $N_t$
+
+$$
+\begin{align*}
+  \mathbb{P}(L_t > x | N_t = 0) &= \mathbb{P}(X_{N_t + 1} > x | N_t = 0) \\
+  &= \mathbb{P}(X_1 > x | X_1 > t) \geq\mathbb{P}(X_1 > x) \\
+  &= 1 - F(x)
+\end{align*}
+$$
+
+where $F$ is the cumulative density function of the interarrival times. For $n\in\mathbb{N}_+$
+
+$$
+\begin{align*}
+  \mathbb{P}(X_{N_t + 1} > x | N_t = n) &= \mathbb{P}(X_{n + 1} > x | T_n \leq t < T_{n+1}) \\
+  &= \mathbb{P}(X_{n+1} > x | T_n \leq t < T_n + X_{n+1})
+\end{align*}
+$$
+
+Conditioning additionally on $T_n$ for $s \leq t$
+
+$$
+\begin{align*}
+  \mathbb{P}(X_{n+1} > x | T_n = s, X_{n+1} > t-s) &= \mathbb{P}(X_{n+1} > x | X_{n+1} > t-s) \\
+  &\geq \mathbb{P}(X_{n+1} > x) = 1 - F(x)
+\end{align*}
+$$
+
+It follows that $\mathbb{P}(X_{N_t + 1} > x | N_t = n) \geq 1 - F(x)$ for every $n\in\mathbb{N}$ and hence
+
+$$
+\begin{align*}
+  \mathbb{P}(X_{N_t + 1} > x) &= \sum_{n=0}^\infty \mathbb{P}(X_{N_t + 1} > x | N_t = n)\mathbb{P}(N_t = n) \\
+  &\geq \sum_{n=0}^\infty [1 - F(x)]\mathbb{P}(N_n = n) = 1 - F(x)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Inspection paradox' boxType='proposition'>
+Suppose that $t\in[0,\infty)$, $x\in[0,t]$ and $y\in[0,\infty)$, then
+
+1. $\{R_t > y\} = \{N_{t+y} - N_t = 0\}$
+2. $\{C_t\geq x\} = \{R_{t-x} > x\} = \{N_t - N_{t-x} = 0\}$
+3. $\{C_t \geq x, R_t > y\} = \{R_{t-x} > x + y\} = \{N_{t+y} - N_{t-x} = 0\}$
+
+<details>
+<summary>Proof</summary>
+
+1. The events $\{N_{t+y} - N_t = 0\}$ means that there are no arrivals in the interval $(t, t+y]$.
+2. The events $\{N_t - N_{t-x} = 0\}$ means that there are no arrivals in the interval $(t-x, t]$.
+3. The events $\{N_{t+y} - N_{t-x} = 0\}$ means that there are no arrivals in the interval $(t-x, t+x]$.
+</details>
+</MathBox>
+
+### Comparison
+
+<MathBox title='Renewal comparison rules' boxType='proposition'>
+Suppose that $\mathbf{X} = (X_i)_{n\in\mathbb{N}_+}$ and $\mathbf{Y} = (Y_i)_{n\in\mathbb{N}_+}$ are two interarrival sequences defined on the same probability space, with $Y_i \leq X_i$ with probability $1$ for each $n$. Then for $n\in\mathbb{N}$ and $t\in[0,\infty)$
+
+1. $T_{Y,n} \leq T_{X,n}$
+2. $N_{Y,t} \geq N_{X,t}$
+3. $m_Y (t) \geq m_X (t)$
+</MathBox>
+
 ## Markov process
 
 A Markov process is a stochastic process with the property that the probability of a future event dependens only on the present state, i.e. the future is independent of the past.
