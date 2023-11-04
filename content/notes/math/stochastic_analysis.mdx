@@ -91,15 +91,14 @@ $$
   F_n (t) = \mathbb{P}(T_n \leq t),\; t\in[0,\infty)
 $$
 
-The distributions of the arrival time are the convolution powers of $F$, i.e. $F_n = F^{*n}$
+The distributions of the arrival time are the convolution powers of $F$, i.e. $F_n = F^{*n}$.
 
 <details>
 <summary>Proof</summary>
 
-
+This follows from the definitions: $F_n$ is the distribution function of $T_n = \sum_{i=1}^n X_i$. Since $\mathbf{X}$ is an independent, indentically distributed sequence, it follows that $F_n = F^{*n}$.
 </details>
 </MathBox>
-
 
 <MathBox title='Properties of counting processes' boxType='proposition'>
 For $t\geq 0$ and $n\in\mathbb{N}$
@@ -195,6 +194,115 @@ $$
 $$
 
 The interchange of sum and expected value is justified since the terms are nonnegative.
+</details>
+</MathBox>
+
+### Renewal equations
+
+<MathBox title='Renewal equation' boxType='definition'>
+Let $F$ be the distribution function of an interarrival sequence $\mathbf{X}. $Suppose that $a:[0,\infty)\to\mathbb{R}$ is locally bounded. An integral equation of the form
+
+$$
+  u = a + u * F
+$$
+
+for an unknown function $u:[0,\infty)\to\mathbb{R}$ is called a *renewal equation* for $u$.
+</MathBox>
+
+<MathBox title='Renewal equations' boxType='proposition'>
+The renewal equations for the renewal function $M$ and interarrival distribution $F$ are
+
+1. $M = F + M*F$
+2. $F = M - F*M$
+
+<details>
+<summary>Proof</summary>
+
+1. Conditioning on the time of the first arrival $X_1$ and breaking the integration domain
+
+$$
+\begin{align*}
+  M(t) &= \mathbb{E}(N_t) = \int_0^\infty \mathbb{E}(N_t\;|\; X_1 = s)\,\mathrm{d}F(s) \\
+  &= \int_0^t \mathbb{E}(N_t \;|\; X_1 = s)\,\mathrm{d}F(s) + \int_t^\infty \mathbb{E}(N_t \;|\; X_1 = s)\,\mathrm{d}F(s)
+\end{align*}
+$$
+
+If $s > t$ then $\mathbb{E}(N_t\;|\; X_1 = s) = 0$. If $0\leq s\leq t$, then by the renewal property $\mathbb{E}(N_t \;|\; X_1 = s) = 1 + M(t - s)$. Hence we have
+
+$$
+  M(t) = \int_0^t [1 + M(t - s)]\,\mathrm{d}F(s) = F(t) + (M * F)(t)
+$$
+
+2. This follows from the commutative property of convolution 
+
+$$
+  F = M - M * F = M - F * M 
+$$
+</details>
+</MathBox>
+
+<MathBox title='Laplace transform of renewal equations' boxType='proposition'>
+The distributions $F$ and $M$ have Laplace transforms $\Phi$ and $\Gamma$, respectively, related by
+
+$$
+  \Gamma = \frac{\Phi}{1 - \Phi} \quad \Phi = \frac{\Gamma}{\Gamma + 1}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Taking the Laplace transform of the renewal equation $M = F + M * F$ gives 
+
+$$
+\begin{gather*}
+  \Gamma = \Phi + \Gamma\Phi \\
+  \iff \Gamma = \frac{\Phi}{1 - \Phi}
+  \iff \Phi = \frac{\Gamma}{\Gamma + 1}
+\end{gather*}
+$$
+
+Since $F$ is a probability distribution on $[0,\infty)$ with $F(0) < 1$, it follows that $0 < \Phi(s) < 1$ for $s\in(0,\infty)$.
+
+Alternatively, recall that $M = \sum_{n=1}^\infty F^{*n}$. Taking the Laplace transform and using the formula for geometric series gives
+
+$$
+  \Gamma = \sum_{n=1}^\infty \Phi^n = \frac{\Phi}{1 - \Phi}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Solution of the renewal equations' boxType='proposition'>
+Suppose that $a:[0,\infty)\to\mathbb{R}$ is locally bounded. Then the unique locally bounded solution to the renewal equation $u = a + u * F$ is $u = a + a * M$
+
+<details>
+<summary>Proof</summary>
+
+**Direct proof**
+Suppose that $u = a + a*M$. Then $u*F = a*F + a*M$. From the renewal equations we have $M*F = M - F$, such that 
+
+$$
+\begin{align*}
+  u*F &= a*F + a*(M - F) \\
+  &= a*[F + (M - F)] = a*M 
+\end{align*}
+$$
+
+Since $a*M = u - a$ by definition of $u$, then $u = a + u*F$ such that $u$ is a solution to the renewal euation. Next, since $a$ is locally bounded, it follows that $u = a + a*M$. Suppose that $v$ is another locally bounded solution of the integral equation, and let $w = u - v$. Then $w$ is locally bounded and 
+
+$$
+  w*F = (u*F) - (v*F) = [(u - a) - (v - a)]= u - v = w
+$$
+
+Thus, $w = w*F_n$ for $n\in\mathbb{N}_+$. Suppose that $|w(s)| \leq D_t$ for $0\leq s \leq t$. Then $|w(t)|\leq D_t F_n(t)$ for $n\in\mathbb{N}_+$. Since $M(t) = \sum_{n=1}^\infty F_n (t) < \infty$ it follows that $\lim_{n\to\infty} F_n(t) = 0$. Hence $w(t) = 0$ for $t\in[0,\infty)$ and $u = v$.
+
+**Proof using Laplace transforms**
+Let $\alpha$ and $\theta$ denote the Laplace transforms of $a$ and $u$ respectively, and $\Phi$ the Laplace transform of the distribution $F$. Taking the Laplace transform of the renewal equations gives $\theta = \alpha + \theta\Phi$. Solving for $\theta$ gives
+
+$$
+  \theta = \frac{\alpha}{1 - \Phi} = \alpha\left(1 + \frac{\Phi}{1 - \Phi} \right) = \alpha + \alpha\Gamma
+$$
+
+where $\Gamma = \frac{\Phi}{1 - \Phi}$ is the Laplace transform of the distribution $M$. Hence $\theta$ is the Laplace transform of $a + a * M$.
 </details>
 </MathBox>
 
@@ -300,6 +408,67 @@ Suppose that $t\in[0,\infty)$, $x\in[0,t]$ and $y\in[0,\infty)$, then
 </details>
 </MathBox>
 
+#### Distributions of age variables
+
+For $t, y\in[0,\infty)$, let
+
+$$
+  r_y (t) = \mathbb{P}(R_t > y) = \mathbb{P}(N(t,t+y] = 0)
+$$
+
+and let $F_y^c (t) = F^c (t + y)$. Note that $y\mapsto r_y (t)$ is the right distribution function of $R_t$. 
+
+<MathBox title='Age process distributions' boxType='proposition'>
+For $y\in[0,\infty)$ the right distribution $r_y$ satisfies the renewal equation $r_y = F_y^c + r_y * F$ and hence for $t\in[0,\infty)$ the distribution of the remaining life variable is given by
+
+$$
+  \mathbb{P}(R_t > y) = F^c (t + y) + \int_0^t F^c (t + y - s)\,\mathrm{d}M(s),\; y\geq 0
+$$
+
+The distribution of the current life variable is given by
+
+$$
+  \mathbb{P}(C_t \geq x) = F^c (t) + \int_0^{t-x} F^c (t - s)\,\mathrm{d}M(s)
+$$
+
+The joint distribution of the current and remaining life variables is given by
+
+$$
+  \mathbb{P}(C_t \geq x, R_t > y) = F^c (t + y) + \int_0^{t-x} F^c (t + y - s)\,\mathrm{d}M(s)
+$$
+
+<details>
+<summary>Proof</summary>
+
+**Remaining life distribution**
+Conditioning on the time of the first renewal
+
+$$
+  \mathbb{P}(R_t > y) = \int_0^\infty \mathbb{P}(R_t > y | X_1 = s)\,\mathrm{d}F(s)
+$$
+
+Breaking the integration interval into three parts $[0,t]$, $(t, t+y]$ and $(t+y,\infty)$ and noting that
+- $\mathbb{P}(R_t > y | X_1 = s) = \mathbb{P}(R_{t-s} > 0)$ for $s\in[0,t]$
+- $\mathbb{P}(R_t > y | X_1 = s) = 0$ for $s\in(t, t+y)$
+- $\mathbb{P}(R_t > y | X_1 = s) = 1$ for $s\in(t + y, \infty)$
+
+Combining the result gives
+
+$$
+\begin{align*}
+  \mathbb{P}(R_t > y) &= \int_0^t \mathbb{P}(R_{t-s} > y)\,\mathrm{d}F(s) + \int_t^{t+y} 0\,\mathrm{d}F(s) + \int_{t+y}^\infty 1\,\mathrm{d}F(s) \\
+  &= (r_y * F)(t) + 1 - F(t + y) = F_y^c(t) + (r_y * F)(t)
+\end{align*}
+$$
+
+**Current life distribution**
+The result follows from the fact that $\mathbb{P}(C_t \geq x) = \mathbb{P}(R_{t-x} > x)$ for $x\in[0,t]$.
+
+**Joint distribution of current and remaining life**
+The result follows from the fact that $\mathbb{P}(C_t \geq x, R_t > y) = \mathbb{P}(R_{t-x} > x + y)$.
+</details>
+</MathBox>
+
 ### Comparison
 
 <MathBox title='Renewal comparison rules' boxType='proposition'>
@@ -309,6 +478,7 @@ Suppose that $\mathbf{X} = (X_i)_{n\in\mathbb{N}_+}$ and $\mathbf{Y} = (Y_i)_{n\
 2. $N_{Y,t} \geq N_{X,t}$
 3. $m_Y (t) \geq m_X (t)$
 </MathBox>
+
 
 ## Markov process
 
