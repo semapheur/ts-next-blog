@@ -112,7 +112,6 @@ The following events have probability $1$:
 4. $N_t < \infty$ for all $t\in[0,\infty)$
 5. $N_t \xrightarrow{t\to\infty} \infty $
 
-
 <details>
 <summary>Proof</summary>
 
@@ -132,6 +131,16 @@ $$
 
 5. Since $\mathbb{P}(X > 0) > 0$, there exists $t > 0$ such that $\mathbb{P}(X > t) > 0$. By the second Borel-Cantelli lemma it follows that $X_i > t$ with probability $1$ for infinitely many $n\in\mathbb{N}_+$. Therefore $\lim_{n\to \infty} T_n = \sum_{i=1}^\infty X_i = \infty$ with probability $1$.
 </details>
+</MathBox>
+
+### Comparison
+
+<MathBox title='Renewal comparison rules' boxType='proposition'>
+Suppose that $\mathbf{X} = (X_i)_{n\in\mathbb{N}_+}$ and $\mathbf{Y} = (Y_i)_{n\in\mathbb{N}_+}$ are two interarrival sequences defined on the same probability space, with $Y_i \leq X_i$ with probability $1$ for each $n$. Then for $n\in\mathbb{N}$ and $t\in[0,\infty)$
+
+1. $T_{Y,n} \leq T_{X,n}$
+2. $N_{Y,t} \geq N_{X,t}$
+3. $m_Y (t) \geq m_X (t)$
 </MathBox>
 
 ### Renewal function
@@ -469,6 +478,181 @@ In the limit $t\to\infty$, then $g(x+y) = g(x) + g(y)$ for all $x,y\geq 0$. It f
 </details>
 </MathBox>
 
+### Delayed renewal process
+
+In a delayed renewal process, the first arrival time is allowed to have a different distribution than the other interarrival times.
+
+<MathBox title='Delayed renewal process' boxType='definition'>
+Suppose that $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is a sequence of independent variables taking values in $[0,\infty)$ with $(X_i)_{i\in\mathbb{N}_+ \setminus \{1\}}$ identically distributed. Suppose also that $\mathbb{P}(X_n > 0) > 0$ for $n\in\mathbb{N}_+$. The stochastic process with $\mathbf{X}$ as the sequence of interarrival times is a delayed renewal process.
+</MathBox>
+
+Let $G$ denote the distribution function of $X_1$, and $G_n$ the distribution function of the arrival time $T_n = \sum_{i=1}^n T_n$ for $n\in\mathbb{N}_+$. Ignoring $X_1$, the interarrival sequence $(X_i)_{i\in\mathbb{N}_+ \setminus\{1\}}$ with common distribution function $F$ and common mean $\mu$, produces an ordinary renewal process. Thus
+
+$$
+  G_n = G*F_{n-1} = F_{n-1}*G
+$$
+
+<MathBox title='Delayed renewal function' boxType='proposition'>
+The delayed renewal function $U(t) = \mathbb{E}(N_t)$ satisfies
+
+$$
+  U(t) = \sum_{n=1}^\infty G_n (t),\; t\in[0,\infty)
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+  U(t) = \mathbb{E}(N_t) = \mathbb{E}\left(\sum_{n=1}^\infty \mathbf{1}(T_n \leq t) \right) = \sum_{n=1}^\infty \mathbb{P}(T_n \leq t) = \sum_{n=1}^\infty G_n (t)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Delayed renewal equations' boxType='proposition'>
+The delayed renewal function $U$ satisfies the equations
+
+1. $U = G + M*G$
+2. $U = G + U*F$
+
+<details>
+<summary>Proof</summary>
+
+1. Conditioning on the time of the first arrival $T_1 = X_1$, and noting that $\mathbb{E}(N_t | X_1 = s) = 0$ if $s > t$ and $\mathbb{E}(N_t | X_1 = s) = 1 + M(t-s)$ if $0\leq s\leq t$
+
+$$
+\begin{align*}
+  U(t) &= \int_0^\infty \mathbb{E}(N_t|X_1 = s)\,\mathrm{d}G(s) = \int_0^t [1 + M(t - s)]\mathrm{d}G(s) \\
+  &= G(t) + \int_0^t M(t-s)\,\mathrm{d}G(s)
+\end{align*}
+$$
+
+2. Note that
+
+$$
+\begin{align*}
+  U &= \sum_{n=1}^\infty G_n = G + \sum_{n=2}^\infty G_n \\
+  &= G + \sum_{n=2}^\infty (G_{n-1} * F) = G + \left( \sum_{n=1}^\infty G_n \right)*F \\
+  &= G + U*F
+\end{align*}
+$$
+</details>
+</MathBox>
+
+#### Asymptotic behaviour
+
+<MathBox title='Strong law of large numbers for delayed renewal processes' boxType='proposition'>
+With probability $1$
+$$
+  \lim_{t\to\infty} \frac{N_t}{t} = \frac{1}{\mu}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We will show that $\lim_{n\to\infty} \frac{T_n}{n} = \mu$ with probability $1$ and the rest is exactly the same as for regular renewal processes. For $n\in\mathbb{N}_+ \setminus \{1\}$
+
+$$
+\frac{T_n}{n} = \frac{X_1}{n} + \frac{n-1}{n}\frac{1}{n-1}\sum_{i=2}^n X_i
+$$
+
+Note that with probability $1$ we have $\lim_{n\to\infty}\frac{X_1}{n} = 0$, $\lim_{n\to\infty}\frac{n}{n-1} = 1$ and $\lim_{n\to\infty} \frac{1}{n-1}\sum_{n=2}^n X_i = \mu$. The latter follows from the ordinary strong law of large numbers.
+</details>
+</MathBox>
+
+<MathBox title='Delayed elementary renewal theorem' boxType='theorem'>
+With probability $1$
+$$
+  \lim_{t\to\infty} \frac{U(t)}{t} = \frac{1}{\mu}
+$$
+</MathBox>
+
+<MathBox title='Delayed renewal theorem' boxType='theorem'>
+For $h > 0$
+
+$$
+  U(t,t+h] = U(t+h) - U(t) \xrightarrow{t\to\infty} \frac{h}{\mu}
+$$
+
+in each of the following cases:
+1. $F$ is non-arithmetic
+2. $F$ is arithmetic with span $d\in(0,\infty)$, and $h$ is a multiple of $d$
+</MathBox>
+
+<MathBox title='Delayed key renewal theorem' boxType='theorem'>
+Suppose that the delaye renewal process is non-arithmetic and that $g:[0,\infty)\to[0,\infty)$ is directly Riemann integrable. Then
+
+$$
+  (g*U)(t) = \int_0^t g(t-s)\,\mathrm{d}U(s) \xrightarrow{t\to\infty} \frac{1}{\mu}\int_0^\infty g(x)\,\mathrm{d}x
+$$
+</MathBox>
+
+#### Stationary point processes
+
+A point process if a stochastic process that models a discrete set of random points in a measure space $(S\mathcal{S},\lambda)$. The special cases $S=\mathbb{N}$ with counting measure and $S = [0,\infty)$ with length measure are of particular interest as (delayed) renewal processes give rise to point processes in these spaces.
+
+For a general point process on $S$, let $N(A)$ denoted the number of random points $A\in\mathcal{S}$. TThe process is said to by stationary if $\lambda(A) = \lambda(B)$ implies that $N(A)$ and $N(B)$ have the same distribution for $A,B\in\mathcal{S}$. For $S = [0,\infty)$ the term stationary increments is often used, because the stationarity property means that for $s,t\in[0,\infty)$, the distribution of $N(s,s+t] = N_{s+t} - N_s$ depends only on $t$.
+
+<MathBox title='' boxType='proposition'>
+For the delayed renewal process, the point process $\mathbf{N}$ is stationary if and only if the initial arrival time has the distribution function
+
+$$
+  G(t) = \frac{1}{\mu}\int_0^t F^c (s)\,\mathrm{d}s,\; t\in[0,\infty)
+$$
+
+in which case the renewal function is $U(t) = \frac{t}{\mu}$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose first that $\mathbf{N}$ has stationary increments. In particular, this means that the arrival times have continuous distributions. For $s,t\in[0,\infty)$
+
+$$
+\begin{align*}
+  U(s+t) = \mathbb{E}(N_{s+t}) = \mathbb{E}[(N_{s+t} - N_t) + N_t] \\
+  &= \mathbb{E}(N_{s+t} - N_t) + \mathbb{E}(N_t) \\
+  &= U(s) + U(t)
+\end{align*}
+$$
+
+The only increasing solutions to this functional equation are linear function, such that $U(t) = ct$ for some positive constant $c$. Substituting $m_d$ into the renewal equation $U = G + U*F$ gives
+
+$$
+\begin{align*}
+  ct &= G(t) + \int_0^t c(t-s)\,\mathrm{d}F(s) \\
+  &= G(t) + ctF(t) - \int_0^t cs\,\mathrm{d}F(s)
+\end{align*}
+$$
+
+Integrating the by parts and simplifying gives
+
+$$
+  G(t) = c\int_0^t F^c (s)\,\mathrm{d}s
+$$
+
+If we let $t\to\infty$ the left side converges to $1$ and the right side to $c\mu$, thus $c = \frac{1}{\mu}$ and $U(t) = \frac{t}{\mu}$ for $t\in[0,\infty)$.
+
+Conversely, suppose that $G$ has the assumed form. Note that this is a continuous distribution with density function $t\mapsto \frac{F^c(t)}{\mu}$. Substituting into the renewal equation, it follows that the renewal denisty $U'$ satisfies
+
+$$
+  U' = \frac{1}{\mu}F^c + \frac{1}{\mu}F_c * \sum_{n=1}^\infty F_n = \frac{1}{\mu}
+$$
+
+Thus $U(t) = \frac{t}{\mu}$. The process $\mathbf{N}$ has stationary increments if and only if the remaining life $R_t$ at time $t$ has distribution function $G$ for each $t$.
+
+$$
+  \mathbb{P}(R_t > y) = G^c (t + y) + \int_0^t F^c (t + y - s)\,\mathrm{d}m_d (s),\; y\geq 0
+$$
+
+Note that $G^c (t+y) = \frac{1}{\mu}\int_{t+y}^\infty F^c (u)\,\mathrm{d}u$ and $\mathrm{d}U(s) = \frac{1}{\mu}\mathrm{d}s$. Substituting gives
+
+$$
+  \mathbb{P}(R_t > y) = \frac{1}{\mu}\int_{t+y}^\infty F^c (u)\,\mathrm{d}u + \frac{1}{\mu}\int_y^{t+y} F^c (u)\,\mathrm{d}u = \frac{1}{\mu}\int_y^\infty F^c (u)\,\mathrm{d}u
+$$
+</details>
+</MathBox>
+
+### Alternating renewal process
+
 ### Age processes
 
 Renewal processes can be applied to model the reliability of devices.
@@ -690,15 +874,7 @@ $$
 </details>
 </MathBox>
 
-### Comparison
 
-<MathBox title='Renewal comparison rules' boxType='proposition'>
-Suppose that $\mathbf{X} = (X_i)_{n\in\mathbb{N}_+}$ and $\mathbf{Y} = (Y_i)_{n\in\mathbb{N}_+}$ are two interarrival sequences defined on the same probability space, with $Y_i \leq X_i$ with probability $1$ for each $n$. Then for $n\in\mathbb{N}$ and $t\in[0,\infty)$
-
-1. $T_{Y,n} \leq T_{X,n}$
-2. $N_{Y,t} \geq N_{X,t}$
-3. $m_Y (t) \geq m_X (t)$
-</MathBox>
 
 ## Markov process
 
