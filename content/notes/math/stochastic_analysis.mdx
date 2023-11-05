@@ -57,6 +57,7 @@ Let $\mu = \mathbb{E}(X)$ denote the common mean of the interarrival times. If $
 3. $\mathrm{var}(T_n) = n\sigma^2$
 4. $\mathrm{cov}(T_m, T_n) = \min\{m, n\}\sigma^2$
 5. $T_n \xrightarrow{n\to\infty} \infty$ with probability $1$
+6. $\lim_{n\to\infty} \frac{T_n}{n} = \mu$ with probability $1$ (strong law of large numbers)
 
 <details>
 <summary>Proof</summary>
@@ -306,6 +307,168 @@ where $\Gamma = \frac{\Phi}{1 - \Phi}$ is the Laplace transform of the distribut
 </details>
 </MathBox>
 
+### Limit theorems
+
+<MathBox title='Law of large numbers for renewal processes' boxType='theorem'>
+If $\mu < infty$, then $\lim_{t\to\infty} \frac{N_t}{t} = \frac{1}{\mu}$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Recall that $T_{N_t} \leq t < T_{N_t + 1}$ for $t > 0$. Hence, if $N_t > 0$
+
+$$
+  \frac{T_{N_t}}{N_t} \leq \frac{t}{N_t} < \frac{T_{N_t + 1}}{N_t}
+$$
+
+Note that $N_t \xrightarrow{t\to\infty} \infty$ with probability $1$. By the strong law of large numbers $\lim_{n\to\infty} \frac{T_n}{n} = \mu$ with probability $1$. It follows that $\lim_{t\to\infty} \frac{T_{N_t}}{N_t} = \mu$ with probability $1$. Also, $\lim_{t\to\infty} \frac{N_t + 1}{N_t} = 1$ with probability $1$. Thus with probability $1$
+
+$$
+  \frac{T_{N_t + 1}}{N_t} = \frac{T_{N_t + 1}}{N_t + 1}\frac{N_t + 1}{N_t} \xrightarrow{t\to\infty} \mu
+$$
+
+By the squeeze theorem for limits it follows that $\lim_{t\to\infty}\frac{t}{N_t} = \mu$ with probability $1$.
+</details>
+</MathBox>
+
+<MathBox title='Central limit theorem for renewal processes' boxType='theorem'>
+Suppose that $\mu < 0$ and $\sigma < 0$, and let
+
+$$
+  Z_t = \frac{N_t - t/\mu}{\sigma\sqrt{t/\mu^3}},\; t > 0
+$$
+
+The distribution of $Z_t$ converges to the standard normal distribution as $t\to\infty$.
+
+<details>
+<summary>Proof</summary>
+
+For $n\in\mathbb{N}_+$ let
+
+$$
+  W_n = \frac{T_n - n\mu}{\sigma\sqrt{n}}
+$$
+
+The distribution of $W_n$ converges to the standard normal distribution as $n\to\infty$ by the ordinary central limit theorem. For $z\in\mathbb{R}$, we have $\mathbb{P}(Z_t \leq z) = \mathbb{P}\left(T_{n(z,t)} > t \right)$ where $n(z,t) = \lfloor t/\mu + z\sigma\sqrt{t/\mu^3} \rfloor$. Also, $\mathbb{P}(Z_t \leq z) = \mathbb{P}[W_{n(z,t)} > w(z,t)]$ where
+
+$$
+  w(z,t) = -\frac{z}{\sqrt{1 + z\sigma/\sqrt{t/\mu}}}
+$$
+
+Note that $n(z,t) \xrightarrow{t\to\infty} \infty$ and $w(z,t) \xrightarrow{t\to\infty} -z$. Recall that $1 - \Phi(-z)$ = \Phi(z), where $\Phi$ is the standard normal distribution function. Hence $\mathbb{P}(Z_t \leq z) \xrightarrow{t\to\infty} \Phi(z)$.
+</details>
+</MathBox>
+
+<MathBox title='Elementary renewal theorem' boxType='theorem'>
+$$
+  \lim_{t\to\infty} \frac{M(t)}{t} = \frac{1}{\mu}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We first show that $\liminf_{t\to\infty} \frac{M(t)}{t} \geq \frac{1}{\mu}$. This result is trivial if $\mu = \infty$, so assume that $\mu < \infty$. Recall that $N_t + 1$ is a stopping time for the sequence of interarrival times $\mathbf{X}$, and that $T_{N_t + 1} > t$ for $t > 0$. From Wald's equation it follows that
+
+$$
+  \mathbb{E}(T_{N_t + 1}) = \mathbb{E}(N_t + 1)\mu = [M(t) + 1]\mu > t
+$$
+
+Thus $\frac{M(t)}{t} > \frac{1}{\mu} - \frac{1}{t}$ for $t > 0$ implying that $\liminf_{t\to\infty} \frac{M(t)}{t} \geq \frac{1}{\mu}$.
+
+Next we show that $\limsup_{t\to\infty} \frac{M(t)}{t} \leq \frac{1}{\mu}$. For this part of the proof, we need to truncate the arrival times, and use the basic comparison method. For $a > 0$, let
+
+$$
+  X_{a,i} = \begin{cases} 
+    X_i,\quad& $X_i \leq a$ \\
+    a,\quad& X_i > a
+  \end{cases}
+$$
+
+and consider the renewal process with the sequence of interarrival times $\mathbf{X}_a = (X_{a,n})_{n\in\mathbb{N}_+}$. Note that $T_{a, N_{a,t} + 1} \leq t + a$ for $t > 0$ and $a > 0$. From Wald's equation, it follows that $[M_a (t) + 1]\mu_a \leq t + a$. Thus
+
+$$
+  \frac{M_a (t)}{t} \leq \left( \frac{1}{\mu_a} + \frac{a}{t\mu_a} \right) - \frac{1}{t},\; a,t > 0
+$$
+
+Since $M(t) \leq M_a (t)$ it follows that 
+
+$$
+  \frac{M(t)}{t} \leq \left( \frac{1}{\mu_a} + \frac{a}{t\mu_a} \right) - \frac{1}{t},\; a,t > 0
+$$
+
+Hence $\limsup_{t\to\infty} \frac{M(t)}{t} \leq \frac{1}{\mu_a}$ for $a > 0$. By the monotone convergence theorem $\lim_{a\to\infty} \mu_a = \mu$ implying that $\limsup_{t\to\infty} \frac{M(t)}{t} \leq \frac{1}{\mu}$
+</details>
+</MathBox>
+
+<MathBox title='Renewal theorem' boxType='theorem'>
+For $h > 0$
+
+$$
+  \lim_{t\to\infty} M(t, t+h] = \frac{h}{\mu}
+$$
+
+in each of the follow cases:
+1. The renewal process is non-arithmetic
+2. The renewal process is arithmetic with span $d$, and $h$ is a multiple of $d$
+</MathBox>
+
+<MathBox title='Direct Riemann integration' boxType='theorem'>
+Suppose that $g:[0,\infty)\to[0\infty)$. For $h\in[0,\infty)$ and $k\in\mathbb{N}$, let $m_k (g, h) = \inf\{ g(t) \;|\; t\in[kh, (k+1)h) \}$ and $M_k (g, h) = \sup\{ g(t) \;|\; t\in[kh, (k+1)h) \}$. The lower and upper Riemann sums of $g$ on $[0,\infty)$ corresponding to $h$ are
+
+$$
+  L_g (h) = h\sum_{k=0}^\infty m_k (g,h)\quad U_g (h) = h\sum_{k=0}^\infty M_k (g,h)
+$$
+
+The sums exist in $[0,\inty]$ and have the following properties
+1. $L_g (h) \leq U_g (h)$ for $h > 0$
+2. $L_g (h)$ increases as $h$ decreases
+3. $U_g (h)$ decreases as $h$ decreases
+
+The function $g$ is direct Riemann integrable if $U_g (h) < \infty$ for every $h > 0$ and
+
+$$
+  \lim_{h\downarrow 0} L_g (h) = \lim_{h\downarrow 0} U_g (h)
+$$
+
+The common value is the integral $int_0^\infty g(t)\,\mathrm{d}t$. If $g$ is Riemann integrable on $[0,t]$ for every $t\in[0,\infty)$ and if $U_g (h) < \infty$ for some $h\in(0,\infty)$ then $g$ is directly Riemann integrable.
+</MathBox>
+
+<MathBox title='Key renewal theorem' boxType='theorem'>
+Suppose that the renewal process is non-arithmetic and that $g:[0,\infty)\to[0,\infty)$ is directly Riemann integrable. Then
+
+$$
+  (g*M)(t) = \int_0^t g(t - s)\,\mathrm{d}M(s) \xrightarrow{t\to\infty} \frac{1}{\mu}\int_0^\infty g(x)\,\mathrm{d}x
+$$
+</MathBox>
+
+<MathBox title='Relations between renewal theorems' boxType='proposition'>
+1. The renewal theorem implies the elementary renewal theorem.
+2. The elementary renewal theorem almost implies the renewal theorem
+3. The key renewal theorem implies the renewal theorem
+
+<details>
+<summary>Proof</summary>
+
+1. Let $a_n = M(n, n+1]$ for $n\in\mathbb{N}$. From the renewal theorem $\lim_{n\to\infty} a_n = \frac{1}{\mu}$ such that $\lim_{n\to\infty} \frac{1}{n}\sum_{k=0}^{n-1} a_k = \frac{1}{\mu}$. It follows that $\lim_{n\to\infty} \frac{M(n)}{n} = \frac{1}{\mu}$. Since the renewal function is increasing for $t > 0$
+
+$$
+  \frac{\lfloor t \rfloor}{t}\frac{M(\lfloor t \rfloor)}{\lfloor t \rfloor} \leq \frac{M(t)}{t} \leq \frac{\lceil t \rceil}{t}\frac{M(\lceil t \rceil)}{\lceil t \rceil}
+$$
+
+From the squeeze theorem for limits it follows that $lim_{t\to\infty} \frac{M(t)}{t} = \frac{1}{\mu}$
+
+2. Assume that $g(x) = \lim_{t\to\infty} [M(t + x) - M(t)]$ exists for each $x > 0$. Note that
+
+$$
+  M(t + x + y) - M(t) = [M(t + x + y) - M(t + x)] + [M(t + x) - M(t)]
+$$
+
+In the limit $t\to\infty$, then $g(x+y) = g(x) + g(y)$ for all $x,y\geq 0$. It follows that $g$ is increasing and $g(x) = cx$ for $x \geq 0$ where $c$ is a constant. Likewise as in the 1st proof, $\lim_{n\to\infty} \frac{M(n)}{n} = c$. From the elementary renewal theorem, we conclude that $c = \frac{1}{\mu}$.
+
+3. This results follows by applying the key renewal theorem to the function $g_h (x) = \mathbf{1}(0\leq x\leq h)$ for $h > 0$.
+</details>
+</MathBox>
+
 ### Age processes
 
 Renewal processes can be applied to model the reliability of devices.
@@ -469,6 +632,64 @@ The result follows from the fact that $\mathbb{P}(C_t \geq x, R_t > y) = \mathbb
 </details>
 </MathBox>
 
+#### Limits
+
+<MathBox title='Age process limits' boxType='proposition'>
+1. If the renewal process is non-arithmetic then
+
+$$
+  \lim_{t\to\infty} \mathbb{P}(R_t > x) = \frac{1}{\mu}\int_x^\infty F^c (y)\,\mathrm{d}y,\; x\in[0,\infty)
+$$
+
+2. If the renewal process is aperiodic, then
+
+$$
+  \lim_{t\to\infty} \mathbb{P}(C_t > x) = \frac{1}{\mu}\int_x^\infty F^c (y)\,\mathrm{d}y,\; x\in[0,\infty)
+$$
+
+3. The current and remainig life have the same limiting distribution:
+
+$$
+  \lim_{t\to\infty}\mathbb{P}(C_t \leq x) = \lim_{t\to\infty}\mathbb{P}(R_t \leq x) = \frac{1}{x}\int_0^x F^c (y)\,\mathrm{d}y
+$$
+
+<details>
+<summary>Proof</summary>
+
+1. Recall that 
+
+$$
+  \mathbb{P}(R_t > x) = F^c (t + x) + \int_0^t F^c (t + x - s)\,\mathrm{d}M(s)\,\; x\in[0,\infty)
+$$
+
+Since $\lim_{t\to\infty} F^c (t+x) = 0$, it follows that the integral converges to $\frac{1}{\mu}\int_0^\infty F^c(x + y)\,\mathrm{d}y$ by the key renewal theorem. Changing variables in the limiting integral gives the result.
+
+2. Recall that, since the renewal process is aperiodic
+
+$$
+  \mathbb{P}(C_t > x) = F^c (t) + \int_0^{t-x} F^c (t - s)\,\mathrm{d}M(s)\,\; x\in[0,t]
+$$
+
+Note that $\lim_{t\to\infty} F^c (t) = 0$. The change of variables $u = t - x$ changes the integral into $\int_0^u F^c (u + x - s)\,\mathrm{d}M(s)$. By the key renewal theorem, this integral converges to
+
+$$
+  \frac{1}{\mu}\int_0^\infty F^c (y+x)\,\mathrm{d}y = \int_x^\infty F^c (y + x)\,\mathrm{d}y
+$$
+
+3. By the previous two results, the limiting right distribution functions of $R_t$ and $C_t$ are the same. The ordinary (left) limiting distribution function is
+
+$$
+  1 - \frac{1}{\mu}\int_x^\infty F^c(y)\,\mathrm{d}y = \frac{1}{\mu}\left(\mu - \int_x^\infty F^c(y)\,\mathrm{d}y \right)
+$$
+
+Note that $\mu = \int_0^\infty F^c (y)\,\mathrm{d}y$, so the result follows since
+
+$$
+  \int_0^\infty F^c (y)\,\mathrm{d}y - \int_x^\infty F^c(y)\,\mathrm{d}y = \int_0^x F^c(y)\,\mathrm{d}y
+$$
+</details>
+</MathBox>
+
 ### Comparison
 
 <MathBox title='Renewal comparison rules' boxType='proposition'>
@@ -478,7 +699,6 @@ Suppose that $\mathbf{X} = (X_i)_{n\in\mathbb{N}_+}$ and $\mathbf{Y} = (Y_i)_{n\
 2. $N_{Y,t} \geq N_{X,t}$
 3. $m_Y (t) \geq m_X (t)$
 </MathBox>
-
 
 ## Markov process
 
