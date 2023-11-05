@@ -97,7 +97,7 @@ The distributions of the arrival time are the convolution powers of $F$, i.e. $F
 <details>
 <summary>Proof</summary>
 
-This follows from the definitions: $F_n$ is the distribution function of $T_n = \sum_{i=1}^n X_i$. Since $\mathbf{X}$ is an independent, indentically distributed sequence, it follows that $F_n = F^{*n}$.
+This follows from the definitions: $F_n$ is the distribution function of $T_n = \sum_{i=1}^n X_i$. Since $\mathbf{X}$ is an independent, identically distributed sequence, it follows that $F_n = F^{*n}$.
 </details>
 </MathBox>
 
@@ -653,6 +653,74 @@ $$
 
 ### Alternating renewal process
 
+An alternating renewal process models a system that, over time, alternates between two states.
+
+<MathBox title='Age processes' boxType='definition'>
+Let $\mathbf{U} = (U_n)_{n\in\mathbb{N}_+}$ and $\mathbf{V} = (V_n)_{n\in\mathbb{N}_+}$ denote the successive lengths of time that the system is in state $1$ and $0$, respectively. Suppose that the $\mathbf{W} = ((U_n, V_n))_{n\in\mathbb{N}_+}$ is an independent, identically distributed sequence. It follows that $\mathbf{U}$ and $\mathbf{V}$ each are independent, identically distributed sequences, but $\mathbf{U}$ and $\mathbf{V}$ might well be dependent. Let $\mu = \mathbb{E}(U)$ denote the mean og a generic time period $U$ in state $1$ and $\nu = \mathbb{E}(V)$ the mean of a generic time period $V$ in state $0$. Let $G$ denote the distribution function of a time period $U$ in state $1$, and as usual, let $G^c = 1 - G$ denote the right distribution function of $U$.
+
+It is natural to consider returns to state $1$ as the arrivals in an alternating renewal process. Let $X_n = U_n + V_n$ for $n\in\mathbb{N}_+$ and consider the renewal process with interarrival times $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$. This makes sense, because $\mathbf{X}$ is an independent, identically distributed sequence of nonnegative variables. As for an ordinary renewal process, $F$ denotes the common distribution function of $X_n$, while $M$ is the renewal function. Note that $\mathbb{E}(X) = \mu + \nu$.
+
+In this setting the renewal process associated with $\mathbf{W}$ is known as an alternating renewal process.
+</MathBox>
+
+#### State process
+If $I_t \in \{0, 1 \}$ is the state of the system at time $t\in[0,\infty)$, then $\mathbf{I} = \{I_t\}_{t\in[0,\infty)}$ is a stochastic process with state space $\{0,1\}$. The stochastic processes $\mathbf{W}$ and $\mathbf{I}$ are equivalent in the sense that we can recover one from another. Let $p(t) = \mathbb{P}(I_t = 1)$, the probability that the device is in state $1$ at time $t$.
+
+<MathBox title='' boxType='proposition'>
+The function $p$ satisfies the renewal equation $p = G^c + p*F$ and hence $p = G^c + G^c * M$.
+
+<details>
+<summary>Proof</summary>
+
+Conditioning on the first arrival $X_1$
+
+$$
+\begin{align*}
+  \mathbb{P}(I_t = 1) &= \mathbb{P}(I_t = 1, X_1 > t) + \mathbb{P}(I_t = 1, X_1 \leq t) \\
+  &= \mathbb{P}(I_t = 1, X_1 > t) + \int_0^t \mathbb{P}(I_t = 1 | X_1 = s)\,\mathrm{d}F(s)
+\end{align*}
+$$
+
+Since $\{I_t = 1, X_1 > t\} = \{U_1 > t\}$, it follows that $\mathbb{P}(I_t = 1, X_1 > t) = \mathbb{P}(U_1 > t) = G^c (t)$. By the elementary renewal theorem $\mathbb{P}(I_t = 1 | X_s) = p(t - s)$ for $s\leq t$. Thus
+
+$$
+  p(t) = G^c (t) + \int_0^t p(t-s)\,\mathrm{d}F(s),\; t\in[0,\infty)
+$$
+
+or equivalent $p = G^c + p*F$. By the fundamental theorem on renewal equations, the solution is $p = G^c + G^c *M$, so
+
+$$
+  p(t) = G^c(t) + \int_0^t G^c (t-s)\,\mathrm{d}M(s),\; t\in[0,\infty)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If the alternating renewal process is non-arithmetic, then
+
+$$
+  \lim_{t\to\infty} p(t) = \frac{\mu}{\mu + \nu}
+$$
+
+Equivalently, for $\mathbb{P}(I_t = 0) = 1 - p(t)$
+
+$$
+  \lim_{t\to\infty} 1 - p(t) = \frac{\nu}{\mu + \nu}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From the alternating renewal equation $p = G^c + G^c * M$. As a basic property of the right distribution function $\lim_{t\to\infty} G^c (t) = 0$. By the key renewal theorem
+
+$$
+  \lim_{t\to\infty} (G^c * M)(t) = \frac{1}{\mu + \nu}\int_0^\infty G^c (s)\,\mathrm{d}s
+$$
+
+By another property of the right distribution function $\int_0^\infty G^c (s)\,\mathrm{d}s = \mu$.
+</details>
+</MathBox>
+
 ### Age processes
 
 Renewal processes can be applied to model the reliability of devices.
@@ -837,6 +905,12 @@ $$
   \lim_{t\to\infty}\mathbb{P}(C_t \leq x) = \lim_{t\to\infty}\mathbb{P}(R_t \leq x) = \frac{1}{x}\int_0^x F^c (y)\,\mathrm{d}y
 $$
 
+4. If the renewal process is non-arithmetic then
+
+$$
+  \lim_{t\to\infty}\mathbb{P}(L_t \leq x) = \frac{1}{\mu}\int_0^x y\,\mathrm{d}F(y),\; x\in[0,\infty)
+$$
+
 <details>
 <summary>Proof</summary>
 
@@ -871,6 +945,14 @@ Note that $\mu = \int_0^\infty F^c (y)\,\mathrm{d}y$, so the result follows sinc
 $$
   \int_0^\infty F^c (y)\,\mathrm{d}y - \int_x^\infty F^c(y)\,\mathrm{d}y = \int_0^x F^c(y)\,\mathrm{d}y
 $$
+
+4. Fix $x\in[0,\infty)$. For $n\in\mathbb{N}_+$ define state $1$ (on) period associated with the interarrival time $X_n$ by $U_n = X_n \mathbf{1}(X_n > x)$. The state $0$ (off) period corresponding to $X_n$ is $V_n = X_n - U_n$. Thus, each renewal period is either totally on or off, depending on whether or not the interarrival time is greater that $x$. Note that the system is on at time $t\in[0,\infty)$ if and only if $L_t > x$, such that for a generic interarrival time $X$
+
+$$
+  \lim_{t\to\infty}\mathbb{P}(L_t > x) = \frac{1}{\mu}\mathbb{E}[X\mathbf{1}(X > x)]
+$$
+
+Finally, note that $\mathbb{E}[X\mathbf{1}(X > x)] = \int_x^\infty y\,\mathrm{d}F(y)$.
 </details>
 </MathBox>
 
@@ -1983,7 +2065,7 @@ $$
   X_n = \sum_{i=0}^n U_i
 $$
 
-In addition, $\mathbf{X}$ has stationary increments if and only if $(U_n)_{n\in\mathbb{N}}$ are indentically distributed.
+In addition, $\mathbf{X}$ has stationary increments if and only if $(U_n)_{n\in\mathbb{N}}$ are identically distributed.
 
 <details>
 <summary>Proof</summary>
@@ -3368,7 +3450,7 @@ for every $k\in\mathbb{N}_+$. Hence $M_\infty$ is a tail random variable for $\m
 Suppose that $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is a sequence of random variables each taking values in $S$. Recall that $\mathbf{X}$ is exchangeable if for every $n\in\mathbb{N}$, every permutation of $\mathbf{X}$ has the same distribution on $(S^n,\mathcal{S}^n)$. Clearly if $\mathbf{X}$ is a sequence of indepedent, identically distributed variables, then $\mathbf{X}$ is exchangeable. Conversely, if $\mathbf{X}$ is exchangeable, by definition the variables are identically distributed, but not necessarily indepedent. On the other hand conditionally indepedent and identically distributed sequences are exchangeable.
 
 <MathBox title='' boxType='proposition'>
-Suppose that $\Theta$ is a random variable on $(T,\mathcal{T})$. If $\mathbf{X}$ is conditionally indepedent and indentically distributed given $\Theta$, then $\mathbf{X}$ is exchangeable.
+Suppose that $\Theta$ is a random variable on $(T,\mathcal{T})$. If $\mathbf{X}$ is conditionally indepedent and identically distributed given $\Theta$, then $\mathbf{X}$ is exchangeable.
 
 <details>
 <summary>Proof</summary>
@@ -3458,7 +3540,7 @@ $$
   B\mapsto \int_T \mu_\theta^n (B)\,\mathrm{d}\nu(\theta)
 $$
 
-If $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is an exchangeable sequence of random variables, each taking values in a measurable space $(S,\mathcal{S})$, then there exists a random variable $\Theta$ such that $\mathbf{X}$ is independent and indentically distributed given $\Theta$. The generalization of de Finetti's theorem is central in Bayesian statistical inference. For and exchangeable sequence of random variables (observations in a statistical experiment), there is a hidden, random parameter $\Theta$. Given $\Theta = \theta$, the variables are indepedent and identically distributed. We gain information about $\Theta$ by imposing a *prior distribution* on $\Theta$ and the updating thes, based on our observations and using Baye's theorem, to a posterior distribution.
+If $\mathbf{X} = (X_n)_{n\in\mathbb{N}_+}$ is an exchangeable sequence of random variables, each taking values in a measurable space $(S,\mathcal{S})$, then there exists a random variable $\Theta$ such that $\mathbf{X}$ is independent and identically distributed given $\Theta$. The generalization of de Finetti's theorem is central in Bayesian statistical inference. For and exchangeable sequence of random variables (observations in a statistical experiment), there is a hidden, random parameter $\Theta$. Given $\Theta = \theta$, the variables are indepedent and identically distributed. We gain information about $\Theta$ by imposing a *prior distribution* on $\Theta$ and the updating thes, based on our observations and using Baye's theorem, to a posterior distribution.
 
 ### Examples
 
