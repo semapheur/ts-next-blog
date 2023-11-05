@@ -1,7 +1,12 @@
-import pkg from 'bloom-filters';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+//const {XorFilter} = require('bloom-filters')
+//const fs = require('fs')
+//const path = require('path')
+//const matter = require('gray-matter')
+
+import pkg from 'bloom-filters'
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
 
 const {XorFilter} = pkg
 
@@ -82,14 +87,12 @@ async function indexNotes() {
 }
 
 const notes = await indexNotes()
-const cache = `export const notes = ${JSON.stringify(notes)}`;
 
-fs.writeFile('./cache/note.js', cache, function (e) {
+const cache = `export const notes = ${JSON.stringify(notes)}`
+
+fs.writeFile('./cache/note.js', cache, function(e) {
   if (e) {
-      console.log(e);
+    console.log(e);
   }
   console.log('Note cache file written');
 });
-
-
-
