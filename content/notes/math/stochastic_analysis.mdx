@@ -721,6 +721,169 @@ By another property of the right distribution function $\int_0^\infty G^c (s)\,\
 </details>
 </MathBox>
 
+### Renewal reward process
+
+In a renewal reward process, each interarrival time is associated with a random variable that is generically thought of as the reward associated with that interarrival time. 
+
+<MathBox title='Renewal reward process' boxType='proposition'>
+Suppose that $\mathbf{Y} = (Y_n)_{n\in\mathbb{N}_+}$ is a sequence of real-valued variables, where $Y_n$ is thought of as the reward (or cost) associated with the interarrival time $X_n$. Let $\mathbf{Z} = ((X_n, Y_n))_{n\in\mathbb{N}_+}$ be an indepedent, identically distributed sequence. Let $\nu = \mathbb{E}(Y)\in\mathbb{R}$ denote the mean of a generic reward $Y$.
+
+The stochastic process $\mathbf{R} = \{R_t\}_{t\in[0,\infty)}$ defined by
+
+$$
+  R_t = \sum_{i=1}^{N_t} Y_t,\; t\in[0,\infty)
+$$
+
+is the reward renewal process associated with $\mathbf{Z}$. The function $r$ given by $r(t) = \mathbb{E}(R_t)$ is the reward function.
+</MathBox>
+
+In the special case that $\mathbf{Y}$ and $\mathbf{X}$ are independent, the distribution of $R_t$ is known as a compound distribution, based on the distribution of $N_t$ and the distribution of a generic reward $Y$.
+
+Note that a renewal reward process generalizes an ordinary renewal process. If $Y_n = 1$ for each $n\in\mathbb{N}_+$, then $R_t = N_t$ for $t\in[0,\infty)$ and the reward process simply reduces to the counting process.
+
+<MathBox title='Renewal reward theorem' boxType='theorem'>
+1. $\lim_{t\to\infty} \frac{R_t}{t} = \frac{\nu}{\mu}$ with probability $1$
+2. $\lim_{t\to\infty} \frac{r(t)}{t} = \frac{\nu}{\mu}$
+
+<details>
+<summary>Proof</summary>
+
+1. Note that
+
+$$
+  \frac{R}{t} = \frac{R_t}{N_t}\frac{N_t}{t}
+$$
+
+By the strong law of large numbers for the indepedent, identically distributed sequence $\mathbf{Y}$
+
+$$
+  \lim_{n\to\infty} \frac{1}{n} \sum_{i=1}^n Y_i = \nu
+$$
+
+with probability $1$. Since $N_t \xrightarrow{t\to\infty} \infty$ with probability $1$ it follows that with probability $1$
+
+$$
+  \frac{R_t}{N_t} = \frac{1}{N_t}\sum_{i=1}^{N_t} Y_i \xrightarrow{t\to\infty} \nu
+$$
+
+From the law of large number for the renewal process, $\lim_{t\to\infty} \frac{N_t}{t} = \frac{1}{\mu}$.
+
+2. Note that
+
+$$
+  R_t = \sum_{i=1}^{N_t} Y_i = \sum_{i=1}^{N_t + 1} Y_i - Y_{N_t + 1}
+$$
+
+Recall that $N_t + 1$ is a stopping time for the sequence of interarrival times $\mathbf{X}$, and hence is also a stopping time for the sequence of interarrival time, reward pairs $\mathbf{Z}$. By Wald's equation
+
+$$
+\begin{align*}
+  \mathbb{E}\left( \sum_{i=1}^{N_t + 1} Y_i \right) &= \nu\mathbb{E}(N_t + 1) \\
+  &= \nu[M(t) + 1] = \nu M(t) + \nu
+\end{align*}
+$$
+
+By the elementary renewal theorem
+
+$$
+  \frac{\nu M(t) + \nu}{t} = \nu\frac{M(t)}{t} + \frac{\nu}{t} \xrightarrow{t\to\infty} \frac{\nu}{\mu}
+$$
+
+It remains to show that
+
+$$
+  \lim_{t\to\infty} \frac{\mathbb{E}(Y_{N_t + 1})}{t} = 0
+$$
+
+Let $u(t) = \mathbb{E}(Y_{N_t + 1})$ for $t\in[0,\infty)$. Taking cases for the first arrival time $X_1$ gives
+
+$$
+  u(t) = \mathbb{E}[Y_{N_t + 1}\mathbf{1}(X_1 > t)] + \mathbb{E}[Y_{N_t + 1}\mathbf{1}(X_1 \leq t)]
+$$
+
+Since $X_1 > t$ if and only if $N_t = 0$, the first term is $\mathbb{E}[Y_1\mathbf{1}(X_1 > t)] = a(t)$. Assuming that the expected reward $\nu$ exists in $\mathbb{R}$, it follows that $|a(t)| \leq\mathbb{E}(|Y_1|) < \infty$. This shows that $a$ is bounded with $\lim_{t\to\infty} a(t) = 0$. For the second term, if the first arrival occurs at time $s\in[0,t]$, then the renewal process restarts, independently of the past, so
+
+$$
+  \mathbb{E}[Y_{N_t + 1}\mathbf{1}(X_1 \leq t)] = \int_0^t u(t-s)\,\mathrm{d}F(s),\; t\in[0,\infty)
+$$
+
+It follows that $u$ satisfies the renewal equation $u = a + u*F$. By the fundamental theorem on renewal equations, the solution is $u = a + a*M$. For some $\varepsilon > 0$, there exists $T\in(0,\infty)$ such that $|a(t)| < \varepsilon$ for $t > T$. For $t > T$
+
+$$
+\begin{align*}
+  \left|\frac{u(t)}{t}\right| &\leq \frac{1}{t}\left[|a(t) + \int_0^{t-T} |a(t-s)|\,\mathrm{d}M(s) + \int_{t-M}^t |a(t-s)|\,\mathrm{d}M(s)\right] \\
+  &\leq \frac{1}{t}[\varepsilon + \varepsilon M(t-T) + \mathbb{E}|Y_1|[M(t) - M(t - T)]]
+\end{align*}
+$$
+
+Using the elementary renewal theorem, the last expression converges to $\frac{\varepsilon}{\mu}$ as $t\to\infty$. Since $\varepsilon > 0$ is arbitrary, it follows that $\lim_{t\to\infty} \frac{u(t)}{t} = 0$.
+</details>
+</MathBox>
+
+#### General reward process
+
+The renewal process $\mathbb{R} = \{R_t\}_{t\in[0,\infty)}$ is a step function, taking the value $\sum_{i=1}^n Y_i$ on the renewal interval $[T_n, T_{n+1})$. The reward process can be modified so that the reward accrue continuously in time or in a mixed discrete/continuous manner.
+
+<MathBox title='Conditions for general reward processes' boxType='definition'>
+Suppose that $\mathbf{Z} = ((X_n, Y_n))_{n\in\mathbb{N}_+}$ is the sequence of interarrival times and rewards. A stochastic process $\mathbf{V} = \{V_t\}_{t\in[0,\infty)}$ is a reward process associated with $\mathbf{Z}$ if the following conditions hold for $n\in\mathbb{N}$:
+
+1. $V_{T_n} = \sum_{i=1}^n Y_i$
+2. $V_t$ is between $V_{T_n}$ and $V_{T_n + 1}$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that the rewards are nonnegative and that $\mathbf{U} = \{U_t\}_{t\in[0,\infty)}$ is a nonnegative stochastic process satisfying
+
+1. $t\mapsto U_t$ piecewise continuous
+2. $\int_{T_n}^{T_{n+1}} U_t\,\mathrm{d}t = Y_{n+1}$ for $n\in\mathbb{N}$
+
+Let $V_t = \int_0^t U_s\,\mathrm{d}s$ for $t\in[0,\infty)$. Then $\mathbb{V} = \{ V_t \}_{t\in[0,\infty)}$ is a reward process associated with $\mathbf{Z}$.
+
+<details>
+<summary>Proof</summary>
+
+By additivity of the integral it follows that $V_{T_n} = \sum_{i=1}^n Y_i$ for $n\in\mathbb{N}$. Since $\mathbf{U}$ is nonnegative, $\mathbf{V}$ is increasing and $V_{T_n} \leq V_t \leq V_{T_{n+1}}$ for $t\in(T_n, T_{n+1})$. 
+</details>
+</MathBox>
+
+The stochastic process $\mathbf{U}$ can be interpreted as a reward density process, where $U_t$ is the rate at which the reward is being accrued at time $t$.
+
+<MathBox title='General reward renewal theorem' boxType='theorem'>
+Suppose that the $\mathbf{V} = \{V_t\}_{t\in[0,\infty)}$ is a reward process associated with $\mathbf{Z} = ((X_n, Y_n))_{n\in\mathbb{N}_+}$ and let $v(t) = \mathbb{E}(V_t)$ for $t\in[0,\infty)$ be the corresponding reward function.
+
+1. $\lim_{t\to\infty} \frac{V_t}{t} = \frac{\nu}{\mu}$ with probability $1$
+2. $\lim_{t\to\infty} \frac{v(t)}{t} = \frac{\nu}{\mu}$
+
+<details>
+<summary>Proof</summary>
+
+The proof is shown for nonnegative reward variables $Y$. If the rewards variables take positive and negative values, the variables can be split into positive and negative parts.
+
+1.  Note that
+
+$$
+  \frac{R_t}{t} \leq\frac{V_t}{t}\leq\frac{R_t}{t} + \frac{Y_{N_t + 1}}{t}
+$$
+
+From the renewal reward theorem, $\lim_{t\to\infty} \frac{R_t}{t} = \frac{\nu}{\mu}$, and $\lim_{t\to\infty} \frac{Y_{N_t+1}}{t} = 0$, both with probability $1$. Hence the strong law of large numbers holds for $\mathbf{V}$.
+
+2. Taking expected values of the displayed inequalities
+
+$$
+  \frac{r(t)}{t} \leq\frac{v(t)}{t}\leq\frac{r(t)}{t} + \frac{\mathbb{E}(Y_{N_t + 1})}{t}
+$$
+
+From the renewal reward theorem $\lim_{t\to\infty}\frac{r(t)}{t} = \frac{\nu}{\mu}$ and $\lim_{t\to\infty}\frac{\mathbb{E}(Y_{N_t + 1})}{t} = 0$. Hence the 2nd property holds.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Suppose that the rewards are positive, and consider the continuous reward process with density process $\mathbf{U} = \{U_t\}_{t\in[0,\infty)}$. Let $u(t) = \mathbb{E}(U_t)$ for $t\in[0,\infty)$. Then
+
+1. $\lim_{t\to\infty} \frac{1}{t} \int_0^t U_s\,\mathrm{d}s = \frac{\nu}{\mu}$ with probability $1$
+2. $\lim_{t\to\infty} \frac{1}{t} \int_0^t u(s)\,\mathrm{d}s = \frac{\nu}{\mu}$
+</MathBox>
+
 ### Age processes
 
 Renewal processes can be applied to model the reliability of devices.
@@ -955,8 +1118,6 @@ $$
 Finally, note that $\mathbb{E}[X\mathbf{1}(X > x)] = \int_x^\infty y\,\mathrm{d}F(y)$.
 </details>
 </MathBox>
-
-
 
 ## Markov process
 
