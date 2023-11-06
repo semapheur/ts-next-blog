@@ -1,60 +1,76 @@
 'use client'
 
-import {ReactNode, useEffect, useRef} from 'react';
-import { CrossIcon } from 'utils/icons';
+import {KeyboardEvent, ReactNode, useEffect, useRef, useState} from 'react'
+import { CrossIcon } from 'utils/icons'
+import useEventListener from 'hooks/useEventListener'
 
-import Portal from './Portal';
-
-interface Props {
-    isOpen: boolean;
-    handleClose: () => void;
-    children: ReactNode;
+type Props = {
+  isOpen: boolean
+  children: ReactNode
+  onClose?: () => void
 }
 
-export default function LatexModal({isOpen, handleClose, children}: Props) {
-  const contentRef = useRef<HTMLDivElement>(null);
+export default function LatexModal({isOpen, children, onClose}: Props) {
+  const [isModalOpen, setModalOpen] = useState(isOpen)
+  const modalRef = useRef<HTMLDialogElement>(null)
 
-  useEffect(() => {
-    const closeOnEscapeKey = (e: KeyboardEvent) => {
-      e.key === 'Escape' ? handleClose() : null;
+  const handleClick = (e: MouseEvent) => {
+    const modal = modalRef.current
+    if (!modal) return
+
+    const modalSize = modal.getBoundingClientRect()
+    if (
+      e.clientX < modalSize.left ||
+      e.clientX > modalSize.right ||
+      e.clientY < modalSize.top ||
+      e.clientY > modalSize.bottom
+    ) {
+      handleClose()
     }
-    return () => {
-      document.body.removeEventListener('keydown', closeOnEscapeKey);
-    };
-  }, [handleClose])
+  }
+  useEventListener('click', handleClick, modalRef)
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose()
+    }
+    setModalOpen(false)
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
+    if (e.key == 'Escape') {
+      handleClose()
+    }
+  }
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    setModalOpen(isOpen)
   }, [isOpen])
-  
-  if (!isOpen) return null;
 
+  useEffect(() => {
+    const modal = modalRef.current
+    if (modal) {
+      if (isModalOpen) {
+        modal.showModal()
+      } else {
+        modal.close()
+      }
+    }
+  }, [isModalOpen])
+  
   return (
-    <Portal portalId='react-portal'>
-      <div className='fixed inset-0 h-screen w-screen 
-        flex justify-center items-center backdrop-blur-sm 
-        transition-all z-[999]'
+    <dialog ref={modalRef} onKeyDown={handleKeyDown}
+      className='relative left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+        h-3/4 max-w-3/4 px-1 pt-2 bg-main/50 border rounded-lg shadow-sm backdrop-blur'
+    >
+      <button onClick={handleClose}
+        className='absolute top-1 right-1'
       >
-        <div className='relative h-3/4 w-min pt-8 
-          flex justify-center 
-          bg-main border rounded-lg shadow-sm z-[9999]' 
-        >
-          <button className='absolute top-1 right-1'
-            onClick={handleClose}
-          >
-            <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
-          </button>
-          <div className='prose max-w-none flex justify-center h-full w-full overflow-scroll' 
-            ref={contentRef}
-          >
-            {children}
-          </div>
-        </div>
+        <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
+      </button>
+      <div className='prose flex justify-center h-full w-full overflow-scroll'>
+        {children}
       </div>
-    </Portal>
+    </dialog>
   )
 }

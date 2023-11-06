@@ -1,16 +1,16 @@
 'use client'
 
-import dynamic from 'next/dynamic';
-import {useState} from 'react';
+import dynamic from 'next/dynamic'
+import {useState} from 'react'
 
-const Modal = dynamic(() => import('components/LatexModal'), {ssr: false}); //import Modal from 'components/Modal';
+const Modal = dynamic(() => import('components/LatexModal'), {ssr: false}) //import Modal from 'components/Modal'
 
-interface Props {
-    width?: number;
-    src: string;
-    alt?: string;
-    caption: string;
-    children: string;
+type Props = {
+  width?: number
+  src: string
+  alt?: string
+  caption: string
+  children: string
 }
 
 const latex = (className: string) => {
@@ -28,11 +28,11 @@ const latex = (className: string) => {
 }
 
 export default function LatexFig({width=70, src, alt, caption, children}: Props) {
-  const [isHovered, setHover] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isHovered, setHover] = useState<boolean>(false)
+  const [showModal, setShowModal] = useState<boolean>(false)
   
   if (!alt) {
-      alt = src.match(/(?<=\/)\w+(?=.(svg|png|gif))/)![0];
+    alt = src.match(/(?<=\/)\w+(?=.(svg|png|gif))/)![0]
   }
 
   return (
@@ -52,11 +52,9 @@ export default function LatexFig({width=70, src, alt, caption, children}: Props)
           {latex('w-10 h-10')}
         </button>
       }
-      {showModal && 
-        <Modal isOpen={showModal} handleClose={() => setShowModal(!showModal)}>
-          {children}
-        </Modal>
-      }
+      <Modal isOpen={showModal} onClose={() => setShowModal(!showModal)}>
+        {children}
+      </Modal>
     </figure>
   )
 }

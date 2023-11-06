@@ -32,7 +32,7 @@ export default function Sidebar({noteDetails}: Props) {
       bg-primary/50 backdrop-blur shadow-r dark:shadow-black/50 md:relative w-auto'
     >
       <Toggle/>
-      <nav key={'nav.sidebar'} className='w-0 md:min-w-max bg-primary/0
+      <nav key='nav.sidebar' className='w-0 md:min-w-max bg-primary/0
         peer-checked/toggle:w-max transition-transform overflow-y-scroll overflow-x-hidden'
       >
         {Object.entries(noteDetails).map(([subject, notes]) => (
