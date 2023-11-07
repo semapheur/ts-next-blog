@@ -884,6 +884,51 @@ Suppose that the rewards are positive, and consider the continuous reward proces
 2. $\lim_{t\to\infty} \frac{1}{t} \int_0^t u(s)\,\mathrm{d}s = \frac{\nu}{\mu}$
 </MathBox>
 
+#### Asymptotic behaviour
+
+<MathBox title='Limits of alternating renewal processes' boxType='proposition'>
+The limits of the alternating renewal process are
+
+1. $\lim_{t\to\infty} \frac{1}{t}\int_0^t I_s\,\mathrm{d}s = \frac{\mu}{\mu + \nu}$
+2. $\lim_{t\to\infty} \frac{1}{t}\int_0^t p(s)\,\mathrm{d}s = \frac{\mu}{\mu + \nu}$
+
+<details>
+<summary>Proof</summary>
+
+Consider the renewal reward process where the reward associated with the interarrival time $X_n$ is $U_n$ (on period). The rewards $U_n$ are nonnegative and clearly 
+
+$$
+  \int_{T_n}^{T_{n+1}} I_s\,\mathrm{d}s = U_{n+1}
+$$
+
+Thus $t\mapsto \int_0^t I_s\,\mathrm{d}s$ for $t\in[0,\infty)$ defines a continuous reward process. The results follow directly from the reward renewal theorem.
+</details>
+</MathBox>
+
+#### Thinning
+Consider a basic renewal process with the usual notation. For $n\in\mathbb{N}_+$ suppose that arrival $n$ is either accepted or rejected. The process of accepting or rejecting points in a point process is known as thinning the point process.
+
+Define the random variable $Y_n$ to be $1$ in the first case, and $0$ in the second. Let $Z_n = (X_n, Y_n)$ denote the intearrival time and rejection variable pair and assume that $\mathbf{Z} = (Z_n)_{n\in\mathbb{N}_+}$ is an independent, identically distributed sequence.  Note that this structure defines a renewal reward process, such that $\mathbf{Y} = (Y_n)_{n\in\mathbb{N}_+}$ is a sequence of Bernoulli trials. Let $p$ denotes probability of accepting an arrival. The thinned counting process $\mathbf{R} = \{R_t\}_{t\in[0,\infty)}$ is given by
+
+$$
+  R_t = \sum_{i=1}^{N_t} Y_i
+$$
+
+and denotes the number of accepted point in $[0,t]$ for $t\in[0,\infty)$. Let $r(t) = \mathbb{E}(R_t)$ denote the expected number of accepted points in $[0,\infty)$.
+
+<MathBox title='Limits of thinned renewal processes' boxType='proposition'>
+The limits of the thinned renewal process are
+
+1. $\lim_{t\to\infty} \frac{R(t)}{t} = \frac{p}{\mu}$
+2. $\lim_{t\to\infty} \frac{r(t)}{t} = \frac{p}{\mu}$
+
+<details>
+<summary>Proof</summary>
+
+This follows immediately from the renewal theorem since $\nu = p$.
+</details>
+</MathBox>
+
 ### Age processes
 
 Renewal processes can be applied to model the reliability of devices.
@@ -1049,7 +1094,7 @@ The result follows from the fact that $\mathbb{P}(C_t \geq x, R_t > y) = \mathbb
 
 #### Limits
 
-<MathBox title='Age process limits' boxType='proposition'>
+<MathBox title='Age process limiting distributions' boxType='proposition'>
 1. If the renewal process is non-arithmetic then
 
 $$
@@ -1116,6 +1161,94 @@ $$
 $$
 
 Finally, note that $\mathbb{E}[X\mathbf{1}(X > x)] = \int_x^\infty y\,\mathrm{d}F(y)$.
+</details>
+</MathBox>
+
+<MathBox title='Age process limits' boxType='proposition'>
+Let $\mu = \mathbb{E}(X)$ and $\nu = \mathbb{E}(X^2)$.
+
+Limits for the current life process
+1. $\frac{1}{t}\int_0^t C_s\,\mathrm{d}s = \frac{\nu}{2\mu}$ with probability $1$
+2. $\frac{1}{t}\int_0^t c(s)\,\mathrm{d}s = \frac{\nu}{2\mu}$
+
+Limits for the remaining life process
+3. $\frac{1}{t}\int_0^t R_s\,\mathrm{d}s = \frac{\nu}{2\mu}$ with probability $1$
+4. $\frac{1}{t}\int_0^t r(s)\,\mathrm{d}s = \frac{\nu}{2\mu}$
+
+Limits for the total life process
+5. $\frac{1}{t}\int_0^t L_s\,\mathrm{d}s = \frac{\nu}{mu}$ with probability $1$
+6. $\frac{1}{t}\int_0^t l(s)\,\mathrm{d}s = \frac{\nu}{2\mu}$ 
+
+<details>
+<summary>Proof</summary>
+
+Consider the renewal reward process where the reward associated with the interarrival time $X_n$ is $\frac{1}{2}X_n^2$ for $n\in\mathbb{N}$.
+
+**Current life**
+The process $t\mapsto\int_0^t C_s\,\mathrm{d}s$ for $t\in[0,\infty)$ is a continuous reward process for this sequence of rewards. To see this, note that for $t\in[T_n, T_{n+1})$, we have $C_t = t - T_n$. Changing variables and noting that $T_{n+1} = T_n + X_{n+1}$ we have
+
+$$
+  \int_{T_n}^{T_{n+1}} C_t\,mathrm{d}t = \int_0^{X_{n+1}} s\,\mathrm{d}s = \frac{1}{2}X_{n+1}^2
+$$
+
+The results follow directly from the reward renewal theorem.
+
+**Remaining life**
+The process $t\mapsto\int_0^t R_s\,\mathrm{d}s$ for $t\in[0,\infty)$ is a continuous reward process for this sequence of rewards. To see this, note that for $t\in[T_n, T_{n+1})$, we have $C_t = t - T_n$. Changing variables and noting that $T_{n+1} = T_n + X_{n+1}$ we have
+
+$$
+  \int_{T_n}^{T_{n+1}} R_t\,mathrm{d}t = \int_0^{X_{n+1}} s\,\mathrm{d}s = \frac{1}{2}X_{n+1}^2
+$$
+
+The results follow directly from the reward renewal theorem.
+
+**Total life**
+The limits for the total life process follow trivially from the results for the current and remaining life processes.
+</details>
+</MathBox>
+
+### Replacement models
+Replacement models are variations on a basic renewal process in which the devices is replaced at times other than failure. Often the cost $a$ of a planned replacement is less than the cost $b$ of an emergency replacement (at failure).
+
+In the age replacement model, the device is replace either when it fails or when it reaches a specified age $s\in(0,\infty)$. This model gives rise to a new renewal process with interarrival sequence $\mathbf{U} = (U_n)_{n\in\mathbb{N}}$ where $U_n = \min\{X_n, s\}$ for $n\in\mathbb{N}_+$. If $a,b\in(0,\infty)$ are the costs of planned and unplanned replacements, respectively, then the associated cost associated with the renewal period $U_n$ is
+
+$$
+  Y_n = a\mathbf{1}(U_n = s) + b\mathbf{1}(U_n < s) = a\mathbf{1}(X_n \geq s) + b\mathbf{1}(X_n < s)
+$$
+
+The sequence $((U_n, Y_n))_{n\in\mathbb{N}_+}$ satisfies the assumptions of a renewal process. If $a\geq b$, i.e. the planned cost of replacement is at least as large as the unplanned cost of replacement, then $Y_n \geq b$ for $n\in\mathbb{N}_+$. In this case, the model makes no financial sense.
+
+<MathBox title='Properties of age replacement processes' boxType='proposition'>
+Let $F$ be the common distribution function associated with the underlying intearrival sequence $\mathbf{X}$ for. Then
+
+1. The expected cost of a renewal period is $\mathbb{E}(Y) = aF^c(s) + bF(s)$
+2. The expected length of a renewal period is $\mathbb{E}(U) = \int_0^s F^c (x)\,\mathrm{d}x$ 
+3. The limiting expected cost per unit time is 
+
+$$
+  K(s) = \frac{\mathbb{E}(Y)}{\mathbb{E}(U)} = \frac{aF^c (s) + bF(s)}{\int_0^s F^c}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The 1st and 2nd properties follow from the definition of the reward $Y$ and the renewal period $U$. The 3rd property follows from the reward renewal theorem.
+</details>
+</MathBox>
+
+<MathBox title='Age replacement cost density limits' boxType='proposition'>
+1. $C(s) \xrightarrow{s\downarrow 0} \infty$
+2. $C(s) \xrightarrow{s\uparrow 0} \infty$
+
+<details>
+<summary>Proof</summary>
+
+1. Recall that $F^c (0) > 0$ an $\lim_{s\downarrow 0} \int_0^s F^c(x)\,\mathrm{d}x = 0$
+2. Note that $\lim_{s\to\infty} F^c(s) = 0$ and $\lim_{s\to\infty} F(s) = 1$ and
+
+$$
+  \lim_{s\to\infty} \int_0^s F^c(x)\,\mathrm{d}x = \int_0^\infty F^c(x)\,\mathrm{d}x = \mu
+$$
 </details>
 </MathBox>
 
