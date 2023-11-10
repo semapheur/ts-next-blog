@@ -4442,6 +4442,18 @@ $$
 $$
 </MathBox>
 
+Wiener was able to show by brute forces that for the particular basis $\psi_n = (x) = \sqrt{2}\cos(\pi n x)$, the series
+
+$$
+  X_t = \sum_{n=1}^\infty \xi_n \langle \mathbf{1}_{[0,t]}, \psi_n \rangle
+$$
+
+converges not only in $L^2$, but also uniformly in $t$. This basis gives the following presentation of a Wiener process with continuous paths: 
+
+$$
+  W_t = \xi_0 t + \sum_{k=1}^\infty \sum_{n=2^{k-1}}^{2^k-1}$ n^{-1}\xi_n \sqrt{X}\sin(\pi n t)
+$$
+
 ### Lévy's construction
 
 Lévy discovered that the Haar wavelet basis is a more natural orthonormal basis for the construction of the Wiener process. The Haar mother wavelet function $h:\mathbb{R}\to\{-1, 0, 1\}$ is defined as
@@ -4472,8 +4484,60 @@ $$
   \langle h_{n,k}, h_{m,l} \rangle = \int_{R} h_{n,k} h_{m,l}\,\mathrm{d}t = \delta_{nm}\delta_{kl}
 $$
 
-Shauder functions $G_{n,k}$
+The Haar functions therefore form an orthonormal basis that is complete on $L^2[0,1]$ (not proved here). For the Haar basis the inner products of the series $X_t = \sum_{n=1}^\infty \xi_n \langle \mathbf{1}_{[0,t]}, \psi_n \rangle$, define the Shauder functions $G_{n,k}$
 
 $$
   G_{n,k}(t) = \langle\mathbf{1}_{[0,t]}, h_{n,k}\rangle = \int_0^t h_{n,k}(s)\,\mathrm{d}s
 $$
+
+<MathBox title='' boxType='theorem'>
+If the random variables $\xi_{n,k}$ are independent, indentically distributed with standard normal distribution then
+
+$$
+  X_t := \xi_{0,1}t + \sum_{n=1}^\infty \sum_{k=0}^{2^n - 1} \xi_{n,k} G_{n, k}(t)
+$$
+
+converges uniformly with probability 1 for $t\in[0,1]$ and the limit function $X_t$ is a standard Wiener process.
+
+<details>
+<summary>Proof</summary>
+
+Recall that if $Z$ is a Standard normal random variable, then for every $x > 0$
+
+$$
+  \mathbb{P}(Z > x) \leq \frac{2e^{-x^2/2}}{\sqrt{2\pi}x}
+$$
+
+By the Wiener isometry corollary, the random variables $X_t$ defined in terms of Schauder functions are centered Gaussians with covariances that agree with the covariances of a Wiener process. To prove that this series defines a Brownian motion, it suffices to show that the series converges uniformly for $t\in[0,1]$ with probability $1$.
+
+The Schauder function $G_{n,k}$ has maximum value $2^{-n/2}$, so to prove that the series converges uniformly, it is enough to show with probability $1$ that
+
+$$
+  \sum_{n=1}^\infty \sum_{k=1}^{2^m} \frac{|\xi_{n,k}|}{2^{m/2}} < \infty
+$$
+
+To do this we will use the Borel-Cantelli lemma and the tail estimate for the normal distribution to show that with probability $1$, there is a (possibly random) $m_*$ such that for all $n \geq n_*$
+
+$$
+  \max_k |\xi_{n,k}|\leq 2^{n/4}
+$$
+
+This will imply that almost surely, the series is eventually dominated by a multiple of the geometric series $\sum 2^{-(n+2)/4}$, and consequently converges uniformly in $t$. It suffices to show that the probabilities of the complementary events are summable. By the tail estimate for the normal distribution
+
+$$
+  \mathbb{P}(|\xi_{n,k} \geq 2^{n/4}|) \leq\frac{4}{2^{n/4}\sqrt{2\pi}}e^{-2^{n/2}}
+$$
+
+Hence, by the Bonferroni inequality (crude union bound)
+
+$$
+  \mathbb{P}(\max_{k\in[1, 2^n] |\xi_{n,k}| \geq 2^{n/4}} \leq 2^n 2^{-n/4} \sqrt{2/\pi}e^{-2^{n-1}}
+$$
+
+Since this bound is summable in $n$, the Borell-Cantelli lemma implies that $\max_k |\xi_{n,k}|\leq 2^{n/4}$ must hold with probability $1$. This proves the series in theorem converges uniformly with probability $1$, and thus $X_t$ is continuous.
+</details>
+</MathBox>
+
+### Brownian motion as a limit of random walks
+
+Standard Brownian motion is in sense a limit of rescaled simple random walks. 
