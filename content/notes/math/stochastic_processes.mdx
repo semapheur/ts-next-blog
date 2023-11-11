@@ -4390,6 +4390,33 @@ A standard Brownian motion is a random process $\mathbf{X} = \{ X_t \}_{t\in[0,\
 5. $t\mapsto$ is continuous on $[0,\infty)$ with probability $1$ 
 </MathBox>
 
+<MathBox title='' boxType='proposition'>
+Let $\mathbf{X} = \{ X_t \}_{t\in[0,\infty)}$ be a standard Brownian motion. By definition $X_t$ has the probability density function
+
+$$
+  f_t (x) = \frac{1}{\sqrt{2\pit}}e^{-\frac{x^2}{2t}}
+$$
+
+Then $\mathbf{X}$ is a Gaussian process with the following properties
+1. if $0 < t_1 < t_2 < \dots < t_n < \infty$ then $\left(X_{t_1}, X_{t_2},\dots,X_{t_n}\right)$ has probability density function for $(x_1, x_2,\dots, x_n)\in\mathbb{R}^n$
+
+$$
+  f_{t_1,t_2,\dots,t_n}(x_1,x_2,\dots,x_n) = f_{t_1}(x_1)f_{t_2 - t_1}(x_2 - x_1)\cdots f_{t_n - t_{n-1}}(x_n - x_{n-1})
+$$
+
+2. mean function $m(t) = 0$ for $t\in[0,\infty)$
+3. covariance function $c(s,t) = \min\{s,t\}$ for $s,t\in[0,\infty)$
+4. $\mathbb{E}(X_t^{2n} = \frac{(2n)!t^n}{n!2^n}$
+5. $\mathbb{E}(X_t^{2n-1} = 0$
+6. moment generating function $\mathbb{E}(e^{uX_t}) = e^{tu/2}$ for $u\in\mathbb{R}$ 
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+### Wiener isometry
 <MathBox title='Wiener isometry' boxType='theorem'>
 Let $\mathbf{X} = \{ X_t \}_{t\in[0,\infty)}$ be a standard Brownian motion on the probability space $(\Omega,\mathcal{F},\mathbb{P})$. For any nonempty interval $J\subseteq\mathbb{R}_+$, the mapping $\mathbf{1}_{(s,t]} \mapsto X_t - X_s$ extends to a linear isometry $I_X : L^2(J)\to L^2(\Omega,\mathcal{F},\mathbb{P})$. For every function $f\in L^2(j)$, the random variable $I_X (f)$ is mean-zero Gaussian.
 
@@ -4519,7 +4546,7 @@ $$
 To do this we will use the Borel-Cantelli lemma and the tail estimate for the normal distribution to show that with probability $1$, there is a (possibly random) $m_*$ such that for all $n \geq n_*$
 
 $$
-  \max_k |\xi_{n,k}|\leq 2^{n/4}
+  \max_k (|\xi_{n,k}|) \leq 2^{n/4}
 $$
 
 This will imply that almost surely, the series is eventually dominated by a multiple of the geometric series $\sum 2^{-(n+2)/4}$, and consequently converges uniformly in $t$. It suffices to show that the probabilities of the complementary events are summable. By the tail estimate for the normal distribution
@@ -4531,13 +4558,66 @@ $$
 Hence, by the Bonferroni inequality (crude union bound)
 
 $$
-  \mathbb{P}(\max_{k\in[1, 2^n] |\xi_{n,k}| \geq 2^{n/4}} \leq 2^n 2^{-n/4} \sqrt{2/\pi}e^{-2^{n-1}}
+  \mathbb{P}(\max_{k\in[1, 2^n]}(|\xi_{n,k}|) \geq 2^{n/4}} \leq 2^n 2^{-n/4} \sqrt{2/\pi}e^{-2^{n-1}}
 $$
 
-Since this bound is summable in $n$, the Borell-Cantelli lemma implies that $\max_k |\xi_{n,k}|\leq 2^{n/4}$ must hold with probability $1$. This proves the series in theorem converges uniformly with probability $1$, and thus $X_t$ is continuous.
+Since this bound is summable in $n$, the Borell-Cantelli lemma implies that $\max_k (|\xi_{n,k}|)\leq 2^{n/4}$ must hold with probability $1$. This proves the series in theorem converges uniformly with probability $1$, and thus $X_t$ is continuous.
 </details>
 </MathBox>
 
 ### Brownian motion as a limit of random walks
 
-Standard Brownian motion is in sense a limit of rescaled simple random walks. 
+Standard Brownian motion is in a sense a limit of rescaled simple random walks. Let $\mathbf{X} = (X_n)_{n\in\mathbb{N}+}$ be the symmetric simple random walk. Thus $X_n = \sum_{i=1}^n U_i$ where $\mathbf{U} = (U_n)_{n\in\mathbb{N}}$ is a sequence of independent variables with $\mathbf{P}(U_n = 1) = \mathbf{P}(U_n = -1) = \frac{1}{2}$. Recall that $\mathbb{E}(X_n) = 0$ and $\mathrm{var}(X_n) = n$ for $n\in\mathbb{N}$. Since $\mathbf{X}$ is the partial sum process associated with an indepedent, identically distributed sequence, $\mathbf{X}$ has stationary, indepedent increments. By the central limit theorem, $\frac{X_n}{\sqrt{n}}$ converges to a standard normal distribution as $n\to\infty$.
+
+For $h,d\in(0,\infty)$ the continuous time process
+
+$$
+  X_{h,d} = \{dX_{\lfloor t/h \rfloor}\}_{t\in(0,\infty)}
+$$
+
+is a jump process with jumps at $\{ nh \}_{n\in\mathbb{N}}$, and with jumps of sized $\pm d$. Note that $\mathbf{E}[X_{h,d}(t)] = 0$ and $\mathrm{var}[X_{h,d}(t)] = d^2\lfloor t/h \rfloor$. If $d = \sqrt{h}$, then by the central limit theorem the distribution of $X_{h,d}(t)$ will converge to the normal distribution with mean $0$ and variance $t$ as $h\downarrow 0$.
+
+### Tranformations
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{X} = \{X_t\}_{t\in[0,\infty)}$ is a standard Brownian motion. The following transforms preserve the standard Brownian motion:
+
+1. $\mathbf{Y} = \{ Y_t \}_{t\in[0,\infty)}$ with $Y_t = -X_t$ (spatial reflection)
+2. $\mathbf{Y} = \{ Y_t \}_{t\in[0,\infty)}$ with $Y_t = X_{s+t} - X_s$ for some $s\in[0,\infty)$ (shift)
+3. $\mathbf{Y} = \{ Y_t \}_{t\in[0,T]}$ with $Y_t = X_{T-t} - X_T$ for $0\leq t \leq T$ (time reversal)
+4. $\mathbf{Y} = \{ Y_t \}_{t\in[0,\infty)}$ with $Y_t = \frac{1}{a}X_{a^2 t}$ (temporal and spatial scaling)
+5. $\mathbf{Y} = \{ Y_t\}_{t\in[0,\infty)}$ with $Y_0 = 0$ and $Y_t = tX_{1/t}$ (time inversion)
+
+<details>
+<summary>Proof</summary>
+
+1. Clearly $\mathbf{Y}$ is a Gaussian process, with mean function $\mathbb{E}(-X_t) = -\mathbf{E}(X_t) = 0$ for $t\in[0,\infty)$ and covariance function $\mathrm{cov}(-X_s, -X_t) = \mathrm{cov}(X_s, X_t) = \min\{s,t\}$ for $s,t\in[0,\infty)$. Since $\mathbf{X}$ is continuous, so is $\mathbf{Y}$.
+2. Since $\mathbf{X}$ has stationary, independent increments, the process $\mathbf{Y}$ is equivalent in distribution to $\mathbf{X}$. Since $\mathbf{X}$ is continuous, so is $\mathbf{Y}$.
+3. $\mathbf{Y}$ is a Gaussian process, since a finite, linear combination of variables from this process reduces to a finite, linear combination of variables from $\mathbf{X}$. Next, $\mathbb{E}(Y_t) = \mathbb{E}(X_{T-t}) - \mathbb{E}(X_T) = 0$. If $s,t\in[0,T]$ with $s\leq t$ then
+
+$$
+\begin{align*}
+  \mathrm{cov}(Y_s, Y_t) &= \mathrm{cov}(X_{T-s} - X_T, X_{T-t} - X_t) \\
+  &= \mathrm{cov}(X_{T-s},X_{T-t}) - \mathrm{cov}(X_{T-s},X_T) - \mathrm{cov}(X_T,X_{T-t}) + \mathrm{cov}(X_T,X_t) \\
+  &= (T-t) - (T-s) - (T-t) + T = s
+\end{align*}
+$$
+
+Since $t\mapsto X_t$ is continuous on $[0,T]$ with probability $1$, then so is $t\mapsto Y_t$.
+4. $\mathbf{Y}$ is a Gaussian process, since finite, linear combinations of variables in $Y$ reduce to finite, linear combinations of variables in $\mathbf{X}$. Next, $\mathbb{E}(Y_t) = a\mathbb{E}(X_{a^2t) = 0$ for $t \geq 0$. If $0 < s < t$
+
+$$
+  \mathrm{cov}(Y_s, Y_t) = \mathrm{cov}\left(\frac{1}{a}X_{a^2s}, \frac{1}{a}X_{a^2t} \right) = \frac{1}{a^2}\mathrm{cov}(X_{a^2s}, \mathrm{cov}_{a^2t}) = \frac{1}{a^2}a^2 s = s
+$$
+
+Finally, $\mathbf{Y}$ is continuous since $\mathbf{X}$ is continuous.
+
+5.  $\mathbf{Y}$ is a Gaussian process, since finite, linear combinations of variables in $Y$ reduce to finite, linear combinations of variables in $\mathbf{X}$. Next, $\mathbf{E}(Y_t) = t\mathbb{E}(X_{1/t}) = 0$ for $t > 0$ and for $s,t > 0$ with $s < t$
+
+$$
+  \mathrm{cov}(Y_s, Y_t) = \mathrm{cov}(sX_{1/s},tX_{1/t}) = st\mathrm{cov}(X_{1/s}, X_{1/t}) = st\frac{1}{t} = s
+$$
+
+Since $t\mapsto X_t$ is continuous on $[0,\infty)$ with probability $1$, it follows that $t\mapsto Y_t$ is continuous on $(0,\infty)$ with probability $1$. To prove continuity at $t = 0$, we need to show that $tX_{1/t} \xrightarrow{t\downarrow 0} 0$ with probability $1$, or equivalently $\frac{X_s}{s}\xrightarrow{s\uparrow\infty}0$. This statement holds by the law of iterated logarithm.
+</details>
+</MathBox>
