@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { SVGChess } from './svgchess'
+import { SVGChess } from './SvgChess'
 
 type Props = {
   fen: string,

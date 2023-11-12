@@ -3,9 +3,16 @@
 import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
-import { OpinionStore } from './svgternary'
+import { OpinionStore } from './SvgTernary'
 import Vector from 'utils/vector'
-import { setAttributes, removeElementsByClass, addChildElement, mousePosition, setSvgTransform, EventStore} from 'utils/svg'
+import { 
+  setAttributes, 
+  removeElementsByClass, 
+  addChildElement, 
+  mousePosition, 
+  setSvgTransform, 
+  EventStore
+} from 'utils/svg'
 
 type SvgPlots = {
   [key: string] : {

@@ -4,7 +4,7 @@ import { ChangeEvent, createContext, Dispatch, FormEvent, SetStateAction, useCon
 import {parse as mathParse} from 'mathjs'
 
 import useResizeObserver from 'hooks/useResizeObserver'
-import { SVGPlot } from './svgplot'
+import { SVGPlot } from './SvgPlot'
 import Split from './Split'
 import { CrossIcon } from 'utils/icons'
 import Tex from './Tex'
