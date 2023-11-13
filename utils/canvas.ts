@@ -14,3 +14,8 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line) {
   ctx.lineTo(line.end.x, line.end.y)
   ctx.stroke()
 }
+
+export function setCanvasTransform(ctx: CanvasRenderingContext2D, matrix: DOMMatrix) {
+  const {a, b, c, d, e, f} = matrix
+  ctx.transform(a, b, c, d, e, f)
+}

@@ -3,16 +3,16 @@
 import {parse as mathParse} from 'mathjs'
 import { difference, intersection } from 'utils/num'
 
-import { OpinionStore } from './SvgTernary'
 import Vector from 'utils/vector'
 import { 
   setAttributes, 
   removeElementsByClass, 
   addChildElement, 
   mousePosition, 
-  setSvgTransform, 
-  EventStore
+  setSvgTransform,
+  matrixToString 
 } from 'utils/svg'
+import EventListenerStore from 'utils/event'
 
 type SvgPlots = {
   [key: string] : {
@@ -40,7 +40,7 @@ export class SVGPlot {
   }
   private gridSize = new Vector(1, 1)
   private plots: SvgPlots = {}
-  private eventListeners: EventStore = {}
+  private eventListeners = new EventListenerStore()
 
   constructor(
     container: HTMLDivElement,
@@ -67,6 +67,7 @@ export class SVGPlot {
       height: height.toString(),
       viewBox: viewBox,
     }
+    
     setAttributes(this.svgElement, svgAttr)
     container.appendChild(this.svgElement)
 
@@ -78,13 +79,13 @@ export class SVGPlot {
     this.frameGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     if (margin) {
       this.setFrameTransform(margin, width, height)
-      setSvgTransform(this.svgElement, this.frameGroup, this.frameTransform)
+      setSvgTransform(this.svgElement, this.frameGroup, this.frameGroup.getCTM()!)
     }
     this.svgElement.appendChild(this.frameGroup)
     
     this.plotGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     this.setViewTransform(width, height)
-    setSvgTransform(this.svgElement, this.plotGroup, this.viewTransform)
+    setSvgTransform(this.svgElement, this.plotGroup, this.plotGroup.getCTM()!)
     this.frameGroup.appendChild(this.plotGroup)
     
     addChildElement(this.frameGroup, 'g', {id: 'crosshair-group'})
@@ -99,26 +100,9 @@ export class SVGPlot {
   }
 
   public cleanup() {
-    // Cleanup bound event handlers
-    for (let event in this.eventListeners) {
-      for (let [el, handler] of this.eventListeners[event]) {
-        el.removeEventListener(event, handler)
-      }
-    }
+    this.eventListeners.cleanupEventListeners()
     // Remove svg
     //this.svgElement.parentNode?.removeChild(this.svgElement)
-  }
-
-  private storeEventListener(
-    event: string, 
-    el: Element, 
-    handler: EventListenerOrEventListenerObject
-  ) {
-    if (!Object.hasOwn(this.eventListeners, event)) {
-      this.eventListeners[event] = []
-    }
-    el.addEventListener(event, handler)
-    this.eventListeners[event].push([el, handler])
   }
 
   public resize(width: number, height: number) {
@@ -133,25 +117,30 @@ export class SVGPlot {
   }
     
   private setFrameTransform(margin?: Vector, width?: number, height?: number) {
-    if (!width) width = this.svgElement.getBoundingClientRect().width
-    if (!height) height = this.svgElement.getBoundingClientRect().height
+    let transform = this.frameGroup.getCTM()!
+
+    if (!width) width = this.svgElement.getBoundingClientRect().width // svgElement.height.baseVal.value
+    if (!height) height = this.svgElement.getBoundingClientRect().height // svgElement.height.baseVal.value
     if (!margin) {
       margin = new Vector(
-        (1 - this.frameTransform.a) / 2,
-        (1 - this.frameTransform.d) / 2
+        (1 - transform.a) / 2,
+        (1 - transform.d) / 2
       )
     }
 
-    this.frameTransform = new DOMMatrix([
+    transform = new DOMMatrix([
       1 - 2 * margin.x, 
       0, 0, 
       1 - 2 * margin.y,
       (1 - 2 * margin.x) * width * margin.x,
       (1 - 2 * margin.y) * height * margin.y
     ])
+    setSvgTransform(this.svgElement, this.frameGroup, transform)
   }
 
   private setViewTransform(width?: number, height?: number) {
+    let frameTransform = this.frameGroup.getCTM()!
+
     if (!width) width = this.svgElement.getBoundingClientRect().width
     if (!height) height = this.svgElement.getBoundingClientRect().height
 
@@ -160,19 +149,24 @@ export class SVGPlot {
       this.viewRange.y.diff() as number
     )
 
-    this.viewTransform = new DOMMatrix([
-      (width * this.frameTransform.a) / viewLength.x,
+    const viewTransform = new DOMMatrix([
+      (width * frameTransform.a) / viewLength.x,
       0, 0,
-      (height * this.frameTransform.d) / (viewLength.y),
-      (width * this.frameTransform.a) * (-this.viewRange.x[0] / viewLength.x),
-      (height * this.frameTransform.d) * (-this.viewRange.y[0] / viewLength.y),
+      (height * frameTransform.d) / viewLength.y,
+      (width * frameTransform.a) * (-this.viewRange.x[0] / viewLength.x),
+      (height * frameTransform.d) * (-this.viewRange.y[0] / viewLength.y),
     ])
+
+    setSvgTransform(this.svgElement, this.plotGroup, viewTransform)
   }
 
-  private svgToDrawPosition(svgPos: Vector): Vector {
+  private svgToDrawPosition(svgPos: Vector): Vector|null {
+    const transform = this.plotGroup.getCTM()
+    if (!transform) return null
+
     return new Vector(
-      (svgPos.x - this.viewTransform.e) / this.viewTransform.a,
-      (svgPos.y - this.viewTransform.f) / this.viewTransform.d
+      (svgPos.x - transform.e) / transform.a,
+      (svgPos.y - transform.f) / transform.d
     )
   }
 
@@ -180,7 +174,7 @@ export class SVGPlot {
     const crosshairGroup = document.getElementById('crosshair-group')!
 
     const onMouseEnterBound = onMouseEnter.bind(this)
-    this.storeEventListener('mouseenter', this.frameGroup, onMouseEnterBound)
+    this.eventListeners.storeEventListener('mouseenter', this.frameGroup, onMouseEnterBound)
     
     function onMouseEnter() {
       // Text element displaying cursor position
@@ -214,6 +208,7 @@ export class SVGPlot {
         return coord.toFixed(2)
       }
 
+      const transform = this.plotGroup.getCTM()
       const svgPos = mousePosition(this.svgElement, event)
       if (!svgPos) return
       const drawPos = this.svgToDrawPosition(svgPos)
@@ -225,10 +220,10 @@ export class SVGPlot {
       text.innerHTML = `(${coordText(drawPos.x, 0)}, ${coordText(-drawPos.y, 1)})`
 
       const xLine = document.getElementById('crosshair-line-x')!
-      xLine.setAttribute('d', `M${svgPos.x},${this.viewTransform.f}L${svgPos.x},${svgPos.y}`)
+      xLine.setAttribute('d', `M${svgPos.x},${transform.f}L${svgPos.x},${svgPos.y}`)
 
       const yLine = document.getElementById('crosshair-line-y')!
-      yLine.setAttribute('d', `M${this.viewTransform.e},${svgPos.y}L${svgPos.x},${svgPos.y}`)
+      yLine.setAttribute('d', `M${transform.e},${svgPos.y}L${svgPos.x},${svgPos.y}`)
     }
     
     function onMouseLeave() {
@@ -247,7 +242,7 @@ export class SVGPlot {
     let oldPos: Vector | null
 
     const onClickBound = onClick.bind(this)
-    this.storeEventListener('mousedown', this.frameGroup, onClickBound)
+    this.eventListeners.storeEventListener('mousedown', this.frameGroup, onClickBound)
 
     function onClick(event: MouseEvent) {
       if (event.button !== dragButton) return
@@ -262,11 +257,12 @@ export class SVGPlot {
     }
 
     function onMouseMove(event: MouseEvent) {
-      let newPos = mousePosition(this.frameGroup, event)
+      const transform = this.plotGroup.getCTM()
+      const newPos = mousePosition(this.frameGroup, event)
       if (!newPos || !oldPos) return
       let dist = {
-        x: (oldPos.x - newPos.x) / this.viewTransform.a,
-        y: (oldPos.y - newPos.y) / this.viewTransform.d
+        x: (oldPos.x - newPos.x) / transform.a,
+        y: (oldPos.y - newPos.y) / transform.d
       }
 
       this.viewRange.x.addScalarInplace(dist.x)
@@ -288,7 +284,7 @@ export class SVGPlot {
     //const zoomStep = 1
 
     const onWheelBound = onWheel.bind(this)
-    this.storeEventListener('wheel', this.frameGroup, onWheelBound)
+    this.eventListeners.storeEventListener('wheel', this.frameGroup, onWheelBound)
 
     function onWheel(event: WheelEvent) {
       const viewLength = new Vector(
@@ -322,7 +318,7 @@ export class SVGPlot {
     let dragPos: Vector|null
 
     const onClickBound = onClick.bind(this)
-    this.storeEventListener('mousedown', this.frameGroup, onClickBound)
+    this.eventListeners.storeEventListener('mousedown', this.frameGroup, onClickBound)
 
     function onClick(event: MouseEvent) {
     
@@ -424,8 +420,8 @@ export class SVGPlot {
     this.transformGrid()
     this.transformAxis()
 
-    setSvgTransform(this.svgElement, this.frameGroup, this.frameTransform)
-    setSvgTransform(this.svgElement, this.plotGroup, this.viewTransform)
+    setSvgTransform(this.svgElement, this.frameGroup, this.frameGroup.getCTM()!)
+    setSvgTransform(this.svgElement, this.plotGroup, this.plotGroup.getCTM()!)
 
     if (!pan) {
       this.redrawPlots()
@@ -435,6 +431,7 @@ export class SVGPlot {
   private ticks(redraw = false) {
   
     const axis = document.getElementById('axis-group')!
+    const transform = this.plotGroup.getCTM()!
 
     const svgSize = {
       x: this.svgElement.getBoundingClientRect().width,
@@ -445,9 +442,10 @@ export class SVGPlot {
       const axisOffset = {x: -30, y: 15}
       const minOffset = {x: 10, y: 15}
       const maxOffset = {x: 30, y: 10}
+      
 
       const translate = (key === 'x') ?
-        this.viewTransform.e : this.viewTransform.f
+        transform.e : transform.f
 
       if (translate < 0) return `${minOffset[key]}`
 
@@ -485,10 +483,10 @@ export class SVGPlot {
       const step = this.gridSize[index]
 
       const scale = (index === 0) ? 
-        this.viewTransform.a : this.viewTransform.d
+        transform.a : transform.d
 
       const translate = (index === 0) ? 
-        this.viewTransform.e : this.viewTransform.f
+        transform.e : transform.f
 
       let tick = (index === 0) ? 
         this.viewRange.x[0] : this.viewRange.y[0]
@@ -539,18 +537,19 @@ export class SVGPlot {
     }
     const pattern = document.createElementNS(this.xmlns, 'pattern')
     setAttributes(pattern, attr)
-
+    
+    const transform = this.plotGroup.getCTM()!
     // Axis lines
     let line = {
       class: 'x-axis',
-      x1: '0', y1: `${this.viewTransform.f}`, x2: '100%', y2: `${this.viewTransform.f}`,
+      x1: '0', y1: `${transform.f}`, x2: '100%', y2: `${transform.f}`,
       stroke: 'rgba(var(--color-text) / 1)', 'stroke-width': '0.3',
     }
     addChildElement(pattern, 'line', line)
 
     line['class'] = 'y-axis',
-    line['x1'] = `${this.viewTransform.e}`, line['y1'] = '0'
-    line['x2'] = `${this.viewTransform.e}`, line['y2'] = '100%'
+    line['x1'] = `${transform.e}`, line['y1'] = '0'
+    line['x2'] = `${transform.e}`, line['y2'] = '100%'
     addChildElement(pattern, 'line', line)
 
     this.svgDefs.appendChild(pattern)
@@ -571,16 +570,17 @@ export class SVGPlot {
 
   private transformAxis() {
     const pattern = document.getElementById('axis-pattern')!
+    const transform = this.plotGroup.getCTM()!
 
     // x axis
     let line = pattern.getElementsByClassName('x-axis')[0]
     
-    let xAttr = {y1: `${this.viewTransform.f}`, y2: `${this.viewTransform.f}`}
+    let xAttr = {y1: `${transform.f}`, y2: `${transform.f}`}
     setAttributes(line, xAttr)
 
     // y axis
     line = pattern.getElementsByClassName('y-axis')[0]
-    let yAttr = {x1: `${this.viewTransform.e}`, x2: `${this.viewTransform.e}`}
+    let yAttr = {x1: `${transform.e}`, x2: `${transform.e}`}
     setAttributes(line, yAttr)
 
     // Ticks
@@ -589,6 +589,7 @@ export class SVGPlot {
 
   private gridIntervals(minScreenLength: number = 50) {
 
+    const transform = this.plotGroup.getCTM()!
     const intervalLength = (minLength: number) => {
       const power = Math.floor(Math.log10(minLength))
       const base = minLength*10**(-power)
@@ -602,8 +603,8 @@ export class SVGPlot {
       return null
     }
     const min = [
-      minScreenLength / this.viewTransform.a,
-      minScreenLength / this.viewTransform.d
+      minScreenLength / transform.a,
+      minScreenLength / transform.d
     ]
     this.gridSize = new Vector(
       intervalLength(min[0])!,
@@ -614,12 +615,12 @@ export class SVGPlot {
   public grid() {
     this.gridIntervals()
 
-    const tst = new DOMMatrix()
+    const transform = this.plotGroup.getCTM()!
 
     // Pattern
     const attr = {
       id: 'grid-pattern', patternUnits: 'userSpaceOnUse',
-      patternTransform: this.viewTransform.toString(),
+      patternTransform: matrixToString(transform),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
     }
     const pattern = document.createElementNS(this.xmlns, 'pattern')
@@ -629,14 +630,14 @@ export class SVGPlot {
     let line = {
       class: 'y-grid',
       x1: '0', y1: '0', x2: `${this.gridSize.x}`, y2: '0',
-      stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': `${1/this.viewTransform.d}`,
+      stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': `${1/transform.d}`,
     }
     addChildElement(pattern, 'line', line)
 
     // Vertical line
     line['class'] = 'x-grid',
     line['x2'] = '0', line['y2'] = `${this.gridSize.y}`
-    line['stroke-width'] = `${1/this.viewTransform.a}`
+    line['stroke-width'] = `${1/transform.a}`
     addChildElement(pattern, 'line', line)
 
     this.svgDefs.appendChild(pattern)
@@ -652,10 +653,11 @@ export class SVGPlot {
 
   public transformGrid() {
     this.gridIntervals()
+    const transform = this.plotGroup.getCTM()! as DOMMatrix
 
     const pattern = document.getElementById('grid-pattern')!
     const attr = {
-      patternTransform: this.viewTransform.toString(),
+      patternTransform: matrixToString(transform),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
     }
     setAttributes(pattern, attr)
@@ -664,7 +666,7 @@ export class SVGPlot {
     let line = pattern.getElementsByClassName('y-grid')[0]
     let yAttr = {
       x2: `${this.gridSize.x}`,
-      'stroke-width': `${1/this.viewTransform.d}`,
+      'stroke-width': `${1/transform.d}`,
     }
     setAttributes(line, yAttr)
     
@@ -672,7 +674,7 @@ export class SVGPlot {
     line = pattern.getElementsByClassName('x-grid')[0]
     let xAttr = {
       y2: `${this.gridSize.y}`,
-      'stroke-width': `${1/this.viewTransform.a}`,
+      'stroke-width': `${1/transform.a}`,
     }
     setAttributes(line, xAttr)
   }

@@ -1,7 +1,8 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import { setAttributes, svgPath, svgPoly, mousePosition, addChildElement, EventStore } from 'utils/svg'
+import { setAttributes, svgPath, svgPoly, mousePosition, addChildElement } from 'utils/svg'
 import { betaPDF } from 'utils/probability'
 import Vector from 'utils/vector'
+import EventListenerStore from 'utils/event'
 
 const SIN60 = Math.sqrt(3) / 2
 const TAN30 = Math.sqrt(3) / 3
@@ -93,7 +94,7 @@ export default class SVGTernaryPlot {
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
-  private eventListeners: EventStore = {}
+  private eventListeners = new EventListenerStore()
   private id_prefix: string = 'ternary'
 
   constructor(
@@ -324,7 +325,7 @@ export default class SVGTernaryPlot {
     //const dragButton = 0
     let dragged: boolean
     const onClickBound = onClick.bind(this, store)
-    this.storeEventListener('mousedown', circle, onClickBound)
+    this.eventListeners.storeEventListener('mousedown', circle, onClickBound)
 
     function onClick(store?: TernaryStore) {
       dragged = true
@@ -388,7 +389,7 @@ export default class SVGTernaryPlot {
 
     let dragged: boolean
     const onClickBound = onClick.bind(this, store)
-    this.storeEventListener('mousedown', circle, onClickBound)
+    this.eventListeners.storeEventListener('mousedown', circle, onClickBound)
 
     function onClick(store?: TernaryStore) {
       dragged = true
@@ -489,7 +490,7 @@ export default class SVGTernaryPlot {
     addChildElement(crosshair, 'path', path)
 
     const onMouseMoveBound = onMouseMove.bind(this)
-    this.storeEventListener('mousemove', this.frameGroup, onMouseMoveBound)
+    this.eventListeners.storeEventListener('mousemove', this.frameGroup, onMouseMoveBound)
 
     function onMouseMove(event: MouseEvent) {
 
@@ -521,17 +522,5 @@ export default class SVGTernaryPlot {
         cLine.setAttribute('d', '')
       }
     }
-  }
-
-  private storeEventListener(
-    event: string, 
-    el: Element, 
-    handler: EventListenerOrEventListenerObject
-  ) {
-    if (!Object.hasOwn(this.eventListeners, event)) {
-      this.eventListeners[event] = []
-    }
-    el.addEventListener(event, handler)
-    this.eventListeners[event].push([el, handler])
   }
 }

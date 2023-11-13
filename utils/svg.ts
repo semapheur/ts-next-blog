@@ -1,16 +1,12 @@
 import Vector from 'utils/vector'
 
-export type EventStore = {
-  [event: string]: [Element, EventListenerOrEventListenerObject][]
-}
-
 export function setSvgTransform(
   svgRoot: SVGSVGElement, 
   svgEl: SVGGElement | SVGGeometryElement,
   matrix: DOMMatrix
 ) {
   svgEl.transform.baseVal.initialize(
-    svgRoot.createSVGTransformFromMatrix(matrix)
+    svgRoot.createSVGTransformFromMatrix(matrix as SVGMatrix)
   )
 }
 
@@ -56,13 +52,9 @@ export function mousePosition(
   )
 }
 
-export function transformMatrix() {
-    const matrix = [
-      this.scale.x, 0, 0, this.scale.y, 
-      this.translate.x, this.translate.y
-    ]
-    return `matrix(${matrix.join(',')})`
-  }
+export function matrixToString(matrix: DOMMatrix): string {
+  return `matrix(${matrix.a},${matrix.b},${matrix.c},${matrix.d},${matrix.e},${matrix.f})`
+}
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''
