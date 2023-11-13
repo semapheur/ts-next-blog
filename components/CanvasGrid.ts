@@ -84,6 +84,7 @@ export default class CanvasGrid {
     //this.ctx.fillRect(0, 0, 1, 1)
     
     const transform = this.ctx.getTransform()
+    console.log(this.viewRange.x)
 
     this.ctx.lineWidth = 2 / -transform.d
     const xAxis: Line = {
@@ -125,8 +126,10 @@ export default class CanvasGrid {
   private panOnDrag() {
     const dragButton = 1
     const rect = this.canvas.getBoundingClientRect()
+    const transform = this.ctx.getTransform()
 
-    let oldPos: Vector | null
+    let startPos: Vector
+    let isPanning = false
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener('mousedown', this.canvas, onClickBound)
@@ -134,10 +137,11 @@ export default class CanvasGrid {
     function onClick(event: MouseEvent) {
       if (event.button !== dragButton) return
 
+      isPanning = true
       event.preventDefault()
       
       // Click position
-      oldPos = new Vector(
+      startPos = new Vector(
         event.clientX - rect.left, 
         event.clientY - rect.top
       )
@@ -151,27 +155,21 @@ export default class CanvasGrid {
         event.clientX - rect.left, 
         event.clientY - rect.top
       )
-      const transform = this.ctx.getTransform()
+      
+      if (!isPanning) return
 
-      if (!newPos || !oldPos) return
       let dist = {
-        x: (oldPos.x - newPos.x) / transform.a,
-        y: (oldPos.y - newPos.y) / transform.d
+        x: (startPos.x - newPos.x) / transform.a,
+        y: (startPos.y - newPos.y) / transform.d
       }
-      console.log(dist.x)
 
       this.viewRange.x.addScalarInplace(dist.x)
       this.viewRange.y.addScalarInplace(dist.y)
-
-      this.setTransform()
-
-      oldPos = new Vector(
-        event.clientX - rect.left, 
-        event.clientY - rect.top
-      )
     }
 
     function onMouseUp() {
+      isPanning = false
+      this.setTransform()
       this.drawAxes()
       this.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
       this.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
