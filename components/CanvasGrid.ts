@@ -1,4 +1,4 @@
-import {drawLine, setCanvasTransform, Line} from 'utils/canvas'
+import {drawLine, setCanvasTransform, Line, transformPoint} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import Vector from 'utils/vector'
 
@@ -128,7 +128,7 @@ export default class CanvasGrid {
     const rect = this.canvas.getBoundingClientRect()
     const transform = this.ctx.getTransform()
 
-    let startPos: Vector
+    let startPos = new Vector(0,0)
     let isPanning = false
 
     const onClickBound = onClick.bind(this)
@@ -151,7 +151,7 @@ export default class CanvasGrid {
     }
 
     function onMouseMove(event: MouseEvent) {
-      let newPos = new Vector(
+      let panPos = new Vector(
         event.clientX - rect.left, 
         event.clientY - rect.top
       )
@@ -159,8 +159,8 @@ export default class CanvasGrid {
       if (!isPanning) return
 
       let dist = {
-        x: (startPos.x - newPos.x) / transform.a,
-        y: (startPos.y - newPos.y) / transform.d
+        x: (startPos.x - panPos.x) / transform.a,
+        y: (startPos.y - panPos.y) / transform.d
       }
 
       this.viewRange.x.addScalarInplace(dist.x)
