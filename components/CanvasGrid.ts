@@ -14,43 +14,89 @@ export type ViewRange = {
   y: Vector
 }
 
-class CanvasGrid {
+export default class CanvasGrid {
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
-  private transform = new DOMMatrix([1, 0, 0, 1, 0, 0])
   private viewRange: ViewRange = {
     x: new Vector(-10, 10),
     y: new Vector(-10, 10)
   }
   private eventListeners = new EventListenerStore()
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, aspect: number = 1) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')!
-    this.ctx.strokeStyle = '#ffffff'
+
+    this.squareGrids()
+    console.log(this.viewRange)
+    
+    this.setTransform()
+
+    this.drawAxes()
+    this.panOnDrag()
+  }
+
+  public squareGrids() {
+    const width = this.canvas.width
+    const height = this.canvas.height
+
+    const viewLength = new Vector(
+      this.viewRange.x.diff() as number, 
+      this.viewRange.y.diff() as number
+    )
+
+    if (width < height) {
+      const aspect = width / height
+      const xLength = viewLength.y * aspect
+
+      this.viewRange.x = new Vector(
+        this.viewRange.x.mean + xLength/2,
+        this.viewRange.x.mean - xLength/2
+      )
+    } else if (width > height) {
+      const aspect = height / width
+      const yLength = viewLength.x * aspect
+
+      this.viewRange.y = new Vector(
+        this.viewRange.y.mean + yLength/2,
+        this.viewRange.y.mean - yLength/2
+      )
+    } else {
+      const deltaLength = viewLength.diff() as number
+      if (deltaLength < 0) {
+        this.viewRange.x = new Vector(
+          this.viewRange.x.mean - viewLength.y / 2,
+          this.viewRange.x.mean + viewLength.y / 2
+        )
+      } else if (deltaLength > 0) {
+        this.viewRange.y = new Vector(
+          this.viewRange.y.mean - viewLength.x / 2,
+          this.viewRange.y.mean + viewLength.x / 2
+        )
+      }
+    }
   }
 
   drawAxes() {
-    this.ctx.lineWidth = 2
-
-    const transform = this.ctx.getTransform()
     
-    const xAxisY = this.canvas.height/2 + transform.f
-    if (xAxisY >= 0 || xAxisY <= this.canvas.height) {
-      const xAxis: Line = {
-        start: {x: -transform.e, y: xAxisY},
-        end: {x: this.canvas.width - transform.e, y: xAxisY}
-      }
-      drawLine(this.ctx, xAxis)
+    this.ctx.strokeStyle = 'black'
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+    //this.ctx.fillRect(0, 0, 1, 1)
+    
+    this.ctx.lineWidth = 2 / this.canvas.height
+    const xAxis: Line = {
+      start: {x: this.viewRange.x.x, y: 0},
+      end: {x: this.viewRange.x.y, y: 0}
     }
-    const yAxisX = this.canvas.width/2 + transform.e
-    if (yAxisX >= 0 || yAxisX <= this.canvas.width) {
-      const yAxis: Line = {
-        start: {x: yAxisX, y: -transform.f},
-        end: {x: yAxisX, y: this.canvas.height - transform.f}
-      }
-      drawLine(this.ctx, yAxis)
+    drawLine(this.ctx, xAxis)
+
+    this.ctx.lineWidth = 10 / this.canvas.width
+    const yAxis: Line = {
+      start: {x: 0, y: this.viewRange.y.x},
+      end: {x: 0, y: this.viewRange.y.y}
     }
+    drawLine(this.ctx, yAxis)
   }
 
   private drawGrid() {
@@ -58,21 +104,18 @@ class CanvasGrid {
 
   }
 
-  private setViewTransform(width?: number, height?: number) {
-    if (!width) width = this.canvas.width
-    if (!height) height = this.canvas.height
-
+  private setTransform() {
     const viewLength = new Vector(
       this.viewRange.x.diff() as number, 
       this.viewRange.y.diff() as number
     )
 
     const transform = new DOMMatrix([
-      width / viewLength.x,
+      this.canvas.width / viewLength.x,
       0, 0,
-      height / viewLength.y,
-      width * (-this.viewRange.x[0] / viewLength.x),
-      height * (-this.viewRange.y[0] / viewLength.y),
+      this.canvas.height / viewLength.y,
+      this.canvas.width * (-this.viewRange.x[0] / viewLength.x),
+      this.canvas.height * (-this.viewRange.y[0] / viewLength.y),
     ])
 
     setCanvasTransform(this.ctx, transform)
@@ -111,19 +154,16 @@ class CanvasGrid {
       this.viewRange.x.addScalarInplace(dist.x)
       this.viewRange.y.addScalarInplace(dist.y)
 
-      this.transformView(true)
+      this.setTransform()
+      console.log(this.ctx.getTransform())
 
       oldPos = new Vector(event.clientX, event.clientY)
     }
 
     function onMouseUp() {
-    
+      this.drawAxes()
       this.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
       this.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
     }
-  }
-
-  private draw() {
-
   }
 }

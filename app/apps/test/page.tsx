@@ -1,66 +1,28 @@
 'use client'
 
+import CanvasGrid from 'components/CanvasGrid'
+import useResizeObserver from 'hooks/useResizeObserver'
 import { useEffect, useRef } from 'react'
 
-const vertexShaderSource = `#version 300 es
-
-  void main() {
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`
-
-const fragmentShaderSource = `#version 300 es
-
-  void main() {
-
-  }
-`
-
-function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
-  const shader = gl.createShader(type)!
-  gl.shaderSource(shader, source)
-  gl.compileShader(shader)
-  const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
-  if (success) {
-    return shader
-  }
-  console.log(gl.getShaderInfoLog(shader))
-  gl.deleteShader(shader)
-}
-
-function createProgram(
-  gl: WebGL2RenderingContext, 
-  vertexShader: WebGLShader, 
-  fragmentShader: WebGLShader) 
-{
-  const program = gl.createProgram()!
-  gl.attachShader(program, vertexShader)
-  gl.attachShader(program, fragmentShader)
-  gl.linkProgram(program)
-  var success = gl.getProgramParameter(program, gl.LINK_STATUS)
-  if (success) {
-    return program
-  }
-  console.log(gl.getProgramInfoLog(program))
-  gl.deleteProgram(program)
-}
-
-export default function WebGl() {
+export default function page() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const gridRef = useRef<CanvasGrid|null>(null)
+  //const size = useResizeObserver(canvasRef)
 
   useEffect(() => {
     const canvas = canvasRef.current
 
-    if (canvas) {
-      const gl = canvas.getContext('webgl2')
-      if (!gl) return
+    if (!gridRef.current && canvas) {
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width
+      canvas.height = rect.height
 
-      const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
-      const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
-      const program = createProgram(gl, vertexShader, fragmentShader)
-      gl.useProgram(program)
+      gridRef.current = new CanvasGrid(canvas)
     }
+    
   }, [])
 
-  return <canvas ref={canvasRef}/>
+  return (
+    <canvas ref={canvasRef} className='w-full h-full'/>
+  )
 }

@@ -24,9 +24,21 @@ export default class Vector extends Array<number> {
   set z(newZ: number) {
     this[2] = newZ
   }
-
-  get norm() : number {
+  
+  get norm(): number {
     return Math.sqrt(this.dot(this)!)
+  }
+
+  get sum(): number {
+    let sum = 0
+    for (let i = 0; i < this.length; i++) {
+      sum += this[i]
+    }
+    return sum 
+  }
+
+  get mean(): number {
+    return this.sum / this.length 
   }
 
   public coord(i: number): number|undefined {

@@ -32,8 +32,6 @@ export class SVGPlot {
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
   private plotGroup: SVGGElement
-  private frameTransform = new DOMMatrix([1, 0, 0, 1, 0, 0])
-  private viewTransform = new DOMMatrix([1, 0, 0, 1, 0, 0])
   private viewRange: ViewRange = {
     x: new Vector(-10, 10),
     y: new Vector(-10, 10)
