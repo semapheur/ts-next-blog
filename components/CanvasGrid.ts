@@ -28,7 +28,6 @@ export default class CanvasGrid {
     this.ctx = canvas.getContext('2d')!
 
     this.squareGrids()
-    console.log(this.viewRange)
     
     this.setTransform()
 
@@ -84,14 +83,16 @@ export default class CanvasGrid {
 
     //this.ctx.fillRect(0, 0, 1, 1)
     
-    this.ctx.lineWidth = 2 / this.canvas.height
+    const transform = this.ctx.getTransform()
+
+    this.ctx.lineWidth = 2 / -transform.d
     const xAxis: Line = {
       start: {x: this.viewRange.x.x, y: 0},
       end: {x: this.viewRange.x.y, y: 0}
     }
     drawLine(this.ctx, xAxis)
 
-    this.ctx.lineWidth = 10 / this.canvas.width
+    this.ctx.lineWidth = 2 / transform.a
     const yAxis: Line = {
       start: {x: 0, y: this.viewRange.y.x},
       end: {x: 0, y: this.viewRange.y.y}
@@ -123,6 +124,7 @@ export default class CanvasGrid {
 
   private panOnDrag() {
     const dragButton = 1
+    const rect = this.canvas.getBoundingClientRect()
 
     let oldPos: Vector | null
 
@@ -135,14 +137,20 @@ export default class CanvasGrid {
       event.preventDefault()
       
       // Click position
-      oldPos = new Vector(event.clientX, event.clientY)
+      oldPos = new Vector(
+        event.clientX - rect.left, 
+        event.clientY - rect.top
+      )
 
       this.canvas.addEventListener('mouseup', onMouseUp.bind(this))
       this.canvas.addEventListener('mousemove', onMouseMove.bind(this))
     }
 
     function onMouseMove(event: MouseEvent) {
-      let newPos = new Vector(event.clientX, event.clientY)
+      let newPos = new Vector(
+        event.clientX - rect.left, 
+        event.clientY - rect.top
+      )
       const transform = this.ctx.getTransform()
 
       if (!newPos || !oldPos) return
@@ -150,14 +158,17 @@ export default class CanvasGrid {
         x: (oldPos.x - newPos.x) / transform.a,
         y: (oldPos.y - newPos.y) / transform.d
       }
+      console.log(dist.x)
 
       this.viewRange.x.addScalarInplace(dist.x)
       this.viewRange.y.addScalarInplace(dist.y)
 
       this.setTransform()
-      console.log(this.ctx.getTransform())
 
-      oldPos = new Vector(event.clientX, event.clientY)
+      oldPos = new Vector(
+        event.clientX - rect.left, 
+        event.clientY - rect.top
+      )
     }
 
     function onMouseUp() {
