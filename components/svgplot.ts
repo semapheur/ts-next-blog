@@ -147,7 +147,7 @@ export class SVGPlot {
       this.viewRange.y.diff() as number
     )
 
-    const viewTransform = new DOMMatrix([
+    const transform = new DOMMatrix([
       (width * frameTransform.a) / viewLength.x,
       0, 0,
       (height * frameTransform.d) / viewLength.y,
@@ -155,7 +155,7 @@ export class SVGPlot {
       (height * frameTransform.d) * (-this.viewRange.y[0] / viewLength.y),
     ])
 
-    setSvgTransform(this.svgElement, this.plotGroup, viewTransform)
+    setSvgTransform(this.svgElement, this.plotGroup, transform)
   }
 
   private svgToDrawPosition(svgPos: Vector): Vector|null {
@@ -237,7 +237,8 @@ export class SVGPlot {
   private panOnDrag() {
     const dragButton = 1
 
-    let oldPos: Vector | null
+    let startPos = new Vector(0,0)
+    let isPanning = false
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener('mousedown', this.frameGroup, onClickBound)
@@ -248,19 +249,22 @@ export class SVGPlot {
       event.preventDefault()
       
       // Click position
-      oldPos = mousePosition(this.frameGroup, event)
+      startPos = mousePosition(this.frameGroup, event)!
+      isPanning = true
 
       this.frameGroup.addEventListener('mouseup', onMouseUp.bind(this))
       this.frameGroup.addEventListener('mousemove', onMouseMove.bind(this))
     }
 
     function onMouseMove(event: MouseEvent) {
+      if (!isPanning) return
+      
       const transform = this.plotGroup.getCTM()
-      const newPos = mousePosition(this.frameGroup, event)
-      if (!newPos || !oldPos) return
+      const newPos = mousePosition(this.frameGroup, event)!
+
       let dist = {
-        x: (oldPos.x - newPos.x) / transform.a,
-        y: (oldPos.y - newPos.y) / transform.d
+        x: (startPos.x - newPos.x) / transform.a,
+        y: (startPos.y - newPos.y) / transform.d
       }
 
       this.viewRange.x.addScalarInplace(dist.x)
@@ -268,10 +272,11 @@ export class SVGPlot {
 
       this.transformView(true)
 
-      oldPos = mousePosition(this.frameGroup, event)
+      startPos = mousePosition(this.frameGroup, event)!
     }
 
     function onMouseUp() {
+      isPanning = false
       this.redrawPlots()
       this.frameGroup.removeEventListener('mousemove', onMouseMove.bind(this))
       this.frameGroup.removeEventListener('mouseup', onMouseUp.bind(this))

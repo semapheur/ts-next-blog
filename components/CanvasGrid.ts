@@ -1,4 +1,4 @@
-import {drawLine, setCanvasTransform, Line, transformPoint} from 'utils/canvas'
+import {drawLine, Line} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import Vector from 'utils/vector'
 
@@ -21,6 +21,7 @@ export default class CanvasGrid {
     x: new Vector(-10, 10),
     y: new Vector(-10, 10)
   }
+  private lastTime = 0
   private eventListeners = new EventListenerStore()
 
   constructor(canvas: HTMLCanvasElement, aspect: number = 1) {
@@ -28,10 +29,6 @@ export default class CanvasGrid {
     this.ctx = canvas.getContext('2d')!
 
     this.squareGrids()
-    
-    this.setTransform()
-
-    this.drawAxes()
     this.panOnDrag()
   }
 
@@ -79,21 +76,24 @@ export default class CanvasGrid {
   drawAxes() {
     
     this.ctx.strokeStyle = 'black'
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    const viewLength = new Vector(
+      this.viewRange.x.diff() as number,
+      this.viewRange.y.diff() as number
+    )
+    this.ctx.clearRect(this.viewRange.x[0], this.viewRange.y[0], viewLength.x, viewLength.y)
 
     //this.ctx.fillRect(0, 0, 1, 1)
     
     const transform = this.ctx.getTransform()
-    console.log(this.viewRange.x)
-
-    this.ctx.lineWidth = 2 / -transform.d
+  
+    this.ctx.lineWidth = 1 / -transform.d
     const xAxis: Line = {
       start: {x: this.viewRange.x.x, y: 0},
       end: {x: this.viewRange.x.y, y: 0}
     }
     drawLine(this.ctx, xAxis)
 
-    this.ctx.lineWidth = 2 / transform.a
+    this.ctx.lineWidth = 1 / transform.a
     const yAxis: Line = {
       start: {x: 0, y: this.viewRange.y.x},
       end: {x: 0, y: this.viewRange.y.y}
@@ -120,13 +120,12 @@ export default class CanvasGrid {
       this.canvas.height * (-this.viewRange.y[0] / viewLength.y),
     ])
 
-    setCanvasTransform(this.ctx, transform)
+    this.ctx.setTransform(transform)
   }
 
   private panOnDrag() {
     const dragButton = 1
     const rect = this.canvas.getBoundingClientRect()
-    const transform = this.ctx.getTransform()
 
     let startPos = new Vector(0,0)
     let isPanning = false
@@ -151,12 +150,13 @@ export default class CanvasGrid {
     }
 
     function onMouseMove(event: MouseEvent) {
+      if (!isPanning) return
+
+      const transform = this.ctx.getTransform()
       let panPos = new Vector(
         event.clientX - rect.left, 
         event.clientY - rect.top
       )
-      
-      if (!isPanning) return
 
       let dist = {
         x: (startPos.x - panPos.x) / transform.a,
@@ -165,14 +165,27 @@ export default class CanvasGrid {
 
       this.viewRange.x.addScalarInplace(dist.x)
       this.viewRange.y.addScalarInplace(dist.y)
+
+      startPos = new Vector(
+        event.clientX - rect.left, 
+        event.clientY - rect.top
+      )
     }
 
     function onMouseUp() {
       isPanning = false
-      this.setTransform()
-      this.drawAxes()
+      
       this.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
       this.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
     }
+  }
+
+  animate(timestamp: number) {
+    //const deltaTime = timestamp - this.lastTime
+    this.lastTime = timestamp
+    this.setTransform()
+    this.drawAxes()
+
+    requestAnimationFrame(this.animate.bind(this))
   }
 }

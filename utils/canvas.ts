@@ -19,7 +19,7 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line) {
 
 export function setCanvasTransform(ctx: CanvasRenderingContext2D, matrix: DOMMatrix) {
   const {a, b, c, d, e, f} = matrix
-  ctx.transform(a, b, c, d, e, f)
+  ctx.setTransform(a, b, c, d, e, f)
 }
 
 export function transformPoint(ctx: CanvasRenderingContext2D, point: Vector) {

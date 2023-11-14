@@ -18,6 +18,7 @@ export default function page() {
       canvas.height = rect.height
 
       gridRef.current = new CanvasGrid(canvas)
+      gridRef.current.animate(0)
     }
     
   }, [])
