@@ -95,18 +95,11 @@ export default class CanvasGrid {
         tick *= -1
       }
 
-      if (step > 999) {
-        return tick.toExponential(0)
-      }
-      if (step < 0.01) {
-        return tick.toExponential(3)
-      }
-      if (step < 0.1) {
-        return tick.toFixed(2)
-      }
-      if (step < 1) {
-        return tick.toFixed(1)
-      }
+      if (step > 999) return tick.toExponential(0)
+      if (step < 1) return tick.toFixed(1)
+      if (step < 0.1) return tick.toFixed(2)
+      if (step < 0.01) return tick.toExponential(3)
+
       return tick.toFixed(0)
     }
     
