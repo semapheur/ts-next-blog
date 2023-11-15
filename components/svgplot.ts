@@ -1,7 +1,7 @@
 //svgEl.transform.baseVal.initialize()
 
 import {parse as mathParse} from 'mathjs'
-import { difference, intersection } from 'utils/num'
+import { difference, intersection, intervalLength } from 'utils/num'
 
 import Vector from 'utils/vector'
 import { 
@@ -37,6 +37,7 @@ export class SVGPlot {
     y: new Vector(-10, 10)
   }
   private gridSize = new Vector(1, 1)
+  private minGridScreenSize = 50
   private plots: SvgPlots = {}
   private eventListeners = new EventListenerStore()
 
@@ -446,7 +447,6 @@ export class SVGPlot {
       const minOffset = {x: 10, y: 15}
       const maxOffset = {x: 30, y: 10}
       
-
       const translate = (key === 'x') ?
         transform.e : transform.f
 
@@ -590,36 +590,17 @@ export class SVGPlot {
     this.ticks(true)
   }
 
-  private gridIntervals(minScreenLength: number = 50) {
-
+  public grid() {
     const transform = this.plotGroup.getCTM()!
-    const intervalLength = (minLength: number) => {
-      const power = Math.floor(Math.log10(minLength))
-      const base = minLength*10**(-power)
-
-      if (base < 2) return Math.ceil(base) * 10**power
-
-      if (base > 2 && base < 5) return 5 * 10**power
-
-      if (base > 5) return 10**(power + 1)
-
-      return null
-    }
+    
     const min = [
-      minScreenLength / transform.a,
-      minScreenLength / transform.d
+      this.minGridScreenSize / transform.a,
+      this.minGridScreenSize / transform.d
     ]
     this.gridSize = new Vector(
       intervalLength(min[0])!,
       intervalLength(min[1])!
     )
-  }
-
-  public grid() {
-    this.gridIntervals()
-
-    const transform = this.plotGroup.getCTM()!
-
     // Pattern
     const attr = {
       id: 'grid-pattern', patternUnits: 'userSpaceOnUse',
@@ -655,8 +636,16 @@ export class SVGPlot {
   }
 
   public transformGrid() {
-    this.gridIntervals()
-    const transform = this.plotGroup.getCTM()! as DOMMatrix
+    const transform = this.plotGroup.getCTM()!
+
+    const min = [
+      this.minGridScreenSize / transform.a,
+      this.minGridScreenSize / transform.d
+    ]
+    this.gridSize = new Vector(
+      intervalLength(min[0])!,
+      intervalLength(min[1])!
+    )
 
     const pattern = document.getElementById('grid-pattern')!
     const attr = {

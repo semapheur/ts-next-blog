@@ -44,3 +44,16 @@ export function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   }
   return result
 }
+
+export function intervalLength(minLength: number) {
+  const scale = Math.floor(Math.log10(minLength))
+  const base = minLength*10**(-scale)
+
+  if (base < 2) return Math.ceil(base) * 10**scale
+
+  if (base > 2 && base < 5) return 5 * 10**scale
+
+  if (base > 5) return 10**(scale + 1)
+
+  return null
+}
