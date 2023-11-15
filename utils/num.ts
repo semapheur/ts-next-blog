@@ -1,3 +1,7 @@
+export function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
+}
+
 export function sum(arr: number[], start?: number, stop?: number): number {
 
   if (!start) start = 0

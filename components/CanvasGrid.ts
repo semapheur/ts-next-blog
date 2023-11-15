@@ -1,6 +1,6 @@
 import {drawLine, Line} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
-import { intervalLength } from 'utils/num'
+import { clamp, intervalLength } from 'utils/num'
 import Vector from 'utils/vector'
 
 type Axis = 'x'|'y'
@@ -87,10 +87,38 @@ export default class CanvasGrid {
   }
 
   private drawGrid() {
+
+    const tickFormat = (axis: Axis, step: number, tick: number): string => {
+      if (tick === 0) return '0'
+
+      if (axis === 'x') {
+        tick *= -1
+      }
+
+      if (step > 999) {
+        return tick.toExponential(0)
+      }
+      if (step < 0.01) {
+        return tick.toExponential(3)
+      }
+      if (step < 0.1) {
+        return tick.toFixed(2)
+      }
+      if (step < 1) {
+        return tick.toFixed(1)
+      }
+      return tick.toFixed(0)
+    }
     
     const unitIterate = (step: number, axis:Axis) => {
-
       this.ctx.lineWidth = axis === 'x' ? 0.5 / transform.a : 0.5 / -transform.d
+      const fontSize = axis === 'x' ? 15 / transform.a : 15 / -transform.d
+      this.ctx.font = `bold ${fontSize}px trebuchet ms`
+      this.ctx.textAlign = axis === 'x' ? 'start' : 'center'
+      const textOffset = {
+        edge: axis === 'x' ? 5 / transform.a : 5 / -transform.d,
+        grid: axis === 'x' ? 5 / transform.a : 0,
+      }
 
       let tick = axis === 'x' ? this.viewRange.y[0] : this.viewRange.x[0]
       const stop = axis === 'x' ? this.viewRange.y[1] : this.viewRange.x[1]
@@ -113,7 +141,22 @@ export default class CanvasGrid {
             x: axis === 'x' ? this.viewRange.x[1] : tick, 
             y: axis === 'y' ? this.viewRange.y[1] : tick}
         }
+        this.ctx.strokeStyle ='black'
         drawLine(this.ctx, line)
+        const tickPos = {
+          x: axis === 'y' ? tick + textOffset.grid : clamp(
+            textOffset.edge, 
+            this.viewRange.x[0] + textOffset.edge, 
+            this.viewRange.x[1] - 3 * textOffset.edge),
+          y: axis === 'x' ? tick + textOffset.grid : clamp(
+            textOffset.edge,
+            this.viewRange.y[0] - 3 * textOffset.edge,
+            this.viewRange.y[1] + textOffset.edge
+            )
+        }
+        this.ctx.fillStyle ='black'
+        this.ctx.fillText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
+
         tick += step
       }
     }
@@ -132,7 +175,6 @@ export default class CanvasGrid {
   }
 
   private drawTicks() {
-    
   }
 
   private setTransform() {

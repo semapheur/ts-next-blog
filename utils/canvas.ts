@@ -10,7 +10,11 @@ export type Line = {
   end: Point 
 }
 
-export function drawLine(ctx: CanvasRenderingContext2D, line: Line) {
+export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string) {
+  if (color) {
+    ctx.strokeStyle = color
+  }
+
   ctx.beginPath()
   ctx.moveTo(line.start.x, line.start.y)
   ctx.lineTo(line.end.x, line.end.y)
