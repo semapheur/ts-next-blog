@@ -23,7 +23,7 @@ const fragmentShaderSource = `#version 300 es
   }
 `
 
-function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
+export function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!
   gl.shaderSource(shader, source)
   gl.compileShader(shader)
@@ -35,7 +35,7 @@ function createShader(gl: WebGL2RenderingContext, type: number, source: string) 
   gl.deleteShader(shader)
 }
 
-function createProgram(
+export function createProgram(
   gl: WebGL2RenderingContext, 
   vertexShader: WebGLShader, 
   fragmentShader: WebGLShader) 
