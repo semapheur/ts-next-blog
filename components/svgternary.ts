@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import { setAttributes, svgPath, svgPoly, mousePosition, addChildElement } from 'utils/svg'
+import { setAttributes, svgPoly, mousePosition, addChildElement } from 'utils/svg'
 import { betaPDF } from 'utils/probability'
 import Vector from 'utils/vector'
 import EventListenerStore from 'utils/event'

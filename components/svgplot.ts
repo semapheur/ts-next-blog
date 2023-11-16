@@ -78,13 +78,11 @@ export class SVGPlot {
     this.frameGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     if (margin) {
       this.setFrameTransform(margin, width, height)
-      setSvgTransform(this.svgElement, this.frameGroup, this.frameGroup.getCTM()!)
     }
     this.svgElement.appendChild(this.frameGroup)
     
     this.plotGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
     this.setViewTransform(width, height)
-    setSvgTransform(this.svgElement, this.plotGroup, this.plotGroup.getCTM()!)
     this.frameGroup.appendChild(this.plotGroup)
     
     addChildElement(this.frameGroup, 'g', {id: 'crosshair-group'})
@@ -134,7 +132,7 @@ export class SVGPlot {
       (1 - 2 * margin.x) * width * margin.x,
       (1 - 2 * margin.y) * height * margin.y
     ])
-    setSvgTransform(this.svgElement, this.frameGroup, transform)
+    setSvgTransform(this.frameGroup, transform)
   }
 
   private setViewTransform(width?: number, height?: number) {
@@ -156,7 +154,7 @@ export class SVGPlot {
       (height * frameTransform.d) * (-this.viewRange.y[0] / viewLength.y),
     ])
 
-    setSvgTransform(this.svgElement, this.plotGroup, transform)
+    setSvgTransform(this.plotGroup, transform)
   }
 
   private svgToDrawPosition(svgPos: Vector): Vector|null {
@@ -424,8 +422,8 @@ export class SVGPlot {
     this.transformGrid()
     this.transformAxis()
 
-    setSvgTransform(this.svgElement, this.frameGroup, this.frameGroup.getCTM()!)
-    setSvgTransform(this.svgElement, this.plotGroup, this.plotGroup.getCTM()!)
+    setSvgTransform(this.frameGroup, this.frameGroup.getCTM()!)
+    setSvgTransform(this.plotGroup, this.plotGroup.getCTM()!)
 
     if (!pan) {
       this.redrawPlots()

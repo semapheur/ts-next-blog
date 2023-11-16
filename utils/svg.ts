@@ -1,13 +1,10 @@
 import Vector from 'utils/vector'
 
-export function setSvgTransform(
-  svgRoot: SVGSVGElement, 
+export function setSvgTransform( 
   svgEl: SVGGElement | SVGGeometryElement,
   matrix: DOMMatrix
 ) {
-  svgEl.transform.baseVal.initialize(
-    svgRoot.createSVGTransformFromMatrix(matrix as SVGMatrix)
-  )
+  svgEl.setAttribute('transform', matrix.toString())
 }
 
 export function setAttributes(element: Element, attributes: {[key: string]: string}) {
