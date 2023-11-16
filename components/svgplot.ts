@@ -9,8 +9,8 @@ import {
   removeElementsByClass, 
   addChildElement, 
   mousePosition, 
-  setSvgTransform,
-  matrixToString 
+  setSvgTransform, 
+  screenToDrawPosition
 } from 'utils/svg'
 import EventListenerStore from 'utils/event'
 
@@ -136,7 +136,8 @@ export class SVGPlot {
   }
 
   private setViewTransform(width?: number, height?: number) {
-    let frameTransform = this.frameGroup.getCTM()!
+    const frameTransform = this.frameGroup.getCTM()
+    if (!frameTransform) return
 
     if (!width) width = this.svgElement.getBoundingClientRect().width
     if (!height) height = this.svgElement.getBoundingClientRect().height
@@ -145,7 +146,6 @@ export class SVGPlot {
       this.viewRange.x.diff() as number, 
       this.viewRange.y.diff() as number
     )
-
     const transform = new DOMMatrix([
       (width * frameTransform.a) / viewLength.x,
       0, 0,
@@ -153,25 +153,15 @@ export class SVGPlot {
       (width * frameTransform.a) * (-this.viewRange.x[0] / viewLength.x),
       (height * frameTransform.d) * (-this.viewRange.y[0] / viewLength.y),
     ])
-
+    console.log(transform)
     setSvgTransform(this.plotGroup, transform)
-  }
-
-  private svgToDrawPosition(svgPos: Vector): Vector|null {
-    const transform = this.plotGroup.getCTM()
-    if (!transform) return null
-
-    return new Vector(
-      (svgPos.x - transform.e) / transform.a,
-      (svgPos.y - transform.f) / transform.d
-    )
   }
 
   private crosshair() {
     const crosshairGroup = document.getElementById('crosshair-group')!
 
     const onMouseEnterBound = onMouseEnter.bind(this)
-    this.eventListeners.storeEventListener('mouseenter', this.frameGroup, onMouseEnterBound)
+    this.eventListeners.storeEventListener('mouseenter', this.svgElement, onMouseEnterBound)
     
     function onMouseEnter() {
       // Text element displaying cursor position
@@ -205,10 +195,10 @@ export class SVGPlot {
         return coord.toFixed(2)
       }
 
-      const transform = this.plotGroup.getCTM()
-      const svgPos = mousePosition(this.svgElement, event)
-      if (!svgPos) return
-      const drawPos = this.svgToDrawPosition(svgPos)
+      const transform = this.plotGroup.getCTM()!
+      const svgPos = mousePosition(this.frameGroup, event)
+      if (!svgPos || !transform) return
+      const drawPos = screenToDrawPosition(svgPos, transform)!
       
       const text = document.getElementById('crosshair-text')!
       text.setAttribute('x', `${svgPos.x + 15}`)
@@ -294,9 +284,10 @@ export class SVGPlot {
         this.viewRange.y.diff() as number
       )
       const svgPos = mousePosition(this.frameGroup, event)
-      if (!svgPos) return
+      const transform = this.plotGroup.getCTM()
+      if (!svgPos || !transform) return
 
-      const drawPos = this.svgToDrawPosition(svgPos)
+      const drawPos = screenToDrawPosition(svgPos, transform)!
 
       const dw = viewLength.x * Math.sign(-event.deltaY) * 0.05
       const dh = viewLength.y * Math.sign(-event.deltaY) * 0.05
@@ -602,7 +593,7 @@ export class SVGPlot {
     // Pattern
     const attr = {
       id: 'grid-pattern', patternUnits: 'userSpaceOnUse',
-      patternTransform: matrixToString(transform),
+      patternTransform: DOMMatrix.fromMatrix(transform).toString(),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
     }
     const pattern = document.createElementNS(this.xmlns, 'pattern')
@@ -647,7 +638,7 @@ export class SVGPlot {
 
     const pattern = document.getElementById('grid-pattern')!
     const attr = {
-      patternTransform: matrixToString(transform),
+      patternTransform: DOMMatrix.fromMatrix(transform).toString(),
       width: `${this.gridSize.x}`, height: `${this.gridSize.y}`,
     }
     setAttributes(pattern, attr)

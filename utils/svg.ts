@@ -2,9 +2,9 @@ import Vector from 'utils/vector'
 
 export function setSvgTransform( 
   svgEl: SVGGElement | SVGGeometryElement,
-  matrix: DOMMatrix
+  matrix: DOMMatrix | SVGMatrix
 ) {
-  svgEl.setAttribute('transform', matrix.toString())
+  svgEl.setAttribute('transform', DOMMatrix.fromMatrix(matrix).toString())
 }
 
 export function setAttributes(element: Element, attributes: {[key: string]: string}) {
@@ -49,9 +49,19 @@ export function mousePosition(
   )
 }
 
-export function matrixToString(matrix: DOMMatrix): string {
-  return `matrix(${matrix.a},${matrix.b},${matrix.c},${matrix.d},${matrix.e},${matrix.f})`
+export function screenToDrawPosition(
+  screenPos: Vector, 
+  transform: DOMMatrix
+): Vector|null 
+{
+  if (!transform) return null
+
+  return new Vector(
+    (screenPos.x - transform.e) / transform.a,
+    (screenPos.y - transform.f) / transform.d
+  )
 }
+
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''
