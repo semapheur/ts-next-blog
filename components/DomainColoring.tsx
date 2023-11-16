@@ -6,7 +6,6 @@ type AxisProps = {
 
 }
 
-
 type State = {
   position: number[]
   mouseDown: boolean

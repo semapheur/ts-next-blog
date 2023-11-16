@@ -1,6 +1,7 @@
-import {drawLine, Line} from 'utils/canvas'
+import {drawLine, mousePosition, Line} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import { clamp, intervalLength } from 'utils/num'
+import { screenToDrawPosition } from 'utils/svg'
 import Vector from 'utils/vector'
 
 type Axis = 'x'|'y'
@@ -22,6 +23,7 @@ export default class CanvasGrid {
 
     this.squareGrids()
     this.panOnDrag()
+    this.zoomOnWheel()
   }
 
   public squareGrids() {
@@ -98,7 +100,7 @@ export default class CanvasGrid {
       if (step > 999) return tick.toExponential(0)
       if (step < 1) return tick.toFixed(1)
       if (step < 0.1) return tick.toFixed(2)
-      if (step < 0.01) return tick.toExponential(3)
+      if (step < 0.01) return tick.toExponential(1)
 
       return tick.toFixed(0)
     }
@@ -144,8 +146,7 @@ export default class CanvasGrid {
           y: axis === 'x' ? tick + textOffset.grid : clamp(
             textOffset.edge,
             this.viewRange.y[0] - 3 * textOffset.edge,
-            this.viewRange.y[1] + textOffset.edge
-            )
+            this.viewRange.y[1] + textOffset.edge)
         }
         this.ctx.fillStyle ='black'
         this.ctx.fillText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
@@ -165,9 +166,6 @@ export default class CanvasGrid {
     for (const [index, key] of ['x', 'y'].entries()) {
       unitIterate(gridUnit[index], key as Axis)
     }
-  }
-
-  private drawTicks() {
   }
 
   private setTransform() {
@@ -202,10 +200,7 @@ export default class CanvasGrid {
       event.preventDefault()
       
       // Click position
-      startPos = new Vector(
-        event.clientX - rect.left, 
-        event.clientY - rect.top
-      )
+      startPos = mousePosition(this.canvas, event)
       this.canvas.addEventListener('mouseup', onMouseUp.bind(this))
       this.canvas.addEventListener('mousemove', onMouseMove.bind(this))
     }
@@ -214,10 +209,7 @@ export default class CanvasGrid {
       if (!isPanning) return
 
       const transform = this.ctx.getTransform()
-      let panPos = new Vector(
-        event.clientX - rect.left, 
-        event.clientY - rect.top
-      )
+      let panPos = mousePosition(this.canvas, event)
       let dist = {
         x: (startPos.x - panPos.x) / transform.a,
         y: (startPos.y - panPos.y) / transform.d
@@ -226,10 +218,7 @@ export default class CanvasGrid {
       this.viewRange.x.addScalarInplace(dist.x)
       this.viewRange.y.addScalarInplace(dist.y)
 
-      startPos = new Vector(
-        event.clientX - rect.left, 
-        event.clientY - rect.top
-      )
+      startPos = mousePosition(this.canvas, event)
     }
 
     function onMouseUp() {
@@ -237,6 +226,37 @@ export default class CanvasGrid {
       
       this.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
       this.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
+    }
+  }
+
+  private zoomOnWheel() {
+    //const zoomStep = 1
+
+    const onWheelBound = onWheel.bind(this)
+    this.eventListeners.storeEventListener('wheel', this.canvas, onWheelBound)
+
+    function onWheel(event: WheelEvent) {
+      const viewLength = new Vector(
+        this.viewRange.x.diff() as number, 
+        this.viewRange.y.diff() as number
+      )
+      const zoomPos = mousePosition(this.canvas, event)
+      const transform = this.ctx.getTransform()
+      if (!zoomPos || !transform) return
+
+      const drawPos = screenToDrawPosition(zoomPos, transform)!
+
+      const dw = viewLength.x * Math.sign(-event.deltaY) * 0.05
+      const dh = viewLength.y * Math.sign(-event.deltaY) * 0.05
+
+      const dx = dw * ((drawPos.x - this.viewRange.x[0]) / viewLength.x)
+      const dy = dh * ((drawPos.y - this.viewRange.y[0]) / viewLength.y)
+      
+      this.viewRange.x[0] += dx
+      this.viewRange.y[0] += dy
+
+      this.viewRange.x[1] = this.viewRange.x[0] + (viewLength.x - dw)
+      this.viewRange.y[1] = this.viewRange.y[0] + (viewLength.y - dh)
     }
   }
 

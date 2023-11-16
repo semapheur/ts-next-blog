@@ -31,3 +31,14 @@ export function transformPoint(ctx: CanvasRenderingContext2D, point: Vector) {
 
   return ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x, point.y))
 }
+
+export function mousePosition(
+  canvas: HTMLCanvasElement, 
+  event: MouseEvent
+): Vector {
+  const rect = canvas.getBoundingClientRect()
+  return new Vector(
+    event.clientX - rect.left, 
+    event.clientY - rect.top
+  )
+}

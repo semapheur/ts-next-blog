@@ -4,7 +4,7 @@ import CanvasGrid from 'components/CanvasGrid'
 import useResizeObserver from 'hooks/useResizeObserver'
 import { useEffect, useRef } from 'react'
 
-export default function page() {
+export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const gridRef = useRef<CanvasGrid|null>(null)
   //const size = useResizeObserver(canvasRef)
