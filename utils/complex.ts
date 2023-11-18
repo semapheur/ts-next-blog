@@ -3,6 +3,7 @@ import {
   FunctionNode,
   SymbolNode
 } from 'mathjs'
+import { union } from './num'
 
 function functionDependencies(glslExpression: string) {
   const dependencies = new Set<string>()
@@ -32,6 +33,27 @@ function functionVariables(glslExpression: string) {
   })
 
   return variables
+}
+
+function requiredFunctions(required: Set<string>): string[] {
+  const stack = Array.from(required)
+  const declarations: string[] = []
+
+  while (stack.length > 0) {
+    const fn = stack.pop()!
+    const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
+
+    declarations.push(cfn.code)
+    const dependencies = cfn.dependencies
+    for (let d of dependencies) {
+      if (required.has(d)) continue
+
+      required.add(d)
+      stack.push(d)
+    }
+  }
+ 
+  return declarations
 }
 
 class ComplexFunction{

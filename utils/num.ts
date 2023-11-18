@@ -49,6 +49,15 @@ export function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   return result
 }
 
+export function union<T>(setA: Set<T>, setB: Set<T>): Set<T> {
+  const result = new Set(setA)
+
+  for (const el of setB) {
+    result.add(el)
+  }
+  return result
+}
+
 export function intervalLength(minLength: number) {
   const scale = Math.floor(Math.log10(minLength))
   const base = minLength*10**(-scale)

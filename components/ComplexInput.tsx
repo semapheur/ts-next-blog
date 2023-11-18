@@ -19,7 +19,9 @@ export default function ComplexInput({className, ...props}: Props) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const expression = parse(inputValue)
-      //console.log(toGlsl(expression))
+
+      const [glsl, fns] = toGlsl(expression)
+
     }
   }
 
@@ -32,8 +34,8 @@ export default function ComplexInput({className, ...props}: Props) {
   </form>)
 }
 
-function toGlsl(ast: MathNode) {
-  const infixOperators = ['+', '-']
+function toGlsl(ast: MathNode): [string, Set<string>] {
+  const vecOperators = new Set<string>(['+', '-'])
   const functions = new Set<string>()
 
   function callback(node: MathNode): MathNode {
@@ -41,13 +43,11 @@ function toGlsl(ast: MathNode) {
       case 'SymbolNode': {
         if ((node as SymbolNode).name != 'i') return node
         
-        functions.add('complex')
-        return new FunctionNode('complex', [new ConstantNode(0), new ConstantNode(1)])
+        return new FunctionNode('vec2', [new ConstantNode(0), new ConstantNode(1)])
       } 
       case 'ConstantNode': {
-        functions.add('complex')
         const args = [new ConstantNode((node as ConstantNode).value), new ConstantNode(0)]
-        return new FunctionNode('complex', args)
+        return new FunctionNode('vec2', args)
       }
       case 'FunctionNode': {
         const fn = 'c' + (node as FunctionNode).fn.name
@@ -60,14 +60,20 @@ function toGlsl(ast: MathNode) {
         return new FunctionNode(fn, args) 
       }
       case 'OperatorNode': {
+        const op = (node as OperatorNode).op
         const fn = 'c' + (node as OperatorNode).fn
-        functions.add(fn)
         
         const args = (node as OperatorNode).args
         for (let i = 0; i < args.length; i++) {
           args[i] = callback(args[i])
         }
-        return new FunctionNode(fn, args)
+
+        if (vecOperators.has(op)) {
+          return new OperatorNode(op, op, args)
+        } else {
+          functions.add(fn)
+          return new FunctionNode(fn, args)
+        } 
       }
       case 'ParenthesisNode': {
         return callback((node as ParenthesisNode).content)
@@ -80,5 +86,5 @@ function toGlsl(ast: MathNode) {
 
   const glsl = ast.transform(callback)
 
-  return glsl.toString()
+  return [glsl.toString(), functions]
 }
