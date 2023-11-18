@@ -38,13 +38,15 @@ class ComplexFunction{
   private name: string
   private body: string
   private variables: Set<string>
-  private dependencies: Set<string>
 
   constructor(name: string, body: string) {
     this.name = name
     this.body = body
     this.variables = functionVariables(body)
-    this.dependencies = functionDependencies(body)
+  }
+
+  get dependencies() {
+    return functionDependencies(this.body)
   }
 
   get arguments() {

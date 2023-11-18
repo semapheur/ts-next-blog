@@ -19,10 +19,6 @@ export default function ComplexInput({className, ...props}: Props) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const expression = parse(inputValue)
-      expression.traverse(function(node, path, parent) {
-        console.log(node.type)
-        console.log(node)
-      })
       //console.log(toGlsl(expression))
     }
   }
