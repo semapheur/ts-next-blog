@@ -27,8 +27,7 @@ const sunPath = (unit: number): string => {
 }
 
 export default function ThemeToggle() {
-
-const [activeTheme, setActiveTheme] = useDarkMode();
+	const [activeTheme, setActiveTheme] = useDarkMode();
 	// Check if active theme is valid
 	if (activeTheme && !['light', 'dark'].includes(activeTheme)) {
 			console.error(`Invalid color mode: ${activeTheme}`);

@@ -4,6 +4,8 @@ import CanvasGrid from 'components/CanvasGrid'
 import useResizeObserver from 'hooks/useResizeObserver'
 import { useEffect, useRef } from 'react'
 
+import ComplexInput from 'components/ComplexInput'
+
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const gridRef = useRef<CanvasGrid|null>(null)
@@ -23,7 +25,8 @@ export default function Page() {
     
   }, [])
 
-  return (
+  return (<div className='h-full relative'>
+    <ComplexInput className='absolute left-0 top-0'/>
     <canvas ref={canvasRef} className='w-full h-full'/>
-  )
+  </div>)
 }
