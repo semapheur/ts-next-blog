@@ -19,7 +19,11 @@ export default function ComplexInput({className, ...props}: Props) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const expression = parse(inputValue)
-      console.log(toGlsl(expression))
+      expression.traverse(function(node, path, parent) {
+        console.log(node.type)
+        console.log(node)
+      })
+      //console.log(toGlsl(expression))
     }
   }
 
@@ -33,6 +37,7 @@ export default function ComplexInput({className, ...props}: Props) {
 }
 
 function toGlsl(ast: MathNode) {
+  const infixOperators = ['+', '-']
   const functions = new Set<string>()
 
   function callback(node: MathNode): MathNode {
@@ -49,7 +54,7 @@ function toGlsl(ast: MathNode) {
         return new FunctionNode('complex', args)
       }
       case 'FunctionNode': {
-        const fn = 'c' + (node as FunctionNode).fn
+        const fn = 'c' + (node as FunctionNode).fn.name
         functions.add(fn)
 
         const args = (node as FunctionNode).args
