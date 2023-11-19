@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { signal } from '@preact/signals-react'
+import { useEffect, useRef } from 'react'
+import { signal, effect } from '@preact/signals-react'
 import useMousePosition from 'hooks/useMousePosition'
 import {
   parse, 
@@ -13,6 +13,7 @@ import {
 
 import ComplexInput from 'components/ComplexInput'
 import { requiredFunctions } from 'utils/complex'
+import { VERTEX_SHADER_2D, makeProgram, init2dBuffers } from 'utils/webgl'
 
 type AxisProps = {
   center: number[],
@@ -28,20 +29,60 @@ type DomainColoringProps = {
   state: State
 }
 
-const inputFunction = signal<string>('')
+const expression = signal<string>('')
+const gl = signal<WebGL2RenderingContext|null>(null)
+
+effect(() => {
+  if (gl.value) {
+    makeScene(gl.value, expression.value)
+    render(gl.value)
+  }
+})
 
 export default function DomainColoring(props: DomainColoringProps) {
-  const glRef = useRef<HTMLCanvasElement>(null)
-  const axisRef = useRef<HTMLCanvasElement>(null)
+  const plotRef = useRef<HTMLCanvasElement>(null)
+  //const axisRef = useRef<HTMLCanvasElement>(null)
 
+  useEffect(() => {
+    const canvas = plotRef.current
+
+    if (!canvas) return
+
+    gl.value = canvas.getContext('webgl2')
+
+    if (!gl.value) {
+      console.error('Unable to initialize WebGL')
+      return
+    }
+  }, [])
 
   return (
     <div className='relative w-full h-full'>
-      <ComplexInput inputFunction={inputFunction} className='absolute left-0 top-0'/>
-      <canvas ref={glRef} className='absolute inset-0 w-full h-full'/>
-      <canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>
+      <ComplexInput expression={expression} className='absolute left-0 top-0'/>
+      <canvas ref={plotRef} className='absolute inset-0 w-full h-full'/>
+      {/*<canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>*/}
     </div>
   )
+}
+
+function render(gl: WebGL2RenderingContext) {
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+}
+
+function makeScene(gl: WebGL2RenderingContext, expression: string) {
+  const fragmentShader = makeFragmentShader(expression)
+
+  const program = makeProgram(gl, VERTEX_SHADER_2D, fragmentShader)
+  if (program === undefined) {
+    console.log('AST could not be compiled:', expression)
+    return
+  }
+  init2dBuffers(gl)
+  gl.useProgram(program)
+
+  const positionLoc = gl.getAttribLocation(program, 'a_position')
+  gl.enableVertexAttribArray(positionLoc)
+  gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
 }
 
 function toGlsl(ast: MathNode): [string, Set<string>] {
@@ -99,17 +140,17 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   return [glsl.toString(), functions]
 }
 
-function fragmentShader(
-  inputFunction: string,
-  uniforms: string[]
+function makeFragmentShader(
+  expression: string,
+  //uniforms: string[]
 ): string
 {
 
-  const uniformBuffers = uniforms.map((name) => {
-    `uniform vec2 ${name}`
-  })
+  //const uniformBuffers = uniforms.map((name) => {
+  //  `uniform vec2 ${name}`
+  //})
 
-  const [fn, required] = toGlsl(parse(inputFunction))
+  const [fn, required] = toGlsl(parse(expression))
   const functionDeclarations = requiredFunctions(required)
 
   return `#version 300 es
@@ -120,8 +161,6 @@ function fragmentShader(
   #endif
 
   const float PI = 3.14159265358979323846264;
-
-  ${uniformBuffers}
 
   ${functionDeclarations.join('\n')}
 

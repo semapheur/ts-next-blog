@@ -1,4 +1,4 @@
-const VERTEX_SHADER_2D = `#version 300 es
+export const VERTEX_SHADER_2D = `#version 300 es
   in vec2 a_position;
 
   void main() {
@@ -24,7 +24,7 @@ export function init2dBuffers(gl: WebGL2RenderingContext) {
   )
 }
 
-export function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
+export function makeShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!
   gl.shaderSource(shader, source)
   gl.compileShader(shader)
@@ -36,7 +36,7 @@ export function createShader(gl: WebGL2RenderingContext, type: number, source: s
   gl.deleteShader(shader)
 }
 
-export function createProgram(
+export function makeProgram(
   gl: WebGL2RenderingContext, 
   vertexShader: WebGLShader, 
   fragmentShader: WebGLShader) 

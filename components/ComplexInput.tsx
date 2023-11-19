@@ -2,15 +2,15 @@ import { HTMLProps, KeyboardEvent } from 'react'
 import { Signal } from '@preact/signals-react'
 
 interface Props extends HTMLProps<HTMLFormElement> {
-  inputFunction: Signal<string>
+  expression: Signal<string>
   className?: string
 }
 
-export default function ComplexInput({inputFunction, className, ...props}: Props) {
+export default function ComplexInput({expression, className, ...props}: Props) {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      inputFunction.value = (e.target as HTMLInputElement).value
+      expression.value = (e.target as HTMLInputElement).value
     }
   }
 
