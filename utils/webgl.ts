@@ -1,29 +1,3 @@
-export const VERTEX_SHADER_2D = `#version 300 es
-  in vec2 a_position;
-
-  void main() {
-    gl_Position = vec4(a_position, 0, 1);
-  }
-`
-
-export function init2dBuffers(gl: WebGL2RenderingContext) {
-  const vertexBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
-
-  const vertices = [
-    -1.0, -1.0,
-    1.0, -1.0,
-    -1.0, 1.0,
-    1.0, 1.0
-  ]
-
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array(vertices),
-    gl.STATIC_DRAW
-  )
-}
-
 export function makeShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!
   gl.shaderSource(shader, source)
@@ -51,4 +25,25 @@ export function makeProgram(
   }
   console.log(gl.getProgramInfoLog(program))
   gl.deleteProgram(program)
+}
+
+export function setRectangle(
+  gl: WebGL2RenderingContext, 
+  x: number, y: number, 
+  width: number, heigth: number)
+{ 
+  const x1 = x
+  const x2 = x + width
+  const y1 = y
+  const y2 = y + height
+
+  const vertices = new Float32Array([
+    x1, y1,
+    x2, y1,
+    x1, y2,
+    x1, y2,
+    x2, y1,
+    x2, y2
+  ])
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 }

@@ -13,10 +13,14 @@ import {
   SymbolNode,   
 } from 'mathjs'
 
-import ComplexInput from 'components/ComplexInput'
-import { requiredFunctions } from 'utils/complex'
-import { VERTEX_SHADER_2D, makeProgram, init2dBuffers, makeShader } from 'utils/webgl'
 import useResizeObserver from 'hooks/useResizeObserver'
+
+import ComplexInput from 'components/ComplexInput'
+
+import { resizeCanvas } from 'utils/canvas'
+import { requiredFunctions } from 'utils/complex'
+import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
+import { Vec2 } from 'utils/types'
 
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
@@ -60,18 +64,49 @@ export default function DomainColoring() {
   )
 }
 
-function render(gl: WebGL2RenderingContext) {
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-}
+function makeScene(
+  gl: WebGL2RenderingContext, 
+  expression: string,
+  scale: Vec2, translate: Vec2) 
+{
+  function render() {
+    resizeCanvas(gl.canvas as HTMLCanvasElement)
+  
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+  
+    gl.clearColor(0, 0, 0, 0)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-function makeScene(gl: WebGL2RenderingContext, expression: string) {
-  const vertexShader = makeShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_2D)
+    gl.uniform2f(scaleLoc, scale.x, scale.y)
+    gl.uniform2f(translateLoc, translate.x, translate.y)
 
-  const fragmentShaderSource = makeFragmentShaderSource(expression)
-  const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+    gl.bindVertexArray(vertexArray)
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+    setRectangle(gl, translate.x, translate.y, scale.x, scale.y)
+    
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  const vertexCode = `#version 300 es
+    in vec2 a_position;
+
+    uniform vec2 u_scale;
+    uniform vec2 u_translation;
+
+    void main() {
+      vec2 position = (a_position + u_translation) / u_scale;
+
+      gl_Position = vec4(position, 0, 1);
+    }
+  `
+
+  const vertexShader = makeShader(gl, gl.VERTEX_SHADER, vertexCode)
+
+  const fragmentCode = makeFragmentCode(expression)
+  const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, fragmentCode)
 
   if (!(vertexShader && fragmentShader)) {
-    console.log(fragmentShaderSource)
+    console.log(fragmentCode)
     return
   }
 
@@ -80,12 +115,21 @@ function makeScene(gl: WebGL2RenderingContext, expression: string) {
     console.log('AST could not be compiled:', expression)
     return
   }
-  init2dBuffers(gl)
   gl.useProgram(program)
+
+  const scaleLoc = gl.getUniformLocation(program, 'u_scale')
+  const translateLoc = gl.getUniformLocation(program, 'u_translate')
+
+  const positionBuffer = gl.createBuffer()
+  const vertexArray = gl.createVertexArray()
+  gl.bindVertexArray(vertexArray)
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
 
   const positionLoc = gl.getAttribLocation(program, 'a_position')
   gl.enableVertexAttribArray(positionLoc)
+  
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
+
 }
 
 function toGlsl(ast: MathNode): [string, Set<string>] {
@@ -143,7 +187,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   return [glsl.toString(), functions]
 }
 
-function makeFragmentShaderSource(
+function makeFragmentCode(
   expression: string,
   //uniforms: string[]
 ): string

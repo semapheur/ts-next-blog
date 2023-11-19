@@ -1,14 +1,5 @@
 import Vector from './vector'
-
-type Point = {
-  x: number,
-  y: number
-}
-
-export type Line = {
-  start: Point,
-  end: Point 
-}
+import {Line} from './types'
 
 export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string) {
   if (color) {
@@ -41,4 +32,17 @@ export function mousePosition(
     event.clientX - rect.left, 
     event.clientY - rect.top
   )
+}
+
+export function resizeCanvas(canvas: HTMLCanvasElement) {
+  const dpr = window.devicePixelRatio
+  const rect = canvas.getBoundingClientRect()
+  const width = Math.round(rect.width * dpr)
+  const height = Math.round(rect.height * dpr)
+
+  if (canvas.width !== width || canvas.height != height) {
+    canvas.width = width
+    canvas.height = height
+  }
+  
 }

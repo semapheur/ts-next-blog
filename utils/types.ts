@@ -1,5 +1,15 @@
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 
+export type Vec2 = {
+  x: number,
+  y: number
+}
+
+export type Line = {
+  start: Vec2,
+  end: Vec2 
+}
+
 export type MDXPost<T> = {
   serialized: MDXRemoteSerializeResult,
   frontmatter: T
