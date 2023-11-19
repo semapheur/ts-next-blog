@@ -35,7 +35,7 @@ function functionVariables(glslExpression: string) {
   return variables
 }
 
-function requiredFunctions(required: Set<string>): string[] {
+export function requiredFunctions(required: Set<string>): string[] {
   const stack = Array.from(required)
   const declarations: string[] = []
 
@@ -43,9 +43,8 @@ function requiredFunctions(required: Set<string>): string[] {
     const fn = stack.pop()!
     const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
 
-    declarations.push(cfn.code)
-    const dependencies = cfn.dependencies
-    for (let d of dependencies) {
+    declarations.push(cfn.code) 
+    for (let d of cfn.dependencies) {
       if (required.has(d)) continue
 
       required.add(d)

@@ -25,7 +25,7 @@ export default function Page() {
     
   }, [])
 
-  return (<div className='h-full relative'>
+  return (<div className='relative h-full'>
     <ComplexInput className='absolute left-0 top-0'/>
     <canvas ref={canvasRef} className='w-full h-full'/>
   </div>)

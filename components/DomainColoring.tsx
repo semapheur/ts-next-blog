@@ -1,5 +1,18 @@
 import { useRef } from 'react'
+import { signal } from '@preact/signals-react'
 import useMousePosition from 'hooks/useMousePosition'
+import {
+  parse, 
+  ConstantNode, 
+  FunctionNode, 
+  MathNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,   
+} from 'mathjs'
+
+import ComplexInput from 'components/ComplexInput'
+import { requiredFunctions } from 'utils/complex'
 
 type AxisProps = {
   center: number[],
@@ -15,40 +28,91 @@ type DomainColoringProps = {
   state: State
 }
 
-function fragmentShader(
-  expression, 
-  customShader: boolean, 
-  width: number, height: number,
-  variableNames: string[],
-  logMode: boolean
-): string
-{
-  const xOffset = (width/2).toFixed(2)
-  const yOffset = (height/2).toFixed(2)
+const inputFunction = signal<string>('')
 
-  const dpr = window.devicePixelRatio.toFixed()
+export default function DomainColoring(props: DomainColoringProps) {
+  const glRef = useRef<HTMLCanvasElement>(null)
+  const axisRef = useRef<HTMLCanvasElement>(null)
 
-  const vecType = logMode ? 'vec3' : 'vec2'
 
-  const variableDeclarations = variableNames.map(
-    (name: string) => `uniform ${vecType} ${name}`
-  ).join('\n')
+  return (
+    <div className='relative w-full h-full'>
+      <ComplexInput inputFunction={inputFunction} className='absolute left-0 top-0'/>
+      <canvas ref={glRef} className='absolute inset-0 w-full h-full'/>
+      <canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>
+    </div>
+  )
+}
 
-  let customCode = ''
-  let glslExpression = ''
+function toGlsl(ast: MathNode): [string, Set<string>] {
+  const vecOperators = new Set<string>(['+', '-'])
+  const functions = new Set<string>()
 
-  if (customShader) {
-    customCode = expression
-    glslExpression = 'mapping(z)'
-  } else {
-    glslExpression = toGlsl(expression, logMode)[0]
-    if (logMode) {
-      glslExpression = `upconvert(${glslExpression})`
+  function callback(node: MathNode): MathNode {
+    switch(node.type) {
+      case 'SymbolNode': {
+        if ((node as SymbolNode).name != 'i') return node
+        
+        return new FunctionNode('vec2', [new ConstantNode(0), new ConstantNode(1)])
+      } 
+      case 'ConstantNode': {
+        const args = [new ConstantNode((node as ConstantNode).value), new ConstantNode(0)]
+        return new FunctionNode('vec2', args)
+      }
+      case 'FunctionNode': {
+        const fn = 'c' + (node as FunctionNode).fn.name
+        functions.add(fn)
+
+        const args = (node as FunctionNode).args
+        for (let i = 0; i < args.length; i++) {
+          args[i] = callback(args[i])
+        }
+        return new FunctionNode(fn, args) 
+      }
+      case 'OperatorNode': {
+        const op = (node as OperatorNode).op
+        const fn = 'c' + (node as OperatorNode).fn
+        
+        const args = (node as OperatorNode).args
+        for (let i = 0; i < args.length; i++) {
+          args[i] = callback(args[i])
+        }
+
+        if (vecOperators.has(op)) {
+          return new OperatorNode(op, op, args)
+        } else {
+          functions.add(fn)
+          return new FunctionNode(fn, args)
+        } 
+      }
+      case 'ParenthesisNode': {
+        return callback((node as ParenthesisNode).content)
+      }
+      default: {
+        return node
+      }
     }
   }
-  if (!glslExpression) return null
 
-  return `
+  const glsl = ast.transform(callback)
+
+  return [glsl.toString(), functions]
+}
+
+function fragmentShader(
+  inputFunction: string,
+  uniforms: string[]
+): string
+{
+
+  const uniformBuffers = uniforms.map((name) => {
+    `uniform vec2 ${name}`
+  })
+
+  const [fn, required] = toGlsl(parse(inputFunction))
+  const functionDeclarations = requiredFunctions(required)
+
+  return `#version 300 es
   #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
   #else
@@ -56,160 +120,42 @@ function fragmentShader(
   #endif
 
   const float PI = 3.14159265358979323846264;
-  const float TAU = 2.*PI;
-  const float E = 2.718281845904523;
-  const float LN2 = 0.69314718055994531;
-  const float LN2_INV = 1.442695040889634;
-  const float LNPI = 1.1447298858494001741434;
-  const float PHI = 1.61803398874989484820459;
-  const float SQ2 = 1.41421356237309504880169;
 
-  const float checkerboard_scale = 0.25;
+  ${uniformBuffers}
 
-  const ${vecType} ZERO = ${vecType}(0);
-  const ${vecType} ONE = ${logMode ? 'vec3(1.0, 0, 0)' : '(1.0, 0)'};
-  const ${vecType} I = ${logMode ? 'vec3(0, 1.0, 0)' : 'vec2(0, 1.0)'};
-  const ${vecType} C_PI = PI * ONE;
-  const ${vecType} C_TAU = TAU * ONE;
-  const ${vecType} C_E = E * ONE;
-  const ${vecType} C_PHI = PHI * ONE
+  ${functionDeclarations.join('\n')}
 
-  ${variableDeclarations}
-
-  vec2 clogcart(${vecType} z) {
-    return vec2(${
-      logMode ? 'log(length(z.xy)) + z.z' : 'log(length(z))'}, 
-      atan(z.y, z.x+1e-20)
-    );
-  }
-  vec2 encodereal(float a) {return vec2(log(abs(a)), 0.5*PI*(1. - sign(a)));}
-  ${vecType} downconvert(${vecType} z) {
-    return ${vecType}(${logMode ? 'vec3(vec2(z.xy) * exp(z.z))' : 'z'};}
-  vec3 upconvert(vec3 z) {float l = length(z.xy); return vec3(z.xy/l, z.z + log(l));}
-  float ordinate(${vecType} z) {return ${logMode ? 'z.z' : '0.0'};}
-
-  ${functionDefinitions(expression, logMode)}
-
-  vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyc) * 6.0 - K.wwww);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y)
+  vec2 complex_function(vec 2 z) {
+    return ${fn};
   }
 
-  vec3 get_color(${vecType} z_int, float derivative, float phase_derivative) {
-    vec2 magphase = clogcart(z_int);
-    magphase.x *= LN2_INV;
-    magphase.y = mod(magphase.y, TAU);
-    vec2 z = ${logMode ? 'downconvert(z_int).xy' : 'z_int'};
-
-    float color_value;
-    float color_saturation = 1.0;
-
-    ${logMode ? `float phase_decay_factor = 1.0/clamp(8.0 * phase_derivative, 1.0, 10000.);
-    color_saturation *= phase_decay_factor;` : ''}
-
-    if (continuous_gradient.x > 0.5) {
-      float color_lightness = 0.5 + atan(0.35 * magphase.x)/PI;
-      color_saturation = 1.0;
-      
-      if (invert_gradient.x > 0.5) {
-        color_lightness = 1.0 - color_lightness;
-      }
-
-      // HSL to HSV
-      color_lightness *= 2.0;
-      color_saturation *= 1.0 - abs(color_lightness - 1.0);
-      color_value = (color_lightness + color_saturation) / 2.0;
-      color_saturation /= color_value;
-    } else {
-      color_value = 0.5 * exp2(fract(magphase.x));
-
-      if (invert_gradient.x > 0.5) {
-        color_value = 1.5 - color_value;
-      }
-      ${logMode ? 'color_value += (0.75 - color_value) * (1.0 - phase_decay_factor);' : ''}
-    }
-
-    if (enable_checkerboard.x > 0.5) {
-      vec2 checkerboard_components = floor(2.0 * fract(z/checkeboard_scale));
-      float checkerboard = floor(2.0 * fract((checkerboard_components.x + checkerboard_components.y)/2.0));
-
-      // Anti-Moire
-      float decay_factor = clamp(40. * derivative, 1.0, 10000.0) - 1;
-      checkerboard = 0.5 + (checkerboard - 0.5) / (1.0 + 3.0 * decay_factor);
-
-      if (magphase.x > 15.0) {checkerboard = 0.5;}
-
-      color_value *= 0.8 + 0.2 * checkerboard;
-    }
-
-    vec3 hsv_color = vec3(magphase.y/TAU, color_saturation, color_value);
-    return hsv2rgb(hsv_color);
+  vec3 hsv2rgb(vec3 hsv) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(hsv.xxx + K.xyz) * 6.0 - K.www);
+    return hsv.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), hsv.y);
   }
 
-  ${customCode}
-
-  const vec2 screen_offset = vec2(${xOffset}, ${yOffset});
-  vec2 from_pixel(vec2 xy) {
-    vec2 plot_center = vec2(center_x.x, center_y.x);
-    float scale = exp(-log_scale.x) / ${dpr};
-    return scale * (xy - screen_offset) + plot_center;
+  float magnitude_shading(vec2 z) {
+    vec2 z_abs = abs(z);
+    return 0.5 + 0.5 * (z_abs - floor(z_abs));
   }
 
-  ${vecType} internal_mapping(vec2 xy) {
-    vec2 z_int = from_pixel(xy);
-    ${logMode ? 'vec3 z = vec3(z_int, 0);': 'vec2 z = z_int;'}
-    return ${glslExpression}
+  float gridlines(vec2 z, float alpha) {
+    return pow(abs(sin(z.x) * PI), alpha) * pow(abs(sin(z.y) * PI), alpha);
+  }
+
+  vec3 domain_color(vec2 z, float alpha) {
+    float h = carg(z) + 2*PI / 3;
+    float s = magnitude_shading(z);
+    float v = gridline(z, alpha);
+
+    return hsv2rgb(vec3(h,s,v));
   }
 
   void main() {
-    // Setup for supersampling
-    const vec2 A = vec2(0.125, 0.375);
-    const vec2 B = vec2(0.375, -0.125);
-    vec2 xy = gl_FragCoord.xy;
+    vec2 z = complex_function(gl_FragCoord.xy);
 
-    // 4-Rook supersampling
-    ${vecType} w1 = internal_mapping(xy + A);
-    ${vecType} w2 = internal_mapping(xy - A);
-    ${vecType} w3 = internal_mapping(xy + B);
-    ${vecType} w4 = internal_mapping(xy - B);
-
-    // Anti-Moire
-    float phase_derivative = ${logMode ? '0.5 * (length(w1 - w2) + length(w3 - w4))' : '0.'};
-    float derivative = ${
-      logMode ? 'phase_derivative * exp(min(w1.z, 20.))' 
-      : '0.5 * (length(w1 - w2) + length(w3 - w4))'};
-
-    vec3 color1 = get_color(w1, derivative, phase_derivative);
-    vec3 color2 = get_color(w2, derivative, phase_derivative);
-    vec3 color3 = get_color(w3, derivative, phase_derivative);
-    vec3 color4 = get_color(w4, derivative, phase_derivative);
-
-    vec3 color = 0.25 * (color1 + color2 + color3 + color4);
-    gl_FragColor = vec4(color, 1.)
-  }
-  `
-}
-
-export default function DomainColoring(props: DomainColoringProps) {
-  const glRef = useRef<HTMLCanvasElement>(null)
-
-  const mousePosition = useMousePosition(glRef)
-
-  function handleZoom(wheelEvent: WheelEvent) {
-    const {position} = props.state
-    
-    if (!position.every(isFinite)) {return}
-
-    const [x, y, ]
-
-    const [mousePlotX, mouse]
-  }
-
-  return (
-    <div className='relative w-full h-full'>
-      <canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>
-      <canvas ref={glRef} className='absolute inset-0 w-full h-full'/>
-    </div>
-  )
+    vec3 color = domain_color(vec2 z);
+    gl_FragColor = vec4(color, 1.0);
+  }`
 }
