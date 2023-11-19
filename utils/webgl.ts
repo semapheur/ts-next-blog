@@ -1,3 +1,16 @@
+const vertexCode = `#version 300 es
+  in vec2 a_position;
+
+  uniform vec2 u_scale;
+  uniform vec2 u_translation;
+
+  void main() {
+    vec2 position = (a_position + u_translation) / u_scale;
+
+    gl_Position = vec4(position, 0, 1);
+  }
+`
+
 export function makeShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!
   gl.shaderSource(shader, source)

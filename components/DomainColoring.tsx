@@ -36,12 +36,12 @@ effect(() => {
 
   if (expression.value && gl) {
     const translate = {
-      x: gl.canvas.width / 2,
-      y: gl.canvas.height / 2
+      x: -gl.canvas.width / 2,
+      y: -gl.canvas.height / 2
     }
     const scale = {
-      x: gl.canvas.width,
-      y: gl.canvas.height
+      x: 0.01,
+      y: 0.01
     }
 
     makeScene(gl, expression.value, scale, translate)
@@ -87,34 +87,24 @@ function makeScene(
 {
   function render() {
     resizeCanvas(gl.canvas as HTMLCanvasElement)
-  
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
-  
+    
     gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.uniform2f(scaleLoc, scale.x, scale.y)
     gl.uniform2f(translateLoc, translate.x, translate.y)
-
-    gl.bindVertexArray(vertexArray)
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-    setRectangle(gl, translate.x, translate.y, scale.x, scale.y)
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    requestAnimationFrame(render)
+    //requestAnimationFrame(render)
   }
 
   const vertexCode = `#version 300 es
     in vec2 a_position;
 
-    uniform vec2 u_scale;
-    uniform vec2 u_translation;
-
     void main() {
-      vec2 position = (a_position + u_translation) / u_scale;
-
-      gl_Position = vec4(position, 0, 1);
+      gl_Position = vec4(a_position, 0, 1);
     }
   `
 
@@ -145,7 +135,7 @@ function makeScene(
 
   const positionLoc = gl.getAttribLocation(program, 'a_position')
   gl.enableVertexAttribArray(positionLoc)
-  
+  setRectangle(gl, -1, -1, 2, 2)
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
 
   render()
@@ -226,7 +216,10 @@ function makeFragmentCode(
     precision mediump float;
   #endif
 
-  out vec4 FragColor;
+  out vec4 fragColor;
+
+  uniform vec2 u_scale;
+  uniform vec2 u_translate;
 
   const float PI = 3.14159265358979323846264;
 
@@ -242,8 +235,8 @@ function makeFragmentCode(
     return hsv.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), hsv.y);
   }
 
-  float phase(vec2 z) {
-    return atan(z.y, z.x) + 2.0 * PI / 3.0;
+  float norm_phase(vec2 z) {
+    return atan(z.y, z.x) / (2.0 * PI);
   }
 
   float magnitude_shading(vec2 z) {
@@ -256,7 +249,7 @@ function makeFragmentCode(
   }
 
   vec3 domain_color(vec2 z, float alpha) {
-    float h = phase(z);
+    float h = norm_phase(z);
     float s = magnitude_shading(z);
     float v = gridlines(z, alpha);
 
@@ -264,9 +257,11 @@ function makeFragmentCode(
   }
 
   void main() {
-    vec2 z = complex_function(gl_FragCoord.xy);
+    vec2 coord = (gl_FragCoord.xy + u_translate) * u_scale;
+
+    vec2 z = complex_function(coord);
 
     vec3 color = domain_color(z, 0.1);
-    FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
   }`
 }
