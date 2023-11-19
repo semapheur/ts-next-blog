@@ -39,8 +39,12 @@ effect(() => {
       x: gl.canvas.width / 2,
       y: gl.canvas.height / 2
     }
+    const scale = {
+      x: gl.canvas.width,
+      y: gl.canvas.height
+    }
 
-    makeScene(gl, expression.value, translate)
+    makeScene(gl, expression.value, scale, translate)
   }
 })
 

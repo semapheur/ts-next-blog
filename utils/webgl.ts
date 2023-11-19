@@ -30,7 +30,7 @@ export function makeProgram(
 export function setRectangle(
   gl: WebGL2RenderingContext, 
   x: number, y: number, 
-  width: number, heigth: number)
+  width: number, height: number)
 { 
   const x1 = x
   const x2 = x + width
