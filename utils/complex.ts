@@ -3,7 +3,6 @@ import {
   FunctionNode,
   SymbolNode
 } from 'mathjs'
-import { union } from './num'
 
 function functionDependencies(glslExpression: string) {
   const dependencies = new Set<string>()

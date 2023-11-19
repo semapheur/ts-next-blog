@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 import { signal, effect } from '@preact/signals-react'
 import useMousePosition from 'hooks/useMousePosition'
@@ -13,40 +15,33 @@ import {
 
 import ComplexInput from 'components/ComplexInput'
 import { requiredFunctions } from 'utils/complex'
-import { VERTEX_SHADER_2D, makeProgram, init2dBuffers } from 'utils/webgl'
-
-type AxisProps = {
-  center: number[],
-
-}
-
-type State = {
-  position: number[]
-  mouseDown: boolean
-}
-
-type DomainColoringProps = {
-  state: State
-}
+import { VERTEX_SHADER_2D, makeProgram, init2dBuffers, makeShader } from 'utils/webgl'
+import useResizeObserver from 'hooks/useResizeObserver'
 
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
 
 effect(() => {
-  if (gl.value) {
+  if (expression.value && gl.value) {
     makeScene(gl.value, expression.value)
     render(gl.value)
   }
 })
 
-export default function DomainColoring(props: DomainColoringProps) {
+export default function DomainColoring() {
+  const wrapRef = useRef<HTMLDivElement>(null)
   const plotRef = useRef<HTMLCanvasElement>(null)
+  const size = useResizeObserver(wrapRef)
   //const axisRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     const canvas = plotRef.current
 
     if (!canvas) return
+
+    const wrapRect = canvas.parentElement!.getBoundingClientRect()
+    canvas.width = wrapRect.width
+    canvas.height = wrapRect.height
 
     gl.value = canvas.getContext('webgl2')
 
@@ -57,22 +52,30 @@ export default function DomainColoring(props: DomainColoringProps) {
   }, [])
 
   return (
-    <div className='relative w-full h-full'>
+    <div ref={wrapRef} className='relative w-full h-full'>
       <ComplexInput expression={expression} className='absolute left-0 top-0'/>
-      <canvas ref={plotRef} className='absolute inset-0 w-full h-full'/>
+      <canvas ref={plotRef}/>
       {/*<canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>*/}
     </div>
   )
 }
 
 function render(gl: WebGL2RenderingContext) {
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
 function makeScene(gl: WebGL2RenderingContext, expression: string) {
-  const fragmentShader = makeFragmentShader(expression)
+  const vertexShader = makeShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_2D)
 
-  const program = makeProgram(gl, VERTEX_SHADER_2D, fragmentShader)
+  const fragmentShaderSource = makeFragmentShaderSource(expression)
+  const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+
+  if (!(vertexShader && fragmentShader)) {
+    console.log(fragmentShaderSource)
+    return
+  }
+
+  const program = makeProgram(gl, vertexShader, fragmentShader)
   if (program === undefined) {
     console.log('AST could not be compiled:', expression)
     return
@@ -140,7 +143,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   return [glsl.toString(), functions]
 }
 
-function makeFragmentShader(
+function makeFragmentShaderSource(
   expression: string,
   //uniforms: string[]
 ): string
@@ -160,11 +163,13 @@ function makeFragmentShader(
     precision mediump float;
   #endif
 
+  out vec4 FragColor;
+
   const float PI = 3.14159265358979323846264;
 
   ${functionDeclarations.join('\n')}
 
-  vec2 complex_function(vec 2 z) {
+  vec2 complex_function(vec2 z) {
     return ${fn};
   }
 
@@ -174,9 +179,13 @@ function makeFragmentShader(
     return hsv.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), hsv.y);
   }
 
+  float phase(vec2 z) {
+    return atan(z.y, z.x) + 2.0 * PI / 3.0;
+  }
+
   float magnitude_shading(vec2 z) {
-    vec2 z_abs = abs(z);
-    return 0.5 + 0.5 * (z_abs - floor(z_abs));
+    float modulus = length(z);
+    return 0.5 + 0.5 * (modulus - floor(modulus));
   }
 
   float gridlines(vec2 z, float alpha) {
@@ -184,9 +193,9 @@ function makeFragmentShader(
   }
 
   vec3 domain_color(vec2 z, float alpha) {
-    float h = carg(z) + 2*PI / 3;
+    float h = phase(z);
     float s = magnitude_shading(z);
-    float v = gridline(z, alpha);
+    float v = gridlines(z, alpha);
 
     return hsv2rgb(vec3(h,s,v));
   }
@@ -194,7 +203,7 @@ function makeFragmentShader(
   void main() {
     vec2 z = complex_function(gl_FragCoord.xy);
 
-    vec3 color = domain_color(vec2 z);
-    gl_FragColor = vec4(color, 1.0);
+    vec3 color = domain_color(z, 0.1);
+    FragColor = vec4(color, 1.0);
   }`
 }

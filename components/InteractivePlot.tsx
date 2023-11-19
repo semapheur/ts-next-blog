@@ -207,10 +207,10 @@ export default function InteractivePlot() {
   const size = useResizeObserver(wrapRef)
 
   useEffect(() => {
-    const wrapper = wrapRef.current
-    if (!svgRef.current && wrapper) {
+    const wrap = wrapRef.current
+    if (!svgRef.current && wrap) {
       
-      svgRef.current = new SVGPlot(wrapper)
+      svgRef.current = new SVGPlot(wrap)
       svgRef.current.axes()
       svgRef.current.grid()
       
