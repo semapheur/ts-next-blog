@@ -22,13 +22,25 @@ import { requiredFunctions } from 'utils/complex'
 import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
 import { Vec2 } from 'utils/types'
 
+type Transform2 = {
+  translate: Vec2,
+  scale: Vec2
+}
+
 const expression = signal<string>('')
-const gl = signal<WebGL2RenderingContext|null>(null)
+const glSignal = signal<WebGL2RenderingContext|null>(null)
+const transformSignal = signal<Transform2|null>(null)
 
 effect(() => {
-  if (expression.value && gl.value) {
-    makeScene(gl.value, expression.value)
-    render(gl.value)
+  const gl = glSignal.value
+
+  if (expression.value && gl) {
+    const translate = {
+      x: gl.canvas.width / 2,
+      y: gl.canvas.height / 2
+    }
+
+    makeScene(gl, expression.value, translate)
   }
 })
 
@@ -47,9 +59,9 @@ export default function DomainColoring() {
     canvas.width = wrapRect.width
     canvas.height = wrapRect.height
 
-    gl.value = canvas.getContext('webgl2')
+    glSignal.value = canvas.getContext('webgl2')
 
-    if (!gl.value) {
+    if (!glSignal.value) {
       console.error('Unable to initialize WebGL')
       return
     }
@@ -84,7 +96,9 @@ function makeScene(
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
     setRectangle(gl, translate.x, translate.y, scale.x, scale.y)
     
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+    requestAnimationFrame(render)
   }
 
   const vertexCode = `#version 300 es
@@ -130,6 +144,7 @@ function makeScene(
   
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
 
+  render()
 }
 
 function toGlsl(ast: MathNode): [string, Set<string>] {
