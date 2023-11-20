@@ -21,15 +21,19 @@ import { resizeCanvas } from 'utils/canvas'
 import { requiredFunctions } from 'utils/complex'
 import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
 import { Vec2 } from 'utils/types'
+import Vector from 'utils/vector'
 
-type Transform2 = {
-  translate: Vec2,
-  scale: Vec2
+type ViewRange = {
+  x: Vector
+  y: Vector
 }
 
 const expression = signal<string>('')
 const glSignal = signal<WebGL2RenderingContext|null>(null)
-const transformSignal = signal<Transform2|null>(null)
+const viewRange = signal<ViewRange>({
+  x: new Vector(-10, 10),
+  y: new Vector(-10, 10)
+})
 
 effect(() => {
   const gl = glSignal.value
@@ -56,8 +60,11 @@ export default function DomainColoring() {
 
   useEffect(() => {
     const canvas = plotRef.current
+    const wrap = wrapRef.current
 
-    if (!canvas) return
+    if (!(canvas && wrap)) return
+
+    viewRange.value = squareGrids(viewRange.value, wrap)
 
     const wrapRect = canvas.parentElement!.getBoundingClientRect()
     canvas.width = wrapRect.width
@@ -264,4 +271,45 @@ function makeFragmentCode(
     vec3 color = domain_color(z, 0.1);
     fragColor = vec4(color, 1.0);
   }`
+}
+
+function squareGrids(view: ViewRange, element: HTMLElement): ViewRange {
+  const {width, height} = element.getBoundingClientRect()
+
+  const viewLength = new Vector(
+    view.x.diff() as number, 
+    view.y.diff() as number
+  )
+
+  if (width < height) {
+    const aspect = width / height
+    const xLength = viewLength.y * aspect
+
+    view.x = new Vector(
+      view.x.mean - xLength/2,
+      view.x.mean + xLength/2
+    )
+  } else if (width > height) {
+    const aspect = height / width
+    const yLength = viewLength.x * aspect
+
+    view.y = new Vector(
+      view.y.mean - yLength/2,
+      view.y.mean + yLength/2
+    )
+  } else {
+    const deltaLength = viewLength.diff() as number
+    if (deltaLength < 0) {
+      view.x = new Vector(
+        view.x.mean - viewLength.y / 2,
+        view.x.mean + viewLength.y / 2
+      )
+    } else if (deltaLength > 0) {
+      view.y = new Vector(
+        view.y.mean - viewLength.x / 2,
+        view.y.mean + viewLength.x / 2
+      )
+    }
+  }
+  return view
 }

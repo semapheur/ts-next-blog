@@ -1,7 +1,8 @@
-import {drawLine, mousePosition, Line} from 'utils/canvas'
+import {drawLine, mousePosition} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import { clamp, intervalLength } from 'utils/num'
 import { screenToDrawPosition } from 'utils/svg'
+import { Line } from 'utils/types'
 import Vector from 'utils/vector'
 
 type Axis = 'x'|'y'
@@ -14,7 +15,6 @@ export default class CanvasGrid {
     y: new Vector(-10, 10)
   }
   private minGridScreenSize = 50
-  private lastTime = 0
   private eventListeners = new EventListenerStore()
 
   constructor(canvas: HTMLCanvasElement) {
@@ -30,7 +30,6 @@ export default class CanvasGrid {
     const width = this.canvas.width
     const height = this.canvas.height
 
-    
     const viewLength = new Vector(
       this.viewRange.x.diff() as number, 
       this.viewRange.y.diff() as number
@@ -185,7 +184,6 @@ export default class CanvasGrid {
 
   private panOnDrag() {
     const dragButton = 1
-    const rect = this.canvas.getBoundingClientRect()
 
     let startPos = new Vector(0,0)
     let isPanning = false
@@ -269,8 +267,6 @@ export default class CanvasGrid {
   }
 
   animate(timestamp: number) {
-    //const deltaTime = timestamp - this.lastTime
-    this.lastTime = timestamp
 
     this.setTransform()
     this.clearCanvas()
