@@ -214,7 +214,7 @@ export class SVGPlot {
     }
     
     function onMouseLeave() {
-      for (let i of ['text', 'line-x', 'line-y']) {
+      for (const i of ['text', 'line-x', 'line-y']) {
         const el = document.getElementById(`crosshair-${i}`)
         el?.remove()
       }
@@ -249,11 +249,11 @@ export class SVGPlot {
       if (!isPanning) return
       
       const transform = this.plotGroup.getCTM()
-      const newPos = mousePosition(this.frameGroup, event)!
+      const panPos = mousePosition(this.frameGroup, event)!
 
-      let dist = {
-        x: (startPos.x - newPos.x) / transform.a,
-        y: (startPos.y - newPos.y) / transform.d
+      const dist = {
+        x: (startPos.x - panPos.x) / transform.a,
+        y: (startPos.y - panPos.y) / transform.d
       }
 
       this.viewRange.x.addScalarInplace(dist.x)

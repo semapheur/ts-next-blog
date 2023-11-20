@@ -55,8 +55,55 @@ effect(() => {
 export default function DomainColoring() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const plotRef = useRef<HTMLCanvasElement>(null)
+  const mousePos = useMousePosition<HTMLDivElement>(wrapRef)
   const size = useResizeObserver(wrapRef)
   //const axisRef = useRef<HTMLCanvasElement>(null)
+
+  function panOnDrag(element: HTMLDivElement) {
+    const dragButton = 1
+
+    let startPos = {x: 0, y: 0}
+    let isPanning = false
+
+    function onClick(event: MouseEvent) {
+      if (event.button !== dragButton) return
+
+      isPanning = true
+      event.preventDefault()
+      
+      // Click position
+      startPos = mousePos
+      element.addEventListener('mouseup', onMouseUp.bind(this))
+      element.addEventListener('mousemove', onMouseMove.bind(this))
+    }
+
+    function onMouseMove(event: MouseEvent) {
+      if (!isPanning) return
+
+      const transform = this.ctx.getTransform()
+      const panPos = mousePos
+      let dist = {
+        x: (startPos.x - panPos.x) / transform.a,
+        y: (startPos.y - panPos.y) / transform.d
+      }
+
+      viewRange.value.x.addScalarInplace(dist.x)
+      viewRange.value.y.addScalarInplace(dist.y)
+
+      startPos = mousePos
+    }
+
+    function onMouseUp() {
+      isPanning = false
+      
+      element.removeEventListener('mousemove', onMouseMove.bind(this))
+      element.removeEventListener('mouseup', onMouseUp.bind(this))
+    }
+  }
+
+  function zoomOnWheel() {
+
+  }
 
   useEffect(() => {
     const canvas = plotRef.current

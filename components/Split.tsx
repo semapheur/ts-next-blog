@@ -110,7 +110,7 @@ export default function Split(props: SplitProps) {
     }
   }, [split, resizePanes])
 
-  const onDragStop = useCallback((e: MouseEvent) => {
+  const onDragStop = useCallback(() => {
 
     if (!dragState.current) return
 

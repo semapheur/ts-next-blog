@@ -1,20 +1,20 @@
 'use client'
 
 import {RefObject, useEffect, useState} from 'react'
+import { Vec2 } from 'utils/types'
 
-type Position = {
-  x: number|null,
-  y: number|null
-}
-
-export default function useMousePosition(elementRef: RefObject<Element>): Position {
-  const [position, setPosition] = useState<Position>({x: null, y: null})
+export default function useMousePosition<
+  T extends HTMLElement = HTMLDivElement
+>(
+  elementRef: RefObject<T>
+): Vec2 {
+  const [position, setPosition] = useState<Vec2>({x: 0, y: 0})
 
   const updatePosition = (e: MouseEvent) => {
-    const boundingRect = elementRef.current!.getBoundingClientRect()
+    const {left, top} = elementRef.current!.getBoundingClientRect()
     setPosition({
-      x: e.clientX - boundingRect.left, 
-      y: e.clientY - boundingRect.top}
+      x: e.clientX - left, 
+      y: e.clientY - top}
     )
   }
 

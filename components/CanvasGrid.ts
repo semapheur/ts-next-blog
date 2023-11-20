@@ -207,8 +207,8 @@ export default class CanvasGrid {
       if (!isPanning) return
 
       const transform = this.ctx.getTransform()
-      let panPos = mousePosition(this.canvas, event)
-      let dist = {
+      const panPos = mousePosition(this.canvas, event)
+      const dist = {
         x: (startPos.x - panPos.x) / transform.a,
         y: (startPos.y - panPos.y) / transform.d
       }
