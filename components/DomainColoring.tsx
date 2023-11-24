@@ -237,7 +237,7 @@ function makeFragmentCode(
   }
 
   void main() {
-    vec2 coord = (gl_FragCoord.xy + u_translate) * u_scale;
+    vec2 coord = (gl_FragCoord.xy + u_translate) / u_scale;
 
     vec2 z = complex_function(coord);
 

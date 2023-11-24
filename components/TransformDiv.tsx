@@ -35,7 +35,10 @@ export default function TransformDiv({children, ...props}: Props) {
   const [startPos, setStartPos] = useState<Vec2>({x: 0, y: 0})
 
   const handleMouseDown = (e: MouseEvent) => {
+    if (e.button !== 1) return
+
     setDragging(true)
+    console.log(isDragging)
     setStartPos({
       x: e.clientX,
       y: e.clientY
@@ -47,6 +50,7 @@ export default function TransformDiv({children, ...props}: Props) {
 
       transform.value.translate.x += e.clientX - startPos.x
       transform.value.translate.y += e.clientY - startPos.y
+      console.log(transform.value)
 
       setStartPos({
         x: e.clientX,
@@ -121,8 +125,8 @@ function squareGrids(view: ViewRange, width: number, height: number): ViewRange 
 
 function setTransform(viewRange: ViewRange, width: number, height: number): Transform2D {
   const viewLength = new Vector(
-    this.viewRange.x.diff() as number, 
-    this.viewRange.y.diff() as number
+    viewRange.x.diff() as number, 
+    viewRange.y.diff() as number
   )
 
   return{
