@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import { signal, effect } from '@preact/signals-react'
-import useMousePosition from 'hooks/useMousePosition'
 import {
   parse, 
   ConstantNode, 
@@ -13,115 +12,51 @@ import {
   SymbolNode,   
 } from 'mathjs'
 
-import useResizeObserver from 'hooks/useResizeObserver'
-
 import ComplexInput from 'components/ComplexInput'
+import TransformDiv, {transform} from 'components/TransformDiv'
 
 import { resizeCanvas } from 'utils/canvas'
 import { requiredFunctions } from 'utils/complex'
 import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
 import { Vec2 } from 'utils/types'
-import Vector from 'utils/vector'
+
 
 const expression = signal<string>('')
-const glSignal = signal<WebGL2RenderingContext|null>(null)
+const gl = signal<WebGL2RenderingContext|null>(null)
 
 effect(() => {
-  const gl = glSignal.value
+  if (!(expression.value && gl.value && transform.value)) return
 
-  if (expression.value && gl) {
-    const translate = {
-      x: -gl.canvas.width / 2,
-      y: -gl.canvas.height / 2
-    }
-    const scale = {
-      x: 0.01,
-      y: 0.01
-    }
-
-    makeScene(gl, expression.value, scale, translate)
-  }
+  makeScene(gl.value, expression.value, transform.value.scale, transform.value.translate)
 })
 
 export default function DomainColoring() {
-  const wrapRef = useRef<HTMLDivElement>(null)
   const plotRef = useRef<HTMLCanvasElement>(null)
-  const mousePos = useMousePosition<HTMLDivElement>(wrapRef)
-  const size = useResizeObserver(wrapRef)
   //const axisRef = useRef<HTMLCanvasElement>(null)
-
-  function panOnDrag(element: HTMLDivElement) {
-    const dragButton = 1
-
-    let startPos = {x: 0, y: 0}
-    let isPanning = false
-
-    function onClick(event: MouseEvent) {
-      if (event.button !== dragButton) return
-
-      isPanning = true
-      event.preventDefault()
-      
-      // Click position
-      startPos = mousePos
-      element.addEventListener('mouseup', onMouseUp.bind(this))
-      element.addEventListener('mousemove', onMouseMove.bind(this))
-    }
-
-    function onMouseMove(event: MouseEvent) {
-      if (!isPanning) return
-
-      const transform = this.ctx.getTransform()
-      const panPos = mousePos
-      let dist = {
-        x: (startPos.x - panPos.x) / transform.a,
-        y: (startPos.y - panPos.y) / transform.d
-      }
-
-      viewRange.value.x.addScalarInplace(dist.x)
-      viewRange.value.y.addScalarInplace(dist.y)
-
-      startPos = mousePos
-    }
-
-    function onMouseUp() {
-      isPanning = false
-      
-      element.removeEventListener('mousemove', onMouseMove.bind(this))
-      element.removeEventListener('mouseup', onMouseUp.bind(this))
-    }
-  }
-
-  function zoomOnWheel() {
-
-  }
 
   useEffect(() => {
     const canvas = plotRef.current
-    const wrap = wrapRef.current
 
-    if (!(canvas && wrap)) return
+    if (!canvas) return
 
-    viewRange.value = squareGrids(viewRange.value, wrap)
+    const {width, height} = canvas.parentElement!.getBoundingClientRect()
+    canvas.width = width
+    canvas.height = height
 
-    const wrapRect = canvas.parentElement!.getBoundingClientRect()
-    canvas.width = wrapRect.width
-    canvas.height = wrapRect.height
+    gl.value = canvas.getContext('webgl2')
 
-    glSignal.value = canvas.getContext('webgl2')
-
-    if (!glSignal.value) {
+    if (!gl.value) {
       console.error('Unable to initialize WebGL')
       return
     }
   }, [])
 
   return (
-    <div ref={wrapRef} className='relative w-full h-full'>
+    <TransformDiv className='relative w-full h-full'>
       <ComplexInput expression={expression} className='absolute left-0 top-0'/>
       <canvas ref={plotRef}/>
       {/*<canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>*/}
-    </div>
+    </TransformDiv>
   )
 }
 
