@@ -31,36 +31,36 @@ interface Props extends HTMLProps<HTMLDivElement> {
 
 export default function TransformDiv({children, ...props}: Props) {
   const divRef = useRef<HTMLDivElement>(null)
-  const [isDragging, setDragging] = useState(false)
-  const [startPos, setStartPos] = useState<Vec2>({x: 0, y: 0})
+  const isDragging = useRef(false)
+  const startPos = useRef<Vec2>({x: 0, y: 0})
 
   const handleMouseDown = (e: MouseEvent) => {
     if (e.button !== 1) return
 
-    setDragging(true)
+    isDragging.current = true
     console.log(isDragging)
-    setStartPos({
+    startPos.current = {
       x: e.clientX,
       y: e.clientY
-    })
+    }
   }
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
+    if (isDragging.current) {
 
-      transform.value.translate.x += e.clientX - startPos.x
-      transform.value.translate.y += e.clientY - startPos.y
-      console.log(transform.value)
+      transform.value.translate.x -= e.clientX - startPos.current.x
+      transform.value.translate.y += e.clientY - startPos.current.y
+      console.log(transform.value.translate)
 
-      setStartPos({
+      startPos.current = {
         x: e.clientX,
         y: e.clientY
-      })
+      }
     }
   }
 
   const handleMouseUp = () => {
-    setDragging(false)
+    isDragging.current = false
   }
 
   useEffect(() => {

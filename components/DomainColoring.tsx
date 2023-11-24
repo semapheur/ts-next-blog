@@ -77,7 +77,7 @@ function makeScene(
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    //requestAnimationFrame(render)
+    requestAnimationFrame(render)
   }
 
   const vertexCode = `#version 300 es
