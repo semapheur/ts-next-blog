@@ -27,7 +27,7 @@ const gl = signal<WebGL2RenderingContext|null>(null)
 effect(() => {
   if (!(expression.value && gl.value && transform.value)) return
 
-  makeScene(gl.value, expression.value, transform.value.scale, transform.value.translate)
+  makeScene(gl.value, expression.value, transform.value)
 })
 
 export default function DomainColoring() {
@@ -63,7 +63,7 @@ export default function DomainColoring() {
 function makeScene(
   gl: WebGL2RenderingContext, 
   expression: string,
-  scale: Vec2, translate: Vec2) 
+  transform: DOMMatrix) 
 {
   function render() {
     resizeCanvas(gl.canvas as HTMLCanvasElement)
@@ -72,8 +72,8 @@ function makeScene(
     gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    gl.uniform2f(scaleLoc, scale.x, scale.y)
-    gl.uniform2f(translateLoc, translate.x, translate.y)
+    gl.uniform2f(scaleLoc, transform.a, transform.d)
+    gl.uniform2f(translateLoc, transform.e, transform.f)
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
@@ -202,10 +202,15 @@ function makeFragmentCode(
   uniform vec2 u_translate;
 
   const float PI = 3.14159265358979323846264;
-
+                         
   ${functionDeclarations.join('\n')}
 
-  vec2 complex_function(vec2 z) {
+  vec2 pixel_to_draw(vec2 xy) {
+    return (xy - u_translate) / u_scale;
+  }
+
+  vec2 complex_function(vec2 xy) {
+    vec2 z = pixel_to_draw(xy);
     return ${fn};
   }
 
@@ -219,9 +224,10 @@ function makeFragmentCode(
     return atan(z.y, z.x) / (2.0 * PI);
   }
 
+
   float magnitude_shading(vec2 z) {
-    float modulus = length(z);
-    return 0.5 + 0.5 * (modulus - floor(modulus));
+    float log_modulus = log2(length(z));
+    return 0.5 + 0.5 * (log_modulus - floor(log_modulus));
   }
 
   float gridlines(vec2 z, float alpha) {
@@ -237,11 +243,23 @@ function makeFragmentCode(
   }
 
   void main() {
-    vec2 coord = (gl_FragCoord.xy + u_translate) / u_scale;
+    // 4-Rook supersampling
+    const vec2 A = vec2(0.125, 0.375);
+    const vec2 B = vec2(0.375, -0.125);
 
-    vec2 z = complex_function(coord);
+    vec2 xy = gl_FragCoord.xy;
 
-    vec3 color = domain_color(z, 0.1);
+    vec2 z1 = complex_function(xy + A);
+    vec2 z2 = complex_function(xy - A);
+    vec2 z3 = complex_function(xy + B);
+    vec2 z4 = complex_function(xy - B);
+
+    vec3 color1 = domain_color(z1, 0.1);
+    vec3 color2 = domain_color(z2, 0.1);
+    vec3 color3 = domain_color(z3, 0.1);
+    vec3 color4 = domain_color(z4, 0.1);
+
+    vec3 color = 0.25 * (color1 + color2 + color3 + color4);
     fragColor = vec4(color, 1.0);
   }`
 }

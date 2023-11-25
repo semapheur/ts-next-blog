@@ -1,9 +1,10 @@
 'use client'
 
-import { MouseEvent, useEffect, useState, useRef, HTMLProps, ReactNode } from 'react'
+import { MouseEvent, useEffect, useState, useRef, HTMLProps, ReactNode, WheelEvent } from 'react'
 import {signal, Signal} from '@preact/signals-react'
 import {Vec2} from 'utils/types'
 import Vector from 'utils/vector'
+import { screenToDrawPosition } from 'utils/svg'
 
 type Transform2D = {
   scale: Vec2
@@ -15,10 +16,11 @@ type ViewRange = {
   y: Vector
 }
 
-export const transform = signal<Transform2D>({
+export const transform = signal(new DOMMatrix([1, 0, 0, 1, 0, 0]))
+/*
   scale: {x: 1, y: 1},
   translate: {x: 0, y: 0}
-})
+})*/
 
 const viewRange = signal<ViewRange>({
   x: new Vector(-10, 10),
@@ -38,7 +40,6 @@ export default function TransformDiv({children, ...props}: Props) {
     if (e.button !== 1) return
 
     isDragging.current = true
-    console.log(isDragging)
     startPos.current = {
       x: e.clientX,
       y: e.clientY
@@ -47,10 +48,8 @@ export default function TransformDiv({children, ...props}: Props) {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging.current) {
-
-      transform.value.translate.x -= e.clientX - startPos.current.x
-      transform.value.translate.y += e.clientY - startPos.current.y
-      console.log(transform.value.translate)
+      transform.value.e += e.clientX - startPos.current.x 
+      transform.value.f -= e.clientY - startPos.current.y 
 
       startPos.current = {
         x: e.clientX,
@@ -61,6 +60,24 @@ export default function TransformDiv({children, ...props}: Props) {
 
   const handleMouseUp = () => {
     isDragging.current = false
+  }
+
+  function handleWheel(e: WheelEvent<HTMLDivElement>) {
+    const div = divRef.current
+    
+    if (!div) return
+
+    const {height, left, top} = div.getBoundingClientRect()
+
+    const zoomFactor = 1 + Math.sign(-e.deltaY) * 0.1
+    const zoomPos = {
+      x: e.clientX - left,
+      y: height - e.clientY - top
+    }
+    transform.value.a *= zoomFactor
+    transform.value.d *= zoomFactor
+    transform.value.e = zoomPos.x + (transform.value.e - zoomPos.x) * zoomFactor
+    transform.value.f = zoomPos.y + (transform.value.f - zoomPos.y) * zoomFactor
   }
 
   useEffect(() => {
@@ -78,6 +95,7 @@ export default function TransformDiv({children, ...props}: Props) {
     onMouseDown={handleMouseDown}
     onMouseMove={handleMouseMove}
     onMouseUp={handleMouseUp}
+    onWheel={handleWheel}
   >
     {children}
   </div>)
@@ -123,34 +141,19 @@ function squareGrids(view: ViewRange, width: number, height: number): ViewRange 
   return view
 }
 
-function setTransform(viewRange: ViewRange, width: number, height: number): Transform2D {
+function setTransform(viewRange: ViewRange, width: number, height: number): DOMMatrix {
   const viewLength = new Vector(
     viewRange.x.diff() as number, 
     viewRange.y.diff() as number
   )
 
-  return{
-    scale: {
-      x: width / viewLength.x,
-      y: height / viewLength.y
-    },
-    translate: {
-      x: width * (viewRange.x[0] / viewLength.x),
-      y: height * (viewRange.y[0] / viewLength.y),
-    }
-  } 
-}
-
-function setScale(viewRange: ViewRange, width: number, height: number) {
-  const viewLength = new Vector(
-    viewRange.x.diff() as number, 
-    viewRange.y.diff() as number
-  )
-
-  return {
-    x: width / viewLength.x,
-    y: height / viewLength.y
-  }
+  return new DOMMatrix([
+    width / viewLength.x,
+    0, 0,
+    height / viewLength.y,
+    width * (-viewRange.x[0] / viewLength.x),
+    height * (-viewRange.y[0] / viewLength.y),
+  ])
 }
 
 

@@ -1,4 +1,5 @@
 import Vector from 'utils/vector'
+import { Vec2 } from './types'
 
 export function setSvgTransform( 
   svgEl: SVGGElement | SVGGeometryElement,
@@ -50,9 +51,9 @@ export function mousePosition(
 }
 
 export function screenToDrawPosition(
-  screenPos: Vector, 
+  screenPos: Vec2, 
   transform: DOMMatrix
-): Vector|null 
+): Vec2|null 
 {
   if (!transform) return null
 

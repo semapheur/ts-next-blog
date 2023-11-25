@@ -2,7 +2,7 @@ import {drawLine, mousePosition} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import { clamp, intervalLength } from 'utils/num'
 import { screenToDrawPosition } from 'utils/svg'
-import { Line } from 'utils/types'
+import { Line, Vec2 } from 'utils/types'
 import Vector from 'utils/vector'
 
 type Axis = 'x'|'y'
@@ -185,7 +185,7 @@ export default class CanvasGrid {
   private panOnDrag() {
     const dragButton = 1
 
-    let startPos = new Vector(0,0)
+    let startPos: Vec2 = {x: 0, y: 0}
     let isPanning = false
 
     const onClickBound = onClick.bind(this)

@@ -1,5 +1,4 @@
-import Vector from './vector'
-import {Line} from './types'
+import {Line, Vec2} from './types'
 
 export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string) {
   if (color) {
@@ -13,36 +12,36 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: stri
 }
 
 export function setCanvasTransform(ctx: CanvasRenderingContext2D, matrix: DOMMatrix) {
-  const {a, b, c, d, e, f} = matrix
-  ctx.setTransform(a, b, c, d, e, f)
+  ctx.setTransform({...matrix})
 }
 
-export function transformPoint(ctx: CanvasRenderingContext2D, point: Vector) {
-  if (point.length != 2) return null
-
+export function transformPoint(ctx: CanvasRenderingContext2D, point: Vec2) {
   return ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x, point.y))
 }
 
 export function mousePosition(
   canvas: HTMLCanvasElement, 
   event: MouseEvent
-): Vector {
-  const rect = canvas.getBoundingClientRect()
-  return new Vector(
-    event.clientX - rect.left, 
-    event.clientY - rect.top
-  )
+): Vec2 {
+  const {left, top} = canvas.getBoundingClientRect()
+  return {
+    x: event.clientX - left, 
+    y: event.clientY - top
+  }
 }
 
 export function resizeCanvas(canvas: HTMLCanvasElement) {
   const dpr = window.devicePixelRatio
-  const rect = canvas.getBoundingClientRect()
-  const width = Math.round(rect.width * dpr)
-  const height = Math.round(rect.height * dpr)
+  const {width, height} = canvas.getBoundingClientRect()
+  const newWidth = Math.round(width * dpr)
+  const newHeight = Math.round(height * dpr)
 
-  if (canvas.width !== width || canvas.height != height) {
-    canvas.width = width
-    canvas.height = height
+  if (canvas.width !== newWidth) {
+    canvas.width = newWidth
+  } 
+  
+  if (canvas.height != newHeight) {
+    canvas.height = newHeight
   }
   
 }
