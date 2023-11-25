@@ -224,7 +224,6 @@ function makeFragmentCode(
     return atan(z.y, z.x) / (2.0 * PI);
   }
 
-
   float magnitude_shading(vec2 z) {
     float log_modulus = log2(length(z));
     return 0.5 + 0.5 * (log_modulus - floor(log_modulus));
