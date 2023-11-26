@@ -21,13 +21,17 @@ function functionDependencies(glslExpression: string) {
 
 function functionVariables(glslExpression: string) {
   const variables = new Set<string>()
+  const pattern = /(vec|mat)[234]/
 
   const ast = parse(glslExpression)
 
   ast.traverse(function(node, path, parent) {
     if (node.type === 'SymbolNode') {
       const variable = (node as SymbolNode).name
-      variables.add(variable)
+
+      if (!pattern.test(variable)) {
+        variables.add(variable)
+      }
     }
   })
 
@@ -89,5 +93,5 @@ const FUNCTIONS = {
   carg: 'vec2(atan(z.y, z.x), 0)',
   creciprocal: 'cconj(z) / dot(z, z)',
   cmultiply: 'mat2(z1, -z1.y, z1.x) * z2',
-  cdivide: 'cmul(z1, creciprocal(w))'
+  cdivide: 'cmultiply(z1, creciprocal(w))'
 }

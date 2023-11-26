@@ -31,8 +31,10 @@ const gl = signal<WebGL2RenderingContext|null>(null)
 const grid = signal<CanvasGrid|null>(null)
 
 effect(() => {
-  if (!(expression.value && gl.value && grid.value && transform.value)) return
+  if (!(grid.value && transform.value)) return
+  grid.value.transformView(transform.value)
 
+  if (!(expression.value && gl.value && transform.value)) return
   makeScene(gl.value, expression.value, transform.value)
 })
 
@@ -54,8 +56,7 @@ export default function DomainColoring() {
     gridCanvas.width = width
     gridCanvas.height = height
     grid.value = new CanvasGrid(gridCanvas, viewRange.value)
-    grid.value.animate(0)
-    console.log(new DOMPoint(0,0))    
+    grid.value.animate(0)   
 
     if (!gl.value) {
       console.error('Unable to initialize WebGL')
@@ -74,7 +75,6 @@ export default function DomainColoring() {
 
 function makeScene(
   gl: WebGL2RenderingContext,
-  //grid: CanvasGrid,
   expression: string,
   transform: DOMMatrix) 
 {
@@ -92,8 +92,6 @@ function makeScene(
 
     requestAnimationFrame(render)
   }
-
-  //grid.transformView(transform)
 
   const vertexCode = `#version 300 es
     in vec2 a_position;

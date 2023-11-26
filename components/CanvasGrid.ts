@@ -17,7 +17,7 @@ export default class CanvasGrid {
   private minGridScreenSize = 50
   private eventListeners = new EventListenerStore()
 
-  constructor(canvas: HTMLCanvasElement, viewRange?: ViewRange, interactive = true) {
+  constructor(canvas: HTMLCanvasElement, viewRange?: ViewRange, interactive = false) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')!
 
