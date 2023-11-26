@@ -83,7 +83,7 @@ function makeScene(
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.uniform2f(scaleLoc, matrix.a, matrix.d)
-    gl.uniform2f(translateLoc, matrix.e, matrix.f)
+    gl.uniform2f(translateLoc, matrix.e, gl.canvas.height - matrix.f)
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 

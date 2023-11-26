@@ -108,8 +108,8 @@ export default class CanvasGrid {
     }
     
     const unitIterate = (step: number, axis:Axis) => {
-      this.ctx.lineWidth = axis === 'x' ? 0.5 / transform.a : 0.5 / -transform.d
-      const fontSize = axis === 'x' ? 15 / transform.a : 15 / -transform.d
+      this.ctx.lineWidth = axis === 'x' ? 0.5 / transform.a : 0.5 / transform.d
+      const fontSize = axis === 'x' ? 15 / transform.a : 15 / transform.d
       this.ctx.font = `bold ${fontSize}px trebuchet ms`
       this.ctx.textAlign = axis === 'x' ? 'start' : 'center'
       const textOffset = {

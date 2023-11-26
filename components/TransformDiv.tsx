@@ -27,7 +27,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging.current) {
       transform.value.e += e.clientX - startPos.current.x 
-      transform.value.f -= e.clientY - startPos.current.y 
+      transform.value.f += e.clientY - startPos.current.y 
 
       startPos.current = new DOMPoint(e.clientX, e.clientY)
     }
@@ -45,7 +45,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     const {height, left, top} = div.getBoundingClientRect()
 
     const zoomFactor = 1 + Math.sign(-e.deltaY) * 0.1
-    const zoomPos = new DOMPoint(e.clientX - left, height - e.clientY + top)
+    const zoomPos = new DOMPoint(e.clientX - left, e.clientY - top)
       
     transform.value.a *= zoomFactor
     transform.value.d *= zoomFactor
