@@ -31,8 +31,8 @@ const gl = signal<WebGL2RenderingContext|null>(null)
 const grid = signal<CanvasGrid|null>(null)
 
 effect(() => {
-  if (!(grid.value && transform.value)) return
-  grid.value.transformView(transform.value)
+  //if (!(grid.value && transform.value)) return
+  //grid.value.transformView(transform.value)
 
   if (!(expression.value && gl.value && transform.value)) return
   makeScene(gl.value, expression.value, transform.value)
@@ -55,7 +55,7 @@ export default function DomainColoring() {
 
     gridCanvas.width = width
     gridCanvas.height = height
-    grid.value = new CanvasGrid(gridCanvas, viewRange.value)
+    grid.value = new CanvasGrid(gridCanvas, viewRange.value, true)
     grid.value.animate(0)   
 
     if (!gl.value) {

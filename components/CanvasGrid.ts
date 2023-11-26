@@ -8,7 +8,6 @@ import Vector from 'utils/vector'
 type Axis = 'x'|'y'
 
 export default class CanvasGrid {
-  private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
   private viewRange = {
     x: new Vector(-10, 10),
@@ -18,12 +17,12 @@ export default class CanvasGrid {
   private eventListeners = new EventListenerStore()
 
   constructor(canvas: HTMLCanvasElement, viewRange?: ViewRange, interactive = false) {
-    this.canvas = canvas
     this.ctx = canvas.getContext('2d')!
 
     if (viewRange) this.viewRange = viewRange
 
     this.squareGrids()
+    this.setTransform(this.viewRange)
 
     if (interactive) {
       this.panOnDrag()
@@ -32,8 +31,7 @@ export default class CanvasGrid {
   }
 
   public squareGrids() {
-    const width = this.canvas.width
-    const height = this.canvas.height
+    const {width, height} = this.ctx.canvas.getBoundingClientRect()
 
     const viewLength = new Vector(
       this.viewRange.x.diff() as number, 
@@ -73,7 +71,7 @@ export default class CanvasGrid {
   }
 
   drawAxes() {
-    this.ctx.strokeStyle = 'black'
+    this.ctx.strokeStyle = 'white'
 
     const transform = this.ctx.getTransform()
   
@@ -140,8 +138,8 @@ export default class CanvasGrid {
             x: axis === 'x' ? this.viewRange.x[1] : tick, 
             y: axis === 'y' ? this.viewRange.y[1] : tick})
         }
-        this.ctx.strokeStyle ='black'
-        drawLine(this.ctx, line)
+        drawLine(this.ctx, line, 'white')
+        
         const tickPos = {
           x: axis === 'y' ? tick + textOffset.grid : clamp(
             textOffset.edge, 
@@ -174,24 +172,28 @@ export default class CanvasGrid {
     }
   }
 
-  private setTransform() {
+  private setTransform(viewRange: ViewRange) {
+    const {width, height} = this.ctx.canvas.getBoundingClientRect()
     const viewLength = new Vector(
-      this.viewRange.x.diff() as number, 
-      this.viewRange.y.diff() as number
+      viewRange.x.diff() as number, 
+      viewRange.y.diff() as number
     )
-    const transform = new DOMMatrix([
-      this.canvas.width / viewLength.x,
+    const matrix = new DOMMatrix([
+      width / viewLength.x,
       0, 0,
-      this.canvas.height / viewLength.y,
-      this.canvas.width * (-this.viewRange.x[0] / viewLength.x),
-      this.canvas.height * (-this.viewRange.y[0] / viewLength.y),
+      height / viewLength.y,
+      width * (-viewRange.x[0] / viewLength.x),
+      height * (-viewRange.y[0] / viewLength.y),
     ])
-    this.ctx.setTransform(transform)
+    this.ctx.setTransform(matrix)
   }
 
-  transformView(matrix: DOMMatrix) {
+  private transformView() {
+    const matrix = this.ctx.getTransform()
+    const {width, height} = this.ctx.canvas.getBoundingClientRect()
+
     const topLeft = screenToDrawPosition(new DOMPoint(0,0), matrix)
-    const bottomRight = screenToDrawPosition(new DOMPoint(this.canvas.width, this.canvas.height), matrix)
+    const bottomRight = screenToDrawPosition(new DOMPoint(width, height), matrix)
 
     this.viewRange = {
       x: new Vector(topLeft.x, bottomRight.x),
@@ -205,8 +207,9 @@ export default class CanvasGrid {
     let startPos = new DOMPoint(0, 0)
     let isPanning = false
 
+    const matrix = this.ctx.getTransform()
     const onClickBound = onClick.bind(this)
-    this.eventListeners.storeEventListener('mousedown', this.canvas, onClickBound)
+    this.eventListeners.storeEventListener('mousedown', this.ctx.canvas, onClickBound)
 
     function onClick(event: MouseEvent) {
       if (event.button !== dragButton) return
@@ -215,63 +218,48 @@ export default class CanvasGrid {
       event.preventDefault()
       
       // Click position
-      startPos = mousePosition(this.canvas, event)
-      this.canvas.addEventListener('mouseup', onMouseUp.bind(this))
-      this.canvas.addEventListener('mousemove', onMouseMove.bind(this))
+      startPos = new DOMPoint(event.clientX, event.clientY)
+      this.ctx.canvas.addEventListener('mouseup', onMouseUp.bind(this))
+      this.ctx.canvas.addEventListener('mousemove', onMouseMove.bind(this))
     }
 
     function onMouseMove(event: MouseEvent) {
       if (!isPanning) return
 
-      const transform = this.ctx.getTransform()
-      const panPos = mousePosition(this.canvas, event)
-      const dist = {
-        x: (startPos.x - panPos.x) / transform.a,
-        y: (startPos.y - panPos.y) / transform.d
-      }
+      matrix.e += event.clientX - startPos.x
+      matrix.f += event.clientY - startPos.y
+      this.ctx.setTransform(matrix)
 
-      this.viewRange.x.addScalarInplace(dist.x)
-      this.viewRange.y.addScalarInplace(dist.y)
-
-      startPos = mousePosition(this.canvas, event)
+      startPos = new DOMPoint(event.clientX, event.clientY)
     }
 
     function onMouseUp() {
       isPanning = false
       
-      this.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
-      this.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
+      this.ctx.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
+      this.ctx.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
     }
   }
 
   private zoomOnWheel() {
-    //const zoomStep = 1
-
+    const matrix: DOMMatrix = this.ctx.getTransform()
     const onWheelBound = onWheel.bind(this)
-    this.eventListeners.storeEventListener('wheel', this.canvas, onWheelBound)
+    this.eventListeners.storeEventListener('wheel', this.ctx.canvas, onWheelBound)
 
     function onWheel(event: WheelEvent) {
-      const viewLength = new Vector(
-        this.viewRange.x.diff() as number, 
-        this.viewRange.y.diff() as number
-      )
-      const zoomPos = mousePosition(this.canvas, event)
-      const transform = this.ctx.getTransform()
-      if (!zoomPos || !transform) return
-
-      const drawPos = screenToDrawPosition(zoomPos, transform)!
-
-      const dw = viewLength.x * Math.sign(-event.deltaY) * 0.05
-      const dh = viewLength.y * Math.sign(-event.deltaY) * 0.05
-
-      const dx = dw * ((drawPos.x - this.viewRange.x[0]) / viewLength.x)
-      const dy = dh * ((drawPos.y - this.viewRange.y[0]) / viewLength.y)
       
-      this.viewRange.x[0] += dx
-      this.viewRange.y[0] += dy
+      const zoomPos = mousePosition(this.ctx.canvas, event)
+      
+      if (!(zoomPos && matrix)) return
 
-      this.viewRange.x[1] = this.viewRange.x[0] + (viewLength.x - dw)
-      this.viewRange.y[1] = this.viewRange.y[0] + (viewLength.y - dh)
+      const zoomFactor = 1 + Math.sign(-event.deltaY) * 0.1
+
+      matrix.a *= zoomFactor
+      matrix.d *= zoomFactor
+      matrix.e = zoomPos.x + (matrix.e - zoomPos.x) * zoomFactor
+      matrix.f = zoomPos.y + (matrix.f - zoomPos.y) * zoomFactor
+      
+      this.ctx.setTransform(matrix)
     }
   }
 
@@ -284,7 +272,7 @@ export default class CanvasGrid {
   }
 
   animate(timestamp: number) {
-    this.setTransform()
+    this.transformView()
     this.clearCanvas()
     this.drawGrid()
     this.drawAxes()
