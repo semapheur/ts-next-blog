@@ -15,6 +15,6 @@ export default function ComplexInput({expression, className, ...props}: Props) {
   }
 
   return (<form action='' className={className} {...props} onSubmit={(e) => e.preventDefault()}>
-    <input type='text' onKeyDown={handleKeyDown}/>
+    <input type='text' placeholder={'Complex function'} onKeyDown={handleKeyDown}/>
   </form>)
 }
