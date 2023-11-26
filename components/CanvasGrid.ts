@@ -9,20 +9,20 @@ type Axis = 'x'|'y'
 
 export default class CanvasGrid {
   private ctx: CanvasRenderingContext2D
-  private viewRange = {
-    x: new Vector(-10, 10),
-    y: new Vector(-10, 10)
-  }
+  private viewRange: ViewRange
   private minGridScreenSize = 50
   private eventListeners = new EventListenerStore()
 
-  constructor(canvas: HTMLCanvasElement, viewRange?: ViewRange, interactive = false) {
+  constructor(canvas: HTMLCanvasElement, matrix?: DOMMatrix, viewRange?: ViewRange, interactive = false) {
     this.ctx = canvas.getContext('2d')!
 
-    if (viewRange) this.viewRange = viewRange
+    if (matrix) this.ctx.setTransform(matrix)
 
-    this.squareGrids()
-    this.setTransform(this.viewRange)
+    if (viewRange) {
+      this.viewRange = viewRange
+      this.squareGrids()
+      this.setTransform()
+    }
 
     if (interactive) {
       this.panOnDrag()
@@ -139,7 +139,7 @@ export default class CanvasGrid {
             y: axis === 'y' ? this.viewRange.y[1] : tick})
         }
         drawLine(this.ctx, line, 'white')
-        
+
         const tickPos = {
           x: axis === 'y' ? tick + textOffset.grid : clamp(
             textOffset.edge, 
@@ -172,33 +172,39 @@ export default class CanvasGrid {
     }
   }
 
-  private setTransform(viewRange: ViewRange) {
+  private setTransform() {
     const {width, height} = this.ctx.canvas.getBoundingClientRect()
     const viewLength = new Vector(
-      viewRange.x.diff() as number, 
-      viewRange.y.diff() as number
+      this.viewRange.x.diff() as number, 
+      this.viewRange.y.diff() as number
     )
     const matrix = new DOMMatrix([
       width / viewLength.x,
       0, 0,
       height / viewLength.y,
-      width * (-viewRange.x[0] / viewLength.x),
-      height * (-viewRange.y[0] / viewLength.y),
+      width * (-this.viewRange.x[0] / viewLength.x),
+      height * (-this.viewRange.y[0] / viewLength.y),
     ])
     this.ctx.setTransform(matrix)
   }
 
   private transformView() {
     const matrix = this.ctx.getTransform()
+
     const {width, height} = this.ctx.canvas.getBoundingClientRect()
 
-    const topLeft = screenToDrawPosition(new DOMPoint(0,0), matrix)
-    const bottomRight = screenToDrawPosition(new DOMPoint(width, height), matrix)
+    const bottomLeft = screenToDrawPosition(new DOMPoint(0, 0), matrix)
+    const topRight = screenToDrawPosition(new DOMPoint(width, height), matrix)
 
     this.viewRange = {
-      x: new Vector(topLeft.x, bottomRight.x),
-      y: new Vector(topLeft.y, bottomRight.y)
+      x: new Vector(bottomLeft.x, topRight.x),
+      y: new Vector(bottomLeft.y, topRight.y)
     }
+    console.log(this.viewRange.y)
+  }
+
+  updateTransform(matrix: DOMMatrix) {
+    this.ctx.setTransform(matrix)
   }
 
   private panOnDrag() {
@@ -271,11 +277,15 @@ export default class CanvasGrid {
     this.ctx.clearRect(this.viewRange.x[0], this.viewRange.y[0], viewLength.x, viewLength.y)
   }
 
-  animate(timestamp: number) {
+  draw() {
     this.transformView()
     this.clearCanvas()
     this.drawGrid()
     this.drawAxes()
+  }
+
+  animate(timestamp: number) {
+    this.draw()
 
     requestAnimationFrame(this.animate.bind(this))
   }

@@ -28,14 +28,11 @@ const viewRange = signal<ViewRange>({
 })
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
-const grid = signal<CanvasGrid|null>(null)
+const grid = signal<CanvasRenderingContext2D|null>(null)
 
 effect(() => {
-  //if (!(grid.value && transform.value)) return
-  //grid.value.transformView(transform.value)
-
-  if (!(expression.value && gl.value && transform.value)) return
-  makeScene(gl.value, expression.value, transform.value)
+  if (!(expression.value && gl.value && grid.value && transform.value)) return
+  makeScene(gl.value, grid.value, expression.value, transform.value)
 })
 
 export default function DomainColoring() {
@@ -55,8 +52,7 @@ export default function DomainColoring() {
 
     gridCanvas.width = width
     gridCanvas.height = height
-    grid.value = new CanvasGrid(gridCanvas, viewRange.value, true)
-    grid.value.animate(0)   
+    grid.value = gridCanvas.getContext('2d')
 
     if (!gl.value) {
       console.error('Unable to initialize WebGL')
@@ -75,23 +71,35 @@ export default function DomainColoring() {
 
 function makeScene(
   gl: WebGL2RenderingContext,
+  ctx: CanvasRenderingContext2D,
   expression: string,
-  transform: DOMMatrix) 
+  matrix: DOMMatrix) 
 {
-  function render() {
+  function renderPlot() {
     resizeCanvas(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     
     gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    gl.uniform2f(scaleLoc, transform.a, transform.d)
-    gl.uniform2f(translateLoc, transform.e, transform.f)
+    gl.uniform2f(scaleLoc, matrix.a, matrix.d)
+    gl.uniform2f(translateLoc, matrix.e, matrix.f)
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    requestAnimationFrame(render)
+    requestAnimationFrame(renderPlot)
   }
+
+  function renderGrid() {
+    resizeCanvas(ctx.canvas as HTMLCanvasElement)
+
+    grid.updateTransform(matrix)
+    grid.draw()
+
+    requestAnimationFrame(renderGrid)
+  }
+
+  const grid = new CanvasGrid(ctx.canvas, transform.value)
 
   const vertexCode = `#version 300 es
     in vec2 a_position;
@@ -131,7 +139,8 @@ function makeScene(
   setRectangle(gl, -1, -1, 2, 2)
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
 
-  render()
+  renderPlot()
+  renderGrid()
 }
 
 function toGlsl(ast: MathNode): [string, Set<string>] {
