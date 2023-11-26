@@ -28,34 +28,33 @@ const viewRange = signal<ViewRange>({
 })
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
+const grid = signal<CanvasGrid|null>(null)
 
 effect(() => {
-  if (!(expression.value && gl.value && transform.value)) return
+  if (!(expression.value && gl.value && grid.value && transform.value)) return
 
   makeScene(gl.value, expression.value, transform.value)
 })
 
 export default function DomainColoring() {
-  const plotRef = useRef<HTMLCanvasElement>(null)
-  const axisRef = useRef<HTMLCanvasElement>(null)
-  const canvasGrid = useRef<CanvasGrid|null>(null)
+  const plotCanvasRef = useRef<HTMLCanvasElement>(null)
+  const gridCanvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const plot = plotRef.current
-    const axis = axisRef.current
+    const plotCanvas = plotCanvasRef.current
+    const gridCanvas = gridCanvasRef.current
 
-    if (!(plot && axis)) return
+    if (!(plotCanvas && gridCanvas)) return
 
-    const {width, height} = plot.parentElement!.getBoundingClientRect()
-    plot.width = width
-    plot.height = height
+    const {width, height} = plotCanvas.parentElement!.getBoundingClientRect()
+    plotCanvas.width = width
+    plotCanvas.height = height
+    gl.value = plotCanvas.getContext('webgl2')
 
-    axis.width = width
-    axis.height = height
-    canvasGrid.current = new CanvasGrid(axis, viewRange.value)
-    canvasGrid.current.animate(0)
-
-    gl.value = plot.getContext('webgl2')
+    gridCanvas.width = width
+    gridCanvas.height = height
+    grid.value = new CanvasGrid(gridCanvas, viewRange.value)
+    grid.value.animate(0)    
 
     if (!gl.value) {
       console.error('Unable to initialize WebGL')
@@ -65,15 +64,16 @@ export default function DomainColoring() {
 
   return (
     <TransformDiv viewRange={viewRange} className='relative w-full h-full'>
-      <canvas ref={plotRef} className='absolute inset-0 w-full h-full'/>
-      <canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>
+      <canvas ref={plotCanvasRef} className='absolute inset-0 w-full h-full'/>
+      <canvas ref={gridCanvasRef} className='absolute inset-0 w-full h-full'/>
       <ComplexInput expression={expression} className='absolute left-0 top-0'/>
     </TransformDiv>
   )
 }
 
 function makeScene(
-  gl: WebGL2RenderingContext, 
+  gl: WebGL2RenderingContext,
+  //grid: CanvasGrid,
   expression: string,
   transform: DOMMatrix) 
 {
@@ -91,6 +91,8 @@ function makeScene(
 
     requestAnimationFrame(render)
   }
+
+  //grid.transformView(transform)
 
   const vertexCode = `#version 300 es
     in vec2 a_position;
@@ -188,15 +190,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   return [glsl.toString(), functions]
 }
 
-function makeFragmentCode(
-  expression: string,
-  //uniforms: string[]
-): string
-{
-
-  //const uniformBuffers = uniforms.map((name) => {
-  //  `uniform vec2 ${name}`
-  //})
+function makeFragmentCode(expression: string): string {
 
   const [fn, required] = toGlsl(parse(expression))
   const functionDeclarations = requiredFunctions(required)

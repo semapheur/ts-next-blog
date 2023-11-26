@@ -189,10 +189,14 @@ export default class CanvasGrid {
     this.ctx.setTransform(transform)
   }
 
-  private transformView(matrix: DOMMatrix) {
-    this.ctx.setTransform(matrix)
+  transformView(matrix: DOMMatrix) {
+    const topLeft = screenToDrawPosition(new DOMPoint(0,0), matrix)
+    const bottomRight = screenToDrawPosition(new DOMPoint(this.canvas.width, this.canvas.height), matrix)
 
-    //this.viewRange()
+    this.viewRange = {
+      x: new Vector(topLeft.x, bottomRight.x),
+      y: new Vector(topLeft.y, bottomRight.y)
+    }
   }
 
   private panOnDrag() {
@@ -286,9 +290,5 @@ export default class CanvasGrid {
     this.drawAxes()
 
     requestAnimationFrame(this.animate.bind(this))
-  }
-
-  transformAnimate(transform: DOMMatrix) {
-
   }
 }

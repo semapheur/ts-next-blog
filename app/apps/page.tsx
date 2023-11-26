@@ -9,12 +9,17 @@ const content = [
   {
     title: '2D plotter',
     description: 'An SVG-based plotting app running on math.js',
-    slug: 'apps/plot'
+    slug: 'apps/2d-plot'
+  },
+  {
+    title: 'Domain coloring',
+    description: 'A WebGL-based domain coloring visualization of complex functions',
+    slug: 'apps/domain-coloring'
   },
   {
     title: 'Opinion plot',
     description: 'An SVG-based visualization of binomial opinions in terms of belief, disbelief, uncertainty and base rate',
-    slug: 'apps/opinion'
+    slug: 'apps/opinion-plot'
   }
 ]
 

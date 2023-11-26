@@ -45,7 +45,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     const {height, left, top} = div.getBoundingClientRect()
 
     const zoomFactor = 1 + Math.sign(-e.deltaY) * 0.1
-    const zoomPos = new DOMPoint(e.clientX - left, height - e.clientY - top)
+    const zoomPos = new DOMPoint(e.clientX - left, height - e.clientY + top)
       
     transform.value.a *= zoomFactor
     transform.value.d *= zoomFactor
