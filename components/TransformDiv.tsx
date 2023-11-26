@@ -61,7 +61,6 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     const {width, height} = div.getBoundingClientRect()
     viewRange.value = squareGrids(viewRange.value, width, height)
     transform.value = setTransform(viewRange.value, width, height)
-
   }, [])
 
   return (<div ref={divRef} {...props}

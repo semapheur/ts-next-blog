@@ -54,7 +54,8 @@ export default function DomainColoring() {
     gridCanvas.width = width
     gridCanvas.height = height
     grid.value = new CanvasGrid(gridCanvas, viewRange.value)
-    grid.value.animate(0)    
+    grid.value.animate(0)
+    console.log(new DOMPoint(0,0))    
 
     if (!gl.value) {
       console.error('Unable to initialize WebGL')

@@ -7,6 +7,10 @@ import EventListenerStore from 'utils/event'
 const SIN60 = Math.sqrt(3) / 2
 const TAN30 = Math.sqrt(3) / 3
 
+function printPoint(p: DOMPoint) {
+  return `${p.x},${p.y}`
+}
+
 type TernaryValue = {
   point: number[],
   director: number
@@ -509,9 +513,9 @@ export default class SVGTernaryPlot {
         text.setAttribute('y', `${-svgPos!.y + 20}`)
         text.innerHTML = `(${coord[0].toFixed(2)}, ${coord[1].toFixed(2)}, ${coord[2].toFixed(2)})`
 
-        aLine.setAttribute('d', `M${(1 - coord[0]) * this.side / 2},${(1 - coord[0]) * this.side * SIN60}L${svgPos!.print()}`)
-        bLine.setAttribute('d', `M${coord[1] * this.side},0L${svgPos!.print()}`)
-        cLine.setAttribute('d', `M${this.side - svgPos!.y * TAN30},${svgPos!.y}L${svgPos!.print()}`)
+        aLine.setAttribute('d', `M${(1 - coord[0]) * this.side / 2},${(1 - coord[0]) * this.side * SIN60}L${printPoint(svgPos)}`)
+        bLine.setAttribute('d', `M${coord[1] * this.side},0L${printPoint(svgPos)}`)
+        cLine.setAttribute('d', `M${this.side - svgPos!.y * TAN30},${svgPos!.y}L${printPoint(svgPos)}`)
       } else {
         text.setAttribute('x', '')
         text.setAttribute('y', '')

@@ -226,7 +226,7 @@ export class SVGPlot {
   private panOnDrag() {
     const dragButton = 1
 
-    let startPos = new Vector(0,0)
+    let startPos = new DOMPoint(0,0)
     let isPanning = false
 
     const onClickBound = onClick.bind(this)
@@ -308,7 +308,7 @@ export class SVGPlot {
   private resizeOnDrag() {
     const dragButton = 0
     let dragged: boolean
-    let dragPos: Vector|null
+    let dragPos: DOMPoint|null
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener('mousedown', this.frameGroup, onClickBound)

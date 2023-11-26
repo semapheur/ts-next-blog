@@ -38,12 +38,12 @@ export function removeElementsByClass(baseElement: Element, className: string) {
 export function mousePosition(
   svg: SVGSVGElement | SVGGElement | SVGGeometryElement, 
   event: MouseEvent
-): Vector|null 
+): DOMPoint|null 
 {
   const ctm = svg.getScreenCTM()
   if (!ctm) return null
 
-  return new Vector(
+  return new DOMPoint(
     (event.clientX - ctm.e) / ctm.a,
     (event.clientY - ctm.f) / ctm.d
   )
