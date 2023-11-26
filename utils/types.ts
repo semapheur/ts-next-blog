@@ -1,4 +1,5 @@
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
+import Vector from 'utils/vector'
 
 export type Vec2 = {
   x: number,
@@ -6,8 +7,13 @@ export type Vec2 = {
 }
 
 export type Line = {
-  start: Vec2,
-  end: Vec2 
+  start: DOMPoint,
+  end: DOMPoint 
+}
+
+export type ViewRange = {
+  x: Vector,
+  y: Vector
 }
 
 export type MDXPost<T> = {

@@ -1,4 +1,4 @@
-import {Line, Vec2} from './types'
+import {Line} from './types'
 
 export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string) {
   if (color) {
@@ -15,19 +15,19 @@ export function setCanvasTransform(ctx: CanvasRenderingContext2D, matrix: DOMMat
   ctx.setTransform({...matrix})
 }
 
-export function transformPoint(ctx: CanvasRenderingContext2D, point: Vec2) {
-  return ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x, point.y))
+export function transformPoint(ctx: CanvasRenderingContext2D, point: DOMPoint) {
+  return ctx.getTransform().invertSelf().transformPoint(point)
 }
 
 export function mousePosition(
   canvas: HTMLCanvasElement, 
   event: MouseEvent
-): Vec2 {
+): DOMPoint {
   const {left, top} = canvas.getBoundingClientRect()
-  return {
-    x: event.clientX - left, 
-    y: event.clientY - top
-  }
+  return new DOMPoint(
+    event.clientX - left, 
+    event.clientY - top
+  )
 }
 
 export function resizeCanvas(canvas: HTMLCanvasElement) {
@@ -43,5 +43,4 @@ export function resizeCanvas(canvas: HTMLCanvasElement) {
   if (canvas.height != newHeight) {
     canvas.height = newHeight
   }
-  
 }

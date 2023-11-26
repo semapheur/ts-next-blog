@@ -12,15 +12,20 @@ import {
   SymbolNode,   
 } from 'mathjs'
 
+import CanvasGrid from 'components/CanvasGrid'
 import ComplexInput from 'components/ComplexInput'
 import TransformDiv, {transform} from 'components/TransformDiv'
 
 import { resizeCanvas } from 'utils/canvas'
 import { requiredFunctions } from 'utils/complex'
+import { ViewRange } from 'utils/types'
+import Vector from 'utils/vector'
 import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
-import { Vec2 } from 'utils/types'
 
-
+const viewRange = signal<ViewRange>({
+  x: new Vector(-10, 10),
+  y: new Vector(-10, 10)
+})
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
 
@@ -32,18 +37,25 @@ effect(() => {
 
 export default function DomainColoring() {
   const plotRef = useRef<HTMLCanvasElement>(null)
-  //const axisRef = useRef<HTMLCanvasElement>(null)
+  const axisRef = useRef<HTMLCanvasElement>(null)
+  const canvasGrid = useRef<CanvasGrid|null>(null)
 
   useEffect(() => {
-    const canvas = plotRef.current
+    const plot = plotRef.current
+    const axis = axisRef.current
 
-    if (!canvas) return
+    if (!(plot && axis)) return
 
-    const {width, height} = canvas.parentElement!.getBoundingClientRect()
-    canvas.width = width
-    canvas.height = height
+    const {width, height} = plot.parentElement!.getBoundingClientRect()
+    plot.width = width
+    plot.height = height
 
-    gl.value = canvas.getContext('webgl2')
+    axis.width = width
+    axis.height = height
+    canvasGrid.current = new CanvasGrid(axis, viewRange.value)
+    canvasGrid.current.animate(0)
+
+    gl.value = plot.getContext('webgl2')
 
     if (!gl.value) {
       console.error('Unable to initialize WebGL')
@@ -52,10 +64,10 @@ export default function DomainColoring() {
   }, [])
 
   return (
-    <TransformDiv className='relative w-full h-full'>
+    <TransformDiv viewRange={viewRange} className='relative w-full h-full'>
+      <canvas ref={plotRef} className='absolute inset-0 w-full h-full'/>
+      <canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>
       <ComplexInput expression={expression} className='absolute left-0 top-0'/>
-      <canvas ref={plotRef}/>
-      {/*<canvas ref={axisRef} className='absolute inset-0 w-full h-full'/>*/}
     </TransformDiv>
   )
 }
@@ -230,7 +242,7 @@ function makeFragmentCode(
   }
 
   float gridlines(vec2 z, float alpha) {
-    return pow(abs(sin(z.x) * PI), alpha) * pow(abs(sin(z.y) * PI), alpha);
+    return pow(abs(sin(PI * z.x)), alpha) * pow(abs(sin(PI * z.y)), alpha);
   }
 
   vec3 domain_color(vec2 z, float alpha) {

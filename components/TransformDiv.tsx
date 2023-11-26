@@ -1,49 +1,27 @@
 'use client'
 
-import { MouseEvent, useEffect, useState, useRef, HTMLProps, ReactNode, WheelEvent } from 'react'
+import { MouseEvent, useEffect, useRef, HTMLProps, ReactNode, WheelEvent } from 'react'
 import {signal, Signal} from '@preact/signals-react'
-import {Vec2} from 'utils/types'
+import {ViewRange} from 'utils/types'
 import Vector from 'utils/vector'
-import { screenToDrawPosition } from 'utils/svg'
-
-type Transform2D = {
-  scale: Vec2
-  translate: Vec2
-}
-
-type ViewRange = {
-  x: Vector,
-  y: Vector
-}
 
 export const transform = signal(new DOMMatrix([1, 0, 0, 1, 0, 0]))
-/*
-  scale: {x: 1, y: 1},
-  translate: {x: 0, y: 0}
-})*/
-
-const viewRange = signal<ViewRange>({
-  x: new Vector(-10, 10),
-  y: new Vector(-10, 10)
-})
 
 interface Props extends HTMLProps<HTMLDivElement> {
+  viewRange: Signal<ViewRange>
   children: ReactNode
 }
 
-export default function TransformDiv({children, ...props}: Props) {
+export default function TransformDiv({viewRange, children, ...props}: Props) {
   const divRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
-  const startPos = useRef<Vec2>({x: 0, y: 0})
+  const startPos = useRef<DOMPoint>(new DOMPoint(0,0))
 
   const handleMouseDown = (e: MouseEvent) => {
     if (e.button !== 1) return
 
     isDragging.current = true
-    startPos.current = {
-      x: e.clientX,
-      y: e.clientY
-    }
+    startPos.current = new DOMPoint(e.clientX, e.clientY)
   }
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -51,10 +29,7 @@ export default function TransformDiv({children, ...props}: Props) {
       transform.value.e += e.clientX - startPos.current.x 
       transform.value.f -= e.clientY - startPos.current.y 
 
-      startPos.current = {
-        x: e.clientX,
-        y: e.clientY
-      }
+      startPos.current = new DOMPoint(e.clientX, e.clientY)
     }
   }
 
@@ -70,10 +45,8 @@ export default function TransformDiv({children, ...props}: Props) {
     const {height, left, top} = div.getBoundingClientRect()
 
     const zoomFactor = 1 + Math.sign(-e.deltaY) * 0.1
-    const zoomPos = {
-      x: e.clientX - left,
-      y: height - e.clientY - top
-    }
+    const zoomPos = new DOMPoint(e.clientX - left, height - e.clientY - top)
+      
     transform.value.a *= zoomFactor
     transform.value.d *= zoomFactor
     transform.value.e = zoomPos.x + (transform.value.e - zoomPos.x) * zoomFactor

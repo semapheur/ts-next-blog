@@ -1,5 +1,4 @@
 import Vector from 'utils/vector'
-import { Vec2 } from './types'
 
 export function setSvgTransform( 
   svgEl: SVGGElement | SVGGeometryElement,
@@ -51,18 +50,12 @@ export function mousePosition(
 }
 
 export function screenToDrawPosition(
-  screenPos: Vec2, 
-  transform: DOMMatrix
-): Vec2|null 
+  screenPoint: DOMPoint, 
+  matrix: DOMMatrix
+): DOMPoint
 {
-  if (!transform) return null
-
-  return new Vector(
-    (screenPos.x - transform.e) / transform.a,
-    (screenPos.y - transform.f) / transform.d
-  )
+  return screenPoint.matrixTransform(matrix.inverse())
 }
-
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''

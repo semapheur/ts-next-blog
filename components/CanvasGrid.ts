@@ -2,7 +2,7 @@ import {drawLine, mousePosition} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
 import { clamp, intervalLength } from 'utils/num'
 import { screenToDrawPosition } from 'utils/svg'
-import { Line, Vec2 } from 'utils/types'
+import { Line, ViewRange } from 'utils/types'
 import Vector from 'utils/vector'
 
 type Axis = 'x'|'y'
@@ -17,13 +17,18 @@ export default class CanvasGrid {
   private minGridScreenSize = 50
   private eventListeners = new EventListenerStore()
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, viewRange?: ViewRange, interactive = true) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')!
 
+    if (viewRange) this.viewRange = viewRange
+
     this.squareGrids()
-    this.panOnDrag()
-    this.zoomOnWheel()
+
+    if (interactive) {
+      this.panOnDrag()
+      this.zoomOnWheel()
+    }
   }
 
   public squareGrids() {
@@ -74,15 +79,15 @@ export default class CanvasGrid {
   
     this.ctx.lineWidth = 2 / transform.d
     const xAxis: Line = {
-      start: {x: this.viewRange.x.x, y: 0},
-      end: {x: this.viewRange.x.y, y: 0}
+      start: new DOMPoint(this.viewRange.x.x, 0),
+      end: new DOMPoint(this.viewRange.x.y, 0)
     }
     drawLine(this.ctx, xAxis)
 
     this.ctx.lineWidth = 2 / transform.a
     const yAxis: Line = {
-      start: {x: 0, y: this.viewRange.y.x},
-      end: {x: 0, y: this.viewRange.y.y}
+      start: new DOMPoint(0, this.viewRange.y.x),
+      end: new DOMPoint(0, this.viewRange.y.y)
     }
     drawLine(this.ctx, yAxis)
   }
@@ -128,12 +133,12 @@ export default class CanvasGrid {
           continue
         }
         const line: Line = {
-          start: {
+          start: DOMPoint.fromPoint({
             x: axis === 'x' ? this.viewRange.x[0] : tick, 
-            y: axis === 'y' ? this.viewRange.y[0] : tick},
-          end: {
+            y: axis === 'y' ? this.viewRange.y[0] : tick}),
+          end: DOMPoint.fromPoint({
             x: axis === 'x' ? this.viewRange.x[1] : tick, 
-            y: axis === 'y' ? this.viewRange.y[1] : tick}
+            y: axis === 'y' ? this.viewRange.y[1] : tick})
         }
         this.ctx.strokeStyle ='black'
         drawLine(this.ctx, line)
@@ -147,8 +152,10 @@ export default class CanvasGrid {
             this.viewRange.y[0] - 3 * textOffset.edge,
             this.viewRange.y[1] + textOffset.edge)
         }
-        this.ctx.fillStyle ='black'
+        this.ctx.fillStyle ='white'
+        this.ctx.strokeStyle ='black'
         this.ctx.fillText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
+        this.ctx.strokeText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
 
         tick += step
       }
@@ -182,10 +189,16 @@ export default class CanvasGrid {
     this.ctx.setTransform(transform)
   }
 
+  private transformView(matrix: DOMMatrix) {
+    this.ctx.setTransform(matrix)
+
+    //this.viewRange()
+  }
+
   private panOnDrag() {
     const dragButton = 1
 
-    let startPos: Vec2 = {x: 0, y: 0}
+    let startPos = new DOMPoint(0, 0)
     let isPanning = false
 
     const onClickBound = onClick.bind(this)
@@ -267,12 +280,15 @@ export default class CanvasGrid {
   }
 
   animate(timestamp: number) {
-
     this.setTransform()
     this.clearCanvas()
     this.drawGrid()
     this.drawAxes()
 
     requestAnimationFrame(this.animate.bind(this))
+  }
+
+  transformAnimate(transform: DOMMatrix) {
+
   }
 }
