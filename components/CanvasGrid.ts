@@ -10,13 +10,14 @@ type Axis = 'x'|'y'
 export default class CanvasGrid {
   private ctx: CanvasRenderingContext2D
   private viewRange: ViewRange
-  private minGridScreenSize = 50
+  private transform: DOMMatrix
+  private minGridSize = 50
   private eventListeners = new EventListenerStore()
 
-  constructor(canvas: HTMLCanvasElement, matrix?: DOMMatrix, viewRange?: ViewRange, interactive = false) {
+  constructor(canvas: HTMLCanvasElement, transform?: DOMMatrix, viewRange?: ViewRange, interactive = false) {
     this.ctx = canvas.getContext('2d')!
 
-    if (matrix) this.ctx.setTransform(matrix)
+    if (transform) this.transform = transform
 
     if (viewRange) {
       this.viewRange = viewRange
@@ -71,21 +72,19 @@ export default class CanvasGrid {
   }
 
   drawAxes() {
+    const {width, height} = this.ctx.canvas.getBoundingClientRect()
     this.ctx.strokeStyle = 'white'
-
-    const transform = this.ctx.getTransform()
   
-    this.ctx.lineWidth = 2 / transform.d
+    this.ctx.lineWidth = 2
     const xAxis: Line = {
-      start: new DOMPoint(this.viewRange.x.x, 0),
-      end: new DOMPoint(this.viewRange.x.y, 0)
+      start: new DOMPoint(0, this.transform.f),
+      end: new DOMPoint(width, this.transform.f)
     }
     drawLine(this.ctx, xAxis)
 
-    this.ctx.lineWidth = 2 / transform.a
     const yAxis: Line = {
-      start: new DOMPoint(0, this.viewRange.y.x),
-      end: new DOMPoint(0, this.viewRange.y.y)
+      start: new DOMPoint(this.transform.e, 0),
+      end: new DOMPoint(this.transform.e, height)
     }
     drawLine(this.ctx, yAxis)
   }
@@ -95,80 +94,84 @@ export default class CanvasGrid {
     const tickFormat = (axis: Axis, step: number, tick: number): string => {
       if (tick === 0) return '0'
 
-      if (axis === 'x') {
+      if (axis === 'y') {
         tick *= -1
       }
 
       if (step > 999) return tick.toExponential(0)
-      if (step < 1) return tick.toFixed(1)
-      if (step < 0.1) return tick.toFixed(2)
       if (step < 0.01) return tick.toExponential(1)
+      if (step < 0.1) return tick.toFixed(2)
+      if (step < 1) return tick.toFixed(1)
 
       return tick.toFixed(0)
     }
     
-    const unitIterate = (step: number, axis:Axis) => {
-      this.ctx.lineWidth = axis === 'x' ? 0.5 / transform.a : 0.5 / transform.d
-      const fontSize = axis === 'x' ? 15 / transform.a : 15 / transform.d
-      this.ctx.font = `bold ${fontSize}px trebuchet ms`
-      this.ctx.textAlign = axis === 'x' ? 'start' : 'center'
+    const unitIterate = (step: number, axis: Axis) => {
+      const {width, height} = this.ctx.canvas.getBoundingClientRect()
+
+      this.ctx.lineWidth = 1
+      this.ctx.font = `bold 1rem trebuchet ms`
+      this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
+      this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'
       const textOffset = {
-        edge: axis === 'x' ? 5 / transform.a : 5 / -transform.d,
-        grid: axis === 'x' ? 5 / transform.a : 0,
+        edge: 5,
+        grid: axis === 'x' ? 5 : 0
       }
 
-      let tick = axis === 'x' ? this.viewRange.y[0] : this.viewRange.x[0]
-      const stop = axis === 'x' ? this.viewRange.y[1] : this.viewRange.x[1]
+      let tick = axis === 'x' ? this.viewRange.x[0] : this.viewRange.y[0]
+      const stop = axis === 'x' ? this.viewRange.x[1] : this.viewRange.y[1]
 
       const remainder = tick % step
       if (remainder !== 0) {
-          tick += (remainder < 0) ? -remainder : step - remainder
+        tick += (remainder < 0) ? -remainder : step - remainder
       }
-
+      
       while (tick < stop) {
         if (tick === 0) {
           tick += step
           continue
         }
+        
+        const screenTick = axis === 'x' ?
+          (tick * this.transform.a) + this.transform.e :
+          (tick * this.transform.d) + this.transform.f
+
         const line: Line = {
           start: DOMPoint.fromPoint({
-            x: axis === 'x' ? this.viewRange.x[0] : tick, 
-            y: axis === 'y' ? this.viewRange.y[0] : tick}),
+            x: axis === 'x' ? screenTick : 0, 
+            y: axis === 'y' ? screenTick : 0}),
           end: DOMPoint.fromPoint({
-            x: axis === 'x' ? this.viewRange.x[1] : tick, 
-            y: axis === 'y' ? this.viewRange.y[1] : tick})
+            x: axis === 'x' ? screenTick : width, 
+            y: axis === 'y' ? screenTick : height})
         }
         drawLine(this.ctx, line, 'white')
 
         const tickPos = {
-          x: axis === 'y' ? tick + textOffset.grid : clamp(
-            textOffset.edge, 
-            this.viewRange.x[0] + textOffset.edge, 
-            this.viewRange.x[1] - 3 * textOffset.edge),
-          y: axis === 'x' ? tick + textOffset.grid : clamp(
-            textOffset.edge,
-            this.viewRange.y[0] - 3 * textOffset.edge,
-            this.viewRange.y[1] + textOffset.edge)
+          x: axis === 'x' ? screenTick : clamp(
+            this.transform.e, 
+            0 + textOffset.edge, 
+            width - 3 * textOffset.edge),
+          y: axis === 'y' ? screenTick : clamp(
+            this.transform.f,
+            3 * textOffset.edge,
+            height - textOffset.edge)
         }
-        this.ctx.fillStyle ='white'
+        this.ctx.fillStyle ='black'
         this.ctx.strokeStyle ='black'
         this.ctx.fillText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
-        this.ctx.strokeText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
+        //this.ctx.strokeText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
 
         tick += step
       }
     }
-    const transform = this.ctx.getTransform()
-    const min = [
-      this.minGridScreenSize / transform.a,
-      this.minGridScreenSize / transform.d
-    ]
-    const gridUnit = new Vector(
-      intervalLength(min[0])!,
-      intervalLength(min[1])!
-    )
-    for (const [index, key] of ['x', 'y'].entries()) {
-      unitIterate(gridUnit[index], key as Axis)
+
+    const gridUnit = {
+      x: intervalLength(this.minGridSize / this.transform.a),
+      y: intervalLength(this.minGridSize / this.transform.d)
+    }
+  
+    for (const axis of ['x', 'y']) {
+      unitIterate(gridUnit[axis], axis as Axis)
     }
   }
 
@@ -178,33 +181,29 @@ export default class CanvasGrid {
       this.viewRange.x.diff() as number, 
       this.viewRange.y.diff() as number
     )
-    const matrix = new DOMMatrix([
+    this.transform = new DOMMatrix([
       width / viewLength.x,
       0, 0,
       height / viewLength.y,
       width * (-this.viewRange.x[0] / viewLength.x),
       height * (-this.viewRange.y[0] / viewLength.y),
     ])
-    this.ctx.setTransform(matrix)
   }
 
   private transformView() {
-    const matrix = this.ctx.getTransform()
-
     const {width, height} = this.ctx.canvas.getBoundingClientRect()
 
-    const bottomLeft = screenToDrawPosition(new DOMPoint(0, 0), matrix)
-    const topRight = screenToDrawPosition(new DOMPoint(width, height), matrix)
+    const bottomLeft = screenToDrawPosition(new DOMPoint(0, 0), this.transform)
+    const topRight = screenToDrawPosition(new DOMPoint(width, height), this.transform)
 
     this.viewRange = {
       x: new Vector(bottomLeft.x, topRight.x),
       y: new Vector(bottomLeft.y, topRight.y)
     }
-    console.log(this.viewRange.y)
   }
 
   updateTransform(matrix: DOMMatrix) {
-    this.ctx.setTransform(matrix)
+    this.transform = matrix
   }
 
   private panOnDrag() {
@@ -213,7 +212,6 @@ export default class CanvasGrid {
     let startPos = new DOMPoint(0, 0)
     let isPanning = false
 
-    const matrix = this.ctx.getTransform()
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener('mousedown', this.ctx.canvas, onClickBound)
 
@@ -232,9 +230,8 @@ export default class CanvasGrid {
     function onMouseMove(event: MouseEvent) {
       if (!isPanning) return
 
-      matrix.e += event.clientX - startPos.x
-      matrix.f += event.clientY - startPos.y
-      this.ctx.setTransform(matrix)
+      this.transform.e += event.clientX - startPos.x
+      this.transform.f += event.clientY - startPos.y
 
       startPos = new DOMPoint(event.clientX, event.clientY)
     }
@@ -248,7 +245,6 @@ export default class CanvasGrid {
   }
 
   private zoomOnWheel() {
-    const matrix: DOMMatrix = this.ctx.getTransform()
     const onWheelBound = onWheel.bind(this)
     this.eventListeners.storeEventListener('wheel', this.ctx.canvas, onWheelBound)
 
@@ -256,25 +252,17 @@ export default class CanvasGrid {
       
       const zoomPos = mousePosition(this.ctx.canvas, event)
       
-      if (!(zoomPos && matrix)) return
-
       const zoomFactor = 1 + Math.sign(-event.deltaY) * 0.1
 
-      matrix.a *= zoomFactor
-      matrix.d *= zoomFactor
-      matrix.e = zoomPos.x + (matrix.e - zoomPos.x) * zoomFactor
-      matrix.f = zoomPos.y + (matrix.f - zoomPos.y) * zoomFactor
-      
-      this.ctx.setTransform(matrix)
+      this.transform.a *= zoomFactor
+      this.transform.d *= zoomFactor
+      this.transform.e = zoomPos.x + (this.transform.e - zoomPos.x) * zoomFactor
+      this.transform.f = zoomPos.y + (this.transform.f - zoomPos.y) * zoomFactor
     }
   }
 
   private clearCanvas() {
-    const viewLength = new Vector(
-      this.viewRange.x.diff() as number,
-      this.viewRange.y.diff() as number
-    )
-    this.ctx.clearRect(this.viewRange.x[0], this.viewRange.y[0], viewLength.x, viewLength.y)
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
   }
 
   draw() {

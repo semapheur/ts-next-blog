@@ -68,5 +68,5 @@ export function intervalLength(minLength: number) {
 
   if (base > 5) return 10**(scale + 1)
 
-  return null
+  return 0
 }
