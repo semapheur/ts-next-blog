@@ -99,7 +99,7 @@ function makeScene(
     requestAnimationFrame(renderGrid)
   }
 
-  const grid = new CanvasGrid(ctx.canvas, transform.value)
+  const grid = new CanvasGrid(ctx.canvas, transform.value, undefined, false, true)
 
   const vertexCode = `#version 300 es
     in vec2 a_position;
@@ -159,7 +159,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
         return new FunctionNode('vec2', args)
       }
       case 'FunctionNode': {
-        const fn = 'c' + (node as FunctionNode).fn.name
+        const fn = 'c_' + (node as FunctionNode).fn.name
         functions.add(fn)
 
         const args = (node as FunctionNode).args
@@ -170,7 +170,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
       }
       case 'OperatorNode': {
         const op = (node as OperatorNode).op
-        const fn = 'c' + (node as OperatorNode).fn
+        const fn = 'c_' + (node as OperatorNode).fn
         
         const args = (node as OperatorNode).args
         for (let i = 0; i < args.length; i++) {
@@ -202,7 +202,7 @@ function makeFragmentCode(expression: string): string {
 
   const [fn, required] = toGlsl(parse(expression))
   const functionDeclarations = requiredFunctions(required)
-
+  
   return `#version 300 es
   #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;

@@ -10,9 +10,9 @@ function functionDependencies(glslExpression: string) {
   const ast = parse(glslExpression)
 
   ast.traverse(function(node, path, parent) {
-    if (node.type === 'FunctionNode' && (node as FunctionNode).fn.name.startsWith('c')) {
+    if (node.type === 'FunctionNode' && (node as FunctionNode).fn.name.startsWith('c_')) {
       const fn = (node as FunctionNode).fn.name
-      dependencies.add(fn)
+      if (fn.startsWith('c_')) dependencies.add(fn)
     }
   })
 
@@ -21,17 +21,14 @@ function functionDependencies(glslExpression: string) {
 
 function functionVariables(glslExpression: string) {
   const variables = new Set<string>()
-  const pattern = /(vec|mat)[234]/
 
   const ast = parse(glslExpression)
-
+  
   ast.traverse(function(node, path, parent) {
     if (node.type === 'SymbolNode') {
       const variable = (node as SymbolNode).name
 
-      if (!pattern.test(variable)) {
-        variables.add(variable)
-      }
+      if (variable[0] === 'z') variables.add(variable)
     }
   })
 
@@ -46,7 +43,7 @@ export function requiredFunctions(required: Set<string>): string[] {
     const fn = stack.pop()!
     const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
 
-    declarations.push(cfn.code) 
+    declarations.unshift(cfn.code) 
     for (let d of cfn.dependencies) {
       if (required.has(d)) continue
 
@@ -88,10 +85,15 @@ class ComplexFunction{
 }
 
 const FUNCTIONS = {
-  cconj: 'vec2(z.x, -z.y)',
-  cabs: 'vec2(length(z), 0)',
-  carg: 'vec2(atan(z.y, z.x), 0)',
-  creciprocal: 'cconj(z) / dot(z, z)',
-  cmultiply: 'mat2(z1, -z1.y, z1.x) * z2',
-  cdivide: 'cmultiply(z1, creciprocal(w))'
+  c_conj: 'vec2(z.x, -z.y)',
+  c_abs: 'vec2(length(z), 0)',
+  c_arg: 'vec2(atan(z.y, z.x), 0)',
+  c_reciprocal: 'c_conj(z) / dot(z, z)',
+  c_multiply: 'mat2(z1, -z1.y, z1.x) * z2',
+  c_divide: 'c_multiply(z1, c_reciprocal(w))',
+  c_exp: 'exp(z.x) * vec2(cos(z.y), sin(z.y))',
+  c_log: 'vec2(log(length(z)), atan(z.y, z.x))',
+  c_pow: 'c_exp(c_multiply(c_log(z1), z2))',
+  c_sin: 'vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y))',
+  c_cos: 'vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y))',
 }

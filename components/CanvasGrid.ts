@@ -13,8 +13,17 @@ export default class CanvasGrid {
   private transform: DOMMatrix
   private minGridSize = 50
   private eventListeners = new EventListenerStore()
+  private complex: Boolean
 
-  constructor(canvas: HTMLCanvasElement, transform?: DOMMatrix, viewRange?: ViewRange, interactive = false) {
+  constructor(
+    canvas: HTMLCanvasElement, 
+    transform?: DOMMatrix, 
+    viewRange?: ViewRange, 
+    interactive = false, 
+    complex = false
+  ) {
+    this.complex = complex
+
     this.ctx = canvas.getContext('2d')!
 
     if (transform) this.transform = transform
@@ -156,10 +165,15 @@ export default class CanvasGrid {
             3 * textOffset.edge,
             height - textOffset.edge)
         }
-        this.ctx.fillStyle ='black'
+        this.ctx.fillStyle ='white'
         this.ctx.strokeStyle ='black'
-        this.ctx.fillText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
-        //this.ctx.strokeText(tickFormat(axis, step, tick), tickPos.x, tickPos.y)
+        this.ctx.lineWidth = 0.5
+        let text = (axis === 'y' && this.complex) ? 
+          tickFormat(axis, step, tick) + 'i' :
+          tickFormat(axis, step, tick)
+        
+        this.ctx.fillText(text, tickPos.x, tickPos.y)
+        this.ctx.strokeText(text, tickPos.x, tickPos.y)
 
         tick += step
       }
