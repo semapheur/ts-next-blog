@@ -5286,6 +5286,7 @@ Consequently, for any bounded stopping time $\tau < \infty$, the following Wald 
 6. $\mathbb{E}(W_t^2) = \mathbb{E}(\tau)$
 7. $\mathbb{E}\left[\exp\left(\theta W_\tau - \frac{\theta^2 \tau}{2}\right)\right] = 1$
 8. $\mathbb{E}\left[i\exp\left(\theta W_\tau - \frac{\theta^2 \tau}{2}\right)\right] = 1$
+
 <details>
 <summary>Proof</summary>
 
@@ -5327,6 +5328,53 @@ $$
 $$
 </details>
 </MathBox>
+
+#### First-passage problems
+
+##### Two-point passage
+Fix constants $a,b > 0$ and define $\tau = \tau_{-a, b}$ to be the first time $t$ such that $W_t = -a \lor +b$. The random variable $\tau$ is a finite, but unbounded stopping time, and so the Wald identities may not be applied directly. However, for each $n\in\mathbb{N}_+$, the random variable $t \land n$ is a bounded stopping time. Consequently,
+
+$$
+  \mathbb{E}(W_{\tau \land n}) = 0 \quad \mathbb{E}(W_{\tau\land n}^2) = \mathbb{E}(\tau \land n)
+$$
+
+Until $\tau$, the Wiener path remains between the values $-a$ and $b$, so the random variables $|W_{\tau\land n}|$ are uniformly bounded by $a+b$. By path-continuity, $\lim_{n\to\infty} W_{\tau\land n} = W_\tau$. By the dominated convergence theorem
+
+$$
+  \mathbb{E}(W_\tau) = -a\mathbb{P}(W_\tau = -a) + b\mathbb{P}(W_\tau = b) = 0
+$$
+
+Since $\mathbb{P}(W_\tau = -a) + \mathbb{P}(W_\tau = b) = 1$ it follows that
+
+$$
+  \mathbb{P}[W_\tau = b] = \frac{a}{a+b}
+$$
+
+The dominated convergence theorem also guarantees that $\lim_{n\to\infty} \mathbb{E}(W_{\tau\land n}^2) = \mathbb{E}(W_\tau^2)$, and the monotone convergence theorem that $\lim_{n\to\infty} \mathbb{E}(\tau\land n) \stackrel{\uparrow}{=} \mathbb{E}(\tau)$. It follows that 
+
+$$
+  \mathbb{E}(W_\tau^2) = \mathbb{E}(\tau) = ab
+$$
+
+##### One-point passage
+
+Let $\tau = \tau_a$ be the first passage time to the value $a = W_t$. Recall that $\tau$ is a stopping time and $\tau < \infty$ with probability $1$, but $\tau$ is not bounded. For any $n < \infty$, the truncation $\tau \land n$ is a bounded stopping time. By the third Wald identity for any $\theta > 0$
+
+$$
+  \mathbb{E}\left(\exp\left[ \theta W_{\tau\land n} - \theta^2(\tau\land n) \right]\right) = 1
+$$
+
+Since the path $W_t$ does not assume a value larger than $a$ until after time $\tau$, the random variables $W_{\tau\land n}$ are uniformly bounded by $a$, making the random variables in the last equation dominated by the constant $e^{\theta a}$. Because, $\tau < \infty$ with probability $1$, $\lim_{n\to\infty} \tau\land n = \tau$, and by path-continuity, $\lim_{n\to\infty} W_{\tau\land n} = a$. By the dominated convergence theorem
+
+$$
+  \mathbb{E}\left(\exp\left[ \theta a - \theta^2 (\tau) \right] \right) = 1
+$$
+
+Setting $\lambda = \frac{\theta^2}{2}$ we have
+
+$$
+  \mathbb{E}\left(e^{-\lambda\tau_a}\right) = e^{-\sqrt{2\lambda}a}
+$$
 
 ### Zeroes and arcsine laws
 
@@ -5565,17 +5613,94 @@ $$
 
 ### Skorokhod's theorems
 
+<MathBox title='Mixture representation of mean-zero distributions' boxType='proposition'>
+For any two points $-a < 0 < b$ with $a,b\in\mathbb{R}$ there is a unique two-point distribution $F_{a,b}$ with support $\{-a,b\}$, mean $0$ and variance $ab$. The two-point distribution takes the values
+
+$$
+  F_{a,b}(\{b\}) = \frac{a}{a+b}\quad F_{a,b} (\{-a\}) = \frac{b}{a+b}
+$$
+
+For any Borel probability distribution $F$ on $\mathbb{R}$ with mean $0$ there exists a Borel probability distribution $G$ on $\mathbb{R}_+^2$ such that
+
+$$
+  F = \int F_{a,b}\,\mathrm{d}G(a,b)
+$$
+
+Hence
+
+$$
+  \sigma^2 := \int x^2\,\mathrm{d}F(x) = \int ab\,\mathrm{d}G(a,b)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assume first that $F$ has finite support. If $F$ is supported by only two points, then $F = F_{a,b}$ for some $a,b > 0$ and the result holds with $G$ concentrated at the single point $(a,b)$. 
+
+Suppose that the result is true for mean-zero distributions supported by fewer than $m$ points, and let $F$ be a mean-zero distribution supported by $m$ points. Among the $m$ support points there must be two satisfying $-a < 0 < b$ both with positive probabilities $F(-a)$ and $F(b)$ giving three possibilities
+
+$$
+\begin{align*}
+  -aF(-a) + bF(b) \begin{cases}
+    =0 \\ > 0 \\ < 0
+  \end{cases}
+\end{align*}
+$$
+
+In the first case, $F$ can obviously be decomposed as a convex combination of $F_{a,b}$ and a probability distribution $F'$ supported by the remaining $m-2$ points in the support of $F$. In the second case, there is som value $0 < \beta < F(b)$ such that $-aF(-a) + \beta F(b) = 0$, and so $F$ can be decomposed as a convex combination of $F_{a,b}$ and a distribution $F'$ supported by $b$ and the remaining $m-2$ points. Similarly, in the third case $F$ is a convex combination of $F_{a,b}$ and distribution $F'$ supported by $-a$ and the remaining $m-2$ points. In all cases the results holds by the induction hypothesis and Fubini's theorem.
+
+Next, let $F$ be a Borel probability distribution on $\mathbb{R}$ with mean zero and compact support $[-A, A]$. Clearly, there is a sequence of probability distributions $F_n$ converging to $F$ in distribution such that $F_n$ is supported by finitely many points. In particular, if $X$ is a random variable with distribution $F$, then set
+
+$$
+  X_n = \max\{\frac{k}{2^n} \mid \frac{k}{2^n} \leq X \}
+$$
+
+and let $F_n$ be the distribution of $X_n$. Clearly $X_n \xrightarrow{n\to\infty} X$ pointwise. The distributions $F_n$ need not have mean zero, but by the dominated convergence theorem, $\lim_{n\to\infty} \mathbb{E}(X_n) = \mathbb{E}(X) = 0$. Thus if we replace $X_n$ with $X_n - \mathbb{E}(X_n)$ we will have a sequence of mean-zero distributions converging to $F$, each supported by only finitely many points, all contained in $[-A-1, A+1]$. Since the result holds for distributions with finite support, there are Borel probability distributions $G_n$ such that
+
+$$
+\begin{gather*}
+  F_n = \int F_{a,b}\,\mathrm{d}G_n(a,b) \\
+  \sigma_n^2 := \int x^2\,\mathrm{d}F_n(x) = \int ab\,\mathrm{d}G_n(a,b)
+\end{gather*}
+$$
+
+Since each $F_n$ has supports contained in $[-A-1, A+1]$ the mixing distributions $G_n$ have supports contained in $[0, A+1]^2$. Hence, by Helly's selection principle there is a subsequence $G_k$ that converges weakly to a Borel probability distribution $G$. It follows that
+
+$$
+\begin{gather*}
+  F = \int F_{a,b}\,\mathrm{d}G(a,b) \\
+  $\sigma^2 := \int x^2\,\mathrm{d}F(x) = \int ab\,\mathrm{d}G(a,b) 
+\end{gather*}
+$$
+</details>
+</MathBox>
+
 <MathBox title="Skorokhod's first embedding theorem" boxType='theorem'>
-Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
+Let $F$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
 
 1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
 2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $f$
 3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
+
+<details>
+<summary>Proof</summary>
+
+Consder first the case where $F$ is supported by only two points. Since $F$ has mean $0$, the two support points must satisfy $a < 0 < b$, with $p = F(\{b\}) = 1 - F(\{a\})$. Let $\tau$ be the first time $\mathbf{W}$ visits either $a$ or $b$. Then $\tau < \infty$ almost surely, and $\tau$ is a stopping time with respect to any admissible filtration. The first passage equations imply that the distribution of $W_\tau$ is $F$ and $\mathbb{E}(\tau) = \sigma^2$.
+
+To complete the proof in the case of a two-point distribution, we use the strong Markov property and an induction argument. Assume that stopping times $0 = \tau_0 \leq \tau_1 \leq \tau_2 \leq\dots\leq \tau_m$ have been defined such that the results hold for $n < m$. Define $\tau_{m+1}$ to be the first time after $\tau_m$ that $W_{\tau_{m+1} - W_{\tau_m} \in \{a, b\}$. By the strong Markov property, the random vector $(\tau_{m+1} - \tau_m, W_{\tau_{m+1} - W_{\tau_m})$ is indepedent of the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1}} - W_{\tau_n})$ for $n < m$, and $(\tau_{m+1} - \tau_m, W_{\tau_{m+1}} - W_{\tau_m})$ has the same distribution as $(\tau_1 - \tau_0, W_{\tau_1} - W_{\tau_0})$. This completes the induction for two-point distributions.
+
+Next, let $F$ be any mean-zero distribution with finite variance $\sigma^2$. By the previous proposition, $F$ has a representation as a mixture of two-point distributions $F_{a,b}$ with mixing measure $G$. Let $(\Omega,\mathcal{F},\mathbb{P})$ be a probability space that supports a sequence $\{(A_n, B_n)\}_{n\in\mathbb{N}_+}$ of independent, identically distributed random vectors each with distribution $G$, and an independent process Wiener process $\mathbf{W}$. Let $\mathcal{F}_0$ be the $\sigma$-algebra generated by the random vectors $(A_n, B_n)$ and for each $t\geq 0$ let $\mathcal{F}_t$ be the $\sigma$-algebra generated by $\mathcal{F}_0$ and the random variables $W_s$ for $s\leq t$. Since the random vectors $(A_n, B_n)$ are independent of $\mathbf{W}$, the filtration $\{\mathcal{F}_t\}_{t\geq 0}$ is admissible. Define stopping times $\tau_n$ inductively as follows: $\tau_0 = 0$ And
+
+$$
+  \tau_{n+1} = \min\{ t\geq 0 \mid W_{\tau_n + t} - W_{\tau_n} = -A_n \lor B_n \}
+$$
+
+By the strong Markov property, the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1}} - W_{\tau_n})$ are independent conditional on $\mathcal{F}_0$. The random variable $W_{\tau_{n+1}} - W_{\tau_n}$, conditional on $\mathcal{F}_0$, has the two-point distribution $F_{a,b}$ with $a = A_n$ and $b = B_n$. Since the unconditional distribution of $(A_n, B_n)$ is $G$, it follows that unconditionally the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1}} - W_{\tau_n})$ are independent, identically distributed, and $W_{\tau_{n+1}} - W_{\tau_n}$ has distribution $F$. That $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$ follows from the variance formula in the mixture representation.
+</details>
 </MathBox>
 
 <MathBox title="Skorokhod's second embedding theorem" boxType='theorem'>
-
-Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
+Let $F$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
 
 1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
 2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $F$
