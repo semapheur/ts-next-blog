@@ -5116,21 +5116,168 @@ The probability of a countable intersection of events with probability $1$ has s
 
 ### Reflection principle
 
-Let $M_t$ denote the maximum of a Wiener process $\mathbf{W}$ up to time $t$, and let $\tau_a$ denote the passage time to the value $a$. 
+Let $M_t = \max\{ X_s \}_{0\leq s\leq t}$ denote the maximum of a Wiener process $\mathbf{W}$ on the interval $[0,t]$, and let $\tau_a = \min\{ t\geq 0 \mid W_t = a \}$ denote the passage time to the value $a$. Since $\mathbf{W}$ visits every real number it follows that $\tau_a < \infty$. Since $\tau_a$ is a stopping time, the post-$\tau$ process $W_t^* := W_{\tau + t} - W_\tau$ is a Wiener process that is independent of $\mathcal{F}_{\tau_a}$. Consequently, the reflection $\{ -W_t^*\}_{t\geq 0}$ is also a Wiener process that is independent of $\mathcal{F}_{\tau_a}$.
+
+<MathBox title='Reflection principle' boxType='proposition'>
+Define the process $\tilde{\mathbf{W}} = \{ \tilde{W}_t\}_{t\geq 0}$ where
+
+$$
+  \tilde{W}_t := \begin{cases}
+    W_t &\quad t < \tau_a \\
+    2a - W_t &\quad t\geq\tau_a
+  \end{cases}
+$$
+
+If $\{ W_t \}_{t\geq 0}$ is a Wiener process, then so is $\{ \tilde{W}_t\}_{t\geq 0}$.
+
+<detail>
+<summary>Proof</summary>
+
+This is just a special case of the strong Markov property of a spliced Wiener process.
+</details>
+</MathBox>
+
+The reflected process $\tilde{\mathbf{W}}$ is a Brownian motion that agrees with the original Brownian motion $\mathbf{W}$ up until the first time $\tau_a$ that the path reaches the state $a = W_t$. For $t \geq \tau_a$, the graph of $\tilde{\mathbf{W}}$ is obtained from the path of $\mathbf{W}$ by reflecting in the line $w = a$ after time $\tau_a$.
+
+<MathBox title='' boxType='proposition'>
+
+$$
+  \mathbb{P}(M_t \geq a) = \mathbb{P}(\tau_a \leq t) = 2\mathbb{P}(W_t > a) = 2 - 2\Phi(\frac{a}{\sqrt{t}})
+$$
+
+<detail>
+<summary>Proof</summary>
+
+Note that since the paths of $\mathbf{W}$ and $\tilde{\mathbf{W}}$ coincide up until time $\tau_a$
+
+$$
+  \mathbb{P}(\tau < t, W_t < a) = \mathbb{P}(\tau < t, \tilde{W}_t < a)
+$$
+
+After time $\tau_a$, the path $\tilde{\mathbf{W}}$ is gotten by reflecting the path $\mathbf{W}$ in the line $w = a$. On the event $\tau < t$, it follows that $W_t < a$ if and only if $\tilde{W}_t > a$, such that
+
+$$
+  \mathbb{P}(\tau < t, \tilde{W}_t < a) = \mathbb{P}(\tau < t, W > a)
+$$
+
+Combining the two equalities and using the fact that $\mathbb{P}(W_t = a) = 0$ gives
+
+$$
+  \mathbb{P}(\tau < a) = 2\mathbb{P}(\tau < t, W_t > a) = 2\mathbb{P}(W_t > a)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+For $a > 0$, the hitting time $\tau_a$ has the same distribution as $\frac{a^2}{Z^2}$ where $Z is a standard normal variable. The probability density function $f_a$ is given by
+
+$$
+  f_a (t) = \frac{a}{\sqrt{2\pi t^3}}e^{-\frac{a^2}{2t}}
+$$
+
+<detail>
+<summary>Proof</summary>
+
+Note that $W_t \geq a \implies M_t \geq a \implies \tau_a \leq t$. Thus
+
+$$
+  \mathbb{P}(W_t \geq a) = \mathbb{P}(W_t \geq a, \tau_a \leq t) = \mathbb{P}(W_t \geq a \mid \tau_a \leq t)\mathbb{P}(\tau_a \leq t)
+$$
+
+From the strong Markov property, $s\mapsto W_{\tau + s} - a$ is another Wiener process. Hence $\mathbb{P}(W_t \geq a \mid \tau_a \leq t) = \frac{1}{2}$. Therefore
+
+$$
+\begin{align*}
+  \mathbb{P}(\tau_a \leq t) &= 2\mathbb{P}(W_t \geq a) = \frac{2}{\sqrt{2\pi t}}\int_a^\infty e^{-\frac{x^2}{2t}}\,\mathrm{d}x \\
+  &= \frac{2}{\sqrt{2\pi}}\int_{a/\sqrt{t}}^\infty e^{-\frac{z^2}{2}}\,\mathrm{d}z
+\end{align*}
+$$
+
+where we have used the substitution $z = \frac{x}{\sqrt{t}}$. We recognize the last integral as $\mathbb{P}\left(\frac{a^2}{Z^2} \leq t\right)$ where $Z$ has a standard normal distribution. Taking the derivative of the integral with respect to $t$ gives the probability density function.
+</details>
+</MathBox>
+
+<MathBox title='Wiener processes are recurrent' boxType='proposition'>
+Wiener processes are recurrent. That is, $\mathbb{P}(\tau_a < \infty) = 1$ for every $a\in\mathbb{R}$.
+
+<detail>
+<summary>Proof</summary>
+
+Trivially $\tau_0 = 0$. Suppose that $a > 0$. Then from the distribution of $\tau_a$
+
+$$
+  \mathbb{P}(\tau < \infty) = \lim_{t\to\infty}\mathbb{P}(\tau_a \leq t) = \frac{2}{\sqrt{2\pi}}\int_0^\infty e^{-\frac{z^2}{2}}\,\mathrm{d}z = 1
+$$
+
+If $a < 0$, then by symmetry $\tau_a$ has the same distribution as $\tau_{-a}$ with $\mathbb{P}(\tau_a < \infty) = 1$.
+</details>
+</MathBox>
+
+<MathBox title='Wiener processes are null recurrent' boxType='proposition'>
+Wiener processes are null recurrent. That is, $\mathbb{E}(\tau_a) = \infty$ for every $a\in\mathbb{R}\setminus \{ 0\}$.
+
+<detail>
+<summary>Proof</summary>
+
+By distribution, it suffices to consider $a > 0$. From the result on the distribution of $\tau_a$
+
+$$
+  \mathbb{E}(\tau_a) = \int_0^\infty \mathbb{P}(\tau_a > t)\,\mathrm{d}t = \frac{2}{\sqrt{2\pi}}\int_0^\infty \int_0^{a/\sqrt{t}} e^{-\frac{z^2}{2}}\,\mathrm{d}z\,\mathrm{d}t
+$$
+
+Changing the order of integration gives
+
+$$
+  \mathbb{E}(\tau_a) = \frac{2}{\sqrt{2\pi}}\int_0^\infty \int_0^{a^2/z^2} e^{-\frac{z^2}{2}}\,\mathrm{d}t\,\mathrm{d}z =\frac{2a^2}{\sqrt{2\pi}}\int_0^\infty \frac{1}{z^2}e^{-\frac{z^2}{2}}\,\mathrm{d}z
+$$
+
+We get a lower bound on the last integral by integrating over the interval $[0,1]$ and noting that $e^{-\frac{z^2}{2}}\geq e^{-\frac{1}{2}}$ on this integral. Thus
+
+$$
+  \mathbb{E}(\tau_a) \geq \frac{2a^2 e^{-\frac{1}{2}}}{\sqrt{2\pi}}\int_0^1 \frac{1}{z^2}\,\mathrm{d}z = \infty
+$$
+</details>
+</MathBox>
+
+<MathBox title='Hitting times have stationary, independent increments' boxType='proposition'>
+The process $\{ \tau_x \}_{x\geq 0}$ has stationary, indepedent increments. As a direct result, the collection of probability density functions $\{g_x \}_{x > 0}$ is closed under convolution, i.e. $g_x * g_y = g_{x+y}$ for $x,y\in(0,\infty)$.
+
+<detail>
+<summary>Proof</summary>
+
+Suppose that $x, y\in[0,\infty)$ with $x < y$. By continuity, $\mathbf{W}$ must reach $x$ before reaching $y$. Thus $\tau_y = \tau_x + (\tau_y - \tau_x)$. Note that $\tau_y - \tau_x$ is the hitting time to $y - x$ for the the process $t \mapsto W_{\tau_x + t} - x$, which is a Wiener process independent of $\mathcal{F}_{\tau_x}$. Hence $\tau_y - \tau_x$ is independent of $\mathcal{F}_{\tau_x}$ and has the same distribution as $\tau_{y-x}$. 
+</details>
+</MathBox>
+
+<MathBox title='Hitting times have stationary, independent increments' boxType='proposition'>
+For $t > 0$, the maximum process $M_t$ has the same distributino as $|W_t|$, known as the half-normal distribution with scale parameter $t$ and probability density function
+
+$$
+  h_t (m) = \sqrt{\frac{2}{\pi t}}\exp\left( -\frac{m^2}{2t} \right),\; m\in[0,\infty)
+$$
+
+For $t\geq 0$, $M_t$ has mean $\mathbb{E}(M_t) = \sqrt{\frac{2t}{\pi}}$ and variance $\mathrm{var}(M_t) = t\left( 1 - \frac{2}{\pi} \right)$
+
+<detail>
+<summary>Proof</summary>
+
+Suppose that $x, y\in[0,\infty)$ with $x < y$. By continuity, $\mathbf{W}$ must reach $x$ before reaching $y$. Thus $\tau_y = \tau_x + (\tau_y - \tau_x)$. Note that $\tau_y - \tau_x$ is the hitting time to $y - x$ for the the process $t \mapsto W_{\tau_x + t} - x$, which is a Wiener process independent of $\mathcal{F}_{\tau_x}$. Hence $\tau_y - \tau_x$ is independent of $\mathcal{F}_{\tau_x}$ and has the same distribution as $\tau_{y-x}$. 
+</details>
+</MathBox>
 
 ### Skorokhod's theorems
 
 <MathBox title="Skorokhod's first embedding theorem" boxType='theorem'>
-Let $F$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
+Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
 
 1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
-2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $F$
+2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $f$
 3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
 </MathBox>
 
 <MathBox title="Skorokhod's second embedding theorem" boxType='theorem'>
 
-Let $F$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
+Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
 
 1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
 2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $F$
