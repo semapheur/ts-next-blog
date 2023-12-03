@@ -5261,30 +5261,115 @@ For $t\geq 0$, $M_t$ has mean $\mathbb{E}(M_t) = \sqrt{\frac{2t}{\pi}}$ and vari
 <detail>
 <summary>Proof</summary>
 
-Suppose that $x, y\in[0,\infty)$ with $x < y$. By continuity, $\mathbf{W}$ must reach $x$ before reaching $y$. Thus $\tau_y = \tau_x + (\tau_y - \tau_x)$. Note that $\tau_y - \tau_x$ is the hitting time to $y - x$ for the the process $t \mapsto W_{\tau_x + t} - x$, which is a Wiener process independent of $\mathcal{F}_{\tau_x}$. Hence $\tau_y - \tau_x$ is independent of $\mathcal{F}_{\tau_x}$ and has the same distribution as $\tau_{y-x}$. 
+From the inverse relation and the distribution of $\tau_m$, it follows that $\mathbb{P}(M_t \geq m) = \mathbb{P}(\tau_m \leq t) = 2\mathbb{P}(W_t \geq m) = \mathbb{P}(|W_t| \geq m)$ for $m\geq 0$. By definition, $|W_t|$ has the half-normal distribution with parameter $t$. In particular
+
+$$
+  \mathbb{P}(M_t \geq m) = \frac{2}{\sqrt{2\pi t}}\int_m^\infty e^{-\frac{w^2}{2t}}\,\mathrm{d}w
+$$
+
+Taking the negative derivate with respect to $m$ gives the half-normal distribution function.
 </details>
 </MathBox>
 
-### Skorokhod's theorems
+### Martingales
 
-<MathBox title="Skorokhod's first embedding theorem" boxType='theorem'>
-Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
+<MathBox title='Wiener processes are martingales' boxType='proposition'>
+Let $\mathbf{W}$ be a Wiener process and let $\mathscr{F} = \{\mathcal{F}_t \}_{t\geq 0}$ be an admissible filtration. Then each of the following is a continuous martingale relative to $\mathscr{F}$ with $\theta\in\mathbb{R}$
 
-1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
-2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $f$
-3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
+1. $\{W_t\}_{t\geq 0}$
+2. $\{W_t^2 - t\}_{t\geq 0}$
+3. $\left\{\exp\left(\theta W_t - \frac{\theta^2 t}{2} \right)\right\}_{t\geq 0}$
+4. $\left\{\exp\left(i\theta W_t - \frac{\theta^2 t}{2} \right) \right\}_{t\geq 0}$
+
+Consequently, for any bounded stopping time $\tau < \infty$, the following Wald identities holds
+5. $\mathbb{E}(W_t) = 0$
+6. $\mathbb{E}(W_t^2) = \mathbb{E}(\tau)$
+7. $\mathbb{E}\left[\exp\left(\theta W_\tau - \frac{\theta^2 \tau}{2}\right)\right] = 1$
+8. $\mathbb{E}\left[i\exp\left(\theta W_\tau - \frac{\theta^2 \tau}{2}\right)\right] = 1$
+<details>
+<summary>Proof</summary>
+
+Note that the Wald identities follow from Doob's optional sampling formula.
+
+Let $s,t \in[0,\infty)$ with $s < t$.
+
+1. Since $W_s$ is measurable with respect to $\mathcal{F}_s$ and $W_t - W_s$ is independent of $\mathcal{F}_s$ it follows that
+
+$$
+  \mathbb{E}(W_t \mid\mathcal{F}_s) = \mathbb{E}[W_s + (W_t - W_s) \mid\mathcal{F}_s] = W_s + \mathbb{E}(W_t - W_s) = W_s
+$$
+
+2. Note that
+
+$$
+\begin{align*}
+  X_t = W_t^2 - t &= [W_s + (W_t - W_s)]^2 - t \\
+  &= W_s^2 + 2W_s(W_t - W_s) + (W_t - W_s)^2 - t
+\end{align*}
+$$
+
+Since $W_s$ is measurable relative to $\mathcal{F}_s$ and $W_t - W_s$ is indepedent of $\mathcal{F}_s$ we have
+
+$$
+  \mathbb{E}(X_t \mid\mathcal{F}_s) &= W_s^2 + 2W_s\mathbb{E}(W_t - W_s) + \mathbb{E}[(W_t - W_s)^2] - t
+$$
+
+Note that $\mathbb{E}(X_t - X_s) = 0$ and $\mathbb{E}[(W_t - W_s)^2] = \mathrm{var}(W_t - W_s) = t - s$. Hence, $\mathbb{E}(X_t \mid\mathcal{F}_s) = W_s^2 - s = X_s$.
+
+3. 
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\exp\left[ \theta W_{t+s} - \frac{\theta^2(t+s)}{2} \right] \mid \mathcal{F}_s \right) &= \exp\left( \theta W_{t+s} - \frac{\theta^2 s}{2} \right) \mid \mathcal{F}_s \mathbb{E}\left(\exp\left[ \theta W_{t+s} - W_s - \frac{\theta^2(t+s)}{2} \right] \mid \mathcal{F}_s \right) \\
+  &= \exp\left( \theta W_{t+s} - \frac{\theta^2 s}{2} \right) \mid \mathcal{F}_s \mathbb{E}\left(\exp\left[ \theta W_{t+s} - W_s - \frac{\theta^2(t+s)}{2} \right] \right) \\
+  &= \exp\left( \theta W_{t+s} - \frac{\theta^2 s}{2} \right)
+\end{align*}
+$$
+</details>
 </MathBox>
 
-<MathBox title="Skorokhod's second embedding theorem" boxType='theorem'>
+### Zeroes and arcsine laws
 
-Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
-
-1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
-2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $F$
-3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
+<MathBox title='Zero set of Wiener processes' boxType='definition'>
+The zero set of a Wiener process $\mathbf{W}$ is $Z = \{ t\geq 0 \mid W_t = 0 \}$. 
 </MathBox>
 
-### Laws
+Note that for any fixed $t > 0$, the probability that $t\in Z$ is $0$, because $\mathbb{P}(W_t = 0) = 0$. Hence, because $\mathbb{Q}_+$ is countable
+
+$$
+  \mathbb{P}(\mathbb{Q}_+ \cap Z \neq\emptyset) = 0
+$$
+
+<MathBox title='Properties of Wiener zero sets' boxType='proposition'>
+Let $\lambda$ denote the Lebesgue measure. With probability $1$, the zero set $Z$ satisfies
+1. $Z$ is closed
+2. $\lambda(Z) = 0$
+3. $Z$ is nowhere dense, i.e. the closure of $Z$ has empty interior
+4. $Z$ is perfect, i.e. for every $t\in Z$ there is a sequence of distinct elements $t_n\in Z$ such that $\lim_{n\to\infty} t_n = t$ (no isolated points)
+5. $Z$ has Hausdorff dimension $\frac{1}{2}$
+
+<details>
+<summary>Proof</summary>
+
+1. Note that $Z$ is the inverse image of the closed set $\{0\}$ under the function $t\mapsto W_t$. Because the path $W_t$ is continuous with probability $1$, the zero set $Z$ is closed with probability $1$. 
+
+2. For each $t\in(0,\infty)$ note that $\mathbb{P}(t\in Z) = \mathbb{P}(W_t = 0) = 0$. since $W_t$ has a continuous distribution. By Fubini's theorem
+
+$$
+\begin{align*}
+  \mathbb{E}[\lambda(Z)] &= \mathbb{E}\left[ \int_0^\infty \mathbf{1}_Z (t)\,\mathrm{d}\lambda(t) \right] \\
+  &= \int_0^\infty \mathbb{E}[\mathbf{1}_Z(t)]\,\mathrm{d}\lambda(t) \\
+  &= \int_0^\infty \mathbb{P}(W_t = 0)\,\mathrm{d}t \\
+  &= 0
+\end{align*}
+$$
+
+3. Since $Z$ is closed with Lebesgue measure $0$, its interior is empty.
+4. Fix $0 < q\in\mathbb{Q}_+$ and define $z_q$ to be the first time $t\geq 0$ such that $W_{z_q} = 0$. Because $W_q \neq 0$ almost surely, the random variable $z_q$ is well-defined with $z_q > q$. By the strong Markov property, the post-$z_q$ process $W_{z_q + t} - W_{z_q}$ is a Wiener process, which has infinitely manny zeroes in every time interval $(0, \varepsilon)$ with probability $1$. Since $W_{z_q} = 0$ and since $\mathbb{Q}$ is countable, it follows that $W_t$ almost surely has infinitely many zeroes in every interval $(z_q, z_q + \varepsilon)$ for $\varepsilon > 0$.
+
+Let $t$ be any zero of the path. Then either there is an increasing sequence $t_n$ of zeroes such that $\lim_{t\to\infty} t_n = t$, or there is a real number $\varepsilon > 0$ such that the interval $(t - \varepsilon, t)$ is free of zeroes. In the latter case, there is a rational number $q\in (t-\varepsilon, t)$, and $t = z_q$. In this case, there must be a decreasing sequence $t_n$ of zeroes such that $\lim_{n\to\infty} t_n = t$.
+</details>
+</MathBox>
 
 <MathBox title='Arcsine laws' boxType='proposition'>
 For $s,t\in[0,\infty)$ with $s< t$, let $E(s,t)$ be the event that $\mathbf{X}$ has a zero in the time interval $(s,t)$. That is, $E(s,t) = \{X_u = 0 \textrm{ for some } u\in(s,t)\}$
@@ -5305,7 +5390,7 @@ $$
 \end{align*}
 $$
 
-By the homogneity of $\mathbf{X}$ in time and space, note that for $x > 0$, $\mathbb{P}[E(s,t)|X_s = -x] = \mathbb{P}(\tau_x < t - s)$. A process in state $-x$ at time $s$ that hits $0$ before time $t$ is the same as the process in state $0$ at time $0$ reaching state $x$ before time $t-s$, giving
+By the homogeneity of $\mathbf{X}$ in time and space, note that for $x > 0$, $\mathbb{P}[E(s,t)|X_s = -x] = \mathbb{P}(\tau_x < t - s)$. A process in state $-x$ at time $s$ that hits $0$ before time $t$ is the same as the process in state $0$ at time $0$ reaching state $x$ before time $t-s$, giving
 
 $$
   \mathbb{P}[E(s,t)] = \int_0^\infty \int_0^{t-s} g_x (u) f_s (-x)\,\mathrm{d}u\,\mathrm{d}x
@@ -5332,9 +5417,59 @@ $$
 </details>
 </MathBox>
 
+<MathBox title='' boxType='proposition'>
+The Wiener process $\mathbf{W}$ has infinitely many zeroes in $(0,t)$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Let $E(s,t)$ be the event that $\mathbf{W}$ has a zero in the time interval $(s,t)$. Note that from the arcsine laws $\mathbb{P}[E(0,t)] = 1$ for every $t > 0$. The event that $\mathbf{W}$ has infinitely many zeroes in $(0,t)$ is $\bigcap_{n=1}^\infty E(0,\frac{t}{n}$. The intersection of a countable collection of events with probability $1$ still has probability $1$.
+</details>
+</MathBox>
+
+<MathBox title='The zero set has the arcsine distribution' boxType='proposition'>
+Let $Z_t$ denote the time of the last zero of the Wiener process $\mathbf{W}$ before time $t$, i.e. $Z_t = \max\{s\in[0,t] \mid X_s = 0 \}$. Then $Z_t$ has the arcsine distribution with parameter $t$. The distribution function $H_t$ and the probability density function $h_t$ are given By
+
+$$
+\begin{align*}
+  H_t (s) &= \frac{2}{\pi}\arcsin\left( \sqrt{\frac{s}{t}} \right),\; 0\leq s\leq t \\
+  h_t (s) &= \frac{1}{\pi\sqrt{s(t - s)}},\; 0 < s < t
+\end{align*}
+$$
+
+The mean of $Z_t$ is $\mathbb{E}(Z_t) = \frac{t}{2}$ and the variance is $\mathrm{var}(Z_t) = \frac{t^2}{8}$.
+
+<details>
+<summary>Proof</summary>
+
+For $0\leq s < t$, the event $Z_t \leq s$ is the same as $E(s,t)^c$, i.e. that there are no zeroes in the interval $(s,t)$. Hence the distribution function $H_t$ follows from the arcsine laws.
+</details>
+</MathBox>
+
+### Growth rate
+
 <MathBox title='Law of iterated logarithm' boxType='proposition'>
 
 $$
   \limsup_{t\to\infty} = \frac{X_t}{\sqrt{2t \ln[\ln(t)]}} = 1
 $$
+</MathBox>
+
+### Skorokhod's theorems
+
+<MathBox title="Skorokhod's first embedding theorem" boxType='theorem'>
+Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$. Then on some probability space there exists a Wiener process $\mathbf{W}$, an admissible filtration $\mathscr{F}^W$ and an increasing sequence of stopping times $(\tau_n)_{n\in\mathbb{N}}$ with $\tau_0 = 0$ such that
+
+1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
+2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $f$
+3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
+</MathBox>
+
+<MathBox title="Skorokhod's second embedding theorem" boxType='theorem'>
+
+Let $f$ be any real probability distribution with mean $0$ and variance $\sigma^2 < \infty$ and let $\mathbf{W}$ be a Wiener process. Then there exists increasing stopping times $(\tau_n)_{n\in\mathbb{N}}$ and $\tau_0 = 0$ with respect to the standard filtration such that
+
+1. the random vectors $(\tau_{n+1} - \tau_n, W_{\tau_{n+1} - W_{\tau_n})$ are indepedent, identically distributed
+2. each random variable $W_{\tau_{n+1} - W_{\tau_n}$ has distribution $F$
+3. $\mathbb{E}(\tau_{n+1}) - \mathbb{E}(\tau_n) = \sigma^2$
 </MathBox>
