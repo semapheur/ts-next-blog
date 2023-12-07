@@ -986,7 +986,7 @@ is called the *current life* at time $t \geq 0$. This variable takes values in t
 The random variable
 
 $$
-  R_t = T_{N_t + 1} - 1
+  R_t = T_{N_{t + 1}} - 1
 $$
 
 is called the *remaining life* at time $t\geq 0$. This variable takes values in the interval $(0,\infty)$ and is the time remaining until the device that is in service at time $t$ fails. The random process $\mathbf{R} = (R_t)_{t\geq 0}$ is the remaining life process.
@@ -994,7 +994,7 @@ is called the *remaining life* at time $t\geq 0$. This variable takes values in 
 The random variable
 
 $$
-  L_t = C_t + R_t = T_{N_t + 1} - T_{N_t} = X_{N_t + 1}
+  L_t = C_t + R_t = T_{N_{t + 1}} - T_{N_t} = X_{N_{t + 1}}
 $$
 
 is called the *total life* at time $t\geq 0$. This variable takes values in $[0,\infty)$ and gives the total life of the device that is in service at time $t$. The random proces $\mathbf{L} = (L_t)_{t\geq 0}$ is the total life process.
@@ -1289,6 +1289,63 @@ $$
 $$
 </details>
 </MathBox>
+
+# Point process
+
+<MathBox title='Simple point process' boxType='definition'>
+Let $\mathbf{T} = \{T_i\}_{i\in\mathbb{N}_+}$ be an increasing sequence of random variables taking values in $[0,\infty)$ with $\mathbb{P}(0\leq T_1 \leq \dots) = 1$. If the subsets $\mathbf{T}'_k = \{T_i \mid T_i \leq k < \infty\}$ then $\mathbf{T}$ have a finite cardinality then $\mathbf{T}$ a simple point process.
+</MathBox>
+
+By defining $T_i$ for $i\in\mathbb{N}$ as the time at which the $i$th jump occurs and whose corresponding counting process is denoted as $\{N_t\}_{t\geq 0}$, the following relation is obtained
+
+$$
+  N_t = \sum_{i=1}^\infty \mathbf{1}(T_i \leq t)
+$$
+
+Since $T_i$ is the first time for which $N_t = i$, it follows by the debut theorem that $T_i$ is a stopping time. 
+
+Let $\mathcal{H}_t$ be the collection of time events $\{ t_j \}_{j=1}^n$ up to time $t$ for $n\in\mathbb{N}$, representing the history of the process. Note that the counting process $N_t$ is adapted to $\mathscr{H} = \{H_t\}_{t\geq 0}$.
+
+## Conditional intensity function
+
+A point process can be characterised by the distribution function of the nex arrival time conditioned on the history $\mathcal{H}_t$. The conditional cumulative distribution function of the next jump $T_{i+1}$ given the history up to last jump $i\in\mathbb{N}_+$ taken at time $t$ is
+
+$$
+  F^* (s\mid \mathcal{H}_t) = \int_s^t \mathbb{P}(u \leq T_{k+1} \leq u + \mathrm{d}u \mid \mathcal{H}_s)\,\mathrm{d}u = \int_s^t f^* (u\mid\mathcal{H}_s)\,\mathrm{d}u
+$$
+
+The joint probability density function for a realisation $\{t_i\}_{i=1}^n$ for $n\in\mathbb{N}_+$ is then, by the chain rule
+
+$$
+  f(t_i)_{i=1}^n = \prod_{i=1}^n f^* (t_i \mid \mathcal{H}_{t_{i-1}})
+$$
+
+If a point process has a probability density function $f^*$ which is indepedent of $\mathcal{H}_t$ then the process is a renewal process.
+
+Often it is difficult to work with the conditional arrival distribution $f^*(t)$. Alternatively, point processes can be characterised by the hazard function
+
+$$
+  \lambda^*(t) := \frac{f^* (t)}{1 - F^*(t)}
+$$
+
+<MathBox title='Conditional intensity function' boxType='definition'>
+The conditional intensity function, also known as the complete intensity function, is defined as the expected rate of jumps conditioned on $\mathcal{H}_t$
+
+$$
+  \lambda^* = \lim_{h\downarrow 0} \frac{\mathbb{E}(N_{t+h} - N_t \mid \mathcal{H}_t)}{h} = \lim_{h\downarrow 0}\frac{\mathbb{P}(t\leq T < t+h \mid\mathcal{H}_t)}{h}
+$$
+</MathBox>
+
+It is possible to obtain the survival (total life) function in terms of the hazard function
+
+$$
+\begin{gather*}
+  \lambda^* (t) = -\frac{S^*'(t\mid\mathcal{H}_t)}{S^*(t\mid\mathcal{H}_t)} = -\frac{\mathrm{d}}{\mathrm{d}t} \ln[S^*(t\mid\mathcal{H}_t)] \\
+  S^* (t\mid\mathcal{H}_t) = \exp[\int_0^t \lambda^*(u)\,\mathrm{d}u]
+\end{gather*}
+$$
+
+## Hawkes process
 
 # Markov process
 
