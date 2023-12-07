@@ -58,7 +58,7 @@ export function union<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   return result
 }
 
-export function intervalLength(minLength: number) {
+export function gridUnit(minLength: number) {
   const scale = Math.floor(Math.log10(minLength))
   const base = minLength*10**(-scale)
 

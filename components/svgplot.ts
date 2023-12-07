@@ -1,7 +1,7 @@
 //svgEl.transform.baseVal.initialize()
 
 import {parse as mathParse} from 'mathjs'
-import { difference, intersection, intervalLength } from 'utils/num'
+import { difference, intersection, gridUnit } from 'utils/num'
 
 import Vector from 'utils/vector'
 import { 
@@ -587,8 +587,8 @@ export class SVGPlot {
       this.minGridScreenSize / transform.d
     ]
     this.gridSize = new Vector(
-      intervalLength(min[0])!,
-      intervalLength(min[1])!
+      gridUnit(min[0])!,
+      gridUnit(min[1])!
     )
     // Pattern
     const attr = {
@@ -632,8 +632,8 @@ export class SVGPlot {
       this.minGridScreenSize / transform.d
     ]
     this.gridSize = new Vector(
-      intervalLength(min[0])!,
-      intervalLength(min[1])!
+      gridUnit(min[0])!,
+      gridUnit(min[1])!
     )
 
     const pattern = document.getElementById('grid-pattern')!

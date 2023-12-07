@@ -90,7 +90,7 @@ const FUNCTIONS = {
   c_arg: 'vec2(atan(z.y, z.x), 0)',
   c_reciprocal: 'c_conj(z) / dot(z, z)',
   c_multiply: 'mat2(z1, -z1.y, z1.x) * z2',
-  c_divide: 'c_multiply(z1, c_reciprocal(w))',
+  c_divide: 'c_multiply(z1, c_reciprocal(z2))',
   c_exp: 'exp(z.x) * vec2(cos(z.y), sin(z.y))',
   c_log: 'vec2(log(length(z)), atan(z.y, z.x))',
   c_pow: 'c_exp(c_multiply(c_log(z1), z2))',

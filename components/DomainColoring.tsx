@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { signal, effect } from '@preact/signals-react'
+import { computed, effect, signal } from '@preact/signals-react'
 import {
   parse, 
   ConstantNode, 
@@ -18,6 +18,7 @@ import TransformDiv, {transform} from 'components/TransformDiv'
 
 import { resizeCanvas } from 'utils/canvas'
 import { requiredFunctions } from 'utils/complex'
+import { gridUnit } from 'utils/num'
 import { ViewRange } from 'utils/types'
 import Vector from 'utils/vector'
 import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
@@ -26,6 +27,7 @@ const viewRange = signal<ViewRange>({
   x: new Vector(-10, 10),
   y: new Vector(-10, 10)
 })
+const minGrid = 50
 const expression = signal<string>('')
 const gl = signal<WebGL2RenderingContext|null>(null)
 const grid = signal<CanvasRenderingContext2D|null>(null)
@@ -73,7 +75,7 @@ function makeScene(
   gl: WebGL2RenderingContext,
   ctx: CanvasRenderingContext2D,
   expression: string,
-  matrix: DOMMatrix) 
+  matrix: DOMMatrix,) 
 {
   function renderPlot() {
     resizeCanvas(gl.canvas as HTMLCanvasElement)
@@ -84,6 +86,8 @@ function makeScene(
 
     gl.uniform2f(scaleLoc, matrix.a, matrix.d)
     gl.uniform2f(translateLoc, matrix.e, gl.canvas.height - matrix.f)
+    const unit = gridUnit(minGrid / matrix.a) 
+    gl.uniform1f(unitLoc, unit)
     
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
@@ -128,6 +132,7 @@ function makeScene(
 
   const scaleLoc = gl.getUniformLocation(program, 'u_scale')
   const translateLoc = gl.getUniformLocation(program, 'u_translate')
+  const unitLoc = gl.getUniformLocation(program, 'u_unit')
 
   const positionBuffer = gl.createBuffer()
   const vertexArray = gl.createVertexArray()
@@ -214,6 +219,7 @@ function makeFragmentCode(expression: string): string {
 
   uniform vec2 u_scale;
   uniform vec2 u_translate;
+  uniform float u_unit;
 
   const float PI = 3.14159265358979323846264;
                          
@@ -244,7 +250,8 @@ function makeFragmentCode(expression: string): string {
   }
 
   float gridlines(vec2 z, float alpha) {
-    return pow(abs(sin(PI * z.x)), alpha) * pow(abs(sin(PI * z.y)), alpha);
+    float GRID = PI / u_unit;
+    return pow(abs(sin(GRID * z.x)), alpha) * pow(abs(sin(GRID * z.y)), alpha);
   }
 
   vec3 domain_color(vec2 z, float alpha) {

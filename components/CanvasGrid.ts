@@ -1,6 +1,6 @@
 import {drawLine, mousePosition} from 'utils/canvas'
 import EventListenerStore from 'utils/event'
-import { clamp, intervalLength } from 'utils/num'
+import { clamp, gridUnit } from 'utils/num'
 import { screenToDrawPosition } from 'utils/svg'
 import { Line, ViewRange } from 'utils/types'
 import Vector from 'utils/vector'
@@ -179,13 +179,13 @@ export default class CanvasGrid {
       }
     }
 
-    const gridUnit = {
-      x: intervalLength(this.minGridSize / this.transform.a),
-      y: intervalLength(this.minGridSize / this.transform.d)
+    const unit = {
+      x: gridUnit(this.minGridSize / this.transform.a),
+      y: gridUnit(this.minGridSize / this.transform.d)
     }
   
     for (const axis of ['x', 'y']) {
-      unitIterate(gridUnit[axis], axis as Axis)
+      unitIterate(unit[axis], axis as Axis)
     }
   }
 
