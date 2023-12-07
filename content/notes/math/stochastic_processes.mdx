@@ -1341,9 +1341,131 @@ It is possible to obtain the survival (total life) function in terms of the haza
 $$
 \begin{gather*}
   \lambda^* (t) = -\frac{S^*'(t\mid\mathcal{H}_t)}{S^*(t\mid\mathcal{H}_t)} = -\frac{\mathrm{d}}{\mathrm{d}t} \ln[S^*(t\mid\mathcal{H}_t)] \\
-  S^* (t\mid\mathcal{H}_t) = \exp[\int_0^t \lambda^*(u)\,\mathrm{d}u]
+  S^* (t\mid\mathcal{H}_t) = \exp[\int_0^t \lambda^*(u)\,\mathrm{d}u] = e^{-\Lambda(t)}
 \end{gather*}
 $$
+
+## Compensator
+
+<MathBox title='Compensator' boxType='definition'>
+The compensator of a counting process is defined as
+
+$$
+  \Lambda(t) = \int_0^t \lambda*(s)\,\mathrm{d}s
+$$
+</MathBox>
+
+<MathBox title='Counting process is a submartingale' boxType='proposition'>
+The counting process defined in terms of the arrival times, $N_t = \sum_{i=1}^\infty \mathbf{1}(T_i \leq t)$, is a submartingale.
+
+<details>
+<summary>Proof</summary>
+
+Trivially, $\mathbb{E}(|N_t|) < \infty$ since the increments can only be of one unit
+
+$$
+  \mathbb{E}(|N_t|) = \mathbb{E}(N_t) = \mathbb{P}(N_t = 1) < \infty
+$$
+
+For $s, t\in[0,\infty)$ with $s\leq t$
+
+$$
+\begin{align*}
+  \mathbb{E}(N_t\mid\mathcal{H}_s) &= \mathbb{E}\left(\sum_{i=1}^\infty \mathbf{1}(T_i \leq t) \mid\mathcal{H}_s \right) = \sum_{i=1}^\infty \mathbb{E}[\mathbf{1}(T_i \leq s)\mid\mathcal{H}_s] \\
+  &= \sum_{i=1}^\infty \mathbf{1}(T_i \leq s) + \sum_{i=1}^\infty \mathbb{E}[\mathbf{1}(s < T_i \leq t)\mid\mathcal{H}_s] \geq \sum_{i=1}^\infty \mathbf{1}(T_i \leq s) = N_s
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Doob-Meyer decomposition' boxType='proposition'>
+The counting process $N_t = \sun_{i=1}^\infty \mathbf{1}(T_i \leq t$ can be decomposed into a zero mean martingale $M_t$ and a unique $\mathcal{H}_t$-predictable increasing process $\Lambda_t$
+
+$$
+  N_t = M_t + \Lambda_t
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $\Lambda(t)$ be the compensator of a given process $X$. Then for any stopping time $T$
+
+- $\Delta\Lambda(t) = 0$ if $T$ is a totally inaccessible stopping time
+- $\Delta\Lambda(t) = \mathbb{E}(\Delta X_t \mid\mathcal{H}_{T^-})$ if $T$ is a predictable stopping time
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $N_t$ be a counting process with compensator $\Lambda_t$. Then $N_\infty < \infty$ if and only iff $\Lambda(\infty) < \infty$ with probability $1$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\tau$ be the first time at which $\Lambda_\tau \geq n\in\mathbb{N}$. As the compensator is an increasing function, it is clear that $\Lambda_t < n$ for all $t < \tau$. Moreover, as the counting process only increases with increments of one unit, the same applies for the compensator by the previous lemma. Thus $\Lambda_\tau < n + 1$ giving the following inequality
+
+$$
+\begin{align*}
+  \mathbb{E}(N_\tau) &= \mathbb{E}(\Lambda_\tau + M_\tau) = \mathbb{E}(\Lambda_\tau) + \mathbb{E}(\Lambda_t) \\
+  &= \mathbb{E}(\Lambda(\tau)) < n + 1
+\end{align*}
+$$
+
+which shows that $N_\tau < \infty$. If $\Lambda_\infty$ it follows that $N_\infty < \infty$ in the limit $n\to\infty$.
+
+Conversely, define $\tau$ as the first time at which $N_\tau = n$, i.e. $N_\tau \leq n$. In this case the Doob-Meyer decomposition becomes
+
+$$
+  \mathbb{E}(\Lambda_\tau) = \mathbb{E}(N_\tau) \leq n
+$$
+
+Assuming that $N_\infty < n$, it follows that $\Lambda_\infty < \infty$ almost surely in the limit $n\to\infty$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $N_t$ be a counting process with compensator $\Lambda_t$. Then $N_t$ is almost surely constant on all intervals on which $\Lambda_t$ is constant.
+
+<details>
+<summary>Proof</summary>
+
+Let $s,\varepsilon > 0$ and let $T_{s,\varepsilon}$ denote the stopping time defined As
+
+$$
+  T_{s,\varepsilon} = \inf\{ t \geq s \mid \Lambda_t \geq \Lambda_s + \varepsilon \}
+$$
+
+As $T_{s,\varepsilon}$ is predictable, there exists a sequence of stopping times $T_n < T_{s,\varepsilon}$ increasing to $T_{s,\varepsilon}$ giving
+
+$$
+\begin{align*}
+  \mathbb{E}(N_{T_{s,\varepsilon}} - N_s) &= \lim_{n\to\infty}\mathbb{E}(N_{T_n} - N_s) \\
+  &= \lim_{n\to\infty} \mathbb{E}(\Lambda_{T_n} - \Lambda_s) \leq \varepsilon
+\end{align*}
+$$
+
+Assume that $\Lambda_t = \Lambda_s$ for any $s < t$. From the right-continuity of the compensator, $T_{s,\varepsilon}$ is strictly greater than $t$
+
+$$
+  \mathbb{E}\left[\sup_{s<t}\{\mathbf{1}(\Lambda_t = \Lambda_s)\} (N_t - N_s) \right] \leq \mathbb{E}[N_{T_{s,\varepsilon}} - N_s] \leq \varepsilon
+$$
+
+This inequality holds for any $\varepsilon > 0$, thus almost surely
+
+$$
+  \mathbb{E}\left[\sup_{s<t}\{\mathbf{1}(\Lambda_t = \Lambda_s)\} (N_t - N_s) \right] = 0
+$$
+
+Hence $N_t = N_s$ for all $s < t$ for which $\Lambda_t = \Lambda_s$.
+</details>
+</MathBox>
 
 ## Hawkes process
 
