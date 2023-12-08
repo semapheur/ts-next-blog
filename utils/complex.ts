@@ -86,14 +86,28 @@ class ComplexFunction{
 
 const FUNCTIONS = {
   c_conj: 'vec2(z.x, -z.y)',
-  c_abs: 'vec2(length(z), 0)',
-  c_arg: 'vec2(atan(z.y, z.x), 0)',
+  c_abs: 'vec2(length(z), 0.0)',
+  c_arg: 'vec2(atan(z.y, z.x), 0.0)',
   c_reciprocal: 'c_conj(z) / dot(z, z)',
   c_multiply: 'mat2(z1, -z1.y, z1.x) * z2',
   c_divide: 'c_multiply(z1, c_reciprocal(z2))',
   c_exp: 'exp(z.x) * vec2(cos(z.y), sin(z.y))',
   c_log: 'vec2(log(length(z)), atan(z.y, z.x))',
+  c_square: 'vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y)',
   c_pow: 'c_exp(c_multiply(c_log(z1), z2))',
+  c_sqrt: `
+    float phase = 0.5 * atan(z.y, z.x);
+    return sqrt(length(z)) * vec2(cos(phase), sin(phase))
+  `,
+  c_nthRoot: `
+    float phase = atan(z1.y, z1.x) / int(z2.x);
+    pow(length(z1), 1.0 / z2) * vec2(cos(phase), sin(phase))
+  `,
   c_sin: 'vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y))',
   c_cos: 'vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y))',
+  c_tan: `
+    float tan_x = tan(z.x);
+    float tanh_y = tan(z.y);
+    return c_divide(vec2(tan_x, tanh_y), vec2(1, -tan_x * tanh_y))
+  `
 }
