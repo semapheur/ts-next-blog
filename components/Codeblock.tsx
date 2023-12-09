@@ -3,12 +3,11 @@
 import { HTMLProps, ReactNode, useRef, useState } from 'react'
 import { ClipboardCheckIcon, ClipboardIcon } from 'utils/icons';
 
-interface Props extends HTMLProps<HTMLPreElement> {
-  className?: string
+type Props = {
   children: ReactNode
-}
+} & HTMLProps<HTMLPreElement>
 
-export default function Codeblock({className, children, ...props}: Props) {
+export default function Codeblock({children, ...props}: Props) {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -23,7 +22,7 @@ export default function Codeblock({className, children, ...props}: Props) {
   }
 
   return (
-    <pre className={'group relative ' + className} ref={preRef} {...props} >
+    <pre className={'group relative ' + props.className} ref={preRef} {...props} >
       <button className={`sticky right-4 float-right hidden group-hover:block
         p-1 border-2 rounded
         after:absolute after:text-sm after:px-1

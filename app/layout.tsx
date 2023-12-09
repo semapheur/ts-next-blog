@@ -48,7 +48,6 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{__html: setInitialTheme}}/>
         <Header/>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        <div id='react-portal'/>
       </body>
     </html>
   )

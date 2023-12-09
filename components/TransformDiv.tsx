@@ -4,31 +4,31 @@ import { MouseEvent, useEffect, useRef, HTMLProps, ReactNode, WheelEvent, useSta
 import {signal, Signal} from '@preact/signals-react'
 import {ViewRange} from 'utils/types'
 import Vector from 'utils/vector'
-import useEventListener from 'hooks/useEventListener'
-import { transformPoint } from 'utils/canvas'
 import { screenToDrawPosition } from 'utils/svg'
 
 export const transform = signal(new DOMMatrix([1, 0, 0, 1, 0, 0]))
 
-interface Props extends HTMLProps<HTMLDivElement> {
+type Props = {
   viewRange: Signal<ViewRange>
   children: ReactNode
-}
+} & HTMLProps<HTMLDivElement>
 
 export default function TransformDiv({viewRange, children, ...props}: Props) {
   const divRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const startPos = useRef<DOMPoint>(new DOMPoint(0,0))
-  const [divSize, setDivSize] = useState<DOMPoint>(new DOMPoint(0,0))
+  const divSize = useRef<DOMPoint>(new DOMPoint(0,0))
 
   function handleResize() {
     const div = divRef.current
     if (!div) return
 
-    const currentViewRange = getViewRange(transform.value, divSize.x, divSize.y)
+    const size = divSize.current
+    
+    const currentViewRange = getViewRange(transform.value, size.x, size.y)
     const {width, height} = div.getBoundingClientRect()
     transform.value = setTransform(currentViewRange, width, height)
-    setDivSize(new DOMPoint(width, height))
+    divSize.current = new DOMPoint(width, height)
   }
 
   function handleMouseDown(e: MouseEvent) {
@@ -75,13 +75,13 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     const {width, height} = div.getBoundingClientRect()
     viewRange.value = squareGrids(viewRange.value, width, height)
     transform.value = setTransform(viewRange.value, width, height)
-    setDivSize(new DOMPoint(width, height))
+    divSize.current = new DOMPoint(width, height)
 
-    //window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize)
 
-    //return () => {
-    //  window.removeEventListener('resize', handleResize)
-    //}
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   return (<div ref={divRef} {...props}
@@ -154,8 +154,10 @@ function getViewRange(matrix: DOMMatrix, width: number, height: number): ViewRan
   const x0y0 = screenToDrawPosition(new DOMPoint(0, 0), matrix)
   const x1y1 = screenToDrawPosition(new DOMPoint(width, height), matrix)
 
-  return {
+  const newViewRange = {
     x: new Vector(x0y0.x, x1y1.x),
     y: new Vector(x0y0.y, x1y1.y)
   }
+
+  return squareGrids(newViewRange, width, height)
 }

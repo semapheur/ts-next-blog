@@ -83,7 +83,7 @@ export default function Cards({children}: CardsProps) {
 
   return (
     <div ref={deckRef}
-      className='group h-full flex flex-wrap justify-center items-center gap-4 p-4
+      className='group h-full flex flex-wrap overflow-y-scroll justify-center items-center gap-4 p-4
         bg-primary'
     >
       {children.map((node, i) => 

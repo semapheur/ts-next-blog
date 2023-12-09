@@ -168,7 +168,7 @@ export async function markdownHeadings(source:string) {
 //    return {code, frontmatter};
 //}
 
-//interface MDXProps {
+//type MDXProps = {
 //    code: string
 //}
 

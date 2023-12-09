@@ -16,9 +16,9 @@ type Margin = {
   left: number
 }
 
-interface Props extends HTMLAttributes<HTMLDivElement> {
+type Props = {
   data: Array<[number, number]>
-}
+} & HTMLAttributes<HTMLDivElement>
 
 export default function DensityPlot({data, ...props}: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
