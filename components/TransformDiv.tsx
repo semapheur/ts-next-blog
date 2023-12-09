@@ -22,13 +22,18 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   function handleResize() {
     const div = divRef.current
     if (!div) return
-
+    
     const size = divSize.current
     
+    const viewport = document.querySelector('meta[name=viewport]')!
+    viewport.setAttribute('content', `height=${size.y}px, width=device-width, initial-scale=1.0`)
+
     const currentViewRange = getViewRange(transform.value, size.x, size.y)
     const {width, height} = div.getBoundingClientRect()
     transform.value = setTransform(currentViewRange, width, height)
     divSize.current = new DOMPoint(width, height)
+
+    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
   }
 
   function handleMouseDown(e: MouseEvent) {

@@ -1,7 +1,7 @@
-import {Inter} from 'next/font/google';
+import {Inter} from 'next/font/google'
 import './globals.css'
 import Header from './Header'
-import StyledComponentsRegistry from 'components/StyledComponentsRegistry';
+import StyledComponentsRegistry from 'components/StyledComponentsRegistry'
 
 // Metadata
 export const metadata = {
@@ -9,6 +9,13 @@ export const metadata = {
   icons: {
     icon: '/favicon.ico'
   }
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: 0
 }
 
 // Font
