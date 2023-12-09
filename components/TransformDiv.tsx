@@ -23,12 +23,12 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     const div = divRef.current
     if (!div) return
     
-    const size = divSize.current
+    const oldSize = divSize.current
     
     const viewport = document.querySelector('meta[name=viewport]')!
-    viewport.setAttribute('content', `height=${size.y}px, width=device-width, initial-scale=1.0`)
+    viewport.setAttribute('content', `height=${oldSize.y}px, width=device-width, initial-scale=1.0`)
 
-    const currentViewRange = getViewRange(transform.value, size.x, size.y)
+    const currentViewRange = getViewRange(transform.value, oldSize.x, oldSize.y)
     const {width, height} = div.getBoundingClientRect()
     transform.value = setTransform(currentViewRange, width, height)
     divSize.current = new DOMPoint(width, height)

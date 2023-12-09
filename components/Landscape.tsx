@@ -42,12 +42,12 @@ export default function Landscape() {
 
   useEffect(() => {
 
-    if (!size || 
-      !hill1Ref.current || 
-      !hill2Ref.current || 
-      !hill3Ref.current || 
-      !hill4Ref.current || 
-      !hill5Ref.current
+    if (!(size && 
+      hill1Ref.current && 
+      hill2Ref.current && 
+      hill3Ref.current && 
+      hill4Ref.current && 
+      hill5Ref.current)
     ) return
 
     const {height: h, width: w} = size
