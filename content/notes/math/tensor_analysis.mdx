@@ -1,0 +1,603 @@
+---
+title: 'Tensor Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Lie bracket (commutator)
+
+The Lie bracket measures the separation of vector field flow curves. A flow curve (integral curve) is a curve that is tangent to all vectors in a vector field. 
+
+$$
+\begin{align*}
+  \left[ \mathbf{u}, \mathbf{v} \right] &= \mathbf{u}(\mathbf{v}) - \mathbf{v}(\mathbf{u}) \\
+  &= u^i \partial_i \left( v^j \boldsymbol{\partial}_j \right) - v^i \partial_i \left( u^j \boldsymbol{\partial}_j \right) \\
+  &= u^i \left[ \left( \partial_i v^j \right)\boldsymbol{\partial}_j + v^j \left( \partial_i \boldsymbol{\partial}_j \right) \right] - v^i \left[ \left( \partial_i u^j \right)\boldsymbol{\partial}_j + u^j \left( \partial_i \boldsymbol{\partial}_j \right) \right]
+\end{align*}
+$$
+
+The Lie bracket of basis vectors always vanishes as the basis vector flow curves (coordinate lines) always close.
+
+The Lie bracket is not linear for each input
+
+$$
+\begin{align*}
+  \left[ \alpha \mathbf{u}, \mathbf{v} \right] &= \alpha \mathbf{u}\left( \mathbf{v} \right) - \mathbf{v}\left(\alpha \mathbf{u} \right) \\
+  &= \alpha \mathbf{u}\left( \mathbf{v} \right) - \mathbf{v}\left( \alpha \right) - \alpha \mathbf{v}\left( \mathbf{u} \right) \\
+  &= \alpha \left[ \mathbf{u}\left( \mathbf{v} \right) - \mathbf{v}\left( \mathbf{u} \right)  \right] - \mathbf{v}\left( \alpha \right)\mathbf{u} \\
+  &= \alpha \left[ \mathbf{u}, \mathbf{v} \right] - \mathbf{v}\left( \alpha \right)\mathbf{u}
+\end{align*}
+$$
+
+# Geodesics
+
+The geodesic is the straightest possible path in a curved surface/space. In curved space, a straight path has zero tangential acceleration when we travel along it at constant speed, meaning that the accelaration vector is normal to the surface.
+
+The acceleration along a path $\mathbf{R}(t)$ on a surface is given by the second order derivative in terms of the tangential basis.
+
+$$
+\begin{align*}
+  \frac{\mathrm{d}^2\mathbf{R}}{\mathrm{d}t^2} &= \frac{\mathrm{d}}{\mathrm{d}t} \left( \frac{\mathrm{d}\mathbf{R}}{\mathrm{d}t} \right) \\
+  &= \frac{\mathrm{d}}{\mathrm{d}t} \left( \frac{\mathrm{d}x^i}{\mathrm{d}t} \frac{\partial \mathbf{R}}{\partial x^i} \right) \\
+  &= \frac{\mathrm{d}^2x^i}{\mathrm{d}t^2} \frac{\partial \mathbf{R}}{\partial x^i} + \frac{\mathrm{d}x^i}{\mathrm{d}t} \left( \frac{\mathrm{d}}{\mathrm{d}t} \frac{\partial \mathbf{R}}{\partial x^i} \right) \\
+  &= \frac{\mathrm{d}^2x^i}{\mathrm{d}t^2} \frac{\partial \mathbf{R}}{\partial x^i} + \frac{\mathrm{d}x^i}{\mathrm{d}t} \left[ \left( \frac{\mathrm{d}x^j}{\mathrm{d}t} \frac{\partial}{\partial x^j} \right) \frac{\partial \mathbf{R}}{\partial x^i} \right] \\
+  &= \underbrace{\frac{\mathrm{d}^2x^i}{\mathrm{d}t^2} \frac{\partial \mathbf{R}}{\partial x^i}}_{\mathrm{tangential}} + \frac{\mathrm{d}x^i}{\mathrm{d}t} \frac{\mathrm{d}x^j}{\mathrm{d}t} \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j}
+\end{align*}
+$$
+
+The second term has both tangential and normal component, of which it can be expanded into
+
+$$
+  \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j} = \Gamma^k_{ij} \frac{\partial \mathbf{R}}{\partial x^k} + L_{ij} \mathbf{\hat{n}}
+$$
+
+where 
+- $L_{ij}$ is the second fundamental form giving the normal components.
+- $\Gamma_{ij}^k$ are Christoffel symbols giving the tangential components.
+
+The normal vector $\mathbf{\hat{n}}$ is given by the cross product 
+
+$$
+  \frac{ \frac{\partial \mathbf{R}}{\partial x^i} \times \frac{\partial \mathbf{R}}{\partial x^j}}{\left\lVert \frac{\partial \mathbf{R}}{\partial x^i} \times \frac{\partial \mathbf{R}}{\partial x^j} \right\rVert}
+$$
+
+The Christoffel symbols is derived from the dot product
+
+$$
+\begin{align*}
+  \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j} \cdot \frac{\partial \mathbf{R}}{\partial x^l} &= \left( \Gamma^k_{ij} \frac{\partial \mathbf{R}}{\partial x^k} + L_{ij} \mathbf{\hat{n}} \right) \cdot \frac{\partial \mathbf{R}}{\partial x^l} \\
+  &= \Gamma^k_{ij} \frac{\partial \mathbf{R}}{\partial x^k} \cdot \frac{\partial \mathbf{R}}{\partial x^l} = \Gamma^k_{ij} g_{kl}
+\end{align*}
+$$
+
+By applying the inverse metric tensor, we get
+
+$$
+  \Gamma^m_{ij} = \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j} \cdot \frac{\partial \mathbf{R}}{\partial x^l} \mathfrak{g}^{lm}
+$$
+
+The second fundamental form is derived from the dot product
+
+$$
+\begin{align*}
+  \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j} \cdot \mathbf{\hat{n}} &= \left( \Gamma^k_{ij} \frac{\partial \mathbf{R}}{\partial x^k} + L_{ij} \mathbf{\hat{n}} \right) \cdot \mathbf{\hat{n}} \\
+  L_{ij} &= \frac{\partial^2 \mathbf{R}}{\partial x^i \partial x^j} \cdot \mathbf{\hat{n}}
+\end{align*}
+$$
+
+The second derivative of the path $\mathbf{R}(t)$ can thus be decomposed into
+
+$$
+  \frac{\mathrm{d}^2\mathbf{R}}{\mathrm{d}t^2} = \underbrace{\left( \frac{\mathrm{d}^2x^k}{\mathrm{d}t^2} + \Gamma^k_{ij} \frac{\mathrm{d}x^i}{\mathrm{d}t} \frac{\mathrm{d}x^j}{\mathrm{d}t} \right) \frac{\partial \mathbf{R}}{\partial{x^k}}}_{\mathrm{tangential}} + \underbrace{L_{ij} \frac{\mathrm{d}x^i}{\mathrm{d}t}\frac{\mathrm{d}x^j}{\mathrm{d}t} \mathbf{\hat{n}}}_{\mathrm{normal}}
+$$
+
+## Geodesic equation
+
+A geodesic curve has vanishing tangential acceleration, giving the geodesic equation
+
+$$
+  \frac{\mathrm{d}^2x^k}{\mathrm{d}t^2} + \Gamma^k_{ij} \frac{\mathrm{d}x^i}{\mathrm{d}t} \frac{\mathrm{d}x^j}{\mathrm{d}t} = 0
+$$
+
+# Covariant derivative
+
+The covariant derivative operator provides an affine connection between tangent spaces in a curved space, through parallel transport of a vector field along a smooth curve on a surface.
+
+The covariant derivative operator has the following properties
+- Linearity in direction vector input:
+$$
+\begin{align*}
+  \nabla_{\left(\alpha\boldsymbol{\partial}_1 + \beta\boldsymbol{\partial}_2 \right)} \mathbf{v} &= \left( \alpha\partial_1 + \beta\partial_2 \right) \mathbf{v} \\
+  &= \alpha\left(\partial_1\mathbf{v}\right) + \beta\left( \partial_2  \mathbf{v} \right) \\
+  &= \alpha \nabla_{\boldsymbol{\partial}_1} \mathbf{v} + \beta \nabla_{\boldsymbol{\partial}_2} \mathbf{v}
+\end{align*}
+$$
+
+- Additive in vector field input
+$$
+\begin{align*}
+  \nabla_{\boldsymbol{\partial}_i} \left( \mathbf{u} + \mathbf{v} \right) &= \partial_i \left( \mathbf{u} + \mathbf{v} \right) \\
+  &= \partial_i \mathbf{u} + \partial_i \mathbf{v} \\
+  &= \nabla_{\boldsymbol{\partial}_i} \mathbf{u} + \nabla_{\boldsymbol{\partial}_i} \mathbf{v}
+\end{align*}
+$$
+
+- Product rule (Leibniz rule)
+$$
+\begin{align*}
+  \nabla_{\boldsymbol{\partial}_i} \left( \alpha \mathbf{v} \right) &= \partial_i \left( \alpha \mathbf{v} \right) \\
+  &= \left(\partial_i \alpha \right)\mathbf{v} + \alpha \left( \partial_i \mathbf{v} \right) \\
+  &= \left( \nabla_{\boldsymbol{\partial}_i} \alpha \right)\mathbf{v} + \alpha\left( \nabla_{\boldsymbol{\partial}_i} \mathbf{v} \right)
+\end{align*}
+$$
+
+- The covariant derivative of a scalar field equals the directional derivative
+$$
+  \nabla_{\boldsymbol{\partial}_i} \alpha = \frac{\partial \alpha}{\partial x^i}
+$$
+
+The Christoffel symbols (connection coefficients) themselves are covarant derivaties
+
+$$
+  \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j = \Gamma_{ij}^k \boldsymbol{\partial}_k 
+$$
+
+A general formula for the covariant derivative is given as follows
+
+$$
+\begin{align*}
+  \nabla_{\mathbf{u}} \mathbf{v} &= \nabla_{u_i \partial_i} \left( v^j \boldsymbol{\partial}_j \right) \\
+  &= u^i \nabla_{\partial_i} \left( v^j \boldsymbol{\partial}_j \right) \\
+  &= u^i \left[ \nabla_{\partial_i} \left(v^j \right) \boldsymbol{\partial}_j + v^j \nabla_{\partial_i} \boldsymbol{\partial}_j \right] \\
+  &= u^i \left[ \left(\partial_i v^k \right) \boldsymbol{\partial}_k + v^j \Gamma_{ij}^k \boldsymbol{\partial}_k \right] \\
+  &= u^i \left( \partial_i v^k + v^j \Gamma_{ij}^k \right) \boldsymbol{\partial}_k
+\end{align*}
+$$
+
+## Fundamental theorem of Riemannian geometry
+There is a unique covariant derivative, called the Levi-Civita connection, that is torsion free and has metric compatibility:
+
+- Torsion-free (vanishing Lie bracket)
+$$
+  \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j - \nabla_{\boldsymbol{\partial}_j} \boldsymbol{\partial}_i = \partial_i \partial_j - \partial_j \partial_i \equiv \left[ \boldsymbol{\partial}_i, \boldsymbol{\partial}_j \right] = 0
+$$
+
+- Metric compatibility (product rule of vector field dot product)
+$$
+  \nabla_{\boldsymbol{\partial}_i} \left( \mathbf{u} \cdot \mathbf{v} \right) = \left( \nabla_{\boldsymbol{\partial}_i} \mathbf{u} \right) \cdot \mathbf{v} + \mathbf{u} \cdot \left( \nabla_{\boldsymbol{\partial}_i} \mathbf{v} \right) = 0
+$$
+
+The torsion-free property implies symmetry in the lower indices of the Christoffel symbols
+$$
+\begin{gather*}
+  \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j = \nabla_{\boldsymbol{\partial}_j} \boldsymbol{\partial}_i \\
+  \Gamma_{ij}^k \boldsymbol{\partial}_k = \Gamma_{ji}^k \boldsymbol{\partial}_k \\
+  \Gamma_{ij}^k = \Gamma_{ji}^k
+\end{gather*}
+$$
+
+The metric compatibility property gives the following
+
+$$
+\begin{align*}
+  \nabla_{\boldsymbol{\partial}_k} \left( \boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_j \right) &= \partial_k \left(\boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_j  \right) = \left( \nabla_{\boldsymbol{\partial}_k} \boldsymbol{\partial}_i \right) \cdot \boldsymbol{\partial}_j + \boldsymbol{\partial}_i \cdot \left( \nabla_{\boldsymbol{\partial}_k} \boldsymbol{\partial}_j \right) \\
+  &= \Gamma_{ik}^l \left( \boldsymbol{\partial}_l \cdot \boldsymbol{\partial}_j \right) + \Gamma_{jk}^l \left( \boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_l \right) \\
+  \partial_k g_{ij} &= \Gamma_{ik}^l g_{jl} + \Gamma_{jk}^l g_{il}
+\end{align*}
+$$
+
+The two properties give equal Christoffel terms by permuting indices (equal terms in matching colors)
+
+$$
+\begin{align*}
+  \partial_k g_{ij} &= \color{blue}{\Gamma_{ik}^l g_{jl}} + \color{red}{\Gamma_{jk}^l g_{il}} \\
+  \partial_j g_{ki} &= \color{red}{\Gamma_{kj}^l g_{il}} + \color{green}{\Gamma_{ij}^l g_{kl}} \\
+  \partial_i g_{jk} &= \color{green}{\Gamma_{ji}^l g_{kl}} + \color{blue}{\Gamma_{ki}^l g_{jl}}
+\end{align*}
+$$
+
+Combining the equations and rearranging, a formula for the Christoffel symbol is derived
+
+$$
+\begin{gather*}
+  \Gamma_{jk}^l g_{li} + \Gamma_{kj}^l g_{li} = \partial_k g_{ij} + \partial_j g_{ki} - \partial_i g_{jk} \\
+  2\Gamma_{jk}^l g_{li}\mathfrak{g}^{im} = \mathfrak{g}^{im} \left( \partial_k g_{ij} + \partial_j g_{ki} - \partial_i g_{jk} \right) \\
+  \Gamma_{jk}^l \delta_l^m = \frac{1}{2} \mathfrak{g}^{im} \left( \partial_k g_{ij} + \partial_j g_{ki} - \partial_i g_{jk} \right) \\
+  \Gamma_{jk}^m = \frac{1}{2} \mathfrak{g}^{im} \left( \partial_k g_{ij} + \partial_j g_{ki} - \partial_i g_{jk} \right)
+\end{gather*}
+$$
+
+## Flat-space definition
+
+In flat space, the covariant derivative of a vector field equals the ordrinary derivative, differentiating both the vector components and the basis vectors
+
+$$
+\begin{align*}
+  \frac{\partial \mathbf{v}}{\partial x^i} &= \frac{\partial}{\partial x^i} \left( v^j \frac{\partial \mathbf{v}}{\partial x^j} \right) \\
+  &= \frac{\partial v^j}{\partial x^i} \frac{\partial \mathbf{v}}{\partial x^j} + v^j \frac{\partial}{\partial x^i} \left( \frac{\partial \mathbf{v}}{\partial x^j}  \right) \\
+  &= \left( \frac{\partial v^j}{\partial x^i} + v^j \Gamma_{ij}^k \right) \frac{\partial \mathbf{v}}{\partial x^k} 
+\end{align*}
+$$
+
+## Extrinsic definition (parallel transport)
+
+Parallel transport moves a vector along a smooth curve on a surface. The vector rate of change is normal to the surface.
+
+The covariant derivative $\nabla_{\mathbf{w}}\mathbf{v}$ is the rate of change of a vector field $\mathbf{v}$ in a direction $\mathbf{w}$ with the normal component $\mathbf{n}$ subtracted. When the covariant derivative vanishes, the vector $\mathbf{v}$ is parallel transported in the direction $\mathbf{w}$.
+
+$$
+  \nabla_{\frac{\mathrm{d}}{\mathrm{d}t}}\mathbf{v} = \frac{\mathrm{d}\mathbf{v}}{\mathrm{d}t} - \mathbf{n}
+$$
+
+For a tangent vector field we get
+
+$$
+\begin{align*}
+  \nabla_{\boldsymbol{\partial}_i}\mathbf{v} &= \frac{\partial \mathbf{v}}{\partial x^i} - \mathbf{n} = \frac{\partial}{\partial x^i} \left( v^j \frac{\partial \mathbf{v}}{\partial x^j} \right) - \mathbf{n} \\
+  &= \frac{\partial v^j}{\partial x^i} \frac{\partial \mathbf{v}}{\partial x^j} + v^j \frac{\partial}{\partial x^i} \left( \frac{\partial \mathbf{v}}{\partial x^j}  \right) - \mathbf{n} \\
+  &= \left[ \frac{\partial v^k}{\partial x^i} \frac{\partial \mathbf{v}}{\partial x^k} + v^j \left(\Gamma_{ij}^k \frac{\partial \mathbf{v}}{\partial x^k} + L_{ij}\hat{\mathbf{n}} \right) \right] - \mathbf{n} \\
+  &= \left[ \frac{\partial v^k}{\partial x^i} + v^j \Gamma_{ij}^k  \right]\frac{\partial \mathbf{v}}{\partial x^k} + \underbrace{v^j L_{ij}\mathbf{\hat{n}}}_{=\mathbf{n}} - \mathbf{n} \\
+  &= \left[ \frac{\partial v^k}{\partial x^i} + v^j \Gamma_{ij}^k  \right]\frac{\partial \mathbf{v}}{\partial x^k}
+\end{align*}
+$$
+
+## Intrinsic definition
+
+In intrinsic geometry, curves cannot be described by position and normal vectors with respect to an origin. The covariant derivative is given by
+
+
+$$
+\begin{align*}
+  \nabla_{\boldsymbol{\partial}_i}\mathbf{v} &= \frac{\partial \mathbf{v}}{\partial x^i} \\
+  &= \frac{\partial}{\partial x^i} \left( v^j \boldsymbol{\partial}_j \right) \\
+  &= \frac{\partial v^j}{\partial x^i} \boldsymbol{\partial}_j + v^j \frac{\partial}{\partial x^i} \left( \boldsymbol{\partial}_j \right) \\
+  &= \frac{\partial v^k}{\partial x^i} \boldsymbol{\partial}_k + v^j \Gamma_{ij}^k \boldsymbol{\partial}_k \\
+  &= \left( \frac{\partial v^k}{\partial x^i} + v^j \Gamma_{ij}^k  \right) \boldsymbol{\partial}_k
+\end{align*}
+$$
+
+The Christoffel symbols are derived from partial derivatives of the metric tensor
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial x^k} g_{ij} &= \frac{\partial}{\partial x^k} \left( \boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_j \right) \\
+  &= \frac{\partial}{\partial x^k} \left( \boldsymbol{\partial}_i \right) \cdot \boldsymbol{\partial}_j + \boldsymbol{\partial}_i \cdot \frac{\partial}{\partial x^k} \left( \boldsymbol{\partial}_j \right) \\
+  &= \left( \Gamma_{ik}^l \boldsymbol{\partial}_l \right) \cdot \boldsymbol{\partial}_j + \boldsymbol{\partial}_i \cdot \left( \Gamma_{jk}^l \boldsymbol{\partial}_l \right) \\
+  &= \Gamma_{ik}^l \left( \boldsymbol{\partial}_l \cdot \boldsymbol{\partial}_j \right) + \Gamma_{jk}^l \left( \boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_l \right) \\
+  &= \Gamma_{ik}^l g_{lj} + \Gamma_{jk}^l g_{il} \\
+  &= \Gamma_{ik}^l g_{jl} + \Gamma_{jk}^l g_{il}
+\end{align*}
+$$
+
+Permuting the indices gives the following set of PDEs with equal terms matching in color
+
+$$
+\begin{align*}
+  \frac{\partial g_{ij}}{\partial x^k} &= \color{blue}{\Gamma_{ik}^l g_{jl}} + \color{red}{\Gamma_{jk}^l g_{il}} \\
+  \frac{\partial g_{ki}}{\partial x^j} &= \color{red}{\Gamma_{kj}^l g_{il}} + \color{green}{\Gamma_{ij}^l g_{kl}} \\
+  \frac{\partial g_{jk}}{\partial x^i} &= \color{green}{\Gamma_{ji}^l g_{kl}} + \color{blue}{\Gamma_{ki}^l g_{jl}}
+\end{align*}
+$$
+
+The Christoffel symbols can be isolated with the following PDE combination
+
+$$
+\begin{gather*}
+  \Gamma_{jk}^l g_{li} + \Gamma_{kj}^l g_{li} = \frac{\partial g_{ij}}{\partial x^k} + \frac{\partial g_{ki}}{\partial x^j} - \frac{\partial g_{jk}}{\partial x^i} \\
+  2\Gamma_{jk}^l g_{li}\mathfrak{g}^{im} = \mathfrak{g}^{im} \left( \frac{\partial g_{ij}}{\partial x^k} + \frac{\partial g_{ki}}{\partial x^j} - \frac{\partial g_{jk}}{\partial x^i} \right) \\
+  \Gamma_{jk}^l \delta_l^m = \frac{1}{2} \mathfrak{g}^{im} \left( \frac{\partial g_{ij}}{\partial x^k} + \frac{\partial g_{ki}}{\partial x^j} - \frac{\partial g_{jk}}{\partial x^i} \right) \\
+  \Gamma_{jk}^m = \frac{1}{2} \mathfrak{g}^{im} \left( \frac{\partial g_{ij}}{\partial x^k} + \frac{\partial g_{ki}}{\partial x^j} - \frac{\partial g_{jk}}{\partial x^i} \right)
+\end{gather*}
+$$
+
+By the symmetry $\frac{\partial^2}{\partial x^j \partial x^k} = \frac{\partial^2}{\partial x^k \partial x^j}$ we get
+
+$$
+  \frac{\partial g_{ij}}{\partial x^k} + \frac{\partial g_{ki}}{\partial x^j} - \frac{\partial g_{jk}}{\partial x^i} = 2 \left(\frac{\partial}{\partial x^i} \cdot \frac{\partial^2}{\partial x^j \partial x^k} \right)
+$$
+
+Hence, the extrinsic formula for the Christoffel symbols is retrieved from the intrinsic formula
+
+$$
+\begin{align*}
+  \Gamma_{jk}^m &= \frac{1}{2} \mathfrak{g}^{im} \left[ 2 \left( \frac{\partial}{\partial x^i} \cdot \frac{\partial^2}{\partial x^j \partial x^k} \right) \right] \\
+  &= \frac{\partial}{\partial x^i} \cdot \frac{\partial^2}{\partial x^j \partial x^k} \mathfrak{g}^{im}
+\end{align*}
+$$
+
+## Geodesics
+
+The covariant derivative gives an alternative definition of a geodesic as a curve resulting from parallel transporting a vector along itself
+
+$$
+  \nabla_{\mathbf{v}}\mathbf{v} = \mathbf{0}
+$$
+
+The godesic equation can be retrieved from the covariant derivative of a parametrized curve along itself
+
+$$
+\begin{align*}
+  \nabla_{\frac{\mathrm{d}}{\mathrm{d}\lambda}} \frac{\mathrm{d}}{\mathrm{d}\lambda} &= \frac{\mathrm{d}}{\mathrm{d}\lambda} \left( \frac{\mathrm{d}}{\mathrm{d}\lambda} \right) \\
+  &= \frac{\mathrm{d}}{\mathrm{d}\lambda} \left( \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \boldsymbol{\partial}_j \right) \\
+  &= \frac{\mathrm{d}}{\mathrm{d}\lambda} \left( \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \right) \boldsymbol{\partial}_j + \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \frac{\mathrm{d}}{\mathrm{d}\lambda} \boldsymbol{\partial}_j \\
+  &= \frac{\mathrm{d}^2 u^j}{\mathrm{d}\lambda^2} \boldsymbol{\partial}_j + \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \left( \frac{\mathrm{d}u^i}{\mathrm{d}\lambda} \boldsymbol{\partial}_i  \right) \boldsymbol{\partial}_j \\
+  &= \frac{\mathrm{d}^2 u^j}{\mathrm{d}\lambda^2} \boldsymbol{\partial}_j + \frac{\mathrm{d}u^i}{\mathrm{d}\lambda} \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j \\
+  &= \frac{\mathrm{d}^2 u^j}{\mathrm{d}\lambda^2} \boldsymbol{\partial}_j + \frac{\mathrm{d}u^i}{\mathrm{d}\lambda} \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \Gamma_{ij}^k \boldsymbol{\partial}_k \\
+  &= \left( \frac{\mathrm{d}^2 u^k}{\mathrm{d}\lambda^2} + \frac{\mathrm{d}u^i}{\mathrm{d}\lambda} \frac{\mathrm{d}u^j}{\mathrm{d}\lambda} \Gamma_{ij}^k \right) \boldsymbol{\partial}_k
+\end{align*}
+$$
+
+Hence the curve is geodesic if $\nabla_{\frac{\mathrm{d}}{\mathrm{d}\lambda}} \frac{\mathrm{d}}{\mathrm{d}\lambda} = \mathbf{0}$
+
+# Torsion tensor
+
+The torsion tensor measures the separation between parallel-transported vector fields
+
+$$
+\begin{align*}
+  T\left(\mathbf{u}, \mathbf{v}\right) &= \nabla_{\mathbf{u}}\mathbf{v} - \nabla_{\mathbf{v}}\mathbf{u} - \left[ \mathbf{u}, \mathbf{v} \right] \\
+  &= u^i \left( \partial_i v^k + v^j \Gamma_{ij}^k \right) \boldsymbol{\partial}_k - v^i \left( \partial_i u^k + u^j \Gamma_{ij}^k \right) \boldsymbol{\partial}_k - \left[ u^i \partial_i \left( v^j \boldsymbol{\partial}_j \right) - v^i \partial_i \left( u^j \boldsymbol{\partial}_j \right) \right] \\
+  &= u^i \left( \partial_i v^k + v^j \Gamma_{ij}^k \right) \boldsymbol{\partial}_k - v^i \left( \partial_i u^k + u^j \Gamma_{ij}^k \right) \boldsymbol{\partial}_k - u^i \left[ \left( \partial_i v^k \right)\boldsymbol{\partial}_k + v^j \left( \partial_i \boldsymbol{\partial}_j \right) \right] + v^i \left[ \left( \partial_i u^k \right)\boldsymbol{\partial}_k + u^j \left( \partial_i \boldsymbol{\partial}_j \right) \right] \\
+  &= u^i v^j \Gamma_{ij}^k \boldsymbol{\partial}_k - v^i u^j \Gamma_{ij}^k \boldsymbol{\partial}_k = u^i v^j \Gamma_{ji}^k \boldsymbol{\partial}_k - v^j u^i \Gamma_{ji}^k \boldsymbol{\partial}_k \\
+  &= u^i v^j \left(\Gamma_{ij}^k - \Gamma_{ji}^k \right) \boldsymbol{\partial}_k = u^i v^j T_{ij}^k \boldsymbol{\partial}_k
+\end{align*}
+$$
+
+An affine connection given by a covariant derivative is called torsion-free if the torsion tensor vanishes, $T\left(\mathbf{u}, \mathbf{v}\right) = \mathbf{0}$. Torsion-free means that parallel-transported vectors close properly and it implies that the connection coefficients (Christoffel symbols) are symmetric in the lower indices
+
+$$
+\begin{gather*}
+  T_{ij}^k = \Gamma_{ij}^k - \Gamma_{ji}^k = 0 \\
+  \Gamma_{ij}^k = \Gamma_{ji}^k
+\end{gather*}
+$$
+
+# Riemann curvature tensor (Riemann-Christoffel tensor)
+
+The Riemann curvature tensor $R^d_{abc}$ is of rank $(1,3)$.
+
+## Holonomic definition
+
+On all curved surfaces a coordinate system called the Riemann normal coordinates (local inertia frame) can be found at a point $p$ such that the metric tensor and the Christoffel symbols vanish.
+
+Holonomy describes how vector fields get twisted during parallel transport. In this regard, the Riemann curvature tensor captures this twisting by measuring the rate of change of a parallel-transported vector field $DCBA\mathbf{w}$ relative to the original field $\mathbf{w}$ at the same point. Assuming the Levi-Civita connection applies such that $\left[ \mathbf{u}, \mathbf{v} \right] = 0$
+
+$$
+\begin{align*}
+  R\left( \mathbf{u}, \mathbf{v} \right) \mathbf{w} &= \lim_{r,s \to 0} \frac{\mathbf{w} - DCBA\mathbf{w}}{rs} \\
+  &= \lim_{r,s \to 0} \frac{1}{rs} \left( DCC^{-1}D^{-1}\mathbf{w} - DCBA\mathbf{w} \right) \\
+  &= \lim_{r,s \to 0} \frac{1}{rs} DC \left( C^{-1}D^{-1}\mathbf{w} - BA\mathbf{w} \right) \\
+  &= \lim_{r,s \to 0} \frac{1}{rs} DC \left[ \left( C^{-1}D^{-1}\mathbf{w} - C^{-1}\mathbf{w} + C^{-1}\mathbf{w} - \mathbf{w} \right) - \left( BA\mathbf{w} - B\mathbf{w} + B\mathbf{w} - \mathbf{w} \right) \right] \\
+  &= \lim_{r,s \to 0} \frac{1}{rs} DC \left[ C^{-1}\left( D^{-1} \mathbf{w} - \mathbf{w} \right) + \left( C^{-1} \mathbf{w} - \mathbf{w} \right) - B\left(A \mathbf{w} - \mathbf{w} \right) + \left( B\mathbf{w} - \mathbf{w} \right)  \right] \\
+  &= \lim_{r,s \to 0} DC \left[ \left( \frac{C^{-1}}{r} \underbrace{\frac{D^{-1} \mathbf{w} - \mathbf{w}}{s}}_{=\nabla_{\mathbf{v}}\mathbf{w}} + \frac{1}{s} \underbrace{\frac{C^{-1} \mathbf{w} - \mathbf{w}}{r}}_{=\nabla_{\mathbf{u}}\mathbf{w}} \right) - \left( \frac{B}{s} \underbrace{\frac{A \mathbf{w} - \mathbf{w}}{r}}_{=\nabla_{\mathbf{u}}\mathbf{w}} + \frac{1}{r} \underbrace{\frac{B\mathbf{w} - \mathbf{w}}{s}}_{=\nabla_{\mathbf{v}}\mathbf{w}} \right) \right] \\
+  &= \lim_{r,s \to 0} DC \left[ \frac{C^{-1}}{r} \left( \nabla_{\mathbf{v}}\mathbf{w} \right) + \frac{1}{s} \left( \nabla_{\mathbf{u}}\mathbf{w} \right) - \frac{B}{s} \left( \nabla_{\mathbf{u}}\mathbf{w} \right) - \frac{1}{r} \left( \nabla_{\mathbf{v}}\mathbf{w} \right) \right] \\
+  &= \lim_{r,s \to 0} DC \left( \frac{C^{-1} \nabla_{\mathbf{v}}\mathbf{w} - \nabla_{\mathbf{v}}\mathbf{w}}{r} - \frac{B \nabla_{\mathbf{u}}\mathbf{w} - \nabla_{\mathbf{u}}\mathbf{w}}{s} \right) \\
+  &= \lim_{r,s \to 0} \underbrace{DC}_{=\mathrm{Id}} \left( \nabla_{\mathbf{u}}\nabla_{\mathbf{v}}\mathbf{w} - \nabla_{\mathbf{v}}\nabla_{\mathbf{u}}\mathbf{w} \right) \\
+  &= \nabla_{\mathbf{u}}\nabla_{\mathbf{v}}\mathbf{w} - \nabla_{\mathbf{v}}\nabla_{\mathbf{u}}\mathbf{w}
+\end{align*}
+$$
+
+In the case $\left[ \mathbf{u}, \mathbf{v} \right] \neq 0$, the Riemann curvature tensor is defined as
+
+$$
+  R\left( \mathbf{u}, \mathbf{v} \right) \mathbf{w} = \nabla_{\mathbf{u}}\nabla_{\mathbf{v}}\mathbf{w} - \nabla_{\mathbf{v}}\nabla_{\mathbf{u}}\mathbf{w} - \nabla_{\left[\mathbf{u}, \mathbf{v} \right]}\mathbf{w}
+$$
+
+The Riemann curvature tensor is linear in all inputs
+
+$$
+  R\left( \mathbf{u}, \mathbf{v} \right) \mathbf{w} = u^i v^j w^k R\left(\boldsymbol{\partial}_i, \boldsymbol{\partial}_j \right)\boldsymbol{\partial}_k
+$$
+
+Linearity in the first input is shown as follows
+
+$$
+\begin{align*}
+  R\left( \mathbf{u}, \mathbf{v} \right) \mathbf{w} &= \nabla_{u^i \boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - \nabla_{\mathbf{v}}\nabla_{u^i \boldsymbol{\partial}_i} \mathbf{w} - \nabla_{\left[u^i \boldsymbol{\partial}_i, \mathbf{v} \right]} \mathbf{w} \\
+  &= \nabla_{u^i \boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - \nabla_{\mathbf{v}}\nabla_{u^i \boldsymbol{\partial}_i} \mathbf{w} - \nabla_{u^i \left[ \boldsymbol{\partial}_i, \mathbf{v} \right] - \mathbf{v}\left(u^i\right) \boldsymbol{\partial}_i} \mathbf{w} \\
+  &= u^i \nabla_{\boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - \nabla_{\mathbf{v}} \left( u^i \nabla_{\boldsymbol{\partial}_i} \mathbf{w} \right) - u^i \nabla_{ \left[ \boldsymbol{\partial}_i, \mathbf{v} \right]} \mathbf{w} + \mathbf{v}\left(u^i\right) \nabla_{\boldsymbol{\partial}_i} \mathbf{w} \\
+  &= u^i \nabla_{\boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - \underbrace{\left( \nabla_{\mathbf{v}} u^i \right)}_{=\mathbf{v}\left( u^i\right)} \left( \nabla_{\boldsymbol{\partial}_i} \mathbf{w} \right) - u^i \left( \nabla_{\mathbf{v}}\nabla_{\boldsymbol{\partial}_i} \mathbf{w} \right) - u^i \nabla_{ \left[ \boldsymbol{\partial}_i, \mathbf{v} \right]} \mathbf{w} + \mathbf{v}\left(u^i\right) \left( \nabla_{\boldsymbol{\partial}_i} \mathbf{w} \right) \\
+  &= u^i \nabla_{\boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - u^i \left( \nabla_{\mathbf{v}}\nabla_{\boldsymbol{\partial}_i} \mathbf{w} \right) - u^i \nabla_{u^i \left[ \boldsymbol{\partial}_i, \mathbf{v} \right]} \mathbf{w} \\
+  &= u^i \left( \nabla_{\boldsymbol{\partial}_i} \nabla_{\mathbf{v}} \mathbf{w} - \nabla_{\mathbf{v}}\nabla_{\boldsymbol{\partial}_i} \mathbf{w} - \nabla_{ \left[ \boldsymbol{\partial}_i, \mathbf{v} \right]} \mathbf{w} \right) \\
+  &= u^i R\left( \boldsymbol{\partial}_i, \mathbf{v} \right) \mathbf{w}
+\end{align*}
+$$
+
+Linearity in the second input can be similarly shown, while linearity in the third input is shown as follows
+
+$$
+\begin{align*}
+  R\left( \mathbf{u}, \mathbf{v} \right) \mathbf{w} &= \nabla_{\mathbf{u}}\nabla_{\mathbf{v}}\left(w^i \boldsymbol{\partial}_i \right) - \nabla_{\mathbf{v}}\nabla_{\mathbf{u}}\left(w^i \boldsymbol{\partial}_i \right) - \nabla_{\left[\mathbf{u}, \mathbf{v} \right]}\left(w^i \boldsymbol{\partial}_i \right) \\
+  &= \nabla_{\mathbf{u}} \left[ \left( \nabla_{\mathbf{v}} w^i \right) \boldsymbol{\partial}_i + w^i \left( \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) \right] - \nabla_{\mathbf{v}} \left[ \left( \nabla_{\mathbf{u}} w^i \right) \boldsymbol{\partial}_i + w^i \left( \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) \right] - \nabla_{\left[\mathbf{u}, \mathbf{v} \right]}\left(w^i \boldsymbol{\partial}_i \right) \\
+  &= \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} w^i \right) \boldsymbol{\partial}_i + \left( \nabla_{\mathbf{v}} w^i \right) \left( \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) + \left( \nabla_{\mathbf{u}} w^i \right) \left( \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) + w^i \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) \\
+  &\quad - \left( \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} w^i \right)\boldsymbol{\partial}_i -  \left( \nabla_{\mathbf{v}} w^i \right) \left( \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) - \left( \nabla_{\mathbf{u}} w^i \right) \left( \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) - w^i \left( \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) \\
+  &\quad - \nabla_{\left[\mathbf{u}, \mathbf{v} \right]}\left(w^i \boldsymbol{\partial}_i \right) \\
+  &= \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} w^i \right) \boldsymbol{\partial}_i - \left( \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} w^i \right)\boldsymbol{\partial}_i + w^i \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) - w^i \left( \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) \\
+  &\quad - \underbrace{\left( \nabla_{\left[\mathbf{u}, \mathbf{v} \right]} w^i \right)}_{\nabla_{\mathbf{u}}\nabla_{\mathbf{v}}w^i - \nabla_{\mathbf{v}}\nabla_{\mathbf{u}}w^i} \boldsymbol{\partial}_i - w^i \left( \nabla_{\left[\mathbf{u}, \mathbf{v} \right]} \boldsymbol{\partial}_i \right) \\
+  &= w^i \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} \boldsymbol{\partial}_i \right) - w^i \left( \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} \boldsymbol{\partial}_i \right) - w^i \left( \nabla_{\left[\mathbf{u}, \mathbf{v} \right]} \boldsymbol{\partial}_i \right) \\
+  &= w^i \left( \nabla_{\mathbf{u}} \nabla_{\mathbf{v}} \boldsymbol{\partial}_i - \nabla_{\mathbf{v}} \nabla_{\mathbf{u}} \boldsymbol{\partial}_i - \nabla_{\left[\mathbf{u}, \mathbf{v} \right]} \boldsymbol{\partial}_i \right) \\
+  &= w^i R\left( \mathbf{u}, \mathbf{v} \right) \boldsymbol{\partial}_i
+\end{align*}
+$$
+
+## Geodesic deviation definition
+
+The geodesic deviation of vector flow curves $\mathbf{v}$ separated by the vector field $\mathbf{s}$ is given by
+
+$$
+  \nabla_{\mathbf{v}}\nabla_{\mathbf{v}}\mathbf{s}
+$$
+
+Since the flow and separation curves form closed loops, a torsion-free connecting applies, giving 
+
+$$
+  \nabla_{\mathbf{v}}\mathbf{s} - \nabla_{\mathbf{s}}\mathbf{v} \equiv \left[ \mathbf{v}, \mathbf{s} \right] = 0 \\
+  \nabla_{\mathbf{v}}\mathbf{s} = \nabla_{\mathbf{s}}\mathbf{v}
+$$
+
+Since the flow curves are geodesic the covariant derivative of $\mathbf{v}$ along itself vanishes
+
+$$
+\begin{align*}
+  \mathbf{0} &= \nabla_{\mathbf{v}}\mathbf{v} \\
+  &= \nabla_{\mathbf{s}}\nabla_{\mathbf{v}}\mathbf{v} \\
+  &= \underbrace{\nabla_{\mathbf{s}}\nabla_{\mathbf{v}}\mathbf{v} - \nabla_{\mathbf{v}}\nabla_{\mathbf{s}}\mathbf{v}}_{=R(\mathbf{s}, \mathbf{v})\mathbf{v}} + \nabla_{\mathbf{v}}\underbrace{\nabla_{\mathbf{s}}\mathbf{v}}_{=\nabla_{\mathbf{v}}\mathbf{s}} \\
+  &= R(\mathbf{s}, \mathbf{v})\mathbf{v} + \nabla_{\mathbf{v}}\nabla_{\mathbf{v}}\mathbf{s} \\
+\end{align*}
+$$
+
+The geodesic deviation is thus given by
+
+$$
+  \nabla_{\mathbf{v}}\nabla_{\mathbf{v}}\mathbf{s} = -R(\mathbf{s}, \mathbf{v})\mathbf{v} = R(\mathbf{v}, \mathbf{s})\mathbf{v} 
+$$
+
+### Sectional curvature
+
+Sectional curvature is defined as 
+
+$$
+  K(\mathbf{s}, \mathbf{v}) = \frac{\left[R(\mathbf{s}, \mathbf{v})\mathbf{v}\right] \cdot \mathbf{s}}{\left( \mathbf{s} \cdot \mathbf{s} \right) - \left( \mathbf{v} \cdot \mathbf{v} \right) - \left( \mathbf{s} \cdot \mathbf{v} \right)^2}
+$$
+
+where the denominator is a normalization factor equaling the area of the parallellogram spaned by the vector fields, equivalent of $\lVert \mathbf{s} \times \mathbf{v} \rVert^2$. The sign of the nominator denotes wheter the flow curves described by $\mathbf{v}$ are converging/diverging.
+
+## Tensor components
+
+The Riemann curvature tensor components can be derived as follows
+
+$$
+\begin{align*}
+  R\left( \boldsymbol{\partial}_a, \boldsymbol{\partial}_b \right) \boldsymbol{\partial}_c &= \nabla_{\boldsymbol{\partial}_a} \nabla_{\boldsymbol{\partial}_b} \boldsymbol{\partial}_c - \nabla_{\boldsymbol{\partial}_b} \nabla_{\boldsymbol{\partial}_a} \boldsymbol{\partial}_c - \underbrace{\nabla_{\left[ \boldsymbol{\partial}_a, \boldsymbol{\partial}_b \right]}}_{=0} \boldsymbol{\partial}_c \\
+  &= \nabla_{\boldsymbol{\partial}_a} \left( \Gamma_{bc}^i \boldsymbol{\partial}_i \right) - \nabla_{\boldsymbol{\partial}_b} \left( \Gamma_{ac}^j \boldsymbol{\partial}_j \right) \\
+  &= \nabla_{\boldsymbol{\partial}_a} \left( \Gamma_{bc}^i \right) \boldsymbol{\partial}_i + \Gamma_{bc}^i \nabla_{\boldsymbol{\partial}_a} \boldsymbol{\partial}_i - \nabla_{\boldsymbol{\partial}_b} \left( \Gamma_{ac}^j \right) \boldsymbol{\partial}_j - \Gamma_{ac}^j \nabla_{\boldsymbol{\partial}_b} \boldsymbol{\partial}_j \\
+  &= \partial_a \left( \Gamma_{bc}^i \right) \boldsymbol{\partial}_i - \partial_b \left( \Gamma_{ac}^j \right) \boldsymbol{\partial}_j + \Gamma_{bc}^i \Gamma_{ai}^k \boldsymbol{\partial}_k - \Gamma_{ac}^j \Gamma_{bj}^l \boldsymbol{\partial}_l \\
+  &= \partial_a \left( \Gamma_{bc}^i \right) \boldsymbol{\partial}_d - \partial_b \left( \Gamma_{ac}^d \right) \boldsymbol{\partial}_d + \Gamma_{bc}^i \Gamma_{ai}^d \boldsymbol{\partial}_d - \Gamma_{ac}^j \Gamma_{bj}^d \boldsymbol{\partial}_d \\
+  &= \left[ \partial_a \left( \Gamma_{bc}^i \right) - \partial_b \left( \Gamma_{ac}^d \right) + \Gamma_{bc}^i \Gamma_{ai}^d - \Gamma_{ac}^j \Gamma_{bj}^d \right] \boldsymbol{\partial}_d \\
+  &= R_{cab}^d \boldsymbol{\partial}_d
+\end{align*}
+$$ 
+
+## Symmetries
+
+- 34-symmetry: $R^d_{c\color{red}{ba}} = -R^d_{c\color{red}{ab}}$
+- Bianchi identity: $R^d_{cab} + R^d_{bca} + R^d_{abc} = 0$
+- Second Bianchi identity: $R_{cab;i}^d + R_{cia;b}^d + R_{cbi;a}^d = 0$
+- 12-symmetry: $R_{\color{red}{ba}cd} = -R_{\color{red}{ab}cd}$
+- Flip: $R_{\color{red}{ab}\color{blue}{cd}} = -R_{\color{blue}{cd}\color{red}{ab}}$
+
+## Transformation rule
+
+The Riemann tensor transforms as follows
+
+$$
+  \tilde{R}_{abc}^d = J_a^i J_b^j J_c^k R_{ijk}^l \left(J^{-1}\right)_l^d
+$$
+
+# Ricci tensor
+
+## Geodesic deviation definition
+
+The Ricci tensor desribes volume changes along flow curves and can be defined as a sum of sectional curvature wrt an orthonormal basis
+
+$$
+\begin{align*}
+  \mathrm{Ric}(\mathbf{v}, \mathbf{v}) &= \sum_{i=1}^{n-1} K(\boldsymbol{\partial}_i, \mathbf{v}) \\
+  &= \frac{\left[R\left( \boldsymbol{\partial}_i, \mathbf{v} \right)\mathbf{v}\right] \cdot \boldsymbol{\partial}_i}{\left( \boldsymbol{\partial}_i \cdot \boldsymbol{\partial}_i\right) - \left( \mathbf{v} \cdot \mathbf{v} \right) - \left( \boldsymbol{\partial}_i \cdot \mathbf{v} \right)^2} \\
+  &= \left[R\left( \boldsymbol{\partial}_i, \mathbf{v} \right)\mathbf{v}\right] \cdot \boldsymbol{\partial}_i \\
+  &= \left[R\left( \boldsymbol{\partial}_i, v^j \boldsymbol{\partial}_j \right)v^k \boldsymbol{\partial}_k \right] \cdot \boldsymbol{\partial}_i \\
+  &= v^j v^k \left[R\left( \boldsymbol{\partial}_i, \boldsymbol{\partial}_j \right) \boldsymbol{\partial}_k \right] \cdot \boldsymbol{\partial}_i \\
+  &= v^j v^k R_{kij}^i \\
+  &= v^j v^k R_{kj}
+\end{align*}
+$$
+
+where $\mathbf{v} = \boldsymbol{\partial}_n$ is set as a direction vector field.
+
+## Volume form definition
+
+The volume form is a linear form measuring the volum spaned by a set of vectors
+
+$$
+  \omega (\mathbf{v}_1,...,\mathbf{v}_n) = \sqrt{\det g} \varepsilon_{ij...} \prod_{i=1}^n v_i^{\mu_i} = \omega \prod_{i=1}^n v_i^{\mu_i}
+$$
+
+where $\varepsilon$ is the Levi-Civita symbol
+
+$$
+  \varepsilon_{ij...} = \begin{cases} 
+    1 \, , \quad &\textrm{even permutations} \\
+    -1 \, , \quad  &\textrm{odd permutations} \\
+    0 \, , \quad &\textrm{repeated indices}
+  \end{cases}
+$$
+
+The Ricci tensor can be derived from the covariant derivative of the volume form of separation vectors along a geodesic curve.
+
+With the Levi-Civita connection, the first covariant derivative of the volume form of parallel-transported flow separation vectors along a geodesic path vanishes since volume is preserved
+
+$$
+\begin{align*}
+  \nabla_{\mathbf{v}} \left[ \omega (\mathbf{s}_1,...,\mathbf{s}_n) \right] &= \nabla_{\mathbf{v}} \left( \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \prod_{i=1}^n s_i^{\mu_i} \right) \\
+  &= \left( \nabla_{\mathbf{v}} \sqrt{\det g} \right)\varepsilon_{\mu_1...\mu_n} \prod_{i=1}^n s_i^{\mu_i} + \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \underbrace{\left( \nabla_{\mathbf{v}} s_j^{\mu_j} \right)}_{=0} \prod_{\substack{i=0\\ i\neq j}}^n s_i^{\mu_i}
+\end{align*}
+$$
+
+Since the vectors are parallel-transported, $\nabla_{\mathbf{v}} s_j^{\mu_j} = 0$, and hence 
+
+$$
+  \left( \nabla_{\mathbf{v}} \sqrt{\det g} \right)\varepsilon_{\mu_1...\mu_n} = \nabla_{\mathbf{v}} \omega = 0
+$$
+
+The 2nd covariant derivative of the volume form becomes
+
+$$
+\begin{align*}
+  \nabla_{\mathbf{v}}\nabla_{\mathbf{v}} \left[ \omega (\mathbf{s}_1,...,\mathbf{s}_n) \right] &= \nabla_{\mathbf{v}} \nabla_{\mathbf{v}} \left( \prod_{i=1}^n s_i^{\mu_i} \right) \underbrace{\sqrt{\det g} \varepsilon_{\mu_1...\mu_n} }_{\nabla_{\mathbf{v}} \omega = 0} \\
+  &= \nabla_{\mathbf{v}} \left[ \left( \nabla_{\mathbf{v}} s_j^{\mu_j} \right) \prod_{\substack{i=1 \\ i\neq j}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \\
+  &= \left[ \underbrace{\left( \nabla_{\mathbf{v}}\nabla_{\mathbf{v}} s_j^{\mu_j} \right)}_{=-R(\mathbf{s}, \mathbf{v})\mathbf{v}} \prod_{\substack{i=1 \\ i\neq j}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} + \left[ \left( \nabla_{\mathbf{v}}s_j^{\mu_j} \right) \left( \nabla_{\mathbf{v}}s_k^{\mu_k} \right) \prod_{\substack{i=1 \\ i\neq j,k}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \\
+  &= \left[ -R_{xyz}^{\mu_j} s_j^{y} v^x v^z \prod_{\substack{i=1 \\ i\neq j}} s_i^{\mu_i} \right] \sqrt{\det g} \underbrace{\varepsilon_{\mu_1...\mu_n}}_{\Rightarrow y = \mu_j} + \left[ \left( \nabla_{\mathbf{v}}s_j^{\mu_j} \right) \left( \nabla_{\mathbf{v}}s_k^{\mu_k} \right) \prod_{\substack{i=1 \\ i\neq j,k}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \\
+  &= \left[ -R_{x\mu_j z}^{\mu_j} s_j^{\mu_j} v^x v^z \prod_{\substack{i=1 \\ i\neq j}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} + \left[ \left( \nabla_{\mathbf{v}}s_j^{\mu_j} \right) \left( \nabla_{\mathbf{v}}s_k^{\mu_k} \right) \prod_{\substack{i=1 \\ i\neq j,k}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \\
+  &= \left[ -R_{x\mu_j z}^{\mu_j} v^x v^z \prod_{i=1} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} + \left[ \left( \nabla_{\mathbf{v}}s_j^{\mu_j} \right) \left( \nabla_{\mathbf{v}}s_k^{\mu_k} \right) \prod_{\substack{i=1 \\ i\neq j,k}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n} \\
+  &= -\underbrace{R_{xz}v^x v^z}_{\mathrm{Ric}(\mathbf{v}, \mathbf{v})} \omega (\mathbf{s}_1,...,\mathbf{s}_n) + \left[ \left( \nabla_{\mathbf{v}}s_j^{\mu_j} \right) \left( \nabla_{\mathbf{v}}s_k^{\mu_k} \right) \prod_{\substack{i=1 \\ i\neq j,k}} s_i^{\mu_i} \right] \sqrt{\det g} \varepsilon_{\mu_1...\mu_n}
+\end{align*}
+$$
+
+The Ricci tensor thus measures the volume change along geodesics in curved space
+
+## Ricci scalar
+
+The Ricci scalar measures the amount by which the volume of a geodesic ball in curved space deviates from that of a standard ball in flat space.
+
+$$
+  R = g^{ij}R_{ij} = R_i^i
+$$
+
+## Properties
+
+- Symmetry: $R_{ab} = R_{ba}$
+- Contracted Bianchi identity: $R^{nm}_{;n} - \frac{1}{2}g^{mn}R_{;n} = G^{mn}_{;n} = 0$ where $G^{mn}$ is the Einstein tensor
+
+The Ricci tensor is given by contractions in the second and third lower indices of the Riemann tensor
+
+$$
+  R_{aib}^i = R_{ab} \\
+  R_{abi}^i = -R_{aib}^i = -R_{ab}
+$$
+
+the third possible contraction of the Riemann tensor is trivial
+
+$$
+  R_{\color{blue}{i}ab}^\color{blue}{i} = g^{\color{blue}{i}\color{red}{j}}R_{jiab} = -g^{\color{red}{j}\color{blue}{i}}R_{\color{blue}{i}\color{red}{j}ab} = -R_{\color{red}{j}ab}^\color{red}{j} = 0
+$$
+
+The symmetry of the Ricci tensor is shown from a special case of the Bianchi identity by setting $d = a$
+
+$$
+\begin{align*}
+  R_{c\color{red}{a}b}^\color{red}{a} + R_{bc\color{red}{a}}^\color{red}{a} + \underbrace{R_{\color{red}{a}bc}^\color{red}{a}}_{=0} &= 0 \\
+  R_{c\color{red}{a}b}^\color{red}{a} - R_{b\color{red}{a}c}^\color{red}{a} &= 0 \\
+  R_{cb} - R_{bc} &= 0 \\
+  R_{cb} &= R_{bc}
+\end{align*}
+$$
