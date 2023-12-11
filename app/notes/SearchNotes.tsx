@@ -27,8 +27,7 @@ export default function SearchNotes() {
     if (slug) setPreview(slug);
   }
   const {data: result, error} = useSWR(query, searchFetcher)
-  console.log(result)
-
+  
   return (
     <>
       <div className='flex flex-col gap-8 p-8 divide-y' key='search'>

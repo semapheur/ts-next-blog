@@ -21,7 +21,6 @@ export default function SearchBar() {
     setQuery('')
   }
   const {data: result} = useSWR(query, searchFetcher)
-  console.log(result)
 
   return (
     <div className='group relative'>
