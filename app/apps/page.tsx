@@ -27,7 +27,7 @@ export default function page() {
   return (
     <Cards>
       {content.map((card, i) => 
-        <AppCard key={'app.' + i} content={card} />
+        <AppCard key={`app.${i}`} content={card} />
       )}
     </Cards>
   )

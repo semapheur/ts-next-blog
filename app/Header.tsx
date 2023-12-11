@@ -6,8 +6,8 @@ import MobileNav from 'components/MobileNav';
 
 export default function Header() {
   const nav = [
-    {'title': 'Notes', 'url': '/notes'},
-    {'title': 'Apps', 'url': '/apps'}
+    {title: 'Notes', url: '/notes'},
+    {title: 'Apps', url: '/apps'}
   ]
 
   return (
