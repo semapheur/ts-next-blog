@@ -26,7 +26,13 @@ export default function SearchNotes() {
     const slug = e.currentTarget.getAttribute('data-tag')
     if (slug) setPreview(slug);
   }
-  const {data: result} = useSWR(query, searchFetcher)
+  const {data: result, error} = useSWR(query, searchFetcher)
+  console.log(result)
+
+  if (error) {
+    console.log(error)
+    return <p>Failed to fetch</p>
+  }
 
   return (
     <>
@@ -43,7 +49,7 @@ export default function SearchNotes() {
               : 'No results found! Refine your query...'
             }</h4>       
           )}
-          {result && result.map((note) => 
+          {Array.isArray(result) && result.map((note) => 
             <Link className='block py-1 text-text hover:text-secondary' 
               href={`notes/${note.slug}`} data-tag={note.slug}
               onMouseOver={handleMouseOver} key={note.slug}

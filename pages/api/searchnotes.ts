@@ -6,9 +6,9 @@ import tokenize from 'utils/tokenize';
 import {notes} from 'cache/note';
 
 export type SearchResult = {
-    score: number;
-    slug: string;
-    title: string;
+	score: number;
+	slug: string;
+	title: string;
 }[]
 
 //const notes: Note[] = process.env.NODE_ENV === 'production' ? 
