@@ -120,10 +120,9 @@ Suppose $S$ is finite set.
 6. Boole's inequality: if $\{A_i\}_{i=1}^{n\in\mathbb{N}}$ is a collection of subsets of $S$ then $\left|\bigcup_{i=1}^n A_i \right| \leq \sum_{i=1}^n \left|A_i\right|$
 7. Bonferroni's inequality: if $\{A_i\}_{i=1}^{n\in\mathbb{N}}$ is a collection of subsets of $S$ then $\left|\bigcap_{i=1}^n A_i \right| \geq |S| - \sum_{i=1}^n \left(|S| - |A|\right)
 8. Inclusion-exclusion formula: if $\{A_i\}_{i\in I}$ is a collection subsets of $S$ with $|I| = n$, then $\left|\bigcup_{i\in I} A_i \right| = \sum_{k=1}^n (-1)^{k-1}\left( \sum_{J\subseteq I,\, |J| = k} \left|\bigcap_{j\in J} A_j \right|\right)$
-    - If $A$ and $B$ are subsets of $S$, then $|A\cup B| = |A| + |B| - |A\cap B|$
+  - If $A$ and $B$ are subsets of $S$, then $|A\cup B| = |A| + |B| - |A\cap B|$
 9. Multiplication rule: If $S_i$ is a set with $n_i$ elements for $\{i\}_{i=1}^{k\in\mathbb{N}}, then $\left| \prod_{i=1}^k S_i \right| = \prod_{i=1}^k n_i$
-    - IF $S$ is a set with $n$ elements, then $\left|S^k\right| = n^k$
-
+  - IF $S$ is a set with $n$ elements, then $\left|S^k\right| = n^k$
 </MathBox>
 
 <MathBox title='Theorem' boxType='theorem'>
@@ -146,6 +145,32 @@ To show reflexivity of $\leq$, recall that the identity function $\mathrm{id}_A:
 
 <MathBox title='Schröder-Bernsteim theorem' boxType='theorem'>
 If $A\leq B$ and $B\leq A$, then $A\sim B$, i.e. there is a bijection $f:A\to B$.
+
+<details>
+<summary>Proof</summary>
+
+Let $f:A\to B$ be an injective function from $A$ into $B$ and let $g:B\to A$ be an injective function from $B$ into $A$. We want to use these functions to create a bijective function from $A$ to $B$. For this, we make the following definitions. The *descendants* of an element $a\in A$ are the elements obtained by repeated alternate applications of the the functions $f$ and $g$, i.e.
+
+$$
+  f(a), g\circ f(a), f\circ g \circ f (a),\dots 
+$$
+
+If $b$ is a descendant of $a$ then $a$ is an ancestor of $b$. Descendants and ancestors of elements of $B$ are defined similarly.
+
+By tracing an element's ancestry to its root, there are three possibilities: the element originates in $A$, or in $B$, or it has no point of origin. Accordingly, we can write $A$ as the union of three disjoint sets
+
+$$
+\begin{align*}
+  A_A =& \{a\in A \mid a \text{ originates in } A\} \\
+  A_B =& \{a\in A \mid a \text{ originates in } B\} \\
+  A_\infty =& \{a\in A \mid a \text{ has no originator } \} \\
+\end{align*}
+$$
+
+Similarly, $B = B_A \cup B_B \cup B_\infty$. 
+
+The restriction $f|_{A_A}:A_A \to B_A$ is a bijection. To see this, note that that if $b\in B_A$ then $b$ originated in $A$ and therefore must have the form $f(a)$ for some $a\in A$. However, $b$ and its ancestor $f(a)$ have the same point of origin and so $b\in B_A$ implies $a\in S_A$. Thus, $f|_{A_A}$ is surjective and hence bijective. With similar arguments, the functions $(g|_{B_B})^{-1}:A_B \to B_B$ and $f|_{A_\infty}: A_\infty\to B_\infty$ are also bijections. Combining these bijections, gives a bijection between $A$ and $B$. Hence, $|A| = |B|$.
+</details>
 </MathBox>
 
 <MathBox title='Proposition' boxType='proposition'>
@@ -160,6 +185,14 @@ A set $A$ is called
 3. countably infinite if $A\sim\mathbb{N}$
 4. countable if $A$ is finite or countably infinite
 5. uncountable if $A$ is not countable
+</MathBox>
+
+<MathBox title='Infinite cardinality' boxType='theorem'>
+The cardinality of the natural numbers is denoted $\aleph_0$.
+
+$$
+  |\mathbb{N}| = |\mathbb{Z}| = |\mathbb{Q}| = \aleph_0
+$$
 </MathBox>
 
 <MathBox title='Properties of subsets of infinite sets' boxType='proposition'>
@@ -228,6 +261,18 @@ This property is the reason for the alternative notation $P(S) = 2^S$ of a power
 <summary>Proof</summary>
 
 To prove the equivalence $\mathcal{P}(S)\sim \{0, 1\}^S$, we need to find a bijection $f:\mathcal{P}(S)\to\{0, 1\}^S$. Recall that the indicator function $\mathcal{1}_A$ maps from some set $A$ into $\{0, 1\}$, so that $\{0, 1\}^S$ is the set of all indicator functions for $S$. Suppose $A\in\mathcal{P}(S)$ is a subset of $S$ and consider the function $f:\mathcal{P}(S)\to\{0, 1\}^S$ given by $f(A) = \mathbf{1}_A$. If $A,B\in\mathcal{P}(S)$ and $\mathbf{1}_A = \mathbf{1}_B$, then $A = B$, so $f$ is injective. If $g\in\{0, 1\}^S$, then $g = \mathbf{1}_A$ with $A = \{x\in S \mid f(x) = 1\}$, so $f$ is surjective. Hence $f:\mathcal{P}(S)\to\{0, 1\}^S$ is a bijection. 
+</details>
+</MathBox>
+
+<MathBox title="Cantor's theorem" boxType='theorem'>
+If $S$ is a set then $|S| \leq |\mathcal{P}(S)|$.
+
+<details>
+<summary>Proof</summary>
+
+The function $\iota:S\to\mathcal{P}(S)$ defined by $\iota(s) = \{s\}$ is an injection from $S$ to $\mathcal{P}(S)$ and so $|S|\leq|\mathcal{P}(S)|$. It remains to show that no injection $f:S\to\mathcal{P}(S)$ can be surjective.
+
+Let $X = \{ s\in S \mid s\notin f(s) \}\in\mathcal{P}(S)$. We claim that $X\notin f[\mathcal{P}(S)]$. Suppose that $X = f(x)$ for some $x\in S$. Then if $x\in X$, we have by the definition of $X$ that $x\notin X$. On the other hand, if $x\notin X$ we have again by the definition of $X$ that $x\in X$. This contradiction implies that $X\notin f[\mathcal{P}(S)]$ and so $f$ is not surjective.
 </details>
 </MathBox>
 
@@ -508,7 +553,7 @@ A partial order on a set $S$ is a relation $\leq$ on $S$ that is reflexive, anti
 2. anti-symmetry: $x\leq y \land y\leq x \implies x = y$
 3. transitivity: $x\leq y \land y\leq z \implies x\leq z$
 
-A partial order $\leq$ on $S$ is a total or linear order if for every $x, y\in S$ either $x\leq y$ or $y\leq x$.
+A partial order $\leq$ on $S$ is a total or linear order if for every $x, y\in S$ either $x\leq y$ or $y\leq x$. Any totally ordered subset of a partially ordered set $S$ is called a *chain* in $S$.
 </MathBox>
 
 <MathBox title='Ordering relations' boxType='definition'>
@@ -517,10 +562,14 @@ With the partial order $\leq$ on a set $S$, the following relations can be defin
 2. $x < y \iff x\leq y \land x\neq y$ (strict/strong partial order)
 3. $x > y \iff y \leq x$ (inverse of $<$)
 4. $x \perp y \iff x\leq y \lor y\leq x$
-5. $x\parallel y \iff \neg x\leq y \neg y\leq x$ 
+5. $x\parallel y \iff \neg x\leq y \neg y\leq x$
 </MathBox>
 
 Note that $x\perp y$ means that $x$ and $y$ are related in partial order, while $x\parallel y$ means that $x$ and $y$ are unrelated. A total or linear order is a partial order in which there are no unrelated elements.
+
+<MathBox title="Zorn's lemma" boxType='lemma'>
+If $S$ is a partially ordered set in which every chain has an upper bound, then $S$ has a maximal element.
+</MathBox>
 
 ### Extremal elements
 
@@ -770,13 +819,13 @@ Suppose that $f$ and $g$ are binary operators on a set $S$ and $x, y, z \in S$. 
 ## Restrictions
 
 <MathBox title='Restricted function' boxType='definition'>
-Consider a function $f: X\to Y$ and a subset $A\subseteq X$. The restriction of $f$ to $A$ is the function $f_A: A\to Y$ defined by
+Consider a function $f: X\to Y$ and a subset $A\subseteq X$. The restriction of $f$ to $A$ is the function $f|_A: A\to Y$ defined by
 
 $$
-  f_A := \{(x, y) \in f \mid x\in A \}
+  f|_A := \{(x, y) \in f \mid x\in A \}
 $$
 
-The image $f[A]$ is the range of $f_A$.
+The image $f[A]$ is the range of $f|_A$.
 </MathBox>
 
 ## Images

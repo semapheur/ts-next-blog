@@ -1,9 +1,9 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-import {XorFilter} from 'bloom-filters';
+import {XorFilter} from 'bloom-filters'
 
-import tokenize from 'utils/tokenize';
-import {notes} from 'cache/note';
+import tokenize from 'utils/tokenize'
+import {notes} from 'cache/note'
 
 export type SearchResult = {
 	score: number;
@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	}
 	// Sort search result
 	if (result.length) {
-			result = result.sort((a, b) => b.score - a.score)
+		result = result.sort((a, b) => b.score - a.score)
 	}
 
 	res.statusCode = 200;

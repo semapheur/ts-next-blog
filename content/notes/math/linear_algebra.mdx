@@ -1,0 +1,675 @@
+---
+title: 'Tensor Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Vector space
+
+<MathBox title='Vector space' boxType='definition'>
+A vector space is a set $V$ over a field $\mathbb{F}$ equipped with the two closed operations 
+- $+: V \times V \to V$ **(vector addition)**
+- $\cdot: \mathbb{F} \times V \to V$ **(scalar multiplication)**
+
+and has the following properties
+
+- $V$ is an abelian group under vector addition, i.e. for all $u, v, w \in V$
+  - $u + (v + w) = (u + v) + w$ **(associativity)
+  - $\exists 0 \in V : v + 0 = v$ **(identity element)**
+  - $\forall v \; \exists -v : v + (-v) = 0$ **(additive inverse)**
+  - $u + v = v + u$ **(commutativity)**
+- Scalar multiplication is compatible, satisfying for all $\alpha, \beta\inF$
+  - $\alpha(\betav) = (\alpha\beta)v$
+  - $1v = v$
+- Vector addition and scalar multiplication are related by distributivity
+  - $\alpha (u + v) = \alphau + \alphav$
+  - $(\alpha + \beta)v = \alphav + \betav$
+
+The elements of $V$ are called vectors, while the elements of $\mathbb{F}$ are called scalars.
+</MathBox>
+
+<MathBox title='Linear combination' boxType='definition'>
+A linear combination of vectors $\{ v_i \}_{i=1}^k \subseteq V$ for $k\in\mathbb{N}_+$ is a vector of the form
+
+$$
+  \sum_{i=1}^k \lambda_i v_i,\; \lambda_i \in\mathbb{F}
+$$
+
+If at least one of the scalars $\lambda_i$ is nonzero, the linear combination is nontrivial.
+</MathBox>
+
+<MathBox title='Linear subspace' boxType='definition'>
+A linear subspace of an $\mathbb{F}$-vector space $V$ is a set $U\subseteq V$ that is itself an $\mathbb{F}$-vector. This means that $U$ must satisfy
+- $0\in U$
+- $u, v\in U \implies u + v \in U$ (closed under vector addition)
+- $u\in U, \alpha\in\mathbb{F} \implies \alpha u \in U$ (closed under scalar multiplication)
+
+The conditions imply that $U$ is closed under linear combinations, i.e. $\alpha u + \beta v \in U$ for all $\alpha,\beta\in\mathbb{R}$ and all $u, v \in U$.
+</MathBox>
+
+## Direct sums and products
+
+### External direct sums and products
+<MathBox title='External direct sum' boxType='definition'>
+Let $V_1,\dots,V_n$ be $\mathbb{F}$-vector spaces. The external direct sum of $V_1,\dots,V_n$ denoted
+
+$$
+  V = V_1 \boxplus \cdots \boxplus V_n
+$$
+
+is the vector space $V$ whose elements are ordered $n$-tuples
+
+$$
+  V = \left\{ (v_i)_{i=1}^n \mid v_i \in V_i \right\}
+$$
+
+and whose vector operations apply componentwise
+
+$$
+\begin{gather*}
+  (u_i)_{i=1}^n + (v_i)_{i=1}^n = (u_i + v_i)_{i=1}^n,\; \mathbf{u_i}, \mathbf{v_i}\in V_i \\
+  \lambda (u_i)_{i=1}^n = (\lambdau_i)_{i=1}^n,\; \lambda\in\mathbb{F}
+\end{gather*}
+$$
+</MathBox>
+
+<MathBox title='Direct product' boxType='definition'>
+Let $\mathcal{F} = \{ V_i \}_{i\in I}$ be a collection of $\mathbb{F}$-vector spaces for an index set $I$. The direct product of $\mathcal{F}$ is the vector space
+
+$$
+  \prod_{i\in I} V_i = \left\{ f: I\to\bigcup_{i\in I} V_i \mid f(i) \in V_i \right\}
+$$
+
+which is subspace of the vector space of all functions from $I$ to $\bigcup_{i\in I} V_i$.
+</MathBox>
+
+<MathBox title='Generalized external direct sum' boxType='definition'>
+Let $\mathcal{V} = \{ V_i \}_{i\in I}$ be a collection of $\mathbb{F}$-vector spaces for an index set $I$. The external direct sum of $\mathcal{F}$ is the vector space
+
+$$
+  \bigoplus_{i\in I} V = \left\{ f: I\to\bigcup_{i\in I} V_i \mid f(i) \in V_i, f \text{ has finite support} \right\}
+$$
+
+which is subspace of the vector space of all functions from $I$ to $\bigcup_{i\in I} V_i$. The support of $f:I\to\bigcup_{i\in I} V_i$ is the set
+
+$$
+  \mathrm{supp}(f) = \{i\in I \mid f(i) \neq 0\}
+$$
+
+Thus, $f$ has finite support if $f(i) = 0$ for all but a finite number of $i\in I$.
+</MathBox>
+
+An important case occurs when $V_i = V$ for all $i\in I$. If $V^I$ denotes the set of all functions from $I$ to $V$ and $(V^I)_0$ denote the set of all functions in $V^I$ that have finite support then
+
+$$
+  \prod_{i\in I} V = V^K \quad \bigoplus_{i\in I} V = (V^K)_0
+$$
+
+### Internal direct sums
+
+<MathBox title='Internal direct sum' boxType='definition'>
+An $\mathbb{F}$-vector space $V$ is the (internal) direct sum of a collection $\mathcal{U} = \{ U_i \}_{i\in I}$ of subspaces of $V$ if every vector $v\in V$ can be uniquely written (except for order) as a finite sum of vectors from the subspaces in $\mathcal{F}$. That is, if for all $v\in V$
+
+$$
+  v = \sum_{i=1}^{n\in I} u_i = \sum_{i=1}^{m\in I} w_j,\; u_i, w_i \in U_i
+$$
+
+then $m = n$ and $u_i = w_i$ (after reindexing if necessary) for all $i=1,\dots,n$.
+
+If $V$ is the direct sum of $\mathcal{F}$ we write
+
+$$
+  V = \bigoplus_{i\in I} U_i
+$$
+
+where each $U_i$ is a direct summand of $V$. If $V = U \oplus W$, then $W$ is called a complement of $U$ in $V$.
+</MathBox>
+
+<MathBox title='All subspaces have a complement' boxType='proposition'>
+Any subspace $U$ of a vector space $V$ has a complement $W$ for which $V = U \oplus W$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $I\subseteq\mathbb{N}_+$ be an index set. A vector space $V$ is the direct sum of a collection of subspaces $\mathcal{U} = \{ U_i \}_{i\in I}$ if and only if
+1. $V = \sum_{i\in I} U_i$
+2. $U_i \cap \left(\sum_{j\neq i} U_i \right) = \{ 0 \}$
+
+<details>
+<summary>Proof</summary>
+
+Suppose first that $V$ is the direct sum of $\mathcal{U}$. Then $(1)$ clearly holds and if
+
+$$
+  v \in U_i \cap \left(\sum_{j\neq i} U_i \right)
+$$
+
+then $v = u_i$ for some $u_i \in U_i$ and
+
+$$
+  v = \sum_{k=1}^n u_{j_k},\, u_{j_k}\in U_{j_k}
+$$
+
+where $j_k \neq 1$ for all $k=1,\dots,n$. Hence, by the uniqueness of direct sum representations, $u_i = 0$ and $v = 0$.
+
+Conversely, suppose that $(1)$ and $(2)$ hold. We need only verify the uniqueness condition. If
+
+$$
+  v = \sum_{i=1}^m u_{j_i}\ = \sum_{i=1}^n w_{k_i},\; u_{j_i}\in U_{j_i}, w_{k_i}\in U_{k_i}
+$$
+
+then by including additional zero terms we may assume that the index sets $\{j_i\}_{i=1}^m$ and $\{k_i\}_{i=1}^n$ are the same set $\{ i_j \}_{j=1}^p$, giving
+
+$$
+  \sum_{j=1}^p (u_{i_j} - w_{i_j}) = 0
+$$
+
+Thus each term $u_{i_j} - t_{i_j}\in S_{i_j}$ is a sum of vectors from subspaces other than $S_{i_j}$, which can happen only if $u_{i_j} - t_{i_j} = 0$. Hence $u_{i_j} = t_{i_j}$ for all $i_j$ and $V$ is a direct sum of $\mathcal{U}$.
+</details>
+</MathBox>
+
+## Spans and bases
+
+<MathBox title='Linear dependence and independence' boxType='definition'>
+A set of vectors $S =\{ v_i \}_{i=1}^k$ for $k\in\mathbb{N}_+$ of an $\mathbb{F}$-vector space $V$ is linearly dependent if there is a non-trivial linear combination for $0\in V$. That is, there is a sequence of scalars $(\lambda_i \in\mathbb{F})_{i=1}^k$ that are not all equal to zero such that
+
+$$
+\begin{gather*}
+  \sum_{i=1}^k \lambda_i \mathbf{v_i} = 0 \\
+  \iff \mathbf{v_j} = \sum_{i=1, i\neq j}^k \tilde{\lambda}_i \mathbf{v_i},\; 1 \leq j \leq k, \lambda_j \neq 0, \tilde{\lambda}_i = \frac{-\lambda_i}{\lambda_j}
+\end{gather*}  
+$$
+
+Equivalently, $S$ is linearly dependent if and only if one of its vectors is a linear combination of the others. The set $S$ is linearly independent if it is not linearly dependent, i.e. 
+
+$$
+  \sum_{i=1}^k \lambda_i \mathbf{v_i} = 0 \implies \lambda_i = 0
+$$
+</MathBox>
+
+<MathBox title='Span' boxType='definition'>
+Given a subset $U$ of a $\mathbb{F}$-vector space $V$, the subspace spanned by $U$ is the the smallest set of all linear combinations of vectors in $U$. If $U$ is finite, i.e. for $k\in\mathbb{N}_+$ we can write $U = \{ u_i \}_{i=1}^k$, the span of $U$ is the set
+
+$$
+  \mathrm{span}(U) := \left\{ v\in V \mid \exists (\lambda_i \in F)_{i=1}^k : v = \sum_{i=1}^k \lambda_i u_i \right\}
+$$
+
+In particular $\mathrm{span}(\emptyset) := \{0\}$. 
+
+The subset $U$ is said to span (generate) $V$ if every $v\in V$ is a linear combination of vectors in $U$, in which case we write $\mathrm{span}(U) = V$.
+</MathBox>
+
+<MathBox title='Basis' boxType='definition'>
+A basis $B$ of an $\mathbb{F}$-vector space $V$ is a linearly independent subset of $V$ spanning $V$. 
+</MathBox>
+
+<MathBox title='Basis' boxType='proposition'>
+A finite subset $U = \{u_i\}_{i=1}^n$ of an $\mathbb{F}$-vector space $V$ for $n\in\mathbb{N}$ is a basis for $V$ if and only if
+
+$$
+  V = \bigoplus_{i=1}^n \mathrm{span}(u_i)
+$$
+</MathBox>
+
+<MathBox title='Basis properties' boxType='proposition'>
+If $B$ is a subset of an $\mathbb{F}$-vector space $V$, the following are equivalent
+1. $B$ is a basis of $V$ 
+2. $S$ is a minimal spanning set, i.e. $B$ spans $V$ while no proper subsets of $B$ does
+3. $S$ is a maximal linearly independent set, i.e. $S$ is linearly independent while no proper supersets of $S$ is linearly dependent.
+
+<details>
+<summary>Proof</summary>
+
+**$(1)\iff(2)$**
+Suppose that $B$ is a basis of $V$, i.e. $B$ is linearly independent with $\mathrm{span}(B) = V$. If $\mathrm{\tilde{B}} = V$ for some $\tilde{B}\subset B$, then any vector in $B\setminus \tilde{B}$ should be a linear combination of the vectors in $\tilde{B}$, contradicting the fact that the vectors in $B$ are linearly independent. Hence $B$ must be a minimal spanning set.
+
+Conversely, if $B$ is a minimal spanning set, then it must be linearly independent. If not some $b\in B$ would be a linear combination of the other vectors in $B$ and so $B\setminus\{b\}$ would be a proper spanning subset of $B$, which is a contradiction. Hence $B$ must be a basis. 
+
+**$(1)\iff(3)$**
+Suppose that $B$ is a bsis of $V$. If $B$ is not maximal, there should be a vector $v\in V\setminus{B}$ for which the set $B\cup\{v\}$ is linearly independent. However, then $v\not\in \mathrm{span}(B)$, contradicting the fact that $B$ is a spanning set. Hence, $B$ is a maximal linearly independent set.
+
+Conversely, if $B$ is a maximal linearly independent set then $\mathrm{span}(B) = V$. If not, we could find a vector $v\in V\setminus{B}$ that is not a linear combination of the vectors in $B$. In this case, $B\cup\{v\}$ would be a linearly independent proper superset of $B$, which is a contradiction. Hence, $B$ must be a basis.
+</details>
+</MathBox>
+
+<MathBox title='Basis properties' boxType='proposition'>
+Let $V$ be a nonzero vector space. Let $I$ be a linearly independent set in $V$ and let $S$ be a spanning set in $V$ containing $I$. Then there is a basis $B$ for $V$ for which $I\subseteq B\subseteq S$. In particular
+1. any vector space, except $\{0\}$ has a basis
+2. any linearly independent set in $V$ is contained in a basis
+4. any spanning set in $V$ contains a basis
+
+<details>
+<summary>Proof</summary>
+
+Consider the collection $\mathcal{A}$ of all linearly independent subsets of $V$ containing $I$ and contained in $S$. Clearly, $\mathcal{A}$ is not empty since $I\in\mathcal{A}$. If $\mathcal{C} = \{ I_j\}_{j\in J}$ for some index set $J$ is a chain in $\mathcal{A}$ then the union $U = \bigcup_{j\in J} I_j$ is linearly independent and satisfies $I\subseteq U\subseteq S$, i.e. $U\in\mathcal{A}$. Thus, every chain in $\mathcal{A}$ has an upper bound in $\mathcal{A}$ and by Zorn's lemma, $\mathcal{A}$ must contain a maximal element $B$, which is linearly independent.
+
+The set $B$ is a basis for the vector space $\mathrm{span}(S) = V$, for if any $s\in S$ is not a linear combination of the elements of $B$, then $B\cup\{s\} \subseteq S$ is linearly independent, contradicting the maximality of $B$. Hence $S\subseteq\mathrm{span}(B)$ and so $V = \mathrm{span}(S) \subseteq\mathrm{span}(B)$. 
+</details>
+</MathBox>
+
+## Dimension
+
+<MathBox title='' boxType='proposition'>
+Let $V$ be a vector space and assume that the vectors $\{v_i\}_{i=1}^n$ for $n\in\mathbb{N}_+$ are linearly independent and the vectors $\{ s_i \}_{i=1}^m$ for $m\in\mathbb{N}_+$ span $V$. Then $n \leq m$. 
+
+<details>
+<summary>Proof</summary>
+
+List the two set of vectors with the spanning set followed by the linearly independent set
+
+$$
+  s_1,\dots,s_m;v_1,\dots,v_n
+$$
+
+Move the first vector $v_1$ to the front of the list
+
+$$
+  v_1, s_1,\dots,s_m;v_2,\dots,v_n
+$$
+
+Since $\mathrm{span}\{ s_i \}_{i=1}^m = V$, it follows that $v_1$ is a linear combination of the $s_i$'s. This implies that we may remove one the $s_i$'s, which by reindexing if necessary can be $s_1$, from the list and still have a spanning set
+
+$$
+  v_1, s_2,\dots,s_m;v_2,\dots,v_n
+$$
+
+Note that the first set of vectors still spans $V$ and the second set is still linearly independent. Repeat the process, moving $v_2$ from the second list to the first list
+
+$$
+  v_1, v_2, s_2,\dots,s_m;v_3,\dots,v_n
+$$
+
+As before, the vectors in the first list are linearly independent, since they spanned $V$ before the inclusion of $v_2$. However, since the $v_i$'s are linearly independent, any nontrivial linear combination of the vectors in the first list that equals 0 must involve at least one of the $s_i$'s. Thus, we may remove that vector, which by reindexing if necessary can be $s_2$, and still have a spanning set
+
+$$
+  v_1, v_2, s_3,\dots,s_m;v_3,\dots,v_n
+$$
+
+If $m < n$, this process will eventually exhaust the $s_i$'s and lead to the list
+
+$$
+  v_1,\dots,v_m;v_{m+1},\dots,v_n
+$$
+
+where $\mathrm{span}\{v_i\}_{i=1}^m = V$, which is contradictory since any $v_i$ for $i > m$ is not in the span of $\{v_i\}_{i=1}^m$. Hence, $n\leq m$. 
+</details>
+</MathBox>
+
+<MathBox title='All bases have same cardinality' boxType='theorem'>
+All bases of an $\mathbb{F}$-vector space $V$ have the same cardinality, called the dimension of $V$, denoted $\mathrm{dim}(V)$.
+
+<details>
+<summary>Proof</summary>
+
+For an index set $I\in\mathbb{N}$, let $B = \{ b_i \}_{i\in I}$ be a basis for $V$ and suppose that $C$ is another basis for $V$. Then any vector $c\in C$ can be written as finite linear combination of the vectors in $B$
+
+$$
+  c = \sum_{i\in U_c} \lambda_i b_i,\; \lambda_i\in\mathbb{F}\setminus\{0\}
+$$
+
+Because $C$ is basis, we must have $\bigcup_{c\in C} U_c = I$. If the vectors in $C$ can be expressed as finite linear combinations of the vectors in a proper subset $B' \subset B$ then $\mathrm{span}(B') = V$, which is contradictory.
+
+Since $|U_c| < \mathbb{N}$ for all $$
+</details>
+</MathBox>
+
+## Dual vector space
+
+Given a vector space $V$ over a field $\mathbb{F}$, the dual space $V^*$ is defined as the set of all linear functionals (covectors) $\phi : V \to \mathbb{F}$.
+
+The dual space $V^*$ itself becomes a vector space over $\mathbb{F}$ when equipped with the operations of addition and scalar multiplication satisfying $\forall \phi, \psi \in V^*, x \in V$ and $a \in \mathbb{F}$ 
+
+$$
+\begin{gather*}
+  (\phi + \psi)(x) = \phi(x) + \psi(x) \\
+  (a\phi)(x) = a(\phi(x))
+\end{gather*}
+$$
+
+If $V$ is finite-dimensional, then $V^*$ has the same dimension as $V$.
+
+## Basis
+
+A basis $B$ of a vector space $V$ over a field $\mathbb{F}$ is a linearly independent subset of $V$ that spans $V$.
+
+Given a basis $B = \left\{ e_i \right\}_{i \in I \subseteq \mathbb{N}}$, a new basis $\tilde{B} = \left\{ \tilde{e}_i \right\}_{i \in I \subseteq \mathbb{N}}$ can be formed by transforming the old basis vectors, and vice versa
+
+$$
+\begin{align*}
+  \tilde{e}_i &= \sum_{j=1}^n A_i^je_j = A_i^je_j \\
+  e_i &= \sum_{j=1}^n \tilde{A}_i^j \tilde{e}_j = \tilde{A}_i^j \tilde{e}_j 
+\end{align*}
+$$
+
+Basis vectors transform covariantly. The transforms are invertible (bijections) such that the compositions give the identity transform 
+
+$$
+\begin{gather*}
+  A\tilde{A} = AA^{-1} = I \\
+  \sum_{j=1}^n A_{ij}\tilde{A}_{ji} = \sum_{j=1}^n \tilde{A}_{ij}A_{ji} = \delta_{ij} = \begin{cases} 1, \quad i = j \\ 0, \quad i \neq j \end{cases}
+\end{gather*}
+$$
+
+A vector $v$ can be expressed as a linear combination of basis vectors
+
+$$
+\begin{align*}
+  v = \sum_{j=1}^n v_j e_j = \sum_{j=1}^n v_j \left( \sum_{i=1}^n \tilde{A}_{ij} \tilde{e}_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n \tilde{A}_{ij}v_j \right)\tilde{e}_i = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j \\ 
+  v = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j = \sum_{j=1}^n \tilde{v}_j \left( \sum_{i=1}^n A_{ij} e_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n A_{ij} \tilde{v}_j \right)e_i = \sum_{j=1}^n v_j e_j
+\end{align*}
+$$
+
+Vector components are said to be contravariant as they transform inversely of the basis vectors. To signify this, vector components are denoted with superscript indices. 
+
+$$
+\begin{align*}
+  v^j &= \sum_{j=1}^n A_{ij} \tilde{v}^j \\
+  \tilde{v}^j &= \sum_{j=1}^n \tilde{A}_{ij}v^j
+\end{align*}
+$$
+
+### Dual basis
+
+Given a basis $B = \left\{ e_i \right\}_{i \in I \subset \mathbb{N}}$ for a finite-dimensional vector space $V$, a basis $B^* = \left\{ e^i \right\}_{i \in I \subset \mathbb{N}}$, called the dual basis, can be formed through the bi-orthogonality property
+
+$$
+  e^i \left( e_j \right) = \delta_j^i
+$$
+
+A new dual basis $\tilde{B}^*$ can be formed by transforming the old dual basis, $\tilde{e}^i = \sum_{i=1}^n t_{ij}e^j$. By the bi-orthogonality property
+
+$$
+\begin{align*}
+  \tilde{e}^i (\tilde{e}_k) &= \sum_{j=1} t_{ij} e^j \left( \tilde{e}_k\right) \\
+  &= \sum_{j=1}^n t_{ij} e^j \left( \sum_{l=1}^n a_{lk} e_l \right) \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} e^j (e_l) \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} \delta_j^l \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{jk} = \delta_k^i \quad \Rightarrow t_{ij} = \tilde{a}_{ij}
+\end{align*}
+$$
+
+This shows that dual basis vectors transform covariantly, hence the superscripts
+
+$$
+\begin{gather*}
+  \tilde{e}^i = \sum_{j=1}^n \tilde{a}_{ij} e^j \\
+  e^i = \sum_{j=1}^n a_{ij} \tilde{e}^j
+\end{gather*}
+$$
+
+A covector $\phi \in V^*$ can be represented as a linear combination of the dual basis vectors
+
+$$
+  \phi = \sum_{i=1}^n \phi_i e^i = \sum_{i=1}^n \phi_i \left( a_{ij}e^j \right) = \sum_{j=1}^n \left( \sum_{i=1}^n \phi_i a_{ij} \right) \tilde{e}^j
+$$
+
+Covectors transform covariantly, hence the subscripts.
+
+$$
+\begin{gather*}
+  \phi_j = \sum_{i=1}^n \tilde{a}_{ij}\tilde{\phi}_i \\
+  \tilde{\phi}_j = \sum_{i=1}^n a_{ij}\phi_i
+\end{gather*}
+$$
+
+## Linear transformation
+
+<MathBox title='Linear transformation' boxType='definition'>
+Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$. A function $T: V \to W$ is called a linear transformation if it preserve the operations of vector addition and scalar multiplication, i.e. for all $v, w\in V$ and $\alpha\in\mathbb{F}$
+- $T(v + w) = T(v) + T(w)$ 
+- $T(\alphav) = T(v) + T(w)$ for all $v, w\in V$
+
+These conditions can be replaced by the single condition
+$$
+  T(\alpha v + \beta w) = \alpha T(v) + \beta T(\beta)
+$$
+for all $\alpha, \beta\in\mathbb{F}$ and $v, w\in V$.
+</MathBox>
+
+An isomorphism is a structure-preserving mapping between two vector spaces that can be reversed by an inverse mapping. That is, for a linear map $f: V \to W$ there exists an inverse map $g: W \to V$ such that the compositions $f \circ g: W \to W$ and $g \circ f: V \to V$ are identity maps.
+
+An endomorphism is a linear map $f: V \to V$. An endomorphism that is also an isomorphism is called an automorphism.
+
+For a vector space $V$, the outer product of its basis $B = \left\{ e_i \right\}_{i \in I \subset \mathbb{N}}$ and its dual basis $B^* = \left\{ e^i \right\}_{i \in I \subset \mathbb{N}}$ spans all endomorphic linear transforms. Every linear transform $L : V \to V$ can be writen as a linear combination of vector-covector pairs 
+
+$$
+  L = L_j^i \left(e_i \otimes e^j \right)
+$$
+
+The outer product itself forms a linear map
+
+$$
+\begin{align*}
+  w &= L(v) = L_j^i \left(e_i \otimes e^j \right)(v^k e_k) \\
+  &= L_j^i v^k e_i e^j (e_k) \\
+  &= L_j^i v^k e_i \delta_k^j \\
+  &= L_j^i v^j e_i
+\end{align*}
+$$
+
+<MathBox title='Kernel and image' boxType='definition'>
+Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$. If $T: V \to W$ is a linear transformation then
+
+- the *kernel* (null space) of $T$ is the set $\mathrm{ker}(T) := \{ v\in V \mid T(v) = 0 \}$
+- the *range* (image) of $T$ is the set $\mathrm{ran}(T) := \{ T(v) \mid v\in V\}$
+</MathBox>
+
+### Matrices
+
+Every linear map between finite-dimensional vector spaces can be represented by a matrix. This can be shown as follows for a transform $L : V \subseteq \mathbb{F}^n \to W \subseteq \mathbb{F}^m$. For simplicity, it is assumed that the bases $B^V = \{\hat{v}_i\}_{i \in I \subseteq \mathbb{N}}$ and $B^W = \{\hat{w}_i\}_{i \in I \subseteq \mathbb{N}}$ are orthonormal
+
+$$
+\begin{align*}
+  L(v) &= L\left( \sum_{i=1}^n v^i \hat{v}_i \right) = \sum_{i=1}^n v^i L(\hat{v}_i) \\
+  &= \sum_{i=1}^n v^i \sum_{j=1}^m \left( \sum_{k=1}^n L_k^j \hat{v}^k \right)\hat{w}_j, \quad \sum_{k=1}^n L_k^j \hat{v}^k = L_k^j \delta^{ik} \\
+  &= \sum_{j=1}^m \sum_{i=1}^n L_i^j v^i \hat{w}_j = \sum_{j=1}^m w^j \hat{w}_j = w
+\end{align*}    
+$$
+
+The output vector $w$ is given by the matrix multiplication
+
+$$
+  w^j = \sum_{i=1}^n L_i^j v^i
+$$
+
+### Eigenvectors
+
+Let $L$ be an endomorphic linear transformation $L: V \to V$. A non-zero vector $v \neq 0 \in V$ is an eigenvector of $T$ if
+
+$$
+  L(v) = \lambda v
+$$
+
+where $\lambda \in \mathbb{F}$ is the eigenvalue corresponding to $v$.
+
+The eigenvalue equation can be rearranged as
+
+$$
+  (L - \lambda \cdot \mathrm{Id})v = 0
+$$
+
+If $V$ is a finite-dimensional vector space, the determinant of the composed transformation $L - \lambda \cdot \mathrm{Id}$ vanishes
+
+$$
+  \mathrm{det}(L - \lambda \cdot \mathrm{Id}) = 0
+$$
+
+The determinant gives a polynomial function in $\lambda$, called the characteristic polynomial of $L$.
+
+### Linear map transform
+
+A linear map can be transformed into a new basis through the steps
+1. Transform the input vector (contravariant) from the new to the old basis through a forward transform
+2. Apply the linear map to the transformed vector
+3. Transform the output vector back into the new basis
+
+This can be shown as follows for a linear map $L$
+
+$$
+\begin{align*}
+  L(\tilde{e}_i) &= L\left( \sum_{j=1}^n A_i^j e_j \right) = \sum_{j=1}^n A_i^j L(e_j) \\
+  &= \sum_{j=1}^n A_i^j \sum_{k=1}^n L_j^k e_k \\
+  &= \sum_{j=1}^n \sum_{k=1}^n A_i^j t_j^k \sum_{l=1}^n \tilde{A}_k^l \tilde{e}_l \\
+  &= \sum_{l=1}^n \sum_{j=1}^n \sum_{k=1}^n \tilde{A}_k^l L_j^k A_i^j   \tilde{e}_l = \sum_{l=1} \tilde{L}_i^l \tilde{e}_l
+\end{align*}
+$$
+
+The linear map gets transformed as follows
+
+$$
+\begin{gather*}
+  \tilde{L}_i^l = \sum_{j=1}^n \sum_{k=1}^n \tilde{A}_k^l L_j^k A_i^j = \tilde{A}_k^l L_j^k A_i^j \\
+\begin{aligned}
+  \tilde{L} &= A^{-1}LA = \tilde{A}LA \\
+  A\tilde{L}A^{-1} &= AA^{1}LAA^{-1} = L
+\end{aligned}
+\end{gather*}
+$$
+
+In tensor product notation, this can be derived as follows
+
+$$
+\begin{align*}
+  L &= L_j^i e_i \otimes \mathbf{\varepsilon}^j \\
+  &= L_j^i \left(\tilde{A}_i^k \tilde{e}_k \right) \otimes \left(A_l^j \tilde{\mathbf{\varepsilon}}^l \right) \\
+  &= \left( \tilde{A}_i^k L_j^i A_l^j \right) \tilde{e}_k \otimes \tilde{\mathbf{\varepsilon}}^l \\
+  &= \tilde{L_j^i} \tilde{e}_i \otimes \tilde{\mathbf{\varepsilon}}^j
+\end{align*}
+$$
+
+### Rank-nullity theorem
+
+For any matrix $M \in \mathbb{C}^{m\times n}$
+
+$$
+  \dim\left(\mathrm{Ran}(M) \right) + \dim\left(\mathrm{Ker}(M) \right) = n
+$$
+
+## Inner product (dot product)
+
+$$
+  \langle v, w \rangle = v \cdot w = \lVert v \rVert \lVert w \rVert \cos{\theta} = g_{ij}v^i v^j
+$$
+
+## Norm
+
+The norm of a vector $v \in V$ for a generalized basis $B = \left\{ e_i \right\}_{i \in I \subset \mathbb{N}}$ is given by
+
+$$
+  \lVert v \rVert^2 = \langle v, v \rangle = v^* G v = g_{ij}v^i v^j
+$$
+
+where $g_{ij}$ is the metric tensor
+
+$$
+  g_{ij} = \langle e_i, e_j \rangle
+$$
+
+The norm is invariant of coordinate changes
+
+$$
+\begin{align*}
+  \lVert v \rVert^2 &= \tilde{g}_{ij} \tilde{v}^i \tilde{v}^j \\
+  &= \left( A_i^k A_j^l g_{kl} \right) \left( \tilde{A}_m^i v^m \right) \left( \tilde{A}_n^j v^n \right) \\
+  &= g_{kl} v^m v^n \left( \tilde{A}_m^i A_i^k  \tilde{A}_n^j A_j^l \right) \\
+  &= g_{kl} v^m v^n \left(\delta_m^k \delta_n^l \right) \\
+  &= g_{ij} v^i v^j 
+\end{align*}
+$$
+
+## Cross product (wedge product)
+$$
+\begin{gather*}
+  a \times b = \begin{vmatrix} e_1 & e_2 & e_3\\
+  a_1 & a_2 & a_3 \\
+  b_1 & b_2 & b_3 \end{vmatrix} = \varepsilon^i_{jk}e_i a^j b^k  \\
+  \lVert a \times b \rVert = \lVert a \rVert \lVert b \rVert \sin\theta \\
+  \lVert a \times b \rVert^2 = \lVert a \rVert^2 \lVert b \rVert^2 - \left( a \cdot b \right)^2 = \lVert a \rVert^2 \lVert b \rVert^2 \left(1 - \cos^2\theta \right)
+\end{gather*}
+$$
+
+Properties
+- Jacobi identity
+$$
+  a \times \left( b \times c \right) + b \times \left( c \times a \right) + c \times \left( a \times b \right) = 0
+$$
+- Scalar triple product
+$$
+  A \cdot \left( B \times C \right) = B \cdot \left( C \times A \right) = C \cdot \left( A \times B \right)
+$$
+
+### Triple product
+
+$$
+\begin{align*}
+  \left[a \times \left( b \times c \right)\right]^i &= \varepsilon^i_{jk} a^j \varepsilon^k_{mn} b^m c^n \\ 
+  &= \left(\delta^{im}\delta^{jn} - \delta^{in}\delta^{jm}\right)a^j b^m c^n \\
+  &= b^i a^j c^j - c^i a^j b^j \\
+  &= \left[b \left(a \cdot c \right) - c\left( a \cdot b \right) \right]^i
+\end{align*}
+$$
+
+## Outer product (tensor product)
+
+Given an $m$-dimensional vector $u$ and an $n$-dimensional vector $v$, their outer product is an $m \times n$ matrix 
+
+$$
+  \left(u \otimes v\right)_{ij} = \left(u v^{\dagger}\right)_{ij} = u_{i} v_{j}^*
+$$
+
+The outer product has the following properties $\forall u, v \in V$, $\psi, \phi \in V^*$  and $a \in \mathbb{F}$
+
+- $a \left( v \otimes  \right) = \left(a v \right) \otimes \psi = v \otimes \left(a \psi \right)$
+- $v \otimes \left( \psi + \phi \right) = v \otimes \psi + v \otimes \phi$
+- $\left(u + v \right) \otimes \psi = u \otimes \psi + v \otimes \psi$
+
+## Linear form/functional (covector)
+
+A linear form is a linear map from a vector space to its field of scalars, $f : V \to \mathbb{F}$ (1-form).
+
+Linear functionals are represented as row vectors in $\mathbb{R}^n$.
+
+### Bilinear form
+
+A bilinear form is a map $B: V \times V \to \mathbb{F}$ (2-form) that is linear in each argument separately $\forall u, v, w \in V$ and $\lambda \in \mathbb{F}$
+
+- $\lambda B(u, v) = B(\lambda u, v) = B(u, \lambda u)$
+- $B(u + v, w) = B(u, w) + B(v, w)$
+- $B(u, v + w) = g(u, v) + g(u, w)$
+
+Bilinear forms are formed by linear combinations of covector-covector pairs
+
+$$
+  B = B_{ij} \left( e^i \otimes e^j \right)
+$$
+
+With this definition a bilinear map can be expressed as follows
+
+$$
+\begin{align*}
+  s &= B(u, v) \\
+  &= B_{ij}e^i e^j \left(u^k e_k, v^l e_l \right) \\
+  &= B_{ij}e^i \left(u^k e_k \right) e^j \left( v^l e_l \right) \\
+  &= B_{ij} u^k v^l e^i \left(e_k \right) e^j \left(e_l \right) \\
+  &= B_{ij} u^k v^l \delta_k^i \delta_l^j \\
+  &= B_{ij} u^i v^j
+\end{align*}
+$$
+
+Bilinear forms are transformed as follows
+
+$$
+\begin{align*}
+  B &= B_{ij} \left( e^i \otimes e^j \right) = B_{ij} \left(A_k^i \tilde{e}^k \right) \left( A_l^j \tilde{e}^l \right) \\
+  &= \left( A_k^i A_l^j B_{ij} \right) \tilde{e}^k  \tilde{e}^l \\
+  &= \tilde{B}_{ij}  \tilde{e}^i \tilde{e}^j
+\end{align*}
+$$
+
+giving the transformation rules
+
+$$
+\begin{align*}
+  \tilde{B}_{ij} &= A_i^k A_j^l B_{kl} \\
+  B_{ij} &= \tilde{A}_i^k \tilde{A}_j^l \tilde{B}_{kl}
+\end{align*}
+$$

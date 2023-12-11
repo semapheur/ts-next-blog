@@ -29,11 +29,6 @@ export default function SearchNotes() {
   const {data: result, error} = useSWR(query, searchFetcher)
   console.log(result)
 
-  if (error) {
-    console.log(error)
-    return <p>Failed to fetch</p>
-  }
-
   return (
     <>
       <div className='flex flex-col gap-8 p-8 divide-y' key='search'>
@@ -42,7 +37,7 @@ export default function SearchNotes() {
         </div>
         <div className=''>{
           query && (
-            <h4 className='text-text'>{!result
+            <h4 className='text-text'>{(!result || error)
               ? ''  
               : result.length > 0 
               ? `Found ${result.length} results (hover for preview):`
