@@ -27,6 +27,24 @@ The transpose operation has the following properties for $A,B\in\mathcal{M}_{m,n
 5. $\det(A^T) = \det(A)$
 </MathBox>
 
+## Matrix multiplication
+
+If $A$ is an $m\times n$ matrix and $B$ and $p\times q$ matrix, the matrix product $AB$ is defined if $n = p$, resulting in an $m \times q$ matrix given by the dot product of the corresponding row of $A$ and the corresponding column of $B$
+
+$$
+  [AB]_{i,j} = \sum_{r=1}^n a_{i,r} b_{r,j}
+$$
+
+The matrix product $BA$ is only defined if $m = q$ resulting in an $p \times n$ matrix. If both products are defined, they generally need not be equal, meaning that matrix multiplication is not commutative.
+
+Matrix multiplication has the following properties for matrices $A, B, C$ with appropriate sizes
+- $cA = Ac$ for a scalar $c$ **(scalar commutativity)**
+- $c(AB) = (cA)B$ **(left scalar associativity)**
+- $(AB)c = A(Bc)$ **(right scalar associativity)**
+- $(AB)C = A(BC)$ **(associativity)**
+- $C(A + B) = CA + CB$ **(left distributivity)**
+- $(A + B)C = AC + BC$ **(left distributivity)**
+
 ## Partioning and matrix multiplication
 
 Let $M$ be an $m\times n$ matrix. If $B\subseteq \{1,\dots,m \}$ and $C\subseteq\{1,\dots,n\}$ then the submatrix $M[B,C]$ is the matrix obtained from $M$ by keeping only the rows index in $B$ and the columns with index in $C$ such that $M[B,C]$ has size $|B|\cdot|C|$.
@@ -125,7 +143,7 @@ $$
 
 The corresponding elementary matrix for row switching is obtained by swapping row $i$ and row $j$ of the identity matrix.
 $$
-  T_{i,j} = \begin{align*}
+  T_{i,j} = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
     & & 0 & & 1 & & \\
@@ -133,7 +151,7 @@ $$
     & & 1 & & 0 & & \\
     & & & & & \ddots & \\
     & & & & & & 1
-  \end{align*}
+  \end{bmatrix}
 $$
 
 ### Row scaling transformation
@@ -141,15 +159,15 @@ $$
 The corresponding elementary matrix for scaling the $i$th row by $m \neq 0$ is a diagonal matrix with diagonal entries $1$ except in the $i$th position
 
 $$
-  D_i (m) =   T_{i,j} = \begin{align*}
+  D_i (m) =   T_{i,j} = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
-    & & & 1 & 1 & & \\
+    & & 1 & & & & \\
     & & & m & & & \\
     & & & & 1 & & \\
     & & & & & \ddots & \\
     & & & & & & 1
-  \end{align*}
+  \end{bmatrix}
 $$
 
 The entries of $D_i(m)$ are given by
@@ -167,15 +185,15 @@ $$
 The corresponding elementary matrix for adding the $j$th row multiplied by a scalar $m$ to the $i$th row is the identity matrix with an $m$ in the $(i,j)$th entry
 
 $$
-  L_{i,j} (m) =   T_{i,j} = \begin{align*}
+  L_{i,j} (m) =   T_{i,j} = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
-    & & & 1 & 1 & & \\
+    & & 1 & & & & \\
     & & & \ddots & & & \\
     & & m & & 1 & & \\
     & & & & & \ddots & \\
     & & & & & & 1
-  \end{align*}
+  \end{bmatrix}
 $$
 
 The entries of $L_{i,j}(m)$ are given by
@@ -611,7 +629,7 @@ $$
 where the column matrix $[v]_B$ is known as the *coordinate matrix* of $v$ with respect to the ordered basis $B$. The coordinate is an isomorphism (bijection) with inverse $\phi_B^{-1}:\mathbb{F}^n \to V$ defined by
 
 $$
-  (\lambda_i)_{i=1}^n \mapsto $\sum_{i=1}^n \lambda_i b_i$.
+  (\lambda_i)_{i=1}^n \mapsto \sum_{i=1}^n \lambda_i b_i
 $$
 </MathBox>
 
@@ -648,7 +666,7 @@ The second statement follows from the first by taking transposes.
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-If $A\in\mathcal{M}_{m,n}$, then $\mathrm{rrk}(A) = \mathrm{crk}(A)$. This number is called the rank of $A$ and is denoted by $\mathrm{rk}(A)$.
+If $A\in\mathcal{M}_{m,n}$, then $\mathrm{rrk}(A) = \mathrm{crk}(A)$. This number is called the rank of $A$ and is denoted by $\mathrm{rank}(A)$.
 
 <details>
 <summary>Proof</summary>
@@ -661,122 +679,282 @@ $$
 </details>
 </MathBox>
 
-## Dual vector space
-
-Given a vector space $V$ over a field $\mathbb{F}$, the dual space $V^*$ is defined as the set of all linear functionals (covectors) $\phi : V \to \mathbb{F}$.
-
-The dual space $V^*$ itself becomes a vector space over $\mathbb{F}$ when equipped with the operations of addition and scalar multiplication satisfying $\forall \phi, \psi \in V^*, x \in V$ and $a \in \mathbb{F}$ 
-
-$$
-\begin{gather*}
-  (\phi + \psi)(x) = \phi(x) + \psi(x) \\
-  (a\phi)(x) = a(\phi(x))
-\end{gather*}
-$$
-
-If $V$ is finite-dimensional, then $V^*$ has the same dimension as $V$.
-
-## Basis
-
-A basis $B$ of a vector space $V$ over a field $\mathbb{F}$ is a linearly independent subset of $V$ that spans $V$.
-
-Given a basis $B = \left\{ e_i \right\}_{i \in I \subseteq \N}$, a new basis $\tilde{B} = \left\{ \tilde{e}_i \right\}_{i \in I \subseteq \N}$ can be formed by transforming the old basis vectors, and vice versa
-
-$$
-\begin{align*}
-  \tilde{e}_i &= \sum_{j=1}^n A_i^je_j = A_i^je_j \\
-  e_i &= \sum_{j=1}^n \tilde{A}_i^j \tilde{e}_j = \tilde{A}_i^j \tilde{e}_j 
-\end{align*}
-$$
-
-Basis vectors transform covariantly. The transforms are invertible (bijections) such that the compositions give the identity transform 
-
-$$
-\begin{gather*}
-  A\tilde{A} = AA^{-1} = I \\
-  \sum_{j=1}^n A_{ij}\tilde{A}_{ji} = \sum_{j=1}^n \tilde{A}_{ij}A_{ji} = \delta_{ij} = \begin{cases} 1, \quad i = j \\ 0, \quad i \neq j \end{cases}
-\end{gather*}
-$$
-
-A vector $v$ can be expressed as a linear combination of basis vectors
-
-$$
-\begin{align*}
-  v = \sum_{j=1}^n v_j e_j = \sum_{j=1}^n v_j \left( \sum_{i=1}^n \tilde{A}_{ij} \tilde{e}_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n \tilde{A}_{ij}v_j \right)\tilde{e}_i = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j \\ 
-  v = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j = \sum_{j=1}^n \tilde{v}_j \left( \sum_{i=1}^n A_{ij} e_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n A_{ij} \tilde{v}_j \right)e_i = \sum_{j=1}^n v_j e_j
-\end{align*}
-$$
-
-Vector components are said to be contravariant as they transform inversely of the basis vectors. To signify this, vector components are denoted with superscript indices. 
-
-$$
-\begin{align*}
-  v^j &= \sum_{j=1}^n A_{ij} \tilde{v}^j \\
-  \tilde{v}^j &= \sum_{j=1}^n \tilde{A}_{ij}v^j
-\end{align*}
-$$
-
-### Dual basis
-
-Given a basis $B = \left\{ e_i \right\}_{i \in I \subset \N}$ for a finite-dimensional vector space $V$, a basis $B^* = \left\{ e^i \right\}_{i \in I \subset \N}$, called the dual basis, can be formed through the bi-orthogonality property
-
-$$
-  e^i \left( e_j \right) = \delta_j^i
-$$
-
-A new dual basis $\tilde{B}^*$ can be formed by transforming the old dual basis, $\tilde{e}^i = \sum_{i=1}^n t_{ij}e^j$. By the bi-orthogonality property
-
-$$
-\begin{align*}
-  \tilde{e}^i (\tilde{e}_k) &= \sum_{j=1} t_{ij} e^j \left( \tilde{e}_k\right) \\
-  &= \sum_{j=1}^n t_{ij} e^j \left( \sum_{l=1}^n a_{lk} e_l \right) \\
-  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} e^j (e_l) \\
-  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} \delta_j^l \\
-  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{jk} = \delta_k^i \quad \Rightarrow t_{ij} = \tilde{a}_{ij}
-\end{align*}
-$$
-
-This shows that dual basis vectors transform covariantly, hence the superscripts
-
-$$
-\begin{gather*}
-  \tilde{e}^i = \sum_{j=1}^n \tilde{a}_{ij} e^j \\
-  e^i = \sum_{j=1}^n a_{ij} \tilde{e}^j
-\end{gather*}
-$$
-
-A covector $\phi \in V^*$ can be represented as a linear combination of the dual basis vectors
-
-$$
-  \phi = \sum_{i=1}^n \phi_i e^i = \sum_{i=1}^n \phi_i \left( a_{ij}e^j \right) = \sum_{j=1}^n \left( \sum_{i=1}^n \phi_i a_{ij} \right) \tilde{e}^j
-$$
-
-Covectors transform covariantly, hence the subscripts.
-
-$$
-\begin{gather*}
-  \phi_j = \sum_{i=1}^n \tilde{a}_{ij}\tilde{\phi}_i \\
-  \tilde{\phi}_j = \sum_{i=1}^n a_{ij}\phi_i
-\end{gather*}
-$$
-
-## Linear transformation
+# Linear transformations
 
 <MathBox title='Linear transformation' boxType='definition'>
-Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$. A function $T: V \to W$ is called a linear transformation if it preserve the operations of vector addition and scalar multiplication, i.e. for all $v, w\in V$ and $\alpha\in\mathbb{F}$
-- $T(v + w) = T(v) + T(w)$ 
-- $T(\alphav) = T(v) + T(w)$ for all $v, w\in V$
+Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$. A function $f: V \to W$ is called a *linear transformation* if it preserve vector space operations
 
-These conditions can be replaced by the single condition
 $$
-  T(\alpha v + \beta w) = \alpha T(v) + \beta T(\beta)
+  f(\alpha v + \beta w) = \alpha f(v) + \beta f(w)
 $$
-for all $\alpha, \beta\in\mathbb{F}$ and $v, w\in V$.
+
+for all $\alpha, \beta\in\mathbb{F}$ and $v, w\in V$. A linear transformation $f: V\to V$ is called a *linear operator* on $V$. The set of all linear transformations from $V$ to $W$ is denoted $\mathcal{L}(V, W)$ and the set of all linear operators on $V$ is denoted $\mathcal{L}$. 
+
+The following terms are used to classify linear transformations and operators
+- **homomorphism:** linear transformation
+- **endomorphism:** linear operator
+- **monomorphism (embedding):** injective linear transformation
+- **epimorphism**: surjective linear transformation
+- **isomorphism**: bijective linear transformation
+- **automorphism**: bijective linear operator
 </MathBox>
 
-An isomorphism is a structure-preserving mapping between two vector spaces that can be reversed by an inverse mapping. That is, for a linear map $f: V \to W$ there exists an inverse map $g: W \to V$ such that the compositions $f \circ g: W \to W$ and $g \circ f: V \to V$ are identity maps.
+<MathBox title='' boxType='proposition'>
+1. The set $\mathcal{L}(V, W)$ is a vector space under ordinary addition of funtions and scalar multiplication of functions by elements of $\mathcal{F}$.
+2. If $f\in\mathcal{L}(U, V)$ and $g\in\mathcal{L}(V, W)$ then the composition $g\circ f: V\to W$
+3. If $f\in\mathcal{L}(V, W)$ is bijective, then $f^{-1}\in\mathcal{L}(W, V)$
+4. The vector space $\mathcal{L}$ is an algebra, where multiplication is composition of functions. The identity map $\mathrm{id}\in\mathcal{L}(V)$ is the multiplicative identity, and the zero map $0\in\mathcal{L}(V)$ is the additive identity.
 
-An endomorphism is a linear map $f: V \to V$. An endomorphism that is also an isomorphism is called an automorphism.
+<details>
+<summary>Proof</summary>
+
+Let $f:V\to W$ be a bijective linear transformation. Then $f^{-1}: W\to V$ is well-defined and since any two vectors $w_1, w_2\in W$ have the form $w_1 = f(v_1)$ and $w_2 = f(v_2)$ we have for $\alpha, \beta\in\mathbb{F}$
+
+$$
+\begin{align*}
+  f^{-1}(\alpha w_1 + \beta w_2) =& f^{-1}[\alpha f(v_1) + \beta f(v_2)] \\
+  =& f^{-1}[f(\alpha v_1 + \beta v_2)] \\
+  =& \alpha v_1 + \beta v_2 \\
+  =& \alpha f^{-1}(w_1) + \beta f^{-1}(w_2)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $V$ and $W$ be vector spaces and let $B = \{v_i\}_{i\in I}$ be a basis for $V$. Then we can define a linear transformation $f\in\mathcal{L}(V,W)$ by specfiying the values of $f(v_i)\in W$ arbitrarily for all $v_i\in B$ and extending the domain of $f$ to $V$ using linearity, i.e.
+
+$$
+  f(\lambda_i v_i)_{i\in I} = \sum_{i\in I} \lambda_i f(v_i)
+$$
+
+This process uniquely defines a linear transformation. If $f,g\in\mathcal{L}(V,W)$ satisfy $f(v_i) = g(v_i)$ for all $v_i\in B$ then $f = g$.
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='Kernel and range' boxType='definition'>
+A linear transformation $f\in\mathcal{L}(V, W)$ has the following two principal subspaces:
+- the *kernel* (null space) of $f$ is the set $\mathrm{ker}(f):= \{v\in V \mid f(v) = 0\}$
+- the *range* (image) of $f$ is the set $\mathrm{ran}(f):= \{f(v) \mid v\in V\}$
+
+The dimension of $\mathrm{ker}(f)$ is called the *nullity* of $f$ and is denoted $\mathrm{null}(f)$. The dimension of $\mathrm{ran}(f)$ is called the *rank* of $f$ is denoted $\mathrm{rank}(f)$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $f\in\mathcal{L}(V, W)$, then
+1. $f$ is surjective if and only if $\mathrm{ran}(f) = W$
+2. $f$ is injective if and only if $\mathrm{ker}(f) = \{0\}$
+
+<details>
+<summary>Proof</summary>
+
+The first statement is merely a restatement of the definition of surjectivity. To show the second statement, note that
+
+$$
+  f(u) = f(v) \iff f(u - u) = 0 \iff u - v \in\mathrm{ker}(f)
+$$
+
+Thus, if $\mathrm{ker}(f) = \{0\}$ then $f(u) = f(v) \iff u = v$, showing that $f$ is injective. Conversely, if $f$ is injective and $u\in\mathrm{ker}(f)$, then $f(u) = f(0) \iff u = 0$. Hnece $\mathrm{ker}(f) = \{0\}$.
+</details>
+</MathBox>
+
+## Isomorphism
+
+<MathBox title='Isomorphism' boxType='definition'>
+A bijective linear transformation $f:V\to W$ is an isomorphism from $V$ to $W$. The vector space $V$ and $W$ are isomorphic, denoted $V \simeq W$, if there is an isomorphism from $V\to W$.
+</MathBox>
+
+For any ordered basis $B$ of an $\mathbb{F}$-vector space $V$ with $\dim(V) = n$, the coordinate map $\phi_B: V\to\mathbb{F}^n$ is an isomorphism. Hence, any $n$-dimensional vector space over $\mathbb{F}$ is isomorphic to $\mathbb{F}^n$.
+
+An isomorphism can be characterized as a linear transformation $f:V\to W$ that maps a basis for $V$ to a basis for $W$.
+
+<MathBox title='Properties of isomorphisms' boxType='definition'>
+Let $f\in\mathcal{L}(V, W)$ be an isomorphism. For $S\subseteq V$, then
+1. $S$ spans $V$ if and only if $f(S)$ spans $W$.
+2. $S$ is linearly independent in $V$ if and only if $f(S)$ is linearly independent in $W$.
+3. $S$ is a basis for $V$ if and only if $f(S)$ is a basis for $W$.
+</MathBox>
+
+<MathBox title='Isomorphic spaces have same dimension' boxType='definition'>
+Let $V$ and $W$ be vector spaces, then $V\simeq W$ if and only if $\dim(V) = \dim(W)$.
+</MathBox>
+
+<MathBox title='' boxType='definition'>
+For $n\in\N$, any $n$-dimensinoal vector space over $\mathbb{F}$ is isomorphic to $\mathbb{F}^n$. If $B$ is a set of cardinality $|B| = \kappa$, then any $\kappa$-dimensional vector space over $\mathbb{F}$ is isomorphic to the vector space $(\mathbb{F}^B)_0$ of all functions from $B$ to $\mathbb{F}$ with finite support.
+</MathBox>
+
+## Rank-nullity theorem
+
+<MathBox title='' boxType='proposition'>
+Let $f\in\mathcal{L}(V,W)$. Any complement of $\mathrm{ker}(f)$ is isomorphic to $\mathrm{ran}(f)$.
+
+<details>
+<summary>Proof</summary>
+
+Let $f\in\mathcal{L}(V,W)$. Since any subspace of $V$ has a complement, we can write
+
+$$
+  V = \mathrm{ker}(f) \oplus\mathrm{ker}(f)^c
+$$
+
+where $\mathrm{ker}(f)^c$ is the complement of $\mathrm{ker}(f)$. The restriction of $f$ to $\mathrm{ker}(f)^c$, denoted $f^c:\mathrm{ker}(f)^c \to W$ is injective since
+
+$$
+  \mathrm{ker}(f^c) = \mathrm{ker}(f) \cap\mathrm{ker}(f)^c = \{0\}
+$$
+
+Also, $\mathrm{ran}(f^c)\subseteq \mathrm{ran}(f)$. For the reverse inclusion, if $f\in\mathrm{ran}(f)$ then since $v = u + w$ for $u\in\mathrm{ker}(f)$ and $w\in\mathrm{ker}(f)^c$, we have
+
+$$
+  f(v) = f(u) + f(w) = f(w) = f^c(w) \in\mathrm{ran}(f^c)
+$$
+
+Thus $\mathrm{ran}(f^c) = \mathrm{ran}(f)$ and it follows that $\mathrm{ker}(f)^c \simeq \mathrm{ran}(f)$.
+</details>
+</MathBox>
+
+<MathBox title='Rank-nullity theorem' boxType='theorem'>
+For any $f\in\mathcal{L}(V,W)$
+
+$$
+\begin{gather*}
+  \dim(\mathrm{ker}(f)) + \dim(\mathrm{ran}(f)) = \dim(V) \\
+  \mathrm{rank}(f) + \mathrm{null}(f) = \dim(V)
+\end{gather*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $f\in\mathcal{L}(V,W)$, where $\dim(V) = \dim(W) < \infty$. Then $f$ is injective if and only if it is surjective.
+</MathBox>
+
+## Finite-dimensional linear transformations
+
+Any $m\times n$ matrix $A$ over $\mathbb{F}$ defines a linear transformation $f_A:\mathbb{F}^n\to\mathbb{F}^m$ in the form of the multiplication map $v\mapsto Av$. 
+
+<MathBox title='' boxType='lemma'>
+1. If $A$ is an $m\times n$ matrix over $\mathbb{F}$, then the multiplication function $f_A:\mathbb{F}^n \to\mathbb{F}^m$ defined by $v \mapsto Av$ is a linear map, i.e. $\tau_A \in\mathcal{L}(\mathbb{F}^n,\mathbb{F}^m)$.
+2. If $f\in\mathcal{L}(\mathbb{F}^n,\mathbb{F}^m)$ then $f = f_A$ where
+
+$$
+  A = \begin{bmatrix} f(e_1) & \cdots & f(e_n) \end{bmatrix} \in\mathcal{M}_{m,n}(\mathbb{F})
+$$
+
+is the matrix of $f$.
+
+<details>
+<summary>Proof</summary>
+
+**(1)**: For a matrix $A\in\mathcal{M}_{m,n}(\mathbb{F})$, vectors $v, w \in \mathbb{F}^n$ and scalar $\alpha, \beta \in\mathbb{F}$ the associativity and distributivity properties of matrix multiplication gives
+
+$$
+  A(\alpha v + \beta w) = A(\alpha v) + A(\beta v) = \alpha Av + \beta Aw
+$$
+
+showing that $f_A \in\mathcal{L}(\mathbb{F}^n,\mathbb{F}^m)$.
+
+**(2)**: Let $E = \{ e_i \}_{i=1}^n$ be the standard basis of $\mathbb{F}^n$. Then any $v\in\mathbb{F}^n$ is given by 
+linear combination
+
+$$
+  v = \sum_{i=1}^n v^i e_i = \begin{bmatrix} e_1 & \cdots & e_n \end{bmatrix} \begin{bmatrix} v^1 \\ \vdots \\ v^n \end{bmatrix} = E[v]_E 
+$$
+
+By the linearity of $f$
+
+$$
+\begin{align*}
+  f(v) =& f\left(\sum_{i=1}^n v^i e_i \right) = \sum_{i=1}^n f(e_i)v^i \\
+  =& \begin{bmatrix} f(e_1) & \cdots & f(e_n) \end{bmatrix} [v]_E \\
+  =& A[v]_E = f_A (v)
+\end{align*}
+$$
+
+Hence $A = \begin{bmatrix} f(e_1) & \cdots & f(e_n) \end{bmatrix}$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $A$ be an $m\times n$ matrix over $F$.
+1. $f_A:\mathbb{F}^n \to\mathbb{F}^m$ is injective if and only if $\mathrm{rank}(A) = n$.
+2. $f_A:\mathbb{F}^n \to\mathbb{F}^m$ is surjective if and only if $\mathrm{rank}(A) = m$.
+</MathBox>
+
+### Change of basis matrices
+
+<MathBox title='Change of basis operator' boxType='definition'>
+Let $B $ and $C$ be ordered bases for an $n$-dimensional vector space $V$. For any $v\in V$, the map $\phi_{B,C} = \phi_C \phi_B^{-1}$ given by $[v]_B \mapsto [v]_C$ is called the change of basis operator. 
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $B = \{b_i\}_{i=1}^n$ and $C$ be ordered bases for an $n$-dimensional vector space $V$. The change of basis operator $\phi_{B,C} = \phi_C \phi_B^{-1}$ from $B$ to $C$ is an automorphism of $\mathbb{F}^n$ whose standard matrix is
+
+$$
+  M_{B,C} = \begin{bmatrix} [b_1]_C & \cdots & [b_n]_C \end{bmatrix}
+$$
+
+Hence $[v]_C = M_{B,C}[v]_B$ and $M_{C,B} = M_{B,C}^{-1}$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\phi_{B,C}$ is an operator on $\mathbb{F}^n$ it has the form $f_M$ where $M\in\mathcal{M}_n$
+
+$$
+\begin{align*}
+  M =& \begin{bmatrix} \phi_{B,C}(e_1) & \cdots & \phi_{B,C}(e_n) \end{bmatrix} \\
+  =& \begin{bmatrix} \phi_C \phi_B^{-1}([b_1]_B) & \cdots & \phi_C \phi_B^{-1}([b_n]_B) \end{bmatrix} \\
+  =& \begin{bmatrix} [b_1]_C & \cdots & [b_n]_C \end{bmatrix}
+\end{align*}
+$$
+</summary>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If given any two of the following
+1. an invertible $n\times n$ matrix $A$
+2. an ordered basis $B$ for $\mathbb{F}^n$
+3. an ordered basis $C$ for $\mathbb{F}^n$
+
+then the third is uniquely determined by the equation
+
+$$
+  A = M_{B,C}
+$$
+</MathBox>
+
+### The matrix of a linear transformation
+
+<MathBox title='' boxType='proposition'>
+Let $f:V\to W$ be a linear transformation, where $\dim(V) = n$ and $\dim(W) = m$, and let $B = \{b_i\}_{i=1}^n$ be an ordered basis for $V$ and $C$ nad ordered basis for $W$. Then $f$ can be represented with respect to $B$ and $C$ as the matrix product $[f(v)]_C = [f]_{B,C}[v]_B$ where
+
+$$
+  [f]_[B,C] = \begin{bmatrix} [f(b_1)]_C & \cdots & [f(b_n)]_C \end{bmatrix}
+$$
+
+is called the matrix of $f$ with respect to $B$ and $C$. If $V = W$ and $B = C$ we denote $[f]_{B,B}$ by $[f]_{B}$ and so
+
+$$
+  [f(v)]_B = [f]_B [v]_B
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $f\in\mathcal{L}(V, W)$ and let $B = \{b_i\}_{i=1}^n$ and $C$ be ordered bases for $V$ and $W$, respectively. Then the map $\theta:[v]_B \mapsto [f(v)]_C$ is a representation of $f$ as a linear transformation from $\mathbb{F}^n$ to $\mathbb{F}^m$ in the sense that knowing $\theta$ (along with $B$ and $C$) is equivalent to knowing $f$.
+
+Since $\theta$ is a linear transformation from $\mathbb{F}^n$ to $\mathbb{F}^m$, it is simply multiplication by an $m \times n$ matrix $A$, i.e. $[f(v)]_C = A[v]_B$. Since $[b_i]_B = e_i$ we get the columns of $A$
+
+$$
+  A = A[v]_B = \begin{bmatrix} [f(b_i)]_C & \cdots & [f(b_n)]_C  \end{bmatrix}
+$$
+</details>
+</MathBox>
+
 
 For a vector space $V$, the outer product of its basis $B = \left\{ e_i \right\}_{i \in I \subset \N}$ and its dual basis $B^* = \left\{ e^i \right\}_{i \in I \subset \N}$ spans all endomorphic linear transforms. Every linear transform $L : V \to V$ can be writen as a linear combination of vector-covector pairs 
 
@@ -795,12 +973,7 @@ $$
 \end{align*}
 $$
 
-<MathBox title='Kernel and image' boxType='definition'>
-Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$. If $T: V \to W$ is a linear transformation then
 
-- the *kernel* (null space) of $T$ is the set $\mathrm{ker}(T) := \{ v\in V \mid T(v) = 0 \}$
-- the *range* (image) of $T$ is the set $\mathrm{ran}(T) := \{ T(v) \mid v\in V\}$
-</MathBox>
 
 ### Matrices
 
@@ -885,13 +1058,6 @@ $$
 \end{align*}
 $$
 
-### Rank-nullity theorem
-
-For any matrix $M \in \mathbb{C}^{m\times n}$
-
-$$
-  \dim\left(\mathrm{Ran}(M) \right) + \dim\left(\mathrm{Ker}(M) \right) = n
-$$
 
 ## Inner product (dot product)
 
@@ -1022,3 +1188,103 @@ $$
   B_{ij} &= \tilde{A}_i^k \tilde{A}_j^l \tilde{B}_{kl}
 \end{align*}
 $$
+
+## Dual vector space
+
+Given a vector space $V$ over a field $\mathbb{F}$, the dual space $V^*$ is defined as the set of all linear functionals (covectors) $\phi : V \to \mathbb{F}$.
+
+The dual space $V^*$ itself becomes a vector space over $\mathbb{F}$ when equipped with the operations of addition and scalar multiplication satisfying $\forall \phi, \psi \in V^*, x \in V$ and $a \in \mathbb{F}$ 
+
+$$
+\begin{gather*}
+  (\phi + \psi)(x) = \phi(x) + \psi(x) \\
+  (a\phi)(x) = a(\phi(x))
+\end{gather*}
+$$
+
+If $V$ is finite-dimensional, then $V^*$ has the same dimension as $V$.
+
+## Basis
+
+A basis $B$ of a vector space $V$ over a field $\mathbb{F}$ is a linearly independent subset of $V$ that spans $V$.
+
+Given a basis $B = \left\{ e_i \right\}_{i \in I \subseteq \N}$, a new basis $\tilde{B} = \left\{ \tilde{e}_i \right\}_{i \in I \subseteq \N}$ can be formed by transforming the old basis vectors, and vice versa
+
+$$
+\begin{align*}
+  \tilde{e}_i &= \sum_{j=1}^n A_i^je_j = A_i^je_j \\
+  e_i &= \sum_{j=1}^n \tilde{A}_i^j \tilde{e}_j = \tilde{A}_i^j \tilde{e}_j 
+\end{align*}
+$$
+
+Basis vectors transform covariantly. The transforms are invertible (bijections) such that the compositions give the identity transform 
+
+$$
+\begin{gather*}
+  A\tilde{A} = AA^{-1} = I \\
+  \sum_{j=1}^n A_{ij}\tilde{A}_{ji} = \sum_{j=1}^n \tilde{A}_{ij}A_{ji} = \delta_{ij} = \begin{cases} 1, \quad i = j \\ 0, \quad i \neq j \end{cases}
+\end{gather*}
+$$
+
+A vector $v$ can be expressed as a linear combination of basis vectors
+
+$$
+\begin{align*}
+  v = \sum_{j=1}^n v_j e_j = \sum_{j=1}^n v_j \left( \sum_{i=1}^n \tilde{A}_{ij} \tilde{e}_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n \tilde{A}_{ij}v_j \right)\tilde{e}_i = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j \\ 
+  v = \sum_{j=1}^n \tilde{v}_j \tilde{e}_j = \sum_{j=1}^n \tilde{v}_j \left( \sum_{i=1}^n A_{ij} e_i \right) = \sum_{i=1}^n \left( \sum_{j=1}^n A_{ij} \tilde{v}_j \right)e_i = \sum_{j=1}^n v_j e_j
+\end{align*}
+$$
+
+Vector components are said to be contravariant as they transform inversely of the basis vectors. To signify this, vector components are denoted with superscript indices. 
+
+$$
+\begin{align*}
+  v^j &= \sum_{j=1}^n A_{ij} \tilde{v}^j \\
+  \tilde{v}^j &= \sum_{j=1}^n \tilde{A}_{ij}v^j
+\end{align*}
+$$
+
+### Dual basis
+
+Given a basis $B = \left\{ e_i \right\}_{i \in I \subset \N}$ for a finite-dimensional vector space $V$, a basis $B^* = \left\{ e^i \right\}_{i \in I \subset \N}$, called the dual basis, can be formed through the bi-orthogonality property
+
+$$
+  e^i \left( e_j \right) = \delta_j^i
+$$
+
+A new dual basis $\tilde{B}^*$ can be formed by transforming the old dual basis, $\tilde{e}^i = \sum_{i=1}^n t_{ij}e^j$. By the bi-orthogonality property
+
+$$
+\begin{align*}
+  \tilde{e}^i (\tilde{e}_k) &= \sum_{j=1} t_{ij} e^j \left( \tilde{e}_k\right) \\
+  &= \sum_{j=1}^n t_{ij} e^j \left( \sum_{l=1}^n a_{lk} e_l \right) \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} e^j (e_l) \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{lk} \delta_j^l \\
+  &= \sum_{j=1}^n \sum_{l=1}^n t_{ij} a_{jk} = \delta_k^i \quad \Rightarrow t_{ij} = \tilde{a}_{ij}
+\end{align*}
+$$
+
+This shows that dual basis vectors transform covariantly, hence the superscripts
+
+$$
+\begin{gather*}
+  \tilde{e}^i = \sum_{j=1}^n \tilde{a}_{ij} e^j \\
+  e^i = \sum_{j=1}^n a_{ij} \tilde{e}^j
+\end{gather*}
+$$
+
+A covector $\phi \in V^*$ can be represented as a linear combination of the dual basis vectors
+
+$$
+  \phi = \sum_{i=1}^n \phi_i e^i = \sum_{i=1}^n \phi_i \left( a_{ij}e^j \right) = \sum_{j=1}^n \left( \sum_{i=1}^n \phi_i a_{ij} \right) \tilde{e}^j
+$$
+
+Covectors transform covariantly, hence the subscripts.
+
+$$
+\begin{gather*}
+  \phi_j = \sum_{i=1}^n \tilde{a}_{ij}\tilde{\phi}_i \\
+  \tilde{\phi}_j = \sum_{i=1}^n a_{ij}\phi_i
+\end{gather*}
+$$
+
