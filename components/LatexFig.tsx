@@ -36,11 +36,11 @@ export default function LatexFig({width=70, src, alt, caption, children}: Props)
   }
 
   return (
-    <figure className='relative'
+    <figure className='flex flex-col relative'
       onMouseOver={() => setHover(true)} onMouseLeave={() => setHover(false)}
-    >
-      <img className='bg-white' alt={alt} src={src} width={`${width}%`} />
-      <figcaption className="before:font-bold before:[counter-increment:fig] 
+    > 
+      <img className='mx-auto bg-white mb-0' alt={alt} src={src} width={`${width}%`} />
+      <figcaption className="text-center before:font-bold before:[counter-increment:fig] 
         before:content-['Figure_'_counter(fig)_':_']"
       >
         {caption}
