@@ -6,13 +6,13 @@ showToc: true
 
 # Matrices
 
-The set of $m\times n$ matrices with entries in a field $\mathbb{F}$ is denoted $\mathcal{M}_{m,n}(\mathbb{F})$. For $n\times n$ matrices this set is denoted $\mathcal{M}_{n,n}(\mathbb{F})$. The $(i, j)$-th entry of an $m\times n$ matrix $A\in\mathcal{M}_{m,n}(\mathbb{F})$ is denoted $A_{i,j}$.
+The set of $m\times n$ matrices with entries in a field $\mathbb{F}$ is denoted $\mathcal{M}_{m,n}(\mathbb{F})$. For $n\times n$ matrices this set is denoted $\mathcal{M}_{n,n}(\mathbb{F})$. The $(i, j)$-th entry of an $m\times n$ matrix $A\in\mathcal{M}_{m,n}(\mathbb{F})$ is denoted $[A]_{i,j} = a_{i,j}$.
 
-The *main diagonal* of an $m\times n$ matrix $A$ is sequence of entries $(A_{i,i})_{i=1}^{\min\{m,n\}}$. An $m\times n$ matrix $A$ is called diagonal if its off-diagonal entries are zero, and denoted $A = \mathrm{diag}(A_{i,i})_{i=1}^n$. 
+The *main diagonal* of an $m\times n$ matrix $A$ is sequence of entries $(a_{i,i})_{i=1}^{\min\{m,n\}}$. An $m\times n$ matrix $A$ is called diagonal if its off-diagonal entries are zero, and denoted $A = \mathrm{diag}(a_{i,i})_{i=1}^n$. A square matrix is *upper triangular* if all of its entries below the main diagonal are $0$. Similarly, a square matrix is *lower triangular* if all of its entries above the main diagonal are $0$. 
 
-The transpose of $A\in\mathcal{M}_{m,n}$ is the matrix $A^T$ defined by $(A^T)_{i,j} = A_{j,i}$. A matrix is symmetrix if $A = A^T$ and skew-symmetric if $A^T = -A$. All $n\times n$ diagonal matrices are symmetric.
+The transpose of $A\in\mathcal{M}_{m,n}$ is the matrix $A^T$ defined by $[A^T]_{i,j} = [A]_{j,i}$. A matrix is symmetric if $A = A^T$ and skew-symmetric if $A^T = -A$. All $n\times n$ diagonal matrices are symmetric.
 
-The $n\times n$ identity matrix is defined as $I_n := \mathrm{diag}(1)_{i=1}^n$ with $(I_n)_{i,j} = \delta_{i,j}$ where $\delta_{i,j}$ is the Kronecker delta
+The $n\times n$ identity matrix is defined as $I_n := \mathrm{diag}(1)_{i=1}^n$ with $[I_n]_{i,j} = \delta_{i,j}$ where $\delta_{i,j}$ is the Kronecker delta
 
 $$
   \delta_{i,j} = \begin{cases} 1,\quad& i=j \\ 0,\quad& i\neq j \end{cases}
@@ -27,10 +27,146 @@ The transpose operation has the following properties for $A,B\in\mathcal{M}_{m,n
 5. $\det(A^T) = \det(A)$
 </MathBox>
 
+## Partioning and matrix multiplication
+
+Let $M$ be an $m\times n$ matrix. If $B\subseteq \{1,\dots,m \}$ and $C\subseteq\{1,\dots,n\}$ then the submatrix $M[B,C]$ is the matrix obtained from $M$ by keeping only the rows index in $B$ and the columns with index in $C$ such that $M[B,C]$ has size $|B|\cdot|C|$.
+
+Suppose that $M\in\mathcal{M}_{m,n}$ and $N\in\mathcal{M}_{n,k}$. For
+1. $\mathcal{P} = \{B_1,\dots, B_p\}$ be a partition of $\{1,\dots,m\}$
+2. $\mathcal{Q} = \{C_1,\dots, C_q\}$ be a partition of $\{1,\dots,n\}$
+3. $\mathcal{R} = \{D_1,\dots, D_r\}$ be a partition of $\{1,\dots,k\}$
+
+we have
+
+$$
+  [MN][B_i, D_i] = \sum_{C_h \in\mathcal{Q}} M[B_i, C_h] N[C_h, D_j]
+$$
+
+When the partions contain only single-element block, this reduces to the usual formula for matrix multiplication
+
+$$
+  [MN]_{i,j} = \sum_{h=1}^m M_{i,h} N_{h,j}
+$$
+
+## Block matrices
+
+If $B_{i,j}$ are submatrices of $M\in\mathcal{M}_{m,n}$ with appropriate sizes, then $M$ can be written as the block matrix
+
+$$
+  M = \begin{bmatrix} 
+    B_{1,1} & \cdots & B_{1,n} \\
+    \vdots & \ddots & \vdots \\
+    B_{m,1} & \cdots & B_{m,n}
+  \end{bmatrix}
+$$
+
+A square matrix of the form
+
+$$
+  M = \begin{bmatrix} 
+    B_1 & 0 &\cdots & 0 \\
+    0 & \ddots & \ddots & \vdots \\
+    \vdots & \ddots & \ddots & 0 \\
+    0 & \cdots & 0 & B_n
+  \end{bmatrix}
+$$
+
+where each $B_i$ is square and $0$ is a zero submatrix, is called a *block diagonal matrix*.
+
+## Elementary row operations
+
+There are three elementary row operations on matrices
+- a row within the matrix can be switched with another row (row switching)
+- each element in a row can be multiplied by a non-zero constant (row scaling)
+- a row can be replaced by the sum of that row and a multiple of another row (row addition)
+
+<MathBox title='Reduced row echelon form' boxType='definition'>
+A matrix $R$ is said to be in *reduced row echelon* form if
+1. All zero rows appear at the bottom of the matrix.
+2. In any nonzero row, the first nonzero entry is $1$, called a leading entry.
+3. For any two consecutive rows, the leading entry of the lower is to the right of the leading entry of the upper row.
+4. Any column that contains a leading entry has zeroes in all other positions.
+</MathBox>
+
+<MathBox title='Row equivalence' boxType='proposition'>
+Matrices $A, B\in\mathcal{M}_{m,n}$ are row equivalent, denoted $A\sim B$, if eiter one can be obtained from the other by a series of elementary row operations. 
+
+A matrix $A$ is row equivalent to one and only one matrix $R$ in reduced row echelon form, i.e. $A = E_1\cdots E_k R$ where $E_i$ are elementary matrices required to reduce $A$ to reduced row echelon form.
+
+A matrix $A$ is invertible if and only if its reduced row echelon form is an identity matrix. Hence a matrix is invertible if and only if it is the product of elementary matrices.
+</MathBox>
+
+### Row-switching transformations
+
+The corresponding elementary matrix for row switching is obtained by swapping row $i$ and row $j$ of the identity matrix.
+$$
+  T_{i,j} = \begin{align*}
+    1 & & & & & & \\
+    & \ddots & & & & & \\
+    & & 0 & & 1 & & \\
+    & & & \ddots & & & \\
+    & & 1 & & 0 & & \\
+    & & & & & \ddots & \\
+    & & & & & & 1
+  \end{align*}
+$$
+
+### Row scaling transformation
+
+The corresponding elementary matrix for scaling the $i$th row by $m \neq 0$ is a diagonal matrix with diagonal entries $1$ except in the $i$th position
+
+$$
+  D_i (m) =   T_{i,j} = \begin{align*}
+    1 & & & & & & \\
+    & \ddots & & & & & \\
+    & & & 1 & 1 & & \\
+    & & & m & & & \\
+    & & & & 1 & & \\
+    & & & & & \ddots & \\
+    & & & & & & 1
+  \end{align*}
+$$
+
+The entries of $D_i(m)$ are given by
+
+$$
+  [D_i(m)]_{k,l} = \begin{cases} 
+    0 \quad& k\neq l \\
+    1 \quad& k = l, k\neq i \\
+    m \quad& k = l, k = i
+  \end{cases}
+$$
+
+### Row addition transformation
+
+The corresponding elementary matrix for adding the $j$th row multiplied by a scalar $m$ to the $i$th row is the identity matrix with an $m$ in the $(i,j)$th entry
+
+$$
+  L_{i,j} (m) =   T_{i,j} = \begin{align*}
+    1 & & & & & & \\
+    & \ddots & & & & & \\
+    & & & 1 & 1 & & \\
+    & & & \ddots & & & \\
+    & & m & & 1 & & \\
+    & & & & & \ddots & \\
+    & & & & & & 1
+  \end{align*}
+$$
+
+The entries of $L_{i,j}(m)$ are given by
+
+$$
+  [L_{i,j}(m)]_{k,l} = \begin{cases} 
+    0 \quad& k\neq l, k\neq i, l\neq j \\
+    1 \quad& k = l \\
+    m \quad& k = i, l = j
+  \end{cases}
+$$
+
 ## Determinants
 
 <MathBox title='Determinant' boxType='proposition'>
-The determinant is a function $\mathrm{det}:\mathcal{M}_{n}(\mathbb{F}) \to \mathbb{F}$ defined by
+The determinant is a function $\mathrm{det}:\mathcal{M}_{n}(\mathbb{F}) \to\mathbb{F}$ defined by
 
 $$
   \mathrm{det}(A) = \sum_{\pi\in S_n} \left( \sgn(\sigma) \prod_{i=1}^n A_{i,\sigma(i)} \right)
@@ -48,6 +184,12 @@ $$
 
 <MathBox title='Properties of the determinant' boxType='proposition'>
 The determinant has the following properties for $A,B\in\mathbb{M}_{n}(\mathbb{F})$
+1. $\mathrm{det}(AB) = \mathrm{det}(A)\mathrm{det}(B)$
+2. $A$ is invertible (nonsingular) if and only if $\mathrm{det}(A) \neq 0$
+3. if $A$ is an upper/lower triangular matrix, then $\mathrm{det}(A) = \prod_{i=1}^n A_{i,j}$
+4. if a square matrix $M$ has the block diagonal form
+
+then $\mathrm{det}(M) = \prod_{i=1}^n B_i$.
 </MathBox>
 
 # Vector space
