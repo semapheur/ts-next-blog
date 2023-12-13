@@ -1,4 +1,4 @@
-import React from 'react'
+import {ReactNode} from 'react'
 
 import Sidebar from './Sidebar';
 import matter from 'gray-matter';
@@ -19,7 +19,7 @@ function getNoteDetails(fileName: string, subject: string, note: Buffer, result:
 export default async function NotesLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   const details = await iterNotes(getNoteDetails);
 

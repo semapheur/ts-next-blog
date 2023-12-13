@@ -1,49 +1,49 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'fs'
+import path from 'path'
 
-type NoteHandler<T> = (fileName: string, subject: string, note: Buffer, result: T) => T;
+type NoteHandler<T> = (fileName: string, subject: string, note: Buffer, result: T) => T
 
 export async function iterNotes<T>(handler: NoteHandler<T>) {
-  const result = {} as T;
+  const result = {} as T
 
-  const notesDir = path.join(process.cwd(), 'content', 'notes');
+  const notesDir = path.join(process.cwd(), 'content', 'notes')
   for (let subject of fs.readdirSync(notesDir)) {
-    const subjectDir = path.join(notesDir, subject);
+    const subjectDir = path.join(notesDir, subject)
 
     for (let fileName of fs.readdirSync(subjectDir)) {
-      const regex = new RegExp('[^.]+$');
+      const regex = new RegExp('[^.]+$')
       if (fileName.match(regex)) {
-        const note = fs.readFileSync(path.join(subjectDir, fileName));
-				handler(fileName, subject, note, result);
+        const note = fs.readFileSync(path.join(subjectDir, fileName))
+				handler(fileName, subject, note, result)
       }
     }
   }
-  return result;
+  return result
 }
 
 export function wrapPromise<T>(promise: Promise<T>) {
-  let status = 'pending';
-  let response;
+  let status = 'pending'
+  let response
 
   const suspender = promise.then(
     (res) => {
-      status = 'success';
-      response = res;
+      status = 'success'
+      response = res
     },
     (err) => {
-      status = 'error';
+      status = 'error'
       response = err
     }
   )
   const read = () => {
     switch (status) {
       case 'pending':
-        throw suspender;
+        throw suspender
       case 'error':
-        throw response;
+        throw response
       default:
-        return response;
+        return response
     }
   }
-  return {read};
+  return {read}
 }

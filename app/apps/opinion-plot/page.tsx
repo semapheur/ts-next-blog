@@ -4,8 +4,6 @@ const Opinion = dynamic(() => import('components/OpinionPlot'), {
   ssr: false}
 )
 
-export default function page() {
-  return (
-    <Opinion/>
-  )
+export default function Page() {
+  return <Opinion/>
 }

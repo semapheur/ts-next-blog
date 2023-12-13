@@ -4,8 +4,6 @@ const Plot = dynamic(() => import('components/InteractivePlot'), {
   ssr: false}
 )
 
-export default function page() {
-  return (
-    <Plot/>
-  )
+export default function Page() {
+  return <Plot/>
 }
