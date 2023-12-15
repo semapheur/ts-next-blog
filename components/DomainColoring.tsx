@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { computed, effect, signal } from '@preact/signals-react'
+import { effect, signal } from '@preact/signals-react'
 import {
   parse, 
   ConstantNode, 
@@ -47,13 +47,7 @@ export default function DomainColoring() {
 
     if (!(plotCanvas && gridCanvas)) return
 
-    const {width, height} = plotCanvas.parentElement!.getBoundingClientRect()
-    plotCanvas.width = width
-    plotCanvas.height = height
     gl.value = plotCanvas.getContext('webgl2')
-
-    gridCanvas.width = width
-    gridCanvas.height = height
     grid.value = gridCanvas.getContext('2d')
 
     if (!gl.value) {
@@ -155,7 +149,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   function callback(node: MathNode): MathNode {
     switch(node.type) {
       case 'SymbolNode': {
-        if ((node as SymbolNode).name != 'i') return node
+        if ((node as SymbolNode).name !== 'i') return node
         
         return new FunctionNode('vec2', [new ConstantNode(0), new ConstantNode(1)])
       } 
@@ -164,7 +158,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
         return new FunctionNode('vec2', args)
       }
       case 'FunctionNode': {
-        const fn = 'c_' + (node as FunctionNode).fn.name
+        const fn = `c_${(node as FunctionNode).fn.name}`
         functions.add(fn)
 
         const args = (node as FunctionNode).args
@@ -175,19 +169,17 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
       }
       case 'OperatorNode': {
         const op = (node as OperatorNode).op
-        const fn = 'c_' + (node as OperatorNode).fn
+        const fn = `c_${(node as OperatorNode).fn}`
         
         const args = (node as OperatorNode).args
         for (let i = 0; i < args.length; i++) {
           args[i] = callback(args[i])
         }
-
         if (vecOperators.has(op)) {
           return new OperatorNode(op, op, args)
-        } else {
-          functions.add(fn)
-          return new FunctionNode(fn, args)
-        } 
+        }
+        functions.add(fn)
+        return new FunctionNode(fn, args) 
       }
       case 'ParenthesisNode': {
         return callback((node as ParenthesisNode).content)
@@ -199,7 +191,6 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   }
 
   const glsl = ast.transform(callback)
-
   return [glsl.toString(), functions]
 }
 
@@ -283,4 +274,3 @@ function makeFragmentCode(expression: string): string {
     fragColor = vec4(color, 1.0);
   }`
 }
-

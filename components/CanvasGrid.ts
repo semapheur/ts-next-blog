@@ -13,7 +13,7 @@ export default class CanvasGrid {
   private transform: DOMMatrix
   private minGridSize = 50
   private eventListeners = new EventListenerStore()
-  private complex: Boolean
+  private complex: boolean
 
   constructor(
     canvas: HTMLCanvasElement, 
@@ -119,7 +119,7 @@ export default class CanvasGrid {
       const {width, height} = this.ctx.canvas.getBoundingClientRect()
 
       this.ctx.lineWidth = 1
-      this.ctx.font = `bold 1rem trebuchet ms`
+      this.ctx.font = 'bold 1rem trebuchet ms'
       this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
       this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'
       const textOffset = {
@@ -168,8 +168,8 @@ export default class CanvasGrid {
         this.ctx.fillStyle ='white'
         this.ctx.strokeStyle ='black'
         this.ctx.lineWidth = 0.5
-        let text = (axis === 'y' && this.complex) ? 
-          tickFormat(axis, step, tick) + 'i' :
+        const text = (axis === 'y' && this.complex) ? 
+          `${tickFormat(axis, step, tick)}i` :
           tickFormat(axis, step, tick)
         
         this.ctx.fillText(text, tickPos.x, tickPos.y)

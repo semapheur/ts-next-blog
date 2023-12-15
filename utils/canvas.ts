@@ -31,16 +31,13 @@ export function mousePosition(
 }
 
 export function resizeCanvas(canvas: HTMLCanvasElement) {
-  const dpr = window.devicePixelRatio
   const {width, height} = canvas.getBoundingClientRect()
-  const newWidth = Math.round(width * dpr)
-  const newHeight = Math.round(height * dpr)
 
-  if (canvas.width !== newWidth) {
-    canvas.width = newWidth
+  if (canvas.width !== width) {
+    canvas.width = width
   } 
   
-  if (canvas.height != newHeight) {
-    canvas.height = newHeight
+  if (canvas.height !== height) {
+    canvas.height = height
   }
 }

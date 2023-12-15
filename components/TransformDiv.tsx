@@ -25,15 +25,15 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     
     const oldSize = divSize.current
     
-    const viewport = document.querySelector('meta[name=viewport]')!
-    viewport.setAttribute('content', `height=${oldSize.y}px, width=device-width, initial-scale=1.0`)
+    const viewport = document.querySelector('meta[name=viewport]')
+    viewport?.setAttribute('content', `height=${oldSize.y}px, width=device-width, initial-scale=1.0`)
 
-    const currentViewRange = getViewRange(transform.value, oldSize.x, oldSize.y)
     const {width, height} = div.getBoundingClientRect()
+    const currentViewRange = getViewRange(transform.value, oldSize.x, oldSize.y)
     transform.value = setTransform(currentViewRange, width, height)
     divSize.current = new DOMPoint(width, height)
 
-    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
   }
 
   function handleMouseDown(e: MouseEvent) {

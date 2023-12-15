@@ -32,29 +32,29 @@ export default function Sidebar({noteDetails}: Props) {
       bg-primary/50 backdrop-blur shadow-r dark:shadow-black/50 md:relative w-auto'
     >
       <Toggle/>
-      <nav key='nav.sidebar' className='w-0 md:min-w-max bg-primary/0
-        peer-checked/toggle:w-max transition-transform overflow-y-scroll overflow-x-hidden'
+      <nav key='nav.sidebar' className='h-full w-0 md:min-w-max bg-primary/0
+        peer-checked/toggle:w-max transition-transform overflow-y-scroll'
       >
         {Object.entries(noteDetails).map(([subject, notes]) => (
           <>
-            <label htmlFor={subject} key={'label.' + subject}
+            <label htmlFor={subject} key={`label.${subject}`}
               className='block pl-3 text-text text-xl font-bold cursor-pointer 
                 border-b border-shadow hover:border-secondary
                 transition-colors duration-300 ease-out'
             >
               {subject.charAt(0).toUpperCase() + subject.slice(1)}
             </label>
-            <input key={'input.' + subject} id={subject} type='checkbox' className='peer hidden'/>
-            <ul key={'ul.' + subject}
+            <input key={`input.${subject}`} id={subject} type='checkbox' className='peer hidden'/>
+            <ul key={`ul.${subject}`}
               className='list-none pr-[calc(0.5rem+4px)] h-0 overflow-hidden
               peer-checked:h-auto transition-[height] duration-300 ease-in-out' 
             >
               {notes.map(note => (
-                <li key={'li.' + note.slug} className='list-none pl-2 overflow-hidden
+                <li key={`li.${note.slug}`} className='list-none pl-2 overflow-hidden
                   hover:border-l-4 hover:border-secondary
                   transition duration-300 ease-out'
                 >
-                  <Link href={`/notes/${subject}/${note.slug}`} key={'a.' + note.slug}
+                  <Link href={`/notes/${subject}/${note.slug}`} key={`a.${note.slug}`}
                     className='text-text'
                   >
                     {note.title}
