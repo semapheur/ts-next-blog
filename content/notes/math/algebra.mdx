@@ -30,7 +30,7 @@ showToc: true
 <MathBox title='Category' boxType='definition'>
 A category $\mathcal{C}$ consists of
 - a collection $\mathrm{ob}(\mathcal{C})$ of *objects*
-- for each $A, B\in\mathrm{ob}(\mathcal{C})$ a collection $\mathcal{C}(A,B)$ of *morphisms* (maps or arrows) from $A$ to $B$
+- for each $A, B\in\mathrm{ob}(\mathcal{C})$ a collection $\mathrm{Hom}_{\mathcal{C}}(A,B)$ of *morphisms* (maps or arrows) from $A$ to $B$, shortened as $\mathcal{C}(A,B)$
 - for each $A,B,C\in\mathrm{ob}(\mathcal{C})$ a function $\circ: \mathcal{C}(B,C)\times\mathcal{C}(A,B)\to\mathbb{C}(A,C)$ defined by $(g,f)\mapsto g\circ f$ called *composition*
 - for each $A\in\mathrm{ob}(\mathcal{C})$ an element $\mathrm{id}_A$ of $\mathcal{C}(A,A)$ called the *identity* on $A$
 
@@ -42,37 +42,33 @@ satisfying
 The following notation is commonly used
 - $A\in\mathcal{C}$ instead of $A\in\mathrm{ob}(\mathcal{C})$
 - $f:A\to B$ or $A \xrightarrow{f} B$ instead of $f\in\mathcal{C}(A,B)$
-  - $\mathcal{C}(A,B)$ can also be written as $\mathrm{Hom}_{\mathcal{C}}(A,B)$ (homomorphism)
 - $gf$ instead of $g\circ f$
 - $1_A$ instead of $\mathrm{id}_A$
 
 <MathBox title='Isomorphism' boxType='definition'>
-A map $f:A\to B$ in a category $\mathcal{C}$ is an isomorphism if there exists a map $g: B\to A$ in $\mathcal{C}$ such that $gf = 1_A$ and $fg = 1_B$. In this case, we say that $f$ is *invertible* and that $g$ is the *inverse* of $f$, denoted $g = f^{-1}$.
+A map $f:A\to B$ in a category $\mathcal{C}$ is an isomorphism if there exists a map $g: B\to A$ in $\mathcal{C}$ such that $gf = 1_A$ and $fg = 1_B$. In this case, we say that $f$ is *invertible* and that $g$ is the *inverse* of $f$, denoted $g = f^{-1}$. If there is an isomorphism from $A$ to $B$, we say that $A$ and $B$ are isomorphic, denoted $A\cong B$.
 </MathBox>
 
 <LatexFig width={50} src='/fig/isomorphism.svg' alt=''
   caption='Isomorphism diagram'
 >
 ```tex
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+
+\begin{document}
+
 \begin{tikzcd}[row sep=normal, column sep=normal, every label/.append style = {font = \scriptsize}]
   A \arrow[loop left, "1_A"] \arrow[r, "f", yshift=0.5ex] & 
   B \arrow[loop right, "1_B"] \arrow[l, "f^{-1}", yshift=-0.5ex]
 \end{tikzcd}
+
+\end{document}
 ```
 </LatexFig>
 
-<MathBox title='Functor' boxType='definition'>
-A category $\mathcal{C}$ consists of
-- a collection $\mathrm{ob}(\mathcal{C})$ of *objects*
-- for each $A, B\in\mathrm{ob}(\mathcal{C})$ a collection $\mathcal{C}(A,B)$ of *morphisms* (maps or arrows) from $A$ to $B$
-- for each $A,B,C\in\mathrm{ob}(\mathcal{C})$ a function $\circ: \mathcal{C}(B,C)\times\mathcal{C}(A,B)\to\mathbb{C}(A,C)$ defined by $(g,f)\mapsto g\circ f$ called *composition*
-- for each $A\in\mathrm{ob}(\mathcal{C})$ an element $\mathrm{id}_A$ of $\mathcal{C}(A,A)$ called the *identity* on $A$
-
-satisfying
-- $(h\circ g)\circ f = h \circ (g \circ f)$ for each $f\in\mathcal{C}(A,B)$, $g\in\mathcal{C}(B,C)$ and $h\in\mathcal{C}(C,D)$ **(associativity)**
-- $f\circ \mathrm{id}_A = f = \mathrm{id}_B \circ f$ for each $f\in\mathcal{A}$ **(identity law)**
-</MathBox>
-
+## Functor
 <MathBox title='Functor' boxType='definition'>
 Let $\mathcal{A}$ and $\mathcal{B}$ be categories. A functor $F:\mathcal{A}\to\mathcal{B}$ consists of
 1. a function $\mathrm{ob}(\mathcal{A})\to\mathrm{ob}(\mathcal{B})$ by $A\mapsto F(A)$
@@ -81,6 +77,100 @@ Let $\mathcal{A}$ and $\mathcal{B}$ be categories. A functor $F:\mathcal{A}\to\m
 satisfying
 - $F(f' \circ f) = F(f')\circ F(f)$ whenever $A\xrightarrow{f} A' \xrightarrow{f'} A''$ in $\mathcal{A}$
 - $F(1_A) = 1_{F(A)}$ whenever $A\in\mathcal{A}$
+</MathBox>
+
+<MathBox title='' boxType='definition'>
+Let $\mathcal{A}$ be a locally small category and $A\in\mathcal{A}$. The functor
+
+$$
+  H^A = \mathcal{A}(A,\cdot): \mathcal{A}\to\mathbf{Set}
+$$
+
+is defined as follows
+- $H^A(B) = \mathcal{A}(A,B)$ for $B\in\mathcal{B}$
+- for $g\in\mathcal{A}(B, B')$ define
+$$
+  H^A(g) = \mathcal{A}(A,g): \mathcal{A}(A,B)\to\mathcal{A,B'}
+$$
+
+by
+
+$$
+  p\mapsto g\circ p
+$$
+
+for all $p:A\to B$.
+</MathBox>
+
+<MathBox title='Representable' boxType='definition'>
+Let $\mathcal{A}$ be a locally small category. A functor $X:\mathcal{A}\to\mathbf{Set}$ is *representable* if $X\cong H^A$ for some $A\in\mathcal{A}$. A *representation* of $X$ is a choice of an object $A\in\mathcal{A}$ and an isomorphism between $H^A$ and $X$.
+</MathBox>
+
+<MathBox title='Natural transformation' boxType='definition'>
+Let $F, G:\mathcal{A}\to\mathcal{B}$ be two functors. A *natural transformation* $\alpha:F\to G$ is a collection $\left((F(A) \xrightarrow{\alpha_A} G(A))\right)_{A\in\mathcal{A}}$ of maps in $\mathcal{B}$ such that for every map $f:A\to A'$ in $\mathcal{A}$, the following diagram commutes.
+
+$$
+\begin{CD}
+  F(A) @>F(f)>> F(A') \\
+  @V{\alpha_A}VV @VV{\alpha_{A'}}V \\
+  G(A) @>>G(f)> G(A')
+\end{CD}
+$$
+
+The maps $\alpha_A$ are called the components of $\alpha$.
+
+<LatexFig width={50} src='/fig/natural_transform.svg' alt=''
+  caption='Natural transform diagram'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+
+\begin{document}
+
+\begin{tikzcd}[cramped, sep=normal, every label/.append style = {font = \scriptsize}]
+  \mathcal{A} 
+    \arrow[r, bend left=50, "F", ""{name=U, below}] 
+    \arrow[r, bend right=50, "G" swap, ""{name=D}] &
+  \mathcal{B} \arrow[Rightarrow, "\alpha", from=U, to=D]
+\end{tikzcd}
+
+\end{document}
+```
+</LatexFig>
+
+If every component $\alpha_A$ is invertible in $\mathcal{B}$, then $\alpha$ is called a *natural isomorphism*, denoted $\alpha: F\cong G$. In this case, the inverses $\alpha_A^{-1}$ in $\mathcal{B}$ are the components of a natural isomorphism $\alpha^{-1}:B\to A$.
+</MathBox>
+
+## Universality
+<MathBox title='Universal morphism' boxType='definition'>
+Let $F:\mathcal{A}\to\mathcal{B}$ be a functor between categories $\mathcal{A}$ and $\mathcal{B}$ and suppose that $B\in\mathcal{B}$ is an object in $\mathcal{B}$. A *universal morphism* from $B$ to $F$ is a pair $(A, u: B\to F(A))$ of an object $A\in\mathcal{A}$ and a morphism $u\in\mathcal{D}(B,F(B))$ satisfying the *universal property*:
+- for any pair $(A', f)$ with $A'\in\mathcal{A}$ and $f\in\mathcal{B}(B,F(A'))$, there is a unique morphism $h:A\to A'$ in $\mathcal{A}$ such that $f = F(h) \circ u$ according to following diagram.
+
+<LatexFig width={50} src='/fig/universal_property.svg' alt=''
+  caption='Universal property diagram'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+
+\begin{document}
+
+\begin{tikzcd}[row sep=large, column sep=large, every label/.append style = {font = \scriptsize}]
+  B \arrow[r, "u"] \arrow[dr, "f" swap] & 
+  F(A) \arrow[d, "F(h)", dashed] & 
+  A \arrow[d, "h", dashed] \\
+  & F(A') & A'
+\end{tikzcd}
+
+\end{document}
+```
+</LatexFig>
+
+Equivalently, a universal morphism from $F$ to $B$ is a unique pair $(A, u: F(A)\to B)$ of an object $A\in\mathcal{A}$ and a morphism $u\in\mathcal{B}(F(A),B)$ satisfying the universal property:
+- for any pair $(A', f)$ with $A'\in\mathcal{A}$ and $f\in\mathcal{B}(F(A'), B)$ there is a unique morphism $h:A' \to A$ in $\mathbb{A}$ such that $f = u\circ F(h)$.
 </MathBox>
 
 # Algebraic structures

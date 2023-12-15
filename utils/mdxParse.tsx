@@ -1,32 +1,32 @@
 import { serialize } from 'next-mdx-remote/serialize'
 
-//import {bundleMDX} from 'mdx-bundler';
-import {unified} from 'unified';
-import remarkMath from 'remark-math';
-import remarkGfm from 'remark-gfm';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import rehypeKatex from 'rehype-katex';
-//import rehypeHighlight from 'rehype-highlight';
-//import rehypePrettyCode from 'rehype-pretty-code';
-import rehypeImgSize from 'rehype-img-size';
-//import rehypeMathjaxSvg from 'rehype-mathjax/svg.js';
-import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeStringify from 'rehype-stringify';
-import { MDXPost, NoteHeading } from './types';
-import { MDXRemoteSerializeResult } from 'next-mdx-remote';
-//import toc from 'rehype-toc';
-//import sectionize from 'remark-sectionize';
+//import {bundleMDX} from 'mdx-bundler'
+import {unified} from 'unified'
+import remarkMath from 'remark-math'
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import rehypeKatex from 'rehype-katex'
+//import rehypeHighlight from 'rehype-highlight'
+import rehypePrettyCode from 'rehype-pretty-code'
+import rehypeImgSize from 'rehype-img-size'
+//import rehypeMathjaxSvg from 'rehype-mathjax/svg.js'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeStringify from 'rehype-stringify'
+import { MDXPost, NoteHeading } from './types'
+import { MDXRemoteSerializeResult } from 'next-mdx-remote'
+//import toc from 'rehype-toc'
+//import sectionize from 'remark-sectionize'
 
-export const remarkPlugins = [remarkGfm, remarkMath];
+export const remarkPlugins = [remarkGfm, remarkMath]
 export const rehypePlugins = [
 	rehypeSlug, 
 	rehypeAutolinkHeadings, 
 	[rehypeImgSize, {dir: 'public'}],
-	//rehypePrettyCode,
+	rehypePrettyCode,
 	rehypeKatex,
-];
+]
 
 export async function serializeMDX<T>(rawMdx: string, matter = true): Promise<MDXPost<T> | MDXRemoteSerializeResult> {
 	const serialized = await serialize(
@@ -42,18 +42,18 @@ export async function serializeMDX<T>(rawMdx: string, matter = true): Promise<MD
 	)
 	if (matter) {
 		const frontmatter = serialized.frontmatter as T
-		return {serialized, frontmatter};
+		return {serialized, frontmatter}
 	}
 	return serialized
 }
 
-function nest<T extends Object>(arr: Array<T>, ix: number[], value: T): void {
-	for (let i of ix) {
-		let obj = arr[i - 1];
-		if (!('children' in obj)) obj['children'] = [];
-		arr = obj['children'];
+function nest<T extends object>(arr: T[], ix: number[], value: T): void {
+	for (const i of ix) {
+		const obj = arr[i - 1]
+		if (!('children' in obj)) obj['children'] = []
+		arr = obj['children']
 	}
-	arr.push(value);
+	arr.push(value)
 }
 
 async function mdParser(text: string) {
@@ -64,57 +64,57 @@ async function mdParser(text: string) {
 		.use(rehypeSlug)
 		.use(rehypeKatex)
 		.use(rehypeStringify)
-		.process(text);
+		.process(text)
 
-	return String(process);
+	return String(process)
 }
 
 export async function markdownHeadings(source:string) {
 	const headings = source
 		.split('\n')
 		.filter((line) => {
-			return line.match(/^#+\s/);
+			return line.match(/^#+\s/)
 		})
 
-	const slugs: {[key: string]: number} = {};
-	const counter = Array(6).fill(0);
+	const slugs: {[key: string]: number} = {}
+	const counter = Array(6).fill(0)
 
-	const result: NoteHeading[] = [];
+	const result: NoteHeading[] = []
 	
-	for (let h of headings) {
-		let text: string = h.replace(/^#+\s/, '').replace(/\r|\n/g, '').trim();
+	for (const h of headings) {
+		let text: string = h.replace(/^#+\s/, '').replace(/\r|\n/g, '').trim()
 
-		let slug: string;
+		let slug: string
 		if (h.match(/\$.+\$/g)) {
 			// Parse ID created by rehype slug 
-			let tags = await mdParser(h);
-			slug = tags.match(/(?<=id=")[\w-]+?(?=")/u)![0];
+			const tags = await mdParser(h)
+			slug = tags.match(/(?<=id=")[\w-]+?(?=")/u)![0]
 			
 			// Parse serialized mdx
-			const serialized = await serializeMDX(text, false);
-			text = JSON.stringify(serialized);
+			const serialized = await serializeMDX(text, false)
+			text = JSON.stringify(serialized)
 		} else {
-			slug = text.toLowerCase().replace(/[()']|/g, '').replaceAll(' ', '-');
+			slug = text.toLowerCase().replace(/[()']|/g, '').replaceAll(' ', '-')
 		}
 
 		// Add suffix to duplicate slugs
 		if (slug in slugs) {
-			slug += `-${++slugs[slug]}`;
+			slug += `-${++slugs[slug]}`
 		} else {
-			slugs[slug] = 0;
+			slugs[slug] = 0
 		}
-		const level = h.match(/^#+/)![0].length;
+		const level = h.match(/^#+/)![0].length
 
 		// Update counter
-		counter[level - 1]++;
-		counter.fill(0, level);
+		counter[level - 1]++
+		counter.fill(0, level)
 
-		let number: string = `${counter[0]}`;
+		let number= `${counter[0]}`
 
-		let i = 2;
+		let i = 2
 		while (i <= level) {
-			number += `.${counter[i-1]}`;
-			i++;
+			number += `.${counter[i-1]}`
+			i++
 		} 
 		const obj = {
 			text: text, 
@@ -123,13 +123,13 @@ export async function markdownHeadings(source:string) {
 		}
 
 		if (level === 1) {
-			result.push(obj);
+			result.push(obj)
 		} else {
-			const keys = number.split('.').map(Number).slice(0, -1);
-			nest(result, keys, obj);
+			const keys = number.split('.').map(Number).slice(0, -1)
+			nest(result, keys, obj)
 		}
 	}
-	return result;
+	return result
 }
 
 // Parse MDX using mdx-bundler
@@ -157,15 +157,15 @@ export async function markdownHeadings(source:string) {
 //            options.remarkPlugins = [
 //                ...(options.remarkPlugins ?? []),
 //                ...remarkPlugins,
-//            ];
+//            ]
 //            options.rehypePlugins = [
 //                ...(options.rehypePlugins ?? []),
 //                ...rehypePlugins,
-//            ];
-//            return options;
+//            ]
+//            return options
 //        }
 //    })
-//    return {code, frontmatter};
+//    return {code, frontmatter}
 //}
 
 //type MDXProps = {
@@ -173,7 +173,7 @@ export async function markdownHeadings(source:string) {
 //}
 
 //const MDX = ({code}: MDXProps) => {
-//    const Component = useMemo(() => getMDXComponent(code), [code]);
+//    const Component = useMemo(() => getMDXComponent(code), [code])
 //
 //    return <Component components={mdxComponents}/>
 //}

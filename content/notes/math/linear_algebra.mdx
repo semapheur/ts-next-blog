@@ -2084,73 +2084,6 @@ In this case, $\mathbf{x}$ is an eigenvector for $\mathbf{A}$ associated with $\
 
 # Tensor product
 
-<LatexFig width={50} src='/fig/universal_property_set_function.svg' alt=''
-  caption='Universal property for set functions'
->
-```tex
-\documentclass[tikz]{standalone}
-\usepackage{amssymb}
-\usepackage{tikz}
-\usetikzlibrary{cd}
-
-\begin{document}
-
-\begin{tikzcd}[row sep=large, column sep=large, every label/.append style = {font = \scriptsize}]
-  & & S_1 \arrow[dd, "\tau_2"] \\
-  A \arrow[urr, "f_1", bend left] \arrow[r, "f_2"] \arrow[drr, "f_3", bend right] & 
-  S_2 \arrow[ur, "\tau_1"] \arrow[dr, "\tau_3"] & \\
-  & & S_3
-\end{tikzcd}
-
-\end{document}
-```
-</LatexFig>
-
-<MathBox title='Universal pair for function sets' boxType='definition'>
-Let $A$ be a set and $\mathcal{S}$ a collection of sets. Let $\mathcal{F} = \{ f:A\to S \mid S\in\mathcal{S} \}$ be a collection of functions from $A$ to members of $\mathcal{S}$. Let $\mathcal{H}$ be a collection of functions on members of $\mathcal{S}$ with the following structure.
-1. $\mathcal{H}$ contains the identity function for each member of $\mathcal{S}$.
-2. $\mathcal{H}$ is closed under composition of functions.
-3. Composition of functions in $\mathcal{H}$ is associative.
-
-Assume that for any $\tau\in\mathcal{H}$ and $f\in\mathcal{f}$, the composition $\tau\circ f$ is defined and is a member of $\mathcal{F}$. The collection $\mathcal{H}$ is called the *measuring set* and its members as *measuring functions*.
-
-A pair $(S, f:A\to S)$, where $S\in\mathcal{F}$ and $f\in\mathcal{F}$ has the universal property for $\mathcal{F}$ as measured by $\mathcal{H}$, or is a universal pair for $(\mathcal{F},\mathcal{H})$, if for any $X\in S$ and any $g:A\to X$ in $\mathbb{F}$ there is a unique $\tau:S\to X$ in $\mathcal{H}$ such that
-
-$$
-  g = \tau \circ f
-$$
-
-Another way to express this is to say that any $g\in\mathcal{F}$ can be factored through $f$, or that any $g\in\mathcal{F}$ can be lifted to a function $\tau\in\mathcal{H}$ on $S$.
-</MathBox>
-
-<MathBox title='' boxType='proposition'>
-Let $(S:,f:A\to S)$ and $(T, g:A\to T)$ be universal pairs for $(\mathcal{F},\mathcal{H})$. Then there is a bijective measuring function $\mu\in\mathcal{H}$ for which $\mu(S) = T$.
-
-<details>
-<summary>Proof</summary>
-
-There are unique measuring functions $\tau:S\to T$ and $\sigma:T\to S$ in $\mathcal{H}$ for which
-
-$$
-\begin{align*}
-  g =& \tau\circ f \\
-  f =& \sigma\circ g
-\end{align*}
-$$
-
-Such that
-
-$$
-\begin{align*}
-  g =& (\tau\circ f)\circ g \\
-  f =& (\sigma\circ g)\circ f
-\end{align*}
-$$
-
-However, both $\sigma\circ\tau: S\to S$ and the identity map $\iota:S\to S$ are members of $\mathcal{H}$. Hence, the uniqueness requirement implies that $\sigma\circ\tau = \iota$. Similarly, $\tau\circ\sigma = \iota$ and so $\tau$ and $\sigma$ are inverses of one another, making $\mu = \sigma$ the desired bijection.
-</details>
-</MathBox>
-
 ## Universality for bilinearity
 
 <MathBox title='Bilinear function' boxType='definition'>
@@ -2163,26 +2096,21 @@ $$
 \end{align*}
 $$
 
-The set of all bilinear functions from $U\times V$ to $W$ is denoted $\mathrm{hom}_{\mathbb{F}}(U\times V;W)$. A bilinear function $f:U\times V\to\mathbb{F}$ taking values in the base field $\mathbb{F}$ is called a *bilinear form* on $U\times V$.
+The set of all bilinear functions from $U\times V$ to $W$ is denoted $\mathrm{hom}_{\mathbb{F}}(U\times V, W)$. A bilinear function $f:U\times V\to\mathbb{F}$ taking values in the base field $\mathbb{F}$ is called a *bilinear form* on $U\times V$.
 </MathBox>
 
 Note the difference between bilinear functions $\mathrm{hom}_{\mathbb{F}}(V\times V;W)$ and linear functions $\mathcal{L}(V\times V,W)$. For the latter, $V\times V$ is the direct product of vector spaces. For the cartesion product of sets $V\times V$ we dot not consider any algebraic structure.
 
-<MathBox title='Universal pair for bilinearity' boxType='definition'>
-Let $U\times V$ be the cartesian product of two vector spaces over $\mathbb{F}$. Let $\mathcal{S} = \mathrm{Vect}(\mathbb{F})$ be the collection of all vector spaces over $\mathbb{F}$ and let
+Using category theory, the tensor product can be defined as a universal for bilinearity. Let $U$ and $V$ be vector spaces over $\mathbf{F}$, and consider the functor
 
 $$
-  \mathcal{F} = \{ \mathrm{hom}_{\mathbb{F}}(U,V; W) \mid W\in\mathcal{S} \}
+  \mathbf{Bilin}(U,V;-): \mathbf{Vector}_{\mathbb{F}}\to\mathbf{Set} \\
+  W \mapsto \mathrm{Hom}_{\mathbb{F}}(U\times V, W)
 $$
 
-be the collection of all bilinear maps from $U\times V$ to a vector space $W$. The measuring set $\mathcal{H}$ is the collection of all linear transformations.
+mapping a vector space $W$ to the set of bilinear maps $U\times V\to W$. It can be shown that this functor is representable, i.e. there is a vector space $S$ such that $\mathbf{Bilin}(U,V;W)\cong\mathbf{Vect}_{\mathbb{F}}(S,W) = \mathcal{L}(S,W)$ naturally in $W$. 
 
-A pair $(T,t:U\times V\to T)$ is *universal for bilinearity* if it is universal for $(\mathcal{F},\mathcal{H})$, i.e. if for every bilinear map $g:U\times V\to W$, there is a unique linear transformation $\mathrm{T}: U \otimes V \to W$ for which
-
-$$
-  g = \mathrm{T}\circ t
-$$
-</MathBox>
+In other words, there is a universal pair $(T, b)$ of a vector space $T$ and a bilinear map $b: U\times V\to T$ such that for any pair $(W, f)$ of a vector space $W$ and a bilinear map $g:U\times W$ there is a unique linear map $\mathrm{L}:T\to W$ with $f = L \circ b$ according to the diagram below.
 
 <LatexFig width={50} src='/fig/universal_property_bilinearity.svg' alt=''
   caption='Universal property for bilinearity'
@@ -2196,15 +2124,59 @@ $$
 \begin{document}
 
 \begin{tikzcd}[row sep=normal, column sep=normal, every label/.append style = {font = \scriptsize}]
-  U \times V \arrow[r, "j"] \arrow[rr, "t", bend left] \arrow[dr, "f" swap] & 
-  F_{U \times V} \arrow[r, "\pi"] \arrow[d, "\sigma", dashed] &
-  U \otimes V \arrow[dl, "\tau", dashed] \\
-  & W &
+  U\times V \arrow[r, "b"] \arrow[dr, "\forall f" swap] & 
+  T \arrow[d, "\exists!\mathrm{L}", dashed] \\
+  & \forall W
 \end{tikzcd}
 
 \end{document}
 ```
 </LatexFig>
+
+This property, called the universal property, uniquely determines $(T, b)$ up to isomorphism. The vector space $T$ is called the tensor product of $U$ and $V$, denoted $U \otimes V$ and the bilinear map $b$ is written
+
+$$
+\begin{gather*}
+  \otimes: U\times V \to U\otimes V \\
+  (u, v) \mapsto u\otimes v
+\end{gather*}
+$$
+Since a bilinear map out of $U\times V$ is essentially the same as linear map out of $U\times V$, tensor products reduce the study of bilinear functions to the study of linear transformations. 
+
+<MathBox title='Tensor product' boxType='definition'>
+The tensor product of two vector spaces $U$ and $V$ is a vector space denoted $U\otimes V$ together with a bilinear map $\otimes:U\times V\to U\otimes V$ given by $(u,v)\mapsto u\otimes v$ satisfying the universal property. That is for every for every bilinear map $f:U\times V\to W$ there is a unique linear map $\mathcal{L}:U\otimes V\to W$ such that $f = \mathcal{L} \circ\otimes$, i.e. $f(u,v) = \mathcal{L}(u\otimes v)$ for every $u\in U$ and $v\in V$.
+
+<LatexFig width={50} src='/fig/universal_property_tensor_product.svg' alt=''
+  caption='Universal property for the tensor product'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+
+\begin{document}
+
+\begin{tikzcd}[row sep=normal, column sep=normal, every label/.append style = {font = \scriptsize}]
+  U\times V \arrow[r, "\otimes"] \arrow[dr, "\forall f" swap] & 
+  U\otimes V \arrow[d, "\exists!\mathrm{L}", dashed] \\
+  & \forall W
+\end{tikzcd}
+
+\end{document}
+```
+</LatexFig>
+</MathBox>
+
+## Construction from bases
+
+## Construction from quotient space
+
+
+
+
+
+
 
 
 
