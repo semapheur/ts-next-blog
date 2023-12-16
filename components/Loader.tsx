@@ -9,8 +9,8 @@ export default function Loader({...props}: SVGProps<SVGSVGElement>) {
   const g = Math.ceil((3 * Math.PI + 4) * r);
 
   const d = `
-    M${o.x + a} ${o.y - a} A${r} ${r} 0 1 1 ${o.x + a} ${o.y + a} 
-    L${o.x - a} ${o.y - a} A${r} ${r} 0 1 0 ${o.x - a} ${o.y + a}z
+    M${o.x + a},${o.y - a},A${r},${r},0,1,1,${o.x + a},${o.y + a} 
+    L${o.x - a},${o.y - a}A${r},${r},0,1,0,${o.x - a},${o.y + a}z
   `
 
   return (

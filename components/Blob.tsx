@@ -29,7 +29,7 @@ function mapRange(n: number, i1: Interval, i2: Interval): number {
 function noiseOffset(points: Vector[]): Vector[] {
   const result = Array<Vector>(points.length)
 
-  for (let i in points) {
+  for (const i in points) {
     const offset = points[i].map(() => Math.random() * 1000)
     result[i] = new Vector(...offset)
   }
@@ -77,7 +77,7 @@ export default function Blob({className}: Props) {
     path.setAttribute('d', svgCatmullRom(pointsRef.current, 1, true))
 
     // Update path
-    for (let i in pointsRef.current) {
+    for (const i in pointsRef.current) {
       const offset = offsetsRef.current[i]
 
       const wobbleNoise = noiseVec(offset, 

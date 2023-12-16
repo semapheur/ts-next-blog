@@ -4,10 +4,11 @@ import p5Type from 'p5'
 import p5 from 'p5'
 import { useEffect, useRef } from 'react';
 
-let cols = 600, rows = 30;
+const cols = 600
+const rows = 30;
 
-let t_D = 180*15 / cols;
-let r_D = 1 / rows;
+const t_D = 180*15 / cols;
+const r_D = 1 / rows;
 
 function roseGeometry(p5: p5Type) {
   p5.setup = () => {
@@ -37,14 +38,14 @@ function roseGeometry(p5: p5Type) {
       v.push([])
       for (let theta = 0; theta < cols; theta += 3) {
         
-        let phi = (180 / 2) * p5.exp(-theta * t_D/(8 * 180))
-        let petalCut = 1 - (1/2) * p5.pow((5/4) * p5.pow(1 - ((3.6 * theta * t_D % 360) / 180), 2) - 1/4, 2);
-        let hangDown = 2 * p5.pow(r * r_D, 2) * p5.pow(1.3 * r * r_D - 1, 2) * p5.sin(phi)
+        const phi = (180 / 2) * p5.exp(-theta * t_D/(8 * 180))
+        const petalCut = 1 - (1/2) * p5.pow((5/4) * p5.pow(1 - ((3.6 * theta * t_D % 360) / 180), 2) - 1/4, 2);
+        const hangDown = 2 * p5.pow(r * r_D, 2) * p5.pow(1.3 * r * r_D - 1, 2) * p5.sin(phi)
         
-        let pX = 250 * petalCut * (r * r_D * p5.sin(phi) + hangDown * p5.cos(phi)) * p5.sin(theta * t_D)
-        let pY = -250 * petalCut * (r * r_D * p5.cos(phi) - hangDown * p5.sin(phi))
-        let pZ = 250 * petalCut * (r * r_D * p5.sin(phi) + hangDown * p5.cos(phi)) * p5.cos(theta * t_D)
-        let pos = p5.createVector(pX, pY, pZ) //p5.vertex(pX, pY, pZ)
+        const pX = 250 * petalCut * (r * r_D * p5.sin(phi) + hangDown * p5.cos(phi)) * p5.sin(theta * t_D)
+        const pY = -250 * petalCut * (r * r_D * p5.cos(phi) - hangDown * p5.sin(phi))
+        const pZ = 250 * petalCut * (r * r_D * p5.sin(phi) + hangDown * p5.cos(phi)) * p5.cos(theta * t_D)
+        const pos = p5.createVector(pX, pY, pZ) //p5.vertex(pX, pY, pZ)
         v[r].push(pos)
         //v[r][theta] = pos
       }

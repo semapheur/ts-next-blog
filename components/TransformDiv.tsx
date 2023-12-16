@@ -37,7 +37,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   }
 
   function handlePointerDown(event: PointerEvent) {
-    if (event.button !== 1) return
+    if (![0,1].includes(event.button)) return
 
     isDragging.current = true
     startPos.current = new DOMPoint(event.clientX, event.clientY)
@@ -60,10 +60,10 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
 
   function handleWheel(event: WheelEvent<HTMLDivElement>) {
     const div = divRef.current
-    
     if (!div) return
 
     const {left, top} = div.getBoundingClientRect()
+    console.log(event)
 
     const zoomFactor = 1 + Math.sign(-event.deltaY) * 0.1
     const zoomPos = new DOMPoint(event.clientX - left, event.clientY - top)
@@ -91,7 +91,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     }
   })
 
-  return (<div ref={divRef} {...props}
+  return (<div ref={divRef} {...props} style={{touchAction: 'none'}}
     onPointerDown={handlePointerDown}
     onPointerMove={handlePointerMove}
     onPointerUp={handlePointerUp}

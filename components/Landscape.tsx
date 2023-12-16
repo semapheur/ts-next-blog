@@ -21,7 +21,7 @@ function drawMountain(wayPoints: Curve, numPoints: number[], amplitude: number[]
 
   for (let i = 0; i < wayPoints.length-1; i++) {
       
-    let segment = brownianBridge(wayPoints[i], wayPoints[i+1], numPoints[i], amplitude[i])
+    const segment = brownianBridge(wayPoints[i], wayPoints[i+1], numPoints[i], amplitude[i])
     if (i < wayPoints.length - 2) {
       segment.pop()
     }

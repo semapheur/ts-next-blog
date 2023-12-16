@@ -102,7 +102,7 @@ function wrap(svgText: SVGTextElement, width: number) {
   svgText.removeChild(svgText.firstChild!)
   
   for (let i = 0; i < words.length; i++) {
-    let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
     svgText.appendChild(tspan)
     setAttributes(tspan, {x: '50%', dy: `${i * lineHeight}px`})
     tspan.textContent = words[i]

@@ -26,12 +26,12 @@ export default function WaveFooter() {
     const width = wrap.getBoundingClientRect().width
 
     // Wave
-    let a = new Vector(0, 0.2 * height)
-    let b = new Vector(width, 0.2 * height)
-    let points = Math.ceil(width / 64)
+    const a = new Vector(0, 0.2 * height)
+    const b = new Vector(width, 0.2 * height)
+    const points = Math.ceil(width / 64)
 
-    let curve = drawCurve(a, b, valNoise, points, 0.2*height, 1/10, offsetRef.current, 5)
-    let d = svgCatmullRom(curve, 1) + `L${width},${height}L0,${height}Z`
+    const curve = drawCurve(a, b, valNoise, points, 0.2*height, 1/10, offsetRef.current, 5)
+    const d = svgCatmullRom(curve, 1) + `L${width},${height}L0,${height}Z`
     wave.setAttribute('d', d)
     offsetRef.current += 0.02
 
