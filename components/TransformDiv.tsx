@@ -1,6 +1,6 @@
 'use client'
 
-import { MouseEvent, useEffect, useRef, HTMLProps, ReactNode, WheelEvent, useState } from 'react'
+import { PointerEvent, useEffect, useRef, HTMLProps, ReactNode, WheelEvent, useState } from 'react'
 import {signal, Signal} from '@preact/signals-react'
 import {ViewRange} from 'utils/types'
 import Vector from 'utils/vector'
@@ -36,35 +36,37 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
   }
 
-  function handleMouseDown(e: MouseEvent) {
-    if (e.button !== 1) return
+  function handlePointerDown(event: PointerEvent) {
+    if (event.button !== 1) return
 
     isDragging.current = true
-    startPos.current = new DOMPoint(e.clientX, e.clientY)
+    startPos.current = new DOMPoint(event.clientX, event.clientY)
   }
 
-  function handleMouseMove(e: MouseEvent) {
+  function handlePointerMove(event: PointerEvent) {
     if (isDragging.current) {
-      transform.value.e += e.clientX - startPos.current.x 
-      transform.value.f += e.clientY - startPos.current.y 
+      event.preventDefault()
+      
+      transform.value.e += event.clientX - startPos.current.x 
+      transform.value.f += event.clientY - startPos.current.y 
 
-      startPos.current = new DOMPoint(e.clientX, e.clientY)
+      startPos.current = new DOMPoint(event.clientX, event.clientY)
     }
   }
 
-  function handleMouseUp() {
+  function handlePointerUp() {
     isDragging.current = false
   }
 
-  function handleWheel(e: WheelEvent<HTMLDivElement>) {
+  function handleWheel(event: WheelEvent<HTMLDivElement>) {
     const div = divRef.current
     
     if (!div) return
 
     const {left, top} = div.getBoundingClientRect()
 
-    const zoomFactor = 1 + Math.sign(-e.deltaY) * 0.1
-    const zoomPos = new DOMPoint(e.clientX - left, e.clientY - top)
+    const zoomFactor = 1 + Math.sign(-event.deltaY) * 0.1
+    const zoomPos = new DOMPoint(event.clientX - left, event.clientY - top)
       
     transform.value.a *= zoomFactor
     transform.value.d *= zoomFactor
@@ -90,9 +92,9 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   })
 
   return (<div ref={divRef} {...props}
-    onMouseDown={handleMouseDown}
-    onMouseMove={handleMouseMove}
-    onMouseUp={handleMouseUp}
+    onPointerDown={handlePointerDown}
+    onPointerMove={handlePointerMove}
+    onPointerUp={handlePointerUp}
     onWheel={handleWheel}
   >
     {children}

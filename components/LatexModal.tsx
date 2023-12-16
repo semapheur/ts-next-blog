@@ -38,7 +38,7 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
-    if (e.key == 'Escape') {
+    if (e.key === 'Escape') {
       handleClose()
     }
   }
@@ -48,6 +48,7 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
   }, [isOpen])
 
   useEffect(() => {
+    console.log(isModalOpen)
     const modal = modalRef.current
     if (modal) {
       if (isModalOpen) {
@@ -60,17 +61,16 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
   
   return (
     <dialog ref={modalRef} onKeyDown={handleKeyDown}
-      className='relative left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-        h-3/4 max-w-3/4 px-1 pt-2 bg-main/50 border rounded-lg shadow-sm backdrop-blur'
+      className='flex flex-col p-1 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+        h-3/4 max-w-3/4 bg-primary/50 border border-secondary rounded-lg shadow-sm backdrop-blur-md'
     >
-      <button onClick={handleClose}
-        className='absolute top-1 right-1'
-      >
-        <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
-      </button>
-      <div className='prose flex justify-center h-full w-full overflow-scroll'>
+        <button onClick={handleClose}
+          className='self-end'
+          type='button'
+        >
+          <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
+        </button>
         {children}
-      </div>
     </dialog>
   )
 }

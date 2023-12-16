@@ -22,8 +22,10 @@ export default function Codeblock({children, ...props}: Props) {
   }
 
   return (
-    <pre className={'group relative ' + props.className} ref={preRef} {...props} >
-      <button className={`sticky right-4 float-right hidden group-hover:block
+    <pre ref={preRef} {...props}
+      className={`group relative h-full m-0 ${props.className ?? ''}`}
+    >
+      <button className={`sticky top-6 right-0 float-right hidden group-hover:block
         p-1 border-2 rounded
         after:absolute after:text-sm after:px-1
         after:right-[130%] after:top-[50%] after:translate-y-[-50%]
@@ -33,7 +35,7 @@ export default function Codeblock({children, ...props}: Props) {
         after:hover:opacity-100 after:hover:scale-100
         ${copied ? 'border-green-400' : 'border-gray-300'}`}
         aria-label={`${copied ? 'Copied' : 'Copy'} to clipboard`}
-        onClick={handleCopy}
+        type='button' onClick={handleCopy}
       >
         {copied 
           ? <ClipboardCheckIcon className='w-6 h-6 stroke-green-400' />

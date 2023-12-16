@@ -227,9 +227,9 @@ export default class CanvasGrid {
     let isPanning = false
 
     const onClickBound = onClick.bind(this)
-    this.eventListeners.storeEventListener('mousedown', this.ctx.canvas, onClickBound)
+    this.eventListeners.storeEventListener('pointerdown', this.ctx.canvas, onClickBound)
 
-    function onClick(event: MouseEvent) {
+    function onClick(event: PointerEvent) {
       if (event.button !== dragButton) return
 
       isPanning = true
@@ -237,11 +237,11 @@ export default class CanvasGrid {
       
       // Click position
       startPos = new DOMPoint(event.clientX, event.clientY)
-      this.ctx.canvas.addEventListener('mouseup', onMouseUp.bind(this))
-      this.ctx.canvas.addEventListener('mousemove', onMouseMove.bind(this))
+      this.ctx.canvas.addEventListener('pointerup', onPointerUp.bind(this))
+      this.ctx.canvas.addEventListener('pointermove', onPointerMove.bind(this))
     }
 
-    function onMouseMove(event: MouseEvent) {
+    function onPointerMove(event: PointerEvent) {
       if (!isPanning) return
 
       this.transform.e += event.clientX - startPos.x
@@ -250,11 +250,11 @@ export default class CanvasGrid {
       startPos = new DOMPoint(event.clientX, event.clientY)
     }
 
-    function onMouseUp() {
+    function onPointerUp() {
       isPanning = false
       
-      this.ctx.canvas.removeEventListener('mousemove', onMouseMove.bind(this))
-      this.ctx.canvas.removeEventListener('mouseup', onMouseUp.bind(this))
+      this.ctx.canvas.removeEventListener('pointermove', onPointerMove.bind(this))
+      this.ctx.canvas.removeEventListener('pointerup', onPointerUp.bind(this))
     }
   }
 
