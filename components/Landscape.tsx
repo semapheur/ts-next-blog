@@ -152,13 +152,13 @@ export default function Landscape() {
       <div className='absolute inset-0 h-full w-full 
         origin-bottom-left translate-z-[-5px] scale-[6]
         opacity-0 dark:opacity-100 transition-opacity delay-[2s] duration-1000 
-        bg-[linear-gradient(rgba(0,11,22,0.1)40%,rgba(13,98,245,1)80%,rgba(57,167,255,1)100%)]'
+        bg-[linear-gradient(rgb(0,11,22,0.1)40%,rgb(13,98,245,1)80%,rgb(57,167,255,1)100%)]'
       />
       <div className='absolute inset-0 h-full w-full 
         origin-bottom-left translate-z-[-5px] scale-[6] 
         bg-[length:100%_200%] bg-bottom dark:bg-top dark:opacity-0
         [transition:opacity_2s_ease-in,background-position_1s_ease-out]
-        bg-[radial-gradient(circle_at_50%_60%,rgba(242,248,247,1)0%,rgba(249,249,28,1)3%,rgba(247,214,46,1)8%,rgba(248,200,95,1)12%,rgba(201,165,132,1)30%,rgba(115,130,133,1)51%,rgba(46,97,122,1)85%,rgba(24,75,106,1)100%)]'
+        bg-[radial-gradient(circle_at_50%_60%,rgb(242,248,247,1)0%,rgb(249,249,28,1)3%,rgb(247,214,46,1)8%,rgb(248,200,95,1)12%,rgb(201,165,132,1)30%,rgb(115,130,133,1)51%,rgb(46,97,122,1)85%,rgb(24,75,106,1)100%)]'
       />
       <svg xmlns='http://www.w3.org/2000/svg' 
         className='absolute inset-0 h-full w-full origin-bottom-left translate-z-[-4px] scale-[5]'

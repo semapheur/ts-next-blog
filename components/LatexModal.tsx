@@ -48,22 +48,22 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
   }, [isOpen])
 
   useEffect(() => {
-    console.log(isModalOpen)
     const modal = modalRef.current
-    if (modal) {
-      if (isModalOpen) {
-        modal.showModal()
-      } else {
-        modal.close()
-      }
+    if (!modal) return
+
+    if (isModalOpen) {
+      modal.showModal()
+    } else {
+      modal.close()
     }
   }, [isModalOpen])
   
   return (
     <dialog ref={modalRef} onKeyDown={handleKeyDown}
-      className='flex flex-col p-1 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-        h-3/4 max-w-3/4 bg-primary/50 border border-secondary rounded-lg shadow-sm backdrop-blur-md'
+      className='p-1 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+        h-3/4 max-w-3/4 bg-primary/50 dark:border border-secondary rounded-lg shadow-xl backdrop-blur-lg'
     >
+      <div className='h-full flex flex-col'>
         <button onClick={handleClose}
           className='self-end'
           type='button'
@@ -71,6 +71,7 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
           <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
         </button>
         {children}
+      </div>
     </dialog>
   )
 }

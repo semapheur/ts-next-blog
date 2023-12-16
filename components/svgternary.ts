@@ -257,13 +257,13 @@ export default class SVGTernaryPlot {
     ]
     const polyline = {
       points: svgPoly(vertices), fill: 'none',
-      stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': '1',
+      stroke: 'rgb(var(--color-text) / 0.2)', 'stroke-width': '1',
     }
     addChildElement(pattern, 'polyline', polyline)
     const line = {
       x1: '0', y1: `${gridUnit * SIN60}`,
       x2: `${gridUnit}`, y2: `${gridUnit * SIN60}`,
-      stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': '1',
+      stroke: 'rgb(var(--color-text) / 0.2)', 'stroke-width': '1',
     }
     addChildElement(pattern, 'line', line)
     this.svgDefs.appendChild(pattern)
@@ -476,7 +476,7 @@ export default class SVGTernaryPlot {
     const attr = {
       id: `${this.idPrefix}-crosshair-text`,
       'font-size': '0.75em',
-      fill: 'rgba(var(--color-text) / 1)',
+      fill: 'rgb(var(--color-text) / 1)',
       transform: 'scale(1, -1)'
     }
     addChildElement(crosshair, 'text', attr)

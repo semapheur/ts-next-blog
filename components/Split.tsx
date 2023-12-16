@@ -131,7 +131,7 @@ export default function Split(props: SplitProps) {
     const splitRect = splitRef.current.getBoundingClientRect()
     setSizes(setDefaultSizes(defaultSizes, children.length, splitRect[sizeAttr.current]))
     
-  }, [splitRef, defaultSizes, children])
+  }, [defaultSizes, children])
   
   useEventListener('mousemove', onDragMove, splitRef)
   useEventListener('mouseup', onDragStop, splitRef)
@@ -147,7 +147,7 @@ export default function Split(props: SplitProps) {
   const dividerBaseStyle: CSSProperties = {
     position: 'absolute',
     cursor: split === 'row' ? 'ew-resize' : 'ns-resize',
-    backgroundColor: 'rgba(var(--color-secondary) / 1)',
+    backgroundColor: 'rgb(var(--color-secondary) / 1)',
     transform: split === 'row' ? 'translateX(-50%)' : 'translateY(-50%)' 
   }
   dividerBaseStyle[sizeAttr.current] = '4px'
@@ -155,7 +155,7 @@ export default function Split(props: SplitProps) {
 
   const elements: ReactNode[] = []
   for (let i = 0; i < children.length; i++) {
-    let paneStyle: CSSProperties = split === 'row' ? {
+    const paneStyle: CSSProperties = split === 'row' ? {
       height: '100%',
       width: sizes[i],
       minWidth: minSizes[i]
@@ -165,7 +165,7 @@ export default function Split(props: SplitProps) {
       minHeight: minSizes[i]
     }
     elements.push(
-      <Pane key={'pane.' + i} style={paneStyle}
+      <Pane key={`pane.${i}`} style={paneStyle}
         ref={(el: HTMLDivElement) => paneRefs.current[i] = el}
       >
         {children[i]}
@@ -173,11 +173,11 @@ export default function Split(props: SplitProps) {
     )
 
     if (i < children.length - 1) {
-      let dividerStyle = {...dividerBaseStyle}
+      const dividerStyle = {...dividerBaseStyle}
       dividerStyle[posAttr.current] = sum(sizes, 0, i)
 
       elements.push(
-        <Divider key={'divider.' + i}
+        <Divider key={`divider.${i}`}
           index={i} style={dividerStyle}
           ref={(el: HTMLDivElement) => dividerRefs.current[i] = el}
           onDragStart={handleDragStart}
@@ -201,10 +201,10 @@ function setDefaultSizes(defaultSizes: SizeFormat|undefined, panes: number, spli
       const ix = findAllIndices(sizes, 0)
       const remainderSize = (ceil - total) / ix.length
 
-      for (let i of ix) sizes[i] = remainderSize
+      for (const i of ix) sizes[i] = remainderSize
     }
     if (ceil !== splitSize) {
-      for (let i in sizes) {
+      for (const i in sizes) {
         sizes[i] *= splitSize / ceil
       }
     }
@@ -225,7 +225,7 @@ function setDefaultSizes(defaultSizes: SizeFormat|undefined, panes: number, spli
 
   if (typeof defaultSizes[0] === 'string') {
     for (let i = 0; i < sizes.length; i++) {
-      let size = parseFloat(defaultSizes[i] as string)
+      const size = parseFloat(defaultSizes[i] as string)
       if (size && size < 100) sizes[i] = size
     }
     const total = sum(sizes)
@@ -240,7 +240,9 @@ function setDefaultSizes(defaultSizes: SizeFormat|undefined, panes: number, spli
       for (let p = 0; p < pushes; p++) sizes.push(0)
     }
     return relativeSizes(sizes, total, 100)
-  } else if (typeof defaultSizes[0] === 'number') {
+  }
+  
+  if (typeof defaultSizes[0] === 'number') {
     const total = sum(defaultSizes as number[])
 
     if (total > splitSize) {
@@ -252,8 +254,8 @@ function setDefaultSizes(defaultSizes: SizeFormat|undefined, panes: number, spli
 
       for (let p = 0; p < pushes; p++) (defaultSizes as number[]).push(0)
     }
-    for (let f of [1, 100, splitSize]) {
-      let filtered = (defaultSizes as number[]).filter(s => s < f)
+    for (const f of [1, 100, splitSize]) {
+      const filtered = (defaultSizes as number[]).filter(s => s < f)
 
       if (filtered.length === panes) {
         return relativeSizes(defaultSizes as number[], total, f)

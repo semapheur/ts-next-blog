@@ -30,11 +30,11 @@ module.exports = {
         'read': '65ch'
       },
       boxShadow: {
-        'r': '3px 0 2px -1px rgba(0 0 0 / 0.1)',
-        'trb': '2px 0 2px 1px rgba(0 0 0 / 0.1)',
-        'tlb': '-2px 0 2px 1px rgba(0 0 0 / 0.1)',
-        'inner-l': 'inset 2px 0 4px 0px rgba(0 0 0 / 0.1)',
-        'glow-sm': '0px 9px 30px rgba(0 0 0 / 0.1)'
+        'r': '3px 0 2px -1px rgb(0 0 0 / 0.1)',
+        'trb': '2px 0 2px 1px rgb(0 0 0 / 0.1)',
+        'tlb': '-2px 0 2px 1px rgb(0 0 0 / 0.1)',
+        'inner-l': 'inset 2px 0 4px 0px rgb(0 0 0 / 0.1)',
+        'glow-sm': '0px 9px 30px rgb(0 0 0 / 0.1)'
       },
       keyframes: {
         textstroke: {
@@ -74,10 +74,10 @@ module.exports = {
             'text-shadow': `
               0 0 4px white,
               0 0 10px white,
-              0 0 30px rgba(var(--color-header-accent) / 1),
-              0 0 50px rgba(var(--color-header-accent) / 1),
-              0 0 75px rgba(var(--color-header-accent) / 1),
-              0 0 90px rgba(var(--color-header-accent) / 1)
+              0 0 30px rgb(var(--color-header-accent) / 1),
+              0 0 50px rgb(var(--color-header-accent) / 1),
+              0 0 75px rgb(var(--color-header-accent) / 1),
+              0 0 90px rgb(var(--color-header-accent) / 1)
             `
           },
           to: {
@@ -93,24 +93,24 @@ module.exports = {
         },
         glitch: {
           '0%': { 'text-shadow': `
-            0.025em 0 0 rgba(255 0 0 / 0.75),
-            -0.025em -0.0125em 0 rgba(0 255 0 / 0.75),
-            -0.0125em 0.025em 0 rgba(0 0 255 / 0.75);`
+            0.025em 0 0 rgb(255 0 0 / 0.75),
+            -0.025em -0.0125em 0 rgb(0 255 0 / 0.75),
+            -0.0125em 0.025em 0 rgb(0 0 255 / 0.75);`
           },
           '15%': { 'text-shadow': `
-            -0.025em -0.0125em 0 rgba(255 0 0 / 0.75),
-            0.0125em 0.0125em 0 rgba(0 255 0 / 0.75),
-            -0.025em -0.025em 0 rgba(0 0 255 / 0.75);`
+            -0.025em -0.0125em 0 rgb(255 0 0 / 0.75),
+            0.0125em 0.0125em 0 rgb(0 255 0 / 0.75),
+            -0.025em -0.025em 0 rgb(0 0 255 / 0.75);`
           },
           '50%': { 'text-shadow': `
-            0.0125em 0.025em 0 rgba(255 0 0 / 0.75),
-            0.025em 0 0 rgba(0 255 0 / 0.75),
-            0 -0.025em 0 rgba(0 0 255 / 0.75);`
+            0.0125em 0.025em 0 rgb(255 0 0 / 0.75),
+            0.025em 0 0 rgb(0 255 0 / 0.75),
+            0 -0.025em 0 rgb(0 0 255 / 0.75);`
           },
           '100%': { 'text-shadow': `
-            -0.0125em 0 0 rgba(255 0 0 / 0.75),
-            -0.0125em -0.0125em 0 rgba(0 255 0 / 0.75),
-            -0.0125em -0.025em 0 rgba(0 0 255 / 0.75);`
+            -0.0125em 0 0 rgb(255 0 0 / 0.75),
+            -0.0125em -0.0125em 0 rgb(0 255 0 / 0.75),
+            -0.0125em -0.025em 0 rgb(0 0 255 / 0.75);`
           }
         },
       },

@@ -48,8 +48,8 @@ export default function WaveFooter() {
       <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full'>
         <defs>
           <linearGradient id='ocean' gradientTransform='rotate(90)'>
-            <stop offset='0%' stopColor='rgba(0,159,253,1)'/>
-            <stop offset='100%' stopColor='rgba(42,42,114,1)'/>
+            <stop offset='0%' stopColor='rgb(0,159,253,1)'/>
+            <stop offset='100%' stopColor='rgb(42,42,114,1)'/>
           </linearGradient>
         </defs>
         <path ref={waveRef} fill='url(#ocean)'/>

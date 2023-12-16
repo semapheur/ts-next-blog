@@ -62,6 +62,7 @@ export default function DensityPlot({data, ...props}: Props) {
 
     svg.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
+      .attr('stroke', 'rgb(var(--color-text))')
       .call(d3.axisBottom(xScale))
 
     const yScale = d3.scaleLinear()
@@ -70,9 +71,7 @@ export default function DensityPlot({data, ...props}: Props) {
     
     // y-axis
     svg.append('g')
-      .call(d3.axisLeft(yScale))
-
-    svg.append('g')
+      .attr('stroke', 'rgb(var(--color-text))')
       .call(d3.axisLeft(yScale))
 
     const line = d3.line()

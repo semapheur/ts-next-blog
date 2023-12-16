@@ -166,14 +166,14 @@ export class SVGPlot {
       const attr = {
         id: 'crosshair-text',
         'font-size': '0.75em',
-        fill: 'rgba(var(--color-text) / 1)'
+        fill: 'rgb(var(--color-text) / 1)'
       }
       addChildElement(crosshairGroup, 'text', attr)
 
       // Crosshair lines
       const path = {
         id: 'crosshair-line-x', d: '',
-        stroke: 'rgba(var(--color-text) / 1)', 'stroke-width': '1px', 'stroke-dasharray': '5px',
+        stroke: 'rgb(var(--color-text) / 1)', 'stroke-width': '1px', 'stroke-dasharray': '5px',
         opacity: '0.5', 'vector-effect': 'non-scaling-stroke',
       }
       addChildElement(crosshairGroup, 'path', path)
@@ -495,7 +495,7 @@ export class SVGPlot {
         const attr = {
           class: 'tick-text',
           'font-size': '0.75rem',
-          fill: 'rgba(var(--color-text) / 1)' 
+          fill: 'rgb(var(--color-text) / 1)' 
         }
         attr[`${key}`] = i
         attr[`${perp}`] = clamp(perp)
@@ -532,7 +532,7 @@ export class SVGPlot {
     const line = {
       class: 'x-axis',
       x1: '0', y1: `${transform.f}`, x2: '100%', y2: `${transform.f}`,
-      stroke: 'rgba(var(--color-text) / 1)', 'stroke-width': '0.3',
+      stroke: 'rgb(var(--color-text) / 1)', 'stroke-width': '0.3',
     }
     addChildElement(pattern, 'line', line)
 
@@ -603,7 +603,7 @@ export class SVGPlot {
     const line = {
       class: 'y-grid',
       x1: '0', y1: '0', x2: `${this.gridSize.x}`, y2: '0',
-      stroke: 'rgba(var(--color-text) / 0.2)', 'stroke-width': `${1/transform.d}`,
+      stroke: 'rgb(var(--color-text) / 0.2)', 'stroke-width': `${1/transform.d}`,
     }
     addChildElement(pattern, 'line', line)
 
