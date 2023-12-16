@@ -8,7 +8,7 @@ export function setSvgTransform(
 }
 
 export function setAttributes(element: Element, attributes: {[key: string]: string}) {
-  for (let k of Object.keys(attributes)) {
+  for (const k of Object.keys(attributes)) {
     element.setAttribute(k, attributes[k])
   }    
 }
@@ -37,7 +37,7 @@ export function removeElementsByClass(baseElement: Element, className: string) {
 
 export function mousePosition(
   svg: SVGSVGElement | SVGGElement | SVGGeometryElement, 
-  event: MouseEvent
+  event: PointerEvent | MouseEvent
 ): DOMPoint|null 
 {
   const ctm = svg.getScreenCTM()
@@ -59,12 +59,12 @@ export function screenToDrawPosition(
 
 export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
   let d = ''
-  for (let i in points) {
+  for (const i in points) {
     if (shift) {
       points[i] = points[i].add(shift)
     }
 
-    d += 'L' + points[i].print()
+    d += `L${points[i].print()}`
   }
   if (loop) { d+= 'z'}
   
@@ -72,9 +72,9 @@ export function svgPath(points: Vector[], loop=false, shift?: Vector): string {
 }
 
 export function svgPoly(points: Vector[]): string {
-  let p = Array<string>(points.length)
+  const p = Array<string>(points.length)
 
-  for (let i in points) {
+  for (const i in points) {
     p[i] = points[i].print()
   }
   return p.join(' ')
@@ -101,7 +101,7 @@ export function svgCatmullRom(points: Vector[], tension=1, loop=false, close='')
     copy.unshift(first)
   }
 
-  let d = 'M' + copy[0].print()
+  let d = `M${copy[0].print()}`
 
   for (let i = 0; i + 3 < copy.length; i++) {
     const p0 = copy[i];

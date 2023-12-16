@@ -2,47 +2,47 @@
 
 import {useEffect, useRef} from 'react'
 import {observer} from 'mobx-react-lite'
-import SVGTernaryPlot, {OpinionStore} from './SvgTernary'
 
-import DensityPlot from './DensityPlot'
+import SVGTernaryPlot, {Opinion} from 'components/SvgTernary'
+import DensityPlot from 'components/DensityPlot'
 
-const initialTernaryValue = {
-  point: [1/3, 1/3, 1/3],
+const initialState= {
+  point: new DOMPoint(1/3, 1/3, 1/3),
   director: 0.5
 }
 
-const opinion = new OpinionStore(
-  initialTernaryValue.point, 
-  initialTernaryValue.director
+const opinion = new Opinion(
+  initialState.point, 
+  initialState.director
 )
 
 function OpinionPlot() {
   
-  const ternaryWrapRef = useRef<HTMLDivElement>(null)
-  const ternaryRef = useRef<SVGTernaryPlot|null>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const ternaryPlot = useRef<SVGTernaryPlot|null>(null)
 
   useEffect(() => {
-    const ternaryWrapper = ternaryWrapRef.current
-    if (!ternaryRef.current && ternaryWrapper) {
+    const wrapper = wrapRef.current
+    if (!ternaryPlot.current && wrapper) {
       
-      ternaryRef.current = new SVGTernaryPlot(ternaryWrapper, initialTernaryValue)
-      ternaryRef.current.grid()
-      ternaryRef.current.axis()
-      ternaryRef.current.director(undefined, opinion)
-      ternaryRef.current.point(undefined, opinion)
+      ternaryPlot.current = new SVGTernaryPlot(wrapper, initialState)
+      ternaryPlot.current.grid()
+      ternaryPlot.current.axis()
+      ternaryPlot.current.director(undefined, opinion)
+      ternaryPlot.current.point(undefined, opinion)
       
       //return () => {
       //  ternaryRef.current?.cleanup()
       //}
     }
-  }, [])
+  })
 
   return (
     <div className='h-full grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2'>
-      <div ref={ternaryWrapRef}
+      <div ref={wrapRef}
         className='relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50'
       >
-        <ul className='absolute right-2 top-2 p-2 rounded-md shadow'>
+        <ul className='absolute right-2 top-2 p-2 rounded-md shadow text-text'>
           <b>Opinion</b>
           <li><b>Belief: </b>{opinion.belief.toFixed(2)}</li>
           <li><b>Disbelief: </b>{opinion.disbelief.toFixed(2)}</li>

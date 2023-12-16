@@ -129,8 +129,7 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/container-queries'),
-    plugin(function({ addBase, addUtilities, matchUtilities, theme }) {
-
+    plugin(({ addBase, addUtilities, matchUtilities, theme }) => {
       addBase({
         '*, ::before, ::after': {
           '--tw-translate-z': '0',
@@ -160,7 +159,7 @@ module.exports = {
       matchUtilities({
         'translate-z': (value) => ({
           '--tw-translate-z': value,
-          transform: `var(--tw-transform)`
+          transform: 'var(--tw-transform)'
         })
       }, {
         values: theme('translate'), supportsNegativeValues: true

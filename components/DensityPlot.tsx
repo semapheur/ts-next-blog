@@ -4,11 +4,6 @@ import {HTMLAttributes, useEffect, useRef} from 'react'
 import * as d3 from 'd3'
 import useResizeObserver from 'hooks/useResizeObserver'
 
-type Size = {
-  width: number
-  height: number
-}
-
 type Margin = {
   top: number
   right: number
@@ -26,7 +21,7 @@ export default function DensityPlot({data, ...props}: Props) {
   const size = useResizeObserver(wrapRef)
 
   useEffect(() => {
-    if (!svgRef.current || !size) return
+    if (!(svgRef.current && size)) return
 
     const margin: Margin = {
       top: 0.1 * size.height,

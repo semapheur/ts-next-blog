@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const million = require('million/compiler')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -58,4 +59,4 @@ const nextConfig = {
   //},
 }
 
-module.exports = nextConfig
+module.exports = million.next(nextConfig)

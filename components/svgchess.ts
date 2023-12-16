@@ -98,7 +98,7 @@ function queen(transform: string, color: 'b' | 'w'): SVGGElement {
   }
   addChildElement(queen, 'path', path)
 
-  let circle: {[key: string]: string} = {
+  const circle: {[key: string]: string} = {
     cx:'6', cy:'12', r:'2'
   }
   addChildElement(queen, 'circle', circle)
@@ -283,7 +283,7 @@ function pawn(transform: string, color: 'b' | 'w'): SVGGElement {
   }
   setAttributes(pawn, attr)
 
-  let path: {[key: string]: string} = {
+  const path: {[key: string]: string} = {
     d: 'm22.5,9c-2.21,0,-4,1.79,-4,4,0,0.89,0.29,1.71,0.78,2.38C17.33,16.5,16,18.59,16,21c0,2.03,0.94,3.84,2.41,5.03C15.41,27.09,11,31.58,11,39.5H34C34,31.58,29.59,27.09,26.59,26.03,28.06,24.84,29,23.03,29,21,29,18.59,27.67,16.5,25.72,15.38,26.21,14.71,26.5,13.89,26.5,13c0,-2.21,-1.79,-4,-4,-4z'
   }
   addChildElement(pawn, 'path', path)
@@ -321,7 +321,7 @@ function drawPiece(piece: string, transform: string) {
 }
 
 export class SVGChess {
-  private xmlns: string = 'http://www.w3.org/2000/svg'
+  private xmlns = 'http://www.w3.org/2000/svg'
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
   private engine = new Chess()
@@ -339,7 +339,7 @@ export class SVGChess {
       xmlns: this.xmlns,
       width: size.toString(),
       height: size.toString(),
-      viewBox: `0 0 8 8`,
+      viewBox: '0 0 8 8',
     }
     setAttributes(this.svgElement, svgAttr)
     container.appendChild(this.svgElement)
@@ -356,9 +356,9 @@ export class SVGChess {
     const pattern = document.createElementNS(this.xmlns, 'pattern')
     setAttributes(pattern, attr)
 
-    for (let x of [0, 1]) {
-      for (let y of [0, 1]) {
-        let checker = {
+    for (const x of [0, 1]) {
+      for (const y of [0, 1]) {
+        const checker = {
           class: 'checker',
           x: x.toString(), y: y.toString(), 
           width: '1', height: '1',

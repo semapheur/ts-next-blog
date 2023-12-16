@@ -87,7 +87,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  })
 
   return (<div ref={divRef} {...props}
     onMouseDown={handleMouseDown}
