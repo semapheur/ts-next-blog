@@ -63,7 +63,6 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     if (!div) return
 
     const {left, top} = div.getBoundingClientRect()
-    console.log(event)
 
     const zoomFactor = 1 + Math.sign(-event.deltaY) * 0.1
     const zoomPos = new DOMPoint(event.clientX - left, event.clientY - top)

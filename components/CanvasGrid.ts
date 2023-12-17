@@ -116,14 +116,10 @@ export default class CanvasGrid {
     }
 
     const textAlign = (axis: Axis, width: number, height: number): void => {
-      this.ctx.textAlign = (axis === 'x') ? (
-        (this.transform.e > width) ? 'end' : (
-          ((this.transform.e < 0) ? 'start' : 'center')))
+      this.ctx.textAlign = (axis === 'x') ? 'center'
         : ((this.transform.e >= width/2) ? 'start' : 'end')
 
-      this.ctx.textBaseline = (axis === 'y') ? (
-        (this.transform.f < 0) ? 'top' : (
-          (this.transform.f > height) ? 'bottom' : 'middle'))
+      this.ctx.textBaseline = (axis === 'y') ? 'middle'
         : ((this.transform.f <= height/2) ? 'bottom' : 'top')
     }
     
@@ -175,14 +171,14 @@ export default class CanvasGrid {
         const textWidth = this.ctx.measureText(text).width
         const tickPos = {
           x: axis === 'x' ? screenTick : 
-            clamp(this.transform.e + Math.sign(this.transform.e - width/2)*textOffset, 
+            clamp(this.transform.e + Math.sign(this.transform.e + 1e-10 - width/2)*textOffset, 
               textWidth + textOffset, width - (textWidth + textOffset)),
           y: axis === 'y' ? screenTick : 
-            clamp(this.transform.f + Math.sign(this.transform.f - height/2)*textOffset, 
+            clamp(this.transform.f + Math.sign(this.transform.f - 1e-10 - height/2)*textOffset, 
               font + textOffset, height - (font + textOffset))
         }
         this.ctx.fillStyle ='white'
-        this.ctx.strokeStyle ='black'
+        this.ctx.strokeStyle ='dimgray'
         this.ctx.lineWidth = 3
         
         this.ctx.strokeText(text, tickPos.x, tickPos.y)
