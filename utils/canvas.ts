@@ -1,9 +1,8 @@
 import {Line} from './types'
 
-export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string) {
-  if (color) {
-    ctx.strokeStyle = color
-  }
+export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string, lineWidth?: number) {
+  if (color) ctx.strokeStyle = color
+  if (lineWidth) ctx.lineWidth = lineWidth
 
   ctx.beginPath()
   ctx.moveTo(line.start.x, line.start.y)

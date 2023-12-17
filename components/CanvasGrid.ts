@@ -114,18 +114,29 @@ export default class CanvasGrid {
 
       return tick.toFixed(0)
     }
+
+    const textAlign = (axis: Axis, width: number, height: number): void => {
+      this.ctx.textAlign = (axis === 'x') ? (
+        (this.transform.e > width) ? 'end' : (
+          ((this.transform.e < 0) ? 'start' : 'center')))
+        : ((this.transform.e >= width/2) ? 'start' : 'end')
+
+      this.ctx.textBaseline = (axis === 'y') ? (
+        (this.transform.f < 0) ? 'top' : (
+          (this.transform.f > height) ? 'bottom' : 'middle'))
+        : ((this.transform.f <= height/2) ? 'bottom' : 'top')
+    }
     
     const unitIterate = (step: number, axis: Axis) => {
       const {width, height} = this.ctx.canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio
 
-      this.ctx.lineWidth = 1
-      this.ctx.font = 'bold 1rem trebuchet ms'
+      this.ctx.lineJoin = 'round'
+      const font = 13 * dpr
+      this.ctx.font = `${font}px sans-serif`
       this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
       this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'
-      const textOffset = {
-        edge: 5,
-        grid: axis === 'x' ? 5 : 0
-      }
+      const textOffset = 5
 
       let tick = axis === 'x' ? this.viewRange.x[0] : this.viewRange.y[0]
       const stop = axis === 'x' ? this.viewRange.x[1] : this.viewRange.y[1]
@@ -153,27 +164,29 @@ export default class CanvasGrid {
             x: axis === 'x' ? screenTick : width, 
             y: axis === 'y' ? screenTick : height})
         }
-        drawLine(this.ctx, line, 'white')
-
-        const tickPos = {
-          x: axis === 'x' ? screenTick : clamp(
-            this.transform.e, 
-            0 + textOffset.edge, 
-            width - 3 * textOffset.edge),
-          y: axis === 'y' ? screenTick : clamp(
-            this.transform.f,
-            3 * textOffset.edge,
-            height - textOffset.edge)
-        }
-        this.ctx.fillStyle ='white'
-        this.ctx.strokeStyle ='black'
-        this.ctx.lineWidth = 0.5
+        drawLine(this.ctx, line, 'white', 1)
+        
         const text = (axis === 'y' && this.complex) ? 
           `${tickFormat(axis, step, tick)}i` :
           tickFormat(axis, step, tick)
+
+        textAlign(axis, width, height)
+
+        const textWidth = this.ctx.measureText(text).width
+        const tickPos = {
+          x: axis === 'x' ? screenTick : 
+            clamp(this.transform.e + Math.sign(this.transform.e - width/2)*textOffset, 
+              textWidth + textOffset, width - (textWidth + textOffset)),
+          y: axis === 'y' ? screenTick : 
+            clamp(this.transform.f + Math.sign(this.transform.f - height/2)*textOffset, 
+              font + textOffset, height - (font + textOffset))
+        }
+        this.ctx.fillStyle ='white'
+        this.ctx.strokeStyle ='black'
+        this.ctx.lineWidth = 3
         
-        this.ctx.fillText(text, tickPos.x, tickPos.y)
         this.ctx.strokeText(text, tickPos.x, tickPos.y)
+        this.ctx.fillText(text, tickPos.x, tickPos.y)
 
         tick += step
       }
