@@ -80,7 +80,9 @@ class ComplexFunction{
   }
 
   get code() {
-    return `vec2 ${this.name}(${this.arguments}) { return ${this.body};}`
+    const body = !this.body.includes('return') ? `return ${this.body}` : this.body
+
+    return `vec2 ${this.name}(${this.arguments}) {${body};}`
   }
 }
 
