@@ -11,7 +11,7 @@ export function _betaPDF(x: number, a: number, b: number): number {
   if (x < 0 || x > 1 || a <= 0 || b <= 0) {
     return 0
   }
-  const numerator = Math.pow(x, a - 1) * Math.pow(1 - x, b - 1);
+  const numerator = x**(a - 1) * (1 - x)**(b - 1);
   const denominator = betaFunction(a, b);
 
   return numerator / denominator;

@@ -6,7 +6,7 @@ export function sum(arr: number[], start?: number, stop?: number): number {
 
   if (!start) start = 0
 
-  if (typeof stop === undefined || stop! >= arr.length) {
+  if (stop === undefined || stop! >= arr.length) {
     stop = arr.length - 1
   }
   let sum = 0
@@ -17,7 +17,7 @@ export function sum(arr: number[], start?: number, stop?: number): number {
 }
 
 export function findAllIndices<T>(arr: Array<T>, value: T): number[] {
-  let indices: number[] = []
+  const indices: number[] = []
 
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === value) indices.push(i)

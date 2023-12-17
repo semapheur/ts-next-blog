@@ -7,10 +7,10 @@ export async function iterNotes<T>(handler: NoteHandler<T>) {
   const result = {} as T
 
   const notesDir = path.join(process.cwd(), 'content', 'notes')
-  for (let subject of fs.readdirSync(notesDir)) {
+  for (const subject of fs.readdirSync(notesDir)) {
     const subjectDir = path.join(notesDir, subject)
 
-    for (let fileName of fs.readdirSync(subjectDir)) {
+    for (const fileName of fs.readdirSync(subjectDir)) {
       const regex = new RegExp('[^.]+$')
       if (fileName.match(regex)) {
         const note = fs.readFileSync(path.join(subjectDir, fileName))

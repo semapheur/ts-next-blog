@@ -2,7 +2,7 @@ import Vector from 'utils/vector'
 
 function catmullRomSpline(
   p0: Vector, p1: Vector, p2: Vector, p3: Vector,
-  numPoints: number, alpha: number = 0.5 
+  numPoints: number, alpha = 0.5 
 ): Vector[] 
 {
   if (

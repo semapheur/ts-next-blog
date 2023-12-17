@@ -19,17 +19,17 @@ function TocItem({heading, activeIds}: TocItem) {
     
   const subItem = useMemo(() => {
 		return (heading.children || []).map((h, index) => (
-			<TocItem key={'tocsubitem.' + index} heading={h} activeIds={activeIds}/>
+			<TocItem key={`tocsubitem.${index}`} heading={h} activeIds={activeIds}/>
 		))
 	}, [heading, activeIds])
   
   return (
-		<li key={'li.' + heading.slug} className='list-none relative'>
+		<li key={`li.${heading.slug}`} className='list-none relative'>
 			{heading.children && <>
-				<input key={'input.' + heading.slug} id={heading.slug} type='checkbox'
+				<input key={`input.${heading.slug}`} id={heading.slug} type='checkbox'
 					className='peer w-5 h-5 absolute top-1 left-0 cursor-pointer opacity-0 z-[1]'
 				/>
-				<label key={'label.' + heading.slug} htmlFor={heading.slug}
+				<label key={`label.${heading.slug}`} htmlFor={heading.slug}
 				className='w-5 h-5 absolute top-0 left-0 inline-block translate-y-1
 					after:absolute after:top-[50%] after:left-[50%]
 					after:translate-x-[-50%] after:translate-y-[-75%]
@@ -40,13 +40,13 @@ function TocItem({heading, activeIds}: TocItem) {
 					after:transition-transform'
 				/>
 			</>}
-			<a key={'a.' + heading.slug} href={`#${heading.slug}`}
+			<a key={`a.${heading.slug}`} href={`#${heading.slug}`}
 				className={`inline-block pl-6 ${activeIds.includes(heading.slug) ? 'text-secondary' : 'text-text'}`}
 			>
 				{heading.text.includes('{"compiledSource"') ? <MDXRemote {...JSON.parse(heading.text)}/> : heading.text}
 			</a>
 			{heading.children &&
-				<ul key={'ul.' + heading.slug}
+				<ul key={`ul.${heading.slug}`}
 					className='list-none h-0 overflow-hidden pl-8 peer-checked:h-auto'
 				>
 					{subItem}
@@ -80,8 +80,8 @@ export default function Toc({headings}: Props) {
 		const result: string[] = [];
 
 		const callback = (h: NoteHeading) => {
-			result.push(`h${h.level}[id="${h.slug}"]`);
-			h.children && h.children.forEach(callback)
+			result.push(`h${h.level}[id="${h.slug}"]`)
+			h.children?.forEach(callback)
 		}
 
 		headings.forEach(callback);
@@ -102,7 +102,7 @@ export default function Toc({headings}: Props) {
 				bg-primary/50 rounded-md shadow-md dark:shadow-black/50 backdrop-blur-sm'
 			>
 				<div key='div.toc' className='flex justify-start gap-x-1 border-b border-b-text'>
-					<button key='button.toc' className='cursor-default'>
+					<button key='button.toc' type='button' className='cursor-default'>
 						<BookIcon className='w-6 h-6 stroke-text' />
 					</button>
 					<h2 key='h2.toc' className='font-bold text-text'>Contents</h2>
@@ -110,7 +110,7 @@ export default function Toc({headings}: Props) {
 				<nav key='nav.toc' >
 					<ul className='list-none h-auto'>
 						{(headings || []).map((h, index) => (
-							<TocItem key={'tocitem.' + index} heading={h} activeIds={activeIds} />
+							<TocItem key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
 						))}
 					</ul>
 				</nav>

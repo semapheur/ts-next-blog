@@ -42,9 +42,9 @@ export function brownianBridge(a: Vector, b: Vector, numPoints: number, amplitud
 
   const step = (b.x - a.x) / numPoints
   for (let i = 1; i < numPoints - 1; i++) {
-    let t = a.x + i*step
-    let w = normal(0, amplitude)
-    let y = result[i-1].y + (b.y - result[i-1].y) * (step/(b.x - t)) + Math.sqrt(
+    const t = a.x + i*step
+    const w = normal(0, amplitude)
+    const y = result[i-1].y + (b.y - result[i-1].y) * (step/(b.x - t)) + Math.sqrt(
       step*(b.x - t - step)/(b.x - t)) * w
 
     result[i] = new Vector(t, y)

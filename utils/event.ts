@@ -18,8 +18,8 @@ export default class EventListenerStore {
   }
 
     public cleanupEventListeners() {
-    for (let event in this.store) {
-      for (let [el, handler] of this.store[event]) {
+    for (const event in this.store) {
+      for (const [el, handler] of this.store[event]) {
         el.removeEventListener(event, handler)
       }
     }

@@ -35,9 +35,9 @@ export async function generateStaticParams() {
     const paths: Params[] = []
 
     const notesDir = path.join('content', 'notes');
-    for (let subject of fs.readdirSync(notesDir)) {
+    for (const subject of fs.readdirSync(notesDir)) {
       const subjectDir = path.join(notesDir, subject);
-      for (let fileName of fs.readdirSync(subjectDir)) {
+      for (const fileName of fs.readdirSync(subjectDir)) {
         const path ={
           subject: subject,
           slug: fileName.replace('.mdx', '')
@@ -49,7 +49,7 @@ export async function generateStaticParams() {
 }
 
 async function getNote(subject: string, slug: string) {
-  const mdx = fs.readFileSync(path.join('content', 'notes', subject, slug + '.mdx'), 'utf8');
+  const mdx = fs.readFileSync(path.join('content', 'notes', subject, `${slug}.mdx`), 'utf8');
   //const {data: metaData, content} = matter(note);
   //const mdxSource = await serializeMDX(content, metaData);
 

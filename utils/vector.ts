@@ -1,8 +1,4 @@
 export default class Vector extends Array<number> {
- 
-  constructor(...components: number[]) {
-    super(...components)
-  }
 
   get x(): number {
     return this[0]
@@ -51,7 +47,7 @@ export default class Vector extends Array<number> {
   public equal(...vectors: Vector[]): boolean {
     for (const v of vectors) {
       if (this.length !== v.length) return false
-      for (let i in this) {
+      for (const i in this) {
         if (this[i] !== v[i]) return false
       }
     }
@@ -64,7 +60,7 @@ export default class Vector extends Array<number> {
       if (this.length !== v.length) {
         throw new Error('Addition of vectors with different dimensions is not defined')
       }
-      for (let i in components) {
+      for (const i in components) {
         components[i] += v[i]
       }
     }
@@ -74,14 +70,14 @@ export default class Vector extends Array<number> {
   public addScalar(scalar: number): Vector {
     const components = [...this]
 
-    for (let i in components) {
+    for (const i in components) {
       components[i] += scalar
     }
     return new Vector(...components)
   }
 
   public addScalarInplace(scalar: number) {
-    for (let i in this) {
+    for (const i in this) {
       this[i] += scalar
     }
   }
@@ -93,7 +89,7 @@ export default class Vector extends Array<number> {
       if (this.length !== v.length) {
         throw new Error('Substraction of vectors with different dimensions is not defined')
       }
-      for (let i in components) {
+      for (const i in components) {
         components[i] -= v[i]
       }
     }
@@ -103,8 +99,8 @@ export default class Vector extends Array<number> {
   public scale(...scalars: number[]): Vector {
     const components = [...this]
 
-    for (let s of scalars) {
-      for (let i in components) {
+    for (const s of scalars) {
+      for (const i in components) {
         components[i] *= s
       }
     }
@@ -137,7 +133,7 @@ export default class Vector extends Array<number> {
     }
 
     let dot = 0
-    for (let i in this) {
+    for (const i in this) {
       dot += this[i] * vector[i]
     }
     return dot
@@ -176,7 +172,7 @@ export default class Vector extends Array<number> {
     })
   }
 
-  public print(delimiter: string = ','): string {
+  public print(delimiter = ','): string {
     return this.join(delimiter)
   }
 
@@ -244,7 +240,7 @@ export class Curve extends Array<Vector> {
 
   public add(points: Curve): this|null {
     if (this.length !== points.length) return null
-    for (let p in this) {
+    for (const p in this) {
       this[p].add(points[p])
     }
     return this

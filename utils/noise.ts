@@ -39,11 +39,11 @@ export function fractalNoise(v: Vector|number, noiseFn: NoiseFn,
   let value = 0
 
   for (let o = 0; o < octaves; o++) {
-    const f = frequency * Math.pow(2, octaves)
-    value += noiseFn(v) * (amplitude * Math.pow(persistence, o))
+    const f = frequency * (2**octaves)
+    value += noiseFn(v) * (amplitude * (persistence**o))
   }
 
-  return value / (2 - 1 / Math.pow(2, octaves - 1))
+  return value / (2 - 1 / (2**(octaves - 1)))
 }
 
 
@@ -85,11 +85,11 @@ export class ValueNoise {
     let value = 0
 
     for (let o = 0; o < octaves; o++) {
-      const f = frequency * Math.pow(2, o)
-      const a = (amplitude * Math.pow(persistence, o))
+      const f = frequency * (2**o)
+      const a = (amplitude * (persistence**o))
       value += this.noise(offset + x * f) * a
     }
-    return value / (2 - 1 / Math.pow(2, octaves - 1))
+    return value / (2 - 1 / (2**(octaves - 1)))
   }
 
   //cosine interpolation
@@ -111,7 +111,7 @@ export function drawHill(
   const result: Vector[] = [] 
 
   for (let i = 0; i < waypoints.length-1; i++) {
-    let segment = drawCurve(
+    const segment = drawCurve(
       waypoints[i], waypoints[i+1], 
       Noise, numPoints[i], 
       amplitude[i], freq[i], 

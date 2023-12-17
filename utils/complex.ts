@@ -9,7 +9,7 @@ function functionDependencies(glslExpression: string) {
 
   const ast = parse(glslExpression)
 
-  ast.traverse(function(node, path, parent) {
+  ast.traverse((node, _path, _parent) => {
     if (node.type === 'FunctionNode' && (node as FunctionNode).fn.name.startsWith('c_')) {
       const fn = (node as FunctionNode).fn.name
       if (fn.startsWith('c_')) dependencies.add(fn)
@@ -24,7 +24,7 @@ function functionVariables(glslExpression: string) {
 
   const ast = parse(glslExpression)
   
-  ast.traverse(function(node, path, parent) {
+  ast.traverse((node, _path, _parent) => {
     if (node.type === 'SymbolNode') {
       const variable = (node as SymbolNode).name
 
@@ -44,7 +44,7 @@ export function requiredFunctions(required: Set<string>): string[] {
     const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
 
     declarations.unshift(cfn.code) 
-    for (let d of cfn.dependencies) {
+    for (const d of cfn.dependencies) {
       if (required.has(d)) continue
 
       required.add(d)
