@@ -13,7 +13,10 @@ export default function ComplexInput({expression, ...props}: Props) {
     }
   }
 
-  return (<form action='' className={props.className} {...props} onSubmit={(e) => e.preventDefault()}>
-    <input type='text' placeholder={'Complex function'} onKeyDown={handleKeyDown}/>
+  return (<form action='' className={props.className} {...props} onSubmit={e => e.preventDefault()}>
+    <input type='text' placeholder={'Complex function'} 
+      onKeyDown={handleKeyDown} 
+      onClick={e => e.stopPropagation()}
+    />
   </form>)
 }

@@ -10,7 +10,7 @@ import rehypeKatex from 'rehype-katex'
 //import rehypeHighlight from 'rehype-highlight'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeImgSize from 'rehype-img-size'
-//import rehypeMathjaxSvg from 'rehype-mathjax/svg.js'
+//import rehypeMathjax from 'rehype-mathjax/chtml'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeStringify from 'rehype-stringify'
@@ -26,6 +26,19 @@ export const rehypePlugins = [
 	[rehypeImgSize, {dir: 'public'}],
 	rehypePrettyCode,
 	rehypeKatex,
+	//[rehypeMathjax, {
+	//	loader: {
+  //    load: ['[custom]/xypic.js'],
+  //    paths: {custom: 'https://cdn.jsdelivr.net/gh/sonoisa/XyJax-v3@3.0.1/build/'}
+  //  },
+  //  tex: {
+  //    packages: {'[+]': ['xypic']},
+	//		inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+  //  },
+	//	chtml: {
+  //    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
+  //  }
+	//}]
 ]
 
 export async function serializeMDX<T>(rawMdx: string, matter = true): Promise<MDXPost<T> | MDXRemoteSerializeResult> {

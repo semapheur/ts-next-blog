@@ -23,7 +23,7 @@ export default function Codeblock({children, ...props}: Props) {
 
   return (
     <pre ref={preRef} {...props}
-      className={`group relative h-full m-0 ${props.className ?? ''}`}
+      className={`group relative h-full m-0 overflow ${props.className ?? ''}`}
     >
       <button className={`sticky top-6 right-0 float-right hidden group-hover:block
         p-1 border-2 rounded
