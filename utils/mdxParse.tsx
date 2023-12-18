@@ -69,8 +69,8 @@ function nest<T extends object>(arr: T[], ix: number[], value: T): void {
 	arr.push(value)
 }
 
-async function mdParser(text: string) {
-	const process = await unified()
+function mdParser(text: string) {
+	const process = unified()
 		.use(remarkParse)
 		.use(remarkMath)
 		.use(remarkRehype)
@@ -79,10 +79,11 @@ async function mdParser(text: string) {
 		.use(rehypeStringify)
 		.process(text)
 
-	return String(process)
+	return process
 }
 
-export async function markdownHeadings(source:string) {
+export async function markdownHeadings(source: string) {
+
 	const headings = source
 		.split('\n')
 		.filter((line) => {
@@ -96,18 +97,10 @@ export async function markdownHeadings(source:string) {
 	
 	for (const h of headings) {
 		let text: string = h.replace(/^#+\s/, '').replace(/\r|\n/g, '').trim()
+		let slug = text.toLowerCase().replace(/[\\${}()']|/g, '').replaceAll(' ', '-')
 
-		let slug: string
-		if (h.match(/\$.+\$/g)) {
-			// Parse ID created by rehype slug 
-			const tags = await mdParser(h)
-			slug = tags.match(/(?<=id=")[\w-]+?(?=")/u)![0]
-			
-			// Parse serialized mdx
-			const serialized = await serializeMDX(text, false)
-			text = JSON.stringify(serialized)
-		} else {
-			slug = text.toLowerCase().replace(/[()']|/g, '').replaceAll(' ', '-')
+		if (text.match(/\$.+\$/g)) {
+			text = await serializeMDX(text, false).then(res => JSON.stringify(res))
 		}
 
 		// Add suffix to duplicate slugs
@@ -145,48 +138,38 @@ export async function markdownHeadings(source:string) {
 	return result
 }
 
-// Parse MDX using mdx-bundler
 //export async function compileMDX(content: string) {
-//    if (process.platform === 'win32') {
-//        process.env.ESBUILD_BINARY_PATH = path.join(
-//            process.cwd(),
-//            'node_modules',
-//            'esbuild',
-//            'esbuild.exe',
-//        )
-//    } else {
-//    process.env.ESBUILD_BINARY_PATH = path.join(
-//            process.cwd(),
-//            'node_modules',
-//            'esbuild',
-//            'bin',
-//            'esbuild',
-//        )
-//    }
+//	if (process.platform === 'win32') {
+//		process.env.ESBUILD_BINARY_PATH = path.join(
+//			process.cwd(),
+//			'node_modules',
+//			'esbuild',
+//			'esbuild.exe',
+//		)
+//	} else {
+//	process.env.ESBUILD_BINARY_PATH = path.join(
+//			process.cwd(),
+//			'node_modules',
+//			'esbuild',
+//			'bin',
+//			'esbuild',
+//		)
+//	}
 //
-//    const {code, frontmatter} = await bundleMDX({
-//        source: content,
-//        mdxOptions(options) {
-//            options.remarkPlugins = [
-//                ...(options.remarkPlugins ?? []),
-//                ...remarkPlugins,
-//            ]
-//            options.rehypePlugins = [
-//                ...(options.rehypePlugins ?? []),
-//                ...rehypePlugins,
-//            ]
-//            return options
-//        }
-//    })
-//    return {code, frontmatter}
+//	const {code, frontmatter} = await bundleMDX({
+//		source: content,
+//		mdxOptions(options) {
+//			options.remarkPlugins = [
+//				...(options.remarkPlugins ?? []),
+//				...remarkPlugins,
+//			]
+//			options.rehypePlugins = [
+//				...(options.rehypePlugins ?? []),
+//				...rehypePlugins,
+//			]
+//			return options
+//		}
+//	})
+//	return {code, frontmatter}
 //}
 
-//type MDXProps = {
-//    code: string
-//}
-
-//const MDX = ({code}: MDXProps) => {
-//    const Component = useMemo(() => getMDXComponent(code), [code])
-//
-//    return <Component components={mdxComponents}/>
-//}

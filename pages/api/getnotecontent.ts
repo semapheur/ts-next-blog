@@ -11,7 +11,7 @@ export default async function handler<T>(req: NextApiRequest, res: NextApiRespon
 
   const query = req.query.q!.toString(); //.split('/')
 
-  const filePath = path.join(process.cwd(), 'content', 'notes', query + '.mdx');
+  const filePath = path.join(process.cwd(), 'content', 'notes', `${query}.mdx`);
   const post = fs.readFileSync(filePath)
   const {content} = matter(post);
   const result = await serializeMDX<T>(content) as MDXPost<T>;

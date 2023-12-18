@@ -1,12 +1,12 @@
 import dynamic from 'next/dynamic'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import fs from 'fs';
-import path from 'path';
+import fs from 'fs'
+import path from 'path'
 
-import { markdownHeadings, remarkPlugins, rehypePlugins } from 'utils/mdxParse';
-import { mdxComponents } from 'utils/mdxComponents';
-import Loader from 'components/Loader';
-import { NoteMatter } from 'utils/types';
+import { markdownHeadings, remarkPlugins, rehypePlugins } from 'utils/mdxParse'
+import { mdxComponents } from 'utils/mdxComponents'
+import Loader from 'components/Loader'
+import { NoteMatter } from 'utils/types'
 
 const Toc = dynamic(() => import('./Toc'), {
   ssr: false,
@@ -23,7 +23,7 @@ const Toc = dynamic(() => import('./Toc'), {
 })
 
 type Params = {
-  subject: string,
+  subject: string
   slug: string
 }
 
@@ -34,35 +34,32 @@ type Props = {
 export async function generateStaticParams() {
     const paths: Params[] = []
 
-    const notesDir = path.join('content', 'notes');
+    const notesDir = path.join('content', 'notes')
     for (const subject of fs.readdirSync(notesDir)) {
-      const subjectDir = path.join(notesDir, subject);
+      const subjectDir = path.join(notesDir, subject)
       for (const fileName of fs.readdirSync(subjectDir)) {
         const path ={
           subject: subject,
           slug: fileName.replace('.mdx', '')
-        };
-        paths.push(path);
-      };
-    };
-    return paths;
+        }
+        paths.push(path)
+      }
+    }
+    return paths
 }
 
 async function getNote(subject: string, slug: string) {
-  const mdx = fs.readFileSync(path.join('content', 'notes', subject, `${slug}.mdx`), 'utf8');
-  //const {data: metaData, content} = matter(note);
-  //const mdxSource = await serializeMDX(content, metaData);
+  const source = fs.readFileSync(path.join('content', 'notes', subject, `${slug}.mdx`), 'utf8')
+  //const {data: metaData, content} = matter(note)
+  //const mdxSource = await serializeMDX(content, metaData)
 
-  const mdxHeadings = await markdownHeadings(mdx);
+  const headings = await markdownHeadings(source)
 
-  return {
-    source: mdx, 
-    headings: mdxHeadings
-  };
+  return {source, headings}
 }
 
 export default async function NotePage({params: {subject, slug}}: Props) {
-  const {source, headings} = await getNote(subject, slug);
+  const {source, headings} = await getNote(subject, slug)
   
   const {content, frontmatter} = await compileMDX({
     source: source,

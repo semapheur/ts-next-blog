@@ -1,10 +1,11 @@
 'use client'
 
-import { MDXRemote } from 'next-mdx-remote';
-import { useEffect, useMemo, useState } from 'react';
-import useScrollspy from 'hooks/useScrollspy';
-import { NoteHeading } from 'utils/types';
-import { BookIcon } from 'utils/icons';
+import { useEffect, useMemo, useState } from 'react'
+import {block, For} from 'million/react'
+import { MDXRemote } from 'next-mdx-remote'
+import useScrollspy from 'hooks/useScrollspy'
+import { NoteHeading } from 'utils/types'
+import { BookIcon } from 'utils/icons'
 
 type TocItem = {
   heading: NoteHeading,
@@ -15,12 +16,12 @@ type Props = {
   headings: NoteHeading[]
 }
 
-function TocItem({heading, activeIds}: TocItem) {
+const TocItemBlock = block(function TocItem({heading, activeIds}: TocItem) {
     
   const subItem = useMemo(() => {
-		return (heading.children || []).map((h, index) => (
-			<TocItem key={`tocsubitem.${index}`} heading={h} activeIds={activeIds}/>
-		))
+		return <For each={heading.children || []}>{
+			(h, index) => <TocItem key={`tocsubitem.${index}`} heading={h} activeIds={activeIds}/>
+		}</For>
 	}, [heading, activeIds])
   
   return (
@@ -53,7 +54,7 @@ function TocItem({heading, activeIds}: TocItem) {
 				</ul>}
 		</li>
   )
-}
+})
 
 function Toggle() {
 	return (
@@ -73,24 +74,24 @@ function Toggle() {
 	)
 }
 
-export default function Toc({headings}: Props) {
-  const [headingIds, setHeadingIds] = useState<HTMLHeadingElement[]>([]);
+const TocBlock = block(function Toc({headings}: Props) {
+  const [headingIds, setHeadingIds] = useState<HTMLHeadingElement[]>([])
 
   useEffect(() => {
-		const result: string[] = [];
+		const result: string[] = []
 
 		const callback = (h: NoteHeading) => {
 			result.push(`h${h.level}[id="${h.slug}"]`)
 			h.children?.forEach(callback)
 		}
 
-		headings.forEach(callback);
-		const selector = result.toString();
-		setHeadingIds(Array.from(document.querySelectorAll(selector)));
+		headings.forEach(callback)
+		const selector = result.toString()
+		setHeadingIds(Array.from(document.querySelectorAll(selector)))
       
   }, [headings])
 
-  const activeIds = useScrollspy(headingIds, {threshold: 0.3});
+  const activeIds = useScrollspy(headingIds, {threshold: 0.3})
 
   return (
 		<>
@@ -110,12 +111,12 @@ export default function Toc({headings}: Props) {
 				<nav key='nav.toc' >
 					<ul className='list-none h-auto'>
 						{(headings || []).map((h, index) => (
-							<TocItem key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
+							<TocItemBlock key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
 						))}
 					</ul>
 				</nav>
 			</aside>
 		</>
-		
-  );
-}
+  )
+})
+export default TocBlock

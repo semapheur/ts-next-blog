@@ -128,7 +128,7 @@ export default class CanvasGrid {
       const dpr = window.devicePixelRatio
 
       this.ctx.lineJoin = 'round'
-      const font = 13 * dpr
+      const font = 11 * dpr
       this.ctx.font = `${font}px sans-serif`
       this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
       this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'
@@ -178,7 +178,7 @@ export default class CanvasGrid {
               font + textOffset, height - (font + textOffset))
         }
         this.ctx.fillStyle ='white'
-        this.ctx.strokeStyle ='dimgray'
+        this.ctx.strokeStyle ='#1c1917'
         this.ctx.lineWidth = 3
         
         this.ctx.strokeText(text, tickPos.x, tickPos.y)
