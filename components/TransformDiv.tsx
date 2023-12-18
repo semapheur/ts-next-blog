@@ -37,7 +37,7 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   }
 
   function handlePointerDown(event: PointerEvent) {
-    if (![0,1].includes(event.button)) return
+    if (event.type !== 'touch' && event.button !== 1) return
 
     isDragging.current = true
     startPos.current = new DOMPoint(event.clientX, event.clientY)
@@ -83,10 +83,10 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
     transform.value = setTransform(viewRange.value, width, height)
     divSize.current = new DOMPoint(width, height)
 
-    window.addEventListener('resize', handleResize)
+    div.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener('resize', handleResize)
+      div.removeEventListener('resize', handleResize)
     }
   })
 
