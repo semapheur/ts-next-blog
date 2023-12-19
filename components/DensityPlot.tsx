@@ -38,24 +38,7 @@ export default function DensityPlot({data, ...props}: Props) {
       .attr('height', size.height)
       .append('g')
         .attr('transform', `translate(${margin.left}, ${margin.top})`)
-
-    //svg.append('defs')
-    //  .append('pattern')
-    //    .attr('id', 'density-grid-pattern')
-    //    .attr('width', plotWidth)
-    //    .attr('height', plotHeight)
-    //    .attr('patternUnits', 'userSpaceOnUse')
-    //  .append('rect')
-    //    .attr('width', 1/plotWidth)
-    //    .attr('height', 10/plotHeight)
-    //    .attr('fill', 'none')
-    //    .attr('stroke', 'rgb(var(--color-text))')
-
-    //svg.append('rect')
-    //  .attr('width', plotWidth)
-    //  .attr('height', plotHeight)
-    //  .attr('fill', 'url(#density-grid-pattern)')
-
+    
     const xScale = d3.scaleLinear()
       .domain([0, 1])
       .range([0, plotWidth])
@@ -63,7 +46,11 @@ export default function DensityPlot({data, ...props}: Props) {
     svg.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
       .attr('stroke', 'rgb(var(--color-text))')
-      .call(d3.axisBottom(xScale))
+      .call(d3.axisBottom(xScale).ticks(plotWidth / 80))
+      .call(g => g.selectAll('.tick line').clone()
+        .attr('y2', -plotHeight)
+        .attr('stroke-opacity', 0.1)
+      )
 
     const yScale = d3.scaleLinear()
       .domain([0, 10])
@@ -72,7 +59,11 @@ export default function DensityPlot({data, ...props}: Props) {
     // y-axis
     svg.append('g')
       .attr('stroke', 'rgb(var(--color-text))')
-      .call(d3.axisLeft(yScale))
+      .call(d3.axisLeft(yScale).ticks(plotHeight / 80))
+      .call(g => g.selectAll('.tick line').clone()
+        .attr('x2', plotWidth)
+        .attr('stroke-opacity', 0.1)
+      )
 
     const line = d3.line()
       .curve(d3.curveBasis)

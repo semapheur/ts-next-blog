@@ -313,7 +313,7 @@ export default class SVGTernaryPlot {
     const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
     circle.style.cursor = 'move'
     const attr = {
-      id: `${this.idPrefix}-plot-point`, cx: `${svgPos.x}`, cy: `${svgPos.y}`, r: '1%',
+      id: `${this.idPrefix}-plot-point`, cx: `${svgPos.x}`, cy: `${svgPos.y}`, r: '0.5rem',
       fill: this.colors.point
     }
     setAttributes(circle, attr)
@@ -380,7 +380,7 @@ export default class SVGTernaryPlot {
     const circle = document.createElementNS(this.xmlns, 'circle') as SVGCircleElement
     circle.style.cursor = 'ew-resize'
     const attr = {
-      id: `${this.idPrefix}-director-point`, cx: `${this.side * this.state.director}`, cy: '0', r: '1%',
+      id: `${this.idPrefix}-director-point`, cx: `${this.side * this.state.director}`, cy: '0', r: '0.5rem',
       fill: this.colors.director
     }
     setAttributes(circle, attr)
