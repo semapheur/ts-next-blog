@@ -127,7 +127,7 @@ export default class CanvasGrid {
       const {width, height} = this.ctx.canvas.getBoundingClientRect()
 
       this.ctx.lineJoin = 'round'
-      const font = 16
+      const font = 12
       this.ctx.font = `${font}px sans-serif`
       this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
       this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'

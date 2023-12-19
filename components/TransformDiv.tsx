@@ -37,8 +37,8 @@ export default function TransformDiv({viewRange, children, ...props}: Props) {
   }
 
   function handlePointerDown(event: PointerEvent) {
-    if (event.type !== 'touch' && event.button !== 1) return
-
+    console.log(event)
+    if (!['pen', 'touch'].includes(event.pointerType) && event.button !== 1) return
     isDragging.current = true
     startPos.current = new DOMPoint(event.clientX, event.clientY)
   }

@@ -93,7 +93,7 @@ export default class SVGTernaryPlot {
   private colors = {
     axis: {a: 'red', b: 'green', c: 'blue'},
     director: 'orange',
-    point: 'black'
+    point: 'rgb(var(--color-text)'
   }
   private state: TernaryState
   private svgElement: SVGSVGElement
@@ -217,7 +217,7 @@ export default class SVGTernaryPlot {
     this.translate.y = size * (1 - this.margin)
   }
 
-  private drawTriangle(stroke = 'black') {
+  private drawTriangle(stroke = 'rgb(var(--color-text))') {
     const grid = document.getElementById(`${this.idPrefix}-grid-group`)
     if (!grid) return
 
