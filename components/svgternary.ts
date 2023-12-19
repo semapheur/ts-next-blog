@@ -74,7 +74,7 @@ export class Opinion extends TernaryStore {
     const alpha = 2 * (this.belief / this.uncertainty + this.baseRate)
     const beta = 2 * (this.disbelief / this.uncertainty + (1 - this.baseRate))
 
-    const x = Vector.linspace(0, 1, 100).toArray()
+    const x = Vector.linspace(0, 1, 1000).toArray()
 
     const points = Array<[number, number]>(x.length)
 

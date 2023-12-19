@@ -30,6 +30,8 @@ export default function DensityPlot({data, ...props}: Props) {
       left: 0.1 * size.width
     }
 
+    const yMax = Math.max(...data.map(point => point[1]))
+
     const plotWidth = size.width - (margin.left + margin.right)
     const plotHeight = size.height - (margin.top + margin.bottom)
 
@@ -45,22 +47,38 @@ export default function DensityPlot({data, ...props}: Props) {
 
     svg.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
-      .attr('stroke', 'rgb(var(--color-text))')
       .call(d3.axisBottom(xScale).ticks(plotWidth / 80))
-      .call(g => g.selectAll('.tick line').clone()
+      .call(g => g.select('.domain')
+        .attr('stroke', 'rgb(var(--color-text))')
+      )
+      .call(g => g.selectAll('.tick text')
+        .attr('fill', 'rgb(var(--color-text))')
+      )
+      .call(g => g.selectAll('.tick line')
+        .attr('stroke', 'rgb(var(--color-text))')
+        .clone()
+        .attr('y1', 0)
         .attr('y2', -plotHeight)
         .attr('stroke-opacity', 0.1)
       )
 
     const yScale = d3.scaleLinear()
-      .domain([0, 10])
+      .domain([0, 1.1*yMax])
       .range([plotHeight, 0])
     
     // y-axis
     svg.append('g')
-      .attr('stroke', 'rgb(var(--color-text))')
       .call(d3.axisLeft(yScale).ticks(plotHeight / 80))
+      .call(g => g.select('.domain')
+        .attr('stroke', 'rgb(var(--color-text))')
+      )
+      .call(g => g.selectAll('.tick text')
+        .attr('fill', 'rgb(var(--color-text))')
+      )
       .call(g => g.selectAll('.tick line').clone()
+        .attr('stroke', 'rgb(var(--color-text))')
+        .clone()
+        .attr('x1', 0)
         .attr('x2', plotWidth)
         .attr('stroke-opacity', 0.1)
       )
