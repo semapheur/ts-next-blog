@@ -223,6 +223,7 @@ Let $(X, \mathcal{T})$ be a Hausdorff space, then the following properties hold
 1. if $C\subseteq X$ is compact, then $C$ is closed, ie. $C^c = X \setminus C \in \mathcal{T}$
 2. if $x\in X$, $C\subseteq X$ is compact, and $x\notin C$, then there exist disjoint open sets $U$ and $V$ with $x\in U$ and $C\subseteq V$
 3. if $x\in X$ and $A$ is a neighbourhood of $x$ with $\partial A$ compact, then there exists a closed neighbourhood $B$ of $x$ with $B\subseteq A$
+
 <details>
 <summary>Proof</summary>
 
@@ -384,6 +385,18 @@ Let $(X, \mathcal{T}_X)$, $(Y, \mathcal{T}_Y)$ and $(Z, \mathcal{T}_Z)$ be three
 
 If $A$ is open in $Z$, then $g^{-1}[A]$ is open in $Y$ and therefore $f^{-1}\left[g^{-1}[A] \right] = \left(f^{-1}\circ g^{-1} \right)(A)$ is open in $X$. Noting $(g\circ f)^{-1} = f^{-1}\circ g^{-1}$.
 </details>
+</MathBox>
+
+<MathBox title='Continuity is local' boxType='lemma'>
+Continuity is a local property in the following sense: if $F:X\to Y$ is a map between topological spaces such that every point $p\in X$ has a neighbourhood $U$ on which the restriction $F|_U$ is continuous, then $F$ is continuous.
+</MathBox>
+
+<MathBox title='Gluing lemma for continuous maps' boxType='lemma'>
+Let $X$ and $Y$ be topological spaces, and suppose that one of the following conditions holds:
+1. $B_1,\dots,B_n$ are finitely many closed subsets of $X$ whose union is $X$
+2. $\Set{B_i}_{i\in A}$ is a collection of open subsets of $X$ whose union is $X$
+
+Suppose that for all $i$ we are given continuous maps $F_i:B_i\to Y$ that agree on overlaps, i.e. $F_i|_{B_i \cap B_j} = F_j|_{B_i \cap B_j}$. Then there exists a unique continuous map $F:X\to Y$ whose restriction to each $B_i$ is equal to $F_i$. 
 </MathBox>
 
 ### Homeomorphism
@@ -885,7 +898,122 @@ Given a function $f:M\to\R^k$ and a chart $(U,\varphi)$ for $M$, the function $\
 
 ### Smooth maps between manifolds
 
-Let $M$ and $N$ be smooth manifolds. A map $F:M\to N$ is smooth if for every $p\in M$, there exists smooth charts $(U,\varphi)$ containing $p$ and $(V,\psi)$ containing $F(p)$ such that $F(U) \subseteq V$ and the composite map $\psi\circ F\circ\varphi^{-1}$ is smooth from $\varphi(U)$ to $\psi(V)$.
+Let $M$ and $N$ be smooth manifolds. A map $F:M\to N$ is smooth if for every $p\in M$, there exists smooth charts $(U,\varphi)$ containing $p$ and $(V,\psi)$ containing $F(p)$ such that $F(U) \subseteq V$ and the composite map $\psi\circ F\circ\varphi^{-1}$ is smooth from $\varphi(U)$ to $\psi(V)$. If $M$ and $N$ are smooth manifolds with boundary, smoothness of $F$ is defined in exactly the same way.
+
+$$
+\begin{CD}
+  U\subseteq M @>F>> F(U)\subseteq V\subseteq N \\
+  @V\varphiVV @VV\psiV \\
+  \varphi(U)\subseteq\R^m @>>\psi\circ F\circ\varphi^{-1}> \psi(V)\subseteq\R^n
+\end{CD}
+$$
+
+If $F:M\to N$ is a smooth map, and $(U,\varphi)$ and $(V,\psi)$ are any smooth charts for $M$ and $N$, respectively, we call $\tilde{F} = \psi\circ F \circ\varphi^{-1}$ the coordinate representation of $F$ with respect to the given coordinates. It maps the set $\varphi(U\cap F^{-1} (V))$ to $\psi(V)$
+
+<MathBox title='' boxType='proposition'>
+Every smooth map is continuous.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $M$ and $N$ are smooth manifolds with or without boundary, and that $F:M\to N$ is smooth. Given $p\in M$, smoothness of $F$ means that there are smooth charts $(U,\varphi)$ containing $p$, and $(V,\psi)$ containing $F(p)$, such that $F(U) \subseteq V$ and $\psi\circ F\circ \varphi^{-1}: \varphi(U)\to\psi(V)$ is smooth, hence continuous. Since $\varphi: U\to\varphi(U)$ and $\psi:V\to\psi(V)$ are homemorphisms, it follows that
+
+$$
+  F|_U = \psi^{-1}\circ (\psi\circ F\circ \varphi^{-1})\circ\varphi: U\to V
+$$
+
+which is a composition of continuous maps. Since $F$ is continuous in a neighbourhood of each point, it is continuous on $M$.
+</details>
+</MathBox>
+
+<MathBox title='Equivalent characterizations of smoothness' boxType='proposition'>
+Suppose that $M$ and $N$ are smooth manifolds with or without boundary, and $F:M\to N$ is a map. Then $F$ is smooth if and only if either of the following conditions is satisfied:
+1. For every $p\in M$, there exist smooth charts $(U,\varphi)$ containing $p$ and $(V,\psi)$ containing $F(p)$ suchat $U\cap F^{-1}(V)$ is open in $M$ and the composite map $\psi\circ F\circ\varphi^{-1}$ is smooth from $\varphi(U\cap F^{-1}(V))$ to $\psi(V)$.
+2. $F$ is continuous and there exist smooth atlases $\Set{(U_\alpha, \varphi_\alpha)}$ and $\Set{((V_\beta, \psi_\beta))}$ for $M$ and $N$, respectively, suh that for each $\alpha$ and $\beta$, the composition $\psi_\beta \circ F \circ \varphi_\alpha^{-1}$ is a smooth map from $\varphi_\alpha(U_\alpha \cap F^{-1}(V_\beta))$ to $\psi_\beta (V_\beta)$
+</MathBox>
+
+<MathBox title='Smoothness is local' boxType='proposition'>
+Suppose that $M$ and $N$ are smooth manifolds with or without boundary, and let $F:M\to N$ be a map.
+1. If every point $p\in M$ has a neighbourhood $U$ such that the restriction $F|_U$ is smooth then $F$ is smooth.
+2. Conversely, if $F$ is smooth, then its restriction to every open subset is smooth.
+</MathBox>
+
+<MathBox title='Gluing lemma for smooth maps' boxType='corollary'>
+Suppose that $M$ and $N$ are smooth manifolds with or without boundary, and ket $\Set{U_\alpha}_{\alpha\in A}$ be an open cover of $M$. Suppose that for each $\alpha\in A$, we are given a smooth map $F_\alpha: U_\alpha \to N$ such that the maps agree on overlaps, i.e. $F_\alpha|_{U_\alpha \cap U_\beta} = F_\beta |_{U_\alpha \cap U_\beta}$ for all $\alpha$ and $\beta$. Then there exists a unique smooth map $F:M\to N$ such that $F|_{U_\alpha} = F_\alpha$ for each $\alpha\in A$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $M$, $N$ and $P$ be smooth manifolds with or without boundary.
+1. Every constant map $c:M\to N$ is smooth
+2. The identity map $\mathrm{id}:M\to M$ is smooth
+3. If $U\subseteq M$ is an open submanifold with or without boundary, then the inclusion map $U \hookright M$ is smooth
+4. If $F:M\to N$ and $G:N\to P$ are smooth, then so is $G\circ F: M\to P$
+
+<details>
+<summary>Proof</summary>
+
+**(4):** Let $p\in M$. By definition of smoothness of $G$, there exists smooth charts $(V,\theta)$ containing $F(p)$ and $(W,\psi)$ contining $G(F(p))$ such that $G(V)\subseteq W$ and $\psi\circ G\circ\theta^{-1}: \theta(V) \to \psi(W)$ is smooth. Since $F$ is continuous, $F^{-1}(V)$ is a neigbourhood of $p\in M$, so there is a smooth chart $(U,\varphi)$ for $M$ such that $p\in U\subseteq F^{-1}(V)$. The coordinate representation $\theta\circ F\circ\varphi^{-1}$ is smooth from $\varphi(U)$ to $\theta(V)$. It follows that $G\circ F(U)\subseteq G(V)\subseteq W$ is smooth because it is a composition of smooth maps between subsets of Euclidean spaces.
+
+$$
+\begin{CD}
+  U\subseteq M @>F>> F(U)\subseteq V\subseteq M @>G>> G(F(U)) \subseteq W\subseteq P \\
+  @V\varphiVV @V$\thetaVV @VV\psiV \\
+  \phi(U)\subseteq\R^m @>>\theta\circ F\circ \varphi^{-1}> \theta(V)\subseteq\R^n @>>\psi\circ G\circ\theta^{-1}> \psi(W)\subseteq\R^p
+\end{CD}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $M_1,\dots,M_k$ and $N$ are smooth manifolds with or without boundary, such that at most on of $M_1,\dots,M_k$ has nonzero boundary. For each $i=1,\dots,k$, let $\pi_i: \prod_{j=1}^k M_j \to M_i$ denote the projection onto the $M_i$ factor. A map $F:N\to \prod_{i=1}^k M_i$ is smooth if and only if each of the components maps $F_i = \pi_i \circ F: N\to M_i$ is smooth.
+</MathBox>
+
+### Diffeomorphism
+
+<MathBox title='Diffeomorphism' boxType='definition'>
+If $M$ and $N$ are smooth manifolds with or without boundary, a *diffeomorphism* $M$ to $N$ is a smooth bijective map $F:M\to N$ that has a smooth inverse. The manifolds $M$ and $N$ are *diffeomorphic*, denoted $M\cong N$, if there exists a diffeomorphism between them. 
+</MathBox>
+
+<MathBox title='Properties of diffeomorphism' boxType='proposition'>
+1. Every composition of diffeomorphisms is a diffeomorphism.
+2. Every finite product of diffeomorphism between smooth manifolds is a diffeomorphism.
+3. Every diffeomorphism is a homeomorphism and an open map.
+4. The restriction of a diffeomorphism to an open submanifold with or without boundary is a diffeomorphism onto its image.
+5. "Diffeomorphic" is an equivalence relation on the class of all smooth manifolds with or without boundary.
+</MathBox>
+
+<MathBox title='Diffeomorphism invariance of dimension' boxType='theorem'>
+A nonempty smooth manifold of dimension $m$ cannot be diffeomorphic to an $n$-dimensional smooth manifold unless $m=n$.
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{CD}
+  U\subseteq M @>F>> F(U)\subseteq V\subseteq N \\
+  @V\varphiVV @VV\psiV \\
+  \varphi(U)\subseteq\R^m @>>\psi\circ F\circ\varphi^{-1}> \psi(V)\subseteq\R^n
+\end{CD}
+$$
+
+Suppose that $M$ is a nonempty smooth $m$-manifold, $N$ is a nonempty smooth $n$-manifold, and $F:M\to N$ is a diffeomorphism. Choose any point $p\in M$, and let $(U,\varphi)$ and $(V,\psi)$ be smooth coordinate charts containing $p$ and $F(p)$ respectively. Then the restriction of $\tilde{F} = \psi\circ F\circ\varphi^{-1}:\varphi(U)\to\psi(V)$ is a diffeomorphism from an open subset of $\R^m$ to an open subset of $\R^n$. 
+
+Because $\tilde{F}^{-1} \circ\tilde{F} = \mathrm{id}_{\varphi(U)}$, the chain rule implies that for each $\mathbf{x}\in \varphi(U)$
+
+$$
+\begin{align*}
+  \mathrm{id}_{\R^n} =& \mathrm{D}(\mathrm{id}_{\varphi(U)})(\mathbf{x}) = \mathrm{D}(\tilde{F}^{-1}\circ\tilde{F})(\mathbf{x}) \\
+  =& \mathrm{D}(\tilde{F}^{-1})(\tilde{F}(\mathbf{x}))\circ\mathrm{D}\tilde{F}(\mathbf{x})
+\end{align*}
+$$
+
+Similarly, $\tilde{F}\circ\tilde{F}^{-1} = \mathrm{id}_{\psi(V)}$ implies that $\mathrm{id}_{\R^m} = \mathrm{D}F(\mathbf{x})\circ\mathrm{D}(\tilde{F}^{-1})(\tilde{F}(\mathbf{x}))$. This implies that $\mathrm{D}(\tilde{F}(\mathbf{x}))$ is invertible with inverse $\mathrm{D}(\tilde{F}^{-1})(\tilde{F}(\mathbf{x}))$, and hence $m = n$.
+</details>
+</MathBox>
+
+<MathBox title='Diffeomorphism invariance of the boundary' boxType='theorem'>
+Suppose that $M$ and $N$ are smooth manifolds with or without boundary, and that $F:M\to N$ is a diffeomorphism. Then $F(\partial M) = \partial N$, and $F$ restricts to a diffeomorphism from $\mathrm{int}(M)$ to $\mathrm{int}(N)$.
+</MathBox>
 
 ### Regular value theorem
 
