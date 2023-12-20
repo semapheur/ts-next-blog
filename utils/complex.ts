@@ -4,6 +4,8 @@ import {
   SymbolNode
 } from 'mathjs'
 
+import {union, reorderSet} from 'utils/num'
+
 function functionDependencies(glslExpression: string) {
   const dependencies = new Set<string>()
 
@@ -35,54 +37,69 @@ function functionVariables(glslExpression: string) {
   return variables
 }
 
-export function requiredFunctions(required: Set<string>): string[] {
-  const stack = Array.from(required)
-  const declarations: string[] = []
-
-  while (stack.length > 0) {
-    const fn = stack.pop()!
+function resolveDependencies(required: Set<string>, cfn: ComplexFunction) {
+  for (const fn of cfn.dependencies) {
     const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
-
-    declarations.unshift(cfn.code) 
-    for (const d of cfn.dependencies) {
-      if (required.has(d)) continue
-
-      required.add(d)
-      stack.push(d)
-    }
+    required = resolveDependencies(required, cfn)
+    required = reorderSet(required, fn)
   }
- 
-  return declarations
+  return required
+}
+
+export function requiredFunctions(required: Set<string>): string[] {
+  for (const fn of required) {
+    const cfn = new ComplexFunction(fn, FUNCTIONS[fn])
+    required = resolveDependencies(required, cfn)
+  }
+  return Array.from(required).reverse().map(fn => new ComplexFunction(fn, FUNCTIONS[fn]).code)
 }
 
 class ComplexFunction{
   private name: string
-  private body: string
+  private body: string|string[]
   private variables: Set<string>
 
-  constructor(name: string, body: string) {
+  constructor(name: string, body: string|string[]) {
     this.name = name
     this.body = body
-    this.variables = functionVariables(body)
+
+    if (Array.isArray(body)) {
+      for (const b of body) {
+        const expression = b.split('=').splice(-1)[0]
+        this.variables = union(this.variables, functionVariables(expression))
+      }
+    } else {
+      this.variables = functionVariables(body)
+    }
+    
   }
 
   get dependencies() {
-    return functionDependencies(this.body)
+    if (typeof this.body === 'string') {
+      return functionDependencies(this.body)
+    }
+    
+    let result = new Set<string>()
+    for (const b of this.body) {
+      const expression = b.split('=').splice(-1)[0]
+      result = union(result, functionDependencies(expression))
+    }
+    return result
   }
 
   get arguments() {
-    let declarations = ''
-    for (const v of this.variables) {
-      declarations += `vec2 ${v},`
-    }
-
-    return declarations.slice(0, -1)
+    return Array.from(this.variables).map(v => `vec2 ${v}`).join(',')
   }
 
   get code() {
-    const body = !this.body.includes('return') ? `return ${this.body}` : this.body
+    const declaration = `vec2 ${this.name}(${this.arguments})`
+    if (typeof this.body === 'string') {
+      return `${declaration} {return ${this.body};}`
+    }
+    const body_ = [...this.body]
+    const body = body_.splice(0, body_.length-1).join(';') + `;return ${body_.splice(-1)};`
 
-    return `vec2 ${this.name}(${this.arguments}) {${body};}`
+    return `${declaration} {${body}}`
   }
 }
 
@@ -107,9 +124,19 @@ const FUNCTIONS = {
   `,
   c_sin: 'vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y))',
   c_cos: 'vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y))',
-  c_tan: `
-    float tan_x = tan(z.x);
-    float tanh_y = tan(z.y);
-    return c_divide(vec2(tan_x, tanh_y), vec2(1, -tan_x * tanh_y))
-  `
+  c_tan: [
+    'float tan_x = tan(z.x)',
+    'float tanh_y = tanh(z.y)',
+    'c_divide(vec2(tan_x, tanh_y), vec2(1, -tan_x * tanh_y))'
+  ],
+  c_sec: 'c_reciprocal(c_cos(z))',
+  c_csc: 'c_reciprocal(c_sin(z))',
+  c_cot: 'c_reciprocal(c_tan(z))',
+  c_sinh: 'vec2(sinh(z.x) * cos(z.y), cosh(z.x) * sin(z.y))',
+  c_cosh: 'vec2(cosh(z.x) * cos(z.y), sinh(z.x) * sin(z.y))',
+  c_tanh: [
+    'float tanh_x = tanh(z.x)',
+    'float tan_y = tan(z.y)',
+    'c_divide(vec2(tanh_x, tan_y), vec2(1, tanh_x * tan_y))'
+  ]
 }

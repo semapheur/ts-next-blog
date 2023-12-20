@@ -50,12 +50,22 @@ export function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
 }
 
 export function union<T>(setA: Set<T>, setB: Set<T>): Set<T> {
-  const result = new Set(setA)
-
-  for (const el of setB) {
-    result.add(el)
+  if (setA === undefined && setB === undefined) {
+    throw Error('Both sets are undefined.')
   }
-  return result
+  if (setA === undefined) return setB
+  if (setB === undefined) return setA
+
+  return new Set([...setA, ...setB])
+}
+
+export function reorderSet<T>(set: Set<T>, member: T) {
+  if (set.has(member)) {
+    set.delete(member)
+    set.add(member)
+  }
+  set.add(member)
+  return set
 }
 
 export function gridUnit(minLength: number) {
