@@ -639,47 +639,46 @@ Thus, each subset $U_i^\pm \cap S^n$ is locally homeomorphic to $\R^n$ and the m
 \documentclass[tikz]{standalone}
 \usepackage{amssymb}
 \usepackage{tikz}
-\usetikzlibrary{3d}
 
 \begin{document}
 
+\def\r{1}
+
 \begin{tikzpicture}[every node/.style={font=\small}]
 
-  \draw[->] (-1.3,0,0) -- (1.5,0,0);
-  \draw[->] (0,-1.3,0) -- (0,1.5,0) node[above] {$x^i$};
-  \draw[->] (0,0,-1.3) -- (0,0,1.5);
+  % n-sphere
+  \begin{scope}
+    % Hemispheres
+    \fill[red!30] (\r, 0) arc (0:-180:\r{} and \r/3) arc (180:0:\r);
+    \fill[blue!30] (\r, 0) arc (0:-180:\r{} and \r/3) arc (-180:0:\r);
 
-  \begin{scope}[canvas is zx plane at y=0]
-    \draw (0,-1) arc (-90:125:1);
-    \draw[dashed] (0,-1) arc (270:125:1);
+    \draw[gray, dashed] (\r, 0) arc(0:180:\r{} and \r/3);
+    \draw[gray] (\r, 0) arc(0:-180:\r{} and \r/3);
+
+    % Axes
+    \draw[->] (-1.25*\r, 0) -- (1.5*\r, 0);
+    \draw[->] (0,-1.25*\r) -- (0,1.5*\r) node[above] {$x^i$};
+    \draw[->] (1.5*\r/5, 1.5*\r/3) -- (-1.5*\r/5, -1.5*\r/3);
+
+    % Labels
+    \node at (60:\r) [above right, red] {$U_i^+ \cap S^n \subseteq\mathbb{R}^{n+1}$};
+    \node at (-60:\r{}) [below right, blue] {$U_i^- \cap S^n \subseteq\mathbb{R}^{n+1}$};
   \end{scope}
 
-  \begin{scope}[canvas is xy plane at z=0]
-    \node at (60:1) [above right, red] {$U_i^+ \cap S^n \subseteq\mathbb{R}^{n+1}$};
-    \node at (-60:1) [below right, blue] {$U_i^- \cap S^n \subseteq\mathbb{R}^{n+1}$};
-    \node at (-70:2.75) [above right] {$B^n \subseteq\mathbb{R}^n$};
+  % R^n
+  \begin{scope}[shift={(0,-\r*3)}]
+    % Elipse
+    \filldraw[fill=gray!20, dashed] (0,0) ellipse (\r{} and \r/3);
 
-    \draw[->] (0,-1.75) -- (0,-2.25) node[above right] {$\varphi_i^\pm$};
+    % Axes
+    \draw[->] (-1.25*\r, 0) -- (1.5*\r, 0);
+    \draw[->] (1.5*\r/5, 1.5*\r/3) -- (-1.5*\r/5, -1.5*\r/3);
 
-    \draw[red] (1,0) arc (0:180:1);
-    \draw[blue] (1,0) arc (0:-90:1);
-    \draw[blue, dashed] (0,-1) arc (-90:-108:1);
-    \draw[blue] (-108:1) arc (-108:-162:1);
-    \draw[blue, dashed] (-162:1) arc (-162:-180:1);
-  \end{scope}
+    % Labels
+    \node at (45:\r/2) [above right] {$B^n \subseteq\mathbb{R}^n$};
 
-  \begin{scope}[canvas is yz plane at x=0]
-    \draw[red] (0,1) arc (90:-30:1);
-    \draw[red, dashed] (0,-1) arc (-90:-30:1);
-    \draw[blue] (0,1) arc (90:180:1);
-    \draw[blue, dashed] (-1,0) arc (180:270:1);
-  \end{scope}
-
-  \begin{scope}[canvas is zx plane at y=-3]
-    \filldraw[dashed, fill=gray!20] (0,0) circle [radius=1cm];
-
-    \draw[->] (-1.2,0) -- (1.5,0);
-    \draw[->] (0,-1.2) -- (0,1.5);
+    % Map
+    \path[->] (-0.5*\r, 2*\r) edge[bend right] node[left] {$\varphi_i$} (-0.5*\r, 0.5\r);
   \end{scope}
 
 \end{tikzpicture}
@@ -1158,7 +1157,7 @@ Let $M$ be a smooth manifold. If $K$ is any closed subset of $M$, there is a smo
 <details>
 <summary>Proof</summary>
 
-**$M = \R^n$**\
+**$M = \R^n$**<br/>
 First, consider the special case in which $M = \R^n$ and $K\subseteq\R^n$ is a closed subset. For each $x \in M\setminus K$, there is a positive number $r \leq 1$ such that $B_r (x) \subseteq M\setminus K$. By second-countability, $M\subseteq K$ is the union of countably many such balls $\Set{B_{r_i}(x_i)}_{i=1}^\infty$.
 
 Let $h:\R^n \to\R$ be a smooth bump function that is equal to $1$ on $\overline{B}_{1/2} (0)$ and supported in $B_1 (0)$. For each positive integer $i$, let $C_i \geq 1$ be a constant that bounds the absolute values of $h$ and all of its partial derivatives up through order $i$. Define $f:\R^n \to\R$ by
@@ -1177,10 +1176,164 @@ $$
 
 where $\mathrm{D}_k (h)$ is some $k$th partial derivative of $h$. By our choices of $r_i$ and $C_i$, as as $i\geq k$, each of these terms is bounded in absolute value by $\frac{1}{2^i}$, so the differentiated series also converges uniformly to a continuous function. It the follows from properties of uniform convergence that the $k$th partial derivatives of $f$ exist and are continuous. This completes the induction, and show that $f$ is smooth.
 
-**$M$ arbitrary smooth manifold**\
+**$M$ arbitrary smooth manifold**<br/>
 Let $M$ be an arbitrary smooth manifold, and $K\subseteq M$ any closed subset. Let $\Set{B_\alpha}$ be an open cover of $M$ by smooth coordinate balls, and let $\Set{\psi_\alpha}$ be a subordinate partition of unity. Since each $B_\alpha$ is diffeomorphic to $\R^n$, the preceeding argument show that for each $\alpha$ there is a smooth nonnegative function $f_\alpha: B_\alpha \to\R$ such that $f_\alpha^{-1}(0) = B_\alpha \cap K$. The functino $f = \sum_\alpha \psi_\alpha f_\alpha$ does the trick.
 </details>
 </MathBox>
+
+# Tangent space
+
+## Geometric tangent vectors
+
+<MathBox title='Geometric tangent vector' boxType='definition'>
+Given a point $a\in\R^n$, the *geometric tangent space* to $\R^n$ at $a$, denoted $\R_a^n$, is the set 
+
+$$
+  \Set{a} \times \R^n = \Set{(a, \mathbf{v}) = \mathbf{v}_a | \mathbf{v}\in R^n}$
+$$
+
+A *geometric tangent vector* $\mathbf{v}$ in $\R^n$ is an element of $\R_a^n$ with initial point at $a\in\R^n$. The set $\R_a^n$ is a vector space.
+</MathBox>
+
+As a vector space, $\R_a^n$ is essentially the same as $\R^n$ itself; the only reason for the additional index $a$ is so that the geometric tangent spaces $\R_a^n$ and $\R_b^n$ at distinct points $a$ and $b$ will be disjoint sets.
+
+The directional derivate of a geometric tangent vector $\mathbf{v}$ at $a$ is a map $\mathrm{D}_{\mathbf{v}_a}: C^\infty (\R^n) \to\R$ defined by
+
+$$
+  \mathrm{D}_{\mathbf{v}_a}(f) = \mathrm{D}_{\mathbf{v}}f(a) = \left\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0} f(a + t\mathbf{v})
+$$
+
+This operation is linear over $\R$ and satisfies the product rule
+
+$$
+  \mathrm{D}_{\mathbf{v}_a} (fg) = f(a)\mathrm{D}_{\mathbf{v}_a}(g) + g(a)\mathrm{D}_{\mathbf{v}_a}(f)
+$$
+
+If $\mathbf{v}_a = v^i \mathbf{e}_i|_a$ in terms of the standard basis, then by the rule, $\mathrm{D}_{\mathbf{v}|a}(f)$ can written as
+
+$$
+  \mathrm{D}_{\mathbf{v}_a}(f) = v^i \frac{\partial f}{\partial x^i}(a)
+$$
+
+<MathBox title='Derivation' boxType='definition'>
+If $a$ is a point of $\R^n$, a function $C^\infty (\R^n)\to\R$ is called a $derivation$ at $a$ if it is linear over $\R$ and satisfies the following product rule
+
+$$
+  w(fg) = f(a)wg + g(a)wf
+$$
+</MathBox>
+
+Let $T_a\R^n$ denote the set of all derivations of $C^\infty(\R^n)$ at $a$. Clearly, $T_a \R^n$ is a vector space under the operations
+
+$$
+\begin{align*}
+  (w_1 + w_2)f =& w_1 f + w_2 f \\
+  (cw)f =& c(wf)
+\end{align*}
+$$
+
+<MathBox title='Properties of derivations' boxType='proposition'>
+Suppose that $a\in\R^n$, $w\in T_a \R^n$ and $f,g\in C^\infty(\R)$.
+1. If $f$ is a constant function, then $wf = 0$.
+2. If $f(a) = g(a) = 0$, then $w(fg) = 0$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** It suffices to consider the constant function $f_1 (x) \equiv 1$, for then $f(x) \equiv c$ implies $wf = w(cf_1) = cw f_1 = 0$ by linearity. For $f_1$, the product rule gives
+
+$$
+\begin{align*}
+  wf_1 =& w(f_1 f_1) \\
+  =& f_1 (a)wf_1 + f_1 (a)w f_1 = 2wf_1
+\end{align*}
+$$
+
+which implies that $wf_1 = 0$.
+
+**(2):** Applyting the product rule gives
+
+$$
+  w(fg) = f(a)wg + g(a)wf = 0 + 0 = 0
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $a\in\R^n$.
+1. For each geometric tangent vector $\mathbf{v}_a \in\R_a^n$, the directional derivative $D_{\mathbf{v}_a}: C^\infty (\R^n) \to\R$ is a derivation at $a$.
+2. The map $\mathbf{v}_a \mapsto \mathrm{D}_{\mathbf{v}_a}$ is an isomorphism from $\R_a^n$ onto $T_a\R^n$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This follows from the product rule of the directional derivative.
+
+**(2):** It is easily seen that $\mathbf{v}_a \mapsto \mathrm{D}_{\mathbf{v}_a}$ is linear. To see that it is injective, suppose that $\mathbf{v}_a\in\R_a^n$ has the property that $\mathrm{D}_{\mathbf{v}_a}$ is the zero derivation. Writing $\mathbf{v}_a = v^i \mathbf{e}_i|_a$ in terms of the standard basis, and taking $f$ to be the $j$th coordinate function $x^j: \R^n\to\R$ thought of as a smooth function on $\R^n$, we obtained
+
+$$
+  0 = \mathrm{D}_{\mathbf{v}_a}(x^j) = v^i \left.\frac{\partial}{\partial x^i}(x^j)\right|_{x=a} = v^i \delta_i^j = v^j
+$$
+
+Since this is true for each $j$, it follows that $\mathbf{v}_a$ is the zero vector.
+
+To prove surjectivity, let $w\in T_a \R^n$ be arbitrary and defined $\mathbf{v} = v^i \mathbf{e}_i$ where $v^i = w(x^i)$. We will show that $w = \mathrm{D}_{\mathbf{v}_a}$. Let $f:\R^n \to\R$ be any smooth function. By Taylor's theorem, we can write
+
+$$
+\begin{align*}
+  f(x) =& f(a) + \sum_{i=1}^n \frac{\partial f}{\partial x_i}(a)(x^i - a^i) \\
+  &+ \sum_{i,j=1}^n (x^i - a^i)(x^j - a^j) \int_0^1 (1-t)\frac{\partial^2 f}{\partial x^i \partial x^j}(a + t(x - a))\;\mathrm{d}t
+\end{align*}
+$$
+
+Note that each term in the last sum above is a product of two smooth functions of $x$ that vanish at $x = a$: one is (x^i - a^i), and the other is $(x^j - a^j)$ times the integral. The derivation $w$ annihilates this sum by its properties, giving
+
+$$
+\begin{align*}
+  wf =& w(f(a)) + \sum_{i=1}^n w\left(\frac{\partial f}{\partial x^i}(a)(x^i - a^i)\right) \\
+  =& 0 + \sum_{i=1}^n \frac{\partial f}{\partial x^i}(x)(w(x^i) - w(a^i)) \\
+  =& \sum_{i=1}^n \frac{\partial f}{\partial x^i} (a)v^i = \mathrm{D}_{\mathbf{v}_a}(f)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Partial derivatives form a tangent basis' boxType='corollary'>
+
+For $a\in\R^n$, the set of $n$ derivations
+
+$$
+  \Set{\left.\frac{\partial}{\partial x^i}\right|_a }_{i=1}^n,\quad $\left.\frac{\partial}{\partial x^i}\right|_a f = \frac{\partial f}{\partial x^i}(a)$
+$$
+
+form a basis for $T_a \R^n$, which there has dimension $n$
+
+<details>
+<summary>Proof</summary>
+
+Note that $\left.\frac{\partial}{\partial x^i}\right|_a = \mathrm{D}_{\mathbf{e}_i|_a}$.
+</details>
+</MathBox>
+
+## Tangent vectors on manifolds
+
+<MathBox title='Tangent space' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. If $p\in M$, a linear function $v: C^\infty(M)\to\R$ is called a *derivation* at $p$ if it satisfied the product rule
+
+$$
+  v(fg) = f(p)vg + g(p)vf,\quad \forall f,g\in C^\infty(M)
+$$
+
+The set of all derivations of $C^\infty (M)$ at $p$, denoted $T_p M$, is a vector space called the *tangent space* to $M$ at $p$. An element of $T_p M$ is called a *tangent vector* at $p$. 
+</MathBox>
+
+<MathBox title='Properties of tangent vectors on manifolds' boxType='definition'>
+Suppose that $M$ is a smooth manifold with or without boundary, $p\in M$, $\mathbf{v} \in T_p M$ and $f, g\in C^\infty (M)$.
+1. If $f$ is a constant function, then $vf = 0$.
+2. If $f(p) = g(p) = 0$, then $v(fg) = 0$.
+</MathBox>
+
+## Differential of a smooth map
 
 ### Regular value theorem
 
