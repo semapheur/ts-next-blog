@@ -312,9 +312,9 @@ Suppose that $D$ is dense. Since $\overline{D}$ is closed, then $\overline{D}^c$
 
 <MathBox title='Countability axioms' boxType='axiom'>
 A topological space $(X,\mathcal{T})$ is called
-1. separable if there exists a countable dense subset
-2. first-countable if each point $x\in X$ has a countable neighbourhood basis
-3. second-countable if the topology $\mathcal{T}$ has a countable base
+1. *separable* if there exists a countable dense subset
+2. *first-countable* if each point $x\in X$ has a countable neighbourhood basis
+3. *second-countable* if the topology $\mathcal{T}$ has a countable base
 </MathBox>
 
 <MathBox title='Countability relations' boxType='proposition'>
@@ -323,7 +323,17 @@ Let $(X,\mathcal{T})$ be a topological space, then the following properties hold
 <details>
 <summary>Proof</summary>
 
-Suppose that $\mathcal{B} = \Set{U_i}_{i\in I}$ is a base for $\mathcal{T}$, where $I$ is a countable index set. Select $x_i\in U_i$ for each $i\in I$, and let $D = \Set{ x_i }_{i\in I}$, which is clearly countable. If $U$ is open and nonempty, then $U = \bigcup_{j\in J} U_j$ for some $J\subseteq I$. But then $\Set{x_j }_{j\in J} \subseteq U$, so $D$ is dense.
+**(1):** Suppose that $\mathcal{B} = \Set{U_i}_{i\in I}$ is a base for $\mathcal{T}$, where $I$ is a countable index set. Select $x_i\in U_i$ for each $i\in I$, and let $D = \Set{ x_i }_{i\in I}$, which is clearly countable. If $U$ is open and nonempty, then $U = \bigcup_{j\in J} U_j$ for some $J\subseteq I$. But then $\Set{x_j }_{j\in J} \subseteq U$, so $D$ is dense.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $X$ be a second-countable topological space. Every open cover of $X$ has a countable subcover.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{B}$ be a countable basis for $X$, and let $\mathcal{U}$ be an arbitrary open cover of $X$. Let $\mathcal{B}' \subseteq\mathcal{B}$ be the collection of basis open subsets $B\in\mathcal{B}$ such that $B\subseteq U$ for some $U\in\mathcal{U}$. For each $B\in\mathcal{B}'$, choose a particular set $U_B \in\mathcal{U}$ containing $B$. The collection $\Set{U_B | B\in\mathcal{B}'}$ is countable, so it suffices to show that it covers $X$. Given a point $B\in\mathcal{B}$ such that $x\in B\subseteq V$. This implies, in particular, that $B\in\mathcal{B}'$ and therefore $x\in B\subseteq U_B$.
 </details>
 </MathBox>
 
@@ -1066,6 +1076,110 @@ Each $\psi_\alpha$ is a smooth function that satisfies $0\leq\psi_\alpha \leq 1$
 
 <MathBox title='Bump function' boxType='definition'>
 If $M$ is a topological space, $A\subseteq M$ is a closed subset, and $U\subseteq M$ is an open subset containing $A$, a continuous function $\psi:M\to\R$ is called a *bump function* for $A$ supported in $U$ if $0\leq\psi\leq 1$ on $M$ and $\psi\equiv 1$ on $A$ and $\mathrm{supp}(\psi) \subseteq U$.
+</MathBox>
+
+<MathBox title='Existence of smooth bump functions' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. For any closed subset $A\subseteq M$ and any open subset $U$ containing $A$, there exists a smooth bump function for $A$ supported in $U$.
+
+<details>
+<summary>Proof</summary>
+
+Let $U_0 = U$ an $U_1 = M\setminus A$ and let $\Set{\psi_0, \psi_1}$ be a smooth partition of unity subordinate to the open cover $\Set{U_0, U_1}$. Because $\psi_1 \equiv 0$ on $A$ with $\psi_0 = \sum_i \psi_i = 0$, the functino $\psi_0$ has the required properties.
+</details>
+</MathBox>
+
+<MathBox title='Extension lemma for smooth function' boxType='lemma'>
+Suppose $M$ is a smooth manifold with or without boundary, $A\subseteq M$ is a closed subset, and $f:A\to\R^k$ is a smooth function. For any open subset $U$ containing $A$, there exists a smooth function $\tilde{f}:M\to\R^k$ such that $\tilde{f}|_A = f$ and $\mathrm{supp}(\tilde{f})\subseteq U$.
+
+<details>
+<summary>Proof</summary>
+
+For each $p\in A$, choose a neighbourhood $W_p$ of $p$ and a smooth function $\tilde{f}_p :W_p \to R^k$ that agrees with $f$ on $W_p \cap A$. Replacing $W_p$ by $W_p \cap U$, we may assume $W_p \subseteq U$. The collection of sets $\Set{W_p | p\in A}\cup M\setminus A$ is an open cover of $M$. Let $\Set{\psi_p | p\in A} \cup \Set{\psi_0}$ be a smooth partition of unity subordinate to this cover, with $\mathrm{supp}(\psi_p)\subseteq W_p$ and $\mathrm{supp}(\psi_0) \subseteq M\setminus A$.
+
+For each $p\in A$, the product $\psi_p \tilde{f}_p$ is smooth on $W_p$, and has a smooth extension to all of $M$ if we interpret it to be zero on $M\setminus\mathrm{supp}(\psi_p)$. Thus, we can defined $\tilde{f}: M\to\R^k$ by
+
+$$
+  \tilde{f}(x) = \sum_{p\in A} \psi_p (x)\tilde{f}_p (x)
+$$
+
+Because the collection of supports $\Set{\psi_p}$ is locally finite, this sum has only a finite number of nonzero terms in a neighbourhood of any point of $M$, and therefore defines a smooth function. If $x\in A$, then $\psi_0 (x) = 0$ and $\tilde{f}_p (x) = f(x)$ for each $p$ such that $\psi_p (x) \neq 0$, so
+
+$$
+\begin{align*}
+  \tilde{f}(x) =& \sum_{p\in A} \psi_p(x)f(x) \\
+  =& \left( \psi_0(x) + \sum_{p\in A} \psi_p (x) \right)f(x) \\
+  =& f(x)
+\end{align*}
+$$
+
+so $\tilde{f}$ is indeed an extension of $f$. It follows that 
+
+$$
+  \mathrm{supp}(\tilde{f}) = \overline{\bigcup_{p\in A}\mathrm{supp}(\psi_p)} = \bigcup_{p\in A} \mathrm{supp}(\psi_p) \subseteq U
+$$
+</details>
+</MathBox>
+
+<MathBox title='Exhaustion function' boxType='definition'>
+If $M$ is a topological space, and *exhaustion function* for $M$ is a continuous function $f:M\to\R$ with the property that the set $f^{-1}((-\infty,c])$, called the sublevel set of $f$, is compact for each $c\in\R$. As $n$ ranges over the positive integers, the sublevel sets $f^{-1}((-\infty, n])$ form an exhaustion of $M$ by compact sets.
+</MathBox>
+
+<MathBox title='Existence of smooth exhaustion functions' boxType='proposition'>
+Every smooth manifold with or without boundary admits a smooth positive exhaustion function.
+
+<details>
+<summary>Proof</summary>
+
+Let $\Set{V_j}_{j=1}^\infty$ be any countable open cover of $M$ by precompact open subsets, and let $\Set{\psi_j}$ be a smooth partition of unity subordinate to this cover. Define $f\in C^\infty (M)$ by
+
+$$
+  f(p) = \sum_{j=1}^\infty j\psi_j(p)
+$$
+
+Then $f$ is smooth because only finitely many terms are nonzero in a neighbourhood of any point, and positive because $f(p) \geq\sum_j \psi_j (p) = 1$.
+
+To see that $f$ is an exhaustion function, let $c\in\R$ be arbitrary, and choose a positive integer $N > c$. If $p\notin \bigcup_{j=1}^N \overline{V}_j$, then $\psi_j(p) = 0$ for $1\leq j\leq N$, so
+
+$$
+\begin{align*}
+  f(p) =& \sum_{j=N+1}^\infty j\psi_j (p) \\
+  \geq& \sum_{j=N+1}^\infty N\psi_j (p) \\
+  =& N\sum_{j=1}^\infty \psi_j (p) = N > c
+\end{align*}
+$$
+
+Equivalently, if $f(p) \leq c$, then $p\in \bigcup_{j=1}^N \overline{V}_j$. Thus $f^{-1}((-\infty, c])$ is a closed subset of the compact set $\bigcup_{j=1}^N \overline{V}_j$ and is therefore compact.
+</details>
+</MathBox>
+
+<MathBox title='Level sets of smooth functions' boxType='proposition'>
+Let $M$ be a smooth manifold. If $K$ is any closed subset of $M$, there is a smooth nonnegative function $f:M\to\R$ such that $f^{-1}(0) = K$.
+
+<details>
+<summary>Proof</summary>
+
+**$M = \R^n$**\
+First, consider the special case in which $M = \R^n$ and $K\subseteq\R^n$ is a closed subset. For each $x \in M\setminus K$, there is a positive number $r \leq 1$ such that $B_r (x) \subseteq M\setminus K$. By second-countability, $M\subseteq K$ is the union of countably many such balls $\Set{B_{r_i}(x_i)}_{i=1}^\infty$.
+
+Let $h:\R^n \to\R$ be a smooth bump function that is equal to $1$ on $\overline{B}_{1/2} (0)$ and supported in $B_1 (0)$. For each positive integer $i$, let $C_i \geq 1$ be a constant that bounds the absolute values of $h$ and all of its partial derivatives up through order $i$. Define $f:\R^n \to\R$ by
+
+$$
+  f(x) = \sum_{i=1}^\infty \frac{(r_i)^i}{2^i C_i} h\left( \frac{x-x_i}{r_i} \right)
+$$
+
+The terms of the series are bounded in absolute value by those of the convergent series $\sum_i \frac{1}{2^i}$, so the entire series converges uniformly to a continuous function by the Weierstrass $M$-test. Because the $i$th term is positive extactly when $x\in B_{r_i}(x_i)$, it follows that $f$ is zero in $K$ and positive elsewhere.
+
+It remains to show that $f$ is smooth. Suppose that $k\geq 1$ and assume by induction that all partial derivatives of $f$ of order less than $k$ exist and are continuous. By the chain rule and induction, every $k$th partial derivative of the $i$th term in the series can be written in the form
+
+$$
+  \frac{(r_i)^{i-k}}{2^i C_i} \mathrm{D}_k\left[h\left( \frac{x - x_i}{r_i} \right)\right]
+$$
+
+where $\mathrm{D}_k (h)$ is some $k$th partial derivative of $h$. By our choices of $r_i$ and $C_i$, as as $i\geq k$, each of these terms is bounded in absolute value by $\frac{1}{2^i}$, so the differentiated series also converges uniformly to a continuous function. It the follows from properties of uniform convergence that the $k$th partial derivatives of $f$ exist and are continuous. This completes the induction, and show that $f$ is smooth.
+
+**$M$ arbitrary smooth manifold**\
+Let $M$ be an arbitrary smooth manifold, and $K\subseteq M$ any closed subset. Let $\Set{B_\alpha}$ be an open cover of $M$ by smooth coordinate balls, and let $\Set{\psi_\alpha}$ be a subordinate partition of unity. Since each $B_\alpha$ is diffeomorphic to $\R^n$, the preceeding argument show that for each $\alpha$ there is a smooth nonnegative function $f_\alpha: B_\alpha \to\R$ such that $f_\alpha^{-1}(0) = B_\alpha \cap K$. The functino $f = \sum_\alpha \psi_\alpha f_\alpha$ does the trick.
+</details>
 </MathBox>
 
 ### Regular value theorem
