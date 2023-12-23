@@ -29,10 +29,11 @@ showToc: true
 
 <MathBox title='Category' boxType='definition'>
 A category $\mathcal{C}$ consists of
-- a collection $\mathrm{ob}(\mathcal{C})$ of *objects*
-- for each $A, B\in\mathrm{ob}(\mathcal{C})$ a collection $\mathrm{Hom}_{\mathcal{C}}(A,B)$ of *morphisms* (maps or arrows) from $A$ to $B$, shortened as $\mathcal{C}(A,B)$
-- for each $A,B,C\in\mathrm{ob}(\mathcal{C})$ a function $\circ: \mathcal{C}(B,C)\times\mathcal{C}(A,B)\to\mathbb{C}(A,C)$ defined by $(g,f)\mapsto g\circ f$ called *composition*
-- for each $A\in\mathrm{ob}(\mathcal{C})$ an element $\mathrm{id}_A$ of $\mathcal{C}(A,A)$ called the *identity* on $A$
+- a class $\mathrm{ob}(\mathcal{C})$ of *objects*
+- a class $\hom(\mathcal{C})$ of *morphism*
+- for each morphism $f\in\hom(\mathbb{C})$, two objects $A,B\in\mathrm{ob}(\mathbb{C})$ called the *source* and *target* of $f$, respectively
+- for each $A,B,C\in\mathrm{ob}(\mathcal{C})$ a function $\circ: \hom_\mathcal{C}(B,C)\times\hom_\mathcal{C}(A,B)\to\hom_\mathcal{C}(A,C)$ defined by $(f,g)\mapsto g\circ f$ called *composition*
+- for each $A\in\mathrm{ob}(\mathcal{C})$ an element $\mathrm{id}_A\in \hom_\mathcal{C}(A,A)$ called the *identity* on $A$
 
 satisfying
 - $(h\circ g)\circ f = h \circ (g \circ f)$ for each $f\in\mathcal{C}(A,B)$, $g\in\mathcal{C}(B,C)$ and $h\in\mathcal{C}(C,D)$ **(associativity)**
@@ -41,9 +42,25 @@ satisfying
 
 The following notation is commonly used
 - $A\in\mathcal{C}$ instead of $A\in\mathrm{ob}(\mathcal{C})$
-- $f:A\to B$ or $A \xrightarrow{f} B$ instead of $f\in\mathcal{C}(A,B)$
+- $\mathcal{C}(A,B)$ instead of $\hom_\mathcal{C}(A,B)$
+- $f:A\to B$ or $A \xrightarrow{f} B$ instead of $f\in\hom_\mathcal{C}(A,B)$
 - $gf$ instead of $g\circ f$
 - $1_A$ instead of $\mathrm{id}_A$
+
+A category $\mathcal{C}$ in which both $\mathrm{ob}(\mathbf{C})$ and $\hom(\mathcal{C})$ are sets is called a *small category*. A category in which each class of morphisms $\hom_\mathcal{C}(A,B)$ is a set is called *locally small*. 
+
+Common categories
+- $\mathbf{Set}$: sets and maps
+- $\mathbf{Top}$: topological spaces and continuous maps
+- $\mathbf{Man}$: topological manifolds and continuous maps
+- $\mathbf{Diff}$: smooth manifolds and smooth maps
+- $\mathbf{Vec}$: vector spaces and linear maps
+- $\mathbf{Bilin}$: bilinear maps and tensor products
+- $\mathbf{Grp}$: groups and group homomorphisms
+- $\mathbf{Ab}$: abelian groups and group homomorphisms
+- $\mathbf{Rng}$: rings and ring homomorphisms
+- $\mathbf{CRng}$: commutative rings and ring homomorphisms
+
 
 <MathBox title='Isomorphism' boxType='definition'>
 A map $f:A\to B$ in a category $\mathcal{C}$ is an isomorphism if there exists a map $g: B\to A$ in $\mathcal{C}$ such that $gf = 1_A$ and $fg = 1_B$. In this case, we say that $f$ is *invertible* and that $g$ is the *inverse* of $f$, denoted $g = f^{-1}$. If there is an isomorphism from $A$ to $B$, we say that $A$ and $B$ are isomorphic, denoted $A\cong B$.
@@ -70,14 +87,19 @@ A map $f:A\to B$ in a category $\mathcal{C}$ is an isomorphism if there exists a
 
 ## Functor
 <MathBox title='Functor' boxType='definition'>
-Let $\mathcal{A}$ and $\mathcal{B}$ be categories. A functor $F:\mathcal{A}\to\mathcal{B}$ consists of
-1. a function $\mathrm{ob}(\mathcal{A})\to\mathrm{ob}(\mathcal{B})$ by $A\mapsto F(A)$
-2. for each $A, A'\in\mathcal{A}$ a function $\mathcal{A}(A,A')\to\mathcal{B}(F(A), F(A'))$ by $f\mapsto F(f)$
+Let $\mathcal{A}$ and $\mathcal{B}$ be categories. A *covariant functor* $F:\mathcal{A}\to\mathcal{B}$ consists of
+1. a map $\mathrm{ob}(\mathcal{A})\to\mathrm{ob}(\mathcal{B})$ defined by $A\mapsto F(A)$
+2. for each $A, A'\in\mathcal{A}$ a map $\hom_\mathcal{A}(A,A')\to\hom_\mathcal{B}(F(A), F(A'))$ defined by $f\mapsto F(f)$
 
 satisfying
 - $F(f' \circ f) = F(f')\circ F(f)$ whenever $A\xrightarrow{f} A' \xrightarrow{f'} A''$ in $\mathcal{A}$
 - $F(1_A) = 1_{F(A)}$ whenever $A\in\mathcal{A}$
+
+A functor is called *contravariant* if for each $A, A'\in\mathcal{A}$ a there is a map $\hom_\mathcal{A}(A,A')\to\hom_\mathcal{B}(F(A'), F(A))$ by $f\mapsto F(f)$ such that
+- $F(f' \circ f) = F(f)\circ F(f')$ whenever $A\xrightarrow{f} A' \xrightarrow{f'} A''$ in $\mathcal{A}$
 </MathBox>
+
+If $\mathcal{C}$ is a cateogory whose objects are sets with some additional structure and whose morphisms are maps preserving that structure, the *forgetful functor* $F:C\to\mathbf{Set}$ assigns to each object its underlying set, and to each morphism the same map thought of as a map between sets. 
 
 <MathBox title='' boxType='definition'>
 Let $\mathcal{A}$ be a locally small category and $A\in\mathcal{A}$. The functor

@@ -621,13 +621,13 @@ where $U_i^+$ and $U_i^-$ denote the subsets of $\R^{n+1}$ where the $i$th coord
 Let $f:B^n \to\R$ be the continuous function $f(\mathbf{u}) = \sqrt{1 - \lVert\mathbf{u}\rVert^2}$, where $B^n$ is the unit $n$-ball. For each $i=1,\dots,n+1$, it is easily seen that $U_i^+ \cap S^n$ is the grap of the function
 
 $$
-  x^i = f(x^1,\dots, x_{i-1},x_{i+1},\dots,x^{n+1})
+  x^i = f(x^1,\dots, x^{i-1},x^{i+1},\dots,x^{n+1})
 $$
 
 Similarly, $U_i^- \cap S^n$ is the graph of the function
 
 $$
-  x^i = -f(x^1,\dots, x_{i-1},x_{i+1},\dots,x^{n+1})
+  x^i = -f(x^1,\dots, x^{i-1},x^{i+1},\dots,x^{n+1})
 $$
 
 Thus, each subset $U_i^\pm \cap S^n$ is locally homeomorphic to $\R^n$ and the maps $\varphi_i^\pm (x^1,\dots,x^{n+1}) = (x^1,\dots,x^{i-1},x^{i+1},\dots,x^n)$, removing the $i$th coordinate, are graph coordinates for $S^n$. Since each point of $S^n$ is in the domain of least one of these $2n + 2$ charts, $S^n$ is a topological $n$-manifold.
@@ -1814,6 +1814,77 @@ $$
 for any smooth curve $\gamma:I\to M$ such that $0\in I$, $\gamma(0) = \mathbf{p}$ and $\gamma'(0) = \mathbf{v}$.
 </MathBox>
 
+## Alternative definitions of the tangent space
+
+### Derivations of the space of germs
+
+<MathBox title='Germ' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. A *smooth function element* on $M$ is an ordered pair $(f,U)$ where $U$ is an open subset of $M$ and $f:U\to\R$ is a smooth function.
+
+For two function elements, we define an equivalence relation $(f,U)\sim_\mathbf{p} (g, V)$ if $f \equiv g$ on some neighbourhood of a point $\mathbf{p}\in M$. The equivalence class of a function element $(f,U)$, denoted $[(f,U)]_\mathbf{p}$, is called the *germ* of $f$ at $\mathbf{p}$. The set of all germs of smooth functions at $\mathbf{p}$ is denoted $C_\mathbf{p}^\infty (M)$. It is a real vector space and an associative algebra under the operations
+
+- **(scalar multiplication):** $c[(f,U)]_\mathbf{p} = [(cf, U)]_\mathbf{p}$
+- **(addition):** $[(f,U)]_\mathbf{p} + [(f + g, U\cap V)]_\mathbf{p}$
+- **(multiplication):** $[(f,U)]_\mathbf{p} \cdot [(g,V)]_\mathbf{p} = [(fg, U\cap V)]$
+
+A *derivation* of $C_\mathbf{p}^\infty$ is a linear map $v:C_\mathbf{p}^\infty (M) \to\R$ satisfying the product rule
+
+$$
+  v[fg]_\mathbf{p} = f(\mathbf{p})v[g]_\mathbf{p} + g(\mathbf{p})v[f]_\mathbf{p}
+$$
+</MathBox>
+
+It is common to define the tangent space to $M$ at $\mathbf{p}$ as the vector space $D_\mathbf{p} M$ of derivations of $C_\mathbf{p}^\infty(M)$. The map $\phi: D_\mathbf{p}M \to T_\mathbf{p} M$ defined by $(\varphi\mathbf{v})f = \mathbf{v}([f]_\mathbf{p})$ is an isomorphism.
+
+### Equivalence classes of curves
+
+<MathBox title='Tangent space' boxType='definition'>
+Let $M$ be an $n$-dimensional smooth manifold and let $p\in M$. The set of all curves in $M$ passing through $p$ is defined as
+
+$$
+  C_p (M) := \Set{ \gamma:(-\varepsilon, \epsilon) \to M | \gamma \textrm{ differentiable } \gamma(0) = p }
+$$
+
+For any chart $h: U\subseteq M \to\R^n$ there is an equivalence relation
+
+$$
+  \gamma\sim\alpha :\iff (\h\circ\gamma)'(0) = (h\circ\alpha)'(0)
+$$
+
+The equivalence class $[\gamma]_\sim := \Set{\alpha | \gamma\sim\alpha }$ represents a tangent vector. The tangent space of $M$ at $p$, denoted $T_p M$ is defined as the set of all tangent vectors at $p$
+
+$$
+  T_p M := C_p(M)/\sim
+$$
+</MathBox>
+
+<MathBox title='Coordinate basis' boxType='definition'>
+Let $M$ be an $n$-dimensional smooth manifold having a chart $h:U\subseteq M \to \R^n$ with inverse $\phi = h^{-1}$. Since the tangent space $T_p M$ is isomorphic to $\R^n$ there is a linear and bijective map $h_* : T_p M \to \R^n$ given by $[\gamma]\mapsto (h\circ\gamma)'(0)$ where the equivalence class $[\gamma]$ is a tangent vector in $T_p M$. The coordinate basis with respect to $h$ is defined as
+
+$$
+  \partial_j := \phi_* (e_j)
+$$
+
+where $\phi_* := h_*^{-1}$ and $(e_i)_{i=1}^n$ is the standard basis of $\R^n$.
+</MathBox>
+
+<MathBox title='Differential' boxType='definition'>
+Let $M, N$ be two smooth manifolds and let $f:M\to N$ be a smooth function. The differential of $f$ at $p\in M$ is defined as
+
+$$
+\begin{align*}
+  \mathrm{d}f_p:& T_p M \to T_{f(p)} \\
+  & [\gamma] \mapsto [f\circ\gamma]
+\end{align*}
+$$
+
+The differential of $f$ is defined as
+
+$$
+  \mathrm{d}f: p\mapsto\mathrm{d}f_p
+$$
+</MathBox>
+
 ### Regular value theorem
 
 In the following discussion, let $M, N$ be smooth manifolds of dimension $m$ and $n$ with $m\geq n$. Recall that $M, N$ are smooth manifolds if there are diffeomorphisms $\varphi:M\to\R^m$ and $\psi:N\to\R^n$.
@@ -1878,53 +1949,6 @@ $$
 
 This shows that $T_p M \supseteq \Set{ \gamma'(0) | \gamma:(-\varepsilon, \varepsilon) \to M \textrm{ differentiable with } \gamma(0) = p }$
 </details>
-</MathBox>
-
-<MathBox title='Tangent spaces' boxType='definition'>
-Let $M$ be an $n$-dimensional smooth manifold and let $p\in M$. The set of all curves in $M$ passing through $p$ is defined as
-
-$$
-  C_p (M) := \Set{ \gamma:(-\varepsilon, \epsilon) \to M | \gamma \textrm{ differentiable } \gamma(0) = p }
-$$
-
-For any chart $h: U\subseteq M \to\R^n$ there is an equivalence relation
-
-$$
-  \gamma\sim\alpha :\iff (\h\circ\gamma)'(0) = (h\circ\alpha)'(0)
-$$
-
-The equivalence class $[\gamma]_\sim := \Set{\alpha | \gamma\sim\alpha }$ represents a tangent vector. The tangent space of $M$ at $p$, denoted $T_p M$ is defined as the set of all tangent vectors at $p$
-
-$$
-  T_p M := C_p(M)/\sim
-$$
-</MathBox>
-
-<MathBox title='Coordinate basis' boxType='definition'>
-Let $M$ be an $n$-dimensional smooth manifold having a chart $h:U\subseteq M \to \R^n$ with inverse $\phi = h^{-1}$. Since the tangent space $T_p M$ is isomorphic to $\R^n$ there is a linear and bijective map $h_* : T_p M \to \R^n$ given by $[\gamma]\mapsto (h\circ\gamma)'(0)$ where the equivalence class $[\gamma]$ is a tangent vector in $T_p M$. The coordinate basis with respect to $h$ is defined as
-
-$$
-  \partial_j := \phi_* (e_j)
-$$
-
-where $\phi_* := h_*^{-1}$ and $(e_i)_{i=1}^n$ is the standard basis of $\R^n$.
-</MathBox>
-
-<MathBox title='Differential' boxType='definition'>
-Let $M, N$ be two smooth manifolds and let $f:M\to N$ be a smooth function. The differential of $f$ at $p\in M$ is defined as
-
-$$
-\begin{align*}
-  \mathrm{d}f_p:& T_p M \to T_{f(p)} \\
-  & [\gamma] \mapsto [f\circ\gamma]
-\end{align*}
-$$
-
-The differential of $f$ is defined as
-
-$$
-  \mathrm{d}f: p\mapsto\mathrm{d}f_p
-$$
 </MathBox>
 
 ## Riemannian manifolds
