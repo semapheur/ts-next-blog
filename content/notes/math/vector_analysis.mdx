@@ -346,9 +346,11 @@ $$
 Let $\alpha:I\to\R^3$ be a differentiable path with speed $v$, Frenet vectors $(\mathbf{T}, \mathbf{N}, \mathbf{B})$, curvature $\kappa$ and torsion $\tau$. Assume that $v\neq 0$ and $\mathbf{T}' \neq\mathbf{0}$ so that the Frenet vectors are defined for all $t$. Then
 
 $$
+\begin{align*}
   \mathbf{T}' &= \kappa v\mathbf{N} \\
   \mathbf{N}' &= -\kappa v \mathbf{T} + \tau v\mathbf{B} \\
   \mathbf{B}' &= -\tau v\mathbf{N}
+\end{align*}
 $$
 
 or in matrix form
@@ -650,7 +652,7 @@ $$
   \lim_{\mathbf{x}\to\mathbf{a}} \frac{f(\mathbf{x}) - f(\mathbf{a}) - T(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
 $$
 
-In a neighbourhood of $\mathbf{a}$, $\mathbf{x}$ takes the form $\mathbf{x} = \mathbf{a} + h\sum_{i=1}^n \mathbf{e}_i$ for $h\in\R$. Suppose that $\mathbf{x}$ approaches $\mathbf{a}$ in the $x_i$-direction, i.e. $\mathbf{x} = \mathbf{a} + h\mathbf{e}_i$. Then $\mathbf{x} - \mathbf{a} = h\mathbf{e}_1$ and $\lVert \mathbf{x} - \mathbf{a} \rVert = |h|$. For the difference quotient to hold true then we require in both limits $h\downarrow 0$ and $h\uparrow 0$ that
+Suppose that $\mathbf{x}$ approaches $\mathbf{a}$ in the $x_i$-direction, i.e. $\mathbf{x} = \mathbf{a} + h\mathbf{e}_i$. Then $\mathbf{x} - \mathbf{a} = h\mathbf{e}_1$ and $\lVert \mathbf{x} - \mathbf{a} \rVert = |h|$. For the difference quotient to hold true then we require in both limits $h\downarrow 0$ and $h\uparrow 0$ that
 
 $$
 \begin{align*}
@@ -659,7 +661,7 @@ $$
 \end{align*}
 $$
 
-Solving for for $T(\mathbf{e}_i)$ gives
+where $T(h\mathbf{e}_i) = hT(\mathbf{e}_i)$ follows from the linearity of $T$. Solving for for $T(\mathbf{e}_i)$ gives
 
 $$
 \begin{align*}
@@ -673,14 +675,10 @@ This limit of the difference quotient is analogous to the one-variable derivativ
 The linear transformation $T:\R^n \to\R$ takes the form of a $1\times n$ matrix
 
 $$
-  J_f(\mathbf{a}) = \mathrm{D}f(\mathbf{a}) = \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x_n}(\mathbf{a}) \end{bmatrix}
+  \mathrm{D}f(\mathbf{a}) = \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x_n}(\mathbf{a}) \end{bmatrix}
 $$
 
-called the *Jacobian matrix* of $f$ at $\mathbf{a}$. Taking the transpose of the Jacobian matrix gives a vector ($n\times 1$ matrix) called the *gradient* of $f$ at $\mathbf{a}$, denoted
-
-$$
-  \nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_i}(\mathbf{a}) \right)_{i=1}^n \in\R^n
-$$
+which is called the *total derivative* of $f$ at $\mathbf{a}$. The total derivative is also known as the Jacobian matrix.
 
 <MathBox title='Partial derivative' boxType='definition'>
 Let $f:U\to\R$ be a real-valued function defined on an open set $U\in\R^n$ and consider a point $\mathbf{a}\in U$. The *partial derivative* of $f$ at $\mathbf{a}$ with respect to $x_i$ is defined by
@@ -697,7 +695,7 @@ $$
 A function $f:U\subseteq\R^n \to\R$ is *differentiable* at a point $\mathbf{a}\in U$ if
 
 $$
-  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert}
+  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
 $$
 
 If this limit exists, the matrix $\mathrm{D}f(\mathbf{a})$ is called the *derivative* of $f$ at $\mathbf{a}$. It is also known as the *Jacobian matrix*. The affine function $\ell(\mathbf{x}) = f(\mathbf{a}) + \mathrm{D}f(\mathbf{a})(\mathbf{x}-\mathbf{a})$ is called the *first-order affine transformation* of $f$ at $\mathbf{a}$.
@@ -737,11 +735,29 @@ $$
 
 ## Gradient (vector field)
 
+If a scalar function $f:U\subseteq\R^n \to\R$ is differentiable at $\mathbf{a}\in U$, its total derivative at this point is the linear transformation $\mathrm{D}f(\mathbf{a}):\R^n \to\R$ in the form of the $1\times n$ Jacobian matrix
+
+$$
+  \mathrm{D}f(\mathbf{a}) = \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{bmatrix}
+$$
+
+Transposing $\mathrm{D}f(\mathbf{a})$ gives a vector ($n\times 1$ matrix) called the *gradient* of $f$ at $\mathbf{a}$, denoted
+
+$$
+\begin{align*}
+  \nabla f(\mathbf{a}) =& \mathrm{D}f(\mathbf{a})^T \\
+  =& \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{bmatrix}^T \\
+  =& \begin{bmatrix} \frac{\partial f}{\partial x_i}(\mathbf{a}) \\ \vdots \\ \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{bmatrix}
+\end{align*}
+$$
+
+On a sidenote, since $\mathrm{D}f(\mathbf{a})$ maps from $\R^n$ into $\R$ it is technically a linear functional, also called a covector, belonging to the dual space of $\R^n$. The total derivative $\mathrm{D}f(\mathbf{a})$ and the gradient $\nabla f(\mathbf{a})$ are thus dual pairs. 
+
 <MathBox title='Gradient' boxType='definition'>
 If a function $f:U\subseteq\R^n \to\R$ is totally differentiable $\mathbf{a}\R^n$, then the gradient of $f$ at $\mathbf{a}$ is defined as
 
 $$
-  \nabla f(\mathbf{a}) = \mathrm{grad}(f(\mathbf{a})) := \begin{bmatrix} \frac{\partial f}{\partial x_i}(\mathbf{a}) \\ \vdots \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{matrix}
+  \nabla f(\mathbf{a}) = \mathrm{grad}(f(\mathbf{a})) := \begin{bmatrix} \frac{\partial f}{\partial x_i}(\mathbf{a}) \\ \vdots \\ \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{bmatrix}
 $$
 
 which is the transpose of the total derivative (Jacobian) $\mathrm{D}f(\mathbf{a})$.
@@ -857,10 +873,10 @@ $$
 
 $$
 \begin{gather*}
-\begin{aligned*}
+\begin{aligned}
   \nabla \cdot \left(f \mathbf{A} \right) &= f\left( \nabla \cdot \mathbf{A} \right) + \mathbf{A} \cdot \left( \nabla f \right) \\
   \int \nabla \cdot \left(f \mathbf{A} \right) \mathrm{d}\tau &= \int f\left( \nabla \cdot \mathbf{A} \right) \mathrm{d}\tau + \int \mathbf{A} \cdot \left( \nabla f \right) \mathrm{d}\tau = \oint f\mathbf{A} \cdot \mathrm{d}\mathbf{a}
-\end{aligned*} \\
+\end{aligned} \\
   \int_\mathcal{V} \nabla \cdot \left(f \mathbf{A} \right) \mathrm{d}\tau = -\int_\mathcal{V} \mathbf{A} \cdot \left( \nabla f \right) \mathrm{d}\tau + \oint_\mathcal{S} f\mathbf{A} \cdot \mathrm{d}\mathbf{a}
 \end{gather*}
 $$
@@ -896,7 +912,7 @@ $$
   \nabla \times \mathbf{v} = \begin{vmatrix} \hat{\mathbf{x}} & \hat{\mathbf{y}} & \hat{\mathbf{z}} \\
   \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\
   v^x & v^y & v^z \end{vmatrix} = \varepsilon^{ij}_{k}\mathbf{e}_i \frac{\partial v^k}{\partial x_j} \equiv \varepsilon^{ij}_{k}\mathbf{e}_i\partial_j v^k
-\begin{gather*}
+\end{gather*}
 $$
 
 The curl of the gradient of any scalar field $\phi$ is always the zero vector field
