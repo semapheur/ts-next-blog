@@ -600,17 +600,41 @@ Suppose that $\lim_{\mathbf{x}\to\mathbf{a}}f(\mathbf{x})$ and $\lim_{\mathbf{x}
 
 ## Differential calculus
 
-<MathBox title='Affine function' boxType='definition'>
-A function $\ell:\R^n \to R^m$ is called an *affine function* if it has the form $\ell(\mathbf{x}) = T(\mathbf{x}) + \mathbf{b}$, $T:\R^n \to\R^m$ is a linear transformation and $\mathbf{b}\in\R^m$.
-</MathBox>
+### Partial derivative
 
-If $U\in\R^n$ is an open set, a real-valued function $f:U\to\R$ is differentiable at a point $\mathbf{a}\in U$ if there exists a real-valued affine function $\ell:\R^n \to \R$ given by $\ell(\mathbf{x}) = T(\mathbf{x}) + b$ such that
+In the one-variable case, a real-valued function $f:I\subseteq\R\to\R$ can be linearly approximated at $a\in I$ by a secant (affine linear function)
+
+$$
+  \ell(t) = \frac{f(x)-f(a)}{x - a} (t - a) + f(a) 
+$$
+
+In the limit $x\to a$, the secant converges to the tangent of $f$ at $a$. If this limit exists, we say that $f$ is differentiable at $a$ with derivative equal to the slope of $\ell$
+
+$$
+  f'(a) := \lim_{x\to a} \frac{f(x) - f(a)}{x - a} \\
+$$
+
+This can be rewritten as
+
+$$
+\begin{align*}
+  0 =& \lim_{x\to a} \left( \frac{f(x) - f(a)}{x - a} - f'(a) \right) \\
+  =& \lim_{x\to a} \frac{f(x) - f(a) - f'(a)(x-a)}{x - a} \\
+  =& \lim_{x\to a} \frac{f(x) - \ell(x)}{x - a} 
+\end{align*}
+$$
+
+Generalizing to the multivariable case, we expect that a function $f:U\subseteq\R^n \to\R$ to be differentiable at a point $\mathbf{a}\in U$ if there is a linear affine function $\ell:\R^n \to\R$ given by $\ell(\mathbf{x}) = T(\mathbf{x}) + b$ such that
 
 $$
   \lim_{\mathbf{x}\to\mathbf{a}} \frac{f(\mathbf{x}) - \ell(\mathbf{x})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
 $$
 
-The affine function $\ell$ gives the linear approximation of $f$ at $\mathbf{a}$ such that $f(\mathbf{a}) = \ell(\mathbf{a}) = T(\mathbf{a}) + b$. Thus, $b = f(\mathbf{a}) - T(\mathbf{a})$ such that
+<MathBox title='Affine function' boxType='definition'>
+A function $\ell:\R^n \to R^m$ is called an *affine function* if it has the form $\ell(\mathbf{x}) = T(\mathbf{x}) + \mathbf{b}$, $T:\R^n \to\R^m$ is a linear transformation and $\mathbf{b}\in\R^m$.
+</MathBox>
+
+The affine function $\ell$ gives the linear approximation of $f$ at $\mathbf{a}$ such that $f(\mathbf{a}) = \ell(\mathbf{a}) = T(\mathbf{a}) + b$. Thus, $b = f(\mathbf{a}) - T(\mathbf{a})$ yielding
 
 $$
 \begin{align*}
@@ -625,7 +649,7 @@ $$
   \lim_{\mathbf{x}\to\mathbf{a}} \frac{f(\mathbf{x}) - f(\mathbf{a}) - T(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
 $$
 
-In a neighbourhood of $\mathbf{a}$, $\mathbf{x}$ takes the form $\mathbf{x} = \mathbf{a} + h\sum_{i=1}^n \mathbf{e}_i$. Suppose that $\mathbf{x}$ approaches $\mathbf{a}$ in the $x_i$-direction, i.e. $\mathbf{x} = \mathbf{a} + h\mathbf{e}_i$. Then $\mathbf{x} - \mathbf{a} = h\mathbf{e}_1$ and $\lVert \mathbf{x} - \mathbf{a} \rVert = |h|$. For the limit to hold true then we require in both limits $h\downarrow 0$ and $h\uparrow 0$ that
+In a neighbourhood of $\mathbf{a}$, $\mathbf{x}$ takes the form $\mathbf{x} = \mathbf{a} + h\sum_{i=1}^n \mathbf{e}_i$ for $h\in\R$. Suppose that $\mathbf{x}$ approaches $\mathbf{a}$ in the $x_i$-direction, i.e. $\mathbf{x} = \mathbf{a} + h\mathbf{e}_i$. Then $\mathbf{x} - \mathbf{a} = h\mathbf{e}_1$ and $\lVert \mathbf{x} - \mathbf{a} \rVert = |h|$. For the difference quotient to hold true then we require in both limits $h\downarrow 0$ and $h\uparrow 0$ that
 
 $$
 \begin{align*}
@@ -645,13 +669,17 @@ $$
 
 This limit of the difference quotient is analogous to the one-variable derivative where only $x_i$ varies while $x_j = a_j$ for $j\neq i$ are held fixed. This limit is called the partial derivative of $f$ at $\mathbf{a}$ with respect to $x_i$, denoted $\frac{\partial}{\partial x_i}(\mathbf{a})$.
 
-The linear transformation $T$ takes the form of $1\times n$ matrix
+The linear transformation $T:\R^n \to\R$ takes the form of a $1\times n$ matrix
 
 $$
-  \mathrm{D}f(\mathbf{a}) = \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x_n}(\mathbf{a}) \end{bmatrix}
+  J_f(\mathbf{a}) = \mathrm{D}f(\mathbf{a}) = \begin{bmatrix} \frac{\partial f}{\partial x^1}(\mathbf{a}) & \cdots & \frac{\partial f}{\partial x_n}(\mathbf{a}) \end{bmatrix}
 $$
 
-called the *Jacobian matrix* of $f$ at $\mathbf{a}$.
+called the *Jacobian matrix* of $f$ at $\mathbf{a}$. Taking the transpose of the Jacobian matrix gives a vector ($n\times 1$ matrix) called the *gradient* of $f$ at $\mathbf{a}$, denoted
+
+$$
+  \nabla f(\mathbf{a}) = \left( \frac{\partial f}{\partial x_i}(\mathbf{a}) \right)_{i=1}^n \in\R^n
+$$
 
 <MathBox title='Partial derivative' boxType='definition'>
 Let $f:U\to\R$ be a real-valued function defined on an open set $U\in\R^n$ and consider a point $\mathbf{a}\in U$. The *partial derivative* of $f$ at $\mathbf{a}$ with respect to $x_i$ is defined by
@@ -664,6 +692,16 @@ $$
 $$
 </MathBox>
 
+<MathBox title='Differentiability' boxType='definition'>
+A function $f:U\subseteq\R^n \to\R$ is *differentiable* at a point $\mathbf{a}\in U$ if
+
+$$
+  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert}
+$$
+
+If this limit exists, the matrix $\mathrm{D}f(\mathbf{a})$ is called the *derivative* of $f$ at $\mathbf{a}$. It is also known as the *Jacobian matrix*. The affine function $\ell(\mathbf{x}) = f(\mathbf{a}) + \mathrm{D}f(\mathbf{a})(\mathbf{x}-\mathbf{a})$ is called the *first-order affine transformation* of $f$ at $\mathbf{a}$.
+</MathBox>
+
 ### Partial derivative (basis vector)
 
 Partial derivatives represent basis vectors
@@ -671,7 +709,6 @@ Partial derivatives represent basis vectors
 $$
   \mathbf{e}_i \equiv \frac{\partial}{\partial \mathbf{x}^i} \equiv \boldsymbol{\partial}_i
 $$
-
 
 A basis of partial derivatives can be transformed to a new basis $\tilde{\mathbf{e}}_i \equiv \frac{\partial}{\partial \tilde{\mathbf{x}}^i}$ by the chain rule
 
