@@ -4,6 +4,84 @@ subject: 'Mathematics'
 showToc: true
 ---
 
+# Euclidean topology
+
+## Open sets
+
+<MathBox title='Open ball' boxType='definition'>
+Consider a point $\mathbf{a}\in\R^n$ and assume $r > 0$. The open ball centered at $\mathbf{a}$ and with radius $r$ is defined as
+$$
+  B_r(\mathbf{a}) = \Set{ \mathbf{x}\in\R | \lVert \mathbf{x} - \mathbf{a} \rVert < r }
+$$
+</MathBox>
+
+Consider a subset $U\subseteq\R^n$. The subset is called 
+- open if, given any point $\mathbf{a}\in U$, there exists a positive real number $r$ such that $B_r(\mathbf{a})\subset U$
+- closed if its complement $U^c = \R^n \backslash U = \Set{\mathbf{x}\in\R^n | \mathbf{x}\notin U}$ is open.
+
+<MathBox title='Interior, exterior and boundary point' boxType='definition'>
+Let $U$ be a subset of $\R^n$. A point $\mathbf{p}\in U$ is called:
+1. an *interior point* if there is open ball $B_r(\mathbf{p})$ that is a subset of $U$, i.e. $B_r(\mathbf{p})\subseteq U$. The set of all interior points of $U$ is denoted $\mathrm{int}(U)$.
+2. an *exterior point* if there is an open ball $B_r(\mathbf{p})$ that is a subset of the complement of $U$, i.e. $B_r(\mathbf{p}) \subseteq \R^n \setminus U$. The set of all exterior points of $U$ is denoted $\mathrm{ext}(U)$.
+3. a *boundary point* if every $B_r(\mathbf{p})$ is both a subset of $U$ and its complement, i.e. $B_r(\mathbf{p}) \cap U \neq\emptyset$ and $B_r(\mathbf{p}) \cap U \neq\emptyset$. The set of all boundary points of $U$ is denoted $\partial U$.
+</MathBox>
+
+## Sequences
+
+<MathBox title='Convergence' boxType='definition'>
+A sequence $(\mathbf{x}_n)_{n\in\N}$ in $\R^m$ converges to a point $\mathbf{a}\in\R^m$ if for every $\varepsilon > 0$, there is $N\in\N$ such that $|\mathbf{x}_n - \mathbf{a}| < \varepsilon$ for all $n \geq N$. In this case we write
+
+$$
+  \lim_{n\to\infty} \mathbf{x}_n = \mathbf{a}
+$$
+</MathBox>
+
+<MathBox title='Properties of convergence' boxType='proposition'>
+Suppose that $(\mathbf{x}_n)_{n\in\N}$ and $(\mathbf{y}_n)_{n\in\N}$ are sequences in $\R^m with $\lim_{n\to\infty} \mathbf{x}_n = \mathbf{x}$ and $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$. Then the following sequences converge
+1. $(c\mathbf{x}_n)_{n\in\N}$ for every $c\in\R$ with $\lim_{n\to\infty} (c\mathbf{x}_n) = c\mathbf{x}$
+2. $(\mathbf{x}_n + \mathbf{y}_n)$ with $\lim_{n\to\infty} (\mathbf{x}_n + \mathbf{y}_n) = \mathbf{x} + \mathbf{y}$
+3. $(\mathbf{x}_n - \mathbf{y}_n)$ with $\lim_{n\to\infty} (\mathbf{x}_n - \mathbf{y}_n) = \mathbf{x} - \mathbf{y}$
+4. $(\mathbf{x}_n \cdot \mathbf{y}_n)$ with $\lim_{n\to\infty} (\mathbf{x}_n \cdot \mathbf{y}_n) = \mathbf{x} \cdot \mathbf{y}$
+
+<details>
+<summary>Proof</summary>
+
+**(2):** Since $\lim_{n\to\infty} \mathbf{x}_n = \mathbf{x}$, there is $N_1 \in\N$ such that $\| \mathbf{x}_n - \mathbf{x} \| < \frac{\epsilon}{2}$ for all $n\geq N_1$. Similary, since $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$, there is $N_2 \in\N$ such that $\| \mathbf{y}_n - \mathbf{y} \| < \frac{\epsilon}{2}$ for all $n\geq N_1$. For $N = \max\Set{N_1, N_2}$, we then get using the triangle inequality
+
+$$
+\begin{align*}
+  \|(\mathbf{x}_n + \mathbf{y}_n) - (\mathbf{x} + \mathbf{y}) \| =& \|(\mathbf{x}_n - \mathbf{x}) + (\mathbf{y}_n - \mathbf{y}) \| \\
+  \stackrel{\triangle}{\leq}& \|\mathbf{x}_n - \mathbf{x}\| + \|\mathbf{y}_n - \mathbf{y}_n| \\
+  < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon
+\end{align*}
+$$
+
+**(4):** Using the triangle and Cauchy-Schwarz inequalities we get
+
+$$
+\begin{align*}
+  \|\mathbf{x}_n \cdot \mathbf{y}_n - \mathbf{x}\cdot\mathbf{y}\| =& \|\mathbf{x}_n \cdot \mathbf{y}_n - \mathbf{x}\cdot\\mathbf{y}_n + \mathbf{x}\cdot\mathbf{y}_n - \mathbf{x}\cdot\mathbf{y} \|
+  \stackrel{\triangle}{\leq}& \|\mathbf{x}_n \cdot \mathbf{y}_n - \mathbf{x}\cdot\mathbf{y}_n\| + \|\mathbf{x}\cdot\mathbf{y}_n - \mathbf{x}\cdot\mathbf{y} \| \\
+  \leq& \| \mathbf{x}_n - \mathbf{x} \| \cdot \| \mathbf{y}_n \| + \| \mathbf{x} \| \cdot \| \mathbf{y}_n - \mathbf{y} \|
+\end{align*}
+$$
+
+Assume that $\| \mathbf{x} \| \neq 0$. Since $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$ there is $N_1\in\N$ such that $\| \mathbf{y}_n - \mathbf{y} \|\frac{\varepsilon}{2 \|\mathbf{x}\|}$ for all $n\geq N_1$.
+
+Since $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$, there is $N_2 \in\N$ such that $\|\mathbf{y}_n - \mathbf{y}\| \leq 1$ when $n \geq N_2$. Thus
+
+$$
+\begin{align*}
+  \| \mathbf{y}_n \| =& \| \mathbf{y} + (\mathbf{y}_n - \mathbf{y}) \| \\
+  \stackrel{\triangle}{\leq}& \| \mathbf{y} \| + \| \mathbf{y}_n - \mathbf{y} \| \\
+  \leq& \| \mathbf{y} + 1 \|
+
+\end{align*}
+$$
+</details>
+</MathBox>
+
+
 # Paths and curves
 
 <MathBox title='Path and curve' boxType='definition'>
@@ -292,19 +370,6 @@ $$
 <MathBox title='Level set (contour)' boxType='definition'>
 Let $f:A\subset \R^n \to\R$ be a scalar function. For a given $c \in f[A] \subseteq\R$, its corresponding level set is the set of all points in the domain at which $f$ has a value of $c$, i.e. $\Set{\mathbf{x}\in A : f(\mathbf{x}) = c }$. For functions of two variables, level sets are also called level curves and, for functions of three variables, level surfaces.
 </MathBox>
-
-## Open sets
-
-<MathBox title='Open ball' boxType='definition'>
-Consider a point $\mathbf{a}\in\R^n$ and assume $r > 0$. The open ball centered at $\mathbf{a}$ and with radius $r$ is defined as
-$$
-  B_r(\mathbf{a}) = \Set{ \mathbf{x}\in\R | \lVert \mathbf{x} - \mathbf{a} \rVert < r }
-$$
-</MathBox>
-
-Consider a subset $U\subseteq\R^n$. The subset is called 
-- open if, given any point $\mathbf{a}\in U$, there exists a positive real number $r$ such that $B_r(\mathbf{a})\subset U$
-- closed if its complement $U^c = \R^n \backslash U = \Set{\mathbf{x}\in\R^n | \mathbf{x}\notin U}$ is open.
 
 ## Continuity
 
@@ -704,6 +769,32 @@ $$
 <details>
 <summary>Proof</summary>
 
+**Proof by componentwise chain rule**<br/>
+Assume that $\alpha$ takes the form
+
+$$
+  \alpha(t) = (x_i(t))_{i=1}^n
+$$
+
+Applying the ordinary chain rule componentwise on the expression
+  
+$$
+  (f\circ t)(t) = f(\alpha(t)) = f(x_1(t),\dots,x_n(t))
+$$
+
+we get
+
+$$
+\begin{align*}
+  (f\circ t)'(t) =& \frac{\mathrm{d}}{\mathbf{d}t} f(\alpha(t)) = \frac{\mathrm{d}}{\mathbf{d}t} f(x_i(t))_{i=1}^n \\
+  =& \sum_{i=1}^n \frac{\partial f}{\partial x_i}(\alpha(t))\frac{\partial x_i (t)}{\partial t} \\
+  =& \sum_{i=1}^n \frac{\partial f}{\partial x_i}(\alpha(t))x'_i(t) \\
+  =& \left(\frac{\partial f}{\partial x_i}(\alpha(t))\right)_{i=1}^n \cdot (x'_i(t))_{i=1}^n \\
+  =& \nabla f(\alpha(t))\cdot \alpha'(t)
+\end{align*}
+$$
+
+**Proof by differential limit**<br/>
 Define a function $Q:U\subseteq\R^n \to\R$ by
 
 $$
