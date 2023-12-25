@@ -37,7 +37,7 @@ $$
 </MathBox>
 
 <MathBox title='Properties of convergence' boxType='proposition'>
-Suppose that $(\mathbf{x}_n)_{n\in\N}$ and $(\mathbf{y}_n)_{n\in\N}$ are sequences in $\R^m with $\lim_{n\to\infty} \mathbf{x}_n = \mathbf{x}$ and $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$. Then the following sequences converge
+Suppose that $(\mathbf{x}_n)_{n\in\N}$ and $(\mathbf{y}_n)_{n\in\N}$ are sequences in $\R^m$ with $\lim_{n\to\infty} \mathbf{x}_n = \mathbf{x}$ and $\lim_{n\to\infty} \mathbf{y}_n = \mathbf{y}$. Then the following sequences converge
 1. $(c\mathbf{x}_n)_{n\in\N}$ for every $c\in\R$ with $\lim_{n\to\infty} (c\mathbf{x}_n) = c\mathbf{x}$
 2. $(\mathbf{x}_n + \mathbf{y}_n)$ with $\lim_{n\to\infty} (\mathbf{x}_n + \mathbf{y}_n) = \mathbf{x} + \mathbf{y}$
 3. $(\mathbf{x}_n - \mathbf{y}_n)$ with $\lim_{n\to\infty} (\mathbf{x}_n - \mathbf{y}_n) = \mathbf{x} - \mathbf{y}$
@@ -795,6 +795,19 @@ $$
 $$
 
 **Proof by differential limit**<br/>
+
+Since $f: U\to\R$ is differentiable at $\mathbf{a}$, then
+
+$$
+  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
+$$
+
+Since $\alpha:I\subseteq\R\to U$ is differentiable at $t_0$, then
+
+$$
+  \alpha'(t_0) = \lim_{t\to t_0} \frac{\| \alpha(t) - \alpha(t_0) \|}{t - t_0} =  \lim_{t\to t_0} \frac{\| \mathbf{x} - \mathbf{a} \|}{t - t_0}
+$$
+
 Define a function $Q:U\subseteq\R^n \to\R$ by
 
 $$
@@ -804,41 +817,26 @@ $$
   \end{cases}
 $$
 
-Since $f: U\to\R$ is differentiable at $\mathbf{a} = \alpha(t_0)$, then
-
-$$
-  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
-$$
-
-Note that $f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a}) = \lVert \mathbf{x} - \mathbf{a}\rVert Q(\mathbf{x})$. By the definition of limits, it follows that
+Since $\alpha$ is differentiable at $t_0$ it is also continuous at this point with $\alpha(t_0) = \mathbf{a}$. Similarly, since $Q$ is differentiable at $\mathbf{a}$ is also continuous at this point. Thus, the composition $Q \circ\alpha$ is also continuous at $t_0$ such that the following limit exists
 
 $$
 \begin{align*}
-  0 =& \lim_{\mathbf{x}\to\mathbf{a}} \lVert \mathbf{x} - \mathbf{a}\rVert Q(\mathbf{x}) \\
-  =& \lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})
+  0 =& \lim_{\mathbf{x}\to\mathbf{a}} |Q(\mathbf{x})| = \lim_{t \to t_0} |Q(\alpha(t))| \\
+  =& \lim_{t \to t_0} \frac{|f(\alpha(t)) - f(\alpha(t_0)) - \nabla f(\alpha(t_0))\cdot(\alpha(t) - \alpha(t_0))|}{\lVert \alpha(t) - \alpha(t_0) \rVert}
 \end{align*}
 $$
 
-If $\alpha:I\subseteq\R\to U$ is differentiable at $t_0$, then its derivative at this point is
+Multiplying the limit with $\alpha'(t_0)$ gives
 
 $$
-  \alpha'(t_0) = \lim_{t\to t_0} \frac{\alpha(t) - \alpha(t_0)}{t - t_0}
+  0 = \lim_{t \to t_0} \left|\frac{f(\alpha(t)) - f(\alpha(t_0)) - \nabla f(\alpha(t_0))\cdot (\alpha(t) - \alpha(t_0))}{t - t_0}\right|
 $$
 
-It follows that $\alpha$ is continuous at $t_0$, and since $\mathbf{a} = \alpha(t_0)$, the composition $t \mapsto \lVert \alpha(t) - \alpha(t_0) \rVert \left|\frac{Q(\alpha(t))}{t - t_0} \right|$ is continuous at $t_0$ such that
-
-$$
-\begin{align*}
-  0 =& \lim_{\alpha(t) \to \alpha(t_0)} \left|\frac{f(\alpha(t)) - f(\alpha(t_0)) - \nabla f(\alpha(t_0))\cdot (\alpha(t) - \alpha(t_0))}{t - t_0}\right| \\
-  =& \lim_{t \to t_0} \left|\frac{f(\alpha(t)) - f(\alpha(t_0)) - \nabla f(\alpha(t_0))\cdot (\alpha(t) - \alpha(t_0))}{t - t_0}\right|
-\end{align*}
-$$
-
-The limit holds if the numerator in the absolute value is zero, hence
+which holds if and only if
 
 $$
 \begin{align*}
-  \lim_{t \to t_0} \frac{f(\alpha(t)) - f(\alpha(t_0))}{t - t_0} =& \lim_{t \to t_0}\nabla f(\alpha(t_0)) \frac{\alpha(t) - \alpha(t_0)}{t - t_0} \\
+  \lim_{t \to t_0} \frac{f(\alpha(t)) - f(\alpha(t_0))}{t - t_0} =& \lim_{t \to t_0}\nabla f(\alpha(t_0)) \cdot \frac{\alpha(t) - \alpha(t_0)}{t - t_0} \\
   (f\circ \alpha)' (t_0) =& \nabla f(\alpha(t_0))\cdot\alpha'(t_0)
 \end{align*}
 $$
