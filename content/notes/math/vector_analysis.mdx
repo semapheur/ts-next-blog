@@ -4,189 +4,6 @@ subject: 'Mathematics'
 showToc: true
 ---
 
-# Curvilinear coordinates
-
-| System | $q_1$ | $q_2$ | $q_3$ | $h_1$ | $h_2$ | $h_3$ |
-|---|:-:|:-:|:-:|:-:|:-:|:-:|
-| Cartesian | $x$ | $y$ | $z$ | $1$ | $1$ | $1$ | 
-| Spherical | $r$ | $\theta$ | $\phi$ | $1$ | $r$ | $r\sin\theta$ |
-| Cylindrical | $s$ | $\phi$ | $z$ | $1$ | $s$ | $1$ |
-
-Consider the 3-dimensional Euclidean space. In Cartesian coordinates the position of a point $P$ is given by
-
-$$
-  \mathbf{r} = x_1 \mathbf{e}_1 + x_2 \mathbf{e}_2 + x_3 \mathbf{e}_3
-$$
-
-where $\mathbf{e}_i := \frac{\partial\mathbf{r}}{\partial x_i}$ are the standard basis vectors. The point $P$ can also be defined by curviliner coordinates $q_i$ that are related to the Cartesian coordinates by the functions
-
-$$
-\begin{split}
-  x_1 = f_1(q_1, q_2, q_3) 
-\end{split}\quad
-\begin{split}
-  x_2 = f_2(q_1, q_2, q_3) 
-\end{split}\quad
-\begin{split}
-    x_3 = f_3(q_1, q_2, q_3) 
-\end{split}
-$$
-
-Assuming that the curvilinear coordinate system is orthogonal, its basis vectors $\mathbf{h}_i := \frac{\partial\mathbf{r}}{\partial q_i}$ are mutually perpendicular such that
-
-$$
-  \mathbf{h_i}\cdot\mathbf{h_j} = \delta_{ij} = \begin{cases}
-    1 \quad i = j \\ 
-    0 \quad i \neq j
-  \end{cases}
-$$
-
-The norm of the basis vectors are given by $\left| \mathbf{h}_i \right| = \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}$. An orthonormal basis $\Set{\mathbf{b}_i }_{i=1}^3$ can thus be formed by setting
-
-$$
-  {\mathbf{b}}_i = \frac{\mathbf{h_i}}{h_i} \quad h_j := \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}
-$$
-
-The total differential change in $\mathbf{r}$ is then given by 
-
-$$
-  \mathrm{d}\mathbf{r} = \sum_{i=1}^3 \left(\frac{\partial\mathbf{r}}{\partial q_i}\right)\mathrm{d}q_i = \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i
-$$
-
-From the total differential change we can form the differential volume element by
-
-$$
-  \mathrm{d}V = \prod_{i=1}^3 \left(\mathrm{d}\mathbf{r} \right)_i = h_1 h_2 h_3 \;\mathrm{d}q_1\;\mathrm{d}q_2\;\mathrm{d}q_3
-$$
-
-and differential surface elements by
-
-$$
-  \mathrm{d}\mathbf{a}_i = (\mathrm{d}\mathbf{r})_j \cdot (\mathrm{d}\mathbf{r})_k \mathbf{b}_i = h_j h_k \;\mathrm{d}q_j\;\mathrm{d}q_k \mathbf{b}_i
-$$
-
-## Gradient
-
-Consider a scalar function $f(q_i) : \R^3 \to\R$. The total derivative of $f$ is given by
-
-$$
-  \mathrm{d}f := \nabla f \cdot\mathrm{d}\mathbf{r} = \sum_{i=1}^3 \frac{\partial f}{\partial q_i}\mathrm{d}q_i
-$$
-
-Evaluating the inner product $\nabla f\cdot \mathrm{d}\mathbf{r}$ we get
-
-$$
-  \mathrm{d}f = \nabla f \cdot\mathrm{d}\mathbf{r} = \nabla f \cdot \left( \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i \right) = \sum_{i=1}^3 h_i \left( \nabla f \cdot\mathbf{b}_i \right)\mathrm{d}q_i
-$$
-
-Equating the terms of $\mathrm{d}f$ we see that
-
-$$
-  \nabla f \cdot \mathbf{b}_i = \frac{1}{h_i}\frac{\partial f}{\partial q_i}
-$$
-
-and hence the gradient of $f$ wrt. to the curvilinear coordinates is given by
-
-$$
-  \nabla f = \sum_{i=1}^3 \left(\nabla f \cdot \mathbf{b}_i \right)\mathbf{b}_i = \sum_{i=1}^3 \frac{1}{h_i}\frac{\partial f}{\partial q_i}\mathbf{b}_i
-$$
-
-## Divergence
-
-Suppose $\mathbf{A}: \R^3 \to\R^3$ is a vector field with components $\mathbf{A} = \sum_{i=1}^3 A_i\mathbf{b}_i$. The divergence of $\mathbf{A}$ can be derived by writing out
-
-$$
-\begin{align*}
-  \nabla\cdot\mathbf{A} &= \nabla\cdot\left( A_1 \mathbf{b}_1 + A_2 \mathbf{b}_2 + A_3 \mathbf{b}_3 \right) \\
-  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} + h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} + h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
-  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} \right) + \nabla\cdot\left( h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} \right) + \nabla\cdot\left( h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right)
-\end{align*}
-$$
-
-Setting $f:= h_j h_k A_i$ and $\mathbf{v}:= \frac{\mathbf{b}_i}{h_j h_k}$, each divergence term takes the form $\nabla\cdot(f\mathbf{v})$ allowing us to apply the identity
-
-$$
-  \nabla\cdot(f\mathbf{v}) = \mathbf{v}\cdot\nabla f + f\nabla\cdot\mathbf{v}
-$$
-
-It can be further shown that $\nabla\cdot\mathbf{v} = \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) = 0$, by recalling that $\nabla q_i = \frac{\mathbf{b}_i}{h_i}$ and $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$ where $\varepsilon_{ijk}$ is the Levi-Civita symbol, so that
-
-$$
-  \nabla q_j \times\nabla q_k = \frac{\mathbf{b}_j \times\mathbf{b}_k}{h_j h_k} = \frac{\mathbf{b}_i}{h_j h_k}
-$$
-
-Taking the divergence of the left hand side, we may use the identity
-
-$$
-  \nabla\cdot(\mathbf{u}\times\mathbf{v}) = \mathbf{v}\cdot(\nabla\times\mathbf{u}) - \mathbf{u}\cdot(\nabla\times\mathbf{v})
-$$
-
-with $\mathbf{u}:= \nabla q_j$ and $\mathbf{v}:= q_k$. However, because gradients are curl free, i.e. $\nabla\times(\nabla f) = \mathbf{0}$ we conclude that
-
-$$
-\begin{align*}
-  \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) &= \nabla\cdot\left(\nabla q_j \times\nabla q_k\right) \\
-  &= \nabla q_k \left(\nabla \times \nabla q_j \right) - \nabla q_j \cdot\left( \nabla\times \nabla q_k \right) \\
-  &= 0
-\end{align*}
-$$
-
-It therefore follows that
-
-$$
-  \nabla\left( h_j h_k A_i \frac{\mathbf{b}_i}{h_j h_k} \right) = \frac{\mathbf{b}_i}{h_j h_k}\cdot \nabla(h_j h_k A_i) = \frac{1}{h_i h_j h_k}\frac{\partial}{\partial q_i}\left( h_j h_k A_i \right)
-$$
-
-where we have used that $\mathbf{q}_i \cdot \nabla f = \frac{1}{h_i}\frac{\partial f}{\partial q_i}$. In conclusion, the divergence of $\mathbf{A}$ wrt. curvilinear coordinates is given by
-
-$$
-  \nabla\cdot\mathbf{A} := \frac{1}{h_1 h_2 h_3}\left[\frac{\partial}{\partial q_1}\left(h_2 h_3 A_1\right) + \frac{\partial}{\partial q_2}\left(h_1 h_3 A_2\right) + \frac{\partial}{\partial q_3}\left(h_1 h_2 A_3\right)\right]
-$$
-
-## Curl
-
-The curl of $\mathbf{A}$ can be derived by writing out
-
-$$
-\begin{align*}
-  \nabla\times\mathbf{A} &= \nabla\times\left(\sum_{i=1}^3 A_i \mathbf{b}_i \right) \\
-  &= \nabla\times\left(\sum_{i=1}^3 h_i A_i \frac{\mathbf{b}_i}{h_i} \right) \\
-  &= \sum_{i=1}^3 \nabla\times\left(h_i A_i \frac{\mathbf{b}_i}{h_i} \right)
-\end{align*}
-$$
-
-Setting $f:= h_i A_i$ and $\mathbf{v} = \frac{\mathbf{b}_i}{h_i}$, each curl term takes the form $\nabla\times (f\mathbf{v})$, allowing us to apply the identity
-
-$$
-  \nabla\times(f\mathbf{v}) = -\mathbf{v}\times\nabla f + f\nabla\times\mathbf{v}
-$$
-
-Since $\nabla\times\left(\frac{\mathbf{b}_i}{h_i}\right) = \nabla\times\left(\nabla q_i \right) = 0$, we are left with
-
-$$
-  \nabla\times\mathbf{A} = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\nabla\left(h_i A_i\right) = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\left[\sum_{j=1}^3 \frac{1}{h_j}\frac{\partial}{\partial q_j}\left( h_i A_i \right)\mathbf{b}_j \right] 
-$$
-
-Applyting the relation $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$, we conclude that
-
-$$
-  \nabla\times\mathbf{A} = \frac{\mathbf{q}_1}{h_2 h_3}\left[\frac{\partial}{\partial q_2}\left(h_3 A_3 \right) - \frac{\partial}{\partial q_3}\left(h_2 A_2 \right)\right] + \frac{\mathbf{q}_2}{h_1 h_3}\left[\frac{\partial}{\partial q_3}\left(h_1 A_1 \right) - \frac{\partial}{\partial q_1}\left(h_3 A_3 \right)\right] + \frac{\mathbf{q}_3}{h_1 h_2}\left[\frac{\partial}{\partial q_1}\left(h_2 A_2 \right) - \frac{\partial}{\partial q_2}\left(h_1 A_1 \right)\right]
-$$
-
-## Laplacian
-
-The Laplacian of a scalar function $f:\R^3 \to\R$ is defined as the divergence of $\nabla f$. Using the results for the gradient and dirvergence in curvilinear coordinates, we find that
-
-$$
-\begin{align*}
-  \nabla^2 f &:= \nabla\cdot\left(\nabla f \right) = \nabla\cdot\left(\sum_{i=1}^3 \frac{1}{h_1}\frac{\partial f}{\partial q_i}\mathbf{b}_i \right) \\
-  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3} + \frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3} + \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
-  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3}\right)  + \nabla\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3}\right) + \nabla\cdot\left( \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
-  &= \frac{\mathbf{b_1}}{h_2 h3}\cdot\left(\frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\mathbf{b_2}}{h_1 h3}\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \right) + \frac{\mathbf{b_3}}{h_1 h2}\cdot\left(\frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \right) \\
-  &= \frac{1}{h_1 h_2 h_3}\left[ \frac{\partial}{\partial q_1}\left( \frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\partial}{\partial q_2}\left( \frac{h_1 h_3}{h_2}\frac{\partial f}{\partial q_2} \right) + \frac{\partial}{\partial q_3}\left( \frac{h_1 h_2}{h_3}\frac{\partial f}{\partial q_3} \right) \right]
-\end{align*}
-$$
-
 # Paths and curves
 
 <MathBox title='Path and curve' boxType='definition'>
@@ -590,7 +407,7 @@ $$
 
 is continuous at $\mathbf{a}$, in which case we write $\lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) = L$.
 
-Alternatively, using the definition of continuity to $\mathbf{f}$ then $\lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) = L$ if for any $\epsilon > 0$, there exists a $\delta > 0$ such that $|f\mathbf{x} - L| < \epsilon$ whenever $\lVert\mathbf{x} - \mathbf{a}\rVert$, except possibly when $\mathbf{x} = \mathbf{a}$.
+Alternatively, using the definition of continuity to $f$ then $\lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) = L$ if for any $\epsilon > 0$, there exists a $\delta > 0$ such that $|f(\mathbf{x}) - L| < \epsilon$ whenever $\lVert\mathbf{x} - \mathbf{a}\rVert$, except possibly when $\mathbf{x} = \mathbf{a}$.
 </MathBox>
 
 <MathBox title='Properties of limits' boxType='proposition'>
@@ -701,39 +518,77 @@ $$
 If this limit exists, the matrix $\mathrm{D}f(\mathbf{a})$ is called the *derivative* of $f$ at $\mathbf{a}$. It is also known as the *Jacobian matrix*. The affine function $\ell(\mathbf{x}) = f(\mathbf{a}) + \mathrm{D}f(\mathbf{a})(\mathbf{x}-\mathbf{a})$ is called the *first-order affine transformation* of $f$ at $\mathbf{a}$.
 </MathBox>
 
-### Partial derivative (basis vector)
+<MathBox title='' boxType='proposition'>
+If $f:\R^n \to\R$ is differentiable at $\mathbf{a}\in\R^n$, then $f$ is continuous at $\mathbf{a}$.
 
-Partial derivatives represent basis vectors
+<details>
+<summary>Proof</summary>
 
-$$
-  \mathbf{e}_i \equiv \frac{\partial}{\partial \mathbf{x}^i} \equiv \boldsymbol{\partial}_i
-$$
-
-A basis of partial derivatives can be transformed to a new basis $\tilde{\mathbf{e}}_i \equiv \frac{\partial}{\partial \tilde{\mathbf{x}}^i}$ by the chain rule
+Define a function $Q:\R^n \to\R$ by
 
 $$
-  \frac{\partial}{\partial \tilde{\mathbf{x}}^i} = \frac{\partial x^j}{\partial \tilde{x}^i} \frac{\partial}{\partial \mathbf{x}^j} = J_i^j \frac{\partial}{\partial \mathbf{x}^j}
+  Q(\mathbf{x}) = \begin{cases}
+    \frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a} \rVert}, \quad& \mathbf{x}\neq\mathbf{a} \\
+    0 \quad& \mathbf{x} = \mathbf{a} 
+  \end{cases}
 $$
 
-where $J$ is the Jacobian matrix of the coordinate transform.
-
-Tangent vectors of a curve can be expressed as linear combination of partial derivatives
+If $f$ is differentiable at $\mathbf{a}$, then
 
 $$
-  \frac{\mathrm{d}}{\mathrm{d} \lambda} = \frac{\mathrm{d}x^i}{\mathrm{d} \lambda} \frac{\partial }{\partial \mathbf{x}^i} 
+  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
 $$
 
-Tangent vectors can be transformed to a new basis. The tangent vector derivative components transform contravariantly
+Thus
+
+$$
+\begin{gather*}
+  \lim_{\mathbf{x}\to\mathbf{a}} |Q(\mathbf{x}) - Q(\mathbf{a})| = \lim_{\mathbf{x}\to\mathbf{a}} |Q(\mathbf{x})| = 0 \\
+  \iff \lim_{\mathbf{x}\to\mathbf{a}} Q(\mathbf{x}) = Q(\mathbf{a})
+\end{gather*}
+$$
+
+showing that $Q$ is continuous at $\mathbf{a}$. Using the triangle and Cauchy-Schwarz inequalities gives
 
 $$
 \begin{align*}
-  \frac{\mathrm{d}}{\mathrm{d} \lambda} = \frac{\mathrm{d}x^i}{\mathrm{d} \lambda} \frac{\partial }{\partial \mathbf{x}^i} &= \frac{\mathrm{d}x^i}{\mathrm{d} \lambda} \left( \frac{\partial \tilde{x}^j}{\partial x^i} \frac{\partial}{\partial \tilde{\mathbf{x}}^j} \right) \\
-  &= \left( \frac{\mathrm{d}x^i}{\mathrm{d} \lambda} \frac{\partial \tilde{x}^j}{\partial x^i} \right) \frac{\partial}{\partial \tilde{\mathbf{x}}^j} \\
-  &= \frac{\mathrm{d} \tilde{x}^i}{\mathrm{d} \lambda} \frac{\partial}{\partial \tilde{\mathbf{x}}^i}
+  |f(\mathbf{x}) - f(\mathbf{a})| =& |Q(\mathbf{x})\lVert \mathbf{x} - \mathbf{a} \rVert + \nabla f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a})| \\
+  \stackrel{\triangle}{\leq}& |Q(\mathbf{x})\lVert \mathbf{x} - \mathbf{a} \rVert| + |\nabla f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a})| \\
+  \leq& |Q(\mathbf{x})|\cdot\lVert \mathbf{x} - \mathbf{a} \rVert + \lVert \nabla f(\mathbf{a})\rVert \cdot \lVert\mathbf{x} - \mathbf{a}\rVert
 \end{align*}
 $$
 
-## Gradient (vector field)
+Taking the limit $\mathbf{x}\to\mathbf{a}$ gives
+
+$$
+\begin{align*}
+  \lim_{\mathbf{x}\to\mathbf{a}} |f(\mathbf{x}) - f(\mathbf{a})| \leq&
+  \lim_{\mathbf{x}\to\mathbf{a}}|Q(\mathbf{x})|\cdot\lVert \mathbf{x} - \mathbf{a} \rVert| \\
+  &+ \lim_{\mathbf{x}\to\mathbf{a}} \lVert \nabla f(\mathbf{a})\rVert \cdot \lVert(\mathbf{x} - \mathbf{a})\rVert \\
+  =& 0
+\end{align*}
+$$
+
+Hence $\lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) = f(\mathbf{a})$, showing that $f$ is continuous at $\mathbf{a}$.
+</details>
+</MathBox>
+
+<MathBox title='Equality of mixed partial' boxType='definition'>
+If $C^2 \ni f: U\subseteq\R^n \to\R$ is a scalar function, whose second-order partial derivatives are continuous on $U$, then all its mixed partial derivatives are equal, i.e.
+
+$$
+  \frac{\partial^2}{\partial x_i \partial x_j} = \frac{\partial^2}{\partial x_i \partial x_j}
+$$
+
+at all points poinst of $U$ and for all $i,j=1,\dots,n$.
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+### Gradient
 
 If a scalar function $f:U\subseteq\R^n \to\R$ is differentiable at $\mathbf{a}\in U$, its total derivative at this point is the linear transformation $\mathrm{D}f(\mathbf{a}):\R^n \to\R$ in the form of the $1\times n$ Jacobian matrix
 
@@ -760,69 +615,53 @@ $$
   \nabla f(\mathbf{a}) = \mathrm{grad}(f(\mathbf{a})) := \begin{bmatrix} \frac{\partial f}{\partial x_i}(\mathbf{a}) \\ \vdots \\ \frac{\partial f}{\partial x^n}(\mathbf{a}) \end{bmatrix}
 $$
 
-which is the transpose of the total derivative (Jacobian) $\mathrm{D}f(\mathbf{a})$.
+which is the transpose of the total derivative (Jacobian) $\mathrm{D}f(\mathbf{a})$. Since $\mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a}) = \nabla f(\mathbf{a})\cdot (\mathbf{x}-\mathbf{a})$, the differentiability condition can be rewritten in terms of the gradient as
+
+$$
+  \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} = 0
+$$
 </MathBox>
 
 <MathBox title='Properties of the del operator' boxType='proposition'>
 Let $f,g:\R^n \to\R$ be scalar functions and $\alpha\in\R$ a scalar. The del operator $\nabla$ has the following properties. 
 
-1. Linearity
-$$
-\begin{gather*}
-  \nabla(f + g) = \nabla f + \nabla g \\
-  \nabla (\alpha f) = \alpha \nabla f
-\end{gather*}
-$$
+1. $\nabla(\alpha f + \beta g) = \alpha\nabla f + \beta\nabla g$ **(linearity)**
 2. $\nabla(fg) = g\nabla f + f\nabla g$ **(product rule):**
 3. $\nabla\left(\frac{f}{g} \right) = \frac{g\nabla f - f\nabla g}{g^2}
 $ **(quotient rule)**
 </MathBox>
 
-The gradient (del) operator maps a scalar field to a vector field. 
+### The little chain rule
+
+<MathBox title='Little chain rule' boxType='theorem'>
+Let $U$ be an open set in $\R^n$, $\alpha:I\to U$ a path in $U$ defined on an open interval $I\in\R$, and $f:U\to\R$ a scalar function. If $\alpha$ is differentiable at $t$ and $f$ is differentiable at $\alpha(t)$, then $f\circ\alpha$ is differentiable at $t$ and
 
 $$
-  \nabla f = \left( \nabla f \right)^i \frac{\partial}{\partial x^i}
+  (f\circ\alpha)'(t) = \nabla f(\alpha(t))\cdot\alpha'(t)
 $$
 
-The gradient operator and differential form are a dual pair
+<details>
+<summary>Proof</summary>
+
+Define a function $Q:U\subseteq\R^n \to\R$ by
+
+$$
+  Q(\mathbf{x}) = \begin{cases}
+    \frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a} \rVert}, \quad& \mathbf{x}\neq\mathbf{a} \\
+    0 \quad& \mathbf{x} = \mathbf{a} 
+  \end{cases}
+$$
+
+Assume that $\alpha$ is differentiable at $t_0$. If $f$ is differentiable at $\mathbf{a} = \alpha(t_0)$ then
 
 $$
 \begin{align*}
-  \mathrm{d}f = \nabla f \cdot \_ &= g\left( \nabla f, \_ \right) \\ 
-  &= \left[ g_{ij} \left( \mathrm{d}x^i \otimes \mathrm{d}x^j \right) \right] \left[ \left( \nabla f \right)^k \frac{\partial}{\partial x^k} \right] \\
-  &= g_{ij} \left( \nabla f \right)^k \mathrm{d}x^i \left( \frac{\partial}{\partial x^k} \right) \mathrm{d}x^j \\
-  &= g_{ij} \left( \nabla f \right)^k \delta_k^i \mathrm{d}x^j \\
-  &= g_{ij} \left( \nabla f \right)^i  \mathrm{d}x^j
+  0 =& \lim_{\mathbf{x}\to\mathbf{a}}\frac{f(\mathbf{x}) - f(\mathbf{a}) - \nabla f(\mathbf{a})\cdot(\mathbf{x} - \mathbf{a})}{\lVert \mathbf{x} - \mathbf{a}\rVert} \\
+  =& lim_{t\to t_0} \left| \frac{f(\alpha(t)) - f(\alpha(t_0)) - \nabla f(\alpha (t_0))(\alpha(t) - \alpha(t_0))}{t - t_0} \right|
 \end{align*}
 $$
-
-The covector components are given by
-
-$$
-  \frac{\partial f}{\partial x^j} = \left( \nabla f \right)^i g_{ij}
-$$
-
-The gradient components are retrieved by applying the inverse metric tensor
-
-$$
-\begin{align*}
-  \frac{\partial f}{\partial x^j} \mathfrak{g}^{jk} &= \left( \nabla f \right)^i g_{ij} \mathfrak{g}^{jk} \\
-  &= \left( \nabla f \right)^i \delta_i^k \\
-  &= \left( \nabla f \right)^k &= \frac{\partial f}{\partial x^j} \mathfrak{g}^{jk}
-\end{align*}    
-$$
-
-The gradient can thus be expressed as
-
-$$
-  \nabla f = \left( \nabla f \right)^i \frac{\partial}{\partial x^k} = \mathfrak{g}^{jk} \frac{\partial f}{\partial x^j} \frac{\partial}{\partial x^k} 
-$$
-
-For a Cartesian basis $g_{ij} = \mathfrak{g}_{ij} = \delta_{ij}$ and the gradient simplifies to
-
-$$
-  \nabla f = \frac{\partial f}{\partial x^i} \frac{\partial}{\partial x^i}
-$$
+</details>
+</MathBox>
 
 ### Directional derivative (gradient/derivative dual pairs)
 
@@ -1116,4 +955,187 @@ The differential form components transform covariantly using the chain rule
 
 $$
   \frac{\partial f}{\partial \tilde{x}^i} = \frac{\partial x^j}{\partial \tilde{x}^i} \frac{\partial f}{\partial x^i} = J_i^j \frac{\partial f}{\partial x^i}
+$$
+
+# Curvilinear coordinates
+
+| System | $q_1$ | $q_2$ | $q_3$ | $h_1$ | $h_2$ | $h_3$ |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| Cartesian | $x$ | $y$ | $z$ | $1$ | $1$ | $1$ | 
+| Spherical | $r$ | $\theta$ | $\phi$ | $1$ | $r$ | $r\sin\theta$ |
+| Cylindrical | $s$ | $\phi$ | $z$ | $1$ | $s$ | $1$ |
+
+Consider the 3-dimensional Euclidean space. In Cartesian coordinates the position of a point $P$ is given by
+
+$$
+  \mathbf{r} = x_1 \mathbf{e}_1 + x_2 \mathbf{e}_2 + x_3 \mathbf{e}_3
+$$
+
+where $\mathbf{e}_i := \frac{\partial\mathbf{r}}{\partial x_i}$ are the standard basis vectors. The point $P$ can also be defined by curviliner coordinates $q_i$ that are related to the Cartesian coordinates by the functions
+
+$$
+\begin{split}
+  x_1 = f_1(q_1, q_2, q_3) 
+\end{split}\quad
+\begin{split}
+  x_2 = f_2(q_1, q_2, q_3) 
+\end{split}\quad
+\begin{split}
+    x_3 = f_3(q_1, q_2, q_3) 
+\end{split}
+$$
+
+Assuming that the curvilinear coordinate system is orthogonal, its basis vectors $\mathbf{h}_i := \frac{\partial\mathbf{r}}{\partial q_i}$ are mutually perpendicular such that
+
+$$
+  \mathbf{h_i}\cdot\mathbf{h_j} = \delta_{ij} = \begin{cases}
+    1 \quad i = j \\ 
+    0 \quad i \neq j
+  \end{cases}
+$$
+
+The norm of the basis vectors are given by $\left| \mathbf{h}_i \right| = \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}$. An orthonormal basis $\Set{\mathbf{b}_i }_{i=1}^3$ can thus be formed by setting
+
+$$
+  \mathbf{b}_i = \frac{\mathbf{h_i}}{h_i} \quad h_j := \sqrt{\frac{\partial\mathbf{r}}{\partial q_i} \cdot \frac{\partial\mathbf{r}}{\partial q_i}}
+$$
+
+The total differential change in $\mathbf{r}$ is then given by 
+
+$$
+  \mathrm{d}\mathbf{r} = \sum_{i=1}^3 \left(\frac{\partial\mathbf{r}}{\partial q_i}\right)\mathrm{d}q_i = \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i
+$$
+
+From the total differential change we can form the differential volume element by
+
+$$
+  \mathrm{d}V = \prod_{i=1}^3 \left(\mathrm{d}\mathbf{r} \right)_i = h_1 h_2 h_3 \;\mathrm{d}q_1\;\mathrm{d}q_2\;\mathrm{d}q_3
+$$
+
+and differential surface elements by
+
+$$
+  \mathrm{d}\mathbf{a}_i = (\mathrm{d}\mathbf{r})_j \cdot (\mathrm{d}\mathbf{r})_k \mathbf{b}_i = h_j h_k \;\mathrm{d}q_j\;\mathrm{d}q_k \mathbf{b}_i
+$$
+
+## Gradient
+
+Consider a scalar function $f(q_i) : \R^3 \to\R$. The total derivative of $f$ is given by
+
+$$
+  \mathrm{d}f := \nabla f \cdot\mathrm{d}\mathbf{r} = \sum_{i=1}^3 \frac{\partial f}{\partial q_i}\mathrm{d}q_i
+$$
+
+Evaluating the inner product $\nabla f\cdot \mathrm{d}\mathbf{r}$ we get
+
+$$
+  \mathrm{d}f = \nabla f \cdot\mathrm{d}\mathbf{r} = \nabla f \cdot \left( \sum_{i=1}^3 h_i \mathrm{d}q_i \mathbf{b}_i \right) = \sum_{i=1}^3 h_i \left( \nabla f \cdot\mathbf{b}_i \right)\mathrm{d}q_i
+$$
+
+Equating the terms of $\mathrm{d}f$ we see that
+
+$$
+  \nabla f \cdot \mathbf{b}_i = \frac{1}{h_i}\frac{\partial f}{\partial q_i}
+$$
+
+and hence the gradient of $f$ wrt. to the curvilinear coordinates is given by
+
+$$
+  \nabla f = \sum_{i=1}^3 \left(\nabla f \cdot \mathbf{b}_i \right)\mathbf{b}_i = \sum_{i=1}^3 \frac{1}{h_i}\frac{\partial f}{\partial q_i}\mathbf{b}_i
+$$
+
+## Divergence
+
+Suppose $\mathbf{A}: \R^3 \to\R^3$ is a vector field with components $\mathbf{A} = \sum_{i=1}^3 A_i\mathbf{b}_i$. The divergence of $\mathbf{A}$ can be derived by writing out
+
+$$
+\begin{align*}
+  \nabla\cdot\mathbf{A} &= \nabla\cdot\left( A_1 \mathbf{b}_1 + A_2 \mathbf{b}_2 + A_3 \mathbf{b}_3 \right) \\
+  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} + h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} + h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \nabla\cdot\left( h_2 h_3 A_1 \frac{\mathbf{b}_1}{h_2 h_3} \right) + \nabla\cdot\left( h_1 h_3 A_2 \frac{\mathbf{b}_2}{h_1 h_3} \right) + \nabla\cdot\left( h_1 h_2 A_3 \frac{\mathbf{b}_3}{h_1 h_2} \right)
+\end{align*}
+$$
+
+Setting $f:= h_j h_k A_i$ and $\mathbf{v}:= \frac{\mathbf{b}_i}{h_j h_k}$, each divergence term takes the form $\nabla\cdot(f\mathbf{v})$ allowing us to apply the identity
+
+$$
+  \nabla\cdot(f\mathbf{v}) = \mathbf{v}\cdot\nabla f + f\nabla\cdot\mathbf{v}
+$$
+
+It can be further shown that $\nabla\cdot\mathbf{v} = \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) = 0$, by recalling that $\nabla q_i = \frac{\mathbf{b}_i}{h_i}$ and $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$ where $\varepsilon_{ijk}$ is the Levi-Civita symbol, so that
+
+$$
+  \nabla q_j \times\nabla q_k = \frac{\mathbf{b}_j \times\mathbf{b}_k}{h_j h_k} = \frac{\mathbf{b}_i}{h_j h_k}
+$$
+
+Taking the divergence of the left hand side, we may use the identity
+
+$$
+  \nabla\cdot(\mathbf{u}\times\mathbf{v}) = \mathbf{v}\cdot(\nabla\times\mathbf{u}) - \mathbf{u}\cdot(\nabla\times\mathbf{v})
+$$
+
+with $\mathbf{u}:= \nabla q_j$ and $\mathbf{v}:= q_k$. However, because gradients are curl free, i.e. $\nabla\times(\nabla f) = \mathbf{0}$ we conclude that
+
+$$
+\begin{align*}
+  \nabla\cdot\left( \frac{\mathbf{b}_i}{h_j h_k} \right) &= \nabla\cdot\left(\nabla q_j \times\nabla q_k\right) \\
+  &= \nabla q_k \left(\nabla \times \nabla q_j \right) - \nabla q_j \cdot\left( \nabla\times \nabla q_k \right) \\
+  &= 0
+\end{align*}
+$$
+
+It therefore follows that
+
+$$
+  \nabla\left( h_j h_k A_i \frac{\mathbf{b}_i}{h_j h_k} \right) = \frac{\mathbf{b}_i}{h_j h_k}\cdot \nabla(h_j h_k A_i) = \frac{1}{h_i h_j h_k}\frac{\partial}{\partial q_i}\left( h_j h_k A_i \right)
+$$
+
+where we have used that $\mathbf{q}_i \cdot \nabla f = \frac{1}{h_i}\frac{\partial f}{\partial q_i}$. In conclusion, the divergence of $\mathbf{A}$ wrt. curvilinear coordinates is given by
+
+$$
+  \nabla\cdot\mathbf{A} := \frac{1}{h_1 h_2 h_3}\left[\frac{\partial}{\partial q_1}\left(h_2 h_3 A_1\right) + \frac{\partial}{\partial q_2}\left(h_1 h_3 A_2\right) + \frac{\partial}{\partial q_3}\left(h_1 h_2 A_3\right)\right]
+$$
+
+## Curl
+
+The curl of $\mathbf{A}$ can be derived by writing out
+
+$$
+\begin{align*}
+  \nabla\times\mathbf{A} &= \nabla\times\left(\sum_{i=1}^3 A_i \mathbf{b}_i \right) \\
+  &= \nabla\times\left(\sum_{i=1}^3 h_i A_i \frac{\mathbf{b}_i}{h_i} \right) \\
+  &= \sum_{i=1}^3 \nabla\times\left(h_i A_i \frac{\mathbf{b}_i}{h_i} \right)
+\end{align*}
+$$
+
+Setting $f:= h_i A_i$ and $\mathbf{v} = \frac{\mathbf{b}_i}{h_i}$, each curl term takes the form $\nabla\times (f\mathbf{v})$, allowing us to apply the identity
+
+$$
+  \nabla\times(f\mathbf{v}) = -\mathbf{v}\times\nabla f + f\nabla\times\mathbf{v}
+$$
+
+Since $\nabla\times\left(\frac{\mathbf{b}_i}{h_i}\right) = \nabla\times\left(\nabla q_i \right) = 0$, we are left with
+
+$$
+  \nabla\times\mathbf{A} = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\nabla\left(h_i A_i\right) = \sum_{i=1}^3 -\frac{\mathbf{b}_i}{h_i}\times\left[\sum_{j=1}^3 \frac{1}{h_j}\frac{\partial}{\partial q_j}\left( h_i A_i \right)\mathbf{b}_j \right] 
+$$
+
+Applyting the relation $\mathbf{b}_i \times \mathbf{b}_j = \sum_{k=1}^3 \varepsilon_{ijk}\mathbf{b}_k$, we conclude that
+
+$$
+  \nabla\times\mathbf{A} = \frac{\mathbf{q}_1}{h_2 h_3}\left[\frac{\partial}{\partial q_2}\left(h_3 A_3 \right) - \frac{\partial}{\partial q_3}\left(h_2 A_2 \right)\right] + \frac{\mathbf{q}_2}{h_1 h_3}\left[\frac{\partial}{\partial q_3}\left(h_1 A_1 \right) - \frac{\partial}{\partial q_1}\left(h_3 A_3 \right)\right] + \frac{\mathbf{q}_3}{h_1 h_2}\left[\frac{\partial}{\partial q_1}\left(h_2 A_2 \right) - \frac{\partial}{\partial q_2}\left(h_1 A_1 \right)\right]
+$$
+
+## Laplacian
+
+The Laplacian of a scalar function $f:\R^3 \to\R$ is defined as the divergence of $\nabla f$. Using the results for the gradient and dirvergence in curvilinear coordinates, we find that
+
+$$
+\begin{align*}
+  \nabla^2 f &:= \nabla\cdot\left(\nabla f \right) = \nabla\cdot\left(\sum_{i=1}^3 \frac{1}{h_1}\frac{\partial f}{\partial q_i}\mathbf{b}_i \right) \\
+  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3} + \frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3} + \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \nabla\cdot\left( \frac{h_2 h_3}{h_1} \frac{\partial f}{\partial q_1} \frac{\mathbf{b}_1}{h_2 h_3}\right)  + \nabla\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \frac{\mathbf{b}_2}{h_1 h_3}\right) + \nabla\cdot\left( \frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \frac{\mathbf{b}_3}{h_1 h_2} \right) \\
+  &= \frac{\mathbf{b_1}}{h_2 h3}\cdot\left(\frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\mathbf{b_2}}{h_1 h3}\cdot\left(\frac{h_1 h_3}{h_2} \frac{\partial f}{\partial q_2} \right) + \frac{\mathbf{b_3}}{h_1 h2}\cdot\left(\frac{h_1 h_2}{h_3} \frac{\partial f}{\partial q_3} \right) \\
+  &= \frac{1}{h_1 h_2 h_3}\left[ \frac{\partial}{\partial q_1}\left( \frac{h_2 h_3}{h_1}\frac{\partial f}{\partial q_1} \right) + \frac{\partial}{\partial q_2}\left( \frac{h_1 h_3}{h_2}\frac{\partial f}{\partial q_2} \right) + \frac{\partial}{\partial q_3}\left( \frac{h_1 h_2}{h_3}\frac{\partial f}{\partial q_3} \right) \right]
+\end{align*}
 $$
