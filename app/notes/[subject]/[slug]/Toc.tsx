@@ -110,9 +110,9 @@ const TocBlock = block(function Toc({headings}: Props) {
 				</div>
 				<nav key='nav.toc' >
 					<ul className='list-none h-auto'>
-						{(headings || []).map((h, index) => (
-							<TocItemBlock key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
-						))}
+					<For each={headings || []}>{
+						(h, index) => <TocItemBlock key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
+					}</For>
 					</ul>
 				</nav>
 			</aside>

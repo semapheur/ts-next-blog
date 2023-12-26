@@ -267,9 +267,9 @@ or in matrix form
 
 $$
   \begin{bmatrix} \mathbf{T}' \\ \mathbf{N}' \\ \mathbf{B}' \end{bmatrix} = \begin{bmatrix} 
-      0 & \kappa & 0 \\ 
-      -\kappa & 0 & \tau \\
-      0 & -\tau & 0
+    0 & \kappa & 0 \\ 
+    -\kappa & 0 & \tau \\
+    0 & -\tau & 0
   \end{bmatrix} \cdot \begin{bmatrix} \mathbf{T} \\ \mathbf{N} \\ \mathbf{B} \end{bmatrix}
 $$
 
@@ -520,10 +520,10 @@ $$
 By definition of limit $\tilde{f}$ and $\tilde{g}$ are continuous at $\mathbf{a}$, hence so is the their sum. In other words, the function given by
 
 $$
-  \tilde{f}(\mathbf{x}) + \tilde{g}(\mathbf{x}) = \begin{align*}
+  \tilde{f}(\mathbf{x}) + \tilde{g}(\mathbf{x}) = \begin{cases}
     f(\mathbf{x}) + g(\mathbf{x}),\quad& \mathbf{x} \neq\mathbf{a} \\
     L + M,\quad& \mathbf{x} = \mathbf{a}
-  \end{align*}
+  \end{cases}
 $$
 
 is continuous at $\mathbf{a}$, such that $\lim_{\mathbf{x}\to\mathbf{a}} (f(\mathbf{x}) + g(\mathbf{x})) = L + M$.
@@ -674,7 +674,7 @@ $$
 If this limit exists, the matrix $\mathrm{D}f(\mathbf{a})$ is called the *derivative* of $f$ at $\mathbf{a}$. It is also known as the *Jacobian matrix*. The affine function $\ell(\mathbf{x}) = f(\mathbf{a}) + \mathrm{D}f(\mathbf{a})(\mathbf{x}-\mathbf{a})$ is called the *first-order affine transformation* of $f$ at $\mathbf{a}$.
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='Differentiability implies continuity' boxType='proposition'>
 If $f:\R^n \to\R$ is differentiable at $\mathbf{a}\in\R^n$, then $f$ is continuous at $\mathbf{a}$.
 
 <details>
@@ -726,6 +726,103 @@ $$
 $$
 
 Hence $\lim_{\mathbf{x}\to\mathbf{a}} f(\mathbf{x}) = f(\mathbf{a})$, showing that $f$ is continuous at $\mathbf{a}$.
+</details>
+</MathBox>
+
+### Mean value theorem
+
+<MathBox title='Mean value theorem' boxType='theorem'>
+Let $B = B_r(\mathbf{a})$ be an open ball centered at $\mathbf{a}$. Let $f:B\to\R$ be a differentiable function. For any $\mathbf{b}\in B$, there is a point $\mathbf{c}\in\R$ on the line segment connecting $\mathbf{a}$ and $\mathbf{b}$ such that
+
+$$
+  f(\mathbf{b}) - f(\mathbf{a}) = \nabla f(\mathbf{c})\cdot (\mathbf{b} - \mathbf{a})
+$$
+
+<details>
+<summary>Proof</summary>
+
+The line segment between $\mathbf{a}$ and $\mathbf{b}$ can be parametrized by the curve $\alpha:[0,1]\to\R^n$ given by $\alpha(t) = \mathbf{a} + t(\mathbf{b} - \mathbf{a})$. Then the composition $f\circ \alpha:[0,1] \to\R$ is real-valued function that is differentiable on the open interval $(0,1)$. By the ordinary mean value theorem, there exists a point $t \in (0,1)$ with $\alpha(t) = \mathbf{c}$ such that
+
+$$
+\begin{align*}
+  (f\circ\alpha)(1) - (f\circ\alpha)(0) =& (f \circ \alpha)'(t)(1 - 0) \\
+  =& (f \circ \alpha)'(t)
+\end{align*}
+$$
+
+Applying the little chain rule on $(f \circ \alpha)'(t)$, noting that $\alpha'(t) = \mathbf{b} - \mathbf{a} = \alpha(1) - \alpha(0)$, gives
+
+$$
+\begin{align*}
+  (f \circ \alpha)'(t) =& \nabla f(\alpha(t))\cdot\alpha'(t) \\
+  =& \nabla f(\alpha(t))\cdot (\alpha(1) - \alpha(0))
+\end{align*}
+$$
+
+Inserting back gives
+
+$$
+\begin{align*}
+  f(\alpha(1)) - f(\alpha(0)) =& \nabla f(\alpha(t))\cdot (\alpha(1) - \alpha(0)) \\
+  f(\mathbf{b}) - f(\mathbf{a}) =& \nabla f(\mathbf{c})\cdot(\mathbf{b} - \mathbf{a})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### $C^1$ test
+
+<MathBox title='Continuously differentiable function' boxType='definition'>
+A scalar function $f:U\subseteq\R^n \to\R$ whose partial derivatives are continuous on $U$ is *continuously differentiable* on $U$, denoted $f\in C^1(U)$.
+</MathBox>
+
+<MathBox title='$C^1$ test' boxType='theorem'>
+Let $f:U\subseteq\R^n \to\R$ be a scalar function. If $f\in C^1(U)$, then $f$ is differentiable at every point of $U$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathbf{a}$ be an arbitrary point in $U$. For any $\mathbf{x}\in U$, there is a point $\mathbf{c}$ on the line segment between $\mathbf{x}$ and $\mathbf{a}$ such that by the mean value theorem
+
+$$
+  f(\mathbf{x}) - f(\mathbf{a}) = \nabla f(\mathbf{c})\cdot (\mathbf{b} - \mathbf{a})
+$$
+
+Also
+
+$$
+  \mathrm{D}f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a}) = \nabla f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a})
+$$
+
+Thus, the first-order approximation of $f$ at $\mathbf{a}$ takes the form
+
+$$
+\begin{align*}
+  f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a}) =& \nabla f(\mathbf{c})\cdot (\mathbf{x} - \mathbf{a}) - \nabla f(\mathbf{a})\cdot (\mathbf{x} - \mathbf{a}) \\
+  =& (\nabla f(\mathbf{c}) - \nabla f(\mathbf{a}))\cdot (\mathbf{x} - \mathbf{a})
+\end{align*}
+$$
+
+Then
+
+$$
+\begin{align*}
+  \frac{|f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a})|}{\| \mathbf{x} - \mathbf{a} \|} =& \frac{|(\nabla f(\mathbf{c}) - \nabla f(\mathbf{a}))\cdot (\mathbf{x} - \mathbf{a})|}{\| \mathbf{x} - \mathbf{a} \|} \\
+  \leq& \| \nabla f(\mathbf{c}) - \nabla f(\mathbf{a}) \| \frac{\|\mathbf{x} - \mathbf{a}\|}{\| \mathbf{x} - \mathbf{a} \|} \\
+  =& \| \nabla f(\mathbf{c}) - \nabla f(\mathbf{a}) \|
+\end{align*}
+$$
+
+Since $\| \mathbf{c} - \mathbf{a} \| \leq \| \mathbf{x} - \mathbf{a} \|$, it follows that $\mathbf{c}\xrightarrow{\mathbf{x}\to \mathbf{a}} \mathbf{a}$. By continuity of partial derivatives, this mean that $\nabla f(\mathbf{c}) \xrightarrow{\mathbf{x}\to\mathbf{a}} \nabla f(\mathbf{a})$. Hence
+
+$$
+\begin{align*}
+  &\lim_{\mathbf{x}\to\mathbf{a}} \frac{|f(\mathbf{x}) - f(\mathbf{a}) - \mathrm{D}f(\mathbf{a})(\mathbf{x} - \mathbf{a})|}{\| \mathbf{x} - \mathbf{a} \|} \\
+  \leq& \lim_{\mathbf{x}\to\mathbf{a}} \| \nabla f(\mathbf{c}) - \nabla f(\mathbf{a}) \| = 0
+\end{align*}
+$$
+
+showing that $f$ is differentiable at $\mathbf{a}$.
 </details>
 </MathBox>
 
