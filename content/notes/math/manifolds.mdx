@@ -3753,6 +3753,159 @@ Let $\mathbf{p}$ be any point in $S$. Since an immersed submanifold (with or wit
 
 ## Lie brackets
 
+<MathBox title='Lie bracket' boxType='definition'>
+Let $X,Y\in\mathfrak{X}(M)$ be smooth vector fields on a smooth manifold $M$. The *Lie bracket* of $X$ and $Y$ is an operator $[X,Y]:C^\infty (M) \to C^\infty(M)$ defined by
+
+$$
+  [X,Y]f = XYf - YXf
+$$
+</MathBox>
+
+<MathBox title='Lie bracket is a smooth vector field' boxType='lemma'>
+The Lie bracket of any pair of smooth vector fields is a smooth vector field.
+
+<details>
+<summary>Proof</summary>
+
+It suffices to show that $[X,Y]$ is a derivation of $C^\infty(M)$. For arbitrary $f,g\in C^\infty (M)$ we gets
+
+$$
+\begin{align*}
+  [X,Y](fg) =& X(Y(fg)) - Y(X(fg)) \\
+  =& X(fYg + gYf) - Y(fXg + gXf) \\
+  =& \cancel{XfYg} + fXYg + \cancel{XgYf} + gXYf \\
+  &- \bcancel{YfXg} - fYXg - YgXf - \bcance{gYXf} \\
+  =& fXYg + gXYf - fYXg - gYXf \\
+  =& f[X,Y]g + g[X,Y]f
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Coordinate formula for the Lie bracket' boxType='proposition'>
+Let $X,Y\in\mathfrak{X}(M)$ be smooth vector fields on a smooth manifold $M$ with or without boundary. The value of the vector field $[X, Y]$ at a point $\mathbf{p}\in M$ is the derivation at $\mathbf{p}$ given by
+
+$$
+  [X,Y]_\mathbf{p} f = X_\mathbf{p} (Yf) - Y_\mathbf{p}(Xf)
+$$
+
+Let $X = X^i \frac{\partial}{\partial x^i}$ and $Y = Y^j \frac{\partial}{\partial x^j}$ be the coordinate expression for $X$ and $Y$ in terms of some smooth local coordinates $(x^i)$ for $M$. Then $[X,Y]$ has the following coordinate expression
+
+$$
+  [X,Y] = \left( X^i \frac{\partial Y^j}{\partial x^i} - Y^i \frac{\partial X^j}{\partial x^i} \right)\frac{\partial}{\partial x^j}
+$$
+
+or more concisely,
+
+$$
+  [X,Y] = (XY^j - YX^j)\frac{\partial}{\partial x^j}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $[X,Y]$ is a smooth vector field, its action on a function is determined locally: $([X,Y]f)|_U = [X,Y](f|_U)$. Thus it suffices to compute in a single smooth chart, where we have
+
+$$
+\begin{align*}
+  [X,Y]f =& X^i \frac{\partial}{\partial x^i}\left( Y^j \frac{\partial f}{\partial x^j} \right) - Y^j \frac{\partial }{\partial x^j} \left(  X^i \frac{\partial f}{\partial x^i} \right) \\
+  =& X^i \frac{\partial Y^j}{\partial x^i} \frac{\partial f}{\partial x^j} + \cancel{X^i Y^j \frac{\partial^2 f}{\partial x^i \partial x^j}} - Y^j \frac{\partial X^i}{\partial x^j}\frac{\partial f}{\partial x^i} - \bcancel{Y^j X^i \frac{\partial^2 f}{\partial x^j \partial x^i}} \\
+  =& X^i \frac{\partial Y^j}{\partial x^i}\frac{\partial f}{\partial x^j} - Y^j \frac{\partial X^i}{\partial x^j} \frac{\partial f}{\partial x^i} \\
+  =& X^i \frac{\partial Y^j}{\partial x^i}\frac{\partial f}{\partial x^j} - Y^i \frac{\partial X^j}{\partial x^i} \frac{\partial f}{\partial x^j} \\
+  =& \left( X^i \frac{\partial Y^j}{\partial x^i} - Y^i \frac{\partial X^j}{\partial x^i} \right)\frac{\partial f}{\partial x^j}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Properties of the Lie bracket' boxType='proposition'>
+The Lie bracket satisfies the following identities for all $X,Y,Z\in\mathfrak{X}(M)$:
+1. **Bilinearity:** For $a,b\in\R$:
+    - $[aX + bY, Z] = a[X,Z] + b[Y,Z]$
+    - $[Z, aX + bY] = a[Z,X] + b[Z,Y]$
+2. **Antisymmetry:** $[X,Y] = - [Y,X]$
+3. **Jacobi identity:** 
+$$
+  [X,[Y,Z]] + [Y,[Z,X]] + [Z,[X,Y]] = 0
+$$
+4. For $f,g\in C^\infty(M)$:
+$$
+  [fX, gY] = fg[X,Y] + (fXg)Y - (gYf)X
+$$
+
+<details>
+<summary>Proof</summary>
+
+Bilinearity and antisymmetry are obvious consequences of the definition. The proof of the Jacobi identity is just a computation
+
+$$
+\begin{align*}
+  &[X,[Y,Z]]f + [Y,[Z,X]]f + [Z,[X,Y]]f \\
+  =& X[Y,Z]f - [Y,Z]Xf + Y[Z,X]f \\
+  &- [Z,X]Yf + Z[X,Y]f - [X,Y]Zf \\
+  =& \color{red}{XYZf} \color{green}{-XZYf} \color{blue}{-YZXf} \color{cyan}{+ZYXf} \color{blue}{+YZXf} \color{orange}{-YXZf} \\
+  & \color{magenta}{-ZXYf} \color{green}{+XZYf} \color{magenta}{+ZXYf} \color{cyan}{-ZYXf} \color{red}{-XYZf} \color{orange}{+YXZf} \\
+  =& 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Naturality of the Lie brackets' boxType='proposition'>
+Let $F:M\to N$ be a smooth map between manifolds with or without boundary, and let $X_1, X_2\in \mathfrak{X}(X)$ and $Y_1, Y_2\in\mathfrak{X}(N)$ be vector fields such that $X_i$ is $F$-related to $Y_i$ for $i=1,2$. Then $[X_1, X_2]$ is $F$-related to $[Y_1, Y_2]$.
+
+<details>
+<summary>Proof</summary>
+
+Since $X_i$ and $Y_i$ are $F$-related
+
+$$
+\begin{align*}
+  X_1 X_2 (f\circ F) =& X_1((X_2f) \circ F) \\
+  =& (Y_1 Y_2 f) \circ F
+\end{align*}
+$$
+
+Similarly,
+
+$$
+  X_2 X_1 (f\circ F) = (Y_2 Y_1 f) \circ F
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  [X_1, X_2](f\circ F) =& X_1 X_2 (f\circ F) - X_2 X_1 (f\circ F) \\
+  =& (Y_1 Y_2 f) \circ F - (Y_2 Y_1 f)\circ F \\
+  =& ([Y_1, Y_2]f)\circ F
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Pushforwards of Lie brackets' boxType='corollary'>
+Suppose that $F:M\to N$ is a diffeomorphism and $X_1, X_2 \in\mathfrak{X}(M)$. Then $F_*[X_1, X_2]= [F_* X_1, F_* X_2]$.
+
+<details>
+<summary>Proof</summary>
+
+This is just a special case of the naturality of the Lie bracket in which $F$ is a diffeomorphism and $Y_i = F_* X_i$ for $i=1,2$.
+</details>
+</MathBox>
+
+<MathBox title='Bracket of vector fields tangent to submanifolds' boxType='corollary'>
+Let $M$ be a smooth manifold and let $S\subseteq M$ be an immersed submanifold with or without boundary in $M$. If $Y_1$ and $Y_2$ are smooth vector fields on that are tangent to $S$, then $[Y_1, Y_2]$ is also tangent to $S$.
+
+<details>
+<summary>Proof</summary>
+
+There exist smooth vector fields $X_1$ and $X_2$ on $S$ such that $X_i$ is $\iota$-related to $Y_i$ for $i=1,2$, where $\iota:S\hookrightarrow M$ is the inclusion. By the naturality of the Lie bracket, $[X_1,X_2]$ is $\iota$-related to $[Y_1, Y_2]$, which is therefore tangent to $S$.
+</details>
+</MathBox>
+
+## The Lie algebra of a Lie group
+
 # Riemannian manifolds
 
 A Riemannian metric $g$ on $M$ is a smooth symmetric covariant $2$-tensor field (bilinear form) on $M$ that is positive definitive at each point. A Riemannian manifold $(M, g)$ is a smooth manifold $M$ endowed with a Riemannian metric $g$.
