@@ -3543,7 +3543,116 @@ Let $M$ be a smooth manifold with or without boundary.
 ## Local and global frames
 
 <MathBox title='Linear independence' boxType='proposition'>
-Suppose that $M$ is a smooth $n$-manifold with or without boundary. An ordered $k$-tuple $(X_1,\dots,X_k)$ of vector fields defined on some subset $A\subseteq M$ is *linearly independent* if $(X_1|_\mathbf{p},\dots, X_k|_\mathbf{p})$ is a linearly independent $k$-tuple in $T_\mathbf{p} M$ for each $\mathbf{p}\in A$. The $k$-tuple $(X_1,\dots,X_k)$ of vector fields *spans* the tangent bundle $TM$ if the $k$-tuple $(X_1|_\mathbf{p},\dots,X_k|\mathbf{p})$ spans $T_\mathbf{p}M$ for each $\mathbf{p}$
+Suppose that $M$ is a smooth $n$-manifold with or without boundary. An ordered $k$-tuple $(X_1,\dots,X_k)$ of vector fields defined on some subset $A\subseteq M$ is *linearly independent* if $(X_1|_\mathbf{p},\dots, X_k|_\mathbf{p})$ is a linearly independent $k$-tuple in $T_\mathbf{p} M$ for each $\mathbf{p}\in A$. The $k$-tuple $(X_1,\dots,X_k)$ of vector fields *spans* the tangent bundle $TM$ if the $k$-tuple $(X_1|_\mathbf{p},\dots,X_k|\mathbf{p})$ spans $T_\mathbf{p}M$ for each $\mathbf{p}$.
+</MathBox>
+
+<MathBox title='Frame' boxType='definition'>
+Suppose that $M$ is a smooth $n$-manifold with or without boundary. A *local frame* for $M$ is an ordered $n$-tuple of vector fields $(E_i)_{i=1}^n$ defined on an open subset $U\subseteq M$ that is linearly independent and spans the tangent bundle. Thus, the vectors $(E_i|_\mathbf{p})_{i=1}^n$ form a basis for $T_p M$ at each $\mathbf{p}$. It is called a *global frame* if $U = M$, and a *smooth frame* if each of the vector fields $E_i$ is smooth. If $M$ admits a smooth global frame, it is called *parallelizable*.
+
+In particular, if $M = \R^n$, then a $k$-tuple of vector fields $(E_i)_{i=1}^k$ defined on some subset $A\subseteq\R^n$ is *orthonormal* if for each $\mathbf{p}\in A$, the vectors $(E_i|_\mathbf{p})_{i=1}^k$ are orthonormal with respect to the Euclidean inner product. A (local/global) frame consisiting of orthonormal vector fields is called an *orthonormal field*.
+</MathBox>
+
+<MathBox title='Completion of local frames' boxType='proposition'>
+Suppose that $M$ is a smooth $n$-manifold with or without boundary.
+1. If $(X_i)_{i=1}^k$ is a linearly independent $k$-tuple of smooth vector fields on an open subset $U\subseteq M$ with $1\geq k < n$, then for each $\mathbf{p}\in U$ there exis smooth vector fields $X_{k+1},\dots,X_n$ in a neighbourhood $V$ of $\mathbf{p}$ such that $(X_i)_{i=1}^n$ is a smooth local frame for $M$ on $U\cap V$.
+2. If $(\mathbf{v}_i)_{i=1}^k$ is a linearly independent $k$-tuple of vectors in $T_\mathbf{p}M$ for some $\mathbf{p}\in M$ with $1\leq k < n$, then there exists a smooth local frame $(X_i)_{i=1}^k$ on a neighbourhood of $\mathbf{p}$ such that $X_i|\mathbf{p} = \mathbf{v}_i$. 
+3. If $(X_i)_{i=1}^n$ is a linearly independent $n$-tuple of smooth vector fields along a closed subset $A\subseteq M$, then there exists a smooth local fram $(\tilde{X}_1)_{i=1}^n$ on some neighbourhood of $A$ such that $\tilde{X}_i|_A = X_i$.
+</MathBox>
+
+<MathBox title='Gram-Schmidt algorithm for frames' boxType='lemma'>
+Suppose that $(X_i)_{i=1}^n$ is a smooth local frame for $T\R^n$ over an open subset $U\subseteq \R^n$. Then there is a smooth orthonormal frame $(E_i)_{i=1}^n$ over $U$ such that for each $\mathbf{p}\in U$
+
+$$
+  \mathrm{span}(E_i|_\mathbf{p})_{i=1}^n = \mathrm{span}(X_i|_\mathbf{p})_{i=1}^n
+$$
+
+<details>
+<summary>Proof</summary>
+
+Applying the Gram-Schmidt algorithm to the vectors $(X_j|_\mathbf{p})$ at each $\mathbf{p}\in U$, we obtain an $n$-tuple of rough vector fields $(E_i)_{i=1}^n$ given inductively by
+
+$$
+  E_j = \frac{X_j - \sum_{i=1}^{j-1} (X_j \cdot E_i)E_i}{|X_j - \sum_{i=1}^{j-1} (X_j \cdot E_i)E_i|},\; j=1,\dots,n
+$$
+
+For eahc $j=1,\dots,n$ and each $\mathbf{p}\in U$, then $X_j|_\mathbf{p}\notin \mathrm{span}(E_1|_\mathbf{p},\dots,E_{j-1}|_\mathbf{p})$, so the denominator above is a nowhere-vanishing smooth function on $U$. Thus, this formula defines $(E_i)_{i=1}^n$ as a smooth orthonormal frame on $U$.
+</details>
+</MathBox>
+
+## Vector fields as derivations of $C^\infty (M)$
+
+Vector fields define operators on the space of smooth real-valued functions. Let $M$ be a smooth manifold with or without boundary. If $X\in\mathcal{X}(M)$ and $f\in C^\infty (U)$ is a smooth real-valued function defined on an open subset $U\subseteq M$, we obtain a new function $Xf:U\to\R$ defined By
+
+$$
+  (Xf)(\mathbf{p}) = X_\mathbf{p}f
+$$
+
+In particular, for any open subset $V \subseteq U$
+
+$$
+  (Xf)|_V = X(f|_V)
+$$
+
+<MathBox title='Smoothness criterion for vector fields' boxType='proposition'>
+Let $M$ be a smooth manifold with or without boundary, and let $X:M\to TM$ be a rough vector field. The following are equivalent:
+1. $X$ is smooth
+2. for every $f\in C^\infty (M)$, the function $Xf$ is smooth on $M$
+3. for every open subset $U\subseteq M$ and every $f\in C^\infty (M)$, the function $Xf$ is smooth on $U$
+
+<details>
+<summary>Proof</summary>
+
+**(1)** $\implies$ **(2)**<br/>
+Assume that $X$ is smooth, and let $f\in C^\infty(M)$. For any $\mathbf{p}\in M$, we can choose smooth coordinates $(x^i)$ on a neighbourhood $U$ of $\mathbf{p}$. Then for $\mathbf{x}\in U$, we can write
+
+$$
+  Xf(\mathbf{x}) = \left( X^i(\mathbf{x})\left.\frac{\partial}{\partial x^i}\right|_\mathbf{x} \right)f = X^i(\mathbf{x})\frac{\partial f}{\partial x^i}(\mathbf{x})
+$$
+
+Since the component functions $X^i$ are smooth on $U$, if follows that $Xf$ is smooth in $U$. Since the same is true in a neighbourhood of each point, $Xf$ is smooth on $M$.
+
+**(2)** $\implies$ **(3)**<br/>
+Suppose that $U\subseteq M$ is open and $f\in C^\infty (U)$. For any $\mathbf{p}\in U$, let $\psi$ be a smooth bump function that is equal to $1$ in a neighbourhood of $\mathbf{p}$ and supported in $U$, and define $\tilde{f} = \psi f$, extended to be zero on $M\setminus\mathrm{supp}(\psi)$. Then $X\tilde{f}$ is smooth by assumption, and is equal to $Xf$ in a neighbourhood of $\mathbf{p}$. This shows that $Xf$ is smooth in a neighbourhood of each point of $U$.
+
+**(3)** $\implies$ **(1)**<br/>
+Suppose that $Xf$ is smooth whenever $f$ is smooth on an open subset of $M$. If $(x^i)$ are any smooth local coordinates on $U\subseteq M$, we can think of each coordinate $x^i$ as a smooth function on $U$. Applying $X$ to one of these functions, we obtain
+
+$$
+  Xx^i = X^j \frac{\partial}{\partial x^j}(x^i) = X^i
+$$
+
+Because $Xx^i$ is smooth by assumption, it follows that the component functions of $X$ are smooth, so $X$ is smooth.
+</details>
+</MathBox>
+
+<MathBox title='Vector fields are derivations' boxType='proposition'>
+Let $M$ be a smooth manifold with or without boundary. A map $D:C^\infty(M) \to C^\infty(M)$ is a derivation if and only if it is of the form $Df = Xf$ for some smooth vector field $X\in\mathcal{X}(M)$.
+
+<details>
+<summary>Proof</summary>
+
+A smooth vector field $X\in\mathcal{X}(M)$ defines a map from $C^\infty(M)$ to itself by $f\mapsto Xf$. This map is clearly linear over $\R$ and satisfies the product rule
+
+$$
+\begin{align*}
+  (Xfg)(\mathbf{p}) =& X_\mathbf{p}fg = \left(X^i (\mathbf{p})\left.\frac{\partial }{\partial x^i}\right|_\mathbf{p}\right)fg \\
+  =& X^i (\mathbf{p}) \frac{\partial fg}{\partial x^i} (\mathbf{p}) \\
+  =& X^i (\mathbf{p}) \left(f(\mathbf{p})\frac{\partial g}{\partial x^i}(\mathbf{p}) +  g(\mathbf{p}) \frac{\partial f}{\partial x^i}(\mathbf{p}) \right) \\
+  =& f(\mathbf{p}) X^i (\mathbf{p})\frac{\partial g}{\partial x^i}(\mathbf{p}) + g(\mathbf{p}) X^i (\mathbf{p})\frac{\partial f}{\partial x^i}(\mathbf{p}) \\
+  =& f(\mathbf{p}) X_\mathbf{p}g + g(\mathbf{p})X_\mathbf{p} f
+\end{align*}
+$$
+
+showing that that $X$ induces a derivation.
+
+Conversely, suppose that $D:C^\infty (M)$. We need to construct a vector field $X$ such that $Df = Xf$ for all $f$. If there is such a vector field, its value at $\mathbf{p}$ must be the derivation at $\mathbf{p}$ whose action on any smooth real-valued function $f\in C^\infty(M)$ is given by
+
+$$
+  X_\mathbf{p}f = (Df)(\mathbf{p})
+$$
+
+The linearity of $D$ guarantees that this expression depends linearly on $f$, and the fact that $D$ is a derivation yields the product rule for tangent vectors. Thus, the map $X_\mathbf{p}:C^\infty(M) \to\R$ so defined is indeed a tangent vector, i.e. a derivation of $C^\infty(M)$ at $\mathbf{p}$. This defines $X$ as a rough vector field. Because $Xf = DF$ is smooth whenever $f\in C^\infty (M)$, this vector field is smooth.
+</details>
 </MathBox>
 
 # Riemannian manifolds
