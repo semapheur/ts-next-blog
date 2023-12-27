@@ -1296,6 +1296,145 @@ Let $\lambda_1$ and $\lambda_2$ be the two eigenvalues of $H_f(\mathbf{a})$. The
 
 ### Lagrange multipliers
 
+<MathBox title='Lagrange multiplier method' boxType='theorem'>
+Suppose that $f, g_1, \dots, g_k:U\subseteq\R^n \to\R$ for $k\in\N_+$ are continunously differentiable functions on an open subset $\R^n$. If $\mathbf{a}$ is a local extrema for $f$ on the subset
+
+$$
+  A = \Set{\mathbf{x}\in U | g_i(\mathbf{x}) = b_i \in\R, i=1,\dots,k}
+$$
+
+then either
+1. $\nabla g_1(\mathbf{a}),\dots, \nabla g_k(\mathbf{a})$ are linearly dependent
+2. there are constants $\lambda_1,\dots,\lambda_k$ such that
+$$
+  \nabla f(\mathbf{a}) = \sum_{i=1}^k \lambda_i \nabla g_i(\mathbf{a}) 
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assume that $1 \geq k < n$. It suffices to show that if the gradients $(\nabla g_i(\mathbf{a}))_{i=1}^k$ are linearly independent, there are constants $(\lambda_i)_{i=1}^k$ such that 
+
+$$
+  \nabla f(\mathbf{a}) = \sum_{i=1}^k \lambda_i \nabla g_i(\mathbf{a}) 
+$$
+
+For any constraint $g_i(\mathbf{x}) = b_i$ for $i=1,\dots,k$ we may define a function $\tilde{g}_i (\mathbf{x}) = g_i(\mathbf{x} - b$, giving the constraint $\tilde{g}_i(\mathbf{x}) = 0$. We can therefore without loss of generality assume that $b_i = 0$.
+
+Defining $\mathbf{G}:\R^n \to\R^k$ by $\mathbf{G}(\mathbf{x}) = (g_i(\mathbf{x}))_{i=1}^k$, we can concisely write the constraint equations as $\mathbf{G}(\mathbf{x}) = \mathbf{0}$. Differentiating $\mathbf{G}$ we get the Jacobian $k\times n$ matrix $\mathbf{G}'(\mathbf{x}) = (\nabla g_i(\mathbf{x}))_{i=1}^k$. Since the gradients are linearly independent at $\mathbf{a}$, it follows by the rank theorem that $\mathbf{G}'(\mathbf{a})$ has $k$ independent columns. By reindexing if necessary, we may assume that the $k$ last columns are linearly independent. 
+
+For ease of notation define
+
+$$
+\begin{align*}
+  \mathbf{z} =& (x_1,\dots,x_m),\; m = n - k \\
+  \mathbf{y} =$ (x_{m+1},\dots,x_n)
+\end{align*}
+$$
+
+In this notation, the Jacobian can be written as the block matrix
+
+$$
+\mathbf{G}'(\mathbf{a}) = \begin{array}{c|c}
+  \frac{\partial\mathbf{G}}{\partial\mathbf{z}}(\mathbf{a}) & \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a})
+\end{array}
+$$
+
+Because $\frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a})$ consists of linearly independent columns, it follows that it is invertible. By the implicit function theorem, there is a differentiable function $\boldsymbol{\Phi}$ defined in a neighbourhood of $\tilde{\mathbf{z}} = (a_i)_{i=1}^m$ such that
+
+$$
+  \mathbf{G}(\tilde{\mathbf{z}}, \boldsymbol{\Phi}(\tilde{\mathbf{z}})) = \mathbf{0}
+$$
+
+and $\boldsymbol{\Phi}(\tilde{\mathbf{z}}) = \tilde{\mathbf{y}} = (\tilde{x}_j)_{j=m+1}^n$. We also know that
+
+$$
+  \boldsymbol{\Phi}'(\tilde{\mathbf{z}}) = -\left( \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\tilde{\mathbf{y}}) \right)^{-1} \frac{\partial\mathbf{G}}{\partial\mathbf{z}}(\tilde{\mathbf{x}})
+$$
+
+From the construction above and the assumptions of the theorem, it follows that the function $h:\R^m \to\R$
+
+$$
+  h(\mathbf{z}) = f(\mathbf{z}, \boldsymbol{\Phi}(\mathbf{z}))
+$$
+
+has a local extrema at $\tilde{\mathbf{z}}$ with $\nabla h(\tilde{\mathbf{z}}) = \mathbf{0}$. In order to apply the chain rule to find $\nabla h$, we define a chain function $\boldsymbol{\Psi}:\R^m \to\R^k$
+
+$$
+  \boldsymbol{\Psi}(\mathbf{z}) = \begin{bmatrix} \mathbf{z} \\ \boldsymbol{\Phi}(\mathbf{z}) \end{bmatrix}
+$$
+
+with Jacobian matrix 
+
+$$
+  \boldsymbol{\Psi}'(\mathbf{z}) = \begin{bmatrix} \mathbf{I}_{n} \\ \boldsymbol{\Phi}'(\mathbf{z}) \end{bmatrix}
+$$
+
+Applying the chain rule we get
+
+$$
+  \nabla h(\mathbf{z}) = \nabla f(\mathbf{z}, \boldsymbol{\Phi}(\mathbf{z}))\boldsymbol{\Psi}'(\mathbf{z})
+$$
+
+Rewrite $\nabla f(\mathbf{z},\mathbf{y})$ as
+
+$$
+\begin{align*}
+  \nabla_\mathbf{z} f(\mathbf{z},\mathbf{y}) =& \left( \frac{\partial f}{\partial z_1}(\mathbf{z}, \mathbf{y}),\dots, \frac{\partial f}{\partial z_m}(\mathbf{z}, \mathbf{y}), \frac{\partial f}{\partial y_1}(\mathbf{z}, \mathbf{y}),\dots,\frac{\partial f}{\partial y_k}(\mathbf{z}, \mathbf{y}) \right) \\
+  =& (\nabla_\mathbf{z}f(\mathbf{z}, \mathbf{y}), \nabla_\mathbf{y}f(\mathbf{z}, \mathbf{y}))
+\end{align*}
+$$
+
+where $\nabla_\mathbf{z}f(\mathbf{z}, \mathbf{y}) = \left( \frac{\partial f}{\partial z_i}(\mathbf{z}, \mathbf{y}) \right)_{i=1}^m$ is the gradient of $f$ as a function of $\mathbf{z}$ and  $\nabla_\mathbf{y}f(\mathbf{z}, \mathbf{y}) = \left( \frac{\partial f}{\partial y_j}(\mathbf{z}, \mathbf{y}) \right)_{j=1}^k$ is the gradient of $f$ as a function of $\mathbf{y}$. This allows us to write $\nabla h (\mathbf{z})$ as
+
+$$
+  \nabla h(\mathbf{z}) = \nabla_\mathbf{z} f(\mathbf{z}, \boldsymbol{\Phi(\mathbf{z})})\mathbf{I}_m + \nabla_\mathbf{y} f(\mathbf{z}, \boldsymbol{\Phi}(\mathbf{z}))\boldsymbol{\Psi}'(\mathbf{z})
+$$
+
+Since $\nabla h(\tilde{\mathbf{z}}) = \mathbf{0}$ and noting that $\mathbf{a} = (\tilde{\mathbf{z}}, \boldsymbol{\Phi}(\tilde{\mathbf{z}})$
+
+$$
+\begin{align*}
+  \mathbf{0} =& \nabla_\mathbf{z} f(\tilde{\mathbf{z}}, \boldsymbol{\Phi(\tilde{\mathbf{z}})}) + \nabla_\mathbf{y} f(\tilde{\mathbf{z}}, \boldsymbol{\Phi}(\tilde{\mathbf{z}}))\boldsymbol{\Psi}'(\tilde{\mathbf{z}}) \\
+  =& \nabla_\mathbf{z} f(\mathbf{a}) + \nabla_\mathbf{y} f(\mathbf{a})\left( \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) \right)^{-1} \frac{\partial\mathbf{G}}{\partial\mathbf{z}}(\mathbf{a})
+\end{align*}
+$$
+
+Assuming that $\nabla_\mathbf{y} f(\mathbf{a})\left( \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) \right)^{-1} = \boldsymbol{\Lambda} = (\lambda_i)_{i=1}^k$, the equation takes the form
+
+$$
+\begin{align*}
+  \nabla_\mathbf{z} f(\mathbf{a}) =& \boldsymbol{\Lambda} \frac{\partial\mathbf{G}}{\partial\mathbf{z}}(\mathbf{a}) \\
+  =& \sum_{i=1}^k \lambda_i \nabla_\mathbf{z} g_i(\mathbf{a})
+\end{align*}
+$$
+
+It remains to show that $\nabla_\mathbf{y}f(\mathbf{a}) \sum_{i=1}^k \lambda_i \nabla_\mathbf{y} g_i(\mathbf{a})$, which is equivalent to
+
+$$
+  \nabla_\mathbf{y} f(\mathbf{a}) =& \boldsymbol{\Lambda} \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) 
+$$
+
+Since $\boldsymbol{\Lambda} = \nabla_\mathbf{y} f(\mathbf{a}) \left( \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) \right)^{-1}$ we get
+
+$$
+  \boldsymbol{\Lambda} \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) =  \nabla_\mathbf{y} f(\mathbf{a}) \left( \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) \right)^{-1} \frac{\partial\mathbf{G}}{\partial\mathbf{y}}(\mathbf{a}) = \nabla_\mathbf{y} f(\mathbf{a}) 
+$$
+
+</details>
+</MathBox>
+
+
+<MathBox title='Lagrange multiplier method with single constraint' boxType='corollary'>
+
+
+<details>
+<summary>Proof</summary>
+
+
+</details>
+</MathBox>
+
 ## Integral calculus
 
 ### Gradient theorem
