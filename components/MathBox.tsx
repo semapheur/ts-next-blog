@@ -1,6 +1,6 @@
 type Props = {
   title: string
-  boxType: string
+  boxType: 'algorithm'|'axiom'|'conjecture'|'corollary'|'criteria'|'definition'|'example'|'lemma'|'observation'|'property'|'proposition'|'proof'|'remark'|'theorem'  
   children: string //{children: ReactNode};
   tag?: string
 }
