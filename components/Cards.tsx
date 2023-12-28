@@ -67,7 +67,7 @@ export default function Cards({children}: CardsProps) {
   const onMouseMove = (e: MouseEvent) => {
     if (!deckRef.current || !cardRefs.current) return
 
-    for (let card of cardRefs.current) {
+    for (const card of cardRefs.current) {
       if (!card) return
       
       const rect = card.getBoundingClientRect()
@@ -87,7 +87,7 @@ export default function Cards({children}: CardsProps) {
         bg-primary'
     >
       {children.map((node, i) => 
-        <Card key={'card.' + i} ref={(el: HTMLDivElement) => cardRefs.current.push(el)}>
+        <Card key={`card.${i}`} ref={(el: HTMLDivElement) => cardRefs.current.push(el)}>
           {node}
         </Card>
       )}
