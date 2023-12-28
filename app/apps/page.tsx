@@ -20,6 +20,11 @@ const content = [
     title: 'Opinion plot',
     description: 'An SVG-based visualization of binomial opinions in terms of belief, disbelief, uncertainty and base rate',
     slug: 'apps/opinion-plot'
+  },
+  {
+    title: 'Periodic table',
+    description: 'Periodic table of elements',
+    slug: 'apps/periodic-table'
   }
 ]
 
