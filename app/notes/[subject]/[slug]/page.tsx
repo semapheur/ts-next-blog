@@ -76,21 +76,21 @@ export default async function NotePage({params: {subject, slug}}: Props) {
   })
 
   return (
-    <main className='relative grid grid-cols-[1fr_auto] w-full 
+    <main className='relative grid grid-cols-[1fr_auto] h-full w-full overflow-y-clip 
       bg-primary shadow-inner-l dark:shadow-black/50'
     >
       <>
         <div key='div.note' className='h-full flex justify-center overflow-y-scroll'>
-        <article className='max-w-full md:max-w-read
-          prose prose-stone prose-sm md:prose-base dark:prose-invert 
-          py-8 px-2 md:px-0'
-        >
-          <h1 className='text-center text-5xl font-extrabold'>
-            {(frontmatter as NoteMatter)?.title}
-          </h1>
-          {content}
-        </article>
-      </div>
+          <article className='max-w-full md:max-w-read
+            prose prose-stone prose-sm md:prose-base dark:prose-invert 
+            py-8 px-2 md:px-0'
+          >
+            <h1 className='text-center text-5xl font-extrabold'>
+              {(frontmatter as NoteMatter)?.title}
+            </h1>
+            {content}
+          </article>
+        </div>
       {frontmatter?.showToc && <Toc key='toc.note' headings={headings}/>}
       </>
     </main>

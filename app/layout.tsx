@@ -30,28 +30,29 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const setInitialTheme = `
-  function getUserPreference() {
-    // Check if the user has explicitly picked light or dark theme
-    if (window.localStorage.getItem('theme')) {
-      return window.localStorage.getItem('theme');
+    function getUserPreference() {
+      // Check if the user has explicitly picked light or dark theme
+      if (window.localStorage.getItem('theme')) {
+        return window.localStorage.getItem('theme');
+      }
+      // Check if the media query prefers light or dark theme
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark' : 'light';
     }
-    // Check if the media query prefers light or dark theme
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark' : 'light';
-  }
-  const theme = getUserPreference();
-  document.body.dataset.theme = theme;
+    const theme = getUserPreference();
+    document.body.dataset.theme = theme;
 
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-`
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  `
+  
   return (
-    <html lang='en' className={inter.variable}>
+    <html lang='en'>
       <head />
-      <body className='flex flex-col h-full w-full bg-primary'>
+      <body className='flex flex-col bg-primary'>
         <script dangerouslySetInnerHTML={{__html: setInitialTheme}}/>
         <Header/>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>

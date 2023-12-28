@@ -19,7 +19,7 @@ type Props = {
 const TocItemBlock = block(function TocItem({heading, activeIds}: TocItem) {
     
   const subItem = useMemo(() => {
-		return <For each={heading.children || []}>{
+		return <For each={heading.children || []} as='li'>{
 			(h, index) => <TocItem key={`tocsubitem.${index}`} heading={h} activeIds={activeIds}/>
 		}</For>
 	}, [heading, activeIds])
@@ -48,7 +48,7 @@ const TocItemBlock = block(function TocItem({heading, activeIds}: TocItem) {
 			</a>
 			{heading.children &&
 				<ul key={`ul.${heading.slug}`}
-					className='list-none h-0 overflow-hidden pl-8 peer-checked:h-auto'
+					className='list-none h-0 overflow-hidden pl-4 peer-checked:h-auto'
 				>
 					{subItem}
 				</ul>}
@@ -96,25 +96,27 @@ const TocBlock = block(function Toc({headings}: Props) {
   return (
 		<>
 			<Toggle/>
-			<aside className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  
-				lg:static lg:translate-x-0 lg:translate-y-0
-				hidden lg:block peer-checked:block
-				max-h-[80%] md:max-h-full h-min md:min-w-max p-4 md:m-4 overflow-y-scroll
-				bg-primary/50 rounded-md shadow-md dark:shadow-black/50 backdrop-blur-sm'
+			<aside className='flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  
+				lg:static lg:translate-x-0 lg:translate-y-0 
+				hidden lg:flex peer-checked:flex
+				h-min min-h-0 max-h-[80%] lg:max-h-[calc(100%-16px)] lg:min-w-max
+				p-2 lg:m-2 bg-primary/50 rounded-md shadow-md dark:shadow-black/50 backdrop-blur-sm'
 			>
-				<div key='div.toc' className='flex justify-start gap-x-1 border-b border-b-text'>
-					<button key='button.toc' type='button' className='cursor-default'>
-						<BookIcon className='w-6 h-6 stroke-text' />
-					</button>
-					<h2 key='h2.toc' className='font-bold text-text'>Contents</h2>
-				</div>
-				<nav key='nav.toc'>
-					<ul className='list-none h-auto'>
-					<For each={headings || []}>{
-						(h, index) => <TocItemBlock key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
-					}</For>
-					</ul>
-				</nav>
+				<>
+					<div key='div.toc' className='flex justify-start gap-x-1 border-b border-b-secondary'>
+						<button key='button.toc' type='button' className='cursor-default'>
+							<BookIcon className='w-6 h-6 stroke-text' />
+						</button>
+						<h2 key='h2.toc' className='font-bold text-text'>Contents</h2>
+					</div>
+					<nav key='nav.toc' className='overflow-y-scroll'>
+						<ul className='list-none h-auto'>
+						<For each={headings || []} as='li'>{
+							(h, index) => <TocItemBlock key={`tocitem.${index}`} heading={h} activeIds={activeIds} />
+						}</For>
+						</ul>
+					</nav>
+				</>
 			</aside>
 		</>
   )
