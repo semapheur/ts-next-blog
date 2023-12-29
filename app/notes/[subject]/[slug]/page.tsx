@@ -46,9 +46,7 @@ const MDXOptions = {
   components: mdxComponents
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent?: ResolvingMetadata
+export async function generateMetadata({ params }: Props,
 ): Promise<Metadata> {
 
   const {subject, slug} = params
