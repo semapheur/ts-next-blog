@@ -15,5 +15,5 @@ const shells = [
 ]
 
 export default function Page() {
-  return <Bohr symbol='H' shells={shells}/>
+  return <Bohr number={118} symbol='H' shells={shells}/>
 }

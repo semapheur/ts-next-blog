@@ -37,6 +37,14 @@ module.exports = {
         'glow-sm': '0px 9px 30px rgb(0 0 0 / 0.1)'
       },
       keyframes: {
+        'spin-left': {
+          from: {
+            transform: 'rotate(0deg)',
+          },
+          to: {
+            transform: 'rotate(-360deg)'
+          }
+        },
         textstroke: {
           '0%': {
             'stroke-dasharray': '0 50%',

@@ -63,6 +63,7 @@ export default function ThemeToggle() {
 				viewBox={`0 0 ${VB_SIZE} ${VB_SIZE}`} 
 				width='2rem' height='2rem'
 			>
+				<title>Toggle dark/light mode</title>
 				<g className='origin-center fill-text'>
 					<path d={sunPath(UNIT)} fillRule='evenodd'/>
 					<circle className={`transition-transform duration-500 ease-out 

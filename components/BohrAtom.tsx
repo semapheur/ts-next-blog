@@ -4,11 +4,12 @@ import {useEffect, useRef} from 'react'
 import {block, For} from 'million/react' 
 
 type Props = {
+  number: number
   symbol: string
   shells: number[]
 }
 
-export default function BohrAtom({symbol, shells}: Props) {
+export default function BohrAtom({number, symbol, shells}: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
 
   return (
@@ -26,9 +27,17 @@ export default function BohrAtom({symbol, shells}: Props) {
       </text>
       {shells.map((electrons, index) =>
         <g>
+          <animateTransform
+            attributeName='transform'
+            type='rotate'
+            from='0'
+            to='360'
+            dur={`${3*(index + 1)**1.5}s`}
+            repeatCount='indefinite' 
+          />
           <circle r={index + 3} fill='none' 
-            className=''
-            stroke='rgb(var(--color-text))' strokeOpacity='0.3' strokeWidth='0.1'>
+            className='stroke-text/30 hover:stroke-yellow-300'
+            strokeWidth='0.1'>
             <title>{`Shell ${index + 1}: ${electrons} electrons`}</title>
           </circle>
           {[...Array(electrons).keys()].map((electron) => 

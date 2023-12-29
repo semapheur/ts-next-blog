@@ -19,6 +19,7 @@ export default function Loader({...props}: SVGProps<SVGSVGElement>) {
       className={'stroke-text/50 self-center'}
       {...props}
     >
+      <title>Infinity loader</title>
       <path id='inf' d={d} strokeWidth='5' strokeLinecap='round' />
       <use href='#inf' 
         strokeDasharray={`${l} ${g-l}`} strokeDashoffset={`${g}`} 
