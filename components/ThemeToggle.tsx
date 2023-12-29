@@ -53,7 +53,8 @@ export default function ThemeToggle() {
 			before:min-w-max before:rounded
 			before:bg-text/50 before:text-primary before:border-secondary
 			before:shadow-md before:backdrop-blur-sm
-			hover:before:content-[attr(aria-label)]' 
+			hover:before:content-[attr(aria-label)]'
+			type='button' 
 			aria-label={`Switch to ${inactiveTheme} theme`} 
 			onClick={() => setActiveTheme(inactiveTheme)}
 		>
