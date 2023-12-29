@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, MouseEvent } from 'react'
+import { useState, PointerEvent } from 'react'
 import {block, For} from 'million/react'
 
 import BohrAtom from 'components/BohrAtom'
@@ -27,7 +27,7 @@ const ElementBlock = function Element({element}: ElementProps) {
       <small>{`(${element.group_block})`}</small><br/>
       <small className='text-normal'>{description}</small>
     </h1>
-    <section className='h-full inline row-span-2'> {element?.shells &&
+    <section className='h-full row-span-2'> {element?.shells &&
       <BohrAtom number={(element.number as number)} symbol={element.symbol} shells={element.shells} height='100%'/>
     }
     </section>
@@ -49,7 +49,7 @@ const ElementBlock = function Element({element}: ElementProps) {
 const PeriodicTableBlock = block(function PeriodicTable() {
   const [selElement, setElement] = useState<Element>()
 
-  function handleHover(event: MouseEvent<HTMLDivElement> & {
+  function handleHover(event: PointerEvent<HTMLDivElement> & {
     target: HTMLDivElement
   })
   {
@@ -74,7 +74,7 @@ const PeriodicTableBlock = block(function PeriodicTable() {
       <div key={element.name}
         id={element.number.toString()}
         className='@container relative grid rounded-sm hover:border border-text'
-        onMouseEnter={handleHover} onFocus={() => {}}
+        onPointerEnter={handleHover} onFocus={() => {}}
         style={{
           gridColumn: element.xpos,
           gridRow: element.ypos,
