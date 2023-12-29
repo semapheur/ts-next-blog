@@ -1,7 +1,6 @@
 'use client'
 
-import {useEffect, useRef, SVGProps} from 'react'
-import {block, For} from 'million/react' 
+import {SVGProps} from 'react'
 
 type Props = {
   number: number
@@ -10,10 +9,9 @@ type Props = {
 } & SVGProps<SVGSVGElement>
 
 export default function BohrAtom({number, symbol, shells, ...props}: Props) {
-  const svgRef = useRef<SVGSVGElement>(null)
 
   return (
-    <svg ref={svgRef} viewBox='-10 -10 20 20' {...props}>
+    <svg viewBox='-10 -10 20 20' {...props}>
       <circle r='2' fill='rgb(var(--color-text))' fillOpacity='0.3'>
         <title>{`Bohr atom of ${symbol}`}</title>
       </circle>
@@ -55,5 +53,3 @@ export default function BohrAtom({number, symbol, shells, ...props}: Props) {
       )}
     </svg>)
 }
-
-// 
