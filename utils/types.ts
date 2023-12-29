@@ -2,28 +2,28 @@ import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import Vector from 'utils/vector'
 
 export type Vec2 = {
-  x: number,
+  x: number
   y: number
 }
 
 export type Line = {
-  start: DOMPoint,
+  start: DOMPoint
   end: DOMPoint 
 }
 
 export type ViewRange = {
-  x: Vector,
+  x: Vector
   y: Vector
 }
 
 export type MDXPost<T> = {
-  serialized: MDXRemoteSerializeResult,
+  serialized: MDXRemoteSerializeResult
   frontmatter: T
 }
 
 export type NoteMatter = {
-  slug: string,
-  title: string,
+  slug: string
+  title: string
   showToc?: boolean
 }
 
@@ -32,8 +32,8 @@ export type NoteDetails = {
 }
 
 export type NoteHeading = {
-  text: string;
-  slug: string;
-  level: number;
-  children?: NoteHeading[];
+  text: string
+  slug: string
+  level: number
+  children?: NoteHeading[]
 }

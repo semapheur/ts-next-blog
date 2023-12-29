@@ -1,4 +1,10 @@
 import dynamic from 'next/dynamic'
+import {Metadata} from 'next'
+
+export const metadata: Metadata = {
+  title: 'Subjective opinion plot',
+  description: 'An SVG-based visualization of binomial subjective opinion in terms of belief, disbelief, uncertainty and base rate'
+}
 
 const Opinion = dynamic(() => import('components/OpinionPlot'), {
   ssr: false}

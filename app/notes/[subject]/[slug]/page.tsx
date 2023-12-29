@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import dynamic from 'next/dynamic'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'fs'
@@ -6,7 +7,8 @@ import path from 'path'
 import { markdownHeadings, remarkPlugins, rehypePlugins } from 'utils/mdxParse'
 import { mdxComponents } from 'utils/mdxComponents'
 import Loader from 'components/Loader'
-import { NoteMatter } from 'utils/types'
+import { NoteHeading, NoteMatter } from 'utils/types'
+import { MDXProps} from 'mdx/types'
 
 const Toc = dynamic(() => import('./Toc'), {
   ssr: false,
@@ -29,6 +31,45 @@ type Params = {
 
 type Props = {
   params: Params
+}
+
+const MDXOptions = {
+  options: {
+    parseFrontmatter: true,
+    mdxOptions: {
+      development: process.env.NODE_ENV !== 'production',
+      remarkPlugins: remarkPlugins,
+      // @ts-ignore
+      rehypePlugins: rehypePlugins
+    }
+  },
+  components: mdxComponents
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent?: ResolvingMetadata
+): Promise<Metadata> {
+
+  const {subject, slug} = params
+  const {source, headings} = await getNote(subject, slug)
+  const {content, frontmatter} = await compileMDX({
+    source: source,
+    ...MDXOptions as MDXProps
+  })
+
+  const result: string[] = []
+
+  const callback = (h: NoteHeading) => {
+    result.push(h.text)
+    h.children?.forEach(callback)
+  }
+  headings.forEach(callback)
+
+  return {
+    title: (frontmatter as NoteMatter).title,
+    description: result.join('\n')
+  }
 }
 
 export async function generateStaticParams() {
@@ -63,16 +104,7 @@ export default async function NotePage({params: {subject, slug}}: Props) {
   
   const {content, frontmatter} = await compileMDX({
     source: source,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        development: process.env.NODE_ENV !== 'production',
-        remarkPlugins: remarkPlugins,
-        // @ts-ignore
-        rehypePlugins: rehypePlugins
-      }
-    },
-    components: mdxComponents
+    ...MDXOptions as MDXProps
   })
 
   return (
