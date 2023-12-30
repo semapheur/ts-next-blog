@@ -84,13 +84,13 @@ const PeriodicTableBlock = block(function PeriodicTable() {
           gridRow: element.ypos,
           backgroundColor: `rgb(var(--color-${element.group_block?.replaceAll(' ', '-')}))`
       }}>
-        <span className='absolute top-0 left-1 text-text text-[15cqw] font-bold'>
+        <span className='invisible @md:visible absolute top-0 left-1 text-text text-[15cqw] font-bold'>
           {element.number}
         </span>
         <span className='m-auto text-text text-[clamp(0.25rem,0.5rem+20cqw,1.5rem)]'>
           {element.symbol}
         </span>
-        <span className='absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]'>
+        <span className='invisible @md:visible absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]'>
           {element.name}
         </span>
       </div>
