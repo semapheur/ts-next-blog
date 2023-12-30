@@ -6,12 +6,13 @@ import { wavelengthToColor, rgbToHex } from 'utils/color'
 
 type Props = {
   wavelengths: number[]
+  name: string
 } & SVGProps<SVGSVGElement>
 
-export default function SpectralLines({wavelengths, ...props}: Props) {
+export default function SpectralLines({wavelengths, name, ...props}: Props) {
 
   return (<svg viewBox='0 0 1 1' {...props}>
-    <title>Spectral lines</title>
+    <title>{`Emission spectrum for ${name}`}</title>
     <defs>
     <linearGradient id='spectrum'>
       <stop id='380nm' offset='0' stopColor='#020005'/>
@@ -93,8 +94,8 @@ export default function SpectralLines({wavelengths, ...props}: Props) {
     </defs>
     <g>
       <rect width='100%' height='100%' fillOpacity='0.5' fill='url(#spectrum)'/>
-      {wavelengths.map((w) => 
-        <line x1={(w - 380)/370} y1='0' x2={(w - 380)/370} y2='1' 
+      {wavelengths.map((w, index) => 
+        <line key={`line.${index}`} x1={(w - 380)/370} y1='0' x2={(w - 380)/370} y2='1' 
           stroke={wavelengthToColor(w, true) as string} 
           strokeWidth='0.005'
         >

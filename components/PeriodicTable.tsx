@@ -42,7 +42,8 @@ const ElementBlock = function Element({element}: ElementProps) {
     </section>
     <section className='text-text text-center'>
       <h2 className='text-[3cqw]'>Spectral lines</h2>
-      <SpectralLines wavelengths={element.emission_wavelengths_nm} width='100%' height='2rem' preserveAspectRatio='none'/>
+      <SpectralLines wavelengths={element.emission_wavelengths_nm} name={element.name} 
+        width='100%' height='2rem' preserveAspectRatio='none'/>
     </section>
   </>)
 }
