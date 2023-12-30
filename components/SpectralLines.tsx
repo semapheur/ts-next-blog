@@ -96,7 +96,7 @@ export default function SpectralLines({wavelengths, ...props}: Props) {
       {wavelengths.map((w) => 
         <line x1={(w - 380)/370} y1='0' x2={(w - 380)/370} y2='1' 
           stroke={wavelengthToColor(w, true) as string} 
-          strokeWidth='0.002'
+          strokeWidth='0.005'
         >
           <title>{`${w} nm`}</title>
         </line>

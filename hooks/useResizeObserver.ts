@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
-type Size = {
+export type Size = {
   height: number, 
   width: number
 }
