@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from 'next'
+import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'fs'

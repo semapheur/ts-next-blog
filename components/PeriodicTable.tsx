@@ -32,7 +32,7 @@ const ElementBlock = function Element({element}: ElementProps) {
     }
     </section>
     <section className='text-text text-center'>
-      <h2 className='text-[3cqw]'>Atomic mass <abbr>(u)</abbr></h2>
+      <h2 className='text-[3cqw]'>Atomic mass <abbr title='Atomic mass unit: 1.66×10−27 kg'>(u)</abbr></h2>
       <strong className='text-[5cqw]'>{element.atomic_mass?.toFixed(3)}</strong>
     </section>
     <section className='text-text text-center'>
@@ -83,7 +83,7 @@ const PeriodicTableBlock = block(function PeriodicTable() {
         <span className='absolute top-0 left-1 text-text text-[15cqw] font-bold'>
           {element.number}
         </span>
-        <span className='m-auto text-text text-[clamp(0.5rem,0.5rem+30cqw,2rem)]'>
+        <span className='m-auto text-text text-[clamp(0.5rem,0.5rem+30cqw,1.5rem)]'>
           {element.symbol}
         </span>
         <span className='absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]'>
