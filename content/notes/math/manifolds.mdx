@@ -5265,13 +5265,13 @@ The problem of finding a solution to a PDE given an initial condition is called 
 A linear first-order PDE depends linearly or affinely on the unknown function and its derivatives. In coordinate form, the most general linear PDE takes the form
 
 $$
-  b(x)u(x) + \sum_{i=1}^n a^i(x)\frac{\partia u}{\partial x^i}(x) = f(x)
+  b(\mathbf{x})u(\mathbf{x}) + \sum_{i=1}^n a^i(\mathbf{x})\frac{\partia u}{\partial x^i}(x) = f(\mathbf{x})
 $$
 
 where $a^i$, $b$ and $f$ are smooth, real-valued functions defined on some open subset $\Omega\subseteq\R^n$ and $u$ is an unknown smooth function on $\Omega$. The partial derivatives represent the action on $u$ of a smooth vector field $A\in\mathfrak{X}(\Omega)$
 
 $$
-  A_x = \sum_{i=1}^n a^i(x) \left.\frac{\partial}{\partial x^1}\right|_x
+  A_\mathbf{x} = \sum_{i=1}^n a^i(\mathbf{x}) \left.\frac{\partial}{\partial x^i}\right|_\mathbf{x}
 $$
 
 In terms of $A$, the linear first order PDE takes the simple form $Au + bu = f$. The Cauchy problem for $Au + bu = f$ with initial hypersurface $S$ is called *noncharacteristic* if $A$ is nowhere tangent to $S$.
@@ -5311,6 +5311,68 @@ The solution $\hat{u}$ is a smooth function of $(t,\mathbf{p})$. Thus, $u = \hat
 </details>
 </MathBox>
 
+### Quasilinear equations
+
+A *quasilinear* PDE can be written as an affine equation in the highest-order derivatives of the unknown function, with coefficients that may depend on the function itself and its derivatives of lower order. In coordinates, a *quasilinear* first-order PDE takes the form
+
+$$
+  \sum_{i=1}^n a^i (\mathbf{x}, u(\mathbf{x})) \frac{\partial u}{\partial x^i} = f(\mathbf{x}, u(\mathbf{x}))
+$$
+
+for an unknown function $u(x^1,\dots,x^n)$, where $a^i$ and $f$ are smooth real-valued functions defined on some open subset $W\subseteq\R^{n+1}$. Let $S\subseteq\R^n$ be a smooth, embedded hypersurface, and $\varphi:S\to\R$ a smooth function whose graphi is contained in $W$. A quasilinear Cauchy problem with initial condition $u|_S = \varphi$, is noncharacteristic if the vector field $A^\varphi$ along $S$ defined bY
+
+$$
+  A^\varphi|_\mathbf{x} = \sum_{i=1}^n a^i (\mathbf{x}, \varphi(\mathbf{x})) \left.\frac{\partial}{\partial x^i}\right|_\mathbf{x} 
+$$
+
+is nowhere tangent to $S$.
+
+<MathBox title='The quasilinear Cauchy problem' boxType='theorem'>
+Let $M$ be a smooth manifold. Suppose that $S\subseteq M$ is an embedded hypersurface, and that $A\in\mathfrak{X}(M)$ is a smooth vector field that is nowhere tangent to $S$. Given functions $b,f\in C^\infty (M)$ and $\varphi\in C^\infty (S)$, then for some neighbourhood $U$ of $S$ in $M$, there exists a unique solution $u\in C^\infty (U)$ to the noncharacteristic Cauchy problem
+
+$$
+\begin{align*}
+  \sum_{i=1}^n a^i (\mathbf{x}, u(\mathbf{x})) \frac{\partial u}{\partial x^i} =& f(\mathbf{x}, u(\mathbf{x})) \\
+  u|_S =& \varphi
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The key is to conver the dependent variable $u$ to an additional independent variable. Define the characteristic vector field for the quasilinear PDE to be the vector field $\xi$ on $W\subseteq\R^{n+1}$ given bY
+
+$$
+  \xi_{\mathbf{x},z} = f(\mathbf{x}, z) \left.\frac{\partial}{\partial z}\right|_{(\mathbf{x}, z)} + \sum_{i=1}^n a^i(\mathbf{x},z) \left.\frac{\partial}{\partial x^i}\right|_{(\mathbf{x},z)}
+$$
+
+Suppose that $u$ is a smooth function defined on an open subset $V\subseteq\R^n$ whose graph $\Gamma(u) = \Set{(\mathbf{x}, u(\mathbf{x})) | \mathbf{x}\in V}$ is contained in $W$. Then the quasilinear PDE hold if and only if $\xi(z - u(\mathbf{x})) = 0$ at all points of $\Gamma(u)$. Since $z - u(\mathbf{x})$ is a defining function for $\Gamma(u)$ it follows that $u$ solves the quasilinear PDE if and only if $\xi$ is tangent to $\Gamma(u)$. The idea is to construct the graph of $u$ as the flowout by $\xi$ from a suitable initial submanifold.
+
+Let $\Gamma(\varphi) = \Set{(\mathbf{x}, \varphi(\mathbf{x})) | \mathbf{x}\in S}$ denote the graph of $\varphi$, which is an $(n-1)$-dimensional embedded submanifold of $W$. The projection $\pi: W\to\R^n$ onto the first $n$ variables maps $\Gamma(\varphi)$ diffeomorphically onto $S$, so if $\xi$ were tangent to $\Gamma(\varphi)$ at some point $(\mathbf{x},\varphi(\mathbf{x}))$, then $\mathrm{d}\phi(\xi_{(\mathbf{x}, \varphi(x))})$ would be tangent to $S$ at $\mathbf{x}$. However, a direct computation shows that
+
+$$
+  \mathrm{d}\phi(\xi_{(\mathbf{x}, \varphi(x))}) = A^\varphi|_\mathbf{x}
+$$
+
+so the noncharacteristic assumption guarantees that $\xi$ is nowhere tangent to $\Gamma(\varphi)$.
+
+Applying the flowout theorem to the vector field $\xi$ starting on $\Gamma(\varphi)\subseteq W$, we obtain an immersed $n$-dimensional submanifold $\mathcal{R}\subseteq W$ containing $\Gamma(\varphi)$, such that $\xi$ is everywhere tangent to $\mathcal{R}$. If we can show that $\mathcal{R}$ is the graph of a smooth function $u$, at least locally near $\Gamma(\varphi)$, then $u$ will be a solution to the Cauchy problem.
+
+Let $\mathbf{p}\in S$ be arbitrary. At $(\mathbf{p},\varphi(\mathbf{p}))\in\Gamma(\varphi)\subseteq \mathcal{R}$, the tangent space to $\mathcal{R}$ is spanned by the vector $\xi_{(\mathbf{p}, \varphi(\mathbf{p}))}$ together with $T_{(\mathbf{p}, \varphi(\mathbf{p}))} \Gamma(\varphi)$. The restriction of $\pi$ to $\Gamma(\varphi)$ is a diffeomorphism onto $S$, so $\mathrm{d}\pi$ maps $T_{(\mathbf{p}, \varphi(\mathbf{p}))}\Gamma(\varphi)$ isomorphically onto $T_\mathbf{p}S$. On the other hand, $\mathrm{d}\pi$ takes $\xi_{(\mathbf{p},\varphi(\mathbf{p}))}$ to $A^\varphi|_\mathbf{p}$. By the noncharacteristic assumption, $A^\varphi|_\mathbf{p} \notin T_\mathbf{p} S$, so $\mathbf{d}\pi$ is injective on $T_{(\mathbf{p}, \varphi(\mathbf{p}))} \mathcal{R}$, and thus for dimensional reasons $T_{(\mathbf{p},\varphi(\mathbf{p}))}\R^{n+1} = T_{(\mathbf{p}, \varphi(\mathbf{p}))} \mathcal{R} \otimes \mathrm{ker}\left(\mathrm{d}\pi_{(\mathbf{p}, \varphi(\mathbf{p}))} \right)$. Because $\mathrm{ker}\left(\mathrm{d}\pi_{(\mathbf{p}, \varphi(\mathbf{p}))} \right)$ is the tangent space to $\Set{\mathbf{p}}\times\R$, it follows that $\mathcal{R}$ intersects $\Set{\mathbf{p}}\times\R$ transversely at $(\mathbf{p},\varphi(\mathbf{p}))$. By local characterization of graphs, there exists a neighbourhood $V$ of $(\mathbf{p},\varphi(\mathbf{p}))$ in $\mathcal{R}$ and a neighbourhood $U$ of $\mathbf{p}\in\R^n$ such that $V$ is the graph of a smooth function $u: U\to\R$. This function solves the Cauchy problem in $U$.
+
+To prove uniqueness, we might need to shrink $U$. Because $\mathcal{R}$ is a flowout, it is the image of some open subset $\mathcal{O}_\delta \subseteq\R\times\Gamma(\varphi(\mathbf{p}))$ under the flow of $\xi$. Choose $V$ small enough that it is the image under flow of a set of the form $(-\varepsilon,\varepsilon)\times Y\subseteq \mathcal{O}_\delta$, for some $\varepsilon > 0$ and some neighbourhood $Y$ of $(\mathbf{p},\varphi(\mathbf{p}))$ in $\Gamma(\varphi)$. With this assumption, $\Gamma(u)$ is exactly the union of the images of the integral curves of $\xi$ starting at points of $Y$ and flowing for time $|t| < \varepsilon$. 
+
+Suppose that $\tilde{u}$ is any other solution to the same Cauchy problem on the same open subset $U$. As noted above, this means that $\xi$ is tangent to the graph of $\tilde{u}$, and the initial condition ensures that $Y = \Gamma(\varphi) \cap U \subseteq \Gamma(\tilde{u})$. Since the graph of $\tilde{u}$ is a properly embedded submanifold of $U\times\R$, then each integral curve of $\xi$ in $U\times\R$ starting at a point of $Y$ must lie entirely in the graph of $\tilde{u}$. Thus $\Gamma(\tilde{u}) \subseteq \Gamma(u)$. However, then $\Gamma(\tilde{u})$ cannot contain any point that are not in $\Gamma(u)$ and still be graph of a function, so $\tilde{u} = u$ on $U$.
+</details>
+</MathBox>
+
+To find an explicit solution to a quasilinear Cauchy problem, we begin by choosin a smooth local parametrization of $S$, written as $\mathbf{s}\mapsto X(\mathbf{s})$ for $\mathbf{s} = (s^2,\dots,s^n)\in \Omega\subseteq\R^{n-1}$. Then the map $\tilde{X}:\Omega\to\R^{n+1}$ given by $\tilde{X}(\mathbf{s}) = (X(\mathbf{s}),\varphi(X(\mathbf{s})))$ is a local parametrization of $\Gamma(\varphi)$, and a local parametrization of $\mathcal{R}$ is given by
+
+$$
+  \Psi(t,\mathbf{s}) = \theta_t (\tilde{X}(\mathbf{s}))
+$$
+
+where $\theta$ is the flow of $\xi$. To rewrite $\mathcal{R}$ as a graph, just invert the map $\pi\circ\Psi:\Omega\to\R^n$ locally by solving for $(x^1,\dots,x^n)$ in terms of $(t,s^2,\dots,s^n)$. Then the $z$-component of $\Psi$, written as a function of $(x^1,\dots,x^n)$, is a solution to the Cauchy problem.
 
 # Riemannian manifolds
 
