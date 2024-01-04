@@ -5374,6 +5374,162 @@ $$
 
 where $\theta$ is the flow of $\xi$. To rewrite $\mathcal{R}$ as a graph, just invert the map $\pi\circ\Psi:\Omega\to\R^n$ locally by solving for $(x^1,\dots,x^n)$ in terms of $(t,s^2,\dots,s^n)$. Then the $z$-component of $\Psi$, written as a function of $(x^1,\dots,x^n)$, is a solution to the Cauchy problem.
 
+# Vector bundles
+
+<MathBox title='Vector bundle' boxType='definition'>
+Let $M$ be a topological space. A (real) *vector bundle* of rank $k$ over $M$ is a topological space $E$ together with a surjective continuous map $\pi:E\to M$ satisfying:
+1. For each $\mathbf{p}\in M$, the fiber $E_\mathbf{p} = \pi^{-1}(\mathbf{p})$ over $\mathbf{p}$ is endowed with the structure of a $k$-dimensional real vector space.
+2. For each $\mathbf{p}\in M$, there exist a neighbourhood $U$ of $\mathbf{p}$ in $M$ and a homomorphism $\Phi: \pi^{-1}(U) \to U\times\R^k$, called a *local trivialization* of $E$ over $U$, satisfying the following conditions:
+    - $\pi_U \circ\Phi = \pi$, where $\pi_U: U\times\R^k \to U$ is the projection
+    - for each $\mathbf{q}\in U$, the restriction of $\Phi$ to $E_\mathbf{q}$ is a vector space isomorphism from $E_\mathbf{q}$ to $\Set{\mathbf{q}}\times\R^k \cong \R^k$
+
+The space $E$ is called the *total space of the bundle*, $M$ is called its *base*, and $\pi$ is its projection. If $M$ and $E$ are smooth manifolds with or without boundary, $\pi$ is a smooth map, and the local trivialization can be chosen to be diffeomorphisms, then $E$ is a *smooth vector bundle*. In this case, we call any local trivialization that is a diffeomorphism onto its image a *smooth local trivialization*. 
+
+If there exists a local trivialization of $E$ over all of $M$, called a *global trivialization* of $E$, then $E$ is said to be a *trivial bundle*. In this case, $E$ itself is homeomorphic to the product space $M\times\R^k$. If $E\to M$ is a smooth bundle that admits a smooth global trivialization, then $E$ is *smoothly trivial*. In this case $E$ is diffeomorphic to $M\times\R^k$.
+
+A rank-$1$ vector bundle is often called a *line bundle*.
+</MathBox>
+
+<MathBox title='The tangent bundle as a vector bundle' boxType='proposition'>
+Let $M$ be a smooth $n$-manifold with or without boundary, and let $TM$ be its tangent bundle. With its standard projection map, its natural vector space structure on each fiber, and the topology and smooth structure, $TM$ is a smooth vector bundle of rank $n$ over $M$.
+
+<details>
+<summary>Proof</summary>
+
+Given any smooth chart $(U,\varphi)$ for $M$ with coordinate functions $(x^j)$, define a map $\Phi:\pi^{-1} (U)\to U\times\R^n$ by
+
+$$
+  \Phi\left(v^i \left.\frac{\partial}{\partial x^i}\right|_\mathbf{p}\right) = (\mathbf{p}, (v^1,\dots,v^n))
+$$
+
+This is linear on fibers and satisfies $\pi_1 \circ\Phi = \pi$. The composite map
+
+$$
+  \pi^{-1}(U) \xrightarrow{\Phi} U\times\R^n \xrightarrow{\varphi\times\mathrm{id}_{\R^n}} \varphi(U)\times\R^n
+$$
+
+is equal to the coordinate map $\tilde{\varphi}: \pi^{-1}(U) \to\R^{2n}$ given by
+
+$$
+  \tilde{\varphi}\left(v^i \left.\frac{\partial}{\partial x^i}\right|_\mathbf{p} \right) = (x^1(\mathbf{p}),\dots,x^n(\mathbf{p}), v^1,\dots,v^n)
+$$
+
+Since both $\tilde{\varphi}$ and $\varphi\times\mathrm{id}_{\R^n}$ are diffeomorphisms, so is $\Phi$. Thus, $\Phi$ satisfies all the conditions for a smooth local trivialization.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $\pi:E\to M$ be a smooth vector bundle of rank $k$ over a smooth manifold $M$. Suppose that $\Phi:\pi^{-1}(U)\to U\times\R^k$ and $\Psi:\pi^{-1}(V)\to V\times\R^k$ are two smooth local trivializations of $E$ with $U\cap V \neq\emptyset$. There exists a smooth map $\tau: U\cap V \to\mathrm{GL}(k, \R)$ such that the composition $\Phi\circ\Ps{-1}: (U\cap V)\times\R^k \to (U\cap V)\times\R^k$ has the form
+
+$$
+  \Phi\circ\Psi^{-1}(\mathbf{p}, \mathbf{v}) = (\mathbf{p}, \tau(\mathbf{p})\mathbf{v})
+$$
+
+where $\tau(\mathbf{p})\mathbf{v}$ denotes the usual action of the $k\times k$ matrix $\tau(\mathbf{p})$ on the vector $\mathbf{v}\in\R^k$.
+
+<details>
+<summary>Proof</summary>
+
+The following diagram commutes:
+
+$$
+\begin{CD}
+  (U\cap V)\times\R^k @<{\Psi^{-1}}<< \pi^{-1}(U\cap V) @>{\Phi}>> (U\cap V)\times\R^k \\
+  @V{\pi_1}VV @V{\pi}VV @VV{\pi_1}V \\
+  U\cap V @= U\cap V @= U\cap V
+\end{CD}
+$$
+
+where the maps on top are to be interpreted as the restrictions of $\Psi$ and $\Phi$ to $\pi^{-1}(U\cap V)$. It follows that $\pi_1 \circ(\Phi\circ\Psi^{-1}) = \pi_1$, which means That
+
+$$
+  \Phi\circ\Psi^{-1}(\mathbf{p},\mathbf{v}) = (\mathbf{p}, \sigma(\mathbf{p},\mathbf{v}))
+$$
+for some smooth map $\sigma: (U\cap V)\times\R^k \to\R^k$. Moreover, for each fixed $\mathbf{p}\in U\cap V$, the map $\mathbf{v}\mapsto\sigma(\mathbf{p},\mathbf{v})$ from $\R^k$ to itself is an invertible linear map, so there is a nonsingular $k\times k$ matrix $\tau(\mathbf{p})$ such that $\sigma(\mathbf{p},\mathbf{v}) = \tau(\mathbf{p})\mathbf{v}$. It remains to show that the transition map $\tau: U\cap V\to\mathrm{GL}(k,\R)$ is smooth.
+</details>
+</MathBox>
+
+<MathBox title='Vector bundle chart lemma' boxType='lemma'>
+Let $M$ be a smooth $n$-manifold with or without boundary, and suppose that for each $\mathbf{p}\in M$, we are given a real vector space $E_\mathbf{p}$ of some fixed dimension $k$. Let $E = \bigsqcup_{\mathbf{p}\in M} E_\mathbf{p}$, and let $\pi:E\to M$ be the map that takes each element of $E_\mathbf{p}$ to the point $\mathbf{p}$. Suppose furthermore that we are given the following data:
+1. an open cover $\Set{U_\alpha}_{\alpha\in A}$ of $M$
+2. for each $\alpha\in A$, a bijective map $\Phi_\alpha:\pi^{-1}(U_\alpha)\to U_\alpha\times\R^k$ whose restriction to each $E_\mathbf{p}$ is a vector space isomorphism from $E_\mathbf{p}$ to $\Set{\mathbf{p}}\times\R^k \cong\R^k$
+3. for each $\alpha,\beta\in A$ with $U_\alpha \cap U_\beta \neq\emptyset$, a smooth map $\tau_{\alpha\beta}: U_\alpha \cap U_\beta \to \mathrm{GL}(k,\R)$ such that the map $\Phi_\alpha \circ\Phi_\beta^{-1}$ from $(U_\alpha \cap U_\beta)\times\R^k$ to itself has the form
+
+$$
+  \Phi_\alpha \circ \Phi_\beta^{-1} (\mathbf{p}, \mathbf{v}) = (\mathbf{p}, \tau_{\alpha\beta}(\mathbf{p})\mathbf{v})
+$$
+
+Then $E$ has a unique topology and smooth structure making it into a smooth manifold with or without boundary and a smooth rank-$k$ vector bundle over $M$, with $\pi$ as projection and $\Set{(U_\alpha, \Phi_\alpha)}$ as smooth local trivializations.
+
+<details>
+<summary>Proof</summary>
+
+For each point $\mathbf{p}\in M$, choose some $U_\alpha$ containing $\mathbf{p}$; choose a smooth chart $(V_\mathbf{p}, \varphi_\mathbf{p})$ for $M$ such that $\mathbf{p}\in V_\mathbf{p}\subseteq U_\alpha$, and let $\hat{V}_\mathbf{p} = \varphi_\mathbf{p}(V_\mathbf{p}) \subseteq\R^n$ or $H^n$. Define a map $\tilde{\varphi}_\mathbf{p} = \pi^{-1}(V_\mathbf{p}) \to\hat{V}_\mathbf{p} \times\R^k$ by $\tilde{\varphi}_\mathbf{p} = (\varphi_\mathbf{p} \times\mathrm{id}_{\R^k})$\circ\Phi_\alpha$ such that
+
+$$
+  \pi^{-1}(V_\mathbf{p}) \xrightarrow{\Phi_\alpha} V_\mathbf{p}\times\R^k \xrightarrow{\varphi_\mathbf{p}\times\mathrm{id}_{\R^k}} \hat{V}_\mathbf{p}\times\R^k
+$$
+
+We will show that the collection of all such charts $\Set{(\pi^{-1}(V_\mathbf{p}), \tilde{\varphi}) | \mathbf{p}\in M}$ satisfies the conditions of the smooth manifold chart lemma, and therefore give $E$ the strcuture of a smooth manifold with or without boundary.
+
+As a composition of bijective maps, $\tilde{\varphi}_\mathbf{p}$ is bijective onto an open subset of either $\R^n \times\R^k = \R^{n+k}$ or $H^n \times\R^n \approx H^{n+k}$. For any $\mathbf{p},\mathbf{q}\in M$, it is easy to check that
+
+$$
+  \tilde{\varphi}_\mathbf{p}(\pi^{-1}(V_\mathbf{p}) \cap \pi^{-1}(V_\mathbf{q})) = \varphi_\mathbf{p}(V_\mathbf{p} \cap V_\mathbf{q}) \times\R^k
+$$
+
+which is open because $\varphi_\mathbf{p}$ is a homeomorphism onto an open subset of $\R^n$ or $H^n$. Wherever two such charts overlap, we have
+
+$$
+  \tilde{\varphi}_\mathbf{p} \circ\tilde{\varphi}_\mathbf{q}^{-1} = (\varphi_\mathbf{p} \times\mathrm{id}_{\R^k}) \circ \Phi_\alpha \circ\Phi_\beta^{-1}\circ(\varphi_\mathbf{q} \times \mathrm{id}_{\R^k})^{-1}
+$$
+
+Since $\varpho_\mathbf{p} \times \mathrm{id}_{\R^k}, \varphi_\mathbf{q}\times\mathrm{id}_{\R^k}$ and $\Phi_\alpha \circ \Phi_\beta^{-1}$ are diffeomorphisms, the compositions is a diffeomorphism. Thus, the first three conditions of the smooth manifold lemma chart are satisfied. Because the open cover $\Set{V_\mathbf{p} | \mathbf{p}\in M}$ has a countable subcover, the fourt condition of the lemma is satisfied as well.
+
+To check the Hausdorff condition, note that any two points in the same space $E_\mathbf{p}$ lie in one of the charts we have constructed, whiel if $\xi\in E_\mathbf{p}$, and $\eta\in E_\mathbf{q}$ with $\mathbf{p}\neq\mathbf{q}$ we can choose $V_\mathbf{p}$ and $V_\mathbf{q}$ to be disjoint neighbourhood of $\mathbf{p}$ and $\mathbf{q}$, so that the sets $\pi^{-1}(V_\mathbf{p})$ and $\pi^{-1}(V_\mathbf{q})$ are disjoint coordinate neighbourhoods containing $\xi$ and $\eta$, respectively. Thus, we have given $E$ the structure of a smooth manifold with or without boundary.
+
+With respect to this structure, each of the maps $\Phi_\alpha$ is a diffeomorphism, because in terms of the coordinate charts $(\pi^{-1}(V_\mathbf{p}), \tilde{\varphi}_\mathbf{p})$ for $E$ and $(V_\mathbf{p}\times\R^k, \varphi_\mathbf{p} \times\mathrm{id}_{\R^k})$ for $V_\mathbf{p}\times\R^k$, the coordinate representation of $\Phi_\alpha$ is the identity map. The coordinate representation of $\pi$, with respect to the same chart for $E$ and the chart $(V_\mathbf{p}, \varphi_\mathbf{p})$ for $M$, is $\pi(\mathbf{x},\mathbf{v}) = \mathbf{x}$, so $\pi$ is smooth as well. Because each $\Phi_\alpha$ maps $E_\mathbf{p}$ to $\Set{\mathbf{p}}\times\R^k$, it is immediate that $\pi_1 \circ\Phi_\alpha = \pi$, and $\Phi_\alpha$ is linear on fibers by hypothesis. Thus, $\Phi_\alpha$ satisfies all the conditions for a smooth local trivialization.
+
+The fact that this is the uniqe smooth structure follows easily from the requirement that the maps $\Phi_\alpha$ be diffeomorphisms onto their images: any smooth structure satisfying the same conditions must include all of the charts we constructed, so it is equal to this one.
+</details>
+</MathBox>
+
+## Local and global sections of vector bundles
+
+<MathBox title='Vector bundle section' boxType='definition'>
+Let $\pi:E\to M$ be a vector bundle. A *(cross) section* of $E$ is a section of the map $\pi$, i.e. a continuous map $\sigma:M\to E$ satisfying $\pi\circ\sigma = \mathrm{id}_M$. This means that $\sigma(\mathbf{p})$ is an element of the fiber $E_\mathbf{p}$ for each $\mathbf{p}\in M$. If $\sigma$ is not necessarily continuous, it is called a *rough section*. 
+
+More generally, a *local section* of $E$ is a continuous map $\sigma:U\to E$ defined on some open subset $U\subseteq M$ and satisfying $\pi\circ\sigma = \mathrm{id}_U$. To emphasize the distinction, a section deifned on all of $M$ is sometimes called a *global section*. Note that the local section of $E$ over $U\subseteq M$ is the same as a global section of the restricted bundle $E|_U$. If $M$ is a smooth manifold with or without boundary and $E$ is a smooth vector bundle, a *smooth section* of $E$ is one that is a smooth map from its domain to $E$.
+
+The *zero section* of $E$ is the global section $\zeta:M\to E$ defined by
+
+$$
+  \zeta(\mathbf{p}) = 0\in E_\mathbf{p},\; \forall \mathbf{p}\in M
+$$
+
+The *support* of a section $\sigma$ is the set
+
+$$
+  \mathrm{supp}(\sigma) = \overline{\Set{\mathbf{p}\in M | \sigma(\mathbf{p}) \neq 0}}
+$$
+
+If $E\to M$ is a smooth vector bundle, the set of all smooth global sections of $E$ is a vector space under point addition and scalar multiplication
+
+$$
+  (c_1 \sigma_1 + c_2 \sigma_2)(\mathbf{p}) = c_1 \sigma_1 (\mathbf{p}) + c_2 \sigma_2 (\mathbf{p}) 
+$$
+
+This vector space is usually denoted by $\Gamma(E)$. Just like smooth vector fields, smooth sections of a smooth bundle can be multiplied by smooth real-valued functions: if $f\in C^\infty(M)$ and $\sigma\in\Gamma(E)$, we obtain a new section $f\sigma$ defined by
+
+$$
+  (f\sigma)(\mathbf{p}) = f(\mathbf{p})\sigma(\mathbf{p})
+$$
+</MathBox>
+
+<MathBox title='Extension lemma for vector bundles' boxType='lemma'>
+Let $\pi:E\to M$ be a smooth vector bundle over a smooth manifold $M$ with or without boundary. Suppose that $A$ is a closed subset of $M$, and that $\sigma: A\to E$ is a section of $E|_A$ that is smooth in the sense that $\sigma$ extends to a smooth local section of $E$ is a neighbourhood of each point. For each open subset $U\subseteq M$ containing $A$, there exists a global smooth section $\tilde{\varphi}\in\Gamma(E)$ such that $\tilde{\varphi}|_A = \sigma$ and $\mathrm{supp}(\tilde{\varphi})\subseteq U$.
+</MathBox>
+
 # Riemannian manifolds
 
 A Riemannian metric $g$ on $M$ is a smooth symmetric covariant $2$-tensor field (bilinear form) on $M$ that is positive definitive at each point. A Riemannian manifold $(M, g)$ is a smooth manifold $M$ endowed with a Riemannian metric $g$.
