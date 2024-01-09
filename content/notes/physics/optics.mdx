@@ -36,11 +36,11 @@ $$
 The relationship between the complex amplitudes $E_x$ and $E_y$ describes the polarization of the electromangetic wave:
 - linear polarization occurs when 
     - $|E_x| = 0$ or $|E_y| = 0$ is zero, or
-    - $|\phi_x - \phi_y| = n\pi$ for $n\in\N$
-- circular polarization occurs when $|E_x| = |E_y|$ and $|\phi_x - \phi_y| = n\frac{\pi}{2}$
+    - $|\phi_x - \phi_y| = m\pi$ for $m\in\N$
+- circular polarization occurs when $|E_x| = |E_y|$ and $|\phi_x - \phi_y| = m\frac{\pi}{2}$
 - circular polarization occurs when 
-    - $|E_x| = |E_y|$ and $0 < |\phi_x - \phi_y| \neq n\frac{\pi}{2}$
-    - $|E_x| \neq |E_y|$ and $|\phi_x - \phi_y| = n\frac{\pi}{2}$
+    - $|E_x| = |E_y|$ and $0 < |\phi_x - \phi_y| \neq m\frac{\pi}{2}$
+    - $|E_x| \neq |E_y|$ and $|\phi_x - \phi_y| = m\frac{\pi}{2}$
 
 ## Jones vector
 
@@ -77,10 +77,10 @@ $$
 \end{align*}
 $$
 
-Written as a column vector the Jonas vector takes the form
+Since $A^2 + B^2 = 1$, we can set $A = \cos\theta$ and $B = \sin\theta$ for an angle $\theta$ with respect to the $x$-axis. Written as a column vector the Jonas vector takes the form
 
 $$
-  \mathbf{j} = \begin{bmatrix} A \\ Be^{i\delta} \end{bmatrix} = \begin{bmatrix} \sin(\theta) \\ \cos(\theta) e^{i\delta} \end{bmatrix}
+  \mathbf{j} = \begin{bmatrix} A \\ Be^{i\delta} \end{bmatrix} = \begin{bmatrix} \cos\theta \\ e^{i\delta}\sin\theta \end{bmatrix}
 $$
 
 | Polarization | Jones vector | Ket notation |
@@ -118,6 +118,103 @@ $$
 Linear polarization occurs when $e = 0$, while circular polarization occurs when $e = 1$. The helicity, or handedness of polarized light is as follows
 - left-handed: $0 < \delta < \pi$
 - right-handed: $\pi < \delta < 2\pi$
+
+## Linear polarizers and wave plates
+
+A polarizer acts on a plane wave by absorbing its electric field along certain axis, while allowing transmission along another axis. The electric field of an monochromatic plane wave propagating in the $z$-direction is given by
+
+$$
+  \mathbf{E}(z, t) = (E_x \hat{\mathbf{x}} + E_y \hat{\mathbf{y}})e^{i(kz -\omega t)}
+$$
+
+Suppose that a polarizer has a transmission axis along $\hat{\mathbf{e}}_1$ and absorption axis along $\hat{\mathbf{e}}_2$ in the $xy$-plane. If $\hat{\mathbf{e}}_1$ and $\hat{\mathbf{e}}_2$ are orthogonal, then they are related to $\hat{\mathbf{x}}$ and $hat{\mathbf{y}}$ through a rotation by an angle $\theta$ with respect to the $x$-axis. This gives the basis transform
+
+$$
+\begin{align*}
+  \hat{\mathbf{x}} =& \cos(\theta) \hat{\mathbf{e}}_1 - \sin(\theta) \hat{\mathbf{e}}_1 \\
+  \hat{\mathbf{y}} =& \sin(\theta) \hat{\mathbf{e}}_1 + \cos(\theta) \hat{\mathbf{e}}_2
+\end{align*}
+$$
+
+with inverse
+
+$$
+\begin{align*}
+  \hat{\mathbf{e}}_1 =& \cos(\theta) \hat{\mathbf{x}} + \sin(\theta) \hat{\mathbf{y}} \\
+  \hat{\mathbf{e}}_2 =& -\sin(\theta) \hat{\mathbf{x}} + \cos(\theta) \hat{\mathbf{y}}
+\end{align*}
+$$
+
+In terms of the $(\hat{\mathbf{e}}_1, \hat{\mathbf{e}}_2)$-basis the electric field becomes
+
+$$
+  \mathbf{E}(z, t) = (E_1 \hat{\mathbf{e}}_1 + E_2 \hat{\mathbf{e}}_2)e^{i(kz -\omega t)}
+$$
+
+where
+
+$$
+\begin{align*}
+  E_1 =& E_x \cos\theta + E_y \sin\theta \\
+  E_2 =& -E_x \sin\theta + E_y \cos\theta
+\end{align*}
+$$
+
+The polarizer allows transmission along $\hat{\mathbf{e}}_1$ and causes absorption along $\hat{\mathbf{e}}_2$. Thus, after traversing the polarizer $E_1$ gets unaffected while $E_2$ is changed by a factor $0 \leq \xi \leq 1$. If $\xi = 0$, then $E_2$ gets extinguished, which is the case of a linear polarizer. The polarized wave takes the form
+
+$$
+  \mathbf{E}'(z, t) = (E_1 \hat{\mathbf{e}}_1 + \xi E_2 \hat{\mathbf{e}}_2)e^{i(kz -\omega t)}
+$$
+
+In terms of the $(\hat{\mathbf{x}}, \hat{\mathbf{y}})$-basis the electric field takes the form
+
+$$
+\begin{align*}
+  \mathbf{E}'(z, t) =& [(E_x \cos\theta + E_y \sin\theta)(\cos\theta\hat{\mathbf{x}} + \sin\theta\hat{\mathbf{y}}) \\
+  &+ \xi(-E_x \sin\theta + E_y \cos\theta)(-\sin\theta \hat{\mathbf{x}} + \cos\theta\mathbf{y})]e^{i(kz - \omega t)} \\
+  =& [E_x (\cos^2\theta + \xi\sin^2 \theta) + E_y (1 - \xi) \sin\theta\cos\theta]\hat{\mathbf{x}}e^{i(kz - \omega t)} \\
+  &+ [E_x (1 - \xi)\sin\theta\cos\theta + E_y(\sin^2 \theta + \xi\cos^2 \theta)]\hat{\mathbf{y}}e^{i(kz - \omega t)} \\
+\end{align*}
+$$
+
+or in matrix form
+
+$$
+  \mathbf{E}'(z, t) = \begin{bmatrix} 
+    \cos^2 \theta + \xi\sin^2 \theta & (1 - \xi)\sin\theta\cos\theta \\ 
+    (1 - \xi)\sin\theta\cos\theta & \sin^2 \theta + \xi\cos^2\theta
+  \end{bmatrix} \cdot \begin{bmatrix} E_x \hat{\mathbf{x}} \\ E_y \hat{\mathbf{y}} \end{bmatrix} e^{i(kz - \omega t)}
+$$
+
+The Jones matrix describing the polarization thus takes the form
+
+$$
+  \begin{bmatrix} 
+    \cos^2 \theta + \xi\sin^2 \theta & (1 - \xi)\sin\theta\cos\theta \\ 
+    (1 - \xi)\sin\theta\cos\theta & \sin^2 \theta + \xi\cos^2\theta
+  \end{bmatrix}
+$$
+
+For a linear polarizer, $\xi = 0$, and the Jones matrix reduces to
+
+$$
+  \mathbf{J} = \begin{bmatrix} 
+    \cos^2 \theta & \sin\theta\cos\theta  \\ 
+    \sin\theta\cos\theta & \sin^2 \theta 
+  \end{bmatrix}
+$$
+
+## Wave plates (phase retarder)
+
+Wave plates are made out of birefringent (birefractive) crystals for which the index of refraction depends on the on the orientation of the electric field polarization. The crystal is cut such that the wave plate has a *fast* and *slow* axis, which are orthogonal. Along the fast axis, the elecromagnetic wave experiences index $n_{\text{fast}}$, while the orthogonal axis experiences higher index $n_{\text{slow}}$.
+
+When a plane wave passes through a wave plate, the component of the electric field oriented along the fast axis travels faster than its orthogonal counterpart, which introduces a relative phase between the two polarization components. As light passes through a wave plate of thickness $d$, the phase difference that accumulates between the fast and the slow polarization component is
+
+$$
+  k_{\text{slow}}d - k_{\text{slow}}d = \frac{2\pi d}{\lambda_c} (n_{\text{slow}} - n_{\text{fast}})
+$$
+
+A desired phase shift can obtained by adjusting the thickness of the wave plate. The most common types of wave plates are the quarter-wave and half-wave plates. The quarter-wave plate induces a phase shift $\frac{\pi}{2} + 2\pi m$ for $m\in \N$ and has a form factor $\xi = e^{i\frac{\pi}{2}} = i$. The half-wave plate induces a phase shift $\pi + 2\pi m$ and has form factor $\xi = e^{i\pi} = -1$.
 
 # Diffraction
 
