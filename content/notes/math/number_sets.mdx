@@ -504,32 +504,40 @@ $$
 
 # Quaternions ($\mathbb{H}$)
 
-A quaternion is an ordered 4-tuple of real numbers of the form $q = a + b\mathbf{i} + c\mathbf{j} + d\mathbf{k} \in \mathbb{H}$ where $a,b,c,d\in\R$ and $\mathbf{i}, \mathbf{j}, \mathbf{k}$ are imaginary basis vectors satisfying the quaternion equations
+A quaternion is an ordered 4-tuple of real numbers of the form $q = a + b\hat{\imath} + c\hat{\jmath} + d\hat{k} \in \mathbb{H}$ where $a,b,c,d\in\R$ and $\hat{\imath}, \hat{\jmath}, \hat{k}$ are imaginary basis vectors satisfying the quaternion equations
 
 $$
-  \mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 = \mathbf{ijk} = -1   
+  \hat{\imath}^2 = \hat{\jmath}^2 = \hat{k}^2 = \hat{\imath}\hat{\jmath}\hat{k} = -1   
 $$
 
 The basis elements can be intepreted as an orthonormal basis for $\R^3$. As such a quaternion can be decomposed into a scalar $q_0$ and a vector $\mathbf{q} = (q_1, q_2, q_3)\in\R^3$, i.e.
 
 $$
-  q = q_0 + \mathbf{q} = q_0 + q_1\mathbf{i} + q_2\mathbf{j} + q_3\mathbf{k}
+  q = q_0 + \mathbf{q} = q_0 + q_1\hat{\imath} + q_2\hat{\jmath} + q_3\hat{k}
 $$
 
-The set of quaternions forms a 4-dimensional vector space over the real numbers with $\Set{1,\mathbf{i},\mathbf{j},\mathbf{k}}$ as basis. Thus quaternions satisfy componentwise addition
+The set of quaternions forms a 4-dimensional vector space over the real numbers with $\Set{1,\hat{\imath},\hat{\jmath},\hat{k}}$ as basis. Thus quaternions satisfy componentwise addition
 
 $$
 \begin{gather*}
-  (a_1 + b_1\mathbf{i} + c_1\mathbf{j} + d_1\mathbf{k}) + (a_2 + b_2\mathbf{i} + c_2\mathbf{j} + d_2\mathbf{k}) \\
-  &= (a_1 + a_2) + (b_1 + b_2)\mathbf{i} + (c_1 + c_2)\mathbf{j} + (d_1 + d_2)\mathbf{k})
+  &(a_1 + b_1\hat{\imath} + c_1\hat{\jmath} + d_1\hat{k}) + (a_2 + b_2\hat{\imath} + c_2\hat{\jmath} + d_2\hat{k}) \\
+  &= (a_1 + a_2) + (b_1 + b_2)\hat{\imath} + (c_1 + c_2)\hat{\jmath} + (d_1 + d_2)\hat{k}
 \end{gather*}
+$$
+
+or in quaternion vector notation
+
+$$
+  r + q = (r_0 + \mathbf{r}) + (q_0 + \mathbf{q}) = (r_0 + q_0) + (\mathbf{r} + \mathbf{q})
 $$
 
 and componentwise scalar multiplication
 
 $$
-  \lambda(a + b\mathbf{i} + c\mathbf{j} + d\mathbf{k}) = \lambda a + (\lambda b)\mathbf{i} + (\lambda c)\mathbf{j} + (\lambda d)\mathbf{k}
+  \lambda(a + b\hat{\imath} + c\hat{\jmath} + d\hat{k}) = \lambda a + (\lambda b)\hat{\imath} + (\lambda c)\hat{\jmath} + (\lambda d)\hat{k}
 $$
+
+
 
 ## Operations on Quaternions
 
@@ -539,55 +547,95 @@ The product of two quaternions $q_1$ and $q_2$, called the Hamilton product, is 
 
 $$
 \begin{align*}
-  q_1 q_2 &= (a_1 + b_1\mathbf{i} + c_1\mathbf{j} + d_1\mathbf{k}) \cdot (a_2 + b_2\mathbf{i} + c_2\mathbf{j} + d_2\mathbf{k}) \\
-  &= \begin{aligned}
-     a_1 a_2 &+ a_1 b_2\mathbf{i} &+ a_1 c_2\mathbf{j} &+ a_1 d_2\mathbf{k}\\
-    + b_1 a_2\mathbf{i} &+ b_1 b_2\mathbf{i}^2 &+ b_1 c_2\mathbf{ij} &+ b_1 d_2\mathbf{ik}\\
-    + c_1 a_2\mathbf{j} &+ c_1 b_2\mathbf{ji}^2 &+ c_1 c_2\mathbf{j}^2 &+ c_1 d_2\mathbf{jk}\\
-    + d_1 a_2\mathbf{k} &+ d_1 b_2\mathbf{ki}^2 &+ d_1 c_2\mathbf{kj} &+ d_1 d_2\mathbf{k^2}\\
-  \end{aligned} \\
-  &= \begin{aligned}
-    a_1 a_2 - b_1 b_2 &+ c_1 c_2 &- d_1 d_2\\
-    + (a_1 b_2 &+ b_1 a_2 &+ c_1 d_2 &- d_1 c_2)\mathbf{i}\\
-    + (a_1 c_2 &+ b_1 d_2 &+ c_1 a_2 &- d_1 b_2)\mathbf{j}\\
-    + (a_1 d_2 &+ b_1 c_2 &+ c_1 b_2 &- d_1 a_2)\mathbf{k}\\
-  \end{aligned}
+  q_1 q_2 =& (a_1 + b_1\hat{\imath} + c_1\hat{\jmath} + d_1\hat{k}) \cdot (a_2 + b_2\hat{\imath} + c_2\hat{\jmath} + d_2\hat{k}) \\
+  =& a_1 a_2 + a_1 b_2\hat{\imath} + a_1 c_2\hat{\jmath} + a_1 d_2\hat{k} \\
+    &+ b_1 a_2\hat{\imath} + b_1 b_2\hat{\imath}^2 + b_1 c_2\hat{\imath}\hat{\jmath} + b_1 d_2\hat{\imath}\hat{k} \\
+    &+ c_1 a_2\hat{\jmath} + c_1 b_2\hat{\jmath}\hat{\imath}^2 + c_1 c_2\hat{\jmath}^2 + c_1 d_2\hat{\jmath}\hat{k} \\
+    &+ d_1 a_2\hat{k} + d_1 b_2\hat{k}\hat{\imath}^2 + d_1 c_2\hat{k}\hat{\jmath} + d_1 d_2\hat{k}^2 \\
+  =& a_1 a_2 - b_1 b_2 + c_1 c_2 - d_1 d_2\\
+    &+ (a_1 b_2 + b_1 a_2 + c_1 d_2 - d_1 c_2)\hat{\imath}\\
+    &+ (a_1 c_2 + b_1 d_2 + c_1 a_2 - d_1 b_2)\hat{\jmath}\\
+    &+ (a_1 d_2 + b_1 c_2 + c_1 b_2 - d_1 a_2)\hat{k}
 \end{align*}
 $$
 
 With the quaternion vector notation the Hamilton product reduces to
 
 $$
-  (a_1 + \mathbf{q}_1) + (a_2 + \mathbf{q}_2) = (a_1 a_2 - \mathbf{q}_1\cdot\mathbf{q}_2) + a_1\mathbf{q}_2 + a_2\mathbf{q}_1 + \mathbf{q}_1 \times\mathbf{q}_2 
+  (a_1 + \mathbf{q}_1)(a_2 + \mathbf{q}_2) = (a_1 a_2 - \mathbf{q}_1\cdot\mathbf{q}_2) + a_1\mathbf{q}_2 + a_2\mathbf{q}_1 + \mathbf{q}_1 \times\mathbf{q}_2 
+$$
+
+where $\cdot$ is the Euclidean inner product and $\times$ is the cross product. The Hamilton product is noncommutative as
+
+$$
+\begin{align*}
+  (a_2 + \mathbf{q}_2)(a_1 + \mathbf{q}_1) =& (a_2 a_1 - \mathbf{q}_2\cdot\mathbf{q}_1) + a_2\mathbf{q}_1 + a_1\mathbf{q}_2 + \mathbf{q}_2 \times\mathbf{q}_1 \\
+  =& (a_1 a_2 - \mathbf{q}_1\cdot\mathbf{q}_2) + a_1\mathbf{q}_2 + a_2\mathbf{q}_1 - \mathbf{q}_1 \times\mathbf{q}_2
+\end{align*}
+$$
+
+giving the anti-commutative relation $\{q_1, q_2\} = q_1 q_2 - q_2 q_1 = 2\mathbf{q}_1 \times \mathbf{q}_2$. The Hamilton product gives the following multiplication rules for the basis elements
+
+$$
+\begin{split}
+  \hat{\imath}\hat{\jmath} = \hat{\imath}&\times\hat{\jmath} = \hat{k} \\
+  \hat{\jmath}\hat{k} = \hat{\jmath}&\times\hat{k} = \hat{\imath} \\
+  \hat{k}\hat{\imath}= \hat{k}&\times\hat{\imath} = \hat{\jmath}
+\end{split} \quad \begin{split}
+  \hat{\jmath}\hat{\imath} = \hat{\jmath}&\times\hat{\imath} = -\hat{k} \\
+  \hat{k}\hat{\jmath} = \hat{k}&\times\hat{\jmath} = -\hat{\imath} \\
+  \hat{\imath}\hat{k} = \hat{\imath}&\times\hat{k} = -\hat{\jmath}
+\end{split}
+$$
+
+The multiplication rules for the basis elements can also be derived from the defining equations for quaternions:
+
+$$
+\begin{split}
+  (\hat{\imath}\hat{\jmath}\hat{k})\hat{k} &= (-1)\hat{k} \\
+  \hat{\imath}\hat{\jmath}(\hat{k}\hat{k}) &= (-1)\hat{k} \\
+  \hat{\imath}\hat{\jmath}(-1) &= (-1)\hat{k} \\
+  \hat{\imath}\hat{\jmath} &= \hat{k}
+\end{split} \quad \begin{split} 
+  \hat{\imath}(\hat{\imath}\hat{\jmath}\hat{k}) &= i(-1) \\
+  (\hat{\imath}\hat{\imath})\hat{\jmath}\hat{k} &= \hat{\imath}(-1) \\
+  (-1)\hat{\jmath}\hat{k} &= \hat{\imath}(-1) \\
+  \hat{\jmath}\hat{k} &= \hat{\imath}
+\end{split} \quad \begin{split} 
+  -\hat{k}\hat{\imath} &= (\hat{\jmath}\hat{\imath})\hat{\imath} \\
+  -\hat{k}\hat{\imath} &= \hat{\jmath}(\hat{\imath}\hat{\imath}) \\
+  -\hat{k}\hat{\imath} &= \hat{\jmath}(-1) \\
+  \hat{k}\hat{\imath} &= \hat{\jmath}
+\end{split}
 $$
 
 #### Multiplication table
 
-| $\times$ | $1$ | $\mathbf{i}$ | $\mathbf{j}$ | $\mathbf{k}$ |
-|---|---|---|---|---|
-| $1$ | $1$ | $\mathbf{i}$ | $\mathbf{j}$ | $\mathbf{k}$ |
-| $\mathbf{i}$ | $\mathbf{i}$ | $-1$ | $\color{red}{\mathbf{k}}$ | $\color{blue}{-\mathbf{j}}$ |
-| $\mathbf{j}$ | $\mathbf{j}$ | $\color{red}{-\mathbf{k}}$ | $-1$ | $\color{green}{\mathbf{i}}$ |
-| $\mathbf{j}$ | $\mathbf{k}$ | $\color{blue}{-\mathbf{j}}$ | $\color{green}{-\mathbf{i}}$ | $-1$ |
+| $\times$ | $\hat{\imath}$ | $\hat{\jmath}$ | $\hat{k}$ |
+|---|---|---|---|
+| $\hat{\imath}$ | $-1$ | $\color{red}{\hat{k}}$ | $\color{cyan}{-\hat{\jmath}}$ |
+| $\hat{\jmath}$ | $\color{red}{-\hat{k}}$ | $-1$ | $\color{green}{\hat{\imath}}$ |
+| $\hat{\jmath}$ | $\color{cyan}{-\hat{\jmath}}$ | $\color{green}{-\hat{\imath}}$ | $-1$ |
+
 
 ### Conjugation
 
-The conjugate of a quaternion $q = q_0 + q_1\mathbf{i} + q_2\mathbf{j} + q_3\mathbf{k} = q_0 + \mathbf{q}$ is defined by
+The conjugate of a quaternion $q = q_0 + q_1\hat{i} + q_2\hat{\jmath} + q_3\hat{k} = q_0 + \hat{q}$ is defined by
 
 $$
-  q* := q_0 - q_1\mathbf{i} + q_2\mathbf{j} + q_3\mathbf{k} = q_0 - \mathbf{q}
+  q^* := q_0 - q_1\hat{\imath} + q_2\hat{\jmath} + q_3\hat{k} = q_0 - \mathbf{q}
 $$
 
 The conjugate of a quaternion can be expressed with multiplication and addition of quaternions:
 
 $$
-  q* = -\frac{1}{2}(q + \mathbf{i}q\mathbf{i} + \mathbf{j}q\mathbf{j} + \mathbf{k}q\mathbf{k})
+  q^* = -\frac{1}{2}(q + \hat{\imath}q\hat{\imath} + \hat{\jmath}q\hat{\jmath} + \hat{k}q\hat{k})
 $$
 
 The scalar and vector parts of a quaternion $q = a + \mathbf{q}$ can be extracted using the conjugation
 
 $$
-  a = \frac{1}{2}(q + q*) \quad \mathbf{q} = \frac{1}{2}(q - q*)
+  a = \frac{1}{2}(q + q^*) \quad \mathbf{q} = \frac{1}{2}(q - q^*)
 $$
 
 ### Norm
@@ -595,5 +643,18 @@ $$
 The norm of a quaternion is defined by
 
 $$
-  \| q \| := \sqrt{q*q} = \sqrt{q*q} = \sqrt{a^2 + b^2 + c^2 + d^2}
+  \| q \| := \sqrt{q^*q} = \sqrt{qq^*} = \sqrt{a^2 + b^2 + c^2 + d^2}
+$$
+
+Normalizing a nonzero quaternion gives a unit quaternion $\mathbf{U}_q$ called the versor of $q$
+
+$$
+  \mathbf{U}_q = \frac{q}{\| q \|}
+$$
+
+### Multiplicative inverse
+The product of a quaternion with its reciprocal should equal $1$, i.e. $qq^1 = 1$. This can be achieved by defining
+
+$$
+  q^{-1} = \frac{1}{\| q \|} q^*
 $$
