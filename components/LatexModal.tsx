@@ -62,7 +62,7 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
     <dialog ref={modalRef} onKeyDown={handleKeyDown}
       className='m-auto p-1 h-auto max-h-[75%] max-w-[75%]
         bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur
-        backdrop:bg-stone-500/50 backdrop:backdrop-blur-sm'
+        backdrop:bg-stone-500/50'
     >
       <div className='h-full flex flex-col'>
         <button onClick={handleClose}
