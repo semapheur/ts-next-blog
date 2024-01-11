@@ -504,10 +504,20 @@ $$
 
 # Quaternions ($\mathbb{H}$)
 
-A quaternion is an ordered 4-tuple of real numbers of the form $q = a + b\hat{\imath} + c\hat{\jmath} + d\hat{k} \in \mathbb{H}$ where $a,b,c,d\in\R$ and $\hat{\imath}, \hat{\jmath}, \hat{k}$ are imaginary basis vectors satisfying the quaternion equations
+A quaternion is an ordered 4-tuple of real numbers of the form $q = a + b\hat{\imath} + c\hat{\jmath} + d\hat{k} \in \mathbb{H}$ where $a,b,c,d\in\R$ and $\hat{\imath}, \hat{\jmath}, \hat{k}$ are imaginary basis elements satisfying the quaternion equations
 
 $$
   \hat{\imath}^2 = \hat{\jmath}^2 = \hat{k}^2 = \hat{\imath}\hat{\jmath}\hat{k} = -1   
+$$
+
+from which it follows that
+
+$$
+\begin{align*}
+  \hat{\imath}\hat{\jmath} &= \hat{k} = -\hat{\jmath}\hat{\imath} \\
+  \hat{\jmath}\hat{k} &= \hat{i} = -\hat{\jmath}\hat{k} \\
+  \hat{k}\hat{\imath} &= \hat{\jmath} = -\hat{\imath}\hat{k}
+\end{align*}
 $$
 
 The basis elements can be intepreted as an orthonormal basis for $\R^3$. As such a quaternion can be decomposed into a scalar $q_0$ and a vector $\mathbf{q} = (q_1, q_2, q_3)\in\R^3$, i.e.
@@ -528,7 +538,7 @@ $$
 or in quaternion vector notation
 
 $$
-  r + q = (r_0 + \mathbf{r}) + (q_0 + \mathbf{q}) = (r_0 + q_0) + (\mathbf{r} + \mathbf{q})
+  p + q = (p_0 + \mathbf{p}) + (q_0 + \mathbf{q}) = (p_0 + q_0) + (\mathbf{p} + \mathbf{q})
 $$
 
 and componentwise scalar multiplication
@@ -537,58 +547,11 @@ $$
   \lambda(a + b\hat{\imath} + c\hat{\jmath} + d\hat{k}) = \lambda a + (\lambda b)\hat{\imath} + (\lambda c)\hat{\jmath} + (\lambda d)\hat{k}
 $$
 
-
-
 ## Operations on Quaternions
 
-### Hamilton product
+### Multiplication rules for basis elements
 
-The product of two quaternions $q_1$ and $q_2$, called the Hamilton product, is given by the quaternion equations and the distributive law
-
-$$
-\begin{align*}
-  q_1 q_2 =& (a_1 + b_1\hat{\imath} + c_1\hat{\jmath} + d_1\hat{k}) \cdot (a_2 + b_2\hat{\imath} + c_2\hat{\jmath} + d_2\hat{k}) \\
-  =& a_1 a_2 + a_1 b_2\hat{\imath} + a_1 c_2\hat{\jmath} + a_1 d_2\hat{k} \\
-    &+ b_1 a_2\hat{\imath} + b_1 b_2\hat{\imath}^2 + b_1 c_2\hat{\imath}\hat{\jmath} + b_1 d_2\hat{\imath}\hat{k} \\
-    &+ c_1 a_2\hat{\jmath} + c_1 b_2\hat{\jmath}\hat{\imath}^2 + c_1 c_2\hat{\jmath}^2 + c_1 d_2\hat{\jmath}\hat{k} \\
-    &+ d_1 a_2\hat{k} + d_1 b_2\hat{k}\hat{\imath}^2 + d_1 c_2\hat{k}\hat{\jmath} + d_1 d_2\hat{k}^2 \\
-  =& a_1 a_2 - b_1 b_2 + c_1 c_2 - d_1 d_2\\
-    &+ (a_1 b_2 + b_1 a_2 + c_1 d_2 - d_1 c_2)\hat{\imath}\\
-    &+ (a_1 c_2 + b_1 d_2 + c_1 a_2 - d_1 b_2)\hat{\jmath}\\
-    &+ (a_1 d_2 + b_1 c_2 + c_1 b_2 - d_1 a_2)\hat{k}
-\end{align*}
-$$
-
-With the quaternion vector notation the Hamilton product reduces to
-
-$$
-  (a_1 + \mathbf{q}_1)(a_2 + \mathbf{q}_2) = (a_1 a_2 - \mathbf{q}_1\cdot\mathbf{q}_2) + a_1\mathbf{q}_2 + a_2\mathbf{q}_1 + \mathbf{q}_1 \times\mathbf{q}_2 
-$$
-
-where $\cdot$ is the Euclidean inner product and $\times$ is the cross product. The Hamilton product is noncommutative as
-
-$$
-\begin{align*}
-  (a_2 + \mathbf{q}_2)(a_1 + \mathbf{q}_1) =& (a_2 a_1 - \mathbf{q}_2\cdot\mathbf{q}_1) + a_2\mathbf{q}_1 + a_1\mathbf{q}_2 + \mathbf{q}_2 \times\mathbf{q}_1 \\
-  =& (a_1 a_2 - \mathbf{q}_1\cdot\mathbf{q}_2) + a_1\mathbf{q}_2 + a_2\mathbf{q}_1 - \mathbf{q}_1 \times\mathbf{q}_2
-\end{align*}
-$$
-
-giving the anti-commutative relation $\{q_1, q_2\} = q_1 q_2 - q_2 q_1 = 2\mathbf{q}_1 \times \mathbf{q}_2$. The Hamilton product gives the following multiplication rules for the basis elements
-
-$$
-\begin{split}
-  \hat{\imath}\hat{\jmath} = \hat{\imath}&\times\hat{\jmath} = \hat{k} \\
-  \hat{\jmath}\hat{k} = \hat{\jmath}&\times\hat{k} = \hat{\imath} \\
-  \hat{k}\hat{\imath}= \hat{k}&\times\hat{\imath} = \hat{\jmath}
-\end{split} \quad \begin{split}
-  \hat{\jmath}\hat{\imath} = \hat{\jmath}&\times\hat{\imath} = -\hat{k} \\
-  \hat{k}\hat{\jmath} = \hat{k}&\times\hat{\jmath} = -\hat{\imath} \\
-  \hat{\imath}\hat{k} = \hat{\imath}&\times\hat{k} = -\hat{\jmath}
-\end{split}
-$$
-
-The multiplication rules for the basis elements can also be derived from the defining equations for quaternions:
+The defining equations for quaternions produce a set multiplication rules for the basis elements. From the equation $\hat{\imath}\hat{\jmath}\hat{k} = -1$, we get that
 
 $$
 \begin{split}
@@ -597,17 +560,39 @@ $$
   \hat{\imath}\hat{\jmath}(-1) &= (-1)\hat{k} \\
   \hat{\imath}\hat{\jmath} &= \hat{k}
 \end{split} \quad \begin{split} 
-  \hat{\imath}(\hat{\imath}\hat{\jmath}\hat{k}) &= i(-1) \\
+  \hat{\imath}(\hat{\imath}\hat{\jmath}\hat{k}) &= \hat{\imath}(-1) \\
   (\hat{\imath}\hat{\imath})\hat{\jmath}\hat{k} &= \hat{\imath}(-1) \\
   (-1)\hat{\jmath}\hat{k} &= \hat{\imath}(-1) \\
   \hat{\jmath}\hat{k} &= \hat{\imath}
 \end{split} \quad \begin{split} 
-  -\hat{k}\hat{\imath} &= (\hat{\jmath}\hat{\imath})\hat{\imath} \\
-  -\hat{k}\hat{\imath} &= \hat{\jmath}(\hat{\imath}\hat{\imath}) \\
-  -\hat{k}\hat{\imath} &= \hat{\jmath}(-1) \\
-  \hat{k}\hat{\imath} &= \hat{\jmath}
+  \hat{\imath}(\hat{\imath}\hat{\jmath}\hat{k})\hat{k} &= \hat{\imath}(-1)\hat{k} \\
+  (\hat{\imath}\hat{\imath})\hat{\jmath}(\hat{k}\hat{k}) &= -\hat{\imath}\hat{k} \\
+  (-1)\hat{\jmath}(-1) &= -\hat{\imath}\hat{k} \\
+  \hat{\imath}\hat{k} &= -\hat{\jmath}
 \end{split}
 $$
+
+From $\hat{\imath}\hat{\jmath} = \hat{k}$ and $\hat{\jmath}\hat{k} = \hat{\imath}$, we get that
+
+$$
+\begin{split}
+  (\hat{\imath}\hat{\jmath})\hat{\jmath} =& \hat{k}\hat{\jmath} \\
+  \hat{\imath}(\hat{\jmath}\hat{\jmath}) =& \hat{k}\hat{\jmath} \\
+  \hat{\imath}(-1) =& \hat{k}\hat{\jmath} \\
+  \hat{k}\hat{\jmath} =& -\hat{\imath}
+\end{split} \quad \begin{split}
+  \hat{\jmath}(\hat{\jmath}\hat{k}) =& \hat{\jmath}\hat{\imath} \\
+  (\hat{\jmath}\hat{\jmath})\hat{k} =& \hat{\jmath}\hat{\imath} \\
+  (-1)\hat{k} =& \hat{\jmath}\hat{\imath} \\
+  \hat{\jmath}\hat{\imath} =& -\hat{k}
+\end{split} \quad \begin{split}
+  \hat{\jmath}(\hat{\jmath}\hat{k}) =& \hat{\jmath}(\hat{\imath}) \\
+  (\hat{\jmath}\hat{\jmath})\hat{k}\hat{\imath} =& \hat{\jmath}(\hat{\imath}\hat{\imath}) \\
+  (-1)\hat{k}\hat{\imath} =& \hat{\jmath}(-1) \\
+  \hat{k}\hat{\imath} =& \hat{\jmath}
+\end{split}
+$$
+
 
 #### Multiplication table
 
@@ -617,6 +602,40 @@ $$
 | $\hat{\jmath}$ | $\color{red}{-\hat{k}}$ | $-1$ | $\color{green}{\hat{\imath}}$ |
 | $\hat{\jmath}$ | $\color{cyan}{-\hat{\jmath}}$ | $\color{green}{-\hat{\imath}}$ | $-1$ |
 
+
+### Hamilton product
+
+The product of two quaternions $p = p_0 + \mathbf{p}$ and $q = q_0 + \mathbf{q}$, called the Hamilton product, is given by the quaternion equations and the distributive law
+
+$$
+\begin{align*}
+  p q =& (p_0 + p_1\hat{\imath} + p_2\hat{\jmath} + p_3\hat{k}) \cdot (q_0 + q_1\hat{\imath} + q_2\hat{\jmath} + q_3\hat{k}) \\
+  =& p_0 q_0 + p_1 q_1\hat{\imath} + p_0 q_2\hat{\jmath} + p_0 q_3\hat{k} \\
+    &+ p_1 q_0\hat{\imath} + p_1 q_1\hat{\imath}^2 + p_1 q_2\hat{\imath}\hat{\jmath} + p_1 q_3\hat{\imath}\hat{k} \\
+    &+ p_2 q_0\hat{\jmath} + p_2 q_1\hat{\jmath}\hat{\imath} + p_2 q_2\hat{\jmath}^2 + p_2 q_3\hat{\jmath}\hat{k} \\
+    &+ p_3 q_0\hat{k} + p_3 q_1\hat{k}\hat{\imath} + p_3 q_2\hat{k}\hat{\jmath} + p_3 q_3\hat{k}^2 \\
+  =& p_0 q_0 - p_1 q_1 + p_2 q_2 - p_3 q_3 \\
+    &+ (p_0 q_1 + p_1 q_0 + p_2 q_3 - p_3 q_2)\hat{\imath}\\
+    &+ (p_0 q_2 - p_1 q_3 + p_2 q_0 + p_3 q_1)\hat{\jmath}\\
+    &+ (p_0 q_3 + p_1 q_2 - p_2 q_1 + p_3 q_0)\hat{k} \\
+  =& p_0 q_0 - p_1 q_1 + p_2 q_2 - p_3 q_3 \\
+    &+ p_0 q_1 \hat{\imath} + p_0 q_2 \hat{\jmath} + p_0 q_3 \hat{k} \\
+    &+ q_0 p_1 \hat{\imath} + q_0 p_2 \hat{\jmath} + q_0 p_3 \hat{k} \\
+    &+ (p_2 q_3 - p_3 q_2)\hat{\imath} + (p_1 q_3 - p_3 q_1)\hat{\jmath} + (p_1 q_2 - p_2 q_1)\hat{k} \\
+  =& p_0 q_0 - \mathbf{p}\cdot\mathbf{q} + p_0 \mathbf{q} + q_0 \mathbf{p} + \mathbf{p}\times\mathbf{q}
+\end{align*}
+$$
+
+where $\cdot$ is the Euclidean inner product and $\times$ is the cross product in $\R^3$. The Hamilton product is noncommutative as
+
+$$
+\begin{align*}
+  q p =& q_0 p_0 - \mathbf{q}\cdot\mathbf{p} + q_0 \mathbf{p} + p_0 \mathbf{q} + \mathbf{q}\times\mathbf{p} \\
+  =& p_0 q_0 - \mathbf{p}\cdot\mathbf{q} + p_0 \mathbf{q} + q_0 \mathbf{p} - \mathbf{p}\times\mathbf{q}
+\end{align*}
+$$
+
+giving the anti-commutative relation $\{p, q\} = p q - q p = 2\mathbf{p} \times \mathbf{q}_2$. 
 
 ### Conjugation
 
