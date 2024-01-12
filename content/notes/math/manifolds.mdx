@@ -5664,7 +5664,7 @@ $$
 
 with the property that for each $\mathbf{p}\in M$, the restricted map $F|_{E_\mathbf{p}}: E_\mathbf{p}\to E'_{f(\mathbf{p})}$ is linear. In this case $F$ is said to *cover* f.
 
-A bijective bundle homomorphism $F:E\to E'$ whose inverse is also a bundle homomorphism, is called a *bundle isomorphism*. If $F$ is also a diffeormorphism, it is a *smooth bundle isomorphism*. If there exists a (smooth) bundle isomorphism between $E$ and $E'$, the two bundles *(smoothly) isomorphic*.
+A bijective bundle homomorphism $F:E\to E'$ whose inverse is also a bundle homomorphism, is called a *bundle isomorphism*. If $F$ is also a diffeomorphism, it is a *smooth bundle isomorphism*. If there exists a (smooth) bundle isomorphism between $E$ and $E'$, the two bundles *(smoothly) isomorphic*.
 
 In the special case in which both $E$ and $E'$ are vector bundles over the same base space $M$, a bundle homomorphism over $M$ covers the identity map of $M$ in the form of a continuous map $F:E\to E'$ such that $\pi' \circ F = \pi$
 
@@ -6352,7 +6352,7 @@ If $M$ is a connected smooth manifold with or without boundary, any two points o
 Let $\mathbf{p}\in M$ be arbitrary, and define a subset $\mathcal{C}\subseteq M$ by
 
 $$
-  \mathcal{C} = \Set{\mathbf{q}\in M | \text{there is a piecewise smooth curve segment in }$M$ \text{ from } $\mathbf{p}$ \text{ to } $\mathbf{q}$}
+  \mathcal{C} = \Set{\mathbf{q}\in M | \text{there is a piecewise smooth curve segment in } M \text{ from } \mathbf{p} \text{ to } \mathbf{q}}
 $$
 
 Clearly, $\mathbf{p}\in \mathcal{C}$, so $\mathcal{C}$ is nonempty. To show that $\mathcal{C} = M$, we need to show that it is open and closed in $M$.
@@ -6379,7 +6379,6 @@ $$
 where $[a_{i-1}, a_i]$ for $i=1,\dots,k$, are subintervals on which $\gamma$ is smooth.
 </MathBox>
 
-
 <MathBox title='Properties of line integrals' boxType='proposition'>
 Let $M$ be a smooth manifold with or without boundary. Suppose that $\gamma:[a,b]\to M$ is a piecewise smooth curve segment, and $\omega, \omega_1, \omega_2 \in \mathfrak{X}^*(M)$.
 1. For any $c_1, c_2\in\R$
@@ -6397,14 +6396,110 @@ $$
 $$
 </MathBox>
 
-<MathBox title='Parameter independence of line integral' boxType='proposition'>
-If $M$ is a connected smooth manifold with or without boundary, any two points of $M$ can be joined by a piecewise smooth curve segment.
+<MathBox title='Reparametrization' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. If $\gamma:[a,b]\to M$ and $\tilde{\gamma}:[c,d]\to M$ are piecewise smooth curve segments, we say that $\tilde{\gamma}$ is a *reparametrization* of $\gamma$ if $\tilde{\gamma} = \gamma\circ\varphi$ for some diffeomorphism $\varphi:[c,d]\to [a,b]$. If $\varphi$ is an increasing function, $\tilde{\gamma}$ is a *forward reparametrization*, and if $\varphi$ is decreasing, it is a *backward reparametrization*. 
+</MathBox>
 
+<MathBox title='Parameter independence of line integral' boxType='proposition'>
+Suppose that $M$ is a smooth manifold with or without boundary, $\omega\in\mathfrak{X}^* (M)$, and $\gamma$ is a piecewise smooth curve segment in $M$. For any reparametrization $\tilde{\gamma}$ of $\gamma$ we have
+
+$$
+  \int_{\tilde{\gamma}} \omega = \begin{cases}
+    \int_\gamma \omega,&\quad \quad\text{ if }\tilde{\gamma} \text{ is a forward reparametrization} \\
+    -\int_\gamma \omega,&\quad\text{ if }\tilde{\gamma} \text{ is a backward reparametrization}
+  \end{cases}
+$$
+
+<details>
+<summary>Proof</summary>
+
+First assume that $\gamma:[a,b]\to M$ is smooth, and suppose that $\tilde{\gamma} = \gamma\circ\varphi$, where $\varphi:[c,d]\to [a,b]$ is an increasing diffeomorphism. Then the diffeomorphism invariance implies
+
+$$
+\begin{align*}
+  \int_\tilde{\gamma} \omega =& \int_{[c,d]} (\gamma\circ\varphi)^* \omega \\
+  =& \int_{[c,d]} \varphi^* \gamma^* \omega = \int_{[a,b]} \gamma^* \omega \\
+  =& \int_\gamma \omega
+\end{align*}
+$$
+
+The proof for when $\varphi$ is decreasing is analogous.
+
+If $\gamma$ is only piecewise smooth, the result follows simply by applying the preceding argument on each subinterval where $\gamma$ is smooth.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $M$ is a smooth manifold with or without boundary. If $\gamma:[a,b]\to M$ is a piecewise smooth curve segment, the line integral of $\omega$ over $\gamma$ can also be expressed as the ordinary integral
+
+$$
+  \int_\gamma \omega = \int_a^b \omega_{\gamma(t)} (\gamma' (t))\;\mathrm{d}t
+$$
+
+<details>
+<summary>Proof</summary>
+
+Fir suppose that $\gamma$ is smooth and that its image is contained in the domain of a single smooth chart. Writing the coordinate representations of $\gamma$ and $\omega$ as $(\gamma^i(t))_{i=1}^n$ and $\omega_i \mathrm{d}x^i$, respectively, we have
+
+$$
+\begin{align*}
+  \omega_{\gamma(t)} (\gamma'(t)) =& \omega_i (\gamma(t))\mathrm{d}x^i (\gamma'(t)) \\
+  =& \omega_i (\gamma(t))\dot{\gamma}^i (t)
+\end{align*}
+$$
+
+Combining this with the pullback formula for covector fields, we obtain
+
+$$
+\begin{align*}
+  (\gamma^* \omega)_t =& (\omega_i \circ\gamma)(t)\mathrm{d}(\gamma^i)_t \\
+  =& \omega_i (\gamma(t))\dot{\gamma}^i (t)\mathrm{d}t \\
+  =& \omega_{\gamma(t)}(\gamma'(t))\mathrm{d}t
+\end{align*}
+$$
+
+Thus, by the definition of the line integral
+
+$$
+  \int_\gamma \omega = \int_{[a,b]} \gamma^* \omega = \int_a^b \omega_{\gamma(t)} (\gamma'(t))\mathrm{d}t
+$$
+
+If $\gamma$ is an arbitrary smooth curve segment, by compactness there exists a finite partition $a = a_0 < a_1 < \cdots < a_k = b$ of $[a,b]$ such that $\gamma([a_{i-1}, a_i])$ is contained in the domain of a single smooth chart for each $i=1,\dots,k$, so we can apply the computation above on each such subinterval. Finally, if $\gamma$ is only piecewise smooth, we simply apply the same argument on each subinterval on which $\gamma$ is smooth.
+</details>
 </MathBox>
 
 <MathBox title='Fundamental theorem for line integrals' boxType='theorem'>
-If $M$ is a connected smooth manifold with or without boundary, any two points of $M$ can be joined by a piecewise smooth curve segment.
+Let $M$ be a smooth manifold with or without boundary. Suppose that $f\in C^\infty (M)$ is a smooth real-valued function on $M$ and that $\gamma:[a,b]\to M$ is a piecewise smooth curve segment in $M$. Then
 
+$$
+  \int_\gamma \mathrm{d}f = f(\gamma(b)) - f(\gamma(a))
+$$
+
+<details>
+<summary>Proof</summary>
+
+Suppose first that $\gamma$ is smooth. Then
+
+$$
+\begin{align*}
+  \int_\gamma =& \int_a^b \mathrm{d}f_{\gamma(t)}(\gamma'(t)) \\
+  =& \int_a^b (f \circ\gamma)'(t)\;\mathrm{d}t
+\end{align*}
+$$
+
+By the fundamental theorem of calculus, this is equal to $f\circ\gamma(b) - f\circ\gamma(a)$.
+
+If $\gamma$ is merely piecewise smooth, let $a = a_0 < a_1 < \cdots < a_k = b$ be the endpoints of the subintervals on which $\gamma$ is smooth. Applying the above argument on each subinterval and summing, we find that
+
+$$
+\begin{align*}
+  \int_\gamma \mathrm{d}f =& \sum_{i=1}^k (f(\gamma(a_i)) - f(\gamma(a_{i-1}))) \\
+  =& f(\gamma(b)) - f(\gamma(a))
+\end{align*}
+$$
+
+becaiuse the contributions from all the interior points cancel.
+</details>
 </MathBox>
 
 ## Conservative covector fields
