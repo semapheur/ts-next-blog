@@ -6144,6 +6144,163 @@ $$
   \mathrm{d}f = \frac{\mathrm{d f}}{\mathrm{d}x}\mathrm{d}x
 $$
 
+<MathBox title='Properties of the differential' boxType='proposition'>
+Let $M$ be a smooth manifold with or without boundary, and let $f,g\in C^\infty (M)$.
+1. $\mathrm{d}(\alpha f + \beta g)$ for $\alpha, \beta\in\R$
+2. $\mathrm{d}(fg) = f\mathrm{d}g + g\mathrm{d}f$
+3. $\mathrm{d}\left(\frac{f}{g}\right) = \frac{g\mathrm{d}f - f \mathrm{d}g}{g^2}$ where $g\neq 0$
+4. if $J\subseteq\R$ is an interval containing the image of $f$, and $h:J\to\R$ is a smooth function, then $d(h\circ f) = (h' \circ f)\mathrm{d}f$
+5. if $f$ is constant, then $\mathrm{d}f = 0$
+</MathBox>
+
+<MathBox title='Functions with vanishing differentials' boxType='proposition'>
+If $f$ is a smooth real-valued function on a smooth manifold $M$ with or without boundary, then $\mathrm{d}f = 0$ if and only if $f$ is constant on each component of $M$.
+
+<details>
+<summary>Proof</summary>
+
+It suffices to assume that $M$ is connected and show that $\mathrm{d}f = 0$ if and only if $f$ is constant. One direction is immediaty: if $f$ is constant, then $\mathrm{d}f = 0$ by properties of the differential. Conversely, suppose that $\mathrm{d}f = 0$, let $\mathbf{p}\in M$ and let $\mathcal{C} = \Set{\mathbf{q} \in M: f(\mathbf{q}) = f(\mathbf{p})}$. If $\mathbf{q}$ is any point in $\mathcal{C}$, let $U$ be a smooth coordinate ball (or half-ball if $\mathbf{q}\in\partial M$) centered at $\mathbf{q}$. From $\mathrm{d}f = \frac{\partial f}{\partial f}\mathrm{d}x_i$, we see that $\frac{\partial f}{\partial x^i} \equiv 0$ in $U$ for each $i$, so by elementary calculus, $f$ is constant on $U$. This shows that $\mathcal{C}$ is open, and since it is closed by continuity, it must be all of $M$. Thus, $f$ is everywhere equal to the constant $f(\mathbf{p})$.
+</details>
+</MathBox>
+
+Suppose that $M$ is a smooth $n$-manifold. By choosing smooth coordinates on a neighbourhood of $\mathbf{p}\in M$, we can think of $f\in C^\infty (M)$ as a function on an open subset $U\subseteq\R^n$. Recall that $\mathrm{d}x^i |_\mathbf{p}$ is the linear functional that picks out the $i$th component of a tangent vector at $\mathbf{p}$. Writing $\Delta f = f(\mathbf{p}+ \mathbf{v}) - f(\mathbf{p})$ for $\mathbf{v}\in\R^n$, Taylor's theorem shows that $\Delta f$ is well approximated for small $\mathrm{v}$ by
+
+$$
+\begin{align*}
+  \Delta \approx& \frac{\partial f}{\partial x^i}(\mathbf{p})v^i \\
+  =& \frac{\partial f}{\partial x^i}(\mathbf{p})\mathrm{d}x^i|_\mathbf{p}(\mathbf{v}) = \mathrm{d}f_\mathbf{p}(\mathbf{v})
+\end{align*}
+$$
+
+where we are now considering $\mathbf{v}$ as an element of $T_\mathbf{p}\R^n$ via the isomorphism $T_\mathbf{p}\R^n \cong \R^n$. In other words, $\mathrm{d}f_\mathbf{p}$ is the linear functional that best approximates $\Delta f$ near $\mathbf{p}$
+
+<MathBox title='Derivative of a function along a curve' boxType='proposition'>
+Suppose that $M$ is a smooth manifold with or without boundary, $\gamma: J\subseteq\R \to M$ is a smooth curve, and $f:M\to\R$ is a smooth function. Then the derivative of the real-valued function $f\circ\gamma: J\to\R$ is given by
+
+$$
+  (f\circ\gamma)'(t) = \mathrm{d}f_{\gamma(t)}(\gamma'(t))
+$$
+
+<details>
+<summary>Proof</summary>
+
+It follows directly from the definition that for any $t_0 \in J$
+
+$$
+\begin{align*}
+  \mathrm{d}f_{\gamma(t_0)} (\gamma'(t_0)) =& \gamma'(t_0)f \\
+  =& \mathrm{d}\gamma_{t_0} \left(\left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t_0} \right)f \\
+  =& \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t_0} (f\circ\gamma) \\
+  =& (f\circ\gamma)'(t_0)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+## Pullbacks of covector fields
+
+<MathBox title='Pullbacks' boxType='definition'>
+Let $F:M\to N$ be a smooth map between smooth manifolds with or without boundary, and let $\mathbf{p}\in M$ be arbitrary. The differential $\mathrm{d}F_\mathbf{p}: T_\mathbf{p} M \to T_{F(\mathbf{p})} N$ yields a dual linear map
+
+$$
+  \mathrm{d}F_\mathbf{p}^* : T_{F(\mathbf{p})}^* N \to T_\mathbf{p}^* M
+$$
+
+called the *(pointwise) pullback* by $F$ at $\mathbf{p}$, or the *cotangent map* of $F$. Unraveling the definitions, we see that $\mathrm{d}F_\mathbf{p}^*$ is characterized by
+
+$$
+  \mathrm{d}F_\mathbf{p}^* (\omega)(\mathbf{v}) = \omega(\mathrm{d}F_\mathbf{p}(\mathbf{v})),\; \omega\in T_{F(\mathbf{p})}^* N, \mathbf{v}\in T_\mathbf{p}M
+$$
+
+If $\omega$ is a covector field in $M$, we define a rough vector field $F^* \omega$ on $M$, called the *pullback* of $\omega$ by $F$ by
+
+$$
+  (F^*\omega)_\mathbf{p} = \mathrm{d}F_\mathbf{p}^* (\omega_{F(\mathbf{p})})
+$$
+
+It acts on a vector $\mathbf{v}\in T_\mathbf{p}M$ by
+
+$$
+  (F^*\omega)_\mathbf{p} (\mathbf{v}) = \omega_{F(\mathbf{p})} (\mathrm{d}F_\mathbf{p}(\mathbf{v}))
+$$
+</MathBox>
+
+Observe that the assignments $(M,\mathbf{p})\mapsto T_\mathbf{p}^* M$ and $F\mapsto \mathrm{d}F_\mathbf{p}^*$ yields a contravariant functor from the category of pointed smooth manifolds to the category of real vector spaces. This shows that the convention of calling covectors in $T^* M$ *covariant* is particularly unfortunate. 
+
+<MathBox title='' boxType='proposition'>
+Let $F:M\to N$ be a smooth map between smooth manifolds with or without boundary. Suppose that $u$ is a continuous real-valued function on $N$, and $\omega$ is a covector field on $N$. Then
+
+$$
+  F^* (u\omega) = (u\circ F)F^* \omega
+$$
+
+If in addition $u$ is smooth, Then
+
+$$
+  F^* \mathbf{d}u = \mathrm{d}(u\circ F)
+$$
+
+<details>
+<summary>Proof</summary>
+
+To prove $F^* (u\omega) = (u\circ F)F^* \omega$ we compute
+
+$$
+\begin{align*}
+  (F^*(u\omega))_\mathbf{p} =& \mathrm{d}F_\mathbf{p}^* ((u\omega)_{F(\mathbf{p})}) \\
+  =& \mathrm{d}F_\mathbf{p}^* (u(F(\mathbf{p}))\omega_{F(\mathbf{p})}) \\
+  =& u(F(\mathbf{p}))\mathrm{d}F_\mathbf{p}^* (\omega_{F(\mathbf{p})}) \\
+  =& u(F(\mathbf{p}))(F^* \omega)_\mathbf{p} \\
+  =& ((u\circ F)F^* \omega)_\mathbf{p}
+\end{align*}
+$$
+
+To prove $F^* (u\omega) = (u\circ F)F^* \omega$ we let $\mathbf{v}\in T_\mathbf{p} M$ be arbitrary, and compute
+
+$$
+\begin{align*}
+  (F^* \mathrm{d}u)_\mathbf{p} (\mathbf{v}) =& (\mathrm{d}F_\mathbf{p}^* (\mathrm{d}u_{F(\mathbf{p})})) \\
+  =& \mathrm{d}u_{F(\mathbf{p})} (\mathrm{d}F_\mathbf{p} (\mathbf{v})) \\
+  =& \mathrm{d}F_\mathbf{p} (\mathbf{v})u \\
+  =& \mathbf{v}(u\circ F) \\
+  =& \mathrm{d}(u\circ F)_\mathbf{p} (\mathbf{v})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $F:M\to N$ is a smooth map between smooth manifolds with or without boundary, and let $\omega$ be a covector field on $N$. Then $F^* \omega$ is a (continuous) covector field on $M$. If $\omega$ is smooth, then so is $F^* \omega$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathbf{p}\in M$ be arbitrary, and choose smooth coordinates (y^j) for $N$ in a neighbourhood $V$ of $F(\mathbf{p})$. Let $U = F^{-1}(V)$, which is a neighbourhood of $\mathbf{p}$. Writing $\omega$ in coordinates as $\omega = \omega_j \mathrm{d}y^j$ for continuous functions $\omega_j$ on $V$ and using the previous proposition twice (applied to $F|_U$),, we have the following computation in $U$
+
+$$
+\begin{align*}
+  F^* \omega =& F^* (\omega_j \mathrm{d}y^j) (\omega_j \circ F)F^* \mathrm{d}y^j \\
+  =& (\omega_j \circ F)\mathrm{d}(y^j \circ F)
+\end{align*}
+$$
+
+This expression is continuous, and is smooth if $\omega$ is smooth.
+</details>
+</MathBox>
+
+The pullback formula for a covector field can also be written As
+
+$$
+  F^* \omega = (\omega_j \circ F)\mathrm{d}(y^i \circ F) = (\omega_j \circ F)\mathrm{d}F^j
+$$
+
+where $F^j$ is the $j$th component function of $F$ in these coordinates.
+
+### Restricting covector fields to submanifolds
+
+## Line integrals
+
+
 # Riemannian manifolds
 
 A Riemannian metric $g$ on $M$ is a smooth symmetric covariant $2$-tensor field (bilinear form) on $M$ that is positive definitive at each point. A Riemannian manifold $(M, g)$ is a smooth manifold $M$ endowed with a Riemannian metric $g$.
