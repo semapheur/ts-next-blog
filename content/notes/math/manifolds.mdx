@@ -6340,7 +6340,9 @@ $$
 </MathBox>
 
 <MathBox title='Curve segment' boxType='definition'>
-Let $M$ be a smooth manifold with or without boundary. A *curve segment* in $M$ is a continuous curve $\gamma:[a,b] \to M$ whose domain is a compact interval. It is a *smooth curve segment* if it is smooth $[a,b]$ is considered as a manifold with boundary (or, equivalently, if $\gamma$ has an extension to a smooth curve defined in a neighbourhood of each endpoint). It is a *piecewise smooth curve segment* if there exists a finite partition $a = a_0 < a_1 < \cdots < a_k = b$ of $[a,b]$ such that $\gamma|_{[a_{i-1}, a_i]}$ is smooth for each $i$. Continuity of $\gamma$ means that $\gamma(t)$ approaches the same value as $t$ approaches any of the points $a_i$ (other than $a_0$ or $a_k$) from the left or the right. Smoothness of $\gamma$ on each subinterval means that $\gamma$ has one-sided velocity vectors at each such $a_i$ when approaching from the left of the right, but these one-sided velocities need not be equal.   
+Let $M$ be a smooth manifold with or without boundary. A *curve segment* in $M$ is a continuous curve $\gamma:[a,b] \to M$ whose domain is a compact interval. It is a *smooth curve segment* if it is smooth $[a,b]$ is considered as a manifold with boundary (or, equivalently, if $\gamma$ has an extension to a smooth curve defined in a neighbourhood of each endpoint). It is a *piecewise smooth curve segment* if there exists a finite partition $a = a_0 < a_1 < \cdots < a_k = b$ of $[a,b]$ such that $\gamma|_{[a_{i-1}, a_i]}$ is smooth for each $i$. If $\gamma(a) = \gamma(b)$, then $\gamma$ is a *closed curve segment*.
+
+Continuity of $\gamma$ means that $\gamma(t)$ approaches the same value as $t$ approaches any of the points $a_i$ (other than $a_0$ or $a_k$) from the left or the right. Smoothness of $\gamma$ on each subinterval means that $\gamma$ has one-sided velocity vectors at each such $a_i$ when approaching from the left of the right, but these one-sided velocities need not be equal.  
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
@@ -6503,6 +6505,186 @@ becaiuse the contributions from all the interior points cancel.
 </MathBox>
 
 ## Conservative covector fields
+
+<MathBox title='Exact differential and potential' boxType='definition'>
+A smooth covector field $\omega$ on a smooth manifold $M$ with or without boundary is an *exact differential* on $M$ if there is a function $f\in C^\infty(M)$ such that $\omega = \mathrm{d}f$. In this case, the function $f$ is called a *potential* for $\omega$. The potential is not uniquely determined, but by properties of the line integral, difference between any two potentials for $\omega$ must be constant on each component of $M$. 
+</MathBox>
+
+<MathBox title='Conservative vector field' boxType='definition'>
+A smooth covector field $\omega$ on a smooth manifold $M$ with or without boundary is *conservative* if the line integral of $\omega$ for every piecewise smooth closed curve segment is zero.
+
+<details>
+<summary>Details</summary>
+
+This terminology comes from physics, where a force field is called conservative if the change in energy caused by the force acting along any closed path is zero, meaning that energy is conserved.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A smooth covector field $\omega$ is conservative if and only if its line integrals are path-independent, in the sense that $\int_\gamma \omega = \int_{\tilde{\gamma}}\omega$ whenever $\gamma$ and $\tilde{\gamma}$ are piecewise smooth curve segments with the same starting and ending points.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $M$ be a smooth $n$-manifold with or without boundary. A smooth covector field on $M$ is conservative if and only if it is exact.
+
+<details>
+<summary>Proof</summary>
+If $\omega\in\mathfrak{X}^* (M)$ is exact, the fundamental theorem for line integrals shows that it is conservative, so we need only to prove the converse. Suppose that $\omega$ is conservative, and assume for the moment that $M$ is connected. Because the line integrals of $\omega$ are path-independent, we can adopt the following notation: for any points $\mathbf{p},\mathbf{q}\in M$, we use the notation $\int_\mathbf{p}^\mathbf{q} \omega$ to denote the value of any integral of the form $\int_\gamma \omega$, where $\gamma$ is a piecewise smooth curve segment from $\mathbf{p}$ to $\mathbf{q}$. Because a backward representation of a path from $\mathbf{p}$ to $\mathbf{q}$ is path from $\mathbf{q}$ to $\mathbf{p}$, then by parameter independence it follows that $\int_\mathbf{q}^\mathbf{p} \omega = -\int_\mathbf{p}^\mathbf{q \omega}$. For any three points $\mathbf{p}_1, \mathbf{p}_2, \mathbf{p}_3\in M$, then by properties of the line integral
+
+$$
+  \int_{\mathbf{p}_1}^{\mathbf{p}_2} \omega + \int_{\mathbf{p}_2}^{\mathbf{p}_3} \omega = \int_{\mathbf{p}_1}^{\mathbf{p}_3} \omega
+$$
+
+Choose any base point $\mathbf{p}_0 \in M$, and define a function $f:M\to\R$ by $f(\mathbf{q}) = \int_{\mathbf{p}_0}^\mathbf{q} \omega$. We need to show that $f$ is smooth and $\mathrm{d}f = \omega$. To accomplish this, let $\mathbf{q}_0 \in M$ be arbitrary, let $(U, (x^i))$ be a smooth chart centered at $\mathbf{q}_0$, and write the coordinate representation of $\omega$ in $U$ as $\omega = \omega_i \mathrm{d}x^i$. We need to show that
+
+$$
+  \frac{\partial f}{\partial x^j} (\mathbf{q}_0) = \omega_j (\mathbf{q}_0),\; j=1,\dots,\n
+$$
+
+which implies that $\mathrm{d}f_{\mathbf{q}_0} = \omega_{\mathbf{q}_0}$.
+
+First suppose that $\mathbf{q}_0 \in \mathrm{int}(M)$. Fix $j$, and let $\gamma:[-\varepsilon,\varepsilon]\to U$ be the smooth curve segment defined in coordinates by $\gamma(t) = (0,\dots,t,\dots,0)$ with $t$ in the $j$th place, and with $\varepsilon$ chose small enough that $\gamma[-\varepsilon, \varepsilon]\subseteq U$. Let $\mathbf{p}_1 = \gamma(-\varepsilon)$, and define a new function $\tilde{f}: M\to \R$ by $\tilde{f}(\mathbf{q}) = \int_{\mathbf{p}_1}^\mathbf{q} \omega$. Then
+
+$$
+\begin{align*}
+  f(\mathbf{q}) - \tilde{f}(\mathbf{q}) =& \int_{\mathbf{p}_0}^\mathbf{q} \omega - \int_{\mathbf{p}_1}^\mathbf{q} \omega \\
+  =& \int_{\mathbf{p}_0}^\mathbf{q} \omega + \int_\mathbf{q}^{\mathbf{p}_1} \omega \\
+  =& \int_{\mathbf{p}_0}^{\mathbf{p}_1} \omega
+\end{align*}
+$$
+
+which does not depend on $\mathbf{q}$. Thus $\tilde{f}$ and $f$ differ by a constant, so it suffices to show that $\frac{\partial\tilde{f}}{\partial x^j}(\mathbf{q_0}) = \omega_j (\mathbf{q}_0)$.
+
+Now $\gamma'(t) = \left.\frac{\partial}{\partial x^j}\right|_{\gamma(t)}$ by construction, so
+
+$$
+\begin{align*}
+  \omega_{\gamma(t)}(\gamma'(t)) =& \omega_i (\gamma(t))\mathrm{d}x^i \left(\left.\frac{\partial}{\partial x^j}\right|_{\gamma(t)} \right) = \gamma_j (\gamma(t))
+\end{align*}
+$$
+
+Since the restriction of $\gamma$ to $[-\epsilon, t]$ is a smooth curve from $\mathbf{p}_1$ to $\gamma(t)$ we have
+
+$$
+\begin{align*}
+  \tilde{f}\circ\gamma(t) =& \int_{\mathbf{p}_1}^{\gamma(t)} \omega = \int_{-\varepsilon}^t \omega_{\gamma(s)}(\gamma'(s))\;\mathrm{d}s \\
+  =& \int_{-\varepsilon}^t \omega_j (\gamma(s))\;\mathrm{d}s
+\end{align*}
+$$
+
+Thus, by the fundamental theorem of calculus
+
+$$
+\begin{align*}
+  \frac{\partial\tilde{f}}{\partial x^j} (\mathbf{q}_0) =& \gamma'(0)\tilde{f} = \left.\frac{\mathrm{d}}{\mathrm{d}t}_{t=0} \tilde{f}\circ\gamma(t) \\
+  =& \left.\frac{\mathrm{d}}{\mathrm{d}t}_{t=0} \int_{-\varepsilon}^t \omega_j (\gamma(s))\;\mathrm{d}s \\
+  =& \omega_j (\gamma(0)) = \gamma_j (\mathbf{q}_0)
+\end{align*}
+$$
+
+This shows that $\mathrm{d}f_{\mathbf{q}_0} = \omega_{\mathbf{q}_0}$ when $\mathbf{q}_0 \in \mathrm{int}(M)$.
+
+For $\mathbf{q}_0 \in \partial M$, the chart $(U, (x^i))$ is a boundary chart centered at $\mathbf{q}_0$. The proof above shows that $\frac{\partial f}{\partial x^j}(\mathbf{q}_0) = \omega_j (\mathbf{q}_0)$ except in the case $j = n$. That case requires a special argument because $x^n$ takes on only nonnegative values in a boundary chart. In that case we simply set $\mathbf{p}_1 = \gamma(0)$ instead of $\mathbf{p}_1 = \gamma(-\varepsilon)$, and proceed as before. Then the same argument shows that $\mathrm{d}f_{\mathbf{q}_0} = \omega_{\mathbf{q}_0}$ in this case as well. This completes the proof that $\mathrm{d}f = \omega$ when $M$ is connected. Since the component functions of $\omega$ are smooth and equal to the partial derivatives of $f$ in coordinates, this also shows that $f$ is smooth.
+
+Finally, if $M$ is not connected, let $\Set{M_i}$ be the components of $M$. The argument above shows that for each $i$ there is a function $f_i \in C^\infty (M_i)$ such that $\mathrm{d}f_i = \omega$ on $M_i$. Letting $f:M\to\R$ be the function that is equal to $f_i$ on $M$ for each $i$, we have $\mathrm{d}f = \omega$, thus completing the proof.
+</details>
+</MathBox>
+
+<MathBox title='Closed covector field' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. A smooth covector field $\omega$ on $M$ is *closed* if its components in every smooth chart satisfy
+
+$$
+  \frac{\partial\omega_j}{\partial x^i} = \frac{\partial\omega_i}{\partial x^j}
+$$
+
+</MathBox>
+
+<MathBox title='Every exact covector field is closed' boxType='proposition'>
+Let $M$ be a smooth manifold with or without boundary, and suppose that $\omega\in\mathfrak{X}^* (M)$ is an exact covector field. Then $\omega$ is closed.
+
+
+<details>
+<summary>Proof</summary>
+
+Let $f$ by any potential for $\omega$, and let $(U,(x^i))$ be any smooth chart on $M$. Because $f$ is smooth, its mixed partials are equal, giving
+
+$$
+  \frac{\partial^2 f}{\partial x^i \partial x^j} = \frac{\partial^2 f}{\partial x^j \partial x^i}
+$$
+
+Writing $\omega = \omega \mathrm{d}x^i$ in coordinates, we see that $\omega = \mathrm{d}f$ is equivalent to $\omega_i = \frac{\partial f}{\partial x^i}$. Substituting this into the mixed partials identity, we find that the component functions of $\omega$ satisfy the following identity for pair of indices $i$ and $j$:
+
+$$
+  \frac{\partial\omega_j}{\partial x^i} = \frac{\partial\omega_i}{\partial x^j}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $\omega$ be a smooth covector field on a smooth manifold $M$ with or without boundary. The following are equivalent:
+1. $\omega$ is closed
+2. $\omega$ satisfies $\frac{\partial\omega_j}{\partial x^i} = \frac{\partial\omega_i}{\partial x^j}$ in some smooth chart around every point
+3. for any open subset $U\subseteq M$ and smooth vector fields $X, Y\in \mathfrak{X}(U)$
+$$
+  X(\omega(Y)) - Y(\omega(X)) = \omega([X,Y])
+$$
+
+<details>
+<summary>Proof</summary>
+
+We will prove that **(1)** $\implies$ **(2)** $\implies$ **(3)** $\implies$ **(1)**. The implication **(1)** $\implies$ **(2)** is immediate from the definition of closed covector fields.
+
+To prove **(2)** $\implies$ **(3)**, assume that **(2)** holds, and suppose that $U\subseteq M$ and $X,Y\in\mathfrak{X}(U)$ as in the statement of **(3)**. It suffices to verify that $X(\omega(Y)) - Y(\omega(X)) = \omega([X,Y])$ holds in a neighbourhood of each point of $U$. In any coordinate chart $(V, (x^i))$ with $V\subseteq U$, we can write $\omega = \omega_i \mathrm{d}x^i$, $X = X^j \frac{\partial}{\partial x^j}$ and $Y = Y^k \frac{\partial}{\partial x^k}$, and compute
+
+$$
+\begin{align*}
+  X(\omega(Y)) =& X(\omega_i Y^i) = Y^i X\omega_i + \omega_i XY^i \\
+  =& Y^i X^j \frac{\partial \omega_i}{\partial x^j} + \omega_i XY^i
+\end{align*}
+$$
+
+Also
+
+$$
+\begin{align*}
+  Y(\omega(X)) =& Y(\omega_i X^i) = X^i Y\omega_i + \omega_i YX^i \\
+  =& X^i Y^j \frac{\partial \omega_i}{\partial x^j} + \omega_i YX^i
+\end{align*}
+$$
+
+such that
+
+$$
+\begin{align*}
+  X(\omega(Y)) - Y(\omega(X)) =& Y^i X^j \frac{\partial \omega_i}{\partial x^j} + \omega_i XY^i \\
+  &- X^j Y^i \frac{\partial \omega_j}{\partial x^i} + \omega_i YX^i \\
+  =& \omega_i (XY^i - YX^i)
+\end{align*}
+$$
+
+The coordinate formula for the Lie bracket shows that this last expression is equal to $\omega([X,Y])$.
+
+Finally, if $\omega$ satisfies **(3)**, in any coordinate chart we can apply $X(\omega(Y)) - Y(\omega(X)) = \omega([X,Y])$ with $X = \frac{\partial}{\partial x^i}$ and $Y = \frac{\partial}{\partial x^j}$, noting that $[X,Y] = 0$ in that case, to obtain $\frac{\partial\omega_j}{\partial x^i} = \frac{\partial\omega_i}{\partial x^j}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Suppose that $F:M\to N$ is a local diffeomorphism. Then the pullback $F^*: \mathfrak{X}^* (N) \to\mathfrak{X}^* (M)$ takes closed covector fields to closed covector fields, and exact ones to exact ones.
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='Pointaré lemma for covector fields' boxType='theorem'>
+If $U$ is a star-shaped open subset of $\R^n$ or $H^n$, then every closed covector field on $U$ is exact.
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
 
 # Riemannian manifolds
 
