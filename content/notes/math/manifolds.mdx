@@ -6735,6 +6735,7 @@ Let $\mathbf{p}\in M$ be arbitrary. The hypothesis implies that $\omega$ satisfi
 
 # Tensors
 
+## Multilinear algebra
 <MathBox title='Multilinear map' boxType='definition'>
 Suppose that $V_1,\dots, V_k$ and $W$ are vector spaces. A map $F:V_1 \times\cdots\times V_k \to W$ is multilinear if it is linear as a function of variable separately when the others are held fixed, i.e. for each $i=1,\dots,k$ and $\alpha, \alpha'\in\R$
 
@@ -6770,6 +6771,205 @@ $$
 
 If follows from the multilinearity of $F$ and $G$ that $F\otimes G(\mathbf{v}_1,\dots,\mathbf{v}_k,\mathbf{w}_1,\dots,\mathbf{w}_l)$ depends linearly on each argument $\mathbf{v}_i$ or $\mathbf{w}_j$ separately, so $F\otimes G \in L(V_1,\dots,V_k,W_1,\dots,W_l;\R)$ called. This is called the *tensor product* of $F$ and $G$.
 
+If $\omega^j \in V_j^*$ for $j=1,\dots,k$, then $\omega^1 \otimes\cdots\otimes\omega^k \in\mathrm{L}(V_1,\dots,V_k;\R)$ is the multilinear function given by
+
+$$
+  \omega^1 \otimes\cdots\omega^k (\mathbf{v}_1,\dots,\mathbf{v}_k) = \omeg^1 (\mathbf{v}_1)\cdots\omega^k (\mathbf{v}_k)
+$$
+</MathBox>
+
+<MathBox title='A basis for the space of multilinear functions' boxType='proposition'>
+Let $V_1,\dots,V_k$ be real vector spaces of dimensions $n_1,\dots,n_k$, respectively. For each $j\in\Set{1,\dots,k}$, let $(\mathbf{e}_i^{(j)},\dots, \mathbf{e}_{n_j}^{(j)})$ be a basis for $V_j$, and let $(\varepsilon_{(j)}^1,\dots,\varepsilon_{(j)}^{n_j})$ be the corresponding dual basis for $V_j^*$. Then the set
+
+$$
+  B = \Set{\varepsilon_{(1)}^{i_1} \otimes\cdots\otimes\varepsilon_{(k)}^{i_k} | 1\leq i_1 \leq n_1, \dots, 1 \leq i_k \leq n_k}
+$$
+
+is a basis for $\mathbf{L}(V_1,\dots,V_k;\R)$, which therefore has dimension equal to $\prod_{j=1}^k n_j$.
+
+<details>
+<summary>Proof</summary>
+
+We need to show that $B$ is linearly independent and spans $\mathrm{L}(V_1,\dots,V_k;\R)$. Suppose that $F\in\mathrm{L}(V_1,\dots,V_k;\R)$ is arbitrary. For each ordered $k$-tuple $(i_1,\dots,i_k)$ of integers with $1 \leq i_j \leq n_j$, define a number $F_{i_k\dots i_k}$ by
+
+$$
+  F_{i_k\dots i_k} = F\left( \mathbf{e}_{i_1}^{(1)},\dots,\mathbf{e}_{i_k}^{(k)} \right)
+$$
+
+we will show that
+
+$$
+  F = F_{i_1\dots i_k} \varepsilon_{(1)}^{i_1} \otimes\cdots\otimes\varepsilon_{(k)}^{i_k}
+$$
+
+from which it follows that $B$ spans $\mathrm{L}(V_1,\dots,V_k;\R)$. For any $k$-tuple of vectors $(\mathbf{v}_j)_{j=1}^k \in \prod_{j=1}^k V_j$, write $\mathbf{v}_j = v_j^{i_j} \mathbf{e}_{i_j}^{(j)}$ and compute
+
+$$
+\begin{align*}
+  F_{i_1\dots i_k} \varepsilon_{(1)}^{i_1} \otimes\cdots\otimes \varepsilon_{(k)}^{i_k} (\mathbf{v}_1,\dots, \mathbf{v}_k) =& F_{i_1\dots i_k} \varepsilon_{(1)}^{i_1} (\mathbf{v}_1)\cdots \varepsilon_{(k)}^{i_k}(\mathbf{v}_k) \\
+  =& F_{i_1\dots i_k} v_{1}^{(i_1)} \cdots v_k^{i_k}
+\end{align*}
+$$
+
+while $F(\mathbf{v}_1,\dots,\mathbf{v}_k)$ is equal to the same by multilinearity. This proves the claim.
+
+To show that $B$ is linearly indpendent, suppose that some linear combination equals zero:
+
+$$
+  F_{i_1\dots i_k} \varepsilon_{(1)}^{i_1} \otimes\cdots\otimes\varepsilon_{(k)}^{i_k} = 0
+$$
+
+Apply this to any ordered $k$-tuple of basis vectors, $(\mathbf{e}_{j_i}^{(i)})_{i=1}^{k}$. By the same computation as above, this implies that each coefficient $F_{j_1\dots j_k}$ is zero. Thus, the only linear combination of elements of $B$ that sums to zero is the trivial one.
+</details>
+</MathBox>
+
+### Abstract tensor products of vector spaces
+
+<MathBox title='Free vector space' boxType='definition'>
+For any set $S$, a *formal linear combination* of elements of $S$ is a function $f: S\to\R$ such that $f(s) = 0$ for all but finitely many $s\in S$. The *free vector space* on $S$, denoted $\mathcal{F}(S)$, is the set of all formal linear combination of elements of $S$. Under pointwise addition and scalar multiplication, $\mathcal{F}(S)$ becomes a vector space over $\R$.
+
+<details>
+<summary>Details</summary>
+
+For each $x\in S$, there is a function $\delta_x \in \mathcal{F}(S)$ defined by
+
+$$
+  \delta_x(s) = \begin{cases}
+    1,\quad& s = x \\
+    0,\quad& s \neq x
+  \end{cases}
+$$
+
+Typically we identify this function with $x$, and therefore think of $S$ as a subset of $\mathcal{F}(S)$. Every element $f\in \mathcal{F}(S)$ can then be uniquely written in the form $f = \sum_{i=1}^m a_i x_i$, where $x_1,\dots, x_m$ are the elements of $S$ for which $f(x_i) \neq = 0$, and $a_i = f(x_i)$. Thus, $S$ is a basis for $\mathcal{F}(S)$, which is therefore finite-dimensional if and only if $S$ is a finite set.
+</details>
+</MathBox>
+
+<MathBox title='Characteristic property of the free vector space' boxType='definition'>
+For any set $S$ and any vector space $W$, every map $A: S\to W$ has a uniqe extension to a linear map $\overline{A}:\mathcal{F}(S) \to W$.
+</MathBox>
+
+<MathBox title='Tensor product space' boxType='definition'>
+Let $V_1,\dots,V_k$ be real vector spaces and let $\mathcal{F}(V_1\times\cdots\times V_k)$ be the set of all finite formal linear combinations of $k$-tuples $(\mathbf{v}_i \in V_i)_{i=1}^k$. Let $\mathcal{R}$ be the subspace of $\mathcal{F}(V_1 \times\cdots\times V_k)$ spanned by all elements of the following forms
+
+$$
+\begin{gather}
+  (\mathbf{v}_1,\dots,\alpha\mathbf{v}_i,\dots,\mathbf{v}_k) - \alpha(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k),\; \alpha\in\R \\
+  (\mathbf{v}_1,\dots,\mathbf{v}_i + \mathbf{v}'_i,\dots,\mathbf{v}_k) - (\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) - (\mathbf{v}_1,\dots,\mathbf{v}'_i,\dots,\mathbf{v}_k),\; \mathbf{v}_j, \mathbf{v}_j \in V_j
+\end{gather}
+$$
+
+The *tensor product space* of $V_1,\dots, V_k$ is defined as the quotient vectors space
+
+$$
+  \bigotimes_{i=1}^k V_i = \mathcal{F}\left(\prod_{i=1}^k V_i \right)/\mathcal{R}
+$$
+
+Let $\Pi: \mathcal{F}\left(\prod_{i=1}^k V_i \right) \to \bigotimes_{i=1}^k V_i$ be the natural projection. The equivalence class of an element $(\mathbf{v}_i)_{i=1}^k \in \bigotimes_{i=1}^k V_i$ is denoted by
+
+$$
+  \mathbf{v}_1 \otimes\cdots\mathbf{v}_k = \Pi(\mathbf{v}_1,\dots,\mathbf{v}_k)
+$$
+
+and is called the *(abstract) tensor product* of $\mathbf{v}_1,\dots,\mathbf{v}_k$. It follows from the definition that the tensor product satisfies
+
+$$
+\begin{align*}
+  \mathbf{v}_1 \otimes\cdots\otimes \alpha\mathbf{v}_i \otimes\cdots\otimes \mathbf{v}_k =& \alpha(\mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}_i \otimes\cdots\otimes \mathbf{v}_k) \\
+  \mathbf{v}_1 \otimes\cdots\otimes (\mathbf{v}_i + \mathbf{v}'_i) \otimes\cdots\otimes \mathbf{v}_k =& (\mathbf{v}_1 \otimes\cdots\otimes\mathbf{v}_i \otimes\cdots\otimes \mathbf{v}_k) \\
+  &+ (\mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}'_i \otimes\cdots\otimes \mathbf{v}_k) 
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title='Characteristic property of the tensor product space' boxType='proposition'>
+Let $V_1,\dots, V_k$ be finite-dimensional real vector spaces. If $A: V_1 \times\cdots V_k \to X$ is any multilinear map into a vector space $X$, then there is a unique linear map $\tilde{A}: V_1 \otimes\cdots\otimes V_k$ such that the following diagram commutes
+
+$$
+\begin{CD}
+  \prod_{i=1}^k V_i @>{A}>> X \\
+  @V{\pi}VV @AA{\tilde{A}}A \\
+  \bigotimes_{i=1}^k V_i @= \bigotimes_{i=1}^k V_i
+\end{CD}
+$$
+
+where $\pi$ is the map $\pi(\mathbf{v}_1,\dots,\mathbf{v}_k) = \mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}_k$.
+
+<details>
+<summary>Proof</summary>
+
+Note that any map $A:\prod_{i=1}^k V_i \to X$ extends uniquely to a linear map $\overline{A}:\mathcal{F}\left(\prod_{i=1}^k V_i \right)\to X$ by the characteristic property of the free vector space. This map is characterized by the fact that $\overline{A}(\mathbf{v}_1,\dots,\mathbf{v}_k) = A(\mathbf{v}_1,\dots,\mathbf{v}_k)$ whenever $(\mathbf{v}_1,\dots,\mathbf{v}_k)\in \prod_{i=1}^k V_i \subseteq \mathcal{F}\left(\prod_{i=1}^k V_i \right)$. The fact that $A$ is multilinear means precisely that the subspace $\mathcal{R}$ is contained in the kernel of $\overline{A}$, because
+
+$$
+\begin{align*}
+  \overline{A}(\mathbf{v}_1,\dots,\alpha\mathbf{v}_i\,dots,\mathbf{v}_k) =& A(\mathbf{v}_1,\dots,\alpha\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  =& \alpha A(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  =& a\overline{A}(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  =& \overline{A}(\alpha(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k))
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \overline{A}(\mathbf{v}_1,\dots,\mathbf{v}_i + \mathbf{v}'_i \,dots,\mathbf{v}_k) =& A(\mathbf{v}_1,\dots,\mathbf{v}_i + \mathbf{v}'_i \,dots,\mathbf{v}_k) \\
+  =& A(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  &+ A(\mathbf{v}_1,\dots,\mathbf{v}'_i,\dots,\mathbf{v}_k)
+  =& \overline{A}(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  &+ \overline{A}(\mathbf{v}_1,\dots,\mathbf{v}'_i,\dots,\mathbf{v}_k) \\
+  =& \overline{A}((\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) + (\mathbf{v}_1,\dots,\mathbf{v}'_i,\dots,\mathbf{v}_k))
+\end{align*}
+$$
+
+Thus, $\overline{A}$ descends to a linear map $\tilde{A}: \bigotimes_{i=1}^k V_i  = \mathcal{F}\left(\prod_{i=1}^k V_i \right)/\mathcal{R}$ satisfying $\tilde{A}\circ\Pi = \overline{A}$. Since $\pi$ is equal to the inclusion $\prod_{i=1}^k V_i \hookrightarrow \mathcal{F}\left(\prod_{i=1}^k V_i \right)$ followed by $\Pi$, this implies $\tilde{A}\circ\pi = A$, which is in accordance with the stated commutative diagram. Uniqueness follows from the fact that every element of $V_1 \otimes\cdots\otimes V_k$ can be written as a linear combination of elements of the form $\mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}_k$, and $\tilde{A}$ is uniquely determined on such elements by
+
+$$
+\begin{align*}
+  \tilde{A}(\mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}_k) =& \overline{A}(\mathbf{v}_1,\dots,\mathbf{v}_k) \\
+  =& A(\mathbf{v}_1,\dots,\mathbf{v}_k)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='A basis for the tensor product space' boxType='proposition'>
+Let $V_1,\dots,V_k$ be real vector spaces of dimensions $n_1,\dots,n_k$, respectively. For each $j\in\Set{1,\dots,k}$, let $(\mathbf{e}_i^{(j)},\dots, \mathbf{e}_{n_j}^{(j)})$ be a basis for $V_j$. Then the set
+
+$$
+  B = \Set{\mathbf{e}_{(1)}^{i_1} \otimes\cdots\otimes\mathbf{e}_{(k)}^{i_k} | 1\leq i_1 \leq n_1, \dots, 1 \leq i_k \leq n_k}
+$$
+
+is a basis for $\bigotimes_{i=1}^k V_i$, which therefore has dimension equal to $\prod_{j=1}^k n_j$.
+
+<details>
+<summary>Proof</summary>
+
+Elements of the form $\mathbf{v}_1 \otimes\cdots\otimes \mathbf{v}_k$ span the tensor product space by definition. Expanding each $\mathbf{v}_i$ in such an expression in terms of its basis representation shows that $B$ spans $\bigotimes_{i=1}^k V_i$.
+
+To prove that $B$ is linearly independent, assume that some linear combination of elements of $B$ is equal to zero:
+
+$$
+  a^{i_1\dots i_k} \mathbf{e}_{i_1}^{(1)}\otimes\cdots\otimes \mathbf{e}_{i_k}^{(k)} = \mathbf{0}
+$$
+
+For each ordered $k$-tuple of indices $(m_1,\dots,m_k)$, define a multilinear function $\tau^{m_1\dots m_k}: \prod_{i=1}^k V_i \to\R$ by
+
+$$
+  \tau^{m_1\dots m_k} (\mathbf{v}_1,\dots,\mathbf{v}_k) = \varepsilon_{(1)}^{m_1}(\mathbf{v}_1)\cdots\varepsilon_{(k)}^{m_k}(\mathbf{v}_k)
+$$
+
+where $\left( \varepsilon_{(j)}^i \right)$ is the basis for $V_j^*$ dual to $(\mathbf{e}_i^{(j)})$. Because $\tau^{m_1\dots m_k}$ is multilinear, it descends to a linear to a linear function $\tilde{\tau}^{m_1\dots m_k}: \bigotimes_{i=1}^k V_k \to\R$ by the characteristic property of the tensor product. It follows That
+
+$$
+\begin{align*}
+  0 =& \tilde{\tau}^{m_1\dots m_k} ( a^{i_1\dots i_k} \mathbf{e}_{i_1}^{(1)} \otimes\cdots\otimes \mathbf{e}_{i_k}^{(k)}) \\
+  =& a^{i_i \dots i_k} \tau^{m_1 \dots m_k} (\mathbf{e}_{i_1}^{(1)} \otimes\cdots\otimes \mathbf{e}_{i_k}^{(k)}) \\
+  =& a^{m_1\dots m_k} 
+\end{align*}
+$$
+
+which shows that $B$ is linearly independent.
+</details>
 </MathBox>
 
 # Riemannian manifolds
