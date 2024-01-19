@@ -7081,7 +7081,7 @@ Note the following particular cases of tensors
 - $1$-rank covariant tensors are covectors, i.e. $T_1^0 (V) = T_1 (V^*) = V^*$
 - $1$-rank contravariant tensors are vectors, i.e. $T_0^1 (V) = T^1 (V) = V$
 
-<MathBox title='Bases for tensor spaces' boxType='definition'>
+<MathBox title='Bases for tensor spaces' boxType='proposition'>
 Let $V$ be an $n$-dimensional real vector space. Suppose that $(\mathbf{e}_j)_{j=1}^n$ is any basis for $V$, and $(\varepsilon^j)_{j=1}^n$ is the corresponding dual basis for $V^*$. Then the following sets constitute bases for the tensor spaces over $V$
 
 - $k$-rank covariant tensor space $T_k (V^*)$
@@ -7099,6 +7099,295 @@ $$
 
 Thus, $\dim(T^k (V^*)) = \dim(T_k(V)) = n^k$ and $\dim(T_q^p (V)) = n^{p+q}$.
 </MathBox>
+
+## Symmetric tensors
+
+<MathBox title='Symmetric tensor' boxType='definition'>
+Let $V$ be a finite-dimensional vector space. A covariant $k$-tensor $T$ on $V$ is *symmetric* if its values is unchanged by interchanging any pair of arguments, i.e.
+
+$$
+  T(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j,\dots,\mathbf{v}_k) = T(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k)
+$$
+
+whenever $1 \leq i < j \leq k$.
+
+The set of symmetric covariant $k$-tensors, denoted $\sigma_k (V^*)$, is a linear subpace of the space of $T_k (V^*)$ of all covariant $k$-tensors on $V$, i.e. $\Sigma_k (V^*) \subseteq T_k (V^*)$. There is a natural projection from $T_k (V^*)$ to $\Sigma_k (V^*)$ defined as follows. Let $S_k$ denote the *symmetric group* on $k$ elements. That is, the group of permutations of the set $\Set{1,\dots,k}$. Given a $k$-tensor $\alpha$ and a permutation $\sigma\in S_k$, we define a new $k$-tensor $^\sigma \alpha$ bY
+
+$$
+  ^\sigma \alpha(\mathbf{v}_1,\dots,\mathbf{v}_k) = \alpha(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})
+$$
+
+Note that $^\tau(^\tau \alpha) = ^{\tau\sigma}\alpha$, where $\tau\sigma$ represents the composition of $\tau$ and $\alpha$, i.e. $\tau\sigma(i) = \tau(\sigma(i))$. We define a projection $\mathrm{sym}: T_k (V^*) \to\sigma_k (V^*)$ called *symmetrization* bY
+
+$$
+  \mathrm{sym}(\alpha) = \frac{1}{k!}\sum_{\sigma\in S_k} ^\sigma \alpha
+$$
+
+More explicitly, this means that
+
+$$
+  (\mathrm{sym}(\alpha))(\mathbf{v}_1,\dots,\mathbf{v}_k) = \frac{1}{k!}\sum_{\sigma\in S_k} \alpha(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})
+$$
+</MathBox>
+
+<MathBox title='Properties of symmetrization' boxType='proposition'>
+Let $\alpha$ be a covariant tensor on a finite-dimensional vector space.
+1. $\mathrm{sym}(\alpha)$ is symmetric
+2. $\mathrm{sym}(\alpha) = \alpha$ if and only if $\alpha$ is symmetric
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Suppose that $\alpha\in T_k (V^*)$. If $\tau\in S_k$ is any permutation, then
+
+$$
+\begin{align*}
+  (\mathrm{sym}(\alpha))(\mathbf{v}_{\tau(1)},\dots,\mathbf{v}_{\tau(k)}) =& \frac{1}{k!}\sum_{\sigma\in S_k} ^\sigma \alpha (\mathbf{v}_{\tau}(1),\dots,\mathbf{v}_{\tau(k)}) \\
+  =& \frac{1}{k!}\sum_{\sigma\in S_k} ^{\tau\sigma} \alpha(\mathbf{v}_1,\dots,\mathbf{v}_k) \\
+  =& \frac{1}{k!}\sun_{\eta\in S_k} ^\eta \alpha(\mathbf{v}_1,\dots,\mathbf{v}_k) \\
+  =& (\mathrm{sym}(\alpha))(\mathbf{v}_1,\dots,\mathbf{v}_k)
+\end{align*}
+$$
+
+where we have substituted $\eta = \tau\sigma$ and used the fact that $\eta$ runs over all of $S_k$ as $\sigma$ does. This shows that $\mathrm{sym}(\alpha)$ is symmetric.
+
+**(2):** If $\alpha$ is symmetric, then it follows that $^\sigma \alpha = \alpha$ for every $\alpha\in S_k$. It follows immediately that $\mathrm{sym}(\alpha) = \alpha$. On the other hand, if $\mathrm{sym}(\alpha) = \alpha$, then $\alpha$ is symmetric because **(1)** shows that $\mathrm{sym}(\alpha)$ is.
+</details>
+</MathBox>
+
+<MathBox title='Symmetric product' boxType='definition'>
+Let $V$ be a finite-dimensional real vector space. If $\alpha\in\Sigma_k (V^*)$ and $\beta\in\Sigma_l (V^*)$, their *symmetric product* is the $(k+l)$-tensor $\alpha\beta$ defined bY
+
+$$
+  \alpha\beta := \mathrm{sym}(\alpha\otimes\beta)
+$$
+
+More explicitly, the action of $\alpha\beta$ on vectors $\mathbf{v}_1,\dots,\mathbf{v}_{k+l}$ isolated
+
+$$
+  \alpha\beta(\mathbf{v}_1,\dots,\mathbf{v}_{k+l}) = \frac{1}{(k+l)!}\sum_{\sigma\in S_{k+l}} \alpha(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})\beta(\mathbf{v}_{\sigma(k+1)},\dots,\mathbf{v}_{\sigma(k+l)})
+$$
+</MathBox>
+
+<MathBox title='Properties of the symmetric product' boxType='proposition'>
+1. The symmetric product is symmetric and bilinear: for all symmetric tensors $\alpha, \beta, \gamma$ and all $a,b\in\R$
+    - $\alpha\beta =& \beta\alpha$
+    - $(a\alpha + b\beta)\gamma = a\alpha\gamma + b\beta\gamma = \gamma(a\alpha + b\beta)$
+2. If $\alpha$ and $\beta$ are covectors, then $\alpha\beta = \frac{1}{2}(\alpha\otimes\beta + \beta\otimes\alpha)$
+</MathBox>
+
+## Alternating tensors
+
+<MathBox title='Alternating tensor' boxType='definition'>
+Let $V$ be a finite-dimensional real vector space. A covariant $k$-tensor $T$ is *alternating* (or *antisymmetric* or *skew-symmetric*) if it changes sign whenever two of its agruments are interchanged. This means that for all vectors $\mathbf{v}_1,\dots,\mathbf{v}_k \in V$ and every distring indices $i, j$ it satisfies
+
+$$
+  T(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j),\dots,\mathbf{v}_k) = -T(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k)
+$$
+
+Alternating tensors are also variously called *exterior forms*, *multicovectors* or *k-covectors*. The subspace of all alternating covariant $k$-tensors on $V$ is denoted by $\Lambda_k (V^*) \subseteq T_k (V^*)$.
+</MathBox>
+
+<MathBox title='Sign' boxType='definition'>
+For any permutation $\sigma\in S_k$, the *sign* of $\sigma$, denoted $\mathrm{sgn}(\sigma)$, is defined As
+
+$$
+  \mathrm{sgn}(\sigma) = \begin{cases}
+    +1,\quad& \sigma\text{ is even} \\
+    -1,\quad& \sigma\text{ is odd}
+  \end{cases}
+$$
+</MathBox>
+
+Every $0$-tensor, which is a scalar, is both symmetric and alternating, because there no arguments to interchange. Similarly, every $1$-form is both symmetric and alternating. Every $2$-form is a skew-symmetric bilinear form. Note that every *2*-form $\beta$ can be expressed as a sum of an alternating tensor and symmetric one, because
+
+$$
+\begin{align*}
+  \beta(\mathbf{v},\mathbf{w}) =& \frac{1}{2}(\beta(\mathbf{v},\mathbf{w}) - \beta(\mathbf{w}, \mathbf{v})) + \frac{1}{2}(\beta(\mathbf{v},\mathbf{w}) + \beta(\mathbf{w},\mathbf{v})) \\
+  =& \alpha (\mathbf{v},\mathbf{w}) + \sigma(\mathbf{v},\mathbf{w}) 
+\end{align*}
+$$
+
+where $\alpha(\mathbf{v},\mathbf{w}) = \frac{1}{2}(\beta(\mathbf{v},\mathbf{w}) - \beta(\mathbf{w},\mathbf{v}))$ is an alternating tensor and $\sigma(\mathbf{v},\mathbf{w}) = \frac{1}{2}(\mathbf{\beta}(\mathbf{v},\mathbf{w}) - \beta(\mathbf{w},\mathbf{v}))$ is symmetric.
+
+## Tensors and tensor fields on manifolds
+
+<MathBox title='Tensor bundle' boxType='definition'>
+Let $M$ be a smooth manifold with or without boundary. The bundle of covariant $k$-tensors on $M$ is defined as
+
+$$
+  T_k T^* M = \bigsqcup_{\mathbf{p}\in M} T_k (T_\mathbf{p}^* M)
+$$
+
+Analogously, the bundle of contravariant $k$-tensors is defined as
+
+$$
+  T^k TM = \bigsqcup_{\mathbf{p}\in M} T^k (T_\mathbf{p} M)
+$$
+
+The bundle of mixed $(p,q)$-rank tensors is defined as
+
+$$
+  T_q^p TM = \bigsqcup_{\mathbf{p}\in M} T_q^p (T_\mathbf{p} M)
+$$
+
+A section of a tensor bundle is called a *tensor field* on $M$. A *smooth tensor field* is a section that is smooth in the usual sense of smooth section of vector bundles.
+</MathBox>
+
+Note the following natural identitities of tensor bundles
+- $T_0^0 TM = T_0 M^* M = T^0 TM = M\times\R$
+- $T_1^0 TM = T_1 T^* M = T* M$, i.e. covariant $1$-tensors are covector fields
+- $T_0^1 TM = T^1 TM = TM$, i.e. contravariant $1$-tensors are vector fields
+- $T_k^0 TM = T_k T^* M$
+- $T_0^k TM = T^k TM$
+
+The spaces of smooth sections of tensor bundles, denoted
+- $\Gamma(T_k T^* M) = \mathcal{T}_k (M)$
+- $\Gamma(T^k TM)$
+- $\Gamma(T_q^p TM)$
+
+are infinite-dimensional vector spaces over $\R$, and modules over $C^\infty (M)$. In any smooth local coordinates $(x^i)$, sections of these bundles can be written as
+
+$$
+  A = \begin{cases}
+    A_{i_1 \dots i_q} \bigotimes_{j=1}^q \mathrm{d}x^{i_j},\quad& A\in\gamma(T_q T^* M) \\
+    A^{i_1 \dots i_p} \bigotimes_{j=1}^p \frac{\partial}{\partial x^{i_j}},\quad& A\in\gamma(T^p TM) \\
+    A_{j_l \dots j_q}^{i_k \dots i_p} \left( \bigotimes_{k=1}^p \frac{\partial}{\partial x^{i_j}} \right) \otimes \left( \bigotimes_{l=1}^q \mathrm{d}x^{j_l} \right),\quad& A\in \Gamma(T_q^p TM)
+  \end{cases}
+$$
+
+The functions $A_{i_1 \dots i_q}$, $A^{i_1 \dots i_p}$ and $A_{j_l \dots j_q}^{i_k \dots i_p}$ are called the *component functions* of $A$ in the choosen coordinates.
+
+<MathBox title='Smoothness criteria for tensor fields' boxType='proposition'>
+Let $M$ be a smooth manifold with or without boundary, and let $A:M\to T_k T^* M$ be a rough section. Then the following are equivalent.
+1. $A$ is smooth
+2. In every smooth coordinate chart, the component functions of $A$ are smooth
+3. Each point of $M$ is contained in some coordinate chart in which $A$ has smooth component functions.
+4. If $X_1,\dots,X_k \in\mathfrak{X}(M)$, then the function $A(X_1,\dots,X_k):M\to\R$, defined by
+$$
+  A(X_1,\dots,X_k)(\mathbf{p}) = A_\mathbf{p}(X_1|_\mathbf{p},\dots,\mathbf{X}_k|_\mathbf{p})
+$$
+is smooth.
+5. Whenever $X_1,\dots,X_k$ are smooth vector fields defined on some open subset $U\subseteq M$, the function $A(X_1,\dots,X_k)$ is smooth on $U$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $M$ is a smooth manifold with or without boundaru, $A\in\mathcal{T}_k (M)$, $B\in\mathcal{T}_l (M)$ and that $f\in C^\infty(M)$. Then $fA$ nad $A\otimes B$ are also smooth tensor fields, whose components in any smooth local coordinate chart are
+
+$$
+\begin{align*}
+  (fA)_{i_1 \dots i_k} =& fA_{i_1 \dots i_k} \\
+  (A\otimes B)_{i_1 \dots i_{k+l}} = A_{i_1 \dots i_k} B_{i_{k+1} \dots i_{k+l}}
+\end{align*}
+$$
+</MathBox>
+
+If $A$ is a smooth covariant $k$-tensor field on a smooth manifold $M$, and $X_1,\dots,X_k$ are smooth vector fields, then by the by the smoothness criteria, then $A(X_1,\dots,X_k)$ is a smooth real-valued function on $M$. Thus $A$ induces a map $ \prod_{i=1}^k \mathfrak{X}(M) \to C^\infty (M)$. It is easy to see that this map is multilinear over $\R$. In fact, it is actually multilinear over $C^\infty (M)$, which means that for $f, g \in C^\infty(M)$ an $X_i, Y_i \in\mathfrak{X}(M)$ we have
+
+$$
+\begin{align*}
+  &A(X_1,\dots, fX_i + g Y_i, \dots, X_k) \\
+  &= fA(X_1,\dots,X_i,\dots,X_k) + gA(X_1,\dots,Y_i,\dots,Y_k)
+\end{align*}
+$$
+
+<MathBox title='Tensor characterization lemma' boxType='lemma'>
+A map
+
+$$
+  \mathcal{A}: \prod_{i=1}^k \mathfrak{X}(M) \to C^\infty (M)
+$$
+
+is induced by a smooth covariant $k$-tensor field if and only if $\mathcal{A}$ is multilinear over $C^\infty(M)$.
+
+<details>
+<summary>Proof</summary>
+
+Note that if $A$ is a smooth covariant $k$-tensor field, then the map $(X_1,\dots,X_k)\mapsto A(X_1,\dots,X_k)$ is multilinear over $C^\infty (M)$. To prove the converse, we proceeds as in the proof of the bundle homomorphism characterization lemma.
+
+Suppose that $\mathcal{A}$ is multilinear over $C^\infty (M)$. We sho first that $\mathcal{A}$ acts locally. If $X_i$ is a smooth vector field that vanishes on a neighbourhood $U$ of $\mathbf{p}$, we can choose a bump function $\psi$ supported in $U$ such that $\psi(\mathbf{p}) = 1$, then because $\psi X_i \equiv 0$, we have
+
+$$
+\begin{align*}
+  0 =& \mathcal{A}(X_1,\dots, \psi X_i, \dots, X_k)(\mathbf{p}) \\
+  =& \psi(\mathbf{p})\mathcal{A}(X_1,\dots,X_i,\dots,X_k)(\mathbf{p})
+\end{align*}
+$$
+
+It follows that the value of $\mathcal{A}(X_1,\dots,X_k)$ at $\mathbf{p}$ depends only on the values of $X_1,\dots,X_k$ in a neighbourhood of $\mathbf{p}$.
+
+Next we show that $\mathcal{A}$ actually acts pointwise. If $X_i|_\mathbf{p} = 0$, then in any coordinate chart centered at $\mathbf{p}$ we can write $X_i = X_i^j \frac{\partial}{\partial x^j}$, where the component functions $X_i^j$ all vanish at $\mathbf{p}$. By the extension lemma for vector fields, we can find global smooth vector fields $E_j$ on $M$ such that $E_j = \frac{\partial}{\partial x^j}$ in some neighbourhood of $\mathbf{p}$. Similarly, the locally defined functions $X_i^j$ can be extended to global smooth functions $f_i^j$ on $M$ that agree with $X_i^j$ in a neighbourhood of $\mathbf{p}$. It follows from the multilinearity of $\mathcal{A}$ over $C^\infty (M)$, and the fact that $f_i^j E_j = X_i$ in a neighbourhood of $\mathbf{p}$ that
+
+$$
+\begin{align*}
+  \mathcal{A}(X_1,\dots,X_i,\dots,X_k)(\mathbf{p}) =& \mathcal{A}(X_1,\dots,f_i^j E_j,\dots, X_k)(\mathbf{p}) \\
+  =& f_i^j (\mathbf{p})\mathcal{A}(X_1,\dots,E_j,\dots,X_k)(\mathbf{p}) = 0
+\end{align*}
+$$
+
+It follows by linearity that $\mathcal{A}(X_1,\dots,X_k)$ depends only on the value of $X_i$ at $\mathbf{p}$.
+
+We define a rough tensor field $A:M\to T_k T^* M$ by
+
+$$
+  A_\mathbf{p}(\mathbf{v}_1,\dots,\mathbf{v}_k) = \mathcal{A}(V_1,\dots,V_k)(\mathbf{p}),\; \mathbf{p}\in M, \mathbf{v}_1,\dots,\mathbf{v}_k \in T_\mathbf{p}M
+$$
+
+where $V_1,\dots,V_k$ are any extension of $\mathbf{v}_1,\dots,\mathbf{v}_k$ to smooth global vector fields on $M$. The discussion abouve shows that this is independent of the choices of extension, and the resulting tensor field is smooth by the smoothness criteria.
+</details>
+</MathBox>
+
+A *symmetric tensor field* on a manifold (with or without boundary) is simply a covariant tensor field whose value at each point is a symmetric tensor. The symmetric product of two or more tensor fields is defined pointwise, just like the tensor product. Thus, if $A$ and $B$ are smooth covector fields, their symmetric product is the smooth $2$-tensor field $AB$, which is given by
+
+$$
+  AB = \frac{1}{2}(A\otimes B + B\otimes A)
+$$
+
+Alternating tensor fields are called *differential forms*.
+
+### Pullbacks of tensor fields
+
+<MathBox title='Tensor field pullback' boxType='definition'>
+Let $M$ and $N$ be smooth manifolds with or without boundary, and suppose that $F:M\to N$ is a smooth map. For any point $\mathbf{p}\in M$, we define a tensor $\mathrm{d}F_\mathbf{p}^* (\alpha) \in T_k (T_\mathbf{p}^* M)$, called the *pointwise pullback* of $\alpha$ by $F$ at $\mathbf{p}$ by
+
+$$
+  \mathrm{d}F_\mathbf{p}^* (\alpha)(\mathbf{v}_1,\dots,\mathbf{v}_k) = \alpha(\mathrm{d}F_\mathbf{p}(\mathbf{v}_1), \dots,\mathrm{d}F_\mathbf{p}(\mathbf{v}_k)),\; \mathbf{v}_1,\dots,\mathbf{v}_k \in T_\mathbf{p}M
+$$
+
+If $A$ is a covariant $k$-tensor field on $N$, we define a rough $k$-tensor field $F^* A$ on $M$, called the *pullback* of $A$ by $F$, by
+
+$$
+  (F^* A)_\mathbf{p} = \mathrm{d}F_\mathbf{p}^* (A_{F(\mathbf{p})})
+$$
+
+This tensor field acts on vectors $\mathbf{v}_1,\dots,\mathbf{v}_k \in T_\mathbf{p} M$ by
+
+$$
+  (F^* A)_\mathbf{p}(\mathbf{v}_1,\dots,\mathbf{v}_k) = A_{F(\mathbf{p})}(\mathrm{d}F_\mathbf{p}(\mathbf{v}_1),\dots,\mathrm{d}F_\mathbf{p}(\mathbf{v}_k))
+$$
+</MathBox>
+
+<MathBox title='Properties of tensor pullbacks' boxType='proposition'>
+Suppose that $F:M\to N$ and $G:N\to P$ are smooth maps, $A$ and $B$ are covariant tensor fields on $N$, and $f:N\to\R$ is a real-valued function on $f$.
+1. $F^* (fB) = (f\circ F) F^* B$
+2. $F*(A\otimes B) = F^* = F^* A \otimes F^* B$
+3. $F^* (A+B) =F^* A + F^* B$
+4. $F^* B$ is a (continuous) tensor field, and is smooth if $B$ is smooth
+5. $(G\circ F)^* B = F^* (G^* B)$
+6. (\mathrm{id}_N)^* B = B
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $F:M\to N$ be smooth, and let $B$ be a covariant $k$-tensor field on $N$. If $\mathbf{p}\in M$ and $(y^i)$ are smooth coordinates for $N$ on a neighbourhood of $F(\mathbf{p})$, then $F^* B$ has the following expression in a neighbourhood of $\mathbf{p}$
+
+$$
+  F^* (B_{i_1 \dots i_k} \bigotimes_{j=1}^k \mathrm{d}y^{i_j}) = (B_{i_1 \dots i_k} \circ F) \left(\bigotimes_{j=1}^k \mathrm{d}(y^{i_j} \circ F) \right)
+$$
+</MathBox>
+
+In general, there is neither a pushforwar nor a pullback operation for mixed tensor fields. However, in the special case of a diffeomorphism, tensor fields of any variance can be pushed forward and pulled back at will.
+
+### Lie derivatives of tensor fields
 
 # Riemannian manifolds
 
