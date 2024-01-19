@@ -2089,7 +2089,7 @@ Suppose that $M$ and $N$ are smooth manifolds without boundary, and that $F:M\to
 <details>
 <summary>Proof</summary>
 
-**(1):** Suppose first that $F$ is a local diffeomorpism. Given $\mathbf{p}\in M$ there is a neighbourhood $U$ of $\mathbf{p}$ such that $F$ is a diffeomorphism from $U$ to $F(U)$. It follows that $\mathrm{d}F_\mathbf{p}:T_\mathbf{p}M\to T_{F(\mathbf{p})} N$ is an isomorphism. Thus, $\mathrm{rank}(F) = \dim(M) = \dim(N)$, so $F$ is both a smooth immersion and a smooth submersion.
+**(1):** Suppose first that $F$ is a local diffeomorphism. Given $\mathbf{p}\in M$ there is a neighbourhood $U$ of $\mathbf{p}$ such that $F$ is a diffeomorphism from $U$ to $F(U)$. It follows that $\mathrm{d}F_\mathbf{p}:T_\mathbf{p}M\to T_{F(\mathbf{p})} N$ is an isomorphism. Thus, $\mathrm{rank}(F) = \dim(M) = \dim(N)$, so $F$ is both a smooth immersion and a smooth submersion.
 
 Conversely, if $F$ is both a smooth immersion and a smooth submersion, then $\mathrm{d}F_\mathbf{p}$ is an isomorphism at each $\mathbf{p}\in M$, and the inverse function theorem for manifolds shows that $\mathbf{p}$ has a neighbourhood on which $F$ restricts to a diffeomorphism onto its image.
 
@@ -7390,27 +7390,141 @@ In general, there is neither a pushforwar nor a pullback operation for mixed ten
 ### Lie derivatives of tensor fields
 
 <MathBox title='Lie derivative of a tensor field' boxType='definition'>
+Suppose that $M$ is a smooth manifold, $V$ is a smooth vector field on $M$, and that $\theta$ is its flow. For any $\mathbf{p}\in M$, if $t$ is sufficiently close to zero, then $\theta_t$ is a diffeomorphism from a neighbourhood of $\mathbf{p}$ to a neighbourhood of $\theta_t (\mathbf{p})$, so $\mathrm{d}(\theta_t)_\mathbf{p}^*$ pulls back tensors at $\theta_t (\mathbf{p})$ to ones at $\mathbf{p}$ by the formula
 
+$$
+  \mathrm{d}(\theta_t)_\mathbf{p}^* (A_{\theta_t (\mathbf{p})})(\mathbf{v}_1,\dots,\mathbf{v}_k) = A_{\theta_t (\mathbf{p})}(\mathrm{d}(\theta_t)_\mathbf{p}(\mathbf{v}_1),\dots,\mathrm{d}(\theta_t)_\mathbf{p}(\mathbf{v}_k))
+$$
+
+Note that $\mathrm{d}(\theta_t)_\mathbf{p}^* (A_\theta_t (\mathbf{p}))$ is just the value of the pullback tensor field $\theta_t^* A$ at $\mathbf{p}$.
+
+Given a smooth covariant tensor field $A$ on $M$, the *Lie derivative* of $A$ with respect to $V$, denoted $\mathcal{L}_V A$, is defined by
+
+$$
+\begin{align*}
+  (\mathcal{L}_V A)_\mathbf{p} =& \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0} (\theta_t^* A)_\mathbf{p} \\
+  =& \lim_{t\to 0} \frac{\mathrm{d}(\theta_t)_\mathbf{p}^* (A_{\theta_t(\mathbf{p})}) - A_\mathbf{p}}{t}
+\end{align*}
+$$
+
+provided that the derivative exists. Because the expression being differentiated lies in $T_k (T_\mathbf{p}^* M)$ for all $t$, then $(\mathcal{L}_V A)_\mathbf{p}$ makes sense as an element of $T_k (T_\mathbf{p}^* M$.
 </MathBox>
 
 <MathBox title='' boxType='lemma'>
-
+Suppose that $M$ is a smooth manifold, $V$ is a smooth vector field on $M$, and that $\theta$ is its flow. The Lie derivative exists for every $\mathbf{p}\in M$ and defines $\mathcal{L}_V A$ as a smooth tensor field on $M$.
 </MathBox>
 
 <MathBox title='Properties of Lie derivatives of tensor fields' boxType='proposition'>
+Let $M$ be a smooth manifold and let $V\in\mathfrak{X}(M)$. Suppose that $f$ is a smooth real-valued function on $0$, and that $A$ and $B$ are smooth covariant tensor fields on $M$.
+1. $\mathcal{L}_V f = Vf$
+2. $\mathcal{L}_V (fA) = (\mathcal{L}_V f)A + f\mathcal{L}_V A$
+3. $\mathcal{L}_V (A\otimes B) = (\mathcal{L}_V A)\otimes B + A \otimes \mathcal{L}_V B$
+4. If $X_1,\dots,X_k\in\mathfrak{X}(M)$ and $A$ is a smooth $k$-tensor field,
+$$
+\begin{align*}
+  \mathcal{L}_V (A(X_1,\dots,X_k)) =& (\mathcal{L}_V A)(X_1,\dots,X_k) \\
+  &+ A(\mathcal{L}_V X_1,\dots,X_k) + \cdots + A(X_1,\dots, \mathcal{L}_V X_k)
+\end{align*}
+$$
 
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $\theta$ be the flow of $V$. For a real-valued function $f$ we can write
+
+$$
+  \theta_t^* f(\mathbf{p}) = f(\theta_t (\mathbf{p})) = f\circ\theta^{(\mathbf{p})}(t)
+$$
+
+Thus, the definition of $\mathcal{L}_V f$ reduces to the ordinary derivative with respect to $t$ of the composite function $f\circ\theta^{(\mathbf{p})}$. Because $\theta^{(\mathbf{p})}$ is an integral curve of $V$, it follows that
+
+$$
+\begin{align*}
+  (\mathcal{L}_V f)(\mathbf{p}) =& \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0} f\circ\theta^{(\mathbf{p})} \\
+  =& \mathrm{d}f_\mathbf{p} (\theta^{(\mathbf{p})}' (0)) = \mathrm{d}f_\mathbf{p}(V_\mathbf{p}) \\
+  =& Vf(\mathbf{p})
+\end{align*}
+$$
+
+This proves **(1)**.
+
+The other assertions can be proved by the techniques used in the theorem for the equivalnce of the Lie derivative with the Lie bracket. In a neighbourhood of a regular point for $V$, if $(u^i)$ are coordinates in which $V = \frac{\partial}{\partial u^1}$, then it follows immediately from the definition that $\mathcal{L}_V$ acts on a tensor field simply by taking the partial derivative of its coefficients with respect to $u^1$, and **(2)**-**(4)** all follow from the ordinary product rule. The same relations hold on the support of $V$ by continuity, and on the complement of the support because the flow of $V$ is trivial here.
+</details>
 </MathBox>
 
 <MathBox title='' boxType='corollary'>
+If $V$ is a smooth vector field nad $A$ is a smooth covariant $k$-tensor field, then for any smooth vector fields $X_1,\dots,X_k$,
 
+$$
+\begin{align*}
+  (\mathcal{L}_V A)(X_1,\dots,X_k) =& V(A(X_1,\dots,X_k)) \\
+  &- A([V,X_1],X_2,\dots, X_k) - \cdots - A(X_1,\dots,X_{k-1},[V,X_k]) 
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that
+
+$$
+\begin{align*}
+  \mathcal{L}_V (A(X_1,\dots,X_k)) =& (\mathcal{L}_V A)(X_1,\dots,X_k) \\
+  &+ A(\mathcal{L}_V X_1,\dots,X_k) + \cdots + A(X_1,\dots, \mathcal{L}_V X_k)
+\end{align*}
+$$
+
+Solving for $(\mathcal{L}_V A)(X_1,\dots,X_k)$, and replacing $\mathrm{L}_V f$ by $V f$ and $\mathcal{L}_V X_i$ by $[V, X_i]$ gives the desired result.
+</details>
 </MathBox>
 
 <MathBox title='' boxType='corollary'>
+If $f\in C^\infty (M)$, then $\mathcal{L}_V (\mathrm{d} f) = \mathrm{d}(\mathcal{L}_V f)$.
 
+<details>
+<summary>Proof</summary>
+
+By the previous corollary, we compute for any $X\in \mathfrak{X}(M)$
+
+$$
+\begin{align*}
+  (\mathcal{L}_V \mathrm{d}f) =& V(\mathrm{d}f(X)) - \mathrm{d}f([V,X]) \\
+  =& VXf - [V,X]f = VXf - (VXf - XVf) \\
+  =& XVf = \mathrm{d}(Vf)(X) = \mathrm{d}(\mathcal{L}_V f)(X)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Invariant tensor field' boxType='proposition'>
+If $A$ is a smooth tensor field, $A$ is *invariant* under $\theta$ if for each $t$, the map $\theta_t$ pulls $A$ back to itself wherever it is defined, i.e.
+
+$$
+  \mathrm{d}(\theta_t)_\mathbf{p}^* (A_{\theta_t (\mathbf{p})}) = A_\mathbf{p}
+$$
+
+for all $(t,\mathbf{p})$ in the domain of $\theta$. If $\theta$ is a global flow, this is equivalent to $\theta_t^* A = A$ for all $t\in\R$.
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
+Suppose that $M$ is a smooth manifold with or without boundary and $V\in\mathfrak{X}(M)$. If $\partial M \neq\emptyset$, assume in addition that $V$ is tangent to $\partial M$. Let $\theta$ be the flow of $V$. For any smooth covariant tensor field $A$ and any $(t_0, \mathbf{p})$ in the domain of $\theta$
 
+$$
+  \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_\mathbf{t=t_0} (\theta_t^* A)_\mathbf{p} = (\theta_{t_0}^* (\mathcal{L}_V A))
+$$
+
+<details>
+<summary>Proof</summary>
+
+After expanding the definition of the pullback in the statement, we see that we have to prove
+
+$$
+  \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=t_0} \mathrm{d}(\theta_t)_\mathbf{p}^* (A_{\theta_t (\mathbf{p})}) =& \left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0} \mathrm{d}(\theta_{s+ t_0})_\mathbf{p}^* (A_{\theta_{s+t_0}(\mathbf{p})}) \\
+  =& \left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0} \mathrm{d}(\theta_{t_0})_\mathbf{p}^* \mathrm{d}(\theta_s)_{\theta_{t_0}(\mathbf{p})}^*  (A_{\theta_s (\theta_{t_0}(\mathbf{p}))}) \\
+  =& \mathrm{d}(\theta_{t_0})_\mathbf{p}^* \left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0} \mathrm{d}(\theta_s)_{\theta_{t_0}(\mathbf{p})}^* (A_{\theta_s(\theta_{t_0}(\mathbf{p}))}) \\
+  =& \mathrm{d}(\theta_{t_0})_\mathbf{p}^* ((\mathcal{L}_V A)_{\theta_{t_0}(\mathbf{p})})
+$$
+</details>
 </MathBox>
 
 <MathBox title='' boxType='theorem'>
