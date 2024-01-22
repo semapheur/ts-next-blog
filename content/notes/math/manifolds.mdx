@@ -7533,19 +7533,143 @@ Let $M$ be a smooth manifold and let $V\in\mathfrak{X}(M)$. A smooth covariant t
 
 # Riemannian manifolds
 
-A Riemannian metric $g$ on $M$ is a smooth symmetric covariant $2$-tensor field (bilinear form) on $M$ that is positive definitive at each point. A Riemannian manifold $(M, g)$ is a smooth manifold $M$ endowed with a Riemannian metric $g$.
+<MathBox title='Riemannian metric' boxType='definition'>
+A Riemannian metric on a smooth manifold $M$ is a smooth symmetric covariant $2$-tensor field $g$ on $M$ that is positive definite at each point. For each $\mathbf{p}\in M$, the 2-form $g_\mathbf{p}$ is an inner product on $T_\mathbf{p} M$, usually denoted
 
-## Riemannian metric
+$$
+  \langle \mathbf{v}, \mathbf{w} \rangle_g = g_\mathbf{p} (\mathbf{v}, \mathbf{w}),\; \mathbf{v},\mathbf{w}\in T_\mathbf{p} M
+$$
 
-If $g$ is a Riemannian metric on $M$, then for each $p \in M$, the $2$-tensor $g_p$ is an inner product on $T_p M$. In any smooth local coordinates $\left( x^i \right)$, a Riemannian metric can be written
+In any smooth local coordinates $(x^i)$, a Riemannian metric can be written
+
+$$
+  g = g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j
+$$
+
+where $(g_{ij})$ is a symmetric positive definite matrix of smooth functions, i.e. $g_{ij} = g_{ji}$. The symmetry of $g$ allows us to write $g$ in terms of symmetric products
 
 $$
 \begin{align*}
-  g &= g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j \\
-  &= \frac{1}{2} \left( g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ji} \mathrm{d}x^i \otimes \mathrm{d}x^j  \right) \\
-  &= \frac{1}{2} \left( g_{ij} \mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ij} \mathrm{d}x^j \otimes \mathrm{d}x^i  \right) \\
-  &= g_{ij} \mathrm{d}x^i \mathrm{d}x^j 
+  g =& g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j \\
+  =& \frac{1}{2}(g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ji}\;\mathrm{d}x^i \otimes \mathrm{d}x^j) \\
+  =& \frac{1}{2}(g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ij}\;\mathrm{d}x^j \otimes \mathrm{d}x^i) \\
+  =& g_{ij} \;\mathrm{d}x^i\;\mathrm{d}x^j
+\end{align*}
+$$
+</MathBox>
+
+Note that a Riemannian metric is not the same thing as a metric in the sense of metric spaces, although the two concepts are related. To avoid this ambiguity, we will use the term "distance function" for a metic in the metric space sense.
+
+<MathBox title='Riemannian metric' boxType='definition'>
+A *Riemannian manifold* is a pair $(M, g)$, where $M$ is smoth manifold and $g$ is a Riemannian metric. It is common to state that "M is a Riemannian manifold" if $M$ understood to be endowed with a Riemannian metric.
+</MathBox>
+
+<MathBox title='Euclidean metric' boxType='example'>
+The simple example of a Riemannian metric is the *Euclidean metric* $\overline{g}$ on $\R^n$, given in standard coordinates bY
+
+$$
+  \overline{g} = \delta_{ij}\;\mathrm{d}x^i \;\mathrm{d}x^j
+$$
+
+where $\delta_{ij}$ is the Kronecker delta. Applied to vectors $\mathbf{v}, \mathbf{w}\in T_\mathbf{p}\R^n$, this yields
+
+$$
+  \overline{g}_\mathbf{p}(\mathbf{v}, \mathbf{w}) = \delta_{ij} \mathbf{v}^i \mathbf{w}^j = \sum_{i=1}^n v^i w^i = \mathbf{v}\cdot \mathbf{w}
+$$
+
+which shows that $\overline{g}$ is the covariant $2$-tensor field whose value at each point is the Euclidean dot product.
+</MathBox>
+
+The following geometric construction can be defined on a Riemannian manifold $(M, g)$ with or without boundary
+- The *length* or *norm* of tangent vector $\mathbf{v}\in T_\mathbf{p}M$:
+$$
+  |\mathbf{v}|_g = \langle \sqrt{\mathbf{v},\mathbf{v}\rangle_g} = \sqrt{g_\mathbf{p}(\mathbf{v}, \mathbf{w})}
+$$
+- The *angle* between two nonzero tangent vectors $\mathbf{v},\mathbf{w}\in T_\mathbf{p} M$ is the the unique $\theta\in[0,\pi]$ satisfying
+$$
+  \cos(\theta) = \frac{\langle \mathbf{v}, \mathbf{w} \rangle_g}{|\mathbf{v}|_g |\mathbf{w}|_g}
+$$
+
+Tangent vector $\mathbf{v},\mathbf{w}\in T_\mathbf{p} M$ are *orthogonal* if $\langle \mathbf{v}, \mathbf{w} \rangle_g = 0$. This means either on or both vectors are zero, or the angle between them is $\frac{\pi}{2}$.
+
+<MathBox title='Existence of Riemannian metrics' boxType='proposition'>
+Every smooth manifold with or without boundary admits a Riemannian metric.
+
+<details>
+<summary>Proof</summary>
+
+Let $M$ be a smooth manifold with or without boundary, and choose a covering of $M$ by smooth coordinate charts $(U_\alpha, \varphi_\alpha)$. In each coordinate domain, there is a Riemannian metric $g_\alpha = \varphi_\alpha^* \overline{g}$, whose coordinate expression is $\delta_{ij}\;\mathrm{d}x^i\;\mathrm{d}x^j$. Let $\Set{\psi_\alpha}$ be a smooth partition on unity subordinate to the cover $\Set{U_\alpha}$, and define
+
+$$
+  g = \sum_\alpha \psi_\alpha g_\alpha
+$$
+
+with each term interpreted to be zero outside $\mathrm{supp}(\mathbf{psi}_\alpha)$. By local finiteness, there are only finitely many nonzero terms in a neighbourhood of each point, so this expression defines a smooth tensor field. It is obviously symmetric, so only positivity needs to be checked. If $\mathbf{v}\in T_\mathbf{p} M$ is any nonzero vector, then
+
+$$
+  g_\mathbf{p}(\mathbf{v},\mathbf{v}) = \sum_\alpha \psi_\alpha (\mathbf{p}) g_\alpha |_\mathbf{p} (\mathbf{v}, \mathbf{v})
+$$
+
+This sum is nonnegative, because each term is nonnegative. At least one of the functions $\psi_\alpha$ is strictly positive at $\mathbf{p}$, because they sum to $1$. Becuase $g_\alpha|_\mathbf{p}(\mathbf{v},\mathbf{v}) > 0$, it follows that $g_\mathbf{p}(\mathbf{v},\mathbf{v}) > 0$
+</details>
+</MathBox>
+
+<MathBox title='Orthonormal frame' boxType='definition'>
+Let $(M, g)$ be an $n$-dimensional Riemannian manifold with or without boundary. A local frame $(E_i)_{i=1}^n$ for $M$ on an open subset $U\subseteq M$ is an *orthonormal frame* if the vectors $(E_i|_\mathbf{p})_{i=1}^n$ form an orthonormal basis for $T_\mathbf{p} M$ at each point $\mathbf{p}\in U$, or equivalently if $\langle E_i, E_j \rangle_g = \delta_{ij}$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $(M, g)$ be an $n$-dimensional Riemannian manifold with or without boundary, and suppose that $(X_i)$ is a smooth local frme for $M$ over an open subset $U\subseteq M$. Then there is a smooth orthonormal frame $(E_j)$ over $U$ such that $\mathrm{span}(E_1|_\mathbf{p},\dots,E_j|_\mathbf{p}) = \mathrm{span}(X_1|_\mathbf{p},\dots,X_j|_\mathbf{p})$ for each $j = 1,\dots,n$ and each $\mathbf{p}\in U$. 
+</MathBox>
+
+<MathBox title='Existence of local orthonormal frames' boxType='corollary'>
+Let $(M, g)$ be an $n$-dimensional Riemannian manifold with or without boundary. For each $\mathbf{p}\in M$, there is a smooth orthonormal frame on a neighbourhood of $\mathbf{p}$.
+</MathBox>
+
+## Pullback metrics
+
+<MathBox title='Pullback metric' boxType='definition'>
+Suppose that $M$, $N$ are smooth manifold with or without boundary, $g$ is a Riemannian metric on $N$, and that $F:M\to N$ is smooth. The pullback $F^* g$ is a smooth $2$-tensor field on $M$. If it is positive definite, it is a Riemannian metric on $M$, called the *pullback metric* determined by $F$.
+</MathBox>
+
+<MathBox title='Pullback metric criterion' boxType='proposition'>
+Suppose that $F:M\to N$ is a smooth map between smooth manifolds $M$ and $N$, and that $g$ is a Riemannian metric on $N$. Then $F^* g$ is a Riemannian metric on $M$ if and only if $F$ is a smooth immersion.
+</MathBox>
+
+<MathBox title='Riemannian isometry' boxType='definition'>
+If $(M,g)$ and $(\tilde{M},\tilde{g})$ are both Riemannian manifolds, a smooth map $F:M\to\tilde{M}$ is called a *(Riemannian) isometry* if it is a diffeomorphism that satisfies $F^*\tilde{g} = g$. More generally, $F$ is a *local isometry* if every point $\mathbf{p}\in M$ has a neighbourhood $U$ such that $F|_U$ is an isometry of $U$ onto an open subset of $\tilde{M}$; or equivalently, if $F$ is a local diffeomorphism satisfying $F*^\tilde{g} = g$.
+
+If there exists a Riemannian isometry between $(M,g)$ and $(\tilde{M},\tilde{g})$, we say that they are *isometric* as Riemannian manifolds. If each point of $M$ has a neighbourhood that is isometric ot an open subset of $(\tilde{M},\tilde{g})$, we say that $(M,g)$ is *locally isometric* to $(\tilde{M},\tilde{g})$.
+</MathBox>
+
+<MathBox title='Flatness' boxType='definition'>
+A Riemannian $n$-manifold $(M,g)$ is *a flat Riemannian manifold*, and $g$ is *flat metric*, if $(M,g)$ is locally isometric to $(\R^n, \overline{g})$.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+For a Riemannian manifold $(M, g)$, the following are equivalent:
+1. $g$ is flat
+2. Each point of $M$ is contained in the domain of a smooth coordinate chart in which $g$ has the coordinate representation $g = \delta_{ij}\;\mathrm{d}x^i \;\mathrm{d}x^j$.
+3. Each point of $M$ is contained in the domain of a smooth local coordinatee chart in which the coordinate frame is orthonormal.
+4. Each point of $M$ is contained in the domain of a commuting orthonormal frame.
+
+<details>
+<summary>Proof</summary>
+
+The implications **(1)** $\implies$ **(2)** $\implies$ **(3)** $\implies$ **(4)** are easy consequences of the definitions. The remaining implication **(4)** $\implies$ **(1)** follows from the canonical form theorem for commuting frames: if $(E_i)$ is a commuting orthonormal frame for $g$ on an open subset $U\subseteq M$, then each $\mathbf{p}\in V$ is contained in the domain of a smooth chart $(U,\varphi)$ in which the coordiante frame is equal to $(E_i)$. This means $\varphi_* E_i = \frac{\partial}{\partial x^i}$, so the diffeomorphism $\varphi: U\to\varphi(U)$ satisfies
+
+$$
+\begin{align*}
+  \varphi^* \overline{g}(E_i, E_j) =& \oveline{g}(\varphi_* E_i, \varphi_* E_j) \\
+  =& \overline{g}\left( \frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^j} \right) \\
+  =& \delta_{ij} = g(E_i, E_j)
 \end{align*}
 $$
 
-where $(g_{ij})$ is a symmetric positive definitive matrix of smooth functions.
+Bilinearity then shows that $\varphi^* \overline{g} = g$, so $\varphi$ is an isometry between $(U, g|_U)$ and $\varphi(U)$ with the Euclidean metric. This shows that $g$ is flat.
+</details>
+</MathBox>
+
+## Riemannian submanifolds
+
+# Differential forms
