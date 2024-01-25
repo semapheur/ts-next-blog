@@ -2278,7 +2278,7 @@ Conversely, suppose that $F$ is a smooth immersion, and let $\mathbf{p}\in M$. W
 
 On the other hand, suppose that $F(\mathbf{p})\in\partial N$ and let $(W,\psi)$ be any smooth boundary chart for $N$ centered at $F(\mathbf{p})$. If we let $U_0 = F^{-1}(W)$, which is a neighbourhood of $\mathbf{p}$, and let $\iota:H^n \to\R^n$ be the inclusion map, then the preceeding argument can be applied to the composite map $\iota\circ\psi\circ F|_{U_0}: U_0 \to\R^n$ to show that $\mathbf{p}$ has a neighbourhood $U_1 \subseteq U_0$ such that $\iota\circ\psi\circ F|_{U_1}$ is injective, from which it follows that $F|_{U_1}$ is injective.
 
-Let $\mathbf{p}\in M$ be arbitray, and let $U_1$ be a neighbourhood of $\mathbf{p}$ on which $F$ is injective. There exists a precompact neighbourhood $U$ of $\mathbf{p}$ such that $\overline{U}\subseteq U_1$. The restriction of $F$ to $\overline{U}$ is an injective continuous map with compact domain, so it is a topological embedding by the closed map lemma. Because any restriction of a topological embedding is again a topological embedding, $F|_U$ is both a topological embedding and a smooth immersion, hence a smooth embedding.
+Let $\mathbf{p}\in M$ be arbitrary, and let $U_1$ be a neighbourhood of $\mathbf{p}$ on which $F$ is injective. There exists a precompact neighbourhood $U$ of $\mathbf{p}$ such that $\overline{U}\subseteq U_1$. The restriction of $F$ to $\overline{U}$ is an injective continuous map with compact domain, so it is a topological embedding by the closed map lemma. Because any restriction of a topological embedding is again a topological embedding, $F|_U$ is both a topological embedding and a smooth immersion, hence a smooth embedding.
 </details>
 </MathBox>
 
@@ -6140,7 +6140,7 @@ $$
   \mathrm{d}f = \frac{\partial f}{\partial f}\mathrm{d}x_i
 $$
 
-Particularly, in the $1$-dimensional case, this resduces to
+Particularly, in the $1$-dimensional case, this reduces to
 
 $$
   \mathrm{d}f = \frac{\mathrm{d f}}{\mathrm{d}x}\mathrm{d}x
@@ -8001,3 +8001,212 @@ A *pseudo-Riemannian metric* on a smooth manifold $M$ is a smooth symmetric $2$-
 Note that the proposition of the existence of Riemannian does not carry over to the pseudo-Riemannian case, since it is not generally true that a linear combination of nondegenerate $2$-tensors with positive coefficients is necessarily nondegenerate.
 
 # Differential forms
+
+## The algebra of alternating tensors
+<MathBox title='Characteristics of alternating tensors' boxType='lemma'>
+Let $\alpha$ be a covariant $k$-tensor on a finite-dimensional vector space $V$. The following are equivalent:
+1. $\alpha$ is alternating
+2. $\alpha(\mathbf{v}_1,\dots,\mathbf{v}_k) = 0$ whenever the $k$-tuple $(\mathbf{v}_1,\dots,\mathbf{v}_k)$ is linearly independent.
+3. $\alpha$ give the values zero whenevers two of its arguments are equal, i.e.
+$$
+  \alpha(\mathbf{v}_1,\dots,\mathbf{w},\dots,\mathbf{w},\dots,\mathbf{v}_k) = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+The implications **(1)** $\implies$ **(3)** and **(2)** $\implies **(3)** are immediate. We complete the proof by showing that **(3)** implies both **(1)** and **(2)**.
+
+Assume that $\alpha$ satisfies **(3)**. For any vectors $(\mathbf{v}_i)_{i=1}^k$, the hypothesis implies
+
+$$
+\begin{align*}
+  0 =& \alpha(\mathbf{v}_1,\dots, \mathbf{v}_i + \mathbf{v}_j, \dots, \mathbf{v}_i + \mathbf{v}_j, \dots, \mathbf{v_k}) \\
+  =& \alpha(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  &+ \alpha(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j,\dots,\mathbf{v}_k) \\
+  &+ \alpha(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k) \\
+  &+ \alpha(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_j,\dots,\mathbf{v}_k) \\
+  =& \alpha(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j,\dots,\mathbf{v}_k) \\
+  &+ \alpha(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_k)
+\end{align*}
+$$
+
+Thus, $\alpha$ is alternating. On the other hand, if $(\mathbf{v}_i)_{i=1}^k$ is a linearly dependent $k$-tuple, then one of the $\mathbf{v}_i$ can be written as a linear combination of the others. For simplicity, assume that $\mathbf{v}_k = \sum_{j=1}^{k-1} a^j \mathbf{v}_j$. Then multilinearity of $\alpha$ implies
+
+$$
+  \alpha(\mathbf{v}_1,\dots,\mathbf{v}_k) = \sum_{j=1}^{k-1} a^j \alpha(\mathbf{v}_1,\dots,\mathbf{v}_{k-1},\mathbf{v}_j)
+$$
+
+In each of these terms, $\alpha$ has two identical arguments, so every term is zero.
+</details>
+</MathBox>
+
+<MathBox title='Alternation' boxType='definition'>
+The *alternation* of a tensor $\alpha$ on a finite-dimensional vector space is a map $\mathrm{alt}:T^k (V^*) \to \Lambda^k (V^*)$ defined by
+
+$$
+  \mathrm{alt}(\alpha) = \frac{1}{k!}\sum_{\sigma\in S_k} \mathrm{sgn}(\sigma) (^\sigma \alpha)
+$$
+
+where $S_k$ is the symmetric group on $k$ elements. More explicitly, this means
+
+$$
+  (\mathrm{alt}(\alpha))(\mathbf{v}_1,\dots,\mathbf{v}_k) = \frac{1}{k!}\sum_{\sigma\in S_k} \mathrm{sgn}(\sigma) \alpha(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})
+$$
+</MathBox>
+
+<MathBox title='Properties of alternation' boxType='proposition'>
+Let $\alpha$ be a covariant tensor on a finite-dimensional vector space.
+1. $\mathrm{alt}(\alpha)$ is alternating
+2. $\mathrm{alt}(\alpha) = \alpha$ if and only if $\alpha$ is alternating
+</MathBox>
+
+### Elementary alternating tensors
+
+<MathBox title='Multi-index' boxType='definition'>
+Given a positive integer $k\in\N_+$, an ordered $k$-tuple $I = (i_1,\dots,i_k)$ of positive integers is called a *multi-index* of length $k$. If $I$ is such a multi-index and $\sigma\in S_k$ is a permutation of $\Set{1,\dots,k}$, we write $I_\sigma$ for the following multi-index:
+
+$$
+  I_\sigma = (i_{\sigma(1)},\dots,i_{\sigma(k)})
+$$
+
+Note that $I_{\sigma\tau} = (I_\sigma)_\tau$ for $\sigma,\tau \in S_k$.
+
+A multi-index is increasing if $i_1 < \cdots < i_k$. It is useful to use a primed summation sign to denote a sum over only increasing multi-indices, e.g.
+
+$$
+  \sum'_{I} \alpha_I \varepsilon^I \alpha_I \varepsilon^I = \sum_{I: i_1 < \cdots < i_k} \alpha_I \varepsilon^I
+$$
+</MathBox>
+
+<MathBox title='Elementary alternating tensor' boxType='definition'>
+Let $V$ be an $n$-dimensional vector space, and suppose that $(\varepsilon^i)_{i=1}^n$ is any basis for $V^*$. For each multi-index $I = (i_1,\dots,i_k)$ of length $k$ such that $1 \leq i_1, \dots, i_k \leq n$, define a covariant $k$-tensor $\varepsilon^I = \varepsilon^{i_1 \dots i_k}$ bY
+
+$$
+\begin{align*}
+  \varepsilon^I (\mathbf{v}_1,\dots,\mathbf{v}_k) =& \mathrm{det}\begin{bmatrix} 
+    \varepsilon^{i_1}(\mathbf{v}_1) & \cdots & \varepsilon^{i_1}(\mathbf{v}_k) \\
+    \vdots & \ddots & \vdots \\
+    \varepsilon^{i_k}(\mathbf{v}_1) & \cdots & \varepsilon^{i_k}(\mathbf{v}_k)
+  \end{bmatrix} \\
+  =& \mathrm{det}\begin{bmatrix} 
+    \mathbf{v}_1^{i_1} & \cdots & \mathbf{v}_k^{i_1} \\
+    \vdots & \ddots & \vdots \\
+    \mathbf{v}_1^{i_k} & \cdots & \mathbf{v}_k^{i_k} 
+  \end{bmatrix}
+\end{align*}
+$$
+
+In other words, if $\mathbf{V}$ denotes the $n\times k$ matrix whose columns are the components of the vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ with respect to the basis $(\mathbf{e}_i)$ dual to $(\varepsilon^i)$, then $\varepsilon^I (\mathbf{v}_1,\dots,\mathbf{v}_k)$ is the determinant of the $k\times k$ submatrix consisting of rows $i_1,\dots,i_k$ of $\mathbf{V}$. Because the determinant changes sign whenever two columns are interchanged, it is clear that $\varepsilon^I$ is an alternating $k$-tensor, called an *elementary alternating tensor* or *elementary $k$-vector*.
+</MathBox>
+
+In order to streamline computations with elementary $k$-covectors, it is useful to extend the Kronecker delta notation in the following way. If $I$ and $J$ are multi-indices of length $k$, we define
+
+$$
+  \delta_J^I = \mathrm{det}\begin{bmatrix} 
+    \delta_{j_1}^{i_1} & \cdots & \delta_{j_k}^{i_1} \\
+    \vdots & \ddots & \vdots \\
+    \delta_{j_1}^{i_k} & \cdots & \delta_{j_k}^{i_k}
+  \end{bmatrix}
+$$
+
+<MathBox title='Properties of elementary alternating tensors' boxType='lemma'>
+Suppose that $V$ is a finite-dimensional vector space. Let $(\mathbf{e}_i)$ be a basis for $V$, let $(\varepsilon^i)$ be the dual basis $V^*$, and let $\varepsilon^I$ be an elementary alternating tensor.
+1. If $I$ has a repeated index, then $\varepsilon^I = 0$
+2. If $J = I_\sigma$ for some $\sigma\in S_k$, then $\varepsilon^I = \mathrm{sgn}(\sigma) \varepsilon^J$
+3. The result of evaluating $\varepsilon^I$ on a sequence of basis vectors is
+$$
+  \varepsilon^I (\mathbf{e}_{j_1},\dots,\mathbf{e}_{j_k}) = \sigma_J^I
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $I$ has a repeated index, then for any vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$, the determinant equal to $\varepsilon^I (\mathbf{v}_1,\dots,\mathbf{v}_k)$ has two identical rows and this is equal to zero, which proves **(1)**. On the other hand, if $J$ is obtained from $I$ by interchanging two indices, then the corresponding determinants have opposite sign, implying **(2)**. Finally, **(3)** follows immediately from the definition of $\varepsilon^I$.
+</details>
+</MathBox>
+
+<MathBox title='A basis for $\Lambda^k (V^*)$' boxType='proposition'>
+Let $V$ be an $n$-dimensional vector space. If $(\varepsilon^i)$ is any basis for $V^*$, then for each positive integer $k \leq n$, the collection of $k$-covectors
+
+$$
+  \mathcal{E} = \Set{\varepsilon^I | I \text{ is an increasing multi-index of length } k}
+$$
+
+is a basis for $\Lambda^k (V^*)$. Thus,
+
+$$
+  \dim(\Lambda^k (V^*)) = \binom{n}{k} = \frac{n!}{k!(n-k)!}
+$$
+
+If $k > n$, then $  \dim(\Lambda^k (V^*)) = 0$.
+
+<details>
+<summary>Proof</summary>
+
+The fact that $\Lambda^k (V^*)$ is the trivial vector space when $k > n$ follows immediately from characteristics of alternating tensors, since every $k$-tuple of vectors is linearly dependent in that case. For the case $k \leq n$, we need to show that $\mathcal{E}$ spans $\Lambda^k (V^*)$ and is linearly independent. Let $(\mathbf{e}_i)$ be the basis for $V$ dual to (\varepsilon^i).
+
+To shows that $\mathrm{span}(\mathcal{E}) = \Lambda^k (V^*)$, let $\alpha\in\Lambda^k (V^*)$ be arbitrary. For each multi-index $I = (i_1,\dots,i_k)$, define a real number $\alpha_I$ bY
+
+$$
+  \alpha_I = \alpha(\mathbf{e}_{i_1},\dots,\mathbf{e}_{i_k})
+$$
+
+The fact that $\alpha$ is alternating implies $\alpha_I = 0$ if $I$ contains a repeated index, and $\alpha_J = \mathrm{sgn}(\sigma)\alpha_I$ if $J = I_\sigma$ for $\sigma\in S_k$. For any multi-index $J$, therefore, by the properties of elementary alternating tensors
+
+$$
+\begin{align*}
+  \sum'_I \alpha_I \varepsilon^I (\mathbf{e}_{j_1},\dots,\mathbf{e}_{j_k}) = \sum'_I \alpha_I \delta_J^I \\
+  =& a_J = \alpha(\mathbf{e}_{j_1},\dots,\mathbf{e}_{j_k})
+\end{align*}
+$$
+
+Thus, $\sum'_I \alpha_I \varepsilon^I = \alpha$, implying that $\mathrm{span}(\mathcal{E}) = \Lambda^k (V^*)$.
+
+To show that $\mathcal{E}$ is a linearly independent set, supposet that the identity $\sum'_I \alpha_I \varepsilon^I = 0$ holds for some coefficients $\alpha_I$. Let $J$ be any increasing multi-index. Applying both sides of the identity to the vectors $(\mathbf{e}_{j_1}, \dots, \mathbf{e}_{j_k})$ and using the properties of elementary alternating tensors we get
+
+$$
+  0 = \sum'_I \alpha_I \varepsilon^I (\mathbf{e}_{j_1},\dots,\mathbf{e}_{j_k}) = \alpha_J
+$$
+
+Thus each coefficient $\alpha_J$ is zero.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $V$ is an $n$-dimensional vector space and $\omega\in\Lambda^n (V^*)$. If $T:V\to V$ is any linear operator and $\mathbf{v}_1,\dots,\mathbf{v}_n$ are arbitrary vectors in $V$, then
+
+$$
+  \omega(T\mathbf{v}_1,\dots,T\mathbf{v}_n) = \det(T) \omega(\mathbf{v}_1,\dots,\mathbf{v}_n)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $(\mathbf{e}_i)$ be any basis for $V$ and let $(\varepsilon^i)$ be its dual basis. Let $(T_i^j)$ denote the matrix of $T$ with respect to this basis, and let $T_i = T\mathbf{e}_i = T_^j \mathbf{e}_j$. By the previous proposition, we can write $\omega = c\varepsilon^{1\dots n}$ for some real number $c$.
+
+Since both sides of the stated identity are multilinear functions of $\mathbf{v}_1,\dots,\mathbf{v}_n$, it suffices to verify the identity when the $\mathbf{v}_i$ are basis vectors. Furthermore, since both sides are alternating, we only need to check the case $(\mathbf{v}_1,\dots,\mathbf{v}_n) = (\mathbf{e}_i,\dots,\mathbf{e}_n)$. In this case, the right hand side is
+
+$$
+  \det(T)c\varepsilon^{1\dots n} (\mathbf{e}_1,\dots,\mathbf{e}_n) = c \det(T)
+$$
+
+On the other hand, the left-hand side reduces to
+
+$$
+\begin{align*}
+  \omega(T\mathbf{e}_1,\dots, T\mathbf{e}_n) =& c\varepsilon^{1\dots n} (T_1,\dots, T_n) \\
+  =& c\det(\varepsilon^j (T_i)) = c\det(T_i^j)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+
+### The wedge product
+
+### Interior multiplication
+
+## Differential forms on manifold
+
+## Exterior derivatives
