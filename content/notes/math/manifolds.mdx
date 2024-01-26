@@ -5255,7 +5255,7 @@ $$
   F\left( x^1,\dots, x^n, u(x), \frac{\partial u}{\partial x^1}(x),\dots,\frac{\partial u}{\partial x^n}(x) \right) = 0
 $$
 
-where $u$ is an unknown function of $n$ variables, and $F$ is a given smooth (not strictly necessary) function of $2n+1$ variables. In the following theory, both $u$ and $F$ are assumed to be real-valued. Most PDEs have a multitude of solutions, and in order to get a unique solution one generally stipulates that the solution should satisy some extra conditions. For first-order equations, the appropriate condition is to specify "initial value" on a hypersurface: given a smooth hypersurface $S\subseteq\R^n$ and a smooth function $\varphi:S\to\R$, we seek a smooth function $u$ that solves the PDE and also satisfies the initial condition
+where $u$ is an unknown function of $n$ variables, and $F$ is a given smooth (not strictly necessary) function of $2n+1$ variables. In the following theory, both $u$ and $F$ are assumed to be real-valued. Most PDEs have a multitude of solutions, and in order to get a unique solution one generally stipulates that the solution should satisfy some extra conditions. For first-order equations, the appropriate condition is to specify "initial value" on a hypersurface: given a smooth hypersurface $S\subseteq\R^n$ and a smooth function $\varphi:S\to\R$, we seek a smooth function $u$ that solves the PDE and also satisfies the initial condition
 
 $$
   u|_S = \varphi
@@ -8531,3 +8531,268 @@ $$
 $$
 
 ## Exterior derivatives
+
+Recall that given a smooth $1$-form $\omega$, a necessary condition for the existence of a smooth function $f$ such that $\omega = \mathrm{d}f$ is that $\omega$ is *closed*, satisfying
+
+$$
+  \frac{\partial\omega_j}{\partial x^i} - \frac{\partial\omega_i}{\partial x^j} = 0
+$$
+
+in every smooth coordinate chart. Since the left-hand side is antisymmetric in the indices $i$ and $j$, it can be interpreted as the $ij$-component of an alternating tensor field, i.e. a $2$-form. We can define a $2$-form $\mathrm{d}\omega$ locally in each smooth chart by
+
+$$
+  \mathrm{d}\omega = \sum_{i<j} \left( \frac{\partial\omega_j}{\partial x^i} - \frac{\partial\omega_i}{\partial x^j} \right) \mathrm{d}x^i \wedge \mathrm{d}x^j
+$$
+
+It follows that $\omega$ is closed if and only if $\mathrm{d}\omega = 0$ in each chart. It turns out that $\mathrm{d}\omega$ is well defined globally, independently of the choice of coordinate chart, and this definition has a significant generalization to differential forms of all degrees.
+
+For each smooth manifold $M$ with or without boundary, we can show that there is a differential operator $\mathrm{d}:\Omega^k (M) \to\Omega^{k+1}(M)$ satisfying $\mathrm{d}(\mathbf{d}\omega) = 0$ for all $\omega$. Thus, it will follow that a necessary condition for a smooth $k$-form $\omega$ to be equal to $\mathrm{d}\eta$ for some $(k-1)$-form $\eta$ is that $\mathrm{d}\omega = 0$.
+
+<MathBox title='Exterior derivative on Euclidean space' boxType='definition'>
+If $\omega = \sum'_J \omega_J \mathrm{d}x^J$ is a smooth $k$-form on an open subset $U\subseteq\R^n$ or $\mathbf{H}^n$, we define its *exterior derivative* $\mathrm{d}\omega$ to be the following $(k+l)$-form
+
+$$
+  \mathrm{d}\left( \sum'_J \omega_J \mathrm{d}x^J \right) = \sum'_J \mathrm{d}\omega_J \wedge \mathrm{d}x^J
+$$
+
+where $\mathrm{d}\omega_J$ is the differential of the function $\omega_J$. In more detail, this is
+
+$$
+  \mathrm{d}\left( \sum'_J \omega_J \bigwedge_{h=1}^k \mathrm{d}x^{j_h} \right) = \sum'_J \sum_i \frac{\partial\omega_J}{\partial x^i} \mathrm{d}x^i \wedge \left(\bigwedge_{h=1}^k \mathrm{d}x^{j_h} \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that for a smooth $0$-form, the exterior derivative reduces To
+
+$$
+  \mathrm{d}f = \frac{\partial f}{\partial x^i} \mathrm{d}x^i
+$$
+
+which is the differential of $f$.
+
+Note that when $\omega$ is a $1$-form, the exterior derivative becomes
+
+$$
+\begin{align*}
+  \mathrm{d}(\omega_j \mathrm{d}x^j) =& \sum_{i,j} \frac{\partial\omega_j}{\partial x^i} \mathrm{d}x^i \wedge\mathrm{d}x^j \\
+  =& \sum_{i<j} \frac{\partial\omega_j}{\partial x^i} \mathrm{d}x^i \wedge\mathrm{d}x^j + \sum_{i>j} \frac{\partial\omega_j}{\partial x^i} \mathrm{d}x^i \wedge\mathrm{d}x^j \\
+  =& \sum_{i < j} \left(\frac{\partial\omega_j}{\partial x^i} - \frac{\partial\omega_i}{\partial x^j} \right) \mathrm{d}x^i \wedge \mathrm{d}x^j
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Properties of the exterior derivative on $\R^n$' boxType='proposition'>
+1. $\mathrm{d}$ is linear over $\R$
+2. If $\omega$ is a smooth $k$-form and $\eta$ is a smooth $l$-form on an open subset $U\subseteq\R^n$ or $\mathbb{H}^n$, then
+$$
+  \mathrm{d}(\omega\wedge\eta) = \mathrm{d}\omega \wedge\eta + (-1)^k \omega \wedge \mathrm{d}\eta
+$$
+3. $\mathrm{d}\circ\mathrm{d}\equiv 0$
+4. $d$ commutes with pullbacks: if $U$ is an open subset of $\R^n$ or $\mathbf{H}^n$, $V$ is an open subset of $\R^m$ or $\H^m$, $F:U\to V$ is a smooth map, and $\omega\in\Omega^k (V)$, then
+
+$$
+  F^* (\mathrm{d}\omega) = \mathrm{d}(F^* \omega)
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Linearity of $d$ is an immediate consequence of the definition.
+
+**(2):** It suffices to consider terms of the form $\omega = u\mathrm{d}x^I \in\Omega^k (U)$ and $\eta = v\mathrm{d}x^J \in \Omega^l (U)$ for smooth real-valued functions $u$ and $v$. First we need to know that $\mathrm{d}$ satisfies $\mathrm{d}(u\mathrm{d}x^I) = \mathrm{d}u \wedge \mathrm{d}x^I$ for any multi-index $I$, not just increasing ones. If $I$ has repeated indices, then clearly $\mathrm{d}(u\;\mathrm{d}x^I) = 0 = \mathrm{d}u \wedge \mathrm{d}x^I$. If not, let $\sigma$ be the permutation sending $I$ to an increasin multi-index $J$. Then
+
+$$
+\begin{align*}
+  \mathrm{d}(u\;\mathrm{d}x^I) = \mathrm{sgn}(\sigma)\mathrm{d}(u\;\mathrm{d}x^J) \\
+  =& \mathrm{sgn}(\sigma) \mathrm{d}u \wedge \mathrm{d}x^J = \mathrm{d}u \wedge \mathrm{d}x^I
+\end{align*}
+$$
+
+Using this, we compute
+
+$$
+  \mathrm{d}(\omega\wedge\eta) =& \mathrm{d}((u\;\mathrm{d}x^I) \wedge (v\;\mathrm{d}x^J)) \\
+  =& \mathrm{d}(uv\;\mathrm{d}x^I \wedge \mathrm{d}x^J) \\
+  =& (v\;\mathrm{d}u + u\;\mathrm{d}v) \wedge \mathrm{d}x^I \wedge \mathrm{d}x^J \\
+  =& (\mathrm{d}u \wedge \mathrm{d}x^I) \wedge (v\;\mathrm{d}x^J) + (-1)^k (u\;\mathrm{d}x^I) \wedge (\mathrm{d}v \wedge \mathrm{d}x^J) \\
+  =& \mathrm{d}\omega \wedge\eta + (-1)^k \omega\wedge\mathrm{d}\eta
+$$
+
+where the $(-1)^k$ comes from the fact that $\mathrm{d}v \wedge\mathrm{d}x^I = (-1)^k \;\mathrm{d}x^I \wedge\mathrm{d}v$ because $\mathrm{d}v$ is a $1$-form and $\mathrm{d}x^I$ is a $k$-form.
+
+**(3):** In the case of a $0$-form, which is just a real-valued function, we get
+
+$$
+\begin{align*}
+  \mathrm{d}(\mathrm{d}u) =& \mathrm{d}\left(\frac{\partial u}{\partial x^j} \mathrm{d}x^j \right) = \frac{\partial^2 u}{\partial x^i \partial x^j}\mathrm{d}x^i \wedge \mathrm{d}x^j \\
+  =& \sum_{i < j} \left( \underbrace{\frac{\partial^2 u}{\partial x^i x^j} - \frac{\partial^2 u}{\partial x^j x^i}}{=0} \right) \mathrm{d}x^i \wedge \mathrm{d}x^j = 0
+\end{align*}
+$$
+
+For the general case, we use the $k = 0$ case together **(2)** to compute
+
+$$
+\begin{align*}
+  \mathrm{d}(\mathrm{d}\omega) =& \mathrm{d}\left( \sum'_J \mathrm{d}\omega_J \wedge \mathrm{d}x^{j_1} \wedge\cdots\wedge \mathrm{d}x^{j_k} \right) \\
+  =& \sum'_J \mathrm{d}(\mathrm{d}\omega_J) \wedge \mathrm{d}x^{j_1} \wedge\cdots\wedge \mathrm{d}x^{j_k} \\
+  &+ \sum'_J \sum_{i=1}^k (-1)^i \mathrm{d}\omega_J \wedge\mathrm{d}x^{j_1} \wedge\cdots\wedge \mathrm{d}(\mathrm{d}x^{j_i}) \wedge\cdots\wedge \mathrm{d}x^{j_k} \\
+  =& 0
+\end{align*}
+$$
+
+**(4):** It suffices to consider $\omega = u \;\mathrm{d}x^{i_1} \wedge\cdots\wedge \mathrm{d}x^{i_k}$. For such a form, the left-hand side of $F^* (\mathrm{d}\omega) = \mathrm{d}(F^* \omega)$ is
+
+$$
+\begin{align*}
+  F^* (\mathrm{d}(u \mathrm{d}x^{i_1} \wedge\cdots\wedge \mathrm{d}x^{i_k})) =& F^* (\mathrm{d}u \wedge \mathrm{d}x^{i_1} \wedge\cdots\wedge \mathrm{d}x^{i_k}) \\
+  =& \mathrm{d}(u\circ F)\wedge \mathrm{d}(x^{i_1} \circ F) \wedge\cdots\wedge \mathrm{d}(x^{i_k} \circ F)
+\end{align*}
+$$
+
+and the right-hand side is
+
+$$
+  \mathrm{d}(F^* (u\;\mathrm{d}x^{i_1} \wedge\cdots\wedge\mathrm{d}x^{i_k})) =& \mathrm{d}((u\circ F)\mathrm{d}(x^{i_1}\circ F)\wedge\cdots\wedge\mathrm{d}(x^{ik}\circ F)) \\
+  =& \mathrm{d}(u\circ F) \wedge \mathrm{d}(x^{i_1} \circ F)\wedge\cdots\wedge \mathrm{d}(x^{i_k}\circ F)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Existence and uniqueness of exterior differentiation' boxType='theorem'>
+Suppose that $M$ is a smooth manifold with or without boundary. There are unique operators $\mathrm{d}:\Omega^k (M) \to\Omega^{k+1}(M)$ for all $k\in\N_+$, called *exterior differentiation*, satisfying the following properties
+1. $d$ is linear over $\R$
+2. If $\omega\in\Omega^{k}(M)$ and $\eta\in\Omega^l (M)$, then
+$$
+  \mathrm{d}(\omega\wedge\eta) = \mathrm{d}\omega \wedge\eta + (-1)^k \omega\wedge\mathrm{d}\eta
+$$
+3. $\mathrm{d}\circ\mathrm{d} \equiv 0$
+4. For $f\in\Omega^0 (M) = C^\infty(M)$, $\mathrm{d}f$ is the differential of $f$, given by $\mathrm{d}f(X) = Xf$
+
+<details>
+<summary>Proof</summary>
+
+First, we prove existence. Suppose that $\omega\in\Omega^k (M)$. We seek to define $\mathrm{d}\omega$ by means of the coordinate formula $\mathrm{d}\left( \sum'_J \omega_J \mathrm{d}x^J \right) = \sum'_J \mathrm{d}\omega_J \wedge \mathrm{d}x^J$ in each chart. More precisely, this means that for each smooth chart $(U,\varphi)$ for $M$, we seek to set
+
+$$
+  \mathrm{d}\omega = \varphi^* \mathrm{d}(\varphi^{-1}* \omega)
+$$
+
+To see that this is well-defined, we note that for any smooth chart $(V,\psi)$, the map $\varphi\circ\psi^{-1}$ is a diffeomorphism between open subsets of $\R^n$ or $\mathbb{H}^n$, the pullpack commutativity property of the exterior derivative implies
+
+$$
+  (\varphi\circ\psi^{-1})^* \mathrm{d}(\varphi^{-1*}\omega) = \mathrm{d}((\varphi\circ\psi^{-1})^* \varphi^{-1*}\omega)
+$$
+
+Together with the fact that $(\varphi\circ\psi^{-1}) = \psi^{-1*}\circ\varphi^*$, this implies that $\varphi^* \mathrm{d}(\varphi^{-1*}\omega) = \psi^* \mathrm{d}(\psi^{-1*}\omega)$, so $\mathrm{d}\omega$ is well defined. It satisfies **(1)**-**(4)** by virtue of the properties for Euclidean exteriori derivative.
+
+To prove uniqueness, suppose that $\mathrm{d}$ is any operator satisfying **(1)**-**(4)**. First, we need to show that $\mathrm{d}\omega$ is determined locally: if $\omega_1$ and $\omega_2$ are $k$-forms that agree on an open subset $U\subseteq M$, the $\mathrm{d}\omega_1 = \mathrm{d}\omega_2$ on $U$. To see this, let $\mathbf{p}\in U$ be arbitrary, let $\eta = \omega_1 - \omega_2$, and let $\psi\in C^\infty (M)$ be a bump function with $\psi\equiv 1$ on some neighbourhood of $\mathbf{p}$ and supported in $U$. Then $\psi\eta\equiv 0$, so **(1)**-**(4)** imply $0 = \mathrm{d}(\psi\eta) = \mathrm{d}\psi\wedge\eta + \psi\mathrm{d}\eta$. Evaluating this at $\mathbf{p}$ and using the facts that $\psi(\mathbf{p}) = 1$ and $\mathrm{d}\psi_\mathbf{p} = 0$, we conclude that $\mathrm{d}\omega_1|_\mathbf{p} - \mathrm{d}\omega_2|_\mathbf{p} = \mathrm{d}\eta_\mathbf{p} = 0$.
+
+Let $\omega\in\Omega^k (M)$ be arbirtrary, and let $(U,\varphi)$ be any smooth coordinate chart on $M$. We can write $\omega$ in coordinates as $\sum'_I \omega_I \mathrm{d}x^I$ on $U$. For any $\mathbf{p}\in U$, by means of a bump function we can construct global smooth functions $\tilde{omega}_I$ and $\tilde{x}^i$ on $M$ that agree with $\omega_I$ and $x^i$ in a neighbourhood of $\mathbf{p}$. By virtue of **(1)**-**(4)** together with the observation in the preceding paragraph, it follows that $\mathrm{d}\left( \sum'_J \omega_J \mathrm{d}x^J \right) = \sum'_J \mathrm{d}\omega_J \wedge \mathrm{d}x^J$ holds at $\mathbf{p}$. Since $\mathbf{p}$ was arbitrary, this $\mathrm{d}$ must be equal to the one we defined above.
+</details>
+</MathBox>
+
+If $A = \bigoplus_k A^k$ is a graded algebra, a linear map $T:A\to A$ is a map of degree $m$ if $T(A^K) \subseteq A^{k+m}$ for each $k\in\N$. It is an *antiderivation* if it satisfies $T(xy) = (TX)y + (-1)^k x(Ty)$ whenever $x\in A^k$ and $y\in A^l$. In this sense, the preceding theorem tells that the differential on functions extends uniquely ot an antiderivation of $\Omega^* (M)$ of degree $+1$ whose square is zero.
+
+<MathBox title='Naturality of the exterior derivative' boxType='proposition'>
+Suppose that $M$ and $N$ are smooth manifolds. If $F:M\to N$ is a smooth map, then for each $k$ the pullback map $F^*: \Omega^k (N) \to\Omega^k (M)$ commutes with $d$, i.e.
+
+$$
+  F^* (\mathrm{d}\omega) = \mathrm{d}(F^* \omega),\; \forall\omega\in\Omega^k (N)
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $(U,\varphi)$ and $(V,\psi)$ are smooth charts for $M$ and $N$, respectively, we can apply the null property of the wedge product to the cordinate representation $\psi\circ F\circ\varphi^{-1}$. Using $\mathrm{d}\omega = \varphi^* \mathrm{d}(\varphi^{-1*}\omega)$ twice, we compute as follows on $U\cap F^{-1}(V)$
+
+$$
+\begin{align*}
+  F^* (\mathrm{d}\omega) =& F^* \psi^* \mathrm{d}(\psi^{-1*}\omega) \\
+  =& \varphi^* \circ (\psi\circ F\circ\varphi^{-1})^* \mathrm{d}(\psi^{-1*}\omega) \\
+  =& \varphi^* \mathrm{d}((\psi\circ F \circ\varphi^{-1})^* \psi^{-1*}\omega) \\
+  =& \varphi^* \mathrm{d}(\varphi^{-1*} F^* \omega) \\
+  =& \mathrm{d}(F^* \omega)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+A smooth differential form $\omega\in\Omega^k (M)$ is closed if $\mathrm{d}\omega$ and exact if there exists a smooth $(k-1)$-form $\eta$ on $M$ such that $\omega = \mathrm{d}\eta$. The fact that $\mathrm{d}\circ\mathrm{d}\equiv 0$ implies that every exact form is closed.
+
+### Exterior derivatives and vector calculus in $\R^3$
+
+In $\R^3$ any smooth $1$-form takes the formal
+
+$$
+  \omega = P\;\mathrm{d}x + Q\;\mathrm{d}y + R\;\mathrm{d}z
+$$
+
+for some smooth functions $P, Q, R$. Using $\mathrm{d}\left( \sum'_J \omega_J \mathrm{d}x^J \right) = \sum'_J \mathrm{d}\omega_J \wedge \mathrm{d}x^J$ and the fact that any $1$-form with itself is zero, we compute
+
+$$
+\begin{align*}
+  \mathrm{d}\omega =& \mathrm{d}P\wedge\mathrm{d}x + \mathrm{d}Q\wedge\mathrm{d}y + \mathrm{d}R\wedge\mathrm{d}z \\
+  =& \left(\frac{\partial P}{\partial x}\mathrm{d}x + \frac{\partial P}{\partial y}\mathrm{d}y + \frac{\partial P}{\partial z}\mathrm{d}z \right)\wedge\mathrm{d}x \\
+  &+ \left(\frac{\partial Q}{\partial x}\mathrm{d}x + \frac{\partial Q}{\partial y}\mathrm{d}y + \frac{\partial Q}{\partial z}\mathrm{d}z \right)\wedge\mathrm{d}y \\
+  &+ \left(\frac{\partial R}{\partial x}\mathrm{d}x + \frac{\partial R}{\partial y}\mathrm{d}y + \frac{\partial R}{\partial z}\mathrm{d}z \right)\wedge\mathrm{d}y \\
+  =& \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right)\mathrm{d}x \wedge\mathrm{d}y + \left( \frac{\partial R}{\partial x} - \frac{\partial P}{\partial z} \right)\mathrm{d}x \wedge\mathrm{d}z \\
+  &+ \left( \frac{\partial R}{\partial y} - \frac{\partial Q}{\partial z} \right)\mathrm{d}y \wedge\mathbf{d}z
+\end{align*}
+$$
+
+An arbitrary $2$-form on $\R^3$ can be written
+
+$$
+  \eta = u\;\mathrm{d}x\wedge\mathrm{d}y + v\;\mathrm{d}x\wedge\mathrm{d}z + w\;\mathrm{d}y\wedge\mathrm{d}z
+$$
+
+A similar computation shows that
+
+$$
+  \mathrm{d}\eta = \left(\frac{\partial u}{\partial z} - \frac{\partial v}{\partial y} + \frac{\partial w}{\partial x} \right)\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z
+$$
+
+Recall that the vector calculus operatior on $\R^n$, the gradient of function $f\in C^\infty (\R^n)$ and the divergence of a vector field $X\in\mathfrak{X}(\R^n)$, are defined bY
+
+$$
+\begin{align*}
+  \mathrm{grad}(f) =& \sum_{i=1}^n \frac{\partial f}{\partial x^i}\frac{\partial}{\partial x^i} \\
+  \mathrm{div}(X) =& \sum_{i=1}^n \frac{\partial X^i}{\partial x^i}
+\end{align*}
+$$
+
+In the case $n=3$, the curl of a vector field $X\in\mathfrak{X}(\R^3)$ is defined by
+
+$$
+\begin{align*}
+  \mathrm{curl}(X) =& \left( \frac{\partial X^3}{\partial y} - \frac{\partial X^2}{\partial z} \right)\frac{\partial}{\partial x} \\
+  &+ \left( \frac{\partial X^1}{\partial z} - \frac{\partial X^3}{\partial x} \right)\frac{\partial}{\partial y}
+  &+ \left( \frac{\partial X^2}{\partial x} - \frac{\partial X^1}{\partial y} \right)\frac{\partial}{\partial z}
+\end{align*}
+$$
+
+Note that the components of the $2$-form $\mathrm{d}\omega$ corresponds (execpt in ordering and sign) with the curl of a vector field with components $(P,Q,R)$. Similarly, there is a strong correspondence between the $3$-form $\mathrm{d}\eta$ and the divergence of a vector field. These analogies can be justified by defining the following maps.
+
+The Euclidean metrid on $\R^3$ yields an index-lowering isomorphism $\flat:\mathfrak{X}(\R^3) \to\Omega^1 (\R^3)$. Interior multiplication yields another map $\beta:\mathfrak{X}(\R^3) \to\omega^2(\R^3)$ by
+
+$$
+  \beta(X) = X \lrcorner (\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}y)
+$$
+
+It is easy to check that $\beta$ is linear over $C^\inft (\R^3)$, so it corresponds to a smooth bundle isomorphism from $TM$ to $\Lambda^2 T^* \R^3$. It is a bundle isomorphism because it is injective and both $TM$ and $\Lambda^2 T^* \R^3$ are bundles of rank $3$. Similarly, we define a smooth bundle isomorphism $*:C^\infty (\R^3) \to\Omega^3 (\R^3)$ by
+
+$$
+  *(f) = f\;\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z
+$$
+
+These operators commute according to the following diagram.
+$$
+\begin{CD}
+  C^\inft (\R^3) @>{\mathrm{grad}}>> \mathfrak{X}(\R^3) @>{\mathrm{curl}}>> \mathfrak{X}(\R^3) @>{\mathrm{div}}>> C^\infty (\R^3) \\
+  @VV{\mathrm{id}}V @VV{\flat}V @VV{\beta}V @VV{*}V \\
+  \Omega^0 (\R^3) @>>{\mathrm{d}}> \Omega^1 (\R^3) @>>{\mathrm{d}}> \Omega^2 (\R^3) @>>{\mathrm{d}}> \Omega^3 (\R^3)
+\end{CD}
+$$
