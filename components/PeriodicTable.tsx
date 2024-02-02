@@ -1,13 +1,11 @@
 'use client'
 
-import { useRef, useState, PointerEvent, useEffect, RefObject } from 'react'
-import {block, For} from 'million/react'
+import { useState, PointerEvent } from 'react'
 
 import BohrAtom from 'components/BohrAtom'
 import SpectralLines from 'components/SpectralLines'
 
 import data from 'content/data/elements.json'
-import useResizeObserver, {Size} from 'hooks/useResizeObserver'
 
 type Element = typeof data[0]
 
@@ -15,7 +13,7 @@ type ElementProps = {
   element: Element|undefined
 }
 
-const ElementInfoBlock = function ElementInfo({element}: ElementProps) {
+function ElementInfo({element}: ElementProps) {
   if (!element) return <></>
 
   const description = (element.year_discovered === null) ? 'Undiscovered' 
@@ -48,7 +46,7 @@ const ElementInfoBlock = function ElementInfo({element}: ElementProps) {
   </>)
 }
 
-const PeriodicTableBlock = block(function PeriodicTable() {
+export default function PeriodicTable() {
   const [selElement, setElement] = useState<Element>()
 
   function handleHover(event: PointerEvent<HTMLDivElement> & {
@@ -72,30 +70,29 @@ const PeriodicTableBlock = block(function PeriodicTable() {
     grid-rows-[repeat(10,minmax(0,1fr))]'
   > 
     <div className='h-full @container row-span-3 col-start-3 col-span-10 grid grid-rows-[1fr_2fr] grid-cols-4'>
-      <ElementInfoBlock element={selElement}/>
-    </div>
-    <For each={data} as='div' memo>{element => 
-      <div key={element.name}
-        id={element.number.toString()}
-        className='@container relative grid rounded-sm hover:border border-text'
-        onPointerEnter={handleHover} onFocus={() => {}}
-        style={{
-          gridColumn: element.xpos,
-          gridRow: element.ypos,
-          backgroundColor: `rgb(var(--color-${element.group_block?.replaceAll(' ', '-')}))`
-      }}>
-        <span className='invisible @[3rem]:visible absolute top-0 left-1 text-text text-[15cqw] font-bold'>
-          {element.number}
-        </span>
-        <span className='m-auto text-text text-[clamp(0.25rem,0.5rem+20cqw,1.5rem)]'>
-          {element.symbol}
-        </span>
-        <span className='invisible @[3rem]:visible absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]'>
-          {element.name}
-        </span>
-      </div>
+      <ElementInfo element={selElement}/>
+    </div>{
+      data.map(element => 
+        <div key={element.name}
+          id={element.number.toString()}
+          className='@container relative grid rounded-sm hover:border border-text'
+          onPointerEnter={handleHover} onFocus={() => {}}
+          style={{
+            gridColumn: element.xpos,
+            gridRow: element.ypos,
+            backgroundColor: `rgb(var(--color-${element.group_block?.replaceAll(' ', '-')}))`
+        }}>
+          <span className='invisible @[3rem]:visible absolute top-0 left-1 text-text text-[15cqw] font-bold'>
+            {element.number}
+          </span>
+          <span className='m-auto text-text text-[clamp(0.25rem,0.5rem+20cqw,1.5rem)]'>
+            {element.symbol}
+          </span>
+          <span className='invisible @[3rem]:visible absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]'>
+            {element.name}
+          </span>
+        </div>  
+      )
     }
-    </For>
   </div>)
-})
-export default PeriodicTableBlock
+}

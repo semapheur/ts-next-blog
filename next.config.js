@@ -37,6 +37,7 @@ const nextConfig = {
   //assetPrefix: isProd ? '/ts-next-blog' : '',
   basePath: '',
   reactStrictMode: true,
+  staticPageGenerationTimeout: 1000,
   async headers() {
     return [
       {
@@ -57,6 +58,14 @@ const nextConfig = {
   //  }
   //  return config
   //},
+}
+
+const millionConfig = {
+  auto: {
+    threshold: 0.05, // default: 0.1,
+    skip: ['useBadHook', /badVariable/g],
+    rsc: true
+  }
 }
 
 module.exports = million.next(nextConfig)

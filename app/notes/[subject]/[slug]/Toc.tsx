@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { block, For } from "million/react"
 import { MDXRemote } from "next-mdx-remote"
 import useScrollspy from "hooks/useScrollspy"
 import { NoteHeading } from "utils/types"
@@ -16,18 +15,18 @@ type Props = {
 	headings: NoteHeading[]
 }
 
-const TocItemBlock = block(function TocItem({ heading, activeIds }: TocItem) {
+// million-ignore
+function TocItem({ heading, activeIds }: TocItem) {
 	const subItem = useMemo(() => {
 		return (
-			<For each={heading.children || []} as="li">
-				{(h, index) => (
-					<TocItem
-						key={`tocsubitem.${index}`}
-						heading={h}
-						activeIds={activeIds}
-					/>
-				)}
-			</For>
+			<>
+			 {heading.children?.map((h, index) => 
+				<TocItem
+					key={`tocsubitem.${index}`}
+					heading={h}
+					activeIds={activeIds}
+				/>)}
+			</>
 		)
 	}, [heading, activeIds])
 
@@ -78,7 +77,7 @@ const TocItemBlock = block(function TocItem({ heading, activeIds }: TocItem) {
 			)}
 		</li>
 	)
-})
+}
 
 function Toggle() {
 	return (
@@ -103,7 +102,7 @@ function Toggle() {
 	)
 }
 
-const TocBlock = block(function Toc({ headings }: Props) {
+export default function Toc({ headings }: Props) {
 	const [headingIds, setHeadingIds] = useState<HTMLHeadingElement[]>([])
 
 	useEffect(() => {
@@ -123,7 +122,7 @@ const TocBlock = block(function Toc({ headings }: Props) {
 
 	return (
 		<>
-			<Toggle />
+			<Toggle/>
 			<aside
 				className="flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  
 				lg:static lg:translate-x-0 lg:translate-y-0 
@@ -145,20 +144,16 @@ const TocBlock = block(function Toc({ headings }: Props) {
 					</div>
 					<nav key="nav.toc" className="overflow-y-scroll">
 						<ul className="list-none h-auto">
-							<For each={headings || []} as="li">
-								{(h, index) => (
-									<TocItemBlock
-										key={`tocitem.${index}`}
-										heading={h}
-										activeIds={activeIds}
-									/>
-								)}
-							</For>
+							{headings?.map((h, index) => 
+								<TocItem
+									key={`tocitem.${index}`}
+									heading={h}
+									activeIds={activeIds}
+								/>)}
 						</ul>
 					</nav>
 				</>
 			</aside>
 		</>
 	)
-})
-export default TocBlock
+}

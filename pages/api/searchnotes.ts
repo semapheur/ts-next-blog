@@ -20,10 +20,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 	let result: SearchResult = [];
 	let score = 0;
-	for (let note of notes) {
+	for (const note of notes) {
 		score = query.filter(q => note.title.toLowerCase().includes(q)).length;
 
-		let xor8 = XorFilter.fromJSON(JSON.parse(JSON.stringify(note.filter))) as XorFilter;
+		const xor8 = XorFilter.fromJSON(JSON.parse(JSON.stringify(note.filter))) as XorFilter;
 		query.forEach(q => {
 			if (xor8.has(q)) score++
 		})
