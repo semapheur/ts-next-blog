@@ -905,7 +905,7 @@ $$
 ## Multilinear maps and iterated tensor products
 
 <MathBox title='Multilinear map' boxType='definition'>
-If $V_1,\dots,V_n$ and $W$ are vector spaces over $\mathbb{F}$, a function $F:V_1 \times\cdots\times V_n \to W$ is multilinear if it is linear in each variable separately, i.e. for each $k=1,\dots,n$ and $\alpha,\beta\in\mathbb{F}$
+If $V_1,\dots,V_n$ and $W$ are vector spaces over $\mathbb{F}$, a map $F:V_1 \times\cdots\times V_n \to W$ is multilinear if it is linear in each variable separately, i.e. for each $k=1,\dots,n$ and $\alpha,\beta\in\mathbb{F}$
 
 $$
 \begin{align*}
@@ -1236,10 +1236,255 @@ $$
 
 forms the tensor algebra over $V^*$. 
 
+## Symmetric and antisymmetric tensor spaces
+
+<MathBox title='Symmetric, antisymmetric and alternating maps' boxType='definition'>
+If $V$ and $W$ are vector spaces over $\mathbb{F}$, a map $F:V^n \to W$ is called
+- *symmetric* if it is invariant under interchange of coordinate positions, i.e. 
+$$
+\begin{align*}
+  &F(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j,\dots,\mathbf{v}_n) \\
+  =& F(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_n)
+\end{align*}
+$$
+for any $i\neq j$.
+- *antisymmetric/skew-symmetric* if it changes sign under interchange of coordiate positions, i.e.
+$$
+\begin{align*}
+  &F(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_j,\dots,\mathbf{v}_n) \\
+  =& -F(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_i,\dots,\mathbf{v}_n)
+\end{align*}
+$$
+- *alternate/alternating* if $\mathbf{v}_i = \mathbf{v}_j$ for some $i\neq j$ implies that $F(\mathbf{v}_1,\dots,\mathbf{v}_n) = 0$
+</MathBox>
+
+<MathBox title='Permutation' boxType='definition'>
+A *permutation* of a set $N = \Set{1,\dots,n}$ for $n\in\N_+$ is a bijective function $\pi: N\to N$. The group (under composition) of all such permutations is denoted $S_n$ and is called the *symmetric group* on $n$ symbols. A *cycle* of length $k\in\N_+$ is a permutation of the form $(i_1,\dots,i_k)$, which sends $i_u$ to $i_{u+1}$ for $u = 1,\dots,k-1$ and also sends $i_k$ to $i_1$. All other elements of $N$ are left fixed. Every permutation is the product (composition) of disjoint cycles.
+
+A *transposition* is a cycle $(i,j)$ of length $2$. Every cycle (and therefore every permutation) is the product of transpositions. In general, a permutation can be expressed as a product of transpositions in many ways. Howevery, the number of tranpositions is either alway even or always odd. Thus, we can define the *parity* of a permutation $\pi\in S_n$ to be the parity of the number of transpositions in any decomposition of $\pi$ as a product of transpositions. The *sign* of a permutation is defined bY
+
+$$
+  \mathrm{sgn}(\pi) = \begin{cases}
+    1,& \quad \pi\text{ has even parity} \\
+    -1,& \quad \pi\text{ has odd parity}
+  \end{cases}
+$$
+
+If $\mathrm{sgn}(\pi) = 1$, then $\pi$ is an *even permutation* and if $\mathrm{sgn}(\pi) = -1$, then $\pi$ is an *odd permutation*. The sign of $\pi$ is often written $(-1)^\pi$.
+</MathBox>
+
+In terms of permutations, a map $F:V\to W$ between $\mathbb{F}$-vector spaces $V$ and $W$ is symmetric if and only if for all permutations $\pi\in S_n$
+
+$$
+  F(\mathbf{v}_1,\dots,\mathbf{v}_n) = F(\mathbf{v}_{\pi(1)},\dots,\mathbf{v}_{\pi(n)})
+$$
+
+Similarly, $F$ is antisymmetric if and only if
+
+$$
+  F(\mathbf{v}_1,\dots,\mathbf{v}_n) = (-1)^{\pi} F(\mathbf{v}_{\pi(1)},\dots,\mathbf{v}_{\pi(n)})
+$$
+
+<MathBox title='Wedge product' boxType='definition'>
+Let $E = (e_i)_{i=1}^n$ be a sequence of independent variables. For $p\leq n$, let $\mathbb{F}_p^- [e_i]_{i=1}^n$ be the vector space over $\mathbb{F}$ with basis
+
+$$
+  A_p (E) = \Set{e_{i_1}\cdots e_{i_p} | i_1 <\cdots < i_p}
+$$
+
+consisting of all words of length $p$ over $E$ that are in ascending order. Let $F_0^- [e_i]_{i=1}^n = F\epsilon$, which we identify with $\mathbb{F}$ by identifying $\epsilon$ with $1\in\mathbb{F}$. Define a product on the direct sum
+
+$$
+  \mathbb{F}^- [e_i]_{i=1}^n = \bigoplus_{p=0}^n F_p^-
+$$
+
+as follows. First, the product $f\wedge g$ of monomials $f = x_1\cdots x_p \in F_p^-$ and $g = y_1\cdots y_q \in \mathbb{F}^-$ is defined as follows:
+1. If $x_1\dots x_p y_1 \cdots y_q$ has a repeated factor, then $f\wedge g = 1$.
+2. Otherwise, reorder $x_1\cdots x_p y_1 \cdots y_q$ in ascending order, say $z_1 \cdots z_{p+q}$ via the permutation $\sigma$ and set
+$$
+  f\wedge g = (-1)^\sigma z_1\cdots z_{p+q}
+$$
+
+Extende the product by distributivity to $\mathbb{F}^- [e_i]_{i=1}^n$. The resulting product makes $\mathbb{F}^- [e_i]_{i=1}^n$ into a (noncommutative) algebra over $\mathbb{F}$. This product is called the *wedge product* or *exterior product* on $\mathbb{F}^- [e_i]_{i=1}^n$.
+</MathBox>
+
+Let $B = \Set{e_i}_{i=1}^n$ be a basis for an $n$-dimensional vector space $V$. It is convenient to group the decomposable basis tensors $\mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p}$ according to their index multiset. Specifically, for each multiset $M = \Set{i_1,\dots,i_p}$ with $1\leq i_k \leq n$, let $G_M$ be the set of all tensors $\mathbf{e}_{k_1} \otimes\cdots\otimes \mathbf{e}_{k_p}$ where $(k_1,\dots,k_p)$ is a permutation of $\Set{i_1,\dots,i_p}$.
+
+If $\mathbf{v}\in T^p (V)$ has the form
+
+$$
+  \mathbf{v} = \sum_{i_1,\dots,i_p} \alpha_{i_1,\dots,i_p} \mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p}
+$$
+
+where $\alpha_{i_1,\dots,i_p} \neq 0$, then let $G_M (\mathbf{v})$ be the subset of $G_M$ whose elements appear in the sum for $\mathbf{v}$. Let $S_M (\mathbf{v})$ denote the sum of terms of $\mathbf{v}$ associated with $G_M (\mathbf{v})$. Accordingly, $\mathbf{v}$ can be written in the form
+
+$$
+  \mathbf{v} = \sum_M S_M (\mathbf{v}) = \sum_M \left( \sum_{t\in G_M (\mathbf{v})} \alpha_t t \right)
+$$
+
+where the sum is over a collection of multisets $M$ with $S_M (\mathbf{v}) \neq 0$. Note also that $\alpha_t \neq 0$ since $t\in G_M (\mathbf{v})$. Finally, let $\mathbf{u}_M = \mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p}$ be the unique member of $G_M$ for which $i_1 \leq\cdots\leq i_p$.
+
+### Symmetric and antisymmetric tensors
+
+Let $S_p$ be the symmetric group on $\Set{i,\dots,p}$ for $p\in\N_+$. For each $\sigma\in S_p$, the multilinear map $F_\sigma : V^p \to T^p (V)$ defined by
+
+$$
+  F_\sigma (x_1,\dots,x_p) = x_{\sigma_1} \otimes\codts\otimes x_{\sigma_p}
+$$
+
+determines a unique linear operator $\lambda_\sigma$ on $T^p (V)$ for which
+
+$$
+  \lambda_\sigma (x_1 \otimes\cdots\otimes x_p) = x_{\sigma_1} \otimes\codts\otimes x_{\sigma_p}
+$$
+
+Let $\Set{\mathbf{e}_i}_{i=1}^n$ be a basis for $V$. Since $\lambda_\sigma$ is a bijection of the basis
+
+$$
+  B = \Set{\mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p} | \mathbf{e}_{i_j} \in B}
+$$
+
+it follows that $\lambda_\sigma$ is an isomorphism of $T^p (V)$. Note also that $\lambda_\sigma$ is a permutation of each $G_M$, meaning that the set $G_M$ are invariant under $\lambda_\sigma$.
+
+<MathBox title='Symmetric and antisymmetric tensors' boxType='definition'>
+Let $V$ be a finite-dimensional vector space.
+1. A tensor $t\in T^p (V)$ is *symmetric* if $\lambda_\sigma t = t$ for all permutations $\sigma\in S_p$. The set of all symmetric tensors
+$$
+  ST^p (V) = \Set{t\in T^p (V) | \lambda_\sigma t = t,\,\forall \sigma\in S_p}
+$$
+is a subspace of $T^p (V)$, called the *symmetric tensor space* of degree $p$ over $V$. 
+2. A tensor $t\in T^p (V)$ is *antisymmetric* if $\lambda_\sigma t = (-1)^\sigma t$. The set of all antisymmetric tensors
+$$
+  AT^p (V) = \Set{t\in T^p (V) | \lambda_\sigma t = (-1)^\sigma t,\,\forall \sigma\in S_p}
+$$
+is a subspace of $T^p (V)$, called the *antisymmetric tensor space* or *exterior product space* of degree $p$ over $V$.
+</MathBox>
+
+Let us write (anti)symmetric to denote a tensor that is either symmetric or antisymmetric. Since for any $s,t\in G_M$, there is a permutation $\lambda_\sigma$ taking $s$ to $t$, an (anti)symmetric tensor $\mathbf{v}$ must have $G_M (\mathbf{v}) = G_M$ and so
+
+$$
+  \mathbf{v} = \sum_M S_M (\mathbf{v}) = \sum_M \left( \sum_{t\in G_M} \alpha_t t \right)
+$$
+
+Since $\lambda_\sigma$ is a permutation of $G_M$, it follows that $\mathbf{v}$ is symmetric if and only if
+
+$$
+  \lambda_\sigma (S_M (\mathbf{v})) = S_M (\mathbf{v})
+$$
+
+for all $\sigma\in S_p$ and this holds if and only if the coefficients $\alpha_t$ of $S_M (\mathbf{v})$ are equal, say $\alpha_t = \alpha_M$ for all $t\in G_M$. Hence, the symmetric tensors are precisely the tensors of the form
+
+$$
+  \mathbf{v} = \sum_M \left( \alpha_M \sum_{t\in G_M} t \right)
+$$
+
+The tensor $\mathbf{v}$ is antisymmetric if and only if
+
+$$
+  \lambda_\sigma (S_M (\mathbf{v})) = (-1)^\sigma S_M (\mathbf{v})
+$$
+
+In this case, the coefficients $\alpha_t$ of $S_M (\mathbf{v})$ differ only by sign. Before examining this more closely, note that $M$ must be a set. If $M$ has an element $k$ of multiplicity greater than $1$, we can split $G_M$ into two disjoint Parts
+
+$$
+  G_M = G'_M \cup G''_M
+$$
+
+where $G'_M$ are the tensors that have $\mathbf{e}_k$ in positions $r$ and $s$
+
+$$
+  G'_M = \Set{\mathbf{e}_{i_1} \otimes\cdots\otimes \underbrace{\mathbf{}}_{\text{position }r} \otimes\cdots\otimes \underbrace{\mathbf{}}_{\text{position }s} \otimes\cdots\otimes \mathbf{e}_{i_p} }
+$$
+
+Then $\lambda_{(r,s)}$ fixes each element of $G'_M$ and sends the elements of $G''_M$ to other elements of $G''_M$. Hence applying $\lambda_{(r,s)}$ to the corresponding decomposition of $S_M (\mathbf{v})$
+
+$$
+  S_M (\mathbf{v}) = S'_M + S''_M
+$$
+
+gives
+
+$$
+  -(S'_M + S''_M) = -S_M = \lambda_{(1,2)} S_M = S'_M + \lambda_{(1,2)} S''_M
+$$
+
+and so $S'_M = 0$, hence $S_M (\mathbf{v}) = 0$. Thus. $M$ is a set.
+
+Since for any $\sigma\in S_p$, we have $G_M = \Set{\lambda_\sigma t | t\in G_M}$, the antisymmetric tensor condition implies that
+
+$$
+\begin{align*}
+  (-1)^\sigma \sum_{t\in G_M} \alpha t =& \lambda_\sigma \left( \sum_{t\in G_M} \alpha_t t \right) \\
+  =& \sum_{t\in G_M} \alpha_t \lambda_\sigma t \\
+  =& \sum_{t\in G_M} \alpha_{\lambda_\sigma^{-1}t} t
+\end{align*}
+$$
+
+which holds if and only if $\alpha_{\lambda_\sigma^{-1}t} = (-1)^\sigma \alpha$, or equivalently
+
+$$
+  \alpha_{\lambda_\sigma t} = (-1)^\sigma \alpha_t
+$$
+
+for all $t\in G_M$ and $\sigma\in S_p$. Choosing $\mathbf{u} = \mathbf{u}_M = \mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p}$, where $i_1 < \cdots< i_p$, as standard-bearer, if $\sigma_{u,t}$ denotes the permutation for which $\lambda_{\sigma_{u,t}} (u) = t$, then
+
+$$
+  \alpha_t = (-1)^{\sigma_{u,t}} \alpha_u
+$$
+
+Thus, $\mathbf{v}$ is antisymmetric if and only if it has the form
+
+$$
+  \mathbf{v} = \sum_M \left( \alpha_M \sum_{t\in G_M} (-1)^{\sigma_{u,t}} t \right)
+$$
+
+where $\alpha_M = \alpha_u \neq 0$ and the sum is over a family of sets. We can simplify the expression for (anti)symmetric tensors by representing the inner sums more succintly. In the symmetric case, define a surjective linear map $\tau: T^p (V) \to \mathbb{F}_p [\mathbf{e}_i]_{i=1}^n$ by
+
+$$
+  \tau(\mathbf{e}_{i_1} \otimes\cdots\otimes\mathbf{e}_{i_p}) = \mathbf{e}_{i_1} \wedge\cdots\wedge\mathbf{e}_{i_p}
+$$
+
+and extending by linearity. Since $\tau$ takes every member of $G_M$ to the same monomial $\tau \mathbf{u} = \mathbf{e}_{i_1} \wedge\cdots\wedge \mathbf{e}_{i_p}$, where $i_1 \leq\cdots\leq i_p$, we have
+
+$$
+\begin{align*}
+  \tau\mathbf{v} = \tau\left( \sum_M \left( \alpha_M \sum_{t\in G_M} t \right) \right) \\
+  =& \sum_M \alpha_M |G_M| \tau \mathbf{u}_M
+\end{align*}
+$$
+
+In the antisymmetric case, define a surjective linear map $\tau: T^p (V) \to \mathbb{F}_p^- [\mathbf{e}_i]_{i=1}^n$ by
+
+$$
+  \tau(\mathbf{e}_{i_1} \otimes\cdots\otimes\mathbf{e}_{i_p}) = \mathbf{e}_{i_1} \vee\cdots\vee\mathbf{e}_{i_p}
+$$
+
+and extending by linearity. Since $\tau t = (-1)^{\sigma_{u, t}} \tau \mathbf{u}_M$ we have
+
+$$
+\begin{align*}
+  \tau\mathbf{v} =& \sum_M \left( \alpha_M \sum_{t\in G_M} (-1)^{\sigma_{u,t}} \tau t \right) \\
+  =& \sum_M \left( \alpha_M \sum_{t\in G_M} \tau \mathbf{u}_M \right) \\
+  =& \sum_M \alpha_M |G_M| \tau \mathbf{u}_M
+\end{align*}
+$$
+
+Thus, an for an (anti)symmetric tensor
+
+$$
+  \tau\mathbf{v} = \sum_M \alpha_M |G_M| \tau \mathbf{u}_M
+$$
+
+where $\mathbf{u}_M = \mathbf{e}_{i_1} \otimes\cdots\otimes \mathbf{e}_{i_p}$ with $i_1 \leq\cdots\leq i_p$ and
+- $\tau \mathbf{u}_M = \mathbf{e}_{i_1} \wedge\cdots\wedge \mathbf{e}_{i_p}$ if $\mathbf{v}$ is symmetric
+- $\tau \mathbf{u}_M = \mathbf{e}_{i_1} \vee\cdots\vee \mathbf{e}_{i_p}$ if $\mathbf{v}$ is antisymmetric
+
+In either case, the monomials $\tau u_M$ are linearly independent for distinct (multi)sets $M$. Therefore, if $\tau\mathbf{v} = 0$ then $\alpha_M |G_M| = 0$ for all (multi)set $M$. Hence, if $\mathrm{char}(\mathbf{F}) = 0$, then $\alpha_M = 0$ and so $\mathbf{v} = 0$. This shows that the restricted maps $\tau|_{ST^p (V)}$ and $\tau|_{AT^p (V)}$ are isomorphisms. 
+
 # Tensor field
 
 <MathBox title='Tensor field' boxType='definition'>
-Let $V$ be an $n$-dimensional vector space. A tensor field of rank $(p,q)$ is a map $T:V\to T_q^p (V)$. The space of all tensor fields of rank $(p,q)$ is denoted $\mathcal{T}_q^p (V)$
+Let $V$ be an $n$-dimensional vector space. A tensor field of rank $(p,q)$ is a map $T:V\to T_q^p (V)$. The space of all tensor fields of rank $(p,q)$ is denoted $\mathcal{T}_q^p (V)$.
 </MathBox>
 
 <MathBox title='Tensor' boxType='definition'>
