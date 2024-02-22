@@ -5909,13 +5909,9 @@ The stopping times $\tau_n$ are clearly increasing with $n$ and converge since t
 ## Fractional Brownian Motion (fBm)
 
 <MathBox title='Fractional Brownian motion' boxType='definition'>
-A *fractional Brownian motion* is a centered Gaussian process process $\mathbf{B}^H = \Set{B_t^H}_{t\geq 0}$ with covariance function
-
-$$
-  \mathrm{cov}(B_t^H, B_s^H) = \frac{1}{2}(t^{2H} + s^{2H} - |t-s|^{2H})
-$$
-
-The parameter $H\in(0,1)$ is called the *Hurst exponent*.
+A *fractional Brownian motion* with Hurst exponent $H\in(0,1)$ is a centered Gaussian process process $\mathbf{B}^H = \Set{B_t^H}_{t\geq 0}$ satisfying
+1. $B_0^H = \mathbb{E}[B_t^H] = 0$ for all $t\in\R$
+2. $\mathbb{E}(B_t^H B_s^H) = \frac{1}{2}(|t|^{2H} + |s|^{2H} - |t-s|^{2H})$ for $s,t\in\R$
 </MathBox>
 
 Note that for $H = \frac{1}{2}$, the covariance function becomes 
@@ -5931,7 +5927,7 @@ Let $\mathbf{B}^H$ be a fractional Brownian motion. Then
 
 $$
 \begin{align*}
-  &\mathrm{cov}[(B_{t_1}^H B_{s_1}^H), (B_{t_2}^H, B_{s_2}^H)] \\
+  &\matbb{E}[(B_{t_1}^H B_{s_1}^H) (B_{t_2}^H, B_{s_2}^H)] \\
   &= \frac{1}{2}(|t_1 - s_2|^{2H} + |t_2 - s_1|^{2H} - |t_2 - t_1|^{2H} - |s_2 - s_1|^{2H})
 \end{align*}
 $$
@@ -5939,42 +5935,44 @@ $$
 
 <MathBox title='Properties of fractional Brownian motion' boxType='proposition'>
 A fractional Brownian motion $\mathbf{B}^H$ has the following properties:
-1. stationary increments
-2. self-similarity
-3. dependence of increments
-    - $\mathbf{B}^H$ is counterpersistent (mean-reverting) for $H\in\left(0, \frac{1}{2}\right)$
-    - $\mathbf{B}^H$ is persistent (trending) for $H\in\left(\frac{1}{2}, 1 \right)$
+1. **Stationary increments:** $B_t^H - B_s^H \sim B_{t-s}$ in distribution for $0 \leq s < t$
+2. **Self-similarity:** $B_{at}^H \sim |a|^H B_t^H$ in distribution for any $a > 0$
+3. **Long-range dependence:** $\sum_{n=1}^\infty \mathbb{E}[B_1^H (B_{n+1}^H - B_n^H)] = \infty$ for $H \in \left(\frac{1}{2}, 1 \right)$
 
 <details>
 <summary>Proof</summary>
 
 **(1):** Take a fixed $t\geq 0$ and consider the process $Y_t = B_{t+s}^H - B_s^H$ for $t \geq 0$. From the alternate covariance formula, it follows that the covariance function of $\mathbf{Y}$ is the same as that of $\mathbf{B}^H$. Since both processes are centered Gaussian, the equality of covariance functions implies that $\mathbf{Y}$ has the same distribution as $\mathbf{B}^H$. Thus, the incremental behaviour of $\mathbf{B}^H$ at any point in the future is the same.
 
-**(2):** Consider the process $Z_t = B_{at}^H$ with $t \geq 0$ for a fixed $a > 0$. The covariance is given bY
+**(2):** Consider the process $Z_t = B_{at}^H$ with $t \geq 0$ for a fixed $a > 0$. The covariance is given by
 
 $$
 \begin{align*}
-  \mathrm{cov}(B_{at}^H , B_{at}^H) =& \frac{1}{2}[(at)^{2H} + (as)^{2H} - |at - as|^{2H}] \\
-  =& a^{2H} \frac{1}{2}(t^{2H} + s^{2H} - |t-s|^{2H}) \\
-  =& a^H \mathrm{cov}(B_t^H, B_t^H)
+  \mathbb{E}(B_{at}^H B_{at}^H) =& \frac{1}{2}(|at|^{2H} + |as|^{2H} - |at - as|^{2H}) \\
+  =& |a|^{2H} \frac{1}{2}(t^{2H} + s^{2H} - |t-s|^{2H}) \\
+  =& |a|^{2H} \mathbb{E}(B_t^H, B_t^H) \\
+  =& \mathbb{E}(|a|^H B_t^H  |a|^H B_t^H)
 \end{align*}
 $$
 
-**(3):** Assume that $s_1 < t_1 < s_2 < t_2$ so that the intervals $[s_1, t_1]$ and $[s_2, t_2]$ do not intersect. Then the left-hand side of the covariance formula can be expressed as
+Thus, $B_{at}^H$ is equivalent to $|a|^H B_t^H$ in distribution.
+
+**(3):** Define the increment process $\mathbf{Y} = \Set{B_{t+1}^H - B_t^H}_{t\geq 0}$. The covariance between two increments $Y_k$ and $Y_{k+n}$ is
 
 $$
-  \frac{1}{2}(f(a_1) - f(a_2) - (f(b_1) - f(b_2)))
+  \rho^H (n) = \frac{1}{2}\left[(n+1)^{2H} + (n-1)^{2H} - 2n^{2H}\right]
 $$
 
-where
-- $f(x) = x^{2H}$
-- $a_1 = t_2 - s_1$
-- $a_2 = t_2 - t_1$
-- $b_1 = s_2 - s_1$
-- $b_2 = s_2 - t_1$
+In the limit of infinitely distant increments, i.e. $n\to \infty$, the covariance converge to
 
-Note that $a_1 - a_2 = b_2 - b_1 = t_1 - s_1$, giving
-- $\mathrm{cov}[(B_{t_1}^H - B_{s_1}^H)(B_{t_2}^H - B_{s_2}^H)] < 0$ for $H\in\left(0, \frac{1}{2}\right)$ since $f$ is concave in this case.
-- $\mathrm{cov}[(B_{t_1}^H - B_{s_1}^H)(B_{t_2}^H - B_{s_2}^H)] < 0$ for $H\in\left(\frac{1}{2}, 1\right)$ since $f$ is convex in this case.
+$$
+  \lim_{n\to\infty} \rho^H (n) = H(2H - 1)n^{2H - 2}
+$$
+
+Thus,
+
+$$
+  \sum_{n=1}^\infty \rho^H (n) = \infty
+$$
 </details>
 </MathBox>
