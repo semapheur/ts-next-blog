@@ -1,0 +1,209 @@
+---
+title: 'Stochastic Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Martingales
+
+## Local martingales
+<MathBox title='Quadratic variation of a martingale' boxType='theorem'>
+A process $\Set{M_t}_{t\geq 0}$ is a local martingale beginning at $0$ if it is adapted and satisfies
+1. $M_0 = 0$ for all $\omega$
+2. $M$ is continuous for all $\omega$
+3. There exists a sequence of stopping times $T_n$ converging to $\infty$ for any $\omega$ such that $M^{T_n} := \Set{ M_{t\wedge T_n}}_{t\geq 0}$, is a uniformly integrable martingale.
+
+For such a sequence of stopping times, $\Set{T_n}_{n\in\N}$ reduces $M$. A process $M$ is a local martingale if $M_t = M_0 + N_t$, where $M_0\in\mathcal{F}_0$ and $N$ is a local martingale beginning at $0$.
+</MathBox>
+
+<MathBox title='Quadratic variation of a martingale' boxType='theorem'>
+For a given probability space $(\Omega,\mathcal{F},\mathbb{P})$ with filter $\mathscr{F} = \Set{\mathcal{F}_t}_{t\geq 0}$, all the following statements hold.
+1. Any continuous martingale is a local martingale.
+2. There exists a sequence of stopping times $T_n$ converging to $\infty$ for any $\omega$ such that $M^{T_n} := \Set{M_{t\wedge T_n}}_{t\geq 0}$ for all $n\in\N$ is a martingale.
+3. If $M$ is a local martingale and $T$ is a stopping time, then $M^T = \Set{M_{t\wedge T}}_{t\geq 0}$ is a local martingale.
+4. If $M$ is a local martingale, $\Set{T_n}_{n\in\N}$ reduces $M$, and $\Set{S_n}_{n\in\N}$ are stopping times converging to $\infty$, then $\Set{S_n \wedge T_n}_{n\in\N}$ reduces $M$.
+5. The set of local martingales is a vector space.
+6. If $M$ is a nonnegative local martingale and $M_0 \in \mathcal{L}^1$, then $M$ is a supermartingale.
+7. If $M$ is a local martingale and $|M_t| \leq X$ for all $t\geq 0$, where $X\in\mathcal{L}^1$, then $M$ is a martingale.
+8. If $M$ is a local martingale beginning at $0$, then $T_n = \inf\{t\geq 0 : |M_t| = n\}$ reduces $M$.
+
+<details>
+<summary>Proof</summary>
+
+Part **(1)** follows from the possible case $T_n = n$. Then for any constant $c \geq 0$, $\Set{M_{t\wedge c}}_{t\geq 0}$ is a uniformly integrable, as all of its values are of type $\mathbb{E}(M_c | \mathcal{G})$ for some $\sigma$-algebra $\mathcal{G}$ and $M_c \in\mathcal{L}^1$.
+
+For part **(2)** note that if $T_n \to\infty$ and $M^{T_n}$ is a martingale, then $M^{T_n \wedge n}$ is uniformly integrable, as shown for **(1)**., and $T_n \wedge n \to\finty$.
+
+For part **(3)** and **(4)** note that if $M^{T_n}$ is a uniformly integrable martingale, so is $M^{T_n \wedge T}$. The stability by addition mentioned in **(5)** is a dircet consequence of **(4)**, by choosing $\Set{T_n}_{n\in\N}$ reducing the first martingale and $\Set{S_n}_{n\in\N}$ reducing the second. Point **(6)** is a consequence of Fatou's lemma: if $M = M_0 + N$ and $\Set{T_n}_{n\in\N}$ reduces $N$, then
+
+$$
+\begin{align*}
+  \mathbb{E}(M_t|\mathcal{F}_s) =& \mathbb{E}\left(\lim_{n\to\infty} M_{t\wedge T_n} \right) \\
+  \leq& \liminf{n\to\infty} \mathbb{E}(M_{t\wedge T_n | \mathcal{F}_s}) \\
+  =& \liminf_{n\to\infty} M_{s\wedge T_n} = M_s
+\end{align*}
+$$
+
+Note that $M_t$ is in $\mathcal{L}^1$ precisely thanks to the above equation. The result **(7)** relies on dominated convergence applied to the indetity
+
+$$
+  M_{s\wedge T_n} = \mathbb{E}(M_{t\wedge T_n} | \mathcal{F}_s)
+$$
+
+where $\Set{T_n}_{n\in\N}$ reduces $M$. Finally, **(8)** is a direct consequence of **(2)** and **(7)**.
+</details>
+</MathBox>
+
+<MathBox title='Indistinguishability of local martingales' boxType='theorem'>
+Let $M$ be a local martingale beginning at 0$. If $M$ is a finite variation process, then $M$ is indistinguishable from $0$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that $M$ is a finite variation process, and choose
+
+$$
+  T_n = \inf\{ t\geq 0 | \int_0^t |\mathrm{d}M_s| \geq n \}
+$$
+
+Then $T_n \to\infty$ and $T_n$ is a stopping time. The local martingale $M^{T_n}$ is bounded by $n$, so it is a martingale by properties of local martingales. As a consequence, for any subdivision $0 = t_0 < \cdots < t_p = t$
+
+$$
+\begin{align*}
+  \mathbb{E}[(M_t^{T_n})^2] =& \sum_{k=1}^n \mathbb{E}[(M_{t_k}^{T_n})^2 - (M_{t_{k-1}}^{T_n})^2] \\
+  =& \sum_{k=1}^p \mathbb{E}[(M_{t_k}^{T_n} - M_{t_{k-1}}^{T_n})^2] \\
+  \leq& \mathbb{E}\left( \max{\ell}\left|M_{t_\ell}^{T_n} - M_{t_{\ell - 1}}^{T_n} \right| \sum_{k=1}^ns |M_{t_k}^{T_n} - M_{t_{k-1}}^{T_}| \right) \\
+  \leq& n\mathbb{E}\left( \max_{\ell} |M_{t_\ell}^{T_n} - M_{t_{\ell - 1}}^{T_n} | \right)
+\end{align*}
+$$
+
+As this maximum is bounded by $n$ and $M$ has continuous trajectories, dominated convergence allows to conclude that $\mathbb{E}[(M_t^{T_n})^2] = 0$, by choosing subdivisions with time step going to $0$. By Fatou's lemma, one can take the $n\to\infty$ limit to conclude $\mathbb{E}(M_t^2) = 0$, so $M_t = 0$ almost surely. As $M$ is continuous, this is equivalent to being indistinguishable from $0$.
+</details>
+</MathBox>
+
+<MathBox title='Quadratic variation of a martingale' boxType='theorem'>
+Let $M$ be a local martingale. Then there exists a unique (up to indistinguishability) increasing continuous variation process, noted $\langle M, M \rangle$, such that $\Set{M_t^2 - \langle M, M \rangle_t}_{t\geq 0}$ is a local martingale. Moreover, if $\Set{ 0 = t_0^{(n)} < t_1^{(n)} < \cdots}_{n\in\N_+}$ is any sequence of subdivisions of $\R_+$, with step going to $0$, then
+
+$$
+  \langle M, M \rangle_t = \lim_{n\to\infty} \sum_{k\geq 1} \left( M_{t_k^{(n)} \wedge t} - M_{t_{k-1}^{(n)}\wedge t} \right)^2
+$$
+
+uniformly in the sense of convergence in probability. The process $\langle M, M \rangle$, often noted $\langle M \rangle$, is called the *bracket* or *quadratic variation* of $M$.
+
+<details>
+<summary>Proof</summary>
+
+Uniqueness of quadratic variation is an easy consequence of indistinguishability. We will first prove the existence of the bracket when $M$ is a true martingale, and $|M|$ is almost surely bounded by some $K > 0$. For a subdivision $\delta = \Set{0 = t_0 < t_1 < \dots}$ and a process $Y$, we note
+
+$$
+  Q_t^{(Y,\delta)} = \sum_{k\in\N_+} \left( Y_{t_k^{(n)} \wedge t} - Y_{t_{k-1}^{(n)}\wedge t} \right)^2 
+$$
+
+Furthermore,
+
+$$
+\begin{align*}
+  X_t^{(\delta)} :=& M_t^2 - Q_t^{(M,\delta)} \\
+  =& M_t^2 - \sum_{k\in\N_+} \left( M_{t_k^{(n)} \wedge t} - M_{t_{k-1}^{(n)}\wedge t} \right)^2 \\
+  =& 2\sum_{k\in\N_+} M_{t_{k-1}^{(n)}} \left( M_{t_k^{(n)}} - M_{t_{k-1}^{(n)} \wedge t} \right)
+\end{align*}
+$$
+
+Thus, $\Set{X_t^{(\delta)}}_{t\geq 0}$ is a continuous martingale. For a sequence $\Set{\delta_n}_{n\in\N}$ of subdivisions with step going to 0, we want to find a subsequence of $\Set{X^{(\delta_n)}}_{n\geq 0}$ converging uniformly on compact sets. Note that
+
+$$
+  \delta_t^{(n,m)} =& X_t^{(\delta_n)} - \delta_t^{(\delta_m)} = Q_t^{(M,\delta_m)} - Q_t^{(M,\delta_n)}
+$$
+
+which is a martingale, so
+
+$$
+  \Set{(\delta_t^{(n,m)})^2 - Q_t^{(\delta^{(n,m)},\delta_n \cup \delta_m)}}_{t\geq 0}
+$$
+
+is a martingale as well, by the same decomposition used to prove that $X^{(\delta)}$ is a martingale. As a consequence, the expectation of $(\delta_t^{(n,m)})^2$ is also a discrete analogue of the quadratic variation of a finite variation process. We therefore expect this to go to $0$, which would prove that the sequence of \Set{X_t^{(\delta_n)}}_{n\in\N} is a Cauchy sequence in $\mathcal{L}^2$, hence converging. Note that, $(a-b)^2 \leq 2(a^2 + b^2)$, then
+
+$$
+  Q_t^{A-B,\delta} \leq 2\left( Q_t^{A,\delta} - Q_t^{B,\delta} \right)
+$$
+
+so in order to prove that $\mathbb{E}[(\delta_t^{(n,m)})^2]$ converges to $0$, a sufficient condition is
+
+$$
+  \mathbb{E}(Q_t^{(Q^{(M,\delta_n)}, \delta_n \cup \delta_m)}) \xrightarrow{n,m\to\infty} 0
+$$
+
+Note that $\varepsilon_n = \sup_{u,v\in[0,t]} |M_u - M_v|$ is the supremum such that $u - v$ is smaller than the time step of $\delta_n$. Then if $s_{k-1}$ and $s_k$ are successive elements of $\delta_n \cup \delta_m$, then $|Q_{s_k}^{(M,\delta_n)} - Q_{s_{k-1}}^{(M,\delta_n)}| \leq \varepsilon_n |M_{s_k} - M_{s_{k-1}}|$, hence
+
+$$
+  Q_t^{(Q^{(M,\delta)}, \delta_n \cup\delta_m)} \leq \varepsilon_n^2 \sum_{k\in\N_+} (M_{s_k \wedge t} - M_{s_{k-1} \wedge t})^2
+$$
+
+Note that for any subdivision $\delta$
+
+$$
+\begin{align*}
+  (Q_t^{(M,\delta)})^2 =& \sum_{k\in\N_+} (M_{s_k \wedge t} - M_{s_{k-1}\wedge t})^4 \\
+  &+ \sum_{k\in\N} (Q_{s_k\wedge t}^{(M,\delta)} - Q_{s_{k-1}\wedge t}^{M,\delta})(Q_t^{(M,\delta)} - Q_{s_k \wedge t}^{(M,\delta)})
+\end{align*}
+$$
+
+As $X^(\delta)$ is a martingale, $\mathbb{E}(Q_t^{(M,\delta)} - Q_{s_{k\wedge t}}^{M,\delta} | \mathcal{F}_{s_k \wedge t} ) = \mathbb{E}(M_t^2 - M_{s_k \wedge t}^2 | \mathcal{F}_{s_k \wedge t})$, so using $|M| \leq K$, we get
+
+$$
+\begin{align*}
+  \mathbb{E}[(Q_t^{(M,\delta)})^2] \leq& 4K^2 \left( \mathbb{E}(Q_t^{(M,\delta)}) + \sum_{k\in\N_+} (Q_{s_k \wedge t}^{(M,\delta)}) - Q_{s_{k-1}\wedge t}^{(M,\delta)} \right) \\
+  =& 8K^2 \mathbb{E}(Q_t^{(M,\delta)}) = 8K^2 \mathbb{M_t^2} \leq 8K^4
+\end{align*}
+$$
+
+As the quadratic increments is uniformly bounded in $\mathcal{L}^2$ by $8K^4$, we get by the Cauchy-Schwarz inequality
+
+$$
+  \mathbb{E}(Q_t^{(Q^{(M,\delta_n)},\delta_n \cup\delta_m)}) \leq (8K^4 \mathbb{E}(\varepsilon_n^4))^{1/2}
+$$
+
+By dominated convergence, where $\varepsilon_n \to 0$ almost surely and $\varepsilon_n \leq 2K$, this goes to $0$ in the limit $n\to\infty$. It follows that $\Delta_t^{(m,n)} \xrightarrow{n,n\to\infty} 0$ in $\mathcal{L}^2$. By Doob's inequaliyt, this implies that
+
+$$
+  \mathbb{E}\left[ \left( \sup_{[0,t]} (X^{(\delta_n)} - X^{(\delta_m)}) \right)\right] \xrightarrow{n,m\to\infty} 0
+$$
+
+so there is a subsequence of the $X^{(\delta_n)}$ converging almost surely, uniformly, on $[0,t]$. Let $X$ denote this (continuous) limit. As the subsequence of the $X^{(\delta)}$ converge to $X$ in $\mathcal{L}^2$, their martingale property is preserved in the limit, hence $X$ is a martingale. Moreover, from the definition of $Q_t^{(M,\delta)}$ it follows that $M^2 - X^{(\delta)}$ is an increasing process. This property holds for $M^2 - X$ by uniform convergence. For $s\in[0,t]$ define
+
+$$
+  \langle M \rangle_s := M_s^2 - X_s
+$$
+
+From the previous discussion, $\langle M \rangle$ satisfies all required properties of the bracket on $[0,t]$. By uniqueness of the bracket, the value $\langle M \rangle_s$ is independent of the choice of the horizon $t\geq s$, and of the choice of the subsequence providing uniform convergence. Moreover, the above reasoning has proved that $X_s^{(\delta_n)} - X_s^{(\delta_m)}$ is Cauchy sequence in $\mathcal{L}^2$, as $\varepsilon_n$ can be chose indentical for any choice of $s\in[0,\t]$, the convergence is in $L^2$ and uninform on compact sets.
+
+This bounded martingale case extends easily. First, note that if the result is true for local martingales beginning at $0$, it is true for local martingales. If $M_t = M_0 + N_n$ with $M_0 \in\mathcal{F}_0$ and $N$ is a local martingale beginning at $0$, as $M_0 N$ is a local martingale, so is $M_t^2 - \langle N \rangle_t = N_t^2 - \langle N \rangle_t + M_0^2 + 2M_0 N_t$. Thus, we can assume that $M_0 = 0$.
+
+We localize $M$ by $T_n = \inf\{ t \geq 0 : |M_t| = n \}$. Then $M^{T_n}$ is a local martingale, bounded by $n$, so we can apply the previous argument: there is an increasing process, noted $\langle M \rangle^{(n)}$ usch that $(M^{T_n})^2 - \langle M \rangle^{(n)}$ is a martingale. By uniqueness, (\langle M \rangle^{(n)})^{T_m} = \langle M \rangle^{(m)} for $m \leq n$. From this coherence property, we can define a process $\langle M \rangle$ such that $(M^{T_n})^2 - \langle M \rangle^{T_n}$ is a martingale. As $T_n \to\infty$ almost surely, this means that $M^2 - \langle M \rangle$ is a local martingale.
+
+The property of uniform convergence of quadratic increments to the bracket also holds for $(M^{T_n})^2 - \langle M \rangle^{T_n}$ in $\mathcal{L}^2$. Since $\mathbb{P}(T_n \leq t) \xrightarrow{n\to\infty} 0$ by dominated or monotone convergence, it follows that the uniform converge holds in probability.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $M$ and $N$ be two local martingales. Then
+
+$$
+  \langle M, N \rangle = \frac{1}{2} (\langle M + N, M + N \rangle - \langle M, M \rangle - \langle N, N \rangle)
+$$
+
+satisfying the following.
+1. Up to indistinguishability, $\langle M, N \rangle$ is the unique finite variation process such that $MN - \langle M,N\rangle$ is a local martingale.
+2. The function $(M, N) \mapsto \langle M, N \rangle$ is symmetric and bilinear.
+3. If $(0 = t_0^{(n)} < t_1^{(n)} < \dots)_{n\in\N}$ is any sequence of subdivisions of $\R_+$ with step going to $0$, then
+$$
+  \langle M, N \rangle_t = \lim_{n\to\infty} \sum_{k\in\N_+} (M_{t_k^{(n)}\wedge t} - M_{t_{k-1}^{(n)} \wedge t}) (N_{t_k^{(n)}\wedge t} - N_{t_{k-1}^{(n)} \wedge t})
+$$
+in probability, uniformly for $t$ in compact sets.
+4. For any stopping time $T$, then $\langle M, N \rangle_{t\wedge T} = \langle M^T, N \rangle_t = \langle M^T ,N^T \rangle_t$ for $t\geq 0$.
+</MathBox>
+
+# Brownian motion
+
+# Stochastic integrals
+
