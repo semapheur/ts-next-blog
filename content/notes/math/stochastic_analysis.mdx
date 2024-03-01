@@ -163,7 +163,7 @@ $$
   \mathbb{E}(Q_t^{(Q^{(M,\delta_n)},\delta_n \cup\delta_m)}) \leq (8K^4 \mathbb{E}(\varepsilon_n^4))^{1/2}
 $$
 
-By dominated convergence, where $\varepsilon_n \to 0$ almost surely and $\varepsilon_n \leq 2K$, this goes to $0$ in the limit $n\to\infty$. It follows that $\Delta_t^{(m,n)} \xrightarrow{n,n\to\infty} 0$ in $\mathcal{L}^2$. By Doob's inequaliyt, this implies that
+By dominated convergence, where $\varepsilon_n \to 0$ almost surely and $\varepsilon_n \leq 2K$, this goes to $0$ in the limit $n\to\infty$. It follows that $\Delta_t^{(m,n)} \xrightarrow{n,n\to\infty} 0$ in $\mathcal{L}^2$. By Doob's inequality, this implies that
 
 $$
   \mathbb{E}\left[ \left( \sup_{[0,t]} (X^{(\delta_n)} - X^{(\delta_m)}) \right)\right] \xrightarrow{n,m\to\infty} 0
@@ -201,6 +201,160 @@ $$
 $$
 in probability, uniformly for $t$ in compact sets.
 4. For any stopping time $T$, then $\langle M, N \rangle_{t\wedge T} = \langle M^T, N \rangle_t = \langle M^T ,N^T \rangle_t$ for $t\geq 0$.
+</MathBox>
+
+<MathBox title='Kumita-Watanabe inequality' boxType='theorem'>
+Let $H$ and $K$ be progressively measurable processes and suppose that $M$ and $N$ are local martingales. Then, for any $t\in\R_+ \cup\Set{\infty}$
+
+$$
+  \int_0^t |H_s K_s|\cdots|\mathrm{d}\langle M, N \rangle_s | \leq \left( \int_0^t H_s^2 \;\mathrm{d}\langle M \rangle_s \right)^{1/2} \left( \int_0^t K_s^2 \;\mathrm{d}\langle N \rangle_s \right)^{1/2}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that from properties of quadratic variation of two martingales and the Cauchy-Schwarz inequality we have
+
+$$
+  |\langle M, N \rangle_t - \langle M, N \rangle_s | \leq (\langle M \rangle_t - \langle M \rangle_s)^{1/2} (\langle N \rangle_t - \langle N \rangle_s )^{1/2}
+$$
+
+almost surely. Using Cauchy-Schwarz again, for $s = t_0 < \cdots < t_n = t$, the above inequality yields
+
+$$
+\begin{align*}
+  &\sum_{k=1}^n |\langle M, N \rangle_{t_k} - \langle M, N \rangle_{t_{k-1}} | \\
+  \leq& \sum_{k=1}^n (\langle M \rangle_{t_k} - \langle M \rangle_{t_{k-1}})^{1/2} (\langle N \rangle_{t_k} - \langle N \rangle_{t_{k-1}})^{1/2} \\
+  \leq& \left( sum_{k=1}^n (\langle M \rangle_{t_k} - \langle M \rangle_{t_{k-1}})\right)^{1/2} \left((\langle N \rangle_{t_k} - \langle N \rangle_{t_{k-1}})\right)^{1/2} \\
+  =& (\langle M \rangle_t - \langle M \rangle_s )^{1/2} (\langle N \rangle_t - \langle N \rangle_s)^{1/2}
+\end{align*}
+$$
+
+By the finite variation supremum theorem, we get
+
+$$
+  \int_s^t |\mathrm{d}\langle M, N \rangle_u | \leq \left( \int_s^t \mathrm{d}\langle M \rangle_u \right)^{1/2} \left( \int_s^t \mathrm{d}\langle N \rangle_u \right)^{1/2}
+$$
+
+For functions of type $H = \sum h_\ell \mathbf{1}_{B_\ell}$ and $K = \sum k_\ell \mathbf{1}_{B_\ell}$, with disjoint bounded Borel sets $B_i$, we have
+
+$$
+\begin{align*}
+  \int |H_s K_s |\cdot |\mathrm{d}\langle M, N \rangle_s | =& \sum_\ell |h_\ell k_\ell | \int_{B_\ell} |\mathrm{d}\langle M, N \rangle_u | \\
+  \leq& \sum_\ell |h_\ell k_\ell| \left( \int_{B_\ell} \mathrm{d}\langle M \rangle_u \right)^{1/2} \left( \int_{B_\ell} \mathrm{d}\langle N \rangle_u \right)^{1/2} \\
+  \leq& \left( \sum_\ell h_\ell^2 \int_{B_\ell} \mathrm{d}\langle M \rangle_u \right)^{1/2} \left( \sum_\ell k_\ell^2 \int_{B_\ell} \mathrm{d}\langle N \rangle_u \right)^{1/2} \\
+  =& \left( \int_0^t H_s^2 \mathrm{d}\langle M \rangle_s \right)^{1/2} \left( \int_0^t K_s^2 \mathrm{d}\langle N \rangle_s \right)^{1/2}
+\end{align*}
+$$
+
+Approximation of progressively measurable processes as increasing limit of such functions completes the proof.
+</details>
+</MathBox>
+
+<MathBox title='Integrability of local martingales' boxType='theorem'>
+Let $M$ be a local martingale with $M_0 = 0$.
+1. The process $M$ is an $\mathcal{L}^2$-bounded martingale, i.e. $\sup_{t\geq 0} \mathbb{E}(|M_t|^2) < \infty$, if and only if $\mathbb{E}(\langle M \rangle_\infty) < \infty$. In such a case, $M^2 - \langle M \rangle$ is a uniformly integrable martingale.
+2. The process $M$ is a square integrable martingale if and only if $\mathbb{E}(\langle M \rangle_t ) < \infty$ for $t\geq 0$. In such a case, $M^2 - \langle M \rangle$ is a martingale.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Assume first that $M$ is an $\mathbb{L}^2$-bounded martingale. It is therefore uniformly integrable and converges almost surely to some $M_\infty$. Moreover, from Doob's inequality
+
+$$
+  \mathbb{E}\left(\sup_{t\geq 0} M_t^2 \right) \leq 4 \sup_{t\geq 0} \mathbb{E}(M_t^2) < \infty
+$$
+
+As a consequence, if we define $T_n = \inf\Set{t\geq 0 | \langle M \rangle_t \geq n}$ then
+
+$$
+  \Set{M_{t\wedge T_n}^2 - \langle M \rangle_{t\wedge T_n}}_{t\geq 0}
+$$
+
+is a local martingale bounded by $\sup_{t\geq 0} (M_t^2) + n\in \mathcal{L}^1$, so it is a true martingale. Thus
+
+$$
+  \mathbb{E}(\langle M \rangle_{t\wedge T_n}) = \mathbb{E}(M_{t\wedge T_n}^2)
+$$
+
+Dominated convergence allows to take the limit $t\to\infty$ on the right hand side, and monotone convergence on the left side,
+
+$$
+  \mathbb{E}(\langle M \rangle_{T_n}) = \mathbb{E}(M_{T_n}^2)
+$$
+
+Monotone convergence on the left and dominated convergence on the right yields
+
+$$
+  \mathbb{E}(\langle M \rangle_\infty) = \mathbb{E}(M_\infty^2)
+$$
+
+In particular, $\mathbb{E}(\langle M \rangle_\infty)$ if finite. This implies that $M^2 - \langle M \rangle$ is bounded by an integrable random variable $\mathrm{sup}_{t\geq 0} (M_t^2) + \langle M \rangle_\infty $, so it is a uniformly integrable martingale.
+
+Conversely, suppose that $\mathbb{E}(\langle M \rangle_\infty) < \infty$ and note that $\tilde{T}_n = \inf\Set{t\geq 0 : |M_t| \geq n}$. Then $M^{\tilde{T}_n}$ (bounded by $n$) and $(M^{\tilde{T}_n})^2 - \langle M \rangle^{\tilde{T}}$ (bounded by $n^2 + \langle M \rangle^{T_n} \in \mathcal{L}^1$) are uniformly integrable martingales. Thus, for any stopping time $S$
+
+$$
+  \mathbb{E}(M_{S\wedge\tilde{T}_n}^2) = \mathbb{E}(\langle M \rangle_{S\wedge\tilde{T}_n})
+$$
+
+By Fatou's lemma
+
+$$
+  \mathbb{E}(M_S^2) \leq \mathbb{E}(\langle M \rangle_S) \leq \mathbb{E}(\langle M \rangle_\infty) < \infty
+$$
+
+In particular, $M$ is $\mathcal{L}^2$-bounded. Moreover, it is a martingale and therefore in the identity
+
+$$
+  \mathbb{E}(M_{t\wedge\tilde{T}_n} | \mathcal{F}_s) = M_{s\wedge\tilde{T}_n}
+$$
+
+the limit $n\to\infty$ is allowed by dominated convergence. Indeed, the $M_{t\wedge\tilde{T}_n}$ are bounded in $\mathcal{L}^2 with (\mathbb{E}(\sup_t M_t^2)) < \infty$, so $\mathbb{E}(\sup_n M_{t\wedge\tilde{T}_n}^2) < \infty$ and hence bounded in $\mathcal{L}^1$.
+
+**(2):** By Doob's inequality, if $M$ is square integrable, $\Set{M_{s\wedge t}}_{c\get 0}$ is $\mathcal{L}^2$-bounded, so by **(1)**, $\mathbb{E}(\langle M \rangle_t) < \infty$. Reciprocally, if $\mathbb{E}(\langle M \rangle_t) < \infty$, then **(1)** implies that $\Set{M_{s\wedge t}}_{c\get 0}$ is bounded in $\mathcal{L}^2$, in particular $\mathbb{E}(M_t^2) < \infty$. Finally, in such a case, from **(1)** the process $\Set{M_{s\wedge t}^2 - \langle M \rangle_{s\wedge t}}_{s\geq 0}$ is a uniformly integrable martingale, so $M^2 - \langle M \rangle$ is a martingale. 
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $M$ be a local martingale, with $M_0 = 0$ almost surely. Then $M$ is indistinguishable from $0$ if and only if $\langle M \rangle$ is identically $0$.
+
+<details>
+<summary>Proof</summary>
+
+If $M$ is indistinguishable from $0$, it is clear that the bracket vanishes (as a limit of quadratic increments). Reciprocally, if $\langle M \rangle\equiv 0$, then by integrability $M^2$ is a martingale so $\mathbb{E}(M_t^2) = 0$ for any given $t$. Thus, $M_t = 0$ almost surely. One can conclude by continuity that $M$ is indistinguishable from $0$.
+</details>
+</MathBox>
+
+<MathBox title='Semimartingale process' boxType='definition'>
+Given a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ with filtration $\mathscr{F} = \Set{\mathcal{F}_t}_{t\geq 0}$, a process $X$ is called a semimartingale if is of type
+
+$$
+  X = X_0 + M + A
+$$
+
+where $X_0 \in\mathcal{F}_0$, $M$ is a locale martingale beginning at $0$, and $A$ is a finite variation process.
+</MathBox>
+
+Note that the decomposition of a semimartingale process is unique up to indistinguishability. As a consequence, we can define without ambiguity the bracket of $X = X_0 + M + A$ and $\tilde{X} = \tilde{X}_0 + \tilde{M} + \tilde{A}$ as
+
+$$
+  \langle X, \tilde{X} \rangle = \langle M, \tilde{M} \langle
+$$
+
+In particular, the bracket of a finite variation process with any semimartingale is always $0$. Then we can show that the bracket is still given as a limit of increment (the finite variation part does not contribute). Thus, if $(0 < t_0^{(n)} < t_1^{(n)} \dots)_{n\in\N}$ is any sequence of subdivisions of $\R_+$ with step going to $0$, then in the sense of convergence in probability
+
+$$
+  \langle X, \tilde{X} \rangle_ t = \lim_{t\to\infty} \sum_{k\in\N_+} \left( X_{t_k^{(n)} \wedge t} - X_{t_{k-1}^{(n)} \wedge t} \right)\left( \tilde{X}_{t_k^{(n)} \wedge t} - \tilde{X}_{t_{k-1}^{(n)} \wedge t} \right)
+$$
+
+<MathBox title='' boxType='theorem'>
+If, given a probability space, the process $Y$ is continuous with independent increments, then it takes the from
+
+$$
+  Y = X + F
+$$
+
+where $X$ is a semimartingale with independent increments and $F$ is a deterministic continuous function.
 </MathBox>
 
 # Brownian motion
