@@ -860,7 +860,7 @@ We get the desired result because $\sigma_n \xrightarrow{n\to\infty} \infty$ alm
 
 To extend the notion of stochastic integral to semimartingales, we need to work with locally bounded processes. A progressively measurable process $H$ is locally bounded if almost surely $\sup_{[0,t]}|H_s| < \infty$ for any $t\geq 0$. Note that is $H$ is locally bounded and $M$ is a local martingale, then $H\in L^2_{\mathrm{loc}} (M)$. Moreover, if $A$ is a finite variation process, then for any $t\geq 0$ almost surely $\int_0^t |H_s|\;|\mathrm{d}A_s| < \infty$. As a consequence, for a semimartingale $X = X_0 + M + A$, and a locally bounded progressively measurable process $H$, the definition $H\cdot X = H\cdot M + H\cdot A$ makes sense.
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='Properties of stochastic integrals' boxType='proposition'>
 The stochastic integral of a locally bounded progressively measurable process with respect to a semimartingale satisfies the following
 1. The map $(H,X)\mapsto H\cdot X$ is bilinear.
 2. If $G$ and $H$ are locally bounded, $G\cdot (H\cdot X) = (GH)\cdot X$
@@ -901,4 +901,102 @@ Since $H$ is left-continuous, this last term converges to $0$ as $n\to\infty$ by
 </details>
 </MathBox>
 
-## The Itô formula
+## Itô's formula
+
+<MathBox title="Itô's formula" boxType='theorem'>
+Let $F:\R^d \to\R$ be second differentiable, i.e. $F\in C^2$, and let $X^1,\dots,X^d$ be (continuous) semimartingales. Then $F(X^1,\dots,X^d)$ is a semimartingale and
+
+$$
+\begin{align*}
+  F(X_t^1,\dots,X_t^d) =& F(X_0^1,\dots,X_0^d) \\
+  &+ \sum_{k=1}^d \int_0^t \partial_{x_k} F(X_s^1,\dots,X_s^d)\;\mathrm{d}X_s^k \\
+  &+ \frac{1}{2}\sum_{1\leq k,\ell, d} \int_0^t \partial_{x_k x_\ell} F(X_s^1,\dots,X_s^d)\;\mathrm{d}\langle X^k, X^\ell \rangle_s
+\end{align*}
+$$
+
+or in differential form
+
+$$
+\begin{align*}
+  \mathrm{d}F(X_t^1,\dots,X_t^d) =& \sum_{k=1}^d \partial_{k} F(X_s^1,\dots,X_s^d)\;\mathrm{d}X_s^k \\
+  &+ \frac{1}{2}\sum_{1\leq k,\ell, d} \partial_{k \ell} F(X_s^1,\dots,X_s^d)\;\mathrm{d}\langle X^k, X^\ell \rangle_s
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We first prove this formula for $f(x,y) = xy$, which is equivalent to proving a stochastic integration by parts formula. For this purpose, by polarization, we just need to prove it for $f(x) = x^2$
+
+$$
+  X_t^2 = X_0^2 + 2 \int_0^t X_t \;\mathrm{d}X_t + \langle X \rangle_t
+$$
+
+From properties of stochastic integrals, we know that
+
+$$
+  2\int_0^t X_t \;\mathrm{d}X = \lim_{\to\infty} 2\sum_{k=0}^{p_n - 1} X_{t_k^{(n)}} (X_{t_{k+1}^{(n)}} - X_{t_k^{(n)}})
+$$
+
+where the sequence of subdivisions $0 = t_0^{(n)} < \cdots < t_{p_n}^{(n)} = t$ has a step going to $0$, and the limit is in probability. Writing this as
+
+$$
+  \lim_{n\to\infty} \left(\sum_{k=0}^{p_n - 1} (X_{t_{k+1}^{(n)}}^2 - X_{t_k^{(n)}}^2) - \sum_{k=0}^{p_n - 1} (X_{t_{k+1}^{(n)}} - X_{t_k^{(n)}})^2 \right)
+$$
+
+and using proves Itô's formula in the quadratic case, by uniqueneses of the limit in probability. In other words, we have proved that formula holds for $F$ being constant, linear of type $x_i x_j$. It follows that if the result holds for $F(x)$, a simple calculation proves that it is true for $F(x)x_i$. Hence, iterating this reasoning, the result holds for any polynomial in the variables $x_1,\dots,x_d$ of arbitrary degree.
+
+By localizing our processes $X_1,\dots,X_d$ through their first exist time from the ball with radius $n$, and taking $n\to\infty$ at the end, we can assume that the processes remain in a compact $K$. Since $F\in C^2 (K)$ on, the Stone-Weierstrass theorem gives a sequence of polynomials $(P_n)_{n\in\N}$ in the variables $x_1,\dots,x_n$ such that $P_n$, its first and second order derivatives converge uniformly to those of $F$ on $K$. We can easily show by dominated convergence that if $H$ and the $H_n$ are continuous uniformly bounded progressively measurable processes, $H_n$ converging almost surely to $H$ on $[0,t]$, then for any semimartingale $X$
+
+$$
+  \lim_{n\to\infty} \int_0^t H_s^n \;\mathrm{d}X_s = \int_0^t H_s \;\mathrm{d}X_s
+$$
+
+in the sense of convergence in probability. Thus, the result is true in the almost sure sense if $X$ is a finite variation process by the usual dominated convergence. If $X$ is $L^2$-bounded martingale, the convergence holds in $L^2$ by the isometry property. If $X$ is a local martingale, the convergence holds in probability by localization. Thus, writing the Itô formula for the polynomials $P_n$ and taking the limit $n\to\infty$ yields the result for $F$, by uniqueness of the limit in probability.
+
+Finally, with Itô's formula proved, it is obvious that $F(X_1,\dots,X_d)$ is a semimartingale as the formula gives its explicit decomposition. Because $F$ is $C^2$, all integrated terms are locally bounded, so the stochastic and Stieltjes integrals make sense.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $M$ be a real local martingale and $\lambda\in\mathbb{C}$. Then the process $\left( \exp(\lambda M_t - \frac{\lambda^2}{2}\langle M \rangle_t) \right)_{t\geq 0}$ is a local martingale.
+
+<details>
+<summary>Proof</summary>
+
+Let $F:\R^2 \to\R$ be a $C^2$. By the Itô formula for a semimartingale $M$
+
+$$
+  \mathrm{d}F(M_t, \langle M \rangle_t) = (\partial_x F)\;\mathrm{d}M_t + (\partial_y F)\;\mathrm{d}\langle M \rangle_t + \frac{1}{2}(\partial_{xx} F)\;\mathrm{d}\langle M \rangle_t 
+$$
+
+If $M$ is a local martingale and $(\partial_y + \frac{1}{2}\partial_{xx})F = 0$, then $F(M,\langle M \rangle)$ is a stochastic integral with respect to $M$, hence a local martingale. In our case, both the real and imaginary parts of $f(x,y) = \exp(\lambda x - \frac{\lambda^2}{2}y)$ satisfy the Itô formula, which yields the result.
+</details>
+</MathBox>
+
+<MathBox title="Levy's criterion" boxType='theorem'>
+Let $M^{(1)},\dots,M^{(d)}$ be local martingales beginning at $0$. Then the following assertions are equivalent.
+1. The processes $M^{(1)},\dots,M^{(d)}$ are independent standard Brownian motions.
+2. $\langle M^{(k)}, M^{(\ell)}\rangle_t = \mathbf{1}_{k=\ell}t$ for any $1\leq k,\ell \leq d$ and $t\geq 0$.
+
+<details>
+<summary>Proof</summary>
+
+**(1)** $\implies$ **(2)**: This follows directly because $(M_t^{(k)}^2)_{t\geq 0}$ is martingale, as well as $(M_t^{(k)}, M_t^{(\ell)})_{t\geq 0}$ when $k \neq\ell$.
+
+**(2)** $\implies$ **(1)**: Write $M = (M^{(i)})_{i=1}^d$ and consider some $u\in\R^d$. Then $u\cdot M$ is a local martingale with bracket $\langle u\cdot M \rangle_t = |u|^2 t$. From the previous corollary, it follows that $(\exp(iu\cdot M_t - \frac{1}{2}|u^2|t))_{t\geq 0}$ is a local martingale. Because it is bounded, it is a martingale:
+
+$$
+  \mathbb{E}[\exp(iu\cdot M_t - \frac{1}{2}|u^2|t)|\mathcal{F}_s] = \exp(iu\cdot M_s - \frac{1}{2}|u^2|t)
+$$
+
+It follows that for any $A\in\mathcal{F}_s$
+
+$$
+  \mathbb{E}\left( \exp(iu\cdot (M_t - M_s)) \mathbf{1}_A \right) = \exp(-\frac{1}{2}|u|^2 (t - s))\mathbb{P}(A)
+$$
+
+The choice $A = \Omega$ proves that $M_t - M_s$ is a Gaussian vector with covariance matrix $(t - s)\mathrm{id}_d$, hence with independent coordinates. Moreover, the above equation also proves that $M_t - M_s$ is independent of $\mathcal{F}_s$.
+
+</details>
+</MathBox>
