@@ -612,7 +612,7 @@ $$
 <details>
 <summary>Details</summary>
 
-It is easily seen that $L^2 (M) = L^2 (\R_+ \times\Omega, \mathcal{F}, \nu)$, where $\mathcal{F}$ is the progressive $\sigma$-algebra and $\nu(A) = \mathbb{E}(\int_0^\infty \mathbf{1}_A (s,\dot)\;\mathrm{d}\langle M \rangle_s$ is a well-defined finite measure. Note that $L^2 (M)$ is a Hilbert space with the inner product
+It is easily seen that $L^2 (M) = L^2 (\R_+ \times\Omega, \mathcal{F}, \nu)$, where $\mathcal{F}$ is the progressive $\sigma$-algebra and $\nu(A) = \mathbb{E}(\int_0^\infty \mathbf{1}_A (s,\cdot)\;\mathrm{d}\langle M \rangle_s$ is a well-defined finite measure. Note that $L^2 (M)$ is a Hilbert space with the inner product
 
 $$
   \langle H, K \rangle_{L^2 (M)} = \mathbb{E}\left( \int_0^\infty H_s K_s \;\mathrm{d}\langle M \rangle_s \right)
@@ -631,3 +631,274 @@ $$
 
 where $H_k \in\mathcal{F}_{t_k}$ is bounded.
 </MathBox>
+
+<MathBox title='' boxType='proposition'>
+For any $M\in H^2$, the subspace $\mathcal{E}$ is dense in $L^2 (M)$.
+
+<details>
+<summary>Proof</summary>
+
+Recall that $L^2 (M) = L^2 (\R_+ \times\Omega, \mathcal{F}, \nu)$.
+
+We need to prove that if $K\in L^2(M)$ is orthogonal to $\mathcal{E}$, then $K = 0$. If $K$ is orthogonal to $F\mathbf{1}_{(s,t]}\in\mathcal{E}$, where $F\in\mathcal{F}_s$ is bounded, then
+
+$$
+  \mathbb{E}\left( F \int_s^t K_u \;\mathrm{d}\langle M \rangle_u \right) = 0
+$$
+
+Let $X_t = \int_0^t K_u \;\mathrm{d}\langle M \rangle_u$. Then $X_t \in L^2$, as a consequence of the Cauchy-Schwarz inequality and $M\in H^2$, $K\in L^2 (M)$. It follows that $\mathbb{E}((X_t - X_s)F) = 0$ for any bounded $F\in\mathcal{F}_s$, so $X_s = \mathbb{E}(X_t | \mathcal{F}_s)$. Thus, $X$ is a martingale. Since this is also a finite variation process, it is indistinguishable from $0$. Hence, for any $t\geq 0$
+
+$$
+  \int_0^t K_u \;\mathrm{d}\langle M \rangle_u = 0
+$$
+
+so $K = 0$ $\nu$-almost everywhere on $\R_+ \times\Omega$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $M\in H^2$. For $H\in\mathcal{E}$, written
+
+$$
+  H_s (\omega) = \sum_{k=0}^{p-1} H_k (\omega) \mathbf{1}_{(t_k, t_{k+1}]} (s)
+$$
+
+we associate $H\cdot M\in H^2$ defined by
+
+$$
+  (H\cdot M)_t = \sum_{k=1}^p H_k (M_{t_{k+1}\wedge t} - M_{t_k \wedge t})
+$$
+
+Then the following results hold.
+1. The map $H\mapsto H\cdot M$ can be uniquely extended into an isometry from $L^2 (M)$ to $H^2$.
+2. The process $H\cdot M$ obtained by the previous extension is characterized by 
+$$
+  \langle H\cdot M, N \rangle = H\cdot\langle M, N \rangle,\; N\in H^2
+$$
+3. If $\tau$ is a stopping time, then
+$$
+  (\mathbf{1}_{(0,\tau]})\cdot M = (H\cdot M)^\tau = H\cdot M^\tau
+$$
+4. If $G\in L^2 (M)$ and $H\in L^2 (G\cdot M)$, then $GH\in L^2(M)$ and
+$$
+  (GH)\cdot M = G\cdot (H\cdot M)
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** We first check that the map $H \mapsto H\cdot M$ is an isometry $\mathcal{E}\to H^2$. It is easy to check that $H\cdot M$ is an $L^2$-bounded martingale. Since
+
+$$
+  \langle H\cdot M \rangle_t = \sum_{k=1}^{p-1} H_k^2 (\langle M \rangle_{t_{k+1}\wedge t} - \langle M \rangle_{t_k \wedge t})
+$$
+
+we get
+
+$$
+\begin{align*}
+  \lVert H\cdot M \rVert_{H^2}^2 =& \mathbb{E}\left( \sum_{k=1}^{p-1} H_k^2 (\langle M \rangle_{t_{k+1}} - \langle M \rangle_{t_k}) \right) \\
+  =& \mathbb{E}\left( \int_0^\infty H_s^2 \;\mathrm{d}\langle M \rangle_s \right) = \lVert H \rVert_{L^2 (M)}^2
+\end{align*}
+$$
+
+Since $\mathbb{E}$ is dense in the Hilbert space $L^2(M)$, this isometry can be extended in a unique way as an isometry $(L^2(M), \lVert\cdot\rVert_{L^2 (M)} \cong (H^2, \lVert\cdot\rVert_{H^2})$.
+
+**(2):** For $H\in\mathcal{E}$ we get
+
+$$
+\begin{align*}
+  \langle H\cdot M, N\rangle_t =& \left\langle \sum_{k=1}^p H_k (M_{t_{k+1} \wedge\cdot} -  M_{t_k \wedge\cdot}), N \right\rangle_t \\
+  =& \sum_{k=1}^p H_k \langle M_{t_{k+1}\wedge\cdot} - M_{t_k \wedge\cdot}, N\rangle_t \\
+  =& \sum_{k=1}^p H_k (\langle M, N \rangle_{t_{k+1 \wedge t}} - \langle M, N \rangle_{t_k \wedge t}) \\
+  =& \int_0^t H_s \;\mathrm{d}\langle M, N \rangle_s
+  =& H\cdot\langle M, N \rangle_t
+\end{align*}
+$$
+
+To prove this for general $H\in L^2(M)$, consider a sequence $H^{(n)}$ in $\mathcal{E}$ converging to $H$ in $L^2 (M)$. Then, by the isometry property, $H^{(n)}\cdot M$ converges to $H\cdot M$ in $H^2$
+
+$$
+\begin{align*}
+  \langle H\cdot M, N \rangle_\infty =& \lim_{n\to\infty} \langle H^{(n)} \cdot M, N \rangle_\infty \\
+  =& \lim_{n\to\infty} (H^{(n)}\cdot\langle M, N \rangle)_\infty \\
+  =& (H\cdot\langle M, N \rangle)_\infty
+\end{align*}
+$$
+
+The first equality is in the sense of an $L^1$-limit, and a consequence of the Kunita-Watanabe inequality with $X = H^{(n)}\cdot M - H\cdot M$
+
+$$
+\begin{align*}
+  \mathbb{E}(|\langle X, N \rangle_\infty|) \leq& \mathbb{E}(\langle X \rangle_\infty)^{1/2} \mathbb{E}(\langle N \rangle_\infty) \\
+  =& \lVert X \rVert_{H^2} \mathbb{E}(\langle N \rangle_\infty)^{1/2}
+\end{align*}
+$$
+
+This also proves the second equality. The third equality holds as a limit in $L^1$ and relies on Kunita-Watanabe as well
+
+$$
+\begin{align*}
+  &\mathbb{E}\left| \int_0^\infty (H_s^{(n)} - H_s)\;\mathrm{d}\langle M, N \rangle_s \right| \\
+  =& \mathbb{E}(\langle N \rangle_\infty) \lVert H^{(n)} - H \rVert_{L^2 (M)}
+\end{align*}
+$$
+
+We have proven that $\mathbb{E}(|\langle H\cdot M, N \rangle_\infty - (H\cdot\langle M, N\rangle)_\infty |) = 0$ which yields that almost surely
+
+$$
+  \langle H\cdot M, N\rangle_\infty = (H\cdot\langle M, N\rangle)_\infty
+$$
+
+Choosing $N$ stopped at time $t$ in this identity proves the expected result.
+
+To get the unique characterization of $H\cdot M$ by the identity in **(2)**, note that if $X$ satisfies the same property as $H\cdot M$, then for any $N\in H^2$
+
+$$
+  \langle H\cdot M - X, N \rangle_\infty = 0
+$$
+
+The choice $N = H\cdot M - X$ proves that $H\cdot M$ and $X$ are indistinguishable.
+
+**(3):** First we prove $(\mathbf{1}_{(0,\tau]} H )\cdot M = (H\cdot M)^\tau$. For this, we just need to check that for any $N\in H^2$
+
+$$
+  \langle(\mathbf{1}_{(0,\tau]}H)\cdot M, N\rangle_\infty = \langle (H\cdot M)^\tau, N \rangle_\infty
+$$
+
+The left hand side is also $((\mathbf{1}_{(0,\tau]}H)\cdot \langle M, N \rangle)_\infty = (H\cdot\langle M, N\rangle)_\tau$, and the right hand side is $\langle H\cdot M, N \rangle_\tau$. Since $\langle H\cdot M, N\rangle = H\cdot\langle M, N \rangle$, this achieves the proof. The proof for $(H\cdot M)^\tau = H\cdot M^\tau$ proceeds in the same way.
+
+**(4):** The first assertion follows from definitions. Because $\langle H\cdot M\rangle = H\cdot\langle M, H\cdot M\rangle = H^2 \langle M \rangle$, we have
+
+$$
+  \int_0^\infty (GH)^2 \;\mathrm{d}\langle M \rangle_s = \int_0^\infty H^2 \;\mathrm{d}\langle G\cdot M\rangle_s < \infty
+$$
+
+Since $H\in L^2 (G\cdot M)$, it follows that $GH\in L^2 (M)$. To prove the second assertion, we just need to test it with respect to any $N\in H^2$, using the associativity for integral of Stieltjes type
+
+$$
+\begin{align*}
+  \langle (GH)\cdot M, N \rangle =& (GH)\cdot \langle M, N \rangle \\
+  =& G\cdot (H\cdot\langle M, N \rangle) \\
+  =& G\cdot\langle H\cdot M, N \rangle \\
+  =& \langle G\cdot (H\cdot M), N\rangle
+\end{align*}
+$$
+
+Hence, $(GH)\cdot M = G\cdot (H\cdot M)$.
+</details>
+</MathBox>
+
+Using the notation $(H\cdot M)_t = \int_0^t H_s \;\mathrm{d}M_s$, the associativity property takes the form
+
+$$
+  \int_0^t G_s (H_s\;\mathrm{d}M_s) = \int_0^t (G_s H_s)\;\mathrm{d}M_s
+$$
+
+When iterated, the 2nd property of the previos theorem yields the joint bracket of two stochastic integrals. Because $\langle \int_0 H_s\;\mathrm{d}M_s, N \rangle = \int_0^t H_s\;\mathrm{d}\langle M, N\rangle_s$, we get for $H\in L^2 (M)$ and $G\in L^2 (N)$
+
+$$
+  \left\langle \int_0 H_s \;\mathrm{d}M_s, \int_0 G_s \;\mathrm{d}M_s \right\rangle = \int_0^t (G_s H_s)\;\mathrm{d}\langle M, N\rangle_s
+$$
+
+In particular, we the first two moments of stochastic integrals become
+
+$$
+\begin{align*}
+  \mathbb{E}\left( \int_0^t H_s\;\mathrm{d}M_s \right) =& 0 \\
+  \mathbb{E}\left[\left( \int_0^t H_s\;\mathrm{d}M_s \right) \left( \int_0^t G_s \;\mathrm{d}N_s \right) \right] = \mathbb{E}\left( \int_0^t (G_s H_s)\;\mathrm{d}\langle M, N\rangle_s \right)
+\end{align*}
+$$
+
+<MathBox title='' boxType='theorem'>
+Let $M$ be a local martingale beginning at $0$ and define
+
+$$
+  L^2_{\mathrm{loc}} (M) := \Set{\text{progressively measurable }H | \int_0^t H_s^2 \;\mathrm{d}\langle M \rangle_s \stackrel{\text{a.s.}}{<} \infty,\; t\geq 0}
+$$
+
+For any $H\in L^2_{\mathrm{loc}} (M)$ there is a unique local martingale beginning at $0$, noted $H\cdot M$, such that for any local martingale $N$
+
+$$
+  \langle H\cdot M, N\rangle = H\cdot\langle M, N\rangle
+$$
+
+For any stopping time $\tau$
+
+$$
+  (\mathbf{1}_{(0,\tau]} H) \cdot M = (H\cdot M)^\tau = H\cdot M^\tau
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that
+
+$$
+  \tau_n = ìnf\Set{t \geq 0 | \int_0^t (1 + H_s^2)\;\mathrm{d}\langle M \rangle_s = n}
+$$
+
+Then $M^{\tau_n} \in H^2$ and $H\in L^2 (M^{\tau_n})$, so we can consider the stochastic integral $H\cdot M^{\tau_n}$ from the previous theorem. From the 3rd property, $(H\cdot M^{\tau_m})^{\tau_n} = H\cdot M^{\tau_n}$ for $m< n$. This coherence relation proves that there is a process, noted $H\cdot M$, such that $(H\cdot M)^{\tau_n} = H\cdot M^{\tau_n}$ for any $n\in\N$. Because $H\in L^2_{\mathrm{loc}}(M)$, then $\tau_n \xrightarrow{n\to\infty} \infty$. Hence, since $(H\cdot M)^{\tau_n}$ is a martingale, $H\cdot M$ is a local martingale.
+
+
+To prove $\langle H\cdot M, N\rangle = H\cdot\langle M, N\rangle$, take $N$ as a local martingale and $\tilde{\tau}_n = \inf\Set{t\geq 0 : |N_t| = n}$. Then if $\sigma_n = \tilde{\tau}_n \wedge \tau_n$, we get $N^{\sigma_n} \in H^2$, allowing us to write
+
+$$
+\begin{align*}
+  \langle H\cdot M, N \rangle^{\sigma_n} =& \langle (H\cdot M)^{\sigma_n}, N^{\sigma_n} \rangle \\
+  =& \langle (H\cdot M^{\tau_n})^{\sigma_n}, N^{\sigma_n}\rangle \\
+  =& \langle H\cdot M^{\tau_n} N^{\sigma_n} \\
+  =& H\cdot\langle M^{\tau_n}, N^{\sigma_n}\rangle \\
+  =& H\cdot\langle M, N\rangle^{\sigma_n} \\
+  =& (H\cdot\langle M, N\rangle)^{\sigma_n}
+\end{align*}
+$$
+
+We get the desired result because $\sigma_n \xrightarrow{n\to\infty} \infty$ almost surely.
+</details>
+</MathBox>
+
+To extend the notion of stochastic integral to semimartingales, we need to work with locally bounded processes. A progressively measurable process $H$ is locally bounded if almost surely $\sup_{[0,t]}|H_s| < \infty$ for any $t\geq 0$. Note that is $H$ is locally bounded and $M$ is a local martingale, then $H\in L^2_{\mathrm{loc}} (M)$. Moreover, if $A$ is a finite variation process, then for any $t\geq 0$ almost surely $\int_0^t |H_s|\;|\mathrm{d}A_s| < \infty$. As a consequence, for a semimartingale $X = X_0 + M + A$, and a locally bounded progressively measurable process $H$, the definition $H\cdot X = H\cdot M + H\cdot A$ makes sense.
+
+<MathBox title='' boxType='proposition'>
+The stochastic integral of a locally bounded progressively measurable process with respect to a semimartingale satisfies the following
+1. The map $(H,X)\mapsto H\cdot X$ is bilinear.
+2. If $G$ and $H$ are locally bounded, $G\cdot (H\cdot X) = (GH)\cdot X$
+3. If $\tau$ is a stopping time, $(\mathbf{1}_{(0,\tau]} H)\cdot X = (H\cdot X)^\tau = H\cdot X^\tau$
+4. If $X$ is a locale martingale, so is $H\cdot X$
+5. If $X$ is a finite variation process, so is $H\cdot X$
+6. If $H$ is a step process, $H_s = \sum_{k=0}^{p-1} H_k \mathbf{1}_{(t_k, t_{k+1}]} (s)$, then
+$$
+  (H\cdot X)_t = \sum_{k=0}^{p-1} H_k (X_{t_{k+1} \wedge t} - X_{t_k \wedge t})
+$$
+7. If $H$ is assumed to be left-continuous, then in the sense of convergence in probability
+$$
+  \int_0^t H_s\;\mathrm{d}X_s = \lim_{n\to\infty} \sum_{k=0}^{p_n - 1} H_{t_k^{(n)}} (X_{t_{k+1}^{(n)}} - X_{t_k^{(n)}})
+$$
+where the sequence of subdivisions $0 = t_0^{(n)} < \cdots < t_{p_n}^{(n)} = t$ has a step going to $0$.
+
+<details>
+<summary>Proof</summary>
+
+Properties **(1)-(6)** are easy consequences of previous analogue statements concerning local martingales and finite variation processes.
+
+**(7):** Suppose that $X$ is a local martingale and let $H^{(n)}$ be the process equal to $H_{t_k^{(n)}}$ on $(t_k^{(n)}, t_{k+1}^{(n)}]$ and $0$ otherwise, and
+
+$$
+  \tau_m = \inf\Set{t\geq 0 : |H_s| + \langle M\rangle_s \geq m}
+$$
+
+Then $M^{\tau_m}$ and $H^{(n)}$ are bounded on $[0,\tau_m]$, so the definition and properties of the stochastic integral in the $H^2 / L^2(M^{\tau_m})$ case allow to use the isometry property
+
+$$
+\begin{align*}
+  &\mathbb{E}\left(\left[(H^n \mathbf{1}_{[0,\tau_m]} \cdot M^{\tau_m})_t - (H\mathbf{1}_{[0,\tau_m]} \cdot M)_t \right]^2 \right) \\
+  =& \mathbb{E}\left( \int_0^{t\wedge \tau_m} (H_s^n - H_s)^2 \;\mathrm{d}\langle M \rangle_s \right)
+\end{align*}
+$$
+
+Since $H$ is left-continuous, this last term converges to $0$ as $n\to\infty$ by dominated convergence. Hence $(H^n \cdot M)_t^{\tau_m}$ converges in $L^2$ to $(H\cdot M)_t^{\tau_m}$. Because $\mathbb{P}(\tau_m > t) \xrightarrow{m\to\infty} 1$, we conclude that $(H^n \cdot M)_t$ converges in probability to $(H\cdot M)_t$.
+</details>
+</MathBox>
+
+## The Itô formula
