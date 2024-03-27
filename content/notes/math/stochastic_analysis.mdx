@@ -1012,7 +1012,7 @@ Note that the processes $M$ and $\langle M \rangle$ have the same constance inte
 
 To prove that $B$ is continuous, not that this is obvious where $t$ is continuous, and if $T$ is not continuous at $t$, this follows from the above coincidence of constance intervals. By Lévy's criterion, we therefore just need to prove that $B$ and $B_t^2 - t$ are local martingales with respect to the filtration $(\mathcal{G}_t)_{t\geq 0}$.
 
-Let $X$ denote $M$ or $(M_t^2 - t)_{t\geq 0}$. Let $S_n = \inf\Set{t\geq 0 : |X_t| \geq n}$. Then $\tilde{S} = \langle M \rangle_{S_n}$ is a $(\mathcal{G}_t)_{\t geq 0}$-stopping time. As $X^{S_n}$ is a bounded $(\mathcal{F}_t)_{t\geq 0}$ martingale, the stopping time theorem yields $X_{T_t}^{S_n} = \mathbb{E}(X_\infty^{S_n} | \mathcal{F}_{T_t}). This means that $X_{\tau_t \wedge \tilde{S}_n}$ is a $(\mathcal{G}_t)_{t\geq 0}$-martingale, and since $\langle M \rangle_{S_n}\to\infty$ we get the expected result.
+Let $X$ denote $M$ or $(M_t^2 - t)_{t\geq 0}$. Let $S_n = \inf\Set{t\geq 0 : |X_t| \geq n}$. Then $\tilde{S} = \langle M \rangle_{S_n}$ is a $(\mathcal{G}_t)_{\t geq 0}$-stopping time. As $X^{S_n}$ is a bounded $(\mathcal{F}_t)_{t\geq 0}$ martingale, the stopping time theorem yields $X_{T_t}^{S_n} = \mathbb{E}(X_\infty^{S_n} | \mathcal{F}_{T_t}). This means that $X_{\tau_t \wedge \tilde{S}_n}$ is a $(\mathcal{G}_t)_{t\geq 0}$-martingale, and since $\langle M \rangle_{S_n}\xrightarrow{n\to\infty}\infty$ we get the expected result.
 </details>
 </MathBox>
 
@@ -1027,3 +1027,117 @@ Let $M^{(1)},\dots,M^{(d)}$ be continuous local martingales beginning at $0$ suc
 </MathBox>
 
 ## Transcience, recurrence, harmonicity
+
+<MathBox title='' boxType='theorem'>
+A Brownian motion $B$ of dimension $d\geq 2$ has polar points. Thus, for any $x \neq B_0$
+
+$$
+  \mathbb{P}(\exists t \geq 0 | B_t = x) = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+By projection on a subspace of dimension $2$, it suffices to prove the result for $d = 0$. Additionally, by scaling and rotation-invariance of Brownian motion, we can consider that $x = (-1, 0)$, and that the bi-dimensional Brownian motion $(X,Y)$ begins at $(0,0)$. Let $M_t = e^{X_t} \cos(Y_t)$ and $N_t = e^{X_t} \sin(Y_t)$. Applying Itô's formula yields
+
+$$
+\begin{align*}
+  \mathrm{d}M_t =& M_t \mathrm{d}X_t - N_t \mathrm{d}Y_t \\
+  \mathrm{d}N_t =& N_t \mathrm{d}X_y + M_t \mathrm{d}Y_t
+\end{align*}
+$$
+
+showing that $M$ and $N$ are local martingales. Moreover, $\langle M, N \rangle = 0$ and
+
+$$
+  \langle N \rangle_t = \langle M \rangle_t = \int_0^t e^{2X_t} \;\mathrm{d}t
+$$
+
+The recurrence of the Brownian motion $X$ easily implies that these brackets go to $\infty$ almost surely. By the Debins-Schwarz theorem we conclude that there are two Brownian motions $B^1$ and $B^2$ such that
+
+$$
+\begin{align*}
+  M_t - 1 =& B_{\langle M \rangle_t}^1 \\
+  N_t =& B_{\langle M \rangle_t}^2
+\end{align*}
+$$
+
+Since $\langle M \rangle$ is continuous with almost sure range $[0,\infty)$, then by writing $B = (B^1, B^2)$ it follows that
+
+$$
+ \mathbb{P}[\exists t \geq 0 | B_t = (-1,0)] = \mathbb{P}[\exists t \geq 0 | (M_t, N_t) = (0,0)]
+$$
+
+Because $|(M_t, N_t)| = e^{X_t}$ and almost surely $X_t$ is finite for any $t\geq 0$, this last event has probability $0$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $B$ be a Brownian motion in dimension $d = 2$, and $O\subset\R^2$ be open. Then
+
+$$
+  \mathbb{P}(\exist t \geq 0 | B_t \in O) = 1
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assuming $B_0 = a \neq 0$, we want to prove that for any $r > 0$ almost surely $B$ is in $\mathcal{B}(r)$ for some $t$.
+
+Define $X_t = |B_t|^2$. We will first show that the process $\ln(X_t)$ is a local martingale. Note that logarithm diverges at $0$, albeit as a polar point. Writing $S_n = \inf\Set{t\geq 0 | X_t < \frac{1}{n}}$, Itô's formula gives
+
+$$
+  \ln(X_{t\wedge S_n}) = \ln(X_0) + 2\int_0^{t\wedge S_n} \frac{B_s^1\;\mathrm{d}B_s^1 + B_s^2\;\mathrm{d}B_s^2}{X_s}
+$$
+
+By the previous theorem, $S_n \xrightarrow{n\to\infty} \infty$, so the formula above holds when replacing $t\wedge S_n$. For a given function $f\in C^2(\R^2)$, Itô's formula gives
+
+$$
+  \mathrm{d}f(B_t^1, B_t^2) = (\partial_1 f)\;\mathrm{d}B_t^2 + (\partial_2 f)\;\mathrm{d}B_t^2 + \frac{1}{2}(\Delta)\;\mathrm{d}t
+$$
+
+For $f(x,y) = \ln(x^2 + y^2)$ we get $\Delta f = 0$, so $\ln(X_t)$ is a local martingale. 
+
+Let $0 < r |a| < R$ and $T_x = \inf(t\geq 0 : |B_t| = x}$. The stopping time theorem applied to $\log(X_{t\wedge T_R \wedge T_r})$ (is a bounded, hence uniformly integral martingale) yields
+
+$$
+  \mathbb{E}(\ln(X_{T_R \wedge T_r})) = \ln|a|
+$$
+
+Because the one-dimensional Brownian motion is recurrent, $T_R < \infty$ almost surely, so $\mathbb{P}(T_r < T_R) + \mathbb{P}(T_R < T_r) = 1$ and
+
+$$
+  \ln(r)\mathbb{P}(T_r < T_R) + \ln(R)\mathbb{P}(T_R < T_r) = \ln|a|
+$$
+
+This implies that
+
+$$
+  \mathbb{P}(T_r < T_R) = \frac{\ln(R) - \ln|a|}{\ln(R) - \ln(r)}
+$$
+
+so when $R\to\infty$ we get by monotone convergence $\mathbb{P}(T_r < \infty) = 1$.
+
+</details>
+</MathBox>
+
+Note that the previous theorem can be strenghtened to prove that there are arbitrary large $t$ such that $B_t \in O$. Indeed, for any $n\geq 0$
+
+$$
+  \mathbb{P}(\exists t \geq n | B_t \in 0) = \mathbb{E}(\mathbb{E}(\mathbf{1}_{\exists t \geq n | B_t \in O} | \mathcal{F}_n))
+$$
+
+and $\mathbb{E}(\mathbf{1}_{\exists t \geq n | B_t \in O} | \mathcal{F}_n)$ is constantly 1 since, from the Markov property, this is also $\mathbb{P}(\exists t\geq 0 | \tilde{B}_t \in O_n)$ where $O_n = O + B_n$ and $\tilde{B}$ is a Brownian motion independent of $B_n$.
+
+<MathBox title='' boxType='theorem'>
+Let $B$ be a Brownian motion of dimension $d = 3$. If $K\subset\R^d$ is compact, simply connected and $B_0 \neq K$, then
+
+$$
+  \mathbb{P}(\exists t\geq 0 | B_t \in K) < 1
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
