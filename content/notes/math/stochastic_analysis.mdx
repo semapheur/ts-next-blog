@@ -1084,19 +1084,21 @@ $$
 
 Assuming $B_0 = a \neq 0$, we want to prove that for any $r > 0$ almost surely $B$ is in $\mathcal{B}(r)$ for some $t$.
 
-Define $X_t = |B_t|^2$. We will first show that the process $\ln(X_t)$ is a local martingale. Note that logarithm diverges at $0$, albeit as a polar point. Writing $S_n = \inf\Set{t\geq 0 | X_t < \frac{1}{n}}$, Itô's formula gives
-
-$$
-  \ln(X_{t\wedge S_n}) = \ln(X_0) + 2\int_0^{t\wedge S_n} \frac{B_s^1\;\mathrm{d}B_s^1 + B_s^2\;\mathrm{d}B_s^2}{X_s}
-$$
-
-By the previous theorem, $S_n \xrightarrow{n\to\infty} \infty$, so the formula above holds when replacing $t\wedge S_n$. For a given function $f\in C^2(\R^2)$, Itô's formula gives
+Define $X_t = |B_t|^2$. We will first show that the process $\ln(X_t)$ is a local martingale. For a given function $f\in C^2(\R^2)$, Itô's formula gives
 
 $$
   \mathrm{d}f(B_t^1, B_t^2) = (\partial_1 f)\;\mathrm{d}B_t^2 + (\partial_2 f)\;\mathrm{d}B_t^2 + \frac{1}{2}(\Delta)\;\mathrm{d}t
 $$
 
 For $f(x,y) = \ln(x^2 + y^2)$ we get $\Delta f = 0$, so $\ln(X_t)$ is a local martingale. 
+
+On a sidenote, $f\notin C^2(\R^2)$ because logarithm diverges at $0$. Thus, we first need to localize $\ln(X_t)$ outside of arbitrarily small neighbourhoods of the origin and then use the polarity of $0$. Writing $S_n = \inf\Set{t\geq 0 | X_t < \frac{1}{n}}$, Itô's formula gives
+
+$$
+  \ln(X_{t\wedge S_n}) = \ln(X_0) + 2\int_0^{t\wedge S_n} \frac{B_s^1\;\mathrm{d}B_s^1 + B_s^2\;\mathrm{d}B_s^2}{X_s}
+$$
+
+By the previous theorem, $S_n \xrightarrow{n\to\infty} \infty$, so the formula above holds when replacing $t\wedge S_n$.
 
 Let $0 < r |a| < R$ and $T_x = \inf(t\geq 0 : |B_t| = x}$. The stopping time theorem applied to $\log(X_{t\wedge T_R \wedge T_r})$ (is a bounded, hence uniformly integral martingale) yields
 
@@ -1130,7 +1132,7 @@ $$
 and $\mathbb{E}(\mathbf{1}_{\exists t \geq n | B_t \in O} | \mathcal{F}_n)$ is constantly 1 since, from the Markov property, this is also $\mathbb{P}(\exists t\geq 0 | \tilde{B}_t \in O_n)$ where $O_n = O + B_n$ and $\tilde{B}$ is a Brownian motion independent of $B_n$.
 
 <MathBox title='' boxType='theorem'>
-Let $B$ be a Brownian motion of dimension $d = 3$. If $K\subset\R^d$ is compact, simply connected and $B_0 \neq K$, then
+Let $B$ be a Brownian motion of dimension $d = 3$. If $K\subset\R^d$ is compact, simply connected and $B_0 \notin K$, then
 
 $$
   \mathbb{P}(\exists t\geq 0 | B_t \in K) < 1
@@ -1139,5 +1141,48 @@ $$
 <details>
 <summary>Proof</summary>
 
+Because $K$ is simply connected and bounded, and $B_0 \notin K$, there is a path $\gamma = (x(t))_{t\in[0,1]}$ such that $x(0) = B_0$ and $x(1)$ is strictly separate from $K$ by a hyperplane $H$. Since $K$ is closed, there is some $\varepsilon > 0$ such that $\gamma_\varepsilon = \Set{x\in\R^d | \mathrm{dist}(x,\gamma) \leq\varepsilon}$ is disjoint from $K$. By the previous corollary, we get
+
+$$
+  \mathbb{P}(\forall t\in[0,1], B_t \in \gamma_\varepsilon) > 0
+$$
+
+By considering $(B_{t+1} - B_1)_{t\geq 0}$ instead of $B$ and embedding $K$ in a sphere not intersecting $H$, we just need to prove that if $B_0 > r$, then
+
+$$
+  \mathbb{P}(\exists t \geq 0 : |B_t| \leq r) < 1
+$$
+
+Note that the process $|B_t|^{2-d}$ is a local martingale. For a function $f\in C^2(\R^d)$, Itô's formula gives
+
+$$
+  \mathrm{d}f(B_t^1,\dots, B_t^d) = \sum_{k=1}^d (\partial_k f)\mathrm{d}B_t^k + \frac{1}{2}(\Delta f)\;\mathrm{d}t
+$$
+
+For $f(x_1,\dots,x_d) = (x_1^2 +\cdots+ x_d^2)^{1-\frac{d}{2}}$, we get $\Delta f = 0$, so $|B_t|^{2-d}$ is a local martingale.
+
+Let $0 < r < |a| < R$ and $T_x = \inf\Set{t\geq 0 : |B_t| = x}$. Applying the stopping theorem to $|X_{t\wedge T_R \wedge T_r}|^{2-d}$ ( this a bounded, hence uniformly integrable martingale) yields
+
+$$
+  \mathbb{E}(|B_{T_R \wedge T_r}|^{2-d}) = |a|^{2-d}
+$$
+
+Since the one-dimensional Brownian motion is recurrent, $T_R < \infty$ almost surely, so $\mathbb{P}(T_r < T_R) + \mathbb{P}(T_R < T_r) = 1$ and
+
+$$
+  r^{2-d}\mathbb{P}(T_r < T_R) + R^{2-d}\mathbb{P}(T_R < T_r) = |a|^{2-d}
+$$
+
+This implies that
+
+$$
+   \mathbb{P}(T_r < T_R) = \frac{R^{2-d} - |a|^{2-d}}{R^{2-d} - r^{2-d}}
+$$
+
+so when $R\to\infty$ we get by monotone convergence
+
+$$
+  \mathbb{P}(T_r < \infty) = \left(\frac{r}{|a|} \right)^{d-2} < 1
+$$
 </details>
 </MathBox>
