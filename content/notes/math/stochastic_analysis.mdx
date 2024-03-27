@@ -1038,7 +1038,7 @@ $$
 <details>
 <summary>Proof</summary>
 
-By projection on a subspace of dimension $2$, it suffices to prove the result for $d = 0$. Additionally, by scaling and rotation-invariance of Brownian motion, we can consider that $x = (-1, 0)$, and that the bi-dimensional Brownian motion $(X,Y)$ begins at $(0,0)$. Let $M_t = e^{X_t} \cos(Y_t)$ and $N_t = e^{X_t} \sin(Y_t)$. Applying Itô's formula yields
+By a projection argument, it suffices to prove the result for $d = 2$. Additionally, by scaling and rotation-invariance of Brownian motion, we can consider that $x = (-1, 0)$, and that the bi-dimensional Brownian motion $(X,Y)$ begins at $(0,0)$. Let $M_t = e^{X_t} \cos(Y_t)$ and $N_t = e^{X_t} \sin(Y_t)$. Applying Itô's formula yields
 
 $$
 \begin{align*}
@@ -1087,10 +1087,10 @@ Assuming $B_0 = a \neq 0$, we want to prove that for any $r > 0$ almost surely $
 Define $X_t = |B_t|^2$. We will first show that the process $\ln(X_t)$ is a local martingale. For a given function $f\in C^2(\R^2)$, Itô's formula gives
 
 $$
-  \mathrm{d}f(B_t^1, B_t^2) = (\partial_1 f)\;\mathrm{d}B_t^2 + (\partial_2 f)\;\mathrm{d}B_t^2 + \frac{1}{2}(\Delta)\;\mathrm{d}t
+  \mathrm{d}f(B_t^1, B_t^2) = (\partial_1 f)\;\mathrm{d}B_t^2 + (\partial_2 f)\;\mathrm{d}B_t^2 + \frac{1}{2}(\nabla^2 f)\;\mathrm{d}t
 $$
 
-For $f(x,y) = \ln(x^2 + y^2)$ we get $\Delta f = 0$, so $\ln(X_t)$ is a local martingale. 
+For $f(x,y) = \ln(x^2 + y^2)$ we get $\nabla^2 f = 0$, so $\ln(X_t)$ is a local martingale. 
 
 On a sidenote, $f\notin C^2(\R^2)$ because logarithm diverges at $0$. Thus, we first need to localize $\ln(X_t)$ outside of arbitrarily small neighbourhoods of the origin and then use the polarity of $0$. Writing $S_n = \inf\Set{t\geq 0 | X_t < \frac{1}{n}}$, Itô's formula gives
 
@@ -1156,10 +1156,10 @@ $$
 Note that the process $|B_t|^{2-d}$ is a local martingale. For a function $f\in C^2(\R^d)$, Itô's formula gives
 
 $$
-  \mathrm{d}f(B_t^1,\dots, B_t^d) = \sum_{k=1}^d (\partial_k f)\mathrm{d}B_t^k + \frac{1}{2}(\Delta f)\;\mathrm{d}t
+  \mathrm{d}f(B_t^1,\dots, B_t^d) = \sum_{k=1}^d (\partial_k f)\mathrm{d}B_t^k + \frac{1}{2}(\nabla^2 f)\;\mathrm{d}t
 $$
 
-For $f(x_1,\dots,x_d) = (x_1^2 +\cdots+ x_d^2)^{1-\frac{d}{2}}$, we get $\Delta f = 0$, so $|B_t|^{2-d}$ is a local martingale.
+For $f(x_1,\dots,x_d) = (x_1^2 +\cdots+ x_d^2)^{1-\frac{d}{2}}$, we get $\nabla^2 f = 0$, so $|B_t|^{2-d}$ is a local martingale.
 
 Let $0 < r < |a| < R$ and $T_x = \inf\Set{t\geq 0 : |B_t| = x}$. Applying the stopping theorem to $|X_{t\wedge T_R \wedge T_r}|^{2-d}$ ( this a bounded, hence uniformly integrable martingale) yields
 
@@ -1184,5 +1184,180 @@ so when $R\to\infty$ we get by monotone convergence
 $$
   \mathbb{P}(T_r < \infty) = \left(\frac{r}{|a|} \right)^{d-2} < 1
 $$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $B$ a Brownian motion in dimension $d\geq 3$. Then almost surely
+
+$$
+  \lim_{t\to\infty} |B_t| = \infty
+$$
+
+<details>
+<summary>Proof</summary>
+
+By projection a argument, it suffices to prove the result for $d = 3$. With appropriate shifting, we may assume $B_0 = (1,0,0)$. The proof of the previous theorem involved the fact that $(\frac{1}{|B_t|})_{t\geq 0}$ is a local martingale. Because it is positive, it is also a supermartingale and converges almost surely to some random variable $X$. We want to prove that $X = 0$ almost surely and because $X \geq 0$ we just need to prove $\mathbb{E}(X) = 0$. By Fatou's lemma
+
+$$
+  \mathbb{E}(X) \leq\lim_{t\to\infty} \mathbb{E}\left(\frac{1}{|B_t|}\right)
+$$
+
+This limit is $0$, because expectation is uniformly bounded and
+
+$$
+  \mathbb{E}\left(\frac{1}{|B_t|}\right) = \frac{1}{t}\mathbb{E}\left[\left(\left[\mathcal{N}_1 - \frac{1}{\sqrt{2}} \right]^2 + \mathcal{N}_2^2 + \mathcal{N}_3^2 \right)^{-1/2}\right]
+$$
+
+where $\mathcal{N_1},\mathcal{N_2},\mathcal{N}_3$ are independent standard normal variables. Hence $\frac{1}{|x|}$ is integrable around $0$ in dimension $d \geq 0$. 
+</details>
+</MathBox>
+
+<MathBox title='Properties of harmonic functions' boxType='proposition'>
+Let $f:U\to\R$ be a $C^2$-function, where $U$ is open and connected. Then the following are equivalent.
+1. The function $f$ is harmonic, i.e. $\nabla^2 f = 0$ on $U$.
+2. For any $x\in\R^d$ and any $r > 0$ such that the ball $\mathcal{B}(x,r)$ is included in $U$,
+$$
+  f(x) = \int f(y)\;\mathrm{d}\sigma_r (y)
+$$
+
+where $\sigma_r$ is the uniform measure, normalized to $1$, on $\partial\mathcal{B}(x,r)$.
+
+<details>
+<summary>Proof</summary>
+
+Let $B$ be a Brownian motion beginning at $x$ and define $\tau_r = \inf\Set{t\geq 0 : |B_t - x| = r}$. The Itô formula yields
+
+$$
+  f(B_{\tau_r}) = f(x) + \int_0^{\tau_r} \nabla f(B_s) \cdot \mathrm{d}B_s + \frac{1}{2}\int_0^\tau_r \nabla^2 f (B_s)\;\mathrm{d}s
+$$
+
+Assuming **(1)**, we get
+
+$$
+  \mathbb{E}(f(B_{\tau_r})) = f(x) + \mathbb{E}\left(\int_0^{\tau_r} \nabla f(B_s) \cdot \mathrm{d}B_s \right)
+$$
+
+Because the Brownian motion is invariant by rotations, the left hand side is $\int f(y)\;\mathrm{d}\sigma_r (y)$. Moreover, since $|\nabla f|$ is uniformly bounded on the ball $\mathcal{B}(x, r)$ with center $x$ and radius $r$, it follows that $X =\left(\int_0^{t\wedge\tau_r} \nabla f(B_s)\cdot \mathrm{d}B_s \right)_{t\geq 0}$ is a martingale with the expectation of its bracket uniformly bounded by
+
+$$
+  \sup_{\mathcal{B}(x,r)} |\nabla f|^2 \mathbb{E}(\tau_r) < \infty
+$$
+
+Thus, $X$ is uniformly integrable, and in particular the stopping time theorem at time $\tau_r$ implies that
+
+$$
+  \mathbb{E}\left( \int_0^{\tau_r} \nabla f(B_s)\cdot\mathrm{d}B_s \right) = 0
+$$
+
+proving **(2)**.
+
+Assume the mean value condition **(2)**, and suppose that $\nabla^2 f(x) \neq 0$ at some point $x\in U$. Up to considering $-f$, assume $\nabla^2 f(x) > 0$ for example. By continuity, there is $r > 0$ such that $\nabla d > 0$ on $\mathbb{B}(x, r)\subset U$. From the previous discussion, the Itô formula and the uniform integrability of the stochastic integral yield
+
+$$
+  \mathbb{E}(f(B_{\tau_r})) = f(x) + \frac{1}{2}\mathbb{E}\left(\int_0^{\tau_r} \nabla^2 f(B_s) \;\mathrm{d}s \right)
+$$
+
+Rotational invariance of Brownian motion combined with **(1)** yield
+
+$$
+  \mathbb{E}\left( \int_0^{\tau_r} \nabla^2 f (B_s)\;\mathrm{d}s \right) = 0
+$$
+
+Because $\nabla^2 f$ is strictly positive along this trajectory this is only possible if $\tau_r = 0$ almost surely, which is not the case. Hence $\nabla^2 f(x) = 0$ necessarily.
+</details>
+</MathBox>
+
+Let $U\subset\R^d$ be a connected open subset with boundary $\partial U$, and let $\varphi:\partial U\to\R$ be a continuous function. The Dirichlet problem seeks to find a twice continuously differentiable function $u:U\to\R$ satisfying the partial differential equation
+
+$$
+\begin{align*}
+  \nabla^2 u(x) =& 0,\; x\in U \\
+  u(x) = \varphi(x),\; x\in\partial U
+\end{align*}
+$$
+
+A point $x\in\partial U$ satisfies the Poincaré cone condition (or is regular) if there is some $\delta > 0$ and a cone $C$ with vertex $x$ and strictly positive angle such that
+
+$$
+  C \cap \mathcal{B}(x,\delta) \subset U^c
+$$
+
+where $\mathcal{B}(x,\delta)$ is the ball with center $x$ and radius $\delta$, and $U^c$ is the complement of $U$ in $\R^d$.
+
+<MathBox title='' boxType='theorem'>
+Consider the Dirichlet problem as described above.
+1. If there is a solution $u$ to the problem, it coincides with
+$$
+  v(x) := \mathbb{E}(\varphi(B_\tau) | B_0 = x)
+$$
+
+where $B$ is a $d$-dimensional Brownian motion and $\tau = \inf\Set{t\geq 0 | B_t \in\partial U}$. In particular, there is at most one solution.
+2. The above $v$ is harmonic and continuous at any regular point of $\partial U$. In particular, if $\partial U$ is everywhere regular, $v$ is the unique solution of the Dirichlet problem.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By Itô's formula
+
+$$
+  u(B_\tau) = u(x) + \int_0^\tau \nabla u(B_s)\cdot\mathrm{d}B_s + \frac{1}{2}\int_0^\tau \nabla^2 u(B_s)\;\mathrm{d}s
+$$
+
+where $B$ is a Brownian motion beginning at $x$. By the same argument as in the previous proposition, the expectation of the above stochastic integral is $0$ because $\mathbb{E}(\tau) < \infty$ and $|\nabla u|$ is bounded. Thus
+
+$$
+  \mathbb{E}(u(B_\tau)) = u(x)
+$$
+
+However, the left hand side is also $\mathbb{E}(\varphi(B_\tau)|B_0 = x)$.
+
+**(2):** We first prove that $v$ is harmonic. Take a ball $\mathcal{B}(x,\delta)\subset U$ and $\tilde{\tau} = \inf\Set{t\geq 0 | B_t \notin \mathcal{B}(x,\delta)}$. Then $\mathcal{F}_{\tilde{\tau}} \subset \mathcal{F}_\tau$ because $\tilde{\tau}\leq\tau$, so using the strong Markov property for the Brownian motion
+
+$$
+\begin{align*}
+  v(x) =& \mathbb{E}_x (\varphi(B_\tau)) = \mathbb{E}_x (\mathbb{E}_x (\varphi(B_\tau)|\mathcal{F}_{\tilde{\tau}})) \\
+  =& \mathbb{E}_x (\mathbb{E}_{B_{\tilde{\tau}}}(\varphi(B_\tau))) \\
+  =& \mathbb{E}_x (v(B_{\tilde{\tau}})) \\
+  =& \int v(y) \sigma_r (\mathrm{d}y)
+\end{align*}
+$$
+
+where we used the invariance of $B$ by rotation around $x$ is the last equality. Here $\sigma_r$ is the uniform measure, normalized to $1$, on the sphere with radius $r$ and center $x$. It follows from properties of harmonic functions that $v$ is harmonic in $U$.
+
+We still need to prove that $v$ is continuous at regular points. Let $x\in\partial U$ be a regular point and take $\delta > 0$, a cone $C$ with vertex $x$ and strictly positive angle such that $C \cap \mathcal{B}(x,\delta) \subset U^c$.
+
+Take a given $\varepsilon > 0$. Because $\varphi$ is continuous on $\partial U$, we can chose the above $\delta$ such that
+
+$$
+  \sup_{y\in\partial U \cap \mathcal{B}(x,\delta)} |\varphi(y) - \varphi(x)| < \varepsilon
+$$
+
+For a Brownian motion $B$, assume that there is some $0 < \theta < \delta$ such that if $|z-x| < \theta$ for $z\in U$, then
+
+$$
+  \mathbb{P}_z (\tau_C \leq \tau_\delta) > 1 - \varepsilon
+$$
+
+which is the probability for a Brownian motion starting at $z$ and where $\tau_C$ is the hitting time of $C\cap \mathcal{B}(x,\delta)$ and $\tau_\delta$ is the hitting time of $\partial\mathcal{B}(x,\delta)$. Then this would imply that for $|z-x| < \theta$ and $z\in U$
+
+$$
+\begin{align*}
+  |v(z) - v(x)| =& |\mathbb{E}_z (\varphi(B_\tau) - \varphi(x))| \\
+  \leq& 2\lVert\varphi\rVert_\infty \mathbb{P}_z (\tau_\delta < \tau_C) + \varepsilon \\
+  \leq& \varepsilon(2\lVert \varphi \rVert_\infty + 1)
+\end{align*}
+$$
+
+Thus, continuity will follow if we can prove $\mathbb{P}_z (\tau_C \leq \tau_\delta) > 1 - \varepsilon$. By rotation invariance we can assume that $B_1$ corresponds to the axis of the cone, with angle $\alpha$. Note that
+
+$$
+\begin{align*}
+  \Set{\tau_C < \tau_\delta} \subset \bigcup_{t > 0} \left( \Set{B_1 (t) > \frac{1}{\tan\alpha}(B_2 (t)^2 +\cdots+ B_d(t)^2)^{1/2}} \right. \\
+  & \left. \cap \bigcap_{k=1}^d \Set{\sup_{[0,t]} |B_k| < c} \right)
+\end{align*}
+$$
+
+for some absolute constant $c > 0$ depending only on $\delta$ and $\alpha$. When $t\to 0$, these last $d$ events have a probability of converging to $1$. Concerning the first event, the probability that it occurs for some arbitrarily small $t > 0$ converges to $1$ as well; this is an easy consequence of the iterated logarithm law where $B_1 (t)$ gets as big as $\sqrt{t \ln(-\ln t)}$ almost surely, and the independence of $B_1$ from the other $(B_i)_{i=2}^d$.
 </details>
 </MathBox>
