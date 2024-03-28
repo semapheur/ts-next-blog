@@ -1590,3 +1590,142 @@ $$
 where $\Delta$ is an almost surely finite random variable independent of $Y$, and with law depending on $\delta$ but not on $t$. It follows that $\mathbb{P}(\mathcal{B}) \xrightarrow{\lambda\to\infty} 1$ since it is independent of $t$.
 </details>
 </MathBox>
+
+## The Girsanov theorem
+
+<MathBox title='' boxType='proposition'>
+Assume that $\mathbb{Q}$ is absolutely continuous relative to $\mathbb{P}$, i.e. $\mathbb{Q} << \mathbb{P}$, on $\mathcal{F}_\infty$. For $t\in[0,\infty]$ define the process
+
+$$
+  D_t = \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F_t}}
+$$
+
+1. The process $D$ is a uniformly integrable martingale.
+2. If $D$ is assumed right-continuous, then for any stopping time $T$
+$$
+  D_T = \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_T}
+$$
+3. If $D$ is assumed right-continuous and $\mathbb{Q}\sim\mathbb{P}$ on $\mathcal{F}$ then $D_t > 0$ for any $t\geq 0$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Note that for any $t > 0$ and $A\in\mathcal{F}_t$
+
+$$
+\begin{align*}
+  \mathbb{E}_{\mathbb{P}} (\mathbf{1}_A D_t) =& \mathbb{E}_{\mathbb{Q}}(\mathbf{1}_A) = \mathbb{E}_{\mathbb{P}}(\mathbf{1}_A D) \\
+  =& \mathbb{E}_{\mathbb{P}}(\mathbf{1}_A \mathbb{E}(D|\mathcal{F_t}))
+\end{align*}  
+$$
+
+where $D = \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}}$. By uniqueness of the Radon-Nikodym derivative, this implies $D_t = \mathbb{E}(D|\mathcal{F}_t)$ almost surely, concluding the proof as $D\in L^1$.
+
+**(2):** By the stopping time theorem $D_T = \mathbb{E}(D|\mathcal{F}_T)$. It follows that for any $A\in\mathcal{F}_T$
+
+$$
+\begin{align*}
+  \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_A \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{Q}}\right|_{\mathcal{F}_T} \right) =& \mathbb{E}_{\mathbb{Q}}(\mathbf{1}_A) = \mathbb{E}_{\mathbb{P}}(\mathbf{1}_A D) \\
+  =& \mathbb{E}_\mathbb{P} (\mathbf{1}_A D_T)
+\end{align*}
+$$
+
+Hence $D_T = \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_T}$.
+
+**(3):** This follows from **(2)**. For $T = \inf\Set{t\geq 0 | D_t = 0}$, by right-continuity $D_T = 0$ on $\Set{T < \infty}$, so
+
+$$
+  \mathbb{Q}(T < \infty) = \mathbb{E}_{\mathbb{P}}(\mathbf{1}_{T < \infty} D_T) = 0
+$$
+
+Because $\mathbb{Q} >> \mathbb{P}$ this implies that $\mathbb{P}(T < \infty) = 0$ as expected
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $D$ be a strictly positive continuous local martingale. Then there exists a unique continuous local martingale $L$ such that
+
+$$
+  D_t = \mathcal{E}(L)_t := \exp(L_t - \frac{1}{2}\langle L \rangle_t)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For uniqueness, note that if $L$ and $\tilde{L}$ are solutions, then
+
+$$
+  L - \tilde{L} = \frac{1}{2}(\langle L \rangle - \langle\tilde{L}\rangle)
+$$
+
+is a finite variation process and also a local martingale, so it is indistinguishable from $0$. For the existence, the choice
+
+$$
+  L_t = \ln(D_0) + \int_0^t \frac{\mathrm{d}D_s}{D_s}
+$$
+
+makes sense since $D$ is strictly positive and, by Itô's formula
+
+$$
+\begin{align*}
+  \ln(D_t) =& \ln(D_0) + \int_0^t \frac{\mathrm{d}D_s}{D_s} - \frac{1}{2}\int_0^t \frac{\mathrm{d}\langle D \rangle_s}{D_s^2} \\
+  =& L_t - \frac{1}{2}\langle L \rangle_t
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Girsanov's theorem" boxType='theorem'>
+Let $\mathbb{Q}\sim\mathbb{P}$ on $\mathcal{F}$. Assume that the process defined by
+
+$$
+  D_t = \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_t}
+$$
+
+is continuous, and write it as $D = \mathcal{E}(L)$, where $L$ is a local martingale. Then if $M$ is a $\mathbb{P}$-local martingale, the process
+
+$$
+  \tilde{M} := M - \langle M, L \rangle
+$$
+
+is a $\mathbb{Q}$-local martingale.
+
+<details>
+<summary>Proof</summary>
+
+We first prove that if a process $XD$ is a $\mathbb{P}$-local martingale, then $X$ is a $\mathbb{Q}$-local martingale. For this, we show that for any stopping time $T$ and adapted continuous process $X$ such taht $(XD)^T$ is a $\mathbb{P}$-martingale, then $X^T$ is a $\mathbb{Q}$-martingale.
+
+First the integrability condition is satisfied, from the previous proposition
+
+$$
+  \mathbb{E}_\mathbb{Q}(|X_t^T|) = \mathbb{E}_\mathbb{P} (|X_t^T| |D_t^T|) < \infty
+$$
+
+because $(XD)^T$ is a $\mathbb{P}$-martingale.
+
+For $s < t$ and $A\in\mathcal{F}_s$, we get
+$$
+\begin{align*}
+  \mathbb{E}_{\mathbb{Q}} (\mathbf{1}_A X_t^T) =& \mathbb{E}_{\mathbb{Q}}(\mathbf{1}_{A \cap \Set{T\leq s}} X_t^T) + \mathbb{E}_{\mathbb{Q}} (\mathbf{1}_{A \cap \Set{T > s}} X_t^T) \\
+  =& \mathbb{E}_{\mathbb{P}}(\mathbf{1}_{A\cap \Set{T\leq s}} X_t^T D_{t \wedge T}) + \mathbb{E}_{\mathbb{P}} (\mathbf{1}_{A\cap\Set{T > s}} X_t^T D_{t\wedge T}) \\
+  =& \mathbb{E}_{\mathbb{P}} (\mathbf{1}_{A\cap\Set{T\leq s}} X_s^T D_{t\wedge T}) + \mathbb{E}_{\mathbb{P}} (\mathbf{1}_{A \cap\Set{T > s}} X_s^T D_{s\wedge T}) \\
+  =& \mathbb{E}_{\mathbb{Q}} (\mathbf{1}_{A\cap\Set{T\leq s}}X_s^T) + \mathbb{E}_{\mathbb{Q}} (\mathbf{1}_{A\cap\Set{T > s}}X_s^T) \\
+  =& \mathbb{E}_{\mathbb{Q}} (\mathbf{1}_A X_s^T)
+\end{align*}
+$$
+
+Hence $X_s^T = \mathbb{E}_{\mathbb{Q}} (X_t^T | \mathcal{F}_s)$.
+
+Following the previous argument, if $\tilde{M}D$ is a $\mathbb{P}$-local martingale, then it is enough to prove that $\tilde{M}$ is a $\mathbb{Q}$-local martingale. Itô's formula yields
+
+$$
+\begin{align*}
+  \mathrm{d}((M - \langle M, L \rangle)D)_t =& (M - \langle M, L \rangle)_t \;\mathrm{d}D_t + (\mathrm{d}M_t + \mathrm{d}\langle M, L \rangle_t)D_t + \mathrm{d}\langle M, D \rangle_t \\
+  =& (M - \langle M, L \rangle)_t \;\mathrm{d}D_t + (\mathrm{d}M_t + \mathrm{d}\langle M, L \rangle_t)D_t + D_t \;\mathrm{d}\langle M, L \rangle_t \\
+  =& (M - \langle M, L \rangle)_t \;\mathrm{d}D_t + D_t \;\mathrm{d}M_t
+\end{align*}
+$$
+
+where in the second equality we have used the fact that $\mathrm{d}D_t = D_t \;\mathrm{d}L_t$. Thus, $\tilde{M}D$ is a stochastic integral with respec to the $\mathbb{P}$-local martingales $D$ and $M$, so it is a $\mathbb{P}$-local martingale.
+</details>
+</MathBox>
