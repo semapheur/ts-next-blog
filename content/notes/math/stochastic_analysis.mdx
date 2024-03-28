@@ -1410,3 +1410,183 @@ $$
 When both $t$ and $n$ go $\infty$, this last probability converges to $0$, concluding the proof.
 </details>
 </MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $Z = X + iY$ be a complex local martingale. Then there exists a unique complex process with finite variation beginning at $0$ such that $Z^2 - \langle Z \rangle$ is a complex local martingale. The followin statements are equivalent.
+1. The process $Z^2$ is a local martingale
+2. The process $\langle Z \rangle$ is identically $0$
+3. The bracket of the real and imaginary parts satisfy $\langle X \rangle = \langle Y \rangle$ and $\langle X, Y \rangle = 0$.
+4. There is a Brownian motion such that $Z_t = B_{\langle X \rangle_t}$.
+
+A local martingale is called *conformal* if any of the above properties is true.
+
+<details>
+<summary>Proof</summary>
+
+The existence of the bracket is given by
+
+$$
+\begin{align*}
+  \langle Z \rangle =& \langle X + iY, X + iY \rangle \\
+  =& \langle X \rangle - \langle Y \rangle + 2i\langle X, Y \rangle
+\end{align*}
+$$
+
+which satisfies all required properties. Uniqueness is a consequence of the bracket theorem and the equivalence between **(1)**, **(2)** and **(3)** is an immediate consequence of the above formula. Moreover, **(3)** implies **(4)** by the general Dubins-Schwarz theorem, and **(4)** obviously implies **(3)**.
+</details>
+</MathBox>
+
+<MathBox title='Complex Itô formula' boxType='theorem'>
+Let $Z$ be a conformal local martingale. For a general function $f:\mathbb{C}\to\mathbb{C}$ of class $C^2$, Itô's formula takes the form
+
+$$
+\begin{align*}
+  f(Z_t) =& f(Z_0) + \int_0^t \partial z f(Z_s)\;\mathrm{d}Z_s \\
+  &+ \int_0^t \partial_{\overline{z}} f(Z_s)\;\mathrm{d}\overline{Z}_s \\
+  &+ \frac{1}{2} \int_0^t \nabla^2 f(Z_s) \;\mathrm{d}\langle \Re(Z) \rangle_s
+\end{align*}
+$$
+
+A function $f:\mathbb{C}\to\mathbb{C}$ is called holomorphic if $\partial_{\overline{z}} f = 0$ and harmonic if $\nabla^2 f = 4\partial_z \partial_{\overline{z}} f = 0$.
+
+If $f$ is harmonic, then $f(Z)$ is a local martingale as well, and if $f$ is holomorphic, then the local martingale $f(Z)$ has the following easy decomposition
+
+$$
+  f(Z_t) = f(Z_0) + \int_0^t f'(Z_s)\;\mathrm{d}Z_s
+$$
+
+<details>
+<summary>Details</summary>
+
+Note that
+
+$$
+\begin{align*}
+  \partial_z =& \frac{1}{2}(\partial_x - i\partial_y) \\
+  \partial_{\overline{z}} =& \frac{1}{2}(\partial_x + i\partial_y)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $f$ be entire and nonconstant, and $B$ a standard complex Brownian motion. Then $f(B)$ is a time-changed Brownian motion
+
+$$
+  f(B_t) = f(B_0) + \tilde{B}_{\langle X \rangle_t}
+$$
+
+where $B$ is a standard Brownian motion, and $\langle X \rangle_t := \int_0^t |f'(B_s)|^2 \;\mathrm{d}s$ is strictly increasing and converges to $\infty$.
+
+<details>
+<summary>Proof</summary>
+
+Because $f$ is an entire function, so is $f^2$ and therefore $f^2 (B)$ is a local martingale and $f(B)$ is a conformal local martingale. By the previous proposition, there is a Brownian motion $\tilde{B}$ such that
+
+$$
+  f(B_t) = f(B_0) + \tilde{B}_{\langle X \rangle_t}
+$$
+
+where $X = \Re(f(B))$ and $\langle X \rangle_t = \int_0^t |f'(B_s)|^2 \;\mathrm{d}s$. Since $f'$ is entire and not identically $0$, it has a countable set of zeros so $\langle X \rangle$ is strictly increasing. It converges to $\infty$ almost surely due the recurrence property of the bi-dimensional Brownian motion.
+</details>
+</MathBox>
+
+<MathBox title="Spitzer's law" boxType='theorem'>
+Let $B$ be a planar Brownian motion beginning at $B_0 \neq 0$. Define its argument $\theta_t$ at time $t$ continuously from $\theta_0 \in [0,2\pi)$ at time $0$. Then
+
+$$
+  \lim_{t\to\infty} \frac{\theta}{\ln t} = \frac{C}{2}
+$$
+
+where $C$ is a standard Cauchy random variable, which has density $\frac{1}{\pi(1 + x^2)}$ with respect to the Lebesgue measure.
+
+<details>
+<summary>Proof</summary>
+
+By rotation and scaling invariance, we can assume $B_0 = (1,0)$. From the previous theorem, if $X$ and $Y$ are independent standard real Brownian motions, then $\tilde{B}$ defined by 
+
+$$
+  \tilde{B}_{int_0^t e^{2X_s} \;\mathrm{d}s} = e^{X_t + iY_t}
+$$
+
+is a complex Brownian motion beginning at $(1,0)$. Let $a > 1$ and $S_a = \inf\Set{t \geq 0 : |B_t| = a}$. We will first prove that
+
+$$
+  \frac{\mathrm{arg}(B_{S_a})}{\ln a} \sim C
+$$
+
+The winding number $\mathrm{arg}(B_{S_a})$ is also the value $Y_{T_{\ln a}}$ where $T_x = \inf\Set{t\geq 0 | X_t = x}$. By scaling, proving that $Y_{T_1} \sim C$ is sufficient. We therefore just need to know the law of $T_1$ and compose it with that of $Y$.
+
+The distribution of $T_1$ is well-known, e.g. by the reflection principle
+
+$$
+\begin{align*}
+  \mathbb{P}(T_1 \leq t) =& \mathbb{P}(\sup_{[0,t] X \geq 1}) \\
+  =& \mathbb{P}(|X_t| \geq 1) \\
+  =& \mathbb{P}\left( \frac{1}{X_1^2} \leq t \right)
+\end{align*}
+$$
+
+so $T_1 \sim \frac{1}{\mathcal{N}^2}$ where $\mathcal{N}$ is a standard normal variable.
+
+The density of $Y_{T_1}$ is also that of $\sqrt{T_1} Y_1$, by conditioning on $T_1$. Hence it has the same law as $\frac{\mathcal{N}'}{\mathcal{N}}$. This is known as the Cauchy distribution.
+
+We have shown that
+
+$$
+  \frac{\mathrm{arg}(B_{S_{\sqrt{t}}})}{\ln t} \sim \frac{C}{2}
+$$
+
+and the proof will be complete if can show that
+
+$$
+  \frac{\mathrm{arg}(B_t) - \mathrm{arg}(B_{S_{\sqrt{t}}})}{\ln t}
+$$
+
+converges to $0$ in probability. For this, consider $\tau$ the inverse of the clock, defined by
+
+$$
+  \int_0^{\tau_t} e^{2X_s} \;\mathrm{d}s = t
+$$
+
+For some parameters $\delta \in (0,1)$ such that $\delta\sqrt{t} \leq 1$ and $\lambda > 0$, consider the events
+
+$$
+\begin{align*}
+  \mathcal{A} =& \Set{S_{\delta\sqrt{t}} \leq t \leq S_{\delta^{-1} \sqrt{t}}} \\
+  \mathcal{B} = \Set{\sup_{[\tau_{S_{\delta\sqrt{t}}}, \tau_{S_{\delta^{-1}\sqrt{t}}}]}} |Y_s - Y_{\tau_{S_{\delta\sqrt{t}}}}| \leq \frac{\lambda}{2}
+\end{align*}
+$$
+
+Then $\mathcal{A}\cap\mathcal{B}\subset \Set{|\mathrm{arg}(B_t) - \mathrm{arg}(B_{S_{\sqrt{t}}})| \leq \lambda}$, so we just need to prove that $\mathbb{P}(\mathcal{A}) \xrightarrow{\delta\to 0} 1$ and $\mathbb{P}(\mathcal{B}) \xrightarrow{\lambda\to\infty} 1$ for a given $\delta$.
+
+Concerning $\mathcal{A}$, things are easy because
+
+$$
+  \Set{|B_t| > \delta\sqrt{t}} \cap \Set{\sup_{[0,t]} |B_s| < \delta^{-1}\sqrt{t}} \subset \mathcal{A}
+$$
+
+and both events have a probability of going to $1$ as $\delta\to 0$, independently of $t$ by scaling.
+
+Concerning $\mathcal{B}$, note that
+
+$$
+  \tau_{S_a} = \inf\Set{u \geq 0 | X_u = \ln a}
+$$
+
+so from the strong Markov property
+
+$$
+  \tau_{S_{\delta^{-1}\sqrt{t}}} - \tau_{S_{\delta\sqrt{t}}} \sim T_{-2\ln\delta}
+$$
+
+where as previously $T_x = \inf\Set{t\geq 0 | X_t = x}$. Since $Y$
+is independent from $X$, this means that 
+
+$$
+  \sup_{[\tau_{S_{\delta\sqrt{t}}}, \tau_{S_{\delta^{-1}\sqrt{t}}}]}} |Y_s - Y_{\tau_{S_{\delta\sqrt{t}}}}| \sim \sup_{[0,\Delta]} |Y_s|
+$$
+
+where $\Delta$ is an almost surely finite random variable independent of $Y$, and with law depending on $\delta$ but not on $t$. It follows that $\mathbb{P}(\mathcal{B}) \xrightarrow{\lambda\to\infty} 1$ since it is independent of $t$.
+</details>
+</MathBox>
