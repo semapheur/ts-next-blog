@@ -1729,3 +1729,156 @@ $$
 where in the second equality we have used the fact that $\mathrm{d}D_t = D_t \;\mathrm{d}L_t$. Thus, $\tilde{M}D$ is a stochastic integral with respec to the $\mathbb{P}$-local martingales $D$ and $M$, so it is a $\mathbb{P}$-local martingale.
 </details>
 </MathBox>
+
+<MathBox title='' boxType='corollary'>
+If the local martingale $L$ and the $\mathbb{P}$-local martingale $M$ are Brownian motions, then
+
+$$
+  \tilde{B} := M - \langle M, B \rangle
+$$
+
+is a $\mathbb{Q}$-local martingale.
+
+<details>
+<summary>Proof</summary>
+
+If $M$ is a $\mathbb{P}$-Brownian motion, then by Girsanov's theorem $\tilde{M}$ is a $\mathbb{Q}$-local martingale and its bracket is $t$ by the quadratic increment formula. Thus, Lévy's criterion applies.
+</details>
+</MathBox>
+
+The condition $\mathbb{Q}\sim\mathbb{P}$ on $\mathcal{F}$ in the hypothesis of Girsanov's theorem is quite restrictive. As an example, if $M = B$ is a Brownian motion, we could try to use the theorem till infinite time to study the properties of the Brownian motion with drift $\tilde{M} = (B_t - \nu t)_{t\geq 0}$. For this, we want a measure $\mathbb{Q}$ on $\mathcal{F}$ such that for any $t\geq 0$
+
+$$
+  \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_t} = \exp\left(\nu B_t - \frac{\nu^2}{2}t \right)
+$$
+
+Although it can be shown that such a measure $\mathbb{Q}$ exists, it is not absolutely continuous relative to the Wiener measure $\mathbb{P}$. To avoid this problem, Girsanov's theorem can be applied up to a finite horizon. If $\mathbb{Q}\sim\mathbb{P}$ on $\mathcal{F}_t$, then $\tilde{M}$ is a $\mathbb{Q}$-local martingale when we only consider its restriction to $[0,t]$. This is true by applying the general statement with a modified filtration such that $\mathcal{F}_u = \mathcal{F}_t$ when $u > t$.
+
+Applying this to the case above we get that $(B_s - \nu s)_{0\leq s\leq t}$ is a $\mathbb{Q}$-Brownian motion. Hence, for any bounded continuous funcional $F$
+
+$$
+  \mathbb{E}_{\mathbb{Q}}(F(B_s - \nu s)_{0\leq s\leq t}) = \mathbb{E}_{\mathbb{P}}(F(B_s)_{0\leq s \leq t})
+$$
+
+When $F$ is a cylindric function, this is just a change of variables formula for finite-dimensional Gaussian measures. If $F$ depends only on the trajectory up to a stopping time $T\leq t$ almost surely, the above equation together with previous proposition yield
+
+$$
+  \mathbb{E}_{\mathbb{P}}\left(F(B_s - \nu s)_{0\leq s \leq T} \exp\left(\nu B_T - \frac{\nu^2}{2}T\right)\right) = \mathbb{E}_{\mathbb{P}}(F(B_s)_{0\leq s\leq T})
+$$
+
+<MathBox title='' boxType='corollary'>
+Let $T_a^{(\nu)} = \inf\Set{s \geq 0 | B_s + \nu s = a}$. Then for any $\lambda \geq 0$
+
+$$
+  \mathbb{E}_{\mathbb{P}} \left( \mathbf{1}_{T_a^{(\nu)}} \exp(-\lambda T_a^{(\nu)}) \right) = \exp(\nu a - |a|\sqrt{2\lambda + \nu^2})
+$$
+
+<details>
+<summary>Proof</summary>
+
+Consider the random variable $F = \mathbf{1}_{T_a^{(\nu) \leq t}} \exp(-\lambda T_a^{(\nu)})$, which is $\mathcal{F}_{t\wedge T_a}$-measurable, then
+
+$$
+  \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_{T_a^{(0)} \leq t} \exp(-\lambda T_a^{(0)}) \exp(\nu B_{t \wedge T_a^{(0)} - \frac{\nu^2}{2} T_a^{(0)}}) \right) = \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_{T_a^{(\nu)} \leq t} \exp(-\lambda T_a^{(\nu)}) \right)
+$$
+
+Dominated convergence as $t\to\infty$ yields
+
+$$
+  \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_{T_a^{(0)} < \infty} \exp\left(-\left(\lambda \frac{\nu^2}{2} T_a^{(0)} \right) \exp(\nu a) \right) \right) = \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_{T_a^{(\nu)} < \infty} \exp(-\lambda T_a^{(\nu)}) \right)
+$$
+
+The left hand side is known so
+
+$$
+  \mathbb{E}_\mathbb{P} \left(\mathbf{1}_{T_a^{(\nu)} < \infty} \exp(-\lambda T_a^{(\nu)}) \right) = \exp(\nu a - |a|\sqrt{2\lambda + \nu^2})
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $f:\R\to\R$ be continuous on $(0,1)$ with $f(0)$ and let $V_\varepsilon (f)$ be the set of continuous functions $g$ on $(0,1)$, beginning at $0$, such that $\sup_{(0,1)} |f(x) - g(x)| < \varepsilon$. Then $\mathbb{P}(V_\varepsilon) > 0$.
+
+<details>
+<summary>Proof</summary>
+
+First, for a given $\varepsilon > 0$, there exists a continuous $f_0$, beginning at $0$, such that its $\varepsilon$-neighbourhood has a strictly positive probability (otherwise the measure would be null). We want to prove it for general $f$. By interpolation an up to choosing a smaller $\varepsilon$, we can suppose that $h := f - f_0$ is $C^1$. Applying the Girsanov theorem with $M = B$ and $L_t = \int_0^t \dot{h}_s \;\mathrm{d}B_s$ for a Brownian motion $B$, then $M - \langle M, L \rangle$ is $B - h$ and
+
+$$
+  \mathbb{P}(|B - f|_{L^{\infty}(0,1)} < \varepsilon) = \mathbb{E}_{\mathbb{P}}\left( \mathbf{1}_{|B - f_0|_{L^\infty (0,1)} < \varepsilon} \exp\left( \int_0^1 \dot{h}_s \;\mathrm{d}B_s - \frac{1}{2}\int_0^1 \dot{h}_s^2 \;\mathrm{d}s \right) \right)
+$$
+
+The right hand side is strictly positive because $\mathbb{P}(|B - f_0|_{L^\infty (0,1)} < \varepsilon) > 0$ and $\int_0^1 \dot{h}_s \;\mathrm{d}B_s > -\infty$ almost surely.
+</details>
+</MathBox>
+
+In most applications of Girsanov's theorem, a $\mathbb{P}$-local martingale $L$ is given, and we make the choice
+
+$$
+  \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_t} = \exp\left( L_t - \frac{1}{2}\langle L \rangle_t \right)
+$$
+
+hoping that the expectation of the right hand side is $1$. Note that $\mathcal{E}(L)$ is a positive local martingale, thus a supermartingale, converging almost surely and 
+
+$$
+  \mathbb{E}(\mathcal{E}(L)_\infty) \leq 1
+$$
+
+There is equality if and only if $\mathcal{E}(L)$ is a uniformly integrable martingale. Moreover, if $\mathcal{E}(L)$ is uniformly integrable, then when defining
+
+$$
+  \left.\frac{\mathrm{d}\mathbb{Q}}{\mathrm{d}\mathbb{P}}\right|_{\mathcal{F}_t} = \mathcal{E}(L)_\infty
+$$
+
+we obviously have $\mathbb{Q}\sim\mathbb{P}$ on $\mathcal{F}_t$. Thus, checking the uniform integrability of an exponential local martingale is important to apply Girsanov's theorem.
+
+<MathBox title="Novikov's criterium" boxType='theorem'>
+Let $L$ be a local martingale beginning at $0$. If $\mathbb{E}\left(\exp\left(\frac{1}{2}\langle L \rangle_\infty \right)\right) < \infty$, then $\mathcal{E}(L)$ is a uniformly integrable martingale.
+
+<details>
+<summary>Proof</summary>
+
+We first prove that the hypothesis inequality implies that $L$ is unformly integrable and that $\mathbb{E}\left(\exp\left(\frac{1}{2} L_\infty \right)\right) < \infty$, which in turn implies the result.
+
+Obviously, $\mathbf{E}(\langle L \rangle_\infty) < \infty$, so $L$ is bounded in $\mathcal{L}^2$. Hence $L$ is a uniformly integrable martingale. Moreover, by a simple application of the Cauchy-Schwarz inequality
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\exp\left(\frac{1}{2}L_\infty\right) \right) =& \mathbb{E}\left( \right) \\
+  \leq& \mathbb{E}(\mathcal{E}(L)_\infty)^{1/2} \mathbb{E}\left(\exp\left(\frac{1}{2}\langle L \rangle_\infty\right) \right)^{1/2} \\
+  \leq& \mathbb{E}\left( \exp\left( \frac{1}{2}\langle L \rangle_\infty \right) \right)^{1/2}
+\end{align*}
+$$
+
+so $\mathbb{E}\left(\exp\left(\frac{1}{2}L_\infty \right)\right) < \infty$.
+
+Next, we want to prove the uniform integrability of $\mathcal{E}(L)$. A sufficient condition is $\mathbb{E}(\mathcal{E}(L)_\infty) = 1$. Since $L$ is uniformly integrable, $L_t = \mathbb{E}(L_\infty | \mathcal{F}_t)$, so by convexity $\exp\left( \frac{1}{2}L_t \right) < \mathbb{E}\left(\exp\left(\frac{1}{2}L_\infty \right) | \mathcal{F}_t \right)$. This proves that $\left(\exp\left( \frac{1}{2}L_t \right)\right)_{t\geq 0}$ is uniformly integrable.
+
+Because the exponential is convex and increasing, $\left(\exp\left( \frac{1}{2}L_t \right)\right)_{t\geq 0}$ is a submartingale, uniformly integrable from the previous point. Hence, for any stopping time $T$, it follows that $\exp\left( \frac{1}{2}L_T \right) < \mathbb{E}\left( \exp\left( \frac{1}{2}L_\infty | \mathcal{F}_t \right) \right)$. Thus $\Set{\exp\left(\frac{1}{2}L_T\right) | T \text{ stopping time}}$ is uniformly integrable.
+
+Optimally, we would like to prove that $\Set{\mathcal{E}(L)_T | T \text{ stopping time}}$ is uniformly integrable. This is slightly too much required. We can however show that $\Set{\mathcal{E}(\lambda L)_T | T \text{ stopping time}}$ is integrable for any $0 < \lambda < 1$. Take any $A \in \mathcal{F}$ (typically $A = \Set{\mathcal{E}(\lambda L)_T > x}$). Then
+
+$$
+\begin{align*}
+  \mathbb{E}(\mathbf{1}_A \mathcal{E}(\lambda L)_T) =& \mathbb{E}(\mathbf{1}_A (\mathcal{E}(L)_T)^{\lambda^2} \exp(\lambda(1 - \lambda)L_T)) \\
+  \leq& \mathbb{E}(\mathcal{E}(L)_T)^{\lambda^2} \mathbb{E}\left(\mathbf{1}_A \exp\left(\frac{\lambda}{1 + \lambda}L_T\right)\right)^{1-\lambda^2} \\
+  \leq& \mathbb{E}\left(\mathbf{1}_A \exp\left(\frac{\lambda}{1 + \lambda}L_T \right)\right)^{1-\lambda^2} \\
+  =& \mathbb{E}\left( \left(\mathbf{1}_A \exp\left( \frac{1}{2}L_T \right)^{\frac{2\lambda}{1 + \lambda}}\right) \right)^{1-\lambda^2} \\
+  \leq& \mathbb{E}\left(\mathbf{1}_A \exp\left(\frac{1}{2}L_T \right)\right)^{2\lambda (1 - \lambda)}
+\end{align*}
+$$
+
+where we used in the second inequality that for a positive supermartingale $M$ and any stopping time $T$, $\mathbb{E}(M_T) \leq M_0$ (this is true for bounded stopping times, and then for any of them by Fatou's lemma). The last inequality relies on the concavity of $x\mapsto x^a$ for $a < 1$. The last term above being uniformly integrable, the set $\Set{\mathcal{E}(\lambda L)_T | T \text{ stopping time}}$ is uniformly integrable for any $0 < \lambda < 1$.
+
+This implies that $\mathcal{E}(\lambda L)$ is a uniformly integrable martingale. It follows that
+
+$$
+\begin{align*}
+  1 =& \mathbb{E}(\mathcal{E}(\lambda L)_\infty) \\
+  \leq& \mathbb{E}(\mathcal{E}(L)_\infty)^{\lambda^2} \mathbb{E}(\exp\left(\frac{1}{2}L_\infty \right))^{2\lambda(1 - \lambda)}
+\end{align*}
+$$
+
+Taking $\lambda \to 1^-$ yields $\mathbb{E}(\mathcal{E}(L)_\infty) \geq 1$.
+</details>
+</MathBox>
