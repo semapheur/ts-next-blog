@@ -5,6 +5,14 @@ type Props = {
   noteDetails: NoteDetails,
 }
 
+function titleCase(text: string) {
+  return text
+    .replace(/_/g, ' ') // Replace all underscores with spaces
+    .replace(/\w\S*/g, (t) => { // Convert to title case
+      return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+    });
+}
+
 function Toggle() {
   return (
     <>
@@ -37,11 +45,11 @@ export default function Sidebar({noteDetails}: Props) {
         {Object.entries(noteDetails).map(([subject, notes]) => (
           <div key={`div.${subject}`}>
             <label htmlFor={subject} key={`label.${subject}`}
-              className='block pl-3 text-text text-xl font-bold cursor-pointer 
+              className='block pl-3 pr-2 text-text text-xl font-bold cursor-pointer 
                 border-b border-shadow hover:border-secondary
                 transition-colors duration-300 ease-out'
             >
-              {subject.charAt(0).toUpperCase() + subject.slice(1)}
+              {titleCase(subject)}
             </label>
             <input key={`input.${subject}`} id={subject} type='checkbox' className='peer hidden'/>
             <ul key={`ul.${subject}`}
