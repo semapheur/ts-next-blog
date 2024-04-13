@@ -27,8 +27,64 @@ Machine learning techniques can be divided into three categories:
 - **Reinforcement learning:** To collect information, the learner actively interacts with the environment and in some cases affects the environment, and receives an immediate reward for each action. The goal is to maximize the reward over a course of actions and iterations with the environment. However, no long-term reward feedback is provided by the environment, and the learner is faced with the *exploration versus exploitation* dilemma, since it must choose between exploring unknown actions to gain more information versus exploiting the information already collected.
 - **Active learning:** The learner adaptively or interactively collects training examples, typically by quering an oracle to request labels for new points. The goal is to achieve a performance comparable to supervised learning.
 
-# Supervised learning
+# Probably approximately correct (PAC) learning framework
 
-With supervised learning the goal is to learn a mapping $f:\mathcal{X}\to\mathcal{Y}$. The inputs $\mathbf{x}\in\mathcal{X}$ are
+Let $X$ be the set of all possible examples, also referred to as the input space, and let $Y$ be the set of all possible labels or target values. A *concept* is a mapping $c:X\to Y$, while a concept class $C$ is a set of concepts that can be learnt. We assume that the examples are independently and identically distributed (i.i.d.) according to some fixed yet unknown distribution $D$. 
 
-## Classification
+The learning problem is formulated as follows. The learner considers a fixed set of possible concepts $H$, called a *hypothesis set*, which may not coincide with $C$. It receives a samle $S = (x_1,\dots,x_n)$ drawn i.i.d. according to $D$ as well as the labels $(c(x_1),\dots,c(x_n))$, which are based on a specific target concept $c \in C$ to learn. Its task is use the labeled sample $S$ to select a hypothesis $h_s \in H$ that has a small *generalization error* with respect to the concept $c$. 
+
+<MathBox title='Generalization error' boxType='definition'>
+Given a hypothesis $h\in H$, a target concept $c\in C$, and an underlying distribution $D$, the *generalization error/risk* of $h$ is defined by
+
+$$
+  R(h) = \mathbb{P}(h(x) \neq c(x)) = \mathbb{E}(\mathbf{1}_{h(x)\neq c(x)}),\; x\sim D
+$$
+
+Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
+</MathBox>
+
+The generalization error of a hypothesis is not directly accessible to the learner since both the distribution $D$ and the taget concept $c$ are unknown. However, the learner can measure the *empirical error* of a hypothesis on the labeled sample $S$.
+
+<MathBox title='Empirical error' boxType='definition'>
+Given a hypothesis $h\in H$, a target concept $c\in C$, and a sample $S = (x_1,\dots,x_n)$, the *empirical error/risk* of $h$ is defined by
+
+$$
+  \hat{R}(h) = \frac{1}{n} \sum_{i=1}^n \mathbf{1}_{h(x_i) \neq c(x_i)}
+$$
+
+Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
+</MathBox>
+
+The empirical error of $h\in H$ is its average error over a sample $S$, while the generalization error is its expected error based on the distribution $D$. Note that for a fixed $h\in H$, the expectation of the empirical error based on an i.i.d. sample $S$ is equal to the generalization error, i.e. $\mathbb{E}(\hat{R}(h)) = R(h)$. By linearity to the expectation and the fact that the sample is drawn i.i.d., we can write for any $x\in S$
+
+$$
+\begin{align*}
+  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)}) \\
+  =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)})
+\end{align*}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \underset{x\sim D^n}{\mathbb{E}} (\mathbf{1}_{\Set{h(x) \neq c(x)}}) \\
+  =& \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{\Set{h(x) \neq c(x)}}) = R(h)
+\end{align*}
+$$
+
+<MathBox title='PAC-learning' boxType='definition'>
+A concept class $C$ is PAC-learnable if there exists an algorithm $A$ and a polynomial function $p(\cdot,\cdot,\cdot,\cdot)$ such that for any $\varepsilon > 0$ and $\delta > 0$, for all distributions $D$ on $X$ and for any target concept $c\in C$, the following holds for any sample size $n \geq p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$
+
+$$
+  \underset{S\sim D^n}\mathbb{P}(R(h_S) \leq \varepsilon) \geq 1 - \delta
+$$
+
+where $s(c)$, the size of $c$, is the maximal cost of the computational representation of $c\in C$. If $A$ further runs in $ p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$, then $C$ is efficiently PAC-learnable. When such an algorithm $A$ exists, it called a PAC-learning algorithm for $C$.
+
+A concept class $C$ is thus PAC-learnable if the hypothesis returned by the algorithm after observing a number of points polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$ is *approximately correct* (error at most $\varepsilon$) with high *probability* (at least $1-\delta$). In this framework, $\delta > 0$ describes the *confidence* $1-\delta$ and $\varepsilon > 0$ the *accuracy* $1 - \varepsilon$. Note that if the running time of the algorithm is polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$, then the sample size $n$ must also be polynomial if the full sample is received by the algorithm.
+</MathBox>
+
+Several characteristics of the PAC definition are worth emphasizing. First, the PAC is framework is a distribution-free model as it makes no particular assumptions about the distribution $D$ from which samples are drawn. Second, the training sample and the test examples used to define the error are drawn according to the same distribution $D$. This is a necessary assumption for generalization to by possible in most cases.
+
+Finally, the PAC framework deals with the question of learnability for a concept class $C$ and not a particular concept. Note that the concept class $C$ is know to the algorithm, while the target concept $c$ is unknown. In many cases, in particular when the computational representation of the concepts is not explicitly discussed or is straightforward, we may omit the polynomial dependency on $n$ and $s(c)$ in the PAC definition and focus only on the sample complexity.
