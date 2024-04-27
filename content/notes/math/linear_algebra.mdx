@@ -307,10 +307,12 @@ If at least one of the scalars $\lambda_i$ is nonzero, the linear combination is
 </MathBox>
 
 <MathBox title='Linear subspace' boxType='definition'>
-A linear subspace of an $\mathbb{F}$-vector space $V$ is a set $U\subseteq V$ that is itself an $\mathbb{F}$-vector. This means that $U$ must satisfy
+Let $V$ be $\mathbb{F}$-vector space. If a subset $U\subseteq V$ satisfies
 - $\mathbf{0}\in U$
 - $\mathbf{u}, \mathbf{v}\in U \implies \mathbf{u} + \mathbf{v} \in U$ (closed under vector addition)
 - $\mathbf{u}\in U, \alpha\in\mathbb{F} \implies \alpha \mathbf{u} \in U$ (closed under scalar multiplication)
+
+then $U$ is also an $\mathbb{F}$-vector space, called a linear subspace of $V$.
 
 The conditions imply that $U$ is closed under linear combinations, i.e. $\alpha \mathbf{u} + \beta \mathbf{v} \in U$ for all $\alpha,\beta\in\R$ and all $\mathbf{u}, \mathbf{v} \in U$.
 </MathBox>
@@ -654,14 +656,28 @@ If $B = \Set{\mathbf{b}_i}_{i=1}^n$ is an ordered basis for a vector space $V$ o
 Accordingly we can define the *coordinate map* $\varphi_B: V\to\mathbb{F}^n$ by
 
 $$
-  \varphi_B (\mathbf{v}) = [\mathbf{v}]_B := \begin{bmatrix} \lambda_i \\ \vdots \\ \lambda_n \end{bmatrix}
+  \varphi_B (\mathbf{v}) = [\mathbf{v}]_B := \begin{bmatrix} \lambda_1 \\ \vdots \\ \lambda_n \end{bmatrix}_B
 $$
 
-where the column matrix $[\mathbf{v}]_B$ is known as the *coordinate matrix* of $\mathbf{v}$ with respect to the ordered basis $B$. The coordinate is an isomorphism (bijection) with inverse $\varphi_B^{-1}:\mathbb{F}^n \to V$ defined by
+where the column matrix $[\mathbf{v}]_B$ is known as the *coordinate matrix* of $\mathbf{v}$ with respect to the ordered basis $B$. The coordinate map is linear, i.e.
+
+$$
+\begin{align*}
+  \varphi_B (\mathbf{v}) =& \varphi_B\left(\sum_{i=1}^n \lambda_i \mathbf{b}_i\right) \\
+  =& \sum_{i=1}^n \lambda_i \varphi_B (\mathbf{b}_i) \\
+  =& \sum_{i=1}^n \lambda_i \mathbf{e}_i
+\end{align*}
+$$
+
+where $\mathbf{e}_i$ is a canonical unit vector in $\mathbb{F}$.
+
+The coordinate map is an isomorphism (bijection) with inverse $\varphi_B^{-1}:\mathbb{F}^n \to V$ defined by
 
 $$
   (\lambda_i)_{i=1}^n \mapsto \sum_{i=1}^n \lambda_i \mathbf{b}_i
 $$
+
+The coordinate map is therefore also called the basis isomorphism.
 </MathBox>
 
 ## Row and column spaces of matrices
@@ -917,7 +933,15 @@ Let $\mathbf{A}$ be an $m\times n$ matrix over $F$.
 ### Change of basis matrices
 
 <MathBox title='Change of basis operator' boxType='definition'>
-Let $B $ and $C$ be ordered bases for an $n$-dimensional vector space $V$. For any $\mathbf{v}\in V$, the map $\varphi_{B,C} = \varphi_C \varphi_B^{-1}$ given by $[\mathbf{v}]_B \mapsto [\mathbf{v}]_C$ is called the change of basis operator. 
+Let $B $ and $C$ be ordered bases for an $n$-dimensional vector space $V$. For any $\mathbf{v}\in V$, the map $\varphi_{B,C} = \varphi_C \circ \varphi_B^{-1}$ given by $[\mathbf{v}]_B \mapsto [\mathbf{v}]_C$ is called the change of basis operator.
+
+$$
+\begin{CD}
+  V @= V \\
+  @V{\varphi_B}VV @VV{\varphi_C}V \\
+  \mathbb{F} @>>{\varphi_C^{-1} \circ \varphi_D}> \mathbb{F}
+\end{CD}
+$$
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
@@ -2053,25 +2077,21 @@ Comparing the expression, we see that $[\mathrm{T}^\times]_{C^*, B^*} = ([\mathr
 
 <MathBox title='Eigenvalue, eigenvector and spectrum' boxType='proposition'>
 Let $V$ be a vector space over $\mathbf{F}$.
-1. A scalar $\lambda\in\mathbb{F}$ is an *eigenvalue* of an operator $\mathrm{T}\in\mathcal{L}(V)$ if there exists a nonzero vector $\mathbf{v}\in V$ for which
-
-$$
-  \mathrm{T}(\mathbf{v}) = \lambda\mathbf{v}
-$$
-
-In this case, $\mathbf{v}$ is an *eigenvector* of $\mathrm{T}$ associated with $\lambda$.
-2. A scalar $\lambda\in\mathbb{F}$ is an eigenvalue for a matrix $\mathbf{A}\in\mathcal{M}_{n}(\mathbb{F})$ if there exists a nonzero column vector $\mathbf{x}$ for which
-
-$$
-  \mathbf{A}\mathbf{x} = \lambda\mathbf{x}
-$$
-
-In this case, $\mathbf{x}$ is an eigenvector for $\mathbf{A}$ associated with $\lambda$.
+1. A scalar $\lambda\in\mathbb{F}$ is an *eigenvalue* of an operator $\mathrm{T}\in\mathcal{L}(V)$ if there exists a nonzero vector $\mathbf{v}\in V$ for which $\mathrm{T}(\mathbf{v}) = \lambda\mathbf{v}$. In this case, $\mathbf{v}$ is an *eigenvector* of $\mathrm{T}$ associated with $\lambda$.
+2. A scalar $\lambda\in\mathbb{F}$ is an eigenvalue for a matrix $\mathbf{A}\in\mathcal{M}_{n}(\mathbb{F})$ if there exists a nonzero column vector $\mathbf{x}$ for which $\mathbf{A}\mathbf{x} = \lambda\mathbf{x}$. In this case, $\mathbf{x}$ is an eigenvector for $\mathbf{A}$ associated with $\lambda$.
 3. The set of all eigenvectors associated with a given eigenvalue $\lambda$, together with the zero vector, forms a subspace of $V$, called the *eigenspace* of $\lambda$, denoted by $E_\lambda$.
 4. The set of all eigenvalues of an operator or matrix is called the *spectrum* of the operator or matrix.
 </MathBox>
 
 # Inner product space
+
+<MathBox title='Inner product' boxType='definition'>
+Let $V$ be an $\mathbb{F}$-vector space. The map $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ is called an inner product on $V$ if it satisfies for all $\mathbf{u},\mathbf{v}, \mathbf{w}\in V$ and $\alpha, \beta \in\mathbb{F}$
+
+1. **Positive definiteness:** $\langle \mathbf{v}, \mathbf{v} \rangle \geq 0$ and $\langle \mathbf{v}, \mathbf{v} \rangle = 0 \implies \mathbf{v} = 0$
+2. **Linearity in the second argument**: $\langle\mathbf{u}, \alpha\mathbf{v} + \beta\mathbf{w}\rangle = \alpha\langle\mathbf{u}, \mathbf{v}\rangle + \beta\langle\mathbf{u}, \mathbf{w}\rangle$
+3. **Conjugate symmetry:** $\langle \mathbf{v}, \mathbf{w}\rangle = \overline{\langle\mathbf{v}, \mathbf{w}\rangle}$
+</MathBox>
 
 # Metric vector space
 
@@ -2081,16 +2101,16 @@ Every linear map between finite-dimensional vector spaces can be represented by 
 
 $$
 \begin{align*}
-  L(v) &= L\left( \sum_{i=1}^n _ \hat{v}_i \right) = \sum_{i=1}^n _ L(\hat{v}_i) \\
-  &= \sum_{i=1}^n _ \sum_{j=1}^m \left( \sum_{k=1}^n L_k^j \hat{v}^k \right)\hat{w}_j, \quad \sum_{k=1}^n L_k^j \hat{v}^k = L_k^j \delta^{ik} \\
-  &= \sum_{j=1}^m \sum_{i=1}^n L_i^j _ \hat{w}_j = \sum_{j=1}^m w^j \hat{w}_j = w
+  L(v) &= L\left( \sum_{i=1}^n \hat{v}_i \right) = \sum_{i=1}^n L(\hat{v}_i) \\
+  &= \sum_{i=1}^n \sum_{j=1}^m \left( \sum_{k=1}^n L_k^j \hat{v}^k \right)\hat{w}_j, \quad \sum_{k=1}^n L_k^j \hat{v}^k = L_k^j \delta^{ik} \\
+  &= \sum_{j=1}^m \sum_{i=1}^n L_i^j \hat{w}_j = \sum_{j=1}^m w^j \hat{w}_j = w
 \end{align*}    
 $$
 
 The output vector $w$ is given by the matrix multiplication
 
 $$
-  w^j = \sum_{i=1}^n L_i^j _
+  w^j = \sum_{i=1}^n L_i^j
 $$
 
 ### Eigenvectors
