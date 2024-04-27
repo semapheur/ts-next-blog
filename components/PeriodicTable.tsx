@@ -65,9 +65,7 @@ export default function PeriodicTable() {
     setElement(data[number-1])
   }
 
-  return (<div className='h-full min-h-0 min-w-0 grid gap-1
-    grid-cols-[repeat(18,minmax(0,1fr))] 
-    grid-rows-[repeat(10,minmax(0,1fr))]'
+  return (<div className='h-full min-h-0 min-w-0 grid gap-1 grid-cols-[repeat(18,minmax(0,1fr))] grid-rows-[repeat(10,minmax(0,1fr))]'
   > 
     <div className='h-full @container row-span-3 col-start-3 col-span-10 grid grid-rows-[1fr_2fr] grid-cols-4'>
       <ElementInfo element={selElement}/>

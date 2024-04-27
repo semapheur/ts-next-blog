@@ -13,21 +13,36 @@ function cap(text: string): string {
 /* Tailwind CSS classes
 bg-axiom bg-theorem bg-lemma bg-corollary bg-proposition bg-definition bg-example
 border-axiom border-theorem border-lemma border-corollary border-proposition border-definition border-example
-before:[counter-increment:axiom] before:content-['Axiom_'_counter(axiom)_':_']
-before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)_':_']
-before:[counter-increment:lemma] before:content-['Lemma_'_counter(lemma)_':_']
-before:[counter-increment:corollary] before:content-['Corollary_'_counter(corollary)_':_']
-before:[counter-increment:proposition] before:content-['Proposition_'_counter(proposition)_':_']
-before:[counter-increment:definition] before:content-['Definition_'_counter(definition)_':_']
-before:[counter-increment:example] before:content-['Example_'_counter(example)_':_']
+before:[counter-increment:axiom] before:content-['Axiom_'_counter(axiom)]
+before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
+before:[counter-increment:lemma] before:content-['Lemma_'_counter(lemma)]
+before:[counter-increment:corollary] before:content-['Corollary_'_counter(corollary)]
+before:[counter-increment:proposition] before:content-['Proposition_'_counter(proposition)]
+before:[counter-increment:definition] before:content-['Definition_'_counter(definition)]
+before:[counter-increment:example] before:content-['Example_'_counter(example)]
 */
 
 export default function MathBox({title, boxType, children, tag}: Props) {
   return (
+    <aside id={tag} className='my-5 bg-primary rounded shadow-md dark:shadow-black/50'>
+      <div className={`px-2 py-1 bg-${boxType} rounded-t break-words`}>
+        <a aria-label={`Link to ${boxType}: ${title}`} tabIndex={-1} href={`#${tag}`}
+          className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold before:hover:underline no-underline`}
+        >
+          {title && `: ${title}`}
+        </a>
+      </div>
+      <div className='px-4 pb-px'>
+        {children}
+      </div>
+    </aside>
+  )
+}
+
+function MathBoxOld({title, boxType, children, tag}: Props) {
+  return (
     <div className={`relative px-3 pt-2 my-8 md:my-8 bg-main border-2 border-${boxType} rounded-lg shadow-md`}>
-      <span className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll 
-        whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-sm
-        before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
+      <span className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-sm before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
       >
         {tag && <a aria-hidden='true' tabIndex={-1} href={`#${tag}`}/>}
         {title}
