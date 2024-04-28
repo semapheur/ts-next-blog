@@ -108,9 +108,10 @@ export default function Blob({className}: Props) {
   }, [animate])
   
   return (
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' 
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'
       className={className}
     >
+      <title>Blob</title>
       <defs>
         <linearGradient id='blob-gradient' gradientTransform='rotate(90)'>
           <stop id='gradientStop1' offset='0%' stopColor='var(--color-blob-start)' 

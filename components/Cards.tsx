@@ -87,7 +87,7 @@ export default function Cards({children}: CardsProps) {
         bg-primary'
     >
       {children.map((node, i) => 
-        <Card key={`card.${i}`} ref={(el: HTMLDivElement) => cardRefs.current.push(el)}>
+        <Card key={`card.${i}`} ref={(el: HTMLDivElement) => {cardRefs.current.push(el)}}>
           {node}
         </Card>
       )}

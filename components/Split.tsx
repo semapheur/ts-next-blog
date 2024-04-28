@@ -166,7 +166,7 @@ export default function Split(props: SplitProps) {
     }
     elements.push(
       <Pane key={`pane.${i}`} style={paneStyle}
-        ref={(el: HTMLDivElement) => paneRefs.current[i] = el}
+        ref={(el: HTMLDivElement) => {paneRefs.current[i] = el}}
       >
         {children[i]}
       </Pane>
@@ -179,7 +179,7 @@ export default function Split(props: SplitProps) {
       elements.push(
         <Divider key={`divider.${i}`}
           index={i} style={dividerStyle}
-          ref={(el: HTMLDivElement) => dividerRefs.current[i] = el}
+          ref={(el: HTMLDivElement) => {dividerRefs.current[i] = el}}
           onDragStart={handleDragStart}
         />
       )
