@@ -11,6 +11,19 @@ export type SearchResult = {
 	title: string
 }[]
 
+export type NoteXor = {
+	slug: string;
+	title: string;
+	filter: {
+			type: string;
+			_filter: string[];
+			_bits: number;
+			_size: number;
+			_blockLength: number;
+			_seed: number;
+	}
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SearchResult>) {
 
 	const query = tokenize(req.query.q!.toString())

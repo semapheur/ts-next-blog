@@ -3,7 +3,6 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 
 import { SearchResult } from 'pages/api/searchnotes'
-import {XorFilter} from 'bloom-filters'
 import Link from 'next/link'
 
 import dynamic from 'next/dynamic'
@@ -11,7 +10,7 @@ const Modal = dynamic(() => import('components/LatexModal'), {ssr: false}) //imp
 
 import notes from 'cache/notes.json'
 import { SearchIcon } from 'utils/icons'
-import tokenize from 'utils/tokenize'
+import { searchNotes } from 'utils/search'
 
 export default function SearchBar() {
   const [query, setQuery] = useState<string>('')
@@ -25,29 +24,9 @@ export default function SearchBar() {
     setQuery('')
     setShowModal(false)
   }
-  //const {data: result} = useSWR(query, searchFetcher)
-  
+
   useEffect(() => {
-    let result: SearchResult = []
-    const tokens = tokenize(query)
-
-    let score = 0
-    for (const note of notes) {
-      score = tokens.filter(q => note.title.toLowerCase().includes(q)).length
-
-      const xor8 = XorFilter.fromJSON(JSON.parse(JSON.stringify(note.filter))) as XorFilter
-      tokens.forEach(q => {
-        if (xor8.has(q)) score++
-      })
-
-      if (score > 0) {
-        result.push({
-          score: score,
-          slug: note.slug,
-          title: note.title
-        })
-      }
-    }
+    const result = searchNotes(query, notes)
     setSearchResult(result)
 
   }, [query])
