@@ -82,9 +82,9 @@ async function indexNotes() {
 }
 
 const notes = await indexNotes()
-const cache = `export const notes = ${JSON.stringify(notes)}`
+const cache = JSON.stringify(notes)
 
-fs.writeFile('./cache/note.js', cache, function(e) {
+fs.writeFile('./cache/notes.json', cache, function(e) {
   if (e) {
     console.log(e);
   }

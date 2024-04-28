@@ -1,6 +1,6 @@
 'use client'
 
-import {KeyboardEvent, ReactNode, useEffect, useRef, useState} from 'react'
+import {HTMLProps, KeyboardEvent, ReactNode, useEffect, useRef, useState} from 'react'
 import { CrossIcon } from 'utils/icons'
 import useEventListener from 'hooks/useEventListener'
 
@@ -8,9 +8,13 @@ type Props = {
   isOpen: boolean
   children: ReactNode
   onClose?: () => void
-}
+  title?: string
+  className?: string
+} & HTMLProps<HTMLDialogElement>
 
-export default function LatexModal({isOpen, children, onClose}: Props) {
+const modalStyle = 'fixed m-auto p-0 inset-0 overflow-hidden max-w-[min(90vw,60ch)] bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur backdrop:bg-stone-500/50'
+
+export default function LatexModal({isOpen, children, onClose, title, className=modalStyle}: Props) {
   const [isModalOpen, setModalOpen] = useState(isOpen)
   const modalRef = useRef<HTMLDialogElement>(null)
 
@@ -60,18 +64,19 @@ export default function LatexModal({isOpen, children, onClose}: Props) {
   
   return (
     <dialog ref={modalRef} onKeyDown={handleKeyDown}
-      className='m-auto p-1 h-auto max-h-[75%] max-w-[75%]
-        bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur
-        backdrop:bg-stone-500/50'
+      className={className}
     >
-      <div className='h-full flex flex-col'>
-        <button onClick={handleClose}
-          className='self-end'
-          type='button'
-        >
-          <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
-        </button>
-        {children}
+      <div className='grid grid-rows-[auto_1fr] max-h-[80vh]'>
+        <header className='flex justify-between p-1'>
+          {title && <h3 className='text-text self-center'>{title}</h3>}
+          <button onClick={handleClose}
+            className='self-end'
+            type='button'
+          >
+            <CrossIcon className='h-6 w-6 stroke-text hover:stroke-red-600'/>
+          </button>     
+        </header>
+          {children}
       </div>
     </dialog>
   )
