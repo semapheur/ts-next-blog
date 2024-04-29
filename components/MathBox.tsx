@@ -11,13 +11,14 @@ function cap(text: string): string {
 }
 
 /* Tailwind CSS classes
-bg-axiom bg-theorem bg-lemma bg-corollary bg-proposition bg-definition bg-example
-border-axiom border-theorem border-lemma border-corollary border-proposition border-definition border-example
+bg-axiom bg-theorem bg-lemma bg-corollary bg-proposition bg-criterion bg-definition bg-example
+border-axiom border-theorem border-lemma border-corollary border-proposition bg-criterion border-definition border-example
 before:[counter-increment:axiom] before:content-['Axiom_'_counter(axiom)]
 before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
 before:[counter-increment:lemma] before:content-['Lemma_'_counter(lemma)]
 before:[counter-increment:corollary] before:content-['Corollary_'_counter(corollary)]
 before:[counter-increment:proposition] before:content-['Proposition_'_counter(proposition)]
+before:[counter-increment:criterion] before:content-['Criterion_'_counter(criterion)]
 before:[counter-increment:definition] before:content-['Definition_'_counter(definition)]
 before:[counter-increment:example] before:content-['Example_'_counter(example)]
 */
