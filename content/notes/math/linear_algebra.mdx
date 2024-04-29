@@ -53,7 +53,7 @@ Matrix multiplication has the following properties for matrices $\mathbf{A}, \ma
 - $c(\mathbf{A}\mathbf{B}) = (c\mathbf{A})\mathbf{B}$ **(left scalar associativity)**
 - $(\mathbf{A}\mathbf{B})c = \mathbf{A}(\mathbf{B}c)$ **(right scalar associativity)**
 - $(\mathbf{A}\mathbf{B})\mathbf{C} = \mathbf{A}(\mathbf{B}\mathbf{C})$ **(associativity)**
-- $\mathbf{Cartan}(\mathbf{A} + \mathbf{B}) = \mathbf{C}\mathbf{A} + \mathbf{C}\mathbf{B}$ **(left distributivity)**
+- $\mathbf{C}(\mathbf{A} + \mathbf{B}) = \mathbf{C}\mathbf{A} + \mathbf{C}\mathbf{B}$ **(left distributivity)**
 - $(\mathbf{A} + \mathbf{B})\mathbf{C} = \mathbf{A}\mathbf{C} + \mathbf{B}\mathbf{C}$ **(left distributivity)**
 
 ## Partitioning and matrix multiplication
@@ -109,12 +109,13 @@ There are three elementary row operations on matrices
 - each element in a row can be multiplied by a non-zero constant (row scaling)
 - a row can be replaced by the sum of that row and a multiple of another row (row addition)
 
-<MathBox title='Reduced row echelon form' boxType='definition'>
-A matrix $\mathbf{R}$ is said to be in *reduced row echelon* form if
-1. All zero rows appear at the bottom of the matrix.
-2. In any nonzero row, the first nonzero entry is $1$, called a leading entry.
-3. For any two consecutive rows, the leading entry of the lower is to the right of the leading entry of the upper row.
-4. Any column that contains a leading entry has zeroes in all other positions.
+<MathBox title='Row echelon form' boxType='definition'>
+A matrix $\mathbf{R}\in\mathcal{M}_{m,n}(\mathbb{F})$ is in *row echelon* form if
+1. All zero rows (if there any) appear at the bottom of the matrix.
+2. For each nonzero row, the leftmost nonzero entry, called the leading entry or the pivot, is strictly to the right of the leading entry of every row above.
+3. Any column that contains a leading entry has zeroes in all other positions.
+
+The matrix $\mathbf{R}$ is in *reduced row echelon form* if all the leading entries are equal to $1$.
 </MathBox>
 
 <MathBox title='Row equivalence' boxType='proposition'>
@@ -150,11 +151,11 @@ $$
 $$
 </MathBox>
 
-### Row-switching transformations
+<MathBox title='Row-switching transformation' boxType='definition'>
+The corresponding elementary matrix for switching rows $i$ and $j$ is obtained by swapping the respective rows of the identity matrix. This in an $n\times n$ matrix $\mathbf{P}_{i,j} \in\mathcal{M}_n (\mathbb{F})$ of the form
 
-The corresponding elementary matrix for row switching is obtained by swapping row $i$ and row $j$ of the identity matrix.
 $$
-  \mathbf{T}_{i,j} = \begin{bmatrix}
+  \mathbf{P}_{i,j} = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
     & & 0 & & 1 & & \\
@@ -164,13 +165,13 @@ $$
     & & & & & & 1
   \end{bmatrix}
 $$
+</MathBox>
 
-### Row scaling transformation
-
+<MathBox title='Row-scaling transformation' boxType='definition'>
 The corresponding elementary matrix for scaling the $i$th row by $m \neq 0$ is a diagonal matrix with diagonal entries $1$ except in the $i$th position
 
 $$
-  \mathbf{D}_i (m) = \mathbf{T}_{i,j} = \begin{bmatrix}
+  \mathbf{D}_i (m) = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
     & & 1 & & & & \\
@@ -190,32 +191,154 @@ $$
     m \quad& k = l, k = i
   \end{cases}
 $$
+</MathBox>
 
-### Row addition transformation
-
-The corresponding elementary matrix for adding the $j$th row multiplied by a scalar $m$ to the $i$th row is the identity matrix with an $m$ in the $(i,j)$th entry
+<MathBox title='Row addition transformation' boxType='definition'>
+The corresponding elementary matrix for adding the $j$th row multiplied by a scalar $\lambda \in\mathbb{F}$ to the $i$th row is the identity matrix with an $\lambda$ in the $(i,j)$th entry. This is an $n\times n$ matrix $\mathbf{Z}_{i,j}(\lambda) = \mathbf{Z}_{i+\lambda j} \in \mathcal{M}_n (\mathbb{F})$ of the form
 
 $$
-  \mathbf{L_h}_{i,j} (m) = \mathbf{T}_{i,j} = \begin{bmatrix}
+  \mathbf{Z}_{i+\lambda j} = \begin{bmatrix}
     1 & & & & & & \\
     & \ddots & & & & & \\
     & & 1 & & & & \\
     & & & \ddots & & & \\
-    & & m & & 1 & & \\
+    & & \lambda & & 1 & & \\
     & & & & & \ddots & \\
     & & & & & & 1
   \end{bmatrix}
 $$
 
-The entries of $\mathbf{L}_{i,j}(m)$ are given by
+The entries of $\mathbf{Z}_{i+\lambda j}$ are given by
 
 $$
-  [\mathbf{L}_{i,j}(m)]_{k,l} = \begin{cases} 
+  [\mathbf{Z}_{i+\lambda j}]_{k,l} = \begin{cases} 
     0 \quad& k\neq l, k\neq i, l\neq j \\
     1 \quad& k = l \\
-    m \quad& k = i, l = j
+    \lambda \quad& k = i, l = j
   \end{cases}
 $$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Consider an $m\times n$ matrix $\mathbf{A}\mathcal{M}_{m\times n}(\mathbb{F})$, and let $\mathbf{M} \in\mathcal{M}_{m\times n}(\mathbb{F})$ be a composition elementary row matrices. Then we have
+
+$$
+\begin{align*}
+  \ker(\mathbf{M}\mathbf{A}) =& \ker(\mathbf{A}) \\
+  \mathrm{ran}(\mathbf{M}\mathbf{A}) =& \mathbf{M}\;\ker(\mathbf{A})
+\end{align*}
+$$
+</MathBox>
+
+## Systems of linear equations
+
+A system of $m$ linear equation with $n$ unknowns and coefficients in $\mathbb{F}$ takes the form
+
+$$
+\begin{align*}
+  a_{11}x_1 + \cdots + a_{1n}x_n =& b_1 \\
+  \vdots & \\
+  a_{m1}x_1 + \cdots + a_{mn}x_n =& b_m 
+\end{align*}
+$$
+
+where $x_1,\dots,x_n$ are the unknowns, $a_{11},\dots,a_{mn}$ are the coefficients and $b_1,\dots,b_m$ are the constant terms. The system can be written as the linear combination
+
+$$
+  x_1 \begin{bmatrix} a_{11} \\ \vdots \\ a_{m1} \end{bmatrix} + \cdots + x_n \begin{bmatrix} a_{1n} \\ \vdots \\ a_{mn} \end{bmatrix} = \begin{bmatrix} b_1 \\ \vdots \\ b_m \end{bmatrix}
+$$
+
+which is equivalent to the matrix equation
+
+$$
+  \begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn} \end{bmatrix} \cdot \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix} = \begin{bmatrix} b_1 \\ \vdots \\ b_m \end{bmatrix}
+$$
+
+or in short form $\mathbf{A}\mathbf{x} = \mathbf{b}$, where $\mathbf{A} = (a_{i,j})_{1\leq i \leq m,\; 1\leq j\leq n} \in\mathcal{M}_{m, n} (\mathbb{F})$, $\mathbf{x} = (x_i)_{1\leq i \leq n}\in\mathbb{F}^n$ and $\mathbf{b} = (b_i)_{1\leq i \leq m}\in\mathbb{F}^m$.
+
+In its augmented form, the system is written as
+
+$$
+\left[\begin{array}{c c c|c}
+  a_{11} & \cdots & a_{1n} & b_1 \\ \vdots & \ddots & \vdots & \vdots \\ a_{m1} & \cdots & a_{mn} & b_m
+\end{array}\right]
+$$
+
+<MathBox title='Free and leading variables' boxType='definition'>
+Consider a system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ where $\mathbf{A}\in M_{m,n}(\mathbf{F})$, $\mathbf{x}\in\mathbb{F}^n$ and $\mathbf{b}\in\mathbb{F}^m$. In its row echelon form, all variables with no pivots in their columns are called *free variables*, while all variables with a pivot in their columns are called *leading variables*. The number of free variables is given by $\dim(\ker(\mathbf{A}))$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+For a system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ where $\mathbf{A}\in M_{m,n}(\mathbf{F})$, $\mathbf{x}\in\mathbb{F}^n$ and $\mathbf{b}\in\mathbb{F}^m$, the set of solutions $S := \Set{\tilde{\mathbf{x}} \in \mathbb{F}^n | \mathbf{A} \tilde{\mathbf{x}} = \mathbf{b}}$ is either an affine subspace $S = \mathbf{v}_0 + \ker(\mathbf{A})$ for $\mathbf{v}_0 \in\mathbf{v_0}\in\mathbb{F}^n$, the empty set, $S = \emptyset$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that $\mathbf{v}_0 \in S$ is a solution, i.e. $\mathbf{A}\mathbf{v}_0 = \mathbf{b}$. Set $\tilde{\mathbf{x}} := \mathbf{v}_0 + \mathbf{x}_0$ for $\mathbf{x}_0 \in\mathbb{F}^n$. Then 
+
+$$
+\begin{align*}
+  \tilde{\mathbf{x}}\in S \iff& \mathbf{A}\tilde{\mathbf{x}} = \mathbf{A}(\mathbf{v}_0 + \mathbf{x}_0) = \mathbf{b} \\
+  \iff& \underbrace{\mathbf{A}\mathbf{v}_0}_{=\mathbf{b}} + \mathbf{A}\mathbf{x}_0 = \mathbf{b} \\
+  \iff& \mathbf{A}\mathbf{x}_0 = \mathbf{0} \\
+  \iff& \mathbf{x}_0 \in\ker(\mathbf{A})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+For a system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ where $\mathbf{A}\in M_{m,n}(\mathbf{F})$, $\mathbf{x}\in\mathbb{F}^n$ and $\mathbf{b}\in\mathbb{F}^m$, the set of solutions $S := \Set{\tilde{\mathbf{x}} \in \mathbb{F}^n | \mathbf{A} \tilde{\mathbf{x}} = \mathbf{b}}$ is either an affine subspace $S = \mathbf{v}_0 + \ker(\mathbf{A})$ for $\mathbf{v}_0 \in\mathbf{v_0}\in\mathbb{F}^n$, the empty set, $S = \emptyset$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that $\mathbf{v}_0 \in S$ is a solution, i.e. $\mathbf{A}\mathbf{v}_0 = \mathbf{b}$. Set $\tilde{\mathbf{x}} := \mathbf{v}_0 + \mathbf{x}_0$ for $\mathbf{x}_0 \in\mathbb{F}^n$. Then 
+
+$$
+\begin{align*}
+  \tilde{\mathbf{x}}\in S \iff& \mathbf{A}\tilde{\mathbf{x}} = \mathbf{A}(\mathbf{v}_0 + \mathbf{x}_0) = \mathbf{b} \\
+  \iff& \underbrace{\mathbf{A}\mathbf{v}_0}_{=\mathbf{b}} + \mathbf{A}\mathbf{x}_0 = \mathbf{b} \\
+  \iff& \mathbf{A}\mathbf{x}_0 = \mathbf{0} \\
+  \iff& \mathbf{x}_0 \in\ker(\mathbf{A})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Solvability of a system linear equation' boxType='proposition'>
+For $\mathbf{A}\in M_{m,n}(\mathbf{F})$ and $\mathbf{b}\in\mathbb{F}^m$, the following claims are equivalent
+1. The system $\mathbf{A}\mathbf{x} = \mathbf{b}$ has at least one solution.
+2. $\mathbf{b}\in\mathrm{ran}(\mathbf{A})$
+3. $\mathbf{b}$ can be written as a linear combination of the columns of $\mathbf{A}$
+4. All zero rows of the row echelon form a of the system have zero constant terms.
+
+<details>
+<summary>Proof</summary>
+
+**(1)** $\iff$ **(2)** is given by the definition of $\mathrm{ran}(\mathbf{A})$.
+**(2)** $\iff$ **(3)** is given by the column representation of $\mathrm{ran}(\mathbf{A})$
+
+$$
+  \mathrm{ran}(A) = \Set{[\mathbf{a}_1 \cdots \mathbf{a_n}]\mathbf{x} | \mathbf{x}\in\mathbb{F}^n}
+$$
+
+**(4)** $\implies$ **(1)** follows from the fact that $\mathrm{rank}(\mathbf{A}) = \mathrm{rank}([\mathbf{A}|\mathbf{b}])$
+
+**(1)** $\implies$ **(4)** can be shown by contraposition. Assume that the row echelon form of $[\mathbf{A}|\mathbf{b}]$ has a zero row with a non-zero constant term. This implies that the system is not solvable, i.e. there is no solution for $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+</details>
+</MathBox>
+
+<MathBox title='Uniqueness for solutions of a system linear equation' boxType='proposition'>
+For $\mathbf{A}\in M_{m,n}(\mathbf{F})$, the following claims are equivalent
+1. The system $\mathbf{A}\mathbf{x} = \mathbf{b}$ has at most one solution for every $\mathbf{b}\in\mathbb{F}^n$.
+2. $\ker(\mathbf{A}) = \Set{\mathbf{0}}$
+3. The row echelon form of $\mathbf{A}\mathbf{x} = \mathbf{b}$ has no free variables.
+4. $\mathrm{rank}(\mathbf{A}) = n$
+5. The linear map $f_{\mathbf{A}}:\mathbb{F}^n \to\mathbb{F}^m$ by $\mathbf{x}\mapsto \mathbf{A}\mathbf{x}$ is injective. 
+
+For square matrices, i.e. $\mathbf{A}\in M_{n,n}(\mathbf{F})$, it follows that $\ker(\mathbf{A}) = \Set{0} \iff \mathrm{ran}(\mathbf{A}) = \mathbb{F}^n$, or equivalently that $f_\mathbf{A}$ is bijective.
+</MathBox>
 
 ## Determinants
 
@@ -785,16 +908,16 @@ This process uniquely defines a linear transformation. If $\mathrm{T},\mathrm{S}
 
 <MathBox title='Kernel and range' boxType='definition'>
 A linear transformation $\mathrm{T}\in\mathcal{L}(V, W)$ has the following two principal subspaces:
-- the *kernel* (null space) of $\mathrm{T}$ is the set $\mathrm{ker}(\mathrm{T}):= \Set{\mathbf{v}\in V | \mathrm{T}(\mathbf{v}) = \mathbf{0}}$
+- the *kernel* (null space) of $\mathrm{T}$ is the set $\ker(\mathrm{T}):= \Set{\mathbf{v}\in V | \mathrm{T}(\mathbf{v}) = \mathbf{0}}$
 - the *range* (image) of $\mathrm{T}$ is the set $\mathrm{ran}(\mathrm{T}):= \Set{\mathrm{T}(\mathbf{v}) | \mathbf{v}\in V}$
 
-The dimension of $\mathrm{ker}(\mathrm{T})$ is called the *nullity* of $\mathrm{T}$ and is denoted $\mathrm{null}(\mathrm{T})$. The dimension of $\mathrm{ran}(\mathrm{T})$ is called the *rank* of $\mathrm{T}$ is denoted $\mathrm{rank}(\mathrm{T})$.
+The dimension of $\ker(\mathrm{T})$ is called the *nullity* of $\mathrm{T}$ and is denoted $\mathrm{null}(\mathrm{T})$. The dimension of $\mathrm{ran}(\mathrm{T})$ is called the *rank* of $\mathrm{T}$ is denoted $\mathrm{rank}(\mathrm{T})$.
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
 Let $\mathrm{T}\in\mathcal{L}(V, W)$, then
 1. $\mathrm{T}$ is surjective if and only if $\mathrm{ran}(\mathrm{T}) = W$
-2. $\mathrm{T}$ is injective if and only if $\mathrm{ker}(\mathrm{T}) = \Set{\mathbf{0}}$
+2. $\mathrm{T}$ is injective if and only if $\ker(\mathrm{T}) = \Set{\mathbf{0}}$
 
 <details>
 <summary>Proof</summary>
@@ -802,10 +925,10 @@ Let $\mathrm{T}\in\mathcal{L}(V, W)$, then
 The first statement is merely a restatement of the definition of surjectivity. To show the second statement, note that
 
 $$
-  \mathrm{T}(u) = \mathrm{T}(v) \iff \mathrm{T}(u - u) = 0 \iff u - v \in\mathrm{ker}(\mathrm{T})
+  \mathrm{T}(u) = \mathrm{T}(v) \iff \mathrm{T}(u - u) = 0 \iff u - v \in\ker(\mathrm{T})
 $$
 
-Thus, if $\mathrm{ker}(\mathrm{T}) = \Set{0}$ then $\mathrm{T}(u) = \mathrm{T}(v) \iff u = v$, showing that $f$ is injective. Conversely, if $\mathrm{T}$ is injective and $u\in\mathrm{ker}(\mathrm{T})$, then $\mathrm{T}(u) = \mathrm{T}(0) \iff u = 0$. Hnece $\mathrm{ker}(\mathrm{T}) = \Set{\mathbf{0}}$.
+Thus, if $\ker(\mathrm{T}) = \Set{0}$ then $\mathrm{T}(u) = \mathrm{T}(v) \iff u = v$, showing that $f$ is injective. Conversely, if $\mathrm{T}$ is injective and $u\in\ker(\mathrm{T})$, then $\mathrm{T}(u) = \mathrm{T}(0) \iff u = 0$. Hnece $\ker(\mathrm{T}) = \Set{\mathbf{0}}$.
 </details>
 </MathBox>
 
@@ -837,7 +960,7 @@ For $n\in\N$, any $n$-dimensinoal vector space over $\mathbb{F}$ is isomorphic t
 ## Rank-nullity theorem
 
 <MathBox title='' boxType='proposition'>
-Let $\mathrm{T}\in\mathcal{L}(V,W)$. Any complement of $\mathrm{ker}(\mathrm{T})$ is isomorphic to $\mathrm{ran}(\mathrm{T})$.
+Let $\mathrm{T}\in\mathcal{L}(V,W)$. Any complement of $\ker(\mathrm{T})$ is isomorphic to $\mathrm{ran}(\mathrm{T})$.
 
 <details>
 <summary>Proof</summary>
@@ -845,22 +968,22 @@ Let $\mathrm{T}\in\mathcal{L}(V,W)$. Any complement of $\mathrm{ker}(\mathrm{T})
 Let $\mathrm{T}\in\mathcal{L}(V,W)$. Since any subspace of $V$ has a complement, we can write
 
 $$
-  V = \mathrm{ker}(\mathrm{T}) \oplus\mathrm{ker}(\mathrm{T})^c
+  V = \ker(\mathrm{T}) \oplus\ker(\mathrm{T})^c
 $$
 
-where $\mathrm{ker}(\mathrm{T})^c$ is the complement of $\mathrm{ker}(\mathrm{T})$. The restriction of $\mathrm{T}$ to $\mathrm{ker}(\mathrm{T})^c$, denoted $\mathrm{T}^c:\mathrm{ker}(\mathrm{T})^c \to W$ is injective since
+where $\ker(\mathrm{T})^c$ is the complement of $\ker(\mathrm{T})$. The restriction of $\mathrm{T}$ to $\ker(\mathrm{T})^c$, denoted $\mathrm{T}^c:\ker(\mathrm{T})^c \to W$ is injective since
 
 $$
-  \mathrm{ker}(\mathrm{T}^c) = \mathrm{ker}(\mathrm{T}) \cap\mathrm{ker}(\mathrm{T})^c = \Set{\mathbf{0}}
+  \ker(\mathrm{T}^c) = \ker(\mathrm{T}) \cap\ker(\mathrm{T})^c = \Set{\mathbf{0}}
 $$
 
-Also, $\mathrm{ran}(\mathrm{T}^c)\subseteq \mathrm{ran}(\mathrm{T})$. For the reverse inclusion, if $\mathrm{T}\in\mathrm{ran}(f)$ then since $\mathbf{v} = \mathbf{u} + \mathbf{w}$ for $\mathbf{u}\in\mathrm{ker}(\mathrm{T})$ and $\mathbf{w}\in\mathrm{ker}(\mathrm{T})^c$, we have
+Also, $\mathrm{ran}(\mathrm{T}^c)\subseteq \mathrm{ran}(\mathrm{T})$. For the reverse inclusion, if $\mathrm{T}\in\mathrm{ran}(f)$ then since $\mathbf{v} = \mathbf{u} + \mathbf{w}$ for $\mathbf{u}\in\ker(\mathrm{T})$ and $\mathbf{w}\in\ker(\mathrm{T})^c$, we have
 
 $$
   \mathrm{T}(\mathbf{v}) = \mathrm{T}(\mathbf{u}) + \mathrm{T}(\mathbf{w}) = \mathrm{T}(\mathbf{w}) = \mathrm{T}^c(\mathbf{w}) \in\mathrm{ran}(\mathrm{T}^c)
 $$
 
-Thus $\mathrm{ran}(\mathrm{T}^c) = \mathrm{ran}(\mathrm{T})$ and it follows that $\mathrm{ker}(\mathrm{T})^c \cong \mathrm{ran}(\mathrm{T})$.
+Thus $\mathrm{ran}(\mathrm{T}^c) = \mathrm{ran}(\mathrm{T})$ and it follows that $\ker(\mathrm{T})^c \cong \mathrm{ran}(\mathrm{T})$.
 </details>
 </MathBox>
 
@@ -869,7 +992,7 @@ For any $\mathrm{T}\in\mathcal{L}(V,W)$
 
 $$
 \begin{gather*}
-  \dim(\mathrm{ker}(\mathrm{T})) + \dim(\mathrm{ran}(\mathrm{T})) = \dim(V) \\
+  \dim(\ker(\mathrm{T})) + \dim(\mathrm{ran}(\mathrm{T})) = \dim(V) \\
   \mathrm{rank}(\mathrm{T}) + \mathrm{null}(\mathrm{T}) = \dim(V)
 \end{gather*}
 $$
@@ -1439,7 +1562,7 @@ $$
   \pi_S (\mathbf{v}) = \mathbf{v} + S
 $$
 
-is a surjective linear transformation with $\mathrm{ker}(\pi_S) = S$.
+is a surjective linear transformation with $\ker(\pi_S) = S$.
 
 <details>
 <summary>Details</summary>
@@ -1461,12 +1584,12 @@ To determine the kernel of $\pi_S$, note that
 
 $$
 \begin{align*}
-  \mathbf{v}\in \mathrm{ker}(\pi_S) \iff& \pi_S(\mathbf{v}) = \mathbf{0} \\
+  \mathbf{v}\in \ker(\pi_S) \iff& \pi_S(\mathbf{v}) = \mathbf{0} \\
   \iff& \mathbf{v} + S = S \iff \mathbf{v}\in S
 \end{align*}
 $$
 
-Hence $\mathrm{ker}(\pi_S) = S$.
+Hence $\ker(\pi_S) = S$.
 </details>
 </MathBox>
 
@@ -1500,13 +1623,13 @@ Let $S$ be a subspace of $V$. Then the function that assigns to each intermediat
 </LatexFig>
 
 <MathBox title='Universal property' boxType='theorem'>
-Let $S$ be a subspace of $V$ and let $\mathrm{T}\in\mathcal{L}(V,W)$ satisfy $S\subseteq\mathrm{ker}(\mathrm{T})$. Then there is a unique linear transformation $\mathrm{T}':V/S\to W$ with the property that 
+Let $S$ be a subspace of $V$ and let $\mathrm{T}\in\mathcal{L}(V,W)$ satisfy $S\subseteq\ker(\mathrm{T})$. Then there is a unique linear transformation $\mathrm{T}':V/S\to W$ with the property that 
 
 $$
   \mathrm{T}' \circ \pi_S = \mathrm{T}
 $$
 
-and $\mathrm{ker}(\mathrm{T}') = \mathrm{ker}(\mathrm{T})/S$ and $\mathrm{ran}(\mathrm{T}') = \mathrm{ran}(\mathrm{T})$.
+and $\ker(\mathrm{T}') = \ker(\mathrm{T})/S$ and $\mathrm{ran}(\mathrm{T}') = \mathrm{ran}(\mathrm{T})$.
 
 <details>
 <summary>Details</summary>
@@ -1530,7 +1653,7 @@ $$
   \mathbf{v} + S = \mathbf{u} + S \implies& \mathrm{T}(\mathbf{v}) = \mathrm{T}(\mathbf{u}) \\
   \mathbf{v} - \mathbf{u} \in S \implies& \mathrm{T}(\mathbf{v} - \mathbf{u}) = \mathbf{0} \\
   \mathbf{x}\in S \implies& \mathrm{T}(\mathbf{x}) = \mathbf{0} \\
-  S \subseteq& \mathrm{ker}(\mathrm{T})
+  S \subseteq& \ker(\mathrm{T})
 \end{align*}
 $$
 
@@ -1548,9 +1671,9 @@ and
 
 $$
 \begin{align*}
-  \mathrm{ker}(\mathrm{T}') =& \Set{\mathbf{v} + S | \mathrm{T}'(\mathbf{v} + S) = \mathbf{0} } \\
+  \ker(\mathrm{T}') =& \Set{\mathbf{v} + S | \mathrm{T}'(\mathbf{v} + S) = \mathbf{0} } \\
   =& \Set{\mathbf{v} + S | \mathrm{T}(\mathbf{v}) = \mathbf{0} } \\
-  =& \Set{\mathbf{v} + S | \mathbf{v}\in\mathrm{ker}(\mathrm{T}) } 
+  =& \Set{\mathbf{v} + S | \mathbf{v}\in\ker(\mathrm{T}) } 
   =& \mathrm{ran}(\mathrm{T})/S
 \end{align*}
 $$
@@ -1560,16 +1683,16 @@ The uniqueness of $\mathrm{T}'$ is evident.
 </MathBox>
 
 <MathBox title='First isomorphism theorem' boxType='theorem'>
-For $\mathrm{T}\in\mathcal{L}(V,W)$, the linear transformation $\mathrm{T}':V/\mathrm{ker}(\mathrm{T}) \to W$ defined by
+For $\mathrm{T}\in\mathcal{L}(V,W)$, the linear transformation $\mathrm{T}':V/\ker(\mathrm{T}) \to W$ defined by
 
 $$
-  \mathrm{T}'(\mathbf{v} + \mathrm{ker}(\mathrm{T})) = \mathrm{T}(\mathbf{v})
+  \mathrm{T}'(\mathbf{v} + \ker(\mathrm{T})) = \mathrm{T}(\mathbf{v})
 $$
 
 is injective and 
 
 $$
-  V/\mathrm{ker}(\mathrm{T}) \cong \mathrm{ran}(\mathrm{T})
+  V/\ker(\mathrm{T}) \cong \mathrm{ran}(\mathrm{T})
 $$
 
 <details>
@@ -1599,7 +1722,7 @@ is called the projection onto $T$ along $S$ and satisfies
 $$
 \begin{align*}
   \mathrm{ran}(\mathrm{P}_T) =& T \\
-  \mathrm{ker}(\mathrm{P}_T) =& \Set{ \mathbf{s}+\mathbf{t}\in V | \mathbf{t} = \mathbf{0} } = S
+  \ker(\mathrm{P}_T) =& \Set{ \mathbf{s}+\mathbf{t}\in V | \mathbf{t} = \mathbf{0} } = S
 \end{align*}
 $$
 </MathBox>
@@ -1667,7 +1790,7 @@ $$
   \mathrm{T}(\mathbf{s} + \mathbf{t}) = \mathbf{s} + (S \cap T)
 $$
 
-is a well-defined surjective linear transformation with $\mathrm{ker}(\mathrm{T}) = T$. Hence, by the first isomorphism theorem $(S + T)/T \cong S/(S\cap T)$.
+is a well-defined surjective linear transformation with $\ker(\mathrm{T}) = T$. Hence, by the first isomorphism theorem $(S + T)/T \cong S/(S\cap T)$.
 </details>
 </MathBox>
 
@@ -1687,7 +1810,7 @@ $$
   \mathrm{T}(\mathbf{s} + S) = \mathbf{s} + T
 $$
 
-is a well-defined surjective linear transformation with $\mathrm{ker}(\mathrm{T}) = T/S$. Hence, by the first isomorphism theorem $\mathrm{T}(\mathbf{s} + S) = \mathbf{s} + T$.
+is a well-defined surjective linear transformation with $\ker(\mathrm{T}) = T/S$. Hence, by the first isomorphism theorem $\mathrm{T}(\mathbf{s} + S) = \mathbf{s} + T$.
 </details>
 </MathBox>
 
@@ -1707,7 +1830,7 @@ $$
   \mathrm{T}(\mathbf{v_1} + \mathbf{v_2}) \cong (\mathbf{v_1} + S, \mathbf{v_2} + S_2)
 $$
 
-is a well-defined since $V = V_1 \oplus V_2$ is a direct sum. It is also a surjective linear transformation with $\mathrm{ker}(\mathrm{T}) = S_1 \oplus S_2$. Hence, by the first isomorphism theorem $\mathrm{T}(\mathbf{v_1} + \mathbf{v_2}) \cong (\mathbf{v_1} + S, \mathbf{v_2} + S_2)$.
+is a well-defined since $V = V_1 \oplus V_2$ is a direct sum. It is also a surjective linear transformation with $\ker(\mathrm{T}) = S_1 \oplus S_2$. Hence, by the first isomorphism theorem $\mathrm{T}(\mathbf{v_1} + \mathbf{v_2}) \cong (\mathbf{v_1} + S, \mathbf{v_2} + S_2)$.
 </details>
 </MathBox>
 
@@ -1722,21 +1845,21 @@ Let $V$ be a vector space over $\mathbb{F}$. A linear transformation $f\in\mathc
 <MathBox title='' boxType='proposition'>
 1. For any nonzero vector $\mathbf{v}\in V\setminus\Set{\mathbf{0}}$, there exists a linear functional $f\in V^*$ for which $f(\mathbf{v}) \neq 0$.
 2. A vector $\mathbf{\mathbf{v}}\in V$ is zero if and only if $f(\mathbf{v}) = 0$ for all $f\in V^*$
-3. Let $f\in V^*$. If $f(\mathbf{x}) \neq 0$ then $V = \mathrm{span}\Set{\mathbf{v}} \oplus \mathrm{ker}(f)$.
+3. Let $f\in V^*$. If $f(\mathbf{x}) \neq 0$ then $V = \mathrm{span}\Set{\mathbf{v}} \oplus \ker(f)$.
 4. Two nonzero linear functionals $f,g\in V^*$ have the same kernel if and only if there is a nonzero scalar $\lambda$ such that $f = \lambda g$.
 
 <details>
 <summary>Proof</summary>
 
-**(3):** If $\mathbf{0}\neq\mathbf{v} \in \mathrm{span}\Set{\mathbf{x}}\cap\mathrm{ker}(f)$ then $f(\mathbf{v}) = 0$ and $\mathrm{v} = \lambda\mathbf{x}$ for $0 \neq \lambda a\in\mathbb{F}$ implying $f(\mathbf{x}) = 0$, which is false. Thus, $\mathrm{span}\Set{\mathbf{x}}\cap\mathrm{ker}(f) = \Set{\mathbf{0}}$ and the direct sum $S = \mathrm{ker}(\mathbf{x})\oplus\mathrm{ker}(f)$ exists. Also, for any $\mathbf{v}\in V$ we have
+**(3):** If $\mathbf{0}\neq\mathbf{v} \in \mathrm{span}\Set{\mathbf{x}}\cap\ker(f)$ then $f(\mathbf{v}) = 0$ and $\mathrm{v} = \lambda\mathbf{x}$ for $0 \neq \lambda a\in\mathbb{F}$ implying $f(\mathbf{x}) = 0$, which is false. Thus, $\mathrm{span}\Set{\mathbf{x}}\cap\ker(f) = \Set{\mathbf{0}}$ and the direct sum $S = \ker(\mathbf{x})\oplus\ker(f)$ exists. Also, for any $\mathbf{v}\in V$ we have
 
 $$
-  \mathbf{v} = \frac{f(\mathbf{v})}{f(\mathbf{x})}\mathbf{x} + \left(\mathbf{v} - \frac{f\mathbf{v}}{f(\mathbf{x})}\mathbf{x} \right) \in\mathrm{span}\Set{\mathbf{x}} + \mathrm{ker}(f)
+  \mathbf{v} = \frac{f(\mathbf{v})}{f(\mathbf{x})}\mathbf{x} + \left(\mathbf{v} - \frac{f\mathbf{v}}{f(\mathbf{x})}\mathbf{x} \right) \in\mathrm{span}\Set{\mathbf{x}} + \ker(f)
 $$
 
-and so $V = \mathrm{span}\Set{\mathbf{x}}\oplus\mathrm{ker}(f)$.
+and so $V = \mathrm{span}\Set{\mathbf{x}}\oplus\ker(f)$.
 
-**(4):** If $f = \lambda g$ for $\lambda\neq 0$ then $\mathrm{ker}(f) = \mathrm{ker}(g)$. Conversely, if $K = \mathrm{ker}(f) = \mathrm{ker}(g)$ then for $\mathbf{x}\notin K$, then by **(3)**
+**(4):** If $f = \lambda g$ for $\lambda\neq 0$ then $\ker(f) = \ker(g)$. Conversely, if $K = \ker(f) = \ker(g)$ then for $\mathbf{x}\notin K$, then by **(3)**
 
 $$
   V = \mathrm{span}\Set{\mathbf{x}}\oplus K
@@ -1841,7 +1964,7 @@ $$
 \end{align*}
 $$
 
-showing that $\mathrm{ker}(\mathrm{T}) = \Set{\mathbf{0}}$.
+showing that $\ker(\mathrm{T}) = \Set{\mathbf{0}}$.
 
 In the finite-dimensional case, since $\dim(V^{**}) = \dim(V^*) = \dim(V)$, it follows that $\mathrm{T}$ is also surjective, hence an isomorphism.
 </details>
@@ -2005,8 +2128,8 @@ for all $\mathbf{v}\in V$.
 
 <MathBox title='' boxType='proposition'>
 Let $\mathrm{T}\in\mathcal{L}(V,W)$, then
-1. $\mathrm{ker}(\mathrm{T}^\times) = \mathrm{ran}(\mathrm{T})^0$
-2. $\mathrm{ran}(\mathrm{T}^\times) = \mathrm{ker}(\mathrm{T})^0$
+1. $\ker(\mathrm{T}^\times) = \mathrm{ran}(\mathrm{T})^0$
+2. $\mathrm{ran}(\mathrm{T}^\times) = \ker(\mathrm{T})^0$
 
 <details>
 <summary>Proof</summary>
@@ -2014,15 +2137,15 @@ Let $\mathrm{T}\in\mathcal{L}(V,W)$, then
 **(1):**
 
 $$
-  \mathrm{ker}(\mathrm{T}^\times) =& \Set{ f\in W^* | \mathrm{T}^\times = 0 } \\
+  \ker(\mathrm{T}^\times) =& \Set{ f\in W^* | \mathrm{T}^\times = 0 } \\
   =& \Set{ f\in W^* | f(\mathrm{T}(V)) = \Set{0} } \\
   =& \Set{ f\in W^* | f(\mathrm{ran}(\mathrm{T})) = \Set{0} } \\
   =& \mathrm{ran}(\mathrm{T})^0
 $$
 
-**(2):** If $f = g\mathrm{T} = \mathrm{T}^\times g\in\mathrm{ran}(\mathrm{T}^\times)$ then $\mathrm{ker}(\mathrm{T})\subseteq \mathrm{ker}(f)$ and so $f\in\mathrm{ker}(\mathrm{T})^0$.
+**(2):** If $f = g\mathrm{T} = \mathrm{T}^\times g\in\mathrm{ran}(\mathrm{T}^\times)$ then $\ker(\mathrm{T})\subseteq \ker(f)$ and so $f\in\ker(\mathrm{T})^0$.
 
-For the reverse inlcusion, let $f\in\mathrm{ker}(\mathrm{T})^0\subseteq V^*$. On $K = \mathrm{ker}(\mathrm{T})$, there is no problem since $f$ and $\mathrm{T}^\times g = g\mathrm{T}$ agree on $K$ for any $g\in W^*$. Let $S$ be a complement of $\mathrm{ker}(\mathrm{T})$. Then $\mathrm{T}$ maps a basis $B = \Set{\mathbf{b}_i }_{i\in I}$ for $S$ to a linearly independent set $\mathrm{T}(B) = \Set{ \mathrm{T}(\mathbf{b}_i) }_{i\in I}\in W$, so we can define $g\in W^*$ any way we want on $\mathrm{T}(B)$. In particular, let $g\in W^*$ be defined by setting
+For the reverse inlcusion, let $f\in\ker(\mathrm{T})^0\subseteq V^*$. On $K = \ker(\mathrm{T})$, there is no problem since $f$ and $\mathrm{T}^\times g = g\mathrm{T}$ agree on $K$ for any $g\in W^*$. Let $S$ be a complement of $\ker(\mathrm{T})$. Then $\mathrm{T}$ maps a basis $B = \Set{\mathbf{b}_i }_{i\in I}$ for $S$ to a linearly independent set $\mathrm{T}(B) = \Set{ \mathrm{T}(\mathbf{b}_i) }_{i\in I}\in W$, so we can define $g\in W^*$ any way we want on $\mathrm{T}(B)$. In particular, let $g\in W^*$ be defined by setting
 
 $$
   g(\mathrm{T}(\mathbf{b}_i)) = f(\mathbf{b}_i),\; i\in I
