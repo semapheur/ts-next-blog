@@ -19,9 +19,11 @@ $$
 
 This notation can be abbreviated by writing the entries as $\mathbf{A} = (a_{i,j})_{1\leq i \leq m,\; 1\leq j\leq n}$. The set of $m\times n$ matrices with entries in a field $\mathbb{F}$ is denoted $\mathcal{M}_{m,n}(\mathbb{F}) = \mathbb{F}^{m \times n}$. For $n\times n$ matrices this set is denoted $\mathcal{M}_{n,n}(\mathbb{F}) = \mathbb{F}^{n \times n}$. 
 
-The *main diagonal* of an $m\times n$ matrix $\mathbf{A}$ is sequence of entries $(a_{i,i})_{i=1}^{\min\Set{m,n}}$. An $m\times n$ matrix $\mathbf{A}$ is called diagonal if its off-diagonal entries are zero, and denoted $\mathbf{A} = \mathrm{diag}(a_{i,i})_{i=1}^n$. A square matrix is *upper triangular* if all of its entries below the main diagonal are $0$. Similarly, a square matrix is *lower triangular* if all of its entries above the main diagonal are $0$. 
+The *main diagonal* of an $m\times n$ matrix $\mathbf{A}$ is sequence of entries $(a_{i,i})_{i=1}^{\min\Set{m,n}}$. An $m\times n$ matrix $\mathbf{A}$ is called diagonal if its off-diagonal entries are zero, and denoted $\mathbf{A} = \mathrm{diag}(a_{i,i})_{i=1}^n$. A square matrix is *upper triangular* if all of its entries below the main diagonal are $0$. Similarly, a square matrix is *lower triangular* if all of its entries above the main diagonal are $0$.
 
 The transpose of $\mathbf{A}\in \mathcal{M}_{m,n}$ is the matrix $\mathbf{A}^T$ defined by $[\mathbf{A}^T]_{i,j} = \mathbf{A}_{j,i}$. A matrix is symmetric if $\mathbf{A} = \mathbf{A}^T$ and skew-symmetric if $\mathbf{A}^T = -\mathbf{A}$. All $n\times n$ diagonal matrices are by definition symmetric.
+
+Suppose that $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ is an $n\times n$-matrix. For $1\leq k \leq n$, the $k$th leading principal minor of $\mathbf{A}$ is the $k\times k$ matrix $H_k = (a_{i,j})_{1\leq i \leq k,\; 1\leq j\leq k}$.
 
 The $n\times n$ identity matrix is defined as $\mathbf{I}_n := \mathrm{diag}(1)_{i=1}^n$ with $[\mathbf{I}_n]_{i,j} = \delta_{i,j}$ where $\delta_{i,j}$ is the Kronecker delta function
 
@@ -438,9 +440,12 @@ $$
 The determinant has the following properties for $\mathbf{A},\mathbf{B}\in\mathbb{M}_{n}(\mathbb{F})$
 1. $\det(\mathbf{AB}) = \det(\mathbf{A})\det(\mathbf{B})$
 2. $\mathbf{A}$ is invertible (nonsingular) if and only if $\det(\mathbf{A}) \neq 0$, in this case $\det(\mathbf{\mathbf{A}}^{-1}) = \frac{1}{\det(\mathbf{A})}$
-3. if $\mathbf{A}$ is an upper/lower triangular matrix, then $\det(\mathbf{A}) = \prod_{i=1}^n \mathbf{A}_{i,j}$
-4. if $\mathbf{M}$ an upper/lower block triangular matrix, i.e. of the form $\mathbf{M} = \left[\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{0} & \mathbf{C} \end{smallmatrix}\right]$ or $\mathbf{M} = \left[\begin{smallmatrix} \mathbf{A} & \mathbf{0} \\ \mathbf{B} & \mathbf{C} \end{smallmatrix}\right]$, then $\det(\mathbf{M}) = \det(\mathbf{A})\det(\mathbf{C})$
-5. if $\mathbf{M}$ is a block diagonal matrix, i.e. of the form
+3. If $\mathbf{A}$ is an upper/lower triangular matrix, then $\det(\mathbf{A}) = \prod_{i=1}^n \mathbf{A}_{i,j}$
+4. $\left|\begin{smallmatrix} \mathbf{A} & \mathbf{0} \\ \mathbf{C} & \mathbf{D} \end{smallmatrix}\right| = \det(\mathbf{A})\det(\mathbf{D}) = \left|\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{0} & \mathbf{D} \end{smallmatrix}\right|$
+5. If $\mathbf{A}$ is invertible then $\left|\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{smallmatrix}\right| = \det(\mathbf{A})\det(\mathbf{D - CA^{-1}B})$
+6. If $\mathbf{D}$ is invertible then $\left|\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{smallmatrix}\right| = \det(\mathbf{D})\det(\mathbf{A - BD^{-1}C})$
+7. If $\mathbf{C}$ and $\mathbf{D}$ commute, then $\left|\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{smallmatrix}\right| = \det(\mathbf{A}\mathbf{D} - \mathbf{B}\mathbf{C})$
+8. If $\mathbf{M}$ is a block diagonal matrix, i.e. of the form
 
 $$
   \mathbf{M} = \begin{bmatrix} 
@@ -451,7 +456,7 @@ $$
   \end{bmatrix}
 $$
 
-then $\det(\mathbf{M}) = \prod_{i=1}^n \mathbf{B}_{i,i}$.
+then $\det(\mathbf{M}) = \prod_{i=1}^n \mathbf{B}_i$.
 </MathBox>
 
 ### $2\times 2$-matrices
@@ -2394,10 +2399,50 @@ Let $V$ be an $\mathbb{F}$-vector space. The map $\langle\cdot, \cdot\rangle: V\
 3. **Conjugate symmetry:** $\langle \mathbf{v}, \mathbf{w}\rangle = \overline{\langle\mathbf{w}, \mathbf{v}\rangle}$
 </MathBox>
 
+<MathBox title='Norm' boxType='definition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. The *norm* on $V$ is a map $\lVert\cdot\rVert: V\to[0,\infty)$ defined by
+
+$$
+  \lVert \mathbf{x} \rVert := \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
+$$
+</MathBox>
+
+<MathBox title='Cauchy-Schwarz inequality' boxType='proposition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Then for all $\mathbf{x},\mathbf{y}\in V$ 
+1. $|\langle\mathbf{y}, \mathbf{x}\rangle| \leq \lVert\mathbf{x}\rVert \cdot \lVert\mathbf{y}\rVert$ 
+2. $|\langle\mathbf{y},\mathbf{x}\rangle| = \lVert\mathbf{x}\rVert\cdot \lVert\mathbf{x}\rVert$ if and only if $\mathbf{x}$ and $\mathbf{y}$ are linearly dependent
+
+<details>
+<summary>Proof</summary>
+
+In the trivial case $\mathbf{x} = \mathbf{0}$, we get $\langle \mathbf{y}, \underbrace{\mathbf{x}}_{0\mathbf{v}} \rangle = 0\langle \mathbf{y},\mathbf{x}\rangle = 0$ and $\lVert\mathbf{x}\rVert\cdot\lVert\mathbf{y}\rVert$.
+
+In the general case $\mathbf{x}\neq\mathbf{0}$, we want to show that $\left|\langle \mathbf{y}, \lVert\hat{\mathbf{x}}\rVert \right|\leq\lVert\mathbf{y}\rVert$ where $\frac{\mathbf{x}}{\lVert\mathbf{x}\rVert}$. For any $\lambda\in\R$, we have that
+
+$$
+\begin{align*}
+  0 \leq& \langle \mathbf{y} - \lambda\hat{\mathbf{x}}, \mathbf{y} - \lambda\hat{\mathbf{x}} \rangle \\
+  =& \langle \mathbf{y},\mathbf{y}\rangle - \lambda \hat{\mathbf{x},\mathbf{y}} \rangle - \lambda\langle\mathbf{y},\hat{\mathbf{x}}\rangle + \lambda^2 \langle\hat{\mathbf{x}},\hat{\mathbf{x}}\rangle \\
+  =& \lambda^2 + \lambda \underbrace{(-2\Re(\langle\mathbf{x},\hat{\mathbf{x}}\rangle))}_{p} + \underbrace{\lVert\mathbf{y}\rVert^2}_{q}
+\end{align*}
+$$
+
+The resulting quadratic polynomial has roots $\lambda_{1,2} = -\frac{p}{2} \pm \sqrt{\left(\frac{p}{2}\right)^2 - q}$. For the inequality to hold, the polynomial must either have a single real root or two imaginary roots. Thus, $\left(\frac{p}{2}\right)^2 - q \leq 0$, implying $|\Re(\langle\mathbf{y},\hat{\mathbf{x}}\rangle)| \leq \lVert\mathbf{y}\rVert$. This proves the Cauchy-Schwartz inequality for $\mathbb{F} = \R$. For $\mathbb{F} = \mathbb{C}$, note that $e^{i\phi}\langle \mathbf{y}, \hat{\mathbf{x}} \rangle = |\langle\mathbf{y},\hat{\mathbf{x}}\rangle|$. Thus, we get $|\Re(e^{i\phi}\langle\mathbf{y},\hat{\mathbf{x}}\rangle)| = |\Re(\langle\mathbf{y},e^{i\phi}\hat{\mathbf{x}}\rangle)| \leq \lVert\mathbf{y}\rVert$.
+</details>
+</MathBox>
+
+<MathBox title='Orthogonality' boxType='definition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Two vectors $\mathbf{x}, \mathbf{v}\in V$ are *orthogonal*, denoted $\mathbf{x}\perp\mathbf{y}$ if $\langle\mathbf{x},\mathbf{y}\rangle = 0$. For a nonempty subspace $M\subseteq V$, we define the *orthogonal complement*
+
+$$
+  M^\perp := \Set{\mathbf{x}\in V |\langle\mathbf{x},\mathbf{m}\rangle = 0 \forall\mathbf{m}\in M}
+$$
+</MathBox>
+
 <MathBox title='Positive definite matrix' boxType='definition'>
 An $n\times n$ matrix $\mathbf{A}\in\mathcal{M}_{n}(\mathbb{F})$ is *positive definite* if
-- $\mathbf{A}^* = \mathbf{A}$ (self-adjoint)
-- $\langle \mathbf{v}, \mathbf{A}\mathbf{v} \rangle > 0$ for all $\mathbf{v}\in \mathbb{F}^\n \setminus\Set{n}$
+1. $\mathbf{A}$ is Hermitian or self-adjoint, i.e. $\mathbf{A}^* = \mathbf{A}$
+2. $\langle \mathbf{v}, \mathbf{A}\mathbf{v} \rangle > 0$ for all $\mathbf{v}\in \mathbb{F}^n \setminus\Set{\mathbf{0}}$
 
 If $\mathbf{A}$ is a positive definite matrix, then the map $\langle\cdot, \cdot\rangle: \mathbb{F}\times\mathbb{F}\to\mathbb{F}$ defined by
 
@@ -2408,12 +2453,46 @@ $$
 defines an inner product in $\mathbb{F}^n$.
 </MathBox>
 
+<MathBox title="Sylvester's criterion" boxType='criterion'>
+A Hermitian matrix is positive definite if and only if all leading principle minors have a positive determinant.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathbf{M}$ is an $n\times n$ Hermitian matrix and let $\mathbf{M}_k$ for $k=\Set{1,\dots,n}$ be the leading principal minors. First assume that $\mathbf{M}$ is positive definite. If $\mathbf{x} = \left[\begin{smallmatrix} x_1 & \cdots & x_k & 0 & \cdots & 0 \end{smallmatrix}\right]^* = \left[\begin{smallmatrix} \mathbf{x}_k & \mathbf{0} \end{smallmatrix}\right]^*$ we note that $0 < \mathbf{x}^* \mathbf{M}\mathbf{x} = \mathbf{x}_k^* \mathbf{M}_k \mathbf{x}_k$. Equivalently, the eigenvalues of $\mathbf{M}_k$ are positive, implying that $\det(\mathbf{M}_k) > 0$ since the determinant is the product of the eigenvalues.
+
+The inverse implication can be shown inductively. The general form of an $(n+1)\times(n+1)$ Hermitian matrix is $\mathbf{M}_{n+1} = \left[\begin{smallmatrix} \mathbf{M}_n & \mathbf{v} \\ \mathbf{v}^* & d \end{smallmatrix}\right]$ where $\mathbf{v}\in\mathbb{F}^n$ and $d\in\mathbb{F}$. Suppose that the criterion holds for $\mathbf{M}_n$. Assuming that all the leading principle minors of $\mathbf{M}$ have positive determinants implies that $\det(\mathbf{M}_{n+1}) > 0$, $\det(\mathbf{M}) > 0$, and that $\mathbf{M}_n$ is positive definite by the inductive hypothesis. Denote $\mathbf{x} = \left[\begin{smallmatrix} \mathbf{x}_n \\ x_{n+1} \end{smallmatrix}\right]$, then
+
+$$
+  \mathbf{x}^* M_{n+1} \mathbf{x} = \mathbf{x}_n^* \mathbf{M}_n \mathbf{x}_n + x_{n+1}\mathbf{x}_n^* \mathbf{v} + \bar{x}_{n+1}\mathbf{v}^* \mathbf{x}_n + d|x_{n+1}|^2
+$$
+
+Completing the squares, we get
+
+$$
+\begin{align*}
+  &(\mathbf{x}^* + \mathbf{v}^* \mathbf{M}_n^{-1} \bar{x}_{n+1})\mathbf{M}_n (\mathbf{x} + x_{n+1}\mathbf{M}_n^{-1}\mathbf{v}) \\
+  &- |x_{n+1}|^2 \mathbf{v}^* \mathbf{M}_n^{-1}\mathbf{v} + d|x_{n+1}|^2 \\
+  =& (\mathbf{x} + \mathbf{c})^* \mathbf{M}_n (\mathbf{x} + \mathbf{c}) + |x_{n+1}|^2 (d - \mathbf{v}^* \mathbf{M}_n^{-1}\mathbf{v})
+\end{align*}
+$$
+
+where $\mathbf{c} = \mathbf{x}_{n+1} M_n^{-1} \mathbf{v}$. The first term is positive by the inductive hypothesis. It remains to check the sign of the second terms. Using the block determinant formula $\left|\begin{smallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{smallmatrix}\right| = \det(\mathbf{A})\det(\mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B})$ on $\mathbf{M}_{n+1}$ we obtain
+
+$$
+  \det(\mathbf{M}_{n+1}) = \det(\mathbf{M}_n)\det(d - \mathbf{v}^* \mathbf{M}_n^{-1}\mathbf{v}) > 0
+$$
+
+which implies $d - \mathbf{v}^* \mathbf{M}_n^{-1} \mathbf{v} > 0$. Hence, $\mathbf{x}^* \mathbf{M}\mathbf{x} > 0$.
+</details>
+</MathBox>
+
 <MathBox title='Properties of positive definite matrices' boxType='proposition'>
 For a self-adjoint $n\times n$ matrix $\mathbf{A}\in\mathcal{M}_{n}(\mathbb{F})$, the following claims are equivalent
 1. $\mathbf{A}$ is positive definite
 2. All eigenvalues of $\mathbf{A}$ are positive
-3. After Gaussian elimination (without scaling and exchanging rows) only with row operations $Z_{i + \lambda j}$, all pivots in the row echelon are positive.
-4. The determinants of leading principal minors of $\mathbf{A}$ are positive.
+3. After Gaussian elimination (without scaling and exchanging rows) only with row operations $\mathbf{Z}_{i + \lambda j}$, all pivots in the row echelon are positive.
+4. The determinants of leading principal minors of $\mathbf{A}$ are positive. **(Sylvester's criterion)**
 </MathBox>
 
 # Metric vector space
