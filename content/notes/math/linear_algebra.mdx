@@ -2482,7 +2482,7 @@ Hence, $\mathbf{p} = \frac{\langle\mathbf{r},\mathbf{x}\rangle}{\langle\mathbf{r
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subseteq V$ is a $k$-dimensional subspace with basis $B = (b_i)_{i=1}^k$. If $\mathbf{y}\in V$, then $\mathbf{y}\perp\mathbf{u}$ for all $\mathbf{u}\in U$ if and only if $\mathbf{y}\perp\mathbf{b}_i$ for all $i\in\Set{1,\dots,k}$.
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subseteq V$ is a $k$-dimensional subspace with basis $B = (\mathbf{b}_i)_{i=1}^k$. If $\mathbf{y}\in V$, then $\mathbf{y}\perp\mathbf{u}$ for all $\mathbf{u}\in U$ if and only if $\mathbf{y}\perp\mathbf{b}_i$ for all $i\in\Set{1,\dots,k}$.
 
 <details>
 <summary>Proof</summary>
@@ -2506,6 +2506,63 @@ Since $\sum_{i=1}^k \lambda_i \mathbf{b}_i \in U$ for all $\mathbf{\lambda}_i \i
 Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subsete V$ is a $k$-dimensional subspace. For $\mathbf{x}\in V$ and a decomposition $\mathbf{x} = \mathbf{p} + \mathbf{n}$ with $\mathbf{p}\in U$ and $\mathbf{n}\in U^\perp$, i.e. $\mathbf{n}\perp\mathbf{p}$, we call
 - $\mathbf{p}$ the *orthogonal projection* of $\mathbf{x}$ onto $U$
 - $\mathbf{n}$ the *normal component* of $\mathbf{x}$ with respect to $U$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subsete V$ is a $k$-dimensional subspace with basis $B = (\mathbf{b}_i)_{i=1}^k$. The orthogonal projection of $\mathbf{x}\in V$ onto $U$ takes the form
+
+$$
+  \mathbf{p} = \sum_{i=1}^k \lambda_i \mathbf{b}_i,\; \lambda_i \in\mathbb{F}
+$$
+
+Taking the orthogonal decomposition $\mathbf{x} = \mathbf{p} + \mathbf{n}$ with $\mathbf{p}\in U$ and $\mathbf{n}\in U^\perp$, we get for each $\mathbf{b}_i$ 
+
+$$
+  \langle\mathbf{b}_i, \mathbf{x}\rangle =& \langle \mathbf{b}_i,\mathbf{p} \rangle + \underbrace{\langle \mathbf{b}_i, \mathbf{n}\rangle}_{=0} \\
+  =& \left\langle \mathbf{b}_i, \sum_{j=1}^k \lambda_j \mathbf{b}_j \right\rangle \\
+  =& \sum_{j=1}^k \lambda_j \langle \mathbf{b}_i, \mathbf{b}_j \rangle 
+$$
+
+This gives a system of $k$ linear equations of the form
+
+$$
+\begin{bmatrix}
+  \langle\mathbf{b}_1,\mathbf{b}_1 \rangle & \cdots & \langle\mathbf{b}_1,\mathbf{b}_k \rangle \\
+  \vdots & \ddots & \vdots \\
+  \langle\mathbf{b}_k,\mathbf{b}_1 \rangle & \cdots & \langle\mathbf{b}_k,\mathbf{b}_k \rangle
+\end{bmatrix}\cdot \begin{bmatrix} \lambda_1 \\ \vdots \lambda_k \end{bmatrix} = \begin{bmatrix} \langle\mathbf{b}_1,\mathbf{x}\rangle \\ \vdots \\ \langle \mathbf{b}_k,\mathbf{x} \rangle \end{bmatrix}
+$$
+
+The coefficient matrix is called a Gramian matrix, denoted $\mathbf{G}(B)$. This system of linear equations has a unique solution if $\mathbf{G}(B)$ is invertible, or equivalently $\ker(\mathbf{G}(B)) = \Set{\mathbf{0}}$.
+
+<details>
+<summary>Proof</summary>
+
+To show that $\ker(G(B)) = \Set{\mathbf{0}}$, choose $\boldsymbol{\beta}\in\ker(G(B))$. From the resulting equation $\mathbf{G}(B)\boldsymbol{\beta} = \mathbf{0}$ we get for each $j\in\Set{1,\dots,k}$ that $\sum_{i=1}^k \beta_i \langle \mathbf{b}_j, \mathbf{b}_i\rangle = \left\langle \mathbf{b}_j, \sum_{i=1}^k \beta_i \mathbf{b}_i \right\rangle = \mathbf{0}$. Note that $\mathbf{y} = \sum_{i=1}^k \beta_i \mathbf \in U$. This shows that $\mathbf{y}$ is orthogonal to all $\mathbf{b}_j$, implying that $\mathbf{y}\in U^\perp$ as well. Since $U\cap U^\perp = \Set{0}$, it follows that $\mathbf{y} = \mathbf{0}$ and hence $\boldsymbol{\beta} = \mathbf{0}$.
+</details>
+</MathBox>
+
+<MathBox title='Approximation formula' boxType='proposition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subsete V$ is a $k$-dimensional subspace. The distance of any $\mathbf{x}\in V$ to $U$ is given by
+
+$$
+  \operatorname{dist}(\mathbf{x}, U) := \inf\Set{\lVert \mathbf{x}-\mathbf{u} \rVert | \mathbf{u}\in U \rVert} = \lVert \mathbf{x} - \mathbf{x}|_U \rVert
+$$
+
+<details>
+<summary>Proof</summary>
+
+For all $\mathbf{u}\in U$ we have 
+
+$$
+  \lVert \mathbf{x}-\mathbf{u} \rVert^2 =& \lVert \underbrace{(\mathbf{x} - \mathbf{x}|_U)}_{=\mathbf{n}} + \underbrace{\tilde{u}}_{(\mathbf{x}|_U - \mathbf{u})}_{\tilde{\mathbf{u}}\in U} \rVert^2 \\
+  =& \langle \mathbf{n} + \tilde{\mathbf{u}}, \mathbf{n} + \tilde{\mathbf{u}} \rangle \\
+  =& \langle\mathbf{n},\mathbf{n}\rangle + \underbrace{\langle\mathbf{n},\tilde{\mathbf{u}}\rangle}_{=\mathbf{0}} + \underbrace{\langle\tilde{\mathbf{u}},\mathbf{n}\rangle}_{=\mathbf{0}} + \langle\tilde{\mathbf{u}},\tilde{\mathbf{u}}\rangle \\
+  =& \lVert \mathbf{n} \rVert^2 + \underbrace{\lVert\tilde{\mathbf{u}}\rVert^2}_{\geq 0} \geq \lVert\mathbf{n}\rVert^2
+$$
+
+This shows that $\inf\Set{\lVert\mathbf{x}-\mathbf{u}\rVert | \mathbf{u}\in U} \geq \lVert\mathbf{n}\rVert$ with equality if and only iff $\tilde{\mathbf{u}} = \mathbf{0} \iff \mathbf{u} = \mathbf{x}|_U$.
+</details>
 </MathBox>
 
 ### Positive definite matrices
