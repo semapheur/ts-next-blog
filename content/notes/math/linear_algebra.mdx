@@ -1071,7 +1071,7 @@ $$
   \mathrm{T}(\alpha \mathbf{v} + \beta \mathbf{w}) = \alpha \mathrm{T}(\mathbf{v}) + \beta \mathrm{T}(\mathbf{w})
 $$
 
-for all $\alpha, \beta\in\mathbb{F}$ and $\mathbf{v}, \mathbf{w}\in V$. A linear transformation $\mathrm{T}: V\to V$ is called a *linear operator* on $V$. The set of all linear transformations from $V$ to $W$ is denoted $\mathcal{L}(V, W)$ and the set of all linear operators on $V$ is denoted $\mathcal{L}(V)$. 
+for all $\alpha, \beta\in\mathbb{F}$ and $\mathbf{v}, \mathbf{w}\in V$. A linear transformation $\mathrm{T}: V\to V$ is called a *linear operator* on $V$. The set of all linear transformations from $V$ to $W$ is denoted $\mathcal{L}(V, W) = \hom(V,W)$ and the set of all linear operators on $V$ is denoted $\mathcal{L}(V) = \hom(V,V)$. 
 
 The following terms are used to classify linear transformations and operators
 - **homomorphism:** linear transformation
@@ -1082,26 +1082,33 @@ The following terms are used to classify linear transformations and operators
 - **automorphism**: bijective linear operator
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
-1. The set $\mathcal{L}(V, W)$ is a vector space under ordinary addition of funtions and scalar multiplication of functions by elements of $\mathcal{F}$.
-2. If $\mathrm{T}\in\mathcal{L}(U, V)$ and $\mathrm{S}\in\mathcal{L}(V, W)$ then the composition $\mathrm{S}\circ \mathrm{T}: V\to W$
-3. If $\mathrm{T}\in\mathcal{L}(V, W)$ is bijective, then $\mathrm{T}^{-1}\in\mathcal{L}(W, V)$
-4. The vector space $\mathcal{L}$ is an algebra, where multiplication is composition of functions. The identity map $\mathrm{id}\in\mathcal{L}(V)$ is the multiplicative identity, and the zero map $0\in\mathcal{L}(V)$ is the additive identity.
+<MathBox title='Projection' boxType='definition'>
+A linear operator $\mathrm{P}\in\mathcal{L}(V)$ is a *projection* if $\mathrm{P}^2 = \mathrm{P}$.
+</MathBox>
 
-<details>
-<summary>Proof</summary>
+<MathBox title='Commutator' boxType='definition'>
+The *commutator* of $\mathrm{A},\mathrm{B}\in\mathcal{L}(V)$ is $[\mathrm{A},\mathrm{B}] := \mathrm{AB} - \mathrm{BA}$, which is $0$ if and only if $\mathrm{A}$ and $\mathrm{B}$ commute.
+</MathBox>
 
-Let $\mathrm{T}:V\to W$ be a bijective linear transformation. Then $\mathrm{T}^{-1}: W\to V$ is well-defined and since any two vectors $\mathbf{w}_1, \mathbf{w}_2\in W$ have the form $\mathbf{w}_1 = \mathrm{T}(\mathbf{v}_1)$ and $\mathbf{w}_2 = \mathrm{T}(\mathbf{v}_2)$ we have for $\alpha, \beta\in\mathbb{F}$
+<MathBox title='Sets of homomorphisms form vector spaces' boxType='proposition'>
+The set $\mathcal{L}(V, W)$ is a vector space under ordinary addition of funtions and scalar multiplication of functions by elements of $\mathcal{F}$.
+</MathBox>
+
+<MathBox title='Sets of endomorphism form vector spaces' boxType='proposition'>
+The set $\mathcal{L}(V)$ is a vector space and an algebra. It is an associative, but noncommutative algebra, where multiplication is composition of linear operators. The identity map $\mathrm{I} = \mathrm{id}\in\mathcal{L}(V)$ is the multiplicative identity, satisfying $\mathrm{I}\mathbf{v} = \mathbf{v}$. The zero map $0\in\mathcal{L}(V)$ is the additive identity.
+</MathBox>
+
+<MathBox title='Composition of linear transformations are linear' boxType='proposition'>
+If $\mathrm{T}:U\to V$ and $\mathrm{S}\in V\to W$ are linear then so is the composition $\mathrm{S}\circ \mathrm{T}: V\to W$. The composition $\mathrm{S}\circ\mathrm{T}$ is usually written $ST$.
+
+Composition of linear transformations is distributive w.r.t. addition. That is, if $\mathrm{P},\mathrm{T}:X\to U$ and $\mathrm{R}, \mathrm{S}:U\to V$, then
 
 $$
 \begin{align*}
-  \mathrm{T}^{-1}(\alpha \mathbf{w}_1 + \beta \mathbf{w}_2) =& \mathrm{T}^{-1}[\alpha \mathrm{T}(\mathbf{v}_1) + \beta \mathrm{T}(\mathbf{v}_2)] \\
-  =& \mathrm{T}^{-1}[\mathrm{T}(\alpha \mathbf{v}_1 + \beta \mathbf{v}_2)] \\
-  =& \alpha \mathbf{v}_1 + \beta \mathbf{v}_2 \\
-  =& \alpha \mathrm{T}^{-1}(\mathbf{w}_1) + \beta \mathrm{T}^{-1}(\mathbf{w}_2)
+  (\mathrm{R}+\mathrm{S})\circ T =& \mathrm{R}\circ \mathrm{T} + \mathrm{S}\circ\mathrm{T} \\
+  \mathrm{S}\circ (\mathrm{T}\circ\mathrm{P}) =& \mathrm{S}\circ\mathrm{T} + \mathrm{S}\circ\mathrm{P}
 \end{align*}
 $$
-</details>
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
@@ -1147,28 +1154,110 @@ Thus, if $\ker(\mathrm{T}) = \Set{0}$ then $\mathrm{T}(u) = \mathrm{T}(v) \iff u
 
 ## Isomorphism
 
-<MathBox title='Isomorphism' boxType='definition'>
-A bijective linear transformation $\mathrm{T}:V\to W$ is an isomorphism from $V$ to $W$. The vector space $V$ and $W$ are isomorphic, denoted $V \cong W$, if there is an isomorphism from $V$ to $W$.
+<MathBox title='Invertibility and isomorphism' boxType='definition'>
+A linear transformation $\mathrm{T}: V\to W$ is *invertible* if it is bijective. A bijective linear transformation $\mathrm{T}:V\to W$ is an isomorphism from $V$ to $W$. The vector space $V$ and $W$ are isomorphic, denoted $V \cong W$, if there is an isomorphism from $V$ to $W$. The inverse of $\mathrm{T}$ is denoted $\mathrm{T}^{-1}$.
 </MathBox>
 
 For any ordered basis $B$ of an $\mathbb{F}$-vector space $V$ with $\dim(V) = n$, the coordinate map $\varphi_B: V\to\mathbb{F}^n$ is an isomorphism. Hence, any $n$-dimensional vector space over $\mathbb{F}$ is isomorphic to $\mathbb{F}^n$.
 
 An isomorphism can be characterized as a linear transformation $\mathrm{T}:V\to W$ that maps a basis for $V$ to a basis for $W$.
 
-<MathBox title='Properties of isomorphisms' boxType='definition'>
+<MathBox title='Properties of isomorphisms' boxType='prosposition'>
 Let $\mathrm{T}\in\mathcal{L}(V, W)$ be an isomorphism. For $S\subseteq V$, then
 1. $S$ spans $V$ if and only if $\mathrm{T}(S)$ spans $W$.
 2. $S$ is linearly independent in $V$ if and only if $\mathrm{T}(S)$ is linearly independent in $W$.
 3. $S$ is a basis for $V$ if and only if $\mathrm{T}(S)$ is a basis for $W$.
 </MathBox>
 
-<MathBox title='Isomorphic spaces have same dimension' boxType='definition'>
+<MathBox title='Isomorphic spaces have same dimension' boxType='proposition'>
 Let $V$ and $W$ be vector spaces, then $V\cong W$ if and only if $\dim(V) = \dim(W)$.
 </MathBox>
 
-<MathBox title='' boxType='definition'>
-For $n\in\N$, any $n$-dimensinoal vector space over $\mathbb{F}$ is isomorphic to $\mathbb{F}^n$. If $B$ is a set of cardinality $|B| = \kappa$, then any $\kappa$-dimensional vector space over $\mathbb{F}$ is isomorphic to the vector space $(\mathbb{F}^B)_0$ of all functions from $B$ to $\mathbb{F}$ with finite support.
+<MathBox title='' boxType='proposition'>
+For $n\in\N$, any $n$-dimensional vector space over $\mathbb{F}$ is isomorphic to $\mathbb{F}^n$. If $B$ is a set of cardinality $|B| = \kappa$, then any $\kappa$-dimensional vector space over $\mathbb{F}$ is isomorphic to the vector space $(\mathbb{F}^B)_0$ of all functions from $B$ to $\mathbb{F}$ with finite support.
 </MathBox>
+
+<MathBox title='Properties of invertible linear transformations' boxType='proposition'>
+If $\mathbf{T}:U\to V$ is an invertible linear transformation, then
+1. $T^{-1}$ is linear, i.e. $T^{-1} \in\mathcal{L}(U, V)$
+2. $\mathrm{T}\mathrm{T}^{-1}$ and $\mathrm{T}^{-1}\mathrm{T}$ is the identity.
+3. If $\mathbf{S}:V\to W$ is invertible and $\mathrm{S}\mathrm{T}$ is defined, then it is invertible with $(\mathrm{S}\mathrm{T})^{-1} = \mathrm{T}^{-1}\mathrm{S}^{-1}$.
+
+<details>
+<summary>Proof</summary>
+
+**(1)**
+Let $\mathrm{T}:U\to V$ be a bijective linear transformation. Then $\mathrm{T}^{-1}: V\to U$ is well-defined and since any two vectors $\mathbf{v}_1, \mathbf{v}_2\in V$ have the form $\mathbf{v}_1 = \mathrm{T}(\mathbf{u}_1)$ and $\mathbf{v}_2 = \mathrm{T}(\mathbf{u}_2)$ we have for $\alpha, \beta\in\mathbb{F}$
+
+$$
+\begin{align*}
+  \mathrm{T}^{-1}(\alpha \mathbf{v}_1 + \beta \mathbf{v}_2) =& \mathrm{T}^{-1}[\alpha \mathrm{T}(\mathbf{u}_1) + \beta \mathrm{T}(\mathbf{u}_2)] \\
+  =& \mathrm{T}^{-1}[\mathrm{T}(\alpha \mathbf{u}_1 + \beta \mathbf{u}_2)] \\
+  =& \alpha \mathbf{u}_1 + \beta \mathbf{u}_2 \\
+  =& \alpha \mathrm{T}^{-1}(\mathbf{v}_1) + \beta \mathrm{T}^{-1}(\mathbf{v}_2)
+\end{align*}
+$$
+
+**(3)**
+
+<LatexFig width={50} src='/fig/invertible_composition.svg' alt=''
+  caption='Invertible composition'
+>
+```tex
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usetikzlibrary{cd}
+
+\begin{document}
+
+\begin{tikzcd}
+  U \arrow[r, bend left=50, "\mathrm{T}"] \arrow[rr, bend left=100, "\mathrm{S}\mathrm{T}"] & 
+  V \arrow[l, bend left=50, "\mathrm{T}^{-1}"] \arrow[r, bend left=50, "\mathrm{S}"]  &
+  W \arrow[l, bend left=50, "\mathrm{S}^{-1}"] \arrow[ll, bend left=100, "(\mathrm{S}\mathrm{T})^{-1} = \mathrm{T}^{-1}\mathrm{S}^{-1}"]
+\end{tikzcd}
+
+\end{document}
+```
+</LatexFig>
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $\mathrm{A}\in\mathcal{L}(V)$ is a left inverse of $\mathrm{B}\in\mathcal{L}(V)$, i.e. $\mathrm{A}\mathrm{B} = \mathrm{I}$, then it is also a right inverse, i.e. $\mathrm{B}\mathrm{A} = \mathrm{I}$.
+</MathBox>
+
+## Similarity
+
+<MathBox title='Similarity transformation' boxType='proposition'>
+The invertible elements of $\mathcal{L}(V)$ forms the general linear group, denoted $\mathrm{GL}_n (K)$, where $n = \dim(V)$. Every $\mathrm{S}\in\mathrm{GL}_n (K)$ defines a *similarity transformation* $\phi_\mathrm{S}$ of $\mathcal{L}(V)$, sending $\mathrm{M}\mapsto \mathrm{M_S} := \mathrm{SMS}^{-1}$, for each $\mathrm{M}\in\mathcal{L}(V)$. We say that $\mathrm{M}$ and $\mathrm{M_S}$ are *similar*.
+</MathBox>
+
+<MathBox title='Similarity transformations are automorphisms' boxType='proposition'>
+Every similarity transformation is an automorphism of $\mathcal{L}(V)$, satisfying
+
+$$
+\begin{align*}
+  (k\mathrm{M})_\mathrm{S} =& k\mathrm{M_S} \\
+  (\mathrm{M} + \mathrm{N})_\mathrm{S} =& \mathrm{M_S} + \mathrm{N_S} \\
+  (\mathrm{MN})_\mathrm{S} =& \mathrm{M_S N_S}
+\end{align*}
+$$
+
+The set of similarity transformation forms a group under $(\mathrm{M_S})_\mathrm{T} := \mathrm{M_{TS}}$, called the *inner automorphism group* of $\mathrm{GL}_n (K)$
+</MathBox>
+
+<MathBox title='Similarity is an equivalence relation' boxType='proposition'>
+Similarity is an equivalence relation $\sim$, satisfying
+1. **Reflexivity:** $\mathrm{M}\sim \mathrm{M}$
+2. **Symmetry:** $\mathrm{L}\sim\mathrm{M} \implies \mathrm{M}\sim\mathrm{L}$
+3. **Transitivity:** $\mathrm{L}\sim\mathrm{M} \land \mathrm{M}\sim\mathrm{N} \implies \mathrm{L}\sim\mathrm{N}$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If either $\mathrm{A}, \mathrm{B}\in\mathcal{L}(V)$ is invertible, then $\mathrm{AB}$ and $\mathrm{BA}$ are similar.
+</MathBox>
+
 
 ## Rank-nullity theorem
 
