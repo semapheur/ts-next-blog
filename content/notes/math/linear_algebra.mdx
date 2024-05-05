@@ -348,15 +348,11 @@ For square matrices, i.e. $\mathbf{A}\in M_{n,n}(\mathbb{F})$, it follows that $
 
 <MathBox title='Volume measure' boxType='definition'>
 The volume measure on $\R^n$ is the $n$-form $\operatorname{vol}_n : \prod_{i=1}^n \R^n \to\R$ satisfying for all $\mathbf{u}_1,\dots,\mathbf{u}_n \in\R$ 
-1. **Homogeneity:** For $\alpha\in\R$ and $j\in\Set{1,\dots,n}$
-$$
-  \operatorname{vol}_n (\mathbf{u}_1,\dots,\alpha \mathbf{u}_j,\dots,\mathbf{u}_n) = \alpha \operatorname{vol}_n (\mathbf{u}_1,\dots, \mathbf{u}_j,\dots,\mathbf{u}_n)
-$$
-2. **Linearity:** For $\mathbf{v}\in\R^n$ and $j\in\Set{1,\dots,n}$
+1. **Linearity:** For $\alpha,\beta\in\mathbb{F}$, $\mathbf{v}\in\R^n$ and $j\in\Set{1,\dots,n}$
 $$
 \begin{align*}
-  \operatorname{vol}_n (\mathbf{u}_1,\dots,\mathbf{u}_j + \mathbf{v},\dots,\mathbf{u}_n) =& \operatorname{vol}_n (\mathbf{u}_1,\dots, \mathbf{u}_j,\dots,\mathbf{u}_n) \\
-  &+ \operatorname{vol}_n (\mathbf{u}_1,\dots,\mathbf{v},\dots,\mathbf{u}_n)
+  \operatorname{vol}_n (\mathbf{u}_1,\dots,\alpha\mathbf{u}_j + \beta\mathbf{v},\dots,\mathbf{u}_n) =& \alpha\operatorname{vol}_n (\mathbf{u}_1,\dots, \mathbf{u}_j,\dots,\mathbf{u}_n) \\
+  &+ \beta\operatorname{vol}_n (\mathbf{u}_1,\dots,\mathbf{v},\dots,\mathbf{u}_n)
 \end{align*}
 $$
 3. **Antisymmetry:** For $i,j\in\Set{1,\dots,n}$ with $i\neq j$
@@ -371,10 +367,10 @@ $$
 The measure $\operatorname{vol}_n(\mathbf{u}_1,\dots,\mathbf{u}_n)$ gives the volume of the parallelepiped spanned by $\mathbf{u}_1,\dots,\mathbf{u}_n$.
 </MathBox>
 
-<MathBox title='Determinant' boxType='definition'>
+<MathBox title='Determinant of matrices' boxType='definition'>
 The determinant is a function $\det:\mathcal{M}_{n}(\mathbb{F}) \to\mathbb{F}$ with the following properties for $\mathbf{A} \in \mathcal{M}_{n}(\mathbb{F})$
 1. If $\mathbf{A} = \left[\begin{smallmatrix} \shortmid & ~ & \shortmid \\ \mathbf{a}_1 & \dots & \mathbf{a}_n \\ \shortmid & ~ & \shortmid \end{smallmatrix}\right]$ then $\operatorname{vol}_n (\mathbf{a}_1,\dots,\mathbf{a_n}) = |\det(\mathbf{A})|$ with the geometric interpretation that the column vectors of $\mathbf{A}$ span a parallelepiped.
-2. $\det(\mathbf{A}) = 0$ if and only if $\left[\begin{smallmatrix} \shortmid \\ \mathbf{a}_1 \\ \shortmid \end{smallmatrix}\right], \dots, \left[\begin{smallmatrix} \shortmid \\ \mathbf{a}_n \\ \shortmid \end{smallmatrix}\right]$ are linearly independent, or equivalently if $\mathbf{A}$ is not invertible.
+2. $\det(\mathbf{A}) = 0$ if and only if $\left[\begin{smallmatrix} \shortmid \\ \mathbf{a}_1 \\ \shortmid \end{smallmatrix}\right], \dots, \left[\begin{smallmatrix} \shortmid \\ \mathbf{a}_n \\ \shortmid \end{smallmatrix}\right]$ are linearly dependent, or equivalently if $\mathbf{A}$ is not invertible.
 3. the sign of $\det(\mathbf{A})$ gives the orientation of the parallelepiped spanned by $\mathbf{A}$. In particular, $\det(\mathbf{I}_n) = 1$.
 </MathBox>
 
@@ -424,20 +420,6 @@ This is precisely the definition of $\operatorname{sgn}: S_n \to \Set{-1,1}$ giv
 </details>
 </MathBox>
 
-<MathBox title='Laplace expansion' boxType='proposition'>
-Let $\mathbf{A} \in \mathcal{M}_{n}(\mathbb{F})$. The *Laplace expansion* of the determinant of $\mathbf{A}$ along the $i$th row is
-
-$$
-  \det(\mathbf{A}) = \sum_{j=1}^{n} (-1)^{i+j} a_{ij} \det(\mathbf{A}^{(\mathbf{i,j})})
-$$
-
-where $\mathbf{A}^{(\mathbf{i,j})}$ is the submatrix obtained by removing the $i$th row and the $j$th column of $\mathbf{A}$. Similarly, the Laplace expansion along the $j$th column is
-
-$$
-  \det(\mathbf{A}) = \sum_{i=1}^{n} (-1)^{i+j} a_{ij} \det(\mathbf{A}^{(\mathbf{i,j})})
-$$
-</MathBox>
-
 <MathBox title='Properties of the determinant' boxType='proposition'>
 The determinant has the following properties for $\mathbf{A},\mathbf{B}\in\mathbb{M}_{n}(\mathbb{F})$
 1. $\det(\mathbf{AB}) = \det(\mathbf{A})\det(\mathbf{B})$
@@ -459,6 +441,123 @@ $$
 $$
 
 then $\det(\mathbf{M}) = \prod_{i=1}^n \mathbf{B}_i$.
+</MathBox>
+
+### Laplace expansion
+
+<MathBox title='Minor and cofactor' boxType='proposition'>
+Let $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$, and let $\mathbf{A}_{ij}$ be the $(n-1)\times(n-1)$ matrix formed by removin the $i$th row and $j$th column.
+- The $(i,j)$ minor of $\mathbf{A}$ is $M_{ij} := \det(\mathbf{A}_{ij})$.
+- The $(i,j)$ cofactor of $\mathbf{A}$ is $C_{ij} := (-1)^{i+j} \det(\mathbf{A}_{ij})$
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ be an $n\times n$ matrix whose $j$th column is the canonical column vector $\mathbf{e}_i$. Then $\det(\mathbf{A}) = C_{ij}$.
+</MathBox>
+
+<MathBox title='Laplace expansion' boxType='theorem'>
+Let $\mathbf{A} \in \mathcal{M}_{n}(\mathbb{F})$. The *Laplace expansion* of the determinant of $\mathbf{A} = a_{ij}$ along the $i$th row is
+
+$$
+  \det(\mathbf{A}) = \sum_{j=1}^n a_{ij} C_{ij} = \sum_{j=1}^{n} (-1)^{i+j} a_{ij} \det(\mathbf{A}_{ij})
+$$
+
+Similarly, the Laplace expansion along the $j$th column is
+
+$$
+  \det(\mathbf{A}) = \sum_{i=1}^n a_{ij} C_{ij}
+$$
+</MathBox>
+
+### Cramer's rule
+
+<MathBox title='Adjugate matrix' boxType='definition'>
+Let $\mathbf{A}\in\mathcal{M}_n (\mathbf{F})$ be an $n\times n$-matrix. The *adjugate* of $\mathbf{A}$ is the transpose of the cofactor matrix $\mathbf{C}$ of $\mathbf{A}$
+
+$$
+  \operatorname{adj}(\mathbf{A}) = \mathbf{C}^T
+$$
+</MathBox>
+
+<MathBox title='Properties invertible matrices' boxType='proposition'>
+For an $n\times n$-matrix $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$, the following claims are equivalent
+1. $\mathbf{A}$ is invertible
+2. the columns of $\mathbf{A}$ are linearly independent
+3. the rows of $\mathbf{A}$ are linearly independent
+4. $\operatorname{rank}(\mathbf{A}) = n$
+5. $\operatorname{ker}(\mathbf{A}) = \Set{\mathbf{0}}$
+6. $\det(\mathbf{A}) \neq 0$
+7. $\mathbf{A}\mathbf{x} = \mathbf{b}$ has a unique solution for each $\mathbf{b}\in\mathbb{F}^n$
+</MathBox>
+
+<MathBox title="Cramer's rule" boxType='theorem'>
+Let $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ be an $n\times n$-matrix and suppose that $\mathbf{b}\in\mathbb{F}$. The solution $\mathbf{x}\in\mathbb{F}$ to the system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ with $\mathbf{x} = \sum_{j=1}^n x_j \mathbf{e}_j$ is 
+
+$$
+  x_k = \frac{1}{\det(\mathbf{A})} \sum_{i=1}^n b_i C_{ik} = \frac{1}{\det(\mathbf{A})}\det\begin{bmatrix}
+    \shortmid & \cdots & \shortmid & \shortmid & \shortmid & \cdots & \shortmid \\
+    \mathbf{a}_1 & \cdots & \mathbf{a}_{k-1} & \mathbf{b} & \mathbf{a}_{k+1} & \cdots & \mathbf{a}_n \\
+    \shortmid & \cdots & \shortmid & \shortmid & \shortmid & \cdots & \shortmid
+  \end{bmatrix}
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $\mathbf{A} = \left[\begin{smallmatrix} \shortmid & \cdots & \shortmid \\ \mathbf{a}_1 & \cdots & \mathbf{a}_n \\ \shortmid & \cdots & \shortmid \end{smallmatrix}\right]$, the system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ can be written as $\sum_{j=1}^n x_j\mathbf{a}_j = \mathbf{b}$. For each $k\in\Set{1,\n}$ define the matrix
+
+$$
+  \mathbf{A}_k = \begin{bmatrix}
+    \shortmid & \cdots & \shortmid & \shortmid & \shortmid & \cdots & \shortmid \\
+    \mathbf{a}_1 & \cdots & \mathbf{a}_{k-1} & \mathbf{b} & \mathbf{a}_{k+1} & \cdots & \mathbf{a}_n \\
+    \shortmid & \cdots & \shortmid & \shortmid & \shortmid & \cdots & \shortmid
+  \end{bmatrix}
+$$
+
+The determinant of $\mathbf{A}_k$ is
+
+$$
+\begin{align*}
+  \det{\mathbf{A}_k} =& \det(\mathbf{a}_1,\dots,\mathbf{a}_{k-1},\mathbf{u},\mathbf{a}_{k+1},\dots,\mathbf{n}) \\
+  =& \det\left(\mathbf{a}_1,\dots,\mathbf{a}_{k-1},\sum_{j=1}^n x_j\mathbf{a}_j,\mathbf{a}_{k+1},\dots,\mathbf{n} \right) \\
+  =& \sum_{j=1}^n x_j \det(\mathbf{a}_1,\dots,\mathbf{a}_{k-1},\mathbf{a}_j,\mathbf{a}_{k+1},\dots,\mathbf{n}) \\
+  =& x_k \det(\mathbf{a}_1,\dots,\mathbf{a}_{k-1},\mathbf{a}_k,\mathbf{a}_{k+1},\dots,\mathbf{n}) \\
+  =& x_k \det(\mathbf{A})
+\end{align*}
+$$
+
+Thus, $x_k = \frac{\det(\mathbf{A})}{\det(\mathbf{A})}$. Using the Laplace expansion for the determinant of $\mathbf{A}_k$ we get $\det(\mathbf{A}) = \sum_{i=1}^n b_i C_{ik}$. Hence
+
+$$
+  x_k = \frac{1}{\det(\mathbf{A})} \sum_{i=1}^n b_i C_{ik}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Formula for matrix inverse' boxType='theorem'>
+If $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ is an invertible $n\times n$-matrix, then the $(i,j)$-entry of its inverse $\mathbf{A}^{-1}$ is $[\mathbf{A}^{-1}]_{ij} = \frac{C_{ji}}{\det(\mathbf{A})}$ such that
+
+$$
+  \mathbf{A}^{-1} = \frac{\operatorname{adj}(\mathbf{A})}{\det(\mathbf{A})}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $\mathbf{A}$ is invertible then the system of linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$ for any $\mathbf{b}\in\mathbb{F}$ has a unique solution given by $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$. Thus, for each $k\in\Set{1,\dots,n}$ we have
+
+$$
+\begin{align*}
+  x_k = \sum_{j=1}^n [\mathbf{A}^{-1}]_{kj} u_j = \sum_{j=1}^n \frac{1}{\det(\mathbf{A})}C_{jk}u_j
+\end{align*}
+$$
+
+where the last equality follows from Cramer's rule. Hence
+
+$$
+  [\mathbf{A}^{-1}]_{ij} = \frac{1}{\det(\mathbf{A})}C_{ji}
+$$
+</details>
 </MathBox>
 
 ### $2\times 2$-matrices
@@ -566,18 +665,34 @@ $$
 ## Trace
 
 <MathBox title='Trace' boxType='definition'>
-The trace of an $n\times n$-matrix $\mathbf{A}$, denoted $\mathrm{tr}(\mathbf{A})$ is the sum of the elements on the main diagonal of $\mathbf{A}$
+The trace of an $n\times n$-matrix $\mathbf{A}$, denoted $\operatorname{tr}(\mathbf{A})$ is the sum of the elements on the main diagonal of $\mathbf{A}$
 
 $$
-  \mathrm{tr}(\mathbf{A}) = \sum_{i_1}^n a_{i,i}
+  \operatorname{tr}(\mathbf{A}) = \sum_{i_1}^n a_{i,i}
 $$
 </MathBox>
 
 <MathBox title='Properties of trace' boxType='proposition'>
-1. $\mathrm{tr}(\lambda\mathbf{A}) = \lambda\mathrm{tr}(\mathbf{A})$
-2. $\mathrm{tr}(\mathbf{A} + \mathbf{B}) = \mathrm{tr}(\mathbf{A}) + \mathrm{tr}(\mathbf{B})$
-3. $\mathrm{tr}(\mathbf{A}\mathbf{B}) = \mathrm{tr}(\mathbf{B}\mathbf{A})$
-4. $\mathrm{tr}(\mathbf{A}\mathbf{B}\mathbf{C}) = \mathrm{tr}(\mathbf{C}\mathbf{A}\mathbf{B}) = \mathrm{tr}(\mathbf{B}\mathbf{C}\mathbf{A})$
+1. **Linearity:**
+    - $\operatorname{tr}(\lambda\mathbf{A}) = \lambda\operatorname{tr}(\mathbf{A})$
+    - $\operatorname{tr}(\mathbf{A} + \mathbf{B}) = \operatorname{tr}(\mathbf{A}) + \operatorname{tr}(\mathbf{B})$
+2. **Commutativity:** $\operatorname{tr}(\mathbf{A}\mathbf{B}) = \operatorname{tr}(\mathbf{B}\mathbf{A})$
+3. $\operatorname{tr}(\mathbf{A}\mathbf{B}\mathbf{C}) = \operatorname{tr}(\mathbf{C}\mathbf{A}\mathbf{B}) = \operatorname{tr}(\mathbf{B}\mathbf{C}\mathbf{A})$
+
+<details>
+<summary>Proof</summary>
+
+**(3):**
+
+$$
+\begin{align*}
+  \mathbf{A}\mathbf{B}_{ii} =& \sum_{j=1}^n a_{ij}b_{ji} \\
+  \mathbf{B}\mathbf{A}_{ii} =& \sum_{j=1}^n b_{ij}a_{ji}
+\end{align*}
+$$
+
+Due to symmetry, we are free to exchange the indices $i$ and $j$. Thus, $\mathbf{A}\mathbf{B}_{ii} = \mathbf{B}\mathbf{A}_{ii}$, showing that $\operatorname{tr}(\mathbf{A}\mathbf{B}) = \operatorname{tr}(\mathbf{B}\mathbf{A})$.
+</details>
 </MathBox>
 
 # Vector space
@@ -2365,7 +2480,7 @@ $$
 
 Note that several notations are commonly used for the transpose of $\mathrm{T}$, including
 - $\mathrm{T}^\times$
-- $\mathrm{T}^#$
+- $\mathrm{T}^\#$
 - $\mathrm{T}'$
 - $\mathrm{T}^T$
 
@@ -2527,6 +2642,235 @@ $$
 $$
 
 Comparing the expression, we see that $[\mathrm{T}^*]_{C^*, B^*} = ([\mathrm{T}]_{B,C})^T$.
+</details>
+</MathBox>
+
+# Multilinear forms
+
+<MathBox title='Multilinear form' boxType='definition'>
+If $V_1,\dots,V_n$ are vector spaces over $\mathcal{F}$, an $n$-linear form is a function $f:V_1 \times\cdots\times V_k \to \mathbb{F}$ that is linear in each coordinate.
+</MathBox>
+
+<MathBox title='The set of multilinear forms form vector spaces' boxType='proposition'>
+Let $V$ be an $\mathbb{F}$-vector space with $\dim(V) = n$. The set of $k$-linear forms $V^{k\times} \to\mathbb{F}$, denoted $\mathcal{T}^k (V^*)$, is a vector space of dimension $n^k$.
+</MathBox>
+
+<MathBox title='Symmetric, skew-symmetric and alternating multilinear forms' boxType='definition'>
+Let $f: V^{k\times} \to\mathbb{F}$ be a $k$-linear form. For any permutation $\sigma\in S_k$, define the $k$-linear form $\sigma f$ by
+
+$$
+  (\sigma f)(\mathbf{v}_1,\dots,\mathbf{v}_k) = f(\mathbf{v}_{\sigma_1},\dots,\mathbf{v}_{\sigma_k})
+$$
+
+A $k$-linear form is
+1. *symmetric* if $\sigma f = f$ for every permutation $\sigma\in S_k$
+2. *skew-symmetric* if $\tau f = -f$ for every transposition $\tau\in S_k$
+3. *alternating* if $f(x_1,\dots,x_k) = 0$ whenever $x_i = x_j$ for $i \neq j$
+</MathBox>
+
+<MathBox title='Relation between alternating and skew-symmetric forms' boxType='proposition'>
+Every alternating form is skew-symmetric.
+
+<details>
+<summary>Proof</summary>
+
+Let $f: V^{k\times} \to\mathbb{F}$ be an alternating $k$-form, and choose $\mathbf{v}_i = \mathbf{v}_j$ for $i \neq j$. Without loss of generality we consider an alternating bilinear form $g:V\times V\to\mathbb{F}$, because all except two variables are fixed. Since $g$ is alternating, we have that
+
+$$
+\begin{align*}
+  0 =& g(\mathbf{v}_i + \mathbf{v}_j, \mathbf{v}_i + \mathbf{v}_j) \\
+  =& \underbrace{g(\mathbf{v}_i, \mathbf{v}_i)}_{=0} + \underbrace{g(\mathbf{v}_j, \mathbf{v}_j)}_{=0} + g(\mathbf{v_i}, \mathbf{v}_j) + g(\mathbf{v}_j, \mathbf{v_i}) \\
+  =& g(\mathbf{v_i}, \mathbf{v}_j) + g(\mathbf{v}_j, \mathbf{v_i})
+\end{align*}
+$$
+
+Rearranging gives $g(\mathbf{v_i}, \mathbf{v}_j) = -g(\mathbf{v}_j, \mathbf{v_i})$, showing that $g$ is skew-symmetric.
+</details>
+</MathBox>
+
+<MathBox title='Equivalence of skew-symmetric and alternating forms' boxType='corollary'>
+If $1 + 1 \neq 0$ in $\mathbb{F}$, then every skew-symmetric form is alternating. If $1 + 1 = 0 \iff 1 = -1$ in $\mathbb{F}$, then symmetry and skew-symmetry are equivalent. In this case, a $k$-linear form $f$ can be decomposed into a symmetric and a skew-symmetric part, i.e.
+
+$$
+  f = \underbrace{\sum_{\sigma \in S_n} \frac{1}{k!}f(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})}_{\text{symmetric}} + \underbrace{\sum_{\sigma \in S_n} \frac{1}{k!}\operatorname{sgn}(\sigma) f(\mathbf{v}_{\sigma(1)},\dots,\mathbf{v}_{\sigma(k)})}_{\text{skew-symmetric}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assume that $1 + 1 \neq 0$ in $\mathbb{F}$. Let $f: V^{k\times} \to\mathbb{F}$ be a skew-symmetric $k$-form. Without loss of generality we consider a skew-symmetric bilinear form $g:V\times V\to\mathbb{F}$, because all except two variables are fixed. Since $g$ is skew-symmetric
+
+$$
+\begin{align*}
+  & g(\mathbf{v}, \mathbf{v}) = -g(\mathbf{v}, \mathbf{v}) \\
+  \iff& 2g(\mathbf{v}, \mathbf{v}) = 0 \\
+  \iff& g(\mathbf{v}, \mathbf{v}) = 0
+\end{align*}
+$$
+
+Hence, $g$ is alternating if $2 \neq 0$ in $\mathbb{F}$.
+</details>
+</MathBox>
+
+<MathBox title='Alternating forms and linear dependence' boxType='proposition'>
+If $f: V^{k \times}\to\mathbb{F}$ is an alternating $k$-form and $\mathbf{v}_1,\dots,\mathbf{v}_k$ is linearly dependent, then $f(\mathbf{v}_1,\dots,\mathbf{v}_k) = 0$.
+
+<details>
+<summary>Proof</summary>
+
+The case $\mathbf{v}_1 = \cdots = \mathbf{v}_k = \mathbf{0}$ is trivial. Assume that $\mathbf{v}_j = \sum_{\substack{i=1 \\ i\neq j}}^k \lambda_i \mathbf{v}_i$, then
+
+$$
+\begin{align*}
+  f(\mathbf{v}_1,\dots,\mathbf{v}_j,\dots,\mathbf{v}_k) =& f\left(\mathbf{v}_1,\dots, \sum_{\substack{i=1 \\ i\neq j}}^k \lambda_i \mathbf{v}_i,\dots,\mathbf{v}_k \right) \\
+  =& \sum_{\substack{i=1 \\ i\neq j}}^k a_i f(\mathbf{v}_1,\dots,\mathbf{v}_i,\dots,\mathbf{v}_{j-1},\mathbf{v}_i,\mathbf{j+1},\dots,\mathbf{v}_k) \\
+  =& 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Alternating forms and linear independence' boxType='proposition'>
+Let $V$ be an $n$-dimensional $\mathbb{F}$-vector space. If $f: V^{k \times}\to\mathbb{F}$ is a nonzero alternating $n$-linear form and $B = \Set{\mathbf{b}_i}_{i=1}^{n}$ is a basis for $V$, then $f(\mathbf{b}_1,\dots,\mathbf{b}_n) \neq 0$.
+
+<details>
+<summary>Proof</summary>
+
+Choose $\mathbf{v}_1,\dots,\mathbf{v}_n \in V$ and write each $\mathbf{v}_i = \sum_{j=1}^n \lambda_{i,j}\mathbf{b}_j$, then
+
+$$
+\begin{align*}
+  f(\mathbf{v}_1,\dots,\mathbf{v}_n) =& f\left(\sum_{j=1}^n \lambda_{1,j}\mathbf{b}_j,\dots,\sum_{j=1}^n \lambda_{n,j}\mathbf{b}_j \right) \\
+  =& \sum_{\sigma\in S_n} c_\sigma f(\mathbf{b}_{\sigma(1)},\dots,\mathbf{b}_{\sigma(n)}) \\
+  =& f(\mathbf{b}_1,\dots,\mathbf{b}_n) \sum_{\sigma\in S_n} c_\sigma \operatorname{sgn}(\sigma)
+\end{align*}
+$$
+
+This show that $f(\mathbf{b}_1,\dots,\mathbf{b}_n) = 0 \implies f(\mathbf{\mathbf{v}_1,\dots,\mathbf{v}_n}$, contradicting that $f$ is nonzero.
+</details>
+</MathBox>
+
+<MathBox title='The subspace of alternating forms is 1-dimensional' boxType='corollary'>
+Let $V$ be an $n$-dimensional $\mathbb{F}$-vector space. The subspace of alternating linear $n$-forms is $1$-dimensional, that is
+1. Any two alternating $n$-linear forms on $V$ are linearly dependent.
+2. There is a nonzero alternating $n$-linear form on $V$. 
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $B = \Set{\mathbf{b}_i}_{i=1}^{n}$ is a basis for $V$ and assume that $g(\mathbf{e}_1,\dots,\mathbf{e}_n) = \lambda f(\mathbf{e}_1,\dots,\mathbf{e}_n)$. Then we need to show that $g(\mathbf{v}_1,\dots,\mathbf{v}_n) = \lambda g(\mathbf{v}_1,\dots,\mathbf{v}_n)$ for any $\mathbf{v}_1,\dots,\mathbf{v}_n \in V$
+
+$$
+\begin{align*}
+  g(\mathbf{v}_1,\dots,\mathbf{v}_n) =& g\left(\sum_{j=1}^n \lambda_{1,j}\mathbf{b}_j,\dots,\sum_{j=1}^n \lambda_{n,j}\mathbf{b}_j \right) \\
+  =& \sum_{\sigma\in S_n} c_\sigma g(\mathbf{b}_{\sigma(1)},\dots,\mathbf{b}_{\sigma(n)}) \\
+  =& g(\mathbf{b}_1,\dots,\mathbf{b}_n) \sum_{\sigma\in S_n} c_\sigma \operatorname{sgn}(\sigma) \\
+  =& lambda f(\mathbf{b}_1,\dots,\mathbf{b}_n) \sum_{\sigma\in S_n} c_\sigma \operatorname{sgn}(\sigma) \\
+  =& \lambda f(\mathbf{v}_1,\dots,\mathbf{v}_n)
+\end{align*}
+$$
+
+**(2):** This can be shown with induction on $k \leq n$ for a fixed $n$. The base $k=1$ is trivial since any nonzero $1$-form $V^* \ni f: V\to\mathbb{F}$ is by definition alternating. For the inductive hypothesis, assume that $f(\mathbf{v}_1,\dots,\mathbf{v}_n)$ is a nonzero alternating $k$-form. We need to construct a nonzero alternating $(k+1)$-form $g(\mathbf{v}_1,\dots,\mathbf{v}_{k+1})$.
+
+Let $U = \operatorname{span}(\mathbf{v}_1,\dots,\mathbf{v}_k)$ and $\mathbf{v}_{k+1} \notin U$. Choose $\ell\in U^0$ such that $\ell(\mathbf{v}_{k+1}) \neq 0$. Define
+
+$$
+\begin{align*}
+  g(\mathbf{v}_1,\dots,\mathbf{v}_{k+1}) =& -\underbrace{f(\mathbf{v}_1,\dots,\mathbf{v}_k)}_{\neq 0}\underbrace{\ell(\mathbf{v}_{k+1})}_{\neq 0} \\
+  =& -f(\mathbf{v}_1,\dots,\mathbf{v}_k)\ell(\mathbf{v}_{k+1}) \\
+  &+ \underbrace{\sum_{i=1} f(\mathbf{v}_1,\dots,\mathbf{v}_{i-1},\mathbf{v}_{k+1},\mathbf{v}_{i+1}\dots,\mathbf{v}_k)\ell(\mathbf{v}_i)}_{=0}
+  \neq& 0
+\end{align*}
+$$
+
+This shows that $g$ is a nonzero linear $(k+1)$-form. It remains to show that $g$ is alternating. In the case $\mathbf{v}_i = \mathbf{v}_j$ for $i, j < k+1$, the following terms of $g$ do not vanish
+
+$$
+\begin{align*}
+  g(\mathbf{v}_1,\dots,\mathbf{v}_{k+1}) =& f(\mathbf{v}_1,\dots,\mathbf{v}_{i-1},\mathbf{v}_{j},\mathbf{v}_{i+1}\dots,\mathbf{v}_k)\ell(\mathbf{v}_i) \\
+  &+ f(\mathbf{v}_1,\dots,\mathbf{v}_{j-1},\mathbf{v}_{i},\mathbf{v}_{j+1}\dots,\mathbf{v}_k)\ell(\mathbf{v}_j)
+\end{align*}
+$$
+
+Note that, $f(\mathbf{v}_1,\dots,\mathbf{v}_{i-1},\mathbf{v}_{j},\mathbf{v}_{i+1}\dots,\mathbf{v}_k) = -f(\mathbf{v}_1,\dots,\mathbf{v}_{j-1},\mathbf{v}_{i},\mathbf{v}_{j+1}\dots,\mathbf{v}_k)$, which shows that $g$ is alternating in this case.
+
+In the case $\mathbf{v}_i = \mathbf{v}_{k+1}$ for $i < k+1$, note that $\ell(\mathbf{v}_i) = 0$, since $\mathbf{v}_{k+1}\in U$. Thus, $g(\mathbf{v}_1,\dots,\mathbf{v}_{k+1}) = 0$ in this case.
+</details>
+</MathBox>
+
+## Determinant of linear operators
+
+Let $\mathrm{T}:V\to V$ be a linear operator on an $\mathbb{F}$-vector space $V$. For an alternating linear $n$-form $f$, define a new alternating $n$-form $\bar{\mathrm{T}}f : V^n \to \mathbb{F}$ by
+
+$$
+  (\bar{\mathrm{T}}f)(\mathbf{v}_1,\dots,\mathbf{v}_n) = f(\mathrm{T}\mathbf{v}_1,\dots,\mathrm{T}\mathbf{v}_n)
+$$
+
+That is, $\mathrm{T}$ induces a map $\bar{\mathrm{T}}$ on the ($1$-dimensional) space of alternating linear $n$-form mapping $f\mapsto \bar{\mathrm{T}}f$. However, since any linear map on a $1$-dimensional space is just scalar multiplication. Thus,
+
+$$
+  \bar{\mathrm{T}}: f \mapsto\lambda f,\; \lambda\in\mathbb{F}
+$$
+
+The scalar $\lambda$ is the *determinant* of $\mathrm{T}$. The determinant of $\mathrm{T}:\R^n \to \R^n$ is the unique alternating linear $n$-form satisfying $\mathrm{T}(\mathbf{e}_1,\dots,\mathbf{e}_n) = 1$, where $E = \Set{\mathbf{e}_i}_{i=1}^n$ is the canonical basis.
+
+<MathBox title='Universal property of the determinant' boxType='definition'>
+Let $V$ be an $n$-dimensional $\mathbb{F}$-vector space. Given a linear operator $\mathrm{T}:V\to V$, there exists a unique scalar $\lambda\in\mathbb{F}$ such that for every alternating linear $n$-form $f$
+
+$$
+  f(\mathrm{T}\mathbf{v}_1,\dots,\mathrm{T}\mathbf{v}_n) = \lambda f(\mathbf{v}_1,\dots,\mathbf{v},x_n)
+$$
+
+$$
+\begin{CD}
+V^n @>{\mathrm{T}^{n \times}}>> V^n \\
+@V{f}VV @VV{f}V \\
+\mathbb{F} @>>{\lambda}> \mathbb{F}
+\end{CD}
+$$
+</MathBox>
+
+<MathBox title='Properties of the determinant' boxType='definition'>
+Let $\mathrm{T}:V\to V$ be a linear operator on an $n$-dimensional $\mathbb{F}$-vector space $V$. 
+1. If $\mathrm{T}\mathbf{v} = \alpha\mathbf{v}$, then $\det(\mathrm{T}) = \alpha^n$
+2. $\det(0) = 0$ and $\det(\mathrm{I}) = 1$
+3. For any two linear operators $\mathrm{A},\mathrm{B}:V\to V$, then $\det(\mathrm{AB}) = \det(\mathrm{A})\det(\mathrm{B})$
+4. If $\mathrm{A}:V\to V$ is invertible, then $\det(\mathrm{A}^{-1}) = \frac{1}{\det(\mathrm{A})} \neq 0$ 
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Calculating $\det(\mathrm{T})$ gives
+
+$$
+\begin{align*}
+  (\bar{\mathrm{T}}f)(\mathbf{v}_1,\dots,\mathbf{v}_n) =& f(\mathrm{T}\mathbf{v}_1,\dots,\mathrm{T}\mathrm{v}) \\
+  =& f(\alpha\mathbf{v}_1,\dots,\alpha\mathbf{v}_n) \\
+  =& \alpha^n f(\mathbf{v}_1,\dots,\mathbf{v}_n)
+\end{align*}
+$$
+
+**(3):**
+
+$$
+\begin{align*}
+  \det(\mathrm{AB})f(\mathbf{v}_1,\dots,\mathbf{v}_n) =& (\bar{\mathrm{AB}}f)(\mathbf{v}_1,\dots,\mathbf{v}_n) \\
+  =& f(\mathrm{A}(\mathrm{B}\mathbf{v}_1),\dots,\mathrm{A}(\mathrm{B}\mathbf{v}_n)) \\
+  =& (\bar{\mathrm{A}}f)(\mathrm{B}\mathbf{v}_1,\dots,\mathrm{B}\mathbf{v}_n) \\
+  =& \det(\mathrm{A})f(\mathrm{B}\mathbf{v}_1,\dots,\mathrm{v}_n) \\
+  =& \det(\mathrm{A})(\bar{\mathrm{B}})(\mathbf{v}_1,\dots,\mathrm{v}_n) \\
+  =& \det(\mathrm{A}\det(\mathrm{B})f(\mathbf{v}_1,\dots,\mathbf{v}_n)
+\end{align*}
+$$
+
+**(4):** Noting that $\mathrm{AA}^{-1} = \mathrm{I}$ and $\det(\mathrm{I}) = 1$, we get
+
+$$
+\begin{gather*}
+  1 = \det(\mathrm{I}) = \det(\mathrm{AA}^{-1}) = \det(\mathrm{A})\det(\mathrm{A}^{-1}) \\
+  \iff \det(\mathrm{A}^{-1}) = \frac{1}{\det(\mathrm{A})} 
+\end{gather*}
+$$
 </details>
 </MathBox>
 
@@ -2716,6 +3060,14 @@ $$
 
 This shows that $\inf\Set{\lVert\mathbf{x}-\mathbf{u}\rVert | \mathbf{u}\in U} \geq \lVert\mathbf{n}\rVert$ with equality if and only iff $\tilde{\mathbf{u}} = \mathbf{0} \iff \mathbf{u} = \mathbf{x}|_U$.
 </details>
+</MathBox>
+
+<MathBox title='Orthonormal basis' boxType='proposition'>
+Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Suppose that $U\subseteq V$ is a $k$-dimensional subspace. A set $B = \Set{\mathbf{b}_i}_{i=1}^{m\leq k}$ is called
+- *orthogonal system* (OS) if $\langle\mathbf{b}_i,\mathbf{b}_j\langle = 0$ for all $i\neq j$
+- *orthonormal system* (ONS) if $\langle\mathbf{b}_i,\mathbf{b}_j\langle = \delta_{ij}$
+- *orthogonal basis* if it is an OS and a basis of $U$
+- *orthonormal basis* if it is an OSN and a basis of $U$
 </MathBox>
 
 ## Positive definite matrices
