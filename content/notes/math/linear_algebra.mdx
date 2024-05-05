@@ -23,7 +23,7 @@ The *main diagonal* of an $m\times n$ matrix $\mathbf{A}$ is sequence of entries
 
 The transpose of $\mathbf{A}\in \mathcal{M}_{m,n}(\mathbf{F})$ is the matrix $\mathbf{A}^T$ defined by $[\mathbf{A}^T]_{i,j} = \mathbf{A}_{j,i}$. A matrix is symmetric if $\mathbf{A} = \mathbf{A}^T$ and skew-symmetric if $\mathbf{A}^T = -\mathbf{A}$. All $n\times n$ diagonal matrices are by definition symmetric.
 
-The conjugate transpose (adjoint) of a complex $m\times n$ matrix $\mathbf{A}\in\mathcal{M}_{m,n}(\mathbb{C})$ is the matrix $\mathbf{A}^*$ defined by $[\mathbf{A}^*]_{i,j} = \overset{\mathbf{A}}_{j,i}$.
+The conjugate transpose (adjoint) of a complex $m\times n$ matrix $\mathbf{A}\in\mathcal{M}_{m,n}(\mathbb{C})$ is the matrix $\mathbf{A}^*$ defined by $[\mathbf{A}^*]_{i,j} = \overline{\mathbf{A}}_{j,i}$.
 
 Suppose that $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ is an $n\times n$-matrix. For $1\leq k \leq n$, the $k$th leading principal minor of $\mathbf{A}$ is the $k\times k$ matrix $H_k = (a_{i,j})_{1\leq i \leq k,\; 1\leq j\leq k}$.
 
@@ -1236,9 +1236,9 @@ Let $V$ be an $\mathbb{F}$-vector space. The invertible elements of $\mathcal{L}
 <MathBox title='Similarity transformations are automorphisms' boxType='proposition'>
 Every similarity transformation is an automorphism of $\mathcal{L}(V)$ for an $\mathbb{F}$-vector space $V$, satisfying for $\mathrm{M}\in\mathcal{L}(V)$, $\mathrm{S}\in\mathrm{GL}_n (\mathbb{F})$ and $\lambda\in\mathbb{F}$
 
-1. $(\lambda\mathrm{M})_\mathrm{S} =& \lambda\mathrm{M_S}$
-2. $(\mathrm{M} + \mathrm{N})_\mathrm{S} =& \mathrm{M_S} + \mathrm{N_S}$
-3. $(\mathrm{MN})_\mathrm{S} =& \mathrm{M_S N_S}$
+1. $(\lambda\mathrm{M})_\mathrm{S} = \lambda\mathrm{M_S}$
+2. $(\mathrm{M} + \mathrm{N})_\mathrm{S} = \mathrm{M_S} + \mathrm{N_S}$
+3. $(\mathrm{MN})_\mathrm{S} = \mathrm{M_S N_S}$
 
 The set of similarity transformation forms a group under $(\mathrm{M_S})_\mathrm{T} := \mathrm{M_{TS}}$, called the *inner automorphism group* of $\mathrm{GL}_n (\mathbb{F})$.
 
@@ -1322,7 +1322,11 @@ Any $m\times n$ matrix $\mathbf{A}$ over $\mathbb{F}$ defines a linear transform
 2. If $\mathrm{T}\in\mathcal{L}(\mathbb{F}^n,\mathbb{F}^m)$ then $\mathrm{T} = \mathrm{T}_\mathbf{A}$ where for the standard basis $E = \Set{ \mathbf{e}_i }_{i=1}^n$
 
 $$
-  \mathbf{A} = \begin{bmatrix} \mathrm{T}(\mathbf{e}_1) & \cdots & \mathrm{T}(\mathbf{e}_n) \end{bmatrix} \in\mathcal{M}_{m,n}(\mathbb{F})
+  \mathbf{A} = \begin{bmatrix}
+    \shortmid & ~ & \shortmid \\
+    \mathrm{T}(\mathbf{e}_1) & \cdots & \mathrm{T}(\mathbf{e}_n) \\
+    \shortmid & ~ & \shortmid
+  \end{bmatrix} \in\mathcal{M}_{m,n}(\mathbb{F})
 $$
 
 is the matrix of $T$.
@@ -1354,7 +1358,7 @@ $$
 \end{align*}
 $$
 
-Hence $\mathbf{A} = \begin{bmatrix} \mathrm{T}(\mathbf{e}_1) & \cdots & \mathrm{T}(\mathbf{e}_n) \end{bmatrix}$
+Hence $\mathbf{A} = \begin{bmatrix} \mathrm{T}(\mathbf{e}_1) & \cdots & \mathrm{T}(\mathbf{e}_n) \end{bmatrix}$.
 </details>
 </MathBox>
 
@@ -2350,7 +2354,7 @@ Hence $V = S^0 \oplus T^0$
 ## Transpose of linear transformations
 
 <MathBox title='Transpose of linear transformations (algebraic adjoint)' boxType='definition'>
-The transpose of a linear transformation $\mathrm{T}\in\mathcal{L}(V,W)$, is the function $\mathrm{T}^*: W^* \to V^*$ defined by
+The transpose of a linear transformation $\mathrm{T}\in\mathcal{L}(V,W)$, also called *algebraic adjoint*, is the function $\mathrm{T}^*: W^* \to V^*$ defined by
 
 $$
 \begin{gather*}
@@ -2361,15 +2365,37 @@ $$
 
 Note that several notations are commonly used for the transpose of $\mathrm{T}$, including
 - $\mathrm{T}^\times$
+- $\mathrm{T}^#$
 - $\mathrm{T}'$
 - $\mathrm{T}^T$
+
+<LatexFig width={50} src='/fig/algebraic_adjoint.svg' alt=''
+  caption='Algebraic adjoint'
+>
+```latex
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usetikzlibrary{cd}
+
+\begin{document}
+
+\begin{tikzcd}
+  V \arrow[r, "\mathrm{T}"] \arrow[rd, swap, "\mathrm{T}^* = f\circ\mathrm{T}"] & 
+  W \arrow[d, "f\in W^*"] \\
+  & \mathbb{F}
+\end{tikzcd}
+
+\end{document}
+```
+</LatexFig>
 </MathBox>
 
 <MathBox title='Properties of the operator adjoint' boxType='proposition'>
 Let $V$ be a vector space over $\mathbb{F}$, and $\alpha,\beta \in\mathbb{F}$, then
-1. $(\alpha\mathrm{T} + \beta\mathrm{S})^\times = \alpha\mathrm{T}^\times + \beta\mathrm{S}^\times$ for $\mathrm{T},\mathrm{S}\in\mathcal{L}(V,W)$ and $\alpha,\beta\in\mathbb{F}$.
-2. $(\mathrm{T}\mathrm{S})^\times = \mathrm{S}^\times \mathrm{T}^\times$ for $\mathrm{S}\in\mathcal{L}(V,W)$ and $\mathrm{T}\in\mathcal{L}(W,U)$.
-3. If $\mathrm{T}\in\mathcal{L}(V)$ is invertible, then $(\mathrm{T}^{-1})^\times = (\mathrm{T}^\times)^{-1}$
+1. $(\alpha\mathrm{T} + \beta\mathrm{S})^* = \alpha\mathrm{T}^* + \beta\mathrm{S}^*$ for $\mathrm{T},\mathrm{S}\in\mathcal{L}(V,W)$ and $\alpha,\beta\in\mathbb{F}$.
+2. $(\mathrm{T}\mathrm{S})^* = \mathrm{S}^* \mathrm{T}^*$ for $\mathrm{S}\in\mathcal{L}(V,W)$ and $\mathrm{T}\in\mathcal{L}(W,U)$.
+3. If $\mathrm{T}\in\mathcal{L}(V)$ is invertible, then $(\mathrm{T}^{-1})^* = (\mathrm{T}^*)^{-1}$
 
 <details>
 <summary>Proof</summary>
@@ -2378,9 +2404,9 @@ Let $V$ be a vector space over $\mathbb{F}$, and $\alpha,\beta \in\mathbb{F}$, t
 
 $$
 \begin{align*}
-  (\alpha\mathrm{T} + \beta\mathrm{S})^\times (f) =& f(\alpha\mathrm{T} + \beta\mathrm{S}) \\
+  (\alpha\mathrm{T} + \beta\mathrm{S})^* (f) =& f(\alpha\mathrm{T} + \beta\mathrm{S}) \\
   =& \alpha f(\mathrm{T}) + \beta f(\mathrm{S}) \\
-  =& \alpha \mathrm{T}^\times (f) + \beta \mathrm{S}^\times (f)
+  =& \alpha \mathrm{T}^* (f) + \beta \mathrm{S}^* (f)
 \end{align*}
 $$
 
@@ -2388,29 +2414,29 @@ $$
 
 $$
 \begin{align*}
-  (\mathrm{T}\mathrm{S})^\times (f) =& f(\mathrm{T}\mathrm{S}) = \mathrm{S}^\times (f\mathrm{T}) \\
-  =& \mathrm{T}(\mathrm{S}^\times(f)) = (\mathrm{T}^\times \mathrm{S}^\times)(f)
+  (\mathrm{T}\mathrm{S})^* (f) =& f(\mathrm{T}\mathrm{S}) = \mathrm{S}^* (f\mathrm{T}) \\
+  =& \mathrm{T}(\mathrm{S}^*(f)) = (\mathrm{T}^* \mathrm{S}^*)(f)
 \end{align*}
 $$
 
-**(3):** Evaluating $\mathrm{T}^\times (\mathrm{T}^\times)^\times$ using property (2) gives
+**(3):** Evaluating $\mathrm{T}^* (\mathrm{T}^*)^*$ using property (2) gives
 
 $$
-  \mathrm{T}^\times (\mathrm{T}^\times)^\times = (\mathrm{T}^{-1} \mathrm{T})^\times = \mathrm{id}^\times = \mathrm{id}
+  \mathrm{T}^* (\mathrm{T}^*)^* = (\mathrm{T}^{-1} \mathrm{T})^* = \mathrm{id}^* = \mathrm{id}
 $$
 
-Doing the same for $(\mathrm{T}^{-1})^{-1} \mathrm{T}^\times$ gives
+Doing the same for $(\mathrm{T}^{-1})^{-1} \mathrm{T}^*$ gives
 
 $$
-  (\mathrm{T}^{-1})^{-1} \mathrm{T}^\times = (\mathrm{T}\mathrm{T}^{-1})^\times = \mathrm{id}^\times = \mathrm{id}
+  (\mathrm{T}^{-1})^{-1} \mathrm{T}^* = (\mathrm{T}\mathrm{T}^{-1})^* = \mathrm{id}^* = \mathrm{id}
 $$
 
-Hence, $(\mathrm{T}^{-1})^\times = (\mathrm{T}^\times)^{-1}$.
+Hence, $(\mathrm{T}^{-1})^* = (\mathrm{T}^*)^{-1}$.
 </details>
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-Let $V$ and $W$ be finite-dimensional $\mathbb{F}$-vector spaces and let $\mathrm{T}\in\mathcal{L}(V,W)$. If we identify $V^{**}$ with $V$ and $W^{**}$ with $W$ using the canonical maps, then $\mathrm{T}^{\times\times}$ is identified with $\mathrm{T}$.
+Let $V$ and $W$ be finite-dimensional $\mathbb{F}$-vector spaces and let $\mathrm{T}\in\mathcal{L}(V,W)$. If we identify $V^{**}$ with $V$ and $W^{**}$ with $W$ using the canonical maps, then $\mathrm{T}^{**}$ is identified with $\mathrm{T}$.
 
 <details>
 <summary>Proof</summary>
@@ -2419,7 +2445,7 @@ For any $\mathbf{x}\in V$ let the corresponding element of $V^{**}$ be denoted $
 
 $$
 \begin{align*}
-  \mathrm{T}^{\times\times}(\bar{\mathbf{x}})(f) =& \bar{\mathbf{v}}[\mathrm{T}^\times (f)] = \bar{\mathbf{v}}(f\mathrm{T}) \\
+  \mathrm{T}^{**}(\bar{\mathbf{x}})(f) =& \bar{\mathbf{v}}[\mathrm{T}^* (f)] = \bar{\mathbf{v}}(f\mathrm{T}) \\
   =& f(\mathrm{T}(\mathbf{v})) = \overline{\mathrm{T}(\mathbf{v})}(f)
 \end{align*}
 $$
@@ -2428,14 +2454,14 @@ and so
 
 $$
 \begin{align*}
-  \mathrm{T}^{\times\times}(\bar{\mathbf{v}})(f) =& \overline{\mathrm{T}(\mathbf{v})} \in W^{**}
+  \mathrm{T}^{**}(\bar{\mathbf{v}})(f) =& \overline{\mathrm{T}(\mathbf{v})} \in W^{**}
 \end{align*}
 $$
 
 Using the canonical maps for both $V^{**}$ and $W^{**}$ we have
 
 $$
-  \mathrm{T}^{\times\times}(\mathbf{v}) = \mathrm{T}(\mathbf{v})
+  \mathrm{T}^{**}(\mathbf{v}) = \mathrm{T}(\mathbf{v})
 $$
 
 for all $\mathbf{v}\in V$.
@@ -2444,8 +2470,8 @@ for all $\mathbf{v}\in V$.
 
 <MathBox title='' boxType='proposition'>
 Let $\mathrm{T}\in\mathcal{L}(V,W)$, then
-1. $\ker(\mathrm{T}^\times) = \operatorname{ran}(\mathrm{T})^0$
-2. $\operatorname{ran}(\mathrm{T}^\times) = \ker(\mathrm{T})^0$
+1. $\ker(\mathrm{T}^*) = \operatorname{ran}(\mathrm{T})^0$
+2. $\operatorname{ran}(\mathrm{T}^*) = \ker(\mathrm{T})^0$
 
 <details>
 <summary>Proof</summary>
@@ -2453,33 +2479,33 @@ Let $\mathrm{T}\in\mathcal{L}(V,W)$, then
 **(1):**
 
 $$
-  \ker(\mathrm{T}^\times) =& \Set{ f\in W^* | \mathrm{T}^\times = 0 } \\
+  \ker(\mathrm{T}^*) =& \Set{ f\in W^* | \mathrm{T}^* = 0 } \\
   =& \Set{ f\in W^* | f(\mathrm{T}(V)) = \Set{0} } \\
   =& \Set{ f\in W^* | f(\operatorname{ran}(\mathrm{T})) = \Set{0} } \\
   =& \operatorname{ran}(\mathrm{T})^0
 $$
 
-**(2):** If $f = g\mathrm{T} = \mathrm{T}^\times g\in\operatorname{ran}(\mathrm{T}^\times)$ then $\ker(\mathrm{T})\subseteq \ker(f)$ and so $f\in\ker(\mathrm{T})^0$.
+**(2):** If $f = g\mathrm{T} = \mathrm{T}^* g\in\operatorname{ran}(\mathrm{T}^*)$ then $\ker(\mathrm{T})\subseteq \ker(f)$ and so $f\in\ker(\mathrm{T})^0$.
 
-For the reverse inlcusion, let $f\in\ker(\mathrm{T})^0\subseteq V^*$. On $K = \ker(\mathrm{T})$, there is no problem since $f$ and $\mathrm{T}^\times g = g\mathrm{T}$ agree on $K$ for any $g\in W^*$. Let $S$ be a complement of $\ker(\mathrm{T})$. Then $\mathrm{T}$ maps a basis $B = \Set{\mathbf{b}_i }_{i\in I}$ for $S$ to a linearly independent set $\mathrm{T}(B) = \Set{ \mathrm{T}(\mathbf{b}_i) }_{i\in I}\in W$, so we can define $g\in W^*$ any way we want on $\mathrm{T}(B)$. In particular, let $g\in W^*$ be defined by setting
+For the reverse inlcusion, let $f\in\ker(\mathrm{T})^0\subseteq V^*$. On $K = \ker(\mathrm{T})$, there is no problem since $f$ and $\mathrm{T}^* g = g\mathrm{T}$ agree on $K$ for any $g\in W^*$. Let $S$ be a complement of $\ker(\mathrm{T})$. Then $\mathrm{T}$ maps a basis $B = \Set{\mathbf{b}_i }_{i\in I}$ for $S$ to a linearly independent set $\mathrm{T}(B) = \Set{ \mathrm{T}(\mathbf{b}_i) }_{i\in I}\in W$, so we can define $g\in W^*$ any way we want on $\mathrm{T}(B)$. In particular, let $g\in W^*$ be defined by setting
 
 $$
   g(\mathrm{T}(\mathbf{b}_i)) = f(\mathbf{b}_i),\; i\in I
 $$
 
-and extending in any manner to all of $W^*$. Then $f = g\mathrm{T} = \mathrm{T}^\times g$ on $B$ and therefore on $S$. Hence $f = \mathrm{T}^\times g\in\operatorname{ran}(\mathrm{T}^\times)$.
+and extending in any manner to all of $W^*$. Then $f = g\mathrm{T} = \mathrm{T}^* g$ on $B$ and therefore on $S$. Hence $f = \mathrm{T}^* g\in\operatorname{ran}(\mathrm{T}^*)$.
 </details>
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-Let $\mathrm{T}\in\mathcal{L}(V,W)$, where $V$ and $W$ are finite-dimensional vector spaces. Then $\operatorname{rank}(\mathrm{T}) = \operatorname{rank}(\mathrm{T}^\times)$.
+Let $\mathrm{T}\in\mathcal{L}(V,W)$, where $V$ and $W$ are finite-dimensional vector spaces. Then $\operatorname{rank}(\mathrm{T}) = \operatorname{rank}(\mathrm{T}^*)$.
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='Relation between algebraic adjoint and matrix transposition' boxType='proposition'>
 Let $\mathrm{T}\in\mathcal{L}(V,W)$, where $V$ and $W$ are finite-dimensional vector spaces. If $B$ and $C$ are ordered bases for $V$ and $W$, respectively, and $B^*$ and $C^*$ are corresponding dual bases, then
 
 $$
-  [\mathrm{T}^\times]_{C^*, B^*} = ([\mathrm{T}]_{B,C})^T
+  [\mathrm{T}^*]_{C^*, B^*} = ([\mathrm{T}]_{B,C})^T
 $$
 
 <details>
@@ -2491,16 +2517,16 @@ $$
   ([\mathrm{T}]_{B,C})_{i,j} = ([\mathrm{T}(\mathbf{b}_j)]_C)_i = c_i[\mathrm{T}(\mathbf{b}_j)],\; \mathbf{b}_i \in B, c_i \in C^*
 $$
 
-and the $(i,j)$th entry of $[\mathrm{T}^\times]_{C^*,B^*}$ is
+and the $(i,j)$th entry of $[\mathrm{T}^*]_{C^*,B^*}$ is
 
 $$
 \begin{align*}
-  ([\mathrm{T}^\times]_{C^*,B^*})_{i,j} =& ([\mathrm{T}^\times(c_j)]_{B^*})_i = \mathbf{b}_i^{**}[\mathrm{T}^\times(c_j)] \\
-  =& \mathrm{T}^\times (c_j)(\mathbf{b}_i) = c_j (\mathrm{T}(\mathbf{b}_i))
+  ([\mathrm{T}^*]_{C^*,B^*})_{i,j} =& ([\mathrm{T}^*(c_j)]_{B^*})_i = \mathbf{b}_i^{**}[\mathrm{T}^*(c_j)] \\
+  =& \mathrm{T}^* (c_j)(\mathbf{b}_i) = c_j (\mathrm{T}(\mathbf{b}_i))
 \end{align*}
 $$
 
-Comparing the expression, we see that $[\mathrm{T}^\times]_{C^*, B^*} = ([\mathrm{T}]_{B,C})^T$.
+Comparing the expression, we see that $[\mathrm{T}^*]_{C^*, B^*} = ([\mathrm{T}]_{B,C})^T$.
 </details>
 </MathBox>
 
