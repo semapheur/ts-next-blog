@@ -167,7 +167,7 @@ If every component $\alpha_A$ is invertible in $\mathcal{B}$, then $\alpha$ is c
 
 ## Universality
 <MathBox title='Universal morphism' boxType='definition'>
-Let $F:\mathcal{A}\to\mathcal{B}$ be a functor between categories $\mathcal{A}$ and $\mathcal{B}$ and suppose that $B\in\mathcal{B}$ is an object in $\mathcal{B}$. A *universal morphism* from $B$ to $F$ is a pair $(A, u: B\to F(A))$ of an object $A\in\mathcal{A}$ and a morphism $u\in\mathcal{D}(B,F(B))$ satisfying the *universal property*:
+Let $F:\mathcal{A}\to\mathcal{B}$ be a functor between categories $\mathcal{A}$ and $\mathcal{B}$ and suppose $B\in\mathcal{B}$ is an object in $\mathcal{B}$. A *universal morphism* from $B$ to $F$ is a pair $(A, u: B\to F(A))$ of an object $A\in\mathcal{A}$ and a morphism $u\in\mathcal{D}(B,F(B))$ satisfying the *universal property*:
 - for any pair $(A', f)$ with $A'\in\mathcal{A}$ and $f\in\mathcal{B}(B,F(A'))$, there is a unique morphism $h:A\to A'$ in $\mathcal{A}$ such that $f = F(h) \circ u$ according to following diagram.
 
 <LatexFig width={50} src='/fig/universal_property.svg' alt=''
@@ -334,4 +334,150 @@ Let $\mathcal{I}$ be a subset of ring $R$. An additive subgroup of $R$ is called
 A left ideal that is also a right ideal, is called a *(two-sided) ideal* of $R$. An ideal is *proper* if $\mathcal{I} \neq R$, and it is *non-trivial* if in addition $\mathcal{I}\neq 0$.
 </MathBox>
 
-<MathBox title='Proper and non-trivial ideal' boxType='definition'>
+<MathBox title='Kernels of ring homomorphisms' boxType='definition'>
+If $f:R\to S$ is a ring homomorphism, its kernel is defined as
+
+$$
+  \ker(f) = \Set{r\in R | f(r) = 0}
+$$
+</MathBox>
+
+<MathBox title='Kernels of ring homomorphisms are proper ideals' boxType='proposition'>
+The kernel of a ring homomorphism $f:R\to S$ is a proper two-sided ideal.
+
+<details>
+<summary>Proof</summary>
+
+Since a ring homomorphism is a group homomorphism, we already know that $f$ is injective if and only if $\ker(f) = \Set{0}$. Note that $\ker(f)$ is an additive subgroup of $R$. Take $a\in\ker(f)$ and $r\in R$, then 
+
+$$
+\begin{align*}
+  f(ra) =& f(r)f(a) = 0 \\
+  f(ar) =& f(a)f(r) = 0
+\end{align*}
+$$
+
+showing that $\ker(f)$ is a two-sided ideal since $ra, ar\in\ker(f)$. Moreover, $\ker(f)$ has to be proper, i.e. $\ker(f) \neq R$, since $f(1) = 1$ by definition.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Suppose $f:R\to S$ is a ring homomorphism and the only two-sided ideals of $R$ are $\Set{0}$ and $R$. Then $f$ is injective.
+
+<details>
+<summary>Proof</summary>
+
+Since $\ker(f)$ is a two-sided ideal of $R$, then either $\ker(f) = \Set{0}$ or $\ker(f) = R$. However, $\ker(f) \neq R$ since $f(1) = 1$ by defininition.
+</details>
+</MathBox>
+
+It is worth noting the analogy between rings and their two-sided ideals on one hand, and groups and their normal subgroups on the other hand:
+- Two-sided ideals are stable when the ring acts on them by multiplication, either on the right or on the left, and thus
+$$
+  rar^{-1} \in\mathcal{I}, a\in\mathcal{I}, r\in R
+$$
+while normal subgroups are stable when the groups on them by conjugation
+$$
+  ghg^{-1} \in H, h\in H, g\in G (H \leq G)
+$$
+- Groups with only trivial normal subgroups are called simple. Similarly, rings with only two sided ideals are called simple rings.
+- The kernel of a group homomorphism is a normal subgroup, while the kernel of a ring homomorphism is an ideal.
+
+## Quotient rings
+
+Let $\mathcal{I}$ be a proper two-sided ideal of $R$. Since $\mathcal{I}$ is an additive subgroup of $R$ by definition, it makes sense to speak of cosets $r + \mathcal{I}$ of $I$ for $r\in R$. Furthermore, a ring has a structure of abelian group for addition, so $\mathcal{I}$ satisfies the definition of a normal subgroup. From group theory, we that it makes sense to speak of the quotient group
+
+$$
+  R\setminus\mathcal{I} = \Set{r + \mathcal{I} | r\in R}
+$$
+
+which is abelian since $(R, +)$ is an abelian group. We now endow $R\setminus\mathcal{I}$ with a multiplication operation defined as
+
+$$
+  (r + \mathcal{I})(r + \mathcal{I}) = rs + \mathcal{I}
+$$
+
+To see that it is well-defined, we check that it does not depend on the choice of the representative in each coset. Suppose
+
+$$
+\begin{align*}
+  r + \mathcal{I} =& r' + \mathcal{I} \\
+  s + \mathcal{I} =& s' + \mathcal{I}
+\end{align*}
+$$
+
+so that $a = r' - r\in\mathcal{I}$ and $b = s' - s\in\mathcal{I}$. Then
+
+$$
+  r's' = (a + r)(b + s) = ab + as + rb + rs
+$$
+
+Since $a, b\in\mathcal{I}$ and $\mathcal{I}$ is an ideal, it follows that $ab, as, rb\in\mathcal{I}$. Consequently, $r's' \in rs + \mathcal{I}$ and therefore multiplication does not depend on the choise of representatives.
+
+Note that this is only true if $\mathcal{I}$ is a two-sided ideal, otherwise we could not have concluded that both $as$ and $rb$ are in $\mathcal{I}$.
+
+<MathBox title='Quotient ring' boxType='definition'>
+The set of cosets of the two-sided ideal $\mathcal{I}$ given by
+
+$$
+  R\setminus\mathcal{I} = \Set{r + \mathcal{I} | r\in R}
+$$
+
+is a ring with identity $1_R + \mathcal{I}$ and zero element $0_R + \mathcal{I}$ called a *quotient ring*.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Every proper two-sided ideal $\mathcal{I}$ is the kernel of a ring homomorphism.
+
+<details>
+<summary>Proof</summary>
+
+Consider the canonical projection $\pi:R\to R\setminus\mathcal{I}$ defined by $r\mapsto\pi(r) = r + \mathcal{I}$. We already know that $\pi$ is a group homomorphism, and that its kernel is $\mathcal{I}$. We are only left to that $\pi$ is a ring homomorphism. Since $\mathcal{I}$ is a two-sided ideal, $R\setminus\mathcal{I}$ is a ring. Moreover, for $r, s\in R$
+
+$$
+  \pi(rs) = rs + \mathcal{I} = (r + \mathcal{I})(s + \mathcal{I}) = \pi(r)\pi(s)
+$$
+
+Finally, $\pi(1_R) = 1_R + \mathcal{I}$ which is indeed the identity element of $R\setminus\mathcal{I}$.
+</details>
+</MathBox>
+
+<MathBox title='Factor theorem for rings' boxType='theorem'>
+Any ring homomorphism $f$ whose kernel $\ker(f)$ contains $\mathcal{I}$ can be factored through $R\setminus\mathcal{I}$. In other words, there is a unique ring homomorphism $\bar{f}:R\setminus\mathcal{I}\to S$ such that $\bar{f}\circ\pi = f$, where $\pi:R\to R\setminus\mathcal{I}$ is the canonical projection. Furthermore,
+1. $\bar{f}$ is an epimorphism if and only if $f$ is
+2. $\bar{f}$ is a monomorphism if and only if $\ker(f) = \mathcal{I}$
+3. $\bar{f}$ is an isomorphism if and only if $f$ is an epimorphism and $\ker(f) = \mathcal{I}$
+
+<details>
+<summary>Proof</summary>
+
+Let $a + \mathcal{I}\in R\setminus\mathcal{I}$ such that $\pi(a) = a + \mathcal{I}$ for $a\in R$, and define
+
+$$
+  \bar{f}(a + \mathcal{I}) = f(a)
+$$
+
+We need check that $\bar{f}$ is well defined in the sense that it should not depend on the choice of the representative taken in the coset. Take another representative, say $b \in a + \mathcal{I}$. Since $a$ and $b$ are in the same coset, they satisfy $a - b \in \mathcal{I} \subset\ker(f)$. Because $a - b \in\ker(f)$, we have $f(a - b) = 0$ and thus $f(a) = f(b)$.
+
+Now that $\bar{f}$ is well defined, it remains to verify that $\bar{f}$ inherits the property of the ring homomorphism from $f$. The rest of the proof works exactly the same as for groups.
+
+</details>
+</MathBox>
+
+<MathBox title='First isomorphism theorem for rings' boxType='theorem'>
+If $f:R\to S$ is a ring homomorphism with kernel $\ker(f)$, then the range of $f$ is isomorphic to $R\setminus K$:
+
+$$
+  \operatorname(f) \cong R\setminus\ker(f) 
+$$
+
+<details>
+<summary>Proof</summary>
+
+By the factor theorem $\bar{f}: R\setminus\ker(f)\to S$ is an isomorphism if and only if $f$ is an epimorphism, and clearly $f$ is an epimorphism on its image, which concludes the proof.
+</details>
+</MathBox>
+
+## The Chinese remainer theorem
+
+## Maximal and prime ideals
