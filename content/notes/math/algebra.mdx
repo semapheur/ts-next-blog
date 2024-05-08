@@ -197,6 +197,38 @@ Equivalently, a universal morphism from $F$ to $B$ is a unique pair $(A, u: F(A)
 
 # Algebraic structures
 
+|   | Addition $+$ | Multiplication $\cdot$ | Special features |
+|---|---|---|---|---|
+| **Semigroup** |   | Associative  |   |
+| **Monoid** |   | Associative | Unique identity: $1a = a1 = a$  |
+| **Group** |   | Associative | Inverses: aa^{-1} = a^{-1}a = \boldsymbol{1} |
+| **Ring** | Abelian group | Semigroup | Zero: $0 + a = a \implies a0 = 0$  |
+| **Integral domain** | Abelian group |   | No zero divisors |
+| **Field** | Abelian group | Abelian monoid | Inverses under $\cdot$ except for $0$ |
+
+<MathBox title='Field' boxType='definition'>
+A field $\mathbb{F}$ is a set containing $1 \neq 0$ equipped with the binary operations $+$ (addition) and $\cdot$ (multiplication) such that
+- $(\mathbb{F}, +)$ is an abelian group
+- $(\mathbb{F}\setminus\Set{0}, \cdot)$ is an abelian group
+- Addition and multiplication are related by distributivity, i.e. for all $a,b,c\in\mathbb{F}$
+    - $a(b + c) = ab + ac$
+    - $(a + b)c = ac + bc$
+</MathBox>
+
+<MathBox title='Algebra' boxType='definition'>
+An algebra $A$ over a field $\mathbb{F}$ is a nonempty set $A$, together with three operations
+- $+:A\times A\to A$ **(addition)**
+- $\cdot: A\times A\to A$ **(multiplication)**
+- $\cdot: \mathbb{F}\times A\to A$ **(scalar multiplication)**
+
+for which the following properties hold:
+- $A$ is a vector space over $\mathbb{F}$ under addition and scalar multiplication
+- $A$ is a ring under addition and multiplication
+- if $r\in\mathbb{F}$ and $a,b\in A$ then $r(ab) = (ra)b = a(rb)$ (scalar compatibility)
+</MathBox>
+
+# Group theory
+
 <LatexFig width={75} src='/fig/algebraic_structures.svg' alt=''
   caption='Relation between group-like algebraic structures'
 >
@@ -257,27 +289,6 @@ A group is a non-empty set $G$ and a binary operation $*: G \times G \to G$, wri
 Note that the closure property follows implicitly from the definition $*: G \times G \to G$.
 
 A group $(G, *)$ is abelian if $a * b = b * a$ for all $a,b \in G$ (commutativity). 
-</MathBox>
-
-<MathBox title='Field' boxType='definition'>
-A field $\mathbb{F}$ is a set containing $1 \neq 0$ equipped with the binary operations $+$ (addition) and $\cdot$ (multiplication) such that
-- $(\mathbb{F}, +)$ is an abelian group
-- $(\mathbb{F}\setminus\Set{0}, \cdot)$ is an abelian group
-- Addition and multiplication are related by distributivity, i.e. for all $a,b,c\in\mathbb{F}$
-    - $a(b + c) = ab + ac$
-    - $(a + b)c = ac + bc$
-</MathBox>
-
-<MathBox title='Algebra' boxType='definition'>
-An algebra $A$ over a field $\mathbb{F}$ is a nonempty set $A$, together with three operations
-- $+:A\times A\to A$ **(addition)**
-- $\cdot: A\times A\to A$ **(multiplication)**
-- $\cdot: \mathbb{F}\times A\to A$ **(scalar multiplication)**
-
-for which the following properties hold:
-- $A$ is a vector space over $\mathbb{F}$ under addition and scalar multiplication
-- $A$ is a ring under addition and multiplication
-- if $r\in\mathbb{F}$ and $a,b\in A$ then $r(ab) = (ra)b = a(rb)$ (scalar compatibility)
 </MathBox>
 
 # Ring theory
@@ -468,7 +479,7 @@ Now that $\bar{f}$ is well defined, it remains to verify that $\bar{f}$ inherits
 If $f:R\to S$ is a ring homomorphism with kernel $\ker(f)$, then the range of $f$ is isomorphic to $R\setminus K$:
 
 $$
-  \operatorname(f) \cong R\setminus\ker(f) 
+  \operatorname{ran}(f) \cong R\setminus\ker(f) 
 $$
 
 <details>
@@ -689,5 +700,331 @@ Let $f:R\to S$ be an epimorphism of commutative rings.
 <summary>Proof</summary>
 
 By the first isomorphism theorem for rings, we have that $S\cong R\setminus\ker(f)$.
+</details>
+</MathBox>
+
+## Polynomial ring
+
+Assume $R$ is a commutative ring. For a space $X$, let $R[X]$ be the set of polynimals in $X$ with coefficients in $R$. It is easy to see that $R[X]$ inhertis the properties of a ring from $R$. We define the *evaluation map* $E_x$ which evaluates a polynomial $f(X) \in R[X]$ in $x\in R$, as
+
+$$
+  E_x : R[X] \to R,\; f(X) \mapsto f(X)|_{X=x} = f(x)
+$$
+
+We can check that $E_x$ is a ring homomorphism. The highest order term determines the degree of polynomial, i.e. if $p(X) = \sum_{i=0}^n a_i X^i$ with $a_n \neq 0$, then $\deg(p(X)) = \deg(p) = n$. By convention, we set $\deg(0) = -\infty$.
+
+There is a polyniam division algorithm over $R[X]$. if $f,g \in R[X]$ with $g$ monic, then there exists unique polynomials $q,r \in R[X]$ such that $f = qg + r$, where $\deg(r) < \deg(g)$.
+
+The requirement that $g$ is monic comes from $R$ being a ring and not necessarily a field. If $R$ is a field, $g$ does not have to be monic, since one can always multiply $g$ by the inverse of the leading coefficient, which is not possible if $R$ is not a field.
+
+<MathBox title='Remainder theorem' boxType='theorem'>
+If $f\in R[X]$ and $a\in R$, then there exists a unique polynomial $q(X)\in R[X]$ such that
+
+$$
+  f(X) = q(X)(X - a) + f(a)
+$$
+
+Hence $f(a) = 0 \implies X - a | f(X)$.
+
+<details>
+<summary>Proof</summary>
+
+Since $(X - a)$ is monic, we can do the division
+
+$$
+  f(X) = q(X)(X - a) + r(X)
+$$
+
+Since $\deg(r) < \deg(X - a)$, then $r(X)$ must be a constant polynomial, which implies that $f(a) = r(X)$ and thus $f(X) = q(X)(X - a) + f(a)$. Furthermore, we clearly have that $f(a) = 0 \iff X - a | f(X)$
+</details>
+</MathBox>
+
+<MathBox title='Remainder theorem' boxType='theorem'>
+If $R$ is an integral domain, then a non-zero groupo polynomial $f$ in $R[X]$ of degree $n$ has at most $n$ roots in $R$, counting multiplicity.
+
+<details>
+<summary>Proof</summary>
+
+If $f$ has no roots in $R[X]$ then we are done. Let us assume that $f$ has a root $a_1$ in $R$, that is $f(a_1) = 0$. Then $X - a_1 | f(X)$ by the remainder theorem, meaning that $f(X) = q_1 (X)(X - a_1)^{n_1}$ where $q_1 (a_1) \neq 0$ and $\deg(q_1) = n - n_1$ since $R$ is an integral domain. If $a_1$ is the only root of $f$ in $R$, then $n_1 \leq n$ and we done. If not, consider similarly $a_2 \neq a_1$ another root of $f$, so that $0 = f(a_2) = q_1 (a_2)(a_2 - a_1)^{n_1}$. Since $R$ is an integral domain, we must have that $q_1 (a_2) = 0$, and thus $a_2$ is a root of $q_1 (X)$. We can repeat the process with $q_1 (X)$ instead of $f(X)$: since $a_2$ is a root of $q_1 (X)$ we have $q_1 (X) = q_2 (X)(X - a_2)^{n_2}$ with $q_2(a_2) \neq 0$ and $\deg(q_2) = n - n_1 - n_2$. By going on iterating the process, we obtain
+
+$$
+\begin{align*}
+  f(X) =& q_1 (X)(X - a_1)^{n_1} \\
+  =& q_2 (X)(X - a_2)^{n_2} (X - a_1)^{n_1} \\
+  \vdots& \\
+  =& (X-a_1)^{n_1} \cdots (X - a_k)^{n_k} \cdot c(X)
+\end{align*}
+$$
+
+where $c(X)$ is a polynomial with no root in $R$, possibly constant, and $n \geq \sum_{i=1}^k n_i$. Since $R$ is an integral domain, the only possible roots of $f$ are $a_1,\dots,a_k$ for $k\leq n$, and the number of roots counting multiplicity is less than $n$.
+</details>
+</MathBox>
+
+## Unique factorization and Euclidean division
+
+In this section, all rings are assumed to be integral domains.
+
+<MathBox title='Associate elements' boxType='definition'>
+The elements $a$ and $b$ are *associate* if $a = ub$ for some unit $u$.
+</MathBox>
+
+<MathBox title='Irreducible elements' boxType='definition'>
+Let $a$ be a nonzero element which is not a unit. Then $a$ is *irreducible* if $a = bc$ implies that either $b$ or $c$ must be a unit.
+</MathBox>
+
+<MathBox title='Prime elements' boxType='definition'>
+Let $a$ be a nonzero element which is not a unit. Then $a$ is *prime* if whenever $a | bc$, then $a | b$ or $a | c$.
+</MathBox>
+
+<MathBox title='Prime elements are irreducible' boxType='proposition'>
+If $a$ is prime, then $a$ is irreducible.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $a$ is prime, and that $a = bc$. We want to prove that either $b$ or $c$ is a unit. By definition of prime, we must have that $a$ divides either $b$ or $c$. Assume that $a | b$, then
+
+$$
+  b = ad \implies b = bcd \implies b(1 - cd) = 0 \implies cd = 1
+$$
+
+using that $R$ is an integral domain, and thus $c$ is a unit. The same argument works if we assume that $a | c$, and we conclude that $a$ is irreducible.
+</details>
+</MathBox>
+
+<MathBox title='Unique factorization domain (UFD)' boxType='definition'>
+A *unique factorization domain* (UFD) is an integral domain $R$ satisfying that
+1. Every element $0\neq a \in R$ can be written as a product of irreducible factors $p_1,\dots,p_n$ up to a unit, i.e. $a = u \prod_{i=1}^n p_i$.
+2. The above factorization is unique, i.e. if $a = u\prod_{i=1}^n p_i = v\prod_{i=1}^n q_i$ are two factorizations into irreducible factors $p_i$ and $q_j$ with units $u,v$, then $n = m$ and $p_i$ and $q_i$ are associate for all $i$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+In a unique factorization domain $R$, we have that $a$ is irreducible if and only if $a$ is prime.
+
+<details>
+<summary>Proof</summary>
+
+We already know that prime implies irreducible. Conversely, take $a$ to be irreducible and assume that $a | bc$. This means that $bc = ad$ for some $d\in R$. Using the property of unique factorization, we decompose $d, b$ and $c$ into products of irreducible terms (respectively $d_i, b_i, c_i$ up to units $u, v, w$)
+
+$$
+  a\cdot ud_1 \cdots d_r = vb_1 \cdots b_s \cdot wc_1 \cdots c_t
+$$
+
+Since the factorization is unique, $a$ must be associate to some either $b_i$ or $c_i$, implying that $a$ divides $b$ or $c$.
+</details>
+</MathBox>
+
+<MathBox title='Noetherian ring' boxType='definition'>
+Let $a_1,a_2,\dots$ be elements of an integral domain $R$. If the sequence of principal ideals $(a_1) \subseteq (a_2) \subseteq \cdots$ stabilizes, i.e. $(a_n) = (a_{n+1}) = \cdots$ for some $n$, then we say that $R$ satisfies the *ascending chain condition on principal ideals*. If the same condition holds but for general ideals, not necessarily principal, we call $R$ a *Noetherian ring.*
+</MathBox>
+
+<MathBox title='Characterization of unique factorization domain' boxType='theorem'>
+Let $R$ be an integral domain.
+1. If $R$ is a unique factorization domain (UFD), then $R$ satisfies the ascending chain condition on principal ideals.
+2. If $R$ satisfies the ascending chain condition on principal ideals, then every nonzero element of $R$ can be factored into irreducible (this says nothing about the unicity of the factorization)
+3. If $R$ is such that every nonzero element of $R$ can be factored into irreducible, and in addition every irreducible element is prime, then $R$ is a UFD.
+
+Thus, $R$ is UFD if and only if it satisfies the ascending chain condition on principal ideals and every irreducible element of $R$ is prime.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Recall that in a UFD, prime and irreducible are equivalent. Consider an ascending chain of principal ideals
+
+$$
+  (a_1) \subseteq (a_2) \subseteq \cdots
+$$
+
+We have that $a_{i+1} | a_i$ for all $i$. Thus, the prime factors of $a_{i+1}$ consist of some (possibly all) prime factors of $a_i$. Since $a_1$ has a unique factorization into finitely many prime factors, the prime factors will end up being the same, and the chain will stabilize.
+
+**(2):** Take $0 \neq a_1 \in R$. If $a_1$ is irreducible, we are done. Assume thus that $a_1$ is not irreducible, i.e. $a_1 = a_2 b_2$, where $a_2$ and $b_2$ are not unit. Since $a_2 | a_1$, we have $(a_1) \subseteq (a_2)$, and actually $(a_1) \subsetneq (a_2)$. Indeed, if $(a_1) = (a_2)$, then $a_2$ would be a multiple of $a_1$, i.e. $a_2 = ca_1$ and thus
+
+$$
+  a_1 = a_2 b_2 \implies a_1 = ca_1 b_2 \implies a_1 (1 - cb_2) = 0
+$$
+
+implying that $cb_2 = 1$ and thus $b_2$ is a unit. This contradicts the assumption that $a_1$ is not irreducible. This computation has shown is that whenever we get at factor which is not irreducible, we can add a new principal ideal to the chain of ideals. Thus, if $a_2 b_2$ is a product of irreducible, we are done. Otherwise, we have that say $a_2$ is not irreducible, and $a_2 = a_3 b_3$, giving $(a_1) \subsetneq (a_2) \subsetneq (a_3)$. Since $R$ satisfies the ascending chaing condition on principal ideal, this process cannot go on and must stop, showing that we have a factorization into irreducible.
+
+**(3):** We now know that $R$ allows a factorization into irreducible. We want to prove that this factorization is unique, under the assumption that every irreducible is prime. Suppose that $a = u\prod_{i=1}^n p_i = v \prod_{j=1}^m q_j$, where $u, v$ are unit and $p_i, q_j$ are irreducible. Then $p_1$ is irreducible, but also prime by assumption. Thus, it must divide on the $q_j$, say $q_1$, giving $q_1 = p_1 d$. Since $q_1$ is irreducible, $d$ must be a unit, and $q_1$ and $p_1$ are associate. We can iterate the process to find that $q_i$ and $p_i$ are associate for all $i$.
+</details>
+</MathBox>
+
+<MathBox title='Principal ideal domain (PID)' boxType='definition'>
+A *principal ideal domain* (PID) is an integral domain in which every ideal is principal.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+A principal ideal domain $R$ is a unique factorization domain.
+
+<details>
+<summary>Proof</summary>
+
+We will prove that if $R$ as a principal ideal domain, then
+- $R$ satisfies the ascending chain condition on principal ideals
+- every irreducible in $R$ is also prime
+
+Having proved these two claims, we can conclude applying the characterization of unique factorization domains.
+
+Let us first prove that $R$ satisfies the ascending chain condition on principle ideals. Consider a sequence of principal ideals $(a_1) \subseteq (a_2) \subsetq \cdots$ and let $\mathcal{I} = \bigcup_{i=1}^\infty (a_i)$. Note that $\mathcal{I}$ is an ideal of $R$ (however, a union of ideals is not necessarily an ideal in general). Indeed, we have that $\mathcal{I}$ is closed under addition: take $a, b\in\mathcal{I}$, then there are ideals $(a_j)$ and $(a_k)$ in the chain with $a\in (a_j)$ and $b \in (a_k)$. If $m \geq \max(j,k)$, then both $a,b\in (a_m)$ and so do $a + b$. To check that $\mathcal{I}$ is closed under multiplication by an element of $R$, take again $a\in\mathcal{I}$. Then $a\in(a_j)$ for some $j$. If $r\in R$, then $ra \in (a_j)$ implying that $ra \in\mathcal{I}$.
+
+By assumption, $\mathcal{I}$ is a principal ideal generated by, say $\mathcal{I} = (b)$. Since $b$ belongs to $\bigcup_{i=1}^\infty (a_i)$, it must belong to some $(a_n)$. Thus $\mathcal{I} = (b) \subseteq (a_n)$. For $j \geq n$, we have
+
+$$
+  (a_j) \subseteq \mathcal{I} \subseteq (a_n) \subseteq (a_j)
+$$
+
+which proves that the chain ideal stabilizes.
+
+It remains to prove that every irreducible element is also prime. Let $a$ be an irreducible element. Consider the principal ideal $(a)$ generated by $a$. Note that $(a)$ is a proper ideal: if $(a) = R$, then $1\in (a)$ and thus $a$ is a unit, which is a contradiction.
+
+By the ascending chain condition, $(a)$ is included in a maximal ideal $\mathcal{I}$. Since $R$ is a principal ideal domain, it follows that $\mathcal{I} = b$. Thus
+
+$$
+  (a) \subseteq (b) \implies b | a \implies a = bd
+$$
+
+where $a$ is irreducible, $b$ cannot be a unit (since $\mathcal{I}$, by definition of maximal ideal, is a proper ideal), and thus $d$ has to be unit of $R$. In other words, $a$ and $b$ are associate. Thus $(a) = \mathcal{I} = (b)$. Since $\mathcal{I}$ is a maximal ideal, it is prime implying that $a$ is prime, which concludes the proof.
+</details>
+</MathBox>
+
+<MathBox title='Euclidean domain' boxType='definition'>
+An integral domain $R$ is a *Euclidean domain* if there is a function $\Psi$ from $R\setminus\Set{0}$ to the non-negative integers such that
+
+$$
+  a = bq + r,\; a,b\in R,\; b\neq 0,\; q,r \in R
+$$
+
+where either $r = 0$ or $\Psi(r) < \Psi(b)$. When the division is performed with natural numbers, it is clear what it means that $r < b$. For polyonomials, we say that $\deg(r) < \deg(b)$. The function $\Psi$ generalizes these notions.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+If $R$ is a *Euclidean domain*, then $R$ is a principal ideal domain.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{I}$ be an ideal of $R$. If $\mathcal{I} = \Set{0}$, it is ideal and we aer done. Assume thus $\mathcal{I} \neq \Set{0}$ and consider the the set $\Set{\Psi(b),\; b\in\mathcal{I},\; b\neq 0}$. It is included in the non-negative integers by definition of $\Psi$, this it contains a smallest element, say $n$. let $0\neq b\in\mathcal{I}$ such that $\Psi(b) = n$.
+
+We will now prive that $\mathcal{I} = (b)$. Take $a\in\mathcal{I}$ and compute $a = bq + r$, where $r = 0$ or $\Psi(r) < \Psi(b)$. This yields $r = a - bq \in\mathcal{I}$ and $\Psi(r) < \Psi(b)$ cannot possibly happen by minimality of $n$, forcing $r$ to be zero.
+</details>
+</MathBox>
+
+## Irreducible polynomials
+
+<MathBox title='Irreducible polynomial' boxType='definition'>
+If $R$ is an integral domain, then an irreducible element of $R[X]$ is called an irreducible polynomial.
+</MathBox>
+
+Let $R$ be an integral domain. We will construct the field of fractions, also called quotient field, of $R$. Suppose $S$ is a subset of $R$ closed under multiplication, contains $1$ and does not contain $0$. This definition includes the set of all nonzero elements of an integral domain, or the set all nonzero elements of a commutative ring that are not zero divisors. We define the followin equivalence realtion on $R\times S$
+
+$$
+  (a, b) \sim (c,d) \iff s(ad - bc) = 0,\; s\in S
+$$
+
+It is clearly reflexive and symmetric. It remains to check transitivity. Suppose $(a,b)\sim(c,d)$ and $(c,d)\sim(e,f)$. Then $s(ad - bc) = 0$ and $t(cf - de) = 0$ for some $t,s\in S$. We can now multiply the first equation by $tf$, the second by $sb$ and add them
+
+$$
+  stf(ad - bc) + tsb(cf - de) = 0
+$$
+
+to get $sdt(fa - be) = 0$, proving transitivity.
+
+If we take nonzero $a,b,c,d \in\Z$ we can write down $a/b = c/d$, or equivalently $ad = bc$, which is also what $(a,b)\sim(c,d)$ satisfies by definition if we take $R$ to be an integral domain. In a sense, $(a,b)$ is some approximation of $a/b$.
+
+Formally, if $a\in R$ and $b\in S$, we define the fraction $a/b$ to be the equivalence class of the pair $(a,b)$. Set set of all equivalence classes is denoted $S^{-1}R$. To make it into a ring, we define the following laws in a natural way
+- **Addition:**
+$$
+  \frac{a}{b} + \frac{c}{d} = \frac{ad + bc}{bd}
+$$
+- **Multiplication:**
+$$
+  \frac{a}{b}\frac{c}{d} = \frac{ac}{bd}
+$$
+- **Additive identity:**
+$$
+  \frac{0}{1} = \frac{0}{s},\; s\in S
+$$
+- **Additive inverse:**
+$$
+  -\frac{a}{b} = \frac{-a}{b}
+$$
+- **Multiplicative identity:**
+$$
+  \frac{1}{1} = \frac{s}{s},\; s\in S
+$$
+
+<MathBox title='' boxType='theorem'>
+With the above definitions, the set of equivalence classes $S^{-1}R$ is a commutative ring.
+1. If $R$ is an integral domain, so is $S^{-1}R$.
+2. If $R$ is an integral domain, and $S = R\setminus\Set{0}$, then $S^{-1}R$ is a field.
+
+<details>
+<summary>Proof</summary>
+
+**Addition is well-defined:** If $a_1/b_1 = c_1 / d_1$ and $a_2 / b_2 = c_2 / d_2$, then for some $s,t \in S$, we have
+
+$$
+\begin{align*}
+  s(a_1 d_1 - b_1 c_1) =& 0 \\
+  t(a_2 d_2 - b_2 c_2) =& 0
+\end{align*}
+$$
+
+Multiplying the first equation by $tb_2 d_2$ and the second by $sb_1 d_1$, we get
+
+$$
+\begin{align*}
+  tb_2 d_2 s(a_1 d_1 - b_1 c_1) =& 0 \\
+  sb_1 d_1 t(a_2 d_2 - b_2 c_2) =& 0
+\end{align*}
+$$
+
+Adding them gives
+
+$$
+\begin{align*}
+  &st[d_2 d_1 (b_2 a_1 + b_1 a_2) - b_2 b_1 (d_2 c_1 + d_1 c_2)] = 0 \\
+  \iff& \frac{b_2 a_1 + b_1 a_2}{b_2 b_1} = \frac{d_2 c_1 + d_1 c_2}{d_2 d_1}
+\end{align*}
+$$
+
+which can be rewritten as
+
+$$
+  \frac{a_1}{b_1} + \frac{a_2}{b_2} = \frac{c_1}{d_1} + \frac{c_2}{d_2}
+$$
+
+This shows that addition does not depend on the choice of representative in an equivalence class.
+
+**Multiplication is well-defined:** If $a_1 / b_1 = c_1 / d_1$ and $a_2 / b_2 = c_2 / d_2$, then for some $s, t\in S$, we have
+
+$$
+\begin{align*}
+  s(a_1 d_1 - b_1 c_1) =& 0 \\
+  t(a_2 d_2 - b_2 c_2) =& 0
+\end{align*}
+$$
+
+Multiplying the first equation by $ta_2 d_2$, the second by $sc_1 d_1$, and adding them gives
+
+$$
+\begin{align*}
+  &st[a_2 d_2 a_1 d_1 - c_1 b_1 b_2 c_2] = 0 \\
+  \iff& \frac{a_1 a_2}{b_1 b_2} = \frac{c_1 c_2}{d_1 d_2}
+\end{align*}
+$$
+
+The ring properties follows from the fact that addition and multiplication are carried out the usual way.
+
+**(1):** We want to prove that $S^{-1}R$ is an integral domain. We assume that $R$ is an integral domain, and we check the definition of an integral domain for $S^{-1}R$. Suppose that $(a/b)(c/d) = 0$ in $S^{-1}R$, i.e.
+
+$$
+  \frac{a}{b}\frac{c}{d} = \frac{0}{1}
+$$
+
+This means that $(ac, bd) \sim (0, 1)$ and $acs = 0$ for some $s\in S$. Now $acs = 0$ is an equation in $R$, which is an integral domain, and $s \neq 0$, this $ac = 0$, so either $a$ or $c$ is $0$, and consequently either $a/b$ or $c/d$ is zero.
+
+**(2):** We wan to prove that $S^{-1}R$ is a field, assuming that $R$ is an integral domain, and $S = R\setminus\Set{0}$. We consider $a/b$ a nonzero element of $S^{-1}R$, for which we need to find an inverse. Note that $a$ and $b$ are nonzero, thus they are both in $S$ meaning that both $a/b$ and $b/a$ are in $S^{-1}R$ and $b/a$ is the multiplicative inverse of $a/b$.
+
 </details>
 </MathBox>
