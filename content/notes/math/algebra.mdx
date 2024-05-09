@@ -1028,3 +1028,135 @@ This means that $(ac, bd) \sim (0, 1)$ and $acs = 0$ for some $s\in S$. Now $acs
 
 </details>
 </MathBox>
+
+<MathBox title='Ring of fractions' boxType='definition'>
+Let $R$ be a commutative ring. The set of equivalence classes $S^{-1}R$ is a commutative ring, called the *ring of fractions* of $R$ by $S$, where $S$ is the set of all it non-divisors of zero. If $R$ is an integral domain, and $S = R\setminus\Set{0}$, then $S^{-1}R$ is called the *field of fractions* or *quotient field* of $R$. 
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A commutative ring $R$ can be embedded in its ring of fractions $S^{-1}$, where $S$ is the set of all it non-divisors of zero. In particular, an integral domain can be embedded its quotient field, which is the smallest field containing $R$.
+
+<details>
+<summary>Proof</summary>
+
+Consider the map $f: R\to S^{-1}R$ by $a \mapsto f(a) = a/1$. It is not hard to check that $f$ is a ring homomorphism. If $S$ has no zero divisor, then $\ker(f)$ is given by the set of $a$ such that $f(a) = a/1 = 0/1$, i.e. the set of $a$ such that $sa = 0$ for some $s$. Since $s$ is not a zero divisor, we have $a = 0$ and $f$ is monomorphism.
+</details>
+</MathBox>
+
+<MathBox title='Primitive polynomial' boxType='definition'>
+Let $D$ be a unique factorization domain and let $f\in D[X]$. The greatest common divisor of all the coefficients of $f$ is called the *content* of $f$, denoted $c(f)$. A polynomial whose content is a unit is called a *primitive polynomial*.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $D$ be a unique factorization domain, and consider $f \neq 0$ and $g,h\in D[x]$ such that $pf(X) = g(X)h(X)$ with $p$ a prime. Then either $p$ divides all the coefficients of $g$ or $p$ divides all the coefficients of $h$.
+
+<details>
+<summary>Proof</summary>
+
+Denote $g(X) = g_0 + \sum_{i=1}^s g_i X^i$ and $h(X) = h_0 + \sum_{j=1}^t h_j X^j$. Suppose by contradiction that $p$ does not divide all coefficients of $g$ and neither of $h$. Let $g_u$ and $h_v$ be the coefficients of minimum index not divisible by $p$. Then the coefficients of $X^{u+v}$ in $g(X)h(X)$ is
+
+$$
+  g_0 h_{u+v} + g_1 h_{u + v - 1} + \cdots + g_u h_v + \dots + g_{u + v - 1}h_1 + g_{u+v}h_0
+$$
+
+By definition of $u$ and $v$, $p$ divides every term except $g_u h_v$, thus $p$ cannt possibly divide the entire expression, and thus there exists a coefficient of $g(X)h(X)$ not divisible by $p$. This contradicts the fact that $p|g(X)h(X)$.
+</details>
+</MathBox>
+
+<MathBox title='Gauss lemma' boxType='lemma'>
+Let $f,g$ be non-constant polynomials in $D[X]$ where $D$ is a unique factorization domain. The content of a product of polynomials is the product of the contents
+
+$$
+  c(fg) = c(f)c(g)
+$$
+
+up to associates. In particular, the product of two primitives polynomials is primitive.
+
+<details>
+<summary>Proof</summary>
+
+Note that by definition of content, we can rewrite
+
+$$
+\begin{align*}
+  f(X) =& c(f)f^*(X) \\
+  g(X) =& c(g)g^* (X)
+\end{align*}
+$$
+
+where $f^*, g^* \in D[X]$ are primitive. Clearly, $fg = c(f)c(g)f^* g^*$. Since $c(f)c(g)$ divides $fg$, it divides every coefficient of $fg$ and thus their greatest common divisor $c(f)c(g) | c(gf)$.
+
+We now prove the converse, i.e. $c(gf) | c(f)c(g)$. Consider each prime $p$ appearing in the factorization of $c(gf)$ such that $p| c(f)c(g)$. Let $p$ be a prime factor of $c(gf)$. Since $fg = c(fg)(fg)^*$, we have that $c(fg)$ divides $fg$, i.e. $p|fg$.
+
+By the above lemma, either $p|f$ or $p|g$, say $p|f = c(f)f^*$, meaning that either $p|c(f)$ or $p|f^*$. Since $f^*$ is primitive, $p$ cannot possibly divide $f^*$, and thus
+
+$$
+  p|c(f) \implies p| c(f)c(g)
+$$
+
+If $p$ appears with multiplicity, we iterate the reasoning with the same $p$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $D$ be a unique factorization domain with quotient field $F$. If $f$ is a non-constant polynomial in $D[X]$, then $f$ is irreducible over $D$ if and only if $f$ is primitive and $f$ is irreducible over $F$.
+
+<details>
+<summary>Proof</summary>
+
+Assume that $f$ is irreducible over $D$. First, we show that $f$ is primitive. If $f$ were not primitive, then we could write
+
+$$
+  f = c(f)f^*
+$$
+
+where $c(f)$ is the content of $f$ and $f^*$ is primitive. Since we assume $f$ is not primitive, its content cannot be a unit, which contradict the irreducibility of $f$ over $D$. Hence, $f$ is primitive.
+
+Next, we show that $f$ is irreducible over $F$. Assume by contradiction that $f$ is not irreducible over $F$. Since $F$ is a field, reducible means $f$ can be factored into a product of two non-constant polynomials in $F[X]$ of smaller degree, i.e. $f(X) = g(X)h(X)$ with $\deg(g) < \deg(f)$ and $\deg(h) < \deg(f)$. Since $g,h \in F[X]$ and $F$ is the field of fractions of $D$, we can write
+
+$$
+\begin{gather*}
+  g(X) = \frac{a}{b}g^*(X), \quad h(X) = \frac{a}{b}h^*(X), \\
+  a, b, c, d \in D
+\end{gather*}
+$$
+
+where $g^*$ and $h^*$ are primitive. Thus, $f(X) = \frac{ac}{bd}g^*(X) h^*(X)$, where $g^* h^*$ is a primitive polynomial by Gauss lemma. Since we already know that $f$ is primitive, it must be that $\frac{ac}{bd} = u$ is a unit. However, this would mean that $f(X) = ug^*(X)h^*(X)$, which contradicts the fact that $f(X)$ is irreducible over $D[X]$. Hence, $f$ is irreducible over $F[X]$.
+
+Conversely, assume that $f$ is primitive, and irreducible over $F[X]$. Assume by contradiction that the primitive polynomial $f$ is not irreducible over $D$, i.e. $f(X) = g(X)h(X)$. Since $f$ is primitive, $\deg(g) \geq 1$ and $\deg(h) \geq 1$. However, then neither $g$ not $h$ can be a unit in $F[X]$ and thus $f = gh$ contradicts the irreducibility of $f$ over $F$.
+</details>
+</MathBox>
+
+<MathBox title="Eisenstein's criterion" boxType='criterion'>
+Let $D$ be a unique factorization domain, with quotient field $F$ and let
+
+$$
+  f(X) = \sum_{i=1}^n a_i X^i
+$$
+
+be a polynomial in $D[X]$ with $n \geq 1$ and $a_0 \neq 0$. If $p$ is a prime in $D$ and $p$ divides $a_i$ for $0\leq i < n$, but $p$ does not divide $a_n$ nor does $p^2$ divide $a_0$, then $f$ is irreducible over $F$.
+
+<details>
+<summary>Proof</summary>
+
+We first divide $f$ by its content to get a primitive polynomial. By the previous proposition, it is enough to prove that this primitive polynomial is irreducible over $D$.
+
+Let $f$ be a primitive polynomial and assume by contradiction it is reducible, i.e. $f(X) = g(X)h(X)$ with $g(X) = \sum_{i=0}^r g_i X^i$ and $h(X) = \sum_{j=0} x_j X^j$. Note that $r$ cannot be zero, for if $r = 0$, then $g_0 = g$ would divide $f$ and thus all $a_i$ implying that $g_0$ divides the content of $f$ and is thus a unit. However, this would contradict the fact that $f$ is reducible. 
+
+Assume that $r \geq 1$ and $s \geq 1$. By hypothesis $p|a_0 = g_0 h_0$ but $p^2$ does not divide $a_0$, meaning that $p$ cannot divide both $g_0$ and $h_0$. If say $p|g_0$, then $p$ does not divide $h_0$ and vice-versa.
+
+By looking at the dominant coefficient $a_n = g_r h_s$, it follows from the assumption that $p$ does not divide $a_n$ that $p$ cannot possibly divide $g_r$. Let $i$ be the smallest integer such that $p$ does not divide $g_i$. Then
+
+$$
+  1 \leq i \leq r < n = r + s
+$$
+
+Let us look at the $i$th coefficient 
+
+$$
+  a_i = g_0 h_i + g_1 h_{i-1} + \dots + g_i h_0
+$$
+
+and by choice of $i$, $p$ must divide $g_0,\dots, g_{i-1}$. Since $p$ divides $a_i$ by assumption, it thus must divide the last term $g_i h_0$, and either $p|g_i$ or $p|h_0$ by definition of prime. Both are impossible as we have chosen $p$ dividing neither $h_0$ nor $g_i$.
+</details>
+</MathBox>
