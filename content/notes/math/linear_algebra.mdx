@@ -5314,6 +5314,347 @@ Hence, the algebraic multiplicity of $\lambda$ is at least equal to the geometri
 </details>
 </MathBox>
 
+## Jordan canonical form
+
+Recall that every linear operator $\mathrm{T}\in\mathcal{L}(V)$ on a finite-dimensional $\mathbb{F}$-vector space $V$ has a rational canonical form. When the minimal polynomial $m_\mathrm{T}(x)$ of $\mathrm{T}$ splits over $\mathbb{F}$, i.e.
+
+$$
+  m_\mathrm{T} (x) = \prod_{i=1}^n (x - \lambda_i)^{e_i}
+$$
+
+there is another set of canonical forms that is arguably simpler than the set of rational canonical forms.
+
+The complexity of the rational canonical form comes from the choice of basis for the cyclic submodules $\langle\mathbf{v}_{i,j}\rangle$. The $\mathrm{T}$-cyclic bases have the form
+
+$$
+  B_{i,j} = (\mathbf{v}_{i,j},\mathrm{T}\mathbf{v}_{i,j},\dots,\mathrm{T}^{d_{i,j}-1}\mathbf{v}_{i,j}),\; d_{i,j} = \deg(p_i^{e_{i,j}})
+$$
+
+With this basis, all of the complexity arises when expressing
+
+$$
+  \mathrm{T}(\mathrm{T}^{d_{i,j}-1} (\mathbf{v}_{i,j})) = \mathrm{T}^{d_{i,j}}(\mathbf{v}_{i,j})
+$$
+
+as a linear combination of the basis vectors. However, from the form of $B_{i,j}$ any ordered set of the form
+
+$$
+  (p_0 (\mathrm{T})\mathbf{v}, p_1 (\mathrm{T})\mathbf{v},\dots,p_{d-1}(\mathrm{T})\mathbf{v})
+$$
+
+where $\deg(p_k(x)) = k$, will also be a basis for $\langle\mathbf{v}_{i,j}\rangle$. In particular, when $m_\mathrm{T}(x)$ splits over $\mathbb{F}$, the elementary divisors are
+
+$$
+  p_i^{e_{i,j}}(x) = (x - \lambda_i)^{e_{i,j}}
+$$
+
+and so the set
+
+$$
+  C_{i,j} = (\mathbf{v}_{i,j}, (\mathrm{T}-\lambda_i)\mathbf{v}_{i,j},\dots,(\mathrm{T}-\lambda_i)^{e_{i,j}-1}\mathbf{v}_{i,j})
+$$
+
+is also a basis for $\langle\mathbf{v}_{i,j}\rangle$. Denoting the $k$th basis vector in $C_{i,j}$ by $\mathbf{b}_k$, then for $k=0,\dots,e_{i,j}-2$
+
+$$
+\begin{align*}
+  \mathrm{T}\mathbf{b}_k =& \mathrm{T}[(\mathrm{T}-\lambda_i)^k(\mathbf{v}_{i,j})] \\
+  =& (\mathrm{T} - \lambda_i + \lambda_i)[(\mathrm{T} - \lambda_i)^k (\mathbf{v}_{i,j})] \\
+  =& (\mathrm{T} - \lambda_i)^{k+1} (\mathbf{v}_{i,j}) + \lambda_i (\mathrm{T} - \lambda_i)^k (\mathbf{v}_{i,j}) \\
+  =& b_{k+1} + \lambda_i b_k
+\end{align*}
+$$
+
+For $k = e_{i,j} - 1$, using the fact that
+
+$$
+  (\mathrm{T} - \lambda_i)^{k+1}(\mathbf{v}_{i,j}) = (\mathrm{T} - \lambda_i)^{e_{i,j}}(\mathbf{v}_{i,j}) = 0
+$$
+
+gives
+
+$$
+  \mathrm{T}(\mathbf{b}_{e_{i,j} - 1}) = \lambda_i \mathbf{b}_{e_{i,j}-1}
+$$
+
+Thus, for this basis the matrix of $\mathrm{T}|_{\langle\mathbf{v}_{i,j}\rangle}$ with respect to $C_{i,j}$ is the $e_{i,j}\times e_{i,j}$ matrix
+
+$$
+  \mathbf{J}(\lambda_i, e_{i,j}) = \begin{bmatrix}
+    \lambda_i & 0 & \cdots & \cdots & 0 \\
+    1 & \lambda_i & \ddots & ~ $ \vdots \\
+    0 & 1 & \ddots & \ddots & \vdots \\
+    \vdots & \ddots & \ddots & \ddots & 0 \\
+    0 & \c
+  \end{bmatrix}
+$$
+
+called a *Jordan block* associated with the scalar $\lambda_i$. This matrix has $\lambda_i$ on the main diagonal, $1$ on the subdiagonal and $0$ elsewhere. The basis $C = \bigcup_{i,j} C_{i,j}$ is called a *Jordan basis* for $\mathrm{T}$.
+
+<MathBox title='Jordan canonical form' boxType='proposition'>
+Let $\mathrm{T}\in\mathcal{L}(V)$ be a linear operator on a finite-dimensional $\mathbb{F}$-vector space $V$. Suppose that the minimal polynomial of $\mathrm{T}\in\mathcal{L}(V)$ splits over the base field $\mathbb{F}$, i.e.
+
+$$
+  m_\mathrm{T} (x) = \prod_{i=1}^n (x - \lambda_i)^{e_i}
+$$
+
+where $\lambda_i\in\mathbb{F}$ are the eigenvalues of $\mathrm{T}$.
+1. The matrix of $\mathrm{T}$ with respect to a Jordan basis $C$ is
+$$
+  \operatorname{diag}(\mathbf{J}(\lambda_i, e_{1,1}),\dots,\mathbf{J}(\lambda_i,e_{1,k_1}),\dots,\mathbf{J}(\lambda_n, e_{n,1}),\dots,\mathbf{J}(\lambda_n, e_{n,k_n}))
+$$
+where the polynomials $(x - \lambda_i)^{e_{i,j}}$ are the elementary divisors of $\mathrm{T}$. This block diagonal matrix is called the *Jordan canonical form* of $\mathrm{T}$.
+2. If $\mathbb{F}$ is algebraically closed, then up to order of the block diagonal matrices, the set of matrices in Jordan canonical form constitutes a set of canonical forms for similarity.
+
+<details>
+<summary>Proof</summary>
+
+**(2):** The companion matrix and corresponding Jordan block are similar, i.e.
+
+$$
+  \mathbf{C}[(x-\lambda_i)^{e_{i,j}}] \sim \mathbf{J}(\lambda_i,e_{i,j})
+$$
+
+since they both represent the operator $\mathrm{T}$ on the subspace $\langle\mathbf{v}_{i,j}\rangle$. It follows that the rational canonical matrix and the Jordan canonical matrix for $\mathrm{T}$ are similar.
+</details>
+</MathBox>
+
+## Triangularizability
+
+<MathBox title='Upper triangularizable linear operator' boxType='definition'>
+A linear operator $\mathrm{T}\in\mathcal{L}(V)$ on an $n$-dimensional vector space $V$ is *upper triangularizable* if there is an ordered basis $B = \Set{\mathbf{v}_i}_{i=1}^n$ of $V$ for which the matrix $[\mathrm{T}]_B$ is upper triangular, or equivalently, if
+
+$$
+  \mathrm{T}\mathbf{v}_i \in \langle\mathbf{v}_1,\dots,\mathbf{v}_n \rangle,\; \forall i=0,\dots,n
+$$
+</MathBox>
+
+<MathBox title="Schur's theorem" boxType='theorem'>
+Let $V$ be a finite-dimensional vector space over a field $\mathbb{F}$.
+1. If the characteristic polynomial (or minimal polynomial) of $\mathrm{T}\in\mathcal{L}(V)$ splits over $\mathbb{F}$, then $\mathrm{T}$ is upper triangularizable.
+2. IF $\mathbb{F}$ is algebraically closed, then all operators are upper triangularizable.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Using induction by matrix means, we want to show that every square matrix $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ whose characteristic polynomial splits over $\mathbb{F}$ is similar to an upper triangular matrix. The base case $n=1$ is trivial since all $1\times 1$ matrices are by definition upper triangularizable. 
+
+For the inductive hypothesis, assume that the result is true for $n - 1$. Let $\mathbf{v}_1$ be an eigenvector associated with the eigenvalue $\lambda_1 \in\mathbb{F}$ of $\mathbf{A}$ and extend $\Set{\mathbf{v}_1}$ to an ordered basis $B = \Set{\mathbf{v}_i}_{i=1}^n$ for $\mathbb{F}^n$. The matrix of $\mathrm{T}_\mathbf{A}$ with respect to $B$ has the form
+
+$$
+  [\mathrm{T}_\mathbf{A}]_B = \begin{bmatrix} \lambda_1 & * \\ \mathbf{0} & \mathbf{A}_1 \end{bmatrix}
+$$
+
+for some $\mathbf{A}_1 \in \mathcal{M}_{n-1}(\mathbb{F})$. Since $[\mathrm{T}_\mathbf{A}]_B$ and $\mathbf{A}$ are similar, we have
+
+$$
+\begin{align*}
+  \det(x\mathbf{I} - \mathbf{A}) =& \det(x\mathbf{I} - [\mathrm{T}_\mathbf{A}]_B) \\
+  =& (x - \lambda_1)\det(x\mathbf{I} - \mathbf{A})
+\end{align*}
+$$
+
+Hence, the characteristic polynomial of $\mathbf{A}_1$ also splits over $\mathbb{F}$ and the induction hypothesis implies that there is an invertible matrix $\mathbf{P}\in\mathcal{M}_{n-1}(\mathbb{F})$ for which
+
+$$
+  \mathbf{U} = \mathbf{PA}_1\mathbf{P}^{-1}
+$$
+
+is upper triangular. Hence if
+
+$$
+  \mathbf{Q} = \begin{bmatrix} 1 & 0 \\ 0 & \mathbf{P} \end{bmatrix}
+$$
+
+then $\mathbf{Q}$ is invertible and
+
+$$
+\begin{align*}
+  \mathbf{Q}[\mathbf{A}]_B \mathbf{Q}^{-1} =& \begin{bmatrix} 1 & 0 \\ 0 & \mathbf{P} \end{bmatrix} \begin{bmatrix} \lambda_1 & * \\ 0 & \mathbf{A}_1 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & \mathbf{P}^{-1} \end{bmatrix} \\
+  =& \begin{bmatrix} \lambda_1 & * \\ 0 & \mathbf{U} \end{bmatrix}
+\end{align*}
+$$
+
+is upper triangular.
+</details>
+</MathBox>
+
+### The real case
+
+<MathBox title='' boxType='proposition'>
+Let $\mathrm{T}\in\mathcal{L}(V)$ be a linear operator over $\mathbb{R}$ with characteristic polynomial $c_\mathrm{T}(x)$. If $V_\mathrm{T}$ is a cyclic module and $\deg(c_\mathrm{T}(x)) = 2$, then there is an ordered basis $C$ for which
+$$
+  [\mathrm{T}]_C = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $c_\mathrm{T}(x) = x^2 + sx + t$ is an irreducible quadratic. If $B$ is a $\mathrm{T}-cyclic$ basis for $V_\mathrm{T}$, then
+
+$$
+  [\mathrm{T}]_B = \begin{bmatrix} 0 & -t \\ 1 & -s \end{bmatrix}
+$$
+
+Let $\mathbf{A} = [\mathrm{T}]_B$. As a complex matrix, $\mathbf{A}$ has two distinct eigenvalues
+
+$$
+  \lambda = -\frac{s}{2} \pm i\frac{\sqrt{4t - s^2}}{2}
+$$
+
+Now, a matrix of the form $\mathbf{B} = \left[\begin{bmatrix} a & -b \\ b & a \end{bmatrix}\right]$ has characteristic polynomial $q(x) = (x - a)^2 + b$ and eigenvalues $a \pm ib$. If we set
+
+$$
+  a = -\frac{s}{2} \quad b = -\frac{\sqrt{4t - s^2}}{2}
+$$
+
+then $\mathbf{B}$ has the same two distinc eigenvalues as $\mathbf{A}$, and so $\mathbf{A}$ and $\mathbf{B}$ have the same Jordan canonical form over $\mathbb{C}$. It follows that $\mathbf{A}$ and $\mathbf{B}$ are similar over $\mathbb{C}$ and therefore also over $\R$. Thus, there is an ordered basis $C$ for which $[\mathrm{T}]_C = \mathbf{B}$.
+</details>
+</MathBox>
+
+<MathBox title='Almost upper triangular matrix' boxType='theorem'>
+A matrix $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ is *almost upper triangular* if it has the form
+
+$$
+  \mathbf{A} = \begin{bmatrix} 
+    \mathbf{A}_1 & ~ & * & ~ \\
+    ~ & \mathbf{A}_2 & ~ & ~ \\
+    ~ & ~ & \ddots & ~ \\
+    ~ & \mathbf{0} & ~ & \mathbf{A}_k
+  \end{bmatrix}
+$$
+
+where $A_i = [a]$ or $A_i = \left[\begin{smallmatrix} a & -b \\ b & a \end{smallmatrix}\right]$ for $a, b\in\mathbb{F}$. A linear operator $\mathrm{T}\in\mathcal{L}(V)$ is *almost upper triangularizable* if there is an ordered basis $B$ for which $[\mathrm{T}]_B$ is almost upper triangular.
+</MathBox>
+
+<MathBox title="Schur's theorem: real case" boxType='theorem'>
+If $V$ is a real vector space, then every linear operator $\mathrm{T}\in\mathcal{L}(V)$ on $V$ is almost upper triangularizable.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that $\mathrm{T}$ has characteristic polynomial $c_\mathrm{T}(x)$. If $p(x)$ is a prime factor of $c_\mathrm{T}(x)$, then $V_\mathrm{T}$ has a cyclic submodule $W_\mathrm{T}$ of order $p(x)$. Hence, $W$ is a $\mathrm{T}$-cyclic subspace of dimension $\deg(p(x))$ and $\mathrm{T}|_W$ has characteristic polynomial $p(x)$.
+
+The minimal polynomial of a real operator $\mathrm{T}\in\mathcal{L}(V)$ factors into a product of linear and irreducible quadratic factors. If $c_\mathrm{T}(x)$ has a linear factor over $\mathbb{F}$, then $V_\mathrm{T}$ has a one-dimensional $\mathrm{T}$-invariant subspace $W$. If $c_\mathrm{T}(x)$ has an irreducible quadratic factor $p(x)$, then $V_\mathrm{T}$ has a cyclic submodule $W_\mathrm{T}$ of order $p(x)$ and so a matrix representation of $\mathrm{T}$ on $W_\mathrm{T}$ is given by the matrix
+
+$$
+  \mathbf{A} = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}
+$$
+
+Using induction by matrix means, we want to show that every real square matrix $\mathbf{A}\in\mathcal{M}_n (\R)$ is simiar to an almost upper triangular matrix. The base case $n = 1$ is trivial because every $1\times 1$ matrix is by definition almost upper triangularizable. 
+
+For the induction hypothesis, assume $\mathbf{A} \in \mathcal{M}_{n-1}(\R)$ is almost upper triangularizable. We have just seen that $\R^n$ has a one dimensional $\mathrm{T}_\mathbf{A}$-invariant subspace $W$ or a two-dimensional $\mathrm{T}_\mathbf{A}$-cyclic subspace $W$, where $\mathrm{T}_\mathbf{A}$ has irreducible characteristic polynomial on $W$. Hence, we may choose a basis $B$ for $\R^n$ for which the first one or first two vectors are a basis for $W$. Then
+
+$$
+  [\mathrm{T}_\mathbf{A}]_B = \begin{bmatrix} \mathbf{A}_1 & * \\ \mathbf{0} & \mathbf{A}_2 \end{bmatrix}
+$$
+
+where $\mathbf{A}_1 = [a]$ or $\mathbf{A}_1 = \begin{smallmatrix} a & -b \\ b & a \end{smallmatrix}$ and $\mathbf{A}_2$ has size $k\times k$. Applying the induction hypothesis to $\mathbf{A}_2$ gives an invertible $\mathbf{P}\in\mathcal{M}_k (\R)$ for which
+
+$$
+  \mathbf{U} = \mathbf{PA}_2\mathbf{P}^{-1}
+$$
+
+is almost upper triangular. Hence if
+
+$$
+  \mathbf{Q} = \begin{bmatrix} \mathbf{I}_{n-k} & \mathbf{0} \\ \mathbf{0} & \mathbf{P} \end{bmatrix}
+$$
+
+then $\mathbf{Q}$ is invertible and
+
+$$
+\begin{align*}
+  \mathbf{Q}[\mathbf{A}]_B \mathbf{Q}^{-1} = \begin{bmatrix} \mathbf{I}_{n-k} & \mathbf{0} \\ \mathbf{0} & \mathbf{P} \end{bmatrix} \begin{bmatrix} \mathbf{A}_1 & * \\ \mathbf{0} & \mathbf{A}_2 \end{bmatrix} \begin{bmatrix} \mathbf{I}_{n-k} & \mathbf{0} \\ \mathbf{0} & \mathbf{P}^{-1} \end{bmatrix} \\
+  =& \begin{bmatrix} \mathbf{A}_1 & * \\ \mathbf{0} & \mathbf{U} \end{bmatrix}
+\end{align*}
+$$
+
+is almost upper triangular.
+</details>
+</MathBox>
+
+### Unitary triangularizability
+
+<MathBox title='Unitary triangularizable operator' boxType='definition'>
+A linear operator $\mathrm{T}\in\mathcal{L}(V)$ is *unitarily upper triangularizable* if there is an ordered orthonormal basis with respect to which $\mathrm{T}$ is upper triangular.
+</MathBox>
+
+## Diagonalizable operators
+
+<MathBox title='Diagonalizable operator' boxType='definition'>
+A linear operator $\mathrm{T}\in\mathcal{L}(V)$ is *diagonalizable* if there is an ordered basis $B = (\mathbf{v}_i)_{i=1}^n$ of $V$ for which the matrix $[\mathrm{T}]_B$ is diagonal, or equivalently, if $\mathrm{T}\mathbf{v}_i = \lambda_i \mathbf{v}_i$ for all $i = 1,\dots,n$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $\mathrm{T}\in\mathcal{L}(V)$ be a linear operator. The following are equivalent:
+1. $\mathrm{T}$ is diagonalizable.
+2. $V$ has a basis consisting entirely of eigenvectors of $\mathrm{T}$.
+3. $V$ has the form $V = \bigoplus_{i=1}^k E_{\lambda_i}$ where the $\lambda_i$ are the distinct eigenvalues of $\mathrm{T}$. 
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A linear operator $\mathrm{T}\in\mathcal{L}(V)$ an a finite-dimensional vector space is diagonalizable if and only if its minimal polynomial is the product of distinct linear factors.
+
+<details>
+<summary>Proof</summary>
+
+If $\mathrm{T}$ is diagonalizable, then $V = \bigoplus_{i=1}^k E_{\lambda_i}$ impying that $m_\mathrm{T}(x)$ is the least common multiple of the minimal polynomials $x - \lambda_i$ of $\mathrm{T}$ restricted to $E_i$. Hence, $m_\mathrm{T}(x)$ is a product of distinct linear factors. Conversely, if $m_\mathrm{T}(x)$ is a product of distinct linear factors, then the primary decomposition of $V$ has the form $V = \bigoplus_{i=1}^k V_i$ where
+
+$$
+  V_i = \Set{\mathbf{v}\in V | (\mathrm{T} - \lambda)\mathbf{v} = 0} = E_{\lambda_i}
+$$
+
+and so $\mathrm{T}$ is diagonalizable.
+</details>
+</MathBox>
+
+### Spectral resolutions
+
+<MathBox title='Spectral resolution' boxType='definition'>
+Let $\mathrm{T}\in\mathcal{L}(V)$ be a diagonalizable linear operator on an $\mathbb{F}$-vector space $V$. The *spectral resolution* of $\mathrm{T}$ is the form
+
+$$
+  \mathrm{T} = \sum_{i=1}^k \lambda_i \mathrm{R}_i
+$$
+
+where $\sum_{i=1}^k \mathrm{R}_i = \mathrm{I}$ is a resolution of the identity and the $\lambda_i \in\mathbb{F}$ are distinct.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+A linear operator $\mathrm{T}\in\mathcal{L}(V)$ is diagonalizable if and only if it has a spectral resolution
+
+$$
+  \mathrm{T} = \sum_{i=1}^k \lambda_i \mathrm{R}_i
+$$
+
+In this case $\Set{\lambda_i}_{i=1}^k$ is the spectrum of $\mathrm{T}$ and $\operatorname{ran}(\mathrm{R}_i) = E_{\lambda_i}$ and $\ker(\mathbf{R}_i) = \bigoplus_{j\neq i} E_{\lambda_i}$.
+
+<details>
+<summary>Proof</summary>
+
+If $\Set{\lambda_i}_{i=1}^k$ is the spectrum of $\mathrm{T}$ and $\operatorname{ran}(\mathrm{R}_i) = E_{\lambda_i}$. It follows that $V = \bigoplus_{i=1}^k \operatorname{ran}(\mathrm{R}_i)$. If $\mathrm{R}_i \mathbf{v} \in\operatorname{ran}(\mathrm{R}_i)$, then
+
+$$
+  \mathrm{T}(\mathrm{R}_i \mathbf{v}) = \left( \sum_{i=1}^k \lambda_i \mathrm{R}_i \right)\mathrm{R}_i \mathbf{v} = \lambda_i (\mathbf{R}_i \mathbf{v})
+$$
+
+and so $\mathrm{R}_i \mathbf{v} \in E_{\lambda_i}$. Hence, $operatorname{\mathrm{R}_i} \subseteq E_{\lambda_i}$ and consequently
+
+$$
+  V = \bigoplus_{i=1}^k \operatorname{R_i} \subseteq \bigoplus_{i=1}^k E_{\lambda_i} \subseteq V
+$$
+
+which implies that $\operatorname{ran}(\mathrm{R}_i) = E_{\lambda_i}$ and $V = \bigoplus_{i=1}^k E_{\lambda_i}$.
+
+The converse also holds, for if $V = \bigoplus_{i=1}^k E_{\lambda_i}$ and if $\mathrm{R}_i$ is projection onto $E_{\lambda_i}$ along the direct sum of the other eigenspaces then $\sum_{i=1}^k \mathrm{R}_i = \mathrm{I}$. Since $\mathrm{T}\mathbf{R}_i = \lambda_i \mathrm{R}_i$, it follows that
+
+$$
+  \mathrm{T} = \mathrm{T}(\sum_{i=1}^k \mathrm{R}_i) = \sum_{i=1}^k \lambda_i \mathrm{R}_i
+$$
+</details>
+</MathBox>
+
 # Inner product space
 
 <MathBox title='Inner product' boxType='definition'>
