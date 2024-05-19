@@ -5660,7 +5660,7 @@ $$
 <MathBox title='Inner product' boxType='definition'>
 Let $V$ be an $\mathbb{F}$-vector space. The map $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ is called an inner product on $V$ if it satisfies for all $\boldsymbol{u},\boldsymbol{v}, \boldsymbol{w}\in V$ and $\alpha, \beta \in\mathbb{F}$
 
-1. **Positive definiteness:** $\langle \boldsymbol{v}, \boldsymbol{v} \rangle \geq 0$ and $\langle \boldsymbol{v}, \boldsymbol{v} \rangle = 0 \implies \boldsymbol{v} = 0$
+1. **Positive definiteness:** $\langle \boldsymbol{v}, \boldsymbol{v} \rangle \geq 0$ and $\langle \boldsymbol{v}, \boldsymbol{v} \rangle = 0 \iff \boldsymbol{v} = 0$
 2. **Linearity in the first argument:** $\langle \alpha\boldsymbol{u} + \beta\boldsymbol{v}, \boldsymbol{w} \rangle = \alpha\langle\boldsymbol{u}, \boldsymbol{w}\rangle + \beta\langle\boldsymbol{v}, \boldsymbol{w}\rangle$
 3. **Conjugate symmetry:** $\langle \boldsymbol{v}, \boldsymbol{w}\rangle = \overline{\langle\boldsymbol{w}, \boldsymbol{v}\rangle}$
     - For $\mathbb{F} = \R$, the inner product is symmetric, i.e. $\langle \boldsymbol{v}, \boldsymbol{w}\rangle = \langle\boldsymbol{w}, \boldsymbol{v}\rangle$
@@ -5717,16 +5717,18 @@ These two equations imply that $\langle\mathrm{T}\mathbf{x},\mathbf{y}\rangle = 
 </details>
 </MathBox>
 
+## Norm and distance
+
 <MathBox title='Norm' boxType='definition'>
 Let $V$ be an $\mathbb{F}$-inner product space. The *norm* on $V$ is a map $\lVert\cdot\rVert: V\to[0,\infty)$ defined by
 
 $$
-  \lVert \boldsymbol{x} \rVert := \sqrt{\langle \boldsymbol{x}, \boldsymbol{x} \rangle}
+  \lVert \boldsymbol{v} \rVert := \sqrt{\langle \boldsymbol{x}, \boldsymbol{x} \rangle}
 $$
 </MathBox>
 
 <MathBox title='Cauchy-Schwarz inequality' boxType='proposition'>
-Let $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ be an inner product on the $\mathbb{F}$-vector space $V$. Then for all $\boldsymbol{x},\boldsymbol{y}\in V$ 
+Let $V$ be an inner product space. Then for all $\boldsymbol{x},\boldsymbol{y}\in V$ 
 1. $|\langle\boldsymbol{y}, \boldsymbol{x}\rangle| \leq \lVert\boldsymbol{x}\rVert\cdot\lVert\boldsymbol{y}\rVert$ 
 2. $|\langle\boldsymbol{y},\boldsymbol{x}\rangle| = \lVert\boldsymbol{x}\rVert\cdot\lVert\boldsymbol{y}\rVert$ if and only if $\boldsymbol{x}$ and $\boldsymbol{y}$ are linearly dependent
 
@@ -5748,6 +5750,56 @@ $$
 The resulting quadratic polynomial has roots $\lambda_{1,2} = -\frac{p}{2} \pm \sqrt{\left(\frac{p}{2}\right)^2 - q}$. For the inequality to hold, the polynomial must either have a single real root or two imaginary roots. Thus, $\left(\frac{p}{2}\right)^2 - q \leq 0$, implying $|\Re(\langle\boldsymbol{y},\hat{\boldsymbol{x}}\rangle)| \leq \lVert\boldsymbol{y}\rVert$. This proves the Cauchy-Schwartz inequality for $\mathbb{F} = \R$. For $\mathbb{F} = \mathbb{C}$, note that $e^{i\phi}\langle \boldsymbol{y}, \hat{\boldsymbol{x}} \rangle = |\langle\boldsymbol{y},\hat{\boldsymbol{x}}\rangle|$. Thus, we get $|\Re(e^{i\phi}\langle\boldsymbol{y},\hat{\boldsymbol{x}}\rangle)| = |\Re(\langle\boldsymbol{y},e^{i\phi}\hat{\boldsymbol{x}}\rangle)| \leq \lVert\boldsymbol{y}\rVert$.
 </details>
 </MathBox>
+
+<MathBox title='Properties of the norm' boxType='proposition'>
+Let $V$ be an $\mathbb{F}$-inner product space.
+1. $\lVert\mathbf{v}\rVert \geq 0$ and $\lVert \mathbf{v} \rVert = 0 \iff \mathbf{v} = \mathbf{0}$
+2. $\lVert\alpha \mathbf{v}\rVert = |\alpha|\cdot\lVert \mathbf{v} \rVert$
+3. **Triangle inequality:** $\lVert \mathbf{u} + \mathbf{v}\rVert \leq \lVert\mathbf{u}\rVert + \lVert\mathbf{v}\Vert$ for all $\mathbf{u},\mathbf{v}\in V$ with equality if and only if $\mathbf{u}$ and $\mathbf{v}$ are linearly dependent
+4. $\lVert\mathbf{u} -\mathbf{v}\rVert \leq \lVert\mathbf{u} - \mathbf{x}\rVert + \lVert\mathbf{x} - \mathbf{v}\rVert$ for all $\mathbf{u},\mathbf{v},\mathbf{x}\in V$
+5. $|\lVert\mathbf{u}\rVert - \lVert\mathbf{v}\rVert| \leq \lVert\mathbf{u}-\mathbf{v}\rVert$
+6. **Parallelogram law:** $\lVert\mathbf{u} + \mathbf{v}\rVert^2 + \lVert\mathbf{u} - \mathbf{v}\rVert^2 = 2\lVert\mathbf{u}\rVert^2 + 2\lVert\mathbf{v}\rVert^2$
+
+<details>
+<summary>Proof</summary>
+
+**(2):**
+
+$$
+\begin{align*}
+  \lVert\alpha \mathbf{v}\rVert =& \sqrt{\langle\alpha\mathbf{v}, \alpha\mathbf{v}\rangle} = \sqrt{\alpha\bar{\alpha}\langle\mathbf{v},\mathbf{v}\rangle} \\
+  =& \sqrt{|\alpha|^2 \langle\mathbf{v},\mathbf{v}\rangle} = |\alpha|\sqrt{\langle\mathbf{v},\mathbf{v}\rangle} \\
+  =& |\alpha|\cdot\lVert \mathbf{v} \rVert
+\end{align*}
+$$
+
+**(3):** By the Cauchy-Schwarz inequality
+
+$$
+\begin{align*}
+  \lVert\mathbf{u} + \mathbf{v}\rVert^2 =& \langle\mathbf{u} + \mathbf{v},\mathbf{u} + \mathbf{v}\rangle \\
+  =& \langle\mathbf{u},\mathbf{u}\rangle + \langle\mathbf{u},\mathbf{v}\rangle + \langle\mathbf{v},\mathbf{u}\rangle + \langle\mathbf{v},\mathbf{v}\rangle \\
+  \leq& \lVert\mathbf{u}\rVert^2 + 2\lVert\mathbf{u}\rVert\cdot\lVert\mathbf{u}\rVert + \lVert\mathbf{v}\rVert^2 \\
+  =& (\lVert\mathbf{u}\rVert + \lVert\mathbf{v}\rVert)^2
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Polarization identities' boxType='proposition'>
+1. If $V$ is a real inner product space, then
+$$
+  \langle\mathbf{u},\mathbf{v}\rangle = \frac{1}{4}(\lVert\mathbf{u} + \mathbf{v}\rVert^2 - \lVert\mathbf{u} - \mathbf{v}\rVert^2)
+$$
+2. If $V$ is a complex inner product space, then
+$$
+\begin{align*}
+  \langle\mathbf{u}, \mathbf{v}\rangle =& \frac{1}{4}(\lVert\mathbf{u} + \mathbf{v}\rVert^2 - \lVert\mathbf{u} - \mathbf{v}\rVert^2) \\
+  &+ \frac{1}{4}i(\lVert\mathbf{u} + i\mathbf{v}\rVert^2 - \lVert\mathbf{u} - i\mathbf{v}\rVert^2)
+\end{align*}
+$$
+</MathBox>
+
 
 ## Orthogonality
 
