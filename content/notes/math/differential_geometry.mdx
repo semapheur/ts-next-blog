@@ -4,6 +4,444 @@ subject: 'Mathematics'
 showToc: true
 ---
 
+In the following discussions, the term "smooth" means infinitely differentiable, or $C^\infty$.
+
+# Riemannian manifolds
+
+## Inner product
+
+<MathBox title='Inner product' boxType='definition'>
+Let $V$ be an $\mathbb{F}$-vector space. The map $\langle\cdot, \cdot\rangle: V\times V \to\mathbb{F}$ is called an inner product on $V$ if it satisfies for all $\boldsymbol{u},\boldsymbol{v}, \boldsymbol{w}\in V$ and $\alpha, \beta \in\mathbb{F}$
+
+1. **Positive definiteness:** $\langle \boldsymbol{v}, \boldsymbol{v} \rangle \geq 0$ and $\langle \boldsymbol{v}, \boldsymbol{v} \rangle = 0 \iff \boldsymbol{v} = 0$
+3. **Conjugate symmetry:** $\langle \boldsymbol{v}, \boldsymbol{w}\rangle = \overline{\langle\boldsymbol{w}, \boldsymbol{v}\rangle}$
+    - For $\mathbb{F} = \R$, the inner product is symmetric, i.e. $\langle \boldsymbol{v}, \boldsymbol{w}\rangle = \langle\boldsymbol{w}, \boldsymbol{v}\rangle$
+2. **Linearity in the first argument:** $\langle \alpha\boldsymbol{u} + \beta\boldsymbol{v}, \boldsymbol{w} \rangle = \alpha\langle\boldsymbol{u}, \boldsymbol{w}\rangle + \beta\langle\boldsymbol{v}, \boldsymbol{w}\rangle$
+    - For $\mathbb{F} = \R$, the symmetry property implies linearity in the second argument as well, making the inner product bilinear.
+
+The pair $(V,\langle\cdot, \cdot\rangle)$ is called an *inner product space*. Note that the inner product can also be defined with linearity the in second argument instead.
+</MathBox>
+
+In terms of an inner product allows, we can define the length (norm) of a vector $\mathbf{v}\in V$ by
+
+$$
+  \lVert\mathbf{v}\rVert = \sqrt{\langle\mathbf{v},\mathbf{v}\rangle}
+$$
+
+and the angle between two non-zero vector $\mathbf{u},\mathbf{v}\in V$ by
+
+$$
+  \cos\theta = \frac{\langle\mathbf{u},\mathbf{v}\rangle}{\lVert\mathbf{u}\rVert\cdot\lVert\mathbf{v}\rVert}
+$$
+
+<MathBox title='Positive-definite matrices' boxType='definition'>
+An $n\times n$ symmetric matrix $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ is *positive-definite* if $\mathbf{x}^\top \mathbf{A}\mathbf{x} \geq 0$ for all $\mathbf{x}\in\mathbb{F}^n$. Equality holds if and only $\mathbf{x} = \mathbf{0}$.
+</MathBox>
+
+Let $\Set{\mathbf{e}_i}_{i=1}^n$ be a basis for an $n$-dimensional inner product space $V$ and let $\mathbf{A}\in\mathcal{M}_n (\mathbb{F})$ be an $n\times n$ matrix with entries $a_{ij} = \langle\mathbf{e}^i, \mathbf{e}^j\rangle$. The inner product of any two vectors $\mathbf{x} = \sum_{i=1}^n x^i \mathbf{e}^i$ and $\mathbf{y} = \sum_{i=1}^n y^i \mathbf{e}^i$ takes the form
+
+$$
+\begin{align*}
+  \langle\mathbf{x},\mathbf{y}\rangle =& \left\langle \sum_{i=1}^n x^i \mathbf{e}_i, \sum_{j=1}^n y^j \mathbf{e}_j \right\rangle \\
+  =& \sum_{i=1}^n \sum_{j=1}^n a_{ij}x^i y^i = \mathbf{x}^\top \mathbf{Ay}
+\end{align*}
+$$
+
+To see that this defines an inner product, note that because $\mathbf{A}$ is positive-definite we have $\langle\mathbf{x},\mathbf{x}\rangle = \mathbf{x}^\top \mathbf{A}\mathbf{x} \geq 0$ with equality if and only if $\mathbf{x} = \mathbf{0}$. Because $\mathbf{A}$ is symmetric, we get
+
+$$
+\begin{align*}
+  \langle \mathbf{y},\mathbf{x}\rangle =& \mathbf{y}^\top \mathbf{Ax} (\mathbf{x}^\top \mathbf{A}^\top \mathbf{y}^\top)^\top \\
+  =& (\mathbf{x}^\top \mathbf{Ay})^\top = \mathbf{x}^\top \mathbf{Ay} \\
+  =& \langle\mathbf{x},\mathbf{y}\rangle
+\end{align*}
+$$
+
+Let ${\varepsilon^j}_{j=1}^n$ be the basis of the dual space $V^*$. If 
+
+$$
+\begin{align*}
+  \langle\mathbf{x},\mathbf{y}\rangle =& \sum_{i,j=1}^n a_{ij}x^i y^j = \sum_{i,j=1}^n a_{ij} \varepsilon^i (\mathbf{x}) \varepsilon^j (\mathbf{y}) \\
+  =& \sum_{i,j=1}^n a_{ij} (\varepsilon^i \otimes\varepsilon^j)(\mathbf{x},\mathbf{y}) 
+\end{align*}
+$$
+
+## Riemannian metric
+
+<MathBox title='Riemannian metric' boxType='definition'>
+A Riemannian metric on a smooth manifold $M$ is a smooth symmetric covariant $2$-tensor field $g$ on $M$ that is positive definite at each point. For each $\mathbf{p}\in M$, the 2-form $g_\mathbf{p}$ is an inner product on $T_\mathbf{p} M$, usually denoted
+
+$$
+  \langle \mathbf{v}, \mathbf{w} \rangle_g = g_\mathbf{p} (\mathbf{v}, \mathbf{w}),\; \mathbf{v},\mathbf{w}\in T_\mathbf{p} M
+$$
+
+In any smooth local coordinates $(x^i)$, a Riemannian metric can be written
+
+$$
+  g = g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j
+$$
+
+where $(g_{ij})$ is a symmetric positive definite matrix of smooth functions, i.e. $g_{ij} = g_{ji}$. The symmetry of $g$ allows us to write $g$ in terms of symmetric products
+
+$$
+\begin{align*}
+  g =& g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j \\
+  =& \frac{1}{2}(g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ji}\;\mathrm{d}x^i \otimes \mathrm{d}x^j) \\
+  =& \frac{1}{2}(g_{ij}\;\mathrm{d}x^i \otimes \mathrm{d}x^j + g_{ij}\;\mathrm{d}x^j \otimes \mathrm{d}x^i) \\
+  =& g_{ij} \;\mathrm{d}x^i\;\mathrm{d}x^j
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title='Metric-preserving maps' boxType='definition'>
+A smooth map $F:(M,g) \to (M, h)$ of Riemannian manifolds is *metric-preserving* if for all $\mathbf{p}\in M$ and tangent vectors $\mathbf{u},\mathbf{v}\in T_\mathbf{p} M$
+
+$$
+  \langle \mathbf{u},\mathbf{v}\rangle_\mathbf{p} = \langle F_* \mathbf{u}, F_* \mathbf{v} \rangle_{F_* (\mathbf{p})}
+$$
+
+An *isometry* is a metric-preserving diffeomorphism.
+</MathBox>
+
+# Curves
+
+<MathBox title='Regular curves' boxType='definition'>
+A parametrized curve $c:[a,b]\subseteq\R \to M$ in a smooth manifold $M$ is *regular* if its velocity $c'(t)$ is nonzero for all $t\in[0,1]$. In other words, a regular curve in $M$ is an immersion $[a,b]\to M$.
+</MathBox>
+
+The speed of a curve $c:[a,b]\to M$ in a Riemannian manifold $M$ is defined as the magnitude $\lVert c'(t) \rVert$ of its velocity $c'(t)$. The arc length of the curve is
+
+$$
+  \ell = \int_a^b \lVert c'(u) \rVert\;\mathrm{d}u
+$$
+
+For each $t\in[a,b]$, let $s(t)$ be the arc length of the curve $c$ restricted to $[a,t]$
+
+$$
+  s(t) = \int_a^t \lVert c'(u) \rVert\;\mathrm{d}u
+$$
+
+The function $s:[a,b]\to[0,\ell]$ is the arc length function of the curve $c$. By the fundamental theorem of calculus, the derivative of $s$ with respect to $t$ is $s'(t) = \lVert c'(t) \rVert$, the speed of $c$.
+
+<MathBox title='Regular curves have diffeomorphic arc length functions' boxType='proposition'>
+Let $M$ be a Riemannian manifold. The arc length function $s:[a,b]\to[0,\ell]$ of a regular curve $c:[a,b]\to M$ has a smooth inverse.
+
+<details>
+<summary>Proof</summary>
+
+Because $c(t)$ is regular, $s'(t) = \lVert c'(t) \rVert$ is never zero, i.e. $s'(t) > 0$ for all $t\in[a,b]$. This implies that $s(t)$ is a monotonically increasing function, and so has an inverse $t(s)$. By the inverse function theorem, $t$ is a smooth function of $s$.
+</details>
+</MathBox>
+
+Given a regular curve $c:[a,b]\to M$, we can write $t\in[a,b]$ as a smooth function of the arc length $s$ to get the arc length parametrization $\gamma(s) = c(t(s))$.
+
+<MathBox title='' boxType='proposition'>
+A curve is parametrized by arc length if and only if it has unit speed and its parameter starts at $0$.
+
+<details>
+<summary>Proof</summary>
+
+The speed of a curve $c:[a,b]\to M$ in a Riemannian manifold $M$ can be computed as the rate of change of the arc length $s$ with respect to $t\in[a,b]$
+
+$$
+  \frac{\mathrm{d}s}{\mathrm{d}t} = \lVert c'(t) \rVert
+$$
+
+Let $\gamma(s)$ be the arc length reparametrization of $c$. Since $s(a) = 0$, the parameter $s$ starts at $0$. By the chain rule, the velocity of $\gamma$ is
+
+$$
+  \gamma'(s) = c'(t(s))t'(s)
+$$
+
+Thus, the speed of $\gamma$ is
+
+$$
+  \lVert\gamma'(s) \rVert = \lVert c'(t(s)) \rVert \cdot |t'(s)| = \frac{\mathrm{d}s}{\mathrm{d}t}\left|\frac{\mathrm{d}t}{\mathrm{d}s}\right| = \left|\frac{\mathrm{d}s}{\mathrm{d}t} \frac{\mathrm{d}t}{\mathrm{d}s}\right| = 1
+$$
+
+Conversely, if a curve $c(t)$ has unit speed, then its arc length is
+
+$$
+  s(t) = \int_a^t \lVert c'(u) \rVert\;\mathrm{d}u = \int_a^t 1\;\mathrm{d}u = t - a
+$$
+
+If $a = 0$, then $s = t$. So a unit-speed curve starting at $t = 0$ is parametrized by arc length.
+</details>
+</MathBox>
+
+<MathBox title='Arc length parametrization of a circle' boxType='example'>
+The curve $c:[0,2\pi]\to\R^2$ given by $c(t) = (a\cos t, a\sin t)$ for $a > 0$ is regular. Its image is the circle of radius $a$ centered at the origin. Its arc length function is
+
+$$
+\begin{align*}
+  s =& \int_0^t \lVert c'(u) \rVert\;\mathrm{d}u = \int_0^t \left\lVert\begin{bmatrix} -a\sin t \\ a\cos t \end{bmatrix}\right\rVert\;\mathrm{d}u \\
+  =& \int_0^t a\;\mathrm{d}u = at
+\end{align*}
+$$
+
+Hence, $t = \frac{s}{a}$ and the arc length parametrization is
+
+$$
+  \gamma(s) = \left(a \cos\frac{s}{a}, a\sin\frac{s}{a} \right)
+$$
+</MathBox>
+
+## Signed curvature of a plane curve
+
+Consider a plane curve $\gamma:[0,\ell]\to\R^2$ parametrized by the arc length $s$. Then the velocity vector $T(s) = \gamma'(s)$ has unit length and is tangent to the curve at the point $\mathbf{p} = \gamma(s)$. A reasonable measure of curvature at $\mathbf{p}$ is the magnitude of the derivative
+
+$$
+  T'(s) = \frac{\mathrm{d}T}{\mathrm{d}s}(s) = \gamma''(s)
+$$
+
+since the faster $T$ changes, the more the curve bends. However, in order to distinguish the directions in which the curve can bend, we will define a curvature with a sign.
+
+There are two unit vectors in the plane perpendicular to $T(s)$ at $\mathbf{p}$. We can choose either one to be $\mathbf{n}(s)$, but usually $\mathbf{n}(s)$ is chosen so that the pair $(T(s),\mathbf{n}(s))$ is oriented positively in the plane, i.e. counterclockwise.
+
+Since $T$ has unit length, we have $\langle T, T \langle = 1$. Applying the product rule, we get
+
+$$
+  \langle T', T \rangle + \langle T, T' \rangle = 2 \langle T', T \rangle = 0
+$$
+
+Thus, $T'$ is orthogonal to $T$ and so it must be a multiple of $\mathbf{n}$. The scalar $\kappa\in\R$ such that
+
+$$
+  T' = \kappa\mathbf{n}
+$$
+
+is called the *(signed) curvature* of the plane curve at $\mathbf{p} = \gamma(s)$. We can also write
+
+$$
+  \kappa = \langle T', \mathbf{n}\rangle = \langle \gamma'', \mathbf{n} \rangle
+$$
+
+The sign of the curvature depends on the choice of $\mathbf{n}$; it indicates whether the curve is bending towards or away from $\mathbf{n}$.
+
+<MathBox title='Curvature of a circle' boxType='example'>
+The circle of radius $a$ centered at the origin has arc length parametrization
+
+$$
+  \gamma(s) = \left(a \cos\frac{s}{a}, a\sin\frac{s}{a} \right),\; 0 \leq s \leq 2\pi a
+$$
+
+The unit tangent vector to the curve is
+
+$$
+  T(s) = \gamma'(s) = \begin{bmatrix} -\sin\frac{s}{a} \\ \cos\frac{s}{a} \end{bmatrix}
+$$
+
+Its derivative is 
+
+$$
+  T'(s) = \gamma''(s) = \begin{bmatrix} -\frac{1}{a}\cos\frac{s}{a} \\ -\frac{1}{a}\sin\frac{s}{a} \end{bmatrix}
+$$
+
+We choose the unit normal $\mathbf{n}$ so that the pair $(T,\mathbf{n})$ is oriented counterclockwise. This means $\mathbf{n}$ is obtained from $T$ by multiplying the rotation matrix
+
+$$
+  \operatorname{rot}\left(\frac{\pi}{2}\right) = \begin{bmatrix} 
+    \cos\frac{\pi}{2} & -\sin\frac{\pi}{2} \\
+    \sin\frac{\pi}{2} & \cos\frac{\pi}{2}
+  \end{bmatrix} = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}
+$$
+
+Hence
+
+$$
+  \mathbf{n} = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} T = \begin{bmatrix} -\cos\frac{s}{a} \\ -\sin\frac{s}{a} \end{bmatrix}
+$$
+
+So $T' = \frac{1}{a}\mathbf{n}$, which shows that the signed curvature $\kappa(s)$ of a circe of radius $a$ is $\frac{1}{a}$, independent of $s$. This accords with the intuition that the larger the radius of a circle, the smaller the curvature.
+</MathBox>
+
+## Orientation and curvature
+
+A curve whose endpoints are fixed has two possible arc length parametrizations, depending on how the curve is oriented. If the arc length of the curve if $\ell$, the two parametrizations $\gamma(s)$ and $\tilde{\gamma}(s)$ are related by
+
+$$
+  \tilde{\gamma}(s) = \gamma(\ell - s)
+$$
+
+Differentiating with respect to the arc length $s$ gives
+
+$$
+  \tilde{T}(s) := \tilde{\gamma}(s) = -\gamma'(\ell - s) = -T(\ell - s)
+$$
+
+and $\tilde{\gamma}''(s) = \gamma''(\ell - s)$. Rotating the tangent vector $\tilde{T}(s)$ by $90\degrees$ amounts to multiplying $\tilde{T}(s)$ in the left by the rotation matrix $\operatorname{rot}\left(\frac{\pi}{2}\right)$. Thus
+
+$$
+  \tilde{\mathbf{n}}(s) = \operatorname{rot}\left( \frac{\pi}{2} \right)\tilde{T}(s) = -\operatorname{rot}\left(\frac{\pi}{2}\right)T(\ell - s) = -\mathbf{n}(\ell - s)
+$$
+
+It follows that the signed curvature of $\tilde{\gamma}(s) = \gamma(\ell - s)$ is
+
+$$
+  \tilde{\kappa}(s) = \langle\tilde{\gamma}''(s),\tilde{\mathbf{n}}(s)\rangle = \langle\gamma''(\ell - s),-\mathbf{n}(\ell - s)\rangle = -\kappa(\ell - s)
+$$
+
+# Directional derivatives in Euclidean space
+
+Suppose $X_\mathbf{p} = \sum_{i=1}^n a^i \left.\frac{\partial}{\partial x^i}\right|_\mathbf{p}$ is a tangent vector at point $\mathbf{p}\in\R^n$ and $f:\R^n \to\R$ is a smooth function defined in a neighbourhood of $\mathbf{p}$. The *directional derivative* of $f$ at $\mathbf{p}$ along $X_\mathbf{p}$, denoted $\mathrm{D}_{X_\mathbf{p}} f$ is
+
+$$
+\begin{align*}
+  \mathrm{D}_{X_\mathbf{p}} f =& \lim_{t\to 0} \frac{f(\mathbf{p} + t\mathbf{a}) - f(\mathbf{p})}{t} = \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0} f(\mathbf{p} + t\mathbf{a}) \\
+  =& \sum_{i=1}^n \left.\frac{\partial f}{\partial x^i}\right|_{\mathbf{p}} \cdot \left.\frac{\mathrm{d}x^i}{\mathrm{d} t}\right|_{t=0} = \sum_{i=1}^n \left.\frac{\partial f}{\partial x^i}\right|_{\mathbf{p}} \cdot a^i \\
+  =& \left( \sum_{i=1}^n a^i \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} \right)f = X_\mathbf{p} f
+\end{align*}
+$$
+
+We can in fact use any curve $c(t)$ with initial point $c(0) = \mathbf{p}$ and initial vector $c'(0) = X_\mathbf{p}$ to compute the directional derivative of $f$ at $\mathbf{p}$
+
+$$
+\begin{align*}
+  \mathrm{D}_{X_\mathbf{p}} f =& X_\mathbf{p} f \\
+  =& c'(0) f = c_* \left(\left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0}\right) f = \left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0} f(c(t))
+\end{align*}
+$$
+
+The directional derivative at $\mathbf{p}$ of a smooth vector field $Y = \sum_{i=1}^n b^i \frac{\partial}{\partial x^i}$ in $\R^n$ along $X_\mathbf{p}$ is
+
+$$
+  \mathrm{D}_{X_\mathbf{p}} Y = \sum_{i=1}^n (X_\mathbf{p} b^i) \left.\frac{\partial}{\partial x^i}\left|_\mathbf{p}
+$$
+
+This shows that $\mathrm{D}_{X_\mathbf{p}} Y$ is $\R$-linear in $X_\mathbf{p}$.
+
+When $X$ is a smooth vector field on $\R^n$, we define the vector field $\mathrm{D}_X Y$ on $\R^n$ by
+
+$$
+  (\mathrm{D}_X Y)_\mathbf{p} = \mathrm{D}_{X_\mathbf{p}} Y,\; \forall \mathbf{p}\in\R^n
+$$
+
+If $X$ and $Y$ are smooth vector fields on $\R^n$, then so is $\mathrm{D}_X Y$. Let $\mathfrak{\R^n}$ be the vector space of all smooth vector fields on $\R^n$. The directional derivative in $\R^n$ gives a bilinear map
+
+$$
+  \mathrm{D}: \mathfrak{X}(\R^n)\times\mathfrak{X}(\R^n)\to\mathfrak{X}(\R^n)
+$$
+
+which we write as $\mathrm{D}_X Y$ instead of $\mathrm{D}(X,Y)$. Let $\mathcal{F} = C^\infty(\R^n)$ be the ring of $C^\infty$ functions on $\R^n$. Then $\mathfrak{X}(\R^n)$ is both a vector space over $\R$ and a module over $\mathcal{F}$.
+
+<MathBox title='Properties of the directional derivative of smooth vector fields' boxType='proposition'>
+Let $\mathcal{F} = C^\infty(\R^n)$ be the ring of $C^\infty$ functions on $\R^n$. For smooth vector fields $X, Y\in\mathfrak{X}(\R^n)$, the directional derivative $\mathrm{D}_X Y$ satisfies the following properties
+1. $\mathrm{D}_X Y$ is $\mathcal{F}$-linear in $X$ and $\R$-linear in $Y$
+2. **Leibniz rule:** if $f$ is a smooth function on $\R^n$, then
+$$
+  \mathrm{D}_X (fY) = (Xf)Y + f\mathrm{D}_X Y
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $f$ be a smooth function on $\R^n$ and $\mathbf{p}$ an arbitrary point on $\R^n$. Then
+
+$$
+\begin{align*}
+  (\mathrm{D}_{fX} Y)_\mathbf{p} =& D_{f(\mathbf{p})X_\mathbf{p}} Y \\
+  =& f(\mathbf{p})\mathrm{D}_{X_\mathbf{p}} Y \\
+  =& (f\mathrm{D}_X Y)_\mathbf{p}
+\end{align*}
+$$
+
+For $Z \in\mathfrak{X}(\R^n)$, we have
+
+$$
+  (\mathrm{D}_{X + Z} Y)_\mathbf{p} = \mathrm{D}_{X_\mathbf{p} + Z_\mathbf{p}} Y = \mathrm{D}_{X_\mathbf{p}} Y + \mathrm{D}_{Z_\mathbf{p}} Y = (\mathrm{D}_X + \mathrm{D}_Z)_\mathbf{p} 
+$$
+
+This proves that $\mathrm{D}_X Y$ is $\mathcal{F}$-linear in $X$. The $\R$-linearity is clear from the directional derivative formula of $Y = \sum_{i=1}^n b^i \frac{\partial}{\partial x^i}$ along $X_\mathbf{p}$
+
+$$
+  \mathrm{D}_{X_\mathbf{p}} Y = \sum_{i=1}^n (X_\mathbf{p} b^i) \left.\frac{\partial}{\partial x^i}\left|_\mathbf{p}
+$$
+
+**(2):** Suppose $Y = \sum_{i=1}^n b^i \frac{\partial}{\partial x^i}$ where $b^i \in C^infty (\R^n)$. Then
+
+$$
+\begin{align*}
+  (\mathrm{D}_X (fY))_\mathbf{p} =& \sum_{i=1}^n X_\mathbf{p} (fb^i) \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} \\
+  =& \sum_{i=1}^n (X_\mathbf{p} f) b^i (\mathbf{p}) \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} + \sum_{i=1}^n f(\mathbf{p}) X_\mathbf{p} b^i \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} \\
+  =& (X_\mathbf{p} f) Y_\mathbf{p} + f(\mathbf{p})D_{X_\mathbf{p}} Y \\
+  =& ((Xf)Y + f\mathrm{D}_X Y)_\mathbf{p}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $X,Y\in\mathfrak{X}(\R^n)$ are smooth vector fields over $\R^n$ then
+
+$$
+  \mathrm{D}_X Y - D_Y X = [X, Y]
+$$
+
+where $[X, Y]$ is the Lie bracket.
+</MathBox>
+
+<MathBox title='Torsion of directional derivatives' boxType='proposition'>
+Let $X,Y\in\mathfrak{X}(\R^n)$ be smooth vector fields over $\R^n$. The *torsion* of the directional derivative $\mathrm{D}$ is defined as 
+
+$$
+  T(X,Y) := \mathrm{D}_X Y - \mathrm{D}_Y X - [X,Y]
+$$
+</MathBox>
+
+For each smooth vector field $X\in\mathfrak{X}(\R^n)$, the directional derivative $\mathrm{D}_X: \mathfrak{X}(\R^n)\to\mathfrak{X}(\R^n)$ is an $\R$-linear endomorphism. This gives rise to a map $\mathfrak{X}(\R^n) \to\operatorname{end}_\R (\mathfrak{X}(\R^n))$ by $X\mapsto\mathrm{D}_X$. The vector space $\mathfrak{X}(\R^n)$ of smooth vector fields on $\R^n$ is a Lie algebra under the Lie bracket of vector fields. For any vector space $V$, the endomorphism ring $\operatorname{end}_\R (V)$ of endormorphisms of $V$ is also a Lie algebra, with Lie bracket
+
+$$
+  [A, B] = A \circ B - B \circ A,\; A,B \in\operatorname{end}(V)
+$$
+
+This shows that the map $X\mapsto \mathrm{D}_X$ is an $\R$-linear map of Lie algebras. A measure fo the deviation of the linear map $X\mapsto \mathrm{D}_X$ from being a Lie homomorphism is given by the function
+
+$$
+  R(X,Y) = [\mathrm{D}_X, \mathrm{D}_Y] - \mathrm{D}_{[X,Y]} = \mathrm{D}_X \mathrm{D}_Y - \mathrm{D}_Y \mathrm{D}_X - \mathrm{D}_{[X,Y]} \in\operatorname{end}_\R (\mathfrak{X}(M))
+$$
+
+called the *curvature* of $\mathrm{D}$.
+
+<MathBox title='' boxType='proposition'>
+Let $\mathrm{D}$ be the directional derivative in $\R^n$ and $X,Y,Z\in\mathfrak{X}(\R^n)$ smooth vector fields on $\R^n$. Then
+1. **Zero torsion:** $T(X, Y) = \mathrm{D}_X Y - D_Y X - [X,Y] = 0$
+2. **Zero curvature:** $R(X, Y) = \mathrm{D}_X \mathrm{D}_Y Z - \mathrm{D}_Y \mathrm{D}_X Z - \mathrm{D}_{[X,Y]}Z = 0$
+3. **Compatibility with the metric:** $X\langle Y,Z \rangle = \langle \mathrm{D}_X Y, Z\rangle + \langle Y, \mathrm{D}_X Z \rangle$
+
+<details>
+<summary>Proof</summary>
+
+**(2):** Let $Z = \sum_{i=1}^n c^i \frac{\partial}{\partial x^i} \in\mathfrak{X}(\R^n)$, then
+$$
+  \mathrm{D}_X \mathrm{D}_Y Z = \mathrm{D}_X \left(\sum_{i=1}^n Y (c^i) \frac{\partial}{\partial x^i} \right) = \sum_{i=1} (XYc^i)\frac{\partial}{\partial x^i}
+$$
+
+By symmetry,
+
+$$
+  \mathrm{D}_Y \mathrm{D}_X Z = \sum_{i=1}^n (YXc^i)\frac{\partial}{\partial x^i}
+$$
+
+So
+
+$$
+\begin{align*}
+  \mathrm{D}_X \mathrm{D}_Y Z - \mathrm{D}_Y \mathrm{D}_X Z = \sum_{i=1}^n (XY - YX)c^i \frac{\partial}{\partial x^i} \\
+  =& D_{[X, Y]} Z
+\end{align*}
+$$
+
+**(3):** Let $Y = \sum_{i=1}^n b^i \frac{\partial}{\partial x^i} \in\mathfrak{X}(\R^n)$ and $Z = \sum_{i=1}^n c^i \frac{\partial}{\partial x^i}\in\mathfrak{X}(\R^n)$, then
+
+$$
+\begin{align*}
+  X\langle X, Z \rangle =& X\left(\sum_{i=1}^n b^i c^i \right) = \sum_{i=1}^n (Xb^i)c^i + \sum_{i=1}^n b^i(Xc^i) \\
+  =& \langle \mathrm{D}_X Y, Z \rangle + \langle Y, \mathrm{D}_X Z \rangle
+\end{align*}
+$$
+</details>
+</MathBox>
+
 # Partial derivative (basis vector)
 
 Partial derivatives represent basis vectors
