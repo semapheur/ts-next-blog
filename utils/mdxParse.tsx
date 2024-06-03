@@ -25,7 +25,14 @@ export const rehypePlugins = [
 	rehypeAutolinkHeadings, 
 	[rehypeImgSize, {dir: 'public'}],
 	rehypePrettyCode,
-	rehypeKatex,
+	[rehypeKatex, {
+		trust: (context) => ['\\htmlId', '\\href'].includes(context.command),
+		macros: {
+			"\\eqref": "\\href{###1}{(\\text{#1})}",
+			"\\ref": "\\href{###1}{\\text{#1}}",
+			"\\label": "\\htmlId{#1}{}"
+		}
+	}]
 	//[rehypeMathjax, {
 	//	loader: {
   //    load: ['[custom]/xypic.js'],
