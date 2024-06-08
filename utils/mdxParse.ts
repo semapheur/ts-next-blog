@@ -28,6 +28,7 @@ export const rehypePlugins = [
 	[rehypeKatex, {
 		trust: (context) => ['\\htmlId', '\\href'].includes(context.command),
 		macros: {
+			"\\d": "\\mathrm{d}",
 			"\\eqref": "\\href{###1}{(\\text{#1})}",
 			"\\ref": "\\href{###1}{\\text{#1}}",
 			"\\label": "\\htmlId{#1}{}"
