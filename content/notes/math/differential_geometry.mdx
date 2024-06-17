@@ -2415,6 +2415,19 @@ showing that $\bar{\Omega} = \mathbf{A}^{-1}\Omega\mathbf{A}$.
 </details>
 </MathBox>
 
+## Riemann curvature tensor
+
+Recall that the curvature tensor of an affine connection $\nabla$ on a manifold $M$ is defined to be
+
+$$
+\begin{gather*}
+  R:\mathfrak{X}(M)\times\mathfrak{X}(M)\times\mathfrak{X}(M) \to\mathfrak{X}(M) \\
+  R(\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]}\mathbf{Z}
+\end{gather*}
+$$
+
+We showed that $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in every argument. It is immediate from the definition that the curvature tensor $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$.
+
 ## Bianchi identities
 
 <MathBox title='First Bianchi identity' boxType='proposition'>
@@ -2422,6 +2435,12 @@ Let $\nabla$ be a connection on the tangent bundle $TM$ of a smooth manifold $M$
 
 $$
   \mathrm{d}\tau = \Omega\wedge\varepsilon - \omega\wedge\tau
+$$
+
+For a Riemann connection, the torsion form $\tau$ is zero and the first Bianchi identity simplifies to
+
+$$
+  \Omega\wedge\varepsilon = 0
 $$
 
 <details>
@@ -2467,9 +2486,179 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Generalized second Bianchi identity' boxType='proposition'>
+### Symmetry properties
 
+<MathBox title='Symmetry properties of the Riemann curvature tensor' boxType='proposition'>
+Let $M$ be a Riemannian manifold with Levi-Civita connection $\nabla$. The Riemann curvature tensor has the following symmetries and identities for $\mathbf{X},\mathbf{Y},\mathbf{Z},\mathbf{V},\mathbf{W}\in\mathfrak{X}(M)$:
+1. $R(\mathbf{X},\mathbf{Y}) =  -R(\mathbf{Y},\mathbf{X})$
+2. $\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle = $\langle R(\mathbf{X},\mathbf{Y})\mathbf{W},\mathbf{Z}\rangle$
+3. **First Bianchi identity:** $R(\mathbf{X},\mathbf{Y})\mathbf{Z} + R(\mathbf{Y},\mathbf{Z})\mathbf{X}) + R(\mathbf{Z},\mathbf{X})\mathbf{Y} = 0$
+4. **Interchange symmetry:** $\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle = \langle R(\mathbf{Z},\mathbf{W})\mathbf{X},\mathbf{Y}\rangle$
+5. **Second Bianchi identity:**
+$$
+  \nabla_\mathbf{X} \langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle + \nabla_\mathbf{Y} \langle R(\mathbf{Z},\mathbf{X})\mathbf{V},\mathbf{W}\rangle + \nabla_\mathbf{Z} \langle R(\mathbf{X},\mathbf{Y})\mathbf{V},\mathbf{W}\rangle = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(2):** Because $\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle$ is a tensor, it is enough to check its skew-symmetry locally, e.g. on an open set $U$ with an orthonormal frame $\Set{\mathbf{e}_i}_{i=1}^n$ (assured by the Gram-Schmidt process). Then
+
+$$
+  \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j,\mathbf{e}_i\rangle = \Omega_j^i (\mathbf{X},\mathbf{Y})
+$$
+
+Since $\nabla$ is metric compatible, its curvature matrix $\Omega = [\Omega_j^i]$ relative to an orthonormal frame is skew-symmetric. Thus
+
+$$
+\begin{align*}
+  \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j,\mathbf{e}_i \rangle =& \omega_j^i (\mathbf{X},\mathbf{Y}) = -\Omega_i^j (\mathbf{X},\mathbf{Y}) \\
+  =& -\langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_1,\mathbf{e}_2 \rangle
+\end{align*}
+$$
+
+On $U$, we can write $\mathbf{Z} = \sum_{i=1}^n z^i \mathbf{e}_i$ and $\mathbf{W} = \sum_{i=1}^n w^j \mathbf{e}_j$ for some smooth functions $z^i, w^j \in C^\infty (U)$. Then
+
+$$
+\begin{align*}
+  \langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W} \rangle =& \sum_{i,j}^n z^i w^j \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_i, \mathbf{e}_j \rangle \\
+  =& -\sum_{i,j}^n z^i w^j \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j, \mathbf{e}_i \rangle
+\end{align*}
+$$
+
+We now show that $\langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle$ is independent of the orthonormal basis $\Set{\mathbf{u},\mathbf{v}}$ for $T_\mathbf{p}M$. Suppse $\Set{\bar{\mathbf{u}},\bar{\mathbf{v}}}$ is another orthonormal basis. Then
+
+$$
+\begin{align*}
+  \bar{\mathbf{u}} = a\mathbf{u} + b\mathbf{v} \\
+  \bar{\mathbf{v}} = c\mathbf{u} + d\mathbf{v}
+\end{align*}
+$$
+
+for an orthonormal matrix $\mathbf{A} = \left[\begin{smallmatrix}a & b \\ c & d\end{smallmatrix}\right]$ and
+
+$$
+\begin{align*}
+  \langle R(\bar{\mathbf{u}},\bar{\mathbf{v}})\bar{\mathbf{v}},\bar{\mathbf{u}}\rangle =& \langle \det(\mathbf{A})R(\mathbf{u},\mathbf{v})(c\mathbf{u} + d\mathbf{v}),a\mathbf{u} + d\mathbf{v}\rangle \\
+  =& \det(\mathbf{A})^2 \langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle
+\end{align*}
+$$
+
+by the skew-symmetry of $\langle R(\mathbf{u},\mathbf{v}\mathbf{z},\mathbf{w}\rangle$ in $\mathbf{z}$ and $\mathbf{w}$. Since $\mathbf{A}\in \mathrm{O}(2)$, then $\det(\mathbf{A}) = \pm 1$. Hence
+
+$$
+  \langle R(\bar{\mathbf{u}},\bar{\mathbf{v}})\mathbf{v},\mathbf{u}\rangle = \langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle
+$$
+
+**(3):** Let $\Set{\mathbf{e}_i}_{i=1}^n$ be a frame over an open set $U$ in $M$, and $\Set{\varepsilon^i}_{i=1}^n$ the dual $1$-forms. On $U$, we write $\mathbf{Z} = \sum_{j=1}^n \varepsilon^j (\mathbf{Z})\mathbf{e}_j$, and
+
+$$
+\begin{align*}
+  R(\mathbf{X},\mathbf{Y})\mathbf{Z} =& \sum_{j=1} R(\mathbf{X},\mathbf{Y})\varepsilon^j (\mathbf{Z})\mathbf{e}_j \\
+  =& \sum_{i,j=1}^n \Omega_j^i (\mathbf{X},\mathbf{Y})\varepsilon^j (\mathbf{Z})\mathbf{e}_i
+\end{align*}
+$$
+
+For a Riemannian connection, the torsion form is zero and the first Bianchi identity simplifies to $\Omega\wedge\varepsilon$. The $i$th component of $\Omega\wedge\varepsilon$ is $\sum_j \Omega_j^i \wedge \varepsilon^j$. Thus, for each $i$, the first Bianchi identity gives
+
+$$
+\begin{align*}
+  0 =& \sum_{j=1}^n (\Omega_j^i \wedge \varepsilon^j)(\mathbf{X},\mathbf{Y},\mathbf{Z}) \\
+  =& \sum_{j=1}^n \Omega_j^i (\mathbf{X},\mathbf{Y})\varepsilon^j (\mathbf{Z}) - \Omega_j^i (\mathbf{X},\mathbf{Z})\varepsilon^j (\mathbf{Y}) + \Omega_j^i (\mathbf{Y},\mathbf{Z})\varepsilon^j (\mathbf{X})
+\end{align*}
+$$
+
+Multiplying by $\mathbf{e}_i$ and summing over $i$, we obtain
+
+$$
+  0 = R(\mathbf{X},\mathbf{Y})\mathbf{Z} + R(\mathbf{Z},\mathbf{X})\mathbf{Y} + R(\mathbf{Y},\mathbf{Z})\mathbf{X}
+$$
+
+**(4):** By the first Bianchi identity
+
+$$
+  \langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle + R(\mathbf{Y},\mathbf{Z})\mathbf{X},\mathbf{W}\rangle + R(\mathbf{Z},\mathbf{X})\mathbf{Y},\mathbf{W}\rangle = 0
+$$
+
+First, to cancel out the term $R(\mathbf{Y},\mathbf{Z})\mathbf{X},\mathbf{W}\rangle$ we add the first Bianchi identity
+
+$$
+  \langle R(\mathbf{Y},\mathbf{Z})\mathbf{W},\mathbf{X}\rangle + R(\mathbf{Z},\mathbf{W})\mathbf{Y},\mathbf{X}\rangle + R(\mathbf{W},\mathbf{Y})\mathbf{Z},\mathbf{X}\rangle = 0
+$$
+
+Secondly, to cancel out the term $R(\mathbf{Z},\mathbf{X})\mathbf{Y},\mathbf{W}\rangle$ terms we add the first Bianchi identity
+
+$$
+  \langle R(\mathbf{Z},\mathbf{X})\mathbf{W},\mathbf{Y}\rangle + R(\mathbf{X},\mathbf{W})\mathbf{Z},\mathbf{Y}\rangle + R(\mathbf{W},\mathbf{Z})\mathbf{X},\mathbf{Y}\rangle = 0
+$$
+
+Finally, to cancel out the term $R(\mathbf{W},\mathbf{Y})\mathbf{Z},\mathbf{X}\rangle$ terms we add the first Bianchi identity
+
+$$
+  \langle R(\mathbf{W},\mathbf{Y})\mathbf{X},\mathbf{Z}\rangle + R(\mathbf{Y},\mathbf{X})\mathbf{W},\mathbf{Z}\rangle + R(\mathbf{X},\mathbf{W})\mathbf{Y},\mathbf{Z}\rangle = 0
+$$
+
+Adding the four equations and making use of the skew-symmetry properties, we get
+
+$$
+  2\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle - 2\langle R(\mathbf{Z},\mathbf{W})\mathbf{X},\mathbf{Y}\rangle = 0
+$$
+
+**(5):** Since $\nabla_\mathbf{X} \langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle$ is $\mathcal{F}$-linear in all of its arguments, it suffices to verify the identity at a point $\mathbf{p}\in M$ and for $\mathbf{X},\mathbf{Y},\mathbf{Z},\mathbf{V},\mathbf{W}$ a frame of smooth vector fields near $\mathbf{p}$. Such a frame is the coordinate frame $\Set{\frac{\partial}{\partial x^i}}_{i=1}^n$ of a normal coordinate neighbourhood of $\mathbf{p}$. The advantage of using a normal coordinate system is that $\nabla_\mathbf{X}\mathbf{Y} = 0$ at $\mathbf{p}$ and $[\mathbf{X},\mathbf{Y}] = 0$ on $U$ for any given coordinate vector fields $\mathbf{X} = \frac{\partial}{\partial x^i}$ and \mathbf{Y} = \frac{\partial}{\partial x^j}$ for some $i,j$. This greatly simplifies the expression for the covariant derivative of a tensor field. Thus if $\mathbf{X},\mathbf{Y},\mathbf{Z},\mathbf{V},\mathbf{W}$ are coordinate vector fields on a normal neighbourhood of $\mathbf{p}$, then the covariant derivative by $\mathbf{X}$ is
+
+$$
+\begin{align*}
+  \nabla_\mathbf{X} \langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle =& \mathbf{X}(\langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle) \\
+  &- \langle R(\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle - \langle R(\mathbf{Y},\nabla_\mathbf{X}\mathbf{Z})\mathbf{V},\mathbf{W}\rangle \\
+  &- \langle R(\mathbf{Y},\mathbf{Z})\nabla_\mathbf{X} \mathbf{V},\mathbf{W}\rangle - \langle R(\mathbf{Y},\mathbf{Z}) \mathbf{V},\nabla_\mathbf{X}\mathbf{W}\rangle \\
+  =& \mathbf{X}(\langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle) \\
+  =& \langle \nabla_\mathbf{X} R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle + \langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\nabla_\mathbf{X}\mathbf{W}\rangle \\
+  =& \langle\nabla_\mathbf{X} \nabla_\mathbf{Y} \nabla_\mathbf{Z}, \mathbf{W}\rangle - \langle \nabla_\mathbf{X}, \nabla_\mathbf{Z}, \nabla_\mathbf{Y} \mathbf{V},\mathbf{W}\rangle
+\end{align*}
+$$
+
+Cyclically permuting $\mathbf{X},\mathbf{Y},\mathbf{Z}$ we get
+
+$$
+  \nabla_\mathbf{Y} \langle R(\mathbf{Z},\mathbf{X})\mathbf{V},\mathbf{W}\rangle = \langle\nabla_\mathbf{Y} \nabla_\mathbf{Z} \nabla_\mathbf{X}, \mathbf{W}\rangle - \langle \nabla_\mathbf{Y}, \nabla_\mathbf{X}, \nabla_\mathbf{Z} \mathbf{V},\mathbf{W}\rangle
+$$
+
+and 
+
+$$
+  \nabla_\mathbf{Z} \langle R(\mathbf{X},\mathbf{Y})\mathbf{V},\mathbf{W}\rangle = \langle\nabla_\mathbf{Z} \nabla_\mathbf{X} \nabla_\mathbf{Y}, \mathbf{W}\rangle - \langle \nabla_\mathbf{Z}, \nabla_\mathbf{Y}, \nabla_\mathbf{X} \mathbf{V},\mathbf{W}\rangle
+$$
+
+Summing the three covariant derivatives gives
+
+$$
+\begin{align*}
+  &\nabla_\mathbf{X} \langle R(\mathbf{Y},\mathbf{Z})\mathbf{V},\mathbf{W}\rangle + \nabla_\mathbf{Y} \langle R(\mathbf{Z},\mathbf{X})\mathbf{V},\mathbf{W}\rangle + \nabla_\mathbf{Z} \langle R(\mathbf{X},\mathbf{Y})\mathbf{V},\mathbf{W}\rangle \\
+  =& \langle R(\mathbf{X},\mathbf{Y})\nabla_\mathbf{Z} \mathbf{V},\mathbf{W}\rangle + \langleR(\mathbf{Y},\mathbf{Z})\nabla_\mathbf{X} \mathbf{V},\mathbf{W}\rangle + \langle R(\mathbf{Z},\mathbf{X})\nabla_\mathbf{Y} \mathbf{V},\mathbf{W}\rangle
+\end{align*}
+$$
+
+Because $R(-,-)-$ is a tensor, we can evaluate the arguments at a single point $\mathbf{p}$ on the right-hand side. Since $\nabla_\mathbf{X} \mathbf{V}$, $\nabla_\mathbf{Y} \mathbf{V}$, $\nabla_\mathbf{Z} \mathbf{V}$ all vanish at $\mathbf{p}$, all three terms are zero.
+</details>
 </MathBox>
+
+### Sectional curvature
+
+Let $M$ be a Riemannian manifold and $\mathbf{p}$ a point in $M$. If $P$ is a $2$-dimensional subspace of the tangent space $T_\mathbf{p}M$, then we define the *sectional curvature* of $P$ to be
+
+$$
+  K(P) = \langle R(\mathbf{e}_1,\mathbf{e}_2)\mathbf{e}_2,\mathbf{e}_1\rangle
+$$
+
+for any orthonormal basis $\Set{\mathbf{e}_1,\mathbf{e}_2}$ of $P$. Just as in the definition of the Gaussian curvature, the right-hand side is independent of the orthonormal basis $\Set{\mathbf{e}_1,\mathbf{e}_2}$.
+
+If $\Set{\mathbf{u},\mathbf{v}}$ is an arbitrary basis for the $2$-plane $P$, then the sectional curvature of $P$ is given by
+
+$$
+  K(P) = \frac{\langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle}{\langle\mathbf{u},\mathbf{u}\rangle\langle\mathbf{v},\mathbf{v}\rangle - \langle\mathbf{u},\mathbf{v}\rangle^2}
+$$
+
+### Ricci curvature
 
 ## Gauss's Theorema Egregium using forms
 
@@ -2654,91 +2843,6 @@ $$
 
 for any orthonormal basis $\Set{\mathbf{u},\mathbf{v}}$ for the tangent plane $T_\mathbf{p}M$.
 </MathBox>
-
-### Skew-symmetries of the curvature tensor
-
-Recall that the curvature tensor of an affine connection $\nabla$ on a manifold $M$ is defined to be
-
-$$
-\begin{gather*}
-  R:\mathfrak{X}(M)\times\mathfrak{X}(M)\times\mathfrak{X}(M) \to\mathfrak{X}(M) \\
-  R(\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]}\mathbf{Z}
-\end{gather*}
-$$
-
-We showed that $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in every argument. It is immediate from the definition that the curvature tensor $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$.
-
-<MathBox title='' boxType='proposition'>
-If an affine connection $\nabla$ on a Riemannian manifold $M$ is metric compatible, then for vector fields $\mathbf{X},\mathbf{Y},\mathbf{Z},\mathbf{W}\in\mathfrak{X}(M)$, the tensor $\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle$ is skew-symmetric in $\mathbf{Z}$ and $\mathbf{W}$.
-
-<details>
-<summary>Proof</summary>
-
-Because $\langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W}\rangle$ is a tensor, it is enough to check its skew-symmetry locally, e.g. on an open set $U$ with an orthonormal frame $\Set{\mathbf{e}_i}_{i=1}^n$ (assured by the Gram-Schmidt process). Then
-
-$$
-  \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j,\mathbf{e}_i\rangle = \Omega_j^i (\mathbf{X},\mathbf{Y})
-$$
-
-Since $\nabla$ is metric compatible, its curvature matrix $\Omega = [\Omega_j^i]$ relative to an orthonormal frame is skew-symmetric. Thus
-
-$$
-\begin{align*}
-  \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j,\mathbf{e}_i \rangle =& \omega_j^i (\mathbf{X},\mathbf{Y}) = -\Omega_i^j (\mathbf{X},\mathbf{Y}) \\
-  =& -\langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_1,\mathbf{e}_2 \rangle
-\end{align*}
-$$
-
-On $U$, we can write $\mathbf{Z} = \sum_{i=1}^n z^i \mathbf{e}_i$ and $\mathbf{W} = \sum_{i=1}^n w^j \mathbf{e}_j$ for some smooth functions $z^i, w^j \in C^\infty (U)$. Then
-
-$$
-\begin{align*}
-  \langle R(\mathbf{X},\mathbf{Y})\mathbf{Z},\mathbf{W} \rangle =& \sum_{i,j}^n z^i w^j \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_i, \mathbf{e}_j \rangle \\
-  =& -\sum_{i,j}^n z^i w^j \langle R(\mathbf{X},\mathbf{Y})\mathbf{e}_j, \mathbf{e}_i \rangle
-\end{align*}
-$$
-
-We now show that $\langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle$ is independent of the orthonormal basis $\Set{\mathbf{u},\mathbf{v}}$ for $T_\mathbf{p}M$. Suppse $\Set{\bar{\mathbf{u}},\bar{\mathbf{v}}}$ is another orthonormal basis. Then
-
-$$
-\begin{align*}
-  \bar{\mathbf{u}} = a\mathbf{u} + b\mathbf{v} \\
-  \bar{\mathbf{v}} = c\mathbf{u} + d\mathbf{v}
-\end{align*}
-$$
-
-for an orthonormal matrix $\mathbf{A} = \left[\begin{smallmatrix}a & b \\ c & d\end{smallmatrix}\right]$ and
-
-$$
-\begin{align*}
-  \langle R(\bar{\mathbf{u}},\bar{\mathbf{v}})\bar{\mathbf{v}},\bar{\mathbf{u}}\rangle =& \langle \det(\mathbf{A})R(\mathbf{u},\mathbf{v})(c\mathbf{u} + d\mathbf{v}),a\mathbf{u} + d\mathbf{v}\rangle \\
-  =& \det(\mathbf{A})^2 \langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle
-\end{align*}
-$$
-
-by the skew-symmetry of $\langle R(\mathbf{u},\mathbf{v}\mathbf{z},\mathbf{w}\rangle$ in $\mathbf{z}$ and $\mathbf{w}$. Since $\mathbf{A}\in \mathrm{O}(2)$, then $\det(\mathbf{A}) = \pm 1$. Hence
-
-$$
-  \langle R(\bar{\mathbf{u}},\bar{\mathbf{v}})\mathbf{v},\mathbf{u}\rangle = \langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle
-$$
-</details>
-</MathBox>
-
-### Sectional curvature
-
-Let $M$ be a Riemannian manifold and $\mathbf{p}$ a point in $M$. If $P$ is a $2$-dimensional subspace of the tangent space $T_\mathbf{p}M$, then we define the *sectional curvature* of $P$ to be
-
-$$
-  K(P) = \langle R(\mathbf{e}_1,\mathbf{e}_2)\mathbf{e}_2,\mathbf{e}_1\rangle
-$$
-
-for any orthonormal basis $\Set{\mathbf{e}_1,\mathbf{e}_2}$ of $P$. Just as in the definition of the Gaussian curvature, the right-hand side is independent of the orthonormal basis $\Set{\mathbf{e}_1,\mathbf{e}_2}$.
-
-If $\Set{\mathbf{u},\mathbf{v}}$ is an arbitrary basis for the $2$-plane $P$, then the sectional curvature of $P$ is given by
-
-$$
-  K(P) = \frac{\langle R(\mathbf{u},\mathbf{v})\mathbf{v},\mathbf{u}\rangle}{\langle\mathbf{u},\mathbf{u}\rangle\langle\mathbf{v},\mathbf{v}\rangle - \langle\mathbf{u},\mathbf{v}\rangle^2}
-$$
 
 ### Poincaré half-plane
 
