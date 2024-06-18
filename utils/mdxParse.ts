@@ -19,6 +19,8 @@ import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
+import { rehypeMathref } from './rehype'
+
 export const remarkPlugins = [remarkGfm, remarkMath]
 export const rehypePlugins = [
 	rehypeSlug, 
@@ -33,7 +35,8 @@ export const rehypePlugins = [
 			"\\ref": "\\href{###1}{\\text{#1}}",
 			"\\label": "\\htmlId{#1}{}"
 		}
-	}]
+	}],
+	rehypeMathref
 	//[rehypeMathjax, {
 	//	loader: {
   //    load: ['[custom]/xypic.js'],
