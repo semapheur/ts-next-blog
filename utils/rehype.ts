@@ -4,7 +4,7 @@ import {Transformer} from 'unified'
 import {selectAll, select} from 'hast-util-select'
 import {visit} from 'unist-util-visit'
 
-export function rehypeMathref(options?: Options): void | Transformer<Root, Root> {
+export function rehypeMathref(): Transformer<Root, Root> {
   const boxCount = {
     'algorithm': 0,
     'axiom': 0,
@@ -58,7 +58,6 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
         if (boxType in boxCount) boxCount[boxType]++
         return
       }
-
       const boxRefs = selectAll(`a[href="#${id}"] > span.mord.text > span.mord`, root)
       for (let i=0; i < boxRefs.length; i++) {
         boxRefs[i].children = [{type: 'text', value: `${boxCount[boxType]}`}]

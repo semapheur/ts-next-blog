@@ -43,9 +43,8 @@ export default function MathBox({title, boxType, children, tag}: Props) {
 function MathBoxOld({title, boxType, children, tag}: Props) {
   return (
     <div className={`relative px-3 pt-2 my-8 md:my-8 bg-main border-2 border-${boxType} rounded-lg shadow-md`}>
-      <span className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-sm before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
+      <span id={tag} className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-sm before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
       >
-        {tag && <a aria-hidden='true' tabIndex={-1} href={`#${tag}`}/>}
         {title}
       </span>
       {children}
