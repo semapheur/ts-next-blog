@@ -45,7 +45,7 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
       let id = ''
       let boxType = ''
       for (const attribute of node.attributes) {
-        if (!('name' in attribute) || !('value' in attribute)) continue
+        if (!('name' in attribute)) continue
 
         if (attribute.name === 'boxType') {
           boxType = (attribute.value as string)
