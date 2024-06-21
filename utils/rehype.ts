@@ -24,8 +24,17 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
       }
     }
 
-    //for (const boxType of boxTypes) {
-    //  const boxTags = selectAll(`aside.${boxType}`, root)
-    //}
+    for (const boxType of boxTypes) {
+      const boxTags = selectAll(`span.${boxType}`, root)
+      for (let i=0; i < boxTags.length; i++) {
+        const id = boxTags[i].properties?.id
+        if (!id) continue
+
+        const boxRefs = selectAll(`a[href="#${id}"] > span.mord.text > span.mord`, root)
+        for (let j=0; j < boxRefs.length; j++) {
+          boxRefs[j].children = [{type: 'text', value: `${i}`}]
+        }
+      }
+    }
   }
 }
