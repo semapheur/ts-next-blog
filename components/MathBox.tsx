@@ -27,11 +27,11 @@ export default function MathBox({title, boxType, children, tag}: Props) {
   return (
     <aside id={tag} className='my-5 bg-primary rounded shadow-md dark:shadow-black/50'>
       <div className={`px-2 py-1 bg-${boxType} rounded-t break-words`}>
-        <a aria-label={`Link to ${boxType}: ${title}`} tabIndex={-1} href={`#${tag}`}
-          className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold before:hover:underline no-underline`}
+        <span
+          className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
         >
           {title && `: ${title}`}
-        </a>
+        </span>
       </div>
       <div className='px-4 pb-px'>
         {children}
