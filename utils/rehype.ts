@@ -5,7 +5,22 @@ import {selectAll, select} from 'hast-util-select'
 import {visit} from 'unist-util-visit'
 
 export function rehypeMathref(options?: Options): void | Transformer<Root, Root> {
-  const boxTypes = ['algorithm','axiom','conjecture','corollary','criteria','definition','example','lemma','observation','property','proposition','proof','remark','theorem']
+  const boxCount = {
+    'algorithm': 0,
+    'axiom': 0,
+    'conjecture': 0,
+    'corollary': 0,
+    'criteria': 0,
+    'definition': 0,
+    'example': 0,
+    'lemma': 0,
+    'observation': 0,
+    'property': 0,
+    'proposition': 0,
+    'proof': 0,
+    'remark': 0,
+    'theorem': 0
+  }
 
   return (root) => {
 
@@ -24,17 +39,28 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
       }
     }
 
-    for (const boxType of boxTypes) {
-      const boxTags = selectAll(`span.${boxType}`, root)
-      for (let i=0; i < boxTags.length; i++) {
-        const id = boxTags[i].properties?.id
-        if (!id) continue
+    visit(root, 'mdxJsxFlowElement', (node) => {
+      if (node.name !== 'MathBox') return
+      
+      let id = ''
+      let boxType = ''
+      for (const attribute of node.attributes) {
+        if (!('name' in attribute) || !('value' in attribute)) continue
 
-        const boxRefs = selectAll(`a[href="#${id}"] > span.mord.text > span.mord`, root)
-        for (let j=0; j < boxRefs.length; j++) {
-          boxRefs[j].children = [{type: 'text', value: `${i}`}]
+        if (attribute.name === 'boxType') {
+          boxType = (attribute.value as string)
+        }
+        if (attribute.name === 'tag') {
+          id = (attribute.value as string)
         }
       }
-    }
+      if (!id || !(boxType in boxCount)) return
+
+      const boxRefs = selectAll(`a[href="#${id}"] > span.mord.text > span.mord`, root)
+      for (let i=0; i < boxRefs.length; i++) {
+        boxRefs[i].children = [{type: 'text', value: `${boxCount[boxType]}`}]
+      }
+      boxCount[boxType]++
+    })
   }
 }

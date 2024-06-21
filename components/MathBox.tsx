@@ -28,7 +28,7 @@ export default function MathBox({title, boxType, children, tag}: Props) {
     <aside className='my-5 bg-primary rounded shadow-md dark:shadow-black/50'>
       <div className={`px-2 py-1 bg-${boxType} rounded-t break-words`}>
         <span id={tag}
-          className={`${boxType} before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
+          className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
         >
           {title && `: ${title}`}
         </span>
