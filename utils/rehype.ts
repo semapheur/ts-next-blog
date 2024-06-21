@@ -54,7 +54,10 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
           id = (attribute.value as string)
         }
       }
-      if (!id || !(boxType in boxCount)) return
+      if (!id || !(boxType in boxCount)) {
+        if (boxType in boxCount) boxCount[boxType]++
+        return
+      }
 
       const boxRefs = selectAll(`a[href="#${id}"] > span.mord.text > span.mord`, root)
       for (let i=0; i < boxRefs.length; i++) {
