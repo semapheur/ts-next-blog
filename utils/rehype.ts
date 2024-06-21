@@ -5,6 +5,7 @@ import {selectAll, select} from 'hast-util-select'
 import {visit} from 'unist-util-visit'
 
 export function rehypeMathref(options?: Options): void | Transformer<Root, Root> {
+  const boxTypes = ['algorithm','axiom','conjecture','corollary','criteria','definition','example','lemma','observation','property','proposition','proof','remark','theorem']
 
   return (root) => {
 
@@ -22,5 +23,9 @@ export function rehypeMathref(options?: Options): void | Transformer<Root, Root>
         eqRefs[j].children = [{type: 'text', value: `${i}`}]
       }
     }
+
+    //for (const boxType of boxTypes) {
+    //  const boxTags = selectAll(`aside.${boxType}`, root)
+    //}
   }
 }
