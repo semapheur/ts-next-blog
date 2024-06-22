@@ -1,6 +1,10 @@
+'use client'
 import {useEffect, useRef} from 'react'
 
 import * as THREE from 'three'
+
+import starfieldVertexShader from './shaders/starfield_vs.glsl'
+import starfieldFragmentShader from './shaders/starfield_fs.glsl'
 
 function BitDeinterlace(v: number): number[] {
   const result = [0,0,0]
@@ -21,18 +25,18 @@ export default function SpecialRelativity() {
   const wrapperRef = useRef<HTMLCanvasElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const uniformsStars = {
-    offset: {type: 'v3', value: new THREE.Vector3(0,0,0)},
-    brightness_scale: {type: 'f', value: 0.01},
-    velocity: {type: 'v3', value: new THREE.Vector3(0,0,0)},
-    frac_cam_pos: {type: 'v3', value: new THREE.Vector3(0,0,0)},
-    lorentz: {type: 'm4', value: new THREE.Matrix4()},
-  }
-
   useEffect(() => {
     const wrapper = wrapperRef.current
     const canvas = canvasRef.current
     if (!(canvas && wrapper)) return
+
+    const uniformsStars = {
+      offset: {type: 'v3', value: new THREE.Vector3(0,0,0)},
+      brightness_scale: {type: 'f', value: 0.01},
+      velocity: {type: 'v3', value: new THREE.Vector3(0,0,0)},
+      frac_cam_pos: {type: 'v3', value: new THREE.Vector3(0,0,0)},
+      lorentz: {type: 'm4', value: new THREE.Matrix4()},
+    }
 
     const {width, height} = wrapper.getBoundingClientRect()
 
@@ -64,15 +68,17 @@ export default function SpecialRelativity() {
     }
 
     const attrib = new THREE.Float32BufferAttribute(positions, 4)
-    attrib.count = idx/4
+    attrib.count = idx / 4
     geometry.setAttribute('position', attrib)
     geometry.setAttribute('my_position', attrib)
-    geometry.setDrawRange(0, idx/4)
+    geometry.setDrawRange(0, idx / 4)
+
+    console.log(starfieldVertexShader)
 
     const material = new THREE.ShaderMaterial({
       uniforms: uniformsStars,
-      vertexShader: null,
-      fragmentShader: null,
+      vertexShader: starfieldVertexShader,
+      fragmentShader: starfieldFragmentShader,
       blending: THREE.CustomBlending,
       blendSrc: THREE.SrcAlphaFactor,
       blendDst: THREE.OneFactor

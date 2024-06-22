@@ -1,24 +1,24 @@
 declare module '*.glsl' {
-  const file: string;
-  export default file;
+  const shader: string;
+  export default shader;
 }
 
 declare module '*.fs' {
-  const file: string;
-  export default file;
+  const shader: string;
+  export default shader;
 }
 
 declare module '*.vs' {
-  const file: string;
-  export default file;
+  const shader: string;
+  export default shader;
 }
 
 declare module '*.frag' {
-  const file: string;
-  export default file;
+  const shader: string;
+  export default shader;
 }
 
 declare module '*.vert' {
-  const file: string;
-  export default file;
+  const shader: string;
+  export default shader;
 }

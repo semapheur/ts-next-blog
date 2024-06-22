@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   description: 'A WebGL-based special relativity visualization.'
 }
 
-const PeriodicTable = dynamic(() => import('components/PeriodicTable'), {
+const SpecialRelativity = dynamic(() => import('components/SpecialRelativity'), {
   ssr: true}
 )
 
 export default function Page() {
-  return <PeriodicTable/>
+  return <SpecialRelativity/>
 }
