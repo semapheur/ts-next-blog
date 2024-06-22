@@ -22,7 +22,7 @@ function BitDeinterlace(v: number): number[] {
 }
 
 export default function SpecialRelativity() {
-  const wrapperRef = useRef<HTMLCanvasElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -39,6 +39,20 @@ export default function SpecialRelativity() {
     }
 
     const {width, height} = wrapper.getBoundingClientRect()
+
+    const renderer = new THREE.WebGLRenderer({canvas, antialias: false})
+    renderer.setSize(width, height)
+    
+    const supportsHalf = (renderer.extensions.get('OES_texture_half_float') || renderer.extensions.get('OES_texture_half_float_linear'))
+    const supportsFloat = renderer.extensions.get('OES_texture_float') || renderer.extensions.get('OES_texture_float_linear')
+
+    let textureType: 1009|1015|1016 = THREE.UnsignedByteType
+
+    if (supportsHalf) {
+      textureType = THREE.HalfFloatType
+    } else if (supportsFloat) {
+      textureType = THREE.FloatType
+    }
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
     camera.position.set(0, 0, 1)
@@ -73,8 +87,6 @@ export default function SpecialRelativity() {
     geometry.setAttribute('my_position', attrib)
     geometry.setDrawRange(0, idx / 4)
 
-    console.log(starfieldVertexShader)
-
     const material = new THREE.ShaderMaterial({
       uniforms: uniformsStars,
       vertexShader: starfieldVertexShader,
@@ -88,10 +100,26 @@ export default function SpecialRelativity() {
 
     scene.add(meshStars)
 
+    let globalTime = 0
+    let prevTime = -1
+    function animate(time: number) {
+      if (prevTime === -1) prevTime = time
+      globalTime = time
+      const dt = time - prevTime
+
+      requestAnimationFrame(animate)
+
+      //uniformsStars.offset.value.set(spaceship.offset.x % grid_wraparound, spaceship.offset.y % grid_wraparound, spaceship.offset.z % grid_wraparound)
+
+      renderer.render(scene, camera)
+      prevTime = time
+    }
+    
+    animate(globalTime)
   }, [])
 
   return (
-    <div>
+    <div ref={wrapperRef} className='h-full'>
       <canvas ref={canvasRef}/>
     </div>
   )

@@ -1,5 +1,3 @@
-#version 300 es
-
 #ifdef GL_FRAGMENT_PRECISION_HIGH
   precision highp float;
 #else
@@ -40,7 +38,7 @@ const float prevalence_red_giants_factor = 3.0;
 const float brightness_distribution_factor = 2.0;
 
 void brightness_temperature(vec3 pos, out float brightness_factor, out float temperature) {
-  vec3 b = rand3(vec4(pos, 1.234567));
+  vec3 ab = rand3(vec4(pos, 1.234567));
   float a = ab.x;
   float b = ab.y;
   float br = 1.0 / (a + 1.0 / brightness_distribution_factor);
@@ -62,7 +60,7 @@ void main() {
   
   vec3 seed = floor(offset_s) * grid_size + my_position.xyz;
 
-  vec3 star_offset = rand3(vec3(seed, my_position.w)) * 2.0 - vec3(1.0);
+  vec3 star_offset = rand3(vec4(seed, my_position.w)) * 2.0 - vec3(1.0);
 
   vec3 star_pos_local = my_position.xyz + star_offset * grid_size - render_offset;
 
@@ -72,7 +70,7 @@ void main() {
   vec3 dpos = star_pos_local - frac_cam_pos;
   float r2 = dot(dpos, dpos);
   float r = sqrt(r2);
-  float fade = clam((14.0 * grid_size - r) * 0.5, 0.0, 1.0);
+  float fade = clamp((14.0 * grid_size - r) * 0.5, 0.0, 1.0);
 
   vec4 dpos_dt_world = vec4(dpos, -r);
   vec4 dpos_dt_local = lorentz * dpos_dt_world;
