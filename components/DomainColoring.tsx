@@ -3,18 +3,18 @@
 import { useEffect, useRef } from 'react'
 import { effect, signal } from '@preact/signals-react'
 import {
-  parse, 
-  ConstantNode, 
-  FunctionNode, 
+  parse,
+  ConstantNode,
+  FunctionNode,
   MathNode,
   OperatorNode,
   ParenthesisNode,
-  SymbolNode,   
+  SymbolNode,
 } from 'mathjs'
 
 import CanvasGrid from 'components/CanvasGrid'
 import ComplexInput from 'components/ComplexInput'
-import TransformDiv, {transform} from 'components/TransformDiv'
+import TransformDiv, { transform } from 'components/TransformDiv'
 
 import { resizeCanvas } from 'utils/canvas'
 import { requiredFunctions } from 'utils/complex'
@@ -25,12 +25,12 @@ import { makeProgram, makeShader, setRectangle } from 'utils/webgl'
 
 const viewRange = signal<ViewRange>({
   x: new Vector(-10, 10),
-  y: new Vector(-10, 10)
+  y: new Vector(-10, 10),
 })
 const minGrid = 50
 const expression = signal<string>('')
-const gl = signal<WebGL2RenderingContext|null>(null)
-const grid = signal<CanvasRenderingContext2D|null>(null)
+const gl = signal<WebGL2RenderingContext | null>(null)
+const grid = signal<CanvasRenderingContext2D | null>(null)
 
 effect(() => {
   if (!(expression.value && gl.value && grid.value && transform.value)) return
@@ -58,9 +58,9 @@ export default function DomainColoring() {
 
   return (
     <TransformDiv viewRange={viewRange} className='relative w-full h-full'>
-      <canvas ref={plotCanvasRef} className='absolute inset-0 w-full h-full'/>
-      <canvas ref={gridCanvasRef} className='absolute inset-0 w-full h-full'/>
-      <ComplexInput expression={expression} className='absolute left-0 top-0'/>
+      <canvas ref={plotCanvasRef} className='absolute inset-0 w-full h-full' />
+      <canvas ref={gridCanvasRef} className='absolute inset-0 w-full h-full' />
+      <ComplexInput expression={expression} className='absolute left-0 top-0' />
     </TransformDiv>
   )
 }
@@ -69,20 +69,20 @@ function makeScene(
   gl: WebGL2RenderingContext,
   ctx: CanvasRenderingContext2D,
   expression: string,
-  matrix: DOMMatrix,) 
-{
+  matrix: DOMMatrix,
+) {
   function renderPlot() {
     resizeCanvas(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
-    
+
     gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.uniform2f(scaleLoc, matrix.a, matrix.d)
     gl.uniform2f(translateLoc, matrix.e, gl.canvas.height - matrix.f)
-    const unit = gridUnit(minGrid / matrix.a) 
+    const unit = gridUnit(minGrid / matrix.a)
     gl.uniform1f(unitLoc, unit)
-    
+
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
     requestAnimationFrame(renderPlot)
@@ -97,7 +97,13 @@ function makeScene(
     requestAnimationFrame(renderGrid)
   }
 
-  const grid = new CanvasGrid(ctx.canvas, transform.value, undefined, false, true)
+  const grid = new CanvasGrid(
+    ctx.canvas,
+    transform.value,
+    undefined,
+    false,
+    true,
+  )
 
   const vertexCode = `#version 300 es
     in vec2 a_position;
@@ -147,14 +153,20 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
   const functions = new Set<string>()
 
   function callback(node: MathNode): MathNode {
-    switch(node.type) {
+    switch (node.type) {
       case 'SymbolNode': {
         if ((node as SymbolNode).name !== 'i') return node
-        
-        return new FunctionNode('vec2', [new ConstantNode(0), new ConstantNode(1)])
-      } 
+
+        return new FunctionNode('vec2', [
+          new ConstantNode(0),
+          new ConstantNode(1),
+        ])
+      }
       case 'ConstantNode': {
-        const args = [new ConstantNode((node as ConstantNode).value), new ConstantNode(0)]
+        const args = [
+          new ConstantNode((node as ConstantNode).value),
+          new ConstantNode(0),
+        ]
         return new FunctionNode('vec2', args)
       }
       case 'FunctionNode': {
@@ -165,12 +177,12 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
         for (let i = 0; i < args.length; i++) {
           args[i] = callback(args[i])
         }
-        return new FunctionNode(fn, args) 
+        return new FunctionNode(fn, args)
       }
       case 'OperatorNode': {
         const op = (node as OperatorNode).op
         const fn = `c_${(node as OperatorNode).fn}`
-        
+
         const args = (node as OperatorNode).args
         for (let i = 0; i < args.length; i++) {
           args[i] = callback(args[i])
@@ -179,7 +191,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
           return new OperatorNode(op, op, args)
         }
         functions.add(fn)
-        return new FunctionNode(fn, args) 
+        return new FunctionNode(fn, args)
       }
       case 'ParenthesisNode': {
         return callback((node as ParenthesisNode).content)
@@ -195,10 +207,9 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
 }
 
 function makeFragmentCode(expression: string): string {
-
   const [fn, required] = toGlsl(parse(expression))
   const functionDeclarations = requiredFunctions(required)
-  
+
   return `#version 300 es
   #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
