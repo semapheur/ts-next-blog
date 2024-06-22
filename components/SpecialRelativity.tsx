@@ -299,9 +299,13 @@ export default function SpecialRelativity() {
     const canvas = canvasRef.current
     if (!(canvas && wrapper)) return
 
+    const useFloatTexture = true
+
+    const colorStorageBias = 0.000061035 * 4.1
+
     const uniformsStars = {
       offset: { value: new THREE.Vector3(0, 0, 0) },
-      brightness_scale: { value: 0.1 },
+      brightness_scale: { value: 100 },
       velocity: { value: new THREE.Vector3(0, 0, 0) },
       frac_cam_pos: { value: new THREE.Vector3(0, 0, 0) },
       lorentz: { value: new THREE.Matrix4() },
@@ -309,20 +313,8 @@ export default function SpecialRelativity() {
 
     const { width, height } = wrapper.getBoundingClientRect()
 
-    const renderTarget = new THREE.WebGLRenderTarget(width, height, {
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-      format: THREE.RGBAFormat,
-      type: THREE.UnsignedByteType,
-      depthBuffer: false,
-    })
-
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: false })
     renderer.setSize(width, height)
-
-    const bloomPass = new PyramidBloomPass()
-    bloomPass.bloomFalloffColor = new THREE.Vector3(0.7, 0.7, 0.7)
-    bloomPass.bloomMultiplierColor = new THREE.Vector3(0.1, 0.1, 0.1)
 
     const supportsHalf =
       renderer.extensions.get('OES_texture_half_float') ||
@@ -338,6 +330,18 @@ export default function SpecialRelativity() {
     } else if (supportsFloat) {
       textureType = THREE.FloatType
     }
+
+    const renderTarget = new THREE.WebGLRenderTarget(width, height, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat,
+      type: useFloatTexture ? textureType : THREE.UnsignedByteType,
+      depthBuffer: false,
+    })
+
+    const bloomPass = new PyramidBloomPass()
+    bloomPass.bloomFalloffColor = new THREE.Vector3(0.7, 0.7, 0.7)
+    bloomPass.bloomMultiplierColor = new THREE.Vector3(0.1, 0.1, 0.1)
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
     camera.position.set(0, 0, 1)
@@ -399,8 +403,16 @@ export default function SpecialRelativity() {
 
       //uniformsStars.offset.value.set(spaceship.offset.x % grid_wraparound, spaceship.offset.y % grid_wraparound, spaceship.offset.z % grid_wraparound)
 
+      renderer.setClearColor(
+        new THREE.Color(colorStorageBias, colorStorageBias, colorStorageBias),
+        1,
+      )
+      //renderer.setRenderTarget(renderTarget)
+
       renderer.render(scene, camera)
       bloomPass.render(renderer, renderTarget, renderTarget, null, false)
+
+      //renderer.setRenderTarget(null)
 
       prevTime = time
     }
