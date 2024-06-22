@@ -46,18 +46,14 @@ const nextConfig = {
         headers: securityHeaders,
       },
     ]
-  }
-  //webpack: (config, options) => {
-  //  if (!options.dev && !options.isServer) {
-  //    Object.assign(config.resolve.alias, {
-  //      'react/jsx-runtime.js': 'preact/compat/jsx-runtime',
-  //      react: 'preact/compat',
-  //      'react-dom/test-utils': 'preact/test-utils',
-  //      'react-dom': 'preact/compat'
-  //    })
-  //  }
-  //  return config
-  //},
+  },
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.(glsl|fs|vs|frag|vert)$/,
+      use: ['raw-loader']
+    })
+    return config
+  },
 }
 
 const millionConfig = {
