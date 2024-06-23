@@ -142,7 +142,6 @@ export default function SpecialRelativity() {
     }
 
     const attrib = new THREE.Float32BufferAttribute(positions, 4)
-    attrib.count = idx / 4
     geometry.setAttribute('position', attrib)
     geometry.setAttribute('my_position', attrib)
     geometry.setDrawRange(0, idx / 4)
