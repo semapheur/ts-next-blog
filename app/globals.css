@@ -204,9 +204,34 @@
   }
 }
 
-.katex-display { overflow: auto hidden }
-.katex-display > .katex { white-space: normal }
-/* Add space between broken lines: */
-.katex-display > .base { margin: 0.25em 0 }
-/* Compensate by reducing space around display math */
+.katex-display:has(.katex > .katex-html > .base + .tag) {
+  overflow: hidden;
+}
+
+.katex-display { 
+  margin: 0.5em 0;
+  overflow: auto hidden;
+  & > .katex { 
+    white-space: normal;
+    & > .katex-html > .tag {
+      overflow: auto hidden;
+      position: static;
+      text-wrap: nowrap;
+    }
+    & > .katex-html:has(> .base + .tag) { 
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+    }
+    & > .katex-html > .base:has(+ .tag) {
+      overflow: auto hidden;
+      width: auto;
+    }
+  }
+  & > .base { margin: 0.25em 0; }
+}
+/*
+.katex-display > .katex { white-space: normal; }
+.katex-display > .base { margin: 0.25em 0; }
 .katex-display { margin: 0.5em 0; }
+*/
