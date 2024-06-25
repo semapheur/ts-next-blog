@@ -27,14 +27,18 @@ An $n$-dimensional topological manifold is a Hausdorff topological space $(M, \m
 ## Coordinate charts
 
 <MathBox title='Coordinate chart' boxType='definition'>
-A (coordinate) chart on a topological $n$-manifold $M$ is a pair $(U, \varphi)$ where $U$ is an open subset of $M$, called a coordinate domain/neighbourhood, and $\varphi:U\to \tilde{U}$, called a (local) coordinate map, is a homemorphism to an open subset $\tilde{U} = \varphi(U)\subseteq\R^n$. The collection of charts $\mathcal{A} := \Set{ \left( U_\alpha, \varphi_\alpha \right) }$ covering $M$, i.e. $M = \bigcup_\alpha U_\alpha$, is called an atlas. 
+A (coordinate) chart on a topological $n$-manifold $M$ is a pair $(U, \varphi)$ where $U$ is an open subset of $M$, called a coordinate domain/neighbourhood, and $\varphi:U\to \tilde{U}$, called a (local) coordinate map/system, is a homemorphism to an open subset $\tilde{U} = \varphi(U)\subseteq\R^n$. A chart is *centered* on $\mathbf{p}\in U$ if $\varphi(\mathbf{p}) = 0$.
+
+The collection of charts $\mathcal{A} := \Set{ \left( U_\alpha, \varphi_\alpha \right) }$ covering $M$, i.e. $M = \bigcup_\alpha U_\alpha$, is called an atlas. 
 </MathBox>
 
 Given a chart $(U, \varphi)$, the coordinate domain $U$ get some special names depending on the shape of the image $\varphi(U)$:
 - if $\varphi(U)$ is an open ball, $U$ is called a *coordinate ball*
-- if $\varphi(U)$ is an open cube, $U$ is called a *coordinate cube
+- if $\varphi(U)$ is an open cube, $U$ is called a *coordinate cube*
 
-Because a topological $n$-manifold $M$ is local homeomorphic to $\R^n$, each point $p \in M$ is contained in the domain of some chart $(U,\varphi)$.
+Because a topological $n$-manifold $M$ is locally homeomorphic to $\R^n$, each point $p \in M$ is contained in the domain of some chart $(U,\varphi)$.
+
+If $(r^i)_{i=1}^n$ are the standard coordinates on $\R^n$, the $i$th component of $\varphi = (x^i)_{i=1}^n$ is given by $x^i = r^i \circ\varphi$. The functions $x^i : U\to\R$ are called the *(local) coordinates* on  $U$.
 
 ## Submanifolds
 
@@ -254,16 +258,103 @@ Let $M$ be a topological $n$-manifold with boundary.
 
 ## Smooth structure
 
-<MathBox title='Diffeomorphism' boxType='theorem'>
-Let $U \subseteq \R^n$ and $U \subseteq \R^m$ be open subsets of Euclidean space. A function $f: U \rightarrow V$ is $k$-times continuously differentiable, i.e. $f \in C^k$, if all partial derivatives of $f$ up to the $k$-th order exist and are continuous. For $k=\infty$, $f\in C^\infty$ is called *smooth* or *infinitely differentiable*. If $f$ is bijective with a differentiable inverse map, it is called a *diffeomorphism*, which by definition is a homeomorphism.
+<MathBox title='Diffeomorphism' boxType='definition'>
+Let $U \subseteq \R^n$ and $U \subseteq \R^m$ be open subsets of Euclidean space. A function $f: U \rightarrow V$ is $k$-times continuously differentiable, i.e. $f \in C^k$, if all partial derivatives of $f$ up to the $k$-th order exist and are continuous. For $k=\infty$, then $f\in C^\infty$ is called *smooth* or *infinitely differentiable*. If $f$ is bijective with a differentiable inverse map, it is called a *diffeomorphism*, which by definition is a homeomorphism.
+</MathBox>
+
+<MathBox title='Smoothly compatible charts' boxType='definition'>
+Let $(U, \varphi:U\to\R^n)$ and $(V,\psi:V\to\R^n)$ be two charts of a topological $n$-manifold $M$. The compositions
+
+$$
+  \varphi\circ\psi^{-1} : \psi(U\cap V)\to\varphi(U\cap V) \\
+  \psi\circ\varphi^{-1} : \varphi(U\cap V)\to\psi(U\cap V)
+$$
+
+are called the *transition functions* between the the charts. As compositions of homeomorphism, they are themselves homeormorphic. The two charts are *smoothly compatible* or $C^\infty$-compatible if either $U\cap V = \emptyset$ of the transition functions are diffeomorphic.
+</MathBox>
+
+<MathBox title='Smooth atlas' boxType='definition'>
+An atlas $\mathcal{A}$ on a topological manifold $M$ is *smooth* $(C^\infty)$ if any two charts in $\mathcal{A}$ are smoothly compatible with each other. A smooth atlas $\mathcal{A}$ is *maximal* (complete) if it is not properly contained in any larger smooth atlas. 
+</MathBox>
+
+<MathBox title='A smooth atlas on a circle' boxType='example'>
+The unit circle in the complex plane $\mathbb{C}$ is the set
+
+$$
+  \mathbb{S}^1 = \Set{e^{it}\in\mathbb{C} | 0 \leq t \leq 2\pi}
+$$
+
+Let $U_1$ and $U_2$ be the two open subsets of $\mathbb{S}^1$.
+
+$$
+\begin{align*}
+  U_1 =& \Set{e^{it}\in\mathbb{C} |  -\pi < t < \pi}
+  U_2 =& \Set{e^{it}\in\mathbb{C} | 0 < t < 2\pi}
+\end{align*}
+$$
+
+and define $\varphi_\alpha : U_\alpha \to\R$ for $\alpha = 1,2$ by
+
+$$
+\begin{align*}
+  \varphi_1 (e^{it}) =& t,\; -\pi < t < \pi\\
+  \varphi_2 (e^{it}) =& t,\; 0 < t < 2\pi
+\end{align*}
+$$
+
+Both $\varphi_1$ and $\varphi_2$ are branches of the complex log function $\frac{1}{i}\ln(z)$ for $z\in\mathbb{C}$ and are homeomorphisms onto their respective images. Thus, $(U_1,\varphi_1)$ and $(U_2,\varphi_2)$ are charts on $\mathbb{S}^1$. The intersection $U_1 \cap U_2$ consists of two connected components
+
+$$
+\begin{align*}
+  A =& \Set{e^{it} | -\pi < t < 0} \\
+  B =& \Set{e^{it} | 0 < t < \pi}
+\end{align*}
+$$
+
+with
+
+$$
+\begin{align*}
+  \phi_1 (U_1 \cap U_2) =& \varphi_1 (A \sqcup B) = \varphi_1 (A) \sqcup \varphi_2 (B) = (-\pi,0) \sqcup (0,\pi) \\
+  \phi_1 (U_1 \cap U_2) =& \varphi_1 (A \sqcup B) = \varphi_1 (A) \sqcup \varphi_2 (B) = (\pi,2\pi) \sqcup (0,\pi)
+\end{align*}
+$$
+
+Thre transition function $\varphi_2 \circ \varphi_1^{-1} : \varphi(A \sqcup B) \to \varphi_2 (A \sqcup B)$ is given by
+
+$$
+  (\varphi_2 \circ \varphi_1^{-1})(t) =& \begin{cases} 
+    t + 2\pi\, \quad& t\in(-\pi,0) \\ 
+    t, \quad& t\in (0,\pi)  
+  \end{cases}
+$$
+
+Similarly,
+
+$$
+  (\varphi_1 \circ \varphi_2^{-1})(t) =& \begin{cases} 
+    t - 2\pi\, \quad& t\in(\pi,2\pi) \\ 
+    t, \quad& t\in (0,\pi)
+  \end{cases}
+$$
+
+Thus, $(U_1,\varphi_1)$ and $(U_2,\varphi_2)$ are smoothly compatible charts and form a smooth atlas on $\mathbb{S}^1$.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $\mathcal{A} = \Set{(U_\alpha, \varphi_\alpha)}$ be an atlas on a locally Euclidean space. If two charts $(V,\psi)$ and $(W,\sigma)$ are both compatible with the atlas $\mathcal{A}$, then they are compatible with each other.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathbf{p}\in V\cap W$. We need to show that $\sigma\circ\psi^{-1}$ is smooth at $\psi(\mathbf{p})$. Since $\mathcal{A}$ is an atlas for $M$, then $\mathbf{p}\in U_\alpha$ for some $\alpha$. Thus, $\mathbf{p}\in V\cap W \cap U_\alpha$.
+
+Furthermore, $\sigma\circ\psi^{-1} = (\sigma\circ\varphi_\alpha^{-1})\circ(\varphi_\alpha\circ\psi^{-1})$ (with equality in the common domain) is smooth on $\psi(V\cap W\cap U_\alpha)$, hence at $\psi(\mathbf{p})$. Since $\mathbf{p}$ is an arbitrary point $V\cap W$, this proves that $\sigma\circ\psi^{-1}$ is smooth on $\psi(V\cap W)$. Similarly, $\psi\circ\sigma^{-1}$ is smooth on $\sigma(V\cap W)$.
+</details>
 </MathBox>
 
 <MathBox title='Smooth manifold' boxType='definition'>
-Let $M$ be a topological $n$-manifold. If $(U,\varphi)$ and $(V,\psi)$ are two charts such that $U\cap V \neq \emptyset$, the composite chart $\psi\circ\varphi^{-1}: \varphi(U\cap V) \to\psi(U\cap V=$ is called the *transition map* from $\varphi$ to $\psi$. It is a composition of homeomorphisms, and is thus itself a homeomorphism. Two charts $(U,\varphi)$ and $\psi(U\cap V)$ are *smoothly compatible* if either $U\cap V = \emptyset$ or the transition map $\psi\circ\varphi^{-1}$ is a diffeomorphism. 
-
-An atlas $\mathcal{A}$ on $M$ is called a *smooth atlas* if any two charts in $\mathcal{A}$ are smoothly compatible with each other. A smooth atlas $\mathcal{A}$ is *maximal* (complete) if it is not properly contained in any larger smooth atlas. 
-
-A *smooth structure* on $M$ is a maximal smooth atlas. A smooth (differentiable) manifold $(M, \mathcal{A})$ is a topological manifold $M$ equipped with a maximal smooth atlas $\mathcal{A}$, called a smooth structure. 
+A smooth or $C^\infty$ manifold is a pair $(M,\mathcal{A})$ of topological manifold $M$ equipped with a maximal smooth atlas $\mathcal{A}$, called a smooth (differentiable) structure. A smooth manifold has dimension $n$ if all its connected components have dimension $n$. A $1$-dimensional manifold is also called a *curve*, a $2$-dimensional manifold a *surface*, and an *n*-dimensional manifold an *n-manifold*. 
 </MathBox>
 
 The notion of smooth structure can be specified in different ways by changing the compatibility requirements for charts:
@@ -283,6 +374,16 @@ Let $M$ be a topological $n$-manifold.
 
 Let $\mathbf{x} = \varphi(p) \in \varphi(U \cap V)$ be arbitrary. Because that domains of the charts in $\mathcal{A}$ cover $M$, there is some chart $(W,\theta)\in\mathcal{A}$ such that $p\in W$. Since every chart in $\overline{\mathcal{A}}$ is smoothly compatible with $(W,\theta)$, both of the maps $\theta\circ\varphi^{-1}$ and $\psi\circ\theta^{-1}$ are smooth where they are defined. Since $p\in U\cap V\cap W$, it follows that $\psi\circ\varphi^{-1} = (\psi\circ\theta^{-1})\circ(\theta\circ\varphi^{-1})$ is smooth on a neighbourhood of $\mathbf{x}$. Thus, $\psi\circ\varphi^{-1}$ is smooth in a neighbourhood of each point in $\varphi(U\cap V)$. Therefore, $\mathcal{A}$ is a smooth atlas. To that it is maximal, note that any chart that is smoothly compatible with every chart in $\overline{\mathcal{A}}$ must in particular be smoothly compatible with every chart in $\mathcal{A}$, so it is already on $\overline{\mathcal{A}}$. This proves the existence of a maximal smooth atlas containing $\mathcal{A}$. If $\mathcal{B}$ is any other maximal smooth atals containin $\mathcal{A}$, each of its charts is smoothly compatible with each chart in $\mathcal{A}$, so $\mathcal{B}\subseteq\overline{\mathcal{A}}$. By maximality of $\mathcal{B}$, it follows that $\mathcal{B} = \overline{\mathcal{A}}$.
 </details>
+</MathBox>
+
+<MathBox title='Atlas for product manifolds' boxType='proposition'>
+If $\Set{(U_\alpha, \varphi_\alpha)}$ and $\Set{(V_\beta, \psi_\beta)}$ are smooth atlases for the manifolds $M$ and $N$ of dimensions $m$ and $n$, respectively, then the collection
+
+$$
+  \Set{(U_\alpha \times V_\beta, \varphi_\alpha \times \psi_\beta : U_\alpha \times V_\beta \to \R^m \times\R^n)}
+$$
+
+of charts is a smooth atlas $M\times N$. Thus, $M\times N$ is a smooth manifold of dimension $m + n$.
 </MathBox>
 
 <MathBox title='Regular coordinate ball' boxType='definition'>
@@ -326,7 +427,7 @@ Suppose $M_1,\dots,M_k$ are smooth manifolds and $N$ is a smooth manifold with b
 </MathBox>
 
 <MathBox title='Smooth invariance of the boundary' boxType='theorem'>
-Suppose $M$ is a smooth manifold with boundary and $p\in M$. If there is some smooth chart $(U,\varphi)$ for $M$ such that $\varphi(U)\subseteq \mathbb{H}^n$ and $\varphi(p)\in \partial \mathbb{H}^n$, then same is true for every smooth chart whose domain contains $p$.
+Suppose $M$ is a smooth manifold with boundary and $p\in M$. If there is some smooth chart $(U,\varphi)$ for $M$ such that $\varphi(U)\subseteq \mathbb{H}^n$ and $\varphi(p)\in \partial \mathbb{H}^n$, the same is true for every smooth chart whose domain contains $p$.
 
 <details>
 <summary>Proof</summary>
@@ -892,7 +993,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Properties of differentials' boxType='proposition' tag='proposition-39'>
+<MathBox title='Properties of differentials' boxType='proposition' tag='proposition-18'>
 Let $M$, $N$ and $P$ be smooth manifolds with or without boundary, $F:M\to N$ and $G:N\to P$ be smooth maps and let $p\in M$. The differentials of $F$ at $\mathbf{p}$ and $G$ at $F(\mathbf{p})$ are linear maps
 
 $$
@@ -1074,7 +1175,7 @@ is an isomorphism. The same is true if one of the spaces $M_j$ is a smooth manif
 
 ## Bases for the tangent space at a point
 
-Suppose $M$ is a smooth $n$-manifold without boundary, and let $(U,\varphi)$ be a smooth coordinate chart on $M$. Since $\varphi: U\to\tilde{U}\subseteq\R^n$ is a diffeomorphism onto its image, then by proposition $\ref{proposition-39}.4$  the differential 
+Suppose $M$ is a smooth $n$-manifold without boundary, and let $(U,\varphi)$ be a smooth coordinate chart on $M$. Since $\varphi: U\to\tilde{U}\subseteq\R^n$ is a diffeomorphism onto its image, then by proposition $\ref{proposition-18}.4$  the differential 
 
 $$
   \mathrm{d}\varphi_\mathbf{p}: T_\mathbf{p} U \to T_{\varphi(\mathbf{p})} \R^n
@@ -1082,11 +1183,11 @@ $$
 
 is a vector space isomorphism. Furthermore, since $U$ is an open submanifold it follows that $T_\mathbf{p} U \cong T_\mathbf{p} M$ for every $\mathbf{p}\in M$. This implies that $\mathrm{d}\varphi_\mathbf{p}: T_\mathbf{p} M \to T_{\varphi(\mathbf{p})} \R^n$ is an isomorphism.
 
-<MathBox title='The tangent space to a product manifold' boxType='proposition' tag='proposition-46'>
+<MathBox title='' boxType='proposition' tag='proposition-25'>
 Let $(U,\varphi=(x^i)_{i=1}^n)$ be a chart about a point $\mathbf{p}$ in a smooth $n$-manifold $M$. If $(r^i)_{i=1}^n$ are the standard coordinates on $\R^n$, then
 
 $$
-  \mathrm{d}\varphi_\mathbf{p} \left(\left.\frac{\partial}{\partial x^i}\right) = \left.\frac{\partial}{\partial r^i}\right|_{\varphi(\mathbf{p})}
+  \mathrm{d}\varphi_\mathbf{p} \left(\left.\frac{\partial}{\partial x^i}|\right_\mathbf{p} \right) = \left.\frac{\partial}{\partial r^i}\right|_{\varphi(\mathbf{p})}
 $$
 
 <details>
@@ -1108,14 +1209,13 @@ $$
 Let $M$ be a smooth $n$-manifold with or without boundary, and let $\mathbf{p}\in M$. For any smooth chart $(U, (x^i)_{i=1}^n)$ containing $\mathbf{p}$, the tangent space $T_\mathbf{p} M$ has basis
 
 $$
-  \Set{\boldsymbol{\partial}_i|_\mathbf{p} := \left.\frac{\partial}{\partial x^i}\right|_\mathbf{p}}_{i=1}^n
+  \Set{\boldsymbol{\partial}_i \vert_\mathbf{p} := \left.\frac{\partial}{\partial x^i}\right \vert_\mathbf{p}}_{i=1}^n
 $$
 
 <details>
 <summary>Proof</summary>
 
-An isomorphism of vector spaces maps a basis to a basis. By proposition $\ref{proposition-46}$, the isomorphism $\mathrm{d}\varphi_\mathbf{p}: T_\mathbf{p}M \to T_{\varphi(\mathbf{p})} \R^n$ maps $\Set{\left.\frac{\partial}{\partial x^i}\right|_\mathbf{p}}_{i=1}^n$ to $\Set{\left.\frac{\partial}{\partial r^i}\right|_\mathbf{p}}_{i=1}^n$, which is a basis for $T_{\varphi(\mathbf{p})} \R^n$. Thus, $\Set{\left.\frac{\partial}{\partial x^i}\right|_\mathbf{p}}_{i=1}^n$ is a basis for $T_\mathbf{p} M$.
-
+An isomorphism of vector spaces maps a basis to a basis. By proposition $\ref{proposition-25}$, the isomorphism $\mathrm{d}\varphi_\mathbf{p}: T_\mathbf{p}M \to T_{\varphi(\mathbf{p})} \R^n$ maps $\Set{\left.\frac{\partial}{\partial x^i}\right\vert_\mathbf{p}}_{i=1}^n$ to $\Set{\left.\frac{\partial}{\partial r^i}\right\vert_\mathbf{p}}_{i=1}^n$, which is a basis for $T_{\varphi(\mathbf{p})} \R^n$. Thus, $\Set{\left.\frac{\partial}{\partial x^i}\right\vert_\mathbf{p}}_{i=1}^n$ is a basis for $T_\mathbf{p} M$.
 </details>
 </MathBox>
 
