@@ -472,10 +472,7 @@ If $U$ is open in $X_j$, then $p_j^{-1}[U] = \prod_{i\in I} A_i$ where $A_i = X_
 
 ## Quotient space
 
-Let $(X, \mathcal{T})$ be a topological space, and consider an equivalence relation $\sim$ on $X$. The quotient space wrt to the equivalence relation is the set $X/{\sim}$ with the quotient topology.
-
 An equivalence on the set $X$ is a subset $E$ of the set $X \times X = \Set{ \left( x_1, x_2 \right) | x_1, x_2 \in X }$ satisfying
-
 1. reflexivity: $\left( x, x \right) \in E \, \forall x \in E$ or $x \sim x$
 2. symmetry: $\left( x, y \right) \in E \Rightarrow \left( y, x \right)$ or $x \sim y \implies y \sim x$
 3. transivity: If $\left( x, y \right) \in E$ and $\left( y, z \right) \in E$ then $\left( x, z \right) \in E$, or $x \sim y \wedge y \sim x \implies x \sim z$
@@ -486,17 +483,174 @@ $$
   [x]_\sim := \Set{ y \in X | x \sim y }
 $$
 
-The set of all equivalence classes is a partition of $X$ into a collection of nonempty, mutually disjoint subsets, defined as 
+The set of all equivalence classes, denoted $X\setminus\sim$, is a called a *quotient* of $X$. The quotient $X\setminus\sim$ is a partition of $X$ into a collection of nonempty, mutually disjoint subsets, defined as 
 
 $$
-  X /{\sim} := \Set{ [x]_\sim | x \in X }
+  X\setminus\sim := \Set{ [x]_\sim | x \in X }
 $$
 
-Given the surjective quotient map $p: X \mapsto X /{\sim}$ with $x \mapsto [x]_\sim$, commonly known as a canonical projection. The quotient topology $\hat{\mathcal{T}}$ on $X / \sim$ is defined by declaring a subset $U \subseteq X /{\sim}$ to be open if and only if $p^{-1}[U] \subset X$ is open, ie.
+There is a surjective quotient map $p: X\to X\setminus\sim$ with $x \mapsto [x]_\sim$ called the *canonical/natural projection*. 
+
+If $X$ is a topological space, we define a topology $\mathcal{T}_\sim$ on $X\setminus\sim$ be declaring by declaring a subset $U \subseteq X \setminus\sim$ to be open if and only if $p^{-1}[U] \subset X$ is open, i.e.
 
 $$
-  p^{-1} [U] \in \mathcal{T} \iff U \in \hat{\mathcal{T}}
+  p^{-1} [U] \in \mathcal{T} \iff U \in T_\sim
 $$
+
+showing that $p$ is also continuous. Furthermore, since
+
+$$
+  p^{-1}\left(\bigcup_\alpha U_\alpha \right) = \bigcup_\alpha p^{-1} (U_\alpha)
+$$
+
+and
+
+$$
+  p^{-1} \left(\bigcap_i U_i \right) = \bigcup_i p^{-1} (U_i)
+$$
+
+the collection of open sets in $X\setminus\sim$ is closed under arbitrary unions and finite intersections, and is therefore a topology. It is called the *quotient topology* of $X$ by the equivalence relation $\sim$.
+
+### Continuity of a map on a quotient
+
+Let $\sim$ be an equivalence realtion on the topological space $X$ and give $X\setminus\sim$ the quotient topology. Suppose a function $f:X\to Y$ from $X$ to another topological space $Y$ is constant on each equivalence class. Then it induces a map $\bar{f}: X\setminus\sim\to Y$ by
+
+$$
+  \bar{f}([x]) = f(x),\; x\in X
+$$
+
+giving the commutative diagram
+
+$$
+\begin{CD}
+  X @>{f}>> Y \\
+  @V{p}VV @| \\
+  X\setminus\sim @>>{\bar{f}}> Y
+\end{CD}
+$$
+
+<MathBox title='' boxType='proposition' tag='proposition-17'>
+The induced map $\bar{f}: X\setminus\sim \to Y$ is continuous if and only if $f:X\to Y$ is continuous.
+
+<details>
+<summary>Proof</summary>
+
+If $\bar{f}$ is continuous, then as the composite $\bar{f}\circ p$ of continuous function, $f$ is also continuous.
+
+Conversely, suppose $f$ is continuous. Let $V$ be open in $Y$. Then $f^{-1} (V) = p^{-1} (\bar{f}^{-1}(V))$ is open in $X$. By the definition of quotient topology, $\bar{f}^{-1}(V)$ is open in $X\setminus\sim$. Since $V$ was arbitrary, $\bar{f}:X\setminus Y$ is continuous.
+</details>
+</MathBox>
+
+### Identification of a subset to a point
+
+If $U$ is a subset of a topological space $X$, we can define a relation $\sim$ on $X$ by declaring
+
+$$
+  x\sim x\,\; \forall x\in X
+$$
+
+and
+
+$$
+  x\sim y,\; \forall x,y\in U
+$$
+
+This is an equivalence relation on $X$. We say that the quotient space $X\setminus\sim$ is obtained from $X$ by identifying $U$ to a point.
+
+<MathBox title='' boxType='proposition'>
+Let $I = [0,1]$ be the unit interval and $I\setminus\sim$ the quotient space obtained from $U$ by identifying the two points $\Set{0,1}$ to a point. Suppose $\mathbb{S}^1$ is the unit circle in the complex pane. The function $\bar{f}:I\to\mathbb{S}^1 \subset\mathbb{C}$ by $f(x) = e^{i2\pi x}$ induces a function $\bar{f}:I\setminus\sim\to\mathbb{S}^1$ since $f(0) = f(1)$.
+
+The function $\bar{f}:I\setminus\sim\to\mathbb{S}^1$ is a homeomorphism.
+
+<details>
+<summary>Proof</summary>
+
+Since $f$ is continuous, $\bar{f}$ is also continuous by proposition $\ref{proposition-17}$. Clearly, $\bar{f}$ is a continuous bijection. As the continuous image of the compact set $I$, the quotient $I\setminus\sim$ is compact. Thus, $\bar{f}$ is a continuous bijection from the compact space $I\setminus\sim$ to the Hausdorff space $\mathbb{S}^1$. By corollary, $\bar{f}$ is a homeomorphism.
+</details>
+</MathBox>
+
+### Necessary condition for Hausdorff quotients
+
+The quotient construction does not in general preserve the Hausdorff property or second countability.
+
+<MathBox title='' boxType='proposition'>
+Let $X$ be a topological space with an equivalence relation $\sim$. If the quotient space $X\setminus\sim$ is Hausdorff, then the equivalence class $[x]$ of any point $x$ in $X$ is closed in $X$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $p:X\to X\setminus\sim$ is the canonical projection and $X\setminus\sim$ is Hausdorff. Since every singleton set in a Hausdorff space is closed, then for any $x\in X$, its image $\Set{p(x)}$ is closed in $X\setminus\sim$. By the continuity of $p$, the inverse image $p^{-1}(\Set{p(x)}) = [x]$ is closed in $X$.
+</details>
+<MathBox>
+
+### Open equivalence relations
+
+<MathBox title='Open equivalence relation' boxType='definition'>
+An equivalence relation $\sim$ on a topological space $X$ is open if the canonical projection $p:X\to X\setminus\sim$ is open.
+</MathBox>
+
+<MathBox title='Graph of an equivalence relation' boxType='definition'>
+Let $\sim$ be an equivalence relation on $X$. The graph of $\sim$ is the subset of $X\times X$ that defines the relation
+
+$$
+  R = \Set{(x,y)\in X\times X | x\sim y}
+$$
+
+If the equivalence relation $\sim$ is equality, then the quotient space $X\setminus\sim$ is $X$ itself and the graph $R$ of $\sim$ is simpy the diagonal
+
+$$
+  \Delta = \Set{(x,x)\in X\times X}
+$$
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Suppose $\sim$ is an open equivalence relation on a topological space $X$. Then the quotient space $X\setminus\sim$ is Hausdorff if and only if the graph $R$ of $\sim$ is closed in $X\times X$.
+
+<details>
+<summary>Proof</summary>
+
+There is a sequence of equivalent statements:
+- $R$ is closed in $X\times X$
+- $\iff (X\times X) - R$ is open in $X\times X$
+- $\iff$ for every $(x,y)\in X\times X - R$ there is a basic open set $U\times V$ containing $(x,y)$ such that $(U\times V)\cap R = \emptyset$
+- $\iff$ for every pair $x\nsim y$ in $X$, there exist neighbourhoods $U$ of $x$ and $V$ of $y$ in $X$ such that no element of $U$ is equivalent to an element of $V$
+- $\iff$ for any two points $[x] \neq [y]$ is $X\setminus\sim$, there exist neighbourhoods $U$ of $x$ and $V$ of $y$ in $X$ such that $p(U)\cap p(V) = \emptyset$ in $X\setminus\sim$ **(\*)**
+
+It remains to show that the last statement is equivalent to $X\setminus\sim$ being Hausdorff. First assume **(\*)**. Since $\sim$ is an open equivalence relation, $p(U)$ and $p(V)$ are disjoint open sets in $X\setminus\sim$ containing $[x]$ and $[y]$ respectively. Thus, $X\setminus\sim$ is Hausdorff.
+
+Conversely, suppose $X\setminus\sim$ is Hausdorff. Let $[x]\neq [y]$ in $X\setminus\sim$. Then there exist disjoint open sets $A$ and $B$ in $X\setminus\sim$ such that $[x]\in A$ and $[y]\in B$. By the surjectivity of $p$, we have $A = p(p^{-1} (A))$ and $B = p(p^{-1}(B)$. Let $U = p^{-1}(A)$ and $V = p^{-1}(B)$. Then $x\in U$, $y\in V$ and $A = p(U)$ and $B = p(V)$ are disjoint open sets in $X\setminus\sim$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+A topological space $X$ is Hausdorff if and only if the diagonal $\Delta$ in $X\times X$ is closed.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $\sim$ be an open equivalence relation on a topological space $X$ with canonical projection $p:X\to X\setminus\sim$. If $\mathcal{B} = \Set{B_\alpha}$ is a basis for $X$, then its image $\Set{p(B_\alpha)}$ under $p$ is a basis for $X\setminus\sim$.
+
+<details>
+<summary>Proof</summary>
+
+Since $p$ is an open map, $\Set{p(B_\alpha)}$ is a collection of open sets in $X\setminus\sim$. Let $W$ be an open set in $X\setminus\sim$ and $[x]\in W$ with $x\in X$. Then $x\in p^{-1}(W)$. Since $p^{-1}(W)$ is open, there is a basic open set $B\in\mathcal{B}$ such that
+
+$$
+  x\in B\subset p^{-1}(W)
+$$
+
+Then
+
+$$
+  [x] = p(x) \in p(B) \subset W
+$$
+
+which proves that $\Set{p(B_\alpha)}$ is a basis for $X\setminus\sim$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+If $\sim$ is an opne equivalence relation on a second-countable space $X$, then the quotient space $X\setminus\sim$ is second countable.
+</MathBox>
 
 ### Projective space
 
