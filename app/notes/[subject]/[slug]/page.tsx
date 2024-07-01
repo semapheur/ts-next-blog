@@ -1,14 +1,18 @@
 import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
-import { markdownHeadings, remarkPlugins, rehypePlugins } from 'utils/mdxParse'
-import { mdxComponents } from 'utils/mdxComponents'
-import Loader from 'components/Loader'
-import { NoteHeading, NoteMatter } from 'utils/types'
-import { MDXProps } from 'mdx/types'
+import {
+  markdownHeadings,
+  remarkPlugins,
+  rehypePlugins,
+} from 'lib/utils/mdxParse'
+import { mdxComponents } from 'lib/utils/mdxComponents'
+import Loader from 'lib/components/Loader'
+import type { NoteHeading, NoteMatter } from 'lib/utils/types'
+import type { MDXProps } from 'mdx/types'
 
 const Toc = dynamic(() => import('./Toc'), {
   ssr: false,

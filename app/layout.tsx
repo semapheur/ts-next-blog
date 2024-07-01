@@ -1,28 +1,28 @@
-import {Inter} from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './Header'
-import StyledComponentsRegistry from 'components/StyledComponentsRegistry'
+import StyledComponentsRegistry from 'lib/components/StyledComponentsRegistry'
 
 // Metadata
 export const metadata = {
   title: 'Gelik blog',
   icons: {
-    icon: '/favicon.ico'
-  }
+    icon: '/favicon.ico',
+  },
 }
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: 0
+  userScalable: 0,
 }
 
 // Font
 const inter = Inter({
   variable: '--font-inter',
-  subsets: ['latin']
-});
+  subsets: ['latin'],
+})
 
 export default function RootLayout({
   children,
@@ -48,13 +48,13 @@ export default function RootLayout({
       document.documentElement.classList.remove('dark')
     }
   `
-  
+
   return (
     <html lang='en'>
       <head />
       <body className='flex flex-col bg-primary'>
-        <script dangerouslySetInnerHTML={{__html: setInitialTheme}}/>
-        <Header/>
+        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
+        <Header />
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
     </html>

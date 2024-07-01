@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Special relativity',
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 }
 
 const SpecialRelativity = dynamic(
-  () => import('components/SpecialRelativity'),
+  () => import('lib/components/SpecialRelativity'),
   {
     ssr: true,
   },

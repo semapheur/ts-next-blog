@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { NoteDetails } from 'utils/types'
+import { NoteDetails } from 'lib/utils/types'
 
 type Props = {
   noteDetails: NoteDetails

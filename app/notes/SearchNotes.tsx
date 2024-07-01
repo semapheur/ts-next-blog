@@ -1,13 +1,13 @@
 'use client'
 
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, type MouseEvent, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 //import useSWR, {Fetcher} from 'swr'
 
-import SearchBox from 'components/SearchBox'
-import { SearchResult } from 'pages/api/searchnotes'
-import { searchNotes } from 'utils/search'
+import SearchBox from 'lib/components/SearchBox'
+import type { SearchResult } from 'pages/api/searchnotes'
+import { searchNotes } from 'lib/utils/search'
 import notes from 'cache/notes.json'
 
 const Preview = dynamic(() => import('./PreviewNotes'), { ssr: false })

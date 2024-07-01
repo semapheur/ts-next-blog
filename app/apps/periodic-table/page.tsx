@@ -1,15 +1,15 @@
 import dynamic from 'next/dynamic'
-import {Metadata} from 'next'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Periodic table',
-  description: 'A periodic table app built with React.'
+  description: 'A periodic table app built with React.',
 }
 
-const PeriodicTable = dynamic(() => import('components/PeriodicTable'), {
-  ssr: true}
-)
+const PeriodicTable = dynamic(() => import('lib/components/PeriodicTable'), {
+  ssr: true,
+})
 
 export default function Page() {
-  return <PeriodicTable/>
+  return <PeriodicTable />
 }

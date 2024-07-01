@@ -1,19 +1,25 @@
-import {ReactNode} from 'react'
+import { ReactNode } from 'react'
 
-import Sidebar from './Sidebar';
-import matter from 'gray-matter';
-import { iterNotes } from 'utils/fetching';
-import { NoteDetails, NoteMatter } from 'utils/types';
+import Sidebar from './Sidebar'
+import matter from 'gray-matter'
+import { iterNotes } from 'lib/utils/fetching'
+import { NoteDetails, NoteMatter } from 'lib/utils/types'
 
-function getNoteDetails(fileName: string, subject: string, note: Buffer, result: NoteDetails) {
-
-  const {data: metaData} = matter(note);
-  if (!result[subject]) {result[subject] = [] as NoteMatter[]}
+function getNoteDetails(
+  fileName: string,
+  subject: string,
+  note: Buffer,
+  result: NoteDetails,
+) {
+  const { data: metaData } = matter(note)
+  if (!result[subject]) {
+    result[subject] = [] as NoteMatter[]
+  }
   result[subject].push({
     slug: fileName.replace('.mdx', ''),
-    title: metaData.title
-  }) 
-  return result;
+    title: metaData.title,
+  })
+  return result
 }
 
 export default async function NotesLayout({
@@ -21,7 +27,7 @@ export default async function NotesLayout({
 }: {
   children: ReactNode
 }) {
-  const details = await iterNotes(getNoteDetails);
+  const details = await iterNotes(getNoteDetails)
 
   return (
     <div className='relative flex h-full min-h-0'>

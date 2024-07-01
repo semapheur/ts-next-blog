@@ -1,16 +1,16 @@
 'use client'
 
-import { ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 
-import { SearchResult } from 'pages/api/searchnotes'
+import type { SearchResult } from 'pages/api/searchnotes'
 import Link from 'next/link'
 
 import dynamic from 'next/dynamic'
-const Modal = dynamic(() => import('components/LatexModal'), { ssr: false }) //import Modal from 'components/Modal'
+const Modal = dynamic(() => import('lib/components/LatexModal'), { ssr: false }) //import Modal from 'components/Modal'
 
 import notes from 'cache/notes.json'
-import { SearchIcon } from 'utils/icons'
-import { searchNotes } from 'utils/search'
+import { SearchIcon } from 'lib/utils/icons'
+import { searchNotes } from 'lib/utils/search'
 
 export default function SearchBar() {
   const [query, setQuery] = useState<string>('')
