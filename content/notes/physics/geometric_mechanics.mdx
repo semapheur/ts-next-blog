@@ -29,6 +29,8 @@ A *motion* of the mechanical system is a solution $\mathbf{x}: U\subset\R \to M$
 $$
   \mu\left(\frac{\mathrm{D}\dot{\mathbf{x}}}{\mathrm{d}t}\right) = F(\dot{\mathbf{x}})
 $$
+
+where $\mathrm{D}\dot{\mathbf{x}}/\mathrm{d}t$ is the covariant derivative of $\mathbf{x}$.
 </MathBox>
 
 The geodesics of a Riemannian manifold $(M,\langle\cdot,\cdot\rangle)$ are the motions of the mechanical system $(M, \langle\cdot,\cdot\rangle, 0)$ describing a *free particle* on $M$.
@@ -444,4 +446,117 @@ $$
 $$
 
 is constant along the motion. This conservation law follows from the fact that both $K$ and $U$ are independent of $\theta$. 
+</MathBox>
+
+# Holonomic constraints
+
+<MathBox title='Holonomic constraint' boxType='definition'>
+A *holonomic constraint* on a mechanical system $(M,\langle\cdot,\cdot\rangle, F)$ is a submanifold $N\subset M$ with $\dim(N) < \dim(M)$. A curve $\mathbf{r}: I\subset\R \to M$ is *compatible* with $N$ if $\mathbf{r}(t)\in N$ for all $t\in I$.
+</MathBox>
+
+<MathBox title='Reaction force' boxType='definition'>
+A *reaction force* on a mechanical system with holonomic constraint $(M,\langle\cdot,\cdot\rangle, F, N)$ is a map $R: TN\to T^* M$ satisfying $R(T_\mathbf{p}N) \subset T_\mathbf{p}^* M$ for all $\mathbf{p}\in N$ such that, for each $\mathbf{v}\in TN$, there is a solution $\mathbf{r}: I\subset\R \to N$ of the *generalized Newton equation*
+
+$$
+  \mu\left(\frac{\mathrm{D}\dot{\mathbf{r}}}{\mathrm{d}t}\right) = (F + R)(\dot{\mathbf{r}})
+$$
+
+with initial condition $\dot{\mathbf{r}}(0) = \mathbf{v}$.
+</MathBox>
+
+
+<MathBox title="d'Alembert principle" boxType='definition'>
+A reaction force in a mechanical systme with holonomic constraint $(M,\langle\cdot,\cdot\rangle, F, N)$ satisfy the *d'Alember principle* if
+
+$$
+  \mu^{-1}(R(\mathbf{v})) \in (T_\mathbf{p} N)^\perp
+$$
+
+for all $\mathbf{v}\in T_\mathbf{p} N$ and $\mathbf{p} N$. In this case, the reaction force is said to be *perfect*.
+</MathBox>
+
+The variation of the kinetic energy of a solution of the generalized Newton equation is
+
+$$
+\begin{align*}
+  \frac{\mathrm{d}K}{\mathrm{d}t} =& \left\langle \frac{\mathrm{D}\dot{\mathbf{r}}}{\mathrm{d}t}, \dot{\mathbf{r}} \right\rangle =& F(\dot{\mathbf{r}})(\dot{\mathbf{r}}) + R(\dot{\mathbf{r}})(\dot{\mathbf{r}}) \\
+  =& F(\dot{\mathbf{r}})(\dot{\mathbf{r}}) + \left\langle \mu^{-1} (R(\dot{\mathbf{r}})), \dot{\mathbf{r}}\right\rangle
+\end{align*}
+$$
+
+Thus, a reaction force is perfect if and only if it neither creates nor dissipates energy along any motion compatible with the constraint.
+
+<MathBox title="d'Alembert principle" boxType='definition'>
+Given any mechanical system with holonomic contraint $(M,\langle\cdot,\cdot\rangle,F,N)$, there exists a unique reaction force $R:TN\to T^* M$ satisfying the d'Alembert principle. The solution of the generalized Newton equation
+
+$$
+  \mu\left( \frac{\mathrm{D}\mathbf{r}}{\mathrm{d}t} \right) = (F + R)(\dot{\mathbf{r}})
+$$
+
+are exactly the motions of the mechanical system $(N, \langle\langle\cdot,\cdot\rangle, F|_N)$ where $\langle\langle\cdot,\cdot\rangle\rangle$ is the metric induced on $N$ by $\langle\cdot,\cdot\rangle$ and $F|_N$ is the restriction of $F$ to $N$. In particular, if $F = -\mathrm{d}U$ is conservative then $F|_N = -\mathrm{d}(U|_N)$.
+
+<details>
+<summary>Proof</summary>
+
+Recall that if $\tilde{\nabla}$ is the Levi-Civita connection of $(M,\langle\cdot,\cdot\rangle)$ and $\nabla$ is the Levi-Civita connection of $(N,\langle\langle\cdot,\cdot\rangle\rangle)$ then
+
+$$
+  \nabla_\mathbf{X} \mathbf{Y} = (\tilde{\nabla}_\tilde{\mathbf{X}} \tilde{\mathbf{Y}})^\top,\; \mathbf{X},\mathbf{Y}\in\mathfrak{X}(N)
+$$
+
+where $\tilde{\mathbf{X}}, \tilde{\mathbf{Y}}$ are the extensions of $\mathbf{X}, \mathbf{Y}$ to $\mathfrak{X}(M)$. On sidenote, $\mathbf{v} = \mathbf{v}^\top + \mathbf{v}^\perp$ designates the unique decomposition arising from the splitting $T_\mathbf{p}M = T_\mathbf{p}N \oplus (T_\mathbf{p} N)^\perp$ for each $\mathbf{p}\in N$. The second fundamental for of $N$
+
+$$
+  B(\mathbf{X},\mathbf{Y}) = \tilde{\nabla}_{\tilde{\mathbf{X}}} \tilde{\mathbf{Y}} - \nabla_\mathbf{X} \mathbf{Y} = (\tilde{\nabla}_{\tilde{\mathbf{X}}} \tilde{\mathbf{Y}})^\perp
+$$
+
+is well defined, and $B(\mathbf{X},\mathbf{Y})_\mathbf{p} \in (T_\mathbf{p} N)^\perp$ is a symmetric bilinear function of $\mathbf{X_p}, \mathbf{Y_p} \in T_\mathbf{p} N$ for all $\mathbf{p}\in N$.
+
+Assuming there is a perfect reaction force $R$, the solutions of the generalized Newton equation must satisfy
+
+$$
+  \tilde{\nabla}_{\dot{\mathbf{r}}} \dot{\mathbf{r}} = \mu^{-1} (F(\dot{\mathbf{r}})) + \mu^{-1} (R(\dot{\mathbf{r}}))
+$$
+
+Since by hypothesis $\mu^{-1} R$ is orthogonal to $N$, the component of this equation tangent to $N$ yields
+
+$$
+  \nabla_{\dot{\mathbf{r}}} \dot{\mathbf{r}} = \mu_N^{-1} (F|_N (\dot{\mathbf{r}}))
+$$
+
+where $\mu_N : TN \to T^* N$ is the mass operator on $N$. For any $\mathbf{v} \in TN$ we have
+
+$$
+\begin{align*}
+  \left{\langle\langle} \left(\mu^{-1} (F(\dot{\mathbf{r}})\right)^\top, \mathbf{v}\right{\rangle\rangle} =& \left\langle \mu^{-1} F(\dot{\mathbf{r}}), \mathbf{v} \rigth\rangle \\
+  =& F(\dot{\mathbf{r}})(\mathbf{v}) = F|_N (\dot{\mathbf{r}})(\mathbf{v}) \\
+  =& \langle\langle \mu_N^{-1} (F|_N (\dot{\mathbf{r}})), \mathbf{v} \rangle\rangle
+\end{align*}
+$$
+
+Hence, $\mathbf{r}$ is a motion of $(N, \langle\langle\cdot,\cdot\rangle\rangle, F|_N)$.
+
+On the other hand, the component of the generalized Newton equation orthogonal to $N$ yields
+
+$$
+  B(\dot{\mathbf{r}}, \dot{\mathbf{r}}) = [\mu^{-1}(F(\dot{\mathbf{r}}))]^\perp + \mu^{-1} (R(\dot{\mathbf{r}}))
+$$
+
+Thus, if $R$ exists it must satisfy
+
+$$
+  R(\mathbf{v}) = \mu(B(\mathbf{v},\mathbf{v})) - \mu\left[(\mu^{-1}(F(\mathbf{v})))^\perp \right],\; \forall\mathbf{v}\in TN \tag{\label{equation-3}}
+$$
+
+This proves uniqueness. To prove existence, define $R$ throught $\eqref{equation-3}$, which guarantees that $\mu^{-1} (R(\mathbf{v})) \in (T_\mathbf{p} N)^\perp$ for all $\mathbf{v}\in T_\mathbf{p} N$ and $\mathbf{p}\in N$. Given $\mathbf{v}\in TN$, let $\mathbf{r}: I\subset\R \to N$ be the motion of the mechanical system $(N,\langle\langle\cdot,\cdot\rangle\rangle, F|_N)$ with initial condition $\mathbf{v}$. Then
+
+$$
+\begin{align*}
+  \tilde{nabla}_{\dot{\mathbf{r}}} \dot{\mathbf{r}} =& \nabla_{\dot{\mathbf{r}}} \dot{\mathbf{r}} + B(\dot{\mathbf{r}}, \dot{\mathbf{r}}) \\
+  =& \mu_N^{-1} (F|_N (\dot{\mathbf{r}})) + (\mu^{-1}(F(\dot{\mathbf{r}})))^\perp + \mu^{-1}(R(\dot{\mathbf{r}})) \\
+  =& (\mu^{-1} F(\dot{\mathbf{r}}))^\perp + (\mu^{-1}(F(\dot{\mathbf{r}})))^\perp + \mu^{-1}(R(\dot{\mathbf{r}})) \\
+  =& \mu^{-1}(F(\dot{\mathbf{r}})) + \mu^{-1}(R(\dot{\mathbf{r}}))
+\end{align*}
+$$
+</details>
 </MathBox>
