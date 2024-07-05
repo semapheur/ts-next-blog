@@ -1,14 +1,14 @@
 'use client'
 
-import { ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 //import useSWR, {Fetcher} from 'swr'
 
-import { SearchResult } from 'pages/api/searchnotes'
+import type { SearchResult } from 'pages/api/searchnotes'
 import { XorFilter } from 'bloom-filters'
-import SearchBoxCompact from 'components/SearchBoxCompact'
+import SearchBoxCompact from 'lib/components/SearchBoxCompact'
 import Link from 'next/link'
 
-import notes from 'cache/notes.json'
+import notes from 'content/cache/notes.json'
 import tokenize from 'lib/utils/tokenize'
 
 //const searchFetcher: Fetcher<SearchResult, string> = async (query) => {
@@ -28,7 +28,7 @@ export default function SearchBar() {
   //const {data: result} = useSWR(query, searchFetcher)
 
   useEffect(() => {
-    let result: SearchResult = []
+    const result: SearchResult = []
     const tokens = tokenize(query)
 
     let score = 0

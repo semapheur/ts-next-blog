@@ -12,9 +12,9 @@ import {
   SymbolNode,
 } from 'mathjs'
 
-import CanvasGrid from 'components/CanvasGrid'
-import ComplexInput from 'components/ComplexInput'
-import TransformDiv, { transform } from 'components/TransformDiv'
+import CanvasGrid from 'lib/components/CanvasGrid'
+import ComplexInput from 'lib/components/ComplexInput'
+import TransformDiv, { transform } from 'lib/components/TransformDiv'
 
 import { resizeCanvas } from 'lib/utils/canvas'
 import { requiredFunctions } from 'lib/utils/complex'

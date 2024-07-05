@@ -6,9 +6,9 @@ import type { SearchResult } from 'pages/api/searchnotes'
 import Link from 'next/link'
 
 import dynamic from 'next/dynamic'
-const Modal = dynamic(() => import('lib/components/LatexModal'), { ssr: false }) //import Modal from 'components/Modal'
+const Modal = dynamic(() => import('lib/components/LatexModal'), { ssr: false }) //import Modal from 'lib/components/Modal'
 
-import notes from 'cache/notes.json'
+import notes from 'content/cache/notes.json'
 import { SearchIcon } from 'lib/utils/icons'
 import { searchNotes } from 'lib/utils/search'
 

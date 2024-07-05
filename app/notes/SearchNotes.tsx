@@ -8,7 +8,7 @@ import Link from 'next/link'
 import SearchBox from 'lib/components/SearchBox'
 import type { SearchResult } from 'pages/api/searchnotes'
 import { searchNotes } from 'lib/utils/search'
-import notes from 'cache/notes.json'
+import notes from 'content/cache/notes.json'
 
 const Preview = dynamic(() => import('./PreviewNotes'), { ssr: false })
 

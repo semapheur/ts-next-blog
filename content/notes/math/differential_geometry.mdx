@@ -6,6 +6,257 @@ showToc: true
 
 In the following discussions, the term "smooth" means infinitely differentiable, or $C^\infty$. If $M$ is a smooth manifold, $\mathcal{F} = C^\infty (M)$ denotes the ring of smooth functions on $M$.
 
+# Connections
+
+<MathBox title='Connection on vector bundles' boxType='definition'>
+Let $\pi: E\to M$ be a smooth vector bundle over a smooth manifold $M$ and let $\Gamma(E)$ denote the space of smooth sections of $E$. A *connection* on $E$ is a map
+
+$$
+  \nabla:\mathfrak{X}(M)\times\Gamma(E)\to\Gamma(E)
+$$
+
+written $(\mathbf{X}, \mathbf{Y}) \mapsto\nabla_\mathbf{X} \mathbf{Y}$, satisfying the following properties
+1. $\nabla_\mathbf{X} \mathbf{Y}$ is linear over $C^\infty (M)$ in $\mathbf{X}$.
+$$
+  \nabla_{f\mathbf{X}_1 + g\mathbf{X}_2} \mathbf{Y} = f\nabla_{\mathbf{X}_1} \mathbf{Y} + g\nabla_{\mathbf{X}_2} \mathbf{Y},\, f,g\in C^\infty (M)
+$$
+2. $\nabla_\mathbf{X} \mathbf{s}$ is linear over $\R$ in $\mathbf{Y}$
+$$
+  \nabla_\mathbf{X} (a\mathbf{Y}_1 + b\mathbf{Y}_2) = a\nabla_\mathbf{X} \mathbf{Y}_1 + b\nabla_\mathbf{X} \mathbf{Y}_2,\, a,b\in\R
+$$
+2. **Leibniz rule:**
+$$
+  \nabla_\mathbf{X} (f\mathbf{Y}) = f\nabla_\mathbf{X} \mathbf{Y} + (\mathbf{X}f)\mathbf{Y},\, f\in C^\infty (M)
+$$
+
+The expression $\nabla_\mathbf{X} \mathbf{Y}$ is called the *covariant derivative* of $\mathbf{Y}$ in the direction of $\mathbf{X}$.
+
+<details>
+<summary>Details</summary>
+
+Since $\mathbf{X}f = (\mathrm{d}f)(\mathbf{X})$, the Leibniz rule can be written as
+
+$$
+  \nabla_\mathbf{X} (f\mathbf{Y}) = (\mathrm{d}f)(\mathbf{X})\mathbf{Y} + f\nabla_\mathbf{X} \mathbf{Y}
+$$
+
+or, suppressing $\mathbf{X}$,
+
+$$
+  \nabla (fY) = \mathrm{d}f\cdot\mathbf{Y} + f\nabla\mathbf{Y}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $M$ be a smooth manifold. If $\nabla$ is a connection in a bundle $E$, $\mathbf{X}\in\mathfrak{X}(M)$, $\mathbf{Y}\in\Gamma(M)$ and $\mathbf{p}\in M$, then $\nabla_\mathbf{X}|_\mathbf{p}$ depends only on the values of $\mathbf{X}$ and $\mathbf{Y}$ in an arbitrarily small neighbourhood of $\mathbf{p}$. Specifically, if $\mathbf{X} = \tilde{\mathbf{X}}$ and $\mathbf{Y} = \tilde{\mathbf{Y}}$ on a neighbourhood of $\mathbf{p}$, then $\nabla_\mathbf{X}|_\mathbf{p} = \nabla_{\tilde{\mathbf{X}}} \tilde{\mathbf{Y}}|_\mathbf{p}$.
+
+<details>
+<summary>Proof</summary>
+
+First consider $\mathbf{Y}$. Replacing $\mathbf{Y}$ by $\mathbf{Y} - \tilde{\mathbf{Y}}$, it clearly suffices to show that $\nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p} = 0$ if $\mathbf{Y}$ vanishes on a neighbourhood $U$ of $\mathbf{p}$.
+
+Choose a bump function $\varphi\in C^\infty (M)$ with support in $U$ such that $\varphi(\mathbf{p}) = 1$. The hypothesis that $\mathbf{Y}$ vanishes on $U$ implies that $\varphi\mathbf{Y} \equiv 0$ on all of $M$, so $\nabla_\mathbf{X} (\varphi\mathbf{Y}) = \nabla_\mathbf{X} (0\cdot \varphi\mathbf{Y}) = 0\nabla_\mathbf{X} (\varphi\mathbf{Y}) = 0$. Thus for any $\mathbf{X}\in\mathfrak{X}(M)$, the Leibniz rule gives
+
+$$
+  0 = \nabla_\mathbf{X} (\varphi\mathbf{Y}) = (\mathbf{X}\varphi)\mathbf{Y} + \varphi(\nabla_\mathbf{X} \mathbf{Y})
+$$
+
+Now $\mathbf{Y} \equiv 0$ on the support of $\varphi$, so the first term on the right is identically zero. Evaluating the equation at $\mathbf{p}$ shows that $\nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p} = 0$. The argument for $\mathbf{X}$ is similar.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $M$ be a smooth manifold. If $\nabla$ is a connection in a bundle $E$, $\mathbf{X}\in\mathfrak{X}(M)$, $\mathbf{Y}\in\Gamma(M)$ and $\mathbf{p}\in M$, then $\nabla_\mathbf{X}|_\mathbf{p}$ depends only on the values of $\mathbf{Y}$ in an arbitrarily small neighbourhood of $\mathbf{p}$ and the value of $\mathbf{X}$ at $\mathbf{p}$.
+
+<details>
+<summary>Proof</summary>
+
+By linearity, it suffices to show that $\nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p} = 0$ whenever $\mathbf{X_p} = 0$. Choose a coordinate neighbourhood $U$ of $\mathbf{p}$, and write $\mathbf{X} = \sum_i X^i \boldsymbol{\partial_i}$ in coordinates on $U$, with $X^i (\mathbf{p}) = 0$. Then for any $\mathbf{Y}\in\Gamma(M)$
+
+$$
+  \nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p} = \nabla_{\sum_i X^i \boldsymbol{\partial}_i} \mathbf{Y}|_\mathbf{p} = \sum_i X^i (\mathbf{p}) \nabla_{\boldsymbol{\partial}_i} \mathbf{Y}|_\mathbf{p} = 0
+$$
+
+In the first equality we used $\ref{lemma-1}$, which allows us to evaluate $\nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p}$ by computing locally in $U$. In the second, we used linearity of $\nabla_\mathbf{X} \mathbf{Y}$ over $C^\infty (M)$ in $\mathbf{X}$.
+</details>
+</MathBox>
+
+Lemma $\ref{lemma-2}$ allows us to write $\nabla_\mathbf{X_\mathbf{p}} \mathbf{Y}$ in place of $\nabla_\mathbf{X} \mathbf{Y}|_\mathbf{p}$. This can be interpreted as a directional derivative of $\mathbf{Y}$ at $\mathbf{p}$ in the direction of the vector $\mathbf{X_p}$.
+
+## Affine connections
+
+<MathBox title='Affine connection' boxType='definition'>
+An *affine connection* on a smooth manifold $M$ is a connection in the tangent bundle $TM$, i.e. a map
+ 
+$$
+  \nabla: \mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)
+$$
+
+written $\nabla_\mathbf{X} \mathbf{Y}$ for $\nabla(\mathbf{X},\mathbf{Y})$, satisfying the following properties:
+
+1. $\nabla_\mathbf{X} \mathbf{Y}$ is linear over $C^\infty (M)$ in $\mathbf{X}$.
+$$
+  \nabla_{f\mathbf{X}_1 + g\mathbf{X}_2} \mathbf{Y} = f\nabla_{\mathbf{X}_1} \mathbf{Y} + g\nabla_{\mathbf{X}_2} \mathbf{Y},\, f,g\in C^\infty (M)
+$$
+2. $\nabla_\mathbf{X} \mathbf{s}$ is $\R$-linear in $\mathbf{Y}$
+$$
+  \nabla_\mathbf{X} (a\mathbf{Y}_1 + b\mathbf{Y}_2) = a\nabla_\mathbf{X} \mathbf{Y}_1 + b\nabla_\mathbf{X} \mathbf{Y}_2,\, a,b\in\R
+$$
+2. **Leibniz rule:**
+$$
+  \nabla_\mathbf{X} (f\mathbf{Y}) = f\nabla_\mathbf{X} \mathbf{Y} + (\mathbf{X}f)\mathbf{Y},\, f\in C^\infty (M)
+$$
+</MathBox>
+
+Although the definition of a linear connection resembles the characterization of $\binom{2}{1}$-tensor fields given by the tensor characterization lemma, a linear connection is not a tensor field because it is not linear over $C^\infty (M)$ in $\mathbf{Y}$, but instead satisfies the Leibniz rule.
+
+The directional derivative $\mathrm{D}_\mathbf{X}$ of a vector field $\mathbf{Y}$ on $\R^n$ is an affine connection on $\R^n$ called the *Euclidean connection* on $\R^n$.
+
+### Christoffel symbols
+
+<MathBox title='Christoffel symbols' boxType='proposition'>
+Let $M$ be a smooth $n$-manifold and $\Set{\mathbf{E}_i}_{i=1}^n$ a local frame for $TM$ on an open subset $U\subset M$. In terms of this frame, an affine connection $\nabla$ on $M$ can be expanded as
+
+$$
+  \nabla_{E_i} \mathbf{E_j} = \Gamma_{ij}^k \mathbf{E}_k,\, \forall i, j=1,\dots,n
+$$
+
+The $n^3$ functions $\Gamma_{ij}^k$ on $U$ are called the *Christoffel symbols* of $\nabla$ with respect to this frame.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $M$ be a smooth $n$-manifold, $\nabla$ an affine connection on $M$ and $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$. If $\mathbf{X} = \sum_i^n X^i \mathbf{E}_i$ and $\mathbf{Y} = \sum_{j=1}^n Y^j \mathbf{E}_j$ for a local frame $\Set{\mathbf{E}_i}_{i=1}^n$ on $TM$, then
+
+$$
+  \nabla_\mathbf{X} \mathbf{Y} = (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k
+$$
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \nabla_\mathbf{X} \mathbf{Y} =& \nabla_\mathbf{X} (n Y^j \mathbf{E}_j) \\
+  =& (\mathbf{X}Y^j)\mathbf{E}_j + Y^j \nabla_{X^i \mathbf{E}_i} \mathbf{E}_j \\
+  =& (\mathbf{X}Y^j)\mathbf{E}_j + X^i Y^j \nabla_{\mathbf{E}_i} \mathbf{E}_j \\
+  =& \mathbf{X}Y^k \mathbf{E}_k + X^i Y^j \Gamma_{ij}^k \mathbf{E}_k \\
+  =& (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k
+\end{align*}
+$$
+</details>
+</MathBox>
+
+Let $\nabla$ be an affine connection on a smooth manifold $M$ and let $(U,\Set{x^i}_{i=1}^n)$ be a coordinate open set in $M$. Then $\nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x^j}$ is a linear combination of $\left(\frac{\partial}{\partial x^i}\right)$, so there exist numbers $\Gamma_{ij}^k$ at each point such that
+
+$$
+  \nabla_{\boldsymbol{\partial}_i} = \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k}
+$$
+
+where the $n^3$ functions $\Gamma_{ij}^k$ are the *Christoffel symbols* of the connection $\nabla$ on the coordinate open set $(U,x^1,\dots,x^n)$. By the Leibniz rule and $\mathcal{F}$-linearity in the first argument of a connection, the Christoffel symbols completely describe a connection on $U$.
+
+<MathBox title='' boxType='proposition'>
+An affine connection $\nabla$ on a manifold is torsion-free if and only if in every coordinate chart $(U,\Set{x^i}_{i=1}^n)$ the Christoffel symbol $\Gamma_{ij}^k$ is symmetric in $i$ and $j$
+
+$$
+  \Gamma_{ij}^k = \Gamma_{ji}^k
+$$
+
+A torsion-free connection is also called a symmetric connection.
+
+<details>
+<summary>Proof</summary>
+
+Let $(U,\Set{x^i}_{i=1}^n)$ be a coodinate open set. Since partial differentiation is independent of the order of differentiation
+
+$$
+  \left[\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^i} \right] = 0
+$$
+
+By torsion-freeness
+
+$$
+  \nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x_j} - \nabla_{\boldsymbol{\partial}_j} \frac{\partial}{\partial x_i} =  \left[\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^i} \right] = 0
+$$
+
+In terms of Christoffel symbols
+
+$$
+  \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k} - \sum_{k=1}^n \Gamma_{ji}^k \frac{\partial}{\partial x^k} = 0
+$$
+
+Since $\Set{\frac{\partial}{\partial x^i}}_{i=1}^n$ are linearly independent at each point, $\Gamma_{ij}^k = \Gamma_{ji}^k$.
+
+Conversely, suppose $\Gamma_{ij}^k = \Gamma_{ji}^k$ in the coordinate chart $(U,\Set{x^i}_{i=1}^n)$. Then,
+
+$$
+  T\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^i}\right) = \nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x_j} - \nabla_{\boldsymbol{\partial}_j} \frac{\partial}{\partial x_i} = 0
+$$
+
+Since $T$ is a bilinear function on $T_\mathbf{p}M$ for $\mathbf{p}\in M$, this proves that $T(\mathbf{X},\mathbf{Y})_\mathbf{p} := T(\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p} = 0$ for all $\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p}\in T_\mathbf{p}M$. Thus, for all $X,Y\in\mathfrak{X}(M)$, we have $T(\mathbf{X},\mathbf{Y}) = 0$.
+</details>
+</MathBox>
+
+## Existence of a connection on a vector bundle
+
+Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{s}\in\Gamma(E)$ and function $f\in C^\infty (M)$
+
+$$
+\begin{align*}
+  \nabla_\mathbf{X}^0 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^0 \mathbf{s} \\
+  \nabla_\mathbf{X}^1 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^1 \mathbf{s} 
+\end{align*}
+$$
+
+Thus
+
+$$
+  (\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)(f\mathbf{s}) = 2(\mathbf{X}f)\mathbf{s} + f(\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)\mathbf{s}
+$$
+
+Because of the extra factor of $2$ the sum of two connections does not satisfy the Leibniz rule and so is not a connection. However, if we multiply by $\nabla_\mathbf{X}^0 (f\mathbf{s})$ by $1-t$ and $\nabla_\mathbf{X}^1 (f\mathbf{s})$ by $t$, then $(1-t)\nabla_\mathbf{X}^0 + t\nabla_\mathbf{X}^1$ satisfies the Leibniz rule.
+
+<MathBox title='' boxType='proposition'>
+Any finite linear combination $\sum t_i \nabla^i$ of connections $\nabla^i$ is a connection provided that the coefficients add up to $1$, i.e. $\sum_i t_i = 1$. Such a linear combination is called *convex*.
+</MathBox>
+
+<MathBox title='Existence of connections on vector bundles' boxType='theorem'>
+Every smooth vector bundle $E$ over a manifold $M$ has a connection.
+
+<details>
+<summary>Proof</summary>
+
+Fix a trivializing open cover $\Set{U_\alpha}$ for $E$ and a partition of unity $\Set{\rho_\alpha}$ subordinate to $\Set{U_\alpha}$. On each $U_\alpha$, the vector bundle $E|_{U_\alpha}$ is trivial and so has a connection $\lambda^\alpha$. For $X\in\mathcal{X}(M)$ and $\mathbf{s}\in\Gamma(E)$, dented by $\mathbf{s}_\alpha$ the restriction of $\mathbf{s}$ to $U_\alpha$ and define
+
+$$
+  \nabla_\mathbf{X} \mathbf{s} = \sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha
+$$
+
+Although this looks like an infinite sum, it is in fact a finite sum in a neighbourhood of each point $\mathbf{p}\in M$, for by the local finiteness of $\Set{\operatorname{supp}(\rho_\alpha)}$, there is an open neighbourhood $U$ of $\mathbf{p}$ intersecting only finitely many of the sets $\operatorname{supp}(\rho_\alpha)$. This means that on $U$ all except finitely many of the $\rho_\alpha$ are zero and so $\sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha$ is a finite sum on $U$ with $\sum_\alpha \rho_\alpha = 1$.
+
+By checking the open set $U$, it is easy to show that $\nabla_\mathbf{X} \mathbf{s}$ is $\mathcal{F}$-linear in $\mathbf{X}$, is $\R$-linear in $\mathbf{s}$ and satisfies the Leibniz rule. Hence, $\nabla$ is a connection on $E$.
+</details>
+</MathBox>
+
+## Connections on a vector bundle
+
+<MathBox title='Induced connection on a trivial bundle' boxType='example'>
+Let $E$ be a trivial bundle of rank $r$ over a smooth manifold $M$. There is a bundle isomorphism $\phi:E\to M\times\R^r$, called a *trivialization* for $E$ over $M$. The trivialization $\phi: E \xrightarrow{\sim} M\times\R^r$ induces a connection on $E$ as follows. If $\Set{\mathbf{v}_i}_{i=1}^r$ is a basis for $\R^r$, then $s_i: p\mapsto (\mathbf{p},\mathbf{v}_i)$ for $i=1,\dots,r$ define a global frame fro the product bundle $M\times\R^r$ over $M$, and $\mathbf{e}_i = \phi^{-1} \circ s_i$ define a global frame for $E$ over $M$. Every section $\mathbf{s}\in\Gamma(E)$ can be written uniquely as a linear combination
+
+$$
+  \mathbf{s} = \sum_{i=1}^r h^i \mathbf{e}_i,\; h^i \in\mathcal{F} = C^\infty
+$$
+
+We can define a connection $\nabla$ on $E$ by declaring the sections $\mathbf{e}_i$ to be flat and applying the Leibniz rule and $\R$-linearity to define the connection
+
+$$
+  \nabla_\mathbf{X} \mathbf{s} = \nabla_\mathbf{X} \left(\sum_{i=1}^r h^i \mathbf{e}_i \right) = \sum_{i=1}^r (Xh^i)\mathbf{e}_i
+$$
+
+The connection $\nabla$ on a trivial bundle induced by a trivialization depends on the trivialization, for the flat section for $\nabla$ are presicely the section of $E$ corresponding to the constant sections of $M\times\R^r$ under the trivialization.
+</MathBox>
+
+
 # Curvature and vector fields
 
 ## Tangent vectors
@@ -1052,27 +1303,6 @@ $$
 </details>
 </MathBox>
 
-## Affine connections
-
-On an arbitrary smooth manifold, which is not necessarily embedded in a Euclidean space, there is no longer a canonical way to define the directional derivative of a vector field. However, the directional derivative can be generalized with affine connections as a way of differentiating vector fields on smooth manifolds.
-
-<MathBox title='Affine connection' boxType='definition'>
-Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on $M$. An *affine connection* on a manifold $M$ is an $\R$-bilinear map
-
-$$
-  \nabla: \mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)
-$$
-
-written $\nabla_\mathbf{X} \mathbf{Y}$ for $\nabla(\mathbf{X},\mathbf{Y})$, satisfying the following properties:
-1. $\nabla_\mathbf{X} \mathbf{Y}$ is $\mathcal{F}$-linear in $\mathbf{X}$.
-2. **Leibniz rule:** for $f\in\mathcal{F}$
-$$
-  \nabla_\mathbf{X} (f\mathbf{Y}) = (\mathbf{X}f) + f\nabla_\mathbf{X} \mathbf{Y}
-$$
-</MathBox>
-
-The directional derivative $\mathrm{D}_\mathbf{X}$ of a vector field $\mathbf{Y}$ on $\R^n$ is an affine connection on $\R^n$ called the *Euclidean connection* on $\R^n$.
-
 ### Torsion and curvature
 
 <MathBox title='Torsion and curvature of affine connections' boxType='definition'>
@@ -1724,93 +1954,7 @@ $$
 
 # Curvature and differential forms
 
-## Connections on a vector bundle
-
-<MathBox title='Connection on vector bundles' boxType='definition'>
-Let $E\to M$ be a smooth vector bundle over a smooth manifold $M$. A connection on $E$ is a map
-
-$$
-  \nabla:\mathfrak{X}(M)\times\Gamma(E)\to\Gamma(E)
-$$
-
-such that for $\mathbf{X}\in\mathfrak{X}(M)$ and $\mathbf{s}\in\Gamma(E)$
-1. $\nabla_\mathbf{X} \mathbf{s}$ is $\mathcal{F}$-linear in $\mathbf{X}$ and $\R$-linear in $\mathbf{s}$, where $\mathcal{F} = C^\infty (M)$ is the ring of smooht functions on $M$
-2. **Leibniz rule:** if $f$ is a smooth function on $M$, then
-$$
-  \nabla_\mathbf{X} (f\mathbf{s}) = (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X} \mathbf{s}
-$$
-
-Since $\mathbf{X}f = (\mathrm{d}f)(\mathbf{X})$, the Leibniz rule can be written as
-
-$$
-  \nabla_\mathbf{X} f(f\mathbf{s}) = (\mathrm{d}f)(\mathbf{X})\mathbf{s} + f\nabla_\mathbf{X} \mathbf{s}
-$$
-
-or, suppressing $\mathbf{X}$,
-
-$$
-  \nabla (fs) = \mathrm{d}f\cdot\mathbf{s} + f\nabla\mathbf{s}
-$$
-</MathBox>
-
-<MathBox title='Induced connection on a trivial bundle' boxType='example'>
-Let $E$ be a trivial bundle of rank $r$ over a smooth manifold $M$. There is a bundle isomorphism $\phi:E\to M\times\R^r$, called a *trivialization* for $E$ over $M$. The trivialization $\phi: E \xrightarrow{\sim} M\times\R^r$ induces a connection on $E$ as follows. If $\Set{\mathbf{v}_i}_{i=1}^r$ is a basis for $\R^r$, then $s_i: p\mapsto (\mathbf{p},\mathbf{v}_i)$ for $i=1,\dots,r$ define a global frame fro the product bundle $M\times\R^r$ over $M$, and $\mathbf{e}_i = \phi^{-1} \circ s_i$ define a global frame for $E$ over $M$. Every section $\mathbf{s}\in\Gamma(E)$ can be written uniquely as a linear combination
-
-$$
-  \mathbf{s} = \sum_{i=1}^r h^i \mathbf{e}_i,\; h^i \in\mathcal{F} = C^\infty
-$$
-
-We can define a connection $\nabla$ on $E$ by declaring the sections $\mathbf{e}_i$ to be flat and applying the Leibniz rule and $\R$-linearity to define the connection
-
-$$
-  \nabla_\mathbf{X} \mathbf{s} = \nabla_\mathbf{X} \left(\sum_{i=1}^r h^i \mathbf{e}_i \right) = \sum_{i=1}^r (Xh^i)\mathbf{e}_i
-$$
-
-The connection $\nabla$ on a trivial bundle induced by a trivialization depends on the trivialization, for the flat section for $\nabla$ are presicely the section of $E$ corresponding to the constant sections of $M\times\R^r$ under the trivialization.
-</MathBox>
-
-## Existence of a connection on a vector bundle
-
-Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{s}\in\Gamma(E)$ and function $f\in C^\infty (M)$
-
-$$
-\begin{align*}
-  \nabla_\mathbf{X}^0 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^0 \mathbf{s} \\
-  \nabla_\mathbf{X}^1 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^1 \mathbf{s} 
-\end{align*}
-$$
-
-Thus
-
-$$
-  (\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)(f\mathbf{s}) = 2(\mathbf{X}f)\mathbf{s} + f(\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)\mathbf{s}
-$$
-
-Because of the extra factor of $2$ the sum of two connections does not satisfy the Leibniz rule and so is not a connection. However, if we multiply by $\nabla_\mathbf{X}^0 (f\mathbf{s})$ by $1-t$ and $\nabla_\mathbf{X}^1 (f\mathbf{s})$ by $t$, then $(1-t)\nabla_\mathbf{X}^0 + t\nabla_\mathbf{X}^1$ satisfies the Leibniz rule.
-
-<MathBox title='' boxType='proposition'>
-Any finite linear combination $\sum t_i \nabla^i$ of connections $\nabla^i$ is a connection provided that the coefficients add up to $1$, i.e. $\sum_i t_i = 1$. Such a linear combination is called *convex*.
-</MathBox>
-
-<MathBox title='Existence of connections on vector bundles' boxType='theorem'>
-Every smooth vector bundle $E$ over a manifold $M$ has a connection.
-
-<details>
-<summary>Proof</summary>
-
-Fix a trivializing open cover $\Set{U_\alpha}$ for $E$ and a partition of unity $\Set{\rho_\alpha}$ subordinate to $\Set{U_\alpha}$. On each $U_\alpha$, the vector bundle $E|_{U_\alpha}$ is trivial and so has a connection $\lambda^\alpha$. For $X\in\mathcal{X}(M)$ and $\mathbf{s}\in\Gamma(E)$, dented by $\mathbf{s}_\alpha$ the restriction of $\mathbf{s}$ to $U_\alpha$ and define
-
-$$
-  \nabla_\mathbf{X} \mathbf{s} = \sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha
-$$
-
-Although this looks like an infinite sum, it is in fact a finite sum in a neighbourhood of each point $\mathbf{p}\in M$, for by the local finiteness of $\Set{\operatorname{supp}(\rho_\alpha)}$, there is an open neighbourhood $U$ of $\mathbf{p}$ intersecting only finitely many of the sets $\operatorname{supp}(\rho_\alpha)$. This means that on $U$ all except finitely many of the $\rho_\alpha$ are zero and so $\sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha$ is a finite sum on $U$ with $\sum_\alpha \rho_\alpha = 1$.
-
-By checking the open set $U$, it is easy to show that $\nabla_\mathbf{X} \mathbf{s}$ is $\mathcal{F}$-linear in $\mathbf{X}$, is $\R$-linear in $\mathbf{s}$ and satisfies the Leibniz rule. Hence, $\nabla$ is a connection on $E$.
-</details>
-</MathBox>
-
-### Curvature of a connection on a vector bundle
+## Curvature of a connection on a vector bundle
 
 The concept of torsion does not make sense for a connection on an arbitrary vector bundle on a smooth manifold $M$ because of the asymmetry of its two arguments. However, curvature still makes sense and is defined, as for affine connections as an $\R$-trilinear map
 
@@ -1968,28 +2112,6 @@ $$
 $$
 
 Because $\nabla_{\bar{\mathbf{X}}} \bar{\mathbf{s}}$ is a local operator in $\bar{\mathbf{X}}$ and in $\bar{\mathbf{s}}$, this definition is independent of the choice of $\bar{\mathbf{X}}$ and $\bar{\mathbf{s}}$. Furthermore, $\nabla^U$ satisfies all the properties of a connection on $E|_U$.
-
-### Connections at a point
-
-Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on a smooth manifold $M$. Suppose $\nabla$ is a connection on a vector bundle $E$ over $M$. For $\mathbf{X}\in\mathfrak{X}(M)$ and $\mathbf{s}\in\Gamma(E)$, since $\nabla_\mathbf{X} \mathbf{s}$ is $\mathcal{F}$-linear in $\mathbf{X}$, it is a point operator in $\mathbf{X}$ that can be defined pointwise in $\mathbf{X}$: There is a unique maps, also denoted by $\nabla$,
-
-$$
-  \nabla: T_\mathbf{p}M \times\Gamma(E)\to E_\mathbf{p}
-$$
-
-such that
-
-$$
-  \nabla_{\mathbf{X_p}}\mathbf{s} = (\nabla_\mathbf{X} \mathbf{s})_\mathbf{p}
-$$
-
-It is easy to check that $\nabla_{\mathbf{X_p}} \mathbf{s}$ has the following properties:
-1. $\nabla_{\mathbf{X_p}}\mathbf{s}$ is $\R$-linear in $\mathbf{X_p}$ and in $\mathbf{s}$
-2. **Leibniz rule:** if $f$ is a smooth function on $M$, then
-
-$$
-  \nabla_{\mathbf{X_p}} (f\mathbf{s}) = (\mathbf{X_p})\mathbf{s}(\mathbf{p}) + f(\mathbf{p})\nabla_{\mathbf{X_p}} \mathbf{s}
-$$
 
 ## Connection, curvature and torsion forms
 
@@ -2567,7 +2689,7 @@ $$
 </MathBox>
 
 <MathBox title='Second Bianchi identity' boxType='proposition'>
-Let $\nabla$ be a connection on a smooth vector bundle $E. Suppose $\omega$ and $\Omega$ are the connection and curvature matrices of $\nabla$ relative to a frame for $E$ over an open set. Then
+Let $\nabla$ be a connection on a smooth vector bundle $E$. Suppose $\omega$ and $\Omega$ are the connection and curvature matrices of $\nabla$ relative to a frame for $E$ over an open set. Then
 
 $$
   \mathrm{d}\Omega = \Omega\wedge\omega - \omega\wedge\Omega
@@ -3000,7 +3122,7 @@ for any orthonormal basis $\Set{\mathbf{u},\mathbf{v}}$ for the tangent plane $T
 
 ### Poincaré half-plane
 
-<MathBox title='Gaussian curvature of the Poincaré half-plane' boxType='example'>
+<MathBox title='Gaussian curvature of the Poincaré half-plane' boxType='example' tag='example-6'>
 The Poincaré half-plane is the upper half-plane
 
 $$
@@ -3013,10 +3135,10 @@ $$
   g_{xy} = \frac{\mathrm{d}x \otimes \mathrm{d}x + \mathrm{d}y \otimes \mathrm{d}y}{y^2}
 $$
 
-With this metric, and orthonormal frame is
+With this metric, the orthonormal frame is
 
 $$
-  \mathbf{e}_1 = y\frac{\partial}{\partial x} \quad \mathbf{e}_2 = y\frac{\partial}{\partial y}
+  \mathbf{E}_1 = y\frac{\partial}{\partial x} \quad \mathbf{E}_2 = y\frac{\partial}{\partial y}
 $$
 
 The dual frame is
@@ -3034,7 +3156,7 @@ $$
 On the Poincaré half-plane the connection form $\omega_2^1$ is a linear combination of $\mathrm{d}x$ and $\mathrm{d}y$, taking the form
 
 $$
-  \omega_2^1 = a\mathrm{d}x + b\mathrm{d}y
+  \omega_2^1 = a\;\mathrm{d}x + b\;\mathrm{d}y
 $$
 
 We will determine the coefficients $a$ and $b$ from the first structural equation
@@ -3296,60 +3418,8 @@ $$
 </details>
 </MathBox>
 
-### Christoffel symbols
-
-Let $\nabla$ be an affine connection on a smooth manifold $M$ and let $(U,\Set{x^i}_{i=1}^n)$ be a coordinate open set in $M$. Then $\nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x^j}$ is a linear combination of $\left(\frac{\partial}{\partial x^i}\right)$, so there exist numbers $\Gamma_{ij}^k$ at each point such that
-
-$$
-  \nabla_{\boldsymbol{\partial}_i} = \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k}
-$$
-
-where the $n^3$ functions $\Gamma_{ij}^k$ are the *Christoffel symbols* of the connection $\nabla$ on the coordinate open set $(U,x^1,\dots,x^n)$. By the Leibniz rule and $\mathcal{F}$-linearity in the first argument of a connection, the Christoffel symbols completely describe a connection on $U$.
-
-<MathBox title='' boxType='proposition'>
-An affine connection $\nabla$ on a manifold is torsion-free if and only if in every coordinate chart $(U,\Set{x^i}_{i=1}^n)$ the Christoffel symbol $\Gamma_{ij}^k$ is symmetric in $i$ and $j$
-
-$$
-  \Gamma_{ij}^k = \Gamma_{ji}^k
-$$
-
-A torsion-free connection is also called a symmetric connection.
-
-<details>
-<summary>Proof</summary>
-
-Let $(U,\Set{x^i}_{i=1}^n)$ be a coodinate open set. Since partial differentiation is independent of the order of differentiation
-
-$$
-  \left[\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^i} \right] = 0
-$$
-
-By torsion-freeness
-
-$$
-  \nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x_j} - \nabla_{\boldsymbol{\partial}_j} \frac{\partial}{\partial x_i} =  \left[\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^i} \right] = 0
-$$
-
-In terms of Christoffel symbols
-
-$$
-  \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k} - \sum_{k=1}^n \Gamma_{ji}^k \frac{\partial}{\partial x^k} = 0
-$$
-
-Since $\Set{\frac{\partial}{\partial x^i}}_{i=1}^n$ are linearly independent at each point, $\Gamma_{ij}^k = \Gamma_{ji}^k$.
-
-Conversely, suppose $\Gamma_{ij}^k = \Gamma_{ji}^k$ in the coordinate chart $(U,\Set{x^i}_{i=1}^n)$. Then,
-
-$$
-  T\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^i}\right) = \nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x_j} - \nabla_{\boldsymbol{\partial}_j} \frac{\partial}{\partial x_i} = 0
-$$
-
-Since $T$ is a bilinear function on $T_\mathbf{p}M$ for $\mathbf{p}\in M$, this proves that $T(\mathbf{X},\mathbf{Y})_\mathbf{p} := T(\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p} = 0$ for all $\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p}\in T_\mathbf{p}M$. Thus, for all $X,Y\in\mathfrak{X}(M)$, we have $T(\mathbf{X},\mathbf{Y}) = 0$.
-</details>
-</MathBox>
-
-<MathBox title='Christoffel symbols for the Poincaré half-plane' boxType='example'>
-The Poincaré half-plane $\mathbb{H}^2$ is covered by a single coordinate open set $(U,x^1,x^2)$. We showed in a previous example that its connection form $\omega_2^1$ relative to the orthonormal frame $\mathbf{e}_i = x^2 \frac{\partial}{\partial x^i}$ for $i=1,2$ is
+<MathBox title='Christoffel symbols for the Poincaré half-plane' boxType='example' tag='example-8'>
+The Poincaré half-plane $\mathbb{H}^2$ is covered by a single coordinate open set $(U,x^1,x^2)$. We showed in example $\ref{example-6}$ that its connection form $\omega_2^1$ relative to the orthonormal frame $\mathbf{E}_i = x^2 \frac{\partial}{\partial x^i}$ for $i=1,2$ is
 
 $$
   \omega_2^1 = -\frac{1}{x^2}\mathrm{d}x
@@ -3390,6 +3460,11 @@ Thus, the Christoffel symbols $\Gamma_{ij}^k$ for the Poincaré half-plane are
 | $\boldsymbol{21}$ | -$\frac{1}{x^2}$ | $0$ |
 | $\boldsymbol{22}$ | $0$ | -$\frac{1}{x^2}$ |
 </MathBox>
+
+<MathBox title='Christoffel symbols for $\mathbb{S}^2$' boxType='example'>
+
+</MathBox>
+
 
 ## Geodesic curves
 

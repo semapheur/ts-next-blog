@@ -6,7 +6,7 @@ module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}'
+    './lib/components/**/*.{js,ts,jsx,tsx}'
   ],
   darkMode: 'class',
   theme: {
@@ -17,7 +17,7 @@ module.exports = {
       colors: {
         primary: 'rgb(var(--color-primary) / <alpha-value>)',
         secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
-        'text': 'rgb(var(--color-text) / <alpha-value>)',
+        text: 'rgb(var(--color-text) / <alpha-value>)',
         proof: 'rgb(var(--color-proof) / <alpha-value>)',
         axiom: 'rgb(var(--color-axiom) / <alpha-value>)',
         theorem: 'rgb(var(--color-theorem) / <alpha-value>)',
