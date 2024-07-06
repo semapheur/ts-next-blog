@@ -397,7 +397,7 @@ defines a $\binom{p+1}{q}$-tensor field called the *total covariant derivative* 
 <details>
 <summary>Proof</summary>
 
-This follows immediately from the tensor characterization lemma. By proposition $\ref{\proposition-6}$, $\nabla_\mathbf{X} F$ is a tensor field, so it is multilinear over $C^\infty (M)$ in its $p + q$ arguments. Additionally, it is linear over $C^\infty (M)$ in $\mathbf{X}$ by definition of a connection.
+This follows immediately from the tensor characterization lemma. By proposition $\ref{proposition-6}$, $\nabla_\mathbf{X} F$ is a tensor field, so it is multilinear over $C^\infty (M)$ in its $p + q$ arguments. Additionally, it is linear over $C^\infty (M)$ in $\mathbf{X}$ by definition of a connection.
 </details>
 </MathBox>
 
@@ -410,14 +410,14 @@ $$
 The $2$-tensor $\nabla^2 f = \nabla(\nabla f)$ is called the covariant Hessian of $f$.
 
 <MathBox title='' boxType='proposition'>
-Let $M$ be a smooth manifold. Then for any $f\in C^\infty (M)$ and $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$, the Hessian $\nabla^2 f : \mathfrak{X}(M) \times \mathfrak{X}(M) \to C^\infty (M)$ is given by
+Let $M$ be a smooth manifold. Then for any $f\in C^\infty (M)$ and $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$, the covariant Hessian $\nabla^2 f : \mathfrak{X}(M) \times \mathfrak{X}(M) \to C^\infty (M)$ is given by
 
 $$
   \nabla^2 f(\mathbf{X},\mathbf{Y}) = \mathbf{Y}(\mathbf{X}f) - (\nabla_\mathbf{Y} \mathbf{X})f
 $$
 </MathBox>
 
-When we write the components of a total covariant derivative in terms of coordinates, we use a semicolon to separate indices resulting from differentiation from the preceding indices. For example, if $\mathbf{Y} = Y^i \boldsymbol{\partial}_i$ is a vector field, the components of the $\binom{1}{1}$-vector field $\nabla\mathbf{Y}$ are written {$Y^i}_{;j}$, so that
+When we write the components of a total covariant derivative in terms of coordinates, we use a semicolon to separate indices resulting from differentiation from the preceding indices. For example, if $\mathbf{Y} = Y^i \boldsymbol{\partial}_i$ is a vector field, the components of the $\binom{1}{1}$-vector field $\nabla\mathbf{Y}$ are written ${Y^i}_{;j}$, so that
 
 $$
   \nabla \mathbf{Y} = {Y^i}_{;j} \frac{\partial}{\partial x^i} \otimes \mathrm{d}x^j
@@ -435,6 +435,210 @@ Let $\nabla$ be an affine connection on a smooth $n$-manifold $M$. The component
 $$
   F_{i_1 \dots i_p;m}^{j_1 \dots j_q} = \boldsymbol{\partial}_m  F_{i_1 \dots i_p}^{j_1\dots j_q} + \sum_{s=1}^q  F_{i_1 \dots i_p}^{j_1 \dots k \dots j_q} \Gamma_{mk}^{j_s} - \sum_{s=1}^p  F_{i_1 \dots k \dots i_p}^{j_1 \dots j_q} \Gamma_{mi_s}^k
 $$
+</MathBox>
+
+## Covariant derivative along a curve
+
+Let $c:[a,b]\to M$ be a smooth parametrized curve in a smooth $n$-manifold $M$. Recall that a vector field along the curve $c$ in $M$ is a function
+
+$$
+  V:[a,b]\to\bigsqcup_{t\in[a,b]} T_{c(t)} M
+$$
+
+such that $\mathbf{V}(t) \in T_{c(t)}M$. Such a vector field $\mathbf{V}(t)$ is smooth if for any smooth function $f:M\to\R$ on $M$, the composition $\mathbf{V}(t)f$ is smooth as a function of $t$. The vector space of all smooth vector fields along the curve $c$ is denoted $\Gamma(TM|_{c(t)})$.
+
+For a smooth vector field $\mathbf{V}(t) = \sum_{i=1}^n v^i(t) \frac{\partial}{\partial x^i}$ along a smooth curve $c(t)$ in $\R^n$, the derivative $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t} = \sum_{i=1}^n \dot{v}^i (t) \frac{\partial}{\partial x^i}$ satisfies the following properties
+1. $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}$ is $\R$-linear in $\mathbf{V}$
+2. **Leibniz rule:** for any smooth function $f$ on $[a,b]$
+$$
+  \frac{\mathrm{d}(f\mathbf{V})}{\mathrm{d}t} = \frac{\mathrm{d}f}{\mathrm{d}t}\mathbf{V} + f\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}
+$$
+3. if $\mathbf{V}$ is induced from a smooth vector field $\tilde{\mathbf{V}}$ on $\R^n$, in the sense that $\mathbf{V}(t) = \tilde{\mathbf{V}}_{c(t)}$ and $\mathrm{D}$ is the directional derivative in $\R^n$, then
+$$
+  \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t} = \mathrm{D}_{c'(t)}\tilde{\mathbf{V}}
+$$
+
+It turns out that to every connection $\nabla$ on a manifold $M$ one can associate a way of differentiating vector fields along a curve having the same properties as $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}$.
+
+<MathBox title='Covariant derivative of vector fields along curves' boxType='theorem'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$ and $c:[a,b]\to M$ a smooth curve in $M$. Then there is a unique map
+
+$$
+  \frac{\mathrm{D}}{\mathrm{d}t}: \Gamma(TM|_{c(t)})\to\Gamma(TM|_{c(t)})
+$$
+
+such that for $V\in\Gamma(TM|_{c(t)})$
+1. $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is $\R$-linear in $\mathbf{V}$
+2. **Leibniz rule:** for any smooth function $f:[a,b]\to\R$
+$$
+  \frac{\mathrm{D}(f\mathbf{V})}{\mathrm{d}t} = \frac{\mathrm{d}f}{\mathrm{d}t}\mathbf{V} + f\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}
+$$
+3. **Compatibility with the connection:** if $\mathbf{V}$ is induced from a smooth vector field $\tilde{\mathbf{V}}$ on $M$, in the sense that $\mathbf{V}(t) = \tilde{\mathbf{V}}_{c(t)}$, then
+$$
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t) = \nabla_{c'(t)} \tilde{\mathbf{V}} 
+$$
+
+We call $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ the *covariant derivative* (associated to $\nabla$) of the vector field $\mathbf{V}$ along the curve $c$ in $M$.
+
+<details>
+<summary>Proof</summary>
+
+To prove uniqueness, suppose such a covariant derivative $\frac{\mathrm{D}}{\mathrm{d}t}$ exists. On an open set $U$ with a frame $\Set{\mathbf{e}_i}_{i=1}^n$, a vector field $\mathbf{V}(t)$ along $c$ can written as a linear combination
+
+$$
+  \mathbf{V}(t) = \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)}
+$$
+
+Then
+
+$$
+\begin{align*}
+  \frac{\mathrm{D}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{D}}{\mathrm{d}t} (v^i(t)\mathbf{e}_{i,c(t)}) &\text{[by (1)]} \\
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i\frac{\mathrm{D}\mathbf{e}_{i,c(t)}}{\mathrm{d}t} &\text{[by (2)]} \\
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)} &\text{[by (3)]}\tag{\label{equation-4}}
+\end{align*}
+$$
+
+This formula proves the uniqueness of $\frac{\mathrm{D}}{\mathrm{d}t}$ if it exists.
+
+As for existence, we define $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for a curve $c$ in a framed open set $U$ by the formula above. It is easily verified that $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ satisfiess the three properties of the theorem. Hence, $\frac{\mathrm{D}}{\mathrm{d}t}$ exists for curves in $U$. If $\Set{\bar{\mathbf{e}}_i}_{i=1}^n$ is another frame on $U$, then $\mathbf{V}(t)$ is a linear combination $\sum_{i=1}^n \bar{v}^i (t) \bar{\mathbf{e}}_{i,c(t)}$ and the covariant derivative $\frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$ defined by
+
+$$
+  \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t} = \sum_{i=1}^n \frac{\mathrm{d}\bar{v}^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + \bar{v}^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)}
+$$
+
+also satifes the three properties of the theorem. By the uniqueness of the covariant derivative, $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$. This proves that the covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is independent of the frame. By covering $M$ with framed open sets, $\eqref{equation-4}$ then defines a covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for the curve $c(t)$ in $M$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $M$ be a Riemannian $n$-manifold, $\nabla$ an affine connection on $M$, and $c:[a,b]\to M$ a smooth curve in $M$. If $\nabla$ is metric compatible, then for any smooth vector fields $\mathbf{V},\mathbf{W}$ along $c$
+
+$$
+  \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle = \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle
+$$
+
+<details>
+<summary>Proof</summary>
+
+It suffices to check this equality locally, so let $U$ be an open set on which an orthonormal frame $\Set{\mathbf{e}_i}_{i=1}^n$ exist. With respect to this frame
+
+$$
+\begin{align*}
+  V =& \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)} \\
+  W =& \sum_{j=1}^n w^i (t)\mathbf{e}_{j,c(t)}
+\end{align*}
+$$
+
+for some $C^\infty$ functions $v^i, w^j$ on $[a,b]$. Then
+
+$$
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle =& \frac{\mathrm{d}}{\mathrm{d}t}\sum_{i,j=1}^n v^i w^j \\
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t}
+\end{align*}
+$$
+
+By the defining properties of a covariant derivative
+
+$$
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \frac{\mathrm{D}\mathbf{e}_{i,c(t)}}{\mathrm{d}t} \\
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)}
+$$
+
+Similarly,
+
+$$
+  \frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} =& \sum_{j=1}^n \frac{\mathrm{d}w^j}{\mathrm{d}t}\mathbf{e}_{j,c(t)} + \sum_{j=1}^n \nabla_{c'(t)}\mathbf{e}_{j,c(t)}
+$$
+
+Thus
+
+$$
+\begin{align*}
+  \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i,j=1}^n v^i w^j \langle \nabla_{c'(t)}\mathbf{e}_{i,c(t)}, \mathbf{e}_{j,c(t)}\rangle \\
+  &+ \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t} + \sum_{i,j=1}^n v^i w^j \langle \mathbf{e}_{i,c(t)},\nabla_{c'(t)}\mathbf{e}_{j,c(t)}\rangle 
+\end{align*}
+$$
+
+Since $\Set{\mathbf{e}_i}_{i=1}^n$ are orthonormal vector fields on $U$ and $\nabla$ is metric compatible
+
+$$
+  \langle \nabla_{c'(t)}\mathbf{e}_{i,c(t)}, \mathbf{e}_{j,c(t)}\rangle + \langle \mathbf{e}_{i,c(t)},\nabla_{c'(t)}\mathbf{e}_{j,c(t)}\rangle = c'(t)\langle\mathbf{e}_i,\mathbf{e}_j \rangle = c'(t)\delta_{ij} = 0
+$$
+
+Hence
+
+$$
+\begin{align*}
+  \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t}\mathbf{e}_{j,c(t)} \\
+  =& \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='example'>
+If $\nabla$ is the directional derivative on $\R^n$ and $\mathbf{V}(t) = \sum_{i=1} v^i (t) \frac{\partial}{\partial x^i}$ is a vector field along a smooth curve $c(t)$ in $\R^n$, then the covariant derivative is
+
+$$
+\begin{align*}
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\frac{\partial}{\partial x^i} + \sum_{i=1}^n v^i \mathrm{D}_{c'(t)} \frac{\partial}{\partial x^i} \\
+  =& \sum_{i=1} \frac{\mathrm{d}v^i}{\mathrm{d}t}\frac{\partial}{\partial x^i} = \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}
+\end{align*}
+$$
+
+Since $\mathrm{D}_{c'(t)}\frac{\partial}{\partial x^i} = 0$.
+</MathBox>
+
+### Connection-preserving diffeomorphisms
+
+Although it is in general not possible to push forward a vector field except under a diffeomorphism, it is always possible to push forward a vector field along a curve under any smooth map. Let $f:M\to\tilde{M}$ be a smooth map (not necessarily a diffeomorphism) of manifolds, and $c:[a,b]\to M$ be a smooth curve in $M$. The *pushforward* of the vector fields $\mathbf{V}(t)$ along $c$ in $M$ is the vector field $(f_* \mathbf{V})(t)$ along the image curve $f\circ c$ in $\tilde{M}$ defined by
+
+$$
+  (F_* \mathbf{V})(t) = F_{*,c(t)}(\mathbf{V}(t))
+$$
+
+Denote by $(M,\nabla)$ a smooth manifold with an affine connection $\nabla$. A smooth diffeomorphism $F:(M,\nabla)\to(\tilde{M},\tilde{\nabla})$ *preserves the connection* if for all $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$,
+
+$$
+  F_* (\nabla_\mathbf{X} \mathbf{Y}) = \tilde{\nabla}_{F_* \mathbf{X}} F_* \mathbf{Y}
+$$
+
+In this terminology, an isometry of Riemannian manifolds preserves the Riemannian connection.
+
+<MathBox title='' boxType='proposition'>
+Suppose $F:(M,\nabla)\to(\tilde{M},\tilde{\nabla})$ is a connection-preserving diffeomorphism, $c(t)$ a smooth curve in $M$, and $\frac{\mathrm{D}}{\mathrm{d}t}$, $\frac{\tilde{\mathrm{D}}}{\mathrm{d}t}$ the covariant derivatives along $c$ in $M$ and $f\circ c$ in $\tilde{M}$, respectively. If $\mathbf{V}(t)$ is a vector field along $c$ in $M$, then
+
+$$
+  F_* \left(\frac{\mathrm{D}\mathbf{V}}{\mathrm{D}t}\right) = \frac{\tilde{\mathrm{D}}(F_* \mathbf{V})}{\mathrm{d}t}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Choose a neighbourhood $U$ of $c(t)$ on which there is a frame $\Set{\mathbf{e}_i}_{i=1}^n$ and write $\mathbf{V}(t) = \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)}$. Then $\tilde{\mathbf{e}}_i := F_* \mathbf{e}_i$ for $i=1,\dots,n$ is a frame on the neighbourhood $F(U)$ of $F(c(t))$ in $\tilde{M}$ and
+
+$$
+  (F_* \mathbf{V})(t) = \sum_{i=1}^n v^i (t)\tilde{\mathbf{e}}_{i,(F\circ c)(t)}
+$$
+
+By definition of the covariant derivative
+
+$$
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t) = \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}(t)\mathbf{e}_{i,c(t)} + v^i (t)\nabla_{c'(t)}\mathbf{e}_i
+$$
+
+Because $F$ preserves the connection
+
+$$
+\begin{align*}
+  \left( F_* \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} \right)(t) =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t} F_{*,c(t)}(\mathbf{e}_{i,c(t)}) + v^i(t) \tilde{\nabla}_{F_* c'(t)} F_* \mathbf{e}_i \\
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\tilde{\mathbf{e}}_{i,(F\circ c)(t)} + v^i (t) \tilde{\nabla}_{(F\circ c)'(t)} \tilde{\mathbf{e}}_i \\
+  =& \left(\frac{\tilde{D}}{\mathrm{d}t} F_* \mathbf{V} \right)(t)
+\end{align*}
+$$
+</details>
 </MathBox>
 
 ## Connections on a vector bundle
@@ -3336,210 +3540,6 @@ As such, the Poincaré half-plane is also known as the *hyperbolic plane*.
 # Geodesics
 
 ## Affine connections by covariant derivatives
-
-### Covariant derivative along a curve
-
-Let $c:[a,b]\to M$ be a smooth parametrized curve in a smooth $n$-manifold $M$. Recall that a vector field along the curve $c$ in $M$ is a function
-
-$$
-  V:[a,b]\to\bigsqcup_{t\in[a,b]} T_{c(t)} M
-$$
-
-such that $\mathbf{V}(t) \in T_{c(t)}M$. Such a vector field $\mathbf{V}(t)$ is smooth if for any smooth function $f:M\to\R$ on $M$, the composition $\mathbf{V}(t)f$ is smooth as a function of $t$. The vector space of all smooth vector fields along the curve $c$ is denoted $\Gamma(TM|_{c(t)})$.
-
-For a smooth vector field $\mathbf{V}(t) = \sum_{i=1}^n v^i(t) \frac{\partial}{\partial x^i}$ along a smooth curve $c(t)$ in $\R^n$, the derivative $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t} = \sum_{i=1}^n \dot{v}^i (t) \frac{\partial}{\partial x^i}$ satisfies the following properties
-1. $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}$ is $\R$-linear in $\mathbf{V}$
-2. **Leibniz rule:** for any smooth function $f$ on $[a,b]$
-$$
-  \frac{\mathrm{d}(f\mathbf{V})}{\mathrm{d}t} = \frac{\mathrm{d}f}{\mathrm{d}t}\mathbf{V} + f\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}
-$$
-3. if $\mathbf{V}$ is induced from a smooth vector field $\tilde{\mathbf{V}}$ on $\R^n$, in the sense that $\mathbf{V}(t) = \tilde{\mathbf{V}}_{c(t)}$ and $\mathrm{D}$ is the directional derivative in $\R^n$, then
-$$
-  \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t} = \mathrm{D}_{c'(t)}\tilde{\mathbf{V}}
-$$
-
-It turns out that to every connection $\nabla$ on a manifold $M$ one can associate a way of differentiating vector fields along a curve having the same properties as $\frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}$.
-
-<MathBox title='Covariant derivative of vector fields along curves' boxType='theorem'>
-Let $M$ be a smooth manifold with an affine connection $\nabla$ and $c:[a,b]\to M$ a smooth curve in $M$. Then there is a unique map
-
-$$
-  \frac{\mathrm{D}}{\mathrm{d}t}: \Gamma(TM|_{c(t)})\to\Gamma(TM|_{c(t)})
-$$
-
-such that for $V\in\Gamma(TM|_{c(t)})$
-1. $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is $\R$-linear in $\mathbf{V}$
-2. **Leibniz rule:** for any smooth function $f:[a,b]\to\R$
-$$
-  \frac{\mathrm{D}(f\mathbf{V})}{\mathrm{d}t} = \frac{\mathrm{d}f}{\mathrm{d}t}\mathbf{V} + f\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}
-$$
-3. **Compatibility with the connection:** if $\mathbf{V}$ is induced from a smooth vector field $\tilde{\mathbf{V}}$ on $M$, in the sense that $\mathbf{V}(t) = \tilde{\mathbf{V}}_{c(t)}$, then
-$$
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t) = \nabla_{c'(t)} \tilde{\mathbf{V}} 
-$$
-
-We call $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ the *covariant derivative* (associated to $\nabla$) of the vector field $\mathbf{V}$ along the curve $c$ in $M$.
-
-<details>
-<summary>Proof</summary>
-
-To prove uniqueness, suppose such a covariant derivative $\frac{\mathrm{D}}{\mathrm{d}t}$ exists. On an open set $U$ with a frame $\Set{\mathbf{e}_i}_{i=1}^n$, a vector field $\mathbf{V}(t)$ along $c$ can written as a linear combination
-
-$$
-  \mathbf{V}(t) = \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)}
-$$
-
-Then
-
-$$
-\begin{align*}
-  \frac{\mathrm{D}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{D}}{\mathrm{d}t} (v^i(t)\mathbf{e}_{i,c(t)}) &\text{[by (1)]} \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i\frac{\mathrm{D}\mathbf{e}_{i,c(t)}}{\mathrm{d}t} &\text{[by (2)]} \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)} &\text{[by (3)]}\tag{\label{equation-4}}
-\end{align*}
-$$
-
-This formula proves the uniqueness of $\frac{\mathrm{D}}{\mathrm{d}t}$ if it exists.
-
-As for existence, we define $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for a curve $c$ in a framed open set $U$ by the formula above. It is easily verified that $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ satisfiess the three properties of the theorem. Hence, $\frac{\mathrm{D}}{\mathrm{d}t}$ exists for curves in $U$. If $\Set{\bar{\mathbf{e}}_i}_{i=1}^n$ is another frame on $U$, then $\mathbf{V}(t)$ is a linear combination $\sum_{i=1}^n \bar{v}^i (t) \bar{\mathbf{e}}_{i,c(t)}$ and the covariant derivative $\frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$ defined by
-
-$$
-  \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t} = \sum_{i=1}^n \frac{\mathrm{d}\bar{v}^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + \bar{v}^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)}
-$$
-
-also satifes the three properties of the theorem. By the uniqueness of the covariant derivative, $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$. This proves that the covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is independent of the frame. By covering $M$ with framed open sets, $\eqref{equation-4}$ then defines a covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for the curve $c(t)$ in $M$.
-</details>
-</MathBox>
-
-<MathBox title='' boxType='theorem'>
-Let $M$ be a Riemannian $n$-manifold, $\nabla$ an affine connection on $M$, and $c:[a,b]\to M$ a smooth curve in $M$. If $\nabla$ is metric compatible, then for any smooth vector fields $\mathbf{V},\mathbf{W}$ along $c$
-
-$$
-  \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle = \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle
-$$
-
-<details>
-<summary>Proof</summary>
-
-It suffices to check this equality locally, so let $U$ be an open set on which an orthonormal frame $\Set{\mathbf{e}_i}_{i=1}^n$ exist. With respect to this frame
-
-$$
-\begin{align*}
-  V =& \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)} \\
-  W =& \sum_{j=1}^n w^i (t)\mathbf{e}_{j,c(t)}
-\end{align*}
-$$
-
-for some $C^\infty$ functions $v^i, w^j$ on $[a,b]$. Then
-
-$$
-\begin{align*}
-  \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle =& \frac{\mathrm{d}}{\mathrm{d}t}\sum_{i,j=1}^n v^i w^j \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t}
-\end{align*}
-$$
-
-By the defining properties of a covariant derivative
-
-$$
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \frac{\mathrm{D}\mathbf{e}_{i,c(t)}}{\mathrm{d}t} \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)}
-$$
-
-Similarly,
-
-$$
-  \frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} =& \sum_{j=1}^n \frac{\mathrm{d}w^j}{\mathrm{d}t}\mathbf{e}_{j,c(t)} + \sum_{j=1}^n \nabla_{c'(t)}\mathbf{e}_{j,c(t)}
-$$
-
-Thus
-
-$$
-\begin{align*}
-  \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i,j=1}^n v^i w^j \langle \nabla_{c'(t)}\mathbf{e}_{i,c(t)}, \mathbf{e}_{j,c(t)}\rangle \\
-  &+ \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t} + \sum_{i,j=1}^n v^i w^j \langle \mathbf{e}_{i,c(t)},\nabla_{c'(t)}\mathbf{e}_{j,c(t)}\rangle 
-\end{align*}
-$$
-
-Since $\Set{\mathbf{e}_i}_{i=1}^n$ are orthonormal vector fields on $U$ and $\nabla$ is metric compatible
-
-$$
-  \langle \nabla_{c'(t)}\mathbf{e}_{i,c(t)}, \mathbf{e}_{j,c(t)}\rangle + \langle \mathbf{e}_{i,c(t)},\nabla_{c'(t)}\mathbf{e}_{j,c(t)}\rangle = c'(t)\langle\mathbf{e}_i,\mathbf{e}_j \rangle = c'(t)\delta_{ij} = 0
-$$
-
-Hence
-
-$$
-\begin{align*}
-  \left\langle \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t},\mathbf{W} \right\rangle + \left\langle V,\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t} \right\rangle =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}w^i + \sum_{i=1}^n v^i \frac{\mathrm{d}w^i}{\mathrm{d}t}\mathbf{e}_{j,c(t)} \\
-  =& \frac{\mathrm{d}}{\mathrm{d}t}\langle V,\mathbf{W}\rangle
-\end{align*}
-$$
-</details>
-</MathBox>
-
-<MathBox title='' boxType='example'>
-If $\nabla$ is the directional derivative on $\R^n$ and $\mathbf{V}(t) = \sum_{i=1} v^i (t) \frac{\partial}{\partial x^i}$ is a vector field along a smooth curve $c(t)$ in $\R^n$, then the covariant derivative is
-
-$$
-\begin{align*}
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\frac{\partial}{\partial x^i} + \sum_{i=1}^n v^i \mathrm{D}_{c'(t)} \frac{\partial}{\partial x^i} \\
-  =& \sum_{i=1} \frac{\mathrm{d}v^i}{\mathrm{d}t}\frac{\partial}{\partial x^i} = \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}
-\end{align*}
-$$
-
-Since $\mathrm{D}_{c'(t)}\frac{\partial}{\partial x^i} = 0$.
-</MathBox>
-
-### Connection-preserving diffeomorphisms
-
-Although it is in general not possible to push forward a vector field except under a diffeomorphism, it is always possible to push forward a vector field along a curve under any smooth map. Let $f:M\to\tilde{M}$ be a smooth map (not necessarily a diffeomorphism) of manifolds, and $c:[a,b]\to M$ be a smooth curve in $M$. The *pushforward* of the vector fields $\mathbf{V}(t)$ along $c$ in $M$ is the vector field $(f_* \mathbf{V})(t)$ along the image curve $f\circ c$ in $\tilde{M}$ defined by
-
-$$
-  (F_* \mathbf{V})(t) = F_{*,c(t)}(\mathbf{V}(t))
-$$
-
-Denote by $(M,\nabla)$ a smooth manifold with an affine connection $\nabla$. A smooth diffeomorphism $F:(M,\nabla)\to(\tilde{M},\tilde{\nabla})$ *preserves the connection* if for all $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$,
-
-$$
-  F_* (\nabla_\mathbf{X} \mathbf{Y}) = \tilde{\nabla}_{F_* \mathbf{X}} F_* \mathbf{Y}
-$$
-
-In this terminology, an isometry of Riemannian manifolds preserves the Riemannian connection.
-
-<MathBox title='' boxType='proposition'>
-Suppose $F:(M,\nabla)\to(\tilde{M},\tilde{\nabla})$ is a connection-preserving diffeomorphism, $c(t)$ a smooth curve in $M$, and $\frac{\mathrm{D}}{\mathrm{d}t}$, $\frac{\tilde{\mathrm{D}}}{\mathrm{d}t}$ the covariant derivatives along $c$ in $M$ and $f\circ c$ in $\tilde{M}$, respectively. If $\mathbf{V}(t)$ is a vector field along $c$ in $M$, then
-
-$$
-  F_* \left(\frac{\mathrm{D}\mathbf{V}}{\mathrm{D}t}\right) = \frac{\tilde{\mathrm{D}}(F_* \mathbf{V})}{\mathrm{d}t}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Choose a neighbourhood $U$ of $c(t)$ on which there is a frame $\Set{\mathbf{e}_i}_{i=1}^n$ and write $\mathbf{V}(t) = \sum_{i=1}^n v^i (t)\mathbf{e}_{i,c(t)}$. Then $\tilde{\mathbf{e}}_i := F_* \mathbf{e}_i$ for $i=1,\dots,n$ is a frame on the neighbourhood $F(U)$ of $F(c(t))$ in $\tilde{M}$ and
-
-$$
-  (F_* \mathbf{V})(t) = \sum_{i=1}^n v^i (t)\tilde{\mathbf{e}}_{i,(F\circ c)(t)}
-$$
-
-By definition of the covariant derivative
-
-$$
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t) = \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}(t)\mathbf{e}_{i,c(t)} + v^i (t)\nabla_{c'(t)}\mathbf{e}_i
-$$
-
-Because $F$ preserves the connection
-
-$$
-\begin{align*}
-  \left( F_* \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} \right)(t) =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t} F_{*,c(t)}(\mathbf{e}_{i,c(t)}) + v^i(t) \tilde{\nabla}_{F_* c'(t)} F_* \mathbf{e}_i \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\tilde{\mathbf{e}}_{i,(F\circ c)(t)} + v^i (t) \tilde{\nabla}_{(F\circ c)'(t)} \tilde{\mathbf{e}}_i \\
-  =& \left(\frac{\tilde{D}}{\mathrm{d}t} F_* \mathbf{V} \right)(t)
-\end{align*}
-$$
-</details>
-</MathBox>
 
 <MathBox title='Christoffel symbols for the Poincaré half-plane' boxType='example' tag='example-8'>
 The Poincaré half-plane $\mathbb{H}^2$ is covered by a single coordinate open set $(U,x^1,x^2)$. We showed in example $\ref{example-6}$ that its connection form $\omega_2^1$ relative to the orthonormal frame $\mathbf{E}_i = x^2 \frac{\partial}{\partial x^i}$ for $i=1,2$ is
