@@ -119,7 +119,7 @@ The directional derivative $\mathrm{D}_\mathbf{X}$ of a vector field $\mathbf{Y}
 Let $M$ be a smooth $n$-manifold and $\Set{\mathbf{E}_i}_{i=1}^n$ a local frame for $TM$ on an open subset $U\subset M$. In terms of this frame, an affine connection $\nabla$ on $M$ can be expanded as
 
 $$
-  \nabla_{E_i} \mathbf{E_j} = \Gamma_{ij}^k \mathbf{E}_k,\, \forall i, j=1,\dots,n
+  \nabla_{E_i} \mathbf{E_j} = \Gamma_{ij}^k \mathbf{E}_k,\, \forall i, j=1,\dots,n \tag{\label{equation-5}}
 $$
 
 The $n^3$ functions $\Gamma_{ij}^k$ on $U$ are called the *Christoffel symbols* of $\nabla$ with respect to this frame.
@@ -129,7 +129,7 @@ The $n^3$ functions $\Gamma_{ij}^k$ on $U$ are called the *Christoffel symbols* 
 Let $M$ be a smooth $n$-manifold, $\nabla$ an affine connection on $M$ and $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$. If $\mathbf{X} = \sum_i^n X^i \mathbf{E}_i$ and $\mathbf{Y} = \sum_{j=1}^n Y^j \mathbf{E}_j$ for a local frame $\Set{\mathbf{E}_i}_{i=1}^n$ on $TM$, then
 
 $$
-  \nabla_\mathbf{X} \mathbf{Y} = (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k
+  \nabla_\mathbf{X} \mathbf{Y} = (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k \tag{\label{equation-1}}
 $$
 
 <details>
@@ -199,43 +199,141 @@ Since $T$ is a bilinear function on $T_\mathbf{p}M$ for $\mathbf{p}\in M$, this 
 
 ## Existence of a connection on a vector bundle
 
-Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{s}\in\Gamma(E)$ and function $f\in C^\infty (M)$
+<MathBox title='' boxType='lemma'>
+Suppose $M$ is a smooth $n$-manifold covered by a single coordinate chart $(U, (x^i)_{i=1}^n)$. There is an injective correspondence between linear connections on $M$ and choices of $n^3$ Christoffel symbols $\Gamma_{ij}^k$ on by the rule
+
+$$
+  \nabla_\mathbf{X} \mathbf{Y} = (X^i \frac{\partial Y^k}{\partial x^i} + X^i Y^j \Gamma_{ij}^k)\frac{\partial}{\partial x^k} \tag{\label{equation-2}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that $\eqref{equation-2}$ is equivalent to $\eqref{equation-1}$ when $E_i = \partial/\partial x^i$ is a coordinate frame, so for every connection the Christoffel symbols $\Set{\Gamma_{ij}^k}$ defined by $\eqref{equation-5}$ satisfy $\eqref{equation-2}$. Moreover, given $\Set{\Gamma_{ij}^k}$, it is straightforward to check that $\eqref{equation-2}$ satisfy the affine connection properties.
+</details>
+</MathBox>
+
+Note that a linear combination of affine connections is necessarilty a connection. Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{Y}\in\Gamma(E)$ and function $f\in C^\infty (M)$
 
 $$
 \begin{align*}
-  \nabla_\mathbf{X}^0 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^0 \mathbf{s} \\
-  \nabla_\mathbf{X}^1 (f\mathbf{s}) =& (\mathbf{X}f)\mathbf{s} + f\nabla_\mathbf{X}^1 \mathbf{s} 
+  \nabla_\mathbf{X}^0 (f\mathbf{Y}) =& (\mathbf{X}f)\mathbf{Y} + f\nabla_\mathbf{X}^0 \mathbf{Y} \\
+  \nabla_\mathbf{X}^1 (f\mathbf{Y}) =& (\mathbf{X}f)\mathbf{Y} + f\nabla_\mathbf{X}^1 \mathbf{Y} 
 \end{align*}
 $$
 
 Thus
 
 $$
-  (\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)(f\mathbf{s}) = 2(\mathbf{X}f)\mathbf{s} + f(\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)\mathbf{s}
+  (\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)(f\mathbf{Y}) = 2(\mathbf{X}f)\mathbf{Y} + f(\nabla_\mathbf{X}^0 + \nabla_\mathbf{X}^1)\mathbf{Y}
 $$
 
-Because of the extra factor of $2$ the sum of two connections does not satisfy the Leibniz rule and so is not a connection. However, if we multiply by $\nabla_\mathbf{X}^0 (f\mathbf{s})$ by $1-t$ and $\nabla_\mathbf{X}^1 (f\mathbf{s})$ by $t$, then $(1-t)\nabla_\mathbf{X}^0 + t\nabla_\mathbf{X}^1$ satisfies the Leibniz rule.
+Because of the extra factor of $2$ the sum of two connections does not satisfy the Leibniz rule and so is not a connection. However, if we multiply by $\nabla_\mathbf{X}^0 (f\mathbf{Y})$ by $1-t$ and $\nabla_\mathbf{X}^1 (f\mathbf{Y})$ by $t$, then $(1-t)\nabla_\mathbf{X}^0 + t\nabla_\mathbf{X}^1$ satisfies the Leibniz rule.
 
 <MathBox title='' boxType='proposition'>
 Any finite linear combination $\sum t_i \nabla^i$ of connections $\nabla^i$ is a connection provided that the coefficients add up to $1$, i.e. $\sum_i t_i = 1$. Such a linear combination is called *convex*.
 </MathBox>
 
 <MathBox title='Existence of connections on vector bundles' boxType='theorem'>
-Every smooth vector bundle $E$ over a manifold $M$ has a connection.
+Every smooth vector bundle $E$ over a smooth manifold $M$ has an affine connection.
 
 <details>
 <summary>Proof</summary>
 
-Fix a trivializing open cover $\Set{U_\alpha}$ for $E$ and a partition of unity $\Set{\rho_\alpha}$ subordinate to $\Set{U_\alpha}$. On each $U_\alpha$, the vector bundle $E|_{U_\alpha}$ is trivial and so has a connection $\lambda^\alpha$. For $X\in\mathcal{X}(M)$ and $\mathbf{s}\in\Gamma(E)$, dented by $\mathbf{s}_\alpha$ the restriction of $\mathbf{s}$ to $U_\alpha$ and define
+Fix a trivializing open cover $\Set{U_\alpha}$ for $E$ and a partition of unity $\Set{\rho_\alpha}$ subordinate to $\Set{U_\alpha}$. On each $U_\alpha$, the vector bundle $E|_{U_\alpha}$ is trivial and so has a connection $\nabla^\alpha$. For $\mathbf{X}\in\mathfrak{X}(M)$ and $\mathbf{Y}\in\Gamma(E)$, define
 
 $$
-  \nabla_\mathbf{X} \mathbf{s} = \sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha
+  \nabla_\mathbf{X} \mathbf{Y} = \sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{Y}|_{U_\alpha}
 $$
 
 Although this looks like an infinite sum, it is in fact a finite sum in a neighbourhood of each point $\mathbf{p}\in M$, for by the local finiteness of $\Set{\operatorname{supp}(\rho_\alpha)}$, there is an open neighbourhood $U$ of $\mathbf{p}$ intersecting only finitely many of the sets $\operatorname{supp}(\rho_\alpha)$. This means that on $U$ all except finitely many of the $\rho_\alpha$ are zero and so $\sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{s}_\alpha$ is a finite sum on $U$ with $\sum_\alpha \rho_\alpha = 1$.
 
-By checking the open set $U$, it is easy to show that $\nabla_\mathbf{X} \mathbf{s}$ is $\mathcal{F}$-linear in $\mathbf{X}$, is $\R$-linear in $\mathbf{s}$ and satisfies the Leibniz rule. Hence, $\nabla$ is a connection on $E$.
+By checking the open set $U$, it is easy to show that $\nabla_\mathbf{X} \mathbf{s}$ is linear over $C^\infty (M)$ in $\mathbf{X}$, and linear over $\R$ in $\mathbf{Y}$. For $f\in C^\infty (M)$ we have
+
+$$
+\begin{align*}
+  \nabla_\mathbf{X} (f\mathbf{Y}) =& \sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha (f\mathbf{Y}) \\
+  =& \sum_\alpha \rho_\alpha ((\mathbf{X}f)\mathbf{Y} + f\nabla_\mathbf{X}^\alpha \mathbf{Y}) \\
+  =& (\mathbf{X}f)\mathbf{Y} + f\sum_\alpha \rho_\alpha \nabla_\mathbf{X}^\alpha \mathbf{Y} \\
+  =& (\mathbf{X}f)\mathbf{Y} + f\nabla_\mathbf{X} \mathbf{Y}
+\end{align*}
+$$
 </details>
+</MathBox>
+
+## Covariant derivative of tensor fields
+
+A connection $\nabla$ on the tangent bundle $TM$ of a smooth manifold $M$ induces a covariant derivative on all tensor fields.
+
+<MathBox title='' boxType='proposition'>
+Let $\nabla$ be a connection and $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$ be smooth vector fields on a smooth manifold $M$.
+1. If $\omega$ is a smooth $1$-form on $M$, then $\nabla_\mathbf{X}\omega$ defined by
+$$
+  (\nabla_\mathbf{x}\omega)(\mathbf{Y}) := \mathbf{X}(\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X}\mathbf{Y})
+$$
+is a smooth $1$-form on $M$.
+2. If $T$ is a smooth $(a,b)$-tensor field on $M$, then $\nabla_\mathbf{X} T$ defined by
+$$
+\begin{align*}
+  (\nabla_\mathbf{X}T)(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) :=& \mathbf{X}(T(\omega_1,\dots,\omega_a,\mathbf{Y}_1),\dots,\mathbf{Y}_b) \\
+  &- \sum_{i=1}^a T(\omega_1,\dots,\nabla_\mathbf{X} \omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
+  &- \sum_{j=1}^b T(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\nabla_\mathbf{X} \mathbf{Y}_j,\dots,\mathbf{Y}_b)
+\end{align*}
+$$
+for $\omega_i\in\Omega^1 (M)$, $\mathbf{Y}_j\in\mathfrak{X}(M)$, is a smooth $(a,b)$-tensor field on $M$.
+
+<details>
+<summary>Proof</summary>
+
+By the tensor criterion, it suffices to check that $\nabla_\mathbf{X} \omega$ and $\nabla_\mathbf{X} T$ are $\mathcal{F}$-linear in its arguments, where $\mathcal{F} := C^\infty (M)$ is the ring of smooth function on $M$. Let $f\in\mathcal{F}$.
+
+**(1):** By definition and the Leibniz rule in $\mathbf{Y}$ of a connection
+
+$$
+\begin{align*}
+  (\nabla_\mathbf{X} \omega)(f\mathbf{Y}) =& \mathbf{X}(f\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X} f\mathbf{Y}) \\
+  =& (\mathbf{X}f)\omega(\mathbf{Y}) + f\mathbf{X}(\omega(\mathbf{Y})) - \omega((\mathbf{X}f)\mathbf{Y}) - f\omega(\nabla_\mathbf{X}\mathbf{Y}) \\
+  =& f(\nabla_\mathbf{X} \omega)(\mathbf{Y})
+\end{align*}
+$$
+
+**(2):** Replace $\omega_i$ by $f\omega_i$ in the definition of $\nabla_\mathbf{X}$ T. On the right-hand side, we have
+
+$$
+\begin{align*}
+  \mathbf{X}(T(\omega_1,\dots,f\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b)) =& (\mathbf{X}f)T(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
+  &+ f\mathbf{X}(T(\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b))
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  &T(\omega_1,\dots,\nabla_\mathbf{X} f\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
+  =& T(\omega_1,\dots,(\mathbf{X}f)\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
+  &+ fT(\omega_1,\dots,\nabla_\mathbf{X} \omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b)
+\end{align*}
+$$
+
+The first terms of these two expressions cancel out. All the other terms on the right of the expressions are $\mathcal{F}$-linear in the $i$th argument.
+
+Similary, the right-hand side of the definition of $\nabla_\mathbf{X} T$ is $\mathcal{F}$-linear in the argument $\mathbf{Y}_j$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $M$ be a smooth manifold and let
+
+$$
+  T^{a,b}(M) = \left(\bigotimes_{i=1}^a TM \right)\otimes\left(\bigotimes_{j=1}^b T^* M \right)
+$$
+
+be the bundle of $(a,b)$-tensors on $M$. Suppose $\nabla$ is a connection on a smooth manifold and $\mathbf{X}\in\mathfrak{X}(M)$. The covariant derivative $\nabla_\mathbf{X}: \Gamma(\bigoplus_{a,b=0}^\infty T^{a,b} (M)) \to \Gamma(\bigoplus_{a,b=0}^\infty T^{a,b} (M))$, satisfies the product rule for any two tensor fields $T_1, T_2$
+
+$$
+  \nabla_\mathbf{X} (T_1 \otimes T_2) = (\nabla_\mathbf{X} T_1) \otimes T_2 + T_1 \otimes \nabla_\mathbf{X} T_2
+$$
 </MathBox>
 
 ## Connections on a vector bundle
@@ -2583,81 +2681,6 @@ $$
 
 We showed that $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in every argument. It is immediate from the definition that the curvature tensor $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$.
 
-### Covariant derivative of tensor fields
-
-A connection $\nabla$ on the tangent bundle $TM$ of a smooth manifold $M$ induces a covariant derivative on all tensor fields.
-
-<MathBox title='' boxType='proposition'>
-Let $\nabla$ be a connection and $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(M)$ be smooth vector fields on a smooth manifold $M$.
-1. If $\omega$ is a smooth $1$-form on $M$, then $\nabla_\mathbf{X}\omega$ defined by
-$$
-  (\nabla_\mathbf{x}\omega)(\mathbf{Y}) := \mathbf{X}(\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X}\mathbf{Y})
-$$
-is a smooth $1$-form on $M$.
-2. If $T$ is a smooth $(a,b)$-tensor field on $M$, then $\nabla_\mathbf{X} T$ defined by
-$$
-\begin{align*}
-  (\nabla_\mathbf{X}T)(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) :=& \mathbf{X}(T(\omega_1,\dots,\omega_a,\mathbf{Y}_1),\dots,\mathbf{Y}_b) \\
-  &- \sum_{i=1}^a T(\omega_1,\dots,\nabla_\mathbf{X} \omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
-  &- \sum_{j=1}^b T(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\nabla_\mathbf{X} \mathbf{Y}_j,\dots,\mathbf{Y}_b)
-\end{align*}
-$$
-for $\omega_i\in\Omega^1 (M)$, $\mathbf{Y}_j\in\mathfrak{X}(M)$, is a smooth $(a,b)$-tensor field on $M$.
-
-<details>
-<summary>Proof</summary>
-
-By the tensor criterion, it suffices to check that $\nabla_\mathbf{X} \omega$ and $\nabla_\mathbf{X} T$ are $\mathcal{F}$-linear in its arguments, where $\mathcal{F} := C^\infty (M)$ is the ring of smooth function on $M$. Let $f\in\mathcal{F}$.
-
-**(1):** By definition and the Leibniz rule in $\mathbf{Y}$ of a connection
-
-$$
-\begin{align*}
-  (\nabla_\mathbf{X} \omega)(f\mathbf{Y}) =& \mathbf{X}(f\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X} f\mathbf{Y}) \\
-  =& (\mathbf{X}f)\omega(\mathbf{Y}) + f\mathbf{X}(\omega(\mathbf{Y})) - \omega((\mathbf{X}f)\mathbf{Y}) - f\omega(\nabla_\mathbf{X}\mathbf{Y}) \\
-  =& f(\nabla_\mathbf{X} \omega)(\mathbf{Y})
-\end{align*}
-$$
-
-**(2):** Replace $\omega_i$ by $f\omega_i$ in the definition of $\nabla_\mathbf{X}$ T. On the right-hand side, we have
-
-$$
-\begin{align*}
-  \mathbf{X}(T(\omega_1,\dots,f\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b)) =& (\mathbf{X}f)T(\omega_1,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
-  &+ f\mathbf{X}(T(\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b))
-\end{align*}
-$$
-
-and
-
-$$
-\begin{align*}
-  &T(\omega_1,\dots,\nabla_\mathbf{X} f\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
-  =& T(\omega_1,\dots,(\mathbf{X}f)\omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b) \\
-  &+ fT(\omega_1,\dots,\nabla_\mathbf{X} \omega_i,\dots,\omega_a,\mathbf{Y}_1,\dots,\mathbf{Y}_b)
-\end{align*}
-$$
-
-The first terms of these two expressions cancel out. All the other terms on the right of the expressions are $\mathcal{F}$-linear in the $i$th argument.
-
-Similary, the right-hand side of the definition of $\nabla_\mathbf{X} T$ is $\mathcal{F}$-linear in the argument $\mathbf{Y}_j$.
-</details>
-</MathBox>
-
-<MathBox title='' boxType='proposition'>
-Let $M$ be a smooth manifold and let
-
-$$
-  T^{a,b}(M) = \left(\bigotimes_{i=1}^a TM \right)\otimes\left(\bigotimes_{j=1}^b T^* M \right)
-$$
-
-be the bundle of $(a,b)$-tensors on $M$. Suppose $\nabla$ is a connection on a smooth manifold and $\mathbf{X}\in\mathfrak{X}(M)$. The covariant derivative $\nabla_\mathbf{X}: \Gamma(\bigoplus_{a,b=0}^\infty T^{a,b} (M)) \to \Gamma(\bigoplus_{a,b=0}^\infty T^{a,b} (M))$, satisfies the product rule for any two tensor fields $T_1, T_2$
-
-$$
-  \nabla_\mathbf{X} (T_1 \otimes T_2) = (\nabla_\mathbf{X} T_1) \otimes T_2 + T_1 \otimes \nabla_\mathbf{X} T_2
-$$
-</MathBox>
-
 ### Bianchi identities
 
 <MathBox title='First Bianchi identity' boxType='proposition'>
@@ -3272,7 +3295,7 @@ $$
 \begin{align*}
   \frac{\mathrm{D}}{\mathrm{d}t} =& \sum_{i=1}^n \frac{\mathrm{D}}{\mathrm{d}t} (v^i(t)\mathbf{e}_{i,c(t)}) &\text{[by (1)]} \\
   =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i\frac{\mathrm{D}\mathbf{e}_{i,c(t)}}{\mathrm{d}t} &\text{[by (2)]} \\
-  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)} &\text{[by (3)]}\tag{\label{equation-1}}
+  =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + v^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)} &\text{[by (3)]}\tag{\label{equation-3}}
 \end{align*}
 $$
 
@@ -3284,7 +3307,7 @@ $$
   \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t} = \sum_{i=1}^n \frac{\mathrm{d}\bar{v}^i}{\mathrm{d}t}\mathbf{e}_{i,c(t)} + \bar{v}^i \nabla_{c'(t)}\mathbf{e}_{i,c(t)}
 $$
 
-also satifes the three properties of the theorem. By the uniqueness of the covariant derivative, $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$. This proves that the covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is independent of the frame. By covering $M$ with framed open sets, $\eqref{equation-1}$ then defines a covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for the curve $c(t)$ in $M$.
+also satifes the three properties of the theorem. By the uniqueness of the covariant derivative, $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \frac{\bar{\mathrm{D}}\mathbf{V}}{\mathrm{d}t}$. This proves that the covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ is independent of the frame. By covering $M$ with framed open sets, $\eqref{equation-3}$ then defines a covariant derivative $\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}$ for the curve $c(t)$ in $M$.
 </details>
 </MathBox>
 
@@ -4216,7 +4239,7 @@ Just as the exponential map for a Riemannian manifold is natural with respect to
 If $f:H\to G$ is a group homomorphism, then for any $\mathbf{h}\in H$
 
 $$
-  f\circ \ell_\mathbf{h} = \ell_{f(\mathbf{h})}\circ f \tag{\label{equation-2}}
+  f\circ \ell_\mathbf{h} = \ell_{f(\mathbf{h})}\circ f \tag{\label{equation-4}}
 $$
 
 <details>
@@ -4250,7 +4273,7 @@ $$
   c'(t) = \tilde{\mathbf{A}}_{c(t)} = (\ell_{c(t)})_* \mathbf{A}
 $$
 
-We will now show that $(f\circ c)(t)$ is an integral curve of $\tilde{f_* \mathbf{A}}$, the left-invariant vector field on $G$ generated by $f_* \mathbf{A}\in\mathcal{g}$. Taking the differential of $\eqref{equation-2}$ we get
+We will now show that $(f\circ c)(t)$ is an integral curve of $\tilde{f_* \mathbf{A}}$, the left-invariant vector field on $G$ generated by $f_* \mathbf{A}\in\mathcal{g}$. Taking the differential of $\eqref{equation-4}$ we get
 
 $$
   f_* \circ\ell_{\mathbf{h}*} = \ell_{f(\mathbf{h})*} \circ f_*
