@@ -128,11 +128,11 @@ The $n^3$ functions $\Gamma_{ij}^k$ on $U$ are called the *Christoffel symbols* 
 </MathBox>
 
 <MathBox title='' boxType='lemma'>
-Let $M$ be a smooth $n$-manifold, $\nabla$ an affine connection on $M$ and $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$. If $\mathbf{X} = \sum_i^n X^i \mathbf{E}_i$ and $\mathbf{Y} = \sum_{j=1}^n Y^j \mathbf{E}_j$ for a local frame $\Set{\mathbf{E}_i}_{i=1}^n$ on $TM$, then
+Let $M$ be a smooth $n$-manifold, $\nabla$ an affine connection on $M$ and $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$. If $\mathbf{X} = \sum_{i=1}^n X^i \mathbf{E}_i$ and $\mathbf{Y} = \sum_{j=1}^n Y^j \mathbf{E}_j$ for a local frame $\Set{\mathbf{E}_i}_{i=1}^n$ on $TM$, then
 
 $$
 \begin{equation}
-  \nabla_\mathbf{X} \mathbf{Y} = (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k \tag{\label{equation-2}}
+  \nabla_\mathbf{X} \mathbf{Y} = \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^k \Gamma_{ij}^k) \mathbf{E}_k \tag{\label{equation-2}}
 \end{equation}
 $$
 
@@ -141,26 +141,85 @@ $$
 
 $$
 \begin{align*}
-  \nabla_\mathbf{X} \mathbf{Y} =& \nabla_\mathbf{X} (n Y^j \mathbf{E}_j) \\
-  =& (\mathbf{X}Y^j)\mathbf{E}_j + Y^j \nabla_{X^i \mathbf{E}_i} \mathbf{E}_j \\
-  =& (\mathbf{X}Y^j)\mathbf{E}_j + X^i Y^j \nabla_{\mathbf{E}_i} \mathbf{E}_j \\
-  =& \mathbf{X}Y^k \mathbf{E}_k + X^i Y^j \Gamma_{ij}^k \mathbf{E}_k \\
-  =& (\mathbf{X}Y^k + \mathbf{X}^i \mathbf{Y}^k \Gamma_{ij}^k) \mathbf{E}_k
+  \nabla_\mathbf{X} \mathbf{Y} =& \nabla_\mathbf{X} \left(\sum_{j=1}^n Y^j \mathbf{E}_j \right) \\
+  =& \sum_{j=1}^n (\mathbf{X}Y^j)\mathbf{E}_j + Y^j \nabla_{X^i \mathbf{E}_i} \mathbf{E}_j \\
+  =& \sum_{i,j=1}^n (\mathbf{X}Y^j)\mathbf{E}_j + X^i Y^j \nabla_{\mathbf{E}_i} \mathbf{E}_j \\
+  =& \sum_{i,j,k=1}^n \mathbf{X}Y^k \mathbf{E}_k + X^i Y^j \Gamma_{ij}^k \mathbf{E}_k \\
+  =& \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \mathbf{E}_k
 \end{align*}
 $$
 </details>
 </MathBox>
 
-Let $\nabla$ be an affine connection on a smooth manifold $M$ and let $(U,\Set{x^i}_{i=1}^n)$ be a coordinate open set in $M$. Then $\nabla_{\boldsymbol{\partial}_i} \frac{\partial}{\partial x^j}$ is a linear combination of $\left(\frac{\partial}{\partial x^i}\right)$, so there exist numbers $\Gamma_{ij}^k$ at each point such that
+Let $\nabla$ be an affine connection on a smooth manifold $M$ and let $(U,(x^i)_{i=1}^n)$ be a coordinate open set in $M$. Then $\nabla_{\boldsymbol{\partial}_i} \partial/\partial x^j $ is a linear combination of $\left(\frac{\partial}{\partial x^i}\right)$, so there exist numbers $\Gamma_{ij}^k$ at each point such that
 
 $$
   \nabla_{\boldsymbol{\partial}_i} = \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k}
 $$
 
-where the $n^3$ functions $\Gamma_{ij}^k$ are the *Christoffel symbols* of the connection $\nabla$ on the coordinate open set $(U,x^1,\dots,x^n)$. By the Leibniz rule and $\mathcal{F}$-linearity in the first argument of a connection, the Christoffel symbols completely describe a connection on $U$.
+where the $n^3$ functions $\Gamma_{ij}^k$ are the *Christoffel symbols* of the connection $\nabla$ on $U$. By the Leibniz rule and linearity over $C^\infty (M)$ in the first argument of a connection, the Christoffel symbols completely describe a connection on $U$.
+
+### Torsion tensor
+
+<MathBox title='Torsion of affine connections' boxType='definition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* of $\nabla$ is bilinear map $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ defined by
+
+$$
+  T(\mathbf{X},\mathbf{Y}) := \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y}\mathbf{X} - [\mathbf{X},\mathbf{Y}]
+$$
+
+where $[\mathbf{X},\mathbf{Y}] = \mathbf{XY} - \mathbf{YX}$ is the Lie bracket.
+
+A connection $\nabla$ is *torsion-free* if its torsion is zero.
+</MathBox>
+
+Since the Lie bracket is skew-symmetric, i.e. $[\mathbf{X},\mathbf{Y}] = -[\mathbf{Y},\mathbf{X}]$, it follows that the torsion is also skew-symmetric:
+
+$$
+\begin{align*}
+  T(\mathbf{Y}, \mathbf{X}) =& \nabla_\mathbf{Y}\mathbf{X} - \nabla_\mathbf{X}\mathbf{Y} - [\mathbf{Y},\mathbf{X}] \\
+  =& -(\nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y}\mathbf{X} - [\mathbf{X},\mathbf{Y}]) = -T(\mathbf{X}, \mathbf{Y})
+\end{align*}
+$$
+
+<MathBox title='Coordinate representation of the torsion tensor' boxType='proposition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ is a $\binom{2}{1}$-tensor field on $M$ given in local coordinates by
+
+$$
+  T = (\Gamma_{ij}^k - \Gamma_{ji}^k) \mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
+$$
+
+A connection $\nabla$ is *torsion-free* if its torsion is zero.
+
+<details>
+<summary>Proof</summary>
+
+Let $\mathbf{X} = \sum_{i=1}^n X^i \boldsymbol{\partial}_i$ and $\mathbf{Y} = \sum_{i=1}^n Y^i \boldsymbol{\partial}_i$ be the coordinate expressions for the smooth vector fields $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$ in terms of some local chart $(U, (x^i)_{i=1}^n)$.
+
+Recall that the coordinate formula for the Lie bracket is
+
+$$
+  [\mathbf{X}, \mathbf{Y}] = \sum_{i=1}^n (\mathbf{X}Y^i - \mathbf{Y}X^i)\frac{\partial}{\partial x^i}
+$$
+
+Then the torsion $T(\mathbf{X}, \mathbf{Y})$ has the following coordinate expression
+
+$$
+\begin{align*}
+  T(\mathbf{X},\mathbf{Y}) =& (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \frac{\partial}{\partial x^k} - (\mathbf{Y}X^k + Y^i X^j \Gamma_{ij}^k) \frac{\partial}{\partial x^k} \\
+  &- (\mathbf{X}Y^k - \mathbf{Y}X^k)\frac{\partial}{\partial x^k} \\
+  =& (X^i Y^j \Gamma_{ij}^k - Y^i X^j \Gamma_{ij}^k)\frac{\partial}{\partial x^k} \\
+  =& X^i Y^j (\Gamma_{ij}^k - \Gamma_{ji}^k)\frac{\partial}{\partial x^k}
+\end{align*}
+$$
+
+This shows that $T$ is a $\binom{2}{1}$-tensor field on $M$.
+
+</details>
+</MathBox>
 
 <MathBox title='' boxType='proposition'>
-An affine connection $\nabla$ on a manifold is torsion-free if and only if in every coordinate chart $(U,\Set{x^i}_{i=1}^n)$ the Christoffel symbol $\Gamma_{ij}^k$ is symmetric in $i$ and $j$
+An affine connection $\nabla$ on a manifold is torsion-free if and only if in every coordinate chart $(U,(x^i)_{i=1}^n)$ the Christoffel symbol $\Gamma_{ij}^k$ is symmetric in $i$ and $j$
 
 $$
   \Gamma_{ij}^k = \Gamma_{ji}^k
@@ -198,6 +257,81 @@ $$
 $$
 
 Since $T$ is a bilinear function on $T_\mathbf{p}M$ for $\mathbf{p}\in M$, this proves that $T(\mathbf{X},\mathbf{Y})_\mathbf{p} := T(\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p} = 0$ for all $\mathbf{X}_\mathbf{p},\mathbf{Y}_\mathbf{p}\in T_\mathbf{p}M$. Thus, for all $X,Y\in\mathfrak{X}(M)$, we have $T(\mathbf{X},\mathbf{Y}) = 0$.
+</details>
+</MathBox>
+
+### Torsion and curvature
+
+<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* of $\nabla$ is bilinear map $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ defined by
+
+$$
+  T(\mathbf{X},\mathbf{Y}) := \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X},\mathbf{Y}]
+$$
+
+A connection $\nabla$ is *torsion-free* if its torsion is zero.
+
+The *curvature* of $\nabla$ is a bilinear map $R:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\operatorname{end}(\mathfrak{X}(M))$ defined by
+
+$$
+\begin{align*}
+  R(\mathbf{X},\mathbf{Y}) =& [\nabla_\mathbf{X}, \nabla_\mathbf{Y}] - \nabla_{[\mathbf{X},\mathbf{Y}]} \\
+  =& \nabla_\mathbf{X} \nabla_\mathbf{Y} - \nabla_\mathbf{Y} \nabla_\mathbf{X} - \nabla_{[\mathbf{X},\mathbf{Y}]}
+\end{align*}
+$$
+</MathBox>
+
+An affine connection $\nabla$ on a smooth manifold $M$ gives rise to a linear map $\mathfrak{X}(M)\to\operatorname{end}_\R (\mathfrak{X}(M))$ by $\mathbf{X}\mapsto\nabla_\mathbf{X}$. Here both vector spaces $\mathfrak{X}(M)$ and $\operatorname{end}_\R (\mathfrak{X}(M))$ are Lie algebras. The curvature measures the deviation of the map $\mathbf{X}\mapsto\nabla_\mathbf{X}$ from being a Lie algebra homomorphism.
+
+<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
+Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on $M$. Suppose $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$ are smooth vector fields on a smooth manifold $M$ with affine connection $\nabla$.
+1. The torsion $T(\mathbf{X},\mathbf{Y})$ is $\mathcal{F}$-linear in $\mathbf{X}$ and $\mathbf{Y}$
+2. The curvature $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in $\mathbf{X}$, $\mathbf{Y}$ and $\mathbf{Z}$
+
+<details>
+<summary>Proof</summary>
+
+**(2):** Recall from the properties of the Lie bracket that if $f,g\in \mathcal{F} = C^\infty (M)$, then
+
+$$
+  [f\mathbf{X}, g\mathbf{Y}] = fg[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}g)\mathbf{Y} - g(\mathbf{Y}f)\mathbf{X}
+$$
+
+By the definition of curvature
+
+$$
+  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_{f\mathbf{X}} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_{f\mathbf{X}} \mathbf{Z} - \nabla_{[f\mathbf{X},\mathbf{Y}]}\mathbf{Z}
+$$
+
+By the $\mathcal{F}$-linearity of $\nabla$ in $\mathbf{X}$, the first term is $f\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z}$, and by the Leibniz rule, the second term is
+
+$$
+  \nabla_\mathbf{Y} (f\nabla_\mathbf{X} \mathbf{Z}) = (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z} + f\nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z}
+$$
+
+The last term is
+
+$$
+\begin{align*}
+  \nabla_{[f\mathbf{X},\mathbf{Y}]} \mathbf{Z} =& \nabla_{f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)x} \mathbf{Z} \\
+  =& f\nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z} - (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}
+\end{align*}
+$$
+
+since $\mathbf{X}(1) = 0$. Combining the three terms gives
+
+$$
+\begin{alignÆ}
+  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]} Z) \\
+  =& fR(\mathbf{X},\mathbf{Y})\mathbf{Z}
+\end{align*}
+$$
+
+Because $R(\mathbf{X},\mathbf{Y})$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$, $\mathcal{F}$-linearity in $\mathbf{Y}$ follows from $\mathcal{F}$-linearity in the first argument
+
+$$
+  R(\mathbf{X},f\mathbf{Y}) = -R(f\mathbf{Y},\mathbf{X}) = -fR(\mathbf{Y},\mathbf{X}) = fR(\mathbf{X},\mathbf{Y})
+$$
 </details>
 </MathBox>
 
@@ -502,7 +636,7 @@ $$
   \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t) = \nabla_{\gamma'(t)} \tilde{\mathbf{V}} 
 $$
 
-For any $\mathbf{V}\in\Gamma(TM|_{\gamma(t)}$, we call $\mathrm{D}_t \mathbf{V}$ the *covariant derivative* (associated to $\nabla$) of the vector field $\mathbf{V}$ along the curve $c$ in $M$.
+For any $\mathbf{V}\in\Gamma(TM|_{\gamma(t)})$, we call $\mathrm{D}_t \mathbf{V}$ the *covariant derivative* (associated to $\nabla$) of the vector field $\mathbf{V}$ along the curve $c$ in $M$.
 
 <details>
 <summary>Proof</summary>
@@ -1035,7 +1169,20 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Existence and uniqueness of geodesics' boxType='theorem' tag='theorem-3'>
+<MathBox title='Picard-Lindelöf theorem (existence and uniqueness of first-order ODEs)' boxType='theorem' tag='theorem-3'>
+Let $I\subset\R$ be an interval, and for $1\leq j$, $k\leq n$ let $a_j^k : I\to\R$ be arbitrary smooth functions. The first order linear initial-value problem
+
+$$
+\begin{align*}
+  \dot{V}^k (t) =& a_j^k(t) V^j(t) \\
+  V^k (t_0) =& b^k
+\end{align*}
+$$
+
+has a unique solution on all of $I$ for any $t_0 \in I$ and any initial vector $\mathbf{b} = (b^i)_{i=1}^n \in \R^n$
+</MathBox>
+
+<MathBox title='Existence and uniqueness of geodesics' boxType='theorem' tag='theorem-4'>
 Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$. For any point $\mathbf{p}\in M$, any tangent vector $\mathbf{v}\in T_\mathbf{p}M$ and any $t_0 \in\R$, there is an open interval $I\subset\R$ containing $t_0$ and a geodesic $\gamma:I\to M$ satisfying
 
 $$
@@ -1062,13 +1209,13 @@ $$
 \end{align*}
 $$
 
-By the existance and uniqueness theorem (Picard-Lindelöf theorem) for first-order ODEs, for any $(\mathbf{p},\mathbf{v})\in U\times\R^n$, there exists $\varepsilon > 0$ and a unique solution $\eta: (t_0 - \varepsilon, t_0 + \varepsilon) \to U\times\R^n$ to this system satisfying the initial condition $\eta(t_0) = (\mathbf{p},\mathbf{v})$. If we write the component functions of $\eta$ at $\eta(t) = (\gamma^i(t), u^i(t))$, then we can easily check that the curve $\hat{hat}(t) = (\gamma^i(t))_{i=1}^n$ in $U$ satisfy the existence claim.
+By theorem $\ref{theorem-3}$, for any $(\mathbf{p},\mathbf{v})\in U\times\R^n$, there exists $\varepsilon > 0$ and a unique solution $\eta: (t_0 - \varepsilon, t_0 + \varepsilon) \to U\times\R^n$ to this system satisfying the initial condition $\eta(t_0) = (\mathbf{p},\mathbf{v})$. If we write the component functions of $\eta$ at $\eta(t) = (\gamma^i(t), u^i(t))$, then we can easily check that the curve $\hat{hat}(t) = (\gamma^i(t))_{i=1}^n$ in $U$ satisfy the existence claim.
 
 To prove uniqueness, suppose $\gamma,\sigma: I\to M$ are geodesics defined on an open interval with $\gamma(t_0) = \sigma(t_0)$ and $\gamma'(t_0) = \sigma'(t_0)$. By the uniqueness part the ODE theorem, they agree on some neighbourhood of $t_0$. Let $\beta$ be the supremum of numbers $b$ such that the agree on $[t_0, nb]$. If $\beta\in I$, then by continuity $\gamma(\beta) = \sigma(\beta)$ and $\gamma'(\beta) = \sigma'(\beta)$, and applying local uniqueneses in a neigbourhood of $\beta$, we conclude that they agree on a slightly larger interval, which is a contradiction. Arguing similarly to the left of $t_0$, we conclude that they agree on all of $I$.
 </details>
 </MathBox>
 
-It follows from the uniqueness statement of theorem $\ref{theorem-3}$ that for any $\mathbf{p}\in M$ and $\mathbf{v}\in T_\mathbf{p}M$, there is a unique maximal geodesic $\gamma:I\to M$ with $\gamma(0) = \mathbf{p}$ and $\dot{\gamma}(0) = \mathbf{v}$, defined on some open interval $I$; just let $I$ be the union of all open intervals on which such a geodesic is defined, and observe that the various geodesics agree where they overlap. This maximal geodesic is denoted $\gamma_\mathbf{v}$. (The initial point $\mathbf{p}$ can be recovered from $\mathbf{v}$ by $\mathbf{p} = \pi(\mathbf{v})$, where $\pi:TM\to M$ is the natural projection.)
+It follows from the uniqueness statement of theorem $\ref{theorem-4}$ that for any $\mathbf{p}\in M$ and $\mathbf{v}\in T_\mathbf{p}M$, there is a unique maximal geodesic $\gamma:I\to M$ with $\gamma(0) = \mathbf{p}$ and $\dot{\gamma}(0) = \mathbf{v}$, defined on some open interval $I$; just let $I$ be the union of all open intervals on which such a geodesic is defined, and observe that the various geodesics agree where they overlap. This maximal geodesic is denoted $\gamma_\mathbf{v}$. (The initial point $\mathbf{p}$ can be recovered from $\mathbf{v}$ by $\mathbf{p} = \pi(\mathbf{v})$, where $\pi:TM\to M$ is the natural projection.)
 
 Let $\gamma_\mathbf{v}(t,\mathbf{q})$ be the unique maximal geodesic with initial point $\mathbf{q}$ and initial vector $\mathbf{v}\in T_\mathbf{q}M$. Then
 
@@ -1106,7 +1253,7 @@ A parallel vector field along a curve is an analogue of a constant vector field 
 Let $M$ be a smooth manifold with an affine connection $\nabla$. A smooth vector field $\mathbf{V}\in\mathfrak{X}(M)$ along a curve $\gamma:I\subset\R\to M$ is *parallel* along $\gamma$ with respect to $\nabla$ if $\mathbf{D}_t \mathbf{V} \equiv 0$. A vector field $\mathbf{V}\in\mathfrak{X}(M)$ on $M$ is *parallel* if it is parallel along every curve.
 </MathBox>
 
-<MathBox title='Parallel translation' boxType='theorem'>
+<MathBox title='Parallel translation' boxType='theorem' tag='theorem-5'>
 Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$. For any curve $\gamma:I\subset\R\to M$, $t_0 \in I$, and a vector $\mathbf{V}_0 \in T_{\gamma(t_0)} M$, there is a unique parallel vector field $\mathbf{V}$ along $\gamma$ such that $\mathbf{V}(t_0) = \mathbf{V}_0$.
 
 <details>
@@ -1133,14 +1280,75 @@ $$
   \dot{V}^k (t) = -V^j (t) \dot{gamma}^i (t) \Gamma_{ij}^k  (\gamma(t)),\; k=1,\dots,n
 $$
 
-This a first-order linear system of ODEs. By the existance and uniqueness theorem (Picard-Lindelöf theorem) for first-order ODEs, there is a unique solution on all of $I$ with any initial condition $\mathbf{V}(t_0) = \mathbf{V}_0$.
+This a first-order linear system of ODEs. By theorem $\ref{theorem-3}$, there is a unique solution on all of $I$ with any initial condition $\mathbf{V}(t_0) = \mathbf{V}_0$.
 
 Now assume $\gamma(I)$ is not covered by a single chart. Let $\beta$ denote the supremum of all $b > t_0$ for which there is a unique parallel translate on $[t_0, b]$. Clearly, $\beta > t_0$, since for $b$ close enough to $t_0$, $\gamma[t_0, b]$ is contained in a single chart and the above argument applies. Then a unique parallel translate $\mathbf{V}$ exists on $[t_0, \beta)$. If $\beta\in I$, choose coordinates on an open set containing $\gamma(\beta-\delta,\beta+\delta)$ for some positive $\delta$ (assuming $\gamma$ has been extended to an open interval if necessary). Then there exists a unique parallel vector field $\tilde{\mathbf{V}}$ on $(\beta - \delta, \beta + \delta)$ satisfying the initial condition $\tide{\mathbf{V}}(\beta - \delta/2) = \mathbf{V}(\beta - \delta/2)$. By uniqueness, $\mathbf{V} = \tilde{\mathbf{V}}$ on their common domain, and therefore $\tilde{\mathbf{V}}$ is an extension of $\mathbf{V}$ past $\beta$, which is a contradiction.
 </details>
 </MathBox>
 
-<MathBox title='Parallel translation operator' boxType='corollary'>
-Let $M$ be a smooth manifold with an affine connection $\nabla$. If $y:I\subset\R\to M$ is a curve in $M$ and $a,b\in I$, parallel translation induces an isomorphism $P_{a,b}:T_{\gamma(a)}M \xrightarrow{\sim} T_{gamma(b)}M$ by setting $P_{a,b} \mathbf{V}_a = V(b)$ where $\mathbf{V}$ is the parallel translate of $\mathbf{V}_a \in T_{\gamma(a)} M$ along $\gamma$.
+<MathBox title='Parallel transport' boxType='definition'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\gamma:I\subset\R\to M$ is a curve in $M$. For $t_0, t\in I$ we define the map
+
+$$
+  P_\gamma (t, t_0): T_{\gamma(t_0)}M \to T_{\gamma(t)}
+$$
+
+by $P_\gamma (t, t_0) \mathbf{V}_0 = \mathbf{V}(t)$ where $\mathbf{V}$ a parallel vector field along $\gamma$ with $\mathbf{V}(t_0) = \mathbf{V}_0$. The collection of maps $P_\gamma (t, t_0)$ for $t, t_0 \in I$ is called *parallel transport* along $\gamma$.
+</MathBox>
+
+<MathBox title='Properties of parallel transport' boxType='definition'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\gamma:I\subset\R\to M$ is a curve in $M$. The parallel transport map $P_\gamma (t, s): T_{\gamma(s)}M \to T_{\gamma(t)}$ for $s,t\in I$ has the following properties
+1. $P_\gamma (t, s)$ is linear for all $s,t\in I$
+2. For all $r,s,t \in I$ we have
+$$
+  P_\gamma (t, s) \circ P_\gamma (s,t) = P_\gamma (t,r)
+$$
+In particular, $P_\gamma (t,t) = \mathrm{id}_{T_{\gamma(t) M}}$
+3. If $J\subset\R$ is an interval and $\sigma:J\to I$ is a smooth map, then
+$$
+  P_{\gamma\circ\sigma} (t, s) = P_\gamma (\sigma(t), \sigma(s)),\; s,t\in J
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This follows from the fact that a parallel vector field along $\gamma$ is preserved under vector addition and scalar multiplication.
+
+**(2):** This follows directly from the uniqueness statement in theorem $\ref{theorem-5}$.
+
+**(3):** Fix $s\in J$ and $\mathbf{v} \in T_{\gamma(\sigma(s))} M$. Define the vector field $\mathbf{V}$ along $\gamma$ by
+
+$$
+  \mathbf{V}(\sigma(t)) = \mathbf{v}
+$$
+
+Denote
+
+$$
+\begin{align*}
+  \tilde{\gamma} :=& \gamma\circ\sigma: J\to M \\
+  \tilde{\mathbf{V}} := \mathbf{V}\circ\sigma: I\to\R^n
+\end{align*}
+$$
+
+Then $\tilde{\mathbf{V}}$ is a vector field along $\tilde{\gamma}$ and, by the chain rule, we have
+
+$$
+  \frac{\mathrm{d}}{\mathrm{d}t}\tilde{\mathbf{V}}(t) = \frac{\mathrm{d}}{\mathrm{d}t}\mathbf{V}(\sigma(t)) = \frac{\mathrm{d}\sigma}{\mathrm{d}t}(t) \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}(\sigma(t))
+$$
+
+Projecting orthogonally onto the tangent space $T_{\gamma(\sigma(t))}M$ we obtain
+
+$$
+  \frac{\mathrm{D}\tilde{\mathbf{V}}}{\mathrm{d}t}(t) = \dot{\sigma}(t)\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(\sigma(t)) = 0,\; \forall t\in J
+$$
+
+Hence $\tilde{\mathbf{V}}$ is the unique parallel vector field along $\tilde{\gamma}$ that satisfies $\tilde{\mathbf{V}}(s) = \mathbf{v}$. Thus
+
+$$
+  P_{\tilde{\gamma}}(t,s)\mathbf{v} = \tilde{\mathbf{V}}(t) = \mathbf{V}(\sigma(t)) = P_\gamma (\sigma(t), \sigma(s))\mathbf{v}
+$$
+</details>
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
@@ -1150,7 +1358,7 @@ $$
   \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t_0) = \lim_{t\to t_0} \frac{P_{t_0, t}^{-1} \mathbf{V}(t) - \mathbf{V}(t_0)}{t - t_0}
 $$
 
-where $P_{a,b}:T_{\gamma(a)}M \xrightarrow{\sim} T_{gamma(b)}M$ is the parallel translation operator.
+where $P_{a,b}:T_{\gamma(a)}M \xrightarrow{\sim} T_{\gamma(b)}M$ is the parallel transport operator.
 </MathBox>
 
 ### Parallel translation
@@ -2011,81 +2219,6 @@ $$
   F'(\varphi(\mathbf{p})) =& F(\mathbf{p}) 
   G'(\varphi(\mathbf{p})) =& G(\mathbf{p}) 
 \end{align*}
-$$
-</details>
-</MathBox>
-
-### Torsion and curvature
-
-<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
-Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* of $\nabla$ is bilinear map $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ defined by
-
-$$
-  T(\mathbf{X},\mathbf{Y}) := \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X},\mathbf{Y}]
-$$
-
-A connection $\nabla$ is *torsion-free* if its torsion is zero.
-
-The *curvature* of $\nabla$ is a bilinear map $R:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\operatorname{end}(\mathfrak{X}(M))$ defined by
-
-$$
-\begin{align*}
-  R(\mathbf{X},\mathbf{Y}) =& [\nabla_\mathbf{X}, \nabla_\mathbf{Y}] - \nabla_{[\mathbf{X},\mathbf{Y}]} \\
-  =& \nabla_\mathbf{X} \nabla_\mathbf{Y} - \nabla_\mathbf{Y} \nabla_\mathbf{X} - \nabla_{[\mathbf{X},\mathbf{Y}]}
-\end{align*}
-$$
-</MathBox>
-
-An affine connection $\nabla$ on a smooth manifold $M$ gives rise to a linear map $\mathfrak{X}(M)\to\operatorname{end}_\R (\mathfrak{X}(M))$ by $\mathbf{X}\mapsto\nabla_\mathbf{X}$. Here both vector spaces $\mathfrak{X}(M)$ and $\operatorname{end}_\R (\mathfrak{X}(M))$ are Lie algebras. The curvature measures the deviation of the map $\mathbf{X}\mapsto\nabla_\mathbf{X}$ from being a Lie algebra homomorphism.
-
-<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
-Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on $M$. Suppose $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$ are smooth vector fields on a smooth manifold $M$ with affine connection $\nabla$.
-1. The torsion $T(\mathbf{X},\mathbf{Y})$ is $\mathcal{F}$-linear in $\mathbf{X}$ and $\mathbf{Y}$
-2. The curvature $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in $\mathbf{X}$, $\mathbf{Y}$ and $\mathbf{Z}$
-
-<details>
-<summary>Proof</summary>
-
-**(2):** Recall from the properties of the Lie bracket that if $f,g\in \mathcal{F} = C^\infty (M)$, then
-
-$$
-  [f\mathbf{X}, g\mathbf{Y}] = fg[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}g)\mathbf{Y} - g(\mathbf{Y}f)\mathbf{X}
-$$
-
-By the definition of curvature
-
-$$
-  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_{f\mathbf{X}} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_{f\mathbf{X}} \mathbf{Z} - \nabla_{[f\mathbf{X},\mathbf{Y}]}\mathbf{Z}
-$$
-
-By the $\mathcal{F}$-linearity of $\nabla$ in $\mathbf{X}$, the first term is $f\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z}$, and by the Leibniz rule, the second term is
-
-$$
-  \nabla_\mathbf{Y} (f\nabla_\mathbf{X} \mathbf{Z}) = (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z} + f\nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z}
-$$
-
-The last term is
-
-$$
-\begin{align*}
-  \nabla_{[f\mathbf{X},\mathbf{Y}]} \mathbf{Z} =& \nabla_{f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)x} \mathbf{Z} \\
-  =& f\nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z} - (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}
-\end{align*}
-$$
-
-since $\mathbf{X}(1) = 0$. Combining the three terms gives
-
-$$
-\begin{alignÆ}
-  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]} Z) \\
-  =& fR(\mathbf{X},\mathbf{Y})\mathbf{Z}
-\end{align*}
-$$
-
-Because $R(\mathbf{X},\mathbf{Y})$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$, $\mathcal{F}$-linearity in $\mathbf{Y}$ follows from $\mathcal{F}$-linearity in the first argument
-
-$$
-  R(\mathbf{X},f\mathbf{Y}) = -R(f\mathbf{Y},\mathbf{X}) = -fR(\mathbf{Y},\mathbf{X}) = fR(\mathbf{X},\mathbf{Y})
 $$
 </details>
 </MathBox>
