@@ -99,7 +99,7 @@ written $\nabla_\mathbf{X} \mathbf{Y}$ for $\nabla(\mathbf{X},\mathbf{Y})$, sati
 $$
   \nabla_{f\mathbf{X}_1 + g\mathbf{X}_2} \mathbf{Y} = f\nabla_{\mathbf{X}_1} \mathbf{Y} + g\nabla_{\mathbf{X}_2} \mathbf{Y},\, f,g\in C^\infty (M)
 $$
-2. $\nabla_\mathbf{X} \mathbf{s}$ is $\R$-linear in $\mathbf{Y}$
+2. $\nabla_\mathbf{X} \mathbf{X}$ is linear over $\R$ in $\mathbf{Y}$
 $$
   \nabla_\mathbf{X} (a\mathbf{Y}_1 + b\mathbf{Y}_2) = a\nabla_\mathbf{X} \mathbf{Y}_1 + b\nabla_\mathbf{X} \mathbf{Y}_2,\, a,b\in\R
 $$
@@ -183,18 +183,36 @@ $$
 $$
 
 <MathBox title='Coordinate representation of the torsion tensor' boxType='proposition'>
-Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ is a $\binom{2}{1}$-tensor field on $M$ given in local coordinates by
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ is a $\binom{1}{2}$-tensor field on $M$ given in local coordinates by
 
 $$
-  T = (\Gamma_{ij}^k - \Gamma_{ji}^k) \mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
+  T = \sum_{i,j,k=1}^n (\Gamma_{ij}^k - \Gamma_{ji}^k)\;\mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
 $$
-
-A connection $\nabla$ is *torsion-free* if its torsion is zero.
 
 <details>
 <summary>Proof</summary>
 
-Let $\mathbf{X} = \sum_{i=1}^n X^i \boldsymbol{\partial}_i$ and $\mathbf{Y} = \sum_{i=1}^n Y^i \boldsymbol{\partial}_i$ be the coordinate expressions for the smooth vector fields $\mathbf{X}, \mathbf{Y}\in\mathfrak{X}(M)$ in terms of some local chart $(U, (x^i)_{i=1}^n)$.
+Recall from the properties of the Lie bracket that if $f,g\in C^\infty (M)$, then
+
+$$
+  [f\mathbf{X}, g\mathbf{Y}] = fg[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}g)\mathbf{Y} - g(\mathbf{Y}f)\mathbf{X}
+$$
+
+By the tensor characterization lemma, we need to show that $T$ is linear over $C^\infty (M)$ in its arguments. For any $f \in C^\infty(M)$ applied on the first argument we have
+
+$$
+\begin{align*}
+  T(f\mathbf{X}, \mathbf{Y}) =& \nabla_{f\mathbf{X}} \mathbf{Y} - \nabla_\mathbf{Y} (f\mathbf{X}) - [f\mathbf{X}, \mathbf{Y}] \\
+  =& f\nabla_{\mathbf{X}} \mathbf{Y} - (f\nabla_\mathbf{Y} \mathbf{X} + \cancel{(\mathbf{Y} f)\mathbf{X}}) \\
+  &- (f[\mathbf{X}, \mathbf{Y}] + (f\underbrace{\mathbf{X}(1)}_{=0})\mathbf{Y} - \cancel{(\mathbf{Y}f)\mathbf{X}}) \\
+  =& f (\nabla_\mathbf{X} \mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X}, \mathbf{Y}]) \\
+  =& fT(\mathbf{X},\mathbf{Y})
+\end{align*}
+$$
+
+and similarly for the second argument. Since both $\nabla$ and $[\cdot,\cdot]$ are linear over $\R$ in their arguments, it follows that $T$ is a tensor.
+
+Since $T(\mathbf{X}, \mathbf{Y})$ is a smooth vector field, its action on a function $f\in C^\infty (M)$ is determined locally. That is, for any subset $U\subseteq M$ we $T(\mathbf{X},\mathbf{Y})f|_U = T(\mathbf{X},\mathbf{Y})(f|_U)$. Thus, it suffices to compute in single smooth chart $(U, (x^i)_{i=1}^n)$.
 
 Recall that the coordinate formula for the Lie bracket is
 
@@ -202,18 +220,23 @@ $$
   [\mathbf{X}, \mathbf{Y}] = \sum_{i=1}^n (\mathbf{X}Y^i - \mathbf{Y}X^i)\frac{\partial}{\partial x^i}
 $$
 
-Then the torsion $T(\mathbf{X}, \mathbf{Y})$ has the following coordinate expression
+The torsion $T(\mathbf{X}, \mathbf{Y})$ has the following coordinate expression
 
 $$
 \begin{align*}
-  T(\mathbf{X},\mathbf{Y}) =& (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \frac{\partial}{\partial x^k} - (\mathbf{Y}X^k + Y^i X^j \Gamma_{ij}^k) \frac{\partial}{\partial x^k} \\
-  &- (\mathbf{X}Y^k - \mathbf{Y}X^k)\frac{\partial}{\partial x^k} \\
-  =& (X^i Y^j \Gamma_{ij}^k - Y^i X^j \Gamma_{ij}^k)\frac{\partial}{\partial x^k} \\
-  =& X^i Y^j (\Gamma_{ij}^k - \Gamma_{ji}^k)\frac{\partial}{\partial x^k}
+  T(\mathbf{X},\mathbf{Y})f =& \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \frac{\partial f}{\partial x^k} \\
+  &- (\mathbf{Y}X^k + Y^i X^j \Gamma_{ij}^k) \frac{\partial f}{\partial x^k} \\
+  &- (\mathbf{X}Y^k - \mathbf{Y}X^k)\frac{\partial f}{\partial x^k} \\
+  =& \sum_{i,j,k=1}^n (X^i Y^j \Gamma_{ij}^k - Y^i X^j \Gamma_{ij}^k)\frac{\partial f}{\partial x^k} \\
+  =& \sum_{i,j,k=1}^n X^i Y^j (\Gamma_{ij}^k - \Gamma_{ji}^k)\frac{\partial f}{\partial x^k}
 \end{align*}
 $$
 
-This shows that $T$ is a $\binom{2}{1}$-tensor field on $M$.
+This shows that $T$ is a $\binom{1}{2}$-tensor field on $M$ written as
+
+$$
+  T = \sum_{i,j,k=1}^n (\Gamma_{ij}^k - \Gamma_{ji}^k)\;\mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
+$$
 
 </details>
 </MathBox>
@@ -321,7 +344,7 @@ $$
 since $\mathbf{X}(1) = 0$. Combining the three terms gives
 
 $$
-\begin{alignÆ}
+\begin{align*}
   R(f\mathbf{X},\mathbf{Y})\mathbf{Z} =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]} Z) \\
   =& fR(\mathbf{X},\mathbf{Y})\mathbf{Z}
 \end{align*}
