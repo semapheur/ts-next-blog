@@ -983,8 +983,8 @@ $$
 The geodesic is *maximal* if its domain $I$ cannot be extended to a larger interval.
 </MathBox>
 
-<MathBox title='Geodesic equations' boxType='proposition'>
-Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$, and suppose $\gamma:I\subset\R \to M$ is a smooth curve in $M$. If $(U, \varphi = (x^i)_{i=1}^n)$ is a chart about $\gamma(t)\in M$ for any $t \in I$, then $\gamma$ is geodesic if and only if the components of $(\varphi\circ\gamma)(t) = (y^i = x^i(\gamma(t)))_{i=1}^n$ satisfy the system of differential equations
+<MathBox title='Geodesic equations' boxType='proposition' tag='proposition-22'>
+Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$, and suppose $\gamma:I\subset\R \to M$ is a smooth curve in $M$. If $(U, \varphi = (x^i)_{i=1}^n)$ is a chart about $\gamma(t)\in M$ for any $t \in I$, then $\gamma$ is geodesic if and only if the components of $(\varphi\circ\gamma)(t) = (y^i(t) = x^i[\gamma(t)])_{i=1}^n$ satisfy the system of differential equations
 
 $$
   \frac{\mathrm{d}^2 y^k}{\mathrm{d}t^2} (t) + \sum_{i,j=1}^n \frac{\mathrm{d}y^i}{\mathrm{d}t}(t) \frac{\mathrm{d}y^j}{\mathrm{d}t}(t) \Gamma_{ij}^k (y(t))  = 0,\; k = 1,\dots,n
@@ -993,7 +993,7 @@ $$
 or in compact notation
 
 $$
-  \ddot{y}^k + \dot{y}^i \dot{y}^k \Gamma_{ij}^k = 0,\; k = 1,\dots,n
+  \ddot{y}^k + \dot{y}^i \dot{y}^j \Gamma_{ij}^k = 0,\; k = 1,\dots,n
 $$
 
 These are known as the geodesic equations.
@@ -1035,8 +1035,77 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Existence and uniqueness of geodesics' boxType='theorem'>
+<MathBox title='Existence and uniqueness of geodesics' boxType='theorem' tag='theorem-3'>
+Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$. For any point $\mathbf{p}\in M$, any tangent vector $\mathbf{v}\in T_\mathbf{p}M$ and any $t_0 \in\R$, there is an open interval $I\subset\R$ containing $t_0$ and a geodesic $\gamma:I\to M$ satisfying
 
+$$
+  \gamma(t_0) = \mathbf{p}, \quad \gamma'(t_0) = \mathbf{v}
+$$
+
+Any two such geodesics agree on their common domain.
+
+<details>
+<summary>Proof</summary>
+
+Choose a chart $(U, (x^i)_{i=1}^n)$ about $\mathbf{p}\in M$. By proposition $\ref{proposition-22}$, $\gamma:I \to U$ is a geodesic if and only if its component functions $\hat{\gamma}(t) = (\gamma^i (t))_{i=1}^n$ satisfy the geodesic equations
+
+$$
+  \ddot{\gamma}^k (t) + \dot{\gamma}^i(t) \dot{\gamma}^j(t) \Gamma_{ij}^k (\hat{\gamma}(t)) = 0,\; k=1,\dots,n
+$$
+
+This is a second-order system of ordinary differential equations (ODEs) for the functions $\gamma^k (t)$. Substituting $u^i = \dot{\gamma}^i$, we can convert it to an equivalent first-order system in twice the number of variables
+
+$$
+\begin{align*}
+  \dot{\gamma}^k(t) =& u^k(t) \\
+  \dot{u}^k (t) = -u^i(t) u^j(t) \Gamma_{ij}^k (\hat{\gamma}(t))
+\end{align*}
+$$
+
+By the existance and uniqueness theorem for first-order ODEs, for any $(\mathbf{p},\mathbf{v})\in U\times\R^n$, there exists $\varepsilon > 0$ and a unique solution $\eta: (t_0 - \varepsilon, t_0 + \varepsilon) \to U\times\R^n$ to this system satisfying the initial condition $\eta(t_0) = (\mathbf{p},\mathbf{v})$. If we write the component functions of $\eta$ at $\eta(t) = (\gamma^i(t), u^i(t))$, then we can easily check that the curve $\hat{hat}(t) = (\gamma^i(t))_{i=1}^n$ in $U$ satisfy the existence claim.
+
+To prove uniqueness, suppose $\gamma,\sigma: I\to M$ are geodesics defined on an open interval with $\gamma(t_0) = \sigma(t_0)$ and $\gamma'(t_0) = \sigma'(t_0)$. By the uniqueness part the ODE theorem, they agree on some neighbourhood of $t_0$. Let $\beta$ be the supremum of numbers $b$ such that the agree on $[t_0, nb]$. If $\beta\in I$, then by continuity $\gamma(\beta) = \sigma(\beta)$ and $\gamma'(\beta) = \sigma'(\beta)$, and applying local uniqueneses in a neigbourhood of $\beta$, we conclude that they agree on a slightly larger interval, which is a contradiction. Arguing similarly to the left of $t_0$, we conclude that they agree on all of $I$.
+</details>
+</MathBox>
+
+It follows from the uniqueness statement of theorem $\ref{theorem-3}$ that for any $\mathbf{p}\in M$ and $\mathbf{v}\in T_\mathbf{p}M$, there is a unique maximal geodesic $\gamma:I\to M$ with $\gamma(0) = \mathbf{p}$ and $\dot{\gamma}(0) = \mathbf{v}$, defined on some open interval $I$; just let $I$ be the union of all open intervals on which such a geodesic is defined, and observe that the various geodesics agree where they overlap. This maximal geodesic is denoted $\gamma_\mathbf{v}$. (The initial point $\mathbf{p}$ can be recovered from $\mathbf{v}$ by $\mathbf{p} = \pi(\mathbf{v})$, where $\pi:TM\to M$ is the natural projection.)
+
+Let $\gamma_\mathbf{v}(t,\mathbf{q})$ be the unique maximal geodesic with initial point $\mathbf{q}$ and initial vector $\mathbf{v}\in T_\mathbf{q}M$. Then
+
+$$
+  \gamma_\mathbf{v} (kt) = \gamma_{k\mathbf{v}}(t),\; k\in\R
+$$
+
+<MathBox title='' boxType='proposition'>
+Let $M$ and $\tilde{M}$ be smooth manifolds with respective connections $\nabla$ and $\tilde{\nabla}$. A connection-preserving diffeomorphism $F:(M,\nabla) \to (\tilde{M},\tilde{\nabla})$ takes geodesic to geodesics.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $\gamma:I\subset\R\to M$ is a geodesic in $M$ with velocity vector field $\gamma'$. If $\tilde{\mathbf{T}}(t) = (F\circ\gamma)'(t)$ is the tangent vector field of $F\circ\gamma$, then
+
+$$
+  \tilde{\mathbf{T}}(t) = \mathrm{d}F \left(\mathrm{d}\gamma \left(\frac{\mathrm{d}}{\mathrm{d}t} \right)\right) = \mathrm{d}F (\gamma'(t)) = \mathrm{d}F (\mathbf{T})
+$$
+
+Let $\mathrm{D}_t$ and $\tilde{\mathrm{D}}_t$ be the covariant derivatives along $\gamma(t)$ and $(F\circ \gamma)(t)$, respectively. Then $\mathrm{D}_t T \equiv 0$, because $\gamma(t)$ is a geodesic. If follows that
+
+$$
+  \frac{\tilde{\mathrm{D}}\tilde{\mathbf{T}}}{\mathrm{d}t} = \mathrm{d}fF\left(\frac{\mathrm{D}\mathbf{T}}{\mathrm{d}t}\right) = \mathrm{d}F(0) = 0
+$$
+
+Hence, $F\circ\gamma$ is a geodesic in $M$.
+</details>
+</MathBox>
+
+## Parallel translation
+
+<MathBox title='Parallel vector field' boxType='definition'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$. A vector field $\mathbf{V}$ along a curve $\gamma:I\subset\R\to M$ is *parallel* along $\gamma$ with respect to $\nabla$ if $\mathbf{D}_t \mathbf{V} \equiv 0$. A vector field $\mathbf{V}\in\mathfrak{X}(M)$ on $M$ is *parallel* if it is parallel along every curve.
+</MathBox>
+
+<MathBox title='Parallel vector field' boxType='definition'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$. For any curve $\gamma:I\subset\R\to M$, $t_0 \in I$, and a vector $\mathbf{V}_0 \in T_{\gamma(t_0)} M$, there is a unique parallel vector field $\mathbf{V}$ along $\gamma$ such taht $\mathbf{V}(t_0) = \mathbf{V}$.
 </MathBox>
 
 ## Geodesic flow
@@ -1044,18 +1113,6 @@ $$
 ## Geodesic spray
 
 ## Existence of geodesics
-
-
-
-<MathBox title='' boxType='theorem'>
-Let $M$ be a smooth manifold with a connection $\nabla$. Given any point $\mathbf{p}\in M$ and tangent vector $\mathbf{v}\in T_\mathbf{p}M$, there is a geodesic $c(t)$ in $M$ with initial point $c(0) = \mathbf{p}$ and initial velocity $c'(0) = \mathbf{v}$. Moreover, this geodesic is unique in the sense that any other geodesic satisfying the same initial conditions must agree with $c(t)$ on the intersection of their domains.
-</MathBox>
-
-Let $\gamma_\mathbf{v}(t,\mathbf{q})$ be the unique maximal geodesic with initial point $\mathbf{q}$ and initial vector $\mathbf{v}\in T_\mathbf{q}M$. Then
-
-$$
-  \gamma_\mathbf{v} (kt) = \gamma_{k\mathbf{v}}(t),\; k\in\R
-$$
 
 <MathBox title='' boxType='theorem'>
 Let $M$ be a Riemannian manifold. For any point $\mathbf{p}\in M$, there are a neighbourhood $U$ of $\mathbf{p}$ and numbers $\delta, a > 0$ so that for any $\mathbf{q}\in U$ and $\mathbf{v}\in T_\mathbf{q}M$ with $\lVert\mathbf{v}\rVert < \delta$, there is a unique geodesic $\gamma:(-a,a)\to M$ with $\gamma(0) = \mathbf{q}$ and $\gamma'(0) = \mathbf{v}$. 
@@ -1076,30 +1133,6 @@ $$
 Choose $\varepsilon = \frac{a\delta}{2}$. Then the result follows from the previous proposition.
 </details>
 </MathBox>
-
-<MathBox title='' boxType='proposition'>
-Let $M$ and $\tilde{M}$ be smooth manifolds with respective connections $\nabla$ and $\tilde{\nabla}$. A connection-preserving diffeomorphism $f:(M,\nabla) \to (\tilde{M},\tilde{\nabla})$ takes geodesic to geodesics.
-
-<details>
-<summary>Proof</summary>
-
-Suppose $c(t)$ is a geodesic in $M$, with tangent vector field $\mathbf{T}(t) = c'(t)$. If $\tilde{\mathbf{T}}(t) = (f\circ c)'(t)$ is the tangent vector field of $f\circ c$, then
-
-$$
-  \tilde{\mathbf{T}}(t) = f_* \left(c_* \frac{\mathrm{d}}{\mathrm{d}t} \right) = f_* (c'(t)) = f_* \mathbf{T}
-$$
-
-Let $\frac{\mathrm{D}}{\mathrm{d}t}$ and $\frac{\tilde{\mathrm{D}}}{\mathrm{d}t}$ be the covariant derivatives along $c(t)$ and $(f\circ c)(t)$, respectively. Then $\frac{\mathrm{D}T}{\mathrm{d}t} \equiv 0$, because $c(t)$ is a geodesic. If follows that
-
-$$
-  \frac{\tilde{\mathrm{D}}\tilde{\mathbf{T}}}{\mathrm{d}t} = f_* \left(\frac{\mathrm{D}\mathbf{T}}{\mathrm{d}t}\right) = f_* 0 = 0
-$$
-
-Hence, $f\circ c$ is a geodesic in $M$.
-</details>
-</MathBox>
-
-
 
 # Riemannian geometry
 
