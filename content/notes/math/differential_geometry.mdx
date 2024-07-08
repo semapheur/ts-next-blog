@@ -120,7 +120,7 @@ Let $M$ be a smooth $n$-manifold and $\Set{\mathbf{E}_i}_{i=1}^n$ a local frame 
 
 $$
 \begin{equation}
-  \nabla_{E_i} \mathbf{E_j} = \Gamma_{ij}^k \mathbf{E}_k,\, \forall i, j=1,\dots,n \tag{\label{equation-1}}
+  \nabla_{\mathbf{E}_i} \mathbf{E_j} = \Gamma_{ij}^k \mathbf{E}_k,\, \forall i, j=1,\dots,n \tag{\label{equation-1}}
 \end{equation}
 $$
 
@@ -132,7 +132,7 @@ Let $M$ be a smooth $n$-manifold, $\nabla$ an affine connection on $M$ and $\mat
 
 $$
 \begin{equation}
-  \nabla_\mathbf{X} \mathbf{Y} = \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^k \Gamma_{ij}^k) \mathbf{E}_k \tag{\label{equation-2}}
+  \nabla_\mathbf{X} \mathbf{Y} = (\mathbf{X}Y^k + X^i Y^k \Gamma_{ij}^k) \mathbf{E}_k \tag{\label{equation-2}}
 \end{equation}
 $$
 
@@ -141,23 +141,15 @@ $$
 
 $$
 \begin{align*}
-  \nabla_\mathbf{X} \mathbf{Y} =& \nabla_\mathbf{X} \left(\sum_{j=1}^n Y^j \mathbf{E}_j \right) \\
-  =& \sum_{j=1}^n (\mathbf{X}Y^j)\mathbf{E}_j + Y^j \nabla_{X^i \mathbf{E}_i} \mathbf{E}_j \\
-  =& \sum_{i,j=1}^n (\mathbf{X}Y^j)\mathbf{E}_j + X^i Y^j \nabla_{\mathbf{E}_i} \mathbf{E}_j \\
-  =& \sum_{i,j,k=1}^n \mathbf{X}Y^k \mathbf{E}_k + X^i Y^j \Gamma_{ij}^k \mathbf{E}_k \\
-  =& \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \mathbf{E}_k
+  \nabla_\mathbf{X} \mathbf{Y} =& \nabla_\mathbf{X} \left(Y^j \mathbf{E}_j \right) \\
+  =& (\mathbf{X}Y^j)\mathbf{E}_j + Y^j \nabla_{X^i \mathbf{E}_i} \mathbf{E}_j \\
+  =& (\mathbf{X}Y^j)\mathbf{E}_j + X^i Y^j \nabla_{\mathbf{E}_i} \mathbf{E}_j \\
+  =& \mathbf{X}Y^k \mathbf{E}_k + X^i Y^j \Gamma_{ij}^k \mathbf{E}_k \\
+  =& (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \mathbf{E}_k
 \end{align*}
 $$
 </details>
 </MathBox>
-
-Let $\nabla$ be an affine connection on a smooth manifold $M$ and let $(U,(x^i)_{i=1}^n)$ be a coordinate open set in $M$. Then $\nabla_{\boldsymbol{\partial}_i} \partial/\partial x^j $ is a linear combination of $\left(\frac{\partial}{\partial x^i}\right)$, so there exist numbers $\Gamma_{ij}^k$ at each point such that
-
-$$
-  \nabla_{\boldsymbol{\partial}_i} = \sum_{k=1}^n \Gamma_{ij}^k \frac{\partial}{\partial x^k}
-$$
-
-where the $n^3$ functions $\Gamma_{ij}^k$ are the *Christoffel symbols* of the connection $\nabla$ on $U$. By the Leibniz rule and linearity over $C^\infty (M)$ in the first argument of a connection, the Christoffel symbols completely describe a connection on $U$.
 
 ### Torsion tensor
 
@@ -182,11 +174,20 @@ $$
 \end{align*}
 $$
 
-<MathBox title='Coordinate representation of the torsion tensor' boxType='proposition'>
-Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ is a $\binom{1}{2}$-tensor field on $M$ given in local coordinates by
+<MathBox title='Torsion is a tensor field' boxType='proposition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion tensor* of $\nabla$ is a bilinear map
 
 $$
-  T = \sum_{i,j,k=1}^n (\Gamma_{ij}^k - \Gamma_{ji}^k)\;\mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
+\begin{gather*}
+  T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M) \\
+  T(\mathbf{X},\mathbf{Y}) := \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y}\mathbf{X} - [\mathbf{X},\mathbf{Y}]
+\end{gather*}
+$$
+
+which is a $\binom{1}{2}$-tensor field on $M$ given in local coordinates by
+
+$$
+  T = ({\Gamma_{ij}}^k - {\Gamma_{ji}}^k) \;\boldsymbol{\partial}_k \otimes \mathrm{d}x^i \otimes \mathrm{d}x^j
 $$
 
 <details>
@@ -198,46 +199,55 @@ $$
   [f\mathbf{X}, g\mathbf{Y}] = fg[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}g)\mathbf{Y} - g(\mathbf{Y}f)\mathbf{X}
 $$
 
-By the tensor characterization lemma, we need to show that $T$ is linear over $C^\infty (M)$ in its arguments. For any $f \in C^\infty(M)$ applied on the first argument we have
+Noting that $\mathbf{X}(1)$, we get
+
+$$
+\begin{align*}
+  [f\mathbf{X}, \mathbf{Y}] =& f[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}(1))\mathbf{Y} - (\mathbf{Y}f)\mathbf{X} \\
+  =& f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)\mathbf{X}
+\end{align*}
+$$
+
+By the tensor characterization lemma, we need to show that $T$ is linear over $C^\infty (M)$ in its arguments. That is, for any $f\in C^\infty (M)$
+
+$$
+  T(f\mathbf{X}, \mathbf{Y}) = T(\mathbf{X}, f\mathbf{Y}) = fT(\mathbf{X}, \mathbf{Y})
+$$
+
+Applying $f$ on $\mathbf{X}$ we have
 
 $$
 \begin{align*}
   T(f\mathbf{X}, \mathbf{Y}) =& \nabla_{f\mathbf{X}} \mathbf{Y} - \nabla_\mathbf{Y} (f\mathbf{X}) - [f\mathbf{X}, \mathbf{Y}] \\
   =& f\nabla_{\mathbf{X}} \mathbf{Y} - (f\nabla_\mathbf{Y} \mathbf{X} + \cancel{(\mathbf{Y} f)\mathbf{X}}) \\
-  &- (f[\mathbf{X}, \mathbf{Y}] + (f\underbrace{\mathbf{X}(1)}_{=0})\mathbf{Y} - \cancel{(\mathbf{Y}f)\mathbf{X}}) \\
-  =& f (\nabla_\mathbf{X} \mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X}, \mathbf{Y}]) \\
+  &- (f[\mathbf{X}, \mathbf{Y}] - \cancel{(\mathbf{Y}f)\mathbf{X}}) \\
+  =& f (\nabla_\mathbf{X} \mathbf{Y} - \nabla_\mathbf{Y} \mathbf{X} - [\mathbf{X}, \mathbf{Y}]) \\
   =& fT(\mathbf{X},\mathbf{Y})
 \end{align*}
 $$
 
-and similarly for the second argument. Since both $\nabla$ and $[\cdot,\cdot]$ are linear over $\R$ in their arguments, it follows that $T$ is a tensor.
-
-Since $T(\mathbf{X}, \mathbf{Y})$ is a smooth vector field, its action on a function $f\in C^\infty (M)$ is determined locally. That is, for any subset $U\subseteq M$ we $T(\mathbf{X},\mathbf{Y})f|_U = T(\mathbf{X},\mathbf{Y})(f|_U)$. Thus, it suffices to compute in single smooth chart $(U, (x^i)_{i=1}^n)$.
-
-Recall that the coordinate formula for the Lie bracket is
+Linearity over $C^\infty (M)$ in $\mathbf{Y}$ follows from the skew-symmetry of $T$
 
 $$
-  [\mathbf{X}, \mathbf{Y}] = \sum_{i=1}^n (\mathbf{X}Y^i - \mathbf{Y}X^i)\frac{\partial}{\partial x^i}
+  T(\mathbf{X}, f\mathbf{Y}) = -T(f\mathbf{Y}, \mathbf{X}) = -fT(\mathbf{Y}, \mathbf{X}) = fT(\mathbf{X}, \mathbf{Y})
 $$
 
-The torsion $T(\mathbf{X}, \mathbf{Y})$ has the following coordinate expression
+This shows that $T$ is a tensor field. In local coordinates, the components of $T$ are given by
 
 $$
 \begin{align*}
-  T(\mathbf{X},\mathbf{Y})f =& \sum_{i,j,k=1}^n (\mathbf{X}Y^k + X^i Y^j \Gamma_{ij}^k) \frac{\partial f}{\partial x^k} \\
-  &- (\mathbf{Y}X^k + Y^i X^j \Gamma_{ij}^k) \frac{\partial f}{\partial x^k} \\
-  &- (\mathbf{X}Y^k - \mathbf{Y}X^k)\frac{\partial f}{\partial x^k} \\
-  =& \sum_{i,j,k=1}^n (X^i Y^j \Gamma_{ij}^k - Y^i X^j \Gamma_{ij}^k)\frac{\partial f}{\partial x^k} \\
-  =& \sum_{i,j,k=1}^n X^i Y^j (\Gamma_{ij}^k - \Gamma_{ji}^k)\frac{\partial f}{\partial x^k}
+  T(\boldsymbol{\partial}_i, \boldsymbol{\partial}_j) =& \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial_j} - \nabla_{\boldsymbol{\partial}_j} \boldsymbol{\partial}_i - \underbrace{[\boldsymbol{\partial}_i, \boldsymbol{\partial}_j]}_{=0} \\
+  =& {\Gamma_{ij}}^k \boldsymbol{\partial}_k - {\Gamma_{ji}}^k \boldsymbol{\partial}_k \\
+  =& ({\Gamma_{ij}}^k - {\Gamma_{ji}}^k) \boldsymbol{\partial}_k \\
+  =& {T_{ij}}^k \boldsymbol{\partial}_k
 \end{align*}
 $$
 
-This shows that $T$ is a $\binom{1}{2}$-tensor field on $M$ written as
+This shows that $T$ is a $\binom{1}{2}$-tensor field on $M$ with coordinate representation
 
 $$
-  T = \sum_{i,j,k=1}^n (\Gamma_{ij}^k - \Gamma_{ji}^k)\;\mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \frac{\partial}{\partial x^k}
+  T = ({\Gamma_{ij}}^k - {\Gamma_{ji}}^k) \;\boldsymbol{\partial}_k \otimes \mathrm{d}x^i \otimes \mathrm{d}x^j
 $$
-
 </details>
 </MathBox>
 
@@ -283,18 +293,10 @@ Since $T$ is a bilinear function on $T_\mathbf{p}M$ for $\mathbf{p}\in M$, this 
 </details>
 </MathBox>
 
-### Torsion and curvature
+### Curvature tensor
 
-<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
-Let $\nabla$ be an affine connection on a smooth manifold $M$. The *torsion* of $\nabla$ is bilinear map $T:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\mathfrak{X}(M)$ defined by
-
-$$
-  T(\mathbf{X},\mathbf{Y}) := \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X},\mathbf{Y}]
-$$
-
-A connection $\nabla$ is *torsion-free* if its torsion is zero.
-
-The *curvature* of $\nabla$ is a bilinear map $R:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\operatorname{end}(\mathfrak{X}(M))$ defined by
+<MathBox title='Curvature of affine connections' boxType='definition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *curvature* of $\nabla$ is a bilinear map $R:\mathfrak{X}(M)\times\mathfrak{X}(M)\to\operatorname{end}(\mathfrak{X}(M))$ defined by
 
 $$
 \begin{align*}
@@ -306,54 +308,87 @@ $$
 
 An affine connection $\nabla$ on a smooth manifold $M$ gives rise to a linear map $\mathfrak{X}(M)\to\operatorname{end}_\R (\mathfrak{X}(M))$ by $\mathbf{X}\mapsto\nabla_\mathbf{X}$. Here both vector spaces $\mathfrak{X}(M)$ and $\operatorname{end}_\R (\mathfrak{X}(M))$ are Lie algebras. The curvature measures the deviation of the map $\mathbf{X}\mapsto\nabla_\mathbf{X}$ from being a Lie algebra homomorphism.
 
-<MathBox title='Torsion and curvature of affine connections' boxType='definition'>
-Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on $M$. Suppose $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$ are smooth vector fields on a smooth manifold $M$ with affine connection $\nabla$.
-1. The torsion $T(\mathbf{X},\mathbf{Y})$ is $\mathcal{F}$-linear in $\mathbf{X}$ and $\mathbf{Y}$
-2. The curvature $R(\mathbf{X},\mathbf{Y})\mathbf{Z}$ is $\mathcal{F}$-linear in $\mathbf{X}$, $\mathbf{Y}$ and $\mathbf{Z}$
+<MathBox title='Curvature is a tensor field' boxType='proposition'>
+Let $\nabla$ be an affine connection on a smooth manifold $M$. The *curvature tensor* of $\nabla$ is a trilinear map
+
+$$
+\begin{gather*}
+  R:\mathfrak{X}(M)\times\mathfrak{X}(M)\times\mathfrak{X}(M) \to\mathfrak{X}(M) \\
+  R(\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]}\mathbf{Z}
+\end{gather*}
+$$
+
+which is a $\binom{1}{3}$-tensor field on $M$ given in local coordinates by
+
+$$
+  R = {R_{ijk}}^l \;\boldsymbol{\partial}_l \otimes \mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \mathrm{d}x^k 
+$$
+
+with components
+
+$$
+  R_{ijk}^l = \boldsymbol{\partial}_i \Gamma_{jk}^l - \boldsymbol{\partial}_j \Gamma_{ik}^l + \Gamma_{jk}^s \Gamma_{is}^l - \Gamma_{ik}^s \Gamma_{js}^l
+$$
 
 <details>
 <summary>Proof</summary>
 
-**(2):** Recall from the properties of the Lie bracket that if $f,g\in \mathcal{F} = C^\infty (M)$, then
+Recall from the properties of the Lie bracket that if $f,g\in C^\infty (M)$, then
 
 $$
   [f\mathbf{X}, g\mathbf{Y}] = fg[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}g)\mathbf{Y} - g(\mathbf{Y}f)\mathbf{X}
 $$
 
-By the definition of curvature
-
-$$
-  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} = \nabla_{f\mathbf{X}} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_{f\mathbf{X}} \mathbf{Z} - \nabla_{[f\mathbf{X},\mathbf{Y}]}\mathbf{Z}
-$$
-
-By the $\mathcal{F}$-linearity of $\nabla$ in $\mathbf{X}$, the first term is $f\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z}$, and by the Leibniz rule, the second term is
-
-$$
-  \nabla_\mathbf{Y} (f\nabla_\mathbf{X} \mathbf{Z}) = (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z} + f\nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z}
-$$
-
-The last term is
+Noting that $\mathbf{X}(1)$, we get
 
 $$
 \begin{align*}
-  \nabla_{[f\mathbf{X},\mathbf{Y}]} \mathbf{Z} =& \nabla_{f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)x} \mathbf{Z} \\
-  =& f\nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z} - (\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}
+  [f\mathbf{X}, \mathbf{Y}] =& f[\mathbf{X},\mathbf{Y}] + f(\mathbf{X}(1))\mathbf{Y} - (\mathbf{Y}f)\mathbf{X} \\
+  =& f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)\mathbf{X}
 \end{align*}
 $$
 
-since $\mathbf{X}(1) = 0$. Combining the three terms gives
+By the tensor characterization lemma, we need to show that $R$ is linear over $C^\infty (M)$ in its arguments. That is, for any $f\in C^\infty (M)$
+
+$$
+  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} = R(\mathbf{X},f\mathbf{Y})\mathbf{Z} = R(\mathbf{X},\mathbf{Y})(f\mathbf{Z}) = fR(\mathbf{X},\mathbf{Y})
+$$
+
+Applying $f$ on $\mathbf{X}$ we get
 
 $$
 \begin{align*}
-  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]} Z) \\
+  R(f\mathbf{X},\mathbf{Y})\mathbf{Z} =& \nabla_{f\mathbf{X}} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_{f\mathbf{X}} \mathbf{Z} - \nabla_{[f\mathbf{X},\mathbf{Y}]}\mathbf{Z} \\
+  =& \nabla_{f\mathbf{X}} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_{f\mathbf{X}} \mathbf{Z} - \nabla_{f[\mathbf{X},\mathbf{Y}] - (\mathbf{Y}f)\mathbf{X}}\mathbf{Z} \\
+  =& f\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - (\cancel{(\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}} + f\nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z}) \\
+  &- (f \nabla_{[\mathbf{X},\mathbf{Y}]} - \cancel{(\mathbf{Y}f) \nabla_\mathbf{X}\mathbf{Z}}) \\
+  =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]}\mathbf{Z}) \\
   =& fR(\mathbf{X},\mathbf{Y})\mathbf{Z}
 \end{align*}
 $$
 
-Because $R(\mathbf{X},\mathbf{Y})$ is skew-symmetric in $\mathbf{X}$ and $\mathbf{Y}$, $\mathcal{F}$-linearity in $\mathbf{Y}$ follows from $\mathcal{F}$-linearity in the first argument
+Linearity over $C^\infty (M)$ in $\mathbf{Y}$ follows from the skew-symmetry of $R$ in $\mathbf{X}$ and $\mathbf{Y}$
 
 $$
   R(\mathbf{X},f\mathbf{Y}) = -R(f\mathbf{Y},\mathbf{X}) = -fR(\mathbf{Y},\mathbf{X}) = fR(\mathbf{X},\mathbf{Y})
+$$
+
+Similarly it can be shown that $R$ is linear over $C^\infty (M)$ in $\mathbf{Z}$. This shows that $R$ is a tensor field. In local coordinates, the components of $R$ are given by
+
+$$
+\begin{align*}
+  R(\boldsymbol{\partial}_i, \boldsymbol{\partial}_j)\boldsymbol{\partial}_k =& \nabla_{\boldsymbol{\partial}_i}(\nabla_{\boldsymbol{\partial}_j}\boldsymbol{\partial}_k) - \nabla_{\boldsymbol{\partial}_j} (\nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_k) - \underbrace{\nabla_{[\boldsymbol{\partial}_i,\boldsymbol{\partial}_j]} \boldsymbol{\partial}_k}_{=0} \\
+  =& \nabla_{\boldsymbol{\partial}_i} (\Gamma_{jk}^s \boldsymbol{\partial}_s) - \nabla_{\boldsymbol{\partial}_j}(\Gamma_{ik}^s \boldsymbol{\partial}_s) \\
+  =& \Gamma_{jk}^s \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_s + \boldsymbol{\partial}_i \Gamma_{jk}^l \boldsymbol{\partial}_l - \Gamma_{ik}^s \nabla_{\boldsymbol{\partial}_j} \boldsymbol{\partial}_s - \boldsymbol{\partial}_j \Gamma_{ik}^l \boldsymbol{\partial}_l \\
+  =& (\boldsymbol{\partial}_i \Gamma_{jk}^l - \boldsymbol{\partial}_j \Gamma_{ik}^l + \Gamma_{jk}^s \Gamma_{is}^l - \Gamma_{ik}^s \Gamma_{js}^l)\boldsymbol{\partial}_l \\
+  =& {R_{ijk}}^l \boldsymbol{\partial}_l
+\end{align*}
+$$
+
+This shows that $R$ is a $\binom{1}{3}$-tensor field on $M$ given in local coordinates by
+
+$$
+  R = {R_{ijk}}^l \;\boldsymbol{\partial}_l \otimes \mathrm{d}x^i \otimes \mathrm{d}x^j \otimes \mathrm{d}x^k 
 $$
 </details>
 </MathBox>
@@ -361,11 +396,15 @@ $$
 ## Existence of affine connections
 
 <MathBox title='Affine connection in local coordinates' boxType='lemma'>
-Suppose $M$ is a smooth $n$-manifold covered by a single coordinate chart $(U, (x^i)_{i=1}^n)$. There is an injective correspondence between linear connections on $M$ and choices of $n^3$ Christoffel symbols $\Gamma_{ij}^k$ on by the rule
+Suppose $M$ is a smooth $n$-manifold covered by a single coordinate chart $(U, (x^i)_{i=1}^n)$. There is an injective correspondence between affine connections on $M$ and choices of $n^3$ Christoffel symbols $\Gamma_{ij}^k$ on by the rule
 
 $$
 \begin{equation}
-  \nabla_\mathbf{X} \mathbf{Y} = \left(X^i \frac{\partial Y^k}{\partial x^i} + X^i Y^j \Gamma_{ij}^k \right)\frac{\partial}{\partial x^k} \tag{\label{equation-3}}
+\begin{split}
+  \nabla_\mathbf{X} \mathbf{Y} =& \left(X^i \boldsymbol{\partial}_i Y^k + X^i Y^j \Gamma_{ij}^k \right)\boldsymbol{\partial}_k \\
+  =& \left(\mathbf{X} Y^k + X^i Y^j \Gamma_{ij}^k \right)\boldsymbol{\partial}_k
+\end{split}
+\tag{\label{equation-3}}
 \end{equation}
 $$
 
@@ -376,7 +415,13 @@ Note that $\eqref{equation-3}$ is equivalent to $\eqref{equation-2}$ when $E_i =
 </details>
 </MathBox>
 
-Note that a linear combination of affine connections is necessarilty a connection. Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{Y}\in\Gamma(E)$ and function $f\in C^\infty (M)$
+Note that in terms of coordinate vector fields $\mathbf{X} = \boldsymbol{\partial}_i$ and $\mathbf{Y} = \boldsymbol{\partial}_j$, the affine connection takes the form
+
+$$
+  \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j = \Gamma_{ij}^k \boldsymbol{\partial}_k
+$$
+
+Note that a linear combination of affine connections is not necessarily a connection. Let $\nabla^0$ and $\nabla^1$ be two connections on a vector bundle $E$ over $M$. By the Leibniz rule, for any vector field $\mathbf{X}\in\mathfrak{X}(M)$, section $\mathbf{Y}\in\Gamma(E)$ and function $f\in C^\infty (M)$
 
 $$
 \begin{align*}
@@ -5137,7 +5182,7 @@ $$
 where $\mathbf{e}_1$ and $\mathbf{e}_2$ are evaluated at $c(t)$.
 
 <MathBox title='' boxType='proposition'>
-Let $U$ be an open subset of an oriented Riemannian $2$-manifold $M$ with an orthonormal frame $\Set{\mathbf{e}_1,\mathbf{e}_2}$ that is positively oriented. Suppose $\gamma:[a,b]\to U$ is a unit-speed curve and $\theta:[a,b]\to\R$ is the angle function along the curve $\gamma$ relative to $\Set{\mathbf{e}_1,\mathbf{e}_2}$. If $\omega_2^1$ is the connection form of an affine connection M$, the signed geodesic curvature of $\gamma$ is given by
+Let $U$ be an open subset of an oriented Riemannian $2$-manifold $M$ with an orthonormal frame $\Set{\mathbf{e}_1,\mathbf{e}_2}$ that is positively oriented. Suppose $\gamma:[a,b]\to U$ is a unit-speed curve and $\theta:[a,b]\to\R$ is the angle function along the curve $\gamma$ relative to $\Set{\mathbf{e}_1,\mathbf{e}_2}$. If $\omega_2^1$ is the connection form of an affine connection $M$, the signed geodesic curvature of $\gamma$ is given by
 
 $$
   \kappa_g = \frac{\mathrm{d}\theta}{\mathrm{d}s} - \omega_2^1 (T)
