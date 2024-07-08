@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass"
 
-import vertexShader from "shaders/standard_vs.glsl"
+import vertexShader from "lib/shaders/standard_vs.glsl"
 import blurFragmentShader from "lib/shaders/blur_fs.glsl"
 //import drawFragmentShader from 'lib/shaders/plain_draw_fs.glsl'
 

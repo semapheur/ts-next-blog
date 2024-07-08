@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next"
 
-import { XorFilter } from 'bloom-filters'
+import { XorFilter } from "bloom-filters"
 
-import tokenize from 'lib/utils/tokenize'
-import notes from 'cache/notes.json'
+import tokenize from "lib/utils/tokenize"
+import notes from "content/cache/notes.json"
 
 export type SearchResult = {
   score: number
@@ -56,6 +56,6 @@ export default async function handler(
   }
 
   res.statusCode = 200
-  res.setHeader('Content-Type', 'application/json')
+  res.setHeader("Content-Type", "application/json")
   res.json(result)
 }

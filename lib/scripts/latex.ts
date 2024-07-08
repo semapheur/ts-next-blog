@@ -1,5 +1,55 @@
 import * as fs from "node:fs"
 
+function findMismatchedInlineMath(mdxFile: string) {
+  const mdxContent = fs.readFileSync(mdxFile, "utf8")
+
+  // Split the content into lines
+  const lines = mdxContent.split("\n")
+
+  let inMath = false
+  let lastOpenLine = -1
+  let lastOpenCol = -1
+
+  for (let lineNum = 0; lineNum < lines.length; lineNum++) {
+    const line = lines[lineNum]
+
+    // Skip double dollar expressions
+    if (line.includes("$$")) continue
+
+    for (let colNum = 0; colNum < line.length; colNum++) {
+      if (line[colNum] === "$") {
+        if (inMath) {
+          inMath = false
+        } else {
+          inMath = true
+          lastOpenLine = lineNum
+          lastOpenCol = colNum
+        }
+      }
+    }
+
+    // Check if we're still in math mode at the end of the line
+    if (inMath && lineNum !== lastOpenLine) {
+      return {
+        message: "Unclosed inline math expression",
+        line: lastOpenLine + 1,
+        column: lastOpenCol + 1,
+      }
+    }
+  }
+
+  // Check if we're still in math mode at the end of the file
+  if (inMath) {
+    return {
+      message: "Unclosed inline math expression",
+      line: lastOpenLine + 1,
+      column: lastOpenCol + 1,
+    }
+  }
+
+  return { message: "No mismatched inline math delimiters found" }
+}
+
 function relabelLatexEquations(mdxFile: string) {
   let mdxContent = fs.readFileSync(mdxFile, "utf8")
 
@@ -39,4 +89,5 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
+console.log(findMismatchedInlineMath("./content/notes/math/manifolds.mdx"))
+//relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
