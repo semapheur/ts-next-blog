@@ -1,18 +1,18 @@
-'use client'
-import { useEffect, useRef } from 'react'
+"use client"
+import { useEffect, useRef } from "react"
 
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectionShader'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
+import { ColorCorrectionShader } from "three/examples/jsm/shaders/ColorCorrectionShader"
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 //import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 
-import { PyramidBloomPass } from 'lib/utils/bloom'
+import { PyramidBloomPass } from "lib/utils/bloom"
 
-import starfieldVertexShader from 'shaders/starfield_vs.glsl'
-import fragmentShader from 'shaders/standard_fs.glsl'
+import starfieldVertexShader from "lib/shaders/starfield_vs.glsl"
+import fragmentShader from "lib/shaders/standard_fs.glsl"
 
 function BitDeinterlace(v: number): number[] {
   const result = [0, 0, 0]
@@ -57,11 +57,11 @@ export default function SpecialRelativity() {
     renderer.setSize(width, height)
 
     const supportsHalf =
-      renderer.extensions.get('OES_texture_half_float') ||
-      renderer.extensions.get('OES_texture_half_float_linear')
+      renderer.extensions.get("OES_texture_half_float") ||
+      renderer.extensions.get("OES_texture_half_float_linear")
     const supportsFloat =
-      renderer.extensions.get('OES_texture_float') ||
-      renderer.extensions.get('OES_texture_float_linear')
+      renderer.extensions.get("OES_texture_float") ||
+      renderer.extensions.get("OES_texture_float_linear")
 
     let textureType: THREE.TextureDataType = THREE.UnsignedByteType
 
@@ -142,8 +142,8 @@ export default function SpecialRelativity() {
     }
 
     const attrib = new THREE.Float32BufferAttribute(positions, 4)
-    geometry.setAttribute('position', attrib)
-    geometry.setAttribute('my_position', attrib)
+    geometry.setAttribute("position", attrib)
+    geometry.setAttribute("my_position", attrib)
     geometry.setDrawRange(0, idx / 4)
 
     const material = new THREE.ShaderMaterial({
@@ -177,7 +177,7 @@ export default function SpecialRelativity() {
   }, [])
 
   return (
-    <div ref={wrapperRef} className='h-full'>
+    <div ref={wrapperRef} className="h-full">
       <canvas ref={canvasRef} />
     </div>
   )

@@ -1,9 +1,9 @@
-import * as THREE from 'three'
-import { Pass, FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass'
+import * as THREE from "three"
+import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass"
 
-import vertexShader from 'shaders/standard_vs.glsl'
-import blurFragmentShader from 'shaders/blur_fs.glsl'
-import drawFragmentShader from 'shaders/plain_draw_fs.glsl'
+import vertexShader from "shaders/standard_vs.glsl"
+import blurFragmentShader from "lib/shaders/blur_fs.glsl"
+//import drawFragmentShader from 'lib/shaders/plain_draw_fs.glsl'
 
 export class PyramidBloomPass extends Pass {
   vertexShader: string
