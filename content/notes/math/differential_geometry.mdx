@@ -478,7 +478,7 @@ Let $M$ be a smooth manifold with an affine connection $\nabla$ and let $\mathbf
 
 $$
 \begin{equation}
-  (\nabla_\mathbf{x}\omega)(\mathbf{Y}) := \mathbf{X}(\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X}\mathbf{Y}) \tag{\label{equation-6}}
+  (\nabla_\mathbf{X}\omega)(\mathbf{Y}) := \mathbf{X}(\omega(\mathbf{Y})) - \omega(\nabla_\mathbf{X}\mathbf{Y}) \tag{\label{equation-6}}
 \end{equation}
 $$
 
@@ -503,7 +503,7 @@ $$
 Let $M$ be a smooth $n$-manifold with a connection $\nabla$. If $\omega\in\Lambda^1 (M)$ is a $1$-form and $\mathbf{X}\in\mathfrak{X}(M)$ is a vector field, then on a chart $(U, (x^i)_{i=1}^n)$
 
 $$
-  \nabla_\mathbf{X}\omega = \left(X^i \frac{\partial\omega_k}{\partial x^i} - X^i \omega_j \Gamma_{ik}^j \right)\;\mathrm{d}x^k
+  \nabla_\mathbf{X}\omega = \left(X^i \boldsymbol{\partial}_i \omega_k - X^i \omega_j \Gamma_{ik}^j \right)\;\mathrm{d}x^k
 $$
 </MathBox>
 
@@ -1532,7 +1532,150 @@ Choose $\varepsilon = \frac{a\delta}{2}$. Then the result follows from the previ
 
 # Riemannian geometry
 
+## Riemannian manifold
+
 ## Levi-Civita connection
+
+<MathBox title='Metric compatility for affine connections' boxType='definition'>
+On a Riemannian manifold $(M, g)$, an affine connection $\nabla$ is *metric compatible* if it satisfies the following product rule for all $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$
+
+$$
+  \mathbf{X}\langle\mathbf{Y},\mathbf{Z}\rangle = \langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle + \langle\mathbf{Y}, \nabla_\mathbf{X} \mathbf{Z}\rangle
+$$
+</MathBox>
+
+<MathBox title='Levi-Civita connection' boxType='definition'>
+On a Riemannian manifold $(M,g)$, an affine connection $\nabla$ is called a *Levi-Civita connection*, or a *Riemannian connection*, if $\nabla$ torsion-free and compatible with $g$. 
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-5'>
+A smooth vector field $\mathbf{X}$ on a Riemannian manifold $(M,g)$ is uniquely determined by the values $\langle\mathbf{X},\mathbf{Z}\rangle$ for $\mathbf{Z}\in\mathfrak{X}(M)$.
+
+<details>
+<summary>Proof</summary>
+
+We need to show that if $\tilde{\mathbf{X}}\in\mathfrak{X}(M)$ and $\langle\mathbf{X},\mathbf{Z}\rangle = \langle\tilde{\mathbf{X}},\mathbf{Z}\rangle$ for all $\mathbf{Z}\in\mathfrak{X}(M)$, then $\mathbf{X} = \tilde{\mathbf{X}}$. With $\mathbf{Y} = \mathbf{X} - \tilde{\mathbf{X}}$, this is equivalent to showing that if $\langle\mathbf{Y},\mathbf{Z}\rangle = 0$ for all $\mathbf{Z}\in\mathfrak{X}(M)$, then $\mathbf{Y} = 0$. Take $\mathbf{Z} = \mathbf{Y}$. By the positive-definiteness of Riemannian metric at point $\mathbf{p}\in M$
+
+$$
+\begin{align*}
+  \langle\mathbf{Y},\mathbf{Y}\rangle = 0 \implies& \langle\mathbf{Y_p}, \mathbf{Y_p}) = 0 \; \forall \mathbf{p}\in M \\
+  \implies& \mathbf{Y_p} = 0 \; \forall\mathbf{p}\in M \\
+  \implies& \mathbf{Y} = 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Fundamental theorem of Riemannian geometry' boxType='theorem'>
+On a Riemannian manifold $(M,g)$ there is a unique Levi-Civita connection $\nabla$ with Christoffel symbols given in local coordinates by
+
+$$
+\begin{equation}
+  \Gamma_{ij}^k = \frac{1}{2} g^{kl} (\boldsymbol{\partial}_i g_{jl} + \boldsymbol{\partial}_j g_{il} - \boldsymbol{\partial}_l g_{ij}) \tag{\label{equation-11}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Suppose $\nabla$ is a Levi-Civita connection on $M$ and let $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$ be arbitrary smooth vector fields. We prove uniqueness first by deriving a formula for $\nabla$. By lemma $\ref{lemma-5}$, to specify $\nabla_\mathbf{X} \mathbf{Y}$, it suffices to know $\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle$. 
+
+As the Levi-Civita connection is torsion-free and metric compatible, it satifies the two equations
+
+$$
+\begin{gather*}
+  \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y} \mathbf{X} = [\mathbf{X},\mathbf{Y}] \\
+  \mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle = \langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle + \langle\mathbf{Y}, \nabla_\mathbf{X} \mathbf{Z}\rangle
+\end{gather*}
+$$
+
+Cyclically permuting $\mathbf{X},\mathbf{Y},\mathbf{Z}$ in the compatibility equation gives two additional equations
+
+$$
+\begin{align*}
+  \mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle =& \langle\nabla_\mathbf{Y} \mathbf{Z}, \mathbf{X}\rangle + \langle\mathbf{Z}, \nabla_\mathbf{Y} \mathbf{X}\rangle \\
+  \mathbf{Z}\langle \mathbf{X},\mathbf{Y}\rangle =& \langle\nabla_\mathbf{Z} \mathbf{X},\mathbf{Y} \rangle + \langle\mathbf{X}, \nabla_\mathbf{Z} \mathbf{Y}\rangle
+\end{align*}
+$$
+
+Applying the torsion-free equation on the last term in each of the compatibility equations, we obtain
+
+$$
+\begin{align*}
+  \mathbf{X}\langle\mathbf{Y},\mathbf{Z}\rangle =& \langle\nabla_\mathbf{X} \mathbf{Y}, \mathbf{Z}\rangle + \langle\mathbf{Y},\nabla_\mathbf{Z} \mathbf{X}\rangle + \langle\mathbf{Y}, [\mathbf{X},\mathbf{Z}]\rangle \\
+  \mathbf{Y}\langle\mathbf{Z},\mathbf{X}\rangle =& \langle\nabla_\mathbf{Y} \mathbf{Z}, \mathbf{X}\rangle + \langle\mathbf{Z},\nabla_\mathbf{X} \mathbf{Y}\rangle + \langle\mathbf{Z}, [\mathbf{X},\mathbf{Y}]\rangle \\
+  \mathbf{Z}\langle \mathbf{X},\mathbf{Y}\rangle =& \langle\nabla_\mathbf{Z} \mathbf{X},\mathbf{Y}\rangle + \langle\mathbf{X}, \nabla_\mathbf{Y} \mathbf{Z}\rangle + \langle\mathbf{X}, [\mathbf{Z}, \mathbf{Y}]\rangle
+\end{align*}
+$$
+
+Adding the first two equations and subtracting the third, we get
+
+$$
+\begin{align*}
+  \mathbf{X}\langle\mathbf{Y},\mathbf{Z}\rangle +& \mathbf{Y}\langle\mathbf{Z},\mathbf{X}\rangle - \mathbf{Z}\langle \mathbf{X},\mathbf{Y}\rangle =& 2\langle\nabla_\mathbf{X} \mathbf{Y}, \mathbf{Z}\rangle + \langle\mathbf{Y}, [\mathbf{X},\mathbf{Y}]\rangle + \langle\mathbf{Z},[\mathbf{Y},\mathbf{X}]\rangle - \langle\mathbf{X}, [\mathbf{Z},\mathbf{Y}]\rangle
+\end{align*}
+$$
+
+Solving for $\langle\nabla_\mathbf{X} \mathbf{Y}, \mathbf{Z}\rangle$ we get
+
+$$
+\begin{equation}
+\begin{split}
+  \langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle =& \frac{1}{2}\left(\mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle + \mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle - \mathbf{Z}\langle\mathbf{X},\mathbf{Y}\rangle \\
+  &\left.- \langle\mathbf{X},[\mathbf{Y},\mathbf{Z}]\rangle + \langle\mathbf{Y},[\mathbf{Z},\mathbf{X}]\rangle + \langle\mathbf{Z},[\mathbf{X},\mathbf{Y}]\rangle\right)
+\end{split}\tag{\label{equation-10}}
+\end{equation}
+$$
+
+Now suppose $\nabla^1$ and $\nabla^2$ are two symmetric and metric-compatible connections. Since the right-hand side of $\eqref{equation-10}$ does not depend on the connection, it follows that $\langle \nabla_\mathbf{X}^1 \mathbf{Y} - \nabla_\mathbf{X}^2 \mathbf{Y}, \mathbf{Z}\rangle = 0$ for all $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$. By the positive definiteness of $g$, this can only happen if $\nabla_\mathbf{X}^1 \mathbf{Y} = \nabla_\mathbf{X}^2 \mathbf{Y}$, hence $\nabla^1 = \nabla^2$.
+
+To prove existence, it suffices to show that such a connection exists in each coordinate chart; uniqueness ensures that such the connections constructed in different charts agree where they overlap.
+
+Let $(U, (x^i)_{i=1}^n)$ be any local chart. Applying $\eqref{equation-10}$ to the coordinate vector fields, whose Lie brackets are zero, we get
+
+$$
+  \langle\nabla_{\boldsymbol{\partial}_i} \boldsymbol{\partial}_j, \boldsymbol{\partial}_l \rangle = \frac{1}{2}\left(\boldsymbol{\partial}_i \langle\boldsymbol{\partial}_j, \boldsymbol{\partial}_l \rangle + \boldsymbol{\partial}_j \langle\boldsymbol{\partial}_l, \boldsymbol{\partial}_i \rangle - \boldsymbol{\partial}_l \langle\boldsymbol{\partial}_i, \boldsymbol{\partial}_j \rangle \right)
+$$
+
+Applying the definitions of the metric coefficients and the Christoffel symbols
+
+$$
+  g_{ij} = \langle\boldsymbol{\partial}_i, \boldsymbol{\partial}_j\rangle,\quad \nabla_{\boldsymbol{\partial}_i} \boldsymbol{\nabla}_j = \Gamma_{ij}^m \boldsymbol{\partial}_m 
+$$
+
+we get
+
+$$
+  \Gamma_{ij}^m g_{ml} = \frac{1}{2} \left(\boldsymbol{\partial}_i g_{jl} + \boldsymbol{\partial}_j g_{il} - \boldsymbol{\partial}_l g_{ij} \right)
+$$
+
+Multiplying both sides by the inverse matrix $g^{lk}$ and noting that $g_{ml} g^{lk} = \delta_m^k$, we get
+
+$$
+  \Gamma_{ij}^k = \frac{1}{2} g^{kl} (\boldsymbol{\partial}_i g_{jl} + \boldsymbol{\partial}_j g_{il} - \boldsymbol{\partial}_l g_{ij})
+$$
+
+This formula certainly defines a connection in each chart. Since $g$ is symmetric, it is evident from the formula that $\Gamma_{ij}^k = \Gamma_{ji}^k$, so the connection is symmetric. Thus only compatibility with $g$ needs to be checked. By lemma, it suffices to show that $\nabla g = 0$. In local coordinates, the components of $\nabla g$ are
+
+$$
+  g_{ij;k} = \boldsymbol{\partial}_k g_{ij} - \Gamma_{ki}^l g_{lj} - \Gamma_{kj}^l g_{il}
+$$
+
+Applying $\eqref{equation-11}$ twice, we conclude that
+
+$$
+\begin{align*}
+  \Gamma_{ki}^l g_{lj} + \Gamma_{kj}^l g_{il} =& \frac{1}{2}(\boldsymbol{\partial}_k g_{ij} + \boldsymbol{\partial}_i g_{kj} - \boldsymbol{\partial}_j g_{ki}) + \frac{1}{2}(\boldsymbol{\partial}_k g_{ji} + \boldsymbol{\partial}_j g_{ki} - \boldsymbol{\partial}_i g_{kj}) \\
+  =& \boldsymbol{\partial}_k g_{ij}
+\end{align*}
+$$
+
+which shows that $g_{ij;k} = 0$.
+</details>
+</MathBox>
+
+The Levi-Civita connection on $\R^n$ with its usual Euclidean metric is the directional derivative $\mathrm{D}$ on $\R^n$.
+
 
 # Curvature and vector fields
 
@@ -2292,94 +2435,6 @@ $$
 $$
 </details>
 </MathBox>
-
-### Levi-Civita connection
-
-<MathBox title='Metric compatility for connections' boxType='definition'>
-On a Riemannian manifold $M$, a connection $\nabla$ is *metric compatible* if for all $\mathbf{X},\mathbf{Y},\mathbf{Z}\in\mathfrak{X}(M)$
-
-$$
-  \mathbf{Z}\langle\mathbf{X},\mathbf{Y}\rangle = \langle\nabla_\mathbf{Z} \mathbf{X},\mathbf{Y}\rangle + \langle\mathbf{X}, \nabla_\mathbf{Z} \mathbf{Y}\rangle
-$$
-</MathBox>
-
-<MathBox title='Levi-Civita connection' boxType='definition'>
-On a Riemannian manifold, a *Levi-Civita connection*, also called a *Riemannian connection*, is an affine connection that is torsion-free and metric compatible.
-</MathBox>
-
-<MathBox title='' boxType='lemma'>
-A smooth vector field $\mathbf{X}$ on a Riemannian manifold $(M,g)$ is uniquely determined by the values $\langle\mathbf{X},\mathbf{Z}\rangle$ for $\mathbf{Z}\in\mathfrak{X}(M)$.
-
-<details>
-<summary>Proof</summary>
-
-We need to show that if $X'\in\mathfrak{X}(M)$ and $\langle \mathbf{X},\mathbf{Z}\rangle = \langle\mathbf{X}',\mathbf{Z}\rangle$ for all $\mathbf{Z}\in\mathfrak{X}(M)$, then $\mathbf{X} = \mathbf{X}'$. With $\mathbf{Y} = \mathbf{X} - \mathbf{X}'$, this is equivalent to showing that if $\langle\mathbf{Y},\mathbf{Z}\rangle = 0$ for all $\mathbf{Z}\in\mathfrak{X}(M)$, then $\mathbf{Y} = 0$. Take $\mathbf{Z} = \mathbf{Y}$. By the positive-definiteness of the inner product at point $\mathbf{p}\in M$
-
-$$
-  \langle\mathbf{Y},\mathbf{Y}\rangle = 0 \implies& \langle \mathbf{Y_p}, \mathbf{Y_p}\rangle = 0 \; \forall \mathbf{p}\in M \\
-  \implies& \mathbf{Y_p} = 0 \; \forall\mathbf{p}\in M \\
-  \implies& \mathbf{Y} = 0
-$$
-</details>
-</MathBox>
-
-<MathBox title='Fundamental theorem of Riemannian manifolds' boxType='theorem'>
-On a Riemannian manifold there is a unique Levi-Civita connection.
-
-<details>
-<summary>Proof</summary>
-
-Suppose $\nabla$ is a Levi-Civita connection on $M$. By the previous lemma, to specify $\nabla_\mathbf{X} \mathbf{Y}$, it suffices to know $\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle$ for every vector field $\mathbf{Z}\in\mathfrak{X}(M)$. We seek to find a formula for $\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle$ involving only the Riemannian metric and canonical operations on vector fields such as the Lie bracket.
-
-As the Levi-Civita connection is torsion-free and metric compatible, it satifies the two equations
-
-$$
-\begin{gather*}
-  \nabla_\mathbf{X}\mathbf{Y} - \nabla_\mathbf{Y} - [\mathbf{X},\mathbf{Y}] = 0 \\
-  \mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle = \langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z} \rangle + \langle\mathbf{Y}, \nabla_\mathbf{X} \mathbf{Z} \rangle
-\end{gather*}
-$$
-
-Cyclically permuting $\mathbf{X},\mathbf{Y},\mathbf{Z}$ in the last equation gives two additional equations
-
-$$
-\begin{align*}
-  \mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle =& \langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z} \rangle + \langle\mathbf{Y}, \nabla_\mathbf{X} \mathbf{Z} \rangle \\
-  \mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle =& \langle\nabla_\mathbf{Y} \mathbf{Z}, \mathbf{X}\rangle + \langle\mathbf{Z}, \nabla_\mathbf{Y} \mathbf{X}\rangle \\
-  \mathbf{Z}\langle \mathbf{X},\mathbf{Y}\rangle =& \langle\nabla_\mathbf{Z} \mathbf{X},\mathbf{Y} \rangle + \langle\mathbf{X}, \nabla_\mathbf{Z} \mathbf{Y}\rangle
-\end{align*}
-$$
-
-From the torsion-free equation we can rewrite $\nabla_\mathbf{Y} \mathbf{X}$ in terms of $\nabla_\mathbf{X} \mathbf{Y}$
-
-$$
-  \mathbf{Y}\langle\mathbf{Z},\mathbf{X}\rangle = \langle\nabla_\mathbf{Y} \mathbf{Z}, \mathbf{X}\rangle + \langle\mathbf{Z},\nabla_\mathbf{X} \mathbf{Y}\rangle - \langle\mathbf{Z}, [\mathbf{X},\mathbf{Y}]\rangle
-$$
-
-Subracting $\mathbf{Z}\langle \mathbf{X},\mathbf{Y}\rangle$ from $\mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle$ and then adding $\mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle$, will create terms involving $\nabla_\mathbf{X} \mathbf{Z} - \nabla_\mathbf{Z} \mathbf{X}$ and $\nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Z} \mathbf{Y}$, which are equal to $[\mathbf{X},\mathbf{Y}]$ and $[\mathbf{Y},\mathbf{Z}]$ by torsion-freeness
-
-$$
-\begin{align*}
-  & \mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle + \mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle - \mathbf{Z}\langle\mathbf{X},\mathbf{Y}\rangle \\
-  =& 2\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle + \langle\mathbf{Y}, \nabla_\mathbf{X} \mathbf{Z} - \nabla_\mathbf{Z} \mathbf{X}\rangle + \langle\mathbf{X}, \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Z} \mathbf{Y}\rangle - \langle\mathbf{Z}, [\mathbf{X},\mathbf{Y}]\rangle \\
-  =& 2\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle + \langle\mathbf{Y}, [\mathbf{X},\mathbf{Z}]\rangle + \langle\mathbf{X},[\mathbf{Y},\mathbf{Z}]\rangle - \langle\mathbf{Z},[\mathbf{X},\mathbf{Y}]\rangle
-\end{align*}
-$$
-
-Solving for $\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle$, we get
-
-$$
-\begin{align*}
-  2\langle\nabla_\mathbf{X} \mathbf{Y},\mathbf{Z}\rangle =& \mathbf{X}\langle \mathbf{Y},\mathbf{Z}\rangle + \mathbf{Y}\langle \mathbf{Z},\mathbf{X}\rangle - \mathbf{Z}\langle\mathbf{X},\mathbf{Y}\rangle \\
-  &- \langle\mathbf{X},[\mathbf{Y},\mathbf{Z}]\rangle + \langle\mathbf{Y},[\mathbf{Z},\mathbf{X}]\rangle + \langle\mathbf{Z},[\mathbf{X},\mathbf{Y}]\rangle 
-\end{align*}
-$$
-
-This formula proves that a Levi-Civita is unique if it exists.
-</details>
-</MathBox>
-
-The Levi-Civita connection on $\R^n$ with its usual Euclidean metric is the directional derivative $\mathrm{D}$ on $\R^n$.
 
 ### Orthogonal projection on a surface in $\R^3$
 
