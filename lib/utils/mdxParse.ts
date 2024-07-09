@@ -1,41 +1,41 @@
-import { serialize } from 'next-mdx-remote/serialize'
+import { serialize } from "next-mdx-remote/serialize"
 
 //import {bundleMDX} from 'mdx-bundler'
-import { unified } from 'unified'
+import { unified } from "unified"
 //import { mystParser } from 'myst-parser'
-import remarkMath from 'remark-math'
-import remarkGfm from 'remark-gfm'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import rehypeKatex from 'rehype-katex'
-import rehypePrettyCode from 'rehype-pretty-code'
-import rehypeImgSize from 'rehype-img-size'
+import remarkMath from "remark-math"
+import remarkGfm from "remark-gfm"
+import remarkParse from "remark-parse"
+import remarkRehype from "remark-rehype"
+import rehypeKatex from "rehype-katex"
+import rehypePrettyCode from "rehype-pretty-code"
+import rehypeImgSize from "rehype-img-size"
 //import rehypeMathjax from 'rehype-mathjax/chtml'
-import rehypeSlug from 'rehype-slug'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import rehypeStringify from 'rehype-stringify'
-import type { MDXPost, NoteHeading } from './types'
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
+import rehypeSlug from "rehype-slug"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import rehypeStringify from "rehype-stringify"
+import type { MDXPost, NoteHeading } from "./types"
+import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
-import { rehypeMathref } from './rehype'
+import { rehypeMathref } from "./rehype"
 
 export const remarkPlugins = [remarkGfm, remarkMath]
 export const rehypePlugins = [
   rehypeSlug,
   rehypeAutolinkHeadings,
-  [rehypeImgSize, { dir: 'public' }],
+  [rehypeImgSize, { dir: "public" }],
   rehypePrettyCode,
   [
     rehypeKatex,
     {
-      trust: (context) => ['\\htmlId', '\\href'].includes(context.command),
+      trust: (context) => ["\\htmlId", "\\href"].includes(context.command),
       macros: {
-        '\\d': '\\mathrm{d}',
-        '\\eqref': '\\href{###1}{(\\text{#1})}',
-        '\\ref': '\\href{###1}{\\text{#1}}',
-        '\\label': '\\htmlId{#1}{\\text{#1}}',
+        "\\d": "\\mathrm{d}",
+        "\\eqref": "\\href{###1}{(\\text{#1})}",
+        "\\ref": "\\href{###1}{\\text{#1}}",
+        "\\label": "\\htmlId{#1}{\\text{#1}}",
       },
     },
   ],
@@ -62,7 +62,7 @@ export async function serializeMDX<T>(
   const serialized = await serialize(rawMdx, {
     parseFrontmatter: matter,
     mdxOptions: {
-      development: process.env.NODE_ENV !== 'production',
+      development: process.env.NODE_ENV !== "production",
       remarkPlugins: remarkPlugins,
       // @ts-ignore
       rehypePlugins: rehypePlugins,
@@ -78,8 +78,8 @@ export async function serializeMDX<T>(
 function nest<T extends object>(arr: T[], ix: number[], value: T): void {
   for (const i of ix) {
     const obj = arr[i - 1]
-    if (!('children' in obj)) obj['children'] = []
-    arr = obj['children']
+    if (!("children" in obj)) obj["children"] = []
+    arr = obj["children"]
   }
   arr.push(value)
 }
@@ -98,7 +98,7 @@ function mdParser(text: string) {
 }
 
 export async function markdownHeadings(source: string) {
-  const headings = source.split('\n').filter((line) => {
+  const headings = source.split("\n").filter((line) => {
     return line.match(/^#+\s/)
   })
 
@@ -108,11 +108,11 @@ export async function markdownHeadings(source: string) {
   const result: NoteHeading[] = []
 
   for (const h of headings) {
-    let text: string = h.replace(/^#+\s/, '').replace(/\r|\n/g, '').trim()
+    let text: string = h.replace(/^#+\s/, "").replace(/\r|\n/g, "").trim()
     let slug = text
       .toLowerCase()
-      .replace(/[\\${}()']|/g, '')
-      .replaceAll(' ', '-')
+      .replace(/[\\${}()']|/g, "")
+      .replaceAll(" ", "-")
 
     if (text.match(/\$.+\$/g)) {
       text = await serializeMDX(text, false).then((res) => JSON.stringify(res))
@@ -146,7 +146,7 @@ export async function markdownHeadings(source: string) {
     if (level === 1) {
       result.push(obj)
     } else {
-      const keys = number.split('.').map(Number).slice(0, -1)
+      const keys = number.split(".").map(Number).slice(0, -1)
       nest(result, keys, obj)
     }
   }

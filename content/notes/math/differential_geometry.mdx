@@ -4,8 +4,6 @@ subject: 'Mathematics'
 showToc: true
 ---
 
-In the following discussions, the term "smooth" means infinitely differentiable, or $C^\infty$. If $M$ is a smooth manifold, $\mathcal{F} = C^\infty (M)$ denotes the ring of smooth functions on $M$.
-
 # Connections
 
 <MathBox title='Connection on vector bundles' boxType='definition'>
@@ -47,6 +45,14 @@ $$
 $$
 </details>
 </MathBox>
+
+A connection on the tangent bundle $TM$ of a smooth manifold $M$ can be viewed as a linear map
+
+$$
+  \nabla: \mathfrak{X}(M) \to \hom_{C^\infty (M)} (\mathfrak{X}(M),\mathfrak{X}(M))
+$$
+
+such that for any fixed $\mathbf{Y}\in\mathfrak{X}(M)$, the map $\nabla \mathbf{Y} \mapsto \nabla_\mathbf{X} \mathbf{Y}$ is linear over $C^\infty (M)$, implying that $\nabla \mathbf{Y}$ is a $\binom{1}{1}$-tensor field on $M$.
 
 <MathBox title='' boxType='lemma' tag='lemma-1'>
 Let $M$ be a smooth manifold. If $\nabla$ is a connection in a bundle $E$, $\mathbf{X}\in\mathfrak{X}(M)$, $\mathbf{Y}\in\Gamma(M)$ and $\mathbf{p}\in M$, then $\nabla_\mathbf{X}|_\mathbf{p}$ depends only on the values of $\mathbf{X}$ and $\mathbf{Y}$ in an arbitrarily small neighbourhood of $\mathbf{p}$. Specifically, if $\mathbf{X} = \tilde{\mathbf{X}}$ and $\mathbf{Y} = \tilde{\mathbf{Y}}$ on a neighbourhood of $\mathbf{p}$, then $\nabla_\mathbf{X}|_\mathbf{p} = \nabla_{\tilde{\mathbf{X}}} \tilde{\mathbf{Y}}|_\mathbf{p}$.
@@ -219,8 +225,8 @@ Applying $f$ on $\mathbf{X}$ we have
 $$
 \begin{align*}
   T(f\mathbf{X}, \mathbf{Y}) =& \nabla_{f\mathbf{X}} \mathbf{Y} - \nabla_\mathbf{Y} (f\mathbf{X}) - [f\mathbf{X}, \mathbf{Y}] \\
-  =& f\nabla_{\mathbf{X}} \mathbf{Y} - (f\nabla_\mathbf{Y} \mathbf{X} + \cancel{(\mathbf{Y} f)\mathbf{X}}) \\
-  &- (f[\mathbf{X}, \mathbf{Y}] - \cancel{(\mathbf{Y}f)\mathbf{X}}) \\
+  =& f\nabla_{\mathbf{X}} \mathbf{Y} - f\nabla_\mathbf{Y} \mathbf{X} - \cancel{(\mathbf{Y} f)\mathbf{X}} \\
+  &- f[\mathbf{X}, \mathbf{Y}] + \cancel{(\mathbf{Y}f)\mathbf{X}} \\
   =& f (\nabla_\mathbf{X} \mathbf{Y} - \nabla_\mathbf{Y} \mathbf{X} - [\mathbf{X}, \mathbf{Y}]) \\
   =& fT(\mathbf{X},\mathbf{Y})
 \end{align*}
@@ -354,7 +360,7 @@ $$
   R(f\mathbf{X},\mathbf{Y})\mathbf{Z} = R(\mathbf{X},f\mathbf{Y})\mathbf{Z} = R(\mathbf{X},\mathbf{Y})(f\mathbf{Z}) = fR(\mathbf{X},\mathbf{Y})
 $$
 
-Applying $f$ on $\mathbf{X}$ we get
+Applying $f$ to $\mathbf{X}$ we get
 
 $$
 \begin{align*}
@@ -373,7 +379,25 @@ $$
   R(\mathbf{X},f\mathbf{Y}) = -R(f\mathbf{Y},\mathbf{X}) = -fR(\mathbf{Y},\mathbf{X}) = fR(\mathbf{X},\mathbf{Y})
 $$
 
-Similarly it can be shown that $R$ is linear over $C^\infty (M)$ in $\mathbf{Z}$. This shows that $R$ is a tensor field. In local coordinates, the components of $R$ are given by
+Applying $f$ to $\mathbf{Z}$, we get
+
+$$
+\begin{align*}
+  R(\mathbf{X},\mathbf{Y})f\mathbf{Z} =& \nabla_\mathbf{X} \nabla_\mathbf{Y} (f\mathbf{Z}) - \nabla_\mathbf{Y} \nabla_\mathbf{X} (f\mathbf{Z}) - \nabla_{[\mathbf{X},\mathbf{Y}]} (f\mathbf{Z}) \\
+  =& \nabla_\mathbf{X} f (\nabla_\mathbf{Y} \mathbf{Z}) + \nabla_\mathbf{X} (\mathbf{Y}f)\mathbf{Z} \\ 
+  &- \nabla_\mathbf{Y} f \nabla_\mathbf{X} \mathbf{Z} - \nabla_\mathbf{Y} (\mathbf{X}f)\mathbf{Z} \\
+  &- f\nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z} - ([\mathbf{X},\mathbf{Y}]f) \mathbf{Z} \\
+  =& f \nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} + \textcolor{red}{(\mathbf{X}f)\nabla_\mathbf{Y} \mathbf{Z}} \\
+  &+ \textcolor{lime}{(\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}} + \textcolor{cyan}{(\mathbf{X}(\mathbf{Y}f))\mathbf{Z}} \\
+  &- f\nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \textcolor{lime}{(\mathbf{Y}f)\nabla_\mathbf{X} \mathbf{Z}} \\
+  &- \textcolor{red}{(\mathbf{X}f)\nabla_\mathbf{Y} \mathbf{Z}} - \textcolor{orange}{(\mathbf{Y}(\mathbf{X}f))\mathbf{Z}} \\
+  &- f\nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z} - \textcolor{cyan}{(\mathbf{X}(\mathbf{Y}f))\mathbf{Z}} + \textcolor{orange}{(\mathbf{Y}(\mathbf{X}f))\mathbf{Z}} \\
+  =& f(\nabla_\mathbf{X} \nabla_\mathbf{Y} \mathbf{Z} - \nabla_\mathbf{Y} \nabla_\mathbf{X} \mathbf{Z} - \nabla_{[\mathbf{X},\mathbf{Y}]} \mathbf{Z}) \\
+  =& fR(\mathbf{X}, \mathbf{Y})\mathbf{Z}
+\end{align*}
+$$
+
+This shows that $R$ is a tensor field. In local coordinates, the components of $R$ are given by
 
 $$
 \begin{align*}
@@ -511,7 +535,7 @@ Let $\nabla$ be an affine connection on a smooth manifold $M$. There is a unique
 - On $\mathcal{T}^1_0 (M) = TM$, $\nabla$ agrees with the given affine connection
 - On $\mathcal{T}_0^0 (M) = M$, $\nabla$ is given by ordinary differentiation of functions
 $$
-  \nabla_\mathbf{X} f = X\mathbf{f},\; \mathbf{X}\in\mathfrak{X}(M),\, f\in C^\infty (M)
+  \nabla_\mathbf{X} f = \mathbf{X}f,\; \mathbf{X}\in\mathfrak{X}(M),\, f\in C^\infty (M)
 $$
 
 <MathBox title='Covariant derivative of tensor fields' boxType='proposition' tag='proposition-6'>
@@ -693,7 +717,7 @@ $$
 with the following properties
 1. **Linearity over $\R$:** for any $\mathbf{V},\mathbf{W}\in\Gamma(TM|_{\gamma(t)})$ and $a,b\in\R$ 
 $$
-  \frac{\mathrm{D}}{\mathrm{d}t} (a\mathbf{V} + b\mathbf{W}) = a\frac{\mathbf{D}\mathbf{V}}{\mathrm{d}t} + b\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t}
+  \frac{\mathrm{D}}{\mathrm{d}t} (a\mathbf{V} + b\mathbf{W}) = a\frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} + b\frac{\mathrm{D}\mathbf{W}}{\mathrm{d}t}
 $$
 2. **Leibniz rule:** for any smooth function $f\in C^\infty (I)$
 $$
@@ -941,7 +965,7 @@ $$
 
 $$
 \begin{align*}
-  (\mathrm{D}_{f\mathbf{X}} \mathbf{Y})_\mathbf{p} =& \mathbf{D}_{f(\mathbf{p})\mathbf{X_p}} \mathbf{Y} \\
+  (\mathrm{D}_{f\mathbf{X}} \mathbf{Y})_\mathbf{p} =& \mathrm{D}_{f(\mathbf{p})\mathbf{X_p}} \mathbf{Y} \\
   =& f(\mathbf{p})\mathrm{D}_{\mathbf{X_p}} \mathbf{Y} \\
   =& (f\mathrm{D}_\mathbf{X} \mathbf{Y})_\mathbf{p}
 \end{align*}
@@ -965,7 +989,7 @@ $$
 \begin{align*}
   (\mathrm{D}_\mathbf{X} (f\mathbf{Y}))_\mathbf{p} =& \sum_{i=1}^n \mathbf{X_p} (fb^i) \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} \\
   =& \sum_{i=1}^n (\mathbf{X_p} f) b^i (\mathbf{p}) \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} + \sum_{i=1}^n f(\mathbf{p}) \mathbf{X_p} b^i \left.\frac{\partial}{\partial x^i}\right|_{\mathbf{p}} \\
-  =& (\mathbf{X_p} f) \mathbf{Y}_\mathbf{p} + f(\mathbf{p})\mathbf{D}_{\mathbf{X_p}}\mathbf{Y} \\
+  =& (\mathbf{X_p} f) \mathbf{Y}_\mathbf{p} + f(\mathbf{p})\mathrm{D}_{\mathbf{X_p}}\mathbf{Y} \\
   =& ((\mathbf{X}f)\mathbf{Y} + f\mathrm{D}_\mathbf{X} \mathbf{Y})_\mathbf{p}
 \end{align*}
 $$
@@ -976,7 +1000,7 @@ $$
 If $\mathbf{X},\mathbf{Y}\in\mathfrak{X}(\R^n)$ are smooth vector fields over $\R^n$ then
 
 $$
-  \mathrm{D}_\mathbf{X} \mathbf{Y} - \mathbf{D}_\mathbf{Y} \mathbf{X} = [\mathbf{X}, \mathbf{Y}] = \mathcal{L}_\mathbf{X} \mathbf{Y}
+  \mathrm{D}_\mathbf{X} \mathbf{Y} - \mathrm{D}_\mathbf{Y} \mathbf{X} = [\mathbf{X}, \mathbf{Y}] = \mathcal{L}_\mathbf{X} \mathbf{Y}
 $$
 
 where $[\mathbf{X}, \mathbf{Y}]$ is the Lie bracket and $\mathcal{L}_\mathbf{X} \mathbf{Y}$ is the Lie derivative of $\mathbf{Y}$ with respect to $\mathbf{X}$.
@@ -1029,7 +1053,7 @@ So
 $$
 \begin{align*}
   \mathrm{D}_\mathbf{X} \mathrm{D}_\mathbf{Y} \mathbf{Z} - \mathrm{D}_\mathbf{Y} \mathrm{D}_\mathbf{X} \mathbf{Z} =& \sum_{i=1}^n (\mathbf{XY} - \mathbf{YX})c^i \frac{\partial}{\partial x^i} \\
-  =& \mathbf{D}_{[\mathbf{X},\mathbf{Y}]} Z
+  =& \mathrm{D}_{[\mathbf{X},\mathbf{Y}]} Z
 \end{align*}
 $$
 
@@ -1113,7 +1137,7 @@ $$
   \mathrm{D}_\mathbf{X} \mathbf{Y} = \sum_{i=1}^n (X b^i) \frac{\partial}{\partial x^i} \in \Gamma(T\R^n |_M)
 $$
 
-For any $\mathbf{p}\in M$, we have $(\mathrm{D}_\mathbf{X} \mathbf{Y})_\mathbf{p} = \mathbf{D}_{\mathbf{X_p}} \mathbf{Y}$ by definition. It follows that there is an $\R$-bilinear map $\mathrm{D}:\mathfrak{X}(M)\times\Gamma(T\R^n |_M) \to\Gamma(T\R^n |_M)$ by $\mathrm{D}(\mathbf{X},\mathbf{Y}) = \mathrm{D}_\mathbf{X} \mathbf{Y}$ called the directional derivative on $M$. Because of the asymmetry between $\mathbf{X}$ and $\mathbf{Y}$, where $\mathbf{X}$ is a vector field on $M$ while $\mathbf{Y}$ is a vector field along $M$, the torsion $T(\mathbf{X},\mathbf{Y}) := \mathrm{D}_\mathbf{X} \mathbf{Y} - \mathrm{D}_\mathbf{Y} \mathbf{X} - [\mathbf{X},\mathbf{Y}]$ no longer makes sense. Otherwise, $\mathrm{D}$ satisfies the same properties as the directional derivative $\mathrm{D}$ on $\R^n$. 
+For any $\mathbf{p}\in M$, we have $(\mathrm{D}_\mathbf{X} \mathbf{Y})_\mathbf{p} = \mathrm{D}_{\mathbf{X_p}} \mathbf{Y}$ by definition. It follows that there is an $\R$-bilinear map $\mathrm{D}:\mathfrak{X}(M)\times\Gamma(T\R^n |_M) \to\Gamma(T\R^n |_M)$ by $\mathrm{D}(\mathbf{X},\mathbf{Y}) = \mathrm{D}_\mathbf{X} \mathbf{Y}$ called the directional derivative on $M$. Because of the asymmetry between $\mathbf{X}$ and $\mathbf{Y}$, where $\mathbf{X}$ is a vector field on $M$ while $\mathbf{Y}$ is a vector field along $M$, the torsion $T(\mathbf{X},\mathbf{Y}) := \mathrm{D}_\mathbf{X} \mathbf{Y} - \mathrm{D}_\mathbf{Y} \mathbf{X} - [\mathbf{X},\mathbf{Y}]$ no longer makes sense. Otherwise, $\mathrm{D}$ satisfies the same properties as the directional derivative $\mathrm{D}$ on $\R^n$. 
 
 <MathBox title='' boxType='proposition'>
 Let $\mathcal{F} = C^\infty (M)$ be the ring of smooth functions on $M$. Suppose $M$ is a regular submanifold of $\R^n$ and $\mathrm{D}$ is the directional derivative
@@ -1162,7 +1186,7 @@ Thus,
 
 $$
 \begin{align*}
-  \mathbf{D}_{c'(t)} \tilde{\mathbf{V}} =& \sum_{i=1}^n (c'(t)\tilde{v}^i) \left.\frac{\partial}{\partial x^i}|_{c(t)} \\
+  \mathrm{D}_{c'(t)} \tilde{\mathbf{V}} =& \sum_{i=1}^n (c'(t)\tilde{v}^i) \left.\frac{\partial}{\partial x^i}|_{c(t)} \\
   =& \sum_{i=1}^n \frac{\mathrm{d}v^i}{\mathrm{d}t} \left.\frac{\partial}{\partial x^i}\right|_{c(t)} = \frac{\mathrm{d}\mathbf{V}}{\mathrm{d}t}
 \end{align*}
 $$
@@ -1285,11 +1309,46 @@ To prove uniqueness, suppose $\gamma,\sigma: I\to M$ are geodesics defined on an
 
 It follows from the uniqueness statement of theorem $\ref{theorem-4}$ that for any $\mathbf{p}\in M$ and $\mathbf{v}\in T_\mathbf{p}M$, there is a unique maximal geodesic $\gamma:I\to M$ with $\gamma(0) = \mathbf{p}$ and $\dot{\gamma}(0) = \mathbf{v}$, defined on some open interval $I$; just let $I$ be the union of all open intervals on which such a geodesic is defined, and observe that the various geodesics agree where they overlap. This maximal geodesic is denoted $\gamma_\mathbf{v}$. (The initial point $\mathbf{p}$ can be recovered from $\mathbf{v}$ by $\mathbf{p} = \pi(\mathbf{v})$, where $\pi:TM\to M$ is the natural projection.)
 
+<MathBox title='Rescaling ' boxType='proposition'>
 Let $\gamma_\mathbf{v}(t,\mathbf{q})$ be the unique maximal geodesic with initial point $\mathbf{q}$ and initial vector $\mathbf{v}\in T_\mathbf{q}M$. Then
 
 $$
-  \gamma_\mathbf{v} (kt) = \gamma_{k\mathbf{v}}(t),\; k\in\R
+\begin{equation}
+  \gamma_\mathbf{v} (kt) = \gamma_{k\mathbf{v}}(t),\; k\in\R \tag{\label{equation-12}}
+\end{equation}
 $$
+
+<details>
+<summary>Proof</summary>
+
+It suffices to show that $\gamma_{k\mathbf{v}} (t)$ exists and $\eqref{equation-12}$ holds whenever the right-hand side is defined, for then the converse statement follows by replacing $\mathbf{v}$ by $k\mathbf{v}$, $t$ by $kt$ and $k$ by $1/k$.
+
+Suppose the domain of $\gamma_\mathbf{v}$ is the open interval $I\subset\R$. Define a new curve $\tilde{\gamma}$ by $\tilde{\gamma}(t) = \gamma(kt)$ defined on $k^{-1} I = \Set{t | kt \in I}$. We will show that $\tilde{\gamma}$ is a geodesic with initial point $\mathbf{p}$ and initial velocity $k\mathbf{v}$. It then follows by the uniqueness that it must be equal to $\gamma_{k\mathbf{v}}$.
+
+It is immediate from the definition that $\tilde{\gamma}(0) = \gamma_\mathbf{v}(0) = \mathbf{p}$. Writing $\gamma_\mathbf{v} (t) = (\gamma^i (t))^n$ in local coordinates, the chain rule gives
+
+$$
+\begin{align*}
+  \dot{\tilde{\gamma}}^i (t) =& \frac{\mathrm{d}t}{\mathrm{d}t} \gamma^i (kt) \\
+  =& k\dot{\gamma}^i (kt)
+\end{align*}
+$$
+
+In particular, it follows that $\dot{\tilde{\gamma}} (0) = k\dot{\gamma}_\mathbf{v}(0) = k\mathbf{v}$.
+
+Let $\mathrm{D}_t$ and $\tilde{D}_t$ denote the covariant differentiation operators along $\gamma$ and $\tilde{\gamma}$, respectively. Using the chain rule again in local coordinates
+
+$$
+\begin{align*}
+  \tilde{\mathrm{D}}_t \dot{\tilde{\gamma}}(t) =& \left(\frac{\mathrm{d}}{\mathrm{d}t} \dot{\tilde{\gamma}}^k (t) + \Gamma_{ij}^k (\tilde{\gamma}(t) \dot{\tilde{\gamma}})^i (t) \dot{\tilde{\gamma}}^j (t) \right)\boldsymbol{\partial}_k \\
+  =& (k^2 \ddot{\gamma}_\mathbf{v}(kt) + k^2 \Gamma_{ij}^k (\gamma_\mathbf{v}(kt))) \dot{\gamma}^i (kt) \dot{\gamma}^j (kt) \boldsymbol{\partial}_k \\
+  =& k^2 \mathrm{D}_t \dot{\gamma}_\mathbf{v} (kt) = 0
+\end{align*}
+$$
+
+Thus $\tilde{\gamma}$ is a geodesic, implying that $\tilde{\gamma} = \gamma_{k\mathbf{v}}$.
+</details>
+</MathBox>
 
 <MathBox title='' boxType='proposition'>
 Let $M$ and $\tilde{M}$ be smooth manifolds with respective connections $\nabla$ and $\tilde{\nabla}$. A connection-preserving diffeomorphism $F:(M,\nabla) \to (\tilde{M},\tilde{\nabla})$ takes geodesic to geodesics.
@@ -1318,7 +1377,7 @@ Hence, $F\circ\gamma$ is a geodesic in $M$.
 A parallel vector field along a curve is an analogue of a constant vector field in $\R^n$.
 
 <MathBox title='Parallel vector field' boxType='definition'>
-Let $M$ be a smooth manifold with an affine connection $\nabla$. A smooth vector field $\mathbf{V}\in\mathfrak{X}(M)$ along a curve $\gamma:I\subset\R\to M$ is *parallel* along $\gamma$ with respect to $\nabla$ if $\mathbf{D}_t \mathbf{V} \equiv 0$. A vector field $\mathbf{V}\in\mathfrak{X}(M)$ on $M$ is *parallel* if it is parallel along every curve.
+Let $M$ be a smooth manifold with an affine connection $\nabla$. A smooth vector field $\mathbf{V}\in\mathfrak{X}(M)$ along a curve $\gamma:I\subset\R\to M$ is *parallel* along $\gamma$ with respect to $\nabla$ if $\mathrm{D}_t \mathbf{V} \equiv 0$. A vector field $\mathbf{V}\in\mathfrak{X}(M)$ on $M$ is *parallel* if it is parallel along every curve.
 </MathBox>
 
 <MathBox title='Parallel translation' boxType='theorem' tag='theorem-5'>
@@ -1330,7 +1389,7 @@ Let $M$ be a smooth $n$-manifold with an affine connection $\nabla$. For any cur
 Assume first $\gamma(I)$ is contained in a single coordinate chart $(U, (x^i)_{i=1}^n)$. In this chart, $\mathbf{V}$ is given by the linear combination
 
 $$
-  \mathbf{V}(t) = \sum_{i=1}^n V^i (t) \left.\frac{\partial}{\partial x^i}\right|_{\gamma(t)}
+  \mathbf{V}(t) = V^i (t) \boldsymbol{\partial}_i |_{\gamma(t)}
 $$
 
 
@@ -1338,19 +1397,19 @@ Then by proposition $\ref{proposition-11}$
 
 $$
 \begin{align*}
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \sum_{i,j,k=1}^n \left(\dot{V}^k(t) + V^j(t) \dot{\gamma}^i(t) \Gamma_{ij}^k (\gamma(t)) \right)\left.\frac{\partial}{\partial x^k}\right|_{\gamma(t)}
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t} = \left(\dot{V}^k(t) + V^j(t) \dot{\gamma}^i(t) \Gamma_{ij}^k (\gamma(t)) \right)\boldsymbol{\partial}_k|_{\gamma(t)}
 \end{align*}
 $$
 
 Since $\mathbf{V}$ is parallel along $\gamma$ if $\mathrm{D}_t \mathbf{V} \equiv 0$, it follows that $\mathbf{V}$ is parallel along $\gamma$ if and only if
 
 $$
-  \dot{V}^k (t) = -V^j (t) \dot{gamma}^i (t) \Gamma_{ij}^k  (\gamma(t)),\; k=1,\dots,n
+  \dot{V}^k (t) = -V^j (t) \dot{\gamma}^i (t) \Gamma_{ij}^k  (\gamma(t)),\; k=1,\dots,n
 $$
 
 This a first-order linear system of ODEs. By theorem $\ref{theorem-3}$, there is a unique solution on all of $I$ with any initial condition $\mathbf{V}(t_0) = \mathbf{V}_0$.
 
-Now assume $\gamma(I)$ is not covered by a single chart. Let $\beta$ denote the supremum of all $b > t_0$ for which there is a unique parallel translate on $[t_0, b]$. Clearly, $\beta > t_0$, since for $b$ close enough to $t_0$, $\gamma[t_0, b]$ is contained in a single chart and the above argument applies. Then a unique parallel translate $\mathbf{V}$ exists on $[t_0, \beta)$. If $\beta\in I$, choose coordinates on an open set containing $\gamma(\beta-\delta,\beta+\delta)$ for some positive $\delta$ (assuming $\gamma$ has been extended to an open interval if necessary). Then there exists a unique parallel vector field $\tilde{\mathbf{V}}$ on $(\beta - \delta, \beta + \delta)$ satisfying the initial condition $\tide{\mathbf{V}}(\beta - \delta/2) = \mathbf{V}(\beta - \delta/2)$. By uniqueness, $\mathbf{V} = \tilde{\mathbf{V}}$ on their common domain, and therefore $\tilde{\mathbf{V}}$ is an extension of $\mathbf{V}$ past $\beta$, which is a contradiction.
+Now assume $\gamma(I)$ is not covered by a single chart. Let $\beta$ denote the supremum of all $b > t_0$ for which there is a unique parallel translate on $[t_0, b]$. Clearly, $\beta > t_0$, since for $b$ close enough to $t_0$, $\gamma[t_0, b]$ is contained in a single chart and the above argument applies. Then a unique parallel translate $\mathbf{V}$ exists on $[t_0, \beta)$. If $\beta\in I$, choose coordinates on an open set containing $\gamma(\beta-\delta,\beta+\delta)$ for some positive $\delta$ (assuming $\gamma$ has been extended to an open interval if necessary). Then there exists a unique parallel vector field $\tilde{\mathbf{V}}$ on $(\beta - \delta, \beta + \delta)$ satisfying the initial condition $\tilde{\mathbf{V}}(\beta - \delta/2) = \mathbf{V}(\beta - \delta/2)$. By uniqueness, $\mathbf{V} = \tilde{\mathbf{V}}$ on their common domain, and therefore $\tilde{\mathbf{V}}$ is an extension of $\mathbf{V}$ past $\beta$, which is a contradiction.
 </details>
 </MathBox>
 
@@ -1358,10 +1417,14 @@ Now assume $\gamma(I)$ is not covered by a single chart. Let $\beta$ denote the 
 Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\gamma:I\subset\R\to M$ is a curve in $M$. For $t_0, t\in I$ we define the map
 
 $$
-  P_\gamma (t, t_0): T_{\gamma(t_0)}M \to T_{\gamma(t)}
+  P_{t, t_0}^\gamma: T_{\gamma(t_0)}M \to T_{\gamma(t)} M
 $$
 
-by $P_\gamma (t, t_0) \mathbf{V}_0 = \mathbf{V}(t)$ where $\mathbf{V}$ a parallel vector field along $\gamma$ with $\mathbf{V}(t_0) = \mathbf{V}_0$. The collection of maps $P_\gamma (t, t_0)$ for $t, t_0 \in I$ is called *parallel transport* along $\gamma$.
+by $P_{t, t_0}^\gamma (\mathbf{V}_0) = \mathbf{V}(t)$ where $\mathbf{V}$ a parallel vector field along $\gamma$ with $\mathbf{V}(t_0) = \mathbf{V}_0$. The collection of maps $P_\gamma (t, t_0)$ for $t, t_0 \in I$ is called *parallel transport* along $\gamma$.
+</MathBox>
+
+<MathBox title='Parallel transport is a linear isomorphism' boxType='proposition'>
+Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\gamma:I\subset\R\to M$ is a curve in $M$. The parallel transport $P_{t, t_0}^\gamma: T_{\gamma(t_0)}M \to T_{\gamma(t)} M$ is a linear isomorphism.
 </MathBox>
 
 <MathBox title='Properties of parallel transport' boxType='definition'>
@@ -1369,7 +1432,7 @@ Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\ga
 1. $P_\gamma (t, s)$ is linear for all $s,t\in I$
 2. For all $r,s,t \in I$ we have
 $$
-  P_\gamma (t, s) \circ P_\gamma (s,t) = P_\gamma (t,r)
+  P_\gamma (t,s) \circ P_\gamma (s,r) = P_\gamma (t,r)
 $$
 In particular, $P_\gamma (t,t) = \mathrm{id}_{T_{\gamma(t) M}}$
 3. If $J\subset\R$ is an interval and $\sigma:J\to I$ is a smooth map, then
@@ -1423,10 +1486,32 @@ $$
 Let $M$ be a smooth manifold with an affine connection $\nabla$ and suppose $\gamma:I\subset\R\to M$ is a curve in $M$. If $\mathbf{V}_0 \in T_{\gamma(t_0)} M$ is a tangent vector and $\mathbf{V}$ is the parallel translate of $\mathbf{V}_0$ along $\gamma$, then
 
 $$
-  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t_0) = \lim_{t\to t_0} \frac{P_{t_0, t}^{-1} \mathbf{V}(t) - \mathbf{V}(t_0)}{t - t_0}
+  \frac{\mathrm{D}\mathbf{V}}{\mathrm{d}t}(t_0) = \lim_{t\to t_0} \frac{(P_{t_0, t}^\gamma)^{-1} (\mathbf{V}(t)) - \mathbf{V}(t_0)}{t - t_0}
 $$
 
 where $P_{a,b}:T_{\gamma(a)}M \xrightarrow{\sim} T_{\gamma(b)}M$ is the parallel transport operator.
+
+<details>
+<summary>Proof</summary>
+
+Let $\Set{\mathbf{e}_i}_{i=1}^n$ be a basis of $T_\mathbf{p}M$. Let $\mathbf{e}_i (t) = P_{t_0, t}^\gamma (\mathbf{e}_i)$. By the previous lemma, ${\mathbf{e}_i (t)}_{i=1}^n$ is a basis of $T_{\gamma(t)}$. Thus, there are functions $V^i (t)$ along $\gamma$ so that $\mathbf{V}(\gamma(t)) = V^i (t) \mathbf{e}_i (t)$. It follows that
+
+$$
+  (P_{t_0, t}^\gamma)^{-1} (\mathbf{V}(\gamma(t))) = V^i (t) \mathbf{e}_i
+$$
+
+so
+
+$$
+  \lim_{t\to t_0} \frac{(P_{t_0, t}^\gamma)^{-1} (\mathbf{V}(\gamma(t))) - \mathbf{V}(\mathbf{p})}{t - t_0} = \lim_{t\to t_0} \frac{V^i (t)\mathbf{e}_i - \mathbf{V}(\mathbf{p})}{t - t_0} = \dot{V}^i (t_0)\mathbf{e}_i
+$$
+
+On the other hand
+
+$$
+  \mathrm{D}_t \mathbf{V}(\mathbf{p}) = (\mathrm{D}_t V^i)(\mathbf{p})\mathbf{e}_i + V^i (t_0) \mathrm{D}_t \mathbf{e}_i (t_0) = \dot{V}^i (t_0)\mathbf{e}_i
+$$
+</details>
 </MathBox>
 
 ### Parallel translation
@@ -2073,12 +2158,12 @@ This directional derivative makes sense, since $\mathbf{N}$ is defined along som
 $$
 \begin{align*}
   0 =& \mathbf{X_p}\langle \mathbf{N},\mathbf{N}\rangle \\
-  =& \langle \mathrm{D}_{\mathbf{X_p}} \mathbf{N},\mathbf{N}_\mathbf{p}\rangle + \langle \mathbf{N}_\mathbf{p}, \mathbf{D}_{\mathbf{X_p}}\mathbf{N} \rangle \\
-  =& 2\langle \mathbf{D}_{\mathbf{X_p}} \mathbf{N},\mathbf{N}_\mathbf{p}\rangle
+  =& \langle \mathrm{D}_{\mathbf{X_p}} \mathbf{N},\mathbf{N}_\mathbf{p}\rangle + \langle \mathbf{N}_\mathbf{p}, \mathrm{D}_{\mathbf{X_p}}\mathbf{N} \rangle \\
+  =& 2\langle \mathrm{D}_{\mathbf{X_p}} \mathbf{N},\mathbf{N}_\mathbf{p}\rangle
 \end{align*}
 $$
 
-Thus, $\mathbf{D}_{\mathbf{X_p}} N$ is perpendicular to $\mathbf{N}_\mathbf{p}$ at $\mathbf{p}$ and is therefore in the tangent plane $T_\mathbf{p} M$. So $L_\mathbf{p}:T_\mathbf{p}M \to T_\mathbf{p}M$ is a linear map called the *shape operator* or the *Weingarten map* of the surface $M$ at $\mathbf{p}$. Note that the shape operator depends on the unit normal vector field $\mathbf{N}$ and the point $\mathbf{p}$. With the unit normal vector field $\mathbf{N}$ on $M$ fixed, as the point $\mathbf{p}$ varies in $M$, there is a different shape operator $L_\mathbf{p}$ at each $\mathbf{p}$.
+Thus, $\mathrm{D}_{\mathbf{X_p}} N$ is perpendicular to $\mathbf{N}_\mathbf{p}$ at $\mathbf{p}$ and is therefore in the tangent plane $T_\mathbf{p} M$. So $L_\mathbf{p}:T_\mathbf{p}M \to T_\mathbf{p}M$ is a linear map called the *shape operator* or the *Weingarten map* of the surface $M$ at $\mathbf{p}$. Note that the shape operator depends on the unit normal vector field $\mathbf{N}$ and the point $\mathbf{p}$. With the unit normal vector field $\mathbf{N}$ on $M$ fixed, as the point $\mathbf{p}$ varies in $M$, there is a different shape operator $L_\mathbf{p}$ at each $\mathbf{p}$.
 
 <MathBox title='' boxType='lemma'>
 Let $M$ be a surface in $\R^3$ have a smooth unit normal vector field $\mathbf{N}$. For $\mathbf{X},\mathbf{Y}\in\mathfrak{M}$
@@ -2770,7 +2855,7 @@ $$
   \langle [\mathbf{X},\mathbf{Y}],\mathbf{N}\rangle = 0
 $$
 
-By torsion-freeness, subtracting $\langle \mathbf{D}_Y \mathbf{X},\mathbf{N}\rangle$ and $\langle [\mathbf{X},\mathbf{Y}],\mathbf{N}\rangle$ from $\langle \mathrm{D}_\mathbf{X} \mathbf{Y},\mathbf{N}\rangle$ gives
+By torsion-freeness, subtracting $\langle \mathrm{D}_Y \mathbf{X},\mathbf{N}\rangle$ and $\langle [\mathbf{X},\mathbf{Y}],\mathbf{N}\rangle$ from $\langle \mathrm{D}_\mathbf{X} \mathbf{Y},\mathbf{N}\rangle$ gives
 
 $$
 \begin{align*}
@@ -4943,7 +5028,7 @@ $$
 \begin{align*}
   \int_{a_1}^{b_1} \lVert \frac{\mathrm{d}}{\mathrm{d}u} c(t(u))\rVert\;\mathrm{d}u =& \int_{a_1}^{b_1} \lVert c'(t(u)) \rVert \left|\frac{\mathrm{d}t}{\mathrm{d}u}\right| \mathrm{d}u \\
   =& -\int_{a_1}^{b_1} \lVert c'(t(u))\rVert \frac{\mathrm{d}t}{\mathrm{d}u}\mathrm{d}u \\
-  =& \int_{b_1}^{a_1} \lVert c'(t(u)) \rVert \frac{\mathbf{d}t}{\mathrm{d}u}\mathrm{d}u \\
+  =& \int_{b_1}^{a_1} \lVert c'(t(u)) \rVert \frac{\mathrm{d}t}{\mathrm{d}u}\mathrm{d}u \\
   =& \int_a^b \lVert c'(t) \rVert \mathrm{d}t
 \end{align*}
 $$
