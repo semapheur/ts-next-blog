@@ -33,6 +33,7 @@ export const rehypePlugins = [
       trust: (context) => ["\\htmlId", "\\href"].includes(context.command),
       macros: {
         "\\d": "\\mathrm{d}",
+        "\\D": "\\mathrm{D}",
         "\\eqref": "\\href{###1}{(\\text{#1})}",
         "\\ref": "\\href{###1}{\\text{#1}}",
         "\\label": "\\htmlId{#1}{\\text{#1}}",
