@@ -89,5 +89,7 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(findMismatchedInlineMath("./content/notes/math/manifolds.mdx"))
+console.log(
+  findMismatchedInlineMath("./content/notes/math/affine_geometry.mdx"),
+)
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
