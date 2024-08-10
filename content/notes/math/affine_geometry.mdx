@@ -92,7 +92,7 @@ Thus, $\mathbf{q} = \mathbf{p} + \overrightharpoon{\mathbf{v}}$ is equivalent to
 
 ## Affine combinations (barycenters)
 
-<MathBox title='' boxType='lemma'>
+<MathBox title='' boxType='lemma' tag='lemma-1'>
 Given a real affine space $E$, let $(\mathbf{a}_i)_{i\in I}$ be a collection of points and $(\lambda_i)_{i\in I}$ a family of scalars for some index set $I\subseteq\N$. For any two points $\mathbf{a},\mathbf{b}\in E$, the following properties hold:
 1. If $\sum_{i\in I} \lambda_i = 1$, then
 $$
@@ -350,4 +350,154 @@ is called the *parallelotope* spanned by $(\mathbf{a}_i)_{i=0}^m$. When $\dim(E)
 
 <MathBox title='Convex affine subspace' boxType='definition'>
 Let $A$ be a real affine space. An affine subspace $B\subseteq A$ is *convex* if for any two points $\mathbf{a}, \mathbf{b}\in B$, then $\mathbf{c} = (1 - \lambda)\mathbf{a} + \lambda\mathbf{b} \in B$ with $0\leq\lambda\leq 1$.
+</MathBox>
+
+## Affine maps
+
+<MathBox title='Convex affine subspace' boxType='definition'>
+Let $(A,\vec{A},+)$ and $(B,\vec{B},+)$ be two affine spaces and $I\subseteq\N$ an index set. A function $f:A\to B$ is an *affine map* if and only if for every collection $((\mathbf{a}_i, \lambda_i))_{i\in I}$ of weighted points in $A$ such that $\sum_{i\in I} \lambda_i = 1$, we have
+
+$$
+  f\left(\sum_{i\in I} \lambda_i \mathbf{a}_i \right) = \sum_{i\in I} \lambda_i f(\mathbf{a}_i)
+$$
+
+In other words, $f$ preserves barycenters.
+</MathBox>
+
+<MathBox title='Relation between affine and linear maps' boxType='proposition'>
+Let $(A,\vec{A},+)$ and $(B,\vec{B},+)$ be two affine spaces. If $h:\vec{A}\to\vec{B}$ is a linear map, the map f:A\to B$ defined by
+
+$$
+  f(\mathbf{a} + \vec{\mathbf{v}}) = \mathbf{b} + h(\vec{\mathbf{v}}),\; \mathbf{a}\in A, \mathbf{b}\in B, \vec{\mathbf{v}}\in\vec{A}
+$$
+
+is an affine map.
+
+<details>
+<summary>Proof</summary>
+
+Let $I\subseteq\N$ be an index set. For any collection $(\lambda_i)_{i\in I}$ of scalars with $\sum_{i\in I} \lambda_i = 1$ and any collection $(\vec{\mathbf{v}}_i)_{i\in I}$, we have (using Lemma $\ref{lemma-1}$)
+
+$$
+\begin{align*}
+  \sum_{i\in I} \lambda_i (\mathbf{a} + \vec{\mathbf{v}}_i) =& \mathbf{a} + \sum_{i\in I} \lambda_i \vec{\mathbf{a}(\mathbf{a} + \vec{\mathbf{v}}_i)} \\
+  =& \mathbf{a} + \sum_{i\in I} \lambda_i \vec{\mathbf{v}}_i
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \sum_{i\in I} \lambda_i (\mathbf{b} + h(\vec{\mathbf{v}}_i)) =& \mathbf{b} + \sum_{i\in I} \lambda_i \vec{\mathbf{b}(\mathbf{b} + \vec{h(\vec{\mathbf{v}}_i)})} \\
+  =& \mathbf{b} + \sum_{i\in I} \lambda_i h(\vec{\mathbf{v}}_i)
+\end{align*}
+$$
+
+Applying this to $f$ and using the linearity of $h$, we get
+
+$$
+\begin{align*}
+  f\left(\sum_{i\in I} \lambda_i (\mathbf{a} + \vec{\mathbf{v}}_i) \right) =& f\left(\mathbf{a} + \sum_{i\in I} \lambda_i \vec{\mathbf{v}}_i \right) \\
+  =& \mathbf{b} + h\left(\sum_{i\in I} \lambda_i \mathbf{v}_i \right) \\
+  =& \mathbf{b} + \sum_{i\in I} \lambda_i h(\vec{\mathbf{v}}_i) \\
+  =& \sum_{i\in I} \lambda_i (\mathbf{b} + h(\vec{\mathbf{v}}_i)) \\
+  =& \sum_{i\in I} \lambda_i (\mathbf{b} + h(\vec{\mathbf{v}}_i)) \\
+  =& \sum_{i\in I} \lambda_i f(\mathbf{a} + \vec{v}_i)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Relation between affine and linear maps' boxType='corollary'>
+Let $(A,\vec{A},+)$ and $(B,\vec{B},+)$ be two affine spaces. If $f:A\to B$ is an affine map, there is a unique linear map $\vec{f}:\vec{A}\to\vec{B}$ such that
+
+$$
+  f(\mathbf{a} + \vec{\mathbf{v}}) = f(\mathbf{a}) + \vec{f}(\vec{\mathbf{v}}),\; \mathbf{a}\in A, \vec{\mathbf{v}}\in\vec{A}
+$$
+
+called the linear map associated with $f$.
+
+<details>
+<summary>Proof</summary>
+
+Consider any point $\mathbf{a}\in A$. We claim that the following map $\vec{f}:\vec{A}\to\vec{B}$ is linear
+
+$$
+  \vec{f}(\mathbf{v}) = \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})},\; \vec{\mathbf{v}}\in\vec{A}
+$$
+
+For any scalar $\lambda\in\mathbb{F}$, we can write
+
+$$
+  \mathbf{a} + \lambda\vec{\mathbf{v}} = \lambda(\mathbf{a} + \vec{\mathbf{v}}) + (1 - \lambda)\mathbf{a}
+$$
+
+since $\mathbf{a} + \lambda\vec{\mathbf{v}} = \mathbf{a} + \lambda\vec{\mathbf{a}(\mathbf{a} + \vec{\mathbf{v}})} + (1 - \lambda)\vec{\mathbf{aa}}$. Additionally, we have
+
+$$
+  \mathbf{a} + \vec{\mathbf{u}} + \vec{\mathbf{v}} = (\mathbf{a} + \vec{\mathbf{u}}) + (\mathbf{a} + \vec{\mathbf{v}}) - \mathbf{a}
+$$
+
+since $\mathbf{a} + \vec{\mathbf{u}} + \vec{\mathbf{v}} = \mathbf{a} + \vec{\mathbf{a}(\mathbf{a} + \vec{\mathbf{u}})} + \vec{\mathbf{a}(\mathbf{a} + \vec{\mathbf{v}})} - \vec{\mathbf{aa}}$. Since $f$ preserves barycenters, we get
+
+$$
+  f(\mathbf{a} + \lambda\vec{\mathbf{v}}) = \lambda f(\mathbf{a} + \vec{\mathbf{v}}) + (1 - \lambda)f(\mathbf{a})
+$$
+
+Note that $\mathbf{x} = \sum_{i\in I} \lambda_i \mathbf{a}_i$ with $\sum_{i\in I} \lambda_i = 1$ is the barycenter of a collection $((\mathbf{a}_i, \lambda_i))_{i\in I}$ of weighted points if and only if
+
+$$
+  \vec{\mathbf{bx}} = \sum_{i\in I} \lambda_i \vec{\mathbf{ba}_i},\; \forall \mathbf{b}\in A
+$$
+
+Thus, it follows that
+
+$$
+\begin{align*}
+  \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})} = \lambda \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})} + (1 - \lambda)\vec{f(\mathbf{a})f(\mathbf{a})} \\
+  =& \lambda \vec{f(\mathbf{a}) f(\mathbf{a} + \vec{\mathbf{v}})}
+\end{align*}
+$$
+
+showing that $\vec{f}(\lambda\vec{\mathbf{v}}) = \lambda\vec{f}(\vec{\mathbf{v}})$. We also have
+
+$$
+  f(\mathbf{a} + \vec{\mathbf{u}} + \vec{\mathbf{v}}) = f(\mathbf{a} + \vec{\mathbf{u}}) + f(\mathbf{a} + \vec{\mathbf{v}}) - f(\mathbf{a})
+$$
+
+from which it follows that
+
+$$
+  \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{u}} + \vec{\mathbf{v}})} = \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{u}})} + \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})}
+$$
+
+showing that $\vec{f}(\vec{\mathbf{u}} + \vec{\mathbf{v}}) = \vec{f}(\vec{\mathbf{u}}) + \vec{f}(\vec{\mathbf{v}})$. Hence, $\vec{f}$ is a linear map. For any other point $\mathbf{b}\in A$, since
+
+$$
+\begin{align*}
+  \mathbf{b} + \vec{\mathbf{v}} =& \mathbf{a} + \vec{\mathbf{ab}} + \vec{\mathbf{v}} \\
+  =& \mathbf{a} + \vec{\mathbf{a}(\mathbf{a} + \vec{\mathbf{v}})} - \vec{\mathbf{aa}} + \vec{\mathbf{ab}}
+\end{align*}
+$$
+
+we have $\mathbf{b} + \vec{\mathbf{v}} = (\mathbf{a} + \vec{\mathbf{b}}) - (\mathbf{a} + \mathbf{b})$, and since $f$ preserves barycenters, we get
+
+$$
+  f(\mathbf{b} + \vec{\mathbf{v}}) = f(\mathbf{a} + \vec{\mathbf{v}}) - f(\mathbf{a}) + f(\mathbf{b})
+$$
+
+which implies that
+
+$$
+\begin{align*}
+  \vec{f(\mathbf{b})f(\mathbf{b} + \vec{\mathbf{v}})} =& \vec{f(\mathbf{b})f(\mathbf{a} + \vec{\mathbf{v}})} - \vec{f(\mathbf{b})f(\mathbf{a})} + \vec{f(\mathbf{b})f(\mathbf{b})} \\
+  =& \vec{f(\mathbf{a})f(\mathbf{b})} + \vec{f(\mathbf{b})f(\mathbf{a} + \vec{\mathbf{v}})} \\
+  =& \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})}
+\end{align*}
+$$
+
+Thus, $\vec{f(\mathbf{b})f(\mathbf{b} + \vec{\mathbf{v}})} = \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})}$, which shows that the definition of $\vec{f}$ does not depend on the choice of $\mathbf{a}\in A$. The uniqueness of $\vec{f}$ is obvious since $\vec{f}(\vec{\mathbf{v}}) = \vec{f(\mathbf{a})f(\mathbf{a} + \vec{\mathbf{v}})}$.
+
+</details>
 </MathBox>
