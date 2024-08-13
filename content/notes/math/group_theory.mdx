@@ -365,7 +365,6 @@ $$
 </details>
 </MathBox>
 
-
 Let $G$ be a group and $H$ a subgroup of a group $G$. Proposition $\ref{proposition-4}.2$ implies that the left cosets of $H$ cover $G$. In other words, the left cosets of $H$ that are disjoint form a partition of $G$. The left cosets of $H$ that are equal form equivalence classes on $G$.
 
 <MathBox title='Equal left cosets are equivalence classes' boxType='proposition' tag='proposition-5'>
@@ -384,7 +383,6 @@ To find the equivalence class under $\sim$, we have
 $$
   g\sim k \iff g^{-1}k = h\iff k = gh,\; h\in H
 $$
-
 
 Thus, the equivalence class of $g$ under $\sim$ is $\Set{gh | h\in H} = gH$.
 
@@ -455,8 +453,286 @@ $$
 In this sense, $\Z$ is covered by cosets of congruence classes.
 </MathBox>
 
+### Normal subgroups
 
-## Matrix groups
+<MathBox title='Normal subgroup' boxType='definition'>
+Let $G$ be a group. A subgroup $N$ of $G$ is *normal* if $g^{-1}Ng = N$ for all $g\in G$. This is written $N \unlhd G$.
+</MathBox>
+
+<MathBox title='First normal subgroup criterion' boxType='proposition'>
+A subgroup $N$ of $G$ is *normal* if and only if $g^{-1}Ng \subseteq N$ for all $g\in G$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $N$ is a subgroup of $G$ satisfying $g^{-1} N g \subseteq N$ for all $g\in G$. Then for all $n\in N$, we have
+
+$$
+  gng^{-1} = (g^{-1})^{-1} n (g^{-1}) = n' \in N
+$$
+
+for some $n'$, because $(g^{-1}) \in G$. Solving for $n$ we find
+
+$$
+  n = g^{-1} n' g \in g^{-1}N g
+$$
+
+Hence $N\subseteq g^{-1} N g$ and so $N = g^{-1} N g$. Thus, $N$ is a normal subgroup of $G$.
+
+The converse is obvious.
+</details>
+</MathBox>
+
+<MathBox title='Second normal subgroup criterion' boxType='proposition'>
+A subgroup $N$ of $G$ is *normal* if and only if every left coset of $N$ in $G$ is also a right coset, in which case, $gN = Ng$ for all $g\in G$.
+
+<details>
+<summary>Proof</summary>
+
+Clearly,
+
+$$
+  gNg^{-1} = N \iff gN = Ng
+$$
+
+Thus, if $N$ is normal, then every left coset is a right coset. Conversely, if the left coset $gN$ is also a right coset, then it must be the right coset by Proposition $\ref{proposition-4}$. Hence, $gN = Ng$, and so $gNg^{-1}= N$. 
+</details>
+</MathBox>
+
+The criterions for normal subgroups say that, in order for $N$ to be normal, we must have that for all $g\in G$ and $n\in N$, there exists an $n' \in N$ such that $gn = n'g$ (equivalently, for all $g\in G$ and $n\in N$, there exists an $n'$ such that $ng = gn'$).
+
+<MathBox title='' boxType='proposition'>
+If $H$ and $N$ are subgroups of $G$, and $N$ is normal, then $HN$ is a subgroup of $G$. If $H$ is also normal, then $HN$ is a normal subgroup of $G$.
+
+<details>
+<summary>Proof</summary>
+
+The set $HN$ is nonempty, and
+
+$$
+  (h_1 n_1)(h_2 n_2) = h_1 h_2 n'_1 n_2 \in HN
+$$
+
+showing that it is closed under multiplication. Since
+
+$$
+  (hn)^{-1} = n^{-1} h^{-1} = h^{-1} n' \in HN
+$$
+
+it is also closed under the formation of inverses, and so $HN$ is a subgroup. If both $H$ and $N$ are normal, then
+
+$$
+  gHNg^{-1} = gHg^{-1} \cdot gNg^{-1} = HN
+$$
+
+for all $g\in G$.
+</details>
+</MathBox>
+
+### Kernels and quotients
+
+<MathBox title='Kernel of homomorphisms' boxType='definition'>
+The *kernel* of a group homomorphism $\alpha:G\to G'$ is
+
+$$
+  \ker(\alpha) = \Set{g\in G | \alpha(g) = e}
+$$
+
+Where $e$ is the identity element of $G'$. It follows immediately from this definition that $\alpha$ is injective if and only if $\ker(\alpha) = \Set{e}$.
+
+<details>
+<summary>Proof</summary>
+
+
+If $\ker{\alpha} = \Set{e}$, then
+
+$$
+\begin{align*}
+  &\alpha(g) = \alpha(g') \implies \alpha(g^{-1} g') = e
+  \implies& g^{-1} g' = e \implies $g = g'$
+\end{align*}
+$$
+
+showing that $\alpha$ is injective. The converse is obvious.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The kernel of a homomorphism is a normal subgroup.
+
+<details>
+<summary>Proof</summary>
+
+The kernel of a homomorphism is obviously a subgroup. If $a \in\ker(\alpha)$, so that $\alpha(a) = e$, and $g\in G$, then
+
+$$
+  \alpha(gag^{-1}) = \alpha(g)\alpha(a)\alpha(g)^{-1} = \alpha(g)\alpha(g)^{-1} = e
+$$
+
+Hence $gag^{-1} \in\ker(\alpha)$.
+</details>
+</MathBox>
+
+<MathBox title='Quotient group' boxType='proposition'>
+Let $G$ be a group. The group of cosets of a normal subgroup $N$ of $G$ is called the *quotient/factor group* of $G$ by $N$, and is denoted $G/N$.
+</MathBox>
+
+<MathBox title='Normal subgroups are kernels of homomorphisms' boxType='proposition'>
+Every normal subgroup occurs as the kernel of a homomorphism. More precisely, if $N$ is a normal subgroup of $G$, then there is a unique group structure on the set $G/N$ of cosets of $N$ in $G$ for which the natural map $a\mapsto [a]$: G \to G/N is a homomorphism.
+
+<details>
+<summary>Proof</summary>
+
+Write the cosets as left cosets, and define $(aN)(bN) = (ab)N$. We have to check **(1)** that this is well-defined, and **(1)** that it gives a group structure on the set of cosets. It will then be obvious that the map $g\mapsto gN$ is a homomorphism with kernel $N$.
+1. Let $aN = a'N$ and $bN = b'N$. We have to show that $abN = a'b'N$. However, by proposition
+
+$$
+  abN = a(bN) = a(b'N) = aNb' = a'Nb' = a'b'N
+$$
+2.
+</details>
+</MathBox>
+
+<MathBox title='Universal property of quotient groups' boxType='proposition'>
+The map $a\mapsto aN: G\to G/N$ has the following universal property: for any homomorphism $\alpha:G\to G'$ of groups such that $\alpha(N) = \Set{e}$, there exists a unique homomorphism $G/N \to G'$ making the following diagram commute.
+
+<details>
+<summary>Proof</summary>
+
+Note that for $n\in N$, we have $\alpha(gn) = \alpha(g)\alpha(n) = \alpha(g)$, and so $\alpha$ is constant on each left coset $gN$ of $N$ in $G$. It therefore defines a map $\bar{\alpha}: G/N \to G'$ by $\bar{\alpha}(gN) = \alpha(g)$, which is a homomorphism because
+
+$$
+\begin{align*}
+  \bar{\alpha}((gN)\cdot(g'N)) =& \bar{\alpha}(gg'N) = \alpha(gg') \\
+  =& \alpha(g)\alpha(g') = \bar{\alpha}(gN)\bar{\alpha}(g'N)
+\end{align*}
+$$
+
+The uniqueness of $\bar{\alpha}$ follows from the surjectivity of $G\to G/N$.
+</details>
+</MathBox>
+
+## Homorphism/isomorphism theorems
+
+<MathBox title='Homomorphism theorem' boxType='theorem' tag='theorem-2'>
+For any group homomorphism $\alpha:G\to G'$, the kernel $N$ of $\alpha$ is a normal subgroup of $G$, the image $I$ of $\alpha$ is a subgroup of $G'$ and $\alpha$ factors in a natural way into the composite of a surjection, an isomorphism, and an injection
+
+$$
+\begin{CD}
+  G @>{\alpha}>> G' \\
+  @V{g\mapsto gn}V{\text{surjective}}V @AA{\text{injective}}A \\
+  G/N @>{gN \mapsto \alpha(g)}>{\text{isomorphism}}> I
+\end{CD}
+$$
+
+<details>
+<summary>Proof</summary>
+
+By Proposition $\ref{}$, the kernel of $\alpha$ is a normal subgroup of $G$. If $b = \alpha(a)$ and $b' = \alpha(a')$, then $bb' = \alpha(aa')$ and $b^{-1} = \alpha(a^{-1})$, and so $I := \alpha(G)$ is a subgroup of $G'$. The universal property of quotients (Proposition $\ref{}$) shows that the map $x\mapsto \alpha(x):G\to I$ defines a homomorphism $\bar{\alpha}:G/N\to I$ with $\bar{\alpha}(gN) = \alpha(g)$. The homomorphism $\bar{\alpha}$ is certainly surjective, and if $\bar{\alpha} (gN) = e$, then $g\in\ker(\alpha) = N$. Thus, $\bar{\alpha}$ has a trivial kernel, making it injective. 
+</details>
+</MathBox>
+
+<MathBox title='First osomorphism theorem' boxType='theorem'>
+Let $G$ be a group, $H$ a subgroup of $G$ and $N$ a normal subgroup of $G$. Then $H\cap N$ is normal in $H$ and $H/(H\cap N) \cong NH/N$.
+
+<details>
+<summary>Proof</summary>
+
+By Proposition $\ref{}$, $HN$ is a subgroup. Consider the map $h\mapsto hN: H\to G/N$. This is a homomorphism, and its kernel is $H\cap N$, which is therefore normal in $H$. By Theorem $\ref{theorem-2}$, the map induces an isomorphism $H/(H\cap N) \to I$, where $I$ is its image. However, $I$ is the set of cosets of the form $hN$ with $h\in H$, i.e., $I = HN/N$.
+</details>
+</MathBox>
+
+<MathBox title='Correspondence theorem' boxType='theorem'>
+Let $\alpha: G\to \bar{G}$ be a surjective homomorphism, and let $N = \ker{\alpha}$. Then there is a bijection
+
+$$
+  \Set{\text{subgroup of }G\text{ containing }N} \leftrightarrow {\text{subgroup of }G}
+$$
+
+under which a subgroup $H$ of $G$ containing $N$ corresponds to $\bar{H} = \alpha(H)$ and a subgroup $\bar{H}$ of $\bar{G}$ corresponds to $H = \alpha^{-1} (\bar{H})$. Moreover, if $H \leftright \bar{H}$ and $H' \leftright \bar{H}'$, then
+1. $\bar{H} \subset \bar{H}' \iff H \subset H'$, in which case $|\bar{H}': \bar{H}| = |H': H|$
+2. $\bar{H}$ is normal in $\bar{G}$ if and only if $H$ is normal in $G$, in which case, $\alpha$ induces an isomorphism
+$$
+  G/H \cong \bar{G}/\bar{H}
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $\bar{H}$ is a subgroup of $\bar{G}$, then $\alpha^{-1}(\bar{H})$ is easily seen to be a subgroup of $G$ containing $N$, and if $H$ is a subgroup of $G$, then $\alpha(H)$ is a subgroup of $\bar{G}$. Clearly, $\alpha^{-1} \alpha(H) = HN$, which equals $H$ if and only if $H \supset N$, and $\alpha\alpha^{-1} (\bar{H}) = \bar{H}$. Thus, the two operations give the required bijection. The remaining statements are easily verified. For example, a decomposition $H' = \bigsqcup_{i\in I} a_i H$ of $H'$ into a disjoint union of left cosets of $H$ gives a similar decomposition $H' = \bigsqcup_{i\in I} \alpha(a_i) \bar{H}$ of $\bar{H}'$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $N$ be a subgroup of $G$. Then there is a bijection between the set of subgroups of $G$ containing $N$ and the set of subgroups of $G/N$, $H\leftrightarrow H/N$. Moreover, $H$ is normal in $G$ if and only if $H/N$ is normal in $G/N$, in which case the homomorphism $g\mapsto gN: G\to G/N$ induces an isomorphism
+
+$$
+  G/H \cong (G/N)/(H/N)
+$$
+
+<details>
+<summary>Proof</summary>
+
+This is a special case of the correspondence theorem ($\ref{}$) with $\alpha:G\to G/N$ given by $g\mapsto gN$.
+</details>
+</MathBox>
+
+## Direct products
+
+<MathBox title='Direct product of group' boxType='definition'>
+A group $G$ is a *direct product* of its subgroups $H_1,\dots,H_k$ if the map
+
+$$
+  (h_1,\dots,h_k) \mapsto h_1\cdot h_k: H_1 \times\cdots\times H_k \to G
+$$
+
+is an isomorphism of groups. This means that each element $g$ of $G$ can be written uniquely in the form $g = h_1\cdots h_k$, and that if $g = h_1\cdots h_k$ and $g' = h'_1 \cdots h_k'$, then
+
+$$
+  gg' = (h_1 h'_1)\cdots(h_k h'_k)
+$$
+</MathBox>
+
+<MathBox title='Criteria for direct products of groups' boxType='proposition'>
+A group $G$ is a direct product of subgroups $H_1$ and $H_2$ if and only if
+1. $G = H_1 H_2$
+2. $H_1 \cap H_2 = \Set{e}$
+3. $h_1 h_2 = h_2 h_1$ for all $h_1 \in H_1$ and $h_2 \in H_2$
+4. $H_1 \unlhd G$ and $H_2 \unlhd G$ 
+
+<details>
+<summary>Proof</summary>
+
+If $G$ is the direct product of $H_1$ and $H_2$, then certainly **(1)** and **(3)** hold, and **(2)** holds because, for any $g\in H_1 \cap H_2$, the element $(g, g^{-1})$ maps to $e$ under $(h_1, h_2) \mapsto h_1 h_2$ and so equals $(e,e)$.
+
+Conversely, **(3)** implies that $(h_1, h_2)\mapsto h_1 h_2$ is a homomorphism, and **(2)** implies that it is injective
+
+$$
+  h_1 h_2 = e \mapsto h_1 = h_2^{-1} \in H_1 \cap H_2 = \Set{e}
+$$
+
+Finally, **(1)** implies that it is injective.
+
+Two elements $h_1, h_2$ of a group commute if and only if their commutator
+
+$$
+  [h_1, h_2] := (h_1 h_2)(h_2 h_1)^{-1} = e
+$$
+
+However,
+
+$$
+  (h_1 h_2)(h_2 h_1)^{-1} = h_1 h_2 h_1^{-1} h_2^{-1} = \begin{cases}
+    (h_1 h_2 h_1^{-1})\cdot h_2^{-1} \\
+    h_1 \cdot (h_2 h_1^{-1} h_2^{-1})
+  \end{cases} 
+$$
+
+which is in $H_2$ because $H_2$ is normal, and is in $H_1$ because $H_1$ is normal. Thus, **(2)** implies $[h_1, h_2] = e$.
+</details>
+</MathBox>
+
+# Matrix groups
 
 <MathBox title='General linear group' boxType='definition'>
 The general linear group of degree $n$ over a field $\mathbb{F}$, denoted $\mathrm{GL}_n (\mathbb{F})$, is the set of all invertible $n\times n$-matrices under matrix multiplication, i.e.
