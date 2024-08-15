@@ -4,7 +4,116 @@ subject: 'Mathematics'
 showToc: true
 ---
 
+# Functional
+
+<MathBox title='Functional' boxType='definition'>
+Let $\mathcal{F}$ be the space of $n$-dimensional smooth curves, i.e.
+
+$$
+  \mathcal{F} = \Set{\mathbf{r}: I\subset\R\to\R^n} 
+$$
+
+A *functional* is a map $S[]:\mathcal{F}\to\R$. In this context, a smooth curve $\mathbf{r}(t)$ represents the *trajectory* of a system of $n$ degrees of freedom. 
+</MathBox>
+
+<MathBox title='Differentiable functional' boxType='definition'>
+A functional $S[]:\mathcal{F}\to\R$ is *differentiable*, if for any $\mathcal{F}\ni\mathbf{r}:I\to\R^n$ and $\delta\mathbf{r}(t) \in\mathcal{F}_\varepsilon$, where
+
+$$
+  \mathcal{F}_\varepsilon = \Set{\delta\mathbf{r}:I\to\R^n : \lvert\delta\mathbf{r}(t)\rvert < \varepsilon,\; \left\lvert \frac{\d}{\d t} \delta\mathbf{r}(r) \right\rvert < \varepsilon}
+$$
+
+a functional $\delta S[\cdot,\cdot]: \mathcal{F}\times\mathcal{F}_\varepsilon \to\R$ exists with the properties
+1. $S[\mathbf{r}(t) + \delta\mathbf{r}(t)] = S[\mathbf{r}(t)] + \delta S[\mathbf{r}(t), \delta\mathbf{r}(t)] + \mathcal{O}(\varepsilon^2)$
+2. $\delta S[\mathbf{r}(t), \delta\mathbf{r}(t)]$ is linear in $\delta\mathbf{r}(t)$, i.e. for $\alpha_1, \alpha_2 \in \R$
+$$
+  \delta S[\mathbf{r}(t), \alpha_1 \delta\mathbf{r}_1(t) + \alpha_2 \delta\mathrm{r}_2(t)] = \alpha_1 S[\mathbf{r}(t), \delta\mathbf{r}_1 (t)] + \alpha_2 \delta S[\mathbf{r}(t), \delta\mathbf{r}_2 (t)] 
+$$
+
+The map $\delta S[\cdot,\cdot]$ is called the *differential* of $S[]$.
+</MathBox>
+
+If $\mathbf{r}:I\subset\R\to\R^n$ is the trajectory of an $n$-dimensional system, then $\delta\mathbf{r}(t)$ describes around $\mathbf{r}(t)$.
+
+<MathBox title='Fundamental lemma of variational calculus' boxType='lemma'>
+Let $f:[a,b]\to\R$ be a continuous function. If
+
+$$
+  \int_a^b f(x)g(x)\;\d x = 0
+$$
+
+for all twice differentiable functions $g:[a,b]\to\R$ with $g(a) = g(b) = 0$ and compact support in $(a,b)$, then $f$ is identically zero.
+
+<details>
+<summary>Proof</summary>
+
+Suppose by contradiction that $f$ is nonzero in some subinterval $(c,d) \subseteq (a, b)$. Without loss of generality, assume $f:(c,d) > 0$. Since $g$ is arbitrary, we are free to set it at our choice, say
+
+$$
+  g(x) = \begin{cases} (x - c)(d - x),\quad x\in [c,d] \\ 0,\quad x < c \lor x > d \end{cases}
+$$
+
+Noting that $(x - c) > 0$ and $(d - x) > 0$ for $x\in [c,d]$, consider the integral
+
+$$
+  \int_a^b f(x)g(x)\;\d x = \int_c^d f(x) (x - c)(d - x)\;\d x > 0
+$$
+
+which is positive because the integrand is positive in $(c,d)$. This gives a contradiction, proving that $f$ must be identically zero in $[a,b]$.
+</details>
+</MathBox>
+
 # Euler-Lagrange equations
+
+<MathBox title='Action functional differential' boxType='theorem'>
+Let $(X,L)$ be a real dynamic system with $n$ degrees of freedom, where $X$ is a smooth manifold representing the configuration space and $L: I\subseteq \R \times TX\to\R$ as $L(\mathbf{q}(t), \dot{\mathbf{q}}(t), t)$ is the Lagrangian of the system. Let $\mathcal{F}(a, b, \mathbf{x}_a, \mathbf{x}_b)$ be the set of smooth curves $\mathbf{q}: [a,b]\to X$ for which $\mathbf{q}(a) = \mathbf{x}_a$ and $\mathbf{q}(b) = \mathbf{x}_b$. Define the action functional $S:\mathcal{F}(a,b,\mathbf{x}_a, \mathbf{x}_b)\to\R$ by
+
+$$
+  S[\mathbf{q}] = \int_a^b L(\mathbf{q}(t), \dot{\mathbf{q}}(t), t) \,\d t
+$$
+
+The differential of $S[]$ is given by
+
+$$
+  \delta S[\mathbf{q}(t), \delta\mathbf{q}(t)] = \int_a^b \d t \left( \sum_{i=1}^n \left[\frac{\partial L}{\partial q_i} - \frac{\d}{\d t}\left(\frac{\partial L}{\partial \dot{q}_i} \right)\right] \delta q_i (t) \right) + \sum_{i=1}^n \left.\frac{\partial L}{\partial \dot{q}_j} \partial q_j (t) \right|_a^b
+$$
+
+<details>
+<summary>Proof</summary>
+
+By variation in $\mathbf{q}$, we have
+
+$$
+  S[\mathbf{q}(t) + \delta\mathbf{q}(t)] = \int_a^b L(t, \mathbf{q}(t) + \delta\mathbf{q}(t), \dot{\mathbf{q}}(t) + \partial\dot{\mathbf{q}}(t), t) \;\d t
+$$
+
+Introducing a perturbation $\varepsilon$ and applying Taylor series expansion of $L$ about $t$ to first order we get
+
+$$
+\begin{align*}
+  L(\mathbf{q}(t) + \delta\mathbf{q}(t), \dot{\mathbf{q}}(t) + \partial\dot{\mathbf{q}}(t), t) =& L(\mathbf{q}(t), \dot{\mathbf{q}}(t), t) \\
+  &+ \sum_{i=1}^n \left(\frac{\partial L}{\partial q_i} \delta q_i + \frac{\partial L}{\partial\dot{q}_i} \delta q_i \right) + \mathcal{O}(\varepsilon^2)
+\end{align*}
+$$
+
+By the product rule, we have
+
+$$
+  \frac{\partial L}{\partial \dot{q}_i} \delta\dot{q}_i = \frac{\d}{\d t}\left(\frac{\partial L}{\partial\dot{q}_i} \delta q_i \right) - \left(\frac{\d}{\d t} \frac{\partial L}{\partial\dot{q}_i} \right)\delta q_i
+$$
+
+Since $S[\mathbf{q}(t) + \delta\mathbf{q}(t)] = S[\mathbf{q}(t)] + \delta S[\mathbf{q}(t), \delta(\mathbf{q})(t)] + \mathcal{O}(\varepsilon^2)$ we get
+
+$$
+\begin{align*}
+  \delta S[\mathbf{q}(t), \delta(\mathbf{q})(t)] =& S[\mathbf{q}(t) + \delta\mathbf{q}(t)] - \delta
+\end{align*}
+$$
+</details>
+</MathBox>
+
+
+
 
 Calculus of variations seeks to find extremas of functionals in the form of definite integrals
 
