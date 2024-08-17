@@ -6,9 +6,7 @@ showToc: true
 
 Calculus of variations provides a theoretical framework for finding extrema of functionals, which are mappings $F:X\to\mathbb{F}$ from a function space $X$ to a field $\mathbb{F}$. This framework extends the concept of optimization from finite-dimensional spaces to infinite-dimensional spaces, where the variables are functions rather than finite-dimensional vectors.
 
-# Functional differentiation
-
-## Differentiation in normed spaces
+# Fréchet and Gâteaux derivatives
 <MathBox title='Fréchet derivative' boxType='definition'>
 Let $(X, \lVert\cdot\rVert_X)$ and $(Y, \lVert\cdot\rVert_Y)$ be normed spaces. A function $f:X\to Y$ is *Fréchet differentiable* at $x\in X$ if there exists a bounded linear operator $T\in\mathcal{B}(X, Y)$ such that
 
@@ -265,6 +263,40 @@ Since $\d g(x) \in\mathcal{B}(X,Y)$ and $\d g(y) \in\mathcal{B}(Y,Z)$, it follow
 </details>
 </MathBox>
 
+<MathBox title='Matrix representation of Fréchet derivatives' boxType='proposition'>
+Let $U\subseteq \R^n$ be open. If a vector function $f:U \to\R^m$ by $f = (f_i:U\to\R)_{i=1}^m$, in standard coordinates, is Fréchet differentiable at $\mathbf{x}\in U$ , then the partial derivatives $\d_j f_i \mathbf{x}$ exist for all $j = 1,\dots,n$ and $i=1,\dots,m$. The matrix representation of $\d f(\mathbf{x})$ in standard coordinates is the Jacobian matrix
+
+$$
+  J(\mathbf{x}) = \begin{bmaxtrix} 
+    \d_1 f_1 (\mathbf{x}) & \cdots & \d_n f_1 (\mathbf{x}) \\
+    \vdots & \ddots & \vdots \\
+    \d_1 f_m (\mathbf{x}) & \cdots & \d_n f_m (\mathbf{x})
+  \end{bmatrix}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $J_j$ be the $j$-th column of $J(\mathbf{x})$, i.e. $J_j = \d f(\mathbf{x})\mathbf{e}_j$, and let $J_{ij}$ be the $i$-th entry of the $j$-column of $J(\mathbf{x})$. For $\mathbf{h} = r\mathbf{e}_j$ we have
+
+$$
+\begin{align*}
+  0 =& \lim_{\mathbf{h}\to\mathbf{0}} \frac{\lVert f(\mathbf{x} + \mathbf{h}) - f(\mathbf{x}) - \d f(\mathbf{x}\mathbf{h}) \rVert}{\lVert \mathbf{h} \rVert} \\
+  =& \lim_{r\to 0} \frac{\lVert f(\mathbf{x} + r\mathbf{e}_j) - f(\mathbf{x}) - r\d f(\mathbf{x}) \mathbf{e}_j \rVert}{|r|\cdot\lVert\mathbf{e}_j\rVert} \\
+  =& \lim_{r\to 0} \frac{\lVert f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_j \rVert}{|r|}
+\end{align*}
+$$
+
+This implies that for each component of $f$
+
+$$
+  \lim_{r\to 0} \frac{|f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_{ij} |}{|r|} = 0
+$$
+
+showing that the partial derivative $\d_j f_i (\mathbf{x}) = J_{ij}$ exists.
+</details>
+</MathBox>
+
 <MathBox title='Gâteaux derivative' boxType='definition'>
 Let $X$ and $Y$ be locally convex topological vector spaces. A function $f: X \to Y$ is Gâteaux differentiable at $x\in X$ in the direction $v\in X$ if the following limit exists
 
@@ -321,17 +353,42 @@ showing that the Gâteaux differential of $f$ at $x$ in the direction $v$ equals
 </details>
 </MathBox>
 
+# Functional differentiation
 
+<MathBox title='Functional' boxType='definition'>
+A *functional* is a function $f:X\to\mathbb{F}$ mapping from a function space $X$ to a field $\mathbb{F}$. A functional is linear if it satisfies
+1. **Homogeneity:** $f(\alpha x) = \alpha f(x)$ for $x\in X$ and $\alpha\in\mathbb{F}$
+2. **Additivity:** $f(x_1 + x_2) = f(x_1) + f(x_1)$ for $x_1, x_2 \in X$
 
-<MathBox title='Functional ' boxType='definition'>
-Let $F$ be the space of $n$-dimensional smooth curves, i.e.
+A functional $K:X^m \to\mathbb{F}$ is *m*-linear if it is linear in each argument, in which case we write $K\in\mathcal{L}^m (X,\mathbb{F})$. A functional is $f:X\to\mathbb{F}$ is quadratic if there exists a bilinear functional $K:X^2 \to\mathbb{F}$ such that $f(x) = K(x, x)$ for every $x\in X$. Any quadratic functional satisfies
 
 $$
-  \mathcal{F} = \Set{\mathbf{r}: I\subset\R\to\R^n | \mathbf{r}\in C^\infty (I,\R^n)} 
+  f(\alpha x) = K(\alpha x, \alpha x) = \alpha K (x, \alpha x) = \alpha^2 K(x, x) = \alpha^2 f(x)
 $$
 
-A *functional* is a map $S[]:\mathcal{F}\to\R$. In this context, a smooth curve $\mathbf{r}(t)$ represents the *trajectory* of a system of $n$ degrees of freedom. 
+A functional is continuous if $\lim_{x\to x_0} f(x) = f(x_0)$.
 </MathBox>
+
+<MathBox title='Fréchet differentiable functional' boxType='definition'>
+Let $X$ be a normed space. A functional $J:X\to\mathbb{F}$ is Fréchet differentiable at $x\in X$ if there is a continuous linear functional $J'(x): X\to\mathbb{F}$ such that
+
+$$
+  \lim_{h\to 0} \frac{J(x + h) - J(x) - J'(x)h}{\lVert h \rVert_X}
+$$
+
+The functional $J'(x)$ is the Fréchet derivative of $J$ at $x$. 
+</MathBox>
+
+<MathBox title='Gâteaux differentiable functional' boxType='definition'>
+Let $X$ be a normed space. A functional $J:X\to\mathbb{F}$ is Gâteaux differentiable at $x\in X$ if there is a functional $\delta J(x): X\to\mathbb{F}$ such that
+
+$$
+  \lim_{\tau \to 0} \frac{J(x + \tau h) - J(x)}{\tau} = \left.\frac{\d}{\d\tau} J(x + \alpha h)\right|_{\tau=0} = \delta J(x) h
+$$
+
+The functional $\delta J(x)$ is the Gâteaux derivative of $J$ at $x$. 
+</MathBox>
+
 
 <MathBox title='Differentiable functional' boxType='definition'>
 A functional $S[]:\mathcal{F}\to\R$ is *differentiable*, if for any smooth curve $\mathbf{r}(t)\in\mathcal{F}$ and $\delta\mathbf{r}(t) \in\mathcal{F}_\varepsilon$, where
