@@ -6,353 +6,6 @@ showToc: true
 
 Calculus of variations provides a theoretical framework for finding extrema of functionals, which are mappings $F:X\to\mathbb{F}$ from a function space $X$ to a field $\mathbb{F}$. This framework extends the concept of optimization from finite-dimensional spaces to infinite-dimensional spaces, where the variables are functions rather than finite-dimensional vectors.
 
-# Fréchet and Gâteaux derivatives
-<MathBox title='Fréchet derivative' boxType='definition'>
-Let $(X, \lVert\cdot\rVert_X)$ and $(Y, \lVert\cdot\rVert_Y)$ be normed spaces. A function $f:X\to Y$ is *Fréchet differentiable* at $x\in X$ if there exists a bounded linear operator $T\in\mathcal{B}(X, Y)$ such that
-
-$$
-  \lim_{\lVert h \rVert_X \to 0} \frac{\lVert f(x + h) - f(x) - Th \rVert_Y}{\lVert h \rVert_X} = 0
-$$
-
-The operator $T$ is called the *Fréchet derivative* of $F$ at $x$, denoted $T = \d f(x)$. The Fréchet differential $Th = \d f(x) h$ is called the *first order variation* of $f$ at $x$.
-
-If $f$ is $m$ times differentiable at $x$, the $m$-th order Fréchet derivative at $x$ is the $m$-linear map $\d^m f : X^m \to Y$ defined recursively as 
-
-$$
-  \d^m f (x) := \d(\d^{m-1} f(x))
-$$
-
-The $m$-th order Fréchet differential $\d^m f(x) (h_1,\dots,h_m)$ is called the *m*-th order variation of $f$ at $x$.
-
-The function $f$ is $m$ times *Fréchet differentiable* for any point of $X$ if the function $\d^m f : X^m \to \mathcal{L}^m(X, Y)$ is continuous, where $\mathcal{L}^m(X, Y)$ is the space of $m$-linear functions from $X$ to $Y$. In this case, we write $f \in C^m (X, Y)$.
-</MathBox>
-
-<MathBox title='The Fréchet derivative is unique' boxType='proposition'>
-Let $X$ and $Y$ be normed spaces. If a function $f:X\to Y$ is Fréchet differentiable at $x\in X$, then the Fréchet derivative $\d f(x): X\to Y$ is unique.
-
-<details>
-<summary>Proof</summary>
-
-Assume $T_1, T_2 \in\mathcal{B}(X,Y)$ are Fréchet derivatives of $f:X\to Y$ at $x\in X$ satisfying
-
-$$
-  \lim_{h\to 0} \frac{\lVert f(x + h) - f(x) - T_i h \rVert_Y}{\lVert h\rVert_X} = 0,\; i=1,2
-$$
-
-For nonzero $v\in X$ and $\tau\in\mathbb{F}$ we have
-
-$$
-\begin{align*}
-  \frac{\lVert T_1 v - T_2 v \rVert_Y}{\lVert v \rVert_X} =& \frac{|\tau|}{|\tau|}\frac{\lVert T_1 v - T_2 v\rVert_Y}{\lVert v \rVert_X} \\
-  =& \frac{\lVert T_1 (\tau v) - T_2 (\tau v) \rVert_Y}{\lVert \tau v \rVert_X} \\
-  =& \frac{\lVert (f(x + \tau v) - f(x) - T_2 (\tau v)) - (f(x + \tau v) - f(x) - T_1 (\tau v)) \rVert_Y}{\lVert \tau v\rVert_X} \\
-  \overset{\triangle}{\leq} \frac{\lVert f(x + \tau v) - f(x) - T_2 (\tau v) \rVert_Y}{\lVert \tau v \rVert_X} + \frac{\lVert f(x + \tau v) - f(x) - T_1 (\tau v) \rVert_Y}{\lVert \tau v \rVert_X} \xrightarrow{\tau\to 0} \to 0
-\end{align*}
-$$
-
-This shows that $T_1 v = T_2 v$ for all $v\in X$, implying that $T_1 = T_2$.
-</details>
-</MathBox>
-
-<MathBox title='Fréchet differentiability criterion' boxType='proposition'>
-Let $X$ and $Y$ be normed spaces. Then the following are equivalent
-1. A function $f:X\to Y$ is Fréchet differentiable at $x$ with derivative $T \in\mathcal{B}(X,Y)$
-2. For every $\epsilon > 0$ there exists $\delta > 0$ with the open ball $B(x, \delta) \subset X$ such that for all $h\in B(x, \delta)$
-$$
-  \lVert f(x + h) - f(x) - Th \rVert_Y \leq \epsilon \lVert h \rVert_X
-$$
-</MathBox>
-
-<MathBox title='Fréchet differentiable functions are Lipschitz' boxType='proposition' tag='proposition-3'>
-Let $X$ and $Y$ be normed spaces. If $f:X\to Y$ is Fréchet differentiable at $x_0$, then $f$ is locally Lipschitz at $x_0$. That is, there exists $\delta > 0$ and $L > 0$ such that $B(x_0, \delta) \subset X$ and for all $x \in B(x,\delta)$
-
-$$
-  \lVert f(x) - f(x_0) \rVert_Y \leq L\lvert x - x_0 \rVert_X
-$$
-
-<details>
-<summary>Proof</summary>
-
-Since $f:X\to Y$ is Fréchet differentiable at $x_0 \in X$, then for $\epsilon = 1$ there is $\delta > 0$ such that for all $x\in X$ with $\lVert x - x_0 \rVert_X < \delta$ we have
-
-$$
-  \frac{\lVert f(x) - f(x_0) - \d f(x_0) (x - x_0) \rVert_Y}{\lVert x - x_0 \rVert_X} < 0
-$$
-
-This can be rewritten as
-
-$$
-  \lVert f(x) - f(x_0) - \D f(x_0)(x - x_0) \rVert_Y < \lVert x - x_0 \rVert_X
-$$
-
-By the triangle inequality, we have
-
-$$
-\begin{align*}
-  \lVert f(x) - f(x_0) \rVert_Y =& \lVert f(x) - f(x_0) - \d f(x_0) (x - x_0) + \d f(x_0)(x - x_0) \rVert_Y \\
-  \leq& \lVert f(x) - f(x_0) - \d f(x_0) (x - x_0) \rVert_Y + \lVert \d f(x_0)(x - x_0) \rVert_Y \\
-  \leq& \lVert x - x_0 \rVert_X + \lVert \d f(x_0)(x - x_0) \rVert_Y 
-\end{align*}
-$$
-
-Since $\d f(x_0)$ is a bounded linear operator, it follows that
-
-$$
-  \lVert \d f(x_0)(x - x_0) \rVert_Y \leq \lVert \d f(x_0) \rVert \cdot \lVert \rVert_X
-$$
-
-Thus, we obtain
-
-$$
-  \lVert f(x) - f(x_0) \rVert_Y \leq (1 + \lVert \d f(x_0)\rVert)\lVert x - x_0 \rVert_X
-$$
-
-Taking $L = 1 + \lVert \d f(x_0) \rVert$ shows that $f$ is locally Lipschitz at $x_0$.
-</details>
-</MathBox>
-
-<MathBox title='Fréchet linearity' boxType='proposition'>
-Let $X$ and $Y$ be normed spaces. If $f,g:X\to Y$ are differentiable at $x \in X$, then for any scalars $\alpha,\beta\in\mathbb{F}$, the linear combination $\alpha f + \beta g$ is differentiable at $x$ with derivative
-
-$$
-  \d (\alpha f + \beta g)(x) = \alpha \d f(x) + \beta \d g(x)
-$$
-
-<details>
-<summary>Proof</summary>
-
-By differentiability of $f$ and $g$ at $x$, for any $\epsilon > 0$ there is $\delta > 0$ such that for all $h \in B(x, \delta) \subset X$ we have
-
-$$
-\begin{align*}
-  \lVert f(x + h) - f(x) - \d f(x)h \rVert_Y \leq& \frac{\epsilon \lVert h \rVert_X}{2(|\alpha| + 1)} \\
-  \lVert g(x + h) - g(x) - \d g(x)h \rVert_Y \leq& \frac{\epsilon \lVert h \rVert_X}{2(|\beta| + 1)}
-\end{align*}
-$$
-
-Thus
-
-$$
-\begin{align*}
-  & \lVert \alpha f(x + h) + \beta g(x + h) - \alpha f(x) - \beta g(x) - \alpha\d f(x)h - \beta\d g(x) h \rVert_Y \\
-  &\leq |\alpha|\cdot\lVert f(x + h) - f(x) - \d f(x)h \rVert_Y + |\beta|\cdot\lVert g(x + h) - g(x) - \d g(x)h \rVert_Y \\
-  &\leq \frac{\epsilon|\alpha|\cdot\lVert h \rVert_X}{2(|\alpha| + 1)} + \frac{\epsilon|\beta|\cdot\lVert h \rVert_X}{2(|\beta| + 1)} = \epsilon \lVert h \rVert_X \left(\frac{|\alpha|}{2(|\alpha| + 1)} + \frac{|\beta|}{2(|\beta| + 1)} \right) \\
-  <& \epsilon \lVert h \rVert_X
-\end{align*}
-$$
-
-Since $\d f(x), \d g(x)\in\mathcal{B}(X,Y)$ it follows that $\alpha \d f(x) + \beta g(x) \in \mathcal{B}(X,Y)$. Hence, $\alpha f + \beta g$ is differentiable at $x$ with Fréchet derivative $\alpha \d f(x) + \beta g (x)$.
-</details>
-</MathBox>
-
-<MathBox title='Fréchet product rule' boxType='proposition'>
-Let $X$ be a normed space and $\mathbb{F}$ a field. If $f,g: X\to\mathbb{F}$ are Fréchet differentiable at $x\in X$, then the product $fg$ is differentiable at $x$ with derivative
-
-$$
-  \d (fg)(x) = g(x) \d f(x) + f(x) \d g(x)
-$$
-
-<details>
-<summary>Proof</summary>
-
-By differentiability of $f$ and $g$ at $x$, for each $\epsilon > 0$ there is $\delta_x > 0$ with $B(x,\delta_x)\subset X$, and a constant $L > 0$ (by Proposition $\ref{proposition-3}$) such that for all $0 < \lVert h\rVert < \delta_x$
-
-$$
-  |f(x + h) - f(x)| \leq L \lVert h \rVert_X
-$$
-
-and
-
-$$
-\begin{align*}
-  |f(x + h) - f(x) - \d f(x)h| \leq& \frac{\epsilon \lVert h \rVert_X}{3(|g(x)| + 1)} \\
-  |g(x + h) - f(x) - \d f(x)h| \leq& \frac{\epsilon \lVert h \rVert_X}{3(|f(x)| + L)}
-\end{align*}
-$$
-
-For $\epsilon > 0$ choose
-
-$$
-  \delta = \min\Set{1, \delta_x, \frac{\epsilon}{3L(\lVert \d g(x) \rVert + 1)}}
-$$
-
-When $0 \leq \lVert h \rVert_X < 0$, we get
-
-$$
-\begin{align*}
-  & |f(x + h)g(x + h) - f(x)g(x) - g(x) \d f(x) h - f(x) \d g(x) h| \\
-  =& |f(x + h)g(x + h) - f(x + h)g(x) + f(x + h)g(x) - f(x)g(x) \\
-  &+ f(x + h)\d g(x) h - f(x + h) \d g(x) h - g(x) \d f(x) h - f(x) \d g(x) h| \\
-  \leq& |f(x + h)|\cdot |g(x + h) - g(x) - \d g(x)h| \\
-  &+ |g(x)|\cdot|f(x + h) - f(x) - \d f(x) h| \\
-  &+ |f(x + h) - f(x)|\cdot\lVert \d g(x) \rVert\cdot\lVert h \rVert_X \\
-  \leq& (|f(x)| + L)\frac{\epsilon\lVert h \rVert_X}{3(|f(x) + L|)} \\
-  &+ |g(x)|\frac{\epsilon\lVert h \rVert_X}{3(|g(x)| + 1)} + \delta L \lVert \d g(x) \rVert\cdot\lVert h \rVert_X \\
-  <& \epsilon \lVert h \rVert_X
-\end{align*}
-$$
-
-Where we have used the Lipschitz implication
-
-$$
-  |f(x + h) - f(x)| \leq L\lVert h \rVert_X \implies |f(x + h)| \leq |f(x)| + L\lVert h \rVert_X
-$$
-
-Hence, $fg$ is differentiable at $x$ with Fréchet derivative $\d (fg)(x) = g(x) \d f(x) + f(x) \d g(x)$.
-</details>
-</MathBox>
-
-<MathBox title='Fréchet chain rule' boxType='proposition'>
-Let $X, Y, Z$ be normed spaces. If $f:X\to Y$ is Fréchet differentiable at $x\in X$ and $g:Y\to Z$ is Fréchet differentiable at $y = f(x) \in Y$, the composition $g\circ f$ is Fréchet differentiable at $x$ with derivative
-
-$$
-  \d (g\circ f)(x) = \d g(f(x)) \d f(x)
-$$
-
-<details>
-<summary>Proof</summary>
-
-Choose $\epsilon > 0$. By differentiability of $f:X\to Y$ at $x\in X$ and of $g:Y\to Z$ at $y = f(x) \in Y$, there is $\delta_1 > 0$ such that $B(x,\delta_1)\subset X$ and for all $\xi \in X$ satisfying $0 \lVert\xi\rVert_X < \delta_1$ we have
-
-$$
-  \lVert f(x + \xi) - f(x) - \d f(x)\xi \rVert_Y \leq \frac{\epsilon\lVert\xi\rVert_X}{2(\lVert \d g(y) \rVert + 1)}
-$$
-
-By Proposition $\ref{proposition-3}$, $f$ is locally Lipschitz at $x$, i.e. there is $\delta_2 > 0$ and $L > 0$ such that $B(x,\delta_2)\subset X$ and for all $\xi\in X$ satisfying $0 < \lVert\xi\rVert_X < \delta_2$ we have
-
-$$
-  \lVert f(x + \xi) - f(x) \rVert_X \leq L\lVert\xi\rVert_X
-$$
-
-Set $\delta_x = \min\Set{\delta_1, \delta_2}$. Since $g$ is differentiable at $y$, there is $\delta_y > 0$ such that $B(y, \delta_y) \subset Y$ and for all $0 \leq \lVert\eta\rVert_Y < \delta_y$ we have
-
-$$
-  \lVert g(y + \eta) - g(y) -\d g(y)\eta \rVert_Z \leq \frac{\epsilon\lVert\eta\rVert_Y}{2L}
-$$
-
-Set $\delta = \min\Set{\delta_x, \delta_y / L}$ such that $L\delta\leq\delta_y$. If we take $\eta(\xi) = f(x + \xi) - f(x) = f(x + \xi) - y$ then $h = g\circ f$ satisfies
-
-$$
-  h(x + \xi) - h(x) = g(f(x + \xi)) - g(f(x)) = g(y + \eta(\xi) - g(y))
-$$
-
-Thus for all $\xi\in X$ satisfying $\lVert\xi\rVert_X < \delta$ we have
-
-$$
-  \lVert \rVert_Y = \lVert f(x + \xi) - f(x) \rVert_Y \leq L\lVert\xi\rVert_X < L\delta \leq \delta_y
-$$
-
-so that
-
-$$
-\begin{align*}
-  &\lVert h(x + \xi) - h(x) - \d g(y) \d f(x)\xi \rVert_Z \\
-  =& \lVert g(y + \eta(\xi)) - g(y) - \d g(y)\eta(\xi) + \d g(y) \eta(\xi) - \d g(y) \d f(x)\xi \rVert_Z \\
-  \overset{\triangle}{\leq}& \lVert g(y + \eta(\xi)) - g(y) - \d g(y)\eta(\xi) \rVert_Z \\
-  &+ \lVert \d g(y)\eta(\xi) - \d g(y) \d f(x)\xi \rVert_Z \\
-  \leq& \lVert g(y + \eta(\xi)) - g(y) - \d g(y)\eta(\xi) \rVert_Z \\
-  &+ \lVert \d g(y) \rVert \cdot \lVert \eta(\xi) - \d f(x)\xi \rVert_Y \\
-  =& \lVert g(y + \eta(\xi)) - g(y) - \d g(y)\eta(\xi) \rVert_Z \\
-  &+ \lVert \d g(y) \rVert \cdot \lVert f(x + \xi) - f(x) - \d f(x)\xi \rVert_Y \\
-  \leq& \frac{\epsilon\lVert\eta(\xi)\rVert_Y}{2L} + \lVert \d g(y) \rVert \frac{\epsilon\lVert\xi\rVert_X}{2(\lVert\d g(y)\rVert + 1)} \\
-  <& \frac{\epsilon L\lVert\xi\rVert_X}{2 L} + \frac{\epsilon\lVert\xi\rVert_X}{2} = \epsilon\lVert\xi\rVert_X
-\end{align*}
-$$
-
-Since $\d g(x) \in\mathcal{B}(X,Y)$ and $\d g(y) \in\mathcal{B}(Y,Z)$, it follows that $\d g(y) \d f(x) \in \mathcal{B}(X,Z)$. Hence $g\circ f$ is differentiable at $x$ with Fréchet derivative $\d (g\circ f)(x) = \d g(f(x)) \d f(x)$.
-</details>
-</MathBox>
-
-<MathBox title='Matrix representation of Fréchet derivatives' boxType='proposition'>
-Let $U\subseteq \R^n$ be open. If a vector function $f:U \to\R^m$ by $f = (f_i:U\to\R)_{i=1}^m$, in standard coordinates, is Fréchet differentiable at $\mathbf{x}\in U$ , then the partial derivatives $\d_j f_i \mathbf{x}$ exist for all $j = 1,\dots,n$ and $i=1,\dots,m$. The matrix representation of $\d f(\mathbf{x})$ in standard coordinates is the Jacobian matrix
-
-$$
-  J(\mathbf{x}) = \begin{bmaxtrix} 
-    \d_1 f_1 (\mathbf{x}) & \cdots & \d_n f_1 (\mathbf{x}) \\
-    \vdots & \ddots & \vdots \\
-    \d_1 f_m (\mathbf{x}) & \cdots & \d_n f_m (\mathbf{x})
-  \end{bmatrix}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Let $J_j$ be the $j$-th column of $J(\mathbf{x})$, i.e. $J_j = \d f(\mathbf{x})\mathbf{e}_j$, and let $J_{ij}$ be the $i$-th entry of the $j$-column of $J(\mathbf{x})$. For $\mathbf{h} = r\mathbf{e}_j$ we have
-
-$$
-\begin{align*}
-  0 =& \lim_{\mathbf{h}\to\mathbf{0}} \frac{\lVert f(\mathbf{x} + \mathbf{h}) - f(\mathbf{x}) - \d f(\mathbf{x}\mathbf{h}) \rVert}{\lVert \mathbf{h} \rVert} \\
-  =& \lim_{r\to 0} \frac{\lVert f(\mathbf{x} + r\mathbf{e}_j) - f(\mathbf{x}) - r\d f(\mathbf{x}) \mathbf{e}_j \rVert}{|r|\cdot\lVert\mathbf{e}_j\rVert} \\
-  =& \lim_{r\to 0} \frac{\lVert f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_j \rVert}{|r|}
-\end{align*}
-$$
-
-This implies that for each component of $f$
-
-$$
-  \lim_{r\to 0} \frac{|f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_{ij} |}{|r|} = 0
-$$
-
-showing that the partial derivative $\d_j f_i (\mathbf{x}) = J_{ij}$ exists.
-</details>
-</MathBox>
-
-<MathBox title='Gâteaux derivative' boxType='definition'>
-Let $X$ and $Y$ be locally convex topological vector spaces. A function $f: X \to Y$ is Gâteaux differentiable at $x\in X$ in the direction $v\in X$ if the following limit exists
-
-$$
-  \D f(x; z) = \lim_{t\to 0} \frac{f(x + tv) - f(x)}{t} = \left.\frac{\d}{\d t} f(x + tv)\right|_{t=0}
-$$
-
-This limit is called the *Gâteaux differential* of $f$ at $x$ in the direction $v$. If the limit exists for all $v\in X$, then $f$ is Gâteaux differentiable at $x$. 
-
-If the Gâteaux differential $\D f(x; \cdot): X\to Y$ is linear and continuous, i.e. there is a linear map $A\in\mathcal{L}(X,Y)$ with $\D f(x; v) = Av$ for all $v\in X$, then $A$ is called the *Gâteaux derivative* of $F$ at $x$, denoted $\D f(x) = A$.
-
-If $f$ is $m$ times Gâteaux differentiable at $x$, the $m$-th order Gâteaux differential in iterated directions $v_1,\dots,v_m \in X$ is defined recursively as 
-
-$$
-  \D^m f(x; v_1,\dots,v_m) = \D(\D^{m-1} f)(x; v_1,\dots,v_{m-1};v_m)
-$$ 
-</MathBox>
-
-<MathBox title='Fréchet differentiability implies Gâteaux differentiability' boxType='proposition'>
-Let $X, Y$ be normed spaces. If $f:X\to Y$ is Fréchet differentiable at $x\in X$, then $f$ is Gâteaux differentiable at $x$. In this case $\d f(x) = \D f(x)$, where $\d f(x)$ is the Fréchet derivative of $f$ at $x$ and $\D f(x)$ is the Gâteaux derivative of $f$ at $x$.
-
-<details>
-<summary>Proof</summary>
-
-Because $f: X\to Y$ is a Fréchet differentiable at $x\in X$, we have
-
-$$
-  f(x + h) = f(x) + \d f(x) h + \mathcal{O}(h)
-$$
-
-For any $v\in X$, the Gâteaux differential limit at $x$ is
-
-$$
-  \lim_{t\to 0} \frac{f(x + tv) - f(x)}{t}
-$$
-
-Inserting the Fréchet differentiability condition with $h = tv$, we get
-
-$$
-\begin{align*}
-  \lim_{t\to 0} \frac{\d f(x)(tv) + \mathcal{O}(\lVert tv \rVert)}{t} =& \lim_{t\to 0} \frac{t \d f(x)(v) + \mathcal{O}(\lVert tv \rVert)}{t} \\
-  =& \d f(x)(v) + \lim_{t\to 0} \frac{\mathcal{O}(|t|\cdot\lVert v \rVert)}{t} \\
-  =& \d f(x)(v)
-\end{align*}
-$$
-
-Hence, 
-
-$$
-  \lim_{t\to 0} \frac{f(x + tv) - f(x)}{t} = \d f(x)(v),\; \forall v\in X
-$$
-
-showing that the Gâteaux differential of $f$ at $x$ in the direction $v$ equals the Fréchet differential of $f$ at $x$. Since the Fréchet derivative $\d f(x) \in \mathcal{B}(X,Y)$ is a bounded linear operator, it follows that $f$ is Gâteaux differentiable at $x$ with Gâteaux derivative $\D f(x) = \d f(x)$.
-</details>
-</MathBox>
-
 # Functional differentiation
 
 <MathBox title='Functional' boxType='definition'>
@@ -369,6 +22,28 @@ $$
 A functional is continuous if $\lim_{x\to x_0} f(x) = f(x_0)$.
 </MathBox>
 
+<MathBox title='' boxType='proposition'>
+Let $X$ be a normed vector space and $\mathbb{F}$ a field. If $f:X\to\mathbb{F}$ is a linear functional continuous at some point $x_0$, then $f$ is continuous on $X$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $f:X\to\mathbb{F}$ is linear and continuous at $x_0 \in X$. Let $y_0 \in X$ and define $z = y - y_0 + x_0$. Then
+
+$$
+  \lim_{y\to y_0} \lVert z - x_0 \rVert = \lVert y - y_0 \rVert = 0 \implies z \xrightarrow{y\to y_0} x_0 
+$$
+
+Thus,
+
+$$
+  f(y) - f(y_0) = f(y - y_0) = f(z - x_0) = f(z) - f(x_0) \xrightarrow{y\to y_0} 0
+$$
+
+showing that $f$ is continuous at $y_0$. Since $y_0$ was arbitrary, $f$ is continuous on $X$.
+</details>
+</MathBox>
+
 <MathBox title='Fréchet differentiable functional' boxType='definition'>
 Let $X$ be a normed space. A functional $J:X\to\mathbb{F}$ is Fréchet differentiable at $x\in X$ if there is a continuous linear functional $J'(x): X\to\mathbb{F}$ such that
 
@@ -380,7 +55,7 @@ The functional $J'(x)$ is the Fréchet derivative of $J$ at $x$.
 </MathBox>
 
 <MathBox title='Gâteaux differentiable functional' boxType='definition'>
-Let $X$ be a normed space. A functional $J:X\to\mathbb{F}$ is Gâteaux differentiable at $x\in X$ if there is a functional $\delta J(x): X\to\mathbb{F}$ such that
+Let $X$ be a normed vector space. A functional $J:X\to\mathbb{F}$ is Gâteaux differentiable at $x\in X$ if there is a functional $\delta J(x): X\to\mathbb{F}$ such that
 
 $$
   \lim_{\tau \to 0} \frac{J(x + \tau h) - J(x)}{\tau} = \left.\frac{\d}{\d\tau} J(x + \alpha h)\right|_{\tau=0} = \delta J(x) h
@@ -388,6 +63,84 @@ $$
 
 The functional $\delta J(x)$ is the Gâteaux derivative of $J$ at $x$. 
 </MathBox>
+
+<MathBox title='Differential properties of linear functionals' boxType='proposition'>
+A linear functional $f:X\to\mathbb{F}$ satisifies
+1. $\delta f(x) = f$ for all $x\in X$
+2. If $f$ is continuous, then it is Fréchet differentiable for every $x\in X$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By linearity of $f$ we have for $\tau\in\mathbb{F}$
+
+$$
+  \lim_{\tau\to 0} \frac{f(x + \tau h) - f(x)}{\tau} = \lim_{\tau\to 0} \frac{f(x) + \tau f(h) - f(x)}{\tau} = f(h)
+$$
+
+**(2):** By linearity of $f$ we have
+
+$$
+  \frac{f(x + h) - f(x) - f(h)}{\lVert h \rVert} = \frac{f(x) + f(h) - f(x) - f(h)}{\lVert h \rVert} = 0
+$$
+</details>
+</MathBox>
+
+<MathBox title='Boundedness of continuous quadratic functionals' boxType='proposition' tag='proposition-11'>
+If a functional $f:X\to\mathbb{F}$ is quadratic and continuous, there exists $M < \infty$ such that $|f(x)| < M$ for every $x\in B(0,1) \subset X$.
+
+<details>
+<summary>Proof</summary>
+
+Since $f$ is continuous, the pre-image $f^{-1}[B(0,1)]$ is open. Thus, there is $\epsilon > 0$ such that $|f(x)| < 1$ for every $x \in B(0,\epsilon)\subset X$. Set $M = \epsilon^{-2}$, then for $x = 0$ we have $|f(x)| = 0 < M$. For $x\in B(0,1) \setminus\Set{0}$, let $y = \frac{\epsilon}{\lVert x \rVert}x$. Then $\lVert y \rVert = \epsilon$, giving
+
+$$
+  |f(x)| = \frac{\lVert x \rVert^2}{\epsilon^2} |f(y)| < \frac{\lVert x \rVert^2}{\epsilon^2} = M
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $f:X\to\mathbb{F}$ be a quadratic functional and $K:X^2 \to\mathbb{F}$ be a bilinear functional with $f(x) = K(x,x)$
+1. $\delta f(x)h = K(x,h) +  K(h,x)$ for every $x\in X$
+2. If $K$ is continuous, then $f$ is Fréchet differentiable
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Evaluating the Gâteaux derivative of $f$ at $x$ using $f(x) = K(x,x)$ gives
+
+$$
+\begin{align*}
+  \delta f(x) h =& \lim_{\tau\to 0} \frac{f(x + \tau h) - f(x)}{\tau} \\
+  =& \lim_{\tau\to 0} \frac{K(x + \tau h, x + \tau h) - K(x,x)}{\tau} \\
+  =& \lim_{\tau\to 0} \frac{\tau K(x,h) + \tau K(h,x) + \tau^2 K(h, h)}{\tau} \\
+  =& \lim_{\tau\to 0} K(x,h) + K(h, x) + \tau K(h, h) \\
+  =& K(x, h) + K(h, x)
+\end{align*}
+$$
+
+**(2):** Since $\delta f(x) h = K(x, h) + K(h, x)$, then $\delta f(x)$ is clearly linear. If $K$ is continuous, then $\delta f(x)$ is continuous for every $x$. By Proposition $\ref{proposition-11}$
+
+$$
+\begin{align*}
+  & \frac{f(x + h) - f(x) - \delta f(x)h}{\lVert h \rVert} \\
+  &= \frac{K(x + h, x + h) - K(x,x) - (K(x, h) + K(h, x))}{\lVert h \rVert} \\
+  &= \frac{K(h, h)}{\lVert h \rVert} \\
+  &= \lVert h \rVert K\left(\frac{h}{\lVert h \rVert}, \frac{h}{\lVert h \rVert} \right) \\
+  &= \lVert h \rVert f\left(\frac{h}{\lVert h \rVert}\right) \\
+  &< \lVert h \rVert M \xrightarrow{h\to 0} 0
+\end{align*}
+$$
+
+Hence $f'(x) = \delta f(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+
+</MathBox>
+
 
 
 <MathBox title='Differentiable functional' boxType='definition'>
@@ -407,7 +160,9 @@ $$
 The map $\delta S[\cdot,\cdot]$ is called the *first variation* of $S[]$.
 </MathBox>
 
-If $\mathbf{r}:I\subset\R\to\R^n$ is the trajectory of an $n$-dimensional system, then $\delta\mathbf{r}(t)$ describes around $\mathbf{r}(t)$.
+
+
+
 
 <MathBox title='Fundamental lemma of variational calculus' boxType='lemma'>
 Let $f:[a,b]\to\R$ be a continuous function. If
