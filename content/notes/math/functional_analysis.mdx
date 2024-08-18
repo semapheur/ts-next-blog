@@ -1298,7 +1298,7 @@ $$
 Let $X$ and $Z$ be normed spaces, $S\subseteq Z$ a subspace of $Z$ with norm $\lVert\cdot\rVert_Z$. If $T\in\mathcal{B}(S,Z)$ is a bounded linear operator, a norm-preserving extension of $T$ is a bounded linear operator $\overline{T}\in\mathcal{Z,X}$ such that $\overline{T}(s) = T(s)$ for all $s\in S$ and $\lVert\overline{T}\rVert_{Z\to Y} = \lVert T \rVert_{S\to Z}$.
 </MathBox>
 
-<MathBox title='Continuous linear extension theorem' boxType='theorem'>
+<MathBox title='Continuous linear extension theorem' boxType='theorem' tag='theorem-9'>
 Let $Z$ be a normed space, $S\subseteq Z$ a dense subset of $Z$ and $X$ a Banach space. If $T\in\mathcal{B}(S,X)$, then $T$ has a unique norm-preserving extension $\overline{T}\in\mathbb{B}(Z,X)$.
 
 <details>
@@ -2019,7 +2019,7 @@ $$
 where $\chi$ is the characteristic function. The set of all step functions from $[a,b]$ to $X$ is denoted $S([a,b], X)$.
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-31'>
 Let $X$ be a Banach space. The set $S([a,b], X)$ is a subspace of $(L^\infty ([a,b], X), \lVert\cdot\rVert_\infty)$.
 
 <details>
@@ -2061,12 +2061,136 @@ $$
 Let $X$ be a Banach space. The integral $I(f)$ of a step function $f\in S([a,b], X)$ is defined as
 
 $$
-  I(f) = \sum_{i=1}^N x_i (t_i - t_{i-1}) \in X
+  I(f) = \sum_{i=1}^N x_i (t_i - t_{i-1}) = \int_a^b f(t)\;\d t \in X
 $$
 
-The integral defines a function $I:S([a,b],X) \to X$.
+The integral defines a function $I:S([a,b],X)\to X$.
 </MathBox>
 
+<MathBox title='Integral of step functions is a bounded linear operator' boxType='proposition' tag='proposition-32'>
+Let $X$ be a Banach space. The integral of step functions $I:S([a,b],X)\to X$ is a bounded linear transformation with $\lVert I \rVert = b - a$.
+
+<details>
+<summary>Proof</summary>
+
+Linearity of $I$ follow from the proof of Proposition $\ref{proposition-31}$ where we showed how to combine two subdivisions of $[a,b]$. For
+
+$$
+  f = \left(\sum_{i=1}^{N-1} x_i \chi_{[t_{i-1}, t_i)]}\right) + x_N \chi_{[t_{N-1}, t_N]}
+$$
+
+we have
+
+$$
+\begin{align*}
+  \lVert I(f) \rVert =& \left\lVert \sum_{i=1}^N x_i (t_i - t_{i-1}) \right\rVert \\
+  \leq& \sum_{i=1}^N (t_i - t_{i-1}) \lVert x_i \rVert \\
+  \leq& \sum_{i=1}^N (t_i - t_{i-1}) \sup\Set{\lVert x_i \rVert}_{i=1}^N \\
+  =& (b - a)\lVert f \rVert_\infty
+\end{align*}
+$$
+
+This implies for all nonzero $f\in S([a,b], X)$ that
+
+$$
+  \frac{\lVert I(f) \rVert}{\lVert f \rVert_\infty} \leq b - a
+$$
+
+Thus, $\lVert I \rVert \leq b - a$. The upper bound on $\lVert I \rVert$ is realized for the function $f = \chi_[a,b] \in S([a,b], X)$ and so $\lVert I \rVert = b - a$.
+</details>
+</MathBox>
+
+### Single-variable Banach-valued integral
+
+<MathBox title='Single-variable Banach-valued integration' boxType='theorem'>
+Let $X$ be a Banach space. There is a unique bounded linear extension $\overline{I}: \overline{S([a,b],X)}\to X$ of the integral operator $I:S([a,b], X)\to X$.
+
+<details>
+<summary>Proof</summary>
+
+This follows immediately from the continuous linear extension theorem (Theorem $\ref{proposition-9}$).
+</details>
+</MathBox>
+
+<MathBox title='Single-variable Banach-valued integral' boxType='definition'>
+Let $X$ be a Banach space. The integral of $f\in\overline{S([a,b], X)}$ is defined by
+
+$$
+  \overline{I}(f) = \lim_{n\to\infty} I(s_n) = \lim_{n\to\infty} \int_a^b s_n (d)\;\d t
+$$
+
+where $(s_n)_{n\in\N_+}$ is a sequence of step functions converging uniformly to $f$. For every $f\in \overline{S([a,b], X)}$ we define
+
+$$
+  \int_b^a f(t)\;\d t = -\int_a^b f(t)\;\d t
+$$
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $X$ be a Banach space. Every continuous function from $[a,b]\subset\R$ to $X$ is the uniform limit of step functions, i.e. $C([a,b],X) \subset\overline{S([a,b], X)}$.
+
+<details>
+<summary>Proof</summary>
+
+Any $f\in C([a,b], X)$ is uniformly continuous because $[a,b]$ is compact. For $\epsilon > 0$ there is $\delta > 0$ such that $\lVert f(x) - f(y) \rVert < \epsilon$ whenever $x,y \in [a,b]$ satisfy $|x - y| < \delta$. Choose $N\in\N$ such that $(b-a)/N < \delta$. Set $t_i = a + i(b - a)/N$ for $i=0,\dots,N$. Define the step funcion $f_N \in S([a,b],X)$ by
+
+$$
+  f_N = \left(\sum_{i=1}^{N} f(t_{i-1})\chi_{[t_{i-1}, t_i)}\right) + f(t_{N-1})\chi_{[t_{N-1},t_N]}
+$$
+
+Since any $t\in [t_{i-1}, t_i)$ for $i=1,\dots,N-1$ and $t\in[t_{N-1}, t_N]$ is within $\delta$ of the endpoints, we have $\lVert f(t) - f_N (t) \lVert < \epsilon$. As this holds for all $t\in[a,b]$, we obtain $\lVert f - f_N \rVert < \epsilon$. Since $\epsilon > 0$ is arbitrary, we have that $f$ is a limit point of $S([a,b], X)$. This shows that $C([a,b],X)\subset\overline{S([a,b],X)}$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of single-variable Banach-valued integrals' boxType='proposition'>
+Let $X$ be a Banach space. If $f\in\overline{S([a,b],X)}$ and $\alpha,\beta,\gamma\in[a,b]$ with $\alpha < \gamma < \beta$, then
+1. $\lVert \int_a^b f(t)\;\d t \rVert \leq (b-a)\lVert f\rVert_\infty$
+2. $\lVert \int_a^b f(t)\;\d t \rVert \leq \int_a^b \lVert f \rVert\;\d t$
+3. if $f\chi_{\alpha,\beta} \in\overline{S([a,b],X)}$, then $\int_a^b f(t)\chi_{[\alpha,\beta]}(t)\;\d t = \int_\alpha^\beta f(t)\;\d t$
+4. $\int_\alpha^\beta f(t)\;\d t = \int_\alpha^\gamma f(t)\;\d t + \int_\gamma^\beta f(t)\;\d t$
+5. The function $F(t) = \int_a^t f(s)\;\d s$ for $s\in[a,b]$ is continuous on $C$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This is a restatement of $\lVert\overline{I}\rVert = b-a$ in Proposition $\ref{proposition-32}$.
+
+**(2):** The function $t\mapsto \lVert f(t) \rVert$ belongs to $\overline{S([a,b],X)}$, and so $\int_a^b \lVert f(t) \rVert\;\d t$ is defined.
+
+**(3):** Let $(s_k)_{k\in\N_+}$ in $S([a,b],X)$ converge uniformly to $f\in\overline{S([a,b],X)}$. Let $I_{ab}$ be the integral on $S([a,b], X)$ and $I_{\alpha\beta}$ the integral on $S([a,b],X)$. Since $s_k \chi_{[\alpha,\beta]}$ is zero outside of $[\alpha,\beta]$, the value $I_{\alpha\beta} (s_k \chi_{[\alpha,\beta]})$ is the same as that of $I_{ab}(s_k \chi_{[\alpha,\beta]})$. Thus for each $k\in\N_+$ we have
+
+$$
+  \int_a^b s_k (t) \chi_{[\alpha,\beta]}\;\d t = \int_\alpha^\beta s_k (t)\;\d t
+$$
+
+Since $\overline{I}$ is continuous, the uniformly convergence $s_k \xrightarrow{k\to\infty} f$ implies that $\overline{I}(s_k) \xrightarrow{k\to\infty} \overline{I}(f)$ by continuity of $\overline{I}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $f\in\overline{S([a,b],\R^n)}$ is written in coordinates as $f(t) = (f_i(t))_{i=1}^n$, then $f_i \in\overline{S([a,b],\R)}$ for each $i$ and
+
+$$
+  \int_a^b f(t)\;\d t = \left(\int_a^b f_i (t)\;\d t \right)_{i=1}^n
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $\overline{I}:\overline{S([a,b],\R^n)}\to\R^n$ is continuous, we have $\overline{I}(s_k) \xrightarrow{k\to\infty} \overline{I}(f)$ whenever $s_k \xrightarrow{k\to\infty} f$ uniformly. Thus, it suffices to show that the integral can be written as stated for step function. For a step function $s(t) = (s_i(t))_{i=1}^n$ we have
+
+$$
+\begin{align*}
+  \int_a^b s(t)\;\d t =& \sum_{i=1}^M s(t_i)(t_i - t_{i-1}) \\
+  =& \sum_{i=1}^M (s_1 (t_i),\dots,s_n (t_i))(t_i - t_{i-1}) \\
+  =& \left(\sum_{i=1}^M s_1 (t_i)(t_i - t_{i-1}),\dots,\sum_{i=1}^M s_n (t_i)(t_i - t_{i-1}) \right) \\
+  =& \left(\int_a^b s_j (t)\;\d t \right)_{j=1}^n
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Fundamental theorem of calculus
 
 <MathBox title='Constant functions have zero derivative' boxType='proposition' tag='proposition-29'>
 Let $X$ be a normed space and suppose $f \in C^1 (I, X)$ is a continuously differentiable function on an open interval $I\subseteq \R$. If $\d f(t) \equiv 0$ for all $t\in I$, then $f$ is constant.
