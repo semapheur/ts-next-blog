@@ -452,7 +452,7 @@ The image $f(K)$ is compact in $\R$, so that by Proposition $\ref{proposition-12
 </details>
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-14'>
 Let $X$ and $Y$ be metric spaces. If $K$ is a compact subset of $X$ and $f:K\to Y$ is continuous, then $f$ is uniformly continuous on $K$.
 
 <details>
@@ -2278,7 +2278,7 @@ Since any $t\in [t_{i-1}, t_i)$ for $i=1,\dots,N-1$ and $t\in[t_{N-1}, t_N]$ is 
 </details>
 </MathBox>
 
-<MathBox title='Properties of single-variable Banach-valued integrals' boxType='proposition'>
+<MathBox title='Properties of single-variable Banach-valued integrals' boxType='proposition' tag='proposition-37'>
 Let $X$ be a Banach space. If $f\in\overline{S([a,b],X)}$ and $\alpha,\beta,\gamma\in[a,b]$ with $\alpha < \gamma < \beta$, then
 1. $\lVert \int_a^b f(t)\;\d t \rVert \leq (b-a)\lVert f\rVert_\infty$
 2. $\lVert \int_a^b f(t)\;\d t \rVert \leq \int_a^b \lVert f \rVert\;\d t$
@@ -2379,13 +2379,13 @@ $$
 <details>
 <summary>Proof</summary>
 
-**(1):** Note that $f$ is uniformly continuous, since $f$ is continuous on the compact interval $[a,b]$. Consequently, for every $\epsilon > 0$ there is $\delta > 0$ such that for all $t\in[a,b]$ and all $|h| < \delta$ with $t + h\in[a,b]$
+**(1):** By Proposition $\ref{proposition-14}$, the function $f$ is uniformly continuous since $f$ is continuous on the compact interval $[a,b]$. Consequently, for every $\epsilon > 0$ there is $\delta > 0$ such that for all $t\in[a,b]$ and all $|h| < \delta$ with $t + h\in[a,b]$
 
 $$
   \lVert f(t + h) - f(t) \rVert_X < \epsilon
 $$
 
-From the properties of univariate Banach-valued integral
+From the properties of univariate Banach-valued integral (Proposition $\ref{proposition-37}$)
 
 $$
 \begin{align*}
@@ -2410,7 +2410,7 @@ $$
   g(t) = \int_a^t \d f(s)\;\d s - f(t)
 $$
 
-is continuous on $[a,b]$ and $g$ is differentiable on $(a,b)$ by part **(1)**. Applying **(1)** we have for $t\in(a,b)$ that
+is continuous on $[a,b]$ by Proposition $\ref{proposition-29}$, and $g$ is differentiable on $(a,b)$ by part **(1)**. Applying **(1)** we have for $t\in(a,b)$ that
 
 $$
   \d g(t) = \frac{\d}{\d t} \left[\int_a^t \d f(s)\;\d s - f(t) \right] = \d f(t) - \d f(t) = 0
@@ -2459,4 +2459,117 @@ Let $X$ be a normed space and $f\in C([a,b], X)$ a continuous function on $[a,b]
 $$
   \int_c^d f(g(s)) \d g(s)\;\d s = \int_{g(c)}^{g(d)} f(t)\;\d t
 $$
+</MathBox>
+
+### Uniform convergence and derivatives
+
+<MathBox title='' boxType='definition'>
+Let $X$ and $Y$ be Banach spaces. We say that a sequence $(f_n)_{n\in\N_+}$ in $C(X,Y)$
+1. is Cauchy in $C(X, Y)$ if for every compact $K\subset U$, the sequence $(f_n |_K )_{n\in\N_+}$ is Cauchy in $(C(K,Y),\lVert\cdot\rVert_\infty)$ and
+2. converges uniformly on compact subsets of $X$ to $f\in C(X,Y)$ if for every compact $K\subset U$, the sequence $(f_n |_K)_{n\in\N_+}$ converges to $f|_K$ in $(C(K,Y),\lVert\cdot\rVert_\infty)$.
+
+Note that a Cauchy sequence $(g_n)_{n\in\N_+}$ in $(C(K,Y),\lVert\cdot\rVert_\infty)$ converges uniformly to a unique $g\in C(K,Y)$ because $(C(K,Y), \lVert\cdot\rVert_\infty)$ is a Banach space. 
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $X$ and $Y$ be finite-dimensional Banach spaces, and $U = B(x_*, r) \subset X$ an open set for $x_* \in X$ and $r > 0$. For a sequence $(f_n)_{n\in\N_+} \in C^1 (U,Y)$, if
+1. $(f_n (x_*))_{n\in\N_+}$ converges in $Y$ and
+2. $(\d f_n)_{n\in\N_+}$ converges uniformly on compact subsets of $U$ to $g\in C(U,\mathcal{B}(X,Y))$,
+
+then $(f_n)_{n\in\N_+}$ converges uniformly on compact subsets of $U$ to $f\in C^1 (U,Y)$ for which $\d f = g$.
+
+<details>
+<summary>Proof</summary>
+
+By hypothesis, the sequence $(f_n (x_*))_{n\in\N_+}$ converges to, say $z\in Y$. For each $x\in B(x_*, r) = U$ set $h = x - x_*$. A candidate for the limit function $f\in C(U,Y)$ is
+
+$$
+  f(x) = z + \int_0^1 g(x_* + th)h\;\d t
+$$
+
+where $g\in C(U,\mathcal{B}(X,Y))$ is what $(\d f_n)_{n\in\N_+}$ converges uniformly on compact sets by hypothesis.
+
+Since $U = B(x_*, r)$ is convex, the function $g(x_* + th)$ is defined for all $t\in[0,1]$. When $h = 0$, i.e. $x = x_*$, then
+
+$$
+  f(x_*) = z + \int_0^1 g(x_* + t0)0\;\d t = z = \lim_{n\to\infyt} f_n (x_*)
+$$
+
+We show that $(f_n)_{n\in\N_+}$ converges uniformly on compact subsets of $B(x_*, r)$. It suffices to show uniform convergence on the arbitrary compact set $K = \overline{B(x_*, \rho)}\subset U$, i.e. $0 < \rho < r$. On $K$ we have, by applying the mean value theorem to $f_n$ and using the definition of $f$ that
+
+$$
+\begin{align*}
+  &\lVert f_n (x) - f(x) \rVert_Y \\
+  =& \left\lVert f_n (x_*) + \int_0^1 \d f_n (x_* + th)h\;\d - z - \int_0^1 g(x_* + th)h\;\d t \right\rVert_Y \\
+  \leq& \lVert f_n (x_*) - z \rVert_Y + \left\lVert \int_0^1 (\d f_n (x_* + th) - g(x_* + th))h\;\d t \right\rVert_Y \\
+  \leq& \lVert f_n (x_*) - z \rVert_Y + \sup_{c\in K} \lVert \d f_n (c) - g(c) \rVert_{X\to Y} \lVert h \rVert_X
+\end{align*}
+$$
+
+Since $f_n (x_*) \to z$, for $\epsilon > 0$ there is $N\in\N$ such that for all $n\geq N$ we have
+
+$$
+  \lVert f_n (x_*) - z \rVert_Y < \frac{\epsilon}{2}
+$$
+
+and since $\d f_n \xrightarrow{n\to\infty} g$ uniformly on the compact $K$, there is M \geq N$ such that for $n\geq M$ we have
+
+$$
+  \sup_{c\in K} \lVert \d f_n (c) - g(c) \rVert_Y < \frac{\epsilon}{2r}
+$$
+
+Thus, for all a$n\geq M$, and with $\lVert h \rVert_X$, we have
+
+$$
+  \lVert f_n (x) - f(x) \rVert_Y < \frac{\epsilon}{2} + \frac{\epsilon}{2r}r = \epsilon
+$$
+
+The choice of $N$ and $M$ is independent of the point $x\in K$ chosen, so for all $n\geq N$ we have
+
+$$
+  \lVert f_n - f\rVert_\infty = \sup_{x\in K} \lVert f_n (x) - f(x) \rVert_Y \leq \epsilon
+$$
+
+Thus, $f_n \xrightarrow{n\to\infty} f$ uniformly on the compact $K$. 
+
+Finally, we show that $\d f(x) = g(x)$ for all $x\in U$. For a fixed $x\in B(x_*, r) = U$, there is $a > 0$ such that $K = \overline{B(x,a)}\subset U$. For $\lVert h \rVert_X \leq a$ we have by the integral mean value theorem that
+
+$$
+  f_n (x + h) - f_n (x) = \int_0^1 \d f_n (x + th)h\;\d t
+$$
+
+The left-hand side of this converges uniformly on the compact set $K$ to $f(x + h)  - f(x)$, while the integrand on the right-hand side converges uniformly on $K$ to $g(x + th)h$. By commutativity of integration with uniform limits, we get
+
+$$
+\begin{align*}
+  f(x + h) - f(x) =& \lim_{n\to\infty} (f_n (x + h) - f_n (x)) \\
+  =& \lim_{n\to\infty} \int_0^1 \d f_n (x + th)h\;\d t \\
+  =& \int_0^1 \lim_{n\to\infty} \d f_n (x + th)h\;\d t \\
+  =& \int_0^1 g(x + th)h\;\d t
+\end{align*}
+$$
+
+Hence,
+
+$$
+\begin{align*}
+  \lvert f(x + h) - f(x) - g(x)h \rVert =& \left\lVert \int_0^1 (g(x + th)h - g(x)h)\;\d t \right\rVert_Y \\
+  =& \left\lVert \int_0^1 (g(x + h) - g(x))h\;\d t \right\rVert_Y
+\end{align*}
+$$
+
+Continuity of $g$ on the compact $K = \overline{B(x,a)}$ implies $g$ is uniformly continuous on $K$. For $\epsilon > 0 $ there is $0 < \delta < a$ such that for all $|h|_X < \delta$
+
+$$
+  \lVert g(x + h) - g(x)\rVert_{X\to Y} < \epsilon
+$$
+
+We thus arrive at
+
+$$
+  \lVert f(x + h) - f(x) - g(x)h \rVert_Y \leq \epsilon\lVert h \rVert_X
+$$
+
+This shows that $f$ is differentiable at $x$ with derivative $\d f(x) = g(x)$.
+</details>
 </MathBox>
