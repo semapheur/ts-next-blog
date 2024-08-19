@@ -1314,7 +1314,7 @@ $$
 for all $x, \tilde{x} \in X$ and $\lambda \in \mathbb{F}$. The operator norm of $T$ is defined as
 
 $$
-  \lVert T\rVert = \lVert T\rVert_{X\to Y} := \sup\Set{ \frac{\lVert T_X\rVert_Y}{\lVert X\rVert_X} | x \neq 0 \in X }
+  \lVert T\rVert = \lVert T\rVert_{X\to Y} := \sup\Set{ \frac{\lVert T_X\rVert_Y}{\lVert X\rVert_X} | x \in X\setminus\Set{0} }
 $$
 </MathBox>
 
@@ -1335,7 +1335,7 @@ Since $\mathcal{B}(X,Y)$ is a normed space, it remains to show that is complete.
 **(1):** We construct a candidate function $A:X\to Y$ for the limit of the Cauchy sequence. For $\epsilon > 0$ there is $N\in\N$ such that
 
 $$
-  \sup\Set{\frac{\lVert A_m (x) - A_n (x) \rVert_Y}{\lVert x \rVert_X} | x\neq 0 \in X} = \lVert A_m - A_n \rVert_{X\to Y} < \epsilon
+  \sup\Set{\frac{\lVert A_m (x) - A_n (x) \rVert_Y}{\lVert x \rVert_X} | x\in X\setminus\Set{0}} = \lVert A_m - A_n \rVert_{X\to Y} < \epsilon
 $$
 
 whenever $m, n \geq N$. Thus, for each nonzero $x\in X$ we have
@@ -1387,7 +1387,7 @@ $$
 and also that
 
 $$
-  \lVert A \rVert_{X\to Y} = \sup\Set{\frac{\lVert A(x) \rVert_Y}{\lVert x \rVert_X} | x\neq 0 \in X} \leq (\epsilon + M)
+  \lVert A \rVert_{X\to Y} = \sup\Set{\frac{\lVert A(x) \rVert_Y}{\lVert x \rVert_X} | x\in X\setminus\Set{0}} \leq (\epsilon + M)
 $$
 
 Hence $A$ is bounded.
@@ -1475,14 +1475,14 @@ $$
 This implies that
 
 $$
-  \lVert\overline{T}\rVert_{Z\to X} = \sup\Set{\frac{\lVert\overline{T}(z)\rVert_X}{\lVert z \rVert_Z} | z\neq 0 \in Z} \leq \lVert T \rVert_{S\to X}
+  \lVert\overline{T}\rVert_{Z\to X} = \sup\Set{\frac{\lVert\overline{T}(z)\rVert_X}{\lVert z \rVert_Z} | z\in Z\setminus\Set{0}} \leq \lVert T \rVert_{S\to X}
 $$
 
 On the other hand, since $\overline{T}(s) = T(s)$ for all $s\in S$, we have
 
 $$
 \begin{align*}
-  \lVert\overline{T}\rVert_{Z\to X} =& \sup\Set{\frac{\lVert\overline{T}(z)\rVert_X}{\lVert z \rVert_Z} | z\neq 0 \in Z} \\
+  \lVert\overline{T}\rVert_{Z\to X} =& \sup\Set{\frac{\lVert\overline{T}(z)\rVert_X}{\lVert z \rVert_Z} | z\in Z\setminus\Set{0}} \\
   \geq& \frac{\lVert\overline{T}(s)\rVert_X}{\lVert z \rVert_S} = \lVert T \rVert_{S\to X}
 \end{align*}
 $$
@@ -1733,6 +1733,81 @@ $$
 $$
 
 # Analysis in normed spaces
+
+<MathBox title='Bounded multilinear operators' boxType='definition'>
+Let $X$ and $Y$ be normed spaces. The space of bounded $k$-linear operators is defined inductively by
+
+$$
+  \mathcal{B}(X,Y) = \mathcal{B}(X, \mathcal{B}^{k-1}(X,Y)),\; k\in\N
+$$
+
+where $\mathcal{B}^1(X,Y) = \mathcal{B}(X,Y)$. An element $L\in\mathcal{B}^k (X,Y)$ is a $k$-linear operator $L:X^k \to Y$
+</MathBox>
+
+<MathBox title='Continuity criterion for bounded multilinear operators' boxType='definition'>
+Let $X$ and $Y$ be normed spaces. An $n$-linear operator $L\in\mathcal{B}^n (X,Y)$ is continuous if its norm
+
+$$
+  \lVert L \rVert_{X\to\mathcal{B}^{n-1}(X,Y)} = \sup\Set{\frac{\lVert L(h_1,\dots,h_n) \rVert_Y}{\prod_{i=1}^n \lVert h_i \rVert_X} | h_i \in X_i \setminus\Set{0}}
+$$
+
+is finite.
+
+<details>
+<summary>Proof</summary>
+
+The proof is shown for $n = 2$ (the result follows by induction). An element of $\mathcal{B}^2 (X, Y)$ is a linear tranformation $L:X\to\mathcal{B}(X,Y)$ whose induced norm
+
+$$
+  \lVert L \rVert_{X\to\mathcal{B}(X,Y)} = \sup\Set{\frac{\lVert L(h_1) \rVert_{X\to Y}}{\lVert h_1 \rVert_X} | h_1 \in X\setminus\Set{0}}
+$$
+
+is finite, where for each $h_1 \in X$, the linear transformation $L(h_1): X \to Y$ is bounded, i.e.
+
+$$
+  \lVert L(h_1)\rVert_{X\to Y} = \sup\Set{\frac{\lVert L(h_1)h_2 \rVert_Y}{\lVert h_2 \rVert_X} | h_2 \in X\setminus\Set{0}} < \infty
+$$
+
+We combine $\lVert L(h_1) \rVert_{X\to Y} \leq \lVert L \rVert_{X\to\mathcal{B}(X,Y)}\lVert h_1 \rVert_X$ and $\lVert L(h_1)h_2 \rVert_Y \leq \lVert L(h_1) \rVert_{X\to Y} \lVert h_2 \rVert_X$ to get
+
+$$
+  \lVert L(h_1)h_2 \rVert_Y \leq \lVert L \rVert_{X\to\mathcal{B}(X,Y)} \lVert h_1 \rVert_X \lVert h_2 \rVert_X
+$$
+
+or when both $\lVert h_1 \rVert_X$ and $\lVert h_2 \rVert_X$ are nonzero, that
+
+$$
+  \lVert L \rVert_{X\to\mathcal{B}(X,Y)} \geq \frac{\lVert L(h_1)h_2 \rVert_Y}{\lVert h_1 \rVert_X \lVert h_2 \rVert_X}
+$$
+
+The upper bound $\lVert L \rVert_{X\to\mathcal{B}(X,Y)}$ on the ratios is the supremum because for $\epsilon > 0$ there exists a nonzero $h_1 \in X$ such that
+
+$$
+  \frac{\lVert L(h_1) \rVert_{X\to Y}}{\lVert h_1 \rVert_X} > \lVert L \rVert_{X\to\mathcal{B}(X,Y)} - \frac{\epsilon}{2}
+$$
+
+and there exists a nonzero $h_2 \in X$ such that
+
+$$
+  \frac{\lVert L(h_1)h_2 \rVert_Y}{\lVert h_2 \rVert_X} > \lVert L(h_1) \rVert_{X\to Y} - \frac{\epsilon\lVert h_1 \rVert_X}{2}
+$$
+
+so that
+
+$$
+\begin{align*}
+  \frac{\lVert L(h_1) h_2 \rVert_Y}{\lVert h_1 \rVert_X \lVert h_2 \rVErt_X} >& \frac{\lVert L(h_1) \rVert_{X\to Y}}{\lVert h_1 \rVert_X} - \frac{\epsilon}{2} \\
+  >& \lVert L \rVert_{X\to\mathcal{B}(X,Y)} -\epsilon
+\end{align*}
+$$
+
+Thus
+
+$$
+  \lVert L \rVert_{X\to\mathcal{B}(X,Y)} = \sup\Set{\frac{\lVert L(h_1)h_2 \rVert_Y}{\lVert h_1 \rVert_X \lVert h_2 \rVert_X} | h_1, h_2 \in X\setminus\Set{0}}
+$$
+</details>
+</MathBox>
 
 ## Fréchet derivative
 
