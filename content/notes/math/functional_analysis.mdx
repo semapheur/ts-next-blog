@@ -1821,24 +1821,6 @@ $$
 The operator $T$ is called the *Fréchet derivative* of $F$ at $x$, denoted $T = \d f(x)$. The Fréchet differential $Th = \d f(x) h$ is called the *first order variation* of $f$ at $x$. The function $f$ is *Fréchet differentiable* on $X$ if the function $\d f : X \to \mathcal{B}(X, Y)$ is continuous. The set of continuosly Fréchet differentiable functions from $X$ to $Y$ is denoted $C^1 (X, Y)$.
 </MathBox>
 
-<MathBox title='Higher order Fréchet derivatives' boxType='definition'>
-Let $X$ and $Y$ be normed spaces, and suppose $f:X\to Y$ is Fréchet differentiable on $X$. The function $f$ is twice Fréchet differentiable on $X$ if $\d f: X\to \mathcal{X,Y}$ is differentiable on $X$. The second order Fréchet derivative is the map
-
-$$
-  \d^2 f = \d (\d f): X\to\mathcal{B}(X,\mathcal{X,Y}) = \mathcal{B}^2 (X,Y)
-$$
-
-Inductively, $f$ is $n \geq 2$ times Fréchet differentiable on $X$ if the map $\d^{n-1} f:X\to\mathcal{B}^{n-1} (X,Y)$ is differentiable on $X$. The $n$-the order Fréchet derivative is the map
-
-$$
-  \d^n f = \d (\d^{n-1} f)
-$$
-
-For each $x\in X$, the $n$-th order derivative $\d^n f(x)\in\mathcal{B}^n (X,Y)$ is a continuous multilinear operator $\d^n f(x): X^n \to Y$.
-
-The set of $n$-times continuously Fréchet differentiable functions from $X$ to $Y$ is denoted $C^n (X, Y) = \Set{f\in C^1 (X, Y) | \d f \in C^{n-1} (X, Y)}$ and is a vector space of function. A function $f$ is *smooth* if $f\in C^n (X,Y)$ for all $n\in\N$. The space of smooth functions from $X$ to $Y$ is denoted $C^\infty (X,Y)$.
-</MathBox>
-
 <MathBox title='Fréchet partial derivative' boxType='definition'>
 Let $X_i$ for $i=1,\dots,n$ be a finite collection of normed spaces. Fix an open set $U \subset X_1 \times\cdots\times X_n$, and an ordered list of $k$ integers $i_1,\dots,i_k$ where $i_j \in\Set{1,\dots,k}$ (not necessarily distinct). The $k$-th order partial derivative of $f\in C^k (U, Y)$ corresponding to $i_1,\dots,i_k$ is the function $\d_{i_1}\cdots\d_{i_k} f \in C(U, \mathcal{B}(X_1,\dots,X_k;Y))$.
 
@@ -2024,6 +2006,32 @@ Hence, $fg$ is differentiable at $x$ with Fréchet derivative $\d (fg)(x) = g(x)
 </details>
 </MathBox>
 
+<MathBox title='Bilinear Fréchet product rule' boxType='proposition' tag='proposition-30'>
+Let $X$ and $Y$ be normed spaces. If $L \in\mathcal{L}^2 (X,Y)$ is a bilinear operator, then $L\in C^2 (X^2, Y)$ with
+
+$$
+  \d L(x)h = L(h_1, x_2) + L(x_1, h_2)
+$$
+
+If $X$ is an algebra, and $L(x_1, x_2) = x_1 x_2$ we obtain the usual form of the product rule.
+
+<details>
+<summary>Proof</summary>
+
+By bilinearity
+
+$$
+  L(x_1 + h_1, x^2 + h_2) - L(x_1, x_2) = L(h_1, x_2) + L(x_1, h_2) + L(h_1, h_2)
+$$
+
+Since $|L(h_1,h_2)| \leq \lVert L \rVert\cdot|h_1|\cdot|h_2| = o(|h|^2)$ we get
+
+$$
+  L(x_1 + h_1, x^2 + h_2) - L(x_1, x_2) = L(h_1, x_2) + L(x_1, h_2) + O(|h|^2)
+$$
+</details>
+</MathBox>
+
 <MathBox title='Fréchet chain rule' boxType='proposition'>
 Let $X, Y, Z$ be normed spaces. If $f:X\to Y$ is Fréchet differentiable at $x\in X$ and $g:Y\to Z$ is Fréchet differentiable at $y = f(x) \in Y$, the composition $g\circ f$ is Fréchet differentiable at $x$ with derivative
 
@@ -2111,6 +2119,60 @@ $$
 
 Taking $n\to\infty$ contradicts our assumption.
 </details>
+</MathBox>
+
+<MathBox title='Matrix representation of Fréchet derivatives' boxType='proposition' tag='proposition-33'>
+Let $U\subseteq \R^n$ be open. If a vector function $f:U \to\R^m$ by $f = (f_i:U\to\R)_{i=1}^m$, in the standard basis of $\R^n$, is Fréchet differentiable at $\mathbf{x}\in U$ , then the partial derivatives $\d_j f_i \mathbf{x}$ exist for all $j = 1,\dots,n$ and $i=1,\dots,m$. The matrix representation of $\d f(\mathbf{x})$ in standard coordinates is the Jacobian matrix
+
+$$
+  J(\mathbf{x}) = \begin{bmatrix} 
+    \d_1 f_1 (\mathbf{x}) & \cdots & \d_n f_1 (\mathbf{x}) \\
+    \vdots & \ddots & \vdots \\
+    \d_1 f_m (\mathbf{x}) & \cdots & \d_n f_m (\mathbf{x})
+  \end{bmatrix}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $J_j$ be the $j$-th column of $J(\mathbf{x})$, i.e. $J_j = \d f(\mathbf{x})\mathbf{e}_j$, and let $J_{ij}$ be the $i$-th entry of the $j$-column of $J(\mathbf{x})$. For $\mathbf{h} = r\mathbf{e}_j$ we have
+
+$$
+\begin{align*}
+  0 =& \lim_{\mathbf{h}\to\mathbf{0}} \frac{\lVert f(\mathbf{x} + \mathbf{h}) - f(\mathbf{x}) - \d f(\mathbf{x}\mathbf{h}) \rVert}{\lVert \mathbf{h} \rVert} \\
+  =& \lim_{r\to 0} \frac{\lVert f(\mathbf{x} + r\mathbf{e}_j) - f(\mathbf{x}) - r\d f(\mathbf{x}) \mathbf{e}_j \rVert}{|r|\cdot\lVert\mathbf{e}_j\rVert} \\
+  =& \lim_{r\to 0} \frac{\lVert f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_j \rVert}{|r|}
+\end{align*}
+$$
+
+This implies that for each component of $f$
+
+$$
+  \lim_{r\to 0} \frac{|f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_{ij} |}{|r|} = 0
+$$
+
+showing that the partial derivative $\d_j f_i (\mathbf{x}) = J_{ij}$ exists.
+</details>
+</MathBox>
+
+### Higher order derivatives
+
+<MathBox title='Higher order Fréchet derivatives' boxType='definition'>
+Let $X$ and $Y$ be normed spaces, and suppose $f:X\to Y$ is Fréchet differentiable on $X$. The function $f$ is twice Fréchet differentiable on $X$ if $\d f: X\to \mathcal{X,Y}$ is differentiable on $X$. The second order Fréchet derivative is the map
+
+$$
+  \d^2 f = \d (\d f): X\to\mathcal{B}(X,\mathcal{B}(X,Y)) = \mathcal{B}^2 (X,Y)
+$$
+
+Inductively, $f$ is $n \geq 2$ times Fréchet differentiable on $X$ if the map $\d^{n-1} f:X\to\mathcal{B}^{n-1} (X,Y)$ is differentiable on $X$. The $n$-the order Fréchet derivative is the map
+
+$$
+  \d^n f = \d (\d^{n-1} f)
+$$
+
+For each $x\in X$, the $n$-th order derivative $\d^n f(x)\in\mathcal{B}^n (X,Y)$ is a continuous multilinear operator $\d^n f(x): X^n \to Y$.
+
+The set of $n$-times continuously Fréchet differentiable functions from $X$ to $Y$ is denoted $C^n (X, Y) = \Set{f\in C^1 (X, Y) | \d f \in C^{n-1} (X, Y)}$ and is a vector space of function. A function $f$ is *smooth* if $f\in C^n (X,Y)$ for all $n\in\N$. The space of smooth functions from $X$ to $Y$ is denoted $C^\infty (X,Y)$.
 </MathBox>
 
 <MathBox title='Symmetry of second order Fréchet derivatives' boxType='proposition'>
@@ -2235,38 +2297,14 @@ for all $k=1,\dots,m$.
 </details>
 </MathBox>
 
-<MathBox title='Matrix representation of Fréchet derivatives' boxType='proposition' tag='proposition-33'>
-Let $U\subseteq \R^n$ be open. If a vector function $f:U \to\R^m$ by $f = (f_i:U\to\R)_{i=1}^m$, in the standard basis of $\R^n$, is Fréchet differentiable at $\mathbf{x}\in U$ , then the partial derivatives $\d_j f_i \mathbf{x}$ exist for all $j = 1,\dots,n$ and $i=1,\dots,m$. The matrix representation of $\d f(\mathbf{x})$ in standard coordinates is the Jacobian matrix
+<MathBox title='Representation of Fréchet derivatives' boxType='proposition'>
+Let $X$ and $Y$ be normed spaces. If $f\in C^r (X,Y)$, then for every $x\in X$ the $k$-th derivative of $f$ at $x$ takes the form
 
 $$
-  J(\mathbf{x}) = \begin{bmatrix} 
-    \d_1 f_1 (\mathbf{x}) & \cdots & \d_n f_1 (\mathbf{x}) \\
-    \vdots & \ddots & \vdots \\
-    \d_1 f_m (\mathbf{x}) & \cdots & \d_n f_m (\mathbf{x})
-  \end{bmatrix}
+  \d^k f(x)(u_1,\dots,u_k) = \left.\partial_{t_1}\cdots\partial_{t_k} f\left(x + \sum_{i=1}^k t_i u_i \right)\right|_{t_1=\cdots=t_k=0}
 $$
 
-<details>
-<summary>Proof</summary>
-
-Let $J_j$ be the $j$-th column of $J(\mathbf{x})$, i.e. $J_j = \d f(\mathbf{x})\mathbf{e}_j$, and let $J_{ij}$ be the $i$-th entry of the $j$-column of $J(\mathbf{x})$. For $\mathbf{h} = r\mathbf{e}_j$ we have
-
-$$
-\begin{align*}
-  0 =& \lim_{\mathbf{h}\to\mathbf{0}} \frac{\lVert f(\mathbf{x} + \mathbf{h}) - f(\mathbf{x}) - \d f(\mathbf{x}\mathbf{h}) \rVert}{\lVert \mathbf{h} \rVert} \\
-  =& \lim_{r\to 0} \frac{\lVert f(\mathbf{x} + r\mathbf{e}_j) - f(\mathbf{x}) - r\d f(\mathbf{x}) \mathbf{e}_j \rVert}{|r|\cdot\lVert\mathbf{e}_j\rVert} \\
-  =& \lim_{r\to 0} \frac{\lVert f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_j \rVert}{|r|}
-\end{align*}
-$$
-
-This implies that for each component of $f$
-
-$$
-  \lim_{r\to 0} \frac{|f(x_1,\dots,x_j + r,\dots,x_n) - f(x_1,\dots,x_n) - rJ_{ij} |}{|r|} = 0
-$$
-
-showing that the partial derivative $\d_j f_i (\mathbf{x}) = J_{ij}$ exists.
-</details>
+Moreover, $\d^k f(x) \in \mathcal{B}^k (X,Y)$ is a bounded symmetric multilinear operator.
 </MathBox>
 
 <MathBox title='Hessian matrix' boxType='example'>
@@ -2288,7 +2326,7 @@ $$
   =& \begin{bmatrix} 
     \d_1 \d_1 f(\mathbf{x}) & \cdots & \d_n \d_1 f(\mathbf{x}) \\ 
     \vdots & \ddots & \vdots \\
-    \d_1 \d_n f(\mathbf{x}) \cdots & \d_n \d_n f(\mathbf{x})  
+    \d_1 \d_n f(\mathbf{x}) & \cdots & \d_n \d_n f(\mathbf{x})  
   \end{bmatrix}
 \end{align*}
 $$
@@ -2336,26 +2374,56 @@ Combining the mixed terms gives
 $$
   \d_\mathbf{v}^k f(\mathbf{x}) = \sum_{j_1 +\cdots+ j_n = k} \frac{k!}{j_1!\cdots j_n!} \d_1^{j_1} \cdots \d_n^{j_n} f(\mathbf{x}) v_1^{j_1} \cdots v_n^{j_n}
 $$
+
+The $k$-th order directional derivative of $f$ at $\mathbf{x}\in$ along $\mathbf{v}$ is also written $\d^k f(\mathbf{x}) \mathbf{v}^{(k)}$ where $\mathbf{v}^{(k)} \in X^k$
 </MathBox>
 
 ## Gâteaux derivative
 
 <MathBox title='Gâteaux derivative' boxType='definition'>
-Let $X$ and $Y$ be locally convex topological vector spaces. A function $f: X \to Y$ is Gâteaux differentiable at $x\in X$ in the direction $v\in X$ if the following limit exists
+Let $X$ and $Y$ be locally convex topological vector spaces. A function $f: X \to Y$ is Gâteaux differentiable at $x\in X$ in the direction $h\in X$ if the following limit exists
 
 $$
-  \D f(x; z) = \lim_{t\to 0} \frac{f(x + tv) - f(x)}{t} = \left.\frac{\d}{\d t} f(x + tv)\right|_{t=0}
+  \D f(x; z) = \lim_{\tau\to 0} \frac{f(x + \tau v) - f(x)}{\tau} = \left.\frac{\d}{\d\tau} f(x + \tau v)\right|_{\tau=0}
 $$
 
 This limit is called the *Gâteaux differential* of $f$ at $x$ in the direction $v$. If the limit exists for all $v\in X$, then $f$ is Gâteaux differentiable at $x$. 
 
-If the Gâteaux differential $\D f(x; \cdot): X\to Y$ is linear and continuous, i.e. there is a linear map $A\in\mathcal{L}(X,Y)$ with $\D f(x; v) = Av$ for all $v\in X$, then $A$ is called the *Gâteaux derivative* of $F$ at $x$, denoted $\D f(x) = A$.
+If the Gâteaux differential $\D f(x; \cdot): X\to Y$ is linear and continuous, i.e. there is a linear map $A\in\mathcal{L}(X,Y)$ with $\D f(x; h) = Ah$ for all $h\in X$, then $A$ is called the *Gâteaux derivative* of $F$ at $x$, denoted $\D f(x) = A$.
 
-If $f$ is $m$ times Gâteaux differentiable at $x$, the $m$-th order Gâteaux differential in iterated directions $v_1,\dots,v_m \in X$ is defined recursively as 
+If $f$ is $n$-times Gâteaux differentiable at $x$, the $n$-th order Gâteaux differential in iterated directions $h_1,\dots,h_n \in X$ is defined recursively as 
 
 $$
-  \D^m f(x; v_1,\dots,v_m) = \D(\D^{m-1} f)(x; v_1,\dots,v_{m-1};v_m)
-$$ 
+  \D^n f(x; h_1,\dots,h_n) = \D(\D^{n-1} f)(x; h_1,\dots,h_{n-1};h_n)
+$$
+
+The $n$-th order Gâteaux derivative of $f$ at $x$ in the direction $h\in X$ is defined recursively as
+
+$$
+  \D^n f(x; h) := \lim_{\tau\to 0} \frac{\D^{n-1} f(x + \tau h; h) - \D^{n-1} f(x; h)}{\tau^n} = \left.\frac{\d^2}{\d\tau^} f(x + \tau h) \right|_{\tau=0}
+$$
+</MathBox>
+
+<MathBox title='Gâteaux derivatives are homogeneous' boxType='definition'>
+Let $X$ and $Y$ be locally convex topological vector spaces. If a function $f: X \to Y$ is Gâteaux differentiable at $x\in X$, i.e. $\D f(x)$ exists, then for all $\alpha\in\mathbb{F}$
+
+$$
+  \D f(x; \alpha h) = \alpha \D f(x; \alpha)
+$$
+
+<details>
+<summary>Proof</summary>
+
+From the definition of $\D f(x; h)$
+
+$$
+\begin{align*}
+  \D f(x; \alpha h) =& \lim_{\tau\to 0} \frac{f(x + \tau(\alpha h)) - f(x)}{\tau} \\
+  =& \alpha \lim_{\tau\to 0} \frac{f(x + \tau\alpha h) - f(x)}{\alpha\tau} \\
+  =& \alpha \D f(x; h)
+\end{align*}
+$$
+</details>
 </MathBox>
 
 <MathBox title='Fréchet differentiability implies Gâteaux differentiability' boxType='proposition'>
@@ -2367,7 +2435,7 @@ Let $X, Y$ be normed spaces. If $f:X\to Y$ is Fréchet differentiable at $x\in X
 Because $f: X\to Y$ is a Fréchet differentiable at $x\in X$, we have
 
 $$
-  f(x + h) = f(x) + \d f(x) h + \mathcal{O}(h)
+  f(x + h) = f(x) + \d f(x) h + o(h)
 $$
 
 For any $v\in X$, the Gâteaux differential limit at $x$ is
@@ -2380,8 +2448,8 @@ Inserting the Fréchet differentiability condition with $h = tv$, we get
 
 $$
 \begin{align*}
-  \lim_{t\to 0} \frac{\d f(x)(tv) + \mathcal{O}(\lVert tv \rVert)}{t} =& \lim_{t\to 0} \frac{t \d f(x)(v) + \mathcal{O}(\lVert tv \rVert)}{t} \\
-  =& \d f(x)(v) + \lim_{t\to 0} \frac{\mathcal{O}(|t|\cdot\lVert v \rVert)}{t} \\
+  \lim_{t\to 0} \frac{\d f(x)(tv) + o(\lVert tv \rVert)}{t} =& \lim_{t\to 0} \frac{t \d f(x)(v) + o(\lVert tv \rVert)}{t} \\
+  =& \d f(x)(v) + \lim_{t\to 0} \frac{o(|t|\cdot\lVert v \rVert)}{t} \\
   =& \d f(x)(v)
 \end{align*}
 $$
@@ -2393,6 +2461,42 @@ $$
 $$
 
 showing that the Gâteaux differential of $f$ at $x$ in the direction $v$ equals the Fréchet differential of $f$ at $x$. Since the Fréchet derivative $\d f(x) \in \mathcal{B}(X,Y)$ is a bounded linear operator, it follows that $f$ is Gâteaux differentiable at $x$ with Gâteaux derivative $\D f(x) = \d f(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $X$ and $Y$ be normed spaces. If $f:U\subseteq X\to Y$ is Gâteaux differentiable such that the Gâteaux derivative is continuously linear, i.e. $\D f \in C(U, \mathcal{L}(X,Y))$, then $f\in C^1 (U, Y)$ and $\d f = \D f$, where $\d f$ is the Fréchet derivative of $f$.
+
+<details>
+<summary>Proof</summary>
+
+Assume $g(t) := f(x + th)$ is in $C^1 ([0,1], Y)$ for $h\in U$ with sufficiently small norm. Moreover, by definition we have
+
+$$
+  \dot{g}(t) := \frac{\d }{\d t} g(t) = \D f(x + th)h 
+$$
+
+Using the fundamental theorem of calculus, we obtain
+
+$$
+\begin{align*}
+  f(x + h) - f(x) =& g(1) - g(0) = \int_0^1 \dot{g}(t)\;\d t \\
+  =& \int_^1 \D f(x + th)h\;\d t \\
+  =& \left(\int_0^1 \D f(x + th)\;\d t \right)h
+\end{align*}
+$$
+
+where the last equality follows from continuity of the integral since it clearly holds for simple functions. Consequently
+
+$$
+\begin{align*}
+  |f(x + h) - f(x) - \delta f(x)h| = \left|\left(\int_0^1 (\D f(x + th) - \D f(x))\;\d t \right)h \right| \\
+  \leq& \left(\int_0^1 \lVert \D f(x + th) - \D f(x) \rVert\;\d t \right)|h| \\
+  \leq& \max_{t\in[0,1]} \lVert \D f(x + th) - \D f(x) \rVert\cdot|h|
+\end{align*}
+$$
+
+By continuity of $\D f$, the right-hand side is $o(h)$ as required.
 </details>
 </MathBox>
 
@@ -2425,20 +2529,70 @@ Define $g(t) = f((1 - t)x + ty)$ with $\D f(t) = \delta g(t) = \delta f((1 - t)x
 </details>
 </MathBox>
 
-### Taylor's theorem
+## Taylor's theorem
 
 <MathBox title="Taylor's theorem" boxType='theorem'>
 Let $X$ and $Y$ be normed spaces. If $f \in C^k (U,Y)$ is a $k$ times differentiable function on an open subset $U\subseteq X$, then for all $x\in U$ and $h\in X$ such that the line segment $\ell(x,x+h) = \Set{(1-t)x + th | t\in[0,1]}$ lies in $U$, then
 
 $$
-  f(x + h) = R_k + \sum_{i=1}^k \frac{\d_h^{k-1} f(x)}{(k-1)!}
+\begin{align*}
+  f(x + h) =& R_k + \sum_{i=1}^k \frac{\d_h^{k-1} f(x)}{(k-1)!} \\
+  =& R_k + \sum_{i=1}^k \frac{\d^{k-1} f(x)h^{(k-1)}}{(k-1)!}
+\end{align*}
 $$
 
-where the remainder $R_k$ is given by the integral form
+where $h^{(k) \in X^k}$, and the remainder $R_k$ is given by the integral form
 
 $$
-  R_k (x,h) = \int_0^1 \frac{(1 - t)^{k-1}}{(k-1)!}\d_h^k f(x + th)\;\d t
+  R_k (x,h) \equiv o(|h|^k) = \int_0^1 \frac{(1 - t)^{k-1}}{(k-1)!}\d^k f(x + th)h^{(k)}\;\d t
 $$
+
+Expressing $R_k$ as $o(|h|^k)$ is called the *Peano form* of the remainder.
+
+<details>
+<summary>Proof</summary>
+
+We use proof by induction. In the base case $k = 0$, assume $g(t) := f(x + th)$ is in $C^1 ([0,1], Y)$ for $h\in U$ with sufficiently small norm. Moreover, by definition we have
+
+$$
+  \dot{g}(t) := \frac{\d }{\d t} g(t) = \D f(x + th)h 
+$$
+
+Using the fundamental theorem of calculus, we obtain
+
+$$
+\begin{align*}
+  f(x + h) - f(x) =& g(1) - g(0) = \int_0^1 \dot{g}(t)\;\d t \\
+  =& \int_^1 \D f(x + th)h\;\d t \\
+  =& \left(\int_0^1 \D f(x + th)\;\d t \right)h
+\end{align*}
+$$
+
+For the induction step, we use integration by parts. Let $f_j \in C^1 ([0,1], X_j)$ for $j=1,2$ and suppose $L\in\mathcal{L}^2 (X_1 \times X_2, Y)$ is bilinear. Applying the fundamental theorem of calculus on the bilinear product rule (Proposition $\ref{proposition-30}$) we get
+
+$$
+\begin{align*}
+  \int_0^1 L(\dot{f}_1 (t), f_2 (t))\;\d t =& L(f_1 (1), f_2 (1)) - L(f_1 (0), f_2 (0)) \\
+  &- \int_0^1 L(f_1 (t), \dot{f}_2 (t))\;\d t
+\end{align*}
+$$
+
+Applying by parts with with $L(y,t) = ty$, $f_1 (t) = \d^k f(x + ht)$ and $f_2 (t) = \frac{(1 - t)^{k}}{(k!)}$ establishes the induction step.
+
+To show the Peano form for the remainder we estimate
+
+$$
+\begin{align*}
+  &\left| \int_0^1 \frac{(1 - t)^{k-1}}{(k-1)!}\d_h^k f(x + th)\;\d t - \frac{1}{k!} \d^k f(x) \right|h^{k} \\
+  &\leq \frac{|h|^k}{(k - 1)!} \int_0^1 (1 - t)^{k-1} \lVert \d^k f(x + th) - d^k f(x) \rVert\;\d t \\
+  &\leq \frac{|h|^k}{k!} \sup_{t\in[0,1]} \lVert \d^k f(x + th) - d^k f(x) \rVert
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $X$ and $Y$ be normed spaces. If $f \in C^k (U,Y)$ is a $k$ times differentiable function on an open subset $U\subseteq X$, then for all $x\in U$ and $h\in X$
 </MathBox>
 
 <MathBox title='Upper bound for the Taylor remainders' boxType='corollary'>
