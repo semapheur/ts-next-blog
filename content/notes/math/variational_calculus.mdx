@@ -396,7 +396,7 @@ which is positive because the integrand is positive in $(c,d)$. This gives a con
 
 # Lagrange problem
 
-Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and evolution function $L\in C^2 (\R\times\R^n \times\R^n, \R)$ called the *Lagrangian*. A Lagrange problems seek to find the path $\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X)$ with fixed endpoints that minimizes the integral functional 
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and evolution function $L\in C^2 (\R\times TX, \R)$ called the *Lagrangian*, where $TX$ is the tangent bundle on $X$. A Lagrange problems seek to find the path $\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X)$ with fixed endpoints that minimizes the integral functional 
 
 $$
   S(\mathbf{q}) := \int_{t_0}^{t_1} L(t, \mathbf{q}(t), \dot{\mathbf{q}(t)})\;\d t
@@ -404,8 +404,8 @@ $$
 
 on $D = \Set{\mathbf{q} \in C^2 ([t_0, t_1], X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}$.
 
-<MathBox title='Euler-Lagrange equations' boxType='theorem'>
-Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times\R^n \times\R^n, \R)$. Let 
+<MathBox title='Euler-Lagrange equations' boxType='theorem' tag='theorem-1'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times TX, \R)$, where $TX$ is the tangent bundle of $X$. Let 
 
 $$
   D = \Set{\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}
@@ -429,24 +429,30 @@ $$
 <details>
 <summary>Proof</summary>
 
-The first Gâteaux variation of $S$ at $\mathbf{q}+in D$ in the direction $\mathbf{h} \in C^2 ([t_0, t_1], X)$ for $s\in\R$ is given by
+The first Gâteaux variation of $S$ at $\mathbf{q}\in D$ in the direction $\mathbf{h} \in C^2 ([t_0, t_1], X)$ for $s\in\R$ is given by
 
 $$
 \begin{align*}
   \delta S(\mathbf{q}(t); \mathbf{h}(t)) =& \left.\frac{\d}{\d s} S(\mathbf{q}(t) + t\mathbf{h}(t))\right|_{s=0} \\
-  =& \left.\frac{\d}{\d s} \right|_{s=0} \int_{t_0}^{t_1} L(t, \mathbf{q}(t) + s\mathbf{h}(t), \dot{\mathbf{q}}(t) + s\dot{\mathbf{h}}(t))\;\d t \\
-  =& \int_{t_0}^{t_1} \left.\frac{\d}{\d s} L(t, \mathbf{q} + s\mathbf{h}, \dot{\mathbf{q}} + s\dot{\mathbf{h}})\right|_{s=0} \;\d t
+  =& \left.\frac{\d}{\d s} \right|_{s=0} \int_{t_0}^{t_1} L\left(t, \mathbf{q}(t) + s\mathbf{h}(t), \dot{\mathbf{q}}(t) + s\dot{\mathbf{h}}(t)\right)\;\d t \\
+  =& \int_{t_0}^{t_1} \left.\frac{\d}{\d s} L[\mathbf{q} + s\mathbf{h}] \right|_{s=0} \;\d t
 \end{align*}
+$$
+
+where we use the compact notation
+
+$$
+  L[\mathbf{q} + s\mathbf{h}] = L\left(t, \mathbf{q}(t) + s\mathbf{h}(t), \dot{\mathbf{q}}(t) + s\dot{\mathbf{h}}(t)\right)
 $$
 
 Applying the chain rule gives
 
 $$
 \begin{align*}
-  \delta S(\mathbf{q}; \mathbf{h}) =& \int_{t_0}^{t_1} \left.\frac{\d}{\d s} L(t, \mathbf{q} + s\mathbf{h}, \dot{\mathbf{q}} + s\dot{\mathbf{h}})\right|_{s=0} \;\d t \\
-  =& \int_{t_0}^{t_1} \left.\mathbf{h}\cdot\nabla_{\mathbf{q} + s\mathbf{h}} L(t, \mathbf{q} + s\mathbf{h}, \dot{\mathbf{q}} + s\dot{\mathbf{h}})\right|_{s=0} \\
-  &+ \int_{t_0}^{t_1} \left.\dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L(t, \mathbf{q} + s\mathbf{h}, \dot{\mathbf{q}} + s\dot{\mathbf{h}})\right|_{s=0} \;\d t \\
-  =& \int_{t_0}^{t_1} \left[\mathbf{h}\cdot\nabla_\mathbf{q} L(t,\mathbf{q},\dot{\mathbf{q}}) + \dot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\right]\;\d t
+  \delta S(\mathbf{q}; \mathbf{h}) =& \int_{t_0}^{t_1} \left.\frac{\d}{\d s} L[\mathbf{q} + s\mathbf{h}]\right|_{s=0} \;\d t \\
+  =& \int_{t_0}^{t_1} \left.\mathbf{h}\cdot\nabla_{\mathbf{q} + s\mathbf{h}} L[\mathbf{q} + s\mathbf{h}]\right|_{s=0}\;\d t \\
+  &+ \int_{t_0}^{t_1} \left.\dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}]\right|_{s=0} \;\d t \\
+  =& \int_{t_0}^{t_1} \left(\mathbf{h}\cdot\nabla_\mathbf{q} L(t,\mathbf{q},\dot{\mathbf{q}}) + \dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\right)\;\d t
 \end{align*}
 $$
 
@@ -454,8 +460,8 @@ Integrating the second term by parts we get
 
 $$
 \begin{align*}
-  \int_{t_0}^{t_1} \dot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\;\d t =& \underbrace{\left.\mathbf{h} L(t,\mathbf{q},\dot{\mathbf{q}})\right|_{t_0}^{t_1}}_{=0} \\
-  &- \int_{t_0}^{t_1} \mathbf{v} \frac{\d}{\d t}\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\;\d t
+  \int_{t_0}^{t_1}& \dot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\;\d t \\
+  =& \underbrace{\left.\mathbf{h} L(t,\mathbf{q},\dot{\mathbf{q}})\right|_{t_0}^{t_1}}_{=0} - \int_{t_0}^{t_1} \mathbf{h} \frac{\d}{\d t}\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}})\;\d t
 \end{align*}
 $$
 
@@ -473,126 +479,365 @@ $$
 </details>
 </MathBox>
 
-Calculus of variations seeks to find extremas of functionals in the form of definite integrals
+## Legendre condition
+
+<MathBox title='Condition for local minima in Lagrange problems' boxType='proposition'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times TX, \R)$, where $TX$ is the tangent bundle of $X$. Let 
 
 $$
-  I[y] = \int_{x_1}^{x_2} L\left(x, y, \frac{\d y}{\d x} \right) \d x
+  D = \Set{\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}
 $$
 
-The extremal function $y = f(x)$ of $I[y]$ can be found by introducing a variation in $f$
+be the set of twice continuously differentiable paths in $X$ with fixed endpoints. The action functional $S:D\to\R$ given by
 
 $$
-\begin{align*}
-  \bar{f}(x) &= f(x) + \varepsilon \eta(x) \, , \quad \eta(x_1) = \eta(x_2) = 0 \\
-  \bar{f}'(x) &= f'(x) + \varepsilon\eta'(x)
-\end{align*}
+  S(\mathbf{q}) := \int_{t_0}^{t_1} L(t, \mathbf{q}(t), \dot{\mathbf{q}(t)})\;\d t
 $$
 
-Substituting $\bar{f}$ into $I[y]$ results in a function of $\varepsilon$, $\Phi(\varepsilon) \equiv I[\bar{f}]$ and since $y = f(x)$ is a minimum of $I[y]$, the function $\Phi(\varepsilon)$ is stationary at $\varepsilon = 0$ 
+has a local minimum at $\mathbf{q}$ if for any $\mathbf{h}\in X$
 
 $$
-\begin{align*}
-  0 &= \left. \frac{\d\Phi}{\d\varepsilon} \right|_{\varepsilon = 0} \\
-  &= \left. \frac{\d}{\d\varepsilon} \right|_{\varepsilon = 0} \int_{x_1}^{x_2} L\left(x, \bar{f}, \bar{f}' \right) \d x \\
-  &= \left. \int_{x_1}^{x_2} \frac{\d}{\d\varepsilon} L\left(x, \bar{f}, \bar{f}' \right) \d x \right|_{\varepsilon = 0} \\
-  &= \left. \int_{x_1}^{x_2} \left( \frac{\partial L}{\partial \bar{f}} \frac{\partial \bar{f}}{\partial \varepsilon} + \frac{\partial L}{\partial \bar{f}'}\frac{\partial \bar{f}'}{\partial \varepsilon} \right) \right|_{\varepsilon = 0} \d x \\
-  &= \left. \int_{x_1}^{x_2} \left( \frac{\partial L}{\partial \bar{f}} \eta + \frac{\partial L}{\partial \bar{f}'}\eta' \right) \right|_{\varepsilon = 0} \d x
-\end{align*}
+  \mathbf{h}^2 \nabla_{\mathbf{q}}^2 L(t,\mathbf{q},\dot{\mathbf{q}}) + 2\mathbf{h}\cdot\dot{\mathbf{h}} \nabla_{\mathbf{q}}\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}}) + \dot{\mathbf{q}}^2 \nabla_{\dot{\mathbf{q}}}^2 L(t,\mathbf{q},\dot{\mathbf{q}}) > 0
 $$
 
-Integrating the second term by parts
+<details>
+<summary>Proof</summary>
+
+The second Gâteaux variation of $S$ at $\mathbf{q}(t) \in $ in the dircetion $\mathbf{h}(t)\in X$ is given by
 
 $$
-  \int_{x_1}^{x^2} \frac{\partial L}{\partial \bar{f}'}\eta' \d x = \frac{\partial L}{\partial \bar{f}'} \underbrace{\left[ \eta \right]_{x_1}^{x_2}}_{=0} - \int_{x_1}^{x^2} \eta \frac{\d}{\d x} \left( \frac{\partial L}{\partial \bar{f}'} \right) \d x
+  \delta^2 S(\mathbf{q};\mathbf{h}) = \left.\frac{\d^2}{\d s^2} S(\mathbf{q}; \mathbf{h})\right|_{s=0} = \left.\frac{\d}{\d s} \delta S(\mathbf{q};\mathbf{h}) \right|_{s=0}
 $$
 
-and inserting back
+From the proof of Theorem $\ref{theorem-1}$, we found that
 
 $$
 \begin{align*}
-  0 &= \left. \int_{x_1}^{x_2} \left[ \frac{\partial L}{\partial \bar{f}} \eta - \frac{\d}{\d x} \left( \frac{\partial L}{\partial \bar{f}'} \right) \eta \right] \right|_{\varepsilon = 0} \d x \\
-  &= \int_{x_1}^{x_2} \left[ \frac{\partial L}{\partial f} - \frac{\d}{\d x} \left( \frac{\partial L}{\partial f'} \right) \right] \eta \d x 
+  \delta S(\mathbf{q};\mathbf{h}) =& \int_{t_0}^{t_1} \left.\mathbf{h}\cdot\nabla_{\mathbf{q} + s\mathbf{h}} L[\mathbf{q} + s\mathbf{h}]\right|_{s=0}\;\d t \\
+  &+ \int_{t_0}^{t_1} \left.\dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}]\right|_{s=0} \;\d t
 \end{align*}
 $$
 
-By the fundamental lemma of calculus of variations, the integrand part in the paranthesis vanishes. Thus, if $f(x)$ is an extremal of $I[y]$, then $f(x)$ satisfy the Euler-Lagrange equation
+where we use the compact notation
 
 $$
-  \frac{\partial L}{\partial f} - \frac{\d}{\d x} \left( \frac{\partial L}{\partial f'} \right) = 0
+  L[\mathbf{q} + s\mathbf{h}] = L\left(t, \mathbf{q}(t) + s\mathbf{h}(t), \dot{\mathbf{q}}(t) + s\dot{\mathbf{h}}(t)\right)
 $$
+
+such that
+
+$$
+\begin{align*}
+  \delta^2 S(\mathbf{q};\mathbf{h}) =& \int_{t_0}^{t_1} \left.\frac{\d}{\d s}\Big(\mathbf{h}\cdot\nabla_{\mathbf{q} + s\mathbf{h}} L[\mathbf{q} + s\mathbf{h}]\Big)\right|_{s=0}\;\d t \\
+  &+ \int_{t_0}^{t_1} \left.\frac{\d}{\d s} \left(\dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}]\right)\right|_{s=0} \;\d t
+\end{align*}
+$$
+
+Applying the chain rule to each terms gives
+
+$$
+\begin{align*}
+  \frac{\d}{\d s}& \left(\mathbf{h}\cdot\nabla_{\mathbf{q} + s\mathbf{h}} L[\mathbf{q} + s\mathbf{h}] \right) \\
+  =& \mathbf{h}^2 \nabla_{\mathbf{q} + s\mathbf{h}}^2 L[\mathbf{q} + s\mathbf{h}] + \mathbf{h}\cdot\dot{\mathbf{h}} \nabla_{\mathbf{q} + s\mathbf{h}}\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}]
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \frac{\d}{\d s}& \left(\dot{\mathbf{h}}\cdot\nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}] \right) \\
+  =& \mathbf{h}\cdot\dot{\mathbf{h}} \nabla_{\mathbf{q} + s\mathbf{h}} \nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}} L[\mathbf{q} + s\mathbf{h}] + \dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}} + s\dot{\mathbf{h}}}^2 L[\mathbf{q} + s\mathbf{h}]
+\end{align*}
+$$
+
+Substituting back and evaluating at $s = 0$ yields
+
+$$
+\begin{equation}
+\begin{split}
+  \delta^2 S(\mathbf{q};\mathbf{h}) = \int_{t_0}^{t_1}& \Big[\mathbf{h}^2 \nabla_{\mathbf{q}}^2 L(t,\mathbf{q},\dot{\mathbf{q}}) \\
+  &+ 2\mathbf{h}\cdot\dot{\mathbf{h}} \nabla_{\mathbf{q}}\nabla_{\dot{\mathbf{q}}} L(t,\mathbf{q},\dot{\mathbf{q}}) \\
+  &+ \dot{\mathbf{q}}^2 \nabla_{\dot{\mathbf{q}}}^2 L(t,\mathbf{q},\dot{\mathbf{q}})\Big]\;\d t
+\end{split}
+\tag{\label{equation-1}}
+\end{equation}
+$$
+
+In order to be a local minimum, $\mathbf{q}$ must satisfy $\delta^2 S(\mathbf{q};\mathbf{h}) > 0$ for any nonzero $\mathbf{h}\in X$. Clearly, $\delta^2 S(\mathbf{q};\mathbf{h}) > 0$ if and only if the integrand is positive definite, which gives the desired inequality.
+</details>
+</MathBox>
+
+ntegrating the mixed gradient term in $\eqref{equation-1}$ by parts, we obtain an alternative form of the second variation for the action functional.
+
+$$
+\begin{align*}
+  \delta^2 S(\mathbf{q};\mathbf{h}) =& \int_{t_0}^{t_1} \left(\mathbf{h}^2 \nabla_\mathbf{q}^2 L + 2\mathbf{h}\cdot\dot{\mathbf{h}} \nabla_{\mathbf{q}}\nabla_{\dot{\mathbf{q}}} L + \dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}}}^2 L \right)\;\d t \\
+  =& \int_{t_0}^{t_1} \left(\mathbf{h}^2 \nabla_\mathbf{q}^2 L + \dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}}}^2 L \right)\d t \\
+  &+ \left(\mathbf{h}^2 \nabla_{\mathbf{q}} \nabla_{\dot{\mathbf{q}}} L \right)|_{t_0}^{t_1} - \int_{t_0}^{t_1} \mathbf{h}^2 \frac{\d}{\d t}\left(\nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L \right)\;\d t \\
+  =& \int_{t_0}^{t_1} \left(\dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}}}^2 L + \mathbf{h}^2 \left(\nabla_\mathbf{q}^2 L - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L \right) \right)\;\d t
+\end{align*}
+$$
+
+If we fix the function $\mathbf{u}$ and define
+
+$$
+\begin{align*}
+  R :=& \nabla_{\dot{\mathbf{q}}}^2 L \\
+  T :=& \nabla_\mathbf{q}^2 - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L
+\end{align*}
+$$
+
+the second variation becomes a function over the domain of admissible variations
+
+$$
+  J(\mathbf{h}(t)) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}(t)^2 + S\mathbf{h}(t)^2)\;\d t
+$$
+
+with Lagrangian $L(t, \mathbf{h},\dot{\mathbf{h}}) = R\dot{\mathbf{h}}^2 + S\dot{\mathbf{h}}^2$, which is the standard quadratic functional.
+
+<MathBox title='' boxType='proposition'>
+Let $\mathbf{h} \in C^1 ([t_0,t_1],\R^n)$ be continuously differentiable functions with boundary values $\mathbf{h}(t_0) = \mathbf{h}(t_1) = 0$ and support on $[t_0, t_1]$. Suppose $R, T: [t_0, t_1]\to\R$ are continuous function of $t$. If the functional
+
+$$
+  J(\mathbf{h}) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}^2 + S\mathbf{v}^2)\;\d t
+$$
+
+is positive definite, then $R\geq 0$ for all $t\in[t_0, t_1]$.
+
+<details>
+<summary>Proof</summary>
+
+It suffices to show that if $R < 0$ for some $t\in[t_0, t_1]$, then $J(\mathbf{h})\leq 0$. Without loss of generality, let $\tau \in [t_1, t_2$ such that $R(\tau) = -2\delta$ and $\delta > 0$. Since $R$ is continuous on the interval, there is $\varepsilon > 0$ such that $t_0 \leq \tau - \epsilon < \tau + \epsilon \leq t_1$ and $R < -\delta$ for all $t\in[\tau - \epsilon, \tau + \epsilon]$.
+
+Suppose we define $\mathbf{h}$ by
+
+$$
+  h_i = \begin{cases}
+    \sin^2 (\frac{\pi}{\epsilon}(t - \tau))\quad & t\in[\tau - \epsilon, \tau + \epsilon] \\
+    0 \quad &\text{otherwise}
+  \end{cases}
+$$
+
+for each $i=1,\dots,n$. Then
+
+$$
+\begin{align*}
+  \int_{t_0}^{t_1} (R_i \dot{h}_i^2 + T_i h_i^2)\;\d t =& \int_{\tau-\epsilon}^{\tau+\epsilon} R_i \left[\frac{\pi}{\epsilon}\sin\left(\frac{2\pi}{\epsilon}(t - \tau) \right)\right]^2\;\d t \\
+  &+ \int_{\tau-\epsilon}^{\tau+\epsilon} T_i \sin^4 \left(\frac{\pi}{\epsilon}(t - \tau)\right)\;\d t \\
+  <& \int_{\tau-\epsilon}^{\tau+\epsilon} \left(-\frac{\pi^2}{\epsilon^2}\delta \right)\;\d t + \int_{\tau-\epsilon}^{\tau+\epsilon} M_i \;\d t \\
+  =& -\frac{2\pi^2}{\epsilon}\delta + 2M_i \epsilon
+\end{align*}
+$$
+
+where $M_i = \max_{t\in[t_0,t_1]} |T_i|$. Since $-\frac{2\pi^2}{\epsilon}\delta + 2M_i \epsilon < 0$ for sufficiently small $\epsilon$, we have that
+
+$$
+\begin{align*}
+  J(\mathbf{h}) =& \int_{t_0}^{t_1} \left(\sum_{i=1}^n R_i \dot{h}_i^2 + T_i v_i^2 \right)\;\d t \\
+  \leq& \sum_{i=1}^n \left(-\frac{2\pi^2}{\epsilon}\delta + 2M_i \epsilon \right) < 0
+\end{align*}
+$$
+
+Thus, $J(\mathbf{h})\leq 0$ when $R < 0$ for some $t\in[t_0, t_1]$, implying that $R\geq 0$ for all $t\in[t_0,t_1]$ whenever $J(\mathbf{h}) > 0$.
+</details>
+</MathBox>
+
+<MathBox title='Legendre condition' boxType='theorem'>
+
+</MathBox>
+
+## Hamiltonian
+
+<MathBox title="Equivalence of Hamilton's equations and the Euler-Lagrange equations" boxType='proposition'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times TX, \R)$, where $TX$ is the tangent bundle of $X$. Define the momenta $\mathbf{p}\in C^2 ([t_0, t_1], TX)$ as the Poisson's variables
+
+$$
+  \mathbf{p}(t) = \nabla_{\dot{\mathbf{q}}} L(t, \mathbf{q}(t), \dot{\mathbf{q}}(t))
+$$
+
+and the *Hamiltonian*
+
+$$
+  H(t, \mathbf{u}(t), \mathbf{p}(t)) = \mathbf{p}(t) \cdot \dot{\mathbf{q}}(t) - L(t, \mathbf{q}(t), \dot{\mathbf{q}}(t))
+$$
+
+which is the Legendre transform of the Lagrangian. *Hamilton's equations* are defined as
+
+$$
+\begin{align*}
+  \dot{\mathbf{q}}(t) =& \nabla_\mathbf{p} H(t,\mathbf{q}(t),\mathbf{p}(t)) \\
+  \dot{\mathbf{p}}(t) =& -\nabla_\mathbf{q} H(t,\mathbf{q}(t),\mathbf{p}(t))
+\end{align*}
+$$
+
+If the Lagrangian satisfies the Euler-Lagrange equations $\nabla_\mathbf{q} L = \frac{\d}{\d t} \nabla_{\dot{\mathbf{q}}} L$, then Hamilton's equations and the Euler-Lagrange equations are equivalent.
+
+<details>
+<summary>Proof</summary>
+
+The total derivative of the Hamiltonian is
+
+$$
+  \frac{\d}{\d t} H(t,\mathbf{q},\mathbf{p}) = \frac{\partial H}{\partial t}(t,\mathbf{q},\mathbf{q}) + \dot{\mathbf{q}}\cdot\nabla_\mathbf{q} H(t,\mathbf{q},\mathbf{p}) + \dot{\mathbf{p}}\nabla_\mathbf{p} H(t,\mathbf{q},\mathbf{p})
+$$
+
+In terms of the Legendre transform $H = \mathbf{p}\cdot\dot{\mathbf{q}} - L$, the total derivative of the Hamiltonian is
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} H(t,\mathbf{q},\mathbf{p}) =& \frac{\d}{\d t} (\mathbf{p}\cdot\dot{\mathbf{q}} - L(t, \mathbf{q},\dot{\mathbf{q}})) \\
+  =& -\dot{\mathbf{q}}\cdot\nabla_\mathbf{q} L(t,\mathbf{q},\dot{\mathbf{q}}) + \dot{\mathbf{p}}\cdot\dot{\mathbf{q}} - \frac{\partial L}{\partial t}(t,\mathbf{q},\dot{\mathbf{q}}) 
+\end{align*}
+$$
+
+Equating the expressions gives the equations
+
+$$
+\begin{align*}
+  \frac{\partial H}{\partial t}(t,\mathbf{q},\mathbf{p}) =& -\frac{\partial L}{\partial t}(t,\mathbf{q},\dot{\mathbf{q}}) \\
+  \nabla_\mathbf{q} H(t,\mathbf{q},\mathbf{p}) =& -\nabla_{\mathbf{q}} L(t,\mathbf{q},\dot{\mathbf{q}}) \\
+  \nabla_\mathbf{p} H(t,\mathbf{q},\mathbf{p}) =& \dot{\mathbf{q}}
+\end{align*}
+$$
+
+The second equation is recognized as one of Hamilton's equations. It remains to show that $\nabla_\mathbf{q} H =& -\nabla_{\mathbf{q}} L$ if and only if $\mathbf{q}$ satisfies both Hamilton's equation and the Euler-Lagrange equations. First, assume $\mathbf{q}$ sastifies Hamilton's equations. Then, we see by substitution that
+
+$$
+  \dot{\mathbf{p}} = \nabla_\mathbf{q} L(t,\mathbf{q},\dot{\mathbf{q}})
+$$
+
+Nest, assume $\mathbf{q}$ satisfies the Euler-Lagrange equations. Taking the time derivative of the Poisson variable $\mathbf{p}$ and applying the Euler-Lagrange equations gives
+
+$$
+  \dot{\mathbf{p}} = \frac{\d}{\d t}\nabla_{\dot{\mathbf{q}} L(t,\mathbf{q},\dot{\mathbf{q}})} = \nabla_\mathbf{q} L(t,\mathbf{q},\dot{\mathbf{q}})
+$$
+
+Since both cases yield the same result, we conclude that Hamilton's equations and the Euler Lagrange equations are equivalent.
+</details>
+</MathBox>
 
 ## Beltrami identity
 
-The Beltrami identity is a special case of the Euler-Lagrange equation when $L$ does not depend on $x$, i.e. $\frac{\partial L}{\partial x} = 0$
+<MathBox title='Beltrami identity' boxType='corollary' tag='corollary-1'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (TX, \R)$, where $TX$ is the tangent bundle of $X$. Let 
+
+$$
+  D = \Set{\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}
+$$
+
+be the set of twice continuously differentiable paths in $X$ with fixed endpoints. The action functional $S:D\to\R$ given by
+
+$$
+  S(\mathbf{q}) := \int_{t_0}^{t_1} L(\mathbf{q}(t), \dot{\mathbf{q}(t)})\;\d t
+$$
+
+is stationary on a path $\mathbf{q} \in X$ if and only if $L$ satisfies the Beltrami equations
 
 $$
 \begin{align*}
-  \frac{\partial L}{\partial f} - \frac{\d}{\d x} \left( \frac{\partial L}{\partial f'} \right) = 0 \\
-  y' \frac{\partial L}{\partial f} - y' \frac{\d}{\d x} \left( \frac{\partial L}{\partial f'} \right)
+  \frac{\d}{\d t} \left[L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) - \dot{\mathbf{q}}(t) \cdot \nabla_{\dot{\mathbf{q}}} L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) \right] =& 0 \\
+  \frac{\d}{\d t} \left[L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) - \dot{q}_i \frac{\partial L}{\partial\dot{q}_i} (\mathbf{q}(t),\dot{\mathbf{q}}(t))\right] =& 0 ,\; i=1,\dots,n
 \end{align*}
 $$
 
-The term $y' \frac{\partial L}{\partial y}$ is also found in the total derivative $\frac{\d L(x, y, y')}{\d x}$
+giving the Beltrami identity
 
 $$
-\begin{gather*}
-  \frac{\d L}{\d x} = \frac{\partial L}{\partial x} + \frac{\partial L}{\partial y}y' + \frac{\partial L}{\partial y'}y'' \\
-  y' \frac{\partial L}{\partial y} = \frac{\d L}{\d x} - \frac{\partial L}{\partial x} - \frac{\partial L}{\partial y'}y''
-\end{gather*}
+  L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) - \dot{\mathbf{q}}(t) \cdot \nabla_{\dot{\mathbf{q}}} L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) = C,\; C\in\R
 $$
 
-Inserting back to the modified Euler-Lagrange equation gives
+<details>
+<summary>Proof</summary>
+
+This is a special case of the Lagrange problem where the Lagrangian is not dependent on the parametric variable $t\in[t_0, t_1]$. Thus, if $\mathbf{q}$ is a critical function of $S$, then $L$ satisfies the Euler-Lagrange equation (Theorem $\ref{theorem-1}$)
 
 $$
-\begin{gather*}
-  \frac{\d L}{\d x} - \frac{\partial L}{\partial x} - \left[ \frac{\partial L}{\partial y'}y'' - y' \frac{\d}{\d x} \left( \frac{\partial L}{\partial f'} \right) \right] = 0 \\
-  \frac{\d L}{\d x} - \frac{\partial L}{\partial x} - \frac{\d}{\d x} \left( y' \frac{\partial L}{\partial y'} \right) = 0 \\
-  \frac{\d}{\d x} \left( L - y' \frac{\partial L}{\partial y'} \right) = \underbrace{\frac{\partial L}{\partial x}}_{=0} \\
-  \frac{\d}{\d x} \left( L - y' \frac{\partial L}{\partial y'} \right) = 0
-\end{gather*}
+  \nabla_{\mathbf{q}} L(\mathbf{q}(t),\dot{\mathbf{q}}(t)) = \frac{\d}{\d t} \nabla_{\dot{\mathbf{q}}} L(\mathbf{q}(t),\dot{\mathbf{q}}(t))
 $$
 
-Integrating on both sides results in the Beltrami identity
+Writing out the total derivative $\frac{\d L}{\d t}(\mathbf{q}(t),\dot{\mathbf{q}}(t))$ and applying the Euler-Lagrange equations gives
 
 $$
-  L - y' \frac{\partial L}{\partial y'} = C
+\begin{align*}
+  \frac{\d L}{\d t}(\mathbf{q},\dot{\mathbf{q}}) =& \dot{\mathbf{q}}\cdot\nabla_\mathbf{q} L(\mathbf{q}, \dot{\mathbf{q}}) + \ddot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(\mathbf{q}, \dot{\mathbf{q}}) \\
+  =& \dot{\mathbf{q}}\cdot\left(\frac{\d}{\d t} \nabla_{\dot{\mathbf{q}}} L(\mathbf{q}, \dot{\mathbf{q}}) \right) + \ddot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(\mathbf{q}, \dot{\mathbf{q}}) \\
+  =& \frac{\d}{\d t}\left(\dot{\mathbf{q}}\cdot\nabla_{\dot{\mathbf{q}}} L(\mathbf{q}, \dot{\mathbf{q}}) \right)
+\end{align*}
 $$
 
-where $C$ is a constant dependent on boundary conditions.
+Rearranging gives the Beltrami equations
+
+$$
+  \frac{\d}{\d t} \left[L(\mathbf{q},\dot{\mathbf{q}}) - \dot{\mathbf{q}} \cdot\nabla_{\dot{\mathbf{q}}} L(\mathbf{q},\dot{\mathbf{q}}) \right] = 0 
+$$
+
+</details>
+</MathBox>
 
 ### Brachistochrone problem
 
-The brachistochrone problem seeks to find the path $y = f(x)$ which minimized the time travelled from $a = (0, h)$ to $b = (L, 0)$ in a gravitational field:
+Consider a bead, subject to homogeneous gravitational field, that is allowed to slide down a frictionless wire with fixed endpoints at different heights, not directly above one another. The brachistochrone problem seeks to find the shape of the wire that minimize the time it takes for the particle to travel the wire's length.
+
+Define a Cartesian plane $(x,y)\in\R^2$ with gravitational field $g\hat{\mathbf{y}}$ in positive $y$-direction. Let $A = (0,0)$ and $B = (x_1, x_2)$ be the endpoints of a wire such that $x_1 > 0$ and $y_1 > 0$. 
+
+The possible shapes of the wire are represented as paths $q: ([0,t_1], \R^2)$ with boundary conditions $q(0) = (0,0)$ and $q(t_1) = (x_1,y_1)$. The curve of $q$ is the graph of a function $f\in C^2 ([0,x_1], \R)$ with boundary conditions $f(0) = 0$ and $f(x_1) = y_1$. The arclength of $q$ given by the integral
 
 $$
-  T = \int_a^b \d t = \int_a^b \frac{\d S}{v(x, y)}
+  s(t) = \int_0^{x(t)} \sqrt{1 + f'(u)}\;\d u
 $$
 
-where
-- the infinitisemal distance $\d S$ is retrieved from the Pythagorean theorem: $\sqrt{1 + \left(\frac{\d y}{\d x}\right)^2}\d x$
-- the velocity $v(x, y)$ is retrieved from conservation of energy
+The velocity of the bead is given by $v(t) = \dot{s}(t)$ such that
+
+$$
+  v(t) = \frac{\d s}{\d t} = \sqrt{1 + f'(x(t))}\dot{x}(t)  
+$$
+
+Because the wire is frictionless, the total energy of the system must by conserved, giving
+
 $$
 \begin{gather*}
-  mgh = mgy + \frac{1}{2}mv^2 \\
-  v = \sqrt{2g(h-y)}
+  \frac{1}{2}mv(t)^2 - mgf(x(t)) = 0 \\
+  \implies v(t) = \sqrt{2gf(x(t))}
 \end{gather*}
 $$
 
-Substituting back into $T$ yields
-
-$$
-  T = \int_a^b \sqrt{\frac{1 + (y')^2}{2g(h-y)}} \d x
-$$
-
-The minimal function is found with the Euler-Lagrange equation. Since the integrand is not dependent on $x$, the Beltrami identity applies
+Combining the expressions for $v(t)$ gives the differential equation
 
 $$
 \begin{gather*}
-  \sqrt{\frac{1 + (y')^2}{2g(h-y)}} - \frac{(y')^2}{\sqrt{\left[1 + (y')^2 \right]\left[2g (h - y) \right]}} = C \\
-  1 + (y')^2 - (y')^2 = C \sqrt{\left[1 + (y')^2 \right]\left[2g (h - y) \right]} \\
-  1 = C^2 \left[1 + (y')^2 \right]\left[2g (h - y) \right] \\
-  \left[1 + (y')^2 \right] (h - y) = \underbrace{C_1}_{=\left(2gC^2\right)^{-1}} \\
-  \frac{\d y}{\d x} = \sqrt{\frac{C_1 - (h - y)}{h - y}}
+  \sqrt{2g f(x)} = \sqrt{1 + f'(x)^2} \frac{\d x}{\d t} \\
+  \implies \d t = \sqrt{\frac{1 + f'(x)^2}{2gf(x)}}\;\d x 
+\end{gather*}
+$$
+
+The transit time of the bead is given by the functional
+
+$$
+  T(f) = \int_0^{t_1} \d t = \frac{1}{\sqrt{2g}} \int_0^{x_1} \sqrt{\frac{1 + f'(x)^2}{f(x)}}\;\d x
+$$
+
+with a Lagrangian of the form
+
+$$
+  L(f(x), f'(x)) = \sqrt{\frac{1 + f'(x)^2}{2g f(x)}}
+$$
+
+Thus, to find the curve that minimize the time it takes for the bead to travel from $A$ to $B$, we want to minimize the $T(f)$. Since the Lagrangian $L$ is not dependent on $x$, a $f$ function is critical if and only if $L$ satisfies the Beltrami identity (Corollary $\ref{corollary-1}$)
+
+$$
+  L(f(x),f'(x)) - f'(x) \frac{\partial}{\partial f'} L(f(x),f'(x)) = C,\; C\in\R
+$$
+
+This gives
+
+$$
+\begin{gather*}
+  \sqrt{\frac{1 + f'(x)^2}{2gf(x)}} - \frac{f'(x)^2}{\sqrt{\left[1 + f'(x)^2 \right]\left[2gf(x)\right]}} = C \\
+  1 + f'(x)^2 - f'(x)^2 = C \sqrt{\left[1 + f'(x)^2 \right]\left[2gf(x) \right]} \\
+  1 = C^2 \left[1 + f'(x)^2 \right]\left[2gf(x) \right] \\
+  \left[1 + f'(x)^2 \right] f(x) = \frac{1}{2gC^2} = k^2 \\
+  \frac{\d f}{\d x} = \sqrt{\frac{k^2 - f(x)}{f(x)}}
 \end{gather*}
 $$
 
@@ -600,8 +845,8 @@ The differential equation can be solved by separation of variables
 
 $$
 \begin{align*}
-  \d x &= \sqrt{\frac{C_1 - (h - y)}{h - y}} \d y \\
-  x &= \int \sqrt{\frac{C_1 - (h - y)}{h - y}} \d y
+  \d x &= \sqrt{\frac{k^2 - f(x)}{f(x)}} \d f \\
+  x &= \int \sqrt{\frac{k^2 - f(x)}{f(x)}} \d f
 \end{align*}
 $$
 
@@ -609,8 +854,8 @@ The right hand side integral can be solved by substituting
 
 $$
 \begin{gather*}
-  y = h - C_1 \sin^2 \left( \frac{\theta}{2} \right) = h - \frac{C_1}{2}(1 - \cos\theta) \\
-  \d y = - C_1 \sin\left( \frac{\theta}{2} \right)\cos\left( \frac{\theta}{2} \right) \d\theta
+  f = -k^2 \sin^2 \left( \frac{t}{2} \right) = -\frac{k^2}{2}(1 - \cos t) \\
+  \d y = - k^2 \sin\left( \frac{t}{2} \right)\cos\left( \frac{t}{2} \right) \d t
 \end{gather*}
 $$
 
@@ -618,10 +863,10 @@ Inserting back into the differential equation gives
 
 $$
 \begin{align*}
-  x &= -C_1 \int \sqrt{\frac{C_1 \sin^2 \left( \frac{\theta}{2} \right)}{C_1 \left[1 - \sin^2 \left( \frac{\theta}{2} \right) \right]}}  \sin\left( \frac{\theta}{2} \right)\cos\left( \frac{\theta}{2} \right) \d\theta \\
-  &= -C_1 \int \sin^2 \left( \frac{\theta}{2} \right) \d\theta \\
-  &= -\frac{C_1}{2} \int (1 - \cos\theta)\d\theta \\
-  &= \frac{K_1}{2}\left( \theta - \sin\theta \right) + K_2
+  x &= -k^2 \int \sqrt{\frac{k^2 \sin^2 \left(\frac{t}{2} \right)}{k^2 \left[1 - \sin^2 \left( \frac{t}{2} \right) \right]}}  \sin\left( \frac{t}{2} \right)\cos\left( \frac{t}{2} \right) \d t \\
+  &= -k^2 \int \sin^2 \left( \frac{t}{2} \right) \d t \\
+  &= -\frac{k^2}{2} \int (1 - \cos t)\d t \\
+  &= \frac{k^2}{2}\left( t - \sin t \right) + C_1
 \end{align*}
 $$
 
@@ -629,21 +874,19 @@ This results in the following parametric equations
 
 $$
 \begin{align*}
-  x &= \frac{K_1}{2}\left( \theta - \sin\theta \right) + K_2 \\
-  y &= h + \frac{K_1}{2}(1 - \cos\theta)
+  x &= \frac{k^2}{2}\left(t - \sin t \right) + C_1 \\
+  y &= \frac{k^2}{2}(1 - \cos t)
 \end{align*}
 $$
 
-The boundary condition at $a = (0, h)$ corresponding to $\theta = 0$ implies $K_2 = 0$, while the boundary condition at $b = (L, 0)$ gives an equation set that is not easily solved analytically. Hence, the following parametric equations describe the brachistochrone curve
+which describe a cycloid formed by revolutions of a circle of radius $k^2/2$. The boundary condition $q(0) = (x(0), y(0)) = (0, 0)$ implies $C_1 = 0$, while the boundary condition $q(t_1) = (x(t_1), y(t_1)) = (x_1, y_1)$ gives the equation set
 
 $$
 \begin{align*}
-  x &= \frac{K_1}{2}\left( \theta - \sin\theta \right) \\
-  y &= h + \frac{K_1}{2}(1 - \cos\theta)
+  x_1 =& \frac{1}{2}k^2 (t_1 - \sin t_1) \\
+  y_1 =& \frac{1}{2}k^2 (1 - \cot t_1)
 \end{align*}
 $$
-
-which are the equations of a cycloid.
 
 # Lagrange multiplier method
 
