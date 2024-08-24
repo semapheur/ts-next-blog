@@ -591,16 +591,16 @@ $$
 the second variation becomes a function over the domain of admissible variations
 
 $$
-  J(\mathbf{h}(t)) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}(t)^2 + S\mathbf{h}(t)^2)\;\d t
+  J(\mathbf{h}(t)) = \int_{t_0}^{t_1} \left(R\dot{\mathbf{h}}(t)^2 + S\mathbf{h}(t)^2 \right)\;\d t
 $$
 
 with Lagrangian $L(t, \mathbf{h},\dot{\mathbf{h}}) = R\dot{\mathbf{h}}^2 + S\dot{\mathbf{h}}^2$, which is the standard quadratic functional.
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-15'>
 Let $\mathbf{h} \in C^1 ([t_0,t_1],\R^n)$ be continuously differentiable functions with boundary values $\mathbf{h}(t_0) = \mathbf{h}(t_1) = 0$ and support on $[t_0, t_1]$. Suppose $R, T: [t_0, t_1]\to\R$ are continuous function of $t$. If the functional
 
 $$
-  J(\mathbf{h}) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}^2 + S\mathbf{v}^2)\;\d t
+  J(\mathbf{h}) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}^2 + S\mathbf{h}^2)\;\d t
 $$
 
 is positive definite, then $R\geq 0$ for all $t\in[t_0, t_1]$.
@@ -634,7 +634,7 @@ where $M_i = \max_{t\in[t_0,t_1]} |T_i|$. Since $-\frac{2\pi^2}{\epsilon}\delta 
 
 $$
 \begin{align*}
-  J(\mathbf{h}) =& \int_{t_0}^{t_1} \left(\sum_{i=1}^n R_i \dot{h}_i^2 + T_i v_i^2 \right)\;\d t \\
+  J(\mathbf{h}) =& \int_{t_0}^{t_1} \left(\sum_{i=1}^n R_i \dot{h}_i^2 + T_i h_i^2 \right)\;\d t \\
   \leq& \sum_{i=1}^n \left(-\frac{2\pi^2}{\epsilon}\delta + 2M_i \epsilon \right) < 0
 \end{align*}
 $$
@@ -644,7 +644,192 @@ Thus, $J(\mathbf{h})\leq 0$ when $R < 0$ for some $t\in[t_0, t_1]$, implying tha
 </MathBox>
 
 <MathBox title='Legendre condition' boxType='theorem'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times TX, \R)$, where $TX$ is the tangent bundle of $X$. Let 
 
+$$
+  D = \Set{\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}
+$$
+
+be the set of twice continuously differentiable paths in $X$ with fixed endpoints. The action functional $S:D\to\R$ given by
+
+$$
+  S(\mathbf{q}) := \int_{t_0}^{t_1} L(t, \mathbf{q}(t), \dot{\mathbf{q}(t)})\;\d t
+$$
+
+has a local minimum at $\mathbf{q}$ if
+
+$$
+  \nabla_{\dot{\mathbf{q}}}^2 L \geq 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+In order to be a local minimun, $\mathbf{q}$ must satisfy $\delta^2 S(\mathbf{q};\mathbf{h}) > 0$ for any nonzero variation $\mathbf{h}\in X$. In this case $\mathbf{q}$ is a fixed critical function of $\delta S(\mathbf{q};\mathbf{h})$ so that we can write the second variation $\delta^2 S(\mathbf{q};\mathbf{h})$ as a quadratic functional
+
+$$
+\begin{align*}
+  J(\mathbf{h}) =& \int_{t_0}^{t_1} \left[\dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}}}^2 L + \mathbf{h}^2 \left(\nabla_\mathbf{q}^2 L - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L \right) \right]\;\d t \\
+  =& \int_{t_0}^{t_1} \left(R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 \right)\;\d t
+\end{align*}
+$$
+
+where
+
+$$
+\begin{align*}
+  R :=& \nabla_{\dot{\mathbf{q}}}^2 L \\
+  T :=& \nabla_\mathbf{q}^2 - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L
+\end{align*}
+$$
+
+It follows from Proposition $\ref{proposition-15}$ that if $\delta^2 S(\mathbf{q}; \mathbf{h}) > 0$, then
+
+$$
+  R = \nabla_{\dot{\mathbf{q}}}^2 L \geq 0
+$$
+</details>
+</MathBox>
+
+<MathBox title='Jacobi equations' boxType='proposition'>
+Let $\mathbf{h} \in C^1 ([t_0,t_1],\R^n)$ be continuously differentiable functions with boundary values $\mathbf{h}(t_0) = \mathbf{h}(t_1) = 0$ and support on $[t_0, t_1]$. Suppose $R, T: [t_0, t_1]\to\R$ are continuous function of $t$. Consider the quadratic functional
+
+
+$$
+  J(\mathbf{h}) = \int_{t_0}^{t_1} \left(R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 \right)\;\d t
+$$
+
+with Lagrangian $L(\mathbf{h},\dot{\mathbf{h}}) = R\dot{\mathbf{h}}^2 + T\mathbf{h}^2$. If $\mathbf{h}$ satisfies the Euler-Lagrange equations, then it also satisfies the *Jacobi equations*
+
+$$
+  T\mathbf{h} = \frac{\d}{\d t} (R\dot{\mathbf{h}})
+$$
+
+A point $\tau \neq t_1$ is *conjugate* to $t_1$ if there is a nontrivial solution $\bar{\mathbf{h}}$ to the Jacobi equations such that $\bar{\mathbf{v}}(\tau) = \bar{\mathbf{v}}(t_1)$.
+
+<details>
+<summary>Proof</summary>
+
+If $\mathbf{h}$ satisfies the Euler-Lagrange equations for $L(\mathbf{h},\dot{\mathbf{h}}) = R\dot{\mathbf{h}}^2 + T\mathbf{h}^2$, then
+
+$$
+\begin{align*}
+  \nabla_\mathbf{h} \left(R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 \right) =& \frac{\d}{\d t} \nabla_{\dot{\mathbf{h}}} //
+  2 T\mathbf{h} =& \frac{\d}{\d t} 2(R\dot{\mathbf{h}}) \\
+  T\mathbf{h} =& \frac{\d}{\d t} (R\dot{\mathbf{h}})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-17'>
+Let $\mathbf{h} \in C^1 ([t_0,t_1],\R^n)$ be continuously differentiable functions with boundary values $\mathbf{h}(t_0) = \mathbf{h}(t_1) = 0$ and support on $[t_0, t_1]$. Suppose $R, T: [t_0, t_1]\to\R$ are continuous function of $t$. The functional
+
+$$
+  J(\mathbf{h}) = \int_{t_0}^{t_1} (R\dot{\mathbf{h}}^2 + S\mathbf{h}^2)\;\d t
+$$
+
+is positive definite whenever $R > 0$ for all $t\in[t_0,t_1]$ and there is no point $\tau \in (t_0,t_1)$ conjugate to $t_0$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose there exists a function $\mathbf{v}\in C^1 ([t_0,t_1],\R^n)$ such that $\mathbf{v}^2 = R(S + \dot{\mathbf{v}})$ for all $t\in[t_0,t_1]$. Consider the derivative $\frac{\d}{\d t}(\mathbf{vh}^2)$ of this function. Since $\mathbf{h}$ satisfies the boundary conditions $\mathbf{v}(t_0) = \mathbf{v}(t_1) = 0$, it is clear that
+
+$$
+  \int_{t_0}^{t_1} \frac{\d}{\d t}(\mathbf{vh}^2) = 0
+$$
+
+It follows that
+
+$$
+  \int_{t_0}^{t_1} \left(R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 \right)\;\d t = \int_{t_0}^{t_1} \left(R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 + \frac{\d}{\d t} (\mathbf{v}\mathbf{h}^2) \right)\;\d t
+$$
+
+Evaluating the integrand gives
+
+$$
+\begin{align*}
+  R\dot{\mathbf{h}}^2 + T\mathbf{h}^2 + \frac{\d}{\d t} (\mathbf{v}\mathbf{h}^2) =& R\dot{\mathbf{h}}^2 + 2\mathbf{vh}\dot{\mathbf{h}} + (T + \dot{\mathbf{v}})\dot{\mathbf{v}}^2 \\
+  =& R\dot{\mathbf{v}}^2 + 2\mathbf{vh}\dot{\mathbf{h}} + \frac{\mathbf{v}^2 \mathbf{h}^2}{R} \\
+  =& R\left(\dot{\mathbf{h}}^2 + \frac{2\mathbf{vh}\dot{\mathbf{h}}}{R} + \frac{\mathbf{v}^2 \mathbf{h}^}{R^2} \right) \\
+  =& R\left(\dot{\mathbf{h}} + \frac{\mathbf{vh}}{R} \right)^2
+\end{align*}
+$$
+
+which yields
+
+$$
+\begin{align*}
+  J(\mathbf{h}) =& \int_{t_0}^{t_1} (R\dot{\mathbf{h}}^2 + T\mathbf{h}^2)\;\d t \\
+  =& \int_{t_0}^{t_1} R\left(\dot{\mathbf{h}} + \frac{\mathbf{vh}}{R}\right)^2 \;\d t
+\end{align*}
+$$
+
+Thus, $J(\mathbf{h})$ is positive definite whenever $R > 0$, provided that $\mathbf{v}$ exists. Using the substitution $\mathbf{v} = - R(\dot{\mathbf{u}}/\mathbf{u})$ for some function $\mathbf{u}\in C^1 ([t_0,t_1], \R^n)$, we obtain
+
+$$
+\begin{align*}
+  &\mathbf{v}^2 = R(T + \dot{\mathbf{v}}) \\
+  \implies& $\frac{R^2 \dot{\mathbf{u}}^2}{\mathbf{u}^2} = R\left(T - \frac{\left(R\ddot{\mathbf{u}} + \dot{\mathbf{u}}\frac{\d}{\d t}R \right)\mathbf{u} - R\dot{\mathbf{u}}^2}{\mathbf{u}^2} \right) \\
+  \implies& S\mathbf{u} - \left(R\ddot{\mathbf{u}} + \dot{\mathbf{u}}\frac{\d}{\d t} R \right) = 0 \\
+  \implies& S\mathbf{u} - \frac{\d}{\d t} (R\dot{\mathbf{u}}) = 0
+\end{align*}
+$$
+
+which are just the Jacobi equations for $J(\mathbf{h})$. Since $\mathbf{v}$ only exists for all $t\in[t_0,t_1]$ if a nonzero $\mathbf{u}$ exists, we want $\mathbf{u}$ to be a nontrivial solution to the Jacobi equations which has no conjugate points to $t_0$ on the interval $(t_0, t_1)$. Thus, $J(\mathbf{h}) > 0$ whenever $R > 0$ and there is no point $\tau\in(t_0,t_1)$ conjugate to $t_0$.
+</details>
+</MathBox>
+
+<MathBox title='Sufficient condition for local minima in Lagrange problems' boxType='proposition'>
+Let $(X, L)$ be a real dynamical system of dimension $n$ with configuration space $X\subseteq\R^n$ and *Lagrangian* $L\in C^2 (\R\times TX, \R)$, where $TX$ is the tangent bundle of $X$. Let 
+
+$$
+  D = \Set{\mathbf{q} \in C^2 ([t_0, t_1]\subseteq\R, X) | \mathbf{q}(t_0) = \mathbf{x}_0, \mathbf{q}(t_1) = \mathbf{x}_1}
+$$
+
+be the set of twice continuously differentiable paths in $X$ with fixed endpoints. The action functional $S:D\to\R$ given by
+
+$$
+  S(\mathbf{q}) := \int_{t_0}^{t_1} L(t, \mathbf{q}(t), \dot{\mathbf{q}(t)})\;\d t
+$$
+
+has a local minimum at $\mathbf{q}$ if
+
+$$
+  \nabla_{\dot{\mathbf{q}}}^2 L > 0,\; \forall t\in[t_0,t_1]
+$$
+
+and the Jacobi equations
+
+$$
+  \left(\nabla_\mathbf{\dot{\mathbf{q}}}^2 L - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}}\right) \mathbf{h} - \frac{\d}{\d t} (\dot{\mathbf{h}}\nabla_{\dot{\mathbf{q}}}^2 L) = 0 
+$$
+
+have only the trivial solution $\mathbf{h}\equiv 0$, for all $t\in[t_0,t_1]$.
+
+<details>
+<summary>Proof</summary>
+
+In order to be a local minimum, $\mathbf{q}$ must satisfy $\delta^2 S(\mathbf{q};\mathbf{h}) > 0$ for any nonzero variation $\mathbf{h}\in X$. Since $\mathbf{q}$ is a fixed critical function of $S(\mathbf{q})$, we can rewrite the second varitation as the quadratic functional
+
+$$
+  S(\mathbf{h}) = \int_{t_0}^{t_1} \left[\dot{\mathbf{h}}^2 \nabla_{\dot{\mathbf{q}}}^2 L + \mathbf{h}^2 \left(\nabla_{\mathbf{q}}^2 L - \frac{\d}{\d t}\nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}} L \right) \right]\;\d t
+$$
+
+It follows from Proposition $\ref{proposition-17}$ that $\delta^2 S(\mathbf{q};\mathbf{h}) > 0$ if
+
+$$
+  \nabla_\mathbf{\dot{\mathbf{q}}}^2 L > 0,\; \forall t\in[t_0,t_1]
+$$
+and there is no point $\tau\in(t_0,t_1)$ conjugate to $t_0$. Since $\mathbf{h}(t_0) = \mathbf{h}(t_1) = 0$, the latter requirement neccesitates the the Jacobi equations
+
+$$
+  \left(\nabla_\mathbf{\dot{\mathbf{q}}}^2 L - \frac{\d}{\d t} \nabla_\mathbf{q} \nabla_{\dot{\mathbf{q}}}\right) \mathbf{h} - \frac{\d}{\d t} (\dot{\mathbf{h}}\nabla_{\dot{\mathbf{q}}}^2 L) = 0 
+$$
+
+only have the trivial solution $\mathbf{h}\equiv 0$ for all $t\in[t_0,t_1]$.
+</details>
 </MathBox>
 
 ## Hamiltonian
