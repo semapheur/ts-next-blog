@@ -11,7 +11,7 @@ showToc: true
 Let $V$ be a complex vector space with dual $V^*$.
 - A <b>ket</b> $\ket{v}\in V$ denotes a vector representing the state of a quantum system
 - A <b>bra</b> $\bra{f}\in V^*$ denotes a linear form $f : V \mapsto \mathbb{C}$ and is a covector to $\ket{f}$
-- A <b>bra-ket</b> $\braket{f | v}$ denotes an innerproduct
+- A <b>bra-ket</b> $\braket{f | v}$ denotes an inner product
 
 Bra-ket properties
 - Conjugate symmetry: $\braket{\psi | \phi} = \braket{\phi | \psi}^*$
@@ -46,7 +46,7 @@ Operator properties
 - Anticommutative: $\hat{A}\hat{B} \neq \hat{B}\hat{A}$
 - Associative: $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
 - Power property: $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
-- Inner product: $\braket{\psi|\hat{A}|\phi} \rangle = \braket{\psi | \phi'} \rangle \in \mathbb{C}$
+- Inner product: $\braket{\psi|\hat{A}|\phi} = \braket{\psi | \phi'} \in \mathbb{C}$
 - Expectation: $\langle\hat{A}\rangle = \frac{\braket{\psi | \hat{A} | \phi}}{\braket{\psi | \psi }}$
 
 ### Hermitian conjugate/adjoint
@@ -181,15 +181,15 @@ $$
 
 ## Postulates
 
-1. Description of the state of a system: The state of an isolated physical system is represented, at a fixed time $t$, by a state vector $\ket{\psi}$ belonging to a Hilbert space $\mathcal{H} = L^2(M)$ of square normalisable functions, called the state space.
-2. Description of physical quantities: Every measurable physical quantity $\mathcal{A}$ is described by a Hermitian operator $\hat{A}$ acting in the state space $\mathcal{H}$. This operator is an observable, meaning that its eigenvectors form a basis for $\mathcal{H}$.
-3. Measurement of physical quantities: The result of measuring a physical quantity $\mathcal{A}$ must be one of the eigenvalues of the corresponding observable $\hat{A}$.
+1. **Description of the state of a system:** The state of an isolated physical system is represented, at a fixed time $t$, by a state vector $\ket{\psi}$ belonging to a complex Hilbert space $\mathcal{H} = L^2(M)$ of square normalisable functions, called the state space.
+2. **Description of physical quantities:** Every measurable physical quantity $\mathcal{A}$ is described by a Hermitian operator $\hat{A}$ acting in the state space $\mathcal{H}$. This operator is an observable, meaning that its eigenvectors form a basis for $\mathcal{H}$.
+3. **Measurement of physical quantities:** The result of measuring a physical quantity $\mathcal{A}$ must be one of the eigenvalues of the corresponding observable $\hat{A}$.
 4. When the physical quantity $\mathcal{A}$ is measured on a system in a normalized state $\ket{\psi}$, the probability of obtaining an eigenvalue of the corresponding observable $\mathcal{A}$ is given by amplitude squared of the appropriate wave function.
-5. Effect of measurement on the state: If the measurement of the physical quantity $\mathcal{A}$ on the system in the state $\ket{\psi}$ gives the eigenvector $a_n$, then the state of the system immediately after the measurement is the normalized projection of $\ket{\psi}$ on the eigensubspace associated with $a_n$
+5. **Effect of measurement on the state:** If the measurement of the physical quantity $\mathcal{A}$ on the system in the state $\ket{\psi}$ gives the eigenvector $a_n$, then the state of the system immediately after the measurement is the normalized projection of $\ket{\psi}$ on the eigensubspace associated with $a_n$
 
 ## Wave function
 
-The state of a quantum particle is described by a complex-valued wavefunction $| \psi \rangle \equiv \psi(\mathbf{x}, t)$. The mod square of the wavefunction represents the probability density for the particle's position
+The state of a quantum particle is described by a complex-valued wavefunction $\Psi(\mathbf{x}, t)$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
 
 $$
   P(\mathbf{x}, t) = |\psi(\mathbf{x}, t)|^2
@@ -198,55 +198,120 @@ $$
 This is known as the Born rule. The probabilistic interpretation requires the wavefunction to be a square normalisable function
 
 $$
-  \int |\psi(\mathbf{x}, t)|^2 \d^3 x = \int \psi^* \psi \;\d^3x = \braket{\psi | \psi} < \infty
+  \int |\Psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \Psi^* \Psi \;\d^3x = 1
 $$
 
-The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_1$ and $\psi_2$ are possible states of the system, then so too is
+The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\Psi_1$ and $\Psi_2$ are possible states of the system, then so too is the linear combination
 
 $$
-  \psi_3 (\mathbf{x}, t) = \alpha \psi_1 (\mathbf{x}, t) + \beta \psi_2 (\mathbf{x}, t) \quad \alpha, \beta \in \mathbb{C} 
+  \Psi_3 (\mathbf{x}, t) = \alpha \Psi_1 (\mathbf{x}, t) + \beta \Psi_2 (\mathbf{x}, t) \quad \alpha, \beta \in \mathbb{C} 
 $$
 
-which is known as the principle of superposition.
+which is known as the principle of superposition. The wavefunction $\Psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\Psi(t)}$, i.e.
+
+$$
+  \ket{\Psi(t)} = \int \Psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
+$$
+
+Thus, the wave function can be written as an inner product of the state space vector $\ket{\Psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
+
+$$
+  \Psi(\mathbf{x}, t) = \braket{\mathbf{x}|\Psi(t)}
+$$
+
+In bra-ket notation the normalization integral takes the form
+
+$$
+\begin{align*}
+  \int |\Psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int \braket{\mathbf{x}|\Psi}^* \braket{\mathbf{x}|\Psi}\;\d^3 x \\
+  =& \int \braket{\Psi|\mathbf{x}} \braket{\mathbf{x}|\Psi}\;\d^3 x \\
+  =& \braket{\Psi|\Psi}
+\end{align*}
+$$
 
 ## Schrödinger equation
 
-The Schrödinger equation describes the time evolution of a state vector $\ket{\psi(\mathbf{x}, t)}$
+The Schrödinger equation describes the time evolution of a state vector $\ket{\Psi(t)}$ by the differential equation
 
 $$
-  i\hbar \frac{\partial}{\partial t}\ket{\psi} = \hat{H}\ket{\psi(t)}
+  i\hbar \frac{\partial}{\partial t}\ket{\Psi(t)} = \hat{H}\ket{\Psi(t)}
 $$
 
-where $\hat{H}$ is the Hamiltonian. For a non-relativistic system the Hamiltonian is given by
+where $\hat{H}$ is the Hamiltonian operator. In Cartesian coordinates, $\hat{H}$ is derived from the classical Hamiltonian $H(\mathbf{p},\mathbf{x},t)$ by the substitution (in Cartesian coordinates)
 
 $$
-  \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(x)
+  \mathbf{p} \to\hat{\mathbf{p}} = -i\hbar\nabla
 $$
+
+For a non-relativistic particle with mass $m$ subject to a potential $V(\mathbf{x})$, the Hamiltonian takes the form
+
+$$
+  \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})
+$$
+
+The Schrödinger equation preserves the Born rule if $\hat{H}$ is Hermitian. To show this, we apply the Schrödinger equation to partial time derivative of the normalization integral
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} \int |\Psi(\mathbf{x},t)|^2 =& \int \Psi^* \frac{\partial\Psi}{\partial t} + \Psi \frac{\partial\Psi^*}{\partial t}\;\d^3 x \\
+  =& \frac{1}{i\hbar} \int \Psi^* \hat{H}\Psi - \Psi(\hat{H}\Psi)^* \;\d^3 x \\
+  =& \frac{1}{i\hbar} \left(\braket{\Psi|\hat{H}\Psi} - \braket{\Psi|\hat{H}\Psi}^*\right)
+\end{align*}
+$$
+
+This expression vanishes when $\braket{\Psi|\hat{H}\Psi} = \braket{\Psi|\hat{H}\Psi}^*$, in which case $\hat{H}$ is Hermitian. 
 
 ### Conservation of probability
 
 The Schrödinger equation ensures that probability is conserved for a quantum system. The partial time derivative of the probability density is
 
 $$
-  \frac{\partial P}{\partial t} = \psi^* \frac{\partial\psi}{\partial t} + \frac{\partial\psi^*}{\partial t}\psi
+  \frac{\partial P}{\partial t}(\mathbf{x},t) = \frac{\partial}{\partial t}|\Psi(\mathbf{x},t)|^2 = \Psi^* \frac{\partial\Psi}{\partial t} + \frac{\partial\Psi^*}{\partial t}\Psi
 $$
 
-Applying the Schrödinger equation on the partial time derivatives gives
+Applying the Schrödinger equation with Hamiltonian $\hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})$ on the partial time derivatives gives
 
 $$
 \begin{align*}
-  \frac{\partial P}{\partial t} &= -\psi* \frac{i}{\hbar}\left( -\frac{\hbar^2}{2m}\nabla^2 + V \right)\psi + \psi* \frac{i}\psi \left(-\frac{\hbar^2}{2m}\nabla^2 + V \right)\psi^* \\
-  &= \frac{i\hbar}{2m}\left( \psi^* \nabla^2 \psi - \psi\nabla^2 \psi^* \right) + \frac{i}{\hbar}V\left(\psi\psi* - \psi*\psi \right) \\
-  &= \frac{i\hbar}{2m}\nabla \cdot \left( \psi^* \nabla \psi - \psi\nabla \psi^* \right) \\
-  &\equiv -\mathbf{J}
+  \frac{\partial P}{\partial t} &= -\Psi^* \frac{i}{\hbar}\left( -\frac{\hbar^2}{2m}\nabla^2 + V \right)\Psi + \Psi^* \frac{i}\Psi \left(-\frac{\hbar^2}{2m}\nabla^2 + V \right)\Psi^* \\
+  &= \frac{i\hbar}{2m}\left( \Psi^* \nabla^2 \Psi - \Psi\nabla^2 \Psi^* \right) + \frac{i}{\hbar}V\left(\Psi\Psi^* - \Psi^*\Psi \right) \\
+  &= \frac{i\hbar}{2m}\nabla \cdot \left( \Psi^* \nabla \Psi - \Psi\nabla \Psi^* \right)
 \end{align*}
 $$
 
-This can be rewritten as the continuity equation
+If we define the probability current
+
+$$
+  \mathbf{J} = -\frac{i\hbar}{2m} \left( \Psi^* \nabla \Psi - \Psi\nabla \Psi^* \right)
+$$
+
+we get the continuity equation
 
 $$
   \frac{\partial P}{\partial t} + \nabla \cdot \mathbf{J} = 0
 $$
+
+To see that this gives a conservation law, consider a volume $V\subseteq\R^3$ enclosed by a surface $S$. The probability that the particle lies in this region is given by
+
+$$
+  P_V (t) = \int_V P(\mathbf{x},t)\;\d^3 x
+$$
+
+The continuity equation tells us that this probability changes as
+
+$$
+  \frac{\partial P_V}{\partial t} = - \int_V \nabla\cdot\mathbf{J}\;\d^3 x = - \int_S \mathbf{J}\cdot\d\mathbf{S}
+$$
+
+where the final step follows from the divergence theorem. This shows that a change in $P_V$ produces a flow of probability through $S$.
+
+In the special case $V = \R^3$, then $P = \int_{\R^3} |\Psi(\mathbf{x},t)|^2 \; \d^3 x = 1$. The change in probability is
+
+$$
+  \frac{\partial P}{\partial t} = - \int_{S_\int^2} \mathbf{J}\cdot\d\mathbf{S}
+$$
+
+where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\Psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
 
 ## Observables
 
@@ -373,6 +438,127 @@ $$
 $$
 
 which is the Heisenberg uncertainty principle.
+
+# Matter wave formulation
+
+A free particle moving in a $3$-dimensional Euclidean space with momentum $\mathbf{p}$ is described by a plane wave $\Psi_\mathbf{p}: \R^3 \times\R\to\mathbb{C}$, which in Cartesian coordinates takes the form
+
+$$
+  \Psi_\mathbf{p}(\mathbf{r}, t) = N e^{i(\mathbf{r}\cdot\mathbf{k} - \omega t)}
+$$
+
+where
+- $\mathbf{r}\in\R^3$ is the position of the particle
+- $\mathbf{k}$ is the wave vector pointing in the same direction as a $\mathbf{p}$
+- $\omega$ is the wave frequency
+- $N$ is a normalization constant
+
+The square norm of the wave function describes the probability density of the particle at $\mathbf{x}$, i.e. $|\Psi(\mathbf{r}, t)|^2 \;\d^3 r$ gives the probability of finding the particle in the volume element $\d^3 x$ around $\mathbf{r}$. Thus, the square norm of the wave function is normalized to unity
+
+$$
+  \int |\psi(\mathbf{r}, t)|^2 \;\d^3 r = 1
+$$
+
+The de Broglie equations relate the wavelength $\lambda$ of the particle to the modulus of the momentum $|\mathbf{p}|$, and the frequency $f$ of the particle to the energy $E$
+
+$$
+\begin{align*}
+  \lambda =& \frac{2\pi}{|\mathbf{k}|} = \frac{h}{p} \\
+  f =& \frac{\omega}{2\pi} = \frac{E}{p}
+\end{align*}
+$$
+
+where $h$ is the Planck constant. Introducing the reduced Planck constant $\hbar = h/2\pi$, the equations can be written as
+
+$$
+\begin{align*}
+  \mathbf{p} =& \hbar\mathbf{k} \\
+  E =& \hbar\omega
+\end{align*}
+$$
+
+In terms of momentum and energy, the plane wave takes the alternative form
+
+$$
+  \Psi(\mathbf{r},t) = N e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}
+$$
+
+The energy $E_\mathbf{p}$ depends on the momentum of the particle in the following ways
+- non-relativistic particles: $E_\mathbf{p} = \mathbf{p}^2 / 2m$
+- relativistic particles: $E_\mathbf{p} = c\sqrt{\mathbf{p}^2 + m^2 c^2}$
+- massless particles: $E_\mathbf{p} = c|\mathbf{p}|$
+
+In an infinite volume, the normalization constant makes the wave function vanish. This can be avoided by introducing the *current density* of the particle probability
+
+$$
+  \mathbf{j}(\mathbf{r}, t) := -i\frac{\hbar}{2m} \psi^* (\mathbf{r}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{r},t)
+$$
+
+where $\overset{\leftrightarrow}{\nabla}$ is short notation for the difference between forward- and backward-gradients
+
+$$
+\begin{align*}
+  \psi^* (\mathbf{r}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{r},t) :=& \psi^* (\mathbf{r}, t) \overset{\rightarrow}{\nabla} \psi(\mathbf{r},t) - \psi^* (\mathbf{r}, t) \overset{\leftarrow}{\nabla} \psi(\mathbf{r},t) \\
+  =& \psi^* (\mathbf{r}, t) \nabla \psi(\mathbf{r},t) - [\nabla\psi^* (\mathbf{r}, t)]\psi(\mathbf{r}, t)
+\end{align*}
+$$
+
+A particle wave can be expressed as a superposition of plane waves in the form of a Fourier transform
+
+$$
+  \Psi(\mathbf{r},t) = \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}\;\d^3 p
+$$
+
+The momentum wave function $f(\mathbf{p})$ is given by the inverse Fourier transform
+
+$$
+  f(\mathbf{p}) = \int e^{i\mathbf{p}\cdot\mathbf{r}/\hbar} \Psi(\mathbf{r},0)\;\d^3 r
+$$
+
+By the uncertainty principle of Fourier transformations, the position and momentum wave functions cannot both be concentrated. In general the variances of the particles position and momentum distributions are related by
+
+$$
+  \Delta\mathbf{r} \Delta\mathbf{p} \geq \frac{\hbar}{2}
+$$
+
+which is known as Heisenberg's uncertainty principle.
+
+## Schrödinger equation
+
+The energy of a nonrelativistic particle with momentum $\mathbf{p}$ and mass $m$ is equal to its Hamiltonian
+
+$$
+  H(\mathbf{p}) = E_\mathbf{p} = \frac{\mathbf{p}^2}{2m}
+$$
+
+This gives the following identity for the wave function $\Psi_\mathbf{p}(\mathbf{r},t)$ in Cartesian coordinates
+
+$$
+  \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})[H(\mathbf{p} - E_\mathbf{p})]e^{i(\mathbf{p}\cdot\mathbf{r} - E_\mathbf{p}t)/\hbar} \;\d^3 p = 0
+$$
+
+Substituting for the operators
+
+$$
+\begin{align*}
+  \hat{\mathbf{p}} =& -i\hbar\nabla \\
+  \hat{E} =& i\hbar\frac{\partial}{\partial t}
+\end{align*}
+$$
+
+we get the differential equation
+
+$$
+  \left[H(-i\hbar\nabla) - i\hbar\frac{\partial}{\partial t}\right] \Psi(\mathbf{p},t) = 0
+$$
+
+which is the Schrödinger equation for the wave function of a free particle. For an arbitrary hamiltonian $\hat{H} := H(-i\hbar\nabla,\mathbf{r},t)$, the equation takes the general form
+
+$$
+  \left(\hat{H} - i\hbar\frac{\partial}{\partial t}\right)\Psi(\mathbf{r},t) = 0
+$$
+
+The rule of quantizing the classical Hamiltonian $H(\mathbf{p},\mathbf{r},t)$ by the substitution $\mathbf{p}\to\hat{\mathbf{p}} = -i\hbar\nabla$ is called the correspondence principle.
 
 # Quantum particle in one dimension
 
