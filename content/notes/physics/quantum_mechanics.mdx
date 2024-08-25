@@ -17,7 +17,7 @@ Bra-ket properties
 - Conjugate symmetry: $\braket{\psi | \phi} = \braket{\phi | \psi}^*$
 - Linearity in the second argument: $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi | \phi_1} + a_2\braket{\psi | \phi_2}$
 - Anti-linearity in the first argument: $\braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2 | \phi}$
-- Positive definite: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi | \psi} = 0 \iff ket{\psi} = 0$
+- Positive definite: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi | \psi} = 0 \iff \ket{\psi} = 0$
 - Triangle inequality: $\sqrt{\braket{\psi + \phi | \psi + \phi}} \leq \sqrt{\braket{\psi | \psi}} + \sqrt{\braket{\phi | \phi}}$
 - Schwarz inequality: $\left[\braket{\psi | \phi}\right]^2 \leq \left[\braket{\psi | \psi}\right] \left[\braket{\phi | \phi}\right]$
 - Orthogonality: $\braket{\psi | \phi} = 0$ if and only if $\psi$ and $\phi$ are orthogonal
@@ -123,13 +123,13 @@ $$
   \braket{\phi_i | \psi} = \sum_j a_j \braket{\phi_i | \psi} = \sum_j a_j \delta_{ij} = a_i
 $$
 
-The norm of a wavefunction is
+The norm of a state vector in discrete space is
 
 $$
 \begin{align*}
   \lVert \psi(\mathbf{x}) \rVert^2 =& \braket{ \psi | \psi } = \Braket{ \sum_i a_i \phi_i | \sum_j a_j \phi_j} \\
-  =& \sum_i \sum_j a_i^* a_j \braket{\phi_i | \phi_j} \\
-  =& \sum_i \sum_j a_i^* a_j \delta_{ij} = \sum_i \left| a_i \right|^2
+  =& \sum_{i,j} a_i^* a_j \braket{\phi_i | \phi_j} \\
+  =& \sum_{i,j} a_i^* a_j \delta_{ij} = \sum_i \left| a_i \right|^2
 \end{align*}
 $$
 
@@ -229,6 +229,16 @@ $$
 \end{align*}
 $$
 
+## State space basis
+
+The state space of a quantum system is the complex Hilbert space $\mathcal{H} = L^2 (M)$ of square integrable functions. For wavefunctions
+
+$$
+  \braket{\psi|\phi} = \int \psi(t)^* \phi(t)
+$$
+
+The state space Sinc
+
 ## Schrödinger equation
 
 The Schrödinger equation describes the time evolution of a state vector $\ket{\Psi(t)}$ by the differential equation
@@ -308,7 +318,7 @@ where the final step follows from the divergence theorem. This shows that a chan
 In the special case $V = \R^3$, then $P = \int_{\R^3} |\Psi(\mathbf{x},t)|^2 \; \d^3 x = 1$. The change in probability is
 
 $$
-  \frac{\partial P}{\partial t} = - \int_{S_\int^2} \mathbf{J}\cdot\d\mathbf{S}
+  \frac{\partial P}{\partial t} = - \int_{S_\infty^2} \mathbf{J}\cdot\d\mathbf{S}
 $$
 
 where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\Psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
@@ -438,6 +448,54 @@ $$
 $$
 
 which is the Heisenberg uncertainty principle.
+
+## Time evolution operator
+
+A time evolution operator $\hat{U}$ translates a state vector $\ket{\psi(t)}$ from time $t_a$ to $t_b$ by
+
+$$
+  \hat{U}(t_b,t_a)\ket{\psi(t_a)} = \ket{\psi(t_b)}
+$$
+
+If the Hamiltonian is time-independent, the time evolution operator is obtainable from the Schrödinger equation
+
+$$
+  i\hbar\frac{\partial}{\partial t_b}(\hat{U}(t_b,t_a)\ket{\psi(t_a)}) = \hat{H}\hat{U}(t_b,t_a)\ket{\psi(t_a)} 
+$$
+
+Since $\ket{\psi(t_a)}$ is indepedent of $t_b$, we can factor it out from the partial time derivative
+
+$$
+  i\hbar\frac{\partial\hat{U}(t_b,t_a)}{\partial t_b}\ket{\psi(t_a)} = \hat{H}\hat{U}(t_b,t_a)\ket{\psi(t_a)} 
+$$
+
+This equation must hold for any initial state $\ket{\psi(t_a)}$ giving a first-order differential equation for $\hat{U}(t_b,t_a)$
+
+$$
+  i\hbar\frac{\partial\hat{U}(t_b,t_a)}{\partial t_b} = \hat{H}\hat{U}(t_b,t_a)
+$$
+
+with solution
+
+$$
+  \hat{U}(t_b,t_a) = e^{i\hat{H}(t_a - t_b)/\hbar}
+$$
+
+Its inverse is obtained by interchanging the order of $t_a$ and $t_b$
+
+$$
+  \hat{U}^{-1}(t_b,t_a) = e^{-i\hat{H}(t_a - t_b)/\hbar}
+$$
+
+Furthermore, since $\hat{H}$ is Hermitian, $\hat{U}$ is unitary because
+
+$$
+\begin{align*}
+  \hat{U}^\dagger (t_b,t_a) =& e^{i(t_b - t_a)\hat{H}^\dagger /\hbar} \\
+  =& e^{i(t_b - t_a)\hat{H} /\hbar} \\
+  =& \hat{U}^{-1}(t_b,t_a)
+\end{align*}
+$$
 
 # Matter wave formulation
 
