@@ -1299,6 +1299,263 @@ Hence, we conclude that $\lVert \ell\rVert = \lVert x_\ell\rVert$.
 </details>
 </MathBox>
 
+# Normed algebra
+
+<MathBox title='Normed algebra' boxType='definition'>
+A *normed algebra* is a normed space $A$ equipped with a multiplication $\times: A\times A$ as $(x,y)\mapsto xy$, which satisfies for $x,y,z\in A$ and $\alpha\in\mathbb{F}$
+1. **Asssociates:** $(xy)z = x(yz)$
+2. **Distributivity:** 
+    - $(\alpha x + y)z = \alpha xz + yz$
+    - $z(\alpha x + y) = \alpha zx + zy$
+3. **Sub-multiplicativity of norm**: $\lVert xy\rVert\leq\lVert x\rVert\cdot\lVert y \rVert$
+
+A normed space is *unital* if it has a multiplicative identity, i.e. if there exists an element $1\in A$ such that $1x = x1 = x$ for all $x\in A$.
+</MathBox>
+
+<MathBox title='Banach algebra' boxType='definition'>
+A *Banach algebra* is a normed algebra which is complete as a normed space. 
+
+<details>
+<summary>Details</summary>
+
+Suppse $A_0$ is a normed algebra, and $A$ denotes its completion as a Banach space. Then $A$ acquires a natural Banach algebra structure as follows: if $x,y\inA$, pick sequences $(x_n)$ and $(y_n)$ in $A_0$ such that $x_n \xrightarrow{n\to\infty} x$ and $y_n \xrightarrow{n\to\infty} y$. Then, pick a constant $K$ such that $\lVert x_n \rVert, \lVert y_n \rVert \leq n$, note that
+
+$$
+\begin{align*}
+  \lVert x_n y_n - x_m y_m \rVert =& \lVert x_n (y_n - y_m) + (x_n - x_m)y_m \rVert \\
+  \leq& \lVert x_n (y_n - y_m) \rVert + \lVert (x_n - x_m)y_m \rVert \\
+  \leq& \lVert x_n \rVert \cdot \lVert y_n - y_m \rVert + \lVert x_n - x_m \rVert \cdot \lVert y_m \rVert \\
+  \leq& (\lVert y_n - y_m \rVert + \lVert x_n - x_m \rVert)
+\end{align*}
+$$
+
+and conclude that $(x_n y_n)$ is a Cauchy sequence and hence convergent, define $xy = \lim_{n\to\infty} x_n y_n$. To see that the product we have proposed is unambigously defined defined, we must verify that the above limit is independent of the choice of the approximating sequences, and depends only on $x$ and $y$. To see this, suppose $x_{i,n} \xrightarrow{n\to\infty} x$ and $y_{n,1} \xrightarrow{n\to\infty} y$ for $i=1,2$. Define 
+
+$$
+  x_{2n-1} =& x_{1,n} \\
+  x_{2n} =& x_{2,n} \\
+  y_{2n-1} =& y_{1,n} \\
+  y_{2n} =& y_{2,n}
+$$
+
+and the apply the preceding reasoning to conclude that $(x_n, y_n)$ is a convergent sequence with some limit $z$; then also $(x_{1,n} y_{1,n} = x_{2n-1} y_{2n-1})$ converges to $z$, since a subsequence of a convergent sequence converges to the same limit. Similarly, $(x_{2,n} y_{2,n} = x_{2n} y_{2n})$ converges to $z$.
+
+Thus, we have unambiguously defined the product of any two elements of $A$.
+</details>
+</MathBox>
+
+<MathBox title='Group of units' boxType='definition'>
+Suppose $A$ is a normed algebra. An element $x\in A$ is *invertible* if there is a unique element $x^{-1} \in A$ such that $xx^{-1} = x^{-1}x = 1$. The collection of all invertible elements of $A$ is denoted $G(A)$ and is called the *group of units* in $A$
+</MathBox>
+
+<MathBox title='Group of units properties' boxType='proposition' tag='proposition-21'>
+Let $A$ be a normed algebra with group of units $G(A)$
+1. If $x\in G(A)$ and if $L_x$ is a map given by left-multiplication of $x$, i.e. $L_x(y) = xy$ for $y\in A$, then $L_x \in \mathcal{L}(A)$ is a linear invertible operator on $A$ with $(L_x)^{-1} = L_{x^{-1}}$.
+2. If $x\in G(A)$ and $y\in A$, then $xy \in G(A) \implies yx \in G(A) \implies y\in G(A)$
+3. If $\Set{x_i}_{i=1}^n \subset A$ is a set of pairwise commuting elements, i.e. $x_i x_j = x_j x_i$ for all $i,j =1,\dots,n$, then the product $\prod_{i=1}^n x_i$ is invertible if and only if each $x_i$ is invertible.
+4. If $x\in A$ and $\lVert 1 - x\rVert < 1$, then $x\in G(A)$ and
+$$
+\begin{equation}
+  x^{-1} = \sum_{n=0}^\infty (1 - x)^n \tag{\label{equation-1}}
+\end{equation}
+$$
+In particular, if $\lambda\in\mathbb{C}$ and $|\lambda| > \lVert x \rVert$, then $(x - \lambda)$ is invertible and
+$$
+\begin{equation}
+  (x - \lambda)^{-1} = -\sum_{n=0}^\infty \frac{x^n}{\lambda^{n+1}}  \tag{\label{equation-2}}
+\end{equation}
+$$
+5. $G(A)$ is an open set in $A$ and the mapping $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ onto itself.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This follows trivially.
+
+**(2):** If $y$ is invertible, so is $yx$, respectively $yx$. Conversely, if $xy$ is invertible, respectively $yx$, so is $y = x^{-1}(xy)$, respectively $y = (yx)x^{-1}$.
+
+**(3):** One implication follows from the fact that $G(A)$ is closed under multiplication. Conversely, suppose $x = \prod_{i=1}^n x_i$ is invertible. It is clear that $x_i$ commutes with $x$, for each $i$. It follows easily that each $x_i$ also commutes with $x^{-1}$, and that the inverse of $x_i$ is given by the product of $x^{-1}$ with the product of all $x_j$ with $j\neq 1$.
+
+**(4):** The series $\sum_{n=0}^\infty (1 - x)^n$ is summable since the appropriate geometric series converges under the hypothesis. Let $\Set{s_n = \sum_{i=0}^n (1 - x)^i}$ be the sequence of partial sums, and let $s$ denote the limit. Clearly, each $s_n$ commutes with $(1 - x)$, and also $(1 - x)s_n = s_n (1 - x) = s_{n+1} - 1$. Thus, in the limit $n\to\infty$ we have $(1 - x)s = s(1 - x) = s - 1$, i.e. $xs = sx = 1$.
+
+As for $\eqref{equation-2}$, we may apply $\eqref{equation-1}$ to $(1 - x/\lambda)$ in place of $x$, and justify the steps
+
+$$
+\begin{align*}
+  (x - \lambda)^{-1} =& -\lambda^{-1} \left(1 - \frac{x}{\lambda} \right)^{-1} \\
+  =& -\lambda^{-1} \lambda_{n=0}^\infty \frac{x^n}{\lambda^n} \\
+  =& -\sum_{n=0}^\infty \frac{x^n}{\lambda^{n+1}}
+\end{align*}
+$$
+
+**(5):** The assertions in **(4)** imply that $1\in\opertorname{int}(G(A))$ and is a point of continuity of the inversion map. By **(1)** and **(2)**, we may map this local picture at $1$ via the linear homeomorphism $L_x$ (which maps $G(A)$ onto itself) to a corresponing local picture at $x$, and deduce that any element of $G(A)$ is an interior point and is a point of continuity of the inversion map.
+</details>
+</MathBox>
+
+<MathBox title='Spectrum' boxType='definition'>
+Let $A$ be a unital Banach algebra, and let $x\in A$. The *spectrum* of $x$ is the set, denoted by $\sigma(x)$, defined by
+
+$$
+  \sigma(x) = \Set{\lambda\in\mathbb{F} | (x - \lambda)\notin G(A)}
+$$
+
+and the *spectral radius* of $x$ is defined by
+
+$$
+\begin{equation}
+  r(x) = \sup\Set{\lvert\lambda\rvert | \lambda\in\sigma(x)} \leq\lVert x \rVert \tag{\label{equation-3}}
+\end{equation}
+$$
+
+The *resolvent set* of $x$ is the complementary set $\rho(x)$ defined by
+
+$$
+  \rho(x) = \mathbb{F} - \sigma(x) = \Set{\lambda\in\mathbb{F}| (x - \lambda) \in G(A)}
+$$
+
+and the map $R_x : \rho(x) \to G(A)$ by $\lambda\mapsto (x - \lambda)^{-1}$ is called the *resolvent function* of $x$.
+</MathBox>
+
+<MathBox title='Resolvent properties' boxType='proposition' tag='proposition-22'>
+Let $x\in A$, then
+1. $\lim_{|\lambda|\to\infty} \lVert R_x (\lambda) \rVert = 0$
+2. **Resolvent equation:**
+$$
+  R_x (\lambda) - R_x (\mu) = (\lambda - \mu) R_x (\lambda) R_x (\mu),\; \lambda, \mu \in\rho(x)
+$$
+3. The resolvent function is "weakly analytic", meaning that if $\phi\in A^*$, then the map $\phi\circ R_x:\rho(x)\to\mathbb{F}$ is an analytic function such that
+$$
+  \lim_{|\lambda|\to\infty} \phi\circ R_x (\lambda) = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By $\eqref{equation-2}$, there is a constant $C > 0$ such that
+$$
+  \lVert R_x (\lambda) \rVert \leq \frac{C}{|\lambda|},\; |\lambda| > \lVert x \rVert
+$$
+
+**(2):** If $\lambda,\mu\in\rho(x)$, then
+$$
+\begin{align*}
+  (\lambda-\mu)R_x (\lambda) R_x (\mu) =& (\lambda - \mu)(x - \lambda)^{-1} (x - \mu)^{-1} \\
+  =& R_x (\lambda) ((x - \mu) - (x - \lambda))R_x (\mu) \\
+  =& R_x (\lambda) - R_x (\mu)
+\end{align*}
+$$
+
+**(3):** If $\phi\in A^*$ is any continuous linear functional on $A$, it follows from Proposition $\ref{proposition-21}.5$ and **(2)** that if $\mu\in\rho(x)$, and if $\lambda$ is sufficiently close to $\mu$, then $\mu\in\rho(x)$, and
+
+$$
+\begin{align*}
+  \lim_{\lambda\to\mu} \left(\frac{\phi\circ R_x (\lambda) - \phi\circ R_x (\mu)}{\lambda - \mu} \right) =& \lim_{\lambda\to\mu} (\phi(R_x (\lambda) R_y(\mu))) \\
+  =& \phi(R_x(\mu)^2)
+\end{align*}
+$$
+
+This shows that $\phi\circ R_x$ is differentiable, and thereby analytic, at the point $\mu$. By **(1)** and the boundedness of the linear functional $\phi$, it follows that
+
+$$
+  \lim_{\lambda\to\mu} \phi\circ R_x (\lambda)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $A$ is any Banach algebra and $x\in A$, then $\sigma(x)$ is a non-empty compact subset of $\mathbb{F}$.
+
+<details>
+<summary>Proof</summary>
+
+Assume on the contrary, so that $\rho(x) = \mathbb{F}$. Let $\phi\in A^*$ be arbitrary. By Proposition $\ref{proposition-22}.3$, this means that $\phi\circ R_x$ is an entire function, differentiable on $\mathbb{F}$, which vanishes at infinity. It then follows from Liouville's theorem that $\phi\circ R_x (\lambda) = 0$ for all $\lambda\in\mathbb{F}$. Since $\phi$ is arbitrary, and since $A^*$ separates points of $A$, we may conclude that $R_x (\lambda) = 0$ for all $\lambda\in\mathbb{F}$. However, since $R_x (\lambda) \in G(A)$, this is a contradiction, completing the proof.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-24'>
+If $p(z) = \sum_{n=0}^N a_n z^n$ is polynomial with $a_n \in \mathbb{F}$, and if we define $p(x) = a_0\cdot 1 + \sum_{n=1}^N a_n x^n$ for each $x\in A$, then
+1. $p(z) \mapsto p(x)$ is a homomorphism from the algebra $\mathbb{F}[z]$ of polynomials onto the subalgebra of $A$ which is generated by $\Set{1,x}$.
+2. **Spectral mapping theorem:** If $p$ is any polynomial as above, then
+$$
+  \sigma(p(x)) = p(\sigma(x)) = \Set{p(\lambda) | \lambda\in\sigma(x)}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This is obvious.
+
+**(2):** Temporarily fix $\lambda\in\mathbb{F}$. If $p(z) = \sum_{n=0}^N a_n z^n$, assume without loss of generality that $a_N \neq 0$, and by the fundamental theorem of algebra there exist $\lambda_1,\dots,\lambda_N$ such that
+
+$$
+  p(z) - \lambda = a_N \prod_{n=1}^N (z - \lambda_i)
+$$
+
+From **(1)** we have that
+
+$$
+  p(x) - \lambda = a_N \prod_{n=1}^N (x - \lambda_i)
+$$
+
+By Proposition $\ref{proposition-21}.3$, it follows that
+
+$$
+\begin{align*}
+  \lambda\notin\sigma(p(x)) \iff& \lambda_i \notin\sigma(x) \forall 1\leq i \leq n \\
+  \iff& \lambda\notin p(\sigma(x))
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Spectral radius formula' boxType='theorem'>
+If $A$ is a Banach algebra and if $x\in A$, then
+
+$$
+  r(x) = \lim_{n\to\infty} \lVert x^n \rVert^{1/n}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Fix an arbitrary $\phi\in A^*$, and let $F = \phi\circ R_x$. By definition, this is analytic in the exterior of the disc $\Set{\lambda\in\mathbb{F}: |\lambda| \leq r(x)}$. On the other hand, we may conclude from $\eqref{}$ that $F$ has the Laurentn series expansion
+
+$$
+  F(\lambda) = -\sum_{n=0}^\infty \frac{\phi(x^n)}{\lambda^{n+1}}
+$$
+
+which is valid in the exterior of the disc $\Set{\lambda\in\mathbb{F}: |\lambda|\leq\lVert x\rVert}$. Since $F$ vanishes at infinity, the function $F$ is analytic at the point at infinity, and consequently the Laurent expansion above is valid in the larger region $|\lambda| > r(x)$.
+
+If we temporarily fix a $\lambda$ with $|\lambda| > r(x)$, then we find, in particular, that
+
+$$
+  \lim_{n\to\infty} \frac{\varphi(x^n)}{\lambda^n} = 0
+$$
+
+Since $\varphi$ was arbitrary, it follows from the uniform boundedness principle that there is a constant $K > 0$ such that
+
+$$
+\begin{gather*}
+  \lVert x^n \rVert \leq K|\lambda|^n,\; \forall n\in\N \\
+  \lVert x^n \rVert^{1/n} \leq K^{1/n} |\lambda|
+\end{gather}
+$$
+
+By allowing $|\lambda|$ to decrease to $r(x)$, we may conclude that
+
+$$
+  \limsup_{n\in\N} \lVert x^n \rVert^{1/n} \leq r(x)
+$$
+
+On the other hand, from Proposition $\ref{proposition-24}.2$ and equation $\eqref{equation-3}$ that $r(x) = r(x^n)^{1/n} \leq \lVert x^n \rVert^{1/n}$. Hence, we have 
+
+$$
+  r(x) \leq \liminf_{n\in\N} \lVert x^n \rVert^{1/n}
+$$
+</details>
+</MathBox>
+
+
 # Linear operators
 
 <MathBox title='Linear operator' boxType='definition'>
@@ -2013,7 +2270,7 @@ $$
   \d L(x)h = L(h_1, x_2) + L(x_1, h_2)
 $$
 
-If $X$ is an algebra, and $L(x_1, x_2) = x_1 x_2$ we obtain the usual form of the product rule.
+If $X$ is a normed algebra, and $L(x_1, x_2) = x_1 x_2$ we obtain the usual form of the product rule.
 
 <details>
 <summary>Proof</summary>
