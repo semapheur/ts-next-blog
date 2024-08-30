@@ -8,25 +8,47 @@ showToc: true
 
 ## Dirac notation (bra-ket)
 
-Let $V$ be a complex vector space with dual $V^*$.
-- A <b>ket</b> $\ket{v}\in V$ denotes a vector representing the state of a quantum system
-- A <b>bra</b> $\bra{f}\in V^*$ denotes a linear form $f : V \mapsto \mathbb{C}$ and is a covector to $\ket{f}$
-- A <b>bra-ket</b> $\braket{f | v}$ denotes an inner product
+Let $V$ be a Hilbert space with dual $V^*$.
+- A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
+- A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \mapsto \mathbb{C}$ and is a covector to $\ket{f}$
+- A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product
+- A *ket-bra* $\ket{v}\bra{f}$ denotes an outer product
+- A *ket-ket* $\ket{v}\ket{w}$ denotes a tensor product $\ket{v}\otimes\ket{w}$
 
 Bra-ket properties
-- Conjugate symmetry: $\braket{\psi | \phi} = \braket{\phi | \psi}^*$
-- Linearity in the second argument: $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi | \phi_1} + a_2\braket{\psi | \phi_2}$
-- Anti-linearity in the first argument: $\braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2 | \phi}$
-- Positive definite: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi | \psi} = 0 \iff \ket{\psi} = 0$
-- Triangle inequality: $\sqrt{\braket{\psi + \phi | \psi + \phi}} \leq \sqrt{\braket{\psi | \psi}} + \sqrt{\braket{\phi | \phi}}$
-- Schwarz inequality: $\left[\braket{\psi | \phi}\right]^2 \leq \left[\braket{\psi | \psi}\right] \left[\braket{\phi | \phi}\right]$
-- Orthogonality: $\braket{\psi | \phi} = 0$ if and only if $\psi$ and $\phi$ are orthogonal
+- Conjugate symmetry: $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
+- Linearity in the second argument: $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi|\phi_1} + a_2\braket{\psi|\phi_2}$
+- Anti-linearity in the first argument: $\braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}$
+- Positive definite: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi|\psi} = 0 \iff \ket{\psi} = 0$
+- Triangle inequality: $\sqrt{\braket{\psi + \phi | \psi + \phi}} \leq \sqrt{\braket{\psi|\psi}} + \sqrt{\braket{\phi|\phi}}$
+- Schwarz inequality: $\left[\braket{\psi|\phi}\right]^2 \leq \left[\braket{\psi|\psi}\right] \left[\braket{\phi|\phi}\right]$
+- Orthogonality: $\braket{\psi|\phi} = 0$ if and only if $\psi$ and $\phi$ are orthogonal
 - Hermitian conjugate/adjoint: 
 $$
 \begin{align*}
   \ket{\psi}^\dagger &= \bra{\psi} \\
   \bra{\phi}^\dagger &= \ket{\phi}
 \end{align*}
+$$
+
+## Basis
+
+Let $V$ be an $n$-dimensional vector space with basis $\Set{\ket{e_i}}_{i=1}^n$. Then any $\ket{\psi}\in V$ can be written as a linear combination
+
+$$
+  \ket{\psi} = \sum_{i=1}^n \psi_i \ket{e}_i
+$$
+
+If $V$ is an $n$-dimensional Hilbert space with orthonormal basis $\Set{\ket{e_i}}_{i=1}^n$ then
+
+$$
+  \braket{e_i|e_j} = \delta_{ij}
+$$
+
+The inner product of $\ket{\psi}$ and $\bra{e_j}$ is
+
+$$
+  \braket{e_j|\psi} = \sum_{i=1}^n \psi_i \braket{e_j|e_i} = \sum_{i=1}^n \psi_i \delta_{ji} = \psi_j
 $$
 
 ## Linear operators
@@ -46,8 +68,77 @@ Operator properties
 - Anticommutative: $\hat{A}\hat{B} \neq \hat{B}\hat{A}$
 - Associative: $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
 - Power property: $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
-- Inner product: $\braket{\psi|\hat{A}|\phi} = \braket{\psi | \phi'} \in \mathbb{C}$
-- Expectation: $\langle\hat{A}\rangle = \frac{\braket{\psi | \hat{A} | \phi}}{\braket{\psi | \psi }}$
+- Inner product: $\braket{\psi|\hat{A}|\phi} = \braket{\psi|\phi'} \in \mathbb{C}$
+- Expectation: $\langle\hat{A}\rangle = \frac{\braket{\psi | \hat{A} | \phi}}{\braket{\psi|\psi}}$
+
+### Projection operator
+
+An operator $\hat{P}:V\to V$ is a *projection operator* if $\hat{P}^2 = \hat{P}\hat{P} = \hat{P}$. The orthogonal complement of $\hat{P}$ is the projection operator $\hat{Q} = \hat{I} - \hat{P}$. 
+
+If $V$ is an inner product space and $\hat{P}$ is Hermitian with respect to this inner product, $\hat{P}$ is called an orthogonal projection operator. If $\ket{v}\in V$ is a unit vector, i.e. $\braket{v|v} = 1$, the projection onto $\ket{v}$ is given by
+
+$$
+  \hat{P}_v = \ket{v}\bra{v}
+$$
+
+To see that this is a projection, we have
+
+$$
+  \hat{P}_v^2 = (\ket{v}\bra{v})(\ket{v}\bra{v}) = \ket{v}(\underbrace{\braket{v|v}}_{=1})\bra{v} = \ket{v}\bra{v} = \hat{P}_v
+$$
+
+Also $\hat{P}$ is Hermitian since
+
+$$
+  \hat{P}_v^\dagger = (\ket{v}\bra{v})^\dagger = \ket{v}\bra{v} = \hat{P}_v
+$$
+
+The projection of $\ket{u}\in V$ onto $\ket{v}$ becomes
+
+$$
+  \hat{P}_v \ket{u} = \ket{v}\braket{v|u} = \braket{v|u}\ket{v} = c \ket{v}
+$$
+
+The eigenvalues of $\hat{P}_v$ are found from
+
+$$
+\begin{align*}
+  \hat{P}_v \ket{x} =& \lambda\ket{x} \\
+  \ket{v}\braket{v|\lambda} =& \lambda\ket{x} \\
+  c\ket{v} =& \lambda\ket{x}
+\end{align*}
+$$
+
+If $\ket{x} = \ket{v}$, then $\lambda = \braket{v|x} = \braket{v|v} = 1$. Otherwise, for $\ket{x}\neq\ket{v}$ we have $\lambda = \braket{v|x} = 0$.
+
+In terms of $\hat{P}_v$, any $\ket{u}\in V$ can be decomposed as 
+
+$$
+\begin{align*}
+  \ket{u} =& \hat{I}\ket{u} + \hat{P}_v \ket{v} - \hat{P}_v \\
+  =& \hat{P}_v \ket{u} + (\hat{I} - \hat{P})\ket{u}
+\end{align*}
+$$
+
+Since 
+
+$$
+  \hat{P}_v (\hat{P}_v \ket{u}) = \hat{P}_v^2 \ket{u} = \hat{P}_v \ket{u}
+$$
+
+then $\hat{P}_v \ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $1$. Since
+
+$$
+  \hat{P}_v [(\hat{I} - \hat{P}_v)\ket{u}] = (\hat{P}_v - \underbrace{\hat{P}_v^2}_{=\hat{P}_v})\ket{u} = 0 
+$$
+
+then $(hat{I} - \hat{P}_v)\ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $0$.
+
+If $W\subset$ is an $m$-dimensional subspace with orthonormal basis $\Set{\ket{b}_i}_{i=1}^m$, the projection onto $W$ is given by
+
+$$
+  \hat{P}_W = \sum_{i=1}^m \ket{b_i}\bra{b_i}
+$$
 
 ### Hermitian conjugate/adjoint
 
