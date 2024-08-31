@@ -1,25 +1,20 @@
 import { serialize } from "next-mdx-remote/serialize"
 
-//import {bundleMDX} from 'mdx-bundler'
-import { unified } from "unified"
 //import { mystParser } from 'myst-parser'
 import remarkMath from "remark-math"
 import remarkGfm from "remark-gfm"
-import remarkParse from "remark-parse"
-import remarkRehype from "remark-rehype"
 import rehypeKatex from "rehype-katex"
 import rehypePrettyCode from "rehype-pretty-code"
 import rehypeImgSize from "rehype-img-size"
 //import rehypeMathjax from 'rehype-mathjax/chtml'
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import rehypeStringify from "rehype-stringify"
 import type { MDXPost, NoteHeading } from "./types"
 import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
-import { rehypeMathref } from "./rehype"
+import { rehypeMathref, rehypeLetteredLists } from "./rehype"
 
 export const remarkPlugins = [remarkGfm, remarkMath]
 export const rehypePlugins = [
@@ -41,6 +36,7 @@ export const rehypePlugins = [
     },
   ],
   rehypeMathref,
+  rehypeLetteredLists,
   //[rehypeMathjax, {
   //	loader: {
   //    load: ['[custom]/xypic.js'],
@@ -83,19 +79,6 @@ function nest<T extends object>(arr: T[], ix: number[], value: T): void {
     arr = obj["children"]
   }
   arr.push(value)
-}
-
-function mdParser(text: string) {
-  const process = unified()
-    .use(remarkParse)
-    .use(remarkMath)
-    .use(remarkRehype)
-    .use(rehypeSlug)
-    .use(rehypeKatex)
-    .use(rehypeStringify)
-    .process(text)
-
-  return process
 }
 
 export async function markdownHeadings(source: string) {
