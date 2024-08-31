@@ -1,0 +1,64 @@
+---
+title: 'Prediction'
+subject: 'Machine Learning'
+showToc: true
+---
+
+# Abbreviations
+- **ERM:** empirical risk minimization
+- **GLM:** generalized linear model
+- **i.i.d:** identically
+- **MLE:** maximum likelihood estimation
+- **MAP:** maximum a posteriori
+
+# Predictive models
+
+Predictive models seek to predict outputs $\mathbf{y}$ from inputs $\mathbf{x}$ using some function $f$ that is estimated from a labeled training set $D = \Set{(\mathbf{x}_n,\mathbf{y}_n) | \mathbf{x}_n \in X\subseteq\R^D,\, \mathbf{y}_n \in Y \subseteq\R^C}_{n=1}^N$ for $\mathbf{x}$. The uncertainty about the correct output for a given input can be modeled using a conditional probability model of the form $p(\mathbf{y}|f(\mathbf{x}))$. When $Y$ is a discrete set of labels, this called a *discriminative model*. When $Y = \R$, this is called a *regression model*.
+
+Predictive models are generally distinguished between 
+- *parametric models*, which have a fixed number of parameters independent of the size of the training set
+- *non-parametric models*, which have a variable number of parameters that grows with the size of the training set
+
+Non-parametric models are usually more flexible, but can be slower to use for prediction. Parametric models are usually less flexible, but are faster to use for prediction. Most non-parametric models are based on comparing a test input $\mathbf{x}$ to some or all of the stored training examples $\Set{\mathbf{x}_n}_{n=1}^N$, using som form of similarity, $s_n = K(\mathbf{x}, \mathbf{x}_n) \geq 0$, and then predicting the output using some weighted combination of the training labels, such as $\hat{\mathbf{y}} = \sum_{n=1}^N s_n \mathbf{y}_n$. Typical examples are Gaussian processes, and K-nearest neigbour models.
+
+Most parametric models have the form $p(\mathbf{y}|\mathbf{x}) = p(\mathbf{y}|f(\mathbf{x};\boldsymbol{\theta}))$, where $f$ is a function that predicts the parameters of the output distribution. If $f$ is a linear function of $\boldsymbol{\theta}$, i.e. $f(\mathbf{x}; \boldsymbol{\theta}) = \boldsymbol{\theta}^\top \boldsymbol{\phi}(\mathbf{x})$ for some fixed feature transformation $\boldsymbol{\phi}$, the model is called a generalized linear model (GLM). If $f$ is a non-linear, but differentiable, function of $\boldsymbol{\theta}$, e.g. $f(\mathbf{x},\boldsymbol{\theta}) = \boldsymbol{\theta}_2^\top \boldsymbol{\phi}(\mathbf{x};\boldsymbol{\theta}_1)$ for some learnable function $\boldsymbol{\phi}(\mathbf{x};\boldsymbol{\theta}_1)$, it is common to represent $f$ using a neural network.
+
+## Model fitting using ERM, MLE and MAP
+
+The most common approach of fitting parametric predictive models is through *maximum likelihood estimation* (MLE), which amounts to solving the following optimization problem 
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmax_{\boldsymbol{\theta}\in\Theta} p(D|\boldsymbol{\theta}) = \argmax_{\boldsymbol{\theta}\in\Theta} \ln p(D|\boldsymbol{\theta})
+$$
+
+If the dataset is $N$ independent, identically distributed data samples, the likelihood decomposes into a product of terms $p(D|\boldsymbol{\theta}) = \prod_{n=1}^N p(\mathbf{y}_n | \mathbf{x}_n, \boldsymbol{\theta})$. Thus, we can instead minimize the following (scaled) *negative log likelihood*:
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} -\frac{1}{N} \sum_{n=1}^N -\ln[p(\mathbf{y}_n|\mathbf{x}_n,\boldsymbol{\theta})]
+$$
+
+We can generalize this by replacing the *log loss* $\ell_n (\boldsymbol{\theta}) = -\ln[p(\mathbf{y}_n | \mathbf{x}_n,\boldsymbol{\theta})]$, with a more general loss function to get
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} r(\boldsymbol{\theta})
+$$
+
+where $r(\boldsymbol{\theta})$ is the *empirical risk*
+
+$$
+  r(\boldsymbol{\theta}) = \frac{1}{N} \sum_{n=1}^N \ell_n (\boldsymbol{\theta})
+$$
+
+This approach is called *empirical risk minimization* (ERM). ERM can easily result in *overfitting*, so it is common to add a penalty or regularizer term to get
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} r(\boldsymbol{\theta}) + \lambda C(\boldsymbol{\theta})
+$$
+
+where $\lambda\geq 0$ controls the degree of regularization, and $C(\boldsymbol{\theta})$ is some complexity measure. If we use log loss, and define $C(\boldsymbol{\theta}) = -\ln[\pi_0 (\boldsymbol{\theta})]$, where $\pi_0 (\boldsymbol{\theta})$ is some prior distribution, and we use $\lambda = 1$, we recover the *maximum a posteriori* (MAP) estimate
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} \ln[p(D|\boldsymbol{\theta})] + \ln[\pi_0 (\boldsymbol{\theta})]
+$$
+
+# Generalized linear models
