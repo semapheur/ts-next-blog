@@ -8,9 +8,9 @@ showToc: true
 
 ## Dirac notation (bra-ket)
 
-Let $V$ be a Hilbert space with dual $V^*$.
+Let $V$ be a Hilbert space over $\mathbb{F}$ with dual $V^*$.
 - A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
-- A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \mapsto \mathbb{C}$ and is a covector to $\ket{f}$
+- A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \to\mathbb{F}$ and is a covector to $\ket{f}$
 - A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product
 - A *ket-bra* $\ket{v}\bra{f}$ denotes an outer product
 - A *ket-ket* $\ket{v}\ket{w}$ denotes a tensor product $\ket{v}\otimes\ket{w}$
@@ -268,19 +268,43 @@ $$
   \left[ \hat{A}, \hat{B} \right]\psi = \sum_i a_i \left[ \hat{A}, \hat{B} \right]\phi_i = \sum_i a_i \left(\lambda_i \mu_i - \mu_i \lambda_i \right)\phi_i = 0 
 $$
 
-# Mathematical formulation of quantum mechanics
+# Quantum formalism
 
 ## Postulates
 
-1. **Description of the state of a system:** The state of an isolated physical system is represented, at a fixed time $t$, by a state vector $\ket{\psi}$ belonging to a complex Hilbert space $\mathcal{H} = L^2(M)$ of square normalisable functions, called the state space.
-2. **Description of physical quantities:** Every measurable physical quantity $\mathcal{A}$ is described by a Hermitian operator $\hat{A}$ acting in the state space $\mathcal{H}$. This operator is an observable, meaning that its eigenvectors form a basis for $\mathcal{H}$.
-3. **Measurement of physical quantities:** The result of measuring a physical quantity $\mathcal{A}$ must be one of the eigenvalues of the corresponding observable $\hat{A}$.
-4. When the physical quantity $\mathcal{A}$ is measured on a system in a normalized state $\ket{\psi}$, the probability of obtaining an eigenvalue of the corresponding observable $\mathcal{A}$ is given by amplitude squared of the appropriate wave function.
-5. **Effect of measurement on the state:** If the measurement of the physical quantity $\mathcal{A}$ on the system in the state $\ket{\psi}$ gives the eigenvector $a_n$, then the state of the system immediately after the measurement is the normalized projection of $\ket{\psi}$ on the eigensubspace associated with $a_n$
+1. **Description of system states:** The configuration space of a quantum system is a complex separable Hilbert space $\mathcal{H}$ and the possible states of this system are represented by state vectors $\ket{\psi}\in\mathcal{H}$ with unit norm, i.e. $\lVert\ket{\psi}\rVert = 1$.
+2. **Description of system observables:* Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $H$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distrsibution functions. 
+3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the eigenvalues of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
+    - The probability $P_n$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_n = |\braket{n|\psi}|^2$.
+    - The expected value of $A$ is $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$
+4. **Effect of measurement on the state:** An ideal measurement of an observable $A$ that yields the eigenvalue $a_n$, projects the quantum system from its initial state $\ket{\psi}$ to a final state
+$$
+  \ket{\psi'} = \frac{\hat{P}_n \ket{\psi}}{\sqrt{\psi|\hat{P}_n|\psi}}
+$$
+where $\hat{P}_n$ is the projection operator onto the eigenstate $\ket{n}$ corresponding to the eigenvalue $a_n$.
+
+5. **Time evolution of a system:** In the Schrödinger picture, the time evolution of a state vector $\ket{\psi(t)}$ is governed by the Schrödinger equation
+$$
+  i\hbar\frac{\d}{\d t}\ket{\psi(t)} = \hat{H}\ket{\psi(t)}
+$$
+where $\hat{H}$ is the Hamiltonian of the quantum system.
+
+    - The time evolution of a closed quantum system is described by a unitary transformation $\hat{U}$ acting on the initial state $\ket{\psi(t_0)}$
+$$
+  \ket{\psi(t)} = U(t,t_0)\ket{\psi (t_0)}
+$$
+
+### Time evolution pictures
+
+| Evolution of | Schrödinger $(S)$ | Heisenberg $(H)$ | Interaction $(I)$ |
+| --- | --- | --- | --- |
+| State vector | $\ket{\psi_s (t)} = e^{-i\hat{H}_S t/\hbar} \ket{\psi_S (0)}$ | constant | $\ket{\psi_I (t)} = e^{i\hat{H}_{0;S} t/\hbar} \ket{\psi_S (t)}$ |
+| Observable | constant | $\hat{O}_H = e^{i\hat{H}_S t/\hbar} \hat{O}_S e^{-i\hat{H}_S t/\hbar}$ | $\hat{O}_I = e^{i\hat{H}_{0;S} t/\hbar} \hat{O}_S e^{-i\hat{H}_{0;S} t/\hbar}$ |
+| Density matrix | $\rho_S (t) = e^{i\hat{H}_S t/\hbar} \rho_S (0) e^{-i\hat{H}_S t/\hbar}$ | constant | $\rho_I (t) = e^{i\hat{H}_{0;S} t/\hbar} \rho_S (t) e^{-i\hat{H}_{0;S} t/\hbar}$ |
 
 ## Wave function
 
-The state of a quantum particle is described by a complex-valued wavefunction $\Psi(\mathbf{x}, t)$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
+The state of a quantum particle is described by a complex-valued wavefunction $\psi(\mathbf{x}, t)$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
 
 $$
   P(\mathbf{x}, t) = |\psi(\mathbf{x}, t)|^2
@@ -289,56 +313,48 @@ $$
 This is known as the Born rule. The probabilistic interpretation requires the wavefunction to be a square normalisable function
 
 $$
-  \int |\Psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \Psi^* \Psi \;\d^3x = 1
+  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \psi^* \psi \;\d^3x = 1
 $$
 
-The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\Psi_1$ and $\Psi_2$ are possible states of the system, then so too is the linear combination
+The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_1$ and $\psi_2$ are possible states of the system, then so too is the linear combination
 
 $$
-  \Psi_3 (\mathbf{x}, t) = \alpha \Psi_1 (\mathbf{x}, t) + \beta \Psi_2 (\mathbf{x}, t) \quad \alpha, \beta \in \mathbb{C} 
+  \psi_3 (\mathbf{x}, t) = \alpha \psi_1 (\mathbf{x}, t) + \beta \psi_2 (\mathbf{x}, t) \quad \alpha, \beta \in \mathbb{C} 
 $$
 
-which is known as the principle of superposition. The wavefunction $\Psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\Psi(t)}$, i.e.
+which is known as the principle of superposition. The wavefunction $\psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\psi(t)}$, i.e.
 
 $$
-  \ket{\Psi(t)} = \int \Psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
+  \ket{\psi(t)} = \int \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
 $$
 
-Thus, the wave function can be written as an inner product of the state space vector $\ket{\Psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
+Thus, the wave function can be written as an inner product of the state space vector $\ket{\psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
 
 $$
-  \Psi(\mathbf{x}, t) = \braket{\mathbf{x}|\Psi(t)}
+  \psi(\mathbf{x}, t) = \braket{\mathbf{x}|\psi(t)}
 $$
 
 In bra-ket notation the normalization integral takes the form
 
 $$
 \begin{align*}
-  \int |\Psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int \braket{\mathbf{x}|\Psi}^* \braket{\mathbf{x}|\Psi}\;\d^3 x \\
-  =& \int \braket{\Psi|\mathbf{x}} \braket{\mathbf{x}|\Psi}\;\d^3 x \\
-  =& \braket{\Psi|\Psi}
+  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int \braket{\mathbf{x}|\psi}^* \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  =& \int \braket{\psi|\mathbf{x}} \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  =& \braket{\psi|\psi} = \lVert \psi \rVert^2 = 1
 \end{align*}
 $$
 
-## State space basis
-
-The state space of a quantum system is the complex Hilbert space $\mathcal{H} = L^2 (M)$ of square integrable functions. For wavefunctions
-
-$$
-  \braket{\psi|\phi} = \int \psi(t)^* \phi(t)
-$$
-
-The state space Sinc
+This shows that the state space vector $\ket{\psi(t)}$ has unit norm.
 
 ## Schrödinger equation
 
-The Schrödinger equation describes the time evolution of a state vector $\ket{\Psi(t)}$ by the differential equation
+The Schrödinger equation describes the time evolution of the wave function $\psi(\mathbf{x},t)$ by the differential equation
 
 $$
-  i\hbar \frac{\partial}{\partial t}\ket{\Psi(t)} = \hat{H}\ket{\Psi(t)}
+  i\hbar \frac{\partial}{\partial t}\psi(\mathbf{x},t) = \hat{H}\psi(\mathbf{x},t)
 $$
 
-where $\hat{H}$ is the Hamiltonian operator. In Cartesian coordinates, $\hat{H}$ is derived from the classical Hamiltonian $H(\mathbf{p},\mathbf{x},t)$ by the substitution (in Cartesian coordinates)
+where $\hat{H}$ is the Hamiltonian operator of the system. In Cartesian coordinates, $\hat{H}$ is derived from the classical Hamiltonian $H(\mathbf{p},\mathbf{x},t)$ by the substitution
 
 $$
   \mathbf{p} \to\hat{\mathbf{p}} = -i\hbar\nabla
@@ -350,40 +366,63 @@ $$
   \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})
 $$
 
-The Schrödinger equation preserves the Born rule if $\hat{H}$ is Hermitian. To show this, we apply the Schrödinger equation to partial time derivative of the normalization integral
+In terms of state space vector $\ket{\psi(t)} = \int \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x$, the Schrödinger equation takes the form
+
+$$
+  i\hbar\frac{\d}{\d t}\ket{\psi(t)} = \hat{H}\ket{\psi(t)}
+$$
+
+Taking the Hermitian conjugate of the equation yields
+
+$$
+  -i\hbar\frac{\d}{\d t}\bra{\psi(t)} = \bra{\psi(t)}\hat{H}^\dagger 
+$$
+
+The Schrödinger equation preserves the Born rule if $\hat{H}$ is Hermitian. To prove this, note that probility is conserved, if the norm of $\ket{\psi}$ remains constant over time
+
+$$
+  \frac{\d}{\d t} \braket{\psi(t)|\psi(t)} = 0
+$$
+
+Applying the product rule to the left-hand side gives
+
+$$
+  \frac{\d}{\d t} \braket{\psi|\psi} = \frac{\d}{\d t}(\bra{\psi})\ket{\psi} + \ket{\psi} \frac{\d}{\d t}(\ket{\psi})
+$$
+
+Substituting the Schrödinger equation and its conjugate gives
 
 $$
 \begin{align*}
-  \frac{\d}{\d t} \int |\Psi(\mathbf{x},t)|^2 =& \int \Psi^* \frac{\partial\Psi}{\partial t} + \Psi \frac{\partial\Psi^*}{\partial t}\;\d^3 x \\
-  =& \frac{1}{i\hbar} \int \Psi^* \hat{H}\Psi - \Psi(\hat{H}\Psi)^* \;\d^3 x \\
-  =& \frac{1}{i\hbar} \left(\braket{\Psi|\hat{H}\Psi} - \braket{\Psi|\hat{H}\Psi}^*\right)
+  \frac{\d}{\d t} \braket{\psi|\psi} =& \left(-\frac{i}{\hbar}\bra{\psi}\hat{H}^\dagger \right)\ket{\psi} + \bra{\psi}\left(\frac{i}{\hbar}\hat{H}\ket{\psi} \right) \\
+  =& \frac{i}{\hbar}\left(\braket{\psi|\hat{H}|\psi} - \braket{\psi|\hat{H}^\dagger|\psi} \right) = 0
 \end{align*}
 $$
 
-This expression vanishes when $\braket{\Psi|\hat{H}\Psi} = \braket{\Psi|\hat{H}\Psi}^*$, in which case $\hat{H}$ is Hermitian. 
+This expression vanishes if and only if $\braket{\psi|\hat{H}|\psi} = \braket{\psi|\hat{H}^\dagger|\psi}$. Since this must hold for any arbitrary state $\ket{\psi(t)}$, it follows that $\hat{H} = \hat{H}^\dagger$.
 
 ### Conservation of probability
 
 The Schrödinger equation ensures that probability is conserved for a quantum system. The partial time derivative of the probability density is
 
 $$
-  \frac{\partial P}{\partial t}(\mathbf{x},t) = \frac{\partial}{\partial t}|\Psi(\mathbf{x},t)|^2 = \Psi^* \frac{\partial\Psi}{\partial t} + \frac{\partial\Psi^*}{\partial t}\Psi
+  \frac{\partial P}{\partial t}(\mathbf{x},t) = \frac{\partial}{\partial t}|\psi(\mathbf{x},t)|^2 = \psi^* \frac{\partial\psi}{\partial t} + \frac{\partial\psi^*}{\partial t}\psi
 $$
 
 Applying the Schrödinger equation with Hamiltonian $\hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})$ on the partial time derivatives gives
 
 $$
 \begin{align*}
-  \frac{\partial P}{\partial t} &= -\Psi^* \frac{i}{\hbar}\left( -\frac{\hbar^2}{2m}\nabla^2 + V \right)\Psi + \Psi^* \frac{i}\Psi \left(-\frac{\hbar^2}{2m}\nabla^2 + V \right)\Psi^* \\
-  &= \frac{i\hbar}{2m}\left( \Psi^* \nabla^2 \Psi - \Psi\nabla^2 \Psi^* \right) + \frac{i}{\hbar}V\left(\Psi\Psi^* - \Psi^*\Psi \right) \\
-  &= \frac{i\hbar}{2m}\nabla \cdot \left( \Psi^* \nabla \Psi - \Psi\nabla \Psi^* \right)
+  \frac{\partial P}{\partial t} &= -\psi^* \frac{i}{\hbar}\left( -\frac{\hbar^2}{2m}\nabla^2 + V \right)\psi + \psi^* \frac{i}\psi \left(-\frac{\hbar^2}{2m}\nabla^2 + V \right)\psi^* \\
+  &= \frac{i\hbar}{2m}\left( \psi^* \nabla^2 \psi - \psi\nabla^2 \psi^* \right) + \frac{i}{\hbar}V\left(\psi\psi^* - \psi^*\psi \right) \\
+  &= \frac{i\hbar}{2m}\nabla \cdot \left( \psi^* \nabla \psi - \psi\nabla \psi^* \right)
 \end{align*}
 $$
 
 If we define the probability current
 
 $$
-  \mathbf{J} = -\frac{i\hbar}{2m} \left( \Psi^* \nabla \Psi - \Psi\nabla \Psi^* \right)
+  \mathbf{J} = -\frac{i\hbar}{2m} \left( \psi^* \nabla \psi - \psi\nabla \psi^* \right)
 $$
 
 we get the continuity equation
@@ -406,13 +445,13 @@ $$
 
 where the final step follows from the divergence theorem. This shows that a change in $P_V$ produces a flow of probability through $S$.
 
-In the special case $V = \R^3$, then $P = \int_{\R^3} |\Psi(\mathbf{x},t)|^2 \; \d^3 x = 1$. The change in probability is
+In the special case $V = \R^3$, then $P = \int_{\R^3} |\psi(\mathbf{x},t)|^2 \; \d^3 x = 1$. The change in probability is
 
 $$
   \frac{\partial P}{\partial t} = - \int_{S_\infty^2} \mathbf{J}\cdot\d\mathbf{S}
 $$
 
-where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\Psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
+where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
 
 ## Observables
 
@@ -508,14 +547,14 @@ $$
 The principle can be derived by consider the one-parameter family of states defined by
 
 $$
-  \Psi_s (\mathbf{x}) = \left( \hat{p} - is\hat{x} \right)\psi(\mathbf{x}) \quad s \in \mathbf{R}
+  \psi_s (\mathbf{x}) = \left( \hat{p} - is\hat{x} \right)\psi(\mathbf{x}) \quad s \in \mathbf{R}
 $$
 
 with norm given by
 
 $$
 \begin{align*}
-  0 \leq \Braket{\Psi_s | \Psi_s} &= \Braket{\left( \hat{p} - is\hat{x} \right)\psi | \left( \hat{p} - is\hat{x} \right)\psi} \\
+  0 \leq \Braket{\psi_s | \psi_s} &= \Braket{\left( \hat{p} - is\hat{x} \right)\psi | \left( \hat{p} - is\hat{x} \right)\psi} \\
   &= \Braket{\psi | \left( \hat{p} + is\hat{x} \right)\left( \hat{p} - is\hat{x} \right)\psi} \\
   &= \Braket{\psi | \left( \hat{p}^2 + is\left[\hat{x}, \hat{p} \right] s^2\hat{x}^2 \right)\psi} \\
   &= \Braket{\psi | \left( \hat{p}^2 - s\hbar + s^2\hat{x}^2 \right)\psi} \\
@@ -581,31 +620,417 @@ $$
 Since $\hat{H}$ is Hermitian, $\hat{U}$ is unitary because
 
 $$
-\begin{align*}
+\begin{equation}
+\begin{split}
   \hat{U}^\dagger (t_b,t_a) =& e^{i(t_b - t_a)\hat{H}^\dagger /\hbar} \\
   =& e^{i(t_b - t_a)\hat{H} /\hbar} \\
   =& \hat{U}^{-1}(t_b,t_a)
+\end{split}\tag{\label{equation-6}}
+\end{equation}
+$$
+
+If the Hamiltonian depends explicitly on time, the time evolution operator can be found iteratively. The time interval $[t_a, t_b]$ with $t_a < t_b$ is partitioned into $N + 1$ subintervals of length $\epsilon = (t_b - t_a)/(N + 1)$, such that $t_n = t_a + n\epsilon$ for $n=0,\dots,N+1$. Schrödinger's equation approximates the time evolution at each step $\epsilon$
+
+$$
+\begin{align*}
+  \ket{\psi(t_a + \epsilon)} \approx& \left(1 - \frac{i}{\hbar} \int_{t_a}^{t_a + \epsilon} \hat{H}(t)\;\d t \right)\ket{\psi(t_a)} \\
+  \ket{\psi(t_a + 2\epsilon)} \approx& \left(1 - \frac{i}{\hbar} \int_{t_a}^{t_a + 2\epsilon} \hat{H}(t)\;\d t \right)\ket{\psi(t_a + \epsilon)} \\
+  \vdots& \\
+  \ket{\psi(t_a + (N+1)\epsilon)} \approx& \left(1 - \frac{i}{\hbar} \int_{t_a}^{t_a + (N+1)\epsilon} \hat{H}(t)\;\d t \right)\ket{\psi(t_a + N\epsilon)} 
 \end{align*}
 $$
 
-# Matter wave formulation
-
-A free particle moving in a $3$-dimensional Euclidean space with momentum $\mathbf{p}$ is described by a plane wave $\Psi_\mathbf{p}: \R^3 \times\R\to\mathbb{C}$, which in Cartesian coordinates takes the form
+Combining the equation, the time evolution operator is approximated as
 
 $$
-  \Psi_\mathbf{p}(\mathbf{r}, t) = N e^{i(\mathbf{r}\cdot\mathbf{k} - \omega t)}
+  \hat{U}(t_b, t_a) \approx \prod_{n=0}^{N} \left(\int_{t_n}^{t_{n+1}} \hat{H}(t'_{n+1})\;\d t'_{n+1} \right)
+$$
+
+Expanding the product and taking the limit $N\to\infty$ gives the series
+
+$$
+\begin{align*}
+  \hat{U}(t_b, t_a) =& 1 - \frac{1}{\hbar} \int_{t_a}^{t_b} \d t'_1 \;\hat{H}(t'_1) \\
+  &+ \left(\frac{-i}{\hbar}\right) \int_{t_a}^{t_b} \d t'_n \int_{t_a}^{t_n} \d t'_{n-1} \cdots \int_{t_a}^{t'_2} \d t'_1 \;\hat{H}(t'_n)\hat{H}(t'_{n-1})\cdots\hat{H}(t'_1)
+\end{align*}
+$$
+
+known as the *Neumann-Liouville expansion* or *Dyson series*. Note that each integral has the time arguments in the Hamilton operators ordered causally since the operators are ordered descending in time. It is useful to introduce a time-ordering operator, which when applied to an arbitrary product of operators
+
+$$
+  \hat{O}_n (t_n) \cdots\hat{O}_1 (t_1)
+$$
+
+reorders the times successivelse, i.e.
+
+$$
+  \hat{T}(\hat{O}_n (t_n)c\dots\hat{O}_1 (t_1)) := \hat{O}_{i_n} (t_{i_n})\cdots\hat{O}_{i_1} (t_{i_1})
+$$
+
+where $t_{i_n},\dots,t_{i_1}$ are the times $t_n,\dots,t_1$ relabeled in the causal order, so that
+
+$$
+  t_{i_n} > t_{i_{n-1}} >\cdots> t_{i_1}
+$$
+
+With this operator, the Neumann-Liouville expansion can be written more compactly. Consider the third term of the series
+
+$$
+\begin{equation}
+  \int_{t_a}^{t_b} \d t_2 \int_{t_a}^{t_2} \d t_1 \; \hat{H}(t_2)\hat{H}(t_1) \tag{\label{equation-1}}
+\end{equation}
+$$
+
+The integration covers the triangle above the diagonal in the square $t_1, t_2 \in [t_a, t_b]$ in the $(t_1, t_2)$ plane. Comparing this the with the remaining integral over the lower triangle
+
+$$
+\begin{equation}
+  \int_{t_a}^{t_b} \d t_2 \int_{t_2}^{t_b} \d t_1 \; \hat{H}(t_2)\hat{H}(t_1) \tag{\label{equation-2}}
+\end{equation}
+$$
+
+we see that the two expressions coincide except for the order of the operators. Applying the time-ordering operator to $\eqref{equation-2}$, gives
+
+$$
+  \hat{T} \int_{t_a}^{t_b} \d t_2 \int_{t_2}^{t_b} \d t_1 \; \hat{H}(t_2)\hat{H}(t_1)
+$$
+
+which is equal to $\eqref{equation-1}$ because $\eqref{equation-2}$ can be rewritten as
+
+$$
+\begin{equation}
+  \int_{t_a}^{t_b} \d t_2 \int_{t_2}^{t_b} \d t_1 \; \hat{H}(t_1)\hat{H}(t_2) = \int_{t_a}^{t_b} \d t_1 \int_{t_a}^{t_1} \d t_2 \; \hat{H}(t_1)\hat{H}(t_2) \tag{\label{equation-3}}
+\end{equation}
+$$
+
+where the order of integration is changed in the last step. Apart from the dummy integration variables $t_2 \leftrightarrow t_1$, the double integral $\eqref{equation-3}$ coincides with $\eqref{equation-1}$. Since the time arguments are properly ordered, the time-ordering operator can be applied to $\eqref{equation-1}$ to give
+
+$$
+  \frac{1}{2}\hat{T}\int_{t_a}^{t_b} \d t_2 \int_{t_a}^{t_b} \d t_1 \; \hat{H}(t_2)\hat{H}(t_1) = \frac{1}{2}\hat{T}\left(\int_{t_a}^{t_b} \hat{H}(t)\;\d t \right)^2
+$$
+
+Similarly, we may rewrite the $n$-th order term of the Neumann-Liouville expansion as
+
+$$
+\begin{align*}
+  &\frac{1}{n!} \hat{T} \int_{t_a}^{t_b} \d t_n \int_{t_a}^{t_b} \d t_{n-1} \cdots \int_{t_a}^{t_b} \d t_1 \; \hat{H}(t_n)\hat{H}(t_{n-1})\cdots\hat{H}(t_1) \\
+  =& \frac{1}{n!} \hat{T}\left(\int_{t_a}^{t_b} \hat{H}(t)\;\d t \right)^n 
+\end{align*}
+$$
+
+The time evolution operator $\hat{U}(t_b, t_a)$ has therefore the series expansion
+
+$$
+\begin{align*}
+  \hat{U}(t_b, t_a) = \sum_{n=0}^\infty \frac{1}{n!}\left(\frac{-i}{\hbar}\right)^n \hat{T}\left(\int_{t_a}^{t_b} \hat{H}(t)\;\d t \right)^n
+\end{align*}
+$$
+
+which we recognize as the power series expansion of the exponential, giving
+
+$$
+\begin{equation}
+  \hat{U}(t_b, t_a) = \hat{T}\exp\left(-\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H}(t)\;\d t \right) \tag{\label{equation-5}}
+\end{equation}
+$$
+
+Note that a small variation $\delta\hat{H}(t)$ of $\hat{H}(t)$ changes $\hat{U}(t_b, t_a)$ by
+
+$$
+\begin{align*}
+  \delta\hat{U}(t_b, t_a) =& -\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{T}\exp\left(-\frac{i}{h} \int_{t'}^{t_b} \hat{H}(t)\; \d t \right) \delta\hat{H}(t') \hat{T}\exp\left(-\frac{i}{\hbar} \int_{t_a}^{t'} \hat{H}(t)\;\d t \right)\; \d t'\\
+  =& -\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{U}(t_b, t') \delta\hat{H} (t') \hat{U}(t', t_a)\; \d t'
+\end{align*}
+$$
+
+### Properties of the time evolution operator
+
+#### Fundamental composition law
+
+If two time translation are performed successively, the corresponding operators $\hat{U}$ are related by
+
+$$
+\begin{equation}
+  \hat{U}(t_b, t_a) = \hat{U}(t_b, t')\hat{U}(t', t_a),\; t'\in(t_a, t_b) \tag{\label{equation-4}}
+\end{equation}
+$$
+
+This composition law makes the operators $\hat{U}$ a representation of the Abelian group of time translations. For time-independent Hamiltonians the composition law $\eqref{equation-4}$ is trivial. In the general case with $\hat{U}(t_b, t_a)$ given by $\eqref{equation-5}$, the composition law follows from the additivity rule of the exponential
+
+$$
+\begin{align*}
+  &\hat{T}\exp\left(-\frac{i}{\hbar} \int_{t'}^{t_b} \hat{H}(t)\;\d t \right)\hat{T} \exp\left(\int_{t_a}^{t'} \hat{H} (t) \;\d t \right) \\
+  =& \hat{T}\left[\exp\left(-\frac{i}{\hbar} \int_{t'}^{t_b} \hat{H}(t)\;\d t \right) \exp\left(-\frac{i}{\hbar} \int_{t_a}^{t'} \hat{H}(t)\;\d t \right) \right] \\
+  =& \hat{T}\exp\left(-\frac{i}{\hbar} \left[ \int_{t'}^{t_b} \hat{H}(t)\;\d t + \int_{t_a}^{t'} \hat{H}(t)\;\d t \right]\right) \\
+  =& \hat{T}\exp\left(-\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H}(t)\;\d t \right)
+\end{align*}
+$$
+
+#### Unitarity
+
+The inverse of the time evolution operator $\hat{U}(t_b, t_a)$ is obtained by interchanging the order of $t_a$ and $t_b$, which gives its anticasual form, i.e.
+
+$$
+  \hat{U}(t_b, t_a) = \hat{U}(t_a, t_b)^{-1}
+$$
+
+This implies that $\hat{U}$ is unitary. The unitarity was already established for time independent Hamiltonians in $\eqref{equation-6}$. In the general case, a direc solution of the Schrödinger equation shows that the operator $\hat{U}(t_b, t_a)$ for $t_b < t_a$ has a representation just like $\eqref{equation-5}$, except for a reversed time order of its argument, written as
+
+$$
+  \hat{U}(t_b, t_a) = \hat{\bar{T}} \exp\left(\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H}(t) \;\d t \right)
+$$
+
+where $\hat{\bar{T}}$ denotes the time-antiordering operator, which satisfies
+
+$$
+  \left[\hat{T}\left(\hat{O}_1 (t_1)\cdots \hat{O}_n (t_n) \right) \right]^\dagger = \hat{\bar{T}} \left(\hat{O}_n^\dagger (t_n)\cdots \hat{O}_1^\dagger (t_1) \right)
+$$
+
+It follows that
+
+$$
+\begin{align*}
+  \hat{U}^\dagger (t_b, t_a) =& \left[\hat{T} \exp\left(\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H} (t) \;\d t \right)\right]^\dagger \\
+  =& \hat{\bar{T}} \exp\left(\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H}^\dagger (t) \;\d t \right) \\
+  =& \hat{T} \exp\left(-\frac{i}{\hbar} \int_{t_b}^{t_a} \hat{H} (t) \;\d t \right) \\
+  =& \hat{U}(t_a, t_b) = \hat{U}^{-1} (t_b, t_a)
+\end{align*}
+$$
+
+#### Time evolution for $\hat{U}(t_b, t_a)$
+
+Since the time-evolution operator $\hat{U}(t_b, t_a)$ gives the relation between arbitrary wave functions at different times
+
+$$
+  \ket{\psi(t_b)} = \hat{U}(t_b, t_a) \ket{\psi(t_a)}
+$$
+
+the Schrödinger equation implies that the operator $\hat{U}(t_a, t_b)$ satisfies
+
+$$
+\begin{equation}
+\begin{split}
+  i\hbar\frac{\partial}{\partial t} \hat{U}(t, t_a) =& \hat{H}\hat{U}(t, t_a) \\
+  i\hbar\frac{\partial}{\partial t} \hat{U}^{-1} (t, t_a) =& -\hat{U}(t, t_a)^{-1} \hat{H}
+\end{split} \tag{\label{equation-8}}
+\end{equation}
+$$
+
+with the initial condition $\hat{U}(t_a, t_a) = 1$.
+
+## Heisenberg picture
+
+The Heisenberg picture gives an alternate formulation of quantum mechanics which is more closely related to classical mechanics than the Schrödinger picture. In the Heisenberg picture of quantum mechanics, the state vectors are time-independent, with all the time dependence shifted to the operators.
+
+In the Heisenberg picture the canonical variables $\mathbf{p}(t)$ and $\mathbf{x}(t)$ in phase space are replaced by Heisenberg operators, denoted $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}(t)$, respectively. In Cartesian coordinates, the canonical equal-time commutation rules are
+
+$$
+\begin{align*}
+  [\hat{\mathbf{p}}_H (t) , \hat{\mathbf{x}}_H] =& -i\hbar \\
+  [\hat{\mathbf{p}}_H (t) , \hat{\mathbf{p}}_H] =& 0 \\
+  [\hat{\mathbf{x}}_H (t) , \hat{\mathbf{x}}_H] =& 0 \\
+\end{align*}
+$$
+
+According to Heisenberg, classical equation involving Poisson brackets remain valied if the Poisson brackets are replace by $i/\hbar$ times the matrix commutators at equal times. The Hamilton equations of motion turn into the Heisenberg equations
+
+$$
+\begin{align*}
+  \frac{\d}{\d t}\hat{\mathbf{p}}_H (t) =& \frac{i}{\hbar}[\hat{H}_H, \hat{\mathbf{p}}_H (t)] \\
+  \frac{\d}{\d t}\hat{\mathbf{x}}_H (t) =& \frac{i}{\hbar}[\hat{H}_H, \hat{\mathbf{x}}_H (t)]
+\end{align*}
+$$
+
+where $\hat{H} = H(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H, t)$ is the Hamiltonian in the Heisenberg picture. In Hamiltonian mechanics, an arbitrary observable function $O(\mathbf{p}(t), \mathbf{x}(t), t)$ satisfies the equation of motion
+
+$$
+\begin{align*}
+  \frac{\d O}{\d t} =& \nabla_\mathbf{p} H \cdot\nabla_\mathbf{x} O - \nabla_\mathbf{p} O \cdot\nabla_\mathbf{x} H + \frac{\partial O}{\partial t} \\
+  =& \{H, O\} + \frac{\partial O}{\partial t}
+\end{align*}
+$$
+
+The corresponding Heisenberg operator $\hat{O}_H (t) = O(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H (t), t)$ satisfies
+
+$$
+  \frac{\d}{\d t}\hat{O}_H = \frac{i}{\hbar} [\hat{H}_H, \hat{O}_H] + \frac{\partial}{\partial t} \hat{O}_H
+$$
+
+These rules are called *Heisenberg's correspondence principle*.
+
+The relation between Schrödinger's and Heisenberg's picture is supplied by the time evolution operator. Let $\hat{O}(t) = O(\hat{\mathbf{p}}, \hat{\mathbf{x}}, t)$ be an arbitrart observable in the Schrödinger picture. If the states $\ket{\psi_a (t)}$ are an arbitrary complete set of solution of the Schrödinger equation, where $a$ runs through discrete and continuous indices, the operator $\hat{O}(t)$ can be specified in terms of its functional matrix elements
+
+$$
+  O_{ab} (t) = \braket{\psi_a (t)|\hat{O}(t)|\psi_b (t)}
+$$
+
+We can now use the time evolution operator $\hat{U}(t, 0)$ to go to a new time-independent basis $\ket{\psi_{H;a}}$ defined by
+
+$$
+  \ket{\psi_a (t)} = \hat{U}(t, 0) \ket{\psi_{H;a}}
+$$
+
+Likewise, we transform the Schrödinger operators of the canonical coordinates $\hat{\mathbf{p}}$ and $\hat{\mathbf{x}}$ into the time-dependent canonical Heisenberg operators $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}_H (t)$ via
+
+$$
+\begin{align*}
+  \hat{\mathbf{p}}_H (t) =& \hat{U}(t,0)^{-1} \hat{\mathbf{p}} \hat{U}(t, 0) \\
+  \hat{\mathbf{x}}_H (t) =& \hat{U}(t,0)^{-1} \hat{\mathbf{x}} \hat{U}(t, 0)
+\end{align*}
+$$
+
+At the time $t = 0$, the Heisenberg operators $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}_H (t)$ coincide with the time-idependent Schrödinger oeprators $\hat{\mathbf{p}}$ and $\hat{\mathbf{x}}$, respectively. An arbitrary observable $\hat{O}(t)$ is transformed into the associated Heisenberg operator as
+
+$$
+\begin{equation}
+\begin{split}
+  \hat{O}_H (t) =& \hat{U}^{-1}(t, t_a) O(\hat{\mathbf{p}}, \hat{\mathbf{x}}, t) \hat{U}(t, t_a) \\
+  =& O(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H (t), t)
+\end{split}\tag{\label{equation-7}}
+\end{equation}
+$$
+
+The Heisenberg matrices $O_H (t)_{ab}$ are given by
+
+$$
+  O_H (t)_{ab} = \braket{\psi_{H;a}|\hat{O}_H (t)|\psi_{H;b}}
+$$
+
+To verify that $\eqref{equation-7}$ satisfy Heisenberg's correspondence principle, we take its time derivative to get
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} \hat{O}_H (t) =& \left(\frac{\d}{\d t} \hat{U}^{-1} (t, t_a) \right) \hat{O}(t) \hat{U}(t, t_a) \\
+  &+ \hat{U}^{-1} (t, t_a) \left(\frac{\partial}{\partial t} \hat{O}(t) \right) \hat{U}(t, t_a) \\
+  &+ \hat{U}^{-1} (t, t_a) \hat{O}(t)\left(\frac{\d}{\d t} \hat{U}(t, t_a) \right)
+\end{align*}
+$$
+
+which can be rearranged as
+
+$$
+\begin{align*}
+  &\left[\left(\frac{\d}{\d t} \hat{U}^{-1} (t, t_a) \right)\hat{U}(t, t_a)\right] \hat{U}^{-1} (t, t_a) \hat{O}(t)\hat{U}(t, t_a) \\
+  &+ \left[\hat{U}^{-1} (t, t_a) \hat{O}(t) \hat{U}(t, t_a) \right] \hat{U}^{-1} (t, t_a) \frac{\d}{\d t} \hat{U}(t, t_a) \\
+  &+ \hat{U}^{-1} (t, t_a) \left(\frac{\partial}{\partial t} \hat{O}(t)\right)\hat{U}(t, t_a)
+\end{align*}
+$$
+
+Using $\eqref{equation-8}$, we obtain
+
+$$
+  \frac{\d}{\d} \hat{O}_H (t) = \frac{i}{\hbar} [\hat{U}^{-1} \hat{H}\hat{U}, \hat{O}_H] + \hat{U}^{-1}\left(\frac{\partial}{\partial t} \hat{O}(t) \right)\hat{U}
+$$
+
+Inserting $\eqref{equation-7}$, we retrieve the Heisenberg equation
+
+$$
+  \frac{\d}{\d t}\hat{O}_H = \frac{i}{\hbar} [\hat{H}_H, \hat{O}_H] + \frac{\partial}{\partial t} \hat{O}_H
+$$
+
+This shows equivalence of the Heisenberg and Schrödinger pictures of quantum mechanics.
+
+## Dirac's interaction picture
+
+Dirac's interaction picture is an intermediate representation between the Heisenberg and Schrödinger pictures, where both the state vectors and the operators carry part of the time dependence of observables. The interaction picture is formed by splitting the Hamiltonian operator in the Schrödinger picture into two contributions
+
+$$
+  \hat{H} = \hat{H}_0 + \hat{V}
+$$
+
+where $\hat{H}_0$ is the unperturbed Hamiltonian for which the Schrödinger equation can be solved, and $\hat{V}$ is a (possibly time-dependent) interaction potential which perturbs these solutions slightly.
+
+We remove the time evolution of the unperturbed Schrödinger solutions and define the states
+
+$$
+  \ket{\psi_I (t)} = e^{i\hat{H}_0 t/\hbar} \ket{\psi(t)}
+$$
+
+Their time evolution comes entirely from the interaction potential $\hat{V}$ and is governed by the time evolution operator
+
+$$
+\begin{equation}
+  \hat{U}_I (t_b, t_a) = e^{i\hat{H}_0 t_b /\hbar} e^{-i\hat{H}(t_b - t_a)/\hbar} e^{-i \hat{H}_0 t_a /\hbar} \tag{\label{equation-10}}
+\end{equation}
+$$
+
+and reads
+
+$$
+  \ket{\psi_I (t_b)} = \hat{U}_I (t_b, t_a) \ket{\psi_I (t_a)}
+$$
+
+If $\hat{V} = 0$, the states $\ket{\psi_I (t_b)}$ are time-independent and coincide with the Heisenberg states of the operator $\hat{H}_0$. The operator $\hat{U}_I (t_b, t_a)$ satisfies the equation of motion
+
+$$
+  i\hbar\frac{\partial}{\partial t_b} \hat{U}_I (t_b, t_a) = \hat{V}_I (t_b) \hat{U}_I (t_b, t_a)
+$$
+
+where $\hat{V}_I = e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar}$ is the potential in the interaction picture. This equation of motion can be turned into an integral equation
+
+$$
+\begin{align*}
+  \hat{U}_I (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} \hat{V}_I \hat{U}_I (t, t_a)\;\d t \\
+  =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \hat{U}_I (t, t_a)\;\d t
+\end{align*}
+$$
+
+This equation can be iterated to find a perturbation expansion for the operator $\hat{U}_I (t_b, t_a)$ in powers of the interaction potential
+
+$$
+\begin{align*}
+  \hat{U}_I (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \\
+  &+ \left(-\frac{i}{\hbar}\right)^2 \int_{t_a}^{t_b} \d t \int_{t_a}^t \d t' e^{i\hat{H}_0 t/\hbar}\hat{V}e^{-i\hat{H}_0 (t - t')/\hbar} \hat{V} e^{-i\hat{H}_0 t'/\hbar} + \cdots
+\end{align*}
+$$
+
+Inserting $\eqref{equation-10}$ on the left-hand side and multiplying the equation from the left by $e^{-i\hat{H}_0 t_b/\hbar}$ and from the right by $e^{i\hat{H}_0 t_a/\hbar}$, this can be rewritten as
+
+$$
+\begin{align*}
+  e^{-i\hat{H}_0 (t_b - t_a)/\hbar} =& e^{-i\hat{H}_0 (t_b - t_a)/\hbar} - \frac{i}{\hbar}\int_{t_a}^{t_b} \d t e^{-i\hat{H}_0 (t_b - t)/\hbar} \hat{V} e^{-i\hat{H}_0 (t-t_a)/\hbar} \\
+  &+ \left(-\frac{i}{\hbar}\right)^2 \int_{t_a}^{t_b} \d t \int_{t_a}^t \d t' e^{i\hat{H}_0 (t_b - t)/\hbar}\hat{V}e^{-i\hat{H}_0 (t - t')/\hbar} \hat{V} e^{-i\hat{H}_0 (t' - t_a)/\hbar} + \cdots
+\end{align*}
+$$
+
+This expansion is seen to bee the recursive solution of the integral equation
+
+$$
+  e^{-i\hat{H}_0 (t_b - t_a)/\hbar} =& e^{-i\hat{H}_0 (t_b - t_a)/\hbar} - \frac{i}{\hbar}\int_{t_a}^{t_b} \d t e^{-i\hat{H}_0 (t_b - t)/\hbar} \hat{V} e^{-i\hat{H}_0 (t-t_a)/\hbar}
+$$
+
+In terms of a time-ordering operator $\hat{T}$, the expansion can also be written as
+
+$$
+  e^{-i\hat{H}_0 (t_b - t_a)/\hbar} =& e^{-i\hat{H}_0 t_b/\hbar} \hat{T} \exp\left(-\frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar}\;\d t\right)e^{i\hat{H}t_a/\hbar}
+$$
+
+which can be represented as a mathematical operator formula
+
+$$
+  e^{T(\hat{A} + \hat{B})} = \hat{T}\exp\left(\int_0^T e^{(T - t)\hat{A}} \hat{B} e^{t\hat{A}} \right) = e^{T\hat{A}}\hat{T} \exp\left(\int_0^T e^{-t\hat{A}} \hat{B} e^{t\hat{A}} \right)
+$$
+
+Due to the time-ordering operator, the right-hand side cannot be evaluated using Lie's expansion formula (Hadamard's lemma). The proper expression of the right-hand side is given by the Campbell-Baker-Hausdorff expansion.
+
+# Matter wave formulation
+
+A free particle moving in a $3$-dimensional Euclidean space with momentum $\mathbf{p}$ is described by a plane wave $\psi_\mathbf{p}: \R^3 \times\R\to\mathbb{C}$, which in Cartesian coordinates takes the form
+
+$$
+  \psi_\mathbf{p}(\mathbf{r}, t) = N e^{i(\mathbf{k}\cdot\mathbf{x} - \omega t)}
 $$
 
 where
-- $\mathbf{r}\in\R^3$ is the position of the particle
+- $\mathbf{x}\in\R^3$ is the position of the particle
 - $\mathbf{k}$ is the wave vector pointing in the same direction as a $\mathbf{p}$
 - $\omega$ is the wave frequency
 - $N$ is a normalization constant
 
-The square norm of the wave function describes the probability density of the particle at $\mathbf{x}$, i.e. $|\Psi(\mathbf{r}, t)|^2 \;\d^3 r$ gives the probability of finding the particle in the volume element $\d^3 x$ around $\mathbf{r}$. Thus, the square norm of the wave function is normalized to unity
+The square norm of the wave function describes the probability density of the particle at $\mathbf{x}$, i.e. $|\psi(\mathbf{x}, t)|^2 \;\d^3 x$ gives the probability of finding the particle in the volume element $\d^3 x$ around $\mathbf{x}$. Thus, the square norm of the wave function is normalized to unity
 
 $$
-  \int |\psi(\mathbf{r}, t)|^2 \;\d^3 r = 1
+  \int |\psi(\mathbf{r}, t)|^2 \;\d^3 x = 1
 $$
 
 The de Broglie equations relate the wavelength $\lambda$ of the particle to the modulus of the momentum $|\mathbf{p}|$, and the frequency $f$ of the particle to the energy $E$
@@ -629,7 +1054,7 @@ $$
 In terms of momentum and energy, the plane wave takes the alternative form
 
 $$
-  \Psi(\mathbf{r},t) = N e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}
+  \psi(\mathbf{x},t) = N e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}
 $$
 
 The energy $E_\mathbf{p}$ depends on the momentum of the particle in the following ways
@@ -640,34 +1065,34 @@ The energy $E_\mathbf{p}$ depends on the momentum of the particle in the followi
 In an infinite volume, the normalization constant makes the wave function vanish. This can be avoided by introducing the *current density* of the particle probability
 
 $$
-  \mathbf{j}(\mathbf{r}, t) := -i\frac{\hbar}{2m} \psi^* (\mathbf{r}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{r},t)
+  \mathbf{j}(\mathbf{x}, t) := -i\frac{\hbar}{2m} \psi^* (\mathbf{x}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{x},t)
 $$
 
 where $\overset{\leftrightarrow}{\nabla}$ is short notation for the difference between forward- and backward-gradients
 
 $$
 \begin{align*}
-  \psi^* (\mathbf{r}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{r},t) :=& \psi^* (\mathbf{r}, t) \overset{\rightarrow}{\nabla} \psi(\mathbf{r},t) - \psi^* (\mathbf{r}, t) \overset{\leftarrow}{\nabla} \psi(\mathbf{r},t) \\
-  =& \psi^* (\mathbf{r}, t) \nabla \psi(\mathbf{r},t) - [\nabla\psi^* (\mathbf{r}, t)]\psi(\mathbf{r}, t)
+  \psi^* (\mathbf{x}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{x},t) :=& \psi^* (\mathbf{x}, t) \overset{\rightarrow}{\nabla} \psi(\mathbf{x},t) - \psi^* (\mathbf{x}, t) \overset{\leftarrow}{\nabla} \psi(\mathbf{x},t) \\
+  =& \psi^* (\mathbf{x}, t) \nabla \psi(\mathbf{x},t) - [\nabla\psi^* (\mathbf{x}, t)]\psi(\mathbf{x}, t)
 \end{align*}
 $$
 
 A particle wave can be expressed as a superposition of plane waves in the form of a Fourier transform
 
 $$
-  \Psi(\mathbf{r},t) = \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}\;\d^3 p
+  \psi(\mathbf{x},t) = \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}\;\d^3 p
 $$
 
 The momentum wave function $f(\mathbf{p})$ is given by the inverse Fourier transform
 
 $$
-  f(\mathbf{p}) = \int e^{i\mathbf{p}\cdot\mathbf{r}/\hbar} \Psi(\mathbf{r},0)\;\d^3 r
+  f(\mathbf{p}) = \int e^{i\mathbf{p}\cdot\mathbf{x}/\hbar} \psi(\mathbf{x},0)\;\d^3 r
 $$
 
 By the uncertainty principle of Fourier transformations, the position and momentum wave functions cannot both be concentrated. In general the variances of the particles position and momentum distributions are related by
 
 $$
-  \Delta\mathbf{r} \Delta\mathbf{p} \geq \frac{\hbar}{2}
+  \Delta\mathbf{x} \Delta\mathbf{p} \geq \frac{\hbar}{2}
 $$
 
 which is known as Heisenberg's uncertainty principle.
@@ -680,10 +1105,10 @@ $$
   H(\mathbf{p}) = E_\mathbf{p} = \frac{\mathbf{p}^2}{2m}
 $$
 
-This gives the following identity for the wave function $\Psi_\mathbf{p}(\mathbf{r},t)$ in Cartesian coordinates
+This gives the following identity for the wave function $\psi_\mathbf{p}(\mathbf{x},t)$ in Cartesian coordinates
 
 $$
-  \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})[H(\mathbf{p} - E_\mathbf{p})]e^{i(\mathbf{p}\cdot\mathbf{r} - E_\mathbf{p}t)/\hbar} \;\d^3 p = 0
+  \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})[H(\mathbf{p} - E_\mathbf{p})]e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p}t)/\hbar} \;\d^3 p = 0
 $$
 
 Substituting for the operators
@@ -698,18 +1123,18 @@ $$
 we get the differential equation
 
 $$
-  \left[H(-i\hbar\nabla) - i\hbar\frac{\partial}{\partial t}\right] \Psi(\mathbf{p},t) = 0
+  \left[H(-i\hbar\nabla) - i\hbar\frac{\partial}{\partial t}\right] \psi(\mathbf{p},t) = 0
 $$
 
-which is the Schrödinger equation for the wave function of a free particle. For an arbitrary hamiltonian $\hat{H} := H(-i\hbar\nabla,\mathbf{r},t)$, the equation takes the general form
+which is the Schrödinger equation for the wave function of a free particle. For an arbitrary Hamiltonian $\hat{H} := H(-i\hbar\nabla,\mathbf{x},t)$, the equation takes the general form
 
 $$
-  \left(\hat{H} - i\hbar\frac{\partial}{\partial t}\right)\Psi(\mathbf{r},t) = 0
+  \left(\hat{H} - i\hbar\frac{\partial}{\partial t}\right)\psi(\mathbf{x},t) = 0
 $$
 
-The rule of quantizing the classical Hamiltonian $H(\mathbf{p},\mathbf{r},t)$ by the substitution $\mathbf{p}\to\hat{\mathbf{p}} = -i\hbar\nabla$ is called the correspondence principle.
+The rule of quantizing the classical Hamiltonian $H(\mathbf{p},\mathbf{x},t)$ by the substitution $\mathbf{p}\to\hat{\mathbf{p}} = -i\hbar\nabla$ is called the correspondence principle.
 
-# Quantum particle in one dimension
+# Quantum particle systems
 
 ## Free particle
 
@@ -887,7 +1312,7 @@ $$
   \hat{H} = -\frac{\hbar^2}{2m}\frac{\d^2}{\d x^2} + \frac{1}{2}m\omega^2 x^2
 $$
 
-Almost any system subject to small perturbations about a minimum can be approximated by a Hamiltionian of this form through Taylor expansion. The harmonic oscillator is therefore an important system in quantum mechanics.
+Almost any system subject to small perturbations about a minimum can be approximated by a Hamiltonian of this form through Taylor expansion. The harmonic oscillator is therefore an important system in quantum mechanics.
 
 
 The time independent Shrödinger equation takes the form
@@ -970,6 +1395,8 @@ $$
 $$
 
 With these energy states, the polynomial component $h(y)$ of the wavefunctions are the Hermite polynomials.
+
+## Hydrogen atoms
 
 # Relativistic particles
 
