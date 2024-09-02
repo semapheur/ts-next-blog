@@ -33,13 +33,13 @@ $$
 
 ## Basis
 
-Let $V$ be an $n$-dimensional vector space with basis $\Set{\ket{e_i}}_{i=1}^n$. Then any $\ket{\psi}\in V$ can be written as a linear combination
+Let $V$ be an $n$-dimensional vector space with basis $\set{\ket{e_i}}_{i=1}^n$. Then any $\ket{\psi}\in V$ can be written as a linear combination
 
 $$
   \ket{\psi} = \sum_{i=1}^n \psi_i \ket{e}_i
 $$
 
-If $V$ is an $n$-dimensional Hilbert space with orthonormal basis $\Set{\ket{e_i}}_{i=1}^n$ then
+If $V$ is an $n$-dimensional Hilbert space with orthonormal basis $\set{\ket{e_i}}_{i=1}^n$ then
 
 $$
   \braket{e_i|e_j} = \delta_{ij}
@@ -104,7 +104,7 @@ The eigenvalues of $\hat{P}_v$ are found from
 $$
 \begin{align*}
   \hat{P}_v \ket{x} =& \lambda\ket{x} \\
-  \ket{v}\braket{v|\lambda} =& \lambda\ket{x} \\
+  \ket{v}\underbrace{\braket{v|x}}_{=c\in\R} =& \lambda\ket{x} \\
   c\ket{v} =& \lambda\ket{x}
 \end{align*}
 $$
@@ -132,9 +132,9 @@ $$
   \hat{P}_v [(\hat{I} - \hat{P}_v)\ket{u}] = (\hat{P}_v - \underbrace{\hat{P}_v^2}_{=\hat{P}_v})\ket{u} = 0 
 $$
 
-then $(hat{I} - \hat{P}_v)\ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $0$.
+then $(\hat{I} - \hat{P}_v)\ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $0$.
 
-If $W\subset$ is an $m$-dimensional subspace with orthonormal basis $\Set{\ket{b}_i}_{i=1}^m$, the projection onto $W$ is given by
+If $W\subset$ is an $m$-dimensional subspace with orthonormal basis $\set{\ket{b}_i}_{i=1}^m$, the projection onto $W$ is given by
 
 $$
   \hat{P}_W = \sum_{i=1}^m \ket{b_i}\bra{b_i}
@@ -273,7 +273,7 @@ $$
 ## Postulates
 
 1. **Description of system states:** The configuration space of a quantum system is a complex separable Hilbert space $\mathcal{H}$ and the possible states of this system are represented by state vectors $\ket{\psi}\in\mathcal{H}$ with unit norm, i.e. $\lVert\ket{\psi}\rVert = 1$.
-2. **Description of system observables:* Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $H$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distrsibution functions. 
+2. *Description of system observables:* Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $H$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distrsibution functions. 
 3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the eigenvalues of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
     - The probability $P_n$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_n = |\braket{n|\psi}|^2$.
     - The expected value of $A$ is $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$
@@ -325,7 +325,7 @@ $$
 which is known as the principle of superposition. The wavefunction $\psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\psi(t)}$, i.e.
 
 $$
-  \ket{\psi(t)} = \int \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
+  \ket{\psi(t)} = \int_{\R^3} \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
 $$
 
 Thus, the wave function can be written as an inner product of the state space vector $\ket{\psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
@@ -338,8 +338,8 @@ In bra-ket notation the normalization integral takes the form
 
 $$
 \begin{align*}
-  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int \braket{\mathbf{x}|\psi}^* \braket{\mathbf{x}|\psi}\;\d^3 x \\
-  =& \int \braket{\psi|\mathbf{x}} \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int_{\R^3} \braket{\mathbf{x}|\psi}^* \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  =& \int_{\R^3} \braket{\psi|\mathbf{x}} \braket{\mathbf{x}|\psi}\;\d^3 x \\
   =& \braket{\psi|\psi} = \lVert \psi \rVert^2 = 1
 \end{align*}
 $$
@@ -817,6 +817,223 @@ $$
 $$
 
 with the initial condition $\hat{U}(t_a, t_a) = 1$.
+
+## Propagator
+
+The matrix elements of the time evolution operator in the localized basis states $\set{\ket{\mathbf{x}}}_{\mathbf{x}\in\R^3}$ defines a function
+
+$$
+  (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a) := \braket{\mathbf{x}_b|\hat{U}(t_b,t_a)|\mathbf{x}_a}
+$$
+
+called the *propagator* of a quantum system. The propagator gives an alternate representation for the wave function of a quantum particle. In the position basis $\set{\ket{\mathbf{x}}}_{\mathbf{x}\in\R^3}$, the completeness relation gives
+
+$$
+  \int_{\R^3} \ket{\mathbf{x}}\bra{\mathbf{x}}\;\d^3 x = 1
+$$
+
+The time evolution of a state vector $\ket{\psi(t)}$ from $t=0$ to $t$ can be written as
+
+$$
+\begin{align*}
+  \ket{\psi(t)} =& \hat{U}(t,0)\ket{\psi(0)} = \int_{\R^3} \hat{U}(t,0) \ket{\mathbf{y}}\braket{\mathbf{y}|\psi(0)}\; \d^3 y \\
+  =& \int_{\R^3} \hat{U}(t,0)\ket{\mathbf{y}} \psi(\mathbf{y}, 0)\;\d^3 y
+\end{align*}
+$$
+
+The wave function $\psi(\mathbf{x},t) = \braket{\mathbf{x}|\psi(t)}$ thus takes the form
+
+$$
+\begin{align*}
+  \psi(\mathbf{x},t) =& \braket{\mathbf{x}|\psi(t)} = \int_{\R^3} \braket{\mathbf{x}|\hat{U}(t,0)|\mathbf{y}}\psi(\mathbf{y},0)\; d^3 y \\
+  =& \int_{\R^3} (\mathbf{x},0|\mathbf{y},t)\psi(\mathbf{y}, 0)\; \d^3 y
+\end{align*}
+$$
+
+We can recover the time evolution operator from the propagator by
+
+$$
+  \hat{U}(t) = \int (\mathbf{x},0|\mathbf{y},t) \ket{\mathbf{x}}\bra{\mathbf{y}}\; \d^3 x\;\d^3 y
+$$
+
+The propagator and the time evolution operator both completely describe the behaviour a the system. One can intuitively think of the propagator $K(\mathbf{x}_a, t_a \mathbf{x}_b; t_b)$, as the probability amplitude for a particle to travel from $\mathbf{x}_a$ to $\mathbf{x}_b$ in time $t_b - t_a$ with $t_b > t_a$. The propagator is therefore also referred to as *time evolution amplitude*.
+
+From the operator equations $\eqref{equation-8}$, the propagator satisfies the Schrödinger equation
+
+$$
+  i\hbar \frac{\partial}{\partial t_b} (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b) = H(-i\hbar\nabla_{\mathbf{x}_b}, \mathbf{x}_b,t_b) (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b)
+$$
+
+When dealing with non-relativistic particles, it is customary to introduce a casual/retarded time evolution operator
+
+$$
+  \hat{U}_R (t_b,t_a) = \begin{cases}
+    \hat{U}(t_b,t_a),\quad& t_b \geq t_a \\
+    0,\quad& t_b < t_a
+  \end{cases}
+$$
+
+and the associated casual/retarded time evolution amplitude
+
+$$
+  (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b)_R := \braket{\mathbf{x}|\hat{U}_R (t_b,t_a)|\mathbf{y}}
+$$
+
+The retarded time evolution operator can be expressed in terms of the Heaviside step function
+
+$$
+  \Theta(t) := \begin{cases}
+    1,\quad& t > 0 \\
+    0,\quad& t \leq 0
+  \end{cases}
+$$
+
+giving
+
+$$
+\begin{align*}
+  \hat{U}_R (t_b,t_a) =& \Theta(t_b - t_a) \hat{U}(t_b, t_a) \\
+  (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b)_R =& \Theta(t_b - t_a) (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b)
+\end{align*}
+$$
+
+Note that the derivative of the Heaviside function is given by Dirac's delta function, i.e.  $\frac{\d}{\d t}\Theta(t) = \delta(t)$. In terms of the Heaviside function, the retarded propagator satisfies the Schrödinger equations
+
+$$
+  \left[H_R(-i\hbar\nabla_{\mathbf{x}_b},\mathbf{x}_b,t_b) - i\hbar\frac{\partial}{\partial t_b}\right] (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b) = -i\hbar \delta(t_b - t_a) \delta(\mathbf{x}_b - \mathbf{x}_a)
+$$
+
+The nonzero right-hand side arises from the extra term
+
+$$
+\begin{align*}
+  -i\hbar \left(\frac{\partial}{\partial t_b}\Theta(t_b - t_a)\right) (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b) =& -i\hbar\delta(t_b - t_a) (\mathbf{x}_a,t_a|\mathbf{x}_b,t_b) \\
+  =& -i\hbar (\mathbf{x}_a,t_a|\mathbf{x}_b,t_a)
+\end{align*}
+$$
+
+and the initial condition $K(\mathbf{x}_a,t_a;\mathbf{x}_b,t_a) = \braket{\mathbf{x}_b|\mathbf{x}_a}$ since $\hat{U}(t_a, t_a) = 1$.
+
+If the Hamiltonian does not depend on time, the propagator depends only on the time difference $t = t_b - t_a$. The retarded propagator vanishes for $t < 0$. This property leads to a class of functions $f(t)$ with a characteristic Fourier transform of the form
+
+$$
+  \tilde{f}(E) = \int_0^\infty f(t) e^{iEt/\hbar} \;\d t
+$$
+
+which is analytic in the upper half of the complex energy plane. This analyticity property is necessary and sufficient to produce a factor $\Theta(t)$ in the inverse Fourier transform
+
+$$
+  f(t) = \frac{1}{2\pi\hbar} \int_{-\infty}^\infty \tilde{f}(E) e^{-iEt/\hbar}\;\d E 
+$$
+
+For $t < 0$, the contour integration may be closed by an infinite semicircle in the upper half-plane at no extra cost. Since the contour encloses no singularities, it can be contracted to a point, yielding $f(t) = 0$.
+
+### Fixed-energy amplitude
+
+The *fixed-energy amplitude* of a quantum system is defined by the Fourier transform of the retarded time evolution amplitude
+
+$$
+\begin{equation}
+\begin{split}
+  (\mathbf{x}_b,\mathbf{x}_a)_E =& \int_{-\infty}^\infty e^{iE(t_b - t_a)/\hbar} (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a)_R \;\d t_b \\
+  =& \int_{t_a}^\infty e^{iE(t_b - t_a)/\hbar} (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a) \;\d t_b
+\end{split}\tag{\label{equation-11}}
+\end{equation}
+$$
+
+If the Hamiltonian is time-independent, the propagator takes the form
+
+$$
+  (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a) = \braket{\mathbf{x}_b|e^{-i\hat{H}(t_b - t_a)/\hbar}|\mathbf{x}_a}
+$$
+
+In this case, the fixed-energy amplitudes are matrix element
+
+$$
+  (\mathbf{x}_b,\mathbf{x}_a)_E = \braket{\mathbf{x}_b |\hat{R}(E)|\mathbf{x}_a}
+$$
+
+of the *resolvent operator*
+
+$$
+  \hat{R}(E) = \frac{i\hbar}{E - \hat{H} + i\eta}
+$$
+
+which is the Fourier transform of the retarded time evolution operator
+
+$$
+\begin{align*}
+  \hat{R}(E) =& \int_{-\infty}^\infty e^{iE(t_b - t_a)/\hbar} \hat{U}_R (t_b, t_a)\;\d t_b \\
+  =& \int_{t_a}^\infty e^{iE(t_b - t_a)/\hbar} \hat{U}(t_b, t_a) \;\d t_0
+\end{align*}
+$$
+
+If $\hat{H}$ has a discrete spectrum $\sigma(\hat{H}) = \Set{E_n}_{n\in\N}$ with corresponding eigenstates $\set{\ket{\psi_n}}_{n\in\N}$, the propagator has the following spectral representation
+
+$$
+  (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a) = \sum_{n\in\sigma(\hat{H})} \psi_n (\mathbf{x}_b) \psi_n^* (\mathbf{x}_a) e^{-iE_n (t_b - t_a)/\hbar}
+$$
+
+where $\psi_n (\mathbf{x}) = \braket{\mathbf{x}|n}$ is the wave function associated with the eigenstate $\ket{\psi_n}$. Applying the Fourier transform $\eqref{equation-11}$, we obtain the fixed-energy amplitude
+
+$$
+\begin{equation}
+\begin{split}
+  (\mathbf{x}_b|\mathbf{x}_a)_E =& \sum_{n\in\sigma(\hat{H})} \psi_n (\mathbf{x}_b) \psi_n^* (\mathbf{x}_a) R_n (E) \\
+  =& \sum_{n\in\sigma(\hat{H})} \psi_n (\mathbf{x}_b) \psi_n^* (\mathbf{x}_a) R_n (E) \frac{i\hbar}{E - E_n + i\eta}
+\end{split}\tag{\label{equation-12}}
+\end{equation}
+$$
+
+The time evolution amplitude is recovered by the inverse Fourier transform
+
+$$
+  (\mathbf{x}_b,t_b|\mathbf{x}_a,t_a) = \frac{1}{2\pi\hbar}\int_{-\infty}^\infty e^{-iE(t_b - t_a)/\hbar} (\mathbf{x}_a|\mathbf{x}_b)_E \;\d E
+$$
+
+The small $i\eta$-sheft in the energy $E$ in $\eqref{equation-12}$ can be thought of as being attached to each of the energies $E_n$, which are thus placed by an infinitesimal piece below the real energy axis. This makes the exponential behaviour of the wave functions slighty damped, vanishing at infinite time, i.e. $e^{-i(E_n - i\eta)t/\hbar} \xrightarrow{t\to\infty} 0$.
+
+If the eigenstates are nondegenerate, the residues at the poles of $\eqref{equation-12}$ render directly the products of eigenfunctions (barring degeneracies which must be discussed separately). For a system with a continuum of energy eigenvalues, there is a cut in the complex energy plane which may be thought of as a closely spaced sequence of poles. In general, the wave functions are recovered from the discontinuity of the amplitudes $(\mathbf{x}_b|\mathbf{x}_a)_E$ across the cut, using the formula
+
+$$
+\begin{align*}
+  \operatorname{disc}\left(\frac{i\hbar}{E - E_n}\right) =& \frac{i\hbar}{E - E_n + i\eta} - \frac{i\hbar}{E - E_n - i\eta} \\
+  =& 2\pi\hbar\delta(E - E_n)
+\end{align*}
+$$
+
+This follows from Sochocki's formula, valid inside integrals over $E$
+
+$$
+  \frac{1}{E - E_n \pm i\eta} = \frac{\mathcal{P}}{E - E_n} \mp i\pi\delta(E - E_n)
+$$
+
+where $\mathcal{P}$ indicates that the principal value of the integral has to be taken.
+
+The energy integral over the discontinuity of the fixed-energy amplitude $\eqref{equation-12}$ reproduces the completeness relation taken between the local states $\bar{\mathbf{x}_b}$ and $\ket{\mathbf{x}_a}$
+
+$$
+\begin{equation}
+\begin{split}
+  \int_{-\infty}^\infty \frac{\d E}{2\pi\hbar} \operatorname{disc}(\mathbf{x}_b|\mathbf{x}_a)_E =& \sum_{n\in\sigma(\hat{H})} \psi_n (\mathbf{x}_b) \psi_n^* (\mathbf{x}_a) \\
+  =& \braket{\mathbf{x}_b|\mathbf{x}_a} = \delta^(3) (\mathbf{x}_b - \mathbf{x}_a)
+\end{split}\tag{\label{equation-13}}
+\end{equation}
+$$
+
+The completeness relation reflects the following property of the resolvent operator
+
+$$
+  \int_{-\infty}^\infty \frac{\d E}{2\pi\hbar} \operatorname{disc}\left(\hat{R}(E)\right) = \hat{I}
+$$
+
+If the system also possesses a continuous spectrum, the completeness relation has the form
+
+$$
+  \sum_{n\in\sigma(\hat{H})} \ket{\psi_n}\bra{\psi_n} + \int \ket{\psi_\nu}\bra{\psi_\nu}\;\d\nu = 1
+$$
+
+The continuum causes a branch cut along in the complex energy plan, such that $\eqref{equation-13}$ also includes an integral over the discontinuity along the cut.
 
 ## Heisenberg picture
 
