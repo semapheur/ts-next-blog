@@ -1134,7 +1134,7 @@ $$
 ## Hilbert space
 
 <MathBox title='Hilbert space' boxType='definition'>
-If $\left(X, \lVert \cdot\rVert_{\langle \cdot, \cdot \rangle} \right)$ defines a Banach space, then $\left(X, \langle \cdot, \cdot \rangle \right)$ is called a Hilbert space 
+If $\left(X, \lVert \cdot\rVert_{\langle \cdot, \cdot \rangle} \right)$ defines a Banach space, then $\left(X, \langle \cdot, \cdot \rangle \right)$ is called a Hilbert space.
 </MathBox>
 
 ## $\ell^2$-space
@@ -2032,7 +2032,9 @@ $$
 ## Bounded operators
 
 <MathBox title='Bounded operator' boxType='definition'>
-Let $T$ be a linear operator. If there exists some $M > 0$ such that $\lVert T x\rVert_Y \leq M\lVert x\rVert_X  < \infty$ for all $x \in X$, then $T$ is a bounded operator with operator norm $M$. The set of all linear and bounded operators $T: X \to Y$ is denoted $\mathcal{B}(X, Y)$.
+Let $T\in\mathcal{L}(X,Y)$ be a linear operator between normed spaces $X$ and $Y$. If there exists some $M > 0$ such that $\lVert T x\rVert_Y \leq M\lVert x\rVert_X  < \infty$ for all $x \in X$, then $T$ is a bounded operator with operator norm $M$. The set of all linear and bounded operators $T: X \to Y$ is denoted $\mathcal{B}(X, Y)$.
+
+If $W$ is a subspace of $X$, then $T$ is *bounded below* on $W$ if there exists $\epsilon > 0$ such that $\lVert Tx\rVert\geq\epsilon\lVert x \rVert$ for all $x\in W$. 
 </MathBox>
 
 <MathBox title='The space of bounded linear operators is Banach' boxType='proposition'>
@@ -2342,9 +2344,13 @@ Let $X$ be a complex Banach space and $T: X \to X$ be a bounded linear operator.
 
 1. $\sigma(T) \subseteq \mathbb{C}$ is compact (closed and bounded).
 2. $\sigma(T) \neq \emptyset$ for $X \neq \Set{ 0 }$
-3. $r(T) := \sup_{\lambda\in\sigma(T)}|\lambda| = \lim_{k\to\infty} \lVert T^k\rVert^{1/k} = \inf_{k\in\N} \lVert T^k\rVert^{1/k} \leq \lVert T\rVert < \infty$
-
-where $r(T)$ denotes the spectral radius. 
+3. The spectral radius $r(T)$ is bounded as
+$$
+\begin{align*}
+  r(T) :=& \sup_{\lambda\in\sigma(T)}|\lambda| = \lim_{k\to\infty} \lVert T^k\rVert^{1/k} = \inf_{k\in\N} \lVert T^k\rVert^{1/k} \\
+  \leq& \lVert T\rVert < \infty
+\end{align*}
+$$
 
 <details>
 <summary>Proof</summary>
@@ -2383,6 +2389,45 @@ Consequently $\ell\left(T^{-2}\right) = 0$ for all $\ell \in \mathcal{B}(X)^*$. 
 </details>
 </MathBox>
 
+## Spectral theorem
+
+<MathBox title='Spectral theorem (bounded case)' boxType='theorem'>
+Let $H$ be separable Hilbert space, and let $\mathcal{P}(H)$ denote the set of projection operators onto closed subspaces of $H$.
+1. **Bijection between normal operators and spectral measures**
+
+Let $\Sigma\subset\mathbb{C}$ be a compact subset of the complex plane. There is a bijection between:
+- a. Normal operators $T\in\mathcal{L}(H)$, such that $\sigma(T)\subset\Sigma$, and 
+- b. Spectral measures $\mathcal{B}_\Sigma \ni E\mapsto P(E)\in\mathcal{P}(H)$, where $\mathcal{B}_E$ denotes the Borel subsets of $\Sigma$
+
+This bijection is given by the equation
+$$
+  \langle Tx, y\rangle = \int_{\Sigma} \lambda\;\d\mu_{x,y} (\lambda)
+$$
+where $\mu_{x,y} (E) = \langle P(E)x, y\rangle$.
+
+2. **Characterization of the spectrum**
+
+If $T$ and $P(E)$ are as above, the spectrum of $T$ is the support of the spectral measure $P(\cdot)$. Specificaly, $\lambda\in\sigma(T)$ if and only if $P(U) \neq 0$ for every open neighbourhood $U$ of $\lambda$ in $\Sigma$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** If $T\in\mathcal{L}(H)$ is a normal operator such that $\sigma(T) = \Sigma_0 \subset\Sigma$, then by Proposition $\ref{}$, there is a unique representation $f: C(\Sigma_0)\to C^* (\Set{1,T}) \subset\mathcal{L}(H)$ such taht $f_j (T) = T^j$ if $f_j (\lambda) = \lambda^j$ for $j = 0,1$. This representation gives rise to a unique spectral measure $\mathbb{B}_{\Sigma_0}\ni E\mapsto P(E) \in \mathcal{P}(H)$ such that
+
+$$
+\begin{equation}
+  \langle f(T)x, y\rangle = \int_{\Sigma_0} f\;\d\mu_{x,y},\; \forall f,x,y tag{\label{equation-4}}
+\end{equation}
+$$
+
+We may think of $P$ as a spectral measure being defined for all Borel subsets of $\Sigma$ by the rule $P(E) = P(E\cap\Sigma_0)$.
+
+Conversely, every spectral measure as in **(1.b)** clearly gives rise to a representation of $C(\Sigma)$ into $H$ and consequently a normal operator $T\in\mathcal{L}(H)$ such that $\eqref{equation-4}$ is vali for $f\in C(\Sigma)$. Since homomorphisms of C* algebras "shrink spectra" (Lemma $\ref{}$), we find that $\sigma(T)\subset\Sigma$.
+
+**(2):** Let $T = \int_\sigma \lambda\;\d P(\lambda)$ as in **(1)** above. Define the measure $\mu$ by $\mu(E) = \sum_{n\in N} 2^{-n} \lVert P(E)e_n \rVert^2$, where $\Set{e_n}_{n\in N}$ is an orthonormal basis for $H$. There is an isometric *-isomorphism $L^\infty (\Sigma_0, \mu) \ni \pho\mapsto \int_{\Sigma_0} \phi\;\d P \in\mathcal{L}(H)$, where $\Sigma_0 = \sigma(T)$. Under this isomorphism, the function $f_1 (\lambda) = \lambda$ for $\lambda\in\Sigma_0$ corresponds to $T$. However, it is easy to see that $\lambda_0 \in\sigma_{L^\infty (\Sigma_0, \mu)}(f_1)$ if and only if $\mu(\Set{\lambda: |\lambda-\lambda_0| < \epsilon}) > 0$ for every $\epsilon > 0$. The negation of this latter condition is clearly equivalent to the statement that the function $\lambda\mapsto 1/(\lambda-\lambda_0)$ belongs to $L^\infty (\Sigma_0,\mu)$. Finally, $\mu(E) = 0 \iff P(E) = 0$.
+</details>
+</MathBox>
+
 ## Adjoint operators
 
 <MathBox title='Adjoint operator' boxType='definition'>
@@ -2403,16 +2448,196 @@ If $T$ is normal then the spectral radius of $T$ is equal to the operator norm, 
 ## Compact operators
 
 <MathBox title='Compact operator' boxType='proposition'>
-Let $\left(X ,\lVert \cdot\rVert_X\right)$ and $\left(X ,\lVert \cdot\rVert_X\right)$ be normed spaces. A bounded linear operator $T: X \to Y$ is *compact* if $\overline{T\left[\mathcal{B}_1(0)\right]}$ is compact.
+Let $\left(X ,\lVert \cdot\rVert_X\right)$ and $\left(X ,\lVert \cdot\rVert_X\right)$ be normed spaces. A bounded linear operator $T: X \to Y$ is *compact* if for every bounded sequence $\Set{x_n}_{n\in\N} \subset X$, the sequence $\Set{Tx_n}_{n\in\N}$ has a subsequence which converges with respect to the norm in $Y$. Equivalently, $T$ is compact if it maps the unit ball $B_1 (0) \subset X$ into a set whose closure is compact, i.e. $\overline{T\left[\mathcal{B}_1(0)\right]}$ is compact. The set of compact operators from $X$ to $Y$ is denoted $\mathcal{K}(X,Y)$.
 </MathBox>
 
+<MathBox title='' boxType='proposition' tag='proposition-39'>
+Let $X,Y,Z$ be Banach spaces.
+1. $\mathcal{K}(X,Y)$ is a norm-closed subspace of $\mathcal{L}(X,Y)$
+2. if $A\in\mathcal{L}(Y,Z)$, $B\in\mathcal{L}(X,Y)$, and if either $A$ or $B$ is compact, then $AB$ is also compact.
+3. In particular, $\mathcal{K}(X)$ is a closed two-sided ideal in the Banach-algebra $\mathcal{L}(X)$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Suppose $A, B\in\mathbb{K}(X,Y)$ are compact operators, and $\alpha\in\mathbb{F}$, and suppose $\Set{x_n}_{n\in\N}$ is a bounded sequence in $X$. Since $A$ is compact, there is a subsequence, say $\Set{y_n}_{n\in\N}$ of $\Set{x_n}_{n\in\N}$, such that $\Set{Ay_n}_{n\in\N}$ is a norm-convergent sequence. Since $\Set{y_n}_{n\in\N}$ is a bounded sequence and $B$ is compact, we may extract a further subsequence, say $\Set{z_n}_{n\in\N}$, with the property that $\Set{Bz_n}$ is norm-convergent. It is clear that $\Set{(\alpha A + B) z_n}$ is a norm-convergent sequence. Thus $(\alpha A + B)$ is compact. In other words, $\mathcal{K}(X,Y)$ is a subspace of $\mathcal{L}(X, Y)$.
+
+Suppse now that $\Set{A_n}_{n\in\N}$ is a sequence in $\mathcal{K}(X,Y)$, and that $A\in\mathcal{L}(X,Y)$ is such that $\lVert A_n - A \rVert\xrightarrow{n\to\infty} 0$. We will prove that $A$ is compact using a diagonal argument. Let $S_0 = \Set{x_n}_{n\in\N}$ be a bounded sequence in $X$. Since $A_1$ is compact, we can extract a subsequence $S_1 = \Set{x_n^{(1)}}_{n\in\N}$ of $S_0$ such that $\Set{Ax_n^{(1)}}_{n\in\N}$ is convergent. Proceeding in this fashion, we can find a sequence $\Set{S_k}$ such that $S_k = \Set{x_n^{(k)}}_{n\in\N}$ is a subsequence of $S_{k-1}$ and $\Set{A_k x_n^{(k)}}$ is convergent in $Y$, for each $k\geq 1$. Let us write $z_n = x_n^{(n)}$. Since $\Set{z_n}_{n\geq k\in\N}$ is a subsequence of $S_k$, note that $\Set{A_k z_n}_{n\in\N}$ is a convergent sequence in $Y$ for every $k\in\N_+$.
+
+It remains to show that $\Set{Az_n}_{n\in\N}$ is a Cauchy sequence in $Y$. Suppose $\epsilon > 0$ and let $K = 1 + \sup_{n\in\N} \lVert z_n\rVert$. Pick an integer $N\in\N$ such that $\lVert A_N - A \rVert < \frac{\epsilon}{3K}$. Next, choose an integer $n_0$ such that $\lVert A_N z_n - A_N z_m \rVert < \frac{\epsilon}{3}$ for all $n,m\geq n_0$. If $n, m\geq n_0$, we have
+
+$$
+\begin{align*}
+  \lVert Az_n - Az_m \rVert \leq& \lVert (A - A_N)z_n \rVert + \lVert A_N z_n - A_N z_m \rVert \\
+  &+ \lVert (A_N - A)z_m \rVert \\
+  \leq& \frac{\epsilon}{3K}K + \frac{\epsilon}{K} + \frac{\epsilon}{3K}K \\
+  =& \epsilon
+\end{align*}
+$$
+
+**(2):** Let $\mathcal{B}_1(0) \subset X$ be the unit ball in $X$. We need to show that $AB(\mathcal{B}_1(0))$ is totally bounded. Thus is true in case **(i)** $A$ is compact, since then $B(\mathcal{B}_1(0))$ is bounded, and $A$ maps bounded sets to totally bounded set, and **(ii)** $B$ is compact since then $B(\mathcal{B}_1 (0))$ is totally bounded, and $A$ (being bounded) preserves totally bounded sets.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary' tag='corollary-4'>
+If $T\in\mathcal{L}(H_1,H_2)$ is a linear operator between Hilbert spaces, then
+1. $T$ is compact if and only if $|T| = (T^* T)^{1/2}$ is compact.
+2. In particular, $T$ is compact if and only if $T^*$ is compact.
+
+<details>
+<summary>Proof</summary>
+
+If $T = U|T|$ is the polar decomposition of $T$, then by Theorem $\ref{}$ also $U^* T = |T|$. Thus, each of $T$ and $|T|$ is a multiple of each other. Applying Proposition $\ref{proposition-39}.2$ proves **(1)**. Also, since $T^* = |T|U^*$, we see that the compactness of $T$ implies that of $T^*$, and **(2)** follows from the fact that we may interchange the roles of $T$ and $T^*$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-4'>
+If $T\in\mathcal{K}(H_1,H_2)$ is a compact operator between Hilbert spaces and if $T$ is bounded below on a subspace $\mathcal{M}\subseteqH_1$, then $\mathcal{M}$ is finite-dimensional. In particular, if $\mathcal{N}$ is a closed subspace of $H_2$ such that $\mathcal{N}$ is contained in the range of $T$, then $\mathcal{N}$ is finite-dimensional.
+
+<details>
+<summary>Proof</summary>
+
+If $T$ is bounded below on $\mathcal{M}$, then it is also bounded below (by the same constant) on the closure $\overline{M}$. We can therefore assume without loss of generality that $\mathcal{M}$ is closed. If $\mathcal{M}$ contains an infinite orthonormal set, say $\Set{e_n}_{n\in\N}$, and if $T$ is bounded below by $\epsilon$ on $\mathcal{M}$, then note that $\lVert Te_n - Te_m \rVert\geq \epsilon\sqrt{2}$ for all $n\neq m$. Then $\Set{e_n}_{n\in\N}$ would be a bounded sequence in $H$ such that $\Set{Te_n}_{n\in\N}$ would have no Cauchy subsequence, this contradicting the assumed compactness of $T$. Hence, $\mathcal{M}$ must be finite-dimensional.
+
+As for the second assertion, let $\mathcal{M} = T^{-1} (\mathcal{N})\cap \ker^\top (T)$. Note that $T$ maps $\mathcal{M}$ bijectively onto $\mathcal{N}$. By the open mapping theorem, $T$ must be bounded below on $\mathcal{M}$. Thus, by the first asstion, $\mathcal{M}$ is finite-dimensional, and so is $\mathcal{N}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-40'>
+Let $T\in\mathcal{L}(H_1, H_2)$ be a linear operator between separable Hilbert spaces. Then the following are equivalent
+1. $T$ is compact
+2. $|T|$ is compact
+3. if $\mathcal{M}_\epsilon = \operatorname{ran}(\operatorname{id}_{\epsilon,\infty}(|T|))$, then $\mathcal{M}_\epsilon$ is finite-dimensional
+4. There is a sequence $\Set{T_n}_{n\in\N_+} \subset\mathcal{L}(H_1, H_2)$ such that for each $n\in\N$
+    - a. $\lVert T_n - T \rVert \xrightarrow{n\to\infty} 0$
+    - b. $\operatorname{ran}(T_n)$ is finite-dimensional
+5. $\operatorname{ran}(T)$ does not contain any infinite-dimensional closed subspaces of $H_2$.
+
+<details>
+<summary>Proof</summary>
+
+For $\epsilon > 0$, we use introduce the notation $\operatorname{id}_\epsilon = \operatorname{id}_{[\epsilon,\infty)}$ and $P_\epsilon = \operatorname{id}_\epsilon (|T|)$.
+
+**(1)$\implies$(2):** This follows from Corollary $\ref{corollary-4}$.
+
+**(2)$\implies$(3):** Since $t\geq \epsilon\operatorname{id}_\epsilon (t)$ for all $t\geq 0$, we find easily that $|T|$ is bounded below by $\epsilon$ on $\operatorname{ran}(P_\epsilon)$ and **(3)** follows from Lemma $\ref{lemma-4}$.
+
+**(3)$\implies$(4):** Define $T_n = TP_{1/n}$ and note that $0\leq t(1 - \operatorname{id}_{1/n} (t) \leq \frac{1}{n}$ for all $t\geq 0$ and conclude that $\lVert |T|(1 - \operatorname{id}_{1/n}(|T|))\rVert \leq\frac{1}{n}$. If $T = U|T|$ is the polar decomposition of $T$, it follows that $\lVert T - T_n \rVert\leq\frac{1}{n}$. Finally, **(3)** clearly implies that each $P_{1/n}$ and consequently $T_n$ has finite-dimensional range.
+
+**(4)$\implies$(5):** By Proposition $\ref{proposition-39}.1$ it suffices to show that each $T_n$ is a compact operator. However, any bounded operator with finite-dimensional range is necessarily compact, since any bounded set in a finite-dimensional space is totally bounded.
+
+**(1)$\implies$(5):** This follows from Lemma $\ref{lemma-4}$.
+
+**(5)$\implies$(3):** Pick any bounded measurable function $g$ such that $g(t) = 1/t$ for all $t\geq\epsilon$. Then $tg(t) = 1$ for all $t\geq 1$, and it follows that $|T|g(|T|)x = x$ for all $x\in\mathcal{M}_\epsilon$. Consequently, $\mathcal{M}_\epsilon = |T|(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(|T|)$, and hence of the inital space of the partial isometry $U$. This implies that $T(\mathcal{M}_\epsilon) = U(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(T)$. By **(5)**, this implies that $T(\mathcal{M}_\epsilon)$ is finite-dimensional. However, $|T|$ and consequently $T$ is bounded below by $\epsilon$ on $\mathcal{M}_\epsilon$. In particular, $T$ maps $\mathcal{M}_\epsilon$ bijectively onto $T(\mathcal{M}_\epsilon)$. Hence, $\mathcal{M}_\epsilon$ is finite-dimensional.
+</details>
+</MathBox>
+
+### Normal compact operators
+
 <MathBox title='' boxType='proposition'>
-Suppose $\left(X ,\lVert \cdot\rVert_X\right)$ is a Banach space, and $T: X \to X$ a compact operator, then
-1. $\sigma(T)$ is a countable set
-2. $\dim(X) = \infty \implies 0 \in \sigma(T)$
-3. $\sigma(T)\setminus\Set{0}$ could be empty or finite. Otherwise $\sigma(T)\setminus\Set{0} = \Set{ \lambda_n }_{n\in\N}$ with no accumulation points other than $0$.
-4. Each $\lambda\in\sigma(T)\setminus\Set{0}$ is an eigenvalue of $T\left(\lambda \in \sigma(T)\setminus\Set{0}\right)$ with $\dim\left(\ker(T - \lambda) \right)$
-</MathBox> 
+Let $T\in\mathcal{K}(H)$ be a normal compact operator on a separable Hilbert space, and let $E\mapsto P(E) = \operatorname{id}_E (T)$ be the associated spectral measure.
+1. If $\epsilon > 0$, let $P_\epsilon = P(\Set{\lambda\in\mathbb{C} : |\lambda|\geq\epsilon}$ denote the spectral projection associated to the complement of an $\epsilon$-neighbourhood of $0$. Then $\operatorname{ran}(P_\epsilon)$ is finite dimensional.
+2. If $\Sigma = \sigma(T)\setminus\Set{0}$, then
+    - a. $\Sigma$ is a countable set
+    - b. $\lambda\in\Sigma\implies\lambda$ is an eigenvalue of finite multiplicity, i.e. $0 < \dim(\ker(T-\lambda)) < \infty$
+    - c. The only possible accumulation point of $\Sigma$ is $0$
+    - d. There exist scalars $\lambda_n \in\Sigma$ and an orthonormal basis $\Set{x_n}_{n\in\N}$ of ran $P(\Sigma)$ such that
+$$
+  Tx = \sum_{n\in\N} \lambda_n \langle x,x_n \rangle x_n,\; \forall x\in H
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Note that the function defined by the equation
+
+$$
+  g(\lambda) = \begin{cases}
+    \frac{1}{\lambda},\quad& |\lambda|\geq\epsilon \\
+    0,\quad& |\lambda| < \epsilon
+  \end{cases}
+$$
+
+is a bounded measurable function on $\sigma(T)$ such that $g(\lambda)\lambda = \boldsymbol{1}_{F_\epsilon} (\lambda)$, where $F_\epsilon = \Set{z\in\mathbb{F}:|z|\geq\epsilon}$. It follows that $g(T)T = Tg(T) = P_\epsilon$. Hence, $\operatorname{ran}(P_\epsilon)$ is contained in $\operatorname{ran}(T)$, and the desired conclusion follows from Proposition $\ref{proposition-40}.5$.
+
+**(2):** Let $\mu$ be the measure defined by $\mu(E) = \Sum_{n\in\N} \lVert P(E) e_n \rVert^2$, where $\Set{\epsilon_n}_{n\in\N}$ is some orthonormal basis for $H$. Then the measurable functional calculus yields an embedding of $L^\infty (F_\epsilon, \mathcal{B}_{F_\epsilon}, \mu|_{F_\epsilon})$ into $\mathcal{L}(\operatorname{ran}(P_\epsilon))$. It follows from **(1)** that $L^\infty (F_\epsilon,\mathcal{B}_{F_\epsilon},\mu|_{F_\epsilon})$ is finite-dimensional, where $F_\epsilon$ is as in the last paragraph. This implies that there is a finite set $\Set{\lambda_i}_{i=1}^{n\in\N} \subset F_\epsilon$ such that $\mu|_{F_\epsilon} = \sum_{i=1}^n \mu_{\Set{\lambda_i}}$. 
+
+Assume, without loss of generality, that $\mu(\Set{\lambda_i}) > 0$ for all $i$. Then $P_\epsilon = \sum_{i=1}^n P_i$ is a decomposition of $P_\epsilon$ as a finite sum of non-zero (pairwise orthogonal) projections, where $P_i = P(\Set{\lambda_i})$. Since $P_i$ is the projection onto $\ker{(T-\lambda)}$, we thus find that
+- $\Set{\lambda_i : 1\leq i \leq n} = \Sigma \cap F_\epsilon$
+- each $\lambda_i$ is an eigenvalue of $T$ which has finite multiplicity
+
+By allowing $\epsilon$ to decrease to $0$ through a countable sequence of values, we prove **(a)-(c)**. For **(d)**, note that if $\Sigma = \Set{\lambda_n}_{n\in\N}$, then $\lambda = \sum_{n\in\N} \lambda_n 1_{\Set{\lambda_n}}(\lambda) \mu$ almost everywhere. Hence, $T = \sum_{\lambda\in\Sigma} \lambda P(\Set{\lambda})$. Finally, if $\Set{x_n (\lambda)}_{n\in N_\lambda}$ is an orthonormal basis for $\operatorname{ran}(P(\Set{\lambda}))$, for each $\lambda\in\Sigma$, then $P(\Set{\lambda})x = \sum_{n\in N_\lambda} \langle x, x_n (\lambda)\rangle x_n (\lambda)$ for all $x\in H$. Letting $\Set{x_n}_{n\in\N}$ be an enumeration of $\bigcup_{\lambda\in\Sigma} \Set{x_n (\lambda)}_{n\in N_\lambda}$, we get the desired decomposition of $T$.
+</details>
+</MathBox>
+
+<MathBox title='Singular value decomposition of compact operators' boxType='proposition'>
+Let $T\in\mathcal{K}(H_1,H_2)$ be a compact operator between Hilbert spaces. Then $T$ admits the following decomposition
+
+$$
+  Tx = \sum_{n\in N} \lambda_n \left(\sum_{k\in I_n} \langle x, x_k^{(n)}\rangle y_k^{(n)} \right),\; x\in H_1
+$$
+
+where
+1. $\sigma(|T|)\setminus\Set{0} = \Set{\lambda}_{n\in N}$, where $|T| = (T^* T)^{1/2} \in\mathcal{L}(H_1)$ and $N$ is some countable set. The sequence $\Set{\lambda_n}_{n\in N}$ consists of nonzero singular values of $T$.
+2. $\Set{x_k^{(n)}}_{k\in I_n}$ is an orthonormal basis for $\ker(|T| - \lambda_n)$. Or, respectively, $\Set{y_k^{(n)}}_{k\in I_n}$ is an orthonormal basis for $T(\ker(|T| - \lambda_n) = \ker(|T^*| - \lambda_n)$). Here $I_n$ denote countable index sets.
+
+In particular, we may assume that 
+- $N$ is finite if $\dim(\ran(|T|)) < \infty$ or infinite if $\dim(\ran(|T|)) = \aleph_0$
+- $\Set{\lambda_n}_{n\in N}$ is increasing
+
+If the sequence $\Set{s_n = s_n (T)}_{n\in N}$ is defined by
+
+$$
+  s_n = \begin{cases}
+    \lambda_1,&\quad 0 < n \leq |I_1| \\
+    \lambda_2,&\quad |I_1| < n \leq |I_1| + |I_2| \\
+    \vdots& \\
+    \lambda_m,&\quad \sum_{1\leq k < m} |I_k| < n \leq \sum_{1\leq k \leq m} |I_k| \\
+    0,&\quad \sum_{k\in N} |I_k| < n
+  \end{cases}
+$$
+
+Then $\Set{s_n}_{n\in N}$ is a non-increasing sequence of non-negative real numbers, called the sequence of *singular values* of $T$.
+</MathBox>
+
+### Hilbert-Schmidt operators
+
+<MathBox title='' boxType='lemma' tag='lemma-5'>
+Let $T\in\mathcal{L}(H_1,H_2)$ be a linear operator between Hilbert spaces. Then the following are equivalent:
+1. $\sum_{n\in N\subseteq\N} \lVert Te_n \rVert^2 \rVert < \infty$, for some orthonormal basis $\Set{e_n}_{n\in N\subseteq\N}$ of $H_1$
+2. $\sum_{m\in M\subseteq\N} \lVert T^* f_m \rVert^2 < \infty$, for every orthonormal basis $\Set{f_m}_{m\in M\subseteq\N}$ of $H_2$
+3. $\sum_{n\in N\subseteq\N} \lVert T e_n\rVert^2 < \infty$, for some orthonormal basis $\Set{e_n}_{n\in N\subseteq\N}$ of $H_1$
+
+If these equivalent conditions are satisfied, then the sums of the series in **(2)** and **(3)** are independent of the choice of the orthonormal bases and are all equal to one another.
+
+<details>
+<summary>Proof</summary>
+
+If $\Set{e_n}_{n\in N}$ (respectively, $\Set{f_m}_{m\in M}$) is any orthonormal basis for $H_1$ (respectively, $H_2$), then note that
+
+$$
+\begin{align*}
+  \sum_{n\in N} \lVert Te_n \rVert^2 =& \sum_{n\in N} \sum_{m\in M} |\langle Te_n, f_m\rangle|^2 \\
+  =& \sum_{m\in M} \sum_{n\in N} |\langle T^* f_m, e_n\rangle|^2 \\
+  =& \sum_{m\in M} \lVert T^* f_m\rVert^2
+\end{align*}
+$$
+
+and all the assertions of the proposition follow.
+</details>
+</MathBox>
+
+<MathBox title='Hilbert-Schmidt operator' boxType='definition'>
+A linear operator $T\in\mathcal{L}(H_1, H_2)$ between Hilbert spaces is a *Hilbert-Schmidt operator* if and only if it satisfies the equivalent conditions of Lemma $\ref{lemma-2}$, and the *Hilbert-Schmidt norm* of such an operator is defined to be
+
+$$
+  \lVert T \rVert_2 = \left(\sum_{n\in N} \lVert Te_n \rVert^2 \right)^{1/2}
+$$
+
+where $\Se{e_n}_{n\in N\subseteq\N}$ is any orthonormal basis for $H_1$. The set of all Hilbert-Schmidt operators from $H_1$ to $H_2$ is denoted $\mathcal{L}^2 (H_1, H_2)$.
+</MathBox>
+
+### Fredholm operators
 
 ## Example: $\ell^p$
 
@@ -2652,7 +2877,7 @@ $$
   & \lVert \alpha f(x + h) + \beta g(x + h) - \alpha f(x) - \beta g(x) - \alpha\d f(x)h - \beta\d g(x) h \rVert_Y \\
   &\leq |\alpha|\cdot\lVert f(x + h) - f(x) - \d f(x)h \rVert_Y + |\beta|\cdot\lVert g(x + h) - g(x) - \d g(x)h \rVert_Y \\
   &\leq \frac{\epsilon|\alpha|\cdot\lVert h \rVert_X}{2(|\alpha| + 1)} + \frac{\epsilon|\beta|\cdot\lVert h \rVert_X}{2(|\beta| + 1)} = \epsilon \lVert h \rVert_X \left(\frac{|\alpha|}{2(|\alpha| + 1)} + \frac{|\beta|}{2(|\beta| + 1)} \right) \\
-  <& \epsilon \lVert h \rVert_X
+  < & \epsilon \lVert h \rVert_X
 \end{align*}
 $$
 
