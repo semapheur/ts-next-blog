@@ -693,7 +693,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Hahn-Banach theorem' boxType='theorem'>
+<MathBox title='Hahn-Banach theorem' boxType='theorem' tag='theorem-5'>
 Let $\left(X, \lVert \cdot\rVert_X \right)$ be a normed space, $U \subset X$ a subspace and $\ell \in U^*$ a continuous linear functional on $U$. Then there exists a linear functional $\tilde{\ell} \in X^*$ that extends $\ell$ with $\tilde{\ell}(u) = \ell(u)$ for all $u \in U$ and $\lVert \tilde{\ell}\rVert_{X^*} = \lVert \ell\rVert_{U^*}$.
 </MathBox>
 
@@ -1721,7 +1721,7 @@ For non-unital $A$, apply the already established unital case of the corollary t
 </MathBox>
 
 <MathBox title='' boxType='definition'>
-An element of a commutative Banach algebra $A$ is *quasi-nilpotent* if it satisfies the equivalent conditions of Corollary $\ref{corollary-2}$. The *radical* of $A$ is defined to be the ideal consisting of all quasi-nilpotent elements of $A$. A commutative Banach algebra is *semi-simple* if it has trivial radical (or equivalently, it has no quasi-nilpotent elements, which is the same as saying that the Gelfand transfor of $A$ is injective).
+An element of a commutative Banach algebra $A$ is *quasi-nilpotent* if it satisfies the equivalent conditions of Corollary $\ref{corollary-2}$. The *radical* of $A$ is defined to be the ideal consisting of all quasi-nilpotent elements of $A$. A commutative Banach algebra is *semi-simple* if it has trivial radical (or equivalently, it has no quasi-nilpotent elements, which is the same as saying that the Gelfand transform of $A$ is injective).
 </MathBox>
 
 ## C* algebra
@@ -2009,6 +2009,457 @@ Let $A$ be a C* algebra. If $x\in A$, the following are equivalent
 **(2) $\implies$ (1):** Let $x = x_+ - x_-$ be the canonical decomposition of the self-adjoint element $x$ into its positive and negative parts. We then find (since $x_- x_+ = 0$) that $x_- xx_- = -x^3 \leq 0$. However, $x_- xx_- = (zx_-)^* (zx_-)$, and we may conclude from Lemma $\ref{lemma-3}$ that $x_-^3 = 0$, whence $z^* z = x = x_+ \geq 0$.
 </details>
 </MathBox>
+
+### Representations of C* algebras
+
+<MathBox title='Representation of unital C* algebras' boxType='definition'>
+A representation of a unital C* algebra $A$ is a *-homomorphism $\pi:A\to\mathcal{L}(H)$, where $H$ is a Hilbert space. This will always be assumed to be a unital homorphism, meaning that $\pi(1) = I$, where $1$ is the identity of $A$ and $I\in\mathcal{L}(H)$ is the identity operator on $H$.
+
+Two representations $\pi_i:A\to\mathcal{L}(H_i)$ for $i=1,2$ are *equivalent* if there is a unitary operator $U:H_1 \to H_2$ with the property that $\pi_2 (x) = U\pi (x) U^*$ for all $x\in A$.
+
+A representation $\pi: A\to\mathcal{L}(H)$ is *cyclic* if thre is a vector $\mathbf{x}\in H$ such taht $\Set{\pi(x)(\mathbf{x}): x\in A}$ is dense in $H$. In this case, the vector $\mathbf{x}\in H$ is said to be a *cyclic vector* for the representation $\pi$.
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-4'>
+If $\pi:A\to B$ is a unital *-homomorphism between unital C* algbras, then
+1. $x\in A \implies \sigma(\pi(x))\subseteq\sigma(x)$
+2. $\lVert\pi(x)\rVert\leq\lVert x \rVert \forall x\in A$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Since $\pi$ is a unital algebra homomorphism, it follows that $\pi$ maps invertible elements to invertible elements. This clearly implies the asserted spectral inclusion.
+
+**(2):** If $x = x^* \in A$, the also $\pi(x) = \pi(x^*) = \pi(x)^* \in B$, and since the norm of a self-adjoint element in a C* algebra is equal to its spectral radius, we find from **(1)** that
+
+$$
+  \lVert\pi(x)\rVert = r(\pi(x)) \leq r(x) = \lVert x \rVert
+$$
+
+for any $x\in A$, it follows that
+
+$$
+\begin{align*}
+  \lVert\pi(x)\rVert^2 =& \lVert\pi(x)^* \pi(x)\rVert = \lVert\pi(x^* x)\rVert \\
+  \leq& \lVert x^* x \rVert = \lVert x\rVert^2
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Commutant' boxType='definition'>
+If $H$ is a Hilbert space, and if $S\subset\mathcal{L}(H)$ is any set of operators, the *commutant* of $S$ is defined by
+
+$$
+  S' := \Set{x' \in\mathcal{L}(H) | x' x = xx' \; \forall x\in S}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-34'>
+Let $H$ be a Hilbert space.
+1. If $S\subset\mathcal{L}(H)$ is arbitrary, then the commutant $S'$ is a unital subalgebra of $\mathcal{L}(H)$ that is closed in the weak-operator topology (and consequently also in the stron operator and norm topologies) on $\mathcal{L}(H)$.
+2. If $S$ is closed under formation of adjoints, i.e. if $S = S^*$, where $S^* = \Set{x^* | x \in S}$, then $S'$ is a C* subalgebra of $\mathcal{L}(H)$.
+3. If $S\subset T \subset\mathcal{L}(H)$, then
+    - a. $S' \supset T'$
+    - b. If we inductively define $S'^{(n+1)} = (S'^{(n)})'$ and $S'^{(1)} = S'$, then
+$$
+\begin{align*}
+  S' =& S'^{(2n+1)}, \forall n\in\N \\
+  S\subset S'' =& S'^{(2)} = S'^{(2n + 2)}, \forall n\in\N
+\end{align*}
+$$
+
+4. Let $M$ be a closed subspace of $H$ and let $p$ denote the orthogonal projection onto $M$, and let $S\subset\mathcal{L}(H)$. Then the following conditions are equivalent:
+    - a. $x(M)\subset M$ for all $x\in S$
+    - b. $xp = pxp$ for all $x\in S$
+
+If $S = S^*$ is self-adjoint, then the above conditions are also equivalent to
+    
+    - c. $p\in S'$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** The topological assertion is a consequence of the fact that multiplication is separately weakly continuous. The algebraic assertions are obvious.
+
+**(2):** Note that
+
+$$
+\begin{align*}
+  y\in S \iff& yx^* = x^* y\; \forall x\in S \\
+  \iff& xy^* = y^* x\; \forall x\in S \\
+  \iff& *y \in S'
+\end{align*}
+$$
+
+so that $(S^*)' = (S')^*$, for any $S\subset\mathcal{L}(H)$.
+
+**(3):** Note that **(a)** is a an immediate consequence of the definition, as is the fact that $\subset S''$. Applying **(a)** to this inclusion, we find that $S' \supset S'''$. On the other hand, if we replace $S$ by $S'$ in the inclusion, we see taht $S' \subset S''$, proving **(b)**.
+
+**(4):** For an operator $x \in\mathcal{L}(H)$, the condition that $\mathbf{x}(M) \subset M$, and that $xp = pxp$ are both seen to be equivalent to the requirement that if $((x_j^i))_{1\leq i, j\leq 2}$ is the matrix of $x$ with respect to the direct sum decomposition $H = M \oplus M^\perp$, then $x_1^2 = 0$, i.e. the matrix of $x$ has the form
+
+$$
+  [x] = \begin{bmatrix} a & b \\ 0 & c \end{bmatrix}
+$$
+
+where, of course, $a\in\mathcal{L}(M)$, $b\in\mathcal{M^\perp, M}$ and $c\in\mathcal{L}(M^\perp)$ are the appropriate compressions of $x$. A compression of an operator $x\in\mathcal{L}(H)$ is an operator of the form $z = P_M \circ x|_N$ for some subspaces $M, N \subset H$.
+
+If $S$ is self-adjoint, and if **(a)** and **(b)** are satisfied, we find that $xp = pxp$ and $x^* p = px^* p$ for all $x\in S$. Taking adjoints in the second equation, we find that $px = pxp$. Combining with the first equation, we thus find that $px = xp$ for all $x\in S$, i.e. $p \in S'$. 
+
+Conversely, **(c)** clearly implies **(b)**, since if $px = xp$, then $pxp = xp^2 = xp$.
+</details>
+</MathBox>
+
+<MathBox title="von Neumann's density theorem" boxType='theorem'>
+Let $A$ be a unital *-subalgebra of $\mathcal{L}(H)$. Then $A''$ is closure of $A$ in the strong operator topology.
+
+<details>
+<summary>Proof</summary>
+
+Since $A\subset A''$, and since $A''$ is closed in the strong operator topology, we only need to show that $A$ is strongly dense in $A''$. By the definition of the strong topology, we need to prove the following:
+
+**Assertion:** Let $z\in A''$, then for any $n\in\N$, $\mathbf{x}_1,\dots,\mathbf{x}_n \in H$ and $\epsilon > 0$, there exists $x \in A$ such taht $\lVert (x - z)\mathbf{x}_i \rVert < \epsilon$ for $1\leq i \leq n$.
+
+**Case 1: $n = 1$** 
+
+Let us write $\mathbf{x} = \mathbf{x}_1$, and let $M$ denote the closure of the set $A\mathbf{x} = \Set{x\mathbf{x} : x\in A}$. Note that $A\mathbf{x}$ is a vector space containing $\mathbf{x}$ (since $A$ is an algebra containing $1$), and hence $M$ is a closed subspace of $H$, which is obviously stable under $A$, meaning that $xM \subset M$ for all $x\in A$. Hence, if $p$ is the projection onto $M$, we may deduce from Proposition $\ref{propsition-34}.4$ that $p\in A'$ and that $p\mathbf{x} = \mathbf{x}$. Since $z\in A''$, we find that $xp = pz$, whence $zM \subset M$. In particular, $z\mathbf{x} \in M$. By definition, this means that there exists $x\in A$ such that $\lVert (z\mathbf{x} - x\mathbf{x})\rVert < \epsilon$.
+
+**Case 2: $n\in\N_+$**
+
+Let $H^n = \bigoplus_{i=1}^n H$. We shall identify $\mathcal{L}(H^n)$ with $M_n (\mathcal{L}(H))$. Let us adopt the following notation: if $a\in\mathcal{L}(H)$, we write $a^{(n)}$ for the lementof $M_n (\mathcal{L}(H))$ with $(i,j)$-th entry being given by $\delta_j^i a$, i.e. $a^{(n)} = \operatorname{diag}_n(a)$. With this notation, define
+
+$$
+\begin{equation}
+  A^{(n)} = \Set{a^{(n)} | a\in A} \tag{\label{equation-5}}
+\end{equation}
+$$
+
+and observe that $A^{(n)}$ is a unital *-subalgebra of $\mathcal{L}(H^{(n)})$. We claim that
+
+$$
+\begin{equation}
+  (A^{(n)})' = \Set{((b_j^i)) | b_j^i \in A',\; i,j=1,\dots,n} \tag{\label{equation-6}}
+\end{equation}
+$$
+
+and that
+
+$$
+  (A^{(n)})'' = (A'')^{(n)} = \Set{z^{(n)} | z\in A''}
+$$
+
+Let $b = ((b_j^i))$. Then $ba^{(n)} = ((b_j^i a))$, while $a^{(n)} b = ((ab_j^i))$, proving $\eqref{equation-5}$. In view of $\eqref{equation-5}$, we have $e_j^i \in (A^{(n)})'$, where $e_j^i$ is the matrix which has entry $1 = \operatorname{id}_H$ in the $(i,j)$-th place and $0$ elsewhere. Hence, if $y\in (A^(n))''$, we expect, inparticular, that $ye_j^i = e_j^i y$ for all $1\leq i,j \leq n$. This is seen, fairly easily, to imply that there must exist some $z\in\mathcal{L}(H)$ such that $y = z^{(n)}$. Another routine verification shows that $z^{(n)}$ will commute with $((b_j^i))$ for arbitrary $b_j^i \in A'$ if and only if $z\in A''$, proving $\eqref{equation-6}$.
+
+If $z\in A''$, consider the element $z^{(n)} \in (A^{(n)})''$ and the vector $\mathbf{x} = (\mathbf{x}_i)_{i=1}^n \in H^n$. By **Case 1**, there is an element of $a^{(n)} \in A^{(n)}$ with $a\in A$ such that $\lVert(z^{(n)} - a^{(n)}\mathbf{x}\rVert < \epsilon$. This implies that $\lVert (z - a)\mathbf{x}_i \rVert < \epsilon$ for $1 \leq i \leq n$.
+</details>
+</MathBox>
+
+<MathBox title='Double commutant theorem' boxType='corollary'>
+The following conditions on a unital *-subalgebra $M\subset\mathcal{L}(K)$ are equivalent
+1. $M$ is weakly closed
+2. $M$ is strongly closed
+3. $M = M''$
+
+A subalgebra $M$ as above is called a *von Neumann algrebra*.
+
+<details>
+<summary>Proof</summary>
+
+**(1)$\implies$(2):** This is obvious.
+
+**(2)$\implies$(3):** This follows from Theorem $\ref{theorem-}$.
+
+**(3)$\implies$(1):** This follows from Proposition $\ref{proposition-34}$.
+</details>
+</MathBox>
+
+<MathBox title='Stable representations of C* algebras' boxType='definition'>
+Suppose $\pi: A\to \mathcal{L}(H)$ is a representation of a C* algebra $A$ in terms of a Hilbert space $H$. A closed subspace $M\subset H$ is $\pi$-stable if $\pi(x)(M) \subset M$ for al $x\in A$.
+
+By Proposition $\ref{proposition-34}.4$, the stable condition is equivalent to the condition that $p\in\pi(A)'$, where $p$ is the projection of $H$ onto $M$. Thus, $\pi$-stable subspaces of $H$ are bijective to projections in the von Neumann algebra $\pi(A)'$. In particular, since $p\in M \implies 1 - p \in M$, we see that the orthogonal complement of a $\pi$-stable subspace is also $\pi$-stable.
+
+Every $\pi$-stable subspace yields a new representation $\pi|_M : A\to\mathcal{L}(M)$ by the restriction $\pi|_M (x)(\mathbf{x}) = \pi(x)(\mathbf{x})$ for all $x\in A$ and $\mathbf{x}\in M$. The representation $\pi|_M$ is a called a *sub-representation* of $\pi$. 
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Any representation of a C* algebra is equivalent to a direct sum of cyclic (sub-)representations. Any separable representation is equivalent to a countable direct sum of cyclic representations.
+
+<details>
+<summary>Proof</summary>
+
+If $\pi:A\to\mathcal{L}(H)$ is a representation of a C* algebra $A$ in terms of a Hilbert space $H$, and $\mathbf{x}\in H$ is arbitrary, then the subspace $M = \overline{\Set{\pi(x)(\mathbf{x}) | x\in A}}$ is a closed subspace that is $\pi$-stable, and, by definition, the sub-representation $\pi|_M$ is cyclic (with cyclic vector $\mathbf{x}$). Consider the non-empty collection $\mathcal{P}$ whose typical element is a non-empty collection $\mathcal{S} = \Set{M_i}_{i\in I}$ of pairwise orthogonal nonzero $\pi$-stable subspaces that cyclic (in the sense that the sub-representation afforded by each of them is a cyclic representation). It is clear that the set $\mathcal{P}$ is partially ordered by inclusion, and that if $\mathcal{C} = \Set{\mathcal{S}_\lambda | \lambda\in\Lambda}$ is any totally ordered subset of $\mathcal{P}$, then $\mathcal{S} = \bigcup_{\lambda\in\Lambda} \mathcal{S}_\lambda$ is an element of $\mathcal{P}$. Thus, every totally ordered subset of $\mathcal{P}$ admits an upper bound. Hence, Zorn's lemma implies the existence of a maximal element $\mathcal{S} = \Set{M_i}_{i\in I}$ of $\mathcal{P}$.
+
+Then $M = \bigplus_{i\in I} M_i$ is clearly a $\pi$-stable subspace of $H$, and so also is $M^\perp$. If $M^\perp \neq\Set{0}$, pick a non-zero $\mathbf{x}\in M^\perp$, let $M_0 = \overline{\Set{\pi(x)\mathbf{x} | x\in A}}$, and observe that $\mathcal{S} \cap\Set{M_0}$ is a member of $\mathcal{P}$, which contradicts the maximality of $\mathcal{S}$. Thus, it should be the case that $M^\perp = \Set{0}$, i.e. $H = \bigoplus_{i\in I} M_i$, proving the first assertion.
+
+If $H = \bigoplus_{i\in I} M_i$ is an orthogonal decomposition of $H$ as a direct sum of non-zero cyclic $\pi$-stable subspaces as above, let $\mathbf{x}_i$ be any unit vector in $M_i$. Then $\Set{\mathbf{x}_i}_{i\in I}$ is an orthonormal set in $H$, and the assumed separability of $H$ implies that $I$ is necessarily countable. 
+</details>
+</MathBox>
+
+<MathBox title='State on a unital algebra' boxType='definition'>
+A *state* on a unital C* algebra $A$ is a linear functional $\phi:A\to\mathbb{F}$, which satisfies the following
+1. $\phi$ is positive, meaning that $\phi(x^* x)\geq 0$ for all $x\in A$
+2. $\phi(1) = 1$
+</MathBox>
+
+<MathBox title='Characterization of states' boxType='proposition' tag='proposition-35'>
+The following conditions on a linear function $\phi:A\to\mathbb{F}$ are equivalent:
+1. $\phi$ is a state
+2. $\phi\in A^*$ and $\lVert\phi\rVert = \phi(1) = 1$
+
+<details>
+<summary>Proof</summary>
+
+**(1)$\implies$(2):** First note that since any self-adjoint element is expressible as a difference of two positive elements (see Proposition $\ref{proposition-31}.6$), then $\phi(x)\in\R$ whenever $x = x^*$. It follows from the Cartesian decomposition, that $\phi(x^*) = \overline{\phi(x)}$ for all $x\in A$.
+
+Consider the sequilinear form $B_\phi : A\times A\to\mathbb{C}$ defined by
+
+$$
+  B_\phi (x,y) = \phi(y^* x),\; \forall x,y\in A
+$$
+
+It follows from the assumed positivity of $\phi$ that $B_\phi$ is a positive semi-definite sesquilinear form on $A$, i.e.
+
+$$
+  |\phi(y^* x)|^2 \leq \phi(x^* x) \cdot \phi(y^* y),\; \forall x,y\in A
+$$
+
+In particular, setting $y = 1$ and using the obvious inequality $x^* x \leq \lVert x \rVert^2 1$ and positivity of $\phi$, we find that
+
+$$
+  |\phi(x)|^2 \leq \phi(x^* x) \phi(1) \leq\lVert x \rVert^2 \phi(1)^2 = \lVert x \rVert^2
+$$
+
+so that $\phi\in A^*$ and $\lVert\phi\rVert\leq 1$. Since $\lVert 1\rVert = 1 = \phi(1)$, we find that $\lVert\phi\rVert = \phi(1) = 1$, as desired.
+
+**(2)$\implies$(1):** We want to show that if $x = x^*$, and if $\sigma(x)\subset[a,b]$, then $\phi(x) \in [a,b]$. This will imply that $\phi$ is positive and that $\phi(1) = 1$. Set $c = (a+b)/2$ and $r = (b-a)/2$, and note that $\sigma(x-c)\subset[-r,r]$ and consequently $\lVert x - c\rVert\leq r$. Hence, it follows from the assumptions **(2)** that
+
+$$
+  |\phi(x) - c| = |\phi(x - c)| \leq \lVert x - c\rVert \leq r
+$$
+
+in other words, we have $\phi(x)\in[a,b]$ as asserted.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-6'>
+Let $I\subseteq\N$ be an index set. Suppose $D^{(k)} = \Set{x_i^{(k)}}_{i\in I}$ is a dense subspace of Hilbert spaces $H_k$ for $k = 1, 2$, so that 
+
+$$
+  \left\langle x_i^{(1)}, x_j^{(1)}\right\rangle_{H_1} = \left\langle x_i^{(2)}, x_j^{(2)}\right\rangle_{H_2},\;\forall i,j\in I
+$$ 
+
+Then there exists a unique unitary operator $U:H_1\to H_2$ such that $Ux_i^{(1)} = x_i^{(2)}$ for all $i\in I$.
+</MathBox>
+
+<MathBox title='Gelfand-Naimark-Segal (GNS) construction' boxType='theorem' tag='theorem-17'>
+If $\phi:A\to\mathbb{F}$ is a state on a unital C* algebra $A$, there exists a cyclic representation $\pi_\phi : A\to\mathcal{L}(H_\phi)$ with a cyclic unit vector $\mathbf{x}_\phi \in H_\phi$ such that
+
+$$
+  \phi(x) = \langle\pi_\phi (x)\mathbf{x}_\phi, \mathbf{x}_\phi\rangle,\;\forall x\in A
+$$
+
+The triple $(H_\phi, \pi_\phi, \mathbf{x}_\phi)$ is unique in the sense that if $\pi:A\to H$ is a cyclic representation with cyclic vector $\mathbf{x}$ such that $\phi(x) = \langle\pi(x)\mathbf{x}, \mathbf{x}\rangle$ for all $x\in A$, then there exists a unique unitary operator $U:H\to H_\phi$ such that $U\mathbf{x} = \mathbf{x}_\phi$ and $U\pi(x)U^* = \pi_\phi$ for all $x\in A$.
+
+<details>
+<summary>Proof</summary>
+
+Let $B_\phi : A\times A \to\mathbb{F}$ be the positive semi-definite sesquilinear form defined by
+
+$$
+  B_\phi (x,y) = \phi(y^*, x),\; \forall x,y \in A
+$$
+
+Let $N_\phi = \Set{x\in A | B_\phi (x, x) = 0}$. It follows from
+
+$$
+  |\phi(y* x)|^2 \leq\phi(x^* x) \cdot \phi(y^* y),\; \forall x,y\in A
+$$
+
+that $x\in N_\phi$ if and only if $\phi(y* x) = 0$ for all $y\in A$. This implies that $N_\phi$ is a vector subspace of $A$ which is in fact a left-ideal, i.e. $x\in N_\phi \implies zx\in N_\phi \forall z \in A$.
+
+The equation
+
+$$
+  \langle x + N_\phi, y + N_\phi\rangle = \phi(y^* x)
+$$
+
+defines a genuine inner product on the quotient space $V = A/N_\phi$. For notational convenience, we introduce $\eta(x) = x + N_\phi$ so that $\eta:A\to V$. Since $N_\phi$ is a left-ideal in $A$, it follows that each $x\in A$, unambiguously defines a linear map $L_x : V\to V$ by the prescription $L_x \eta(y) = \eta(xy)$.
+
+We claim now that each $L_x$ is a bounded operator on the inner product space $V$ and that $\lVert L_x \rVert_{\mathcal{L}(V)} \leq \lVert x \rVert_A$. This amounts to the assertion that
+
+$$
+  \phi(y^* x^* xy) = \lVert L_x \eta(y)\rVert^2 \leq \lVert x\rVert^2 \lVert\eta(y)\rVert^2 = \lVert x \rVert^2 \phi(y^* y),\; \forall x,y\in A
+$$
+
+Note now that, for each fixed $y\in A$, if we consider the functional $\psi(z) = \phi(y^* zy)$, then $\psi$ is a positive linear functional. By Proposition $\ref{proposition-35}$, we find that $\lVert\psi\rVert = \psi(1) = \phi(y^* y)$. In particular, we find that for arbitrary $x,y\in A$, we must have $\phi(y^* x^* xy) = \psi(x^* x) \leq\lVert\psi\rVert\cdot\lVert x^* x\rVert$. In other words, $\phi(y^* x^* xy) \leq\lVert x\rVert^2 \phi(y^* y)$ as asserted.
+
+Since $V$ is a genuine inner product space, we may form its completion, call it $H_\phi$, where we think of $V$ as a dense subspace of $H_\phi$. We may deduce from the previous argument that each $L_x$ extends uniquely to a bounded operator on $H_\phi$, which we will denote by $\pi_\phi (x)$. The operator $\pi_\phi (x)$ is defined by the requirement that $\pi_\phi (x)\eta(y) = \eta(xy)$. This immediately implies that $\pi_\phi$ is a unital algebra homomorphism of $A$ into $\mathcal{L}(H_\phi)$. To see that $\pi_\phi$ preserves adjoints, note that if $x,y,z\in A$ are arbitrary, then
+
+$$
+\begin{align*}
+  \langle\pi_\phi (x)\eta(y),\eta(z)\rangle =& \phi(z^* (xy)) \\
+  =& \phi((x^* z)^* y) \\
+  =& \langle\eta(y),\pi_\phi (x^*)\eta(z)\rangle
+\end{align*}
+$$
+
+which implies, by the the density of $\eta(A)$ in $H_\phi$, that $\pi_\phi (x)^* = \pi_\phi (x^*)$, so that $\pi_\phi$ is a representation of $A$ in $H_\phi$. Finally, it should be obvious that $\mathbf{x}_\phi = \eta(1)$ is a cyclic vector for this representation.
+
+Conversely, if $(H,\pi,\mathbf{x})$ is another triple which also works for $\phi$ as asserted in the second statement of the theorem, note that for arbitrary $x,y\in A$ we have
+
+$$
+  \langle\pi(x)\mathbf{x},\pi(y)\mathbf{x}\rangle_H = \phi(y^* x) = \langle\pi_\phi (x)\mathbf{x}_\phi, \pi_\phi(y)\mathbf{x}_\phi\rangle_{H_\phi}
+$$
+
+The assumptions that $\mathbf{x}$ and $\mathbf{x}_\phi$ are cyclic vectors for the representations $\pi$ and $\pi_\phi$ respectively imply via Lemma $\ref{lemma-6}$ that there is a unique operator $U:H\to H_\phi$ with the property that $U(\pi(x)\mathbf{x}) = \pi_\phi (x)\mathbf{x}_\phi$ for all $x\in A$. It is clear that $U$ has the properties asserted in the theorem.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-7'>
+Let $x$ be a self-adjoint element of a C* algebra $A$. Then there exists a cyclic representation $\pi$ of $A$ such that $\lVert\pi(x)\rVert = \lVert x \rVert$.
+
+<details>
+<summary>Proof</summary>
+
+Let $A_0 = C^* (\Set{1,x})$ be the commutative unital C* subalgebra generated by $x$. Since $A_0 \cong C(\sigma(x))$, there exists a complex homomorphism $\phi_0 \in \hat{A}_0$ such that $|\phi_0 (x)| = \lVert x\rVert$. Notice that $\lVert\phi_0 \rVert = 1 = \phi_0 (1)$.
+
+By the Hahn-Banach theorem ($\ref{theorem-5}$), we can find a $\phi\in A^*$ such that $\phi|_{A_0} = \phi_0$ and $\lVert\phi\rVert = \lVert\phi_0 \rVert$. It follows then that $\lVert\phi\rVert = 1 = \phi(1)$. Hence $\phi$ is a state on $A$, by Proposition $\ref{proposition-35}$.
+
+If $\pi_\phi$ is the (cyclic) GNS-representation afforded by the state $\phi$ as in Theorem $\ref{\theorem-17}$, it follows from Lemma $\ref{lemma-4}$ that
+
+$$
+  \lVert x\rVert = |\phi_0 (x)| = |\phi(x)| = |\langle\pi_\phi (x)\mathbf{x}_\phi, \mathbf{x}_\phi\rangle|\leq\lVert\pi_\phi (x)\rVert
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+If $A$ is any C* algebra, there exists an isometric representation $\pi:A\to\mathcal{L}(H)$. If $A$ is separable, we can choose the Hilbert space $H$ to be separable.
+
+<details>
+<summary>Proof</summary>
+
+Let $\Set{x_i}_{i\in I}$ be a dense set in $A$. For each $i\in I$, pick a cyclic representation $\pi_i A\to\mathcal{L}(H_i)$ such that $\lVert\pi_i (x_i^* x_i)\rVert = \lVert x_i^* x_i\rVert$, which is possible by Lemma $\ref{lemma-7}$. Note that the C*-identity shows that we have $\lVert\pi_i (x_i)\rVert = \lVert x_i \rVert$ for all $i\in I$.
+
+Let $\pi = \bigoplus_{i\in I} \pi_i$. From Lemma $\ref{lemma-4}$ and the previous argument, it follows that for arbitrary $i,j\in I$, we have $\lVert\pi_j (x_i)\rVert\leq\lVert x_i \rVert = \lVert \pi_i (x_i)\rVert$. Thus, we see that $\lVert\pi(x_i)\rVert = \lVert x_i \rVert$ for all $i\in I$. Since the set $\Set{x_i}_{i\in I}$ is dense in $A$, we conclude that the representation $\pi$ is necessarily isometric.
+
+Suppose now that $A$ is separable. Then, we may assume that $I$ is countable. Furthermore, note that if $\mathbf{x}_i \in H_i$ is a cyclic vector for the cyclic representation $\pi_i$, then it folows that $\Set{\pi_i (x_j)\mathbf{x}_i}_{j\in I}$ is a countable dense set in $H_i$. It follows that each $H_i$ is separable, and since $I$ is countable, also $H$ must be separable.
+</details>
+</MathBox>
+
+### The Hahn-Hellinger theorem
+
+<MathBox title='' boxType='proposition' tag='proposition-36'>
+Let $X$ be a compact metric space. If $\pi:C(X)\to\mathcal{L}(H)$ is any separable representation of $C(X)$, then  there exists a (finite or infinite) countable collection $\Set{\mu_n}_n$ of probability measures on $(X,\mathcal{B}_X)$ such that $\pi$ is equivalent to $\bigoplus_n \pi_{\mu_n}$.  
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-8'>
+Let $X$ be a compact metric space and $\mathcal{B}_X$ the Borel subsets of $X$.
+1. If $\mu$ and $\nu$ are two probability measures defined on $(X,\mathcal{B}_X)$ which are mutually absolutely continuous, then the representations $\pi_\mu$ and $\pi_\nu$ are equivalent.
+2. If $\mu$ and $\nu$ are two finite positive measures defined on $(X,\mathcal{B}_X)$ which are mutually singular, and if we let $\lambda = \mu + \nu$, then $\pi_\mu \cong\pi_\mu \oplus \pi_\nu$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $\phi = (\d\nu / \d\mu)^{1/2}$, and note that by the defining property of the Radon-Nikodym derivative the equation $(U\mathbf{x}) = \phi\mathbf{x}$ for $\mathbf{x}\in H_\nu$, defines an isometric linear operator $U:H_\nu\to H_\mu$, where we write $H_\lambda = L^2 (X,\mathcal{B},\lambda)$.
+
+To see this, note that if $\mathbf{x}\in H_\nu$, then
+
+$$
+\begin{align*}
+  \lVert U\mathbf{x}\rVert^2 =& \int |\mathbf{x}|^2 \phi^2\;\d\mu = \int |\mathbf{x}|^2 \frac{\d\nu}{\d\mu}\d\mu \\
+  =& \int |\mathbf{x}|^2 \d\nu = \lVert\mathbf{x}\rVert^2
+\end{align*}
+$$
+
+In an identical fashion, if we set $\psi = (\d\mu/\d\nu)^{1/2}$ then the equation $V\nu = \psi\nu$ defines an isometric operator $V:H_\mu \to H_\nu$. However, the uniqueness of the Radon-Nikodym derivative implies that $\psi = \phi^{-1}$, and that $V$ and $U$ are inverses of one another.
+
+Finally, it is easy to deduce from the definitions that
+
+$$
+  U\pi_\nu (f)(\mathbf{x}) = \phi f\mathbf{x} = \pi_\mu (f) U\mathbf{x},\; \mathbf{x}\in H_\nu,\; f\in C(X)
+$$
+
+In other words, $U$ is a unitary operator which implements the equivalence of the representations $\pi_\nu$ and $\pi_\mu$.
+
+**(2):** By hypothesis, there exists a Borel partition $X = A \sqcup B$ such that $\mu = \mu|_A$ and $\nu = \nu|_B$, where the notation $\mu|_E$ denote the measure defined by $\mu|_E (A) = \mu(E\cap A)$. It is easily seen then that also $\mu = \lambda|_A$ and $\nu = \lambda|_B$. The mapping $H_\lambda \ni f\mapsto (1_A f, 1_B f) \in H_\mu \oplus H_\nu$ is a unitary operator that establishes the desired equivalence of representations. 
+</details>
+</MathBox>
+
+<MathBox title='Hahn-Hellinger theorem' boxType='theorem'>
+Let $X$ be a compact metric space.
+1. If $\pi$ is a separable representation of $C(X)$, then there exists a probability measure $\mu$ defined on $(X,\mathcal{B}_X)$ and a collection $\Set{E_n | 1 \leq n \leq\aleph_0}$ of pairwise disjoint Borel subsets of $X$ such that
+    - a. $\mu$ is supported on $\bigcup_{1\leq n\leq\aleph_0} E_n$
+    - 
+$$
+  \pi\cong\bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|E_n}^n
+$$
+2. Suppose $\mu_1$ and $\mu_2$ are two probability measures, and suppose that for each $i=1,2$, we have a collection $\Set{E_n^{(i)} | 1\leq n\leq\aleph_0}$ of pairwise disjoint Borel subsets of $X$ such that $\mu_i$ is supported on $\bigcup_{1\leq n\le\aleph_0} E_n^{(i)}$. Then the following conditions are equivalent:
+    - a. The measures $\mu_i$ are mutually absolutely continuous, and further, $\mu_i (E_n^{(1)} \Delta E_n^{(2)}) = 0$ for all $n$ and for $i = 1,2$, where of course, the symbol $\Delta$ has been used to signify the symmetric difference of sets.
+    - 
+$$
+  \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu_1|_{E_n^{(1)}}}^n \cong\bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu_2|_{E_n^{(2)}}}^n
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By Proposition $\ref{proposition-36}$, we can find a countable set, say $\Set{\mu_n}_{n\in N}$, of probability measures on $(X,\mathcal{B}_X)$ such that
+
+$$
+  \pi\cong\bigoplus_{n\in N} \pi_{\mu_n}
+$$
+
+Let $\Set{\epsilon_n}_{n\in N}$ be any set of strictky positive numbers such that $\sum_{n\in N} \epsilon_n = 1$, and define $\mu = \sum_{n\in N} \epsilon_n \mu_n$. The definitions imply the following facts
+- I. $\mu$ is a probability measure
+- II. if $E\in\mathcal{B}_X$, then $\mu(E) = 0 \iff \mu_n (E) = 0 \forall n\in N$
+
+In particular, it follows from **(ii)** that each $\mu_n$ is absolutely continuous with respect to $\mu$. Thus, if we set $A_n = \Set{x\in X | (\d \mu_n/\d \mu)(x) > 0}$, it follows that $\mu_n$ and $\mu|_{A_n}$ are mutually absolutely continuous. Also, it follows from **(ii)** that $\mu$ is supported on $\bigcup_{n\in N} A_n$. We this find that
+
+$$
+  \pi\cong\bigoplus_{n\in N} \pi_{\mu|_{A_n}}
+$$
+
+We will find it convenient to make the following assumption: $N = \Set{1,2,\dots,n}$ for some $n\in\N$ if $N is finite$ or $N = \N$ if $N$ is infinite. Let $K = \Set{1,2,\dots,|N|}$, and for each $k\in K$, define
+
+$$
+  E_k = \Set{x\in X | \sum_{n\in N} |_{A_n} (x) = k}
+$$
+
+Thus, $x\in E_k$ precisely when $x$ belong to exactly $k$ of the $A_i$. In particular, $\Set{E_k}_{k\in K}$ is easily seen to be a Borel partition of $\bigcup_{n\in N} A_n$. By Lemma $\ref{lemma-8}$, it follows that
+
+$$
+  \pi \cong \bigoplus_{n\in N} \bigoplus_{k\in K} \pi_{\mu|_{(A_n \cap E_k)}}
+$$
+
+Next, for each $n\in N$, $k\in K$, $l\in\N$ such that $1\leq l\leq k$, define
+
+$$
+  A_{n,k,l} = \Set{x \in A_n \cap E_k | \sum_{j=1}^n 1_{A_j} (x) = l}
+$$
+
+Thus, $x\in A_{n,k,l}$ if and only if $x\in E_k$ and further, $n$ is exactly the $l$-th index $j$ for which $x\in A$, i.e. $x\in A_n \cap E_k$ and there are exactly $l$ values of $j$ for which $1\leq j\leq n$ and $x\in A_j$. By definitions, we have
+
+$$
+\begin{align*}
+  A_n \cap E_k =& \bigsqcup_{t\in\N, 1\leq l\leq k} A_{n,k,l},\; \forall n\in N, k\in K \\
+  E_k =& \bigsqcup_{n\in N} A_{n,k,l},\; \forall k\in K,\; 1\leq l \leq k
+\end{align*}
+$$
+
+From Lemma $\ref{lemma-8}$ and the preceeding equations, we conclude that
+
+$$
+\begin{align*}
+  \pi \cong& \bigoplus_{n\in N} \bigoplus_{k\in K} \pi_{\mu|_{(A_n \cap E_k)}} \\
+  \cong& \bigoplus_{n\in N} \bigoplus_{k\in K} \bigoplus_{l\in \N, 1\leq l \leq k} \pi_{\mu|_{(A_{n,k,l})}} \\
+  \cong& \bigoplus_{k\in K} \bigoplus_{l\in \N, 1\leq 1\leq k} \pi_{\mu|_{E_k}} \\
+  \cong& \bigoplus_{k\in K} \pi_{\mu|_{E_k}}^k
+\end{align*}
+$$
+</details>
+</MathBox>
+
 
 # Linear operators
 
@@ -2491,8 +2942,8 @@ If $T = U|T|$ is the polar decomposition of $T$, then by Theorem $\ref{}$ also $
 </details>
 </MathBox>
 
-<MathBox title='' boxType='lemma' tag='lemma-4'>
-If $T\in\mathcal{K}(H_1,H_2)$ is a compact operator between Hilbert spaces and if $T$ is bounded below on a subspace $\mathcal{M}\subseteqH_1$, then $\mathcal{M}$ is finite-dimensional. In particular, if $\mathcal{N}$ is a closed subspace of $H_2$ such that $\mathcal{N}$ is contained in the range of $T$, then $\mathcal{N}$ is finite-dimensional.
+<MathBox title='' boxType='lemma' tag='lemma-9'>
+If $T\in\mathcal{K}(H_1,H_2)$ is a compact operator between Hilbert spaces and if $T$ is bounded below on a subspace $\mathcal{M}\subseteq H_1$, then $\mathcal{M}$ is finite-dimensional. In particular, if $\mathcal{N}$ is a closed subspace of $H_2$ such that $\mathcal{N}$ is contained in the range of $T$, then $\mathcal{N}$ is finite-dimensional.
 
 <details>
 <summary>Proof</summary>
@@ -2507,7 +2958,7 @@ As for the second assertion, let $\mathcal{M} = T^{-1} (\mathcal{N})\cap \ker^\t
 Let $T\in\mathcal{L}(H_1, H_2)$ be a linear operator between separable Hilbert spaces. Then the following are equivalent
 1. $T$ is compact
 2. $|T|$ is compact
-3. if $\mathcal{M}_\epsilon = \operatorname{ran}(\operatorname{id}_{\epsilon,\infty}(|T|))$, then $\mathcal{M}_\epsilon$ is finite-dimensional
+3. if $\mathcal{M}_\epsilon = \operatorname{ran}(\operatorname{id}_{[\epsilon,\infty)}(|T|))$, then $\mathcal{M}_\epsilon$ is finite-dimensional
 4. There is a sequence $\Set{T_n}_{n\in\N_+} \subset\mathcal{L}(H_1, H_2)$ such that for each $n\in\N$
     - a. $\lVert T_n - T \rVert \xrightarrow{n\to\infty} 0$
     - b. $\operatorname{ran}(T_n)$ is finite-dimensional
@@ -2520,13 +2971,13 @@ For $\epsilon > 0$, we use introduce the notation $\operatorname{id}_\epsilon = 
 
 **(1)$\implies$(2):** This follows from Corollary $\ref{corollary-4}$.
 
-**(2)$\implies$(3):** Since $t\geq \epsilon\operatorname{id}_\epsilon (t)$ for all $t\geq 0$, we find easily that $|T|$ is bounded below by $\epsilon$ on $\operatorname{ran}(P_\epsilon)$ and **(3)** follows from Lemma $\ref{lemma-4}$.
+**(2)$\implies$(3):** Since $t\geq \epsilon\operatorname{id}_\epsilon (t)$ for all $t\geq 0$, we find easily that $|T|$ is bounded below by $\epsilon$ on $\operatorname{ran}(P_\epsilon)$ and **(3)** follows from Lemma $\ref{lemma-9}$.
 
 **(3)$\implies$(4):** Define $T_n = TP_{1/n}$ and note that $0\leq t(1 - \operatorname{id}_{1/n} (t) \leq \frac{1}{n}$ for all $t\geq 0$ and conclude that $\lVert |T|(1 - \operatorname{id}_{1/n}(|T|))\rVert \leq\frac{1}{n}$. If $T = U|T|$ is the polar decomposition of $T$, it follows that $\lVert T - T_n \rVert\leq\frac{1}{n}$. Finally, **(3)** clearly implies that each $P_{1/n}$ and consequently $T_n$ has finite-dimensional range.
 
 **(4)$\implies$(5):** By Proposition $\ref{proposition-39}.1$ it suffices to show that each $T_n$ is a compact operator. However, any bounded operator with finite-dimensional range is necessarily compact, since any bounded set in a finite-dimensional space is totally bounded.
 
-**(1)$\implies$(5):** This follows from Lemma $\ref{lemma-4}$.
+**(1)$\implies$(5):** This follows from Lemma $\ref{lemma-9}$.
 
 **(5)$\implies$(3):** Pick any bounded measurable function $g$ such that $g(t) = 1/t$ for all $t\geq\epsilon$. Then $tg(t) = 1$ for all $t\geq 1$, and it follows that $|T|g(|T|)x = x$ for all $x\in\mathcal{M}_\epsilon$. Consequently, $\mathcal{M}_\epsilon = |T|(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(|T|)$, and hence of the inital space of the partial isometry $U$. This implies that $T(\mathcal{M}_\epsilon) = U(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(T)$. By **(5)**, this implies that $T(\mathcal{M}_\epsilon)$ is finite-dimensional. However, $|T|$ and consequently $T$ is bounded below by $\epsilon$ on $\mathcal{M}_\epsilon$. In particular, $T$ maps $\mathcal{M}_\epsilon$ bijectively onto $T(\mathcal{M}_\epsilon)$. Hence, $\mathcal{M}_\epsilon$ is finite-dimensional.
 </details>
@@ -2582,7 +3033,7 @@ where
 2. $\Set{x_k^{(n)}}_{k\in I_n}$ is an orthonormal basis for $\ker(|T| - \lambda_n)$. Or, respectively, $\Set{y_k^{(n)}}_{k\in I_n}$ is an orthonormal basis for $T(\ker(|T| - \lambda_n) = \ker(|T^*| - \lambda_n)$). Here $I_n$ denote countable index sets.
 
 In particular, we may assume that 
-- $N$ is finite if $\dim(\ran(|T|)) < \infty$ or infinite if $\dim(\ran(|T|)) = \aleph_0$
+- $N$ is finite if $\dim(\operatorname{ran}(|T|)) < \infty$ or infinite if $\dim(\operatorname{ran}(|T|)) = \aleph_0$
 - $\Set{\lambda_n}_{n\in N}$ is increasing
 
 If the sequence $\Set{s_n = s_n (T)}_{n\in N}$ is defined by
@@ -2634,7 +3085,7 @@ $$
   \lVert T \rVert_2 = \left(\sum_{n\in N} \lVert Te_n \rVert^2 \right)^{1/2}
 $$
 
-where $\Se{e_n}_{n\in N\subseteq\N}$ is any orthonormal basis for $H_1$. The set of all Hilbert-Schmidt operators from $H_1$ to $H_2$ is denoted $\mathcal{L}^2 (H_1, H_2)$.
+where $\Set{e_n}_{n\in N\subseteq\N}$ is any orthonormal basis for $H_1$. The set of all Hilbert-Schmidt operators from $H_1$ to $H_2$ is denoted $\mathcal{L}^2 (H_1, H_2)$.
 </MathBox>
 
 ### Fredholm operators

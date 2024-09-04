@@ -14,7 +14,7 @@ import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
-import { rehypeMathref, rehypeLetteredLists } from "./rehype"
+import { rehypeMathref, rehypeFancyLists } from "./rehype"
 
 export const remarkPlugins = [remarkGfm, remarkMath]
 export const rehypePlugins = [
@@ -36,7 +36,7 @@ export const rehypePlugins = [
     },
   ],
   rehypeMathref,
-  rehypeLetteredLists,
+  rehypeFancyLists,
   //[rehypeMathjax, {
   //	loader: {
   //    load: ['[custom]/xypic.js'],

@@ -74,31 +74,69 @@ export function rehypeMathref(): Transformer<Root, Root> {
   }
 }
 
-export function rehypeLetteredLists() {
+export function rehypeFancyLists() {
   return (tree: Root) => {
     visit(tree, "element", (node, index, parent: Element) => {
       if (
         node.tagName === "li" &&
         node.children &&
         node.children.length > 0 &&
-        node.children[0].type === "text" &&
-        node.children[0].value.match(/^[a-z]\.\s+/)
+        node.children[0].type === "text"
       ) {
-        const [letter, ...rest] = node.children[0].value.split(". ")
-        const restText = rest.join(". ").trim()
-        node.children[0].value = restText
-        const listItemLetter = letter.toLowerCase()
+        const textValue = node.children[0].value
 
-        if (parent && parent.tagName === "ul") {
-          parent.tagName = "ol"
-          parent.properties = parent.properties || {}
-          parent.properties.type = "a"
-          // Set the `start` attribute only if this is the first item, ensuring correct list numbering.
-          if (index === 0) {
-            parent.properties.start = listItemLetter.charCodeAt(0) - 96
+        const letterMatch = textValue.match(/^[a-z]\.\s+/)
+        const romanMatch = textValue.match(
+          /^(?=[IVXLCDM]+\.)(I{1,3}|IV|VI{0,3}|IX|X{1,3}|XL|L|LX{0,3}|XC|C{1,3}|CD|D|DC{0,3}|CM|M{1,3})\./,
+        )
+
+        if (letterMatch || romanMatch) {
+          const [identifier, ...rest] = textValue.split(". ")
+          const restText = rest.join(". ").trim()
+          node.children[0].value = restText
+
+          if (parent && parent.tagName === "ul") {
+            parent.tagName = "ol"
+            parent.properties = parent.properties || {}
+
+            if (letterMatch) {
+              const listItemLetter = identifier.toLowerCase()
+              parent.properties.type = "a"
+
+              if (index === 0) {
+                parent.properties.start = listItemLetter.charCodeAt(0) - 96
+              }
+            } else if (romanMatch) {
+              parent.properties.type = "i"
+              const startValue = romanToInt(identifier)
+
+              if (index === 0) {
+                parent.properties.start = startValue
+              }
+            }
           }
         }
       }
     })
   }
+}
+
+function romanToInt(roman: string): number {
+  const romanMap: { [key: string]: number } = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000,
+  }
+  return roman
+    .toUpperCase()
+    .split("")
+    .reduce((acc, curr, i, arr) => {
+      const currValue = romanMap[curr]
+      const nextValue = romanMap[arr[i + 1]] || 0
+      return currValue < nextValue ? acc - currValue : acc + currValue
+    }, 0)
 }
