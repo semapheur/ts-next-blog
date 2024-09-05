@@ -1299,11 +1299,57 @@ Hence, we conclude that $\lVert \ell\rVert = \lVert x_\ell\rVert$.
 </details>
 </MathBox>
 
+## Strong and weak convergence
+
+<MathBox title='Strong and weak operator topology' boxType='definition'>
+Let $H$ and $K$ be Hilbert spaces.
+1. For each $x\in H$, consider the seminorm $p_x$ defined on $\mathcal{L}(H, K)$ by $p_x (T) = \lVert Tx\rVert$. The topology on $\mathcal{L}(H,K)$ defined by the collection $\Set{p_x | x\in H}$ of seminorms is called the *strong operator topology*.
+2. For each $x\in H$ and $y\in K$, consider the seminorm $p_{x,y}$ defined on $\mathcal{L}(H,K)$ by $p_{x,y} (T) = |\langle Tx, y\rangle|$. The topology on $\mathcal{L}(H,K)$ defined by the collection $\Set{p_{x,y} | x\in H,\; y\in K}$ of seminorms is called the *weak operator topology*.
+</MathBox>
+
+Suppose $H$ and $K$ are Hilbert spaces. If $\Set{T_i}_{i\in I}$ for an index set $I\subseteq\N$ is a net in $\mathcal{L}(H,K)$, then the net converges to $T\in\mathcal{L}(H,K)$ with respect to the strong operator topology precisely when $\lVert T_i x - Tx \rVert \xrightarrow{i\to\infty} 0$ for all $x\in H$, i.e. precisely when the net $\Set{T_i x}_{i\in I}$ converges to $Tx$ with respect to the strong norm topology on $K$, for every $x\in H$.
+
+Likewise, the net $\Set{T_i}_{i\in I}$ converges to $T$ with respect to the weak operator topology if and only if $\langle(T_i - T)x, y\rangle \xrightarrow{i\to\infty} 0$ for all $x\in H$ and $y\in K$, i.e. if and only if the net $\Set{T_i x}$ converges to $Tx$ with respect to the weak norm topology on $K$, for every $x\in H$.
+
+<MathBox title='' boxType='lemma' tag='lemma-0'>
+Suppose $\Set{T_i}_{i\in I}$ for an index set $I\subseteq\N$ is a net in $\mathcal{L}(H,K)$ which is uniformly bounded, i.e. $\sup\Set{\lVert T_i \rVert}_{i\in I} = K < \infty$. Let $S_1$ and $S_2$ be total sets in $H$ and $K$, respectively, i.e. the set of finite linear combinations of elements in $S_1$ and $S_2$ that are in dense in $H$ and $K$, respectively
+1. $\Set{T_i}_{i\in I}$ converges strongly to $0$ if and only if $\lim_{i\to\infty} \lVert T_i x\rVert = 0$ for all $x\in S_1$
+2. $\Set{T_i}_{i\in I}$ converges weakly to $0$ if and only if $\lim_{i\to\infty} \langle T_i, y\rangle = 0$ for all $x\in S_1$ and $y\in S_2$.
+
+<details>
+<summary>Proof</summary>
+
+The two assertions are proved analogously.
+
+**(b):** Let $x\in H$ and $y\in K$ be arbitrary, and suppose $\epsilon > 0$ is given. We assume, without loss of generality, that $\epsilon < 1$. Let $M = 1 + \max\Set{\lVert x\rVert, \lVert x\rVert}$, and $K = 1 + \sup_{i\in I} \lVert T_i \rVert$.
+
+The assumed totality of the sets $S_i$ for $i=1,2$ implies the existence of vectors $x' = \sum_{k=1}^m \alpha_k x_k$ and $y' = \sum_{j=1}^n \beta_j y_j$, with the property that $x_k \in S_1$, $y_j \in S_2$ for all $k,j$ and such that $\lVert x - x' \rVert < \epsilon/(3KM)$ and $\lVert y - y'\rVert < \epsilon/(3KM)$. Since $\epsilon 1 \leq K,M$, it follows that $\lVert x' \rVert \leq\lVert x\rVert + 1 \leq M$. Similarly, also $\lVert y' \rVert \leq M$. 
+
+Let 
+
+$$
+  N = 1 + \max\Set{|\alpha_k|, |\beta|_k | 1\leq k \leq m, 1\leq j \leq n}
+$$
+
+Since $I$ is a directed set, the assumption that $\lim_{i\to\infty} \langle T_i x_k, y_j \rangle = 0$ for all $j,k$ implies that we can find an index $i_0 \in I$ with the property that $|\langle T_i x_k, y_j| < \epsilon/(3N^2 mn)$ whenever $i \geq i_0$, $1 \leq k\leq m$ and $1\leq j \leq n$. It then follows that for all $i \geq i_0$, we have
+
+$$
+\begin{align*}
+  |\langle T_i x, y\rangle| \leq& |\langle T_i x, y - y'\rangle| + |\langle T_i (x - x'), y'\rangle| + |\langle T_i x', y'\rangle| \\
+  \leq& 2KM \frac{\epsilon}{3KM} + \sum_{k=1}^m \sum_{j=1}^n |\alpha_k \beta_j|\cdot|\langle T_i x_k, y_j\rangle| \\
+  \leq& \frac{2\epsilon}{3} + N^2 mn \frac{\epsilon}{3N^2 mn} \\
+  = \epsilon
+\end{align*}
+$$
+</details>
+</MathBox>
+
+
 # Normed algebra
 
 <MathBox title='Normed algebra' boxType='definition'>
 A *normed algebra* is a normed space $A$ equipped with a multiplication $\times: A\times A$ as $(x,y)\mapsto xy$, which satisfies for $x,y,z\in A$ and $\alpha\in\mathbb{F}$
-1. **Asssociates:** $(xy)z = x(yz)$
+1. **Asssociativity:** $(xy)z = x(yz)$
 2. **Distributivity:** 
     - $(\alpha x + y)z = \alpha xz + yz$
     - $z(\alpha x + y) = \alpha zx + zy$
@@ -2110,7 +2156,7 @@ Conversely, **(c)** clearly implies **(b)**, since if $px = xp$, then $pxp = xp^
 </details>
 </MathBox>
 
-<MathBox title="von Neumann's density theorem" boxType='theorem'>
+<MathBox title="von Neumann's density theorem" boxType='theorem' tag='theorem-16'>
 Let $A$ be a unital *-subalgebra of $\mathcal{L}(H)$. Then $A''$ is closure of $A$ in the strong operator topology.
 
 <details>
@@ -2386,7 +2432,30 @@ In other words, $U$ is a unitary operator which implements the equivalence of th
 </details>
 </MathBox>
 
-<MathBox title='Hahn-Hellinger theorem' boxType='theorem'>
+<MathBox title='' boxType='lemma' tag='lemma-9'>
+Let $\phi\in L^2 (X, \mathcal{B}_X, \mu)$ for a compact metric space $X$. Then there is a sequence $\Set{f_n}_{n\in\N}\subset C(X)$ such that
+1. $\sup_n \lVert f_n \rVert_{C(X)} < \infty$
+2. the sequence $\Set{f_n (x)}_n$ converges to $\phi(x)$, for $\mu$-almost every $x\in X$.
+
+<details>
+<summary>Proof</summary>
+
+Since $C(X)$ is dense in $L^2 (X,\mathcal{B}_X, \mu)$, we may find a sequence $\Set{h_n}_{n\in\N}$ in $C(X)$ such that $\lVert h_n - \phi\rVert_{L^2 (X,\mathbb{B}_X,\mu)} \xrightarrow{n\to\infty} 0$. Since every null convergent sequence in $L^2 (X,\mathcal{B}_X,\mu)$ is known, we can find a subsequence, say $\Set{g_n}_{n\in\N}$ of $\Set{h_n}_{n\in\N}$, such that $g_n (x) \xrightarrow{n\to\infty} \phi(x)$ almost everywhere.
+
+Let $\lVert\phi\rVert_{L^\infty} = K$, and define a continuous "retraction" of $\mathbb{C}$ onto the disc of radius $K+1$ as follows
+
+$$
+  r(z) = \begin{cases}
+    z,\quad& |z| \leq (K + 1) \\
+    \left(\frac{K + 1}{|z|}\right)z, \quad& |z|\geq (K + 1)
+  \end{cases}
+$$
+
+Finally, consider the continuous functions defined by $f_n = r\circ g_n$. It should be clear that $\lVert f_n \rVert \leq (K + 1)$ for all $n\in\N$, and that $f_n (x) \xrightarrow{n\to\infty} f(x)\mu$ almost everywhere.
+</details>
+</MathBox>
+
+<MathBox title='Hahn-Hellinger theorem' boxType='theorem' tag='theorem-19'>
 Let $X$ be a compact metric space.
 1. If $\pi$ is a separable representation of $C(X)$, then there exists a probability measure $\mu$ defined on $(X,\mathcal{B}_X)$ and a collection $\Set{E_n | 1 \leq n \leq\aleph_0}$ of pairwise disjoint Borel subsets of $X$ such that
     - a. $\mu$ is supported on $\bigcup_{1\leq n\leq\aleph_0} E_n$
@@ -2457,9 +2526,311 @@ $$
   \cong& \bigoplus_{k\in K} \pi_{\mu|_{E_k}}^k
 \end{align*}
 $$
+
+**(2):** Suppose for $i=1,2$ that $\mu^{(i)}$is a probability measure on $(X,\mathcal{B}_X)$, and $\Set{E_n^{(i)}}_{i=1}^{\aleph_0}$ is a collection of pairwise disjoint Borel sets such that $\mu^{(i)}$ is supported on $\bigsqcup_{1\leq n\leq\aleph_0} E_n^{(i)}$, and suppose that
+
+$$
+  \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu^{(1)}|_{E_n^{(1)}}}^n \cong \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu^{(2)}|_{E_n}^{(2)}}^n
+$$
+
+It follows from the proof of Lemma $\ref{\lemma-11}$ that a choice for the measure associated to the representation
+
+$$
+  \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu^{(i)}|_{E_n^{(i)}}}^n
+$$
+
+is given by $\mu^{(i)}$ for $i = 1,2$. We may conclude from Lemma $\ref{lemma-11}.2$ that the measures $\mu^{(1)}$ and $\mu^{(2)}$ are mutually absolutely continuous. By Lemma $\ref{lemma-9}.1$, it is seen that $\pi_{\mu^{(1)}|_F}$ is equivalent to $\pi_{\mu^{(2)}|_F}$ for any $F\in\mathcal{B}_X$. Hence, we may assume, without loss of generality, that $\mu^{(1)} = \mu^{(2)} = \mu$. Thus, we need to show that if $\Set{E_n^{(i)}}_{i=1}^{\aleph_0}$ for $i=1,2$ are two collections of pairwise Borel sets such that
+
+$$
+\begin{equation}
+  \mu\left(X - \bigsqcup_{1\leq n\leq\aleph_0} E_n^{(i)} \right) = 0,\; i = 1,2 \tag{\label{equation-11}}
+\end{equation}
+$$
+
+and
+
+$$
+  \pi_i = \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|_{E_n^{(1)}}}^n \cong \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|_{E_n}^{(2)}}^n = \pi_2
+$$
+
+then it is the case that $\mu(E_n^{(1)} \Delta E_n^{(2)}) = 0\;\forall 1\leq n\leq\aleph_0$.
+
+Let $H_i$ be the Hilbert space underlying the representation $\pi_i$, and let $U$ be a unitary operator $U:H_1 \to H_2$ such that $U\pi_1 (f) = \pi_2 (f) U$ for all $f\in C(X)$. Then, also $U\tilde{\pi}_1 (\phi) = \tilde{\pi}_2 (\phi) U$ for all $\phi\in L^\infty (X,\mu)$. In particular, we see that
+
+$$
+\begin{equation}
+  U\tilde{\pi}_1 (1_A) U^* = \tilde{\pi}_2 (1_A)\; \forall A\in\mathcal{B}_X \tag{\label{equation-12}}
+\end{equation}
+$$
+
+Thus, we need to show that if $1\leq k\neq m\leq\aleph_0$, then $\mu(E_m^{(1)} \cap E_k^{(2)}) = 0$. By equation $\eqref{equation-11}$, this implies that $E_m^{(1)} \subset E_m^{(2)} \mod\mu$. The symmetry of the problem allows us to assume without loss of generality that $1\leq k < m \leq\aleph_0$. Fix $k,m$ as above, and choose a finite integer $n$ such that $k < n \leq m$.
+
+Apply Corollary $\ref{corollary-5}$ to the representation $\pi_1$ and set $E_m^{(1)}$ to deduce the existence of a collection $\Set{p_i}_{i=1}^n$ of pairwise orthogonal projections in $\pi_1 (C(X))'$ such that
+
+$$
+\begin{equation}
+  p_i = p_i \tilde{\pi}_i (1_{E_m^{(1)}}),\; \forall 1 \leq i \leq n \tag{\label{equation-13}}
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+  F \in \mathcal{B}_X,\; \mu(F\cap E_m^{(1)}) > 0 \implies p_i \tilde{\pi}_1 (1_F) \neq 0,\; \forall 1\leq i\leq n \tag{\label{equation-14}}
+\end{equation}
+$$
+
+Setting $q_i = Up_i U^*$, it follows from $\eqref{equation-12}$ that $U\pi_1 (C(X))' U^* = \pi_2 (C(X))'$. Consequently, $\eqref{equation-13}$ and $\eqref{equation-14}$ translate into the fact that $\Set{q_i}_{i=1}^n$ is a collection of pairwise orthogonal projections in $\pi_2 (C(X))'$ such that
+
+$$
+  q_i = q_i \tilde{\pi}_2 (1_{E_m^{(1)}}),\; \forall 1\leq i\leq n
+$$
+
+and
+
+$$
+  F\in\mathcal{B}_X,\; \mu(F\cap E_m^{(1)}) > 0 \implies p_i \tilde{\pi}_2 (1_F) \neq 0,\; \forall 1\leq i \leq n
+$$
+
+Applying Corollary $\ref{corollary-5}$ to the representation $\pi_2$ and the set $E_m^{(1)}$, it follows that $\mu(E_m^{(1)} \cap E_k^{(2)}) = 0$.
 </details>
 </MathBox>
 
+<MathBox title='' boxType='lemma' tag='lemma-11'>
+Let $X$ be a compact metric space, and  $H$ a separable Hilbert space. 
+1. If $\pi:C(X)\to\mathcal{L}(H)$ is a representation, there exists a probability measure $\mu$ defined on $\mathcal{B}_X$, and a representation $\tilde{\pi}:L^\infty (X, \mathcal{B}_X, \mu)\to\mathcal{L}(H)$ such that
+    - a. $\tilde{\pi}$ is isometric
+    - b. $\tilde{\pi}$ extends $\pi$ in the sense that $\tilde{\pi}(t) = \pi(f)$ whenever $f\in C(X)$
+    - c. $\tilde{\pi}$ respects bounded convergence, meaning that whenever $\phi$ is the $\mu$-almost everywhere limit of a sequence $\Set{\phi_n}_{n\in\N}\subset L^\infty (X,\mu)$, which is uniformly bounded, i.e. $\sup_{n\in\N} \lVert\phi_n \rVert_{L^\infty (\mu)} < \infty$, then it is the case that the sequence $\Set{\tilde{\pi}(\phi_n)}_{n\in\N}$ converges in the strong operator topology to $\tilde{\pi}(\phi)$.
+2. Suppose that $\tilde{\pi}_i : L^\infty (X,\mathcal{B}_X,\mu_i) \to \mathcal{L}(H_i)$ for $i=1,2$ is a representation which is related to a representation $\pi_i:C(X)\to\mathcal{L}(H_i)$ as in **(1)** above. If $\pi_1 \cong\pi_2$, then the measures $\mu_1$ and $\mu_2$ are mutually absolutely continuous.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** First consider the case when $\pi$ is a cyclic representation. Then there exists a probability measure $\mu$ such taht $\pi\cong\pi_\mu$. Take this $\mu$ as the measure in the statement of **(a)** and define $\tilde{\pi}$ to be the natural multiplication representation defined by $\tilde{\pi}(\phi)\mathbf{x} = \phi\mathbf{x}$ for all $\phi\in L^\infty (\mu)$ and $\mathbf{x}\in L^2 (\mu)$. Then we see that **(a)** is is obvious, while **(c)** is an immediate consequence of the dominated convergence theorem. 
+
+As for **(a)**, suppose $\phi\in L^\infty (\mu)$ and $\epsilon > 0$. If $E=\Set{x : |\phi(x)|\geq \lVert\phi\rVert - \epsilon}$. Thus, if $\mathbf{x} = \mu(E)^{-1/2} 1_E$, we find that $\mathbf{x}$ is a unit vector in $L^2 (\mu)$ such that $\lVert\tilde{\pi}(\phi)\mathbf{x}\rVert\geq\lVert\phi\rVert - \epsilon$. The validity of **(1)**, at least in the cyclic case under consideration, follows from the arbitrariness of $\epsilon$ and from Lemma $\ref{lemma-4}$ applied to the C* algebra $L^\infty (\mu)$. 
+
+For general (separable) $\mu$, we may assume without loss of generality that $\pi = \bigoplus_{n\in N} \pi_{\mu|_{E_n}}^n$ by the Hahn-Hellinger theorem (Theorem $\ref{theorem-19}.1$). Then define $\tilde{\pi} = \bigoplus_{n\in\N} = (\tilde{\pi}_{\mu|_{E_n}})^n$ where the summands are defined as above. Since $\mu$ is supported on $\bigcup_{n\in\N} E_n$ by Theorem $\ref{theorem-19}.1.b$, and since $\tilde{\pi}_{\mu|_{E_n}}$ is an isometric map of $L^\infty (E_n, \mu|_{E_n})$, it is fairly easy to deduce that $\tilde{\pi}$ is an isometric *-homormophism of $L^\infty (X,\mu)$, thus establishing **(1.a)**. The assertion **(b)** follows immediately from the definition and the already established cyclic case.
+
+As for **(c)**, note that the Hilbert space underlying the representation $\tilde{\pi}$ is of the form 
+
+$$
+  H = \bigoplus_{1\leq n\leq\aleph_0} \bigoplus_{1\leq m\leq n} H_{n,m}
+$$
+
+where $H_{n,m} = L^2 (E_n, \mu|_{E_n})$ for all $1\leq m \leq n \leq\aleph_0$. Thus, if $\Set{\phi_k}_{k,\phi}$ are as in **(b)**, we see that $\pi(\phi_k)$ has the form 
+
+$$
+  x^{(k)} = \bigoplus_{1\leq m\leq n\leq\aleph_0} x_{n,m}^{(k)}
+$$
+
+where $x_{n,m}^(k) = \tilde{\pi}_{\mu|_{E_n}} (\phi_k)$ for $1\leq m\leq n\leq\aleph_0$. Similarly, $\tilde{\pi}(\phi)$ has the form 
+
+$$
+  x = \bigoplus_{1\leq m\leq n\leq\aleph_0} x_{n,m}
+$$
+
+where $x_{n,m} = \tilde{\pi}_{\mu|_{E_n}} (\phi)$ for $1\leq m\leq n\leq\aleph_0$. The assumption that $\sup_k \lVert\phi_k \rVert < \infty$ shows that the sequence $\Set{x^{(k)}}_k$ is uniformly bounded in norm. Furthermore, if we let $S = \bigcup_{1\leq m\leq n\leq\aleph_0} H_{n,m}$, where we naturally regard the $H_{n,m}$ as subspaces of $H$, then we find that $S$ is a total set in $H$ and that $x^{(k)} \mathbf{x} \xrightarrow{k\to\infty} x\mathbf{x}$ whenever $\mathbf{x}\in S$ (by the already established cyclic case). Thus, we may deduce from Lemma $\ref{lemma-0}$ that the sequence $\Set{x^{(k)}}$ converges strongly to $x$.
+
+**(2):** Suppose $U:H_1 \to H_2$ is a unitary operator such that $U\pi_1 (f)U^* = \pi_2 (f)$ for all $f\in C(X)$. Define $\mu = \frac{1}{2}(\mu_1 + \mu_2)$, and note that both $\mu_1$ and $\mu_2$ are absolutely continuous with respect to $\mu$. Let $\phi$ be any bounded measurable function on $X$. By Lemma $\ref{lemma-9}$, we may find a sequence $\Set{f_k}_l \subset C(X)$ such that $\sup_k \lVert f_k \rVert < \infty$ and such that $f_k (x) \to \phi(x)$ for all $x\in X\setminus N$ where $\mu(N) = 0$. Then also $\mu_i (N) = 0$ for $i=1,2$. Hence, by the assumed property of the $\tilde{\pi}_i$, we find that $\Set{\pi_i (f_k)}_k$ converges in the strong operator topology to $\tilde{\pi}_i (\phi)$. From the second intertwining nature of the unitary operator $U$, we may deduce that $U\tilde{\pi}_1 (\phi) U^* = \tilde{\pi}_2 (\phi)$ for every bounded measurable function $\phi: X\to\mathbb{C}$. In particular, we see that
+
+$$
+  U\tilde{\pi}_1 (1_E)U^* = \tilde{\pi}_2 (1_E),\; \forall E\in\mathcal{B}_X
+$$
+
+Since the $\tilde{\pi}_i$ are isometric, we find that, for $E\in\mathcal{B}_X$
+
+$$
+\begin{align*}
+  \mu_1 (E) = 0 \iff& \tilde{\pi}_1 (1_E) = 0 \\
+  \iff& \tilde{\pi}_2 (1_E) \\
+  \iff& \mu_2 (E) = 0
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-12'>
+If $\pi$, $\mu$ and $\tilde{\pi}$ are as in Lemma $\ref{lemma-11}.1$, then
+
+$$
+  (\pi(C(X)))'' = \tilde{\pi}(L^\infty (X,\mu))
+$$
+
+Thus, $\tilde{\pi}(L^\infty (X,\mu))$ is the von Neumann algebra generated by $\pi(C(X))$.
+
+<details>
+<summary>Proof</summary>
+
+Introducing $A = \pi(C(X))$, $M = \tilde{\pi}(L^\infty(X,\mu))$, we need to show that $M = A''$. Since $A$ is clearly commutative, it follows that $A\subset A'$. Since $A$ is a unital *-subalgebra of $\mathcal{L}(H)$, and since $A'$ is closed in the strong operator topology, we may conclude from the preceding inclusion and von Neumann's density theorem (Theorem $\ref{theorem-16}$) that we must have $A'' \subset A'$.
+
+By Lemma $\ref{lemma-9}$, Lemma $\ref{lemma-11}.1.c$ and Theorem $\ref{theorem-16}$, we necessarily have $M\subset A''$. Thus, we find that we always have 
+
+$$
+\begin{equation}
+  M \subset A'' \subset A' \tag{\label{equation-7}}
+\end{equation}
+$$
+
+**Case 1: $\pi$ is cyclic**
+
+In this case, we asert that we actually have $A' = A'' = M$. We may assume that the underlying Hilbert space is $H = \mathcal{L}^2 (X,\mu)$, and that $\tilde{\pi}$ is the multiplication representation of $L^\infty (X,\mu)$. In view of $\eqref{equation-7}$, we need to show that $A' \subset M$.
+
+Suppose $x\in A'$. We want to show that $x = \tilde{\pi}(\phi)$, for some $\phi\in L^\infty (X,\mu)$. Note that if this were true, it must be the case that $\phi = x\mathbf{x}_\mu$, where $\mathbf{x}_\mu$ denotes the constant function $1$. Definining $\phi = x\mathbf{x}_\mu$, we need to show that $L^\infty (X,\mu)$ and that $x = \tilde{\pi}(\phi)$. From the inclusion $\eqref{equation-7}$, we have for arbitray $\psi\in L^\infty (X,\mu)$ that
+
+$$
+  x\psi = x\tilde{\pi}(\psi)\mathbf{x}_\mu = \tilde{\pi}(\psi)x\mathbf{x}_\mu = \tilde{\pi}(\psi)\phi = \phi\psi
+$$
+
+Furthermore, if we set $E_r = \Set{x \in X : |\phi(s)| > r}$, then $r1_{E_r} \leq |\phi|1_{E_r}$, and consequently
+
+$$
+\begin{align*}
+  \mu(E_r)^{1/2} =& \lVert 1_{E_r} \rVert_H \\
+  \leq& \frac{1}{r}\lVert\phi 1_{E_r} \rVert_H \\
+  =& \frac{1}{r}\lVert x 1_{E_r} \rVert_H \\
+  \leq& \frac{1}{r} \lVert x \rVert_{\mathcal{L}(H)} \cdot \lVert 1_{E_r} \rVert_H
+\end{align*}
+$$
+
+which clearly implies that $\mu(E_r) = 0$ for all $r > \lVert x\rVert_{\mathcal{L}(H)}$. In other words, $\phi\in L^\infty (X,\mu)$. However, then $x$ and $\tilde{\pi}(\phi)$ are two bounded operators on $H$ that agree on the dense set $L^\infty (X,\mu)$, and hence $x = \tilde{\pi}(\phi)$ as desired.
+
+**Case 2: $\pi = \pi_\mu^n$ for some $1\leq n\leq\aleph_0$**
+
+We may assume that $H = H_\mu^n$ is the Hilbert space direct sum of $n$ copies of $H_\mu = L^2 (X,\mu)$. Moreover, we may identify an operator $x$ on $H_\mu^n$ with its representing matrix $((x(i,j)))$, where $x(i,j)\in\mathcal{L}(H_\mu)$ for all $i,j\in\N$ such that $1\leq i$ and $j\leq n$. In the notation of the proof of Theorem $\ref{theorem-16}$, we find that $A = \pi_\mu (C(X))^{(n)} = \Set{x^{(n)} : x\in\pi_\mu (C(X))}$, where $x^{(n)} = [x\delta_i^j]$.
+
+Arguing exactly as in the proof of Theorem $\ref{theorem-16}$, and using the fact that $\pi_\mu (C(X))' = \tilde{\pi}_\mu (L^\infty (X,\mu))$ from **Case 1**, we find that $y\in A'$ precisely when the entries of the representing matrix satisfy $y(i,j) = \tilde{\pi}_\mu (\phi_{i,j})$ for all $i, j$ and for some collection $\Set{\phi_{i,j} | 1\leq i, j\leq n}\subset L^\infty (X,\mu)$. Again, arguing as in proof of Theorem $\ref{theorem-16}$, and using the fact that $\tilde{\pi}_\mu (L^\infty (X,\mu))'' = \tilde{\pi}_\mu (L^\infty (X,\mu))$ from **Case 1**, we find that $A'' = \Set{z^{(n)} | z\in\tilde{\pi}_\mu (L^\infty (X,\mu))}$. In other words, this says exactly that $A'' = \tilde{\pi}_\mu^n (L^\infty (X,\mu)) = M$.
+
+**Case 3: $\pi$ arbitrary**
+
+By Theorem $\ref{theorem-19}.1$, we may assiume, as in the notation of that theorem, that
+
+$$
+  \pi = \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|_{E_n}}^n
+$$
+
+Let $p_n = \tilde{\pi}(1_{E_n})$ for $1\leq n\leq\aleph_0$, and let $H_n = \operatorname{ran}(p_n)$, so that the Hilbert space underlying the representation $\pi$ (as well as $\tilde{\pi}$) is given by $H = \bigoplus_{1\leq n\leq\aleph_0} H_n$.
+
+By $\eqref{equation-7}$, we see that $p_n \in A'' \subset A'$. This measn that any operator in $A'$ has the form $\oplus_n x_n$ with $x_n \in \mathcal{L}(H_n)$. In fact, it is not hard to see that in order that such a direct sum operator belongs to $A'$, it is necessary and sufficient that $x_n \in \pi_{\mu|_{E_n}}^n (C(X))'$ for all $1\leq n\leq\aleph_0$. From **Case 2**, there must exist $\phi_n \in L^\infty (E_n, \mu|_{E_n})$ such that $z_n = \tilde{\pi}_{\mu|_{E_n}}^n (\phi_n)$ for all $1\leq n\leq\aleph_0$.
+
+In order for $\oplus_n z_n$ to be bounded, it must be the ase that the collection $\Set{\lVert z_n \rVert = \lVert\phi_n \rVert_{L^\infty (E_n, \mu|_{E_n})}}$ be uniformly bounded, or equivalently, that the equation $\phi = \sum_n 1_{E_n} \phi_n$ define an element of $L^\infty (X,\mu)$. In other words, we have shown that an operator belongs to $A''$ if and only if it has the form $z = \tilde{\pi}(\phi)$ for some $\phi\in L^\infty (X,\mu)$, i.e. $A'' \subset M$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-13'>
+Let $\pi = \pi_\mu^n$ and $H = H_\mu^n$ denote the Hilbert space direct sum of $n$ copies of $H_\mu = L^2 (X,\mu)$, where $1\leq n\leq\aleph_0$. Consider the following conditions on a collection $\Set{p_i}_{i\in I} \subset\mathcal{L}(H)$ for an index set $i\in I\subseteq\N$:
+- a. $\Set{p_i}_{i\in I}$ is a collectin of pairwise orthogonal projections in $\pi(C(X))'$
+- b. if $F\in\mathcal{B}_X$ is any Borel set such that $\mu(F) > 0$, and if $\tilde{\pi}$ is associated to $\pi$ as in Lemma $\ref{lemma-11}$, then $p_i \tilde{\pi}(1_F) \neq 0$ for all $i\in I$.
+
+1. There is a collection $\Set{p_i}_{i\in I}$ which satisfies **(a)** and **(b)**, such that $|I| = n$.
+2. If $n < \infty$ and if $\Set{p_i}_{i\in I}$ is any collection satisfying **(a)** and **(b)**, then $|I| \leq n$.
+
+<details>
+<summary>Proof</summary>
+
+Note that since $H = H_\mu^n$, we may identity operators on $H$ with their representing matrices $((x(i,j)))$, where $x(i,j)\in\mathcal{L}(H_\mu)$ for all $1\leq i$ and $j\leq n$. Furthermore, $A = \pi(C(X))$ consists of those operators $x$ whose matrices satisfy $x(i,j) = \delta_{i,j} \pi_\mu (f)$ for some $f\in C(X)$. The proof of **Case 2** in Lemma $\ref{lemma-12}$ shows that $A'$ consists of precisely those operators $y\in\mathcal{L}(H)$ whose matrix entries satisfy $y(i,j)\in\pi_\mu (C(X))' = \tilde{\pi}_{\mu} (L^\infty (X,\mu))$.
+
+1. For $1\leq m\leq n$, define $p_m (i, j) = \delta_{i,j} \delta_{i,m} 1_{H_\mu}$. We have already established that $\Set{p_m}_{m=1}^n$ is a collection of pairwise orthogonal projections in $A'$, which satisfy **(a)**. If $F$ is as in **(b)**, note that $\tilde{\pi}(1_F)$ is the projection $q\in\mathcal{L}(H)$ whose matrix is given by $q(i,j) = \delta_{i,j} \tilde{\pi}_\mu (1_F)$, and it follows that for any $1\leq m\leq n$, the operator $p_m q$ is not zero, since it has the non-zero entry $\tilde{\pi}_\mu (1_F)$ in the $(m, m)$-th place.
+
+2. In order to prove that $|I|\leq n < \infty$, it is enough to show that $|I_0| \leq n$ for every finite subset $I\subset I$. Thus, we may assume without loss of generality that $I$ is a finite set.
+
+Suppose $\Set{p_m}_{m\in I}$ is a collection of pairwise orthogonal projections in $A'$ that satisfies **(b)**. We can find a collection $\Set{\phi_m (i,j) | m\in I,\; 1\leq i,\; j\leq n}\subset L^\infty (X,\mu)$ such that the matrix of the projection $p_m$ is given by $p_m (i,j) = \tilde{\pi}_\mu (\phi_m (i,j))$. We then see that
+
+$$
+  p_m = p_m p_m^* \implies p_m (i,i) = \sum_{j=1}^n p_m (i,j) p_m (i,j)^*,\; \forall i\in I
+$$
+
+By definition of $\phi_m (i,j)$ and the fact that $\tilde{\pi}$ is a *-homomorphism, it is fairly easy to deduce no, that we must have
+
+$$
+\begin{equation}
+\begin{gathered}
+  \phi_m (i,i) = \sum_{j=1}^n |\phi_m (i,j)|^2 \; \text{a.e.} \\
+  \forall 1\leq i\leq n,\; \forall m\in I
+\end{gathered} \tag{\label{equation-8}}
+\end{equation}
+$$
+
+In a similar fashion, if $m,k\in I$ and if $m \neq k$, then notice that
+
+$$
+\begin{align*}
+  p_m p_k = 0 \implies& p_m p_k^* = 0 \\
+  \implies& \sum_{j=1}^n p_m (i, j) p_k (l, j)^* = 0,\; \forall i,l \in I
+\end{align*}
+$$
+which is seen to imply, as before, that
+
+$$
+\begin{equation}
+\begin{gathered}
+  \sum_{j=1}^n \phi_m (i,j)\overline{\phi_k (l,j)} = 0\;\text{a.e.} \\
+  \forall 1\leq i, l\leq n,\;\forall m\neq k\in I
+\end{gathered} \tag{\label{equation-9}}
+\end{equation}
+$$
+
+Since $I$ is finite, as in $n$, and since the union of a finite number of sets of measure zero is also a set of measure zero, we may assume that the functions $\phi_m (i,j)$ satisfy the conditions expressed in $\eqref{equation-8}$ and $\eqref{equation-9}$ everywhere. Thus, we assume that the following equations hold pointwise at every point of $X$
+
+$$
+\begin{equation}
+\begin{gathered}
+  \sum_{j=1}^n |\phi_m (i,j)|^2 = \phi_m (i,i) \\
+  \forall 1\leq i \leq n,\;\forall m\in I \\
+  \sum_{j=1}^n \phi_m (i,j)\overline{\phi_k (l,j)} = 0 \\
+  \forall 1\leq i,l\leq n,\forall m\neq k \in I
+\end{gathered}\tag{\label{equation-10}}
+\end{equation}
+$$
+
+Now, for each $m\in I$, define $F_m = \Set{x\in X | (\phi_m (i,i))(s) = 0,\forall 1\leq i\leq n}$. If $s\notin F_m$ we can pick an index $1\leq i_m \leq n$ such hat $(\phi_m (i_m, i_m))(s) \neq 0$. Thus, if it is possible to pick a point $s$ which does not belong to $F_m$ for all $m\in I$, then we could find vectors
+
+$$
+  v_m = \begin{bmatrix}
+    (\phi_m (i_m, 1))(s) \\
+    \vdots \\
+    (\phi_m (i_m, n))(s)
+  \end{bmatrix},\; m\in I
+$$
+
+which would constitute a set of non-zero vectors in $\mathbb{C}^n$ which are pairwise orthogonal in view of equations $\eqref{equation-10}$. This would show that $|I| \leq n$.
+
+Our proof will be complete once we know that $X\neq \bigcup_{m\in I} F_m$. We make the even stronger assertion that $\mu(F_m) = 0\;\forall m$. Note that if $s\in F_m$, then $\phi_m (i,i)(s) = 0$ for all $1\leq i\leq n$. However, then by equation $\eqref{equation-8}$, we find that $\phi_m (i,j)(s) 0\; \forall 1\leq i,j\leq n$. This implies that $\phi_m (i,j) 1_F = 0\;\text{a.e.}\;\forall 1\leq i, j\leq n$. It follows that every entry of the matrix representing the operator $p_m \tilde{\pi}(1_F)$ is $0$. However, by the assumption that the collection $\Set{p_m}_{m\in I}$ satisfies condition **(b)**, this can happen only if $\mu (F_m) = 0$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary' tag='corollary-5'>
+Let 
+
+$$
+  \pi = \bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|_{E_n}}^n
+$$
+
+Suppose $A\in\mathcal{B}_X$ for a compact metrix space $X$ is such that $\mu(A) > 0$, and let $1\leq n < \infty$. Then the following conditions on $A$ are equivalent:
+1. There exists a collection $\Set{p_i}_{i=1}^n$ of pairwise orthogonal projections in $\pi(C(X))'$ such that
+    - a. $p_i = p_i \tilde{\pi}(1_A)\;\forall 1\leq i\leq n$
+    - b. $F\in\mathcal{B}_X, \mu(A\cap F) > 0 \implies p_i \tilde{\pi}(1_F) \neq 0\; \forall 1\leq i\leq n$
+2. $A\subset \bigsqcup_{n\leq m\leq\aleph_0} E_m \mod\mu$, or equivalently, $\mu(A\cap E_k) = 0\;\forall 1\leq k\leq n$.
+
+<details>
+<summary>Proof</summary>
+
+If we write $e_n = \tilde{\pi}(1_{E_n})$, it is seen that any projection $p \in \pi(C(X))'$ has the form $p = \sum_n q_n$, where $q_n = pe_n$ is an element of $\pi_{\mu|_{E_n}}^n (C(X))'$ when thought of as an operator on $e_n H$.
+
+**(1)$\implies$(2):** Fix $1\leq k < \infty$, and suppose $\mu(A\cap E_k) \neq 0$. Setting $q_i = p_i e_k$, we can apply Lemma $\ref{lemma-13}.2$ to the representation $\pi_{\mu|_{A\cap E_k}}^k$ and the collection $\Set{q_i}_{i=1}^n$ to conclude that $n\leq k$. In other words, if $1\leq k < n$, then $\mu(A\cap E_k) = 0$. 
+
+
+**(2)$\implies$(1):** Fix any $m\geq n$ such that $\mu(A\cap E_m) > 0$. Applying Lemma $\ref{lemma-13}.1$ to the representation $\pi_{\mu|_{A\cap E_m}}^m$, we establish the existence of a collection $\set{q_i^{(m)}}_{i=1}^m$ of pairwise orthogonal projections in $\pi_{\mu|_{A\cap E_m}}^m (C(X))'$ with the property that $q_i^{(m)} \tilde{\pi}_{\mu|_{A\cap E_m}}^m (1_F) \neq 0$ whenever $F$ is a Borel subset of $A\cap E_m$ such that $\mu(F) > 0$. We can regard each $q_i^{(m)}$ as a projection in the big ambient Hilbert space $H$, such that $q_i^{(m)} = q_i^{(m)} \tilde{\pi}(1_{A\cap E_m})$, so that $q_i^{(m)} \in\pi(C(X))'$. If we define for $1\leq i\leq n$
+
+$$
+  p_i = \sum_{\begin{subarray}{c} n\leq m\leq\aleph_0 \\ \mu(A\cap E_m) > 0 \end{subarray}} q_i^{(m)}
+$$
+
+it is clear that $\Set{p_i}_{i=1}^n$ is a family of pairwise orthogonal projections in $\pi(C(X))'$, and that $p_i = p_i \tilde{\pi}(1_A)\;\forall l1\leq i\leq n$. Furthermore, if $F\in\mathcal{B}_X$ satisfies $\mu(A\cap F) > 0$, then there must exist $m\geq n$ such that $\mu(A\cap F\cap E_m) > 0$ because $\mu(A\cap E_k) = 0\; \forall 1\leq k < n$. In this case, note that $(p_i \tilde{\pi}(1_F))\tilde{\pi}(1_{A\cap E_m}) = q_i^{(m)}\tilde{\pi}(1_{A\cap F\cap E_m})$ which is non-zero by the way in which the $q_i^{(m)}$ were chosen. Hence it must be that $p_i \tilde{\pi}(1_F) \neq 0$. 
+</details>
+</MathBox>
 
 # Linear operators
 
@@ -2942,7 +3313,7 @@ If $T = U|T|$ is the polar decomposition of $T$, then by Theorem $\ref{}$ also $
 </details>
 </MathBox>
 
-<MathBox title='' boxType='lemma' tag='lemma-9'>
+<MathBox title='' boxType='lemma' tag='lemma-10'>
 If $T\in\mathcal{K}(H_1,H_2)$ is a compact operator between Hilbert spaces and if $T$ is bounded below on a subspace $\mathcal{M}\subseteq H_1$, then $\mathcal{M}$ is finite-dimensional. In particular, if $\mathcal{N}$ is a closed subspace of $H_2$ such that $\mathcal{N}$ is contained in the range of $T$, then $\mathcal{N}$ is finite-dimensional.
 
 <details>
@@ -2971,13 +3342,13 @@ For $\epsilon > 0$, we use introduce the notation $\operatorname{id}_\epsilon = 
 
 **(1)$\implies$(2):** This follows from Corollary $\ref{corollary-4}$.
 
-**(2)$\implies$(3):** Since $t\geq \epsilon\operatorname{id}_\epsilon (t)$ for all $t\geq 0$, we find easily that $|T|$ is bounded below by $\epsilon$ on $\operatorname{ran}(P_\epsilon)$ and **(3)** follows from Lemma $\ref{lemma-9}$.
+**(2)$\implies$(3):** Since $t\geq \epsilon\operatorname{id}_\epsilon (t)$ for all $t\geq 0$, we find easily that $|T|$ is bounded below by $\epsilon$ on $\operatorname{ran}(P_\epsilon)$ and **(3)** follows from Lemma $\ref{lemma-10}$.
 
 **(3)$\implies$(4):** Define $T_n = TP_{1/n}$ and note that $0\leq t(1 - \operatorname{id}_{1/n} (t) \leq \frac{1}{n}$ for all $t\geq 0$ and conclude that $\lVert |T|(1 - \operatorname{id}_{1/n}(|T|))\rVert \leq\frac{1}{n}$. If $T = U|T|$ is the polar decomposition of $T$, it follows that $\lVert T - T_n \rVert\leq\frac{1}{n}$. Finally, **(3)** clearly implies that each $P_{1/n}$ and consequently $T_n$ has finite-dimensional range.
 
 **(4)$\implies$(5):** By Proposition $\ref{proposition-39}.1$ it suffices to show that each $T_n$ is a compact operator. However, any bounded operator with finite-dimensional range is necessarily compact, since any bounded set in a finite-dimensional space is totally bounded.
 
-**(1)$\implies$(5):** This follows from Lemma $\ref{lemma-9}$.
+**(1)$\implies$(5):** This follows from Lemma $\ref{lemma-10}$.
 
 **(5)$\implies$(3):** Pick any bounded measurable function $g$ such that $g(t) = 1/t$ for all $t\geq\epsilon$. Then $tg(t) = 1$ for all $t\geq 1$, and it follows that $|T|g(|T|)x = x$ for all $x\in\mathcal{M}_\epsilon$. Consequently, $\mathcal{M}_\epsilon = |T|(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(|T|)$, and hence of the inital space of the partial isometry $U$. This implies that $T(\mathcal{M}_\epsilon) = U(\mathcal{M}_\epsilon)$ is a closed subspace of $\operatorname{ran}(T)$. By **(5)**, this implies that $T(\mathcal{M}_\epsilon)$ is finite-dimensional. However, $|T|$ and consequently $T$ is bounded below by $\epsilon$ on $\mathcal{M}_\epsilon$. In particular, $T$ maps $\mathcal{M}_\epsilon$ bijectively onto $T(\mathcal{M}_\epsilon)$. Hence, $\mathcal{M}_\epsilon$ is finite-dimensional.
 </details>
