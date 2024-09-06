@@ -2457,13 +2457,13 @@ Finally, consider the continuous functions defined by $f_n = r\circ g_n$. It sho
 
 <MathBox title='Hahn-Hellinger theorem' boxType='theorem' tag='theorem-19'>
 Let $X$ be a compact metric space.
-1. If $\pi$ is a separable representation of $C(X)$, then there exists a probability measure $\mu$ defined on $(X,\mathcal{B}_X)$ and a collection $\Set{E_n | 1 \leq n \leq\aleph_0}$ of pairwise disjoint Borel subsets of $X$ such that
+1. If $\pi$ is a separable representation of $C(X)$, then there exists a probability measure $\mu$ defined on $(X,\mathcal{B}_X)$ and a collection $\Set{E_n}_{n=1}^\aleph_0$ of pairwise disjoint Borel subsets of $X$ such that
     - a. $\mu$ is supported on $\bigcup_{1\leq n\leq\aleph_0} E_n$
     - 
 $$
   \pi\cong\bigoplus_{1\leq n\leq\aleph_0} \pi_{\mu|E_n}^n
 $$
-2. Suppose $\mu_1$ and $\mu_2$ are two probability measures, and suppose that for each $i=1,2$, we have a collection $\Set{E_n^{(i)} | 1\leq n\leq\aleph_0}$ of pairwise disjoint Borel subsets of $X$ such that $\mu_i$ is supported on $\bigcup_{1\leq n\le\aleph_0} E_n^{(i)}$. Then the following conditions are equivalent:
+2. Suppose $\mu_1$ and $\mu_2$ are two probability measures, and suppose that for each $i=1,2$, we have a collection $\Set{E_n^{(i)}}_{n=1}^\aleph_0$ of pairwise disjoint Borel subsets of $X$ such that $\mu_i$ is supported on $\bigcup_{1\leq n\le\aleph_0} E_n^{(i)}$. Then the following conditions are equivalent:
     - a. The measures $\mu_i$ are mutually absolutely continuous, and further, $\mu_i (E_n^{(1)} \Delta E_n^{(2)}) = 0$ for all $n$ and for $i = 1,2$, where of course, the symbol $\Delta$ has been used to signify the symmetric difference of sets.
     - 
 $$
@@ -3211,6 +3211,76 @@ Consequently $\ell\left(T^{-2}\right) = 0$ for all $\ell \in \mathcal{B}(X)^*$. 
 </details>
 </MathBox>
 
+## Spectral measure
+
+<MathBox title='Spectral measure' boxType='definition'>
+Let $X$ be a compact metric space. A *spectral measure* on the measurable space $(X,\mathbb{B}_X)$ is a mapping $P:\mathcal{B}_X \to \mathcal{P}(H)$, where $\mathcal{P}(H)$ is the set of projections on a Hilbert space $H$, which satisfies:
+1. $P(\emptyset) = 0$, $P(X) = \operatorname{id}_H$
+2. $P$ is countably additive, meaning that if $\Set{E_n}_{n\in I\subseteq\N}$ is a countable collection of pairwise disjoint Borel sets in $X$ with $E = \bigsqcup_{n\in I} E_n$, then $P(E) = \sum_{n\in I} P(E_n)$, where the series is interpreted in the strong operator topology on $H$.
+</MathBox>
+
+Let $(X,\mathcal{B}_X)$ be a measurable space for a compact metric space $X$ and suppose $H$ is a separable Hilbert space. If $P:\mathcal{B}_X \to\mathcal{P}(H)$ is a spectral measure, then for fixed $\mathbf{x}, \mathbf{y} \in H$ the equation
+
+$$
+  \mu_{\mathbf{x},\mathbf{y}} (E) = \langle P(E)\mathbf{x}, \mathbf{y}\rangle
+$$
+
+defines a complex measure $\mu_{\mathbf{x},\mathbf{y}}$ on $(X,\mathcal{B}_X)$. The Cauchy-Shwarz inequality implies that $\mu_{\mathbf{x},\mathbf{y}}$ has total variation norm bounded by $\lVert\mu_{\mathbf{x},\mathbf{y}}\rVert \leq \lVert\mathbf{x}\rVert\cdot\lVert\mathbf{y}\rVert$.
+
+It is easily seen that for fixed $f\in C(X)$, the equation
+
+$$
+  B_f (\mathbf{x},\mathbf{y}) = \int_X f\;\d\mu_{\mathbf{x},\mathbf{y}}
+$$
+
+defines a sesquilinear form on $H$ bounded by
+
+$$
+  | B_f (\mathbf{x},\mathbf{y})| \leq \lVert f\rVert_{C(X)} \cdot\lVert\mathbf{x}\rVert\cdot\lVert\mathbf{y}\rVert
+$$
+
+Thus, there is exists unique operator, say $\pi(f)$, on $H$ such that
+
+$$
+  \langle\pi(f)\mathbf{x}, \mathbf{y}\rangle = \int_X f \;\d\mu_{\mathbf{x},\mathbf{y}}
+$$
+
+It can be verified that the mapping $f\mapsto \pi(f)$ defines a representation of $\pi: C(X)\to\mathcal{L}(H)$. The operator $\pi$ is commonly written in terms of the spectral measure $P$ as
+
+$$
+  \pi(f) = \int_X f\;\d P = \int_X f(x)\;\d P(x)
+$$
+
+This shows that there is a bijection between separable representations of $C(X)$ and spectral measrues defined on $(X,\mathcal{B}_X)$ and taking values in projection operators in a separable Hilbert space. One possible choise for the measure $\mu$ that is associated to the representation $\pi$ is given in terms of the spectral measure $P$ by
+
+$$
+  \mu(E) = \sum_{n\in I} \langle P(E),\mathbf{x}_n, \mathbf{x}_n \rangle = \sum_{n\in I} \lVert P(E) \mathbf{x}_n \rVert^2
+$$
+
+where $\Set{\mathbf{x}_n}_{n\in I}$ is an orthonormal basis for $H$.
+
+Given a probability measure $\mu$ defined on $(X,\mathcal{B}_X)$, let $P_\mu : \mathcal{B}_X \to\mathcal{L}(L^2 (X,\mathcal{B}_X, \mu))$ be the spectral measure defined by
+
+$$
+  \langle P_\mu (E)f, g\rangle = \int_E f(x)\overline{g(x)}\;\d\mu(x)
+$$
+
+For $1\leq n\leq\aleph_0$, we have a natural spectral measure $P_\mu^n :\mathcal{B}\to\mathcal{L}((L^2 (X,\mathcal{B},\mu))^n)$ obtained by defining $P_\mu^n (E) = \bigoplus_{k\in I_n} P_\mu (E)$, where $H^n$ denotes the direct sum of $n$ copies of $H$ and $I_n$ is any set with cardinality $|I_n| = n$.
+
+<MathBox title='Hahn-Hellinger theorem (spectral form)' boxType='theorem'>
+If $X$ is a compact Hausdorff space and if $P:\mathbb{B}\to\mathcal{L}(H)$ is a separable measure (meaning that $H$ is a separable Hilbert space), then there exists a probability measure $\mu:\mathcal{B}\to[0,1]$ and a partition $X = \bigsqcup_{0\leq n\leq\aleph_0} E_n$ of $X$ into measurable sets such that $\mu$ is supported on $X - E_0$ and
+
+$$
+  P \cong \bigoplus_{1\leq n\leq\aleph_0} P_{\mu|_{E_n}}^n
+$$
+
+If $\tilde{P}:\mathcal{B}\to\mathcal{L}(H)$ is another spectral measure, with associated probability measure $\tilde{\mu}$ and partition $X = \bigsqcup_{0\leq n\leq\aleph_0} \tilde{E}_n$, then $\mu$ and $\tilde{\mu}$ are mutually absolutely continuous, and $\mu(E_n \Delta\tilde{E}_n) = 0$ for all $0\leq n\leq\aleph_0$.
+</MathBox>
+
+Let $X$ be a locally compact Hausdorff space, and let $\hat{X}$ denote the one-point compactification of $X$. THen any spectral measure $P:\mathcal{B}_X \to\mathcal{L}(H)$ may be viewed as a spectral measure $P_1$ defined on $\mathcal{B}_{\hat{X}}$ with the understanding that $P_1 (\Set{\infty}) =$, or equivalently, $P_1 (E) = P(E\setminus\Set{\infty})$.
+
+Hence, we may deduce that the above formulation of the Hahn-Hellinger theorem is valid under the assumption that $X$ is a locally compact Hausdorff space.
+
 ## Spectral theorem
 
 <MathBox title='Spectral theorem (bounded case)' boxType='theorem'>
@@ -3219,7 +3289,7 @@ Let $H$ be separable Hilbert space, and let $\mathcal{P}(H)$ denote the set of p
 
 Let $\Sigma\subset\mathbb{C}$ be a compact subset of the complex plane. There is a bijection between:
 - a. Normal operators $T\in\mathcal{L}(H)$, such that $\sigma(T)\subset\Sigma$, and 
-- b. Spectral measures $\mathcal{B}_\Sigma \ni E\mapsto P(E)\in\mathcal{P}(H)$, where $\mathcal{B}_E$ denotes the Borel subsets of $\Sigma$
+- b. Spectral measures $P:\mathcal{B}_\Sigma \to\mathcal{P}(H)$
 
 This bijection is given by the equation
 $$
@@ -3246,7 +3316,61 @@ We may think of $P$ as a spectral measure being defined for all Borel subsets of
 
 Conversely, every spectral measure as in **(1.b)** clearly gives rise to a representation of $C(\Sigma)$ into $H$ and consequently a normal operator $T\in\mathcal{L}(H)$ such that $\eqref{equation-4}$ is vali for $f\in C(\Sigma)$. Since homomorphisms of C* algebras "shrink spectra" (Lemma $\ref{}$), we find that $\sigma(T)\subset\Sigma$.
 
-**(2):** Let $T = \int_\sigma \lambda\;\d P(\lambda)$ as in **(1)** above. Define the measure $\mu$ by $\mu(E) = \sum_{n\in N} 2^{-n} \lVert P(E)e_n \rVert^2$, where $\Set{e_n}_{n\in N}$ is an orthonormal basis for $H$. There is an isometric *-isomorphism $L^\infty (\Sigma_0, \mu) \ni \pho\mapsto \int_{\Sigma_0} \phi\;\d P \in\mathcal{L}(H)$, where $\Sigma_0 = \sigma(T)$. Under this isomorphism, the function $f_1 (\lambda) = \lambda$ for $\lambda\in\Sigma_0$ corresponds to $T$. However, it is easy to see that $\lambda_0 \in\sigma_{L^\infty (\Sigma_0, \mu)}(f_1)$ if and only if $\mu(\Set{\lambda: |\lambda-\lambda_0| < \epsilon}) > 0$ for every $\epsilon > 0$. The negation of this latter condition is clearly equivalent to the statement that the function $\lambda\mapsto 1/(\lambda-\lambda_0)$ belongs to $L^\infty (\Sigma_0,\mu)$. Finally, $\mu(E) = 0 \iff P(E) = 0$.
+**(2):** Let $T = \int_\sigma \lambda\;\d P(\lambda)$ as in **(1)** above. Define the measure $\mu$ by $\mu(E) = \sum_{n\in N} 2^{-n} \lVert P(E)e_n \rVert^2$, where $\Set{e_n}_{n\in N}$ is an orthonormal basis for $H$. There is an isometric *-isomorphism $L^\infty (\Sigma_0, \mu) \ni \phi\mapsto \int_{\Sigma_0} \phi\;\d P \in\mathcal{L}(H)$, where $\Sigma_0 = \sigma(T)$. Under this isomorphism, the function $f_1 (\lambda) = \lambda$ for $\lambda\in\Sigma_0$ corresponds to $T$. However, it is easy to see that $\lambda_0 \in\sigma_{L^\infty (\Sigma_0, \mu)}(f_1)$ if and only if $\mu(\Set{\lambda: |\lambda-\lambda_0| < \epsilon}) > 0$ for every $\epsilon > 0$. The negation of this latter condition is clearly equivalent to the statement that the function $\lambda\mapsto 1/(\lambda-\lambda_0)$ belongs to $L^\infty (\Sigma_0,\mu)$. Finally, $\mu(E) = 0 \iff P(E) = 0$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+A complex number $\lambda_0$ belongs to the spectrum of a normal operator $T\in\mathcal{L}(H)$ on a separable Hilbert space $H$ if and only $\lambda_0$ is an approximate eigenvalue for $T$, meaning that there exists a sequence $\Set{x_n}_{n\in\N}$ of unit vectors in $H$ such that $\lVert T\mathbf{x}_n - \lambda_0 x_n \rVert \xrightarrow{n\to\infty} 0$.
+
+<details>
+<summary>Proof</summary>
+
+An approximate eigenvalue of any (not necessarily normal) operator must necessarily belong to the spectrum of that operator, since an invertible operator is necessarily bounded below.
+
+On the other hand, if $T$ is normal, if $P$ is the associated spectral measure, and if $\lambda_0 \in\sigma(T)$, then $P(U) \neq 0$ for every neighbourhood $U$ of $\lambda_0$. In particular, we can find a unit vector $x_n$ belonging to the range of the projection $P(U_n)$, where $U_n = \Set{\lambda\in\mathbb{C} : |\lambda - \lambda_0| < 1/n}$. Since $|(\lambda - \lambda_0)1_{U_n} (\lambda)| < 1/n \;\forall\lambda$, we find that $\lVert (T-\lambda_0)P(U_n) \rVert\leq 1/n$, and in particular $\lVert(T - \lambda_0)x_n \rVert \leq 1/n \;\forall n$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $T\in\mathcal{L}(H)$ be a normal operator on a separable Hilbert space $H$. Let $\Sigma = \sigma(T)$ and let $P$ be the unique spectral measure associated to $T$ and let $\mu(E) = \sum_{n\in I} 2^{-n} \lVert P(E) e_n \rVert^2$, where $\Set{e_n}_{n\in\N}$ is any orthonormal basis for $H$. Then the assignment
+
+$$
+  \phi\mapsto\phi(T) = \int_\Sigma \phi\;\d P
+$$
+
+defines an isometric *-isomorphism of $L^\infty (\Sigma,\mu)$ onto the von Neumann subalgebra $W^* (\Set{1,T})$ of $\mathcal{L}(H)$ generated by $\Set{1,T}$, such that
+1. $\phi_j (T) = T^j$, where $\phi_j (\lambda) = \lambda^j$ for $j = 0,1$
+2. The representation is weakly continuous, meaning that if $\Set{\phi_n}_{n\in\N}$ is a sequence in $L^\infty (X,\mu)$ which converges to $\phi$ with respect to the weak * topology, then $\phi_n (T) \xrightarrow{\phi(T)}$ in the weak operator topology.
+
+Furthermore, the representation is uniquely determined by conditions **(1)** and **(2)**, and is called the *measurable functional calculus* for $T$.
+
+<details>
+<summary>Proof</summary>
+
+Note that if $\pi: C(\Sigma)\to\mathcal{L}(H)$ is the continuous functional calculus for $T$, and if $\tilde{\pi}$ and $\mu$ are associated with $\pi$ as in Lemma $\ref{lemma-11}$, then
+
+$$
+  \tilde{\pi}(\phi) = \sum_{\Sigma} \phi\;\d P
+$$
+
+where $P(E) = \tilde{\pi}(1_E)$. By Lemma $\ref{lemma-13}$, the image of this representation of $L^\infty (\Sigma,\mu)$ is precisely the von Neumann algebra generated by $\pi(C(\Sigma)) = C^* (\Set{1,T})$.
+
+Through repeated applications of the Cauchy-Schwarz inequality, we can verify that if $\Set{\phi_n}_{n\in\N}$ is a sequence in $L^\infty (\Sigma,\mu)$, then to say that the sequence $\Set{\tilde{\pi}(\phi_n)}_{n\in\N}$ converges to $\tilde{\pi}(\phi)$ with respect to the weak operator topology is exactly equivalent to requiring that $\int_\Sigma (\phi_n - \phi) f\;\d\mu \xrightarrow{n\to 0}$ for every $f\in L^1 (\Sigma,\mu)$, proving **(2)**.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $H$ be a separable Hilbert space.
+1. Let $U\in\mathcal{L}(H)$ be a unitary operator. Then there exists a self-adjoint operator $A\in\mathcal{L}(H)$ such that $U = e^{iA}$, where the right hand side is interpreted as the result of the continuous functional calculus for $A$. Furthermore, given any $a\in\R$, we may choose $A$ to satisfy $\sigma(A)\subset [a,a+2\pi]$.
+2. If $T\in\mathcal{L}(H)$ is a normal operator, and if $n\in\N$, then there exists a normal operator $A\in\mathcal{L}(H)$ such that $T = A^n$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $\phi:\mathbb{C}\to\Set{z\in\mathbb{C} | \im z\in [a,a+2\pi]}$ be any measurable branch of the logarithm. For instance, we might set $\phi(z) = \ln |z| + i\theta$ if $z = |z| e^{i\theta}$ for $a\leq\theta < a + 2\pi$. Setting $A = \phi(U)$, we find $U = e^{iA}$ since $e^{\phi(z)} = z$.
+
+**(2):** This is proved like **(1)**, by taking some measurable branch of the logarithm defined everywhere in $\mathbb{C}$ and choosing the $n$-th root as the complex function defined using this choice of logarithm.
 </details>
 </MathBox>
 
