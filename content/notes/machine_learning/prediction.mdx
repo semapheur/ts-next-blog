@@ -62,3 +62,111 @@ $$
 $$
 
 # Generalized linear models
+
+A generalized linear model (GLM) is a conditional version of an exponential family distribution with the form
+
+$$
+  p(y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2) = \exp\left(\frac{y_n \eta_n - A(\eta_n)}{\sigma^2} + \ln(h(y_n, \sigma^2))\right)
+$$
+
+where 
+- $\eta_n = \mathbf{x}^\top \mathbf{x}_n$ is the natural parameter for the distributions
+- $A(\eta_n)$ is the log normalizer
+- $T(y) = y$ is the sufficient statistic
+- $\sigma^2$ is the dispersion term
+
+The mean and variance of the response variable are
+
+$$
+  \mu_n :=& \mathbb{E}[y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2] = A'(\eta_n) := \ell^{-1} (\eta_n) \\
+  \operatorname{var}(y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2) =& A'' (\eta_n) \sigmaÅ2 
+$$
+
+The mapping from the linear inputs to the mean of the outputs is denoted $\mu_n = \ell^{-1} (\eta_n)$, where the function $\ell$ is called the *link function*, and $\ell^{-1}$ is known as the *mean function*. This relationship is usually written as
+
+$$
+  \ell(\mu_n) = \eta_n = \mathbf{w}^\top \mathbf{x}_n
+$$
+
+## Linear regression
+
+Linear regression is the simplest case of a GLM and is of the form
+
+$$
+\begin{equation}
+  p(y|\mathbf{x},\boldsymbol{\theta}) = \mathcal{N}(y|w_0 + \mathbf{w}^\top \mathbf{x}, \sigma^2) \tag{\label{equation-1}}
+\end{equation}
+$$
+
+where $\boldsymbol{\theta} = (w_0, \mathbf{w}, \sigma^2)$ are all the parameters of the models. The vector of parameters $\mathbf{w}\in\R^n$ are known as the *weights* of *regression coefficients*. Each coefficient $w_i$ for $i=1,\dots,n$ specifies the change in the output we expect if we change the corresponing input feature $x_d$ by one unit. The term $w_0$ is the *offset* or *bias* term, and sepcfieis the output value if all the inputs are $0$. This captures the unconditional mean of the response, $w_0 = \mathbb{E}(y)$, and acts as a baseline.
+
+If the input is one-dimensional, i.e. $X\subseteq\R$, the model has the form $f(\mathbf{x};\mathbf{w}) = ax + b$, where $b = w_0$ is the intercept, and $a = w_1$ is the slope. This is called *simple linear regression*. If the input is multi-dimensional, $\mathbf{x}\in\R^D$ where $D > 1$, the method is called *multiple linear regression*. If the output is also multi-dimensional, i.e. $Y \subset\R^J$ for $J > 1$, it is called *multivariate linear regression*, taking the form
+
+$$
+  p(\mathbf{y}|\mathbf{x}, \mathbf{W}) = \prod_{j=1}^J \mathcal{N}(y_j | \mathbf{w}_j^\top \mathbf{x}, \sigma_j^2)
+$$
+
+Linear regression can be used to fit sample data to other than a linear function by applying a nonlinear transformation to the input featurese, by replacing $\mathbf{x}$ with $\boldsymbol{\phi}(\mathbf{x})$ to get 
+
+$$
+  p(y|\mathbf{x},\boldsymbol{\theta}) = \mathcal{N}(y|\mathbf{w}^\top \boldsymbol{\phi}(\mathbf{x}), \sigma^2)
+$$
+
+As long as the parameters of the *feature extractor* $\boldsymbol{\phi}$ are fixed, the model remains linear in the parameters, even if it is not linear in the outputs.
+
+### Ordinary least squares
+
+From $\eqref{equation-1}$, we can derive the negative log likelihood of the data as follows
+
+$$
+\begin{align*}
+  \operatorname{NLL}(\mathbf{w},\sigma^2) =& \sum_{n=1}^N \ln\left[\left(\frac{1}{2\pi\sigma^2} \right)^{1/2} \exp\left(-\frac{1}{2\sigma^2} (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 \right) \right] \\
+  =& \frac{1}{2\sigma^2} \sum_{n=1}^N (y_n - \hat{y})^2 + \frac{N}{2}\ln(2\pi\sigma^2)
+\end{align*}
+$$
+
+where we have defined the predicted response $\hat{y}_n := \mathbf{w}^\top \mathbf{x}_n$. The MLE is the point where
+
+$$
+  \nabla_{\mathbf{w},\sigma} \operatorname{NLL}(\mathbf{w},\sigma^2) = 0
+$$
+
+$$
+  \operatorname{RSS}(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 = \frac{1}{2}\lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 = \frac{1}{2}(\mathbf{Xw} - \mathbf{w})^\top (\mathbf{Xw} - \mathbf{y})
+$$
+
+Using the matrix identity
+
+$$
+  \frac{\partial}{\partial x}(\mathbf{x}^\top \mathbf{Ax}) = (\mathbf{A} + \mathbf{A}^\top)\mathbf{x}
+$$
+
+we can show that the gradient is given by
+
+$$
+  \nabla_\mathbf{w} \operatorname{RSS}(\mathbf{w}) = \mathbf{X}^\top \mathbf{Xw} - \mathbf{X}^\top \mathbf{y}
+$$
+
+Solving for $\nabla_\mathbf{w} \operatorname{RSS}(\mathbf{w})$ gives
+
+$$
+  \mathbf{X}^\top \mathbf{Xw} = \mathbf{X}^\top \mathbf{y}
+$$
+
+which are known as the *normal equations*. The corresponding solution $\hat{\mathbf{w}}$ is the *ordinary least squares* solution given by
+
+$$
+  \hat{\mathbf{w}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
+$$
+
+The Hessian of $\operatorname{RSS}(\mathbf{w})$ is given by
+
+$$
+  H(\mathbf{w}) = \frac{\partial^2}{\partial\mathbf{w}^2}\operatorname{RSS}(\mathbf{w}) = \mathbf{X}^\top \mathbf{X}
+$$
+
+If $\mathbf{X}$ is full rank, $H$ is positive definite since for any $\mathbf{v} \neq 0$, we have
+
+$$
+  \mathbf{v}^\top (\mathbf{X}^\top \mathbf{X})\mathbf{v} = (\mathbf{Xv})^\top (\mathbf{Xv}) = \lVert\mathbf{Xv}\rVert^2 > 0
+$$
