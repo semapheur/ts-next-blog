@@ -3374,6 +3374,143 @@ Let $H$ be a separable Hilbert space.
 </details>
 </MathBox>
 
+## Polar decomposition
+
+<MathBox title='' boxType='lemma' tag='lemma-14'>
+If $T\in\mathcal{L}(H,K)$ is a linear operator between Hilbert spaces, then
+
+$$
+  \ker(T) = \ker(T^* T) = \ker(T^* T)^{1/2} = \operatorname{ran}(T^*)^\perp
+$$
+
+In particular, also
+
+$$
+  \ker(T)^\perp = \overline{\operatorname{ran}(T^*)}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note first that for arbitrary $x\in H$, we have
+
+$$
+  \lVert Tx \rVert^2 = \langle T^* Tx, x\rangle = \langle (T^* T)^{1/2} x, (T^* T)^{1/2} x = \lVert (T^* T)^{1/2} x \rVert^2
+$$
+
+Hence it follows that $\ker(T) = \ker(T^* T)^{1/2}$.
+
+Note next that
+
+$$
+\begin{align*}
+  x \in\operatorname{ran}(T^*)^\perp \iff& \langle x, T^* x\rangle = 0\; \forall y\in K \\
+  \iff& \langle Tx, y\rangle = 0\; \forall y\in K \\
+  \iff& Tx = 0
+\end{align*}
+$$
+
+and hence $\operatorname{ran}(T^*)^\perp = \ker(T)$. The particular statement of the lemma follows from the fact that $V^{\perp\perp} = \overline{V}$ for any linear subspace $V\subset K$.
+
+Finally, if $\Set{p_n}_{n\in\N}$ is any sequence of polynomial with the property that $p_n (0) = 0$ for all $n\in\N$ and such that $\Set{p_n (t)}$ converges uniformly to $\sqrt{t}$ on $\sigma(T^* T)$, it follows that $\lVert p_n (T^* T) - (T^* T)^{1/2} \rVert \xrightarrow{n\to 0}$, and hence
+
+$$
+\begin{align*}
+  x\in\ker(T^* T) \implies& p_n (T^* T)x = 0 \;\forall n \\
+  \implies& (T^* T)^{1/2} x = 0
+\end{align*}
+$$
+
+and hence we see that also $\ker(T^* T) \subset\ker(T^* T)^{1/2} x = 0$. The reverse inclusion is obvious, completing the proof.
+</details>
+</MathBox>
+
+<MathBox title='Partial isometry' boxType='proposition' tag='proposition-42'>
+If $U\in\mathcal{L}(H,K)$ is a linear operator between Hilbert spaces, the following are equivalent:
+1. $U = UU^* U$
+2. $P = U^* U$ is a projection
+3. $U|_{\ker(U)^\perp}$ is an isometry
+
+An operator satisfying the equivalent conditions **(1)**-**(3)** is called a *partial isometry*.
+
+<details>
+<summary>Proof</summary>
+
+**(1)$\implies$(2):** If $U = UU^* U$, then
+
+$$
+  P^2 = U^* U U^* U = U^* (U U^* U) = U^* U = P
+$$
+
+**(2)$\implies$(1):** Let $M = \operatorname{ran}(P)$. For arbitrary $x\in H$, we have
+
+$$
+  \lVert Px \rVert^2 = \langle Px, x\rangle = \langle U^* Ux, x\rangle = \lVert U x\rVert^2
+$$
+
+This implies that $\ker(U) = \ker(U) = M^\perp$, and that $U$ is isometric on $M$ because $P$ is identity on $M$.
+
+**(3)$\implies$(2):** Let $M = \ker(U)^\perp$. For $i=1,2$, suppose $z_i \in H$ and $x_i \in M$, $y_i \in M^\perp$ are such taht $z_i = x_i + y_i$. Then
+
+$$
+\begin{align*}
+  \langle U^* Uz_1, z_2 \rangle =& \langle Uz_1, Uz_2 \rangle \\
+  =& \langle Ux_1, Ux_2 \rangle \\
+  =& \langle x_1, x_2 \rangle \\
+  =& \langle x_1, z_2 \rangle
+\end{align*}
+$$
+
+where the third equation follows since $U|_M$ is isometric. Hence, $U^* U$ is the projection onto $M$.
+
+**(2)$\implies$(1):** Let $M = \operatorname{ran}(U^* U)$. Then by Lemma $\ref{lemma-14}$, we get $M^\perp = \ker(U^* U) = \ker(U)$. If $x\in M$ and $y\in M^\perp$ are arbitrary and if $z = x + y$, then note that
+
+$$
+  Uz = Ux + Uy = Ux = U(U^* U)z
+$$
+</details>
+</MathBox>
+
+Suppose $U\in\mathcal{L}(H,K)$ is a partial isometry between Hilbert spaces. Setting $M = \ker(T)^\perp$ and $N = \operatorname{ran}(U) = \overline{\operatorname{ran}(U)}$, we find that $U \equiv 0$ on $M^\perp$, and $U$ maps $M$ isometrically onto $N$. It is customary to refer to $M$ as the *initial space*, and to $N$ as the *final space*, of the partial isometry $U$.
+
+Taking adjoint adjoints in **(2)** of Proposition $\ref{\proposition-42}$, it is seen that $U^* \in\mathcal{L}(K,H)$ is also a partial isometry. By Lemma $\ref{\lemma-14}$, we find that $\ker(U^*) = N^\perp$ and $\operatorname{ran}(U^*) = M$. Thus, $N$ is the initial space of $U^*$ and $M$ is the final space of $U^*$.
+
+Finally, if follows from Proposition $\ref{proposition-42}$ that $U^* U$ is the projection of $H$ otno $M$ while $UU^*$ is the projection of $K$ onto $N$.
+
+<MathBox title='' boxType='lemma' tag='lemma-15'>
+Let $U\in\mathcal{L}(H,K)$ be a partial isometry between Hilbert spaces with initial space $M = \ker(U)^\perp$ and final space $N = \operatorname{ran}(U)$. If $y\in N$, then $U^* y$ is the unique element $x\in M$ such that $Ux = y$.
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='Polar decomposition' boxType='theorem'>
+1. Any linear operator $T\in\mathcal{L}(H,K)$ between Hilbert spaces admits a decomposition $T = UA$ such that
+  - a. $U\in\mathcal{L}(H,K)$ is a partial isometry
+  - b. $A\in\mathcal{L}(H)$ is a positive operator
+  - c. $\ker(T) = \ker(U) = \ker(A)$
+2. If $T = VB$ is another decomposition of $T$ as a product of a partial isometry $V$ and a positive operator $B$ such that $\ker(V) = \ker(B)$, then necessarily $U = V$ and $B = A = (T^* T)^{1/2} = |T|$. This unique decomposition is called the polar decomposition of $T$.
+3. If $T = U|T|$ is the polar decomposition of $T$, then $|T| = U^* T$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** If $x,y\in H$ are arbitrary, then
+
+$$
+  \langle Tx, Ty\rangle = \langle T^* Tx, y\rangle = \langle|T|^2 x, y\rangle = \langle|T|x, |T|y\rangle
+$$
+
+Hence is follows that there exists a unique operator $U_0 : \overline{\operatorname{ran}(|T|)}\to\overline{\operatorname{ran}(T)}$ such that $U_0 (|T|x) = Tx \; \forall x\in H$. Let $M = \overline{\operatorname{ran}(|T|)}$ and let $P = P_M$ denote the orthogonal projection onto $M$. Then the operator $U = U_0 P$ clearly defines a partial isometry with initial space $M$ and final space $N = \overline{\operatorname{ran}(T)}$ which further satisfies $T = U|T|$. It follows from Lemma $\ref{lemma-14}$ that $\ker(U) = \ker(|T|) = \ker(T)$.
+
+**(2):** Suppose $T = VB$. Then $V^* V$ is the projection onto $\ker(V)^\perp = \ker(B)^\perp = \overline{\operatorname{ran}(B)}$, which clearly implies that $B = V^* VB$. Thus, we see that $T^* T = BV^* VB = B^2$, showing that $B$ is the positive square root of $|T|^2$, i.e. $B = |T|$. It then follows that $V(|T|x) = Tx = U(|T|x) \forall x\in H$. By continuity, we see that $V$ agrees with $U$ on $\overline{\operatorname{ran}(|T|)}$, but since this is precisely the initial space of both partial isometries $U$ and $V$, we see that we must have $U = V$.
+
+**(3):** This is an immediate consequence of the definition of $U$ and Lemma $\ref{lemma-15}$.
+</details>
+</MathBox>
+
 ## Adjoint operators
 
 <MathBox title='Adjoint operator' boxType='definition'>
