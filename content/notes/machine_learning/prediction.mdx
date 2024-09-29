@@ -7,7 +7,7 @@ showToc: true
 # Abbreviations
 - **ERM:** empirical risk minimization
 - **GLM:** generalized linear model
-- **i.i.d:** identically
+- **i.i.d:** idenpendent and identically distributed
 - **MLE:** maximum likelihood estimation
 - **MAP:** maximum a posteriori
 
@@ -23,7 +23,7 @@ Non-parametric models are usually more flexible, but can be slower to use for pr
 
 Most parametric models have the form $p(\mathbf{y}|\mathbf{x}) = p(\mathbf{y}|f(\mathbf{x};\boldsymbol{\theta}))$, where $f$ is a function that predicts the parameters of the output distribution. If $f$ is a linear function of $\boldsymbol{\theta}$, i.e. $f(\mathbf{x}; \boldsymbol{\theta}) = \boldsymbol{\theta}^\top \boldsymbol{\phi}(\mathbf{x})$ for some fixed feature transformation $\boldsymbol{\phi}$, the model is called a generalized linear model (GLM). If $f$ is a non-linear, but differentiable, function of $\boldsymbol{\theta}$, e.g. $f(\mathbf{x},\boldsymbol{\theta}) = \boldsymbol{\theta}_2^\top \boldsymbol{\phi}(\mathbf{x};\boldsymbol{\theta}_1)$ for some learnable function $\boldsymbol{\phi}(\mathbf{x};\boldsymbol{\theta}_1)$, it is common to represent $f$ using a neural network.
 
-## Model fitting using ERM, MLE and MAP
+## Model fitting using MLE and MRE
 
 The most common approach of fitting parametric predictive models is through *maximum likelihood estimation* (MLE), which amounts to solving the following optimization problem 
 
@@ -49,16 +49,94 @@ $$
   r(\boldsymbol{\theta}) = \frac{1}{N} \sum_{n=1}^N \ell_n (\boldsymbol{\theta})
 $$
 
-This approach is called *empirical risk minimization* (ERM). ERM can easily result in *overfitting*, so it is common to add a penalty or regularizer term to get
+This approach is called *empirical risk minimization* (ERM).
+
+## Regularization and MAP
+
+A fundamental problem of model fitting via MLE and MRE arises when all the probability mass is put on the training examples, leaving no probability for novel data in the future. This problem is known as *overfitting* and occurs when the model has enough parameters to perfectly fit the empirical distribution. However, in most cases the empirical distribution is not the same as the true distribution. Overfitting results in a model that may not generalize.
+
+The main solution to overfitting is to use *regularization*, which means to add a penalty term to the likelihood function or empirical risk. In this case we optimize an objective function of the form
 
 $$
-  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} r(\boldsymbol{\theta}) + \lambda C(\boldsymbol{\theta})
+  \mathcal{L}(\boldsymbol{\theta};\lambda) = \left(\frac{1}{N} \sum_{i=1}^N \ell (\boldsymbol{y}_n, \boldsymbol{\theta}; \boldsymbol{x}_n)\right) + \lambda C = r(\boldsymbol{\theta}) + \lambda C(\boldsymbol{\theta})
 $$
 
-where $\lambda\geq 0$ controls the degree of regularization, and $C(\boldsymbol{\theta})$ is some complexity measure. If we use log loss, and define $C(\boldsymbol{\theta}) = -\ln[\pi_0 (\boldsymbol{\theta})]$, where $\pi_0 (\boldsymbol{\theta})$ is some prior distribution, and we use $\lambda = 1$, we recover the *maximum a posteriori* (MAP) estimate
+where $\lambda\geq 0$ is the *regularization parameter* and $C(\boldsymbol{\theta})$ is some form of *complexity penalty*.
+
+A common complexity penalty is $C(\boldsymbol{\theta}) = -\ln [p(\boldsymbol{\theta})]$, where $p(\boldsymbol{\theta})$ is the prior of $\boldsymbol{\theta}$. If $\ell$ is the log loss, the regularized objective function becomes
 
 $$
-  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} \ln[p(D|\boldsymbol{\theta})] + \ln[\pi_0 (\boldsymbol{\theta})]
+  \mathcal{L}(\boldsymbol{\theta};\lambda) = -\frac{1}{N} \sum_{n=1}^N \ln [p(\boldsymbol{y}_n|\boldsymbol{x}_n, \boldsymbol{\theta})] - \lambda\ln[p(\boldsymbol{\theta})]
+$$
+
+By setting $\lambda = 1$ and rescaling $p(\boldsymbol{\theta})$ appropriatley, we get the objective function
+
+$$
+  mathcal{L}(\boldsymbol{\theta};\lambda) = - \ln(p(D|\boldsymbol{\theta})) + \ln(p(\boldsymbol{\theta}))
+$$
+
+Minimizing this is equivalent to maximize the log posterior
+
+$$
+  \hat{\boldsymbol{\theta}}_{\mathrm{MAP}} = \argmax_{\boldsymbol{\theta}}[\ln(p(\boldsymbol{\theta}|D))] = \argmax_{\boldsymbol{\theta}} [\ln(p(D|\boldsymbol{\theta}) + \ln(p(\boldsymbol{\theta})))]
+$$
+
+which is known as the *maximum a posteriori estimation* (MAP).
+
+## Cross-validation
+
+A key question when using regularization is how to choose the strength of the regularizer $\lambda$: small values focus on minimizing empirical risk, which may result in overfitting, whereas large values focus on staying close to the prior, which may result in underfitting.
+
+A common method for choosing $\lambda$ is to partition the data $D$ into two disjoint sets, the training set $D_\text{train}$ and a validation set $D_\text{valid}$. We fit the model on $D_\text{train}$ and evaluate its performance on $D_\text{valid}$ for each $\lambda$. We then select the $\lambda$ that results in the best validation performance.
+
+To explain this more rigorously, let us define the regularized empirical risk
+
+$$
+  R_\lambda (\boldsymbol{\theta}, D) = \frac{1}{|D|} \sum_{(\mathbf{x},\mathbf{y})\in D} \ell(\boldsymbol{y}, f(\boldsymbol{x};\boldsymbol{\theta})) + \lambda C(\boldsymbol{\theta})
+$$
+
+For each $\lambda$, we compute the parameter estimate
+
+$$
+  \hat{\boldsymbol{\theta}}_\lambda (D_\text{train}) = \argmin_{\boldsymbol{\theta}} R_\lambda (\boldsymbol{\theta}, D_\train)
+$$
+
+We then compute the validation risk
+
+$$
+  R_\lambda^\text{val} := R_0 (\hat{\boldsymbol{\theta}}_\lambda (D_\text{train}), D_\text{valid})
+$$
+
+This is an estimate of the *population risk*, which is the expected loss under the true distribution $p^* (\boldsymbol{x},\boldsymbol{y})$. Finally, we pick
+
+$$
+  \lambda^* = \argmin_{\lambda\in S} R_\lambda^\text{val}
+$$
+
+After picking $\lambda^*$, we can refit the model to the entire dataset, $D = D_\text{train} \cup D_\text{valid}$, to get
+
+$$
+  \hat{\boldsymbol{\theta}}^* = \argmin_{\boldsymbol{\theta}} R_{\lambda^*} (\boldsymbol{\theta}, D)
+$$
+
+A small size of the training set can result in an unreliable estimate of the model parameters. A solution to this is *cross-validation* (CV) by splitting the training data into $K$ *folds*. For each fold $k\in\Set{1,\dots,K}$, we train on all the folds but the $k$th, and test on the $k$th. Formally, we define the *cross-validated risk*
+
+$$
+  R_\lambda^\text{cv} := \frac{1}{K} \sum_{k=1}^K R_0 (\hat{\boldsymbol{\theta}}_\lambda (D_{-k}), D_k)
+$$
+
+where $D_k$ is the data in the $k$th fold, and $D_{-k}$ is all the other data (complement of $D_k$). If we set $K = N$, we get a method known as *leave-one-out-cross-validation*, since we always train on $N-1$ items and validate on the remaining one.
+
+We can use the CV estimate as an objective inside of an optimization routine to pick the optimal hyperparameter
+
+$$
+  \hat{\lambda} = \argmin_\lambda R_\lambda^\text{cv}
+$$
+
+Finally, we combine all the available data and re-estimate the model parameters using 
+
+$$
+  \hat{\boldsymbol{\theta}} = \argmin_\boldsymbol{\theta} R_{\hat{\lambda}} R_{\hat{\lambda}} (\boldsymbol{\theta}, D)
 $$
 
 # Generalized linear models
@@ -78,8 +156,10 @@ where
 The mean and variance of the response variable are
 
 $$
+\begin{align*}
   \mu_n :=& \mathbb{E}[y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2] = A'(\eta_n) := \ell^{-1} (\eta_n) \\
-  \operatorname{var}(y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2) =& A'' (\eta_n) \sigmaÅ2 
+  \operatorname{var}(y_n | \mathbf{x}_n, \mathbf{w}, \sigma^2) =& A'' (\eta_n) \sigma^2 
+\end{align*}
 $$
 
 The mapping from the linear inputs to the mean of the outputs is denoted $\mu_n = \ell^{-1} (\eta_n)$, where the function $\ell$ is called the *link function*, and $\ell^{-1}$ is known as the *mean function*. This relationship is usually written as
@@ -131,8 +211,13 @@ $$
   \nabla_{\mathbf{w},\sigma} \operatorname{NLL}(\mathbf{w},\sigma^2) = 0
 $$
 
+and
+
 $$
-  \operatorname{RSS}(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 = \frac{1}{2}\lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 = \frac{1}{2}(\mathbf{Xw} - \mathbf{w})^\top (\mathbf{Xw} - \mathbf{y})
+\begin{align*}
+  \operatorname{RSS}(\mathbf{w}) =& \frac{1}{2} \sum_{n=1}^N (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 = \frac{1}{2}\lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 \\
+  =& \frac{1}{2}(\mathbf{Xw} - \mathbf{w})^\top (\mathbf{Xw} - \mathbf{y})
+\end{align*}
 $$
 
 Using the matrix identity
