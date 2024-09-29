@@ -8,12 +8,17 @@ showToc: true
 - **ERM:** empirical risk minimization
 - **GLM:** generalized linear model
 - **i.i.d:** idenpendent and identically distributed
-- **MLE:** maximum likelihood estimation
 - **MAP:** maximum a posteriori
+- **MLE:** maximum likelihood estimation
+- **NLL:** negative log-loss
+- **OLS:** ordinary least squares
+- **RSS:** residual sum of squares
+- **SVD:** singular value decomposition
+- **TSS:** total sum of squares
 
 # Predictive models
 
-Predictive models seek to predict outputs $\mathbf{y}$ from inputs $\mathbf{x}$ using some function $f$ that is estimated from a labeled training set $D = \Set{(\mathbf{x}_n,\mathbf{y}_n) | \mathbf{x}_n \in X\subseteq\R^D,\, \mathbf{y}_n \in Y \subseteq\R^C}_{n=1}^N$ for $\mathbf{x}$. The uncertainty about the correct output for a given input can be modeled using a conditional probability model of the form $p(\mathbf{y}|f(\mathbf{x}))$. When $Y$ is a discrete set of labels, this called a *discriminative model*. When $Y = \R$, this is called a *regression model*.
+Predictive models seek to predict outputs $\mathbf{y}$ from inputs $\mathbf{x}$ using some function $f$ that is estimated from a labeled training set $S = \Set{(\mathbf{x}_n,\mathbf{y}_n) | \mathbf{x}_n \in X\subseteq\R^D,\, \mathbf{y}_n \in Y \subseteq\R^C}_{n=1}^N$ for $\mathbf{x}$. The uncertainty about the correct output for a given input can be modeled using a conditional probability model of the form $p(\mathbf{y}|f(\mathbf{x}))$. When $Y$ is a discrete set of labels, this called a *discriminative model*. When $Y = \R$, this is called a *regression model*.
 
 Predictive models are generally distinguished between 
 - *parametric models*, which have a fixed number of parameters independent of the size of the training set
@@ -28,10 +33,10 @@ Most parametric models have the form $p(\mathbf{y}|\mathbf{x}) = p(\mathbf{y}|f(
 The most common approach of fitting parametric predictive models is through *maximum likelihood estimation* (MLE), which amounts to solving the following optimization problem 
 
 $$
-  \hat{\boldsymbol{\theta}} = \argmax_{\boldsymbol{\theta}\in\Theta} p(D|\boldsymbol{\theta}) = \argmax_{\boldsymbol{\theta}\in\Theta} \ln p(D|\boldsymbol{\theta})
+  \hat{\boldsymbol{\theta}} = \argmax_{\boldsymbol{\theta}\in\Theta} p(S|\boldsymbol{\theta}) = \argmax_{\boldsymbol{\theta}\in\Theta} \ln p(S|\boldsymbol{\theta})
 $$
 
-If the dataset is $N$ independent, identically distributed data samples, the likelihood decomposes into a product of terms $p(D|\boldsymbol{\theta}) = \prod_{n=1}^N p(\mathbf{y}_n | \mathbf{x}_n, \boldsymbol{\theta})$. Thus, we can instead minimize the following (scaled) *negative log likelihood*:
+If the dataset is $N$ independent, identically distributed data samples, the likelihood decomposes into a product of terms $p(S|\boldsymbol{\theta}) = \prod_{n=1}^N p(\mathbf{y}_n | \mathbf{x}_n, \boldsymbol{\theta})$. Thus, we can instead minimize the following (scaled) *negative log likelihood*:
 
 $$
   \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}\in\Theta} -\frac{1}{N} \sum_{n=1}^N -\ln[p(\mathbf{y}_n|\mathbf{x}_n,\boldsymbol{\theta})]
@@ -72,39 +77,49 @@ $$
 By setting $\lambda = 1$ and rescaling $p(\boldsymbol{\theta})$ appropriatley, we get the objective function
 
 $$
-  mathcal{L}(\boldsymbol{\theta};\lambda) = - \ln(p(D|\boldsymbol{\theta})) + \ln(p(\boldsymbol{\theta}))
+  mathcal{L}(\boldsymbol{\theta};\lambda) = - \ln(p(S|\boldsymbol{\theta})) + \ln(p(\boldsymbol{\theta}))
 $$
 
 Minimizing this is equivalent to maximize the log posterior
 
 $$
-  \hat{\boldsymbol{\theta}}_{\mathrm{MAP}} = \argmax_{\boldsymbol{\theta}}[\ln(p(\boldsymbol{\theta}|D))] = \argmax_{\boldsymbol{\theta}} [\ln(p(D|\boldsymbol{\theta}) + \ln(p(\boldsymbol{\theta})))]
+  \hat{\boldsymbol{\theta}}_{\mathrm{MAP}} = \argmax_{\boldsymbol{\theta}}[\ln(p(\boldsymbol{\theta}|S))] = \argmax_{\boldsymbol{\theta}} [\ln(p(S|\boldsymbol{\theta}) + \ln(p(\boldsymbol{\theta})))]
 $$
 
 which is known as the *maximum a posteriori estimation* (MAP).
+
+### Weight decay ($\ell_2$ regularization)
+
+A common regularization technique is to penalize the magnitude of the weights (regression coefficients) by introducing a zero-mean Gaussian prior $p(\mathbf{w})$. The resulting MAP estimate is given by
+
+$$
+  \hat{\mathbf{w}}_\text{MAP} = \argmin_{\mathbf{w}} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2
+$$
+
+where $\lVert\mathbf{w}\rVert_2^2 = \sum_{i=1}^d w_i^2$ is the $\ell_2$ norm. This is known as $\ell_2$ regularization or weight decay. The larger the value of $\lambda$, the more the weights are penalized for deviating from the zero-mean prior, and thus the less flexible the model.
 
 ## Cross-validation
 
 A key question when using regularization is how to choose the strength of the regularizer $\lambda$: small values focus on minimizing empirical risk, which may result in overfitting, whereas large values focus on staying close to the prior, which may result in underfitting.
 
-A common method for choosing $\lambda$ is to partition the data $D$ into two disjoint sets, the training set $D_\text{train}$ and a validation set $D_\text{valid}$. We fit the model on $D_\text{train}$ and evaluate its performance on $D_\text{valid}$ for each $\lambda$. We then select the $\lambda$ that results in the best validation performance.
+A common method for choosing $\lambda$ is to partition the data $S$ into two disjoint sets, the training set $S_\text{train}$ and a validation set $S_\text{valid}$. We fit the model on $S_\text{train}$ and evaluate its performance on $S_\text{valid}$ for each $\lambda$. We then select the $\lambda$ that results in the best validation performance.
 
 To explain this more rigorously, let us define the regularized empirical risk
 
 $$
-  R_\lambda (\boldsymbol{\theta}, D) = \frac{1}{|D|} \sum_{(\mathbf{x},\mathbf{y})\in D} \ell(\boldsymbol{y}, f(\boldsymbol{x};\boldsymbol{\theta})) + \lambda C(\boldsymbol{\theta})
+  R_\lambda (\boldsymbol{\theta}, S) = \frac{1}{|S|} \sum_{(\mathbf{x},\mathbf{y})\in S} \ell(\boldsymbol{y}, f(\boldsymbol{x};\boldsymbol{\theta})) + \lambda C(\boldsymbol{\theta})
 $$
 
 For each $\lambda$, we compute the parameter estimate
 
 $$
-  \hat{\boldsymbol{\theta}}_\lambda (D_\text{train}) = \argmin_{\boldsymbol{\theta}} R_\lambda (\boldsymbol{\theta}, D_\train)
+  \hat{\boldsymbol{\theta}}_\lambda (S_\text{train}) = \argmin_{\boldsymbol{\theta}} R_\lambda (\boldsymbol{\theta}, D_\text{train})
 $$
 
 We then compute the validation risk
 
 $$
-  R_\lambda^\text{val} := R_0 (\hat{\boldsymbol{\theta}}_\lambda (D_\text{train}), D_\text{valid})
+  R_\lambda^\text{val} := R_0 (\hat{\boldsymbol{\theta}}_\lambda (S_\text{train}), S_\text{valid})
 $$
 
 This is an estimate of the *population risk*, which is the expected loss under the true distribution $p^* (\boldsymbol{x},\boldsymbol{y})$. Finally, we pick
@@ -113,19 +128,19 @@ $$
   \lambda^* = \argmin_{\lambda\in S} R_\lambda^\text{val}
 $$
 
-After picking $\lambda^*$, we can refit the model to the entire dataset, $D = D_\text{train} \cup D_\text{valid}$, to get
+After picking $\lambda^*$, we can refit the model to the entire dataset, $S = S_\text{train} \cup S_\text{valid}$, to get
 
 $$
-  \hat{\boldsymbol{\theta}}^* = \argmin_{\boldsymbol{\theta}} R_{\lambda^*} (\boldsymbol{\theta}, D)
+  \hat{\boldsymbol{\theta}}^* = \argmin_{\boldsymbol{\theta}} R_{\lambda^*} (\boldsymbol{\theta}, S)
 $$
 
 A small size of the training set can result in an unreliable estimate of the model parameters. A solution to this is *cross-validation* (CV) by splitting the training data into $K$ *folds*. For each fold $k\in\Set{1,\dots,K}$, we train on all the folds but the $k$th, and test on the $k$th. Formally, we define the *cross-validated risk*
 
 $$
-  R_\lambda^\text{cv} := \frac{1}{K} \sum_{k=1}^K R_0 (\hat{\boldsymbol{\theta}}_\lambda (D_{-k}), D_k)
+  R_\lambda^\text{cv} := \frac{1}{K} \sum_{k=1}^K R_0 (\hat{\boldsymbol{\theta}}_\lambda (S_{-k}), S_k)
 $$
 
-where $D_k$ is the data in the $k$th fold, and $D_{-k}$ is all the other data (complement of $D_k$). If we set $K = N$, we get a method known as *leave-one-out-cross-validation*, since we always train on $N-1$ items and validate on the remaining one.
+where $S_k$ is the data in the $k$th fold, and $S_{-k}$ is all the other data (complement of $S_k$). If we set $K = N$, we get a method known as *leave-one-out-cross-validation*, since we always train on $N-1$ items and validate on the remaining one.
 
 We can use the CV estimate as an objective inside of an optimization routine to pick the optimal hyperparameter
 
@@ -136,7 +151,7 @@ $$
 Finally, we combine all the available data and re-estimate the model parameters using 
 
 $$
-  \hat{\boldsymbol{\theta}} = \argmin_\boldsymbol{\theta} R_{\hat{\lambda}} R_{\hat{\lambda}} (\boldsymbol{\theta}, D)
+  \hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}} R_{\hat{\lambda}} R_{\hat{\lambda}} (\boldsymbol{\theta}, S)
 $$
 
 # Generalized linear models
@@ -178,7 +193,7 @@ $$
 \end{equation}
 $$
 
-where $\boldsymbol{\theta} = (w_0, \mathbf{w}, \sigma^2)$ are all the parameters of the models. The vector of parameters $\mathbf{w}\in\R^n$ are known as the *weights* of *regression coefficients*. Each coefficient $w_i$ for $i=1,\dots,n$ specifies the change in the output we expect if we change the corresponing input feature $x_d$ by one unit. The term $w_0$ is the *offset* or *bias* term, and sepcfieis the output value if all the inputs are $0$. This captures the unconditional mean of the response, $w_0 = \mathbb{E}(y)$, and acts as a baseline.
+where $\boldsymbol{\theta} = (w_0, \mathbf{w}, \sigma^2)$ are all the parameters of the models. The vector of parameters $\mathbf{w}\in\R^d$ are known as the *weights* or *regression coefficients*. Each coefficient $w_i$ for $i=1,\dots,d$ specifies the change in the output we expect if we change the corresponing input feature $x_n$ by one unit. The term $w_0$ is the *offset* or *bias* term, and specifies the output value if all the inputs are $0$. This captures the unconditional mean of the response, $w_0 = \mathbb{E}(y)$, and acts as a baseline.
 
 If the input is one-dimensional, i.e. $X\subseteq\R$, the model has the form $f(\mathbf{x};\mathbf{w}) = ax + b$, where $b = w_0$ is the intercept, and $a = w_1$ is the slope. This is called *simple linear regression*. If the input is multi-dimensional, $\mathbf{x}\in\R^D$ where $D > 1$, the method is called *multiple linear regression*. If the output is also multi-dimensional, i.e. $Y \subset\R^J$ for $J > 1$, it is called *multivariate linear regression*, taking the form
 
@@ -232,7 +247,7 @@ $$
   \nabla_\mathbf{w} \operatorname{RSS}(\mathbf{w}) = \mathbf{X}^\top \mathbf{Xw} - \mathbf{X}^\top \mathbf{y}
 $$
 
-Solving for $\nabla_\mathbf{w} \operatorname{RSS}(\mathbf{w})$ gives
+Solving for $\nabla_\mathbf{w} \operatorname{RSS}(\mathbf{w}) = 0$ gives
 
 $$
   \mathbf{X}^\top \mathbf{Xw} = \mathbf{X}^\top \mathbf{y}
@@ -242,6 +257,12 @@ which are known as the *normal equations*. The corresponding solution $\hat{\mat
 
 $$
   \hat{\mathbf{w}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
+$$
+
+Identifying $\mathbf{X}^+ = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$ as the left pseudo inverse of the matrix $\mathbf{X}$, the normal equation can be written as
+
+$$
+  \hat{\mathbf{w}} = \mathbf{X}^+ \mathbf{y}
 $$
 
 The Hessian of $\operatorname{RSS}(\mathbf{w})$ is given by
@@ -255,3 +276,175 @@ If $\mathbf{X}$ is full rank, $H$ is positive definite since for any $\mathbf{v}
 $$
   \mathbf{v}^\top (\mathbf{X}^\top \mathbf{X})\mathbf{v} = (\mathbf{Xv})^\top (\mathbf{Xv}) = \lVert\mathbf{Xv}\rVert^2 > 0
 $$
+
+### Solving using QR decomposition
+
+If $\mathbf{X}$ is tall and skinny, i.e. $N \gg D$, it can be quicker to use QR decomposition to solve the normal equation. For $\mathbf{X} = \mathbf{QR}$, where $\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$, we can write the system of linear equations $\mathbf{Xw} = \mathbf{y}$ as
+
+$$
+\begin{align*}
+  (\mathbf{QR})\mathbf{w} =& \mathbf{y} \\
+  \mathbf{Q}^\top \mathbf{QRw} =& \mathbf{Q}^\top \mathbf{y} \\
+  \mathbf{w} =& \mathbf{R}^{-1} (\mathbf{Q}^\top \mathbf{y})
+\end{align*}
+$$
+
+Since $\mathbf{R}$ is upper triangular, we can solve this last set of equations using backsubsitution, thus avoiding matrix inversion. The time complexity of this algorithm is $\mathcal{O}((N+D)D^2)$.
+
+### Ridge regression ($\ell_2$ regularization)
+
+To avoid overfitting, maximum likelihood estimation can be modified by introducing regularization. One approach, known as *ridge regression*, is to introduce an $\ell_2$ regularization with a zero-mean Gaussian prior on the weights, $p(\mathbf{w}) = \mathcal{N}(\mathbf{w}|\mathbf{0}, \lambda^{-1} \mathbf{I})$. The MAP estimation becomes
+
+$$
+\begin{align*}
+  \hat{\mathbf{w}}_\text{MAP} =& \frac{1}{2\sigma^2}(\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \frac{1}{2\tau^2} \mathbf{w}^\top \mathbf{w} \\
+  =& \argmin_{\mathbf{w}} \operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2
+\end{align*}
+$$
+
+where $\lambda = \sigma^2 / \tau^2$ is proportional to the strength of the prior, and
+
+$$
+  \lVert\mathbf{w}\rVert_2 = \left(\sum_{i=1}^d |w_i|^2 \right)^{1/2} = \sqrt{\mathbf{w}^\top \mathbf{w}}
+$$
+
+Note that we do not penalize th offset term $w_0$, since that only affects the global mean of the output, and does not contribute to overfitting.
+
+Taking the gradient of the MAP estimation with respect to $\mathbf{w}$ gives
+
+$$
+\begin{align*}
+  \nabla_\mathbf{w} (2\operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2) =& \nabla_\mathbf{w} \left((\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \lambda\lVert\mathbf{w}\rVert_2^2 \right) \\
+  =& 2(\mathbf{X}^\top \mathbf{Xw} - \mathbf{X}^\top \mathbf{y} + \lambda\mathbf{w}) \\
+\end{align*}
+$$
+
+Solving for $\nabla_\mathbf{w} (\operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2) = 0$ gives
+
+$$
+  \hat{\mathbf{w}}_\text{MAP} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^\top \mathbf{y}
+$$
+
+#### Solving using QR decomposition
+
+The MAP estimation can be converted to a standard least squares problem, to which we can apply QR decomposition. We assume that the prior has the form $p(\mathbf{w}) = \mathcal{N}(\mathbf{0},\boldsymbol{\Lambda}^{-1})$, where $\boldsymbol{\Lambda} = (1/\tau^2)\mathbf{I}$ is the precision matrix. We can emulate this prior by adding "virtual data" to the training set to get
+
+$$
+  \tilde{\mathbf{X}} = \begin{bmatrix} \mathbf{X}/\sigma \\ \sqrt{\boldsymbol{\Lambda}} \end{bmatrix},\quad \tilde{\mathbf{y}} = \begin{bmatrix} \mathbf{y}/\sigma \\ \mathbf{0}_{d\times 1} \end{bmatrix}
+$$
+
+where $\boldsymbol{\Lambda} = \sqrt{\boldsymbol{\Lambda}}\sqrt{\boldsymbol{\Lambda}}^\top$ is a Cholesky decomposition of $\boldsymbol{\Lambda}$. We see that $\tilde{\mathbf{X}}$ is $(N+d) \times d$, where the extra rows represent pseudo-data from the prior.
+
+Calculating the residual sum of squares on this expanded data gives
+
+$$
+\begin{align*}
+  f(\mathbf{w}) =& (\tilde{\mathbf{y}} - \tilde{\mathbf{X}}\mathbf{w})^\top (\tilde{\mathbf{y}} - \tilde{\mathbf{X}}\mathbf{w}) \\
+  =& \left(\begin{bmatrix} \mathbf{y}/\sigma \\ \mathbf{0} \end{bmatrix} - \begin{bmatrix} \mathbf{X}/\sigma \\ \sqrt{\boldsymbol{\Lambda}} \end{bmatrix}\mathbf{w} \right)^\top \left(\begin{bmatrix} \mathbf{y}/\sigma \\ \mathbf{0} \end{bmatrix} - \begin{bmatrix} \mathbf{X}/\sigma \\ \sqrt{\boldsymbol{\Lambda}} \end{bmatrix}\mathbf{w} \right) \\
+  =& \begin{bmatrix} \frac{1}{\sigma}(\mathbf{y} - \mathbf{Xw}) \\ -\sqrt{\boldsymbol{\Lambda}\mathbf{w}} \end{bmatrix}^\top \begin{bmatrix} \frac{1}{\sigma}(\mathbf{y} - \mathbf{Xw}) \\ -\sqrt{\boldsymbol{\Lambda}\mathbf{w}} \end{bmatrix} \\
+  =& \frac{1}{\sigma^2}(\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + (\sqrt{\boldsymbol{\Lambda}}\mathbf{w})^\top (\sqrt{\boldsymbol{\Lambda}}\mathbf{w}) \\
+  =& \frac{1}{\sigma^2} (\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \mathbf{w}^\top \boldsymbol{\Lambda}\mathbf{w}
+\end{align*}
+$$
+
+Hence, the MAP estimate is given by the normal equation
+
+$$
+  \hat{\mathbf{w}}_\text{MAP} = (\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}})^{-1} \tilde{\mathbf{X}}^\top \tilde{\mathbf{y}}
+$$
+
+which can be solved using standard OLS methods.
+
+#### Solving using singular value decomposition
+
+If $D > N$, it is faster to use singular value decomposition (SVD) than QR decomposition. Let $\mathbf{X} = \mathbf{USV}^\top$ be the SVD of $\mathbf{X}$, where
+- $\mathbf{V}^\top \mathbf{V} = \mathbf{I}_N$
+- $\mathbf{UU}^\top = \mathbf{U}^\top \mathbf{U} = \mathbf{I}_N$
+- $\mathbf{S}$ is a diagonal $N\times N$ matrix
+
+If $\mathbf{R} = \mathbf{US}$ is an $N\times N$ matrix, we can show that
+
+$$
+  \hat{\mathbf{w}}_\text{MAP} = \mathbf{V}(\mathbf{R}^\top \mathbf{R} + \lambda \mathbf{I}_N)^{-1} \mathbf{R}^\top \mathbf{y}
+$$
+
+in other words, we can replace the $D$-dimensional vectors $\mathbf{x}_i$ with $N$-dimensional vectors $\mathbf{r}_i$, and perform our penalized fit as before. The time complexity for this algorithm is $\mathcal{O}(DN^2)$, which is less than $\mathcal{O}(D^3)$ if $D > N$.
+
+### LASSO regression ($\ell_1$ regularization)
+
+An $\ell_1$ regularization can be applied to the maximum likelihood estimation by introducing a zero-mean Laplacian prior on the weights,
+
+$$
+  p(\mathbf{w}|\lambda) = \prod_{d=1}^D \operatorname{Laplace}(w_d|0, 1/\lambda) \propto \prod_{d=1}^D e^{-\lambda|w_d|}
+$$
+
+where $\lambda$ is the sparsity parameter. To perform a MAP estimation of a linear regression model with this prior, we just have to minimize the following objective function
+
+$$
+  \operatorname{PNN}(\mathbf{w}) = -\ln(p(S|\mathbf{w})) - \ln(p(\mathbf{w}|\lambda)) = \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = \lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 + \lambda\lVert\mathbf{w}\rVert_1
+$$
+
+where $\lVert\mathbf{w}\rVert = \sum_{d=1}^D |w_d|$ is the $\ell_1$ norm of $\mathbf{w}$. This method is called *LASSO regression*, which stands for "least absolute shrinkage and selection operator".
+
+#### Thresholding
+
+The partial derivative of $\operatorname{NLL}(\mathbf{w})$ is given by
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial w_d} \operatorname{NLL}(\mathbf{w}) =& a_d w_d - c_d \\
+  a_d =& \sum_{n=1}^N x_{nd}^2 \\
+  c_d =& \sum_{n=1}^N x_{nd} (y_n - \mathbf{w}_{-d}^\top \mathbf{x}_{n,-d})
+\end{align*}
+$$
+
+where $\mathbf{w}_{-d}$ is $\mathbf{w}$ without the $d$th component, and similarly $\mathbf{x}_{n,-d}$ is $\mathbf{x}_n$ withouth the $d$th component. We see that $c_d$ is proportional to the correlation between $d$th column of features $\mathbf{x}_{:,d}$ and the residual error obtained by predicting using all the other features, $\mathbf{r}_{-d} = \mathbf{y} - \mathbf{X}_{:,-d} \mathbf{w}_{-d}$. Hence the magnitude of $c_d$ is an indication of how relevant feature $d$ is for predictin $\mathbf{y}$, relative to the other features and the current parameters. Setting the gradient to $0$ gives the optimal update for $w_d$, keeping all other weights fixed
+
+$$
+  w_d = c_d / a_d = \frac{\mathbf{x}_{:,d}^\top \mathbf{r}_{-d}}{\lVert\mathbf{x}_{:,d}\rVert_2^2}
+$$
+
+The corresponding new prediction for $\mathbf{r}_{-d}$ becomes $\hat{\mathbf{r}}_{-d} = w_d \mathbf{x}_{:,d}$, which is the orthogonal projection of the residual onto the column vector $\mathbf{x}_{:,d}$.
+
+Unfortunately, the $\lVert\mathbf{w}\rVert_1$ term is not differentiable whenever $w_d = 0$. However, we can compute a subgradient at this point
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial w_d} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = (a_d w_d - c_d) + \lambda \partial_{w_d} \lVert\mathbf{w}\rVert_1 \\
+  =& \begin{cases}
+    a_d w_d - c_d - \lambda, \quad& w_d < 0 \\
+    [-c_d - \lambda, -c_d + \lambda] \quad& w_d = 0 \\
+    a_d w_d - c_d + \lambda \quad& w_d > 0
+  \end{cases}
+\end{align*}
+$$
+
+Depending on the value of $c_d$, the solutino to $\partial_{w_d} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = 0$ can occur at $3$ different values of $w_d$
+
+1. If $c_d < -\lambda$, the feature is strongly negatively correlated with the residual, such that the subgradient is zero at $\hat{w}_d = (c_d + \lambda)/a_d < 0$
+2. If $c_d \in [-\lambda, \lambda]$, the feature is only weakly correlated with the residual, such that the subgradient is zero at $\hat{w}_d = 0$
+3. If $c_d > \lambda$, the feature is strongly positively correlated with the residual, such that the subgradient is zero at $\hat{w}_d = (c_d - \lambda)/a_d > 0$
+
+In summary, we have
+
+$$
+  \hat{w}_d (c_d) = \begin{cases}
+    (c_d + \lambda)/a_d,\quad& c_d < -\lambda \\
+    0, \quad& c_d \in [-\lambda, \lambda] \\
+    (c_d - \lambda)/a_d,\quad& c_d > \lambda
+  \end{cases}
+$$
+
+We can write this as
+
+$$
+  \hat{w}_d = \operatorname{SoftThreshold}\left(\frac{c_d}{a_d}, \frac{\lambda}{a_d} \right)
+$$
+
+where
+
+$$
+  \operatorname{SoftThreshold}(x,\delta) := \sign(x) (|x| - \delta)_+
+$$
+
+and $x_+ = \max(x, 0)$ is the positive part of $x$. This is called *soft thresholding*. In contrast, *hard thresholding* sets values of $w_d$ to $0$ if $-\lambda \leq c_d \leq \lambda$, but it does not shrink the values of $w_d$ outside this interval. The slope of the soft thresholding line does does not coincide with the diagonal, which means that even large coefficients are shrunk towards zero. Consequently, LASSO regression is a biased estimator.
