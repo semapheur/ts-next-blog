@@ -18,7 +18,7 @@ showToc: true
 
 # Predictive models
 
-Predictive models seek to predict outputs $\mathbf{y}$ from inputs $\mathbf{x}$ using some function $f$ that is estimated from a labeled training set $S = \Set{(\mathbf{x}_n,\mathbf{y}_n) | \mathbf{x}_n \in X\subseteq\R^D,\, \mathbf{y}_n \in Y \subseteq\R^C}_{n=1}^N$ for $\mathbf{x}$. The uncertainty about the correct output for a given input can be modeled using a conditional probability model of the form $p(\mathbf{y}|f(\mathbf{x}))$. When $Y$ is a discrete set of labels, this called a *discriminative model*. When $Y = \R$, this is called a *regression model*.
+Predictive models seek to predict outputs $\mathbf{y}$ from inputs $\mathbf{x}$ using some function $f$ that is estimated from a labeled training set $S = \Set{(\mathbf{x}_n,\mathbf{y}_n) | \mathbf{x}_n \in X\subseteq\R^P,\, \mathbf{y}_n \in Y \subseteq\R^R}_{n=1}^N$ for $\mathbf{x}$. The uncertainty about the correct output for a given input can be modeled using a conditional probability model of the form $p(\mathbf{y}|f(\mathbf{x}))$. When $Y$ is a discrete set of labels, this called a *discriminative model*. When $Y = \R$, this is called a *regression model*.
 
 Predictive models are generally distinguished between 
 - *parametric models*, which have a fixed number of parameters independent of the size of the training set
@@ -77,7 +77,7 @@ $$
 By setting $\lambda = 1$ and rescaling $p(\boldsymbol{\theta})$ appropriatley, we get the objective function
 
 $$
-  mathcal{L}(\boldsymbol{\theta};\lambda) = - \ln(p(S|\boldsymbol{\theta})) + \ln(p(\boldsymbol{\theta}))
+  \mathcal{L}(\boldsymbol{\theta};\lambda) = - \ln(p(S|\boldsymbol{\theta})) + \ln(p(\boldsymbol{\theta}))
 $$
 
 Minimizing this is equivalent to maximize the log posterior
@@ -193,12 +193,12 @@ $$
 \end{equation}
 $$
 
-where $\boldsymbol{\theta} = (w_0, \mathbf{w}, \sigma^2)$ are all the parameters of the models. The vector of parameters $\mathbf{w}\in\R^d$ are known as the *weights* or *regression coefficients*. Each coefficient $w_i$ for $i=1,\dots,d$ specifies the change in the output we expect if we change the corresponing input feature $x_n$ by one unit. The term $w_0$ is the *offset* or *bias* term, and specifies the output value if all the inputs are $0$. This captures the unconditional mean of the response, $w_0 = \mathbb{E}(y)$, and acts as a baseline.
+where $\boldsymbol{\theta} = (w_0, \mathbf{w}, \sigma^2)$ are all the parameters of the models. The vector of parameters $\mathbf{w}\in\R^P$ are known as the *weights* or *regression coefficients*. Each coefficient $w_p$ for $p=1,\dots,P$ specifies the change in the output we expect if we change the corresponing input feature $\mathbf{x}_n$ by one unit. The term $w_0$ is the *offset* or *bias* term, and specifies the output value if all the inputs are $0$. This captures the unconditional mean of the response, $w_0 = \mathbb{E}(y)$, and acts as a baseline.
 
-If the input is one-dimensional, i.e. $X\subseteq\R$, the model has the form $f(\mathbf{x};\mathbf{w}) = ax + b$, where $b = w_0$ is the intercept, and $a = w_1$ is the slope. This is called *simple linear regression*. If the input is multi-dimensional, $\mathbf{x}\in\R^D$ where $D > 1$, the method is called *multiple linear regression*. If the output is also multi-dimensional, i.e. $Y \subset\R^J$ for $J > 1$, it is called *multivariate linear regression*, taking the form
+If the input is one-dimensional, i.e. $X\subseteq\R$, the model has the form $f(\mathbf{x};\mathbf{w}) = ax + b$, where $b = w_0$ is the intercept, and $a = w_1$ is the slope. This is called *simple linear regression*. If the input is multi-dimensional, $\mathbf{x}\in\R^p$ where $p > 1$, the method is called *multiple linear regression*. If the output is also multi-dimensional, i.e. $Y \subset\R^R$ for $R > 1$, it is called *multivariate linear regression*, taking the form
 
 $$
-  p(\mathbf{y}|\mathbf{x}, \mathbf{W}) = \prod_{j=1}^J \mathcal{N}(y_j | \mathbf{w}_j^\top \mathbf{x}, \sigma_j^2)
+  p(\mathbf{y}|\mathbf{x}, \mathbf{W}) = \prod_{j=1}^R \mathcal{N}(y_j | \mathbf{w}_j^\top \mathbf{x}, \sigma_j^2)
 $$
 
 Linear regression can be used to fit sample data to other than a linear function by applying a nonlinear transformation to the input featurese, by replacing $\mathbf{x}$ with $\boldsymbol{\phi}(\mathbf{x})$ to get 
@@ -277,9 +277,9 @@ $$
   \mathbf{v}^\top (\mathbf{X}^\top \mathbf{X})\mathbf{v} = (\mathbf{Xv})^\top (\mathbf{Xv}) = \lVert\mathbf{Xv}\rVert^2 > 0
 $$
 
-### Solving using QR decomposition
+#### Solving using QR decomposition
 
-If $\mathbf{X}$ is tall and skinny, i.e. $N \gg D$, it can be quicker to use QR decomposition to solve the normal equation. For $\mathbf{X} = \mathbf{QR}$, where $\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$, we can write the system of linear equations $\mathbf{Xw} = \mathbf{y}$ as
+If $\mathbf{X}$ is tall and skinny, i.e. $N \gg P$, it can be quicker to use QR decomposition to solve the normal equation. For $\mathbf{X} = \mathbf{QR}$, where $\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$, we can write the system of linear equations $\mathbf{Xw} = \mathbf{y}$ as
 
 $$
 \begin{align*}
@@ -290,6 +290,27 @@ $$
 $$
 
 Since $\mathbf{R}$ is upper triangular, we can solve this last set of equations using backsubsitution, thus avoiding matrix inversion. The time complexity of this algorithm is $\mathcal{O}((N+D)D^2)$.
+
+#### Solving using SVD
+
+Let $\mathbf{X}$ have the singular value decomposition (SVD) $\mathbf{X} = \mathbf{USV}^\top$, where
+- $\mathbf{V}^\top \mathbf{V} = \mathbf{I}_N$
+- $\mathbf{UU}^\top = \mathbf{U}^\top \mathbf{U} = \mathbf{I}_N$
+- $\mathbf{S}$ is an $N\times P$ matrix, whose upper left block is a $\operatorname{rk}(\mathbf{X}) \times\operatorname{rk}(\mathbf{X})$-dimensional diagonal matrix with the singular values on the diagonal. The remaining block is zero.
+
+Inserting the SVD in the MLE for $\mathbf{w}$ gives
+
+$$
+\begin{align*}
+  \hat{\mathbf{w}} =& (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \\
+  =& (\mathbf{VS}^\top \mathbf{U}^\top \mathbf{USV}^\top)^{-1} \mathbf{VD}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& (\mathbf{VS}^\top \mathbf{SV}^\top)^{-1} \mathbf{VS}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& \mathbf{V}(\mathbf{S}^\top \mathbf{S})^{-1} \mathbf{V}^\top \mathbf{VD}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& \mathbf{V}(\mathbf{S}^\top \mathbf{S})^{-1} \mathbf{D}^\top \mathbf{U}^\top \mathbf{y} 
+\end{align*}
+$$
+
+The block structure of the design matrix implies that $\mathbf{S}^+ = (\mathbf{S}^\top \mathbf{S})^{-1} \mathbf{S}$ is a $p\times n$-matrix with the reciprocal of the non-zero singular values on the diagonal of the left $p\times p$ dimensional upper left block.
 
 ### Ridge regression ($\ell_2$ regularization)
 
@@ -322,7 +343,7 @@ $$
 Solving for $\nabla_\mathbf{w} (\operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2) = 0$ gives
 
 $$
-  \hat{\mathbf{w}}_\text{MAP} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^\top \mathbf{y}
+  \hat{\mathbf{w}}_\text{MAP} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I}_P)^{-1} \mathbf{X}^\top \mathbf{y}
 $$
 
 #### Solving using QR decomposition
@@ -347,7 +368,7 @@ $$
 \end{align*}
 $$
 
-Hence, the MAP estimate is given by the normal equation
+Hence, the MAP estimate is given by
 
 $$
   \hat{\mathbf{w}}_\text{MAP} = (\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}})^{-1} \tilde{\mathbf{X}}^\top \tilde{\mathbf{y}}
@@ -362,20 +383,25 @@ If $D > N$, it is faster to use singular value decomposition (SVD) than QR decom
 - $\mathbf{UU}^\top = \mathbf{U}^\top \mathbf{U} = \mathbf{I}_N$
 - $\mathbf{S}$ is a diagonal $N\times N$ matrix
 
-If $\mathbf{R} = \mathbf{US}$ is an $N\times N$ matrix, we can show that
+Inserting this into the MAP estimate gives
 
 $$
-  \hat{\mathbf{w}}_\text{MAP} = \mathbf{V}(\mathbf{R}^\top \mathbf{R} + \lambda \mathbf{I}_N)^{-1} \mathbf{R}^\top \mathbf{y}
+\begin{align*}
+  \hat{\mathbf{w}}_\text{MAP} =& \mathbf{V}(\mathbf{US}^\top \mathbf{USV}^\top + \lambda \mathbf{I}_P)^{-1} \mathbf{V}\mathbf{S}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& (\mathbf{VS}^\top \mathbf{DV}^\top + \lambda \mathbf{VV}^\top)^{-1} \mathbf{VD}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& \mathbf{V} (\mathbf{S}^\top \mathbf{S} + \lambda \mathbf{I}_P)^{-1} \mathbf{V}^\top \mathbf{VS}^\top \mathbf{U}^\top \mathbf{y} \\
+  =& \mathbf{V}(\mathbf{S}^\top \mathbf{S} + \lambda \mathbf{I}_P)^{-1} \mathbf{S}^\top \mathbf{U}^\top \mathbf{y} 
+\end{align*}
 $$
 
-in other words, we can replace the $D$-dimensional vectors $\mathbf{x}_i$ with $N$-dimensional vectors $\mathbf{r}_i$, and perform our penalized fit as before. The time complexity for this algorithm is $\mathcal{O}(DN^2)$, which is less than $\mathcal{O}(D^3)$ if $D > N$.
+in other words, we can replace the $P$-dimensional vectors $\mathbf{x}_i$ with $N$-dimensional vectors $\mathbf{r}_i$, and perform our penalized fit as before. The time complexity for this algorithm is $\mathcal{O}(PN^2)$, which is less than $\mathcal{O}(D^3)$ if $P > N$.
 
 ### LASSO regression ($\ell_1$ regularization)
 
 An $\ell_1$ regularization can be applied to the maximum likelihood estimation by introducing a zero-mean Laplacian prior on the weights,
 
 $$
-  p(\mathbf{w}|\lambda) = \prod_{d=1}^D \operatorname{Laplace}(w_d|0, 1/\lambda) \propto \prod_{d=1}^D e^{-\lambda|w_d|}
+  p(\mathbf{w}|\lambda) = \prod_{p=1}^P \operatorname{Laplace}(w_p|0, 1/\lambda) \propto \prod_{p=1}^P e^{-\lambda|w_p|}
 $$
 
 where $\lambda$ is the sparsity parameter. To perform a MAP estimation of a linear regression model with this prior, we just have to minimize the following objective function
@@ -384,7 +410,7 @@ $$
   \operatorname{PNN}(\mathbf{w}) = -\ln(p(S|\mathbf{w})) - \ln(p(\mathbf{w}|\lambda)) = \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = \lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 + \lambda\lVert\mathbf{w}\rVert_1
 $$
 
-where $\lVert\mathbf{w}\rVert = \sum_{d=1}^D |w_d|$ is the $\ell_1$ norm of $\mathbf{w}$. This method is called *LASSO regression*, which stands for "least absolute shrinkage and selection operator".
+where $\lVert\mathbf{w}\rVert = \sum_{p=1}^P |w_p|$ is the $\ell_1$ norm of $\mathbf{w}$. This method is called *LASSO regression*, which stands for "least absolute shrinkage and selection operator".
 
 #### Thresholding
 
@@ -392,53 +418,53 @@ The partial derivative of $\operatorname{NLL}(\mathbf{w})$ is given by
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial w_d} \operatorname{NLL}(\mathbf{w}) =& a_d w_d - c_d \\
-  a_d =& \sum_{n=1}^N x_{nd}^2 \\
-  c_d =& \sum_{n=1}^N x_{nd} (y_n - \mathbf{w}_{-d}^\top \mathbf{x}_{n,-d})
+  \frac{\partial}{\partial w_p} \operatorname{NLL}(\mathbf{w}) =& a_p w_p - c_p \\
+  a_p =& \sum_{n=1}^N x_{np}^2 \\
+  c_p =& \sum_{n=1}^N x_{np} (y_n - \mathbf{w}_{-p}^\top \mathbf{x}_{n,-p})
 \end{align*}
 $$
 
-where $\mathbf{w}_{-d}$ is $\mathbf{w}$ without the $d$th component, and similarly $\mathbf{x}_{n,-d}$ is $\mathbf{x}_n$ withouth the $d$th component. We see that $c_d$ is proportional to the correlation between $d$th column of features $\mathbf{x}_{:,d}$ and the residual error obtained by predicting using all the other features, $\mathbf{r}_{-d} = \mathbf{y} - \mathbf{X}_{:,-d} \mathbf{w}_{-d}$. Hence the magnitude of $c_d$ is an indication of how relevant feature $d$ is for predictin $\mathbf{y}$, relative to the other features and the current parameters. Setting the gradient to $0$ gives the optimal update for $w_d$, keeping all other weights fixed
+where $\mathbf{w}_{-p}$ is $\mathbf{w}$ without the $p$th component, and similarly $\mathbf{x}_{n,-p}$ is $\mathbf{x}_n$ withouth the $p$th component. We see that $c_p$ is proportional to the correlation between $p$th column of features $\mathbf{x}_{:,p}$ and the residual error obtained by predicting using all the other features, $\mathbf{r}_{-p} = \mathbf{y} - \mathbf{X}_{:,-p} \mathbf{w}_{-p}$. Hence the magnitude of $c_p$ is an indication of how relevant feature $p$ is for predictin $\mathbf{y}$, relative to the other features and the current parameters. Setting the gradient to $0$ gives the optimal update for $w_p$, keeping all other weights fixed
 
 $$
-  w_d = c_d / a_d = \frac{\mathbf{x}_{:,d}^\top \mathbf{r}_{-d}}{\lVert\mathbf{x}_{:,d}\rVert_2^2}
+  w_p = c_p / a_p = \frac{\mathbf{x}_{:,p}^\top \mathbf{r}_{-p}}{\lVert\mathbf{x}_{:,p}\rVert_2^2}
 $$
 
-The corresponding new prediction for $\mathbf{r}_{-d}$ becomes $\hat{\mathbf{r}}_{-d} = w_d \mathbf{x}_{:,d}$, which is the orthogonal projection of the residual onto the column vector $\mathbf{x}_{:,d}$.
+The corresponding new prediction for $\mathbf{r}_{-p}$ becomes $\hat{\mathbf{r}}_{-p} = w_p \mathbf{x}_{:,p}$, which is the orthogonal projection of the residual onto the column vector $\mathbf{x}_{:,p}$.
 
-Unfortunately, the $\lVert\mathbf{w}\rVert_1$ term is not differentiable whenever $w_d = 0$. However, we can compute a subgradient at this point
+Unfortunately, the $\lVert\mathbf{w}\rVert_1$ term is not differentiable whenever $w_p = 0$. However, we can compute a subgradient at this point
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial w_d} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = (a_d w_d - c_d) + \lambda \partial_{w_d} \lVert\mathbf{w}\rVert_1 \\
+  \frac{\partial}{\partial w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = (a_p w_p - c_p) + \lambda \partial_{w_p} \lVert\mathbf{w}\rVert_1 \\
   =& \begin{cases}
-    a_d w_d - c_d - \lambda, \quad& w_d < 0 \\
-    [-c_d - \lambda, -c_d + \lambda] \quad& w_d = 0 \\
-    a_d w_d - c_d + \lambda \quad& w_d > 0
+    a_p w_p - c_p - \lambda, \quad& w_p < 0 \\
+    [-c_p - \lambda, -c_p + \lambda] \quad& w_p = 0 \\
+    a_p w_p - c_p + \lambda \quad& w_p > 0
   \end{cases}
 \end{align*}
 $$
 
-Depending on the value of $c_d$, the solutino to $\partial_{w_d} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = 0$ can occur at $3$ different values of $w_d$
+Depending on the value of $c_p$, the solutino to $\partial_{w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = 0$ can occur at $3$ different values of $w_p$
 
-1. If $c_d < -\lambda$, the feature is strongly negatively correlated with the residual, such that the subgradient is zero at $\hat{w}_d = (c_d + \lambda)/a_d < 0$
-2. If $c_d \in [-\lambda, \lambda]$, the feature is only weakly correlated with the residual, such that the subgradient is zero at $\hat{w}_d = 0$
-3. If $c_d > \lambda$, the feature is strongly positively correlated with the residual, such that the subgradient is zero at $\hat{w}_d = (c_d - \lambda)/a_d > 0$
+1. If $c_p < -\lambda$, the feature is strongly negatively correlated with the residual, such that the subgradient is zero at $\hat{w}_p = (c_p + \lambda)/a_p < 0$
+2. If $c_p \in [-\lambda, \lambda]$, the feature is only weakly correlated with the residual, such that the subgradient is zero at $\hat{w}_p = 0$
+3. If $c_p > \lambda$, the feature is strongly positively correlated with the residual, such that the subgradient is zero at $\hat{w}_p = (c_p - \lambda)/a_p > 0$
 
 In summary, we have
 
 $$
-  \hat{w}_d (c_d) = \begin{cases}
-    (c_d + \lambda)/a_d,\quad& c_d < -\lambda \\
-    0, \quad& c_d \in [-\lambda, \lambda] \\
-    (c_d - \lambda)/a_d,\quad& c_d > \lambda
+  \hat{w}_p (c_p) = \begin{cases}
+    (c_p + \lambda)/a_p,\quad& c_p < -\lambda \\
+    0, \quad& c_p \in [-\lambda, \lambda] \\
+    (c_p - \lambda)/a_p,\quad& c_p > \lambda
   \end{cases}
 $$
 
 We can write this as
 
 $$
-  \hat{w}_d = \operatorname{SoftThreshold}\left(\frac{c_d}{a_d}, \frac{\lambda}{a_d} \right)
+  \hat{w}_p = \operatorname{SoftThreshold}\left(\frac{c_p}{a_p}, \frac{\lambda}{a_p} \right)
 $$
 
 where
@@ -447,4 +473,4 @@ $$
   \operatorname{SoftThreshold}(x,\delta) := \sign(x) (|x| - \delta)_+
 $$
 
-and $x_+ = \max(x, 0)$ is the positive part of $x$. This is called *soft thresholding*. In contrast, *hard thresholding* sets values of $w_d$ to $0$ if $-\lambda \leq c_d \leq \lambda$, but it does not shrink the values of $w_d$ outside this interval. The slope of the soft thresholding line does does not coincide with the diagonal, which means that even large coefficients are shrunk towards zero. Consequently, LASSO regression is a biased estimator.
+and $x_+ = \max(x, 0)$ is the positive part of $x$. This is called *soft thresholding*. In contrast, *hard thresholding* sets values of $w_p$ to $0$ if $-\lambda \leq c_p \leq \lambda$, but it does not shrink the values of $w_p$ outside this interval. The slope of the soft thresholding line does does not coincide with the diagonal, which means that even large coefficients are shrunk towards zero. Consequently, LASSO regression is a biased estimator.
