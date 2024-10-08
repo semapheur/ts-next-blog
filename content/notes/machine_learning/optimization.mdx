@@ -1,0 +1,146 @@
+---
+title: 'Optimization'
+subject: 'Machine Learning'
+showToc: true
+---
+
+# Optimization problems
+
+<Figure width={100} src='/fig/optimization_problems.svg' alt=''
+  caption='Optimization problem types'
+/>
+
+The core problem in machine learing is parameter estimation (or model fitting) by minimizing a scalar-valued *loss/cost function* $\mathcal{L}:\theta\to\R$. This optimization problem can be stated as
+
+$$
+\begin{equation}
+  \hat{\boldsymbol{\theta}} \in \argmin_{\boldsymbol{\theta}\in\Theta} \mathcal{L}(\boldsymbol{\theta}) \tag{\label{equation-1}}
+\end{equation}
+$$
+
+If we want to maximize a *score/reward function* $R:\Theta\to\R$, we can equivalently minimize $\mathcal{L}(\boldsymbol{\theta}) = -R(\boldsymbol{\theta})$. The term *objective function* is generally used for the function we are seeking to optimize. An algortithm used to find an optimum of an objective function is often called a *solver*. The optimization problem is **continuous** if $\Theta\subseteq\R^p$, where $p$ is the number of parameter features.
+
+## Local and global optimization
+
+A point $\hat{\boldsymbol{\theta}}\in\theta$ satisfying $\eqref{equation-1}$ is called a *global optimum*. The process of finding such a point is called *global optimization*. A point $\hat{\boldsymbol{\theta}}$ is a *local minimum* if
+
+$$
+  \exists\delta > 0, \forall\boldsymbol{\theta}\in\Theta : \lVert\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}\rVert \leq \delta,\; \mathcal{L}(\hat{\boldsymbol{\theta}}) \leq\mathcal{L}(\boldsymbol{\theta})
+$$
+
+A local mimimum whose neighbour contains other local minima with same objective value, is called a *flat local minimum*. A local mimimum is *strict* if its cost is strictly lower than those of neighbouring points
+
+$$
+  \exists\delta > 0,\forall\boldsymbol{\theta}\in\Theta, \boldsymbol{\theta}\neq\hat{\boldsymbol{\theta}} : \lVert\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}\rVert \leq\delta, \mathcal{L}(\hat{\boldsymbol{\theta}}) < \mathcal{L}(\mathbf{\theta})
+$$
+
+If a *solver* is guaranteed to converge to a stationary point from any starting point, it called *globally convergent*. However, this does not implies that it will converge to a global optimum.
+
+### Optimality conditions
+
+For continuous, twice differentiable functions, we can characterize the points corresponing to local minima. Let $\mathbf{g}(\boldsymbol{\theta}) = \nabla\mathcal{L}(\boldsymbol{\theta})$ be the gradient vector, and $\mathbf{H}(\boldsymbol{\theta}) = \nabla^2 \mathcal{L}(\boldsymbol{\theta})$ be the Hessian matrix. Consider a point $\hat{\boldsymbol{\theta}}\in\R^p$ with gradient $\hat{\mathbf{g}} = \mathbf{g}(\boldsymbol{\theta})|_{\hat{\boldsymbol{\theta}}}$ and corresponding Hessian $\hat{\mathbf{H}} = \mathbf{H}(\boldsymbol{\theta})|_{\hat{\boldsymbol{\theta}}}$. The following conditions characterize every local minimum:
+- Necessary condition: If $\hat{\boldsymbol{\theta}}$ is a local minimum, then we must have $\hat{\mathbf{g}} = \mathbf{0}$, and $\mathbf{H}^*$ must be positive semi-definite.
+- Sufficient condition: If $\hat{\mathbf{g}} = \mathbf{0}$ and $\hat{\mathbf{H}}$ is positive definite, then $\hat{\boldsymbol{\theta}}$ is a local optimum.
+
+A stationary point can either be a 
+- mimimum with a corresponding positive definite Hessian
+- maximum with a corresponding negative definite Hessian
+- saddle points, whose Hessian has both positive and negative eigenvalues
+
+Thus, a zero gradient in itself is not a sufficient conditions for optima.
+
+## Constrained and unconstrained optimization
+
+An optimization problem is *unconstrained* if it minimizes an objective function over the entire parameter space $\Theta$. If $\Theta$ is subject to constraints $\mathcal{C}$, the optimization problem is *constrained*. Parameter constraints are generally classified as
+- *inequality constraints* of the form $g(\boldsymbol{\theta}) \leq 0$, which define open/closed subspaces of $\Theta$
+- *equality constraints* of the form $h_k (\boldsymbol{\theta}) = 0$, which define hypersurfaces within $\Theta$
+
+The subset of the parameter set that satisfies the constraints, i.e.
+
+$$
+  \mathcal{C} = \Set{\boldsymbol{\theta} | g_j (\boldsymbol{\theta}) \leq 0 \land h_k (\boldsymbol{\theta}) = 0,\; j\in\mathcal{I},\;k\in\mathcal{E}} \subseteq\Theta
+$$
+
+is called the *feasable set*. If $\mathcal{C} = \Theta$, the optimization problem is unconstrained. The constrained optimization problem can be stated as
+
+$$
+  \hat{\boldsymbol{\theta}}\in\argmin_{\boldsymbol{\theta}\in\mathcal{C}} \mathcal{L}(\boldsymbol{\theta})
+$$
+
+The addition of constraints can change the number of optima of a function. For example, an unbounded function can acquire multiple optima under constraints. Too many constraints can lead to an empty feasible set, i.e. $\mathcal{C}=\emptyset$. The task of finding any point (regardless of its cost) in the feasible set is called a *feasibility problem*.
+
+## Convex and unconvex optimization
+
+In *convex optimization*, we require the objective function to be a convex function defined over a convex set. The convexity implies that every minimum is global.
+
+<MathBox title='Convex set' boxType='definition'>
+A set $\mathcal{S}$ is *convex* if, for any $x, x' \in \mathcal{S}$, we have
+
+$$
+  \lambda x + (1 - \lambda)x' \in\mathcal{S},\; \forall \lambda\in[0,1]
+$$
+</MathBox>
+
+<MathBox title='Convex and concave function' boxType='definition'>
+A function $f:\mathcal{X}\to \mathcal{Y}$ is *convex* if its *epigraph* is a convex set. The epigraph of $f$ is the set of points above the function, i.e. $\mathcal{G}_+ = \Set{y\in Y | y \geq f(x),\forall x\in X }$. Equivalently, a function $f(x)$ is convex if it is defined on a convex set and if, for any $x_1, x_2 \in\mathcal{X}$, and for any $\lambda\in[0,1]$, we have
+
+$$
+  f(\lambda x_1 + (1 - \lambda)x_2) \leq \lambda f(x_1) + (1 - \lambda) f(x_2)
+$$
+
+A function is *strictly convex* if the inequality is strict. A function $f$ is *concave* if $-f(x)$ is convex, and *strictly convex* if $-f(x)$ is stricly convex for all $x\in\mathcal{X}$.
+</MathBox>
+
+<MathBox title='Characterization of convex functions' boxType='proposition'>
+Suppose $f:\R^n \to\R$ is twice differentiable over its domain. Then $f$ is convex if and only if the Hessian $\mathbb{H} = \nabla^2 f(\mathbf{x})$ is positive semi-definite for all $\mathbf{x}\in\R^n$. Furthermore, $f$ is strictly convex if $\mathbb{H}$ is positive definite.
+</MathBox>
+
+Recall that a quadratic form is a function $f:\R^n \to\R$ defined as $f(\mathbf{x}) = \mathbf{x}^\top \mathbf{Ax}$. This is convex if $\mathbf{A}$ is positive semi-definite, and is strictly convex if $\mathbf{A}$ is positive definite. It is neither convex nor concave if $\mathbf{A}$ has eigenvalues of mixed sign.
+
+### Strongly convex functions
+
+A function $f:\R^n \to\R$ is *strongly convex* with parameter $m > 0$ if the following holds for all $\mathbf{x}_1, \mathbf{x}_2 \in\R^n$
+
+$$
+  (\nabla f(\mathbf{x}) - \nabla f(\mathbf{y}))^\top (\mathbf{x} - \mathbf{y}) \geq m\lVert \mathbf{x}-\mathbf{y}\rVert_2^2
+$$
+
+A strongly convex function is also strictly convex, and the opposite is not necessarily true.
+
+If $f$ is twice differentiable, then it is stronly convex with parameter $m > 0$ if and only if $\nabla^2 f(\mathbf{x}) \geq m\mathbf{I}_n$ for all $\mathbf{x}\in\R^n$, where $\nabla^2 f$ is the Hessian matrix and the equality $\geq$ mean that $\nabla^2 f(\mathbf{x}) - m\mathbf{I}$ is positive semi-definite. This is equivalnet to requiring that the minimum eigenvalue of $\nabla^2 f(\mathbf{x})$ be at least $m$ for all $\mathbf{x}\in\R^n$.
+
+## Smooth and nonsmooth optimization
+
+In *smooth optimization*, the objective and constraints are continuously differentiable function. In *nonsmooth optimization*, there is at least some point where the gradient of the objective function or the constraints is not differentiable. Some unsmooth optimization problems allows decomposing the objective into a smooth (differentiable) and a rough (not continuously differentiable) part, i.e.
+
+$$
+  \mathcal{L}(\hat{\boldsymbol{\theta}}) = \mathcal{L}_\mathrm{s} (\boldsymbol{\theta}) \mathcal{L}_\mathrm{r} (\boldsymbol{\theta})
+$$
+
+This is called a *composite objective*. In machine learning applications, $\mathcal{L}_\mathrm{s}$ is usually the training set loss, and $\mathcal{L}_\mathrm{r}$ is a regularizer, such as the $\ell_1$ norm of $\boldsymbol{\theta}$
+
+### Subgradients
+
+For a convex function $f:\R^n \to\R$, we say that $\mathbf{g}\in\R^n$ is a *subgradient* of $f$ at $\mathbf{x}\in\R^n$ if for all $\mathbf{z}\in\R^n$
+
+$$
+  f(\mathbf{z}) \geq f(\mathbf{x}) + \mathbf{g}^\top (\mathbf{z} - \mathbf{x})
+$$
+
+Note that a subgradient can exist even when $f$ is not differentiable at a point. A function is *subdifferentiable* at $\mathbf{x}$ is there is at least one subgradient at $\mathbf{x}$. The set of such subgradients is called the *subdifferential* of $f$ at $\mathbf{x}\in\R^n$, and is denoted $\partial f(\mathbf{x})$.
+
+For example, the subdifferential of the absolute value function $f(x) = |x|$ is given by
+
+$$
+  \partial f(x) = \begin{cases}
+    \Set{-1} \quad&, x < 0 \\
+    [-1, 1] \quad&, x = 0 \\
+    \Set{1} \quad&, x > 0
+  \end{cases}
+$$
+
+# First-order methods
+
+# Second-order methods
+
+# Stochastic gradient descent
