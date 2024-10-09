@@ -107,11 +107,17 @@ $$
 
 A strongly convex function is also strictly convex, and the opposite is not necessarily true.
 
-If $f$ is twice differentiable, then it is stronly convex with parameter $m > 0$ if and only if $\nabla^2 f(\mathbf{x}) \geq m\mathbf{I}_n$ for all $\mathbf{x}\in\R^n$, where $\nabla^2 f$ is the Hessian matrix and the equality $\geq$ mean that $\nabla^2 f(\mathbf{x}) - m\mathbf{I}$ is positive semi-definite. This is equivalnet to requiring that the minimum eigenvalue of $\nabla^2 f(\mathbf{x})$ be at least $m$ for all $\mathbf{x}\in\R^n$.
+If $f$ is twice differentiable, then it is stronly convex with parameter $m > 0$ if and only if $\nabla^2 f(\mathbf{x}) \succeq m\mathbf{I}_n$ for all $\mathbf{x}\in\R^n$, where $\nabla^2 f$ is the Hessian matrix and the equality $\succeq$ mean that $\nabla^2 f(\mathbf{x}) - m\mathbf{I}$ is positive semi-definite. This is equivalnet to requiring that the minimum eigenvalue of $\nabla^2 f(\mathbf{x})$ be at least $m$ for all $\mathbf{x}\in\R^n$.
 
 ## Smooth and nonsmooth optimization
 
-In *smooth optimization*, the objective and constraints are continuously differentiable function. In *nonsmooth optimization*, there is at least some point where the gradient of the objective function or the constraints is not differentiable. Some unsmooth optimization problems allows decomposing the objective into a smooth (differentiable) and a rough (not continuously differentiable) part, i.e.
+In *smooth optimization*, the objective and constraints are continuously differentiable function. For smooth function, we can quantify the degree of smoothnes using the *Lipschitz constant*. For a real-valued function $f:\R\to\R$, this is defined as any constant $K\geq 0$, such that
+
+$$
+  |f(x_1) - f(x_2)| \leq K|x_1 - x_2|,\; \forall x_1, x_2 \in\R 
+$$
+
+In *nonsmooth optimization*, there is at least some point where the gradient of the objective function or the constraints is not differentiable. Some unsmooth optimization problems allows decomposing the objective into a smooth (differentiable) and a rough (not continuously differentiable) part, i.e.
 
 $$
   \mathcal{L}(\hat{\boldsymbol{\theta}}) = \mathcal{L}_\mathrm{s} (\boldsymbol{\theta}) \mathcal{L}_\mathrm{r} (\boldsymbol{\theta})
@@ -139,8 +145,175 @@ $$
   \end{cases}
 $$
 
-# First-order methods
+# First-order solvers
+
+Optimization algorithms that use first-order derivatives iteratively to find stationary points are known as stationary solvers. These solvers start from a point $\boldsymbol{\theta}_0$ and at each iteration $t$ perform an update of the form
+
+$$
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \mathbf{d}_t
+$$
+
+where $\eta_t$ is the *step size* or *learning rate*, and $\mathbf{d}_t$ is a *descent direction*, such as the negative of the gradient $\mathbf{g}_t = \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t}$. These update steps are continued until the method reaches a stationary point, where the gradient is zero.
+
+## Descent direction
+
+A direction $\mathbf{d}$ is a *descent direction* if there exists $\eta_{\mathrm{max}} > 0$ such that
+
+$$
+  \mathcal{L}(\boldsymbol{\theta} + \eta\mathbf{d}) < \mathcal{L}(\mathbf{\theta}),\; \forall 0 < \eta < \eta_{\mathrm{max}}
+$$
+
+The gradient at the current iterate $\boldsymbol{\theta}$ is given by
+
+$$
+  \mathbf{g}_t := \nabla\mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t} = \nabla\mathcal{L}(\boldsymbol{\theta}_t) = \mathbf{g}(\boldsymbol{\theta}_t)
+$$
+
+Since the gradient points in the direction of steepest accent, the negative gradient is the direction of steepes descent. It can be shown that any direction $\mathbf{d}$ is a descent direction if the angle $\theta$ between $\mathbf{d}$ and $-\mathbf{g}_t$ is less than $\pi/4$ ($90\deg$) and satisfies
+
+$$
+  \mathbf{d}^\top \mathbf{g}_t = \lVert\mathbf{d}\rVert\cdot\lVert\mathbf{g}_t \rVert \cos(\theta) < 0
+$$
+
+## Learning rate
+
+In machine learning, the sequence of step sizes $\Set{\eta_t}$ is called the *learning rate schedule*.
+
+### Constant rate
+
+The simplest learning method is to use a constant step size $\eta_t = \eta$. However, the method may fail to converge if $\eta$ is too large, and if it is too small, the method will converge but very slowly.
+
+In some cases, we can derive a theoretical upper bound on the maximum step size guaranteeing convergences. For quadratic objectives of the form $\mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2}\boldsymbol{\theta}^\top \mathbf{A}\boldsymbol{\theta} + \mathbf{b}^\top \boldsymbol{\theta} + c$ with $\mathbf{A}\geq 0$, we can show that the steepest descent will have global convergence if and only if the step size satisfies
+
+$$
+  \eta < \frac{2}{\lambda_{\mathrm{max}}} (\mathbf{A})
+$$
+
+where $\lambda_{\mathrm{max}}(\mathbf{A})$ is the largest eigenvalue of $\mathbf{A}$. More generally, if $K\geq 0$ is the Lipschitz constant of the gradient, then $\eta < 2/K$ ensures convergence. However, the Lipschitz constant is generally unknown.
+
+### Line-search
+
+The optimal step size can be found by finding the value that maximally decreases the objective along the chosen direction by solving the minimalization problem
+
+$$
+\begin{eqation}
+  \eta_t = \argmin_{\eta > 0} \phi_t (\eta) = \argmin_{\eta} \tag{\label{equation-2}}
+\end{equation}
+$$
+
+This is known as *line search*, since we are searching along the line defined by $\mathbf{d}_t$. 
+
+If the loss function is convex, this subproblem is also convex, because $\phi_t (\eta) = \mathcal{L}(\boldsymbol{\theta} + \eta\mathbf{d}_t)$ is a convex function of an affine function of $\eta$, for fixed $\boldsymbol{\theta}_t$ and $\mathbf{d}_t$. For example, consider the quadratic loss
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2}\boldsymbol{\theta}^\top \mathbf{A}\boldsymbol{\theta} + \mathbf{b}^\top \boldsymbol{\theta} + c
+$$
+
+Computing the derivative of $\phi$ gives
+
+$$
+\begin{align*}
+  \frac{\d \phi(\eta)}{\d\eta} =& \frac{\d}{\d\eta} \left[\frac{1}{2}(\boldsymbol{\theta} + \eta\mathbf{d})^\top \mathbf{A}(\boldsymbol{\theta} + \eta\mathbf{d}) + \mathbf{b}^\top (\boldsymbol{\theta} + \eta\mathbf{d}) + c \right] \\
+  =& \mathbf{d}^\top \mathbf{A}(\boldsymbol{\theta} + \eta\mathbf{d}) + \mathbf{d}^\top \mathbf{b} \\
+  =& \mathbf{d}^\top (\mathbf{A}\boldsymbol{\theta} + \mathbf{b}) + \eta\mathbf{d}^\top \mathbf{Ad}
+\end{align*}
+$$
+
+Solving for $\d\pi(\eta)/\d\eta = 0$ gives
+
+$$
+  \eta = -\frac{\mathbf{d}^\top (\mathbf{A}\boldsymbol{\theta} + \mathbf{b})}{\mathbf{d}^\top \mathbf{Ad}}
+$$
+
+Using the optimal step size is known as *exact line search*. However, it is not usually necessary to be so precise. There are several methods, such as the *Armijo backtracking method*, that try to ensure sufficient reduction in the objective function without spending too much time trying to solve $\eqref{equation-2}$. In particular, we can start with the current stepsize (or some maximum value), and then reduce it by a factor $0 < c < 1$ at each step until we satisfy the following condition, known as the *Armijo-Goldstein test*:
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}_t + \eta\mathbf{d}_t) \leq \mathcal{L}(\boldsymbol{\theta}_t) + c\eta\mathbf{d}_t^\top \nabla\mathcal{L}(\boldsymbol{\theta}_t)
+$$
+
+where $c\in[0,1]$ is a constant, typically $c = 10^{-1}$. In practice, the initialization of the line-search and how to backtrack can significantly affect performance.
+
+## Convergence rates
+
+For certain convex problems, with a gradient with bounded Lipschitz constant, one can show that gradient descent converges at a *linear rate*. This means that there exists a number $0 < \mu < 1$ such that
+
+$$
+  |\mathcal{L}(\boldsymbol{\theta}_{t+1}) - \mathcal{L}(\boldsymbol{\theta}_*) \leq \mu|\mathcal{L}(\boldsymbol{\theta}_t) - \mathcal{L}(\boldsymbol{\theta}_*)|
+$$
+
+Here $\mu$ is called the *rate of convergence*.
+
+For some simple problem, we can derive the convergence rate explicitly. For quadratic objective of the form $\mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2}\boldsymbol{\theta}^\top \mathbf{A}\boldsymbol{\theta} + \mathbf{b}^\top \boldsymbol{\theta} + c$ with $\mathbf{A} \succ 0$ positive definite. Suppose we use steepest descent with exact line search. One can show that the convergence rate is given by
+
+$$
+  \mu = \left\frac{\lambda_\mathrm{max} - \lambda_\mathbf{min}}{\lambda_\mathrm{max} + \lambda_\mathbf{min}}\right^2
+$$
+
+where $\lambda_\mathrm{max}$ and $\lambda_\mathrm{min}$ are the largest and smallest eigenvalues of $\mathbf{A}$, respectively. We can write this as $\mu = \left(\frac{\kappa - 1}{\kappa + 1}\right)^2$, where $\kappa = \lambda_\mathrm{max} / \lambda_\mathrm{min}$ is the condition number of $\mathbf{A}$. Intuitively, the condition number measures how "skewed" the space is, in the sense of being far from a symmetrical bowl.
+
+In the more general case of non-quadratic functions, the objective will often be locally quadratic around a local optimum. Hence, the convergence rate depends on the condition number of the Hessian $\kappa(\mathbf{H})$, at that point. We can often improve the convergence speed by optimizing a surrogate objective at each step which has a Hessian that is close to the Hessian of the objective function $\eref$.
+
+In some cases, the path of steepest descent with an exact line-search exhibits a characteristic zig-zag behaviour, which is inefficient. This problem can be overcome using a method called *conjugate descent*.
+
+## Momentum methods
+
+One simple heuristic, known as the *heavy ball* or *momentum* method, is to move faster along directions that were previously good, and to slow down along direction where the gradient has suddenly changed. This can be implemented as follows
+
+$$
+\begin{align*}
+  \mathbf{m}_t =& \beta\mathbf{m}_{t-1} + \mathbf{g}_{t-1} \\
+  \boldsymbol{\theta}_t =& \boldsymbol{\theta}_{t-1} - \eta_t \mathbf{m}_t
+\end{align*}
+$$
+
+where $\mathbf{m}_t$ is the momentum and $0 < \beta < 1$. A typical value of $\beta$ is $0.9$. For $\beta = 0$, the method reduces to gradient descent. We see that $\mathbf{m}_t$ is like an exponentially weighted moving average of the past gradients:
+
+$$
+  \mathbf{m}_t = \sum_{\tau=0}^{t-1} \beta^\tau \mathbf{g}_{t - \tau - 1}
+$$
+
+If all the past gradients are a constant, say $\mathbf{g}$, this simplifies to
+
+$$
+  \mathbf{m}_t = \mathbf{g}\sum_{\tau=0}^{t-1} \beta^\tau
+$$
+
+The scaling factor is a geometric series, whose infinite sum is given by
+
+$$
+  \sum_{i=0}^\infty \beta^i = \frac{1}{1 - \beta}
+$$
+
+Thus in the limit, we multiply the gradient by $1/(1 - \beta)$.
+
+Since we upde the parameters using the gradient average $\mathbf{m}_{t-1}$, rather than just the most recent gradient $\mathbf{g}_{t-1}$, we see that past gradients can exhibit some influence on the present. Furthermore, when momentum is combined with stochastic gradient descent, it can simulate the effects of a larger minibatch, without the computational cost.
+
+### Nesterov momentum
+
+One problem with the standard momentum method is that it may not slow down enough at the bottom of a valley, causing oscillation. The *Nesterov accelerated gradient* method instead modifies the gradient descent to include an extrapolation step, as follows:
+
+$$
+\begin{align*}
+  \tilde{\boldsymbol{\theta}}_{t+1} =& \boldsymbol{\theta}_t + \beta(\boldsymbol{\theta}_t - \boldsymbol{\theta}_{t-1}) \\
+  \boldsymbol{\theta}_{t+1} =& \tilde{\boldsymbol{\theta}}_{t+1} - \eta_t \nabla\mathcal{L} (\tilde{\boldsymbol{\theta}}_{t+1}) 
+\end{align*}
+$$
+
+This is essentially a form of one-step "look ahead", that can reduce the amount of oscillation. Nesterov accelerated gradient can also be rewritten in the same format as standard momentum. In this case, the momentum term is updated using the gradient at the predicted new location,
+
+$$
+\begin{align*}
+  \mathbf{m}_{t+1} =& \beta\mathbf{m}_t - \eta_t \nabla\mathcal{L}(\boldsymbol{\theta}_t + \beta\mathbf{m}_t) \\
+  \boldsymbol{\theta}_{t+1} =& \boldsymbol{\theta}_t + \mathbf{m}_{t+1}
+\end{align*}
+$$
+
+This show how this method can be faster than standard momentum: the momentum vector is already roughly point in the right direction, so measuring the gradient at the new location, $\boldsymbol{\theta}_t + \beta\mathbf{m}_t$, rather than the current location $\boldsymbol{\theta}_t$, can be more accurate.
+
+The Nesterov accelerated gradient method is provably faster than steepest descent for convex functions when $\beta$ and $\eta_t$ are chosen appropriately. It is called "accelerated" because of this improved convergence rate, which is optimal for gradient-based methods using only first-order information when the objective function is convex and has Lipschitz-continuous gradients. In practice, however, using Nesterov momentum can be slower than steepest descent, and can even be unstable is if $\beta$ or $\eta_t$ are misspecified.
 
 # Second-order methods
+
+## Newton's method
 
 # Stochastic gradient descent
