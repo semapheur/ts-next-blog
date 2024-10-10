@@ -1,5 +1,5 @@
-import { MDXRemoteSerializeResult } from 'next-mdx-remote'
-import Vector from 'lib/utils/vector'
+import type { MDXRemoteSerializeResult } from "next-mdx-remote"
+import type Vector from "lib/utils/vector"
 
 export type Vec2 = {
   x: number

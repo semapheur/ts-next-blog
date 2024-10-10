@@ -1,4 +1,5 @@
 import { serialize } from "next-mdx-remote/serialize"
+import type { MDXProps } from "mdx/types"
 
 //import { mystParser } from 'myst-parser'
 import remarkMath from "remark-math"
@@ -15,42 +16,52 @@ import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import sectionize from 'remark-sectionize'
 
 import { rehypeMathref, rehypeFancyLists } from "./rehype"
+import rehypeCitation from "rehype-citation/."
 
 export const remarkPlugins = [remarkGfm, remarkMath]
-export const rehypePlugins = [
-  rehypeSlug,
-  rehypeAutolinkHeadings,
-  [rehypeImgSize, { dir: "public" }],
-  rehypePrettyCode,
-  [
-    rehypeKatex,
-    {
-      trust: (context) => ["\\htmlId", "\\href"].includes(context.command),
-      macros: {
-        "\\d": "\\mathrm{d}",
-        "\\D": "\\mathrm{D}",
-        "\\eqref": "\\href{###1}{(\\text{#1})}",
-        "\\ref": "\\href{###1}{\\text{#1}}",
-        "\\label": "\\htmlId{#1}{\\text{#1}}",
+export function rehypePlugins(bibliography = "", noCite: string[] = []) {
+  return [
+    rehypeSlug,
+    rehypeAutolinkHeadings,
+    [rehypeImgSize, { dir: "public" }],
+    rehypePrettyCode,
+    [
+      rehypeKatex,
+      {
+        trust: (context) => ["\\htmlId", "\\href"].includes(context.command),
+        macros: {
+          "\\d": "\\mathrm{d}",
+          "\\D": "\\mathrm{D}",
+          "\\eqref": "\\href{###1}{(\\text{#1})}",
+          "\\ref": "\\href{###1}{\\text{#1}}",
+          "\\label": "\\htmlId{#1}{\\text{#1}}",
+        },
       },
-    },
-  ],
-  rehypeMathref,
-  rehypeFancyLists,
-  //[rehypeMathjax, {
-  //	loader: {
-  //    load: ['[custom]/xypic.js'],
-  //    paths: {custom: 'https://cdn.jsdelivr.net/gh/sonoisa/XyJax-v3@3.0.1/build/'}
-  //  },
-  //  tex: {
-  //    packages: {'[+]': ['xypic']},
-  //		inlineMath: [ ['$','$'], ['\\(','\\)'] ]
-  //  },
-  //	chtml: {
-  //    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
-  //  }
-  //}]
-]
+    ],
+    [
+      rehypeCitation,
+      {
+        bibliography: bibliography,
+        noCite: noCite ?? [],
+      },
+    ],
+    rehypeMathref,
+    rehypeFancyLists,
+    //[rehypeMathjax, {
+    //	loader: {
+    //    load: ['[custom]/xypic.js'],
+    //    paths: {custom: 'https://cdn.jsdelivr.net/gh/sonoisa/XyJax-v3@3.0.1/build/'}
+    //  },
+    //  tex: {
+    //    packages: {'[+]': ['xypic']},
+    //		inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+    //  },
+    //	chtml: {
+    //    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
+    //  }
+    //}]
+  ]
+}
 
 export async function serializeMDX<T>(
   rawMdx: string,
