@@ -107,7 +107,7 @@ export default async function NotePage({ params: { subject, slug } }: Props) {
   const { content, _ } = await compileMDX({
     source: source,
     ...(MDXOptions(
-      path.join("content", "notes", "references.bib"),
+      path.join("content", "data", "references.bib"),
       frontmatter.data.references,
     ) as MDXProps),
   })

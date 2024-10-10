@@ -1,22 +1,21 @@
 import { serialize } from "next-mdx-remote/serialize"
-import type { MDXProps } from "mdx/types"
 
 //import { mystParser } from 'myst-parser'
-import remarkMath from "remark-math"
-import remarkGfm from "remark-gfm"
-import rehypeKatex from "rehype-katex"
-import rehypePrettyCode from "rehype-pretty-code"
-import rehypeImgSize from "rehype-img-size"
-//import rehypeMathjax from 'rehype-mathjax/chtml'
-import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import rehypeCitation from "rehype-citation"
+import rehypeImgSize from "rehype-img-size"
+import rehypeKatex from "rehype-katex"
+//import rehypeMathjax from 'rehype-mathjax/chtml'
+import rehypePrettyCode from "rehype-pretty-code"
+import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 import type { MDXPost, NoteHeading } from "./types"
 import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
 import { rehypeMathref, rehypeFancyLists } from "./rehype"
-import rehypeCitation from "rehype-citation/."
 
 export const remarkPlugins = [remarkGfm, remarkMath]
 export function rehypePlugins(bibliography = "", noCite: string[] = []) {
@@ -42,7 +41,8 @@ export function rehypePlugins(bibliography = "", noCite: string[] = []) {
       rehypeCitation,
       {
         bibliography: bibliography,
-        noCite: noCite ?? [],
+        csl: "harvard1",
+        noCite: noCite,
       },
     ],
     rehypeMathref,
