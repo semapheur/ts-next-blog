@@ -149,7 +149,7 @@ $$
 
 # First-order solvers
 
-Optimization algorithms that use first-order derivatives iteratively to find stationary points are known as stationary solvers. These solvers start from a point $\boldsymbol{\theta}_0$ and at each iteration $t$ perform an update of the form
+Optimization algorithms that use first-order derivatives iteratively to find stationary points are known as stationary solvers. Such methods neglect the curvature of the objective, and can thus be slow to converge. First-order solvers start from a point $\boldsymbol{\theta}_0$ and at each iteration $t$ perform an update of the form
 
 $$
   \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \mathbf{d}_t
@@ -198,7 +198,7 @@ where $\lambda_{\mathrm{max}}(\mathbf{A})$ is the largest eigenvalue of $\mathbf
 The optimal step size can be found by finding the value that maximally decreases the objective along the chosen direction by solving the minimalization problem
 
 $$
-\begin{eqation}
+\begin{equation}
   \eta_t = \argmin_{\eta > 0} \phi_t (\eta) = \argmin_{\eta} \tag{\label{equation-2}}
 \end{equation}
 $$
@@ -230,7 +230,9 @@ $$
 Using the optimal step size is known as *exact line search*. However, it is not usually necessary to be so precise. There are several methods, such as the *Armijo backtracking method*, that try to ensure sufficient reduction in the objective function without spending too much time trying to solve $\eqref{equation-2}$. In particular, we can start with the current stepsize (or some maximum value), and then reduce it by a factor $0 < c < 1$ at each step until we satisfy the following condition, known as the *Armijo-Goldstein test*:
 
 $$
-  \mathcal{L}(\boldsymbol{\theta}_t + \eta\mathbf{d}_t) \leq \mathcal{L}(\boldsymbol{\theta}_t) + c\eta\mathbf{d}_t^\top \nabla\mathcal{L}(\boldsymbol{\theta}_t)
+\begin{equation}
+  \mathcal{L}(\boldsymbol{\theta}_t + \eta\mathbf{d}_t) \leq \mathcal{L}(\boldsymbol{\theta}_t) + c\eta\mathbf{d}_t^\top \nabla\mathcal{L}(\boldsymbol{\theta}_t) \tag{\label{equation-4}}
+\end{equation}
 $$
 
 where $c\in[0,1]$ is a constant, typically $c = 10^{-1}$. In practice, the initialization of the line-search and how to backtrack can significantly affect performance.
@@ -248,7 +250,7 @@ Here $\mu$ is called the *rate of convergence*.
 For some simple problem, we can derive the convergence rate explicitly. For quadratic objective of the form $\mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2}\boldsymbol{\theta}^\top \mathbf{A}\boldsymbol{\theta} + \mathbf{b}^\top \boldsymbol{\theta} + c$ with $\mathbf{A} \succ 0$ positive definite. Suppose we use steepest descent with exact line search. One can show that the convergence rate is given by
 
 $$
-  \mu = \left\frac{\lambda_\mathrm{max} - \lambda_\mathbf{min}}{\lambda_\mathrm{max} + \lambda_\mathbf{min}}\right^2
+  \mu = \left(\frac{\lambda_\mathrm{max} - \lambda_\mathbf{min}}{\lambda_\mathrm{max} + \lambda_\mathbf{min}}\right)^2
 $$
 
 where $\lambda_\mathrm{max}$ and $\lambda_\mathrm{min}$ are the largest and smallest eigenvalues of $\mathbf{A}$, respectively. We can write this as $\mu = \left(\frac{\kappa - 1}{\kappa + 1}\right)^2$, where $\kappa = \lambda_\mathrm{max} / \lambda_\mathrm{min}$ is the condition number of $\mathbf{A}$. Intuitively, the condition number measures how "skewed" the space is, in the sense of being far from a symmetrical bowl.
@@ -316,9 +318,226 @@ The Nesterov accelerated gradient method is provably faster than steepest descen
 
 # Second-order methods
 
+Second-order solvers consider curvature of the objective in various ways, which may yield faster convergence.
+
 ## Newton's method
 
+Newton's method is a second-order solver consisting of updates of the form
+
+$$
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \mathbf{H}_t^{-1} \mathbf{g}_t
+$$
+
+where
+
+$$
+  \mathbf{H}_t := \nabla^2 \mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t} = \nabla^2 \mathcal{L}(\boldsymbol{\theta}_t) = \mathbf{H}(\boldsymbol{\theta})
+$$
+
+is assumed to be positive-definite to ensure the update is well-defined. If the quadratic approximation is a good one, we should pick $\mathbf{d}_t = -\mathbf{H}_t^{-1} \mathbf{g}_t$ as our descent direction. However, we can also use line seach to find the best stepsize; this tends to be more robust as using $\eta_1 = 1$ may not always converge globally.
+
+<MathBox title="Newton's method" boxType='algorithm'>
+1. Initialize $\boldsymbol{\theta}_0$
+2. **for** $t = 0,1,\dots$ *until convergence* **do**
+    1. Evaluate $\mathbf{g}_t = \nabla\mathcal{L}(\boldsymbol{\theta}_t)$
+    2. Evaluate $\mathbf{H}_t = \nabla^2 \mathcal{L}(\boldsymbol{\theta}_t)$
+    3. Solve $\mathbf{H}_t \mathbf{d}_t = -\mathbf{g}_t$ for $\mathbf{d}_t$
+    4. Use line search to find stepsize $\eta_t$ along $\mathbf{d}_t$
+    5. $\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \mathbf{d}_t$
+
+<details>
+<summary>Details</summary>
+
+Newton's method can be derived by minimizing the second order Taylor series approximation of $\mathbb{L}(\boldsymbol{\theta})$ around $\boldsymbol{\theta}_t$, which is given by
+
+$$
+\begin{equation}
+  \mathcal{L}(\boldsymbol{\theta}) \approx \mathcal{L}(\boldsymbol{\theta}_t) + \mathbf{g}_t^\top (\boldsymbol{\theta} - \boldsymbol{\theta}_t) + \frac{1}{2}(\boldsymbol{\theta} - \boldsymbol{\theta}_t)^\top \boldsymbol{H}_t (\boldsymbol{\theta} - \boldsymbol{\theta}_t) \tag{\label{equation-3}}
+\end{equation}
+$$
+
+The minimum of $\eqref{equation-3}$ is at
+
+$$
+  \boldsymbol{\theta} = \boldsymbol{\theta}_t - \mathbf{H}_t^{-1} \mathbf{g}_t
+$$
+</details>
+</MathBox>
+
+### Quasi-Newton methods
+
+*Quasi-Newton methods*, or *variable metric methods*, iteratively build up an approximation to the Hessian using information gleaned from the gradient vector at each step. The most common method is called *BFGS* (named after its simultaneous inventors, Broyden, Fletcher, Goldfarb and Shanno), which updates the approximation to the Hessian $\mathbf{B}_t \approx \mathbf{H}_t$ as follows
+
+$$
+\begin{align*}
+  \mathbf{B}_{t+1} =& \mathbf{B}_t + \frac{\mathbf{y}_t \mathbf{y}_t^\top}{\mathbf{y}_t^\top \mathbf{s}_t} - \frac{(\mathbf{B}_t \mathbf{s}_t)(\mathbf{B}_t \mathbf{s}_t)^\top}{\mathbf{s}_t^\top \mathbf{B}_t \mathbf{s}_t} \\
+  \mathbf{s}_t =& \boldsymbol{\theta}_t - \boldsymbol{\theta}_{t-1} \\
+  \mathbf{y}_t = \mathbf{g}_t - \mathbf{g}_{t-1}
+\end{align*}
+$$
+
+This a rank-two update to the matrix. If $\mathbf{B}_0$ is positive-definite, and the step size $\eta$ is chosen via line search satisfying both the Armijo-Goldstein condition $\eqref{equation-4}$ and the following condition
+
+$$
+  \nabla\mathcal{L}(\boldsymbol{\theta}_t + \eta\mathbf{d}_t) \geq c_2 \eta \mathbf{d}_t^\top \nabla\mathcal{L}(\boldsymbol{\theta}_t)
+$$
+
+then $\mathbf{B}_{t+1}$ will remain positive definite. The constant $c_2$ is choosen within $(c,1)$ where $c$ is the tunable parameter in $\eqref{equation-4}$. The two step size condition are together know as the *Wolfe conditions*. We typically start with a diagonal approximation $\mathbf{B}_0 = \mathbf{I}$. Thus, BFGS can be though of as a "diagonal plus low-rank" approximation to the Hessian.
+
+Alternatively, BFGS can iteratively update an approximation to the inverse Hessian, $\mathbf{C}_t \approx \mathbf{H}_t^{-1}$, as follows:
+
+$$
+  \mathbf{C}_{t+1} = \left(\mathbf{I} - \frac{\mathbf{s}_t \mathbf{y}_t^\top}{\mathbf{y}_t^\top \mathbf{s}_t} \right) \mathbf{C}_t \left(\mathbf{I} - \frac{\mathbf{y}_t \mathbf{s}_t^\top}{\mathbf{y}_t^\top \mathbf{s}_t} \right) + \frac{\mathbf{s}_t \mathbf{s}_t^\top}{\mathbf{y}_t^\top \mathbf{s}_t}
+$$
+
+Since storing the Hessian approximation still takes $\mathcal{O}(p^2)$ space, for very large problems, one can use *limited memory BGFS*, or *L-BFGS*, where we control the rank of the approximation by only using the $M$ most recent $(\mathbf{s}_t, \mathbf{y}_t)$ pairs while ignoring older information. Rather than storing $\mathbf{B}_t$ explicitly, we just store these vectors in memory, and then approximate $\mathbf{H}_t^{-1} \mathbf{g}_t$ by performing a sequence of inner products with the stored $\mathbf{s}_t$ and $\mathbf{y}_t$ vectors. The storage requirements are therefore $\mathcal{O}(Mp)$. Typically choosing $M$ to be between $5-20$ suffices for good performance.
+
+### Trust region methods
+
+If the objective function is nonconvex, then the Hessian $\mathbf{H}_t$ may not be positive definite, so $\mathbf{d}_t = -\mathbf{H}_t^{-1} \mathbf{g}_t$ may not be a descent direction. Newton's method becomes troublesome if the quadratic approximation becomes invalid. However, there is usually a local region around the current iterate where we can safely approximate the objective by a quadratic. Let us call this region $\mathcal{R}_t$, and let us call $M(\boldsymbol{\delta})$ the approximation to the objective, where $\boldsymbol{\delta} = \boldsymbol{\theta} - \boldsymbol{\theta}_t$. Then at each step we can solve
+
+$$
+  \boldsymbol{\delta}^* = \argmin_{\boldsymbol{\delta}\in\mathcal{R}_t} M_t (\boldsymbol{\delta})
+$$
+
+This is called *trust-region optimization*, and be seen as the "opposite" of line search, in the sense that we pick a distance we want to travel, determined by $\mathcal{R}_t$, and then solve for the optimal direction.
+
+We usually assume that $M_t (\boldsymbol{\delta})$ is a quadratic approximation
+
+$$
+  M_t (\boldsymbol{\delta}) = \mathcal{L}(\boldsymbol{\theta}_t) + \mathbf{g}_t^\top \boldsymbol{\delta} + \frac{1}{2}\boldsymbol{\delta}^\top \mathbf{H}_t \boldsymbol{\delta}
+$$
+
+where $\mathbf{g}_t = \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t}$, and $\mathbf{H}_t = \nabla_{\boldsymbol{\theta}}^2 \mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t}$ is the Hessian. Furthermore, it is common to assume that $\mathcal{R}_t$ is a ball of radius $r$, i.e. $\mathcal{R}_t = \Set{\boldsymbol{\delta} : \lVert\boldsymbol{\delta}\rVert_2 \leq r}$. Using this, we can convert the constrained problem into an unconstrained one as follows:
+
+$$
+  \boldsymbol{\delta}^* = \argmin_{\boldsymbol{\delta}} M(\boldsymbol{\delta})
+$$
+
+for some Lagrangian multiplier $\lambda > 0$, which depends on the radius $r$. We can solve this usin
+
+$$
+  \boldsymbol{\delta} = -(\mathbf{H} + \lambda\mathbf{I})^{-1} \mathbf{g}
+$$
+
+This is called *Tikhonov damping* or *Tikhonov regularization*. Note that adding a sufficiently large $\lambda\mathbf{I}$ to $\mathbf{H}$ ensures the resulting matrix is always positive definite. As $\lambda\to 0$, this trust method reduces to Newton's method, but for $\lambda$ large enough, it will make all the negative eigenvalues positive.
+
 # Stochastic gradient descent
+
+In *stochastic optimization* we seek to minimize the average value of a function
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}) = \mathbb{E}_{q(\mathbf{z})} [\mathcal{L}(\boldsymbol{\theta},\mathbf{z})]
+$$
+
+where $\mathbf{z}$ is a random input to the objective. This could be a noise term, coming from the environment, or it could be a training example drawn randomly from the training set, as we explain below. At each iteration, we assume we observe $\mathcal{L}_t (\mathbf{\theta}) = \mathcal{L}(\boldsymbol{\theta}, \mathbf{z}_t)$, where $\mathbf{z}_t \sim q$. We also assume a way to compute an unbiased estimate of the gradient of $\mathcal{L}$. If the distribution $q(\mathbf{z})$ is independent of the parameters we are optimizing, we can use $\mathbf{g}_t = \lambda_{\boldsymbol{\theta}} \mathcal{L}_t (\boldsymbol{\theta})$. In this case, the resulting algorithm can be written as follows:
+
+$$
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \nabla\mathcal{L}(\boldsymbol{\theta}_t, \boldsymbol{z}_t) = \boldsymbol{\tehta}_t - \eta_t \mathbf{g}_t
+$$
+
+This method is called *stochastic gradient descent* (SGD). As long as the gradient estimate is unbiased, then this method will converge to a stationary point, provide we decay the step size $\eta_t$ at a certain rate.
+
+## Application to finite sum problems
+
+SGD is particularly useful in machine learning models based on minimizing empirical risk, which is given by the loss function
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}_t) = \frac{1}{n} \sum_{i=1}^n \ell(\mathbf{y}_i , f(\mathbf{x}_i; \boldsymbol{\theta}_t)) = \frac{1}{2} \sum_{i=1}^n \mathcal{L}_i (\boldsymbol{\theta}_t)
+$$
+
+This is called a *finite sum problem*. The gradient of this objective has the form
+
+$$
+\begin{equation}
+  \mathbf{g}_t = \frac{1}{n} \sum_{i=1}^n \nabla_{\boldsymbol{\theta}} \mathcal{L}_i (\boldsymbol{\theta}_t) = \frac{1}{n} \sum_{i=1}^n \nabla_{\boldsymbol{\theta}} \ell(\mathbf{y}_i, f(\mathbf{x}_i; \boldsymbol{\theta}_t)) \tag{\label{equation-5}}
+\end{equation}
+$$
+
+This requires summing over all $n$ training, which can be slow if $n$ is large. On the other hand, we can approximate this by sampling a *minibatch* of $b \ll n$ samples to get
+
+$$
+  \mathbf{g}_t \approx \frac{1}{|\mathcal{B}_t|} \sum_{i\in\mathcal{B}_t} \nabla_{\boldsymbol{\theta}} \mathcal{L}_i (\boldsymbol{\theta}_t) = \frac{1}{|\mathcal{B}_t|} \sum_{i\in\mathcal{B}_t} \nabla_{\boldsymbol{\theta}} \ell(\mathbf{y}_i, f(\mathbf{x}_i;\boldsymbol{\theta}_t))
+$$
+
+where $\mathcal{B}_t$ is a set of randomly chosen examples to use at iteration $t$. This is an unbiased approximation to the empirical average $\eqref{equation-5}$. Hence, we can safely use this with SGD.
+
+In practive we usually sample $\mathcal{B}_t$ without replacement. Once we reach the end of a dataset after a single training *epoch*, we can perform a random shuffling of the examples, to ensure that each minibatch on the epoch is different from the last.
+
+Although the theoretical rate of convergence of $SGD$ is slower than batch GD (in particular, SGD has a sublinear convergence rate), in practice SGD is often faster, since the per-step time is much lower. To see why SGD can make faster progress than full batch GD, suppose we have a dataset consisting of a single example duplicated $K$ timese. Batch training will be (at least) $K$ times slower than $SGD$, since it will waste time computing the gradient for the repeated examples. Even if there are no duplicates, batch training can be wasteful, since early on in training the parameters are not well estimated, so it is not worth carefully evaluating the gradient.
+
+<MathBox title='SGD for fitting linear regression' boxType='example' tag=''>
+Recall the objective for a linear regression problem has the form
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2n} \sum_{i=1}^n (\mathbf{x}_i^\top \boldsymbol{\theta} - y_i)^2 = \frac{1}{2n}\lvert\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\rVert_2^2
+$$
+
+with gradient
+
+$$
+  \mathbf{g}_t = \frac{1}{n} \sum_{i=1}^n (\boldsymbol{\theta}_t^\top \mathbf{x}_i - y_i)\mathbf{x}_i
+$$
+
+Now consider using SGD with a minibatch size of $b = 1$. The update becomes
+
+$$
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t (\boldsymbol{\theta}_t^\top \mathbf{x}_i - y_i)\mathbf{x}_i
+$$
+
+where $i = i(t)$ is the index of the example chosen at iteration $t$. This solver is called the *least mean squares* (LMS) algorithm, and is also know as the *delta rule*, or the *Widrow-Hoff rule*. 
+</MathBox>
+
+## Step sizing
+
+When using SGD, we need to be careful in how we choose the learning rate in order to achieve convergence. Typically, an overly small learning rate results in underfitting, and overly large learning rate results in instability of the model.
+
+One heuristic for choosing a good learning rate is to start with a small learning rate and gradually increase it, evaluating performance using a small number of minibatches. The learning rate with the lowest loss is picked. To ensure stability, it is better to pick a rate that is slightly smaller then one with the lowest loss.
+
+Rather than choosing a single constant learning rate, we can use a *learning rate schedule*, adjusting the step size over time. Theoretically, a sufficient condition for SGD to achieve convergence is if the learning rate schedule satisfies the *Robbins-Monro conditions*:
+
+$$
+  \eta_t \to 0,\; \frac{\sum_{t=1}^\infty \eta_t^2}{\sum_{t=1}^\infty \eta_t} \to 0
+$$
+
+The following three learning rate schedules are commonly used:
+1. Piecewise constant: $\eta_t = \eta_i$ if $t_i \leq t \leq t_{i+1}$
+2. Exponential decay: $\eta_t = \eta_0 e^{-\lambda t}$
+3. Polynomial decay: $\eta_t = \eta_0 (\beta t + 1)^{-\alpha}$
+
+In the piecewise constant schedule, $t_i$ are a set of time points at which we adjust the learning rate to a specified value. For example, we may set $\eta_i = \eta_0 \gamma^i$, which reduces the initial learning rate by a factor of $\gamma$ for each threshold that we pass. This is called *step decay*. Sometimes the threshold times are compute adaptively, by estimating when the train or validation loss a plateaued. This is called *reduce-on-plateau*. Exponential decay is typically too fast. A common choice is polynomial decay, with $\alpha = 0.5$ and $\beta = 1$. This corresponds to a *square-root schedule*, $\eta_t = \eta_0 \frac{1}{\sqrt{t + 1}}$.
+
+In deep learning, another common schedule is to quickly increase the learning rate and then gradually decrease it again. This is called *learning rate warmup*, or the *one-cycle learning rate schedule*. The motivation for this is the following: initially the parameters may be in a part of the loss landscape that is poorly conditioned, so a large step size will “bounce around” too much and fail to make progress downhill. However, with a slow learning rate, the algorithm can discover flatter regions of space, where a larger step size can be used. Once there, fast progress can be made. However, to ensure convergence to a point, we must reduce the learning rate to 0.
+
+It is also possible to increase and decrease the learning rate multiple times, in a cyclical fashion. This is called a *cyclical learning rate*. The motivation behind this approach is to escape local minima. The minimum and maximum learning rates can be found based on the initial "dry run" described above, and the half-cycle can be chosen based on how many restarts you want to do with yor training budget. A related approach, known as *stochastic gradient descent with warm restarts*, works by storing all the checkpoints visited after each cool down, and using all of them as members of a model ensemble.
+
+An alternative to using heuristics for estimating the learning rate is to use line seach. This is tricky when using SGD, because the noisy gradient make the computation of the Armijo condition difficult. However, this can be made to work if the variance of the gradient noise goes to zero over time. This can happed if the model is sufficiently flexible that it can perfectly interpolate the training set.
+
+## Iterate averaging
+
+The parameter estimates produced by SGD can be very unstable over time. To reduce the variance of the estimate, we can compte the average using
+
+$$
+  \bar{\boldsymbol{\theta}}_t = \frac{1}{t} \sum_{i=1}^t \boldsymbol{\theta}_i = \frac{1}{t}\boldsymbol{\theta}_t + \frac{t - 1}{t} \bar{\boldsymbol{\theta}}_{t-1}
+$$
+
+where $\boldsymbol{\theta}_t$ are the usual SGD iterates. This is called *iterated averaging* or Polyak-Ruppert averaging.
+
+It can be proven that the estimate $\bar{\boldsymbol{\theta}}_t$ achieves the best possible asymptotic convergence rate among SGD algorithms, matching that of variants using second-order information, such as Hessians. This averaging can also have statistical benefits. In the case of linear regression, it can be proven that this method is equivalent to $\ell_2$ regularization.
+
+Rather than an exponential moving average of SGD, *stochaastig weight averaging* (SWA) uses an equal average in conjunction with a modified learning rate schedule. In contrast to standard Polyak-Ruppert averaging, which was motivated for faster convergence rates, SWA exploits the flatness is objective used to train deep neural networkds, to find solutions which provide better generalization.
+
+## Variance reduction
+
+Variance reduction methods can reduce the variance of the gradients, rather that the parameters themselves and are designed to work for finite sum problems. In some cases, this can improve the theoretical convergence rate from sublinear to linear (i.e., the same as full-batch gradient descent).
+
+### Stochastic variance reduced gradient (SVGR)
+
+### Stochastic averaged gradient accellerated (SAGA)
+
+## Preconditioned SGD
+
+### Adaptive gradient (ADAGRAD)
 
 # References
 

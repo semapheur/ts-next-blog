@@ -37,14 +37,14 @@ export function rehypePlugins(bibliography = "", noCite: string[] = []) {
         },
       },
     ],
-    [
-      rehypeCitation,
-      {
-        bibliography: bibliography,
-        csl: "harvard1",
-        noCite: noCite,
-      },
-    ],
+    //[
+    //  rehypeCitation,
+    //  {
+    //    bibliography: bibliography,
+    //    csl: "harvard1",
+    //    noCite: noCite,
+    //  },
+    //],
     rehypeMathref,
     rehypeFancyLists,
     //[rehypeMathjax, {

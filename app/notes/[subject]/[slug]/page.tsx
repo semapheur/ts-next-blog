@@ -12,7 +12,7 @@ import {
 } from "lib/utils/mdxParse"
 import { mdxComponents } from "lib/utils/mdxComponents"
 import Loader from "lib/components/Loader"
-import type { NoteHeading, NoteMatter } from "lib/utils/types"
+import type { NoteHeading } from "lib/utils/types"
 import type { MDXProps } from "mdx/types"
 
 const Toc = dynamic(() => import("./Toc"), {
@@ -104,7 +104,7 @@ async function getNote(subject: string, slug: string) {
 export default async function NotePage({ params: { subject, slug } }: Props) {
   const { source, headings } = await getNote(subject, slug)
   const frontmatter = matter(source)
-  const { content, _ } = await compileMDX({
+  const { content } = await compileMDX({
     source: source,
     ...(MDXOptions(
       path.join("content", "data", "references.bib"),
