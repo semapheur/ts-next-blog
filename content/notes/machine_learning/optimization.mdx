@@ -529,15 +529,122 @@ Rather than an exponential moving average of SGD, *stochaastig weight averaging*
 
 ## Variance reduction
 
-Variance reduction methods can reduce the variance of the gradients, rather that the parameters themselves and are designed to work for finite sum problems. In some cases, this can improve the theoretical convergence rate from sublinear to linear (i.e., the same as full-batch gradient descent).
+Variance reduction methods can reduce the variance of the gradients, rather that the parameters themselves and are designed to work for finite sum problems. In some cases, this can improve the theoretical convergence rate from sublinear to linear (i.e., the same as full-batch gradient descent). Variance reduction methods are widely used for fitting machine learning model with convex objectives, such as linear models
 
-### Stochastic variance reduced gradient (SVGR)
+### Stochastic variance reduced gradient (SVRG)
 
-### Stochastic averaged gradient accellerated (SAGA)
+Stochastic variance reduced gradient (SVRG) introduces a control variate used to estimate a baseline value of the gradient based on the full batch, which we then use to compare the stochastic gradient to. At a given interval, e.g. once per epoch, we compute the full gradient at a "snapshot" of the model parameters $\tilde{\boldsymbol{\theta}}$. Thus, the corresponding "exact" gradient isi $\nabla\mathcal{L}(\tilde{\boldsymbol{\theta}})$. At step $t$, we compute the usual stochastic gradient at the current parameters, $\nabla_t \mathcal{L}(\boldsymbol{\theta}_t)$, but also at the snapshot parameters, $\nabla\mathcal{L}_t (\tilde{\boldsymbol{\theta}})$, which we use a baseline. We can then use the following improved gradient estimate
+
+$$
+  \mathbf{g}_t = \nabla\mathcal{L}_t (\boldsymbol{\theta}_t) - \nabla\mathcal{L}_t (\tilde{\boldsymbol{\theta}}) + \nabla\mathcal{L}(\tilde{\boldsymbol{\theta}})
+$$
+
+to compute $\boldsymbol{\theta}_{t+1}$. This unbiased because $\mathbb{E}\left[\nabla\mathcal{L}_t (\tilde{\boldsymbol{\theta}})\right] = \nabla\mathcal{L}(\tilde{\boldsymbol{\theta}})$. Furthermore, the update only involves two gradient computations, since we can compute $\nabla\mathcal{L}(\tilde{\boldsymbol{\theta}})$ once per epoch. At the end of the epoch, we update the snapshot parameters, $\tilde{\boldsymbol{\theta}}$, based on the most recent value of $\boldsymbol{\theta}_t$, or a running average of the iterates, and update the expected baseline. We can compute the baseline less often, but then the baseline will not be correlated with the objective and can hurt performance.
+
+Iterations of SVRG are computationally faster compared with full-batch GD, but SVRG can still match the theoretical convergence rate of GD. There are various difficulties with using SVRG with conventional deep learning training practices. For example, the use of batch normalization, data augmentation and dropout all break the assumption of the method, since the loss will differ randomly in ways that depend not just on the parameters and the data index $i$.
+
+### Stochastic averaged gradient accelerated (SAGA)
+
+Unlike SVRG, the stochastic averaged gradient accelerated (SAGA) algorithm requires only one full batch gradient computation, at the start of the algorithm. This saves time at the cost of using more memory by storing $n$ gradient vectors. This enables SAGA to maintain an approximation of the global gradient by romving the old local gradient from the overall sum and replacing it with the new local gradient. This is called an *aggregated gradient* method. 
+
+More precisely, we first initialize by computing $\mathbf{g}_n^{\text{local}} = \nabla\mathcal{L}_i (\boldsymbol{\theta}_0)$ for all $i=1,\dots,n$, and the average $\bar{\mathbf{g}} = \frac{1}{n}\sum_{i=1}^n \mathbf{g}_n^{\text{local}}$. Then, at iteration $t$, we use the gradient estimate
+
+$$
+  \mathbf{g}_t = \nabla\mathcal{L}_i (\boldsymbol{\theta}_t) - \boldsymbol{g}_i^{\text{local}} + \bar{\mathbf{g}}
+$$
+
+where $i\sim\operatorname{Uniform}\Set{1,\dots,n}$ is the example index sampled at iteration $t$. We then update $\mathbf{g}_i^{\text{local}} = \nabla \mathcal{L}_i (\boldsymbol{\theta}_t)$ and $\bar{\mathbf{g}}$ by replacing the old $\mathbf{g}_i^{\text{local}}$ by its new value.
+
+This has an advantage over SVRG since it only has to do one full batch sweep at the start. In fact, the initial step is not necessary, since we can compute $\bar{\mathbf{g}}$ "lazily", by only incorporating gradient we have seen so far. The downside is the large extra memory cost. However, if the features are sparse, the memory cost can be reasonable.
 
 ## Preconditioned SGD
 
-### Adaptive gradient (ADAGRAD)
+Preconditioned SGD involves the following update
+
+$$
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \mathbf{M}_t^{-1} \mathbf{g}_t
+$$
+
+where $\mathbf{M}_t$ is a *precondition matrix*, or simply the *preconditioner*, typically chosen to be positive definite. Unfortunately, the noise in the gradient estimates make it difficul to reliably estimate the Hessian, which makes it difficult to use second-order methods. In addition, it is expensive to solve for the update direction with a full preconditioning matrix. Thus, most practitioners use a diagonal preconditioner $\mathbf{M}_t$. Such preconditioners do not necessarily use second-order information, but often result in speedups compared to vanilla SGD.
+
+### Adaptive gradient (AdaGrad)
+
+The adaptive gradient (AdaGrad) method was originally designed for optimizing convex objectives where many elements of the gradient vector are zero; these might correspond to features that are rarely present in the input, such as rare words. The update has the following form
+
+$$
+  \theta_{t+1, j} = \theta_{t,p} - \eta_t \frac{1}{\sqrt{s_{t,j} + \epsilon}} g_{t,i},\; i=1,\dots,p
+$$
+
+where $s_{t,j} = \sum_{i=1}^t g_{i,j}^2$ is the sum of the squared gradients and $\epsilon > 0$ is a small term to avoid dividing by zero. Equivalently, we can write the update in the vector form
+
+$$
+  \Delta\boldsymbol{\theta}_t = \eta_t \frac{1}{\sqrt{\mathbf{s}_t + \epsilon}}\mathbf{g}_t
+$$
+
+where the square root and division is performed elementwise. Viewed as preconditioned SGD, this is equivalent to taking $\mathbf{M}_t = \operatorname{diag}(\mathbf{s}_t + \boldsymbol{\epsilon})^{1/2}$. This is an example of an *adaptive learning rate*. The overall step size $\eta_t$ still needs to be chosen, but the results are less sensitive to it compared to vanilla GD. In particular, we usually fix $\eta_t = \eta_0$.
+
+### Root mean square propagation (RMSProp)
+
+A defining feature of AdaGrad is that the term in the denominator gets larger over time, so the effective learning rate drops. While it is necessary to ensure convergence, it might hurt performance as the denominator gets to large too fast.
+
+An alternative is to use an exponentially weighted moving average (EWMA) of the past squared gradients, rather than their sum
+
+$$
+  s_{t+1, j} = \beta s_{t,j} + (1 - \beta) g_{t,j}^2
+$$
+
+In practice we usually use $\beta\sim 0.9$, which puts more weight on recent examples. In this case,
+
+$$
+  \sqrt{s_{t,j}} \approx \operatorname{RMS}(\mathbf{g}_{1:t,j}) = \sqrt{\frac{1}{t}\sum_{\tau=1}^t g_{\tau,j}^2}
+$$
+
+This method is known as root mean squared propagator (RMSProp). The overall update of RMPSProp is
+
+$$
+  \Delta\boldsymbol{\theta}_t = -\eta_t \frac{1}{\sqrt{\mathbf{s}_t + \epsilon}}\mathbf{g}_t
+$$
+
+The adaptive delta (ADADelta) is similar to RMSPRops. However, in addition to accumulating an EWMA of the gradients in $\hat{\mathbf{s}}$, it also keeps an EWMA of the updates $\boldsymbol{\delta}_t$ to obtain an update of the form
+
+$$
+  \Delta\boldsymbol{\theta}_t = -\eta_t \frac{\sqrt{\boldsymbol{\delta}_{t-1} + \epsilon}}{\sqrt{\mathbf{s}_t + \epsilon}}\mathbf{g}_t
+$$
+
+where $\boldsymbol{\delta}_t = \beta\boldsymbol{\delta}_{t-1} + (1-\beta)(\Delta\boldsymbol{\theta}_t)^2$ and $\mathbf{s}_t$ is the same as in RMSProp. This has the advantage that the "units" of the numerator and denominator cance, so we are just elementwise-multiplying the gradient by a scalar. This eliminates the need to tune the learning rate $\eta_t$, which means one can simply set $\eta_t = 1$. However, since these adaptive learning rates need not decrease with time (unless chosen explicitly to do so), these methods are not guaranteed to converge to a solution.
+
+### Adaptive moment estimation (ADAM)
+
+It is possible to combine RMSProp with momentum. In particular, let us compute an EWMA of the gradients (as in momentum) and squared gradients (as in RMSProp)
+
+$$
+\begin{align*}
+  \mathbf{m}_t =& \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \mathbf{g}_t \\
+  \mathbf{s}_t =& \beta_2 \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 
+\end{align*}
+$$
+
+We then perform the following update
+
+$$
+  \Delta\boldsymbol{\theta}_t = -\eta_t \frac{1}{\sqrt{s}_t + \epsilon} \mathbf{m}_t
+$$
+
+The resulting method is called adaptive momentum estimation (ADAM). The standard values for the various constants are
+- $\beta_1 = 0.9$
+- $\beta_2 = 0.999$
+- $\epsilon = 10^{-6}$
+
+If we set $\beta_1 = 0$ and no bias-correction, we recover RMSProp, which does not use momentum. For the overall learning rate, it is common to use a fixed value such as $\eta_t = 0.001$. Again, as the adaptive learning rate may not decrease over time, convergence is not guaranteed.
+
+If we initialize with $\mathbf{m}_0 = \mathbf{s}_0 = \mathbf{0}$, then initial estimates will be biased towards small values. This can be avoided with biased-corrected moments, which increase the values early in the optimization process. These estimates are given by
+
+$$
+\begin{align*}
+  \hat{\mathbf{m}}_t =& \frac{\mathbf{m}_t}{1 - \beta_1^t} \\
+  \hat{\mathbf{s}}_t =& \frac{\mathbf{s}_t}{1 - \beta_2^2}
+\end{align*}
+$$
 
 # References
 

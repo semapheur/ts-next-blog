@@ -1,18 +1,18 @@
-import { Inter } from 'next/font/google'
-import './globals.css'
-import Header from './Header'
-import StyledComponentsRegistry from 'lib/components/StyledComponentsRegistry'
+import { Inter } from "next/font/google"
+import "./app.css"
+import Header from "./Header"
+import StyledComponentsRegistry from "lib/components/StyledComponentsRegistry"
 
 // Metadata
 export const metadata = {
-  title: 'Gelik blog',
+  title: "Gelik blog",
   icons: {
-    icon: '/favicon.ico',
+    icon: "/favicon.ico",
   },
 }
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: 0,
@@ -20,8 +20,8 @@ export const viewport = {
 
 // Font
 const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
+  variable: "--font-inter",
+  subsets: ["latin"],
 })
 
 export default function RootLayout({
@@ -50,9 +50,9 @@ export default function RootLayout({
   `
 
   return (
-    <html lang='en'>
+    <html lang="en">
       <head />
-      <body className='flex flex-col bg-primary'>
+      <body className="flex flex-col bg-primary">
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         <Header />
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>

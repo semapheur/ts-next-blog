@@ -40,15 +40,14 @@ type Props = {
   params: Params
 }
 
-const MDXOptions = (bibliography: string, noCite?: string[]) => {
+const MDXOptions = (noCite: string[] = []) => {
   return {
     options: {
       parseFrontmatter: true,
       mdxOptions: {
         development: process.env.NODE_ENV !== "production",
         remarkPlugins: remarkPlugins,
-        // @ts-ignore
-        rehypePlugins: rehypePlugins(bibliography, noCite),
+        rehypePlugins: rehypePlugins(noCite),
       },
     },
     components: mdxComponents,
@@ -104,12 +103,10 @@ async function getNote(subject: string, slug: string) {
 export default async function NotePage({ params: { subject, slug } }: Props) {
   const { source, headings } = await getNote(subject, slug)
   const frontmatter = matter(source)
+  console.log(frontmatter.data.references)
   const { content } = await compileMDX({
     source: source,
-    ...(MDXOptions(
-      path.join("content", "data", "references.bib"),
-      frontmatter.data.references,
-    ) as MDXProps),
+    ...(MDXOptions(frontmatter.data.references) as MDXProps),
   })
 
   return (

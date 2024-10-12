@@ -1,4 +1,5 @@
 import { serialize } from "next-mdx-remote/serialize"
+import path from "node:path"
 
 //import { mystParser } from 'myst-parser'
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
@@ -18,10 +19,18 @@ import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 import { rehypeMathref, rehypeFancyLists } from "./rehype"
 
 export const remarkPlugins = [remarkGfm, remarkMath]
-export function rehypePlugins(bibliography = "", noCite: string[] = []) {
+export function rehypePlugins(noCite: string[] = []) {
   return [
     rehypeSlug,
     rehypeAutolinkHeadings,
+    [
+      rehypeCitation,
+      {
+        bibliography: path.join("content", "data", "references.bib"),
+        csl: "harvard1",
+        noCite: noCite ?? [],
+      },
+    ],
     [rehypeImgSize, { dir: "public" }],
     rehypePrettyCode,
     [
@@ -37,14 +46,6 @@ export function rehypePlugins(bibliography = "", noCite: string[] = []) {
         },
       },
     ],
-    //[
-    //  rehypeCitation,
-    //  {
-    //    bibliography: bibliography,
-    //    csl: "harvard1",
-    //    noCite: noCite,
-    //  },
-    //],
     rehypeMathref,
     rehypeFancyLists,
     //[rehypeMathjax, {
