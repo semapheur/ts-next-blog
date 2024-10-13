@@ -646,6 +646,43 @@ $$
 \end{align*}
 $$
 
+### Issues with adaptive learning rates
+
+When using diagonal scaling methods, the overall learning rate i determined by $\eta_0 \mathbf{M}_t^{-1}$, which changes with time. Hence these methods are often called *adaptive learning rate methods*. However, they still require setting the base learning rate $\eta_0$.
+
+Since the EWMA methods are typically used in the stochastic setting where the gradient estimates are noisy, their learning rate adaption can result in non-convergence even on convex problems. Various solutions addressing this problem have been proposed, including
+- Adaptive momentum stochastic gradient (AMSGrad)
+- Partially adaptive momentum estimation method (PADAM)
+- Yogi
+
+The Yogi update modifies ADAM by replacing
+
+$$
+  \mathbf{s}_t = \beta_2 \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 = \mathbf{s}_{t-1} + (1 - \beta_2)(\mathbf{g}_t^2 - \mathbf{s}_{t-1})
+$$
+
+with
+
+$$
+  \mathbf{s}_t = \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 \ocirc \operatorname{sign}(\mathbf{g}_t^2 - \mathbf{s}_{t-1})
+$$
+
+However, more recent work has shown that vanilla Adam can be made to alway converge provided the $\beta_1$ and $\beta_2$ parameters are tuned on a per-dataset basis. In practice, it is common to fix $\beta_1 = 0.9$ and just tune $\beta_2$.
+
+### Non-diagonal preconditioning matrices
+
+Although adaptive methods can adapt the learning rate of each parameter, they do not solve the more fundamental problem of ill-conditioning due to correlation of the parameters, and hence do not always provide as mush of a speed boost over SGD as one may hope.
+
+One way to get faster convergence is to use the following preconditioning matrix, known as *full-matrix ADAGrad*:
+
+$$
+  \mathbf{M}_t = [(\mathbf{G}_t \mathbf{G}_t^\top)^{1/2} + \epsilon\mathbf{I}_p]^{-1}
+$$
+
+where $\mathbf{G}_t = [\mathbf{g}_t,\dots,\mathbf{g}_1]$. Here $\mathbf{g}_i = \nabla_{\boldsymbol{\psi}} c(\boldsymbol{psi})$ is the $p$-dimensional gradient vector computed at step $i$. Unfortunately, $\mathbf{M}_t$ is a $p\times p$ matrix, which is expensive to store and invert.
+
+The *Shampoo algorithm* makes a block diagonal approximation to $\mathbf{M}$, one per layer of the model, and then exploits Kronecker product structure to efficiently invert it. 
+
 # References
 
 [^ref]

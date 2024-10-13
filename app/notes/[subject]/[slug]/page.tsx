@@ -103,7 +103,6 @@ async function getNote(subject: string, slug: string) {
 export default async function NotePage({ params: { subject, slug } }: Props) {
   const { source, headings } = await getNote(subject, slug)
   const frontmatter = matter(source)
-  console.log(frontmatter.data.references)
   const { content } = await compileMDX({
     source: source,
     ...(MDXOptions(frontmatter.data.references) as MDXProps),

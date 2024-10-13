@@ -26,9 +26,9 @@ export function rehypePlugins(noCite: string[] = []) {
     [
       rehypeCitation,
       {
-        bibliography: path.join("content", "data", "references.bib"),
+        bibliography: "", //path.join("content", "data", "references.bib"),
         csl: "harvard1",
-        noCite: noCite ?? [],
+        noCite: noCite,
       },
     ],
     [rehypeImgSize, { dir: "public" }],
@@ -74,7 +74,7 @@ export async function serializeMDX<T>(
       development: process.env.NODE_ENV !== "production",
       remarkPlugins: remarkPlugins,
       // @ts-ignore
-      rehypePlugins: rehypePlugins,
+      rehypePlugins: rehypePlugins([]),
     },
   })
   if (matter) {
