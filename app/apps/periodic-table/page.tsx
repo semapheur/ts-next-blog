@@ -6,9 +6,7 @@ export const metadata: Metadata = {
   description: 'A periodic table app built with React.',
 }
 
-const PeriodicTable = dynamic(() => import('lib/components/PeriodicTable'), {
-  ssr: true,
-})
+const PeriodicTable = dynamic(() => import('lib/components/PeriodicTable'))
 
 export default function Page() {
   return <PeriodicTable />

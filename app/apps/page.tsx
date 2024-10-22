@@ -1,9 +1,7 @@
 import AppCard from 'lib/components/AppCard'
 import dynamic from 'next/dynamic'
 
-const Cards = dynamic(() => import('lib/components/Cards'), {
-  ssr: false,
-})
+const Cards = dynamic(() => import('lib/components/Cards'))
 
 const content = [
   {

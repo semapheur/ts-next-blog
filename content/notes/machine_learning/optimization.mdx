@@ -188,7 +188,7 @@ The simplest learning method is to use a constant step size $\eta_t = \eta$. How
 In some cases, we can derive a theoretical upper bound on the maximum step size guaranteeing convergences. For quadratic objectives of the form $\mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2}\boldsymbol{\theta}^\top \mathbf{A}\boldsymbol{\theta} + \mathbf{b}^\top \boldsymbol{\theta} + c$ with $\mathbf{A}\geq 0$, we can show that the steepest descent will have global convergence if and only if the step size satisfies
 
 $$
-  \eta < \frac{2}{\lambda_{\mathrm{max}}} (\mathbf{A})
+  \eta < \frac{2}{\lambda_{\mathrm{max}}(\mathbf{A})}
 $$
 
 where $\lambda_{\mathrm{max}}(\mathbf{A})$ is the largest eigenvalue of $\mathbf{A}$. More generally, if $K\geq 0$ is the Lipschitz constant of the gradient, then $\eta < 2/K$ ensures convergence. However, the Lipschitz constant is generally unknown.
@@ -199,7 +199,7 @@ The optimal step size can be found by finding the value that maximally decreases
 
 $$
 \begin{equation}
-  \eta_t = \argmin_{\eta > 0} \phi_t (\eta) = \argmin_{\eta} \tag{\label{equation-2}}
+  \eta_t = \argmin_{\eta > 0} \phi_t (\eta) = \argmin_{\eta} \mathcal{L}(\boldsymbol{\theta}_t + \eta\mathbf{d}_t) \tag{\label{equation-2}}
 \end{equation}
 $$
 
@@ -255,7 +255,7 @@ $$
 
 where $\lambda_\mathrm{max}$ and $\lambda_\mathrm{min}$ are the largest and smallest eigenvalues of $\mathbf{A}$, respectively. We can write this as $\mu = \left(\frac{\kappa - 1}{\kappa + 1}\right)^2$, where $\kappa = \lambda_\mathrm{max} / \lambda_\mathrm{min}$ is the condition number of $\mathbf{A}$. Intuitively, the condition number measures how "skewed" the space is, in the sense of being far from a symmetrical bowl.
 
-In the more general case of non-quadratic functions, the objective will often be locally quadratic around a local optimum. Hence, the convergence rate depends on the condition number of the Hessian $\kappa(\mathbf{H})$, at that point. We can often improve the convergence speed by optimizing a surrogate objective at each step which has a Hessian that is close to the Hessian of the objective function $\eref$.
+In the more general case of non-quadratic functions, the objective will often be locally quadratic around a local optimum. Hence, the convergence rate depends on the condition number of the Hessian $\kappa(\mathbf{H})$, at that point. We can often improve the convergence speed by optimizing a surrogate objective at each step which has a Hessian that is close to the Hessian of the objective function.
 
 In some cases, the path of steepest descent with an exact line-search exhibits a characteristic zig-zag behaviour, which is inefficient. This problem can be overcome using a method called *conjugate descent*.
 
@@ -264,33 +264,67 @@ In some cases, the path of steepest descent with an exact line-search exhibits a
 One simple heuristic, known as the *heavy ball* or *momentum* method, is to move faster along directions that were previously good, and to slow down along direction where the gradient has suddenly changed. This can be implemented as follows
 
 $$
-\begin{align*}
-  \mathbf{m}_t =& \beta\mathbf{m}_{t-1} + \mathbf{g}_{t-1} \\
+\begin{equation}
+\begin{split}
+  \mathbf{m}_t =& \gamma\mathbf{m}_{t-1} + \mathbf{g}_{t-1} \\
   \boldsymbol{\theta}_t =& \boldsymbol{\theta}_{t-1} - \eta_t \mathbf{m}_t
-\end{align*}
+\end{split}
+\tag{\label{equation-6}}
+\end{equation}
 $$
 
-where $\mathbf{m}_t$ is the momentum and $0 < \beta < 1$. A typical value of $\beta$ is $0.9$. For $\beta = 0$, the method reduces to gradient descent. We see that $\mathbf{m}_t$ is like an exponentially weighted moving average of the past gradients:
+where $\mathbf{m}_t$ is the momentum and $0 < \gamma < 1$. A typical value of $\gamma$ is $0.9$. For $\gamma = 0$, the method reduces to gradient descent. We see that $\mathbf{m}_t$ is like an exponentially weighted moving average of the past gradients:
 
 $$
-  \mathbf{m}_t = \sum_{\tau=0}^{t-1} \beta^\tau \mathbf{g}_{t - \tau - 1}
+  \mathbf{m}_t = \sum_{\tau=0}^{t-1} \gamma^\tau \mathbf{g}_{t - \tau - 1}
 $$
 
 If all the past gradients are a constant, say $\mathbf{g}$, this simplifies to
 
 $$
-  \mathbf{m}_t = \mathbf{g}\sum_{\tau=0}^{t-1} \beta^\tau
+  \mathbf{m}_t = \mathbf{g}\sum_{\tau=0}^{t-1} \gamma^\tau
 $$
 
 The scaling factor is a geometric series, whose infinite sum is given by
 
 $$
-  \sum_{i=0}^\infty \beta^i = \frac{1}{1 - \beta}
+  \sum_{i=0}^\infty \gamma^i = \frac{1}{1 - \gamma}
 $$
 
-Thus in the limit, we multiply the gradient by $1/(1 - \beta)$.
+Thus in the limit, we multiply the gradient by $1/(1 - \gamma)$.
 
 Since we upde the parameters using the gradient average $\mathbf{m}_{t-1}$, rather than just the most recent gradient $\mathbf{g}_{t-1}$, we see that past gradients can exhibit some influence on the present. Furthermore, when momentum is combined with stochastic gradient descent, it can simulate the effects of a larger minibatch, without the computational cost.
+
+### Analogy to motion with linear drag
+
+We can get an intuition of momentum gradient descent by comparing it to motion with linear drag. Consider a particle with mass $m$ moving in a viscous medium with drag coefficient $\mu$. If $\boldsymbol{\theta}$ is the position of the particle, its motion is described by the equation
+
+$$
+  m\frac{d^2 \boldsymbol{\theta}}{\d t^2} + \mu \frac{\d\boldsymbol{\theta}}{\d t} = -\nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})
+$$
+
+where $\mathcal{L}$ is the potential energy of the particle. Discretizing the equation we get
+
+$$
+  m \frac{\boldsymbol{\theta}_{t + \Delta t} - 2\boldsymbol{\theta}_t + \boldsymbol{\theta}_{t - \Delta t}}{(\Delta t)^2} + \mu \frac{\boldsymbol{\theta}_{t + \Delta t} - \boldsymbol{\theta}}{\Delta t} = -\nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})
+$$
+
+Rearranging the equation we obtain
+
+$$
+\begin{align*}
+  \Delta\boldsymbol{\theta}_{t + \Delta t} =& \frac{m}{m + \mu\Delta t} \Delta \boldsymbol{\theta} - \frac{(\Delta t)^2}{m + \mu\Delta t} \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})  \\
+  =& \gamma \Delta\boldsymbol{\theta}_t - \eta \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})
+\end{align*}
+$$
+
+This equation is identical with the momentum gradient descent update $\eqref{equation-5}$ where the learning rate $\eta$ and momentum parameter $\gamma$ are related to the mass of the particle and the viscous drag by
+
+$$
+  \eta = \frac{(\Delta t)^2}{m + \mu\Delta t},\quad \gamma = \frac{m}{m + \mu\Delta t}
+$$
+
+This shows that the momentum parameter is proportional to the mass of the particle and provides intertia. In the large viscosity/small learning rate limit, the memory time scales as $(1 - \gamma)^{-1} \approx m/(\mu\Delta t)$.
 
 ### Nesterov momentum
 
@@ -372,7 +406,7 @@ $$
 \begin{align*}
   \mathbf{B}_{t+1} =& \mathbf{B}_t + \frac{\mathbf{y}_t \mathbf{y}_t^\top}{\mathbf{y}_t^\top \mathbf{s}_t} - \frac{(\mathbf{B}_t \mathbf{s}_t)(\mathbf{B}_t \mathbf{s}_t)^\top}{\mathbf{s}_t^\top \mathbf{B}_t \mathbf{s}_t} \\
   \mathbf{s}_t =& \boldsymbol{\theta}_t - \boldsymbol{\theta}_{t-1} \\
-  \mathbf{y}_t = \mathbf{g}_t - \mathbf{g}_{t-1}
+  \mathbf{y}_t =& \mathbf{g}_t - \mathbf{g}_{t-1}
 \end{align*}
 $$
 
@@ -430,10 +464,10 @@ $$
   \mathcal{L}(\boldsymbol{\theta}) = \mathbb{E}_{q(\mathbf{z})} [\mathcal{L}(\boldsymbol{\theta},\mathbf{z})]
 $$
 
-where $\mathbf{z}$ is a random input to the objective. This could be a noise term, coming from the environment, or it could be a training example drawn randomly from the training set, as we explain below. At each iteration, we assume we observe $\mathcal{L}_t (\mathbf{\theta}) = \mathcal{L}(\boldsymbol{\theta}, \mathbf{z}_t)$, where $\mathbf{z}_t \sim q$. We also assume a way to compute an unbiased estimate of the gradient of $\mathcal{L}$. If the distribution $q(\mathbf{z})$ is independent of the parameters we are optimizing, we can use $\mathbf{g}_t = \lambda_{\boldsymbol{\theta}} \mathcal{L}_t (\boldsymbol{\theta})$. In this case, the resulting algorithm can be written as follows:
+where $\mathbf{z}$ is a random input to the objective. This could be a noise term, coming from the environment, or it could be a training example drawn randomly from the training set. At each iteration, we assume we observe $\mathcal{L}_t (\mathbf{\theta}) = \mathcal{L}(\boldsymbol{\theta}, \mathbf{z}_t)$, where $\mathbf{z}_t \sim q$. We also assume a way to compute an unbiased estimate of the gradient of $\mathcal{L}$. If the distribution $q(\mathbf{z})$ is independent of the parameters we are optimizing, we can use $\mathbf{g}_t = \lambda_{\boldsymbol{\theta}} \mathcal{L}_t (\boldsymbol{\theta})$. In this case, the resulting algorithm can be written as follows:
 
 $$
-  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \nabla\mathcal{L}(\boldsymbol{\theta}_t, \boldsymbol{z}_t) = \boldsymbol{\tehta}_t - \eta_t \mathbf{g}_t
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \nabla\mathcal{L}(\boldsymbol{\theta}_t, \boldsymbol{z}_t) = \boldsymbol{\theta}_t - \eta_t \mathbf{g}_t
 $$
 
 This method is called *stochastic gradient descent* (SGD). As long as the gradient estimate is unbiased, then this method will converge to a stationary point, provide we decay the step size $\eta_t$ at a certain rate.
@@ -470,16 +504,22 @@ Although the theoretical rate of convergence of $SGD$ is slower than batch GD (i
 Recall the objective for a linear regression problem has the form
 
 $$
-  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{2n} \sum_{i=1}^n (\mathbf{x}_i^\top \boldsymbol{\theta} - y_i)^2 = \frac{1}{2n}\lvert\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\rVert_2^2
+  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{x}_i^\top \boldsymbol{\theta} - y_i)^2 = \frac{1}{n}\lvert\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\rVert_2^2
 $$
 
 with gradient
 
 $$
-  \mathbf{g}_t = \frac{1}{n} \sum_{i=1}^n (\boldsymbol{\theta}_t^\top \mathbf{x}_i - y_i)\mathbf{x}_i
+  \mathbf{g}_t = \frac{2}{n} \sum_{i=1}^n (\boldsymbol{\theta}_t^\top \mathbf{x}_i - y_i)\mathbf{x}_i = \frac{2}{n}\mathbf{X}^\top (\mathbf{X}\beta - \mathbf{y}) 
 $$
 
-Now consider using SGD with a minibatch size of $b = 1$. The update becomes
+and Hessian
+
+$$
+  \mathbf{H}(\mathbf{X}) = \frac{2}{n}\mathbf{X}^\top \mathbf{X}
+$$
+
+Since $\mathbf{X}^\top \mathbf{X}$ is always positive semi-definite, it follows that $\mathcal{L}$ is a convex function. Now consider using SGD with a minibatch size of $b = 1$. The update becomes
 
 $$
   \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t (\boldsymbol{\theta}_t^\top \mathbf{x}_i - y_i)\mathbf{x}_i
@@ -505,7 +545,15 @@ The following three learning rate schedules are commonly used:
 2. Exponential decay: $\eta_t = \eta_0 e^{-\lambda t}$
 3. Polynomial decay: $\eta_t = \eta_0 (\beta t + 1)^{-\alpha}$
 
-In the piecewise constant schedule, $t_i$ are a set of time points at which we adjust the learning rate to a specified value. For example, we may set $\eta_i = \eta_0 \gamma^i$, which reduces the initial learning rate by a factor of $\gamma$ for each threshold that we pass. This is called *step decay*. Sometimes the threshold times are compute adaptively, by estimating when the train or validation loss a plateaued. This is called *reduce-on-plateau*. Exponential decay is typically too fast. A common choice is polynomial decay, with $\alpha = 0.5$ and $\beta = 1$. This corresponds to a *square-root schedule*, $\eta_t = \eta_0 \frac{1}{\sqrt{t + 1}}$.
+In the piecewise constant schedule, $t_i$ are a set of time points at which we adjust the learning rate to a specified value. For example, we may set $\eta_i = \eta_0 \gamma^i$, which reduces the initial learning rate by a factor of $\gamma$ for each threshold that we pass. This is called *step decay*. Another approach called *time decay rate* decreases the learning for batch training within an epoch, as well as for each epoch. If $m$ denotes the number of batches and $e_i$ the current epoch, the learning rate is updated according to
+
+$$
+  \eta_i(t) = \frac{t_0}{t + t_1},\; i=1,\dots
+$$
+
+where $t = e_i m + i$ and $t_0$ and $t_1$ are fixed parameters. Sometimes the threshold times are computed adaptively, by estimating when the train or validation loss are plateaued. This is called *reduce-on-plateau*.
+
+Exponential decay is typically too fast. A common choice is polynomial decay, with $\alpha = 0.5$ and $\beta = 1$. This corresponds to a *square-root schedule*, $\eta_t = \eta_0 \frac{1}{\sqrt{t + 1}}$.
 
 In deep learning, another common schedule is to quickly increase the learning rate and then gradually decrease it again. This is called *learning rate warmup*, or the *one-cycle learning rate schedule*. The motivation for this is the following: initially the parameters may be in a part of the loss landscape that is poorly conditioned, so a large step size will “bounce around” too much and fail to make progress downhill. However, with a slow learning rate, the algorithm can discover flatter regions of space, where a larger step size can be used. Once there, fast progress can be made. However, to ensure convergence to a point, we must reduce the learning rate to 0.
 
@@ -664,7 +712,7 @@ $$
 with
 
 $$
-  \mathbf{s}_t = \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 \ocirc \operatorname{sign}(\mathbf{g}_t^2 - \mathbf{s}_{t-1})
+  \mathbf{s}_t = \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 \odot \operatorname{sign}(\mathbf{g}_t^2 - \mathbf{s}_{t-1})
 $$
 
 However, more recent work has shown that vanilla Adam can be made to alway converge provided the $\beta_1$ and $\beta_2$ parameters are tuned on a per-dataset basis. In practice, it is common to fix $\beta_1 = 0.9$ and just tune $\beta_2$.

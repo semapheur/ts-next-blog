@@ -1,34 +1,34 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
-import { effect, signal } from '@preact/signals-react'
+import { useEffect, useRef } from "react"
+import { effect, signal } from "@preact/signals-react"
 import {
   parse,
   ConstantNode,
   FunctionNode,
-  MathNode,
+  type MathNode,
   OperatorNode,
-  ParenthesisNode,
-  SymbolNode,
-} from 'mathjs'
+  type ParenthesisNode,
+  type SymbolNode,
+} from "mathjs"
 
-import CanvasGrid from 'lib/components/CanvasGrid'
-import ComplexInput from 'lib/components/ComplexInput'
-import TransformDiv, { transform } from 'lib/components/TransformDiv'
+import CanvasGrid from "lib/components/CanvasGrid"
+import ComplexInput from "lib/components/ComplexInput"
+import TransformDiv, { transform } from "lib/components/TransformDiv"
 
-import { resizeCanvas } from 'lib/utils/canvas'
-import { requiredFunctions } from 'lib/utils/complex'
-import { gridUnit } from 'lib/utils/num'
-import { ViewRange } from 'lib/utils/types'
-import Vector from 'lib/utils/vector'
-import { makeProgram, makeShader, setRectangle } from 'lib/utils/webgl'
+import { resizeCanvas } from "lib/utils/canvas"
+import { requiredFunctions } from "lib/utils/complex"
+import { gridUnit } from "lib/utils/num"
+import type { ViewRange } from "lib/utils/types"
+import Vector from "lib/utils/vector"
+import { makeProgram, makeShader, setRectangle } from "lib/utils/webgl"
 
 const viewRange = signal<ViewRange>({
   x: new Vector(-10, 10),
   y: new Vector(-10, 10),
 })
 const minGrid = 50
-const expression = signal<string>('')
+const expression = signal<string>("")
 const gl = signal<WebGL2RenderingContext | null>(null)
 const grid = signal<CanvasRenderingContext2D | null>(null)
 
@@ -47,20 +47,20 @@ export default function DomainColoring() {
 
     if (!(plotCanvas && gridCanvas)) return
 
-    gl.value = plotCanvas.getContext('webgl2')
-    grid.value = gridCanvas.getContext('2d')
+    gl.value = plotCanvas.getContext("webgl2")
+    grid.value = gridCanvas.getContext("2d")
 
     if (!gl.value) {
-      console.error('Unable to initialize WebGL')
+      console.error("Unable to initialize WebGL")
       return
     }
   }, [])
 
   return (
-    <TransformDiv viewRange={viewRange} className='relative w-full h-full'>
-      <canvas ref={plotCanvasRef} className='absolute inset-0 w-full h-full' />
-      <canvas ref={gridCanvasRef} className='absolute inset-0 w-full h-full' />
-      <ComplexInput expression={expression} className='absolute left-0 top-0' />
+    <TransformDiv viewRange={viewRange} className="relative w-full h-full">
+      <canvas ref={plotCanvasRef} className="absolute inset-0 w-full h-full" />
+      <canvas ref={gridCanvasRef} className="absolute inset-0 w-full h-full" />
+      <ComplexInput expression={expression} className="absolute left-0 top-0" />
     </TransformDiv>
   )
 }
@@ -125,21 +125,21 @@ function makeScene(
 
   const program = makeProgram(gl, vertexShader, fragmentShader)
   if (program === undefined) {
-    console.log('AST could not be compiled:', expression)
+    console.log("AST could not be compiled:", expression)
     return
   }
   gl.useProgram(program)
 
-  const scaleLoc = gl.getUniformLocation(program, 'u_scale')
-  const translateLoc = gl.getUniformLocation(program, 'u_translate')
-  const unitLoc = gl.getUniformLocation(program, 'u_unit')
+  const scaleLoc = gl.getUniformLocation(program, "u_scale")
+  const translateLoc = gl.getUniformLocation(program, "u_translate")
+  const unitLoc = gl.getUniformLocation(program, "u_unit")
 
   const positionBuffer = gl.createBuffer()
   const vertexArray = gl.createVertexArray()
   gl.bindVertexArray(vertexArray)
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
 
-  const positionLoc = gl.getAttribLocation(program, 'a_position')
+  const positionLoc = gl.getAttribLocation(program, "a_position")
   gl.enableVertexAttribArray(positionLoc)
   setRectangle(gl, -1, -1, 2, 2)
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
@@ -149,27 +149,27 @@ function makeScene(
 }
 
 function toGlsl(ast: MathNode): [string, Set<string>] {
-  const vecOperators = new Set<string>(['+', '-'])
+  const vecOperators = new Set<string>(["+", "-"])
   const functions = new Set<string>()
 
   function callback(node: MathNode): MathNode {
     switch (node.type) {
-      case 'SymbolNode': {
-        if ((node as SymbolNode).name !== 'i') return node
+      case "SymbolNode": {
+        if ((node as SymbolNode).name !== "i") return node
 
-        return new FunctionNode('vec2', [
+        return new FunctionNode("vec2", [
           new ConstantNode(0),
           new ConstantNode(1),
         ])
       }
-      case 'ConstantNode': {
+      case "ConstantNode": {
         const args = [
           new ConstantNode((node as ConstantNode).value),
           new ConstantNode(0),
         ]
-        return new FunctionNode('vec2', args)
+        return new FunctionNode("vec2", args)
       }
-      case 'FunctionNode': {
+      case "FunctionNode": {
         const fn = `c_${(node as FunctionNode).fn.name}`
         functions.add(fn)
 
@@ -179,7 +179,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
         }
         return new FunctionNode(fn, args)
       }
-      case 'OperatorNode': {
+      case "OperatorNode": {
         const op = (node as OperatorNode).op
         const fn = `c_${(node as OperatorNode).fn}`
 
@@ -193,7 +193,7 @@ function toGlsl(ast: MathNode): [string, Set<string>] {
         functions.add(fn)
         return new FunctionNode(fn, args)
       }
-      case 'ParenthesisNode': {
+      case "ParenthesisNode": {
         return callback((node as ParenthesisNode).content)
       }
       default: {
@@ -225,7 +225,7 @@ function makeFragmentCode(expression: string): string {
 
   const float PI = 3.14159265358979323846264;
                          
-  ${functionDeclarations.join('\n')}
+  ${functionDeclarations.join("\n")}
 
   vec2 pixel_to_draw(vec2 xy) {
     return (xy - u_translate) / u_scale;

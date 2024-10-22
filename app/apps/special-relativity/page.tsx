@@ -7,10 +7,7 @@ export const metadata: Metadata = {
 }
 
 const SpecialRelativity = dynamic(
-  () => import('lib/components/SpecialRelativity'),
-  {
-    ssr: true,
-  },
+  () => import('lib/components/SpecialRelativity')
 )
 
 export default function Page() {

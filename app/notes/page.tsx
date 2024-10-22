@@ -2,7 +2,6 @@ import Loader from 'lib/components/Loader'
 import dynamic from 'next/dynamic'
 
 const Search = dynamic(() => import('./SearchNotes'), {
-  ssr: false,
   loading: () => (
     <div className='h-full flex justify-center'>
       <Loader width='10%' />

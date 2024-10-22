@@ -6,9 +6,7 @@ export const metadata: Metadata = {
   description: 'An SVG-based plotting app for real-valued functions',
 }
 
-const Plot = dynamic(() => import('lib/components/InteractivePlot'), {
-  ssr: false,
-})
+const Plot = dynamic(() => import('lib/components/InteractivePlot'))
 
 export default function Page() {
   return <Plot />
