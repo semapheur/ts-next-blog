@@ -3,7 +3,8 @@ title: 'Optimization'
 subject: 'Machine Learning'
 showToc: true
 references:
-  - murphy2022probabilisticmachinelearning
+  - book_murphy_2022
+  - book_shalev-schwartz_ben-david_2014
 ---
 
 # Optimization problems
@@ -171,11 +172,12 @@ $$
   \mathbf{g}_t := \nabla\mathcal{L}(\boldsymbol{\theta})|_{\boldsymbol{\theta}_t} = \nabla\mathcal{L}(\boldsymbol{\theta}_t) = \mathbf{g}(\boldsymbol{\theta}_t)
 $$
 
-Since the gradient points in the direction of steepest accent, the negative gradient is the direction of steepes descent. It can be shown that any direction $\mathbf{d}$ is a descent direction if the angle $\theta$ between $\mathbf{d}$ and $-\mathbf{g}_t$ is less than $\pi/4$ ($90\deg$) and satisfies
+Since the gradient points in the direction of steepest accent, the negative gradient is the direction of steepest descent. It can be shown that any direction $\mathbf{d}$ is a descent direction if the angle $\theta$ between $\mathbf{d}$ and $-\mathbf{g}_t$ is less than $\pi/4$ ($90\deg$) and satisfies
 
 $$
   \mathbf{d}^\top \mathbf{g}_t = \lVert\mathbf{d}\rVert\cdot\lVert\mathbf{g}_t \rVert \cos(\theta) < 0
 $$
+
 
 ## Learning rate
 
@@ -456,6 +458,223 @@ $$
 
 This is called *Tikhonov damping* or *Tikhonov regularization*. Note that adding a sufficiently large $\lambda\mathbf{I}$ to $\mathbf{H}$ ensures the resulting matrix is always positive definite. As $\lambda\to 0$, this trust method reduces to Newton's method, but for $\lambda$ large enough, it will make all the negative eigenvalues positive.
 
+## Gradient descent
+
+Gradient descent is a first-order solver that iteratively moves along the negative gradient $\mathbf{g}_t = \nabla_\boldsymbol{\theta} \mathcal{L}(\boldsymbol{\theta})$. Each update takes the form
+
+$$
+\begin{equation}
+  \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \nabla_{\boldsymbol{\theta}}\mathcal{L}(\boldsymbol{\theta}) \tag{\label{equation-7}}
+\end{equation}
+$$
+
+To motivate this method, note that the gradient of $\mathcal{L}$ at $\boldsymbol{\theta}$ yields the first order Taylor approximation
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}_0) \approx \mathcal{L}(\boldsymbol{\theta}) + \langle \boldsymbol{\theta}_0 - \boldsymbol{\theta}, \nabla_{\boldsymbol{\theta} \mathcal{L}(\boldsymbol{\theta})}\rangle
+$$
+
+When $\boldsymbol{L}$ is convex, this approximation gives a lower for bound for $\mathcal{L}$, i.e.
+
+$$
+  \mathcal{L}(\boldsymbol{\theta}_0) \geq \mathcal{L}(\boldsymbol{\theta}) + \langle\boldsymbol{\theta}_0 - \boldsymbol{\theta}, \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})\rangle
+$$
+
+Thus, for $\boldsymbol{\theta}$ close to $\boldsymbol{\theta}_t$ we have that $\mathcal{L}(\boldsymbol{\theta}) \approx \mathcal{L}(\boldsymbol{\theta}_t) + \langle \boldsymbol{\theta} - \boldsymbol{\theta}_t, \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta}_t)\rangle$, which we can minimize. However, this approximation might become loose when $\boldsymbol{\theta}$ is far away from $\boldsymbol{\theta}_t$. We therefore would like to minimize jointly the distance between $\boldsymbol{\theta}$ and $\boldsymbol{\theta}_t$ and the approximation of $\mathcal{L}$ around $\boldsymbol{\theta}_t$. If the parameter $\eta > 0$ controls the tradeoff between the two terms, we obtain the update rule
+
+$$
+  \boldsymbol{\theta}_{t+1} = \argmin_{\boldsymbol{\theta}} \frac{1}{2}\lVert \boldsymbol{\theta} - \boldsymbol{\theta}_t \rVert^2 + \eta\left(\mathcal{L}(\boldsymbol{\theta}_t) + \langle \boldsymbol{\theta} - \boldsymbol{\theta}_t, \nabla\mathcal{L}(\boldsymbol{\theta}_t)\rangle \right)
+$$
+
+Derivating with respect to $\boldsymbol{\theta}$ and solving for zero gives the update rule $\eqref{equation-7}$.
+
+## Convex-Lipschitz functions
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $\mathbf{v}_1,\dots,\boldsymbol{v}_\tau$ be an arbitrary sequence in $\R^n$. Any algorithm with an initialization $\mathbf{w}_0 = 0$ and an update rule of the form
+
+$$
+  \mathbf{w}_{t+1} = \mathbf{w}_t - \eta\mathbf{v}_t
+$$
+
+satisfies
+
+$$
+\begin{equation}
+  \sum_{t=1}^\tau \langle\mathbf{w}_t - \mathbf{w}^*, \mathbf{v}_t \rangle \leq \frac{1}{2\eta}\lVert\mathbf{w}^* \rVert^2 + \frac{\eta}{2} \sum_{t=1}^\tau \lVert\mathbf{v}_t \rVert^2 \tag{\label{equation-9}}
+\end{equation}
+$$
+
+In particular, for every $B, \rho > 0$, if we have that $\lVert\mathbf{v}_t \rVert\leq\rho$ for all $t$ and if we set $\eta = \sqrt{B^2 / (\rho^2 t)}$, then for every $\mathbf{w}^*$ with $\lVert\mathbf{w}^* \rVert \leq B$ we have
+
+$$
+\begin{equation}
+  \frac{1}{\tau}\sum_{t=1}^\tau \langle \mathbf{w}_t - \mathbf{w}^*, \mathbf{v}_t \rangle\leq\frac{B\rho}{\sqrt{\tau}} \tag{\label{equation-10}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Completing the square, we obtain
+
+$$
+\begin{align*}
+  \langle\mathbf{w}_t - \mathbf{w}^*, \mathbf{v}_t \rangle =& \frac{1}{\eta}\langle \mathbf{w}_t - \mathbf{w}^*, \eta\mathbf{v}_t \rangle \\
+  =& \frac{1}{2\eta} \left(-\lVert \mathbf{w}_t - \mathbf{w}^* - \eta\mathbf{w}_t \rVert^2 + \lVert\mathbf{w}_t - \mathbf{w}^* \rVert^2 + \eta^2 \lVert\mathbf{v}_t \rVert^2 \right) \\
+  =& \frac{1}{2\eta} \left(-\lVert\mathbf{w}_{t+1} - \mathbf{w}^* \rVert^2 + \lVert\mathbf{w}_t - \mathbf{w}^* \rVert^2 \right) + \frac{\eta}{2}\lVert\mathbf{v}_t \rVert^2
+\end{align*}
+$$
+
+where the last equality follows from the definition of the update rule. Summing the equality over $t$, we have
+
+$$
+\begin{equation}
+\begin{split}
+  \sum_{t=1}^\tau \langle\mathbf{w}_t - \mathbf{w}^*, \mathbf{v}_t \rangle =& \frac{1}{2\eta} \sum_{t=1}^\tau \left(-\lVert \mathbf{w}_{t+1} - \mathbf{w}^* \rVert^2 + \lVert \mathbf{w}_t - \mathbf{w}^* \rVert^2 \right) \\
+  &+ \frac{2}{\eta} \sum_{t=1}^T \lVert\mathbf{v}_t \rVert^2
+\end{split}\tag{\label{equation-8}}
+\end{equation}
+$$
+
+The first sum on the right-hand side is a telescopic sum that collapses to
+
+$$
+  \lVert \mathbf{w}_0 - \mathbf{w}^* \rVert^2 - \lVert \mathbf{w}_{\tau + 1} - \mathbf{w}^* \rVert^2
+$$
+
+Substuting this into $\eqref{equation-8}$ gives
+
+$$
+\begin{align*}
+  \sum_{t=1}^\tau \langle\mathbf{w}_t - \mathbf{w}^*, \mathbf{v}_t \rangle =& \frac{1}{2\eta} (\lVert\mathbf{w}_0 - \mathbf{w}^* \rVert^2 - \lVert \mathbf{w}_{\tau+1} - \lVert \mathbf{w}_{\tau+1} - \mathbf{w}^* \rVert^2) \\
+  &+ \frac{\eta}{2} \sum_{t=1}^\tau \lVert\mathbf{v}_t \rVert^2 \\
+  \leq& \frac{1}{2\eta}\lVert \mathbf{w}_0 - \mathbf{w}^* \rVert + \frac{\eta}{2}\sum_{t=1}^\tau \lVert\mathbf{v}_t \rVert^2 \\
+  =& \frac{1}{2\eta} \lVert\mathbf{w}^* \rVert^2 + \frac{\eta}{2} \sum_{t=1}^\tau \sum_{t=1}^\tau \lVert\mathbf{v}_t \rVert^2
+\end{align*}
+$$
+
+This proves $\eqref{equation-9}$. The second inequality follows by upper bounding $\lVert\mathbf{w}^* \rVert$ by $B$, $\lVert\mathbf{v}_t \rVert$ by $\rho$, dividing by $\tau$, and plugging in the value of $\eta$.
+</details>
+</MathBox>
+
+Consider a loss function $\mathcal{L}$ that is convex-Lipschitz and let $\boldsymbol{\theta}^* \in\R^p$ be any vector with upper bound $\lVert\boldsymbol{\theta}^* \rVert\leq B$. We would like to obtain an upper bound on the suboptimality of our solution with respect to $\boldsymbol{\theta^*}$, i.e. $\mathcal{L}(\bar{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta}^*)$ where $\bar{\boldsymbol{\theta}} = \frac{1}{\tau} \sum_{t=1}^\tau \boldsymbol{\theta}_t$. From the definition of $\bar{\boldsymbol{\theta}}$ and Jensen's inequality, we have that
+
+$$
+\begin{align*}
+  \mathcal{L}(\bar{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta}^*) =& \boldsymbol{L}\left(\frac{1}{\tau}\sum_{t=1}^\tau \boldsymbol{\theta}_t \right) - \mathcal{L}(\mathbf{\theta}^*) \\
+  \leq& \frac{1}{\tau} \left(\sum_{t=1}^\tau \mathcal{L}(\boldsymbol{\theta}_t)\right) - \mathcal{L}(\boldsymbol{\theta}) \\
+  = \frac{1}{\tau} \sum_{t=1}^\tau \left(\mathcal{L}(\boldsymbol{\theta}_t) - \mathcal{L}(\boldsymbol{\theta}^*) \right) \tag{\label{equation-10}}
+\end{align*}
+$$
+
+From the convexity of $\mathcal{L}$, we have for every $t$ that
+
+$$
+\begin{equation}
+  \mathcal{L}(\boldsymbol{\theta}_t) - \mathcal{L}(\boldsymbol{\theta}^*) \leq \langle \boldsymbol{\theta}_t - \boldsymbol{\theta}^*, \nabla_\boldsymbol{\theta} \mathcal{L}(\boldsymbol{\theta}_t) \tag{\label{equation-11}}
+\end{equation}
+$$
+
+Combining $\eqref{equation-10}$ and $\eqref{equation-11}$, we obtain
+
+$$
+  \mathcal{L}(\bar{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta}^*) \leq \frac{1}{\tau} \langle \boldsymbol{\theta}_t - \boldsymbol{\theta}^*, \nabla\mathcal{L}(\boldsymbol{\theta}_t) \rangle
+$$
+
+Since $\mathcal{L}$ is $\rho$-Lipschitz, it follows that $\lVert\nabla\mathcal{L}(\boldsymbol{\theta}_t)\rVert \leq\rho$. Applying $\ref{lemma-1}$, we obtain
+
+$$
+  \mathcal{L}(\bar{\boldsymbol{\theta}}) -\mathcal{L}(\boldsymbol{\theta}^*) \leq \frac{B\rho}{\sqrt{\tau}}
+$$
+
+Furthermore, for every $\epsilon > 0$, to achieve $\mathcal{L}(\bar{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta}^*) \leq\epsilon$, it suffices to run the gradient descent algorithm for a number of iterations satisfying
+
+$$
+  \frac{\tau}{B^2 \rho^2}{\epsilon^2}
+$$
+
+## Subgradients
+
+The gradient descent algorithm can be generalized to nondifferentiable functions by using a subgradient of $\mathcal{L}(\boldsymbol{\theta})$ at $\boldsymbol{\theta}_t$, instead of the gradient. The analysis of the convergence rate remains unchanged in this case and $\eqref{equation-11}$ also holds for subgradients.
+
+<MathBox title='' boxType='lemma'>
+Let $S\subseteq\R^n$ be an open convex set. A function $f:S\to\R$ is convex if and only if for every $\mathbf{w}\in S$, there exists $\mathbf{v}$ such that
+
+$$
+  f(\mathbf{u}) \geq f(\mathbf{w}) + \langle \mathbf{u} - \mathbf{v}, \mathbf{v} \rangle,\; \forall \mathbf{u}\in S
+$$
+</MathBox>
+
+<MathBox title='Subgradient' boxType='definition' tag='definition-1'>
+Let $S\subseteq\R^n$ be an open convex set and $f:S\to\R$ a convex function. A vector $\mathbf{v}\in\R^n$ that satifies 
+
+$$
+  f(\mathbf{u}) \geq f(\mathbf{w}) + \langle \mathbf{u} - \mathbf{v}, \mathbf{v} \rangle,\; \forall \mathbf{u}\in S
+$$
+
+is called a subgradient of $f$ at $\mathbf{w}$. The set of subgradient of $f$ at $\mathbf{w}$ is called the differential set, denoted $\partial f(\mathbf{w})$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $g(\mathbf{w}) = \max_{i\in [r]} g_i (\mathbf{w})$ for $r$ convex functions $g_1,\dots,g_r$. Given some $\mathbf{w}$, let $j\in\argmax_i g_i(\mathbf{w})$. Then $\nabla g_j (\mathbf{w}) \in \partial g(\mathbf{w})$.
+
+<details>
+<summary>Proof</summary>
+
+Since $g_j$ is convex we have that for all $\mathbf{u}$
+
+$$
+  g_j (\mathbf{u}) \geq g_j (\mathbf{w}) + \langle \mathbf{u} - \mathbf{w}, \nabla g_j (\mathbf{w}) \rangle
+$$
+
+Since $g(\mathbf{w}) = g_j (\mathbf{w})$ and $g(\mathbf{u}) \geq g_j (\mathbf{u})$ we get
+
+$$
+  g(\mathbf{u}) \geq g(\mathbf{w}) + \langle\mathbf{u} - \mathbf{w}, \nabla g_j (\mathbf{w})\rangle 
+$$
+</details>
+</MathBox>
+
+### Subgradient for Lipschitz functions
+
+<MathBox title='' boxType='lemma'>
+Let $S\subseteq\R^n$ be a convex open set and let $f:A\to\R$ be a convex function. Then, $f$ is $\rho$-Lipschitz over $A$ if and only if for all $\mathbf{w}\in A$ and $\mathbf{v}\in \partial f(\mathbf{w})$ we have that $\lVert\mathbf{v}\rVert\leq\rho$.
+
+
+<details>
+<summary>Proof</summary>
+
+Assume that for all $\mathbf{v}\in\partial f(\mathbf{w})$ we have that $\lVert\mathbf{v}\rVert\leq\rho$. Since $\mathbf{v}\in\partial f(\mathbf{w})$ we have
+
+$$
+  f(\mathbf{w}) - f(\mathbf{u}) \leq \langle\mathbf{v}, \mathbf{w} - \mathbf{u}\rangle
+$$
+
+Bounding the right-hand side using the Cauchy-Schwartz inequality we obtain
+
+$$
+  f(\mathbf{w}) - f(\mathbf{u}) \leq \langle\mathbf{v},\mathbf{w} - \mathbf{u}\rangle \leq \lVert\mathbf{v}\rVert\cdot\lVert\mathbf{w} - \mathbf{v}\rVert \leq \rho\lVert\mathbf{w} - \mathbf{u}\rVert
+$$
+
+An analogous argument can show that $f(\mathbf{u}) - f(\mathbf{w}) \leq\rho\lVert\mathbf{w} - \mathbf{u}\rVert$. Hence $f$ is $\rho$-Lipschitz.
+
+Now assume that $f$ is $\rho$-Lipschitz. Choose some $\mathbf{w}\in A$ and $\mathbf{v}\in\partial f(\mathbf{w})$. Since $A$ is open, there exists $\epsilon > 0$ such that $\mathbf{u} = \mathbf{w} + \epsilon\mathbf{v}/\lVert\mathbf{v}\rVert$ belongs to $A$. Thus, $\langle\mathbf{u} - \mathbf{w}, \mathbf{v}\rangle = \epsilon\lVert\mathbf{v}\rVert$ and $\lVert\mathbf{u} - \mathbf{w}\rVert = \epsilon$. From the definition of the subgradient (Definition $\ref{definition-1}$) we get
+
+$$
+  f(\mathbf{u}) - f(\mathbf{w}) \geq \langle\mathbf{v}, \mathbf{u} - \mathbf{w} \rangle = \epsilon\lVert\mathbf{v}\rVert
+$$
+
+On the other hand, from the Lipschitzness of $f$ we have
+
+$$
+  \rho\epsilon = \rho\lVert\mathbf{u} - \mathbf{w}\rVert \geq f(\mathbf{u}) - f(\mathbf{w})
+$$
+
+Combining these two inequalities we conclude that $\lVert\mathbf{v}\rVert\leq\rho$.
+</details>
+</MathBox>
+
 # Stochastic gradient descent
 
 In *stochastic optimization* we seek to minimize the average value of a function
@@ -471,6 +690,22 @@ $$
 $$
 
 This method is called *stochastic gradient descent* (SGD). As long as the gradient estimate is unbiased, then this method will converge to a stationary point, provide we decay the step size $\eta_t$ at a certain rate.
+
+<MathBox title='Stochastic gradient descent' boxType='algorithm'>
+**parameters:**
+- iterations $\tau \in\N_+$
+- learning rate $\eta > 0$
+
+**initialization:**
+- choose $\mathbf{w}_1 = \mathbf{0}
+
+**for** $t=1,\dots,\tau$
+1. choose gradient $\mathbf{g}_t$ at random from a distribution such that $\mathbb{E}[\mathbf{g}_t | \mathbf{w}_t] \in\partial f(\mathbf{w}_t)$
+2. update $\mathbf{w}_{t+1} = \mathbf{w}_t - \eta\mathbf{g}_t$
+
+**output:**
+- $\bar{w} = \frac{1}{\tau} \sum_{t=1}^\tau$
+</MathBox>
 
 ## Application to finite sum problems
 
