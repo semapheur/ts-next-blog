@@ -1,0 +1,262 @@
+---
+title: 'Neural Networks'
+subject: 'Machine Learning'
+showToc: true
+references:
+  - book_mohri_etal_2012
+  - book_murphy_2022
+  - book_shalev-schwartz_ben-david_2014
+---
+
+A neural network can be represented by a directed graph whose nodes correspond to neurons and edges correspond to links between them. Each neuron receives as input a weighted sum of the outputs of the neurons connected to its incoming edges.
+
+# Perceptron (McCulloch-Pitts neuron)
+
+# Feedforward neural network (FFNN)
+
+A feedforward neural network (FFNN) is described by a directed asyclic graph, $G = (V,E)$, and a weight function over the edges, $w = E\to\R$. Nodes of the graph correspond to neurons. Each single neuron is modeled as a real function $\sigma:\R\to\R$ called the activation function of the neuron. Each edge in the graph link the output of some neuron to the input of another neuron. The input of a neuron is obtained by taking a weighted sum of the outputs of all the neurons connected to it, where the weighting is according to $w$.
+
+To network is further organized into layers. The set of nodes can be decomposed into a union a disjoint subsets $V = \sqcup_{t=0}^T V_t$ such that every edge in $E$ connects some node in $V_{t-1}$ to some node in $V_t$ for some $t \in [T]$. The bottom layer, $V_0$, is called the input layer and contains $n + 1$ neurons, where $n$ is the dimensionality of the input space. For every $i\in [n]$, the output of neuron $i$ is simply $x_i$. The last neuron in $V_0$ is the intercept node, which always outputs $1$. Layers $V_1,\dots, V_{T-1}$ are often called *hidden layers*. The top layer, $V_T$ is called the output layers.
+
+We denote by $v_{t,i}$ the $i$ th neuron of the $t$th layer and by $o_{t,i} (\mathbf{x})$ the output of $v_{t,i}$, when the network is fed with the input vector $\mathbf{x}$. Thus, for $i\in[n]$ we have $o_{0,i} (\mathbf{x}) = x_i$ and for $i = n+1$ we have $o_{0, i} (\mathbf{x}) = 1$. The outputs of the neurons at layer $t + 1$ is calculated recursively in the following way. Fix some $v_{t+1, j}\in V_{t+1}$ and let $a_{t+1, j} (\mathbf{x})$ denote the input to $v_{t+1,j}$ when the network is fed with the input vector $\mathbf{x}$. Then
+
+$$
+\begin{align*}
+  a_{t+1, j} (\mathbf{x}) =& \sum_{r: (v_{t,r}, v_{t+1, j})\in E} w((v_{t,r}, v_{t+1, j})) o_{t,r} (\mathbf{x})
+  o_{t+1, j} (\mathbf{x}) =& \sigma(a_{t+1m j}(\mathbf{x}))
+\end{align*}
+$$
+
+That is, the input to $v_{t+1,j}$ is a weighted sum of the outpus of the neurons in $V_t$ that are connected to $v_{t+1,j}$, where weighting is according to $w$, and the output of $v_{t+1}$ is simply the application of the activation function $\sigma$ on its input.
+
+We refer to $T$ as the number of layers in the network (excluding $V_0$), or alternatively the *debth* of the network. The size of the network is denoted $|V|$ and the width of the netweek is $\max_{t\in T} |V|_t$.
+
+## Learning neural networks
+
+A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
+
+$$
+  h_{V,E,\sigma,w} : \R^{|V_0|-1} \to \R^{|V_T|}
+$$
+
+Any set of such functions can serve as a hypothesis class for learning. Usually, we define a hypothesis class of neural network predictors by fixing the graph $(V,E)$ as well as the activation function $\sigma$ and letting the hypothesis class be all functions of the form $h_{V,E,\sigma,w}$ for some $w: E\to\R$. The triplet $(V,E,\sigma)$ is often called the *architecture* of the network. We denote the hypothesis class by $\mathcal{H}_{V,E,\sigma} = \Set{h_{V,E,\sigma,w} | w:E\to\R}$.
+
+<MathBox title='Neural networks implement all Boolean functions' boxType='proposition'>
+For every $n\in\N$, there exists a graph $(V,E)$ of depth $2$, such that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{\pm 1}^n$ to $\set{\pm 1}$.
+
+<details>
+<summary>Proof</summary>
+
+We construct a graph with $|V_0| = n + 1$, |V_1| = 2^n + 1 and $|V_2| = 1$. Let $E$ be all possible edges between adjacent layers. Consider a Boolean function $f:\set{\pm 1}^n \to\set{\pm 1}$. We need to show that we can adjust the weights so that the network will implement $f$. Let $\mathbf{u}_1,\dots,\mathbf{u}_k$ be all vectors in $\set{\pm 1}^n$ on $f$ which outputs $1$. Note that for every $i$ and every $\mathbf{x}\in\set{\pm 1}^n$, if $\mathbf{x}\neq\mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle\leq n - 2$ and if $\mathbf{x} = \mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle = n$. It follows that 
+
+$$
+  g_i (\mathbf{x}) = \operatorname{sign}(\langle\mathbf{x},\mathbf{u}_i\rangle - n + 1) = 1 \iff \mathbf{x} = \mathbf{n}
+$$
+
+Consequently, we can adapt the weights between $V_0$ and $V_1$ so that for every $i\in [k]$, the neuron $v_{1,i}$ implements the function $g_i$. Finally, note that $f$ is the disjunction of the functions $g_i$ allowing us to write
+
+$$
+  f(\mathbf{x}) = \operatorname{sign}\left(\sum_{i=1}^k g_i (\mathbf{x}) + k -1 \right)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all the functions from $\set{0,1}^n$ to $\set{0,1}$. Then, $s(n)$ is exponential in $n$. Similar results holds for $\mathcal{H}_{V, E, \sigma}$ where $\sigma$ is the sigmoid function.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that for some $(V,E)$ we have that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{0,1}^n$ to $\set{0,1}$. It follows that it can shatter the set of $m = 2^n$ vectors in $\set{0,1}^n$ and hence the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is $2^n$. On the other hand, the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is bounded by $\mathcal{O}(|E| \ln(|E|))\leq\mathcal{O}(|V|^3)$. This implies that $|V|\geq\Omega(2^{n/3})$, which concludes the proof for the case with the sign activation function. The proof for the sigmoid case is analogous.
+</details>
+</MathBox>
+
+It is possible derive a similar theorem for $\mathcal{H}_{V, E, \operatorname{sign}}$ for any activation function $\sigma$, as long as we restict the weights so that it is possible to express every weight using a number of bits which is bounded by a universal constant. We can even consider hypothesis clases where different neurons can employ different activation functions, as long as the number of allowed activation functions is also finite.
+
+<MathBox title='' boxType='corollary'>
+Fix some $\epsilon\in(0,1)$. For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class $\mathcal{H}_{V,E,\sigma}$ with $\sigma$ being the sigmoid function, can approximate, to within precision of $\epsilon$, every $1$-Lipschitz function $f:[-1,1]^n \to[-1,1]$. Then $s(n)$ is exponential in $n$.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $T:\N\to\N$ and for every $n\in\N$, let $\mathcal{F}_n$ be the set of functions that can be implemented using a Turing maching with runtime of a most $T(n)$. Then, there exis constants $b, c\in\R_+$ such that for every $n$, there is a graph $(V_n, E_n)$ of size at most $cT(n)^2 + b$ such that $\mathcal{H}_{V_n, E_n, \operatorname{sign}}$ contains $\mathcal{F}_n$.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Suppose that a neuron $v$, that implements the sign activation function, has $k$ incoming edges, connecting it to neurons whose outputs are in $\set{\pm 1}$. Then, by adding one more edge, linking a constant neuron to $v$, and by adjusting the weights on the edges to $v$, the output of $v$ can implement the conjunction or the disjunction of its inputs.
+
+<details>
+<summary>Proof</summary>
+
+Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mathbf{x}) = \wedge_i x_i$, then it can be written as $f(\mathbf{x}) = \operatorname{sign}\left(1 - k + \sum_{i=1}^k x_i \right)$. Similarly, the disjunction function $f(\mathbf{x}) = \vee_i x_i$ can be written as $f(\mathbf{x}) = \operatorname{sign}\left(k - 1 + \sum_{i=1}^k x_i \right)$
+</details>
+</MathBox>
+
+## Sample complexity
+
+<MathBox title='Growth function' boxType='definition'>
+Let $\mathcal{F}_1$ be a set of functions from $X$ to $Z$ and $\mathcal{F}_2$ a set of functions from $Z$ to $Y$. Let $\mathcal{H} = \mathcal{F_2}\circ\mathcal{F_1}$ be the composition class. That is, for every $f_1\in\mathcal{F}_1$ and $f_2\in\mathcal{F}_2$, there exists $h\in\mathcal{H}$ with $h(\mathbf{x}) = f_2(f_1(\mathbf{x}))$. If 
+
+<details>
+<summary>Proof</summary>
+
+It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $a > 0$. Then
+
+$$
+  x \geq 2a \ln(a) \implies x \geq a\ln(x)
+$$
+
+It follows that a necessary condition for the inequality $x < a\ln(x)$ to hold is that $x < 2a\ln(a)$.
+
+<details>
+<summary>Proof</summary>
+
+First note that for $a\in(0,\sqrt{e}]$ the inequality $x\geq a\ln(x)$ holds unconditionally and there the claim is trivial. Now, assume that $a > \sqrt{e}$. Consider the function $f(x) = x - a\ln(x)$. The derivative is $f'(x) = 1 - a/x$. Thus, for $x > a$ the derivative is positive and the function increases. In addition
+
+$$
+\begin{align*}
+  f(2a\ln(a)) =& 2a\ln(a) - a\ln(2a\ln(a)) \\
+  =& 2a\ln(a) - a\ln(a) - a\ln(2\ln(a)) \\
+  =& a\ln(a) - a\ln(2\ln(a))
+\end{align*}
+$$
+
+Since $a - 2\ln(a) > 0$ for all $a > 0$, the proof follows.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $a\geq 1$ and $b > 0$. Then
+
+$$
+  x \geq 4a \ln(2a) + 2b \implies x \geq a\ln(x) + b
+$$
+
+<details>
+<summary>Proof</summary>
+
+It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-3'>
+Let $\mathcal{F}_1$ be a set of functions from $X$ to $Z$ and $\mathcal{F}_2$ a set of functions from $Z$ to $Y$. Let $\mathcal{H} = \mathcal{F_2}\circ\mathcal{F_1}$ be the composition class. That is, for every $f_1\in\mathcal{F}_1$ and $f_2\in\mathcal{F}_2$, there exists $h\in\mathcal{H}$ with $h(\mathbf{x}) = f_2(f_1(\mathbf{x}))$. If 
+
+<details>
+<summary>Proof</summary>
+
+It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O(|E| \ln(|E|))$.
+
+<details>
+<summary>Proof</summary>
+
+To simplify notation, let $\mathcal{H}$ denote the hypothesis class. Recall the growth function
+
+$$
+  \tau_{\mathcal{H}}(m) = \max_{C\subset X:|C|=m} |\mathcal{H}_C|
+$$
+
+where $\mathcal{H}_C$ is the restriction of $\mathcal{H}$ to functions from $C$ to $\Set{0,1}$. We can naturally extend the definition for a set of functions from $X$ to som finite set $Y$, by letting $\mathcal{H}_C$ be the restriction of $\mathcal{H}$ to functions from $C$ to $Y$, and keeping the definition of $\tau_\mathcal{H}(m)$ intact.
+
+Let $V_0,\dots,V_T$ be the layers of a neural network. Fix some $t\in[T]$. By assigning different weights on the edges between $V_{t-1}$ and $V_t$, we obtain different functions from $\R^{|V_{t-1}|} \to\set{\pm 1}^{|V_t|}$. Let $\mathcal{H}_t$ be the class of all possible mappings $\R^{|V_{t-1}|}\to\set{\pm 1}^{|V_t|}$. Then $\mathcal{H}$ can be written as a composition $\mathcal{H} = \mathcal{H}_T \circ\cdots\circ\mathcal{H}_1$. It can shown that the growth function of a composition of hypothesis classes is bounded by the product of the growth function of the individual classes, i.e.
+
+$$
+  \tau_\mathcal{H} (m) \leq \prod_{t=1}^T \tau_{\mathcal{H}_t} (m)
+$$
+
+In addition, each $\mathcal{H}_t$ can be written as a product of function classes, $\mathcal{H}_t = \mathcal{H}_{t,1} \times\cdots\times \mathcal{H}_{t,|V_t|}$, where each $\mathcal{H}_{t,j}$ is all function from layer $t - 1$ to $\set{\pm 1}$ that the $j$th neuron of layer $t$ can implement. It can also be shown that
+
+$$
+  \tau_{\mathcal{H}_t} (m) \leq \prod_{i=1}^{|V_t|} \tau_{\mathcal{H}_{t,i}} (m)
+$$
+
+Let $d_{t,i}$ be the number of edges that are headed to the $i$th neuron of layer $t$. Since the neuron is a homogenous halfspace hypothesis and the VC dimension of homogenous halfspaces is the dimension of the input, we have by Sauer's lemma that
+
+$$
+  \tau_{\mathcal{H}_{t,i}} (m) \leq \left( \frac{em}{d_{t,i}} \right)^{d_{t,i}} leq (em)^{d_{t,i}}
+$$
+
+Overall, we obtained that
+
+$$
+  \tau_{\mathcal{H}} (m) \leq (em)^{\sum_{t,i}} d_{t,i} = (em)^{|E|}
+$$
+
+Now, assume that there are $m$ shattered points. Then, we must have $\tau_\mathcal{H} (m) = 2^m$, from which we obtain
+
+$$
+  2^m \leq (em)^{|E|} \implies m \leq |E| \ln(em) / \ln(2)
+$$
+
+The claim follows from Lemma $\ref{lemma-2}$.
+</details>
+</MathBox>
+
+Let $\sigma$ be a sigmoid activation function. The VC dimension of $\mathcal{H}_{V,E,\sigma}$ is lower bounded by $\Omega(|E|^2)$. That is, the VC dimension is the number of tunable parameters squared. It is also possible to upper bound the VC dimension by $\mathcal{O}(|V|^2 |E|^2)$.
+
+## Runtime complexity
+
+<MathBox title='' boxType='theorem'>
+Let $k\geq 3$. For every $n\in\N$, let $(V,E)$ be a layered graph with $n$ input nodes, $k+1$ nodes at the (single) hidden layer, where one of them is the constant neuron, and a single output node. Then, it is NP hard to implement the ERM rule with respect to $\mathcal{H}_{V,E,\operatorname{sign}}$.
+</MathBox>
+
+## Stochastic gradient descent and backpropagation
+
+Stochastic gradient descent can be used search for optimal weights for a hypothesis $\mathcal{H}_{V,E,\sigma}$. Since $E$ is a finite set, we can think of the weight function as a vector $\mathbf{w}\in\R^{|E|}$. Suppose the network has $n$ input neurons and $k$ output neurons, and denote by $h_\mathbf{w} \R^n \to\R^k$ he function calculated by the network if the weight function is defined by $\mathbf{w}$. Let us denote by $\Delta (h_\mathbf{w} (\mathbf{x}), \mathbf{y})$ the loss of predicting $h_\mathbf{w} (\mathbf{x})$ when the target is $\mathbf{y}\in Y$. For concreteness, we will take $\Delta$ to be the squared loss, $\Delta (h_\mathbf{w}(\mathbf{x}),\mathbf{y}) = \frac{1}{2}\lVert h_\mathbf{w} (\mathbf{x}) - \mathbf{y}\rVert^2$; however, similar derivation can be botained for every differentiable function. Finally, give a distribution $\mathcal{D}$ over the example domain, $\R^n \times\R^n$, let $L_\mathcal{D}(\mathbf{w})$ be the risk of the network, i.e.
+
+$$
+  L_\mathcal{D} (\mathbf{w}) = \mathbb{E}_{(\mathbf{x},\mathbf{y})\sim\mathcal{D}} [\Delta(h_\mathbf{w}(\mathbf{x}, \mathbf{y}))]
+$$
+
+The gradient of $L_\mathcal{D}$, which does not have an analytical form, is calculated using the backpropagation algorithm.
+
+<MathBox title='Stochastic gradient on feedforward neural networks' boxType='algorithm'>
+**parameters:**
+- number of iterations $\tau$
+- step size scheduler $\eta(t)$
+- regularization parameter $\lambda > 0$
+
+**input:**
+- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
+- layered graph $(V,E)$
+- differentiable activation function $\sigma:\R\to\R$
+
+**initialize:**
+- choose $\mathbf{w}_0 \in\R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
+
+**for** $i=1,\dots,\tau$
+1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
+2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
+4. calculate learning step $\eta_i = \eta(i)$
+3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
+</MathBox>
+
+<MathBox title='Backpropagation' boxType='algorithm'>
+**parameters:**
+- number of iterations $\tau$
+- step size scheduler $\eta(t)$
+- regularization parameter $\lambda > 0$
+
+**input:**
+- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
+- layered graph $(V,E)$
+- differentiable activation function $\sigma:\R\to\R$
+
+**initialize:**
+- choose $\mathbf{w}_0 \in \R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
+
+**for** $i=1,\dots,\tau$
+1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
+2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
+4. calculate learning step $\eta_i = \eta(i)$
+3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
+</MathBox>

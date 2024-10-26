@@ -1,0 +1,1111 @@
+---
+title: 'Learning Theory'
+subject: 'Machine Learning'
+showToc: true
+references:
+  - book_mohri_etal_2012
+  - book_shalev-schwartz_ben-david_2014
+---
+
+# Terminology
+
+- **Examples:** Items or instances of data used for learning or evaluation.
+- **Features:** The set of attributes, often represented as a tensor, associated to an example.
+- **Labels:** Values or categories assigned to examples.
+- **Training sample:** Examples used to train a learning algorithm.
+- **Validation sample:** Examples used tune the parameters of a learning algorithm when working with labeled data.
+- **Test sample:** Examples used to evaluate the performance of a learning algorithm that are separate from the training and validation samples.
+- **Loss function:** A function measuring the difference, or loss, between a predicted label and a true label. If $Y$ is the set of all labels and $Y'$ is the set of all possible predictions, the loss function is a mapping $L: Y \times Y' \to \R_+$. In most cases $Y' = Y$ and the loss function is bounded. Common example of loss functions are the zero-one (or misclassification) loss defined over $\Set{-1,1} \times \Set{-1,1}$ by $L(y, y') = \mathbf{1}_{y' = \neq y}$ and the squared loss defined over $I\times I$ by $L(y, y') = (y' - y)^2$, where $I\subseteq\R$ is typically a bounded interval.
+- **Hypothesis set:** A set of functions mapping features to the set of labels.
+
+Machine learning techniques can be divided into seven approaches:
+- **Supervised learning:** The learner receives a set of labeled examples as training data and makes predictions for all unseen points.
+    - Classification (discrete)
+    - Regression (continuous)
+- **Unsupervised learning:** The learner exclusively receives unlabeled training data and makes predictions for all unseen points. 
+    - Clustering
+- **Semi-supervised learning:** The learner receives a training sample consisting of both labeled and unlabed data, and makes predictions for all unseen points.
+- **Transductive inference:** The learner receives a labeled training sample along with a set of unlabeled test points and makes predicition only these particular test points.
+- **On-line learning:** Learning is conducted over multiple rounds with intermixed training and testing phases. At each round, the learner receives an unlabeled training point, makes a prediction, receives the true label, and incurs a loss. The objective is to minimize the cumulative loss over all rounds. No distributional assumption is made; instances and their labels may be chosen adversarially.
+- **Reinforcement learning:** To collect information, the learner actively interacts with the environment and in some cases affects the environment, and receives an immediate reward for each action. The goal is to maximize the reward over a course of actions and iterations with the environment. However, no long-term reward feedback is provided by the environment, and the learner is faced with the *exploration versus exploitation* dilemma, since it must choose between exploring unknown actions to gain more information versus exploiting the information already collected.
+- **Active learning:** The learner adaptively or interactively collects training examples, typically by quering an oracle to request labels for new points. The goal is to achieve a performance comparable to supervised learning.
+
+# Probably approximately correct (PAC) learning framework
+
+Let $X$ be the set of all possible examples, also referred to as the input space, and let $Y$ be the set of all possible labels or target values. A *concept* is a mapping $c:X\to Y$, while a concept class $C$ is a set of concepts that can be learnt. We assume the examples are independently and identically distributed (i.i.d.) according to some fixed yet unknown distribution $D$. 
+
+The learning problem is formulated as follows. The learner considers a fixed set of possible concepts $H$, called a *hypothesis set*, which may not coincide with $C$. It receives a samle $S = (x_1,\dots,x_n)$ drawn i.i.d. according to $D$ as well as the labels $(c(x_1),\dots,c(x_n))$, which are based on a specific target concept $c \in C$ to learn. Its task is use the labeled sample $S$ to select a hypothesis $h_s \in H$ that has a small *generalization error* with respect to the concept $c$. 
+
+<MathBox title='Generalization error' boxType='definition'>
+Given a hypothesis $h\in H$, a target concept $c\in C$, and an underlying distribution $D$, the *generalization error/risk* of $h$ is defined by
+
+$$
+  R(h) = \Pr(h(x) \neq c(x)) = \mathbb{E}(\mathbf{1}_{h(x)\neq c(x)}),\; x\sim D
+$$
+
+Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
+</MathBox>
+
+The generalization error of a hypothesis is not directly accessible to the learner since both the distribution $D$ and the taget concept $c$ are unknown. However, the learner can measure the *empirical error* of a hypothesis on the labeled sample $S$.
+
+<MathBox title='Empirical error' boxType='definition'>
+Given a hypothesis $h\in H$, a target concept $c\in C$, and a sample $S = (x_1,\dots,x_n)$, the *empirical error/risk* of $h$ is defined by
+
+$$
+  \hat{R}(h) = \frac{1}{n} \sum_{i=1}^n \mathbf{1}_{h(x_i) \neq c(x_i)}
+$$
+
+Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
+</MathBox>
+
+The empirical error of $h\in H$ is its average error over a sample $S$, while the generalization error is its expected error based on the distribution $D$. Note that for a fixed $h\in H$, the expectation of the empirical error based on an i.i.d. sample $S$ is equal to the generalization error, i.e. $\mathbb{E}(\hat{R}(h)) = R(h)$. By linearity to the expectation and the fact that the sample is drawn i.i.d., we can write for any $x\in S$
+
+$$
+\begin{align*}
+  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)}) \\
+  =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)})
+\end{align*}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \underset{x\sim D^n}{\mathbb{E}} (\mathbf{1}_{\Set{h(x) \neq c(x)}}) \\
+  =& \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{\Set{h(x) \neq c(x)}}) = R(h)
+\end{align*}
+$$
+
+<MathBox title='PAC-learning' boxType='definition'>
+A concept class $C$ is PAC-learnable if there exists an algorithm $\mathcal{A}$ and a polynomial function $p(\cdot,\cdot,\cdot,\cdot)$ such that for any $\varepsilon > 0$ and $\delta > 0$, for all distributions $D$ on $X$ and for any target concept $c\in C$, the following holds for any sample size $n \geq p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$
+
+$$
+  \underset{S\sim D^n}\Pr(R(h_S) \leq \varepsilon) \geq 1 - \delta
+$$
+
+where $s(c)$, the size of $c$, is the maximal cost of the computational representation of $c\in C$. If $A$ further runs in $ p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$, then $C$ is efficiently PAC-learnable. When such an algorithm $\mathcal{A}$ exists, it called a PAC-learning algorithm for $C$.
+
+A concept class $C$ is thus PAC-learnable if the hypothesis returned by the algorithm after observing a number of points polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$ is *approximately correct* (error at most $\varepsilon$) with high *probability* (at least $1-\delta$). In this framework, $\delta > 0$ describes the *confidence* $1-\delta$ and $\varepsilon > 0$ the *accuracy* $1 - \varepsilon$. Note that if the running time of the algorithm is polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$, then the sample size $n$ must also be polynomial if the full sample is received by the algorithm.
+</MathBox>
+
+Several characteristics of the PAC definition are worth emphasizing. First, the PAC is framework is a distribution-free model as it makes no particular assumptions about the distribution $D$ from which samples are drawn. Second, the training sample and the test examples used to define the error are drawn according to the same distribution $D$. This is a necessary assumption for generalization to by possible in most cases.
+
+Finally, the PAC framework deals with the question of learnability for a concept class $C$ and not a particular concept. Note that the concept class $C$ is known to the algorithm, while the target concept $c$ is unknown. In many cases, in particular when the computational representation of the concepts is not explicitly discussed or is straightforward, we may omit the polynomial dependency on $n$ and $s(c)$ in the PAC definition and focus only on the sample complexity.
+
+## Learning guarantees for finite hypothesis sets
+
+### Consistent case
+
+<MathBox title='Learning bounds for finite hypotheses sets (consistent case)' boxType='theorem'>
+Let $H$ be a finite hypothesis set. Let $A$ be an algorithm that for any target concept $c\in H$ and i.i.d. sample $S$ returns a consistent hypothesis $h_S: \hat{R}(h_s) = 0$. Then, for any $\epsilon, \delta > 0$, the inequality $\Pr_{S\sim D^m} [R(h_s) \leq\epsilon] \geq 1 - \delta$ holds if
+
+$$
+\begin{equation}
+  m \geq \frac{1}{\epsilon}\left(\ln|H| + \ln\frac{1}{\delta} \right) \tag{\label{equation-1}}
+\end{equation}
+$$
+
+This sample complexity result admits the following equivalent statement as a generalization bound: for any $\epsilon,\delta > 0$, with probability at least $1 - \delta$,
+
+$$
+\begin{equation}
+  R(h_S) \leq \frac{1}{m}\left(\ln|H| + \ln\frac{1}{\delta} \right) \tag{\label{equation-2}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $H = \Set{h_i}_{i=1}^{|H|}$, and fix $\epsilon > 0$. We do not know which consistent hypothesis $h_S \in H$ is selected by the algorithm $\mathcal{A}$. This hypothesis further depends on the training sample $S$. Thus, we need to give a *uniform convergence bound*, i.e. a bound that holds for the set of all consistent hypotheses, which a fortiori includes $h_S$. Consequently, the boundedness of the probability that some $h\in H$ would be consistent and have error more than $\epsilon$ is given by
+
+$$
+\begin{align*}
+  \Pr[\exists h \in H : \hat{R}(h) = 0 \land R(h) > 0] =& \Pr\left(\bigvee_{i=1}^{|H|} [h_i \in H, \hat{R}(h_i) = 0 \land R(h_i) > \epsilon] \right) \\
+  \leq& \sum_{h\in H} \Pr[\hat{R}(h) = 0 \land R(h) > \epsilon] \\
+  \leq& \sum_{h\in H} \Pr[\hat{R}(h) = 0 | R(h) > \epsilon]
+\end{align*}
+$$
+
+where the first inequality follows from union of bounds and the second from the definition of conditional probability. Now, consider any hypothesis $h\in H$ with $R(h) > \epsilon$. The probability that $h$ is consistent on a training sample $S$ drawn i.i.d., that is, it has no error on any pont in $S$, can be bounded as
+
+$$
+  \Pr[\hat{R}(h) = 0 | R(h) > \epsilon] \leq (1 - \epsilon)^m
+$$
+
+The previous inequality implies
+
+$$
+  \Pr[\exists h\in H : \hat{R}(h) = 0 \land R(h) > \epsilon] \leq |H|(1 - \epsilon)^m
+$$
+
+Setting the right-hand side to be equal to $\delta$ and solving for $\epsilon$ concludes the proof.
+</details>
+</MathBox>
+
+The theorem shows that when the hypothesis set $H$ is finite, a consistent algorithm $\mathcal{A}$ is a PAC-learning algorithm, since the sample complexity given by $\eqref{equation-1}$ is dominated by a polynomial in $1/\epsilon$ and $1/\delta$. As shown by $\eqref{equation-2}$, the generalization error of consistent hypotheses is upper bounded by a term that decreases as a function of the sample size $m$. As expected, learning algorithms benefit from larger labeled training samples. The decrease rate of $O(1/m)$ guaranteed by this theorem, however, is particularly favorable.
+
+The upper bound increases logarithmically with the cardinality $\ln|H|$. By appropriate scaling, this is related to the term $\log_2 |H|$, which represents the number of bits needed to represent $H$.
+
+### Inconsistent case
+
+<MathBox title='' boxType='corollary'>
+Let $S$ be an i.i.d. sample of size $m$. If $\epsilon > 0$, then for any hypothesis $h:X\to\Set{0,1}$, the following inequalities hold
+
+$$
+\begin{align*}
+  \Pr_{S\sim D^m} [\hat{R}(h) - R(h) \geq\epsilon] \leq& e^{-2m\epsilon^2} \\
+  \Pr_{S\sim D^m} [\hat{R}(h) - R(h) \leq -\epsilon] \leq& e^{-2m\epsilon^2}
+\end{align*}
+$$
+
+By the union bound, this implies the following two-sided inequality
+
+$$
+\begin{equation}
+  \Pr_{S\sim D^m} [|\hat{R}(h) - R(h)| \geq \epsilon] \leq 2e^{-2m\epsilon^2} \tag{\label{equation-3}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows immediately from Hoeffding's inequality.
+</details>
+</MathBox>
+
+<MathBox title='Generalization bound (single hypothesis)' boxType='corollary' tag='corollary-2'>
+Fix a hypothesis $h:X\to\Set{0,1}$. Then, for any $\delta > 0$, the following inequality holds with probability at least $1 - \delta$
+
+$$
+\begin{equation}
+  R(h) \leq \hat{R} + \sqrt{\frac{\ln(2/\delta)}{2m}} \tag{\label{equation-4}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Setting the right-hand side of $\eqref{equation-3}$ to be equal to $\delta$ and solving for $\epsilon$ yields $\eqref{equation-4}$.
+</details>
+</MathBox>
+
+<MathBox title='Learning bounds for finite hypotheses sets (inconsistent case)' boxType='theorem'>
+Let $H$ be a finite hypothesis set. Then, for any $\delta > 0$, with probability at least $1 - \delta$, the following inequality holds:
+
+$$
+  R(h) \leq \hat{R}(h) + \sqrt{\frac{\ln|H| + \ln(2/\delta)}{2m}},\; \forall h\in H
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $H = \Set{h_i}_{i=1}^{|H|}$. Using the union bound and applying Corollary $\ref{corollary-2}$ to each hypothesis yields
+
+$$
+\begin{align*}
+  \Pr[\exists h\in H : |\hat{R}(h) - R(h)| > \epsilon] =& \Pr\left(\bigvee_{i=1}^{|H|} [|\hat{R}(h_i) - R(h_i)| > \epsilon] \right) \\
+  \leq& \sum_{h\in H} \Pr[|\hat{R}(h) - R(h)| > \epsilon] \\
+  \leq& 2|H|e^{-2m\epsilon^2}
+\end{align*}
+$$
+
+Setting the right-hand side to be equal to $\delta$ completes the proof.
+</details>
+</MathBox>
+
+This theorem implies that for a finite hypothesis set $H = \Set{h_i}_{i=1}^{|H|}$
+
+$$
+  R(h) \leq \hat{R}(h) + O\left(\sqrt{\frac{\log_2 |H|}{m}}\right)
+$$
+
+As for the inconsisten case, a larger sample size $m$ guarantees better generalization, and the bound increases logarithmically with $|H|$. In this case, however, the bound is a less favorable function of $\frac{1}{m} \log_2 |H|$; it varies as the square root of this term. This means that for a fixed $|H|$, a quadratically larger labeled sample is needed for the same consistent learning guarantee.
+
+Note that the bound establishes a trade-off between reducing the empirical error versus controlling the size of the hypothesis set: a larger hypothesis set is penalized by the second term, but could help reduce the empirical error, which is the first term. However, for a similar empirical error, it suggest using a smaller hypothesis set. This can be viewed in light of *Occam's razor principle* commonly stated as *the simplest explanation is best* (original: plurality should not be posited without necessity).
+
+# Rademacher complexity
+
+<MathBox title='Empirical Radmacher complexity' boxType='definition'>
+Let $G$ be a collection of function mapping from $Z$ to $[a,b]$ and $S = (z_1,\dots,z_m)$ a fixed sample of size $m$ with elements in $Z$. The *empirical Rachemacher complexity* of $G$ with respect to the sample $S$ is deined as
+
+$$
+  \hat{\mathcal{R}}_S (G) = \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{g\in G} \frac{1}{m}\sum_{i=1}^m \sigma_i g(z_i) \right)
+$$
+
+where $\boldsymbol{\sigma} = (\sigma_1,\dots,\sigma_m)^\top$ and $\sigma_i$ are independent uniform random variables taking values in $\set{\pm 1}$. Then random variable $\sigma_i$ are cllaed the *Rademacher variables*.
+</MathBox>
+
+Let $\mathbf{g}_S$ denote the vector of values taken by function $g$ over the sample $S:\mathbf{g}_s = (g(z_1),\dots,g(z_m))^\top$. Then, the empirical Rademacher complexity can be rewritten as
+
+$$
+  \hat{\mathcal{R}}_S = \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{g\in G} \frac{\boldsymbol{\sigma}\cdot\mathbf{g}_s}{m} \right)
+$$
+
+The inner product $\boldsymbol{\sigma}\cdot\mathbf{g}_S$ measures the correlation of $\mathbf{g}_S$ with the vector of random noise $\boldsymbol{\sigma}$. The supremum $\sup_{g\in G} (\boldsymbol{\sigma}\cdot\mathbf{g}_S)/m$ is a measure of how well the function class $G$ correlates with $\boldsymbol{\sigma}$ over the sample $S$. Thus, the empirical Rademacher complexity measures on average how well the function class $G$ correlates with random noise on $S$. This describes the richness of the familyt $G$: richer or more complex families $G$ can generate more vectors $\mathbf{g}_S$ and thus better correlate with random noise, on average.
+
+<MathBox title='Rademacher complexity' boxType='definition' tag='definition-1'>
+Let $G$ be a collection of functions mapping from $Z$ to $[a,b]$ and $\mathcal{D}$ the sample distribution. For any integer $m \geq 1$, the *Rademacher complexity* over all samples of size $m$ drawn according to $\mathcal{D}$
+
+$$
+  \mathcal{R}_m (G) = \mathbb{E}_{S\sim \mathcal{D}^m} [\hat{\mathcal{R}}_S (G)]
+$$
+
+Where $\hat{\mathcal{R}}_S (G)$ is the empirical Rademacher complexity of $G$.
+</MathBox>
+
+<MathBox title='' boxType='theorem' tag='theorem-1'>
+Let $G$ be a collection of functions mapping from $Z$ to $[0,1]$. For any $\delta > 0$, with probability at least $1 - \delat$, each of the following holds for all $g\in G$:
+
+$$
+\begin{equation}
+  \mathbb{E}[g(z)] \leq \frac{1}{m} \sum_{i=1}^m g(z_i) + 2\mathcal{R}_m (G) + \sqrt{\frac{\ln(1/\delta)}{2m}} \tag{\label{equation-11}}
+\end{equation}
+$$
+
+and
+
+$$
+  \mathbb{E}[g(z)] \leq \frac{1}{m} \sum_{i=1}^m g(z_i) + 2\hat{\mathcal{R}}_m (G) + 3\sqrt{\frac{\ln(2/\delta)}{2m}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For any sample $S = (z_1,\dots,z_m$ and any $g\in G$, we denote by $\hat{\mathbb{E}}_S (g)$ the empirical average of $g$ over $S$:
+
+$$
+  \hat{\mathbb{E}}_S (g) = \frac{1}{m} \sum_{i=1}^m g(z_i)
+$$
+
+The proof consists of applying McDiarmid's inequality to function $\Phi$ defined for any sample $S$ by
+
+$$
+  \Phi(S) = \sup_{g\in G} \mathbb{E}(g) - \hat{\mathbb{E}}_S (g)
+$$
+
+Let $S$ and $S'$ be two sample differing by exactly one point, say $z_m$ in $S$ and $z'_m$ in $S'$. Then, since the difference of suprema does not exceed the supremum of the difference, we have
+
+$$
+\begin{align*}
+  \Phi(S') - \Phi(S) \leq& \sup_{g\in G} \hat{\mathbb{E}}_S (g) - \hat{\mathbb{E}}_{S'} \\
+  =& \sup_{g\in G} \frac{g(z_m) - g(z'_m)}{m} \leq \frac{1}{m}
+\end{align*}
+$$
+
+Similarly, we can obtain $\Phi(S) - \Phi(S') \leq 1/m$, this $|\Phi(S) - \Phi(S')| \leq 1/m$. By McDiarmid's inequality, for any $\delta$ with probability at least $1 - \delta/2$, then following holds
+
+$$
+\begin{equation}
+  \Phi(S) \leq\mathbb{E}_S [\Phi(S)] + \frac{\ln(2/\delta)}{2m} \tag{\label{equation-12}}
+\end{equation}
+$$
+
+We next bound the expectation of the right-hand side as follows
+
+$$
+\begin{align*}
+  \mathbb{E}_S [\Phi(S)] =& \mathbb{E}_S \left(\sup_{g\in G} \mathbb{E}(g) - \hat{\mathbb{E}}_S (g) \right) \\
+  =& \mathbb{E}_S \left(\sup_{g\in G} \hat{\mathbb{E}}\left(\hat{\mathbb{E}}_{S'}(g) - \hat{\mathbb{E}}_S (g) \right) \right) \tag{label{equation-5}} \\
+  \leq& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \hat{\mathbb{E}}_{S'} (g) - \hat{\mathbb{E}}_S (g) \right) \tag{label{equation-6}} \\
+  =& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m (g(z'_1) - g(z_i)) \right) \tag{label{equation-7}} \\
+  =& \mathbb{E}_{\boldsymbol{\sigma}, S, S'} \left(\sup_{g\in G} \frac{1}{m}\sum_{i=1}^m \sigma_i (g(z'_1) - g(z_i)) \right) \tag{label{equation-8}} \\
+  \leq& \mathbb{E}_{\boldsymbol{\sigma}, S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m \sigma_i g(z'_1) \right) + \mathbb{E}_{\boldsymbol{\sigma}, S} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m -\sigma_i g(z_i) \right) \tag{label{equation-9}} \\
+  =& 2\mathbb{E}_{\boldsymbol{\sigma},S} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m \sigma_i (z_i) \right) = 2\mathcal{R}_m (G) \tag{\label{equation-10}}
+\end{align*}
+$$
+
+Equation $\eqref{equation-5}$ uses the fact that points in $S'$ are sampled i.i.d. and thus $\mathbb{E}(g) = \mathbb{E}_{S'} [\hat{\mathbb{E}}(g)]$. Inequality $\eqref{equation-6}$ holds by Jensen's inequality and the convexity of the supremum function. In equation $\eqref{equation-8}$, we introduce Rademacher variables $\sigma_i$, which are uniformly distributed taking values in $\set{\pm 1}$. This does not change the expectation in $\eqref{equation-7}$: when $\sigma_i = 1$, the associated summand remains unchanges; when $\sigma_i = -1$, the associated summand flips signs, which is equivalent to swapping $z_i$ and $z'_i$ between $S$ and $S'$. Since we are taking the expectation over all possible $S$ and $S'$, this swap does not affect the overall expectation. We are simply changing the order of the summands within the expectations. Inequality $\eqref{equation-9}$ holds by the sub-additivity of the supremum, i.e. $\sup(U + V) \leq \sup(U) + \sup(V)$. Finally, $\eqref{equation-10}$ stems from the definition of the Rademacher complexity and the fact that the variables $\sigma_i$ and $-\sigma_i$ are distributed in the same way.
+
+The reduction to $\mathcal{R}_m (G)$ in $\eqref{equation-10}$ yields the bound in $\eqref{equation-11}$ using $\delta$ instead of $\delta/2$. To derive a bound in terms of $\hat{\mathcal{R}}_S (G)$, we observe that, by Definition $\ref{definition-1}$, changing on point in $S$ changes $\hat{\mathcal{R}}_S (G)$ by at most $1/m$. Applying McDiarmid's inequality with probability $1 - \delta/2$ gives
+
+$$
+\begin{equation}
+  \mathcal{R}_m (G) \leq\hat{\mathcal{R}}_S (G) + \sqrt{\frac{\ln(2/\delta)}{2m}} \tag{label{equation-13}}
+\begin{equation}
+$$
+
+Finally, we use the union bound to combine inequalities $\eqref{equation-12}$ and $\eqref{equation-13}$, which yields with probability at least $1 - \delta$:
+
+$$
+  \Phi (S) \leq 2\hat{\mathcal{R}}_S (G) + 3\sqrt{\frac{\ln(2/\delta)}{2m}}
+$$
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $H$ be a collection of functions taking values in $\set{\pm 1}$ and let $G$ be the family of loss functions associated to $H$ for the zero-one loss $G = \Set{(x,y)\mapsto \mathbf{1}_{h(x)\neq y} : h\in H}$. For any sample $S = \Set{(x_i, y_i) \in X\times\set{\pm 1}}_{i=1}^m$, let $S_X$ denote its projection over $X$, i.e. $S_X = (x_1,\dots,x_m)$. Then, the following relation holds between the empirical Rademacher complexities of $G$ and $H$:
+
+$$
+  \hat{\mathcal{R}}_S (G) = \frac{1}{2}\hat{\mathcal{R}}_{S_X} (H)
+$$
+
+<details>
+<summary>Proof</summary>
+
+By definition, the empirical Rademacher complexity of $G$ can be written as
+
+$$
+\begin{align*}
+  \hat{\mathcal{R}}_S (G) =& \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i 1_{h(x_i) \neq y} \right) \\
+  =& \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i \frac{1 - y_i h(x_i)}{2} \right) \\
+  =& \frac{1}{2}\mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m -\sigma_i y_i h(x_i) \right) \\
+  =& \frac{1}{2} \mathbb{E}_{\boldsymbol{\sigma}} \left( \sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i h(x_i) \right) = \frac{1}{2}\mathcal{R}_{S_X} (H) 
+\end{align*}
+$$
+
+where we use the fact that $1_{h(x_i) \neq y} = (1 - y_i h(x_i))/2$ and the fact that for a fixed $y_i \in\set{\pm 1}$, then $\sigma_i$ and $-y_i \sigma$ are distributed in the same way.
+</details>
+</MathBox>
+
+<MathBox title='Rademacher complexity bounds for binary classification' boxType='theorem'>
+Let $H$ be a famliy of functions taking values in $\set{\pm 1}$ and let $\mathcal{D}$ be the distribution over the input space $X$. Then, for any $\delta > 0$, with probability at least $1 - \delta$ over a sample $S$ of size $m$ drawn according to $D$, each of the following holds for any $h\in H$
+
+$$
+  R(h) \leq \hat{R}(h) + \mathcal{R}_m (H) + \sqrt{\frac{\ln(1/\delta)}{2m}}
+$$
+
+and
+
+$$
+  R(h) \leq \hat{R}(h) + \hat{\mathcal{R}}_S (H) + 3\sqrt{\frac{\ln(2/\delta)}{2m}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The result follows immediately from Theorem $\ref{theorem-1}$ and Lemma $\ref{lemma-1}$.
+</details>
+</MathBox>
+
+## Growth function
+
+<MathBox title='Growth function' boxType='definition'>
+The growth function $\Pi_H : \N\to\N$ for a hypothesis set $H$ is defined by
+
+$$
+  \Pi_H (m) = \max_{\set{x_1,\dots,x_m}\subset X} \left| \set{h(x_1),\dots,h(x_m) : h\in H} \right|,\; \forall m\in\N
+$$
+</MathBox>
+
+The growth function $\Pi_H (m)$ of a hypothesis set $H$ is the maximum number of distinct ways in which $m$ points can be classified using hypotheses in $H$.
+
+<MathBox title="Massart's lemma" boxType='theorem' tag='theorem-2'>
+Let $A\subset\R^m$ be a finite set, with $r = \max_{\mathbf{x}\in A} \lVert\mathbf{x}\rVert_2$, then the following holds
+
+$$
+  \mathbb{E}_{\boldsymbol{\sigma}} \left(\frac{1}{m} \sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right) \leq \frac{r\sqrt{2\ln|A|}}{m}
+$$
+
+where $\sigma_i$ are independent uniform random variables taking values in $\set{\pm 1}$ and $\mathbf{x} = (x_1,\dots,x_m)^\top$.
+
+<details>
+<summary>Proof</summary>
+
+For any $t > 0$, using Jensen's inequality, rearranging terms, and bounding the supremum by a sum, we obtain
+
+$$
+\begin{align*}
+  \exp\left(t\mathbb{E}_{\boldsymbol{\sigma}} \left[\sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right] \right) \leq& \mathbb{E}_{\boldsymbol{\sigma}} \left(\exp\left(t \sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right) \right) \\
+  =& \mathbb{E}_{\boldsymbol{\sigma}} \left( \sup_{\mathbf{x}\in A} \exp\left[t \sum_{i=1}^m \sigma_i x_i \right] \right) \\
+  \leq& \sum_{\mathbf{x}\in A} \mathbb{E}_{\boldsymbol{\sigma}} \left(\exp\left[t \sum_{i=1}^m \sigma_i x_i \right] \right)
+\end{align*}
+$$
+
+We next use the independence of the $\sigma_i$, then apply Hoeffding's lemma and use the definition of $r$ to get
+
+$$
+\begin{align*}
+  \exp\left( t\mathbb{E}_{\boldsymbol{\sigma}}\left[\sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right] \right) \leq& \sum_{\mathbf{x}\in A} \prod_{i=1}^m \mathbb{E}_{\boldsymbol{\sigma}} (\exp(t\sigma_i x_i)) \\
+  \leq& \sum_{\mathbf{x}\in A} \prod_{i=1}^m \exp\left(\frac{t^2 (2x_i)^2}{8}\right) \\
+  =& \sum_{\mathbf{x}\in A} \exp\left(\frac{t^2}{2} \sum_{i=1}^m x_i^2 \right) \\
+  \leq& \sum_{\mathbf{x}\in A} \exp\left(\frac{t^2 r^2}{2}\right) = |A|\exp\left(\frac{t^2 r^2}{2}\right)
+\end{align*}
+$$
+
+Taking the logarithm of both sides and dividing by $t$ gives
+
+$$
+  \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right) \leq \frac{\ln|A|}{t} + \frac{tr^2}{2}
+$$
+
+If we choose $t = \sqrt{2 \ln|A|/r}$, which minimizes this upper bound, we get
+
+$$
+  \mathbb{E}_{\boldsymbol{\sigma}}\left(\sup_{\mathbf{x}\in A} \sum_{i=1}^m \sigma_i x_i \right) \leq r\sqrt{2\ln|A|}
+$$
+
+Dividing both sides by $m$ gives the desired result.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary' tag='corollary-1'>
+If $G$ is a collection of functions taking values in $\set{\pm 1}$, then
+
+$$
+  \mathcal{R}_m (G) \leq \sqrt{\frac{2\ln [\Pi_G (m)]}{m}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For a fixed sample $S = (x_1,\dots,x_m)$, we denote by $G_{|S}$ the set of vectors of function values $(g(x_1),\dots,g(x_m))^\top$ where $g$ is in $G$. Since $g\in G$ takes values in $\set{\pm 1}$, the norm of these vectors is bounded by $\sqrt{m}$. We can then apply Massart's lemma (Theorem $\ref{theorem-2}$) to get
+
+$$
+\begin{align*}
+  \mathcal{R}_m (G) = \mathbb{E}_{S} \left(\mathbb{E}_{\boldsymbol{\sigma}}\left[\sup_{\mathbf{u}\in G_{|S} \frac{1}{m} \sum_{i=1}^m \sigma_i u_i \right] \right) \\
+  \leq& \mathbb{E}_S \left(\frac{\sqrt{2m \ln|G_{|S}|}}{m} \right)
+\end{align*}
+$$
+
+By definition, $|G_{|S}|$ is bounded by the growth function, thus
+
+$$
+  \mathcal{R}_m (G) \leq\mathbb{E}_{S} \left( \frac{\sqrt{2m\ln[\Pi_G (m)]}}{m} \right) = \sqrt{\frac{2\ln[\Pi_G (m)]}{m}}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Growth function generalization bounds' boxType='corollary-2'>
+Let $H$ be a collection of functions taking values in $\set{\pm 1}$. Then, for any $\delta$, with probability at least $1 - \delta$, for any $h\in H$
+
+$$
+  R(h) \leq\hat{R}(h) + \sqrt{\frac{2\ln[\Pi_H (m)]}{m}} + \sqrt{\frac{\ln(1/\delta)}{2m}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows immediately from Theorem $ref{theorem-1}$ and Corollary $\ref{corollary-1}$.
+</details>
+</MathBox>
+
+Growth function bound can be also derived directly (without using Rademacher complexity bounds first). The resulting bound is then
+
+$$
+\begin{equation}
+  \Pr\left(|R(h) - \hat{R}(h)| > \epsilon \right) \leq 4\Pi_H (2m) \exp\left(-\frac{me^2}{8} \right) \tag{\label{equation-16}}
+$$
+
+The computation of the growth function is not always convient since, by definition, it requires computing $\Pi_H (m)$ for all $m\geq 1$.
+
+# Vapnik-Chervonenkis (VC) dimension 
+
+<MathBox title='Dichotomy and shattering' boxType='definition'>
+Given a hypothesis set $H$, a *dichotomy* of a set $S$ is one of the possible ways of labeling the points using a hypothesis in $H$. A set $S$ of $m \geq 1$ points is *shattered* by a hypothesis set $H$ when $H$ realizes all possible dichotomies of $S$, that is when $\Pi_H (m) = 2^m$.
+</MathBox>
+
+<MathBox title='Vapnik-Chervonenkis (VC) dimension' boxType='definition'>
+The Vapnik-Chervonenkis (VC) dimension of a hypothesis set $H$ is the size of the largest set that can be fully shattered by $H$, i.e.
+
+$$
+  \operatorname{VCdim}(H) = \max\Set{m | \Pi_H (m) = 2m}
+$$
+</MathBox>
+
+Note that, bydefinition, if $\operatorname{VCdim}(H) = d$, there exists a set of size $d$ that can be fully shattered. However, this does not imply that all sets of size $d$ or less are fully shattered, in fact this is typically not the case.
+
+The VC-dimension of a hypothesis set $H$ can be derived by finding lower and upper bounds. To give a lower bound $d$ for $\operatorname{VCdim}(H)$ it suffices to show that a set $S$ of cardinality $d$ can be shattered by $H$. To give an upper bound, we need to prove that no set $S$ of cardinality $d + 1$ can be shattered by $H$, which is typically more difficult.
+
+<MathBox title='VC-dimension on the real line' boxType='example'>
+The VC-dimension for any hypothesis class of intervals on the real line is $2$, since all four dichotomies $(+,+)$, $(-,-)$, $(+,-)$, $(-,+)$ can be realixed. In contrast, by the definition of intervals, no set of three points can be shattered since the $(+,-,+)$ labeling cannot be realized.
+</MathBox>
+
+<MathBox title="Radon's theorem" boxType='theorem'>
+Any set $X$ of $d + 2$ point in $\R^d$ can be partitioned into two subset $X_1$ and $X_2$ such that the convex hulls of $X_1$ and $X_2$ intersect.
+
+<details>
+<summary>Proof</summary>
+
+Let $X = \set{\mathbf{x}_i}_{i=1}^{d+2} \subset\R^d$. The following is a system of $d + 1$ linear equations in $\alpha_1, \dots,\alpha_{d+1}$
+
+$$
+\begin{align*}
+  \sum_{i=1}^{d+2} \alpha_i \mathbf{x}_i =& 0 \tag{\label{equation-14}} \\
+  \sum_{i=1}^{d+2} \alpha_i =& 0  \tag{\label{equation-15}}
+\end{align*}
+$$
+
+since the first equality leads to $d$ equations, one for each component. The number of unknowns, $d + 2$ is larger than the number of equations, $d + 1$, therefore the system admits a non-zero solution $\beta_1,\dots,\beta_{d+2}$. Since $\sum_{i=1}^{d+2} \beta_i = 0$, both
+
+$$
+\begin{align*}
+  I_1 =& \Set{i \in [1,d+2] : \beta_i > 0} \\
+  I_2 =& \Set{i \in [1,d+2] : \beta_i < 0}
+\end{align*}
+$$
+
+are non-empty sets and $X_1 = \Set{\mathbf{x}_i}_{i\in I_1}$ and $X_2 = \Set{\mathbf{x}_i}_{i\in I_2}$ form a partition of $X$. By $\eqref{equation-15}$, we have $\sum_{i\in I_1} \beta_i = -\sum_{i\in I_2} \beta_i$. Let $\beta = \sum_{i\in I_1} \beta_i$. Then the linear system $\eqref{equation-14}$ implies
+
+$$
+  \sum_{i\in I_1} \frac{\beta_i}{\beta}\mathbf{x}_i = \sum_{i\in I_2} \frac{-\beta_i}{\beta} \mathbf{x}_i
+$$
+
+with $\sum_{i\in I_1} (\beta_i /\beta) = \sum_{i\in I_2} -(\beta_i /\beta) = 1$ and $\beta_i/\beta \geq 0$ for $i\in I_1$ and $-\beta_i / \beta \geq 0$ for $i\in I_2$. By definition of the convex hull, this implies that $\sum_{i\in I_1} (\beta_i /\beta)\mathbf{x}_i$ belongs to both the convex hull of $X_1$ and to that of $X_2$.
+</details>
+</MathBox>
+
+<MathBox title="Sauer's lemma" boxType='theorem' tag='theorem-3'>
+Let $H$ be hypothesis set with $\operatorname{VCdim}(H) = d$. Then, for all $m\in\N$, the following inequality holds
+
+$$
+  \Pi_H (m) \leq \sum_{i=0}^d \binom{m}{i}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The proof is by induction on $m + d$. The statement clearly holds for $m = 1$ and $d = 0$ or $d = 1$. Now, assume it holds for $(m-1, d-1)$ and $(m-1, d)$. Fix a set $S = \set{x_1,\dots,x_m}$ with $\Pi_H (m)$ dichotomies and let $G = H_{|S}$ be the set of concepts $H$ includes by restriction to $S$.
+
+Now consider the following collections over $S' = \set{x_1,\dots,x_{m-1}}$. We define $G_1 = G_{|S'}$ as the set of concepts $H$ includes by restriction to $S'$. Next, by identifying each concept as teh set of points (i $S$ or $S'$) for which it is non-zero, we can define $G_2$ as
+
+$$
+  G_2 = \Set{g' \subseteq S' : (g' \in G) \land (g' \cup\set{x_m} \in G)}
+$$
+
+Since $g' \subseteq S'$, then $g'\in G$ mean that without addin $x_m$ it is a concept of $g$. Further, the constraining $g' \cup\set{x_m}\in G$ means that adding $x_m$ to $g'$ also makes it a concept of $G$. Note that $|G_1| + |G_2| = |G|$.
+
+Since $\operatorname{VCdim}(G_1) \leq \operatorname{VCdim}(G) \leq d$, then by definition of the growth function and using the induction hypothesis
+
+$$
+  |G_1| \leq \Pi_{G_1} (m - 1) \leq \sum_{i=1}^d \binom{m-1}{i}
+$$
+
+Further, by definition of $G_2$, if a set $Z\subseteq S'$ is shattered by $G_2$, then the set $Z\cup\set{x_m}$ is shattered by $G$. Hence
+
+$$
+  \opertorname{VCdim}(G_2) \leq \operatorname{VCdim}(G) - 1 = d - 1
+$$
+
+and by definition of the growth function and using the induction hypothesis
+
+$$
+  |G_2|\leq \Pi_{G_2} (m-1) \leq \sum_{i=0}^{d-1} \binom{m - 1}{i}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  |G| =& |G_1| + |G_2| \leq \sum_{i=0}^d \binom{m-1}{i} + \sum_{i=0}^{d-1} \binom{m-1}{i} \\
+  =& \sum_{i=0}^d \binom{m-1}{i} + \binom{m-1}{i-1} \\
+  =& \sum_{i=0}^d \binom{m}{i}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary' tag='corollary-3'>
+Let $H$ be a hypothesis set with $\operatorname{VCdim}(H) = d$. Then for all $m\geq d$
+
+$$
+  \Pi_H (m) \leq \frac{em}{d}^d = \mathcal{O}(m^4)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Using Sauer's lemma (Theorem $\ref{theorem-3}$) we get
+
+$$
+\begin{align*}
+  \Pi_H (m) \leq& \sum_{i=0}^d \binom{m}{i} \\
+  \leq& \sum_{i=0}^d \binom{m}{i} \left(\frac{m}{d}\right)^{d-i} \\
+  \leq& \sum_{i=0}^m \binom{m}{i} \left(\frac{m}{d}\right)^{d-i} \\
+  =& \left(\frac{m}{d}\right)^d \sum_{i=0}^m \binom{m}{i} \left(\frac{d}{m}\right)^i \\
+  =& \left(\frac{d}{m}\right)^d \left(1 + \frac{d}{m} \right)^m \leq \left(\frac{m}{d}\right)^d e^d
+\end{align*}
+$$
+
+The first inequality multiplies each summand by a factor that is greater than or equal to one since $m \geq d$, while the second inequality add non-negative summands to the summation. After simplifyin the expression using the binomial theorem, the final inequality follows using the general identity $(1 - x) \leq e^{-x}$.
+</details>
+</MathBox>
+
+<MathBox title='VC-dimension generalization bounds' boxType='corollary' tag='corollary-4'>
+Let $H$ be a collection of functions taking values in $\set{\pm 1}$ with VC-dimension $d$. For any $\delta > 0$ the following holds for all $h\in H$ with probability $1 - \delta$:
+
+$$
+  R(h) \leq \hat{R}(h) + \sqrt{\frac{2d \ln(em/d)}{m}} + \sqrt{\frac{\ln(1/\delta)}{2m}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows immediately from Corollaries $\ref{corollary-2}$ and $\ref{corollary-3}$.
+</details>
+</MathBox>
+
+From Corollary $\ref{corollary-4}$, the generalization bound takes the form
+
+$$
+  R(h) \leq \hat{R}(h) + \mathcal{O}\left(\sqrt{\frac{\ln(m/d)}{(m/d)}}\right)
+$$
+
+which emphasizes the importance of the ratio $m/d$ for generalization. The theorem provides another instance of Occam's razor principle where simplicity is measured in terms of smaller $VC$-dimension.
+
+VC-dimension bounds can be derived directly without using an intermediate Radmacher complexity bound. Combining Sauer's lemma (Theorem $\ref{theorem-3}$) and $\eqref{equation-16}$ leads to the high-probability bound
+
+$$
+  R(h) \leq\hat{R}(h) + \sqrt{8[d \ln(2em/d) + \ln(4/\delta)]}{m}
+$$
+
+The logarithm factor only plays a minor role in these bounds and can be eliminated with finer analysis.
+
+## Lower bounds
+
+<MathBox title='Lower bound (realizable case)' boxType='theorem' tag='theorem-4'>
+Let $H$ be a hypothesis set with VC-dimension $d > 1$. Then, for any learning algorithm $\mathcal{A}$, there exists a distribution $\mathcal{D}$ over $X$ and a  target function $f\in H$ such that
+
+$$
+  \Pr_{S\sim\mathcal{D}^m} \left(R_\mathcal{D} (h_S, f) > \frac{d - 1}{32m} \right) \geq 1/100
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $X' = \set{\mathbf{x}_i}_{i=1}^{d-1} \subseteq X$ be a set that is fully shattered by $H$. For any $\epsilon > 0$, we choose $\mathcal{D}$ such that its support is reduced to $X'$ and so that one point $(\mathbf{x}_0)$ has very high probability $(1 - \epsilon)$, with the rest of the probability mass distributed uniformly among the other points
+
+$$
+  \Pr_\mathcal{D} (\mathbf{x}_0) = 1 - 8\epsilon
+$$
+
+and
+
+$$
+  \Pr_{\mathcal{D}}(x_i) = \frac{8\epsilon}{d - 1},\; \forall i\in [1, d-1]
+$$
+
+With this definition, most samples would contain $\mathbf{x}_0$ and since $X'$ is fully shattered, $\mathcal{A}$ can essentially do no better than tossing a coin when determining the label of a point $x_i$ not falling in the training set.
+
+We assume without loss of generalizty that $\mathcal{A}$ makes no error on $\mathbf{x}_0$. For a sample $S$, let $\bar{S}$ denote the set of its elements falling in $\set{x_i}_{i=1}^{d-1}$, and let $\mathcal{S}$ be the set of samples of size $m$ such that $|\bar{S}| \leq (d - 1)/2$. Now, fix a sample $S\in \mathcal{S}$, and consider the uniform distribution $U$ over all labelings $f:X\to\set{0,1}$, which are all in $H$ since the set is scattered. Then, the following lower bound holds:
+
+$$
+\begin{align*}
+  \mathbb{E}_{f\sim U} [R_\mathcal{D} (h_S, f)] =& \sum_{f} \sum_{\mathbf{x}\in X'} 1_{h(\mathbf{x})\neq f(\mathbf{x})} \Pr(\mathbf{x}) \Pr(f) \\
+  \geq& \sum_f \sum_{\mathbf{x}\notin\bar{S}} 1_{h(\mathbf{x}) \neq f(x)} \Pr(\mathbf{x})\Pr(f) \\
+  =& \sum_{\mathbf{x}\notin\bar{S}} \left(\sum_f 1_{h(\mathbf{x}) \neq f(x)} \Pr(f) \right) \Pr(\mathbf{x}) \\
+  =& \frac{1}{2} \sum_{\mathbf{x}\notin\bar{S}} \Pr(x) \geq \frac{1}{2}\frac{d-1}{2}\frac{8\epsilon}{d - 1} = 2\epsilon \tag{label{equation-17}}
+\end{align*}
+$$
+
+The first lower bound holds because wer remove non-negative terms from the summation when we only consider $\mathbf{x}\notin\bar{S}$ instead of all $\mathbf{x}\in X$. After rearranging terms, the subsequent equality holds sisnce we are taking an expectation over $f\in H$ with uniform weight on each $f$ and $H$ shatters $X$. The final lower bound holds due to the definition of $\mathcal{D}$ and $\bar{S}$, the latter implying $|X' - \bar{S}| \geq (d - 1)/2$.
+
+Since $\eqref{equation-17}$ holds for all $S\in\mathcal{S}$, it also holds in expectation over all $S\in\mathcal{S}$, i.e. $\mathbb{E}_{S\in\mathcal{S}} [\mathbb{E}_{f\sim U} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon$. By Fubini's theorem, the expectations can be permuted, this
+
+$$
+  \mathbb{E}_{f\sim U}[\mathbb{E}_{S\in\mathcal{S}} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon
+$$
+
+This implies that $\mathbb{E}_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0)] \geq 2\epsilon$ for at least one labeling $f_0 \in H$. Decomposing this expectation into two parts and using $R_\mathcal{D}(h_S, f_0) \leq \Pr_\mathcal{D} (X' - \set{\mathbf{x}_0})$, we obtain
+
+$$
+\begin{align*}
+  \mathbb{E}_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0)] =& \sum_{S:R_\mathcal{D}(h_S, f_0)\geq\epsilon} R_\mathcal{D} (h_S, f_0) \Pr[R_\mathcal{D}(h_S, f_0)] \\
+  &+ \sum_{S:R_\mathcal{D}(h_S, f_0) < \epsilon} R_\mathcal{D} (h_S, f_0) \Pr[R_\mathcal{D}(h_S, f_0)] \\
+  \leq& \Pr_\mathcal{D} (X' - \set{\mathbf{x}_0}) \Pr_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0) \geq\epsilon] + \epsilon\Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) < \epsilon] \\
+  \leq& 8\epsilon \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq\epsilon] + \epsilon(1 - \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq \epsilon]) 
+\end{align*}
+$$
+
+Collecting terms in $\Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq\epsilon]$ yields
+
+$$
+  \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq\epsilon] \geq \frac{1}{7\epsilon}(2\epsilon - \epsilon) = \frac{1}{7}
+$$
+
+Thus, the probability over all samples $S$ (not necessarily in $\mathcal{S}$) can be lower bounded as
+
+$$
+  \Pr_S [R_\mathcal{D} (h_S, f_0)\geq\epsilon] \geq \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq\epsilon]\Pr(\mathcal{S}) \geq \frac{1}{7}\Pr(S)
+$$
+
+This leads us to find a lower bound for $\Pr(\mathcal{S})$. The probability that more than $(d-1)/2$ points are drawn in a sample of size $m$ verifies the Chernoff bound for any $\gamma > 0$:
+
+$$
+  1 - \Pr(\mathcal{S}) = \Pr[S_m \geq 8\epsilon m(1 + \gamma)] \leq \exp\left(-8\epsilon m\frac{\gamma^2}{3} \right)
+$$
+
+Thus, for $\epsilon = (d - 1)/(32m)$ and $\gamma = 1$
+
+$$
+  \Pr\left(S_m \geq \frac{d-1}{2}\right) \leq e^{-(d-1)/12} \leq e^{-1/12} \leq 1 - 7\delta
+$$
+
+for $\delta \leq 1/100$. Thus, $\Pr(\mathcal{S}) \geq 7\delta$ and $\Pr_S [R_\mathcal{D}(h_S, f_0) \geq\epsilon]\geq\delta$.
+</details>
+</MathBox>
+
+Theorem $\ref{theorem-4}$ shows that for any algorithm $\mathcal{A}$, there is a "bad" distribution over the input space $X$ and a target function $f$ for which the error of the hypothesis returned by $\mathcal{A}$ is $\Omega(d/m)$ with some constant probability. This implies in particular that PAC-learning in the non-realizable case is not possible when the VC-dimension is infinite.
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $\alpha$ be a uniformly distributed random variable taking values in $\set{\alpha_-, \alpha_+}$, where $\alpha_- = (1 -\epsilon)/2$ and $\alpha_+ = (1 + \epsilon)/2$, and let $S$ be a smaple of $m \geq 1$ random variables $X_1,\dots,X_m$ taking values in $\set{0,1}$ and drawn i.i.d. according to the distribution $\mathcal{D}_\alpha$ defined by $\Pr_{\mathcal{D}_\alpha} (X = 1) = \alpha$. Let $h$ be a function from $\mathcal{X}^m$ to $\set{\alpha_-, \alpha_+}$, then the following holds:
+
+$$
+  \mathbb{E}_{\alpha} \left(\Pr_{S\sim\mathcal{D}_\alpha^m} [h(S) \neq\alpha] \right) \geq \Phi(2(m/2),\epsilon)
+$$
+
+where 
+
+$$
+  \Phi(m,\epsilon) = \frac{1}{\epsilon}\left(1 - \sqrt{1 -\exp\left(1 - m\epsilon^2/(1 - \epsilon^2) \right)} \right)
+$$
+
+for all $m$ and $\epsilon$.
+
+<details>
+<summary>Proof</summary>
+
+The lemma can be interpreted in terms of an experiment with two coins with biases $\alpha_-$ and $\alpha_+$. It implies that for a discriminant rule $h(S)$ based on a sample $S$ drawn from $D_{\alpha_-}$ or $D_{\alpha_+}$, to determine which coin was tossed, the sample size must be at least $\Omega(1/\epsilon^2)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-3'>
+Let $Z$ be a random variable taking values in $[0,1]$. Then, for any $\gamma\in[0,1)$
+
+$$
+  \Pr[z > \gamma] \geq \frac{\mathbb{E}(Z) - \gamma}{1 - \gamma} > \mathbb{E}(Z) - \gamma
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since the values taken by $Z$ are in $[0,1]$
+
+$$
+\begin{align*}
+  \mathbb{E}(Z) =& \sum_{z\leq\gamma} \Pr(Z = z)z + \sum_{z\geq\gamma} \Pr(Z = z)z \\
+  \leq& \sum_{z\leq\gamma} \Pr(Z = z)\gamma + \sum_{z > \gamma} \Pr(Z = z) \\
+  =& \gamma\Pr(Z\leq\gamma) + \Pr(Z > \gamma) \\
+  =& \gamma(1 - \Pr(Z > \gamma)) + \Pr(Z > \gamma) \\
+  =& (1 - \gamma)\Pr(Z > \gamma) + \gamma
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Lower bound (nonrealizable case)' boxType='theorem' tag='theorem-5'>
+Let $H$ be a hypothesis set with VC-dimension $d > 1$. Then, for any learning algorithm $\mathcal{A}$, there exists a distribution $\mathcal{D}$ over $X\times\set{0,1}$ such that
+
+$$
+  \Pr_{S\sim\mathcal{D}^m} \left(R_\mathcal{D} (h_S) - \inf_{h\in H} R_\mathcal{D} (h) > \sqrt{\frac{d}{320m}} \right) \geq 1/64
+$$
+
+Equivalently, for any learning algorithm, the sample complexity verifies
+
+$$
+  m \geq \frac{d}{320\epsilon^2}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $X' = \set{\mathbf{x}_i}_{i=1}^d \subseteq X$ be a set fully shattered by $H$. For any $\alpha\in[0,1]$ and any vector $\boldsymbol{\sigma} = (\sigma_1,\dots,\sigma_d)^\top \in \set{\pm 1}^d$, we define a distribution $\mathcal{D}_{\boldsymbol{\sigma}}$ with support $X' \times\set{0,1}$ as follows
+
+$$
+  \Pr_{\mathcal{D}_{\boldsymbol{\sigma}}} [(\mathbf{x}_i, 1)] = \frac{1}{d}\left(\frac{1}{2} + \frac{\sigma_i \alpha}{2} \right),\; \forall i\in[1,d]
+$$
+
+Thus, the label of each point $x_i$ for in $i\in[i,d]$, follows the distributino $\Pr_{\mathcal{D}_{\boldsymbol{\sigma}}} (\cdot | \mathbf{x}_i)$, that of a biased coin where the bias is determined by the sign of $\sigma_i$ and the magnitude of $\alpha$. To determine the most likely labe of each point $\mathbf{x}_i$, the learning algorithm will therefore need to estimate $\Pr_{\mathcal{D}_{\boldsymbol{\sigma}}}(1|\mathbf{x}_i)$ with an accuracy better than $\alpha$. To make this further difficult, $\alpha$ and $\boldsymbol{\sigma}$ will be selected based on the algorithm, requiring $\Omega(1/\alpha^2)$ instances of each point $x_i$ in the training sample.
+
+Clearly, the Bayes classifier $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is defined by $h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}_i) = \argmax_{y\in\set{0,1}} \Pr(y|\mathbf{x}_i) = 1_{sigma_i \geq 0}$ for all $i\in [1,d]$. Also, $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is in $H$ since $X'$ is fully shattered. For all $h\in H$
+
+$$
+\begin{equation}
+\begin{split}
+  R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*) =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \left(\frac{\alpha}{2} + \frac{\alpha}{2} \right) 1_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
+  =& \frac{\alpha}{d} \sum_{x\in X} 1_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
+\end{split}\tag{label{equation-18}}
+\end{equation}
+$$
+
+Let $h_S$ denote the hypothesis returned by the learning algorithm $\mathcal{A}$ after receiving a labeled sample $S$ drawn according to $\mathcal{D}_{\boldsymbol{\sigma}}$. We will denote by $|S|_\mathbf{x}$ the number of occurences of a point $\mathbf{x}$ in $S$. Let $\mathcal{U}$ denote the uniform distribution over $\set{\pm 1}^d$.
+
+Then in view of $\eqref{equation-18}$, the following holds
+
+$$
+\begin{align*}
+  \underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(\frac{1}{\alpha}[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\boldsymbol{D}_{\boldsymbol{\sigma}}}^*)] \right) \\
+  =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(1_{h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^* (\mathbf{x})} \right) \\
+  =& \frac{1}{d} \sum_{x\in X'} \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}) \right] \right) \\
+  =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \sum_{n=1}^m \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}(\mathbf{x}) | |S|_\mathbf{x} = n \right] \Pr(|S|_\mathbf{x} = n) \right) \\
+  \geq& \frac{1}{d} \sum_{x\in X'} \sum_{n=0}^m \Phi(n + 1, \alpha) \Pr(|S|_\mathbf{x} = n) \\
+  \geq& \sum_{\mathbf{x}\in X'} \Phi(m/d + 1,\alpha) \\
+  =& \Phi(m/d + 1, \alpha)
+\end{align*}
+$$
+
+where the first inequality follows from Lemma $\ref{lemma-2}$ and the second inequality follows from the convexity of $\Phi(\cdot,\alpha)$ and Jensen's inequality. Since the expectation over $\boldsymbol{\sigma}$ is lower-bounded by $\Phi(m/d + 1, \alpha)$, there must exist some $\boldsymbol{\sigma}\in\set{\pm 1}^d$ for which
+
+$$
+  \underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\mathbb{E}} \left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right] \right) > \Phi(m/d + 1, \alpha)
+$$
+
+Applying Lemma $\ref{lemma-3}$, we get for any $\gamma\in[0,1]$
+
+$$
+  \underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr}\left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right] > \gamma u \right) > (1 - \gamma)u
+$$
+
+where $u = \Phi(m/d + 1, \alpha)$. Selecting $\delta$ and $\epsilon$ such that $\delta \leq (1 - \gamma)u$ and $\epsilon \leq \gamma\alpha u$ gives
+
+$$
+  \underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr}\left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right]  > \epsilon \right) > \delta
+$$
+
+To satisfy the inequalities defining $\epsilon$ and $\delta$, let $\gamma = 1 - 8\delta$. Then
+
+$$
+\begin{align*}
+  \delta\leq (1 - \gamma)u \iff& u \geq \frac{1}{8} \\
+  \iff& \frac{1}{4}\left(1 - \sqrt{1 - \exp\left(-\frac{(m/d + 1)\alpha^2}{1 - \alpha^2} \right)} \right) \geq \frac{1}{8} \\
+  \iff& \frac{(m/d + 1)\alpha^2}{1 - \alpha^2} \leq \ln\frac{4}{3} \\
+  \iff& \frac{m}{d} \leq \left(\frac{1}{\alpha^2} - 1 \right) \ln\left(\frac{4}{3}\right) - 1
+\end{align*}
+$$
+
+Selecting $\alpha = 8\epsilon/(1 - 8\delta)$ gives $\epsilon = \gamma\alpha/8$ and the condition
+
+$$
+  \frac{m}{d} \leq\left(\frac{(1 - 8\delta)^2}{64\epsilon^2} - 1\right)\ln\left(\frac{4}{3}\right) - 1
+$$
+
+Let $f(1/\epsilon^2)$ denote the right-hand side. We are seeking a sufficient condition of the form $m/d \leq \omega/\epsilon^2$. Since $\epsilon \leq 1/64$, to ensure that $\omega/\epsilon^2 \leq f(1/\epsilon^2)$, it suffices to impose $\omega/(1/64)^2 = f(1/(1/64)^2)$. This condition gives
+
+$$
+  \iemga = \left(\frac{7}{64}\right)^2 \ln\left(\frac{4}{3}\right) - \left(\frac{1}{64}\right)^2 \left(\ln\left(\frac{4}{3}) + 1 \right) \geq 1/320
+$$
+
+This $\epsilon^2 \leq \frac{1}{320(m/d)}$ is sufficient to ensure the inequalities.
+</details>
+</MathBox>
+
+Theorem $\ref{theorem-5}$ shows that for any algorithm $\mathcal{A}$, in the non-realizable case, there exists a "bad" distribution over $X\times\set{0,1}$ such that the error of the hypothesis returned by $\mathcal{A}$ is $\Omega(\sqrt{d/m})$ with some constant probability. In particular, with an infinite VC-dimension, agnostic PAC-learning is not possible.
+
+# Concentration inequalities
+
+## Hoeffding's inequality
+
+<MathBox title="Hoeffding's lemma" boxType='lemma' tag='lemma-4'>
+Let $X$ be a random variable with $\mathbb{E}(X) = 0$ and $a \leq X \leq b$ with b > a. For any $t > 0$, the following inequality holds
+
+$$
+  \mathbb{E}(e^{tX}) \leq \exp\left(\frac{t^2 (b - a)^2}{8} \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+By the convexity of $x\mapsto e^x$, for all $x\in [a,b]$ we have
+
+$$
+  e^{tx} \leq \frac{b - a}{b - a} e^{ta} + \frac{x - a}{b - a} e^{tb}
+$$
+
+Thus, using $\mathbb{E}(X) = 0$, we get
+
+$$
+\begin{align*}
+  \mathbb{E}(e^{tX}) \leq& \mathbb{E}\left( \frac{b - X}{b - a}e^{ta} + \frac{X - a}{b - a}e^{tb} \right) \\
+  \frac{b}{b - a} e^{ta} + \frac{-a}{b - a}e^{tb} = e^{\phi(t)}
+\end{align*}
+$$
+
+where
+
+$$
+\begin{lign*}
+  \phi(t) =& \ln\left(\frac{b}{b - a}e^{ta} + \frac{-a}{b - a}e^{tb} \right) \\
+  =& ta + \ln\ln\left(\frac{b}{b - a} + \frac{-a}{b - a}e^{t(b - a)}\right)
+\end{align*}
+$$
+
+For any $t > 0$, the first derivative of $\phi$ is
+
+$$
+\begin{align*}
+  \phi'(t) =& a - \frac{ae^{t(b - a)}}{\frac{b}{b - a} - \frac{a}{b - a}e^{t(b - a)}} \\
+  =& a - \frac{a}{\frac{b}{b - a}e^{-t(b - a)} - \frac{a}{b - a}} 
+\end{align*}
+$$
+
+and the second derivative of $\phi$ is
+
+$$
+\begin{align*}
+  \phi''(t) =& \frac{-abe^{-t(b - a)}}{\left(\frac{b}{b - a}e^{-t(b-a)} -\frac{a}{b - a} \right)^2} \\
+  =& \frac{\alpha(1 - \alpha)e^{-t(b-a) (b - a)^2}}{\left[(1 - \alpha)e^{-t(b-a)} + \alpha \right]^2}
+  =& \frac{\alpha}{(1-\alpha)e^{-t(b - a)} + \alpha}\frac{(1 - \alpha)e^{-t(b - a)}}{(1 - \alpha)e^{-t(b - a)} + \alpha}(b - a)^2
+\end{align*}
+$$
+
+where $\alpha$ denotes $-a/(b-a)$. Note that $\phi(0) = \phi'(0) = 0$ and that $\phi''(t) = u(1 - u)(b - a)^2$ where
+
+$$
+  u = \frac{\alpha}{(1 -\alpha)e^{-t(b - a)} + \alpha}
+$$
+
+Since $u\in [0,1]$, then $u(1 - u)$ is upper bounded by $1/4$ and $\phi'(t) \leq (b - a)^2 / 4$. Thus, by the second order expansion of function $\phi$, there exists $\theta\in[0,t]$ such that
+
+$$
+  \phi(t) = \phi(0) + t\phi'(t) + \frac{t^2}{2} \phi''(\theta) \leq t^2 \frac{(b - a)^2}{8}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Hoeffding's inequality" boxType='theorem'>
+Let $X_1,\dots,X_m$ be independent random variables with $X_i$ taking values in $[a_i, b_i]$ for all $i=1,\dots,m$. Then for any $\epsilon > 0$, the following inequalities hold for $S_m = \sum_{i=1}^m X_i$
+
+$$
+\begin{align*}
+  \mathbb{P}[S_m - \mathbb{E}(S_m) \geq\epsilon] \leq& \exp\left(-\frac{2\epsilon^2}{\sum_{i=1}^m (b_i - a_i)^2} \right)
+  \mathbb{P}[S_m - \mathbb{E}(S_m) \leq -\epsilon] \leq& \exp\left(-\frac{2\epsilon^2}{\sum_{i=1}^m (b_i - a_i)^2} \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Using Chernoff boundin and Lemma $ref{lemma-4}$, we can write
+
+$$
+\begin{align*}
+  \mathbb{P}[S_m - \mathbb{E}(S_m) \geq\epsilon] \leq& e^{-t\epsilon} \mathbb{E}\left(e^{t(S_m - \mathbb{E}[S_m])} \right) \\
+  =& \prod_{i=1}^m e^{-t\epsilon} \mathbb{E}\left(e^{t(X_i - \mathbb{E}[X_i])} \right) \\
+  \leq& \prod_{i=1}^m e^{-t\epsilon} e^{t^2 (b_i - a_i)^2 / 8} \\
+  =& e^{-t\epsilon} e^{t^2 \sum_{i=1}^2 (b_i - a_i)^2 / 8} \\
+  \leq& e^{-2\epsilon^2 / \sum_{i=1}^m (b_i - a_i)^2} 
+\end{align*}
+$$
+
+where we choose $t = 4\epsilon / \sum_{i=1}^m (b_i - a_i)^2$ to minimize the upper bound. This proves the first Hoeffding inequality. The second inequality is proved analogously. 
+</details>
+</MathBox>
+
+## McDiarmid's inequality
+
+<MathBox title='' boxType='lemma'>
+Let $V$ and $Z$ be random variables satisfying $\mathbb{E}(V|Z) = 0$ and, for some function $f$ and constant $c \geq 0$, the inequalities
+
+$$
+  f(Z) \leq V \leq f(Z) + c
+$$
+
+Then, for all $t > 0$, the following upper bound holds
+
+$$
+  \mathbb{E}(e^{sV}|Z) \leq e^{t^2 c^2 / 8}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The proof follows the same steps as for Lemma $\ref{lemma-4}$ with conditional expectations instead of expectations. Conditioned on $Z$, then $V$ takes values in $[a,b]$ with $a = f(Z)$ and $b = f(Z) + c$ and its expectation vanishes.
+</details>
+</MathBox>
+
+<MathBox title="Azuma's inequality" boxType='theorem' theorem='theorem-5'>
+Let $V_1,V_2,\dots$ be a martingale difference sequence with respect to the random variables $X_1,X_2,\dots$ and assume that for all $i > 0$ there is a constant $c_i \geq 0$ and random variable $Z_i$, which is a function of $X_1,\dots,X_{i-1}$, that satisfy
+
+$$
+  Z_i \leq V_i \leq Z_i + c_i
+$$
+
+Then, for all $\epsilon > 0$ and $m$, the following inequalities hold
+
+$$
+\begin{align*}
+  \mathbb{P}\left(\sum_{i=1}^m V_i \geq\epsilon \right) \leq& \exp\left(\frac{-2\epsilon^2}{\sum_{i=1}^m c_i^2} \right) \\
+  \mathbb{P}\left(\sum_{i=1}^m V_i \leq -\epsilon \right) \leq& \exp\left(\frac{-2\epsilon^2}{\sum_{i=1}^m c_i^2}\right)
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For any $k=1,\dots,m$, let $S_k = \sum_{i=1}^k V_k$. Using Chernoff bounding, we can write for any $t > 0$
+
+$$
+\begin{align*}
+  \mathbb{P}(S_m \geq\epsilon) \leq& e^{-t\epsilon} \mathbb{E}(e^{tS_m}) \\
+  =& e^{-t\epsilon} \mathbb{E}\left[e^{tS_{m-1}} \mathbb{E}(e^{t\mathbf{V}_m} | X_1,\dots,X_{m-1}) \right] \\
+  \leq& e^{-t\epsilon} \mathbb{E}(e^{tS_{m-1}}) e^{t^2 c_m^2 / 8} \\
+  \leq& e^{-t\epsilon} e^{t^2 \sum_{i=1}^m c_i^2 / 8} \\
+  =& e^{-2\epsilon^2 / \sum_{i=1}^m c_i^2} 
+\end{align*}
+$$
+
+where we chose $t = 4\epsilon/\sum_{i=1}^m c_i^2$ to minimize the upper bound. This proves the first Azuma inequality. The second inequality is proved analogously.
+</details>
+</MathBox>
+
+<MathBox title="McDiarmid's inequality" boxType='theorem'>
+Let $X_1,\dots,X_m \in \mathcal{X}^m$ be a set of $m \geq 1$ independent random variables and assume that there exists $c_1,\dots,c_m > 0$ such that $f:\mathbb{X}^m \to\R$ satisfies the following conditions
+
+$$
+\begin{equation}
+  |f(x_1,\dots,x_i,\dots,x_m) - f(x_1,\dots,x'_i,\dots,x_m)| \leq c_i \tag{\label{equation-19}}
+\end{equation}
+$$
+
+for all $i = 1,\dots,m$ and any points $x_1,\dots,x_m,x'_i \in \mathcal{X}$. Let $f(S)$ denote $f(X_1,\dots,X_m)$, then for all $\epsilon > 0$, the following inequalities hold
+
+$$
+\begin{align*}
+  \mathbb{P}(f(S) - \mathbb{E}[f(S)] \geq\epsilon) \leq& \exp\left(\frac{-2\epsilon^2}{\sum_{i=1}^m c_i^2} \right) \\
+  \mathbb{P}(f(S) - \mathbb{E}[f(S)] \leq -\epsilon) \leq& \exp\left(\frac{-2\epsilon^2}{\sum_{i=1}^m c_i^2} \right) \\
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define a sequence of random variables $V_k$ for $k = 1,\dots,m$ as follows
+
+$$
+\begin{align*}
+  V =& f(S) - \mathbb{E}[f(S)] \\
+  V_1 = \mathbb{E}(V|X_1) - \mathbb{E}(V)
+\end{align*}
+$$
+
+and for any $k > 1$
+
+$$
+  V_k = \mathbb{E}(V|X_1,\dots,X_k) - \mathbb{E}(V|X_1,\dots,X_{k-1})
+$$
+
+Note that $V = \sum_{k=1}^m V_k$. Furthermore, the random variable $\mathbb{E}(V|X_1,\dots,X_k)$ is a function of $X_1,\dots,X_k$. Conditioning on $X_1,\dots,X_{k-1}$ and taking its expectations gives
+
+$$
+  \mathbb{E}\left(\mathbb{E}(V|X_1,\dots,X_k)| X_1,\dots,X_{k-1} \right) = \mathbb{E}(V | X_1,\dots,X_{k-1})
+$$
+
+which implies $\mathbb{E}(V_k | X_1,\dots,X_{k-1}) = 0$. Thus, the sequence $(V_k)_{k=1}^m$ is a martingale difference sequence. Since $\mathbb{E}[f(S)]$ is a scalar, $V_k$ can be expressed as
+
+$$
+  V_k = \mathbb{E}[f(S) | X_1,\dots,X_k] - \mathbb{E}[f(S) | X_1,\dots,X_{k-1}]
+$$
+
+Thus, we can define an upper bound $W_k$ and lower bound $U_k$ for $V_k$ by
+
+$$
+\begin{align*}
+  W_k =& \sup_x \mathbb{E}[f(S)|X_1,\dots,X_{k-1}, x] - \mathbb{E}[f(S)|X_1,\dots,X_{k-1}] \\
+  U_k =& \inf_x \mathbb{E}[f(S)|X_1,\dots,X_{k-1}, x] - \mathbb{E}[f(S)|X_1,\dots,X_{k-1}]
+\end{align*}
+$$
+
+By $\eqref{equation-19}$, the following holds for any $k=1,\dots,m$
+
+$$
+\begin{align*}
+  W_k - U_k =& \sup_{x,x'} \mathbb{E}[f(S)|X_1,\dots,X_{k-1},x] \\
+  &- \mathbb{E}[f(S)|X_1,\dots,X_{k-1}, x'] \leq c_k
+\end{align*}
+$$
+
+Thus, $U_k \leq V_k \leq U_k + c_k$. In view of these inequalities, we can apply Azuma's inequality (Theorem $\ref{theorem-5}$) to $V = \sum_{k=1}^m V_k$, which yields McDiarmid's inequalities.
+
+</details>
+</MathBox>
+
+Note that Hoeffding's inequality is a special case of McDiarmid's inequality where $f$ is defined by $f:(x_1,\dots,x_m) \mapsto \frac{1}{m}\sum_{i=1}^m x_i$.
