@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useCallback, useEffect, useRef } from 'react'
-import { createNoise2D } from 'simplex-noise'
-import { svgCatmullRom } from 'lib/utils/svg'
+import { useCallback, useEffect, useRef } from "react"
+import { createNoise2D } from "simplex-noise"
+import { svgCatmullRom } from "lib/utils/svg"
 
-import Vector from 'lib/utils/vector'
+import Vector from "lib/utils/vector"
 
 function circlePoints(
   radius: number,
@@ -75,7 +75,7 @@ export default function Blob({ className }: Props) {
     if (!pathRef.current) return
 
     const path = pathRef.current
-    path.setAttribute('d', svgCatmullRom(pointsRef.current, 1, true))
+    path.setAttribute("d", svgCatmullRom(pointsRef.current, 1, true))
 
     // Update path
     for (const i in pointsRef.current) {
@@ -101,11 +101,11 @@ export default function Blob({ className }: Props) {
     hueOffsetRef.current += noiseStep / 10
 
     document.documentElement.style.setProperty(
-      '--color-blob-start',
+      "--color-blob-start",
       `hsl(${hue}, 100%, 75%)`,
     )
     document.documentElement.style.setProperty(
-      '--color-blob-stop',
+      "--color-blob-stop",
       `hsl(${hue + 60}, 100%, 75%)`,
     )
 
@@ -119,31 +119,31 @@ export default function Blob({ className }: Props) {
 
   return (
     <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 100 100'
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
       className={className}
     >
       <title>Blob</title>
       <defs>
-        <linearGradient id='blob-gradient' gradientTransform='rotate(90)'>
+        <linearGradient id="blob-gradient" gradientTransform="rotate(90)">
           <stop
-            id='gradientStop1'
-            offset='0%'
-            stopColor='var(--color-blob-start)'
+            id="gradientStop1"
+            offset="0%"
+            stopColor="var(--color-blob-start)"
             ref={stopRef1}
           />
           <stop
-            id='gradientStop2'
-            offset='100%'
-            stopColor='var(--color-blob-stop)'
+            id="gradientStop2"
+            offset="100%"
+            stopColor="var(--color-blob-stop)"
             ref={stopRef2}
           />
         </linearGradient>
-        <filter id='blob-blur'>
-          <feGaussianBlur in='SourceGraphic' stdDeviation='0.3' />
+        <filter id="blob-blur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.3" />
         </filter>
       </defs>
-      <path ref={pathRef} fill='url(#blob-gradient)' filter='url(#blob-blur)' />
+      <path ref={pathRef} fill="url(#blob-gradient)" filter="url(#blob-blur)" />
     </svg>
   )
 }

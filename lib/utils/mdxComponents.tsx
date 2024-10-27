@@ -1,19 +1,21 @@
 import Image, { type ImageProps } from "next/image"
 import type { MDXComponents } from "mdx/types"
 
-import ChessFig from "lib/components/ChessFig"
+import ChessFigure from "lib/components/ChessFigure"
 import Codeblock from "lib/components/Codeblock"
 import Figure from "lib/components/Figure"
-import LatexFig from "lib/components/LatexFig"
+import GraphFigure from "lib/components/GraphFigure"
+import LatexFigure from "lib/components/LatexFigure"
 import MathBox from "lib/components/MathBox"
 import MathTooltip from "lib/components/MathTooltip"
 
 export const mdxComponents: MDXComponents = {
   img: (props) => <Image {...(props as ImageProps)} loading="lazy" />,
   pre: Codeblock,
+  ChessFigure,
   Figure,
+  GraphFigure,
+  LatexFigure,
   MathBox,
   MathTooltip,
-  LatexFig,
-  ChessFig,
 }

@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
 import {
-  ChangeEvent,
+  type ChangeEvent,
   createContext,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react'
-import { parse as mathParse } from 'mathjs'
+} from "react"
+import { parse as mathParse } from "mathjs"
 
-import useResizeObserver from 'lib/hooks/useResizeObserver'
-import { SVGPlot } from './SvgPlot'
-import Split from './Split'
-import { CrossIcon } from 'lib/utils/icons'
-import Tex from './Tex'
+import useResizeObserver from "lib/hooks/useResizeObserver"
+import { InteractiveSVGPlot } from "lib/components/InteractiveSvgPlot"
+import Split from "./Split"
+import { CrossIcon } from "lib/utils/icons"
+import Tex from "./Tex"
 
 type PlotState = {
   plots: Map<number, Partial<PlotFields>>
@@ -29,19 +29,19 @@ const PlotContext = createContext<PlotState | undefined>(undefined)
 function usePlotContext() {
   const context = useContext(PlotContext)
   if (!context) {
-    throw new Error('usePlotContext must be used within a Plot Component')
+    throw new Error("usePlotContext must be used within a Plot Component")
   }
   return context
 }
 
 const formValues: PlotFields = {
-  fn: '',
+  fn: "",
   tex: {
-    value: '\\textrm{Input...}',
+    value: "\\textrm{Input...}",
     style: `text-text/50 peer-focus:text-text peer-focus:before:content-["|"] before:inline-block 
     before:text-text before:animate-blink`,
   },
-  color: '',
+  color: "",
 }
 
 type PlotFields = {
@@ -76,52 +76,51 @@ function PlotInput({
     if (!formRef.current) return
 
     if (!validateFunction(values.fn)) {
-      formRef.current.classList.add('bg-red-100.dark:bg-red-400')
+      formRef.current.classList.add("bg-red-100.dark:bg-red-400")
     } else {
-      formRef.current.classList.remove('bg-red-100.dark:bg-red-400')
+      formRef.current.classList.remove("bg-red-100.dark:bg-red-400")
     }
   }, [values])
 
   return (
     <form
       ref={formRef}
-      action=''
+      action=""
       onSubmit={(e) => handleAddPlot(index, e)}
-      className='relative h-12 flex border-b border-text/30 focus-within:border-secondary overflow-y-scroll'
+      className="relative h-12 flex border-b border-text/30 focus-within:border-secondary overflow-y-scroll"
     >
-      <label className='w-10 relative border-r border-text/50 overflow-hidden'>
-        <svg className='h-full w-full'>
-          <circle cx='50%' cy='50%' r='20%' fill={values.color} />
+      <label className="w-10 relative border-r border-text/50 overflow-hidden">
+        <svg className="h-full w-full">
+          <title>Change color</title>
+          <circle cx="50%" cy="50%" r="20%" fill={values.color} />
         </svg>
         <input
-          type='color'
-          name='color'
+          type="color"
+          name="color"
           value={values.color}
           onChange={(e) => handleChangeColor(index, e)}
-          className='absolute inset-0 opacity-0 cursor-pointer'
+          className="absolute inset-0 opacity-0 cursor-pointer"
         />
       </label>
       <input
-        type='text'
-        name='fn'
+        type="text"
+        name="fn"
         value={values.fn}
         onChange={(e) => handleChangeFn(index, e)}
-        className='peer w-[calc(100%-5rem)] pl-2 focus:outline-none
-          bg-transparent text-transparent z-[1]'
+        className="peer w-[calc(100%-5rem)] pl-2 focus:outline-none
+          bg-transparent text-transparent z-[1]"
       />
       <Tex
         math={values.tex.value}
-        errorColor={'red'}
-        className={
-          values.tex.style + ' w-[calc(100%-5rem)] absolute left-10 top-2 px-2'
-        }
+        errorColor={"red"}
+        className={`${values.tex.style} w-[calc(100%-5rem)] absolute left-10 top-2 px-2`}
       />
       <button
-        type='button'
+        type="button"
         onClick={(e) => handleDelPlot(index, e)}
-        className='w-10'
+        className="w-10"
       >
-        <CrossIcon className='w-[80%] stroke-text/50 hover:stroke-red-500' />
+        <CrossIcon className="w-[80%] stroke-text/50 hover:stroke-red-500" />
       </button>
     </form>
   )
@@ -166,7 +165,7 @@ function Panel() {
     } else {
       setPlotForms((old) =>
         old.map((f) => {
-          return { fn: '', tex: f.tex, color: f.color }
+          return { fn: "", tex: f.tex, color: f.color }
         }),
       )
     }
@@ -175,13 +174,13 @@ function Panel() {
   const changeFn = (i: number, e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
 
-    const fn = e.target.value.replace(/\s+/g, '')
+    const fn = e.target.value.replace(/\s+/g, "")
     const newPlotForms = [...plotForms]
     newPlotForms[i].fn = fn
 
     if (!fn) {
       newPlotForms[i].tex = {
-        value: '\\textrm{Input...}',
+        value: "\\textrm{Input...}",
         style: `peer-focus:before:content-["|"] before:inline-block 
         before:text-text before:animate-blink text-text/50 peer-focus:text-text`,
       }
@@ -221,10 +220,10 @@ function Panel() {
   }
 
   return (
-    <div className='h-full pr-4 bg-primary'>
+    <div className="h-full pr-4 bg-primary">
       {plotForms.map((field, i) => (
         <PlotInput
-          key={'form.' + i}
+          key={`form.${i}`}
           index={i}
           values={field}
           handleAddPlot={addPlot}
@@ -241,13 +240,13 @@ export default function InteractivePlot() {
   const [plots, setPlots] = useState(new Map<number, PlotFields>())
   const contextValue: PlotState = { plots, setPlots }
   const wrapRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGPlot | null>(null)
+  const svgRef = useRef<InteractiveSVGPlot | null>(null)
   const size = useResizeObserver(wrapRef)
 
   useEffect(() => {
     const wrap = wrapRef.current
     if (!svgRef.current && wrap) {
-      svgRef.current = new SVGPlot(wrap)
+      svgRef.current = new InteractiveSVGPlot(wrap)
       svgRef.current.axes()
       svgRef.current.grid()
 
@@ -272,8 +271,8 @@ export default function InteractivePlot() {
 
   return (
     <Split
-      className=''
-      split='row'
+      className=""
+      split="row"
       defaultSizes={[0.2, 0.8]}
       minSizes={[100, 500]}
     >
@@ -282,7 +281,7 @@ export default function InteractivePlot() {
       </PlotContext.Provider>
       <div
         ref={wrapRef}
-        className='h-full bg-primary shadow-inner-l dark:shadow-black/50'
+        className="h-full bg-primary shadow-inner-l dark:shadow-black/50"
       />
     </Split>
   )
@@ -291,16 +290,16 @@ export default function InteractivePlot() {
 function convertPlots(plots: Map<number, PlotFields>) {
   const result = {}
 
-  for (let v of plots.values()) {
+  for (const v of plots.values()) {
     result[v.fn] = { color: v.color }
   }
   return result
 }
 
 function reorderMap(i: number, plots: Map<number, Partial<PlotFields>>) {
-  for (let k of plots.keys()) {
+  for (const k of plots.keys()) {
     if (k > i) {
-      let value = plots.get(k)!
+      const value = plots.get(k)!
       plots.delete(k)
       plots.set(k - 1, value)
     }
@@ -313,7 +312,7 @@ function validateFunction(fn: string) {
     const node = mathParse(fn)
     const test = node.compile().evaluate({ x: 0 })
 
-    if (typeof test !== 'number') return false
+    if (typeof test !== "number") return false
 
     return true
   } catch (e) {
@@ -323,10 +322,7 @@ function validateFunction(fn: string) {
 }
 
 function randomColor() {
-  return (
-    '#' +
-    Math.floor(Math.random() * 0xffffff)
-      .toString(16)
-      .padStart(6, '0')
-  )
+  return `#${Math.floor(Math.random() * 0xffffff)
+    .toString(16)
+    .padStart(6, "0")}`
 }

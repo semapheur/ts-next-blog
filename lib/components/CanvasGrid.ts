@@ -1,11 +1,11 @@
-import { drawLine, mousePosition } from 'lib/utils/canvas'
-import EventListenerStore from 'lib/utils/event'
-import { clamp, gridUnit } from 'lib/utils/num'
-import { screenToDrawPosition } from 'lib/utils/svg'
-import { Line, ViewRange } from 'lib/utils/types'
-import Vector from 'lib/utils/vector'
+import { drawLine, mousePosition } from "lib/utils/canvas"
+import EventListenerStore from "lib/utils/event"
+import { clamp, gridUnit } from "lib/utils/num"
+import { screenToDrawPosition } from "lib/utils/svg"
+import type { Line, ViewRange } from "lib/utils/types"
+import Vector from "lib/utils/vector"
 
-type Axis = 'x' | 'y'
+type Axis = "x" | "y"
 
 export default class CanvasGrid {
   private ctx: CanvasRenderingContext2D
@@ -24,7 +24,7 @@ export default class CanvasGrid {
   ) {
     this.complex = complex
 
-    this.ctx = canvas.getContext('2d')!
+    this.ctx = canvas.getContext("2d")!
 
     if (transform) this.transform = transform
 
@@ -82,7 +82,7 @@ export default class CanvasGrid {
 
   drawAxes() {
     const { width, height } = this.ctx.canvas.getBoundingClientRect()
-    this.ctx.strokeStyle = 'white'
+    this.ctx.strokeStyle = "white"
 
     this.ctx.lineWidth = 2
     const xAxis: Line = {
@@ -100,9 +100,9 @@ export default class CanvasGrid {
 
   private drawGrid() {
     const tickFormat = (axis: Axis, step: number, tick: number): string => {
-      if (tick === 0) return '0'
+      if (tick === 0) return "0"
 
-      if (axis === 'y') {
+      if (axis === "y") {
         tick *= -1
       }
 
@@ -116,32 +116,32 @@ export default class CanvasGrid {
 
     const textAlign = (axis: Axis, width: number, height: number): void => {
       this.ctx.textAlign =
-        axis === 'x'
-          ? 'center'
+        axis === "x"
+          ? "center"
           : this.transform.e >= width / 2
-            ? 'start'
-            : 'end'
+            ? "start"
+            : "end"
 
       this.ctx.textBaseline =
-        axis === 'y'
-          ? 'middle'
+        axis === "y"
+          ? "middle"
           : this.transform.f <= height / 2
-            ? 'bottom'
-            : 'top'
+            ? "bottom"
+            : "top"
     }
 
     const unitIterate = (step: number, axis: Axis) => {
       const { width, height } = this.ctx.canvas.getBoundingClientRect()
 
-      this.ctx.lineJoin = 'round'
+      this.ctx.lineJoin = "round"
       const font = 12
       this.ctx.font = `${font}px sans-serif`
-      this.ctx.textAlign = axis === 'x' ? 'center' : 'start'
-      this.ctx.textBaseline = axis === 'x' ? 'bottom' : 'middle'
+      this.ctx.textAlign = axis === "x" ? "center" : "start"
+      this.ctx.textBaseline = axis === "x" ? "bottom" : "middle"
       const textOffset = 5
 
-      let tick = axis === 'x' ? this.viewRange.x[0] : this.viewRange.y[0]
-      const stop = axis === 'x' ? this.viewRange.x[1] : this.viewRange.y[1]
+      let tick = axis === "x" ? this.viewRange.x[0] : this.viewRange.y[0]
+      const stop = axis === "x" ? this.viewRange.x[1] : this.viewRange.y[1]
 
       const remainder = tick % step
       if (remainder !== 0) {
@@ -155,24 +155,24 @@ export default class CanvasGrid {
         }
 
         const screenTick =
-          axis === 'x'
+          axis === "x"
             ? tick * this.transform.a + this.transform.e
             : tick * this.transform.d + this.transform.f
 
         const line: Line = {
           start: DOMPoint.fromPoint({
-            x: axis === 'x' ? screenTick : 0,
-            y: axis === 'y' ? screenTick : 0,
+            x: axis === "x" ? screenTick : 0,
+            y: axis === "y" ? screenTick : 0,
           }),
           end: DOMPoint.fromPoint({
-            x: axis === 'x' ? screenTick : width,
-            y: axis === 'y' ? screenTick : height,
+            x: axis === "x" ? screenTick : width,
+            y: axis === "y" ? screenTick : height,
           }),
         }
-        drawLine(this.ctx, line, 'white', 1)
+        drawLine(this.ctx, line, "white", 1)
 
         const text =
-          axis === 'y' && this.complex
+          axis === "y" && this.complex
             ? `${tickFormat(axis, step, tick)}i`
             : tickFormat(axis, step, tick)
 
@@ -181,7 +181,7 @@ export default class CanvasGrid {
         const textWidth = this.ctx.measureText(text).width
         const tickPos = {
           x:
-            axis === 'x'
+            axis === "x"
               ? screenTick
               : clamp(
                   this.transform.e +
@@ -191,7 +191,7 @@ export default class CanvasGrid {
                   width - (textWidth + textOffset),
                 ),
           y:
-            axis === 'y'
+            axis === "y"
               ? screenTick
               : clamp(
                   this.transform.f +
@@ -201,8 +201,8 @@ export default class CanvasGrid {
                   height - (font + textOffset),
                 ),
         }
-        this.ctx.fillStyle = 'white'
-        this.ctx.strokeStyle = '#292524'
+        this.ctx.fillStyle = "white"
+        this.ctx.strokeStyle = "#292524"
         this.ctx.lineWidth = 3
 
         this.ctx.strokeText(text, tickPos.x, tickPos.y)
@@ -217,7 +217,7 @@ export default class CanvasGrid {
       y: gridUnit(this.minGridSize / this.transform.d),
     }
 
-    for (const axis of ['x', 'y']) {
+    for (const axis of ["x", "y"]) {
       unitIterate(unit[axis], axis as Axis)
     }
   }
@@ -265,7 +265,7 @@ export default class CanvasGrid {
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener(
-      'pointerdown',
+      "pointerdown",
       this.ctx.canvas,
       onClickBound,
     )
@@ -278,8 +278,8 @@ export default class CanvasGrid {
 
       // Click position
       startPos = new DOMPoint(event.clientX, event.clientY)
-      this.ctx.canvas.addEventListener('pointerup', onPointerUp.bind(this))
-      this.ctx.canvas.addEventListener('pointermove', onPointerMove.bind(this))
+      this.ctx.canvas.addEventListener("pointerup", onPointerUp.bind(this))
+      this.ctx.canvas.addEventListener("pointermove", onPointerMove.bind(this))
     }
 
     function onPointerMove(event: PointerEvent) {
@@ -295,17 +295,17 @@ export default class CanvasGrid {
       isPanning = false
 
       this.ctx.canvas.removeEventListener(
-        'pointermove',
+        "pointermove",
         onPointerMove.bind(this),
       )
-      this.ctx.canvas.removeEventListener('pointerup', onPointerUp.bind(this))
+      this.ctx.canvas.removeEventListener("pointerup", onPointerUp.bind(this))
     }
   }
 
   private zoomOnWheel() {
     const onWheelBound = onWheel.bind(this)
     this.eventListeners.storeEventListener(
-      'wheel',
+      "wheel",
       this.ctx.canvas,
       onWheelBound,
     )

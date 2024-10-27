@@ -1,21 +1,22 @@
-'use client'
+"use client"
 
-import useEventListener from 'lib/hooks/useEventListener'
-import React, {
-  CSSProperties,
+import useEventListener from "lib/hooks/useEventListener"
+import type React from "react"
+import {
+  type CSSProperties,
   forwardRef,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useEffect,
   useRef,
   useState,
-} from 'react'
-import { findAllIndices, sum } from 'lib/utils/num'
+} from "react"
+import { findAllIndices, sum } from "lib/utils/num"
 
 type SizeFormat = string | string[] | number[]
 
 type SplitProps = {
-  split: 'row' | 'column'
+  split: "row" | "column"
   className: string
   defaultSizes?: SizeFormat
   minSizes: number[]
@@ -48,7 +49,7 @@ const Divider = forwardRef<HTMLDivElement, DividerProps>(function Divider(
     <div
       ref={ref}
       style={style}
-      className='opacity-0 hover:opacity-100 transition-opacity delay-300'
+      className="opacity-0 hover:opacity-100 transition-opacity delay-300"
       onMouseDown={(e: React.MouseEvent) => {
         e.preventDefault
         onDragStart(index, e)
@@ -74,16 +75,16 @@ export default function Split(props: SplitProps) {
   const splitRef = useRef<HTMLDivElement>(null)
   const paneRefs = useRef<HTMLDivElement[]>([])
   const dividerRefs = useRef<HTMLDivElement[]>([])
-  const sizeAttr = useRef<'width' | 'height'>(
-    split === 'row' ? 'width' : 'height',
+  const sizeAttr = useRef<"width" | "height">(
+    split === "row" ? "width" : "height",
   )
-  const posAttr = useRef<'left' | 'top'>(split === 'row' ? 'left' : 'top')
+  const posAttr = useRef<"left" | "top">(split === "row" ? "left" : "top")
   const [sizes, setSizes] = useState(Array<number>(children.length))
   const dragState = useRef<DragState | null>(null)
 
   const handleDragStart = useCallback(
     (index: number, e: React.MouseEvent) => {
-      const origin = split === 'row' ? e.clientX : e.clientY
+      const origin = split === "row" ? e.clientX : e.clientY
 
       const startSizes: [number, number] = [
         paneRefs.current[index].getBoundingClientRect()[sizeAttr.current],
@@ -122,7 +123,7 @@ export default function Split(props: SplitProps) {
 
       const state = dragState.current
 
-      const dragPos = split === 'row' ? e.clientX : e.clientY
+      const dragPos = split === "row" ? e.clientX : e.clientY
       const delta = state.dragOrigin - dragPos
 
       const divider = dividerRefs.current[state.index]
@@ -165,38 +166,38 @@ export default function Split(props: SplitProps) {
     )
   }, [defaultSizes, children])
 
-  useEventListener('mousemove', onDragMove, splitRef)
-  useEventListener('mouseup', onDragStop, splitRef)
+  useEventListener("mousemove", onDragMove, splitRef)
+  useEventListener("mouseup", onDragStop, splitRef)
 
   const splitStyle: CSSProperties = {
-    height: '100%',
-    position: 'relative',
-    display: 'flex',
-    flex: '1',
+    height: "100%",
+    position: "relative",
+    display: "flex",
+    flex: "1",
     flexDirection: split,
   }
 
   const dividerBaseStyle: CSSProperties = {
-    position: 'absolute',
-    cursor: split === 'row' ? 'ew-resize' : 'ns-resize',
-    backgroundColor: 'rgb(var(--color-secondary) / 1)',
-    transform: split === 'row' ? 'translateX(-50%)' : 'translateY(-50%)',
+    position: "absolute",
+    cursor: split === "row" ? "ew-resize" : "ns-resize",
+    backgroundColor: "rgb(var(--color-secondary) / 1)",
+    transform: split === "row" ? "translateX(-50%)" : "translateY(-50%)",
   }
-  dividerBaseStyle[sizeAttr.current] = '4px'
-  dividerBaseStyle[split === 'row' ? 'height' : 'width'] = '100%'
+  dividerBaseStyle[sizeAttr.current] = "4px"
+  dividerBaseStyle[split === "row" ? "height" : "width"] = "100%"
 
   const elements: ReactNode[] = []
   for (let i = 0; i < children.length; i++) {
     const paneStyle: CSSProperties =
-      split === 'row'
+      split === "row"
         ? {
-            height: '100%',
+            height: "100%",
             width: sizes[i],
             minWidth: minSizes[i],
           }
         : {
             height: sizes[i],
-            width: '100%',
+            width: "100%",
             minHeight: minSizes[i],
           }
     elements.push(
@@ -242,7 +243,7 @@ function setDefaultSizes(
 ): number[] {
   function relativeSizes(sizes: number[], total: number, ceil: number) {
     if (total < ceil && sizes.includes(0)) {
-      console.log('Invalid default sizes! Reverting to fallback sizes.')
+      console.log("Invalid default sizes! Reverting to fallback sizes.")
       const ix = findAllIndices(sizes, 0)
       const remainderSize = (ceil - total) / ix.length
 
@@ -259,24 +260,24 @@ function setDefaultSizes(
 
   if (!defaultSizes) return result
 
-  if (typeof defaultSizes === 'string') {
-    defaultSizes = defaultSizes.split(' ') ?? defaultSizes.split(',')
+  if (typeof defaultSizes === "string") {
+    defaultSizes = defaultSizes.split(" ") ?? defaultSizes.split(",")
     if (!defaultSizes) {
-      console.log('Invalid default sizes! Reverting to fallback sizes.')
+      console.log("Invalid default sizes! Reverting to fallback sizes.")
       return result
     }
   }
   const sizes = Array<number>(Math.min(defaultSizes.length, panes)).fill(0)
 
-  if (typeof defaultSizes[0] === 'string') {
+  if (typeof defaultSizes[0] === "string") {
     for (let i = 0; i < sizes.length; i++) {
-      const size = parseFloat(defaultSizes[i] as string)
+      const size = Number.parseFloat(defaultSizes[i] as string)
       if (size && size < 100) sizes[i] = size
     }
     const total = sum(sizes)
 
     if (total > 100 || (total === 100 && sizes.length < panes)) {
-      console.log('Invalid default sizes! Reverting to fallback sizes.')
+      console.log("Invalid default sizes! Reverting to fallback sizes.")
       return result
     }
     if (total < 100 && sizes.length < panes) {
@@ -287,11 +288,11 @@ function setDefaultSizes(
     return relativeSizes(sizes, total, 100)
   }
 
-  if (typeof defaultSizes[0] === 'number') {
+  if (typeof defaultSizes[0] === "number") {
     const total = sum(defaultSizes as number[])
 
     if (total > splitSize) {
-      console.log('Invalid default sizes! Reverting to fallback sizes.')
+      console.log("Invalid default sizes! Reverting to fallback sizes.")
       return result
     }
     if (defaultSizes.length < panes) {

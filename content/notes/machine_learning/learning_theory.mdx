@@ -30,23 +30,23 @@ Machine learning techniques can be divided into seven approaches:
 - **Reinforcement learning:** To collect information, the learner actively interacts with the environment and in some cases affects the environment, and receives an immediate reward for each action. The goal is to maximize the reward over a course of actions and iterations with the environment. However, no long-term reward feedback is provided by the environment, and the learner is faced with the *exploration versus exploitation* dilemma, since it must choose between exploring unknown actions to gain more information versus exploiting the information already collected.
 - **Active learning:** The learner adaptively or interactively collects training examples, typically by quering an oracle to request labels for new points. The goal is to achieve a performance comparable to supervised learning.
 
-# Probably approximately correct (PAC) learning framework
+# Probably approximately correct (PAC) learning
 
-Let $X$ be the set of all possible examples, also referred to as the input space, and let $Y$ be the set of all possible labels or target values. A *concept* is a mapping $c:X\to Y$, while a concept class $C$ is a set of concepts that can be learnt. We assume the examples are independently and identically distributed (i.i.d.) according to some fixed yet unknown distribution $D$. 
+Let $X$ be the set of all possible examples, also referred to as the input space, and let $Y$ be the set of all possible labels or target values. A *concept* is a mapping $c:X\to Y$, while a concept class $C$ is a set of concepts that can be learnt. We assume the examples are independently and identically distributed (i.i.d.) according to some fixed yet unknown distribution $\mathcal{D}$. 
 
-The learning problem is formulated as follows. The learner considers a fixed set of possible concepts $H$, called a *hypothesis set*, which may not coincide with $C$. It receives a samle $S = (x_1,\dots,x_n)$ drawn i.i.d. according to $D$ as well as the labels $(c(x_1),\dots,c(x_n))$, which are based on a specific target concept $c \in C$ to learn. Its task is use the labeled sample $S$ to select a hypothesis $h_s \in H$ that has a small *generalization error* with respect to the concept $c$. 
+The learning problem is formulated as follows. The learner considers a fixed set of possible concepts $H$, called a *hypothesis set*, which may not coincide with $C$. It receives a samle $S = (x_1,\dots,x_n)$ drawn i.i.d. according to $\mathcal{D}$ as well as the labels $(c(x_1),\dots,c(x_n))$, which are based on a specific target concept $c \in C$ to learn. Its task is use the labeled sample $S$ to select a hypothesis $h_s \in H$ that has a small *generalization error* with respect to the concept $c$. 
 
 <MathBox title='Generalization error' boxType='definition'>
-Given a hypothesis $h\in H$, a target concept $c\in C$, and an underlying distribution $D$, the *generalization error/risk* of $h$ is defined by
+Given a hypothesis $h\in H$, a target concept $c\in C$, and an underlying distribution $\mathcal{D}$, the *generalization error/risk* of $h$ is defined by
 
 $$
-  R(h) = \Pr(h(x) \neq c(x)) = \mathbb{E}(\mathbf{1}_{h(x)\neq c(x)}),\; x\sim D
+  R(h) = \Pr(h(x) \neq c(x)) = \mathbb{E}(\mathbf{1}_{h(x)\neq c(x)}),\; x\sim\mathcal{D}
 $$
 
 Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
 </MathBox>
 
-The generalization error of a hypothesis is not directly accessible to the learner since both the distribution $D$ and the taget concept $c$ are unknown. However, the learner can measure the *empirical error* of a hypothesis on the labeled sample $S$.
+The generalization error of a hypothesis is not directly accessible to the learner since both the distribution $\mathcal{D}$ and the taget concept $c$ are unknown. However, the learner can measure the *empirical error* of a hypothesis on the labeled sample $S$.
 
 <MathBox title='Empirical error' boxType='definition'>
 Given a hypothesis $h\in H$, a target concept $c\in C$, and a sample $S = (x_1,\dots,x_n)$, the *empirical error/risk* of $h$ is defined by
@@ -58,12 +58,12 @@ $$
 Note that by definition, both the hypothesis set $H$ and concept class $C$ are measurable.
 </MathBox>
 
-The empirical error of $h\in H$ is its average error over a sample $S$, while the generalization error is its expected error based on the distribution $D$. Note that for a fixed $h\in H$, the expectation of the empirical error based on an i.i.d. sample $S$ is equal to the generalization error, i.e. $\mathbb{E}(\hat{R}(h)) = R(h)$. By linearity to the expectation and the fact that the sample is drawn i.i.d., we can write for any $x\in S$
+The empirical error of $h\in H$ is its average error over a sample $S$, while the generalization error is its expected error based on the distribution $\mathcal{D}$. Note that for a fixed $h\in H$, the expectation of the empirical error based on an i.i.d. sample $S$ is equal to the generalization error, i.e. $\mathbb{E}(\hat{R}(h)) = R(h)$. By linearity to the expectation and the fact that the sample is drawn i.i.d., we can write for any $x\in S$
 
 $$
 \begin{align*}
-  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)}) \\
-  =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)})
+  \underset{x\sim\mathcal{D}^n}{\mathbb{E}}(\hat{R}(h)) =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim\mathcal{D}^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)}) \\
+  =& \frac{1}{n} \sum_{i=1}^n \underset{x\sim\mathcal{D}^n}{\mathbb{E}}(\mathbf{1}_{h(x_i) \neq c(x_i)})
 \end{align*}
 $$
 
@@ -71,16 +71,16 @@ Thus,
 
 $$
 \begin{align*}
-  \underset{x\sim D^n}{\mathbb{E}}(\hat{R}(h)) =& \underset{x\sim D^n}{\mathbb{E}} (\mathbf{1}_{\Set{h(x) \neq c(x)}}) \\
-  =& \underset{x\sim D^n}{\mathbb{E}}(\mathbf{1}_{\Set{h(x) \neq c(x)}}) = R(h)
+  \underset{x\sim\mathcal{D}^n}{\mathbb{E}}(\hat{R}(h)) =& \underset{x\sim\mathcal{D}^n}{\mathbb{E}} (\mathbf{1}_{\Set{h(x) \neq c(x)}}) \\
+  =& \underset{x\sim\mathcal{D}^n}{\mathbb{E}}(\mathbf{1}_{\Set{h(x) \neq c(x)}}) = R(h)
 \end{align*}
 $$
 
 <MathBox title='PAC-learning' boxType='definition'>
-A concept class $C$ is PAC-learnable if there exists an algorithm $\mathcal{A}$ and a polynomial function $p(\cdot,\cdot,\cdot,\cdot)$ such that for any $\varepsilon > 0$ and $\delta > 0$, for all distributions $D$ on $X$ and for any target concept $c\in C$, the following holds for any sample size $n \geq p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$
+A concept class $C$ is PAC-learnable if there exists an algorithm $\mathcal{A}$ and a polynomial function $p(\cdot,\cdot,\cdot,\cdot)$ such that for any $\varepsilon > 0$ and $\delta > 0$, for all distributions $\mathcal{D}$ on $X$ and for any target concept $c\in C$, the following holds for any sample size $n \geq p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$
 
 $$
-  \underset{S\sim D^n}\Pr(R(h_S) \leq \varepsilon) \geq 1 - \delta
+  \underset{S\sim\mathcal{D}^n}\Pr(R(h_S) \leq \varepsilon) \geq 1 - \delta
 $$
 
 where $s(c)$, the size of $c$, is the maximal cost of the computational representation of $c\in C$. If $A$ further runs in $ p\left(\frac{1}{\varepsilon}, \frac{1}{\delta}, m, s(c) \right)$, then $C$ is efficiently PAC-learnable. When such an algorithm $\mathcal{A}$ exists, it called a PAC-learning algorithm for $C$.
@@ -88,7 +88,7 @@ where $s(c)$, the size of $c$, is the maximal cost of the computational represen
 A concept class $C$ is thus PAC-learnable if the hypothesis returned by the algorithm after observing a number of points polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$ is *approximately correct* (error at most $\varepsilon$) with high *probability* (at least $1-\delta$). In this framework, $\delta > 0$ describes the *confidence* $1-\delta$ and $\varepsilon > 0$ the *accuracy* $1 - \varepsilon$. Note that if the running time of the algorithm is polynomial in $\frac{1}{\varepsilon}$ and $\frac{1}{\delta}$, then the sample size $n$ must also be polynomial if the full sample is received by the algorithm.
 </MathBox>
 
-Several characteristics of the PAC definition are worth emphasizing. First, the PAC is framework is a distribution-free model as it makes no particular assumptions about the distribution $D$ from which samples are drawn. Second, the training sample and the test examples used to define the error are drawn according to the same distribution $D$. This is a necessary assumption for generalization to by possible in most cases.
+Several characteristics of the PAC definition are worth emphasizing. First, the PAC is framework is a distribution-free model as it makes no particular assumptions about the distribution $\mathcal{D}$ from which samples are drawn. Second, the training sample and the test examples used to define the error are drawn according to the same distribution $\mathcal{D}$. This is a necessary assumption for generalization to by possible in most cases.
 
 Finally, the PAC framework deals with the question of learnability for a concept class $C$ and not a particular concept. Note that the concept class $C$ is known to the algorithm, while the target concept $c$ is unknown. In many cases, in particular when the computational representation of the concepts is not explicitly discussed or is straightforward, we may omit the polynomial dependency on $n$ and $s(c)$ in the PAC definition and focus only on the sample complexity.
 
@@ -97,7 +97,7 @@ Finally, the PAC framework deals with the question of learnability for a concept
 ### Consistent case
 
 <MathBox title='Learning bounds for finite hypotheses sets (consistent case)' boxType='theorem'>
-Let $H$ be a finite hypothesis set. Let $A$ be an algorithm that for any target concept $c\in H$ and i.i.d. sample $S$ returns a consistent hypothesis $h_S: \hat{R}(h_s) = 0$. Then, for any $\epsilon, \delta > 0$, the inequality $\Pr_{S\sim D^m} [R(h_s) \leq\epsilon] \geq 1 - \delta$ holds if
+Let $H$ be a finite hypothesis set. Let $A$ be an algorithm that for any target concept $c\in H$ and i.i.d. sample $S$ returns a consistent hypothesis $h_S: \hat{R}(h_s) = 0$. Then, for any $\epsilon, \delta > 0$, the inequality $\Pr_{S\sim\mathcal{D}^m} [R(h_s) \leq\epsilon] \geq 1 - \delta$ holds if
 
 $$
 \begin{equation}
@@ -153,8 +153,8 @@ Let $S$ be an i.i.d. sample of size $m$. If $\epsilon > 0$, then for any hypothe
 
 $$
 \begin{align*}
-  \Pr_{S\sim D^m} [\hat{R}(h) - R(h) \geq\epsilon] \leq& e^{-2m\epsilon^2} \\
-  \Pr_{S\sim D^m} [\hat{R}(h) - R(h) \leq -\epsilon] \leq& e^{-2m\epsilon^2}
+  \Pr_{S\sim\mathcal{D}^m} [\hat{R}(h) - R(h) \geq\epsilon] \leq& e^{-2m\epsilon^2} \\
+  \Pr_{S\sim\mathcal{D}^m} [\hat{R}(h) - R(h) \leq -\epsilon] \leq& e^{-2m\epsilon^2}
 \end{align*}
 $$
 
@@ -162,7 +162,7 @@ By the union bound, this implies the following two-sided inequality
 
 $$
 \begin{equation}
-  \Pr_{S\sim D^m} [|\hat{R}(h) - R(h)| \geq \epsilon] \leq 2e^{-2m\epsilon^2} \tag{\label{equation-3}}
+  \Pr_{S\sim\mathcal{D}^m} [|\hat{R}(h) - R(h)| \geq \epsilon] \leq 2e^{-2m\epsilon^2} \tag{\label{equation-3}}
 \end{equation}
 $$
 
@@ -305,11 +305,11 @@ We next bound the expectation of the right-hand side as follows
 $$
 \begin{align*}
   \mathbb{E}_S [\Phi(S)] =& \mathbb{E}_S \left(\sup_{g\in G} \mathbb{E}(g) - \hat{\mathbb{E}}_S (g) \right) \\
-  =& \mathbb{E}_S \left(\sup_{g\in G} \hat{\mathbb{E}}\left(\hat{\mathbb{E}}_{S'}(g) - \hat{\mathbb{E}}_S (g) \right) \right) \tag{label{equation-5}} \\
-  \leq& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \hat{\mathbb{E}}_{S'} (g) - \hat{\mathbb{E}}_S (g) \right) \tag{label{equation-6}} \\
-  =& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m (g(z'_1) - g(z_i)) \right) \tag{label{equation-7}} \\
-  =& \mathbb{E}_{\boldsymbol{\sigma}, S, S'} \left(\sup_{g\in G} \frac{1}{m}\sum_{i=1}^m \sigma_i (g(z'_1) - g(z_i)) \right) \tag{label{equation-8}} \\
-  \leq& \mathbb{E}_{\boldsymbol{\sigma}, S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m \sigma_i g(z'_1) \right) + \mathbb{E}_{\boldsymbol{\sigma}, S} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m -\sigma_i g(z_i) \right) \tag{label{equation-9}} \\
+  =& \mathbb{E}_S \left(\sup_{g\in G} \hat{\mathbb{E}}\left(\hat{\mathbb{E}}_{S'}(g) - \hat{\mathbb{E}}_S (g) \right) \right) \tag{\label{equation-5}} \\
+  \leq& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \hat{\mathbb{E}}_{S'} (g) - \hat{\mathbb{E}}_S (g) \right) \tag{\label{equation-6}} \\
+  =& \mathbb{E}_{S,S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m (g(z'_1) - g(z_i)) \right) \tag{\label{equation-7}} \\
+  =& \mathbb{E}_{\boldsymbol{\sigma}, S, S'} \left(\sup_{g\in G} \frac{1}{m}\sum_{i=1}^m \sigma_i (g(z'_1) - g(z_i)) \right) \tag{\label{equation-8}} \\
+  \leq& \mathbb{E}_{\boldsymbol{\sigma}, S'} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m \sigma_i g(z'_1) \right) + \mathbb{E}_{\boldsymbol{\sigma}, S} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m -\sigma_i g(z_i) \right) \tag{\label{equation-9}} \\
   =& 2\mathbb{E}_{\boldsymbol{\sigma},S} \left(\sup_{g\in G} \frac{1}{m} \sum_{i=1}^m \sigma_i (z_i) \right) = 2\mathcal{R}_m (G) \tag{\label{equation-10}}
 \end{align*}
 $$
@@ -320,7 +320,7 @@ The reduction to $\mathcal{R}_m (G)$ in $\eqref{equation-10}$ yields the bound i
 
 $$
 \begin{equation}
-  \mathcal{R}_m (G) \leq\hat{\mathcal{R}}_S (G) + \sqrt{\frac{\ln(2/\delta)}{2m}} \tag{label{equation-13}}
+  \mathcal{R}_m (G) \leq\hat{\mathcal{R}}_S (G) + \sqrt{\frac{\ln(2/\delta)}{2m}} \tag{\label{equation-13}}
 \begin{equation}
 $$
 
@@ -347,19 +347,19 @@ By definition, the empirical Rademacher complexity of $G$ can be written as
 
 $$
 \begin{align*}
-  \hat{\mathcal{R}}_S (G) =& \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i 1_{h(x_i) \neq y} \right) \\
+  \hat{\mathcal{R}}_S (G) =& \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i \mathbf{1}_{h(x_i) \neq y} \right) \\
   =& \mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i \frac{1 - y_i h(x_i)}{2} \right) \\
   =& \frac{1}{2}\mathbb{E}_{\boldsymbol{\sigma}} \left(\sup_{h\in H} \frac{1}{m} \sum_{i=1}^m -\sigma_i y_i h(x_i) \right) \\
   =& \frac{1}{2} \mathbb{E}_{\boldsymbol{\sigma}} \left( \sup_{h\in H} \frac{1}{m} \sum_{i=1}^m \sigma_i h(x_i) \right) = \frac{1}{2}\mathcal{R}_{S_X} (H) 
 \end{align*}
 $$
 
-where we use the fact that $1_{h(x_i) \neq y} = (1 - y_i h(x_i))/2$ and the fact that for a fixed $y_i \in\set{\pm 1}$, then $\sigma_i$ and $-y_i \sigma$ are distributed in the same way.
+where we use the fact that $\mathbf{1}_{h(x_i) \neq y} = (1 - y_i h(x_i))/2$ and the fact that for a fixed $y_i \in\set{\pm 1}$, then $\sigma_i$ and $-y_i \sigma$ are distributed in the same way.
 </details>
 </MathBox>
 
 <MathBox title='Rademacher complexity bounds for binary classification' boxType='theorem'>
-Let $H$ be a famliy of functions taking values in $\set{\pm 1}$ and let $\mathcal{D}$ be the distribution over the input space $X$. Then, for any $\delta > 0$, with probability at least $1 - \delta$ over a sample $S$ of size $m$ drawn according to $D$, each of the following holds for any $h\in H$
+Let $H$ be a famliy of functions taking values in $\set{\pm 1}$ and let $\mathcal{D}$ be the distribution over the input space $X$. Then, for any $\delta > 0$, with probability at least $1 - \delta$ over a sample $S$ of size $m$ drawn according to $\mathcal{D}$, each of the following holds for any $h\in H$
 
 $$
   R(h) \leq \hat{R}(h) + \mathcal{R}_m (H) + \sqrt{\frac{\ln(1/\delta)}{2m}}
@@ -389,6 +389,56 @@ $$
 </MathBox>
 
 The growth function $\Pi_H (m)$ of a hypothesis set $H$ is the maximum number of distinct ways in which $m$ points can be classified using hypotheses in $H$.
+
+<MathBox title='Growth function of products' boxType='proposition'>
+For $i=1,2$, let $F_i$ be a set of functions from $X$ to $Y_i$. Let $H = F_2 \times F_1$ be the Cartesian product class. That is, for every $f_1\in F_1$ and $f_2\in F_2$, there exists $h\in H$ with $h(\mathbf{x}) = (f_1(\mathbf{x}, f_1(\mathbf{x}))$. Then
+
+$$
+  \Pi_{H} (m) \leq \Pi_{F_1}(m) \Pi_{F_2}(m)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $C = \set{\mathbf{c}_i}_{i=1}^m \subseteq X$ we have
+
+$$
+\begin{align*}
+  |H_C| =& |\Set{((f_1(\mathbf{c}_1), f_2(\mathbf{c}_1)),\dots,(f_1(\mathbf{c}_m), f_2(\mathbf{c}_m))) : f_1 \in F_1, f_2 \in F_2}| \\
+  =& |\Set{((f_1(\mathbf{c}_1),\dots, f_1(\mathbf{c}_m)),(f_2(\mathbf{c}_1),\dots,f_2(\mathbf{c}_m))) : f_1 \in F_1, f_2 \in F_2}| \\
+  =& |F_{1C} \times F_{2C}| \\
+  \leq& |F_{1C}| \cdot |F_{2C}|
+\end{align*}
+$$
+
+It follows that $\Pi_H (m) \leq \Pi_{F_1}(m) \Pi_{F_2}(m) $
+</details>
+</MathBox>
+
+<MathBox title='Growth function of compositions' boxType='proposition'>
+Let $F_1$ be a set of functions from $X$ to $Z$ and $F_2$ a set of functions from $Z$ to $Y$. Let $H = F_2 \circ F_1$ be the composition class. That is, for every $f_1\in F_1$ and $f_2\in F_2$, there exists $h\in H$ with $h(\mathbf{x}) = f_2(f_1(\mathbf{x}))$. Then
+
+$$
+  \Pi_{H} (m) \leq\Pi_{F_2}(m) \Pi_{F_1}(m)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $C = \set{\mathbf{c}_i}_{i=1}^m \subseteq X$ we have
+
+$$
+\begin{align*}
+  |H_C| =& |\Set{f_2 (f_1(\mathbf{c}_1)),\dots,f_2(f_1(\mathbf{c}_m)) : f_1 \in F_1, f_2 \in F_2}| \\
+  =& \left|\bigcup_{f_1 \in F_1} \Set{f_2 (f_1(\mathbf{c}_1)),\dots,f_2(f_1(\mathbf{c}_m)) : f_2 \in F_2} \right| \\
+  \leq& |F_{1C}| \cdot\Pi_{F_2} (m) \\
+  \leq& \Pi_{F_1}(m) \Pi_{F_2}(m)
+\end{align*}
+$$
+
+It follows that $\Pi_H (m) \leq\Pi_{F_2}(m) \Pi_{F_1}(m) $
+</details>
+</MathBox>
 
 <MathBox title="Massart's lemma" boxType='theorem' tag='theorem-2'>
 Let $A\subset\R^m$ be a finite set, with $r = \max_{\mathbf{x}\in A} \lVert\mathbf{x}\rVert_2$, then the following holds
@@ -677,23 +727,23 @@ $$
 
 With this definition, most samples would contain $\mathbf{x}_0$ and since $X'$ is fully shattered, $\mathcal{A}$ can essentially do no better than tossing a coin when determining the label of a point $x_i$ not falling in the training set.
 
-We assume without loss of generalizty that $\mathcal{A}$ makes no error on $\mathbf{x}_0$. For a sample $S$, let $\bar{S}$ denote the set of its elements falling in $\set{x_i}_{i=1}^{d-1}$, and let $\mathcal{S}$ be the set of samples of size $m$ such that $|\bar{S}| \leq (d - 1)/2$. Now, fix a sample $S\in \mathcal{S}$, and consider the uniform distribution $U$ over all labelings $f:X\to\set{0,1}$, which are all in $H$ since the set is scattered. Then, the following lower bound holds:
+We assume without loss of generalizty that $\mathcal{A}$ makes no error on $\mathbf{x}_0$. For a sample $S$, let $\bar{S}$ denote the set of its elements falling in $\set{x_i}_{i=1}^{d-1}$, and let $\mathcal{S}$ be the set of samples of size $m$ such that $|\bar{S}| \leq (d - 1)/2$. Now, fix a sample $S\in \mathcal{S}$, and consider the uniform distribution $\mathcal{U}$ over all labelings $f:X\to\set{0,1}$, which are all in $H$ since the set is scattered. Then, the following lower bound holds:
 
 $$
 \begin{align*}
-  \mathbb{E}_{f\sim U} [R_\mathcal{D} (h_S, f)] =& \sum_{f} \sum_{\mathbf{x}\in X'} 1_{h(\mathbf{x})\neq f(\mathbf{x})} \Pr(\mathbf{x}) \Pr(f) \\
-  \geq& \sum_f \sum_{\mathbf{x}\notin\bar{S}} 1_{h(\mathbf{x}) \neq f(x)} \Pr(\mathbf{x})\Pr(f) \\
-  =& \sum_{\mathbf{x}\notin\bar{S}} \left(\sum_f 1_{h(\mathbf{x}) \neq f(x)} \Pr(f) \right) \Pr(\mathbf{x}) \\
-  =& \frac{1}{2} \sum_{\mathbf{x}\notin\bar{S}} \Pr(x) \geq \frac{1}{2}\frac{d-1}{2}\frac{8\epsilon}{d - 1} = 2\epsilon \tag{label{equation-17}}
+  \underset{f\sim\mathcal{U}}{\mathbb{E}} [R_\mathcal{D} (h_S, f)] =& \sum_{f} \sum_{\mathbf{x}\in X'} \mathbf{1}_{h(\mathbf{x})\neq f(\mathbf{x})} \Pr(\mathbf{x}) \Pr(f) \\
+  \geq& \sum_f \sum_{\mathbf{x}\notin\bar{S}} \mathbf{1}_{h(\mathbf{x}) \neq f(x)} \Pr(\mathbf{x})\Pr(f) \\
+  =& \sum_{\mathbf{x}\notin\bar{S}} \left(\sum_f \mathbf{1}_{h(\mathbf{x}) \neq f(x)} \Pr(f) \right) \Pr(\mathbf{x}) \\
+  =& \frac{1}{2} \sum_{\mathbf{x}\notin\bar{S}} \Pr(x) \geq \frac{1}{2}\frac{d-1}{2}\frac{8\epsilon}{d - 1} = 2\epsilon \tag{\label{equation-17}}
 \end{align*}
 $$
 
 The first lower bound holds because wer remove non-negative terms from the summation when we only consider $\mathbf{x}\notin\bar{S}$ instead of all $\mathbf{x}\in X$. After rearranging terms, the subsequent equality holds sisnce we are taking an expectation over $f\in H$ with uniform weight on each $f$ and $H$ shatters $X$. The final lower bound holds due to the definition of $\mathcal{D}$ and $\bar{S}$, the latter implying $|X' - \bar{S}| \geq (d - 1)/2$.
 
-Since $\eqref{equation-17}$ holds for all $S\in\mathcal{S}$, it also holds in expectation over all $S\in\mathcal{S}$, i.e. $\mathbb{E}_{S\in\mathcal{S}} [\mathbb{E}_{f\sim U} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon$. By Fubini's theorem, the expectations can be permuted, this
+Since $\eqref{equation-17}$ holds for all $S\in\mathcal{S}$, it also holds in expectation over all $S\in\mathcal{S}$, i.e. $\mathbb{E}_{S\in\mathcal{S}} [\mathbb{E}_{f\sim\mathcal{U}} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon$. By Fubini's theorem, the expectations can be permuted, this
 
 $$
-  \mathbb{E}_{f\sim U}[\mathbb{E}_{S\in\mathcal{S}} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon
+  \mathbb{E}_{f\sim\mathcal{U}}[\mathbb{E}_{S\in\mathcal{S}} (R_\mathcal{D} (h_S, f))] \geq 2\epsilon
 $$
 
 This implies that $\mathbb{E}_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0)] \geq 2\epsilon$ for at least one labeling $f_0 \in H$. Decomposing this expectation into two parts and using $R_\mathcal{D}(h_S, f_0) \leq \Pr_\mathcal{D} (X' - \set{\mathbf{x}_0})$, we obtain
@@ -702,7 +752,8 @@ $$
 \begin{align*}
   \mathbb{E}_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0)] =& \sum_{S:R_\mathcal{D}(h_S, f_0)\geq\epsilon} R_\mathcal{D} (h_S, f_0) \Pr[R_\mathcal{D}(h_S, f_0)] \\
   &+ \sum_{S:R_\mathcal{D}(h_S, f_0) < \epsilon} R_\mathcal{D} (h_S, f_0) \Pr[R_\mathcal{D}(h_S, f_0)] \\
-  \leq& \Pr_\mathcal{D} (X' - \set{\mathbf{x}_0}) \Pr_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0) \geq\epsilon] + \epsilon\Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) < \epsilon] \\
+  \leq& \Pr_\mathcal{D} (X' - \set{\mathbf{x}_0}) \Pr_{S\in\mathcal{S}} [R_\mathcal{D}(h_S, f_0) \geq\epsilon] \\
+  &+ \epsilon\Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) < \epsilon] \\
   \leq& 8\epsilon \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq\epsilon] + \epsilon(1 - \Pr_{S\in\mathcal{S}} [R_\mathcal{D} (h_S, f_0) \geq \epsilon]) 
 \end{align*}
 $$
@@ -807,14 +858,14 @@ $$
 
 Thus, the label of each point $x_i$ for in $i\in[i,d]$, follows the distributino $\Pr_{\mathcal{D}_{\boldsymbol{\sigma}}} (\cdot | \mathbf{x}_i)$, that of a biased coin where the bias is determined by the sign of $\sigma_i$ and the magnitude of $\alpha$. To determine the most likely labe of each point $\mathbf{x}_i$, the learning algorithm will therefore need to estimate $\Pr_{\mathcal{D}_{\boldsymbol{\sigma}}}(1|\mathbf{x}_i)$ with an accuracy better than $\alpha$. To make this further difficult, $\alpha$ and $\boldsymbol{\sigma}$ will be selected based on the algorithm, requiring $\Omega(1/\alpha^2)$ instances of each point $x_i$ in the training sample.
 
-Clearly, the Bayes classifier $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is defined by $h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}_i) = \argmax_{y\in\set{0,1}} \Pr(y|\mathbf{x}_i) = 1_{sigma_i \geq 0}$ for all $i\in [1,d]$. Also, $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is in $H$ since $X'$ is fully shattered. For all $h\in H$
+Clearly, the Bayes classifier $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is defined by $h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}_i) = \argmax_{y\in\set{0,1}} \Pr(y|\mathbf{x}_i) = \mathbf{1}_{\sigma_i \geq 0}$ for all $i\in [1,d]$. Also, $h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*$ is in $H$ since $X'$ is fully shattered. For all $h\in H$
 
 $$
 \begin{equation}
 \begin{split}
-  R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*) =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \left(\frac{\alpha}{2} + \frac{\alpha}{2} \right) 1_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
-  =& \frac{\alpha}{d} \sum_{x\in X} 1_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
-\end{split}\tag{label{equation-18}}
+  R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*) =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \left(\frac{\alpha}{2} + \frac{\alpha}{2} \right) \mathbf{1}_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
+  =& \frac{\alpha}{d} \sum_{\mathbf{x}\in X'} \mathbf{1}_{h(\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^*(\mathbf{x})} \\
+\end{split}\tag{\label{equation-18}}
 \end{equation}
 $$
 
@@ -824,13 +875,13 @@ Then in view of $\eqref{equation-18}$, the following holds
 
 $$
 \begin{align*}
-  \underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(\frac{1}{\alpha}[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\boldsymbol{D}_{\boldsymbol{\sigma}}}^*)] \right) \\
-  =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(1_{h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^* (\mathbf{x})} \right) \\
-  =& \frac{1}{d} \sum_{x\in X'} \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}) \right] \right) \\
-  =& \frac{1}{d} \sum_{\mathbf{x}\in X'} \sum_{n=1}^m \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}(\mathbf{x}) | |S|_\mathbf{x} = n \right] \Pr(|S|_\mathbf{x} = n) \right) \\
-  \geq& \frac{1}{d} \sum_{x\in X'} \sum_{n=0}^m \Phi(n + 1, \alpha) \Pr(|S|_\mathbf{x} = n) \\
-  \geq& \sum_{\mathbf{x}\in X'} \Phi(m/d + 1,\alpha) \\
-  =& \Phi(m/d + 1, \alpha)
+  &\underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(\frac{1}{\alpha}[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\boldsymbol{D}_{\boldsymbol{\sigma}}}^*)] \right) \\
+  &= \frac{1}{d} \sum_{\mathbf{x}\in X'} \underset{\begin{subarray}{l} \boldsymbol{\sigma}\sim\mathcal{U}^m \\ S\sim\mathcal{D}_{\boldsymbol{\sigma}} \end{subarray}}{\mathbb{E}} \left(\mathbf{1}_{h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}^* (\mathbf{x})} \right) \\
+  &= \frac{1}{d} \sum_{x\in X'} \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\Pr_{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}} (\mathbf{x}) \right] \right) \\
+  &= \frac{1}{d} \sum_{\mathbf{x}\in X'} \sum_{n=1}^m \underset{\boldsymbol{\sigma}\sim\mathcal{U}^m}{\mathbb{E}} \left(\Pr_{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m} \left[h_S (\mathbf{x}) \neq h_{\mathcal{D}_{\boldsymbol{\sigma}}}(\mathbf{x}) | |S|_\mathbf{x} = n \right] \Pr(|S|_\mathbf{x} = n) \right) \\
+  &\geq \frac{1}{d} \sum_{x\in X'} \sum_{n=0}^m \Phi(n + 1, \alpha) \Pr(|S|_\mathbf{x} = n) \\
+  &\geq \sum_{\mathbf{x}\in X'} \Phi(m/d + 1,\alpha) \\
+  &= \Phi(m/d + 1, \alpha)
 \end{align*}
 $$
 
@@ -843,13 +894,13 @@ $$
 Applying Lemma $\ref{lemma-3}$, we get for any $\gamma\in[0,1]$
 
 $$
-  \underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr}\left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right] > \gamma u \right) > (1 - \gamma)u
+  \Pr_{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}\left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right] > \gamma u \right) > (1 - \gamma)u
 $$
 
 where $u = \Phi(m/d + 1, \alpha)$. Selecting $\delta$ and $\epsilon$ such that $\delta \leq (1 - \gamma)u$ and $\epsilon \leq \gamma\alpha u$ gives
 
 $$
-  \underset{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m}{\Pr}\left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right]  > \epsilon \right) > \delta
+  \Pr_{S\sim\mathcal{D}_{\boldsymbol{\sigma}}^m} \left(\frac{1}{\alpha}\left[R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_S) - R_{\mathcal{D}_{\boldsymbol{\sigma}}} (h_{\mathcal{D}_{\boldsymbol{\sigma}}^*}) \right]  > \epsilon \right) > \delta
 $$
 
 To satisfy the inequalities defining $\epsilon$ and $\delta$, let $\gamma = 1 - 8\delta$. Then
@@ -872,7 +923,7 @@ $$
 Let $f(1/\epsilon^2)$ denote the right-hand side. We are seeking a sufficient condition of the form $m/d \leq \omega/\epsilon^2$. Since $\epsilon \leq 1/64$, to ensure that $\omega/\epsilon^2 \leq f(1/\epsilon^2)$, it suffices to impose $\omega/(1/64)^2 = f(1/(1/64)^2)$. This condition gives
 
 $$
-  \iemga = \left(\frac{7}{64}\right)^2 \ln\left(\frac{4}{3}\right) - \left(\frac{1}{64}\right)^2 \left(\ln\left(\frac{4}{3}) + 1 \right) \geq 1/320
+  \omega = \left(\frac{7}{64}\right)^2 \ln\left(\frac{4}{3}\right) - \left(\frac{1}{64}\right)^2 \left(\ln\left(\frac{4}{3}\right) + 1 \right) \geq 1/320
 $$
 
 This $\epsilon^2 \leq \frac{1}{320(m/d)}$ is sufficient to ensure the inequalities.
@@ -906,14 +957,14 @@ Thus, using $\mathbb{E}(X) = 0$, we get
 $$
 \begin{align*}
   \mathbb{E}(e^{tX}) \leq& \mathbb{E}\left( \frac{b - X}{b - a}e^{ta} + \frac{X - a}{b - a}e^{tb} \right) \\
-  \frac{b}{b - a} e^{ta} + \frac{-a}{b - a}e^{tb} = e^{\phi(t)}
+  =& \frac{b}{b - a} e^{ta} + \frac{-a}{b - a}e^{tb} = e^{\phi(t)}
 \end{align*}
 $$
 
 where
 
 $$
-\begin{lign*}
+\begin{align*}
   \phi(t) =& \ln\left(\frac{b}{b - a}e^{ta} + \frac{-a}{b - a}e^{tb} \right) \\
   =& ta + \ln\ln\left(\frac{b}{b - a} + \frac{-a}{b - a}e^{t(b - a)}\right)
 \end{align*}
@@ -957,14 +1008,15 @@ Let $X_1,\dots,X_m$ be independent random variables with $X_i$ taking values in 
 
 $$
 \begin{align*}
-  \mathbb{P}[S_m - \mathbb{E}(S_m) \geq\epsilon] \leq& \exp\left(-\frac{2\epsilon^2}{\sum_{i=1}^m (b_i - a_i)^2} \right)
+  \mathbb{P}[S_m - \mathbb{E}(S_m) \geq\epsilon] \leq& \exp\left(-\frac{2\epsilon^2}{\sum_{i=1}^m (b_i - a_i)^2} \right) //
   \mathbb{P}[S_m - \mathbb{E}(S_m) \leq -\epsilon] \leq& \exp\left(-\frac{2\epsilon^2}{\sum_{i=1}^m (b_i - a_i)^2} \right)
+\end{align*}
 $$
 
 <details>
 <summary>Proof</summary>
 
-Using Chernoff boundin and Lemma $ref{lemma-4}$, we can write
+Using Chernoff bounding and Lemma $\ref{lemma-4}$, we can write
 
 $$
 \begin{align*}
@@ -1063,7 +1115,7 @@ Define a sequence of random variables $V_k$ for $k = 1,\dots,m$ as follows
 $$
 \begin{align*}
   V =& f(S) - \mathbb{E}[f(S)] \\
-  V_1 = \mathbb{E}(V|X_1) - \mathbb{E}(V)
+  V_1 =& \mathbb{E}(V|X_1) - \mathbb{E}(V)
 \end{align*}
 $$
 

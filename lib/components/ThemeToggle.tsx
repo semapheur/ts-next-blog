@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect } from 'react'
-import { useDarkMode } from 'lib/hooks/useDarkMode'
-import useHasMounted from 'lib/hooks/useHasMounted'
+import { useEffect } from "react"
+import { useDarkMode } from "lib/hooks/useDarkMode"
+import useHasMounted from "lib/hooks/useHasMounted"
 
 const UNIT = 100
 const root = Math.sqrt(2)
@@ -29,17 +29,17 @@ const sunPath = (unit: number): string => {
 export default function ThemeToggle() {
   const [activeTheme, setActiveTheme] = useDarkMode()
   // Check if active theme is valid
-  if (activeTheme && !['light', 'dark'].includes(activeTheme)) {
+  if (activeTheme && !["light", "dark"].includes(activeTheme)) {
     console.error(`Invalid color mode: ${activeTheme}`)
   }
-  const inactiveTheme = activeTheme === 'light' ? 'dark' : 'light'
+  const inactiveTheme = activeTheme === "light" ? "dark" : "light"
 
   useEffect(() => {
     document.body.dataset.theme = activeTheme
-    if (activeTheme === 'dark') {
-      document.documentElement.classList.add('dark')
+    if (activeTheme === "dark") {
+      document.documentElement.classList.add("dark")
     } else {
-      document.documentElement.classList.remove('dark')
+      document.documentElement.classList.remove("dark")
     }
   }, [activeTheme])
 
@@ -48,30 +48,30 @@ export default function ThemeToggle() {
 
   return (
     <button
-      className='relative cursor-pointer before:absolute 
+      className="relative cursor-pointer before:absolute 
 		before:text-sm before:px-1
 		before:right-[110%] before:top-1/2 before:-translate-y-1/2
 		before:min-w-max before:rounded
 		before:bg-text/50 before:text-primary before:border-secondary
 		before:shadow-md before:backdrop-blur-sm
-		hover:before:content-[attr(aria-label)]'
-      type='button'
+		hover:before:content-[attr(aria-label)]"
+      type="button"
       aria-label={`Switch to ${inactiveTheme} theme`}
       onClick={() => setActiveTheme(inactiveTheme)}
     >
       <svg
         className={`transition-transform duration-700 ease-out
-				${activeTheme === 'light' ? 'rotate-[0.5turn]' : ''}`}
+				${activeTheme === "light" ? "rotate-[0.5turn]" : ""}`}
         viewBox={`0 0 ${VB_SIZE} ${VB_SIZE}`}
-        width='2rem'
-        height='2rem'
+        width="2rem"
+        height="2rem"
       >
         <title>Toggle dark/light mode</title>
-        <g className='origin-center fill-text'>
-          <path d={sunPath(UNIT)} fillRule='evenodd' />
+        <g className="origin-center fill-text">
+          <path d={sunPath(UNIT)} fillRule="evenodd" />
           <circle
             className={`transition-transform duration-500 ease-out 
-						${activeTheme === 'light' ? '-translate-x-[15%] translate-y-[15%]' : ''}`}
+						${activeTheme === "light" ? "-translate-x-[15%] translate-y-[15%]" : ""}`}
             cx={VB_SIZE / 2}
             cy={VB_SIZE / 2}
             r={UNIT - 3}

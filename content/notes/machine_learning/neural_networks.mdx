@@ -10,7 +10,132 @@ references:
 
 A neural network can be represented by a directed graph whose nodes correspond to neurons and edges correspond to links between them. Each neuron receives as input a weighted sum of the outputs of the neurons connected to its incoming edges.
 
-# Perceptron (McCulloch-Pitts neuron)
+# Artificial neuron (unit)
+
+An artificial neuron or a computing unit is typically modelled as an affine transformation followed by a non-linear function. If $\mathbf{x}\in X\subseteq \mathbb{F}^n$ is the input signal and $\mathbf{y}\in Y\subseteq \mathbb{F}^m$ is the out signal, an artifical neuron takes the form
+
+$$
+  \mathbf{y} = \sigma(\mathbf{Wx} + \mathbf{b})
+$$
+
+where
+- $\mathbf{W}\in\mathbb{F}^{m\times n}$ represents linear weights
+- $\mathbf{b}\in\mathbb{F}^m$ is the bias
+- $\sigma: \mathcal{F}^m \to \mathbb{F}^m$
+
+The input and output spaces can take any form, e.g.
+- $\set{0,1}$: binary
+- $\set{\pm 1}:$ boolean
+- $[0,1]$: unit interval (representing probabilities)
+
+## Activation functions
+
+### Heaviside function
+
+$$
+  H(x) = \mathbf{1}_{x\geq 0} (x) := \begin{cases}
+    1, \quad x\geq& 0 \\
+    0, \quad x < 0
+  \end{cases}
+$$
+
+An artificial neuron using the Heaviside activitation function is known as a *perceptron*.
+
+### Rectified linear unit (ReLU)
+
+$$
+  \sigma(\lambda) = \operatorname{ReLU}(\lambda) := \max\set{0,\lambda}
+$$
+
+### Sigmoid
+
+$$
+  \sigma(\lambda) := \frac{1}{1 + e^{-\lambda}}
+$$
+
+<GraphFigure 
+  expression="1/(1 + exp(-x))"
+  points={100}
+  xAxis={{scale: "linear", domain: [-2,2]}}
+  yAxis={{scale: "linear", domain: [0,1]}}
+  caption="Sigmoid function"
+/>
+
+### Hyperbolic tangent
+
+$$
+  \tanh(\lambda) := \frac{e^\lambda - e^{-\lambda}}{e^\lambda + e^{-\lambda}}
+$$
+
+<GraphFigure 
+  expression="tanh(x)"
+  points={100}
+  xAxis={{scale: "linear", domain: [-2,2]}}
+  yAxis={{scale: "linear", domain: [-1,1]}}
+  caption="Hyperbolic tangent"
+/>
+
+### Swish
+
+$$
+  \operatorname{swish}_\beta (\lambda) := \lambda \sigma(\beta\lambda) := \frac{\lambda}{1 + e^{-\beta\lambda}},\; \beta > 0
+$$
+In case of $\beta = 1$, this function is also called the *sigmoid-weighted linear unit* (SiLU).
+
+### Softmax
+
+Softmax also known as the normalized exponential function: $\operatorname{softmax}:\R^n \to[0,1]^n$
+
+$$
+  \operatorname{softmax}(\mathbf{x}) := \frac{e^\mathbf{x}}{\sum_{i=1}^n e^{x_i}}
+$$
+Softmax has the useful property that its output is a discrete probability distribution.
+
+### Maxpool
+
+$\operatorname{maxpool}:\R^n \to\R^m$
+
+$$
+  \operatorname{maxpool}\left(\begin{bmatrix} x_1 \\ \vdot \\ x_n \end{bmatrix} \right) := \begin{bmatrix}
+    \max_{j\in I_1} x_j \\
+    \vdots \\
+    \max_{j\in I_m} x_j
+  \end{bmatrix}
+$$
+
+where for each $i\in\set{1,\dots,m}$ we have a $I_i \subset\set{1,\dots,n}$ that specifies over which inputs to take the maximum for each output. Maxpooling can easily be generalized by replacing the max operation.
+
+### Normalization
+
+$\operatorname{normalize}:\R^n \to\R^n$:
+
+$$
+  \operatorname{normalize}(\mathbf{x}) := \frac{\mathbf{x} - \mu\mathbf{1}_n}{\sigma}
+$$
+where $\mu = \mathbb{E}(\mathbf{x})$ and $\sigma^2 = \operatorname{var}(\mathbf{x})$.
+
+### Dropout
+
+Dropout is a stochastic function that is often used during the training process but is removed once the training is finished. It works by randomly setting individuals values a signal to zero with probability $p$
+
+$$
+  \operatorname{dropout}_p (\mathbf{x})_i := \begin{cases}
+    0 \quad &\text{with probability $p$} \\
+    x_1 \quad &\text{with probability $p - 1$}
+  \end{cases}
+$$
+
+### Heatbath
+
+Heatbath is a scalar function that outputs $1$ or $-1$ with a probability that depends on the input
+$$
+  \operatorname{heatbath}(\lambda) := \begin{cases}
+    1 \quad &\text{with probability $p$} \\
+    -1 \quad &\text{otherwise}
+  \end{cases}
+$$
+
+## Perceptron
 
 # Feedforward neural network (FFNN)
 
@@ -93,17 +218,7 @@ Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mat
 
 ## Sample complexity
 
-<MathBox title='Growth function' boxType='definition'>
-Let $\mathcal{F}_1$ be a set of functions from $X$ to $Z$ and $\mathcal{F}_2$ a set of functions from $Z$ to $Y$. Let $\mathcal{H} = \mathcal{F_2}\circ\mathcal{F_1}$ be the composition class. That is, for every $f_1\in\mathcal{F}_1$ and $f_2\in\mathcal{F}_2$, there exists $h\in\mathcal{H}$ with $h(\mathbf{x}) = f_2(f_1(\mathbf{x}))$. If 
-
-<details>
-<summary>Proof</summary>
-
-It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
-</details>
-</MathBox>
-
-<MathBox title='' boxType='lemma' tag='lemma-2'>
+<MathBox title='' boxType='lemma' tag='lemma-1'>
 Let $a > 0$. Then
 
 $$
@@ -143,18 +258,8 @@ It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(
 </details>
 </MathBox>
 
-<MathBox title='' boxType='lemma' tag='lemma-3'>
-Let $\mathcal{F}_1$ be a set of functions from $X$ to $Z$ and $\mathcal{F}_2$ a set of functions from $Z$ to $Y$. Let $\mathcal{H} = \mathcal{F_2}\circ\mathcal{F_1}$ be the composition class. That is, for every $f_1\in\mathcal{F}_1$ and $f_2\in\mathcal{F}_2$, there exists $h\in\mathcal{H}$ with $h(\mathbf{x}) = f_2(f_1(\mathbf{x}))$. If 
-
-<details>
-<summary>Proof</summary>
-
-It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
-</details>
-</MathBox>
-
 <MathBox title='' boxType='theorem'>
-The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O(|E| \ln(|E|))$.
+The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O[|E| \ln(|E|)]$.
 
 <details>
 <summary>Proof</summary>
@@ -162,36 +267,36 @@ The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O(|E| \ln(|E|))$
 To simplify notation, let $\mathcal{H}$ denote the hypothesis class. Recall the growth function
 
 $$
-  \tau_{\mathcal{H}}(m) = \max_{C\subset X:|C|=m} |\mathcal{H}_C|
+  \Pi_{\mathcal{H}}(m) = \max_{C\subset X:|C|=m} |\mathcal{H}_C|
 $$
 
-where $\mathcal{H}_C$ is the restriction of $\mathcal{H}$ to functions from $C$ to $\Set{0,1}$. We can naturally extend the definition for a set of functions from $X$ to som finite set $Y$, by letting $\mathcal{H}_C$ be the restriction of $\mathcal{H}$ to functions from $C$ to $Y$, and keeping the definition of $\tau_\mathcal{H}(m)$ intact.
+where $\mathcal{H}_C$ is the restriction of $\mathcal{H}$ to functions from $C$ to $\Set{0,1}$. We can naturally extend the definition for a set of functions from $X$ to som finite set $Y$, by letting $\mathcal{H}_C$ be the restriction of $\mathcal{H}$ to functions from $C$ to $Y$, and keeping the definition of $\Pi_\mathcal{H}(m)$ intact.
 
-Let $V_0,\dots,V_T$ be the layers of a neural network. Fix some $t\in[T]$. By assigning different weights on the edges between $V_{t-1}$ and $V_t$, we obtain different functions from $\R^{|V_{t-1}|} \to\set{\pm 1}^{|V_t|}$. Let $\mathcal{H}_t$ be the class of all possible mappings $\R^{|V_{t-1}|}\to\set{\pm 1}^{|V_t|}$. Then $\mathcal{H}$ can be written as a composition $\mathcal{H} = \mathcal{H}_T \circ\cdots\circ\mathcal{H}_1$. It can shown that the growth function of a composition of hypothesis classes is bounded by the product of the growth function of the individual classes, i.e.
-
-$$
-  \tau_\mathcal{H} (m) \leq \prod_{t=1}^T \tau_{\mathcal{H}_t} (m)
-$$
-
-In addition, each $\mathcal{H}_t$ can be written as a product of function classes, $\mathcal{H}_t = \mathcal{H}_{t,1} \times\cdots\times \mathcal{H}_{t,|V_t|}$, where each $\mathcal{H}_{t,j}$ is all function from layer $t - 1$ to $\set{\pm 1}$ that the $j$th neuron of layer $t$ can implement. It can also be shown that
+Let $V_0,\dots,V_T$ be the layers of a neural network. Fix some $t\in[T]$. By assigning different weights on the edges between $V_{t-1}$ and $V_t$, we obtain different functions from $\R^{|V_{t-1}|} \to\set{\pm 1}^{|V_t|}$. Let $\mathcal{H}_t$ be the class of all possible mappings $\R^{|V_{t-1}|}\to\set{\pm 1}^{|V_t|}$. Then $\mathcal{H}$ can be written as a composition $\mathcal{H} = \mathcal{H}_T \circ\cdots\circ\mathcal{H}_1$. Since the growth function of a composition of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
 
 $$
-  \tau_{\mathcal{H}_t} (m) \leq \prod_{i=1}^{|V_t|} \tau_{\mathcal{H}_{t,i}} (m)
+  \Pi_\mathcal{H} (m) \leq \prod_{t=1}^T \Pi_{\mathcal{H}_t} (m)
+$$
+
+In addition, each $\mathcal{H}_t$ can be written as a product of function classes, $\mathcal{H}_t = \mathcal{H}_{t,1} \times\cdots\times \mathcal{H}_{t,|V_t|}$, where each $\mathcal{H}_{t,j}$ is all function from layer $t - 1$ to $\set{\pm 1}$ that the $j$th neuron of layer $t$ can implement. Since the growth function of a product of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
+
+$$
+  \Pi_{\mathcal{H}_t} (m) \leq \prod_{i=1}^{|V_t|} \Pi_{\mathcal{H}_{t,i}} (m)
 $$
 
 Let $d_{t,i}$ be the number of edges that are headed to the $i$th neuron of layer $t$. Since the neuron is a homogenous halfspace hypothesis and the VC dimension of homogenous halfspaces is the dimension of the input, we have by Sauer's lemma that
 
 $$
-  \tau_{\mathcal{H}_{t,i}} (m) \leq \left( \frac{em}{d_{t,i}} \right)^{d_{t,i}} leq (em)^{d_{t,i}}
+  \Pi_{\mathcal{H}_{t,i}} (m) \leq \left( \frac{em}{d_{t,i}} \right)^{d_{t,i}} leq (em)^{d_{t,i}}
 $$
 
 Overall, we obtained that
 
 $$
-  \tau_{\mathcal{H}} (m) \leq (em)^{\sum_{t,i}} d_{t,i} = (em)^{|E|}
+  \Pi_{\mathcal{H}} (m) \leq (em)^{\sum_{t,i}} d_{t,i} = (em)^{|E|}
 $$
 
-Now, assume that there are $m$ shattered points. Then, we must have $\tau_\mathcal{H} (m) = 2^m$, from which we obtain
+Now, assume that there are $m$ shattered points. Then, we must have $\Pi_\mathcal{H} (m) = 2^m$, from which we obtain
 
 $$
   2^m \leq (em)^{|E|} \implies m \leq |E| \ln(em) / \ln(2)
@@ -218,6 +323,71 @@ $$
 $$
 
 The gradient of $L_\mathcal{D}$, which does not have an analytical form, is calculated using the backpropagation algorithm.
+
+To describe the backpropagation algorithm, let us decompose $V$ into the layers of the graph, $V = \bigcup_{t=0}^T$. For every $t$, let us write $V_t = \set{v_{t,1},\dots,v_{t, k_t}}$, where $k_t = |V_t|$. In addition, for every $t$ denote $\mathbf{W}_t \in \R^{k_{t+1} \times k_t}$ a matrix which gives a weight to every potential edge between $V_t$ and $V_{t+1}$. If the edge exists in $E$ then set $\mathbf{W}_{t;i,j}$ to be the weight, according to $\mathbf{w}$, of the edge $(v_{t,j}, v_{t+1, i})$. Otherwise, we add a "phantom" edge and set its weight to zero. When calculating the partial derivative with respect to the weight of some edge, we fix all other weights. Thus, these additional "phantom" edges have no effect on the partial derivatives with respect to existing edges. It follows that we can assume, without loss of generality, that all edges exist, i.e. $E = \bigcup_t (V_t \times V_{t+1})$.
+
+Next we discuss how to calculate the partial derivatives with respect to the edges from $V_{t-1}$ to $V_t$, that is, with respect to the elements in $\mathbf{W}_{t-1}$. Since we fix all other weights of the network, it follows that the outputs of all the neurons in $V_{t-1}$ are fixed numbers which do not depend on the weights in $\mathbf{W}_{t-1}$. Denote the corresponding vector by $\mathbf{o}_{t-1}$. Additionally, let us denote by $\ell_t : \R^{k_t} \to\R$ the loss function of the subnetwork defined by layers $V_t,\dots,V_T$ as a function of the outputs of the neurons in $V_t$. The input to the neurons of $V_t$ can be written as $\mathbf{a}_t = \mathbf{W}_{t-1} \mathbf{o}_{t-1}$ and the output of the neurons of $V_t$ is $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{a}_t)$. That is, for every $j$ we have $o_{t,j} = \sigma(a_{t,j})$. We obtain that the loss, as a function of $\mathbf{W}_{t-1}$, can be written as
+
+$$
+  g_t (\mathbf{W}_{t-1}) =& \ell_t (\mathbf{o}_t) = \ell_t (\boldsymbol{\sigma}(\mathbf{a}_t)) = \ell_t (\boldsymbol{\sigma(\mathbf{W}_{t-1} \mathbf{o}_{t-1})})
+$$
+
+For convenience, we rewrite this as follows. Let $\mathbf{w}_{t-1} \in\R^{k_{t-1}k_t}$ be the column vector obtained by concatenating the rows of $\mathbf{W}_t$ and then taking the transpose of the resulting long vector. Define by $\mathbf{O}_{t-1}$ the $k_t \times (k_{t-1} k_t)$ matrix
+
+$$
+  \mathbf{O}_{t-1} = \begin{bmatrix}
+    \mathbf{o}_{t-1}^top & \mathbf{0} & \cdots & \mathbf{0} \\
+    \mathbf{0} & \mathbf{o}_{t-1}^\top & \cdots & \mathbf{0} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \mathbf{0} & \mathbf{0} & \cdots & \mathbf{o}_{t-1}^\top
+  \end{bmatrix}
+$$
+
+With this notation we get $\mathbf{W}_{t-1} \mathbf{o}_{t-1} = \mathbf{O}_{t-1}\mathbf{w}_{t-1}$, so we can also write
+
+$$
+  g_t (\mathbf{w}_{t-1}) = \ell_t (\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1}))
+$$
+
+Therefore, applying the chain rule, we obtain that
+
+$$
+  J_{\mathbf{w}_{t-1}}(g_t) = J_{\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1})} (\ell_t) \operatorname{\diag}(\boldsymbol{\sigma}' (\mathbf{O}_{t-1}\mathbf{w}_{t-1}))\mathbf{O}_{t-1}
+$$
+
+Using our nation we have $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{O}_{t-1}\mathbf{w}_{t-1})$ and $\mathbf{a}_t = \mathbf{O}_{t-1} \mathbf{w}_{t-1}$, which yields
+
+$$
+  J_{\mathbf{w}_{t-1}} (g_t) = J_{\mathbf{o}_t} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_t))\mathbf{O}_{t-1}
+$$
+
+Let us denote $\boldsymbol{\delta}_t = \mathbf{J}_{\mathbf{o}_t} (\ell_t)$. Then, we can further rewrite the preceding as
+
+$$
+  J_{\mathbf{w}_{t-1}}(g_t) = (\delta_{t,1} \sigma'(a_{t,1})\mathbf{o}_{t-1}^\top,\dots, \delta_{t,k_t} \sigma'(a_{t, k_t}))\mathbf{o}_{t-1}^\top
+$$
+
+It remains to calculate the vector $\boldsymbol{\delta}_t = J_{\mathbf{o}_t}(\ell_t)$ for every $t$. This is the gradient of $\ell_t$ at $\mathbf{o}_t$. We calculate this in a recursive manner. First observe that for the last layer, we have that $\ell_T (\mathbf{u}) = \Delta(\mathbf{u},\mathbf{y})$, where $\Delta$ is the loss function. Since we assume $\Delta (\mathbf{u},\mathbf{y}) = \frac{1}{2}\lVert\mathbf{u} - \mathbf{y}\rVert^2$ we obtain that $J_\mathbf{u}(\ell_T) = (\mathbf{u} - \mathbf{y})$. In particular, $\boldsymbol{\delta}_T = J_{\mathbf{o}_T}(\ell_T) = (\mathbf{o}_T - \mathbf{y})$. Next, note that
+
+$$
+  \ell_t (\mathbf{u}) = \ell_{t+1}(\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u}))
+$$
+
+Thus, by the chain rule
+
+$$
+  J_\mathbf{u} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u})} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{u}))\mathbf{W}_t
+$$
+
+In particular
+
+$$
+\begin{align*}
+  \boldsymbol{\delta}_t =& J_{\mathbf{o}_t} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{o}_t)} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{o}_t))\mathbf{W}_t \\
+  =& J_{\mathbf{o}_{t+1}} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{a}_{t+1}))\mathbf{W}_t \\
+  =& \boldsymbol{\diag}_{t+1} \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_{t+1}))\mathbf{W}_t
+\end{align*}
+$$
 
 <MathBox title='Stochastic gradient on feedforward neural networks' boxType='algorithm'>
 **parameters:**

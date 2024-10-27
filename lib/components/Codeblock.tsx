@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { HTMLProps, ReactNode, useRef, useState } from 'react'
-import { ClipboardCheckIcon, ClipboardIcon } from 'lib/utils/icons'
+import { type HTMLProps, type ReactNode, useRef, useState } from "react"
+import { ClipboardCheckIcon, ClipboardIcon } from "lib/utils/icons"
 
 type Props = {
   children: ReactNode
@@ -25,7 +25,7 @@ export default function Codeblock({ children, ...props }: Props) {
     <pre
       ref={preRef}
       {...props}
-      className={`group relative h-full m-0 overflow ${props.className ?? ''}`}
+      className={`group relative h-full m-0 overflow ${props.className ?? ""}`}
     >
       <button
         className={`sticky top-6 right-0 float-right hidden group-hover:block
@@ -36,15 +36,15 @@ export default function Codeblock({ children, ...props }: Props) {
         after:bg-header-accent after:text-main after:opacity-0 
         after:shadow-md after:transition-opacity 
         after:hover:opacity-100 after:hover:scale-100
-        ${copied ? 'border-green-400' : 'border-gray-300'}`}
-        aria-label={`${copied ? 'Copied' : 'Copy'} to clipboard`}
-        type='button'
+        ${copied ? "border-green-400" : "border-gray-300"}`}
+        aria-label={`${copied ? "Copied" : "Copy"} to clipboard`}
+        type="button"
         onClick={handleCopy}
       >
         {copied ? (
-          <ClipboardCheckIcon className='w-6 h-6 stroke-green-400' />
+          <ClipboardCheckIcon className="w-6 h-6 stroke-green-400" />
         ) : (
-          <ClipboardIcon className='w-6 h-6 stroke-gray-300' />
+          <ClipboardIcon className="w-6 h-6 stroke-gray-300" />
         )}
       </button>
       {children}

@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
-import { observer } from 'mobx-react-lite'
+import { useEffect, useRef } from "react"
+import { observer } from "mobx-react-lite"
 
-import SVGTernaryPlot, { Opinion } from 'lib/components/SvgTernary'
-import DensityPlot from 'lib/components/DensityPlot'
+import SVGTernaryPlot, { Opinion } from "lib/components/SvgTernary"
+import SVGPlot from "lib/components/SvgPlot"
 
 const initialState = {
   point: new DOMPoint(1 / 3, 1 / 3, 1 / 3),
@@ -33,12 +33,12 @@ function OpinionPlot() {
   })
 
   return (
-    <div className='h-full grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2'>
+    <div className="h-full grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2">
       <div
         ref={wrapRef}
-        className='relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50'
+        className="relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50"
       >
-        <ul className='absolute right-2 top-2 p-2 rounded-md shadow text-text'>
+        <ul className="absolute right-2 top-2 p-2 rounded-md shadow text-text">
           <b>Opinion</b>
           <li>
             <b>Belief: </b>
@@ -62,7 +62,11 @@ function OpinionPlot() {
           </li>
         </ul>
       </div>
-      <DensityPlot data={opinion.distribution} />
+      <SVGPlot
+        data={opinion.distribution}
+        xAxis={{ scale: "linear", domain: [0, 1] }}
+        yAxis={{ scale: "linear" }}
+      />
     </div>
   )
 }

@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { useCallback, useEffect, useRef } from 'react'
-import { GithubIcon } from 'lib/utils/icons'
+import Link from "next/link"
+import { useCallback, useEffect, useRef } from "react"
+import { GithubIcon } from "lib/utils/icons"
 
-import { drawCurve, ValueNoise } from 'lib/utils/noise'
-import { svgCatmullRom } from 'lib/utils/svg'
-import Vector from 'lib/utils/vector'
+import { drawCurve, ValueNoise } from "lib/utils/noise"
+import { svgCatmullRom } from "lib/utils/svg"
+import Vector from "lib/utils/vector"
 
 const valNoise = new ValueNoise(2011, 256)
 
@@ -40,8 +40,8 @@ export default function WaveFooter() {
       offsetRef.current,
       5,
     )
-    const d = svgCatmullRom(curve, 1) + `L${width},${height}L0,${height}Z`
-    wave.setAttribute('d', d)
+    const d = `${svgCatmullRom(curve, 1)}L${width},${height}L0,${height}Z`
+    wave.setAttribute("d", d)
     offsetRef.current += 0.02
 
     requestRef.current = requestAnimationFrame(animate)
@@ -54,23 +54,24 @@ export default function WaveFooter() {
 
   return (
     <footer
-      className='relative h-40 bg-amber-100 dark:bg-stone-600'
+      className="relative h-40 bg-amber-100 dark:bg-stone-600"
       ref={wrapRef}
     >
-      <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full'>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
+        <title>Wave footer</title>
         <defs>
-          <linearGradient id='ocean' gradientTransform='rotate(90)'>
-            <stop offset='0%' stopColor='rgb(0,159,253,1)' />
-            <stop offset='100%' stopColor='rgb(42,42,114,1)' />
+          <linearGradient id="ocean" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor="rgb(0,159,253,1)" />
+            <stop offset="100%" stopColor="rgb(42,42,114,1)" />
           </linearGradient>
         </defs>
-        <path ref={waveRef} fill='url(#ocean)' />
+        <path ref={waveRef} fill="url(#ocean)" />
       </svg>
       <Link
-        href='https://github.com/semapheur/ts-next-blog'
-        className='absolute bottom-[10%] left-1/2 -translate-x-1/2'
+        href="https://github.com/semapheur/ts-next-blog"
+        className="absolute bottom-[10%] left-1/2 -translate-x-1/2"
       >
-        <GithubIcon className='w-10 h-10 fill-primary' />
+        <GithubIcon className="w-10 h-10 fill-primary" />
       </Link>
     </footer>
   )

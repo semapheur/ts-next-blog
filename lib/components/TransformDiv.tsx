@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
 import {
-  PointerEvent,
+  type PointerEvent,
   useEffect,
   useRef,
-  HTMLProps,
-  ReactNode,
-  WheelEvent,
+  type HTMLProps,
+  type ReactNode,
+  type WheelEvent,
   useState,
-} from 'react'
-import { signal, Signal } from '@preact/signals-react'
-import { ViewRange } from 'lib/utils/types'
-import Vector from 'lib/utils/vector'
-import { screenToDrawPosition } from 'lib/utils/svg'
+} from "react"
+import { signal, type Signal } from "@preact/signals-react"
+import type { ViewRange } from "lib/utils/types"
+import Vector from "lib/utils/vector"
+import { screenToDrawPosition } from "lib/utils/svg"
 
 export const transform = signal(new DOMMatrix([1, 0, 0, 1, 0, 0]))
 
@@ -33,9 +33,9 @@ export default function TransformDiv({ viewRange, children, ...props }: Props) {
 
     const oldSize = divSize.current
 
-    const viewport = document.querySelector('meta[name=viewport]')
+    const viewport = document.querySelector("meta[name=viewport]")
     viewport?.setAttribute(
-      'content',
+      "content",
       `height=${oldSize.y}px, width=device-width, initial-scale=1.0`,
     )
 
@@ -45,13 +45,13 @@ export default function TransformDiv({ viewRange, children, ...props }: Props) {
     divSize.current = new DOMPoint(width, height)
 
     viewport?.setAttribute(
-      'content',
-      'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0',
+      "content",
+      "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0",
     )
   }
 
   function handlePointerDown(event: PointerEvent) {
-    if (!['pen', 'touch'].includes(event.pointerType) && event.button !== 1)
+    if (!["pen", "touch"].includes(event.pointerType) && event.button !== 1)
       return
     isDragging.current = true
     startPos.current = new DOMPoint(event.clientX, event.clientY)
@@ -97,10 +97,10 @@ export default function TransformDiv({ viewRange, children, ...props }: Props) {
     transform.value = setTransform(viewRange.value, width, height)
     divSize.current = new DOMPoint(width, height)
 
-    div.addEventListener('resize', handleResize)
+    div.addEventListener("resize", handleResize)
 
     return () => {
-      div.removeEventListener('resize', handleResize)
+      div.removeEventListener("resize", handleResize)
     }
   })
 
@@ -108,7 +108,7 @@ export default function TransformDiv({ viewRange, children, ...props }: Props) {
     <div
       ref={divRef}
       {...props}
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: "none" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

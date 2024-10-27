@@ -1,29 +1,29 @@
-'use client'
+"use client"
 
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from "react"
 //import useSWR, {Fetcher} from 'swr'
 
-import type { SearchResult } from 'pages/api/searchnotes'
-import { XorFilter } from 'bloom-filters'
-import SearchBoxCompact from 'lib/components/SearchBoxCompact'
-import Link from 'next/link'
+import type { SearchResult } from "pages/api/searchnotes"
+import { XorFilter } from "bloom-filters"
+import SearchBoxCompact from "lib/components/SearchBoxCompact"
+import Link from "next/link"
 
-import notes from 'content/cache/notes.json'
-import tokenize from 'lib/utils/tokenize'
+import notes from "content/cache/notes.json"
+import tokenize from "lib/utils/tokenize"
 
 //const searchFetcher: Fetcher<SearchResult, string> = async (query) => {
 //  return await fetch(`/api/searchnotes?q=${query}`).then(res => res.json())
 //}
 
 export default function SearchBar() {
-  const [query, setQuery] = useState<string>('')
+  const [query, setQuery] = useState<string>("")
   const [searchResult, setSearchResult] = useState<SearchResult>([])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
   }
   const handleClick = () => {
-    setQuery('')
+    setQuery("")
   }
   //const {data: result} = useSWR(query, searchFetcher)
 
@@ -54,18 +54,18 @@ export default function SearchBar() {
   }, [query])
 
   return (
-    <div className='group relative'>
+    <div className="group relative">
       <SearchBoxCompact query={query} onChange={handleChange} />
       {query && searchResult && (
         <nav
-          className='hidden peer-focus-within:block hover:block delay-200
+          className="hidden peer-focus-within:block hover:block delay-200
             absolute top-8 left-4 px-2 
-            bg-primary/50 rounded-b backdrop-blur-sm z-[1]'
+            bg-primary/50 rounded-b backdrop-blur-sm z-[1]"
         >
-          <h4 className='text-text'>{`${searchResult.length} results`}</h4>
+          <h4 className="text-text">{`${searchResult.length} results`}</h4>
           {searchResult.map((note) => (
             <Link
-              className='block py-1 text-text hover:text-secondary'
+              className="block py-1 text-text hover:text-secondary"
               href={`notes/${note.slug}`}
               key={note.slug}
               onClick={handleClick}

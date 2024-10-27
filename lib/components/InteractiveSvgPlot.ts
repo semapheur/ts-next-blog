@@ -1,9 +1,9 @@
 //svgEl.transform.baseVal.initialize()
 
-import { parse as mathParse } from 'mathjs'
-import { difference, intersection, gridUnit } from 'lib/utils/num'
+import { parse as mathParse } from "mathjs"
+import { difference, intersection, gridUnit } from "lib/utils/num"
 
-import Vector from 'lib/utils/vector'
+import Vector from "lib/utils/vector"
 import {
   setAttributes,
   removeElementsByClass,
@@ -11,8 +11,8 @@ import {
   mousePosition,
   setSvgTransform,
   screenToDrawPosition,
-} from 'lib/utils/svg'
-import EventListenerStore from 'lib/utils/event'
+} from "lib/utils/svg"
+import EventListenerStore from "lib/utils/event"
 
 type SvgPlots = {
   [key: string]: {
@@ -26,8 +26,8 @@ export type ViewRange = {
   y: Vector
 }
 
-export class SVGPlot {
-  private xmlns = 'http://www.w3.org/2000/svg'
+export class InteractiveSVGPlot {
+  private xmlns = "http://www.w3.org/2000/svg"
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
@@ -61,7 +61,7 @@ export class SVGPlot {
     // Create SVG element
     this.svgElement = document.createElementNS(
       this.xmlns,
-      'svg',
+      "svg",
     ) as SVGSVGElement
     const svgAttr = {
       xmlns: this.xmlns,
@@ -76,24 +76,24 @@ export class SVGPlot {
     // Create defs element
     this.svgDefs = document.createElementNS(
       this.xmlns,
-      'defs',
+      "defs",
     ) as SVGDefsElement
     this.svgElement.appendChild(this.svgDefs)
 
     // Create group elements
-    this.frameGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
+    this.frameGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
     if (margin) {
       this.setFrameTransform(margin, width, height)
     }
     this.svgElement.appendChild(this.frameGroup)
 
-    this.plotGroup = document.createElementNS(this.xmlns, 'g') as SVGGElement
+    this.plotGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
     this.setViewTransform(width, height)
     this.frameGroup.appendChild(this.plotGroup)
 
-    addChildElement(this.frameGroup, 'g', { id: 'crosshair-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'grid-group' })
-    addChildElement(this.frameGroup, 'g', { id: 'axis-group' })
+    addChildElement(this.frameGroup, "g", { id: "crosshair-group" })
+    addChildElement(this.frameGroup, "g", { id: "grid-group" })
+    addChildElement(this.frameGroup, "g", { id: "axis-group" })
 
     // Add functionality
     this.crosshair()
@@ -161,11 +161,11 @@ export class SVGPlot {
   }
 
   private crosshair() {
-    const crosshairGroup = document.getElementById('crosshair-group')!
+    const crosshairGroup = document.getElementById("crosshair-group")!
 
     const onPointerEnterBound = onPointerEnter.bind(this)
     this.eventListeners.storeEventListener(
-      'pointerenter',
+      "pointerenter",
       this.svgElement,
       onPointerEnterBound,
     )
@@ -173,30 +173,30 @@ export class SVGPlot {
     function onPointerEnter() {
       // Text element displaying cursor position
       const attr = {
-        id: 'crosshair-text',
-        'font-size': '0.75em',
-        fill: 'rgb(var(--color-text) / 1)',
+        id: "crosshair-text",
+        "font-size": "0.75em",
+        fill: "rgb(var(--color-text) / 1)",
       }
-      addChildElement(crosshairGroup, 'text', attr)
+      addChildElement(crosshairGroup, "text", attr)
 
       // Crosshair lines
       const path = {
-        id: 'crosshair-line-x',
-        d: '',
-        stroke: 'rgb(var(--color-text) / 1)',
-        'stroke-width': '1px',
-        'stroke-dasharray': '5px',
-        opacity: '0.5',
-        'vector-effect': 'non-scaling-stroke',
+        id: "crosshair-line-x",
+        d: "",
+        stroke: "rgb(var(--color-text) / 1)",
+        "stroke-width": "1px",
+        "stroke-dasharray": "5px",
+        opacity: "0.5",
+        "vector-effect": "non-scaling-stroke",
       }
-      addChildElement(crosshairGroup, 'path', path)
+      addChildElement(crosshairGroup, "path", path)
 
-      path['id'] = 'crosshair-line-y'
-      addChildElement(crosshairGroup, 'path', path)
+      path["id"] = "crosshair-line-y"
+      addChildElement(crosshairGroup, "path", path)
 
-      this.frameGroup.addEventListener('pointermove', onPointerMove.bind(this))
+      this.frameGroup.addEventListener("pointermove", onPointerMove.bind(this))
       this.frameGroup.addEventListener(
-        'pointerleave',
+        "pointerleave",
         onPointerLeave.bind(this),
       )
     }
@@ -214,39 +214,39 @@ export class SVGPlot {
       if (!svgPos || !transform) return
       const drawPos = screenToDrawPosition(svgPos, transform)!
 
-      const text = document.getElementById('crosshair-text')!
-      text.setAttribute('x', `${svgPos.x + 15}`)
-      text.setAttribute('y', `${svgPos.y + 20}`)
+      const text = document.getElementById("crosshair-text")!
+      text.setAttribute("x", `${svgPos.x + 15}`)
+      text.setAttribute("y", `${svgPos.y + 20}`)
 
       text.innerHTML = `(${coordText(drawPos.x, 0)}, ${coordText(
         -drawPos.y,
         1,
       )})`
 
-      const xLine = document.getElementById('crosshair-line-x')!
+      const xLine = document.getElementById("crosshair-line-x")!
       xLine.setAttribute(
-        'd',
+        "d",
         `M${svgPos.x},${transform.f}L${svgPos.x},${svgPos.y}`,
       )
 
-      const yLine = document.getElementById('crosshair-line-y')!
+      const yLine = document.getElementById("crosshair-line-y")!
       yLine.setAttribute(
-        'd',
+        "d",
         `M${transform.e},${svgPos.y}L${svgPos.x},${svgPos.y}`,
       )
     }
 
     function onPointerLeave() {
-      for (const i of ['text', 'line-x', 'line-y']) {
+      for (const i of ["text", "line-x", "line-y"]) {
         const el = document.getElementById(`crosshair-${i}`)
         el?.remove()
       }
       this.frameGroup.removeEventListener(
-        'pointermove',
+        "pointermove",
         onPointerMove.bind(this),
       )
       this.frameGroup.removeEventListener(
-        'pointerleave',
+        "pointerleave",
         onPointerLeave.bind(this),
       )
     }
@@ -260,7 +260,7 @@ export class SVGPlot {
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener(
-      'pointerdown',
+      "pointerdown",
       this.frameGroup,
       onClickBound,
     )
@@ -274,8 +274,8 @@ export class SVGPlot {
       startPos = mousePosition(this.frameGroup, event)!
       isPanning = true
 
-      this.frameGroup.addEventListener('pointerup', onPointerUp.bind(this))
-      this.frameGroup.addEventListener('pointermove', onPointerMove.bind(this))
+      this.frameGroup.addEventListener("pointerup", onPointerUp.bind(this))
+      this.frameGroup.addEventListener("pointermove", onPointerMove.bind(this))
     }
 
     function onPointerMove(event: PointerEvent) {
@@ -301,10 +301,10 @@ export class SVGPlot {
       isPanning = false
       this.redrawPlots()
       this.frameGroup.removeEventListener(
-        'pointermove',
+        "pointermove",
         onPointerMove.bind(this),
       )
-      this.frameGroup.removeEventListener('pointerup', onPointerUp.bind(this))
+      this.frameGroup.removeEventListener("pointerup", onPointerUp.bind(this))
     }
   }
 
@@ -313,7 +313,7 @@ export class SVGPlot {
 
     const onWheelBound = onWheel.bind(this)
     this.eventListeners.storeEventListener(
-      'wheel',
+      "wheel",
       this.frameGroup,
       onWheelBound,
     )
@@ -352,7 +352,7 @@ export class SVGPlot {
 
     const onClickBound = onClick.bind(this)
     this.eventListeners.storeEventListener(
-      'pointerdown',
+      "pointerdown",
       this.frameGroup,
       onClickBound,
     )
@@ -372,18 +372,18 @@ export class SVGPlot {
 
       // Coverage rectangle
       const path = {
-        id: 'zoom-rect',
-        fill: 'rgb(var(--color-secondary))',
-        opacity: '0.1',
+        id: "zoom-rect",
+        fill: "rgb(var(--color-secondary))",
+        opacity: "0.1",
       }
-      addChildElement(this.frameGroup, 'path', path)
+      addChildElement(this.frameGroup, "path", path)
 
       this.frameGroup.addEventListener(
-        'pointermove',
+        "pointermove",
         onDrag.bind(this, clickPos),
       )
       this.frameGroup.addEventListener(
-        'pointerup',
+        "pointerup",
         endDrag.bind(this, clickPos),
       )
     }
@@ -395,9 +395,9 @@ export class SVGPlot {
       dragPos = mousePosition(this.frameGroup, event)
       if (!dragPos || !clickPos) return
 
-      const path = document.getElementById('zoom-rect')
+      const path = document.getElementById("zoom-rect")
       const d = `M${clickPos.x},${clickPos.y} L${dragPos.x},${clickPos.y} ${dragPos.x},${dragPos.y} ${clickPos.x},${dragPos.y}Z`
-      path?.setAttribute('d', d)
+      path?.setAttribute("d", d)
     }
 
     // Resize on pointerup
@@ -405,7 +405,7 @@ export class SVGPlot {
       dragged = false
       if (!clickPos || !dragPos) return
 
-      const path = document.getElementById('zoom-rect')
+      const path = document.getElementById("zoom-rect")
       path?.remove()
       const transform = this.plotGroup.getCTM()!
 
@@ -428,8 +428,8 @@ export class SVGPlot {
       this.transformView()
 
       // Cleanup event handlers
-      this.frameGroup.removeEventListener('pointermove', onDrag.bind(this))
-      this.frameGroup.removeEventListener('pointerup', endDrag.bind(this))
+      this.frameGroup.removeEventListener("pointermove", onDrag.bind(this))
+      this.frameGroup.removeEventListener("pointerup", endDrag.bind(this))
     }
   }
 
@@ -469,7 +469,7 @@ export class SVGPlot {
   }
 
   private ticks(redraw = false) {
-    const axis = document.getElementById('axis-group')!
+    const axis = document.getElementById("axis-group")!
     const transform = this.plotGroup.getCTM()!
 
     const svgSize = {
@@ -482,7 +482,7 @@ export class SVGPlot {
       const minOffset = { x: 10, y: 15 }
       const maxOffset = { x: 30, y: 10 }
 
-      const translate = key === 'x' ? transform.e : transform.f
+      const translate = key === "x" ? transform.e : transform.f
 
       if (translate < 0) return `${minOffset[key]}`
 
@@ -492,7 +492,7 @@ export class SVGPlot {
     }
 
     const tickFormat = (tick: number, index: number): string => {
-      if (tick === 0) return '0'
+      if (tick === 0) return "0"
 
       const gridSize = this.gridSize[index]
 
@@ -515,7 +515,7 @@ export class SVGPlot {
     }
 
     const iterateTicks = (index: number, key: string) => {
-      const perp = key === 'x' ? 'y' : 'x'
+      const perp = key === "x" ? "y" : "x"
 
       const step = this.gridSize[index]
 
@@ -537,13 +537,13 @@ export class SVGPlot {
           continue
         }
         const attr = {
-          class: 'tick-text',
-          'font-size': '0.75rem',
-          fill: 'rgb(var(--color-text) / 1)',
+          class: "tick-text",
+          "font-size": "0.75rem",
+          fill: "rgb(var(--color-text) / 1)",
         }
         attr[`${key}`] = i
         attr[`${perp}`] = clamp(perp)
-        const txt = document.createElementNS(this.xmlns, 'text')
+        const txt = document.createElementNS(this.xmlns, "text")
         setAttributes(txt, attr)
         axis.appendChild(txt)
         txt.innerHTML = `${tickFormat(tick, index)}`
@@ -554,10 +554,10 @@ export class SVGPlot {
     }
 
     if (redraw) {
-      removeElementsByClass(axis, 'tick-text')
+      removeElementsByClass(axis, "tick-text")
     }
 
-    for (const [index, key] of ['x', 'y'].entries()) {
+    for (const [index, key] of ["x", "y"].entries()) {
       iterateTicks(index, key)
     }
   }
@@ -565,64 +565,64 @@ export class SVGPlot {
   public axes() {
     // Pattern
     const attr = {
-      id: 'axis-pattern',
-      patternUnits: 'userSpaceOnUse',
-      width: '100%',
-      height: '100%',
+      id: "axis-pattern",
+      patternUnits: "userSpaceOnUse",
+      width: "100%",
+      height: "100%",
     }
-    const pattern = document.createElementNS(this.xmlns, 'pattern')
+    const pattern = document.createElementNS(this.xmlns, "pattern")
     setAttributes(pattern, attr)
 
     const transform = this.plotGroup.getCTM()!
     // Axis lines
     const line = {
-      class: 'x-axis',
-      x1: '0',
+      class: "x-axis",
+      x1: "0",
       y1: `${transform.f}`,
-      x2: '100%',
+      x2: "100%",
       y2: `${transform.f}`,
-      stroke: 'rgb(var(--color-text) / 1)',
-      'stroke-width': '0.3',
+      stroke: "rgb(var(--color-text) / 1)",
+      "stroke-width": "0.3",
     }
-    addChildElement(pattern, 'line', line)
+    addChildElement(pattern, "line", line)
 
-    line['class'] = 'y-axis'
-    line['x1'] = `${transform.e}`
-    line['y1'] = '0'
-    line['x2'] = `${transform.e}`
-    line['y2'] = '100%'
-    addChildElement(pattern, 'line', line)
+    line["class"] = "y-axis"
+    line["x1"] = `${transform.e}`
+    line["y1"] = "0"
+    line["x2"] = `${transform.e}`
+    line["y2"] = "100%"
+    addChildElement(pattern, "line", line)
 
     this.svgDefs.appendChild(pattern)
 
     // Axis rectangle
     const rect = {
-      class: 'axis-rect',
-      width: '100%',
-      height: '100%',
-      fill: 'url(#axis-pattern)',
-      'vector-effect': 'non-scaling-stroke',
+      class: "axis-rect",
+      width: "100%",
+      height: "100%",
+      fill: "url(#axis-pattern)",
+      "vector-effect": "non-scaling-stroke",
     }
 
-    const axis = document.getElementById('axis-group')!
-    addChildElement(axis, 'rect', rect)
+    const axis = document.getElementById("axis-group")!
+    addChildElement(axis, "rect", rect)
 
     // Ticks
     this.ticks()
   }
 
   private transformAxis() {
-    const pattern = document.getElementById('axis-pattern')!
+    const pattern = document.getElementById("axis-pattern")!
     const transform = this.plotGroup.getCTM()!
 
     // x axis
-    let line = pattern.getElementsByClassName('x-axis')[0]
+    let line = pattern.getElementsByClassName("x-axis")[0]
 
     const xAttr = { y1: `${transform.f}`, y2: `${transform.f}` }
     setAttributes(line, xAttr)
 
     // y axis
-    line = pattern.getElementsByClassName('y-axis')[0]
+    line = pattern.getElementsByClassName("y-axis")[0]
     const yAttr = { x1: `${transform.e}`, x2: `${transform.e}` }
     setAttributes(line, yAttr)
 
@@ -632,7 +632,7 @@ export class SVGPlot {
 
   public grid() {
     const transform = this.plotGroup.getCTM()!
-    const grid = document.getElementById('grid-group')!
+    const grid = document.getElementById("grid-group")!
 
     const min = [
       this.minGridScreenSize / transform.a,
@@ -641,49 +641,49 @@ export class SVGPlot {
     this.gridSize = new Vector(gridUnit(min[0]), gridUnit(min[1]))
     // Pattern
     const attr = {
-      id: 'grid-pattern',
-      patternUnits: 'userSpaceOnUse',
+      id: "grid-pattern",
+      patternUnits: "userSpaceOnUse",
       patternTransform: DOMMatrix.fromMatrix(transform).toString(),
       width: `${this.gridSize.x}`,
       height: `${this.gridSize.y}`,
     }
-    const pattern = document.createElementNS(this.xmlns, 'pattern')
+    const pattern = document.createElementNS(this.xmlns, "pattern")
     setAttributes(pattern, attr)
 
     // Horizontal line
     const line = {
-      class: 'y-grid',
-      x1: '0',
-      y1: '0',
+      class: "y-grid",
+      x1: "0",
+      y1: "0",
       x2: `${this.gridSize.x}`,
-      y2: '0',
-      stroke: 'rgb(var(--color-text) / 0.2)',
-      'stroke-width': `${1 / transform.d}`,
+      y2: "0",
+      stroke: "rgb(var(--color-text) / 0.2)",
+      "stroke-width": `${1 / transform.d}`,
     }
-    addChildElement(pattern, 'line', line)
+    addChildElement(pattern, "line", line)
 
     // Vertical line
-    line['class'] = 'x-grid'
-    line['x2'] = '0'
-    line['y2'] = `${this.gridSize.y}`
-    line['stroke-width'] = `${1 / transform.a}`
-    addChildElement(pattern, 'line', line)
+    line["class"] = "x-grid"
+    line["x2"] = "0"
+    line["y2"] = `${this.gridSize.y}`
+    line["stroke-width"] = `${1 / transform.a}`
+    addChildElement(pattern, "line", line)
 
     this.svgDefs.appendChild(pattern)
 
     // Grid rectangle
     const rect = {
-      class: 'grid-rect',
-      width: '100%',
-      height: '100%',
-      fill: 'url(#grid-pattern)',
-      'vector-effect': 'non-scaling-stroke',
+      class: "grid-rect",
+      width: "100%",
+      height: "100%",
+      fill: "url(#grid-pattern)",
+      "vector-effect": "non-scaling-stroke",
     }
-    addChildElement(grid, 'rect', rect)
+    addChildElement(grid, "rect", rect)
   }
 
   public transformGrid() {
-    const pattern = document.getElementById('grid-pattern')!
+    const pattern = document.getElementById("grid-pattern")!
     const transform = this.plotGroup.getCTM()!
 
     const min = [
@@ -700,18 +700,18 @@ export class SVGPlot {
     setAttributes(pattern, attr)
 
     // Horizontal grid line
-    let line = pattern.getElementsByClassName('y-grid')[0]
+    let line = pattern.getElementsByClassName("y-grid")[0]
     const yAttr = {
       x2: `${this.gridSize.x}`,
-      'stroke-width': `${1 / transform.d}`,
+      "stroke-width": `${1 / transform.d}`,
     }
     setAttributes(line, yAttr)
 
     // Vertical grid line
-    line = pattern.getElementsByClassName('x-grid')[0]
+    line = pattern.getElementsByClassName("x-grid")[0]
     const xAttr = {
       y2: `${this.gridSize.y}`,
-      'stroke-width': `${1 / transform.a}`,
+      "stroke-width": `${1 / transform.a}`,
     }
     setAttributes(line, xAttr)
   }
@@ -719,79 +719,79 @@ export class SVGPlot {
   public innerShadow() {
     const filter = document.createElementNS(
       this.xmlns,
-      'filter',
+      "filter",
     ) as SVGFilterElement
-    setAttributes(filter, { id: 'inset-shadow' })
+    setAttributes(filter, { id: "inset-shadow" })
 
     // Shadow offset
     const feOffset = document.createElementNS(
       this.xmlns,
-      'feOffset',
+      "feOffset",
     ) as SVGFEOffsetElement
-    setAttributes(feOffset, { dx: '0', dy: '0' })
+    setAttributes(feOffset, { dx: "0", dy: "0" })
     filter.appendChild(feOffset)
 
     // Shadow blur
     const feBlur = document.createElementNS(
       this.xmlns,
-      'feGaussianBlur',
+      "feGaussianBlur",
     ) as SVGFEGaussianBlurElement
-    setAttributes(feBlur, { stdDeviation: '1', result: 'offset-blur' })
+    setAttributes(feBlur, { stdDeviation: "1", result: "offset-blur" })
     filter.appendChild(feBlur)
 
     // Invert drop shadow to make inset shadow
     const feComposite1 = document.createElementNS(
       this.xmlns,
-      'feComposite',
+      "feComposite",
     ) as SVGFECompositeElement
     setAttributes(feComposite1, {
-      operator: 'out',
-      in: 'SourceGraphic',
-      in2: 'offset-blur',
-      result: 'inverse',
+      operator: "out",
+      in: "SourceGraphic",
+      in2: "offset-blur",
+      result: "inverse",
     })
     filter.appendChild(feComposite1)
 
     // Cur colour inside shadow
     const feFlood = document.createElementNS(
       this.xmlns,
-      'feFlood',
+      "feFlood",
     ) as SVGFEFloodElement
     setAttributes(feFlood, {
-      'flood-color': 'black',
-      'flood-opacity': '1',
-      result: 'color',
+      "flood-color": "black",
+      "flood-opacity": "1",
+      result: "color",
     })
     filter.appendChild(feFlood)
 
     const feComposite2 = document.createElementNS(
       this.xmlns,
-      'feComposite',
+      "feComposite",
     ) as SVGFECompositeElement
     setAttributes(feComposite2, {
-      operator: 'in',
-      in: 'color',
-      in2: 'inverse',
-      result: 'shadow',
+      operator: "in",
+      in: "color",
+      in2: "inverse",
+      result: "shadow",
     })
     filter.appendChild(feComposite2)
 
     // Place shadow over element
     const feComposite3 = document.createElementNS(
       this.xmlns,
-      'feComposite',
+      "feComposite",
     ) as SVGFECompositeElement
     setAttributes(feComposite3, {
-      operator: 'over',
-      in: 'shadow',
-      in2: 'ShadowGraphic',
+      operator: "over",
+      in: "shadow",
+      in2: "ShadowGraphic",
     })
     filter.appendChild(feComposite3)
 
     this.svgDefs.appendChild(filter)
   }
 
-  public plot(fn: string, clr = 'red', redraw = false, points?: number) {
+  public plot(fn: string, clr = "red", redraw = false, points?: number) {
     // Check if the same function has been plotted already
     if (!redraw) {
       if (fn in this.plots) {
@@ -804,7 +804,9 @@ export class SVGPlot {
 
     const viewWidth = this.viewRange.x.diff() as number
 
-    if (!points) points = parseInt(this.svgElement.getAttribute('width')!)
+    if (!points) {
+      points = Number.parseInt(this.svgElement.getAttribute("width")!)
+    }
 
     const domain = Vector.linspace(
       this.viewRange.x[0] - viewWidth,
@@ -812,7 +814,7 @@ export class SVGPlot {
       points * 3,
     ).toArray()
 
-    const path: string[] = Array(domain.length).fill('')
+    const path: string[] = Array(domain.length).fill("")
 
     const y = -lambda.evaluate({ x: domain[0] })
     path[0] = `M${domain[0]},${y}`
@@ -831,15 +833,15 @@ export class SVGPlot {
 
     const attr = {
       id: fn,
-      class: 'plot-path',
-      d: path.join(' '),
-      fill: 'none',
+      class: "plot-path",
+      d: path.join(" "),
+      fill: "none",
       stroke: clr,
-      'stroke-width': '2px',
-      'vector-effect': 'non-scaling-stroke',
+      "stroke-width": "2px",
+      "vector-effect": "non-scaling-stroke",
       //'stroke-width': `${1/((this.transform[0] + this.transform[3])/2)}`
     }
-    addChildElement(this.plotGroup, 'path', attr)
+    addChildElement(this.plotGroup, "path", attr)
 
     this.plots[fn] = {
       yBounds: [yMin, yMax],
@@ -860,7 +862,7 @@ export class SVGPlot {
     if (fn in this.plots) {
       const path = document.getElementById(fn)
       if (!path) return
-      path.setAttribute('stroke', color)
+      path.setAttribute("stroke", color)
       this.plots[fn].color = color
     }
   }

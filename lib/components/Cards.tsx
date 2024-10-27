@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import useEventListener from 'lib/hooks/useEventListener'
-import useForwardRef from 'lib/hooks/useForwardRef'
-import { forwardRef, ReactNode, useRef } from 'react'
+import useEventListener from "lib/hooks/useEventListener"
+import useForwardRef from "lib/hooks/useForwardRef"
+import { forwardRef, type ReactNode, useRef } from "react"
 
 type CardsProps = {
   children: ReactNode[]
@@ -40,8 +40,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     cardRef.current.style.transform = `perspective(${rect.width}px) rotateX(0deg) rotateY(0deg)`
   }
 
-  useEventListener('mousemove', handleTilt, cardRef)
-  useEventListener('mouseleave', resetTilt, cardRef)
+  useEventListener("mousemove", handleTilt, cardRef)
+  useEventListener("mouseleave", resetTilt, cardRef)
 
   return (
     <div
@@ -77,18 +77,18 @@ export default function Cards({ children }: CardsProps) {
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
 
-      card.style.setProperty('--xPos', `${x}px`)
-      card.style.setProperty('--yPos', `${y}px`)
+      card.style.setProperty("--xPos", `${x}px`)
+      card.style.setProperty("--yPos", `${y}px`)
     }
   }
 
-  useEventListener('mousemove', onMouseMove, deckRef)
+  useEventListener("mousemove", onMouseMove, deckRef)
 
   return (
     <div
       ref={deckRef}
-      className='group h-full flex flex-wrap overflow-y-scroll justify-center items-center gap-4 p-4
-        bg-primary'
+      className="group h-full flex flex-wrap overflow-y-scroll justify-center items-center gap-4 p-4
+        bg-primary"
     >
       {children.map((node, i) => (
         <Card
