@@ -1,0 +1,580 @@
+---
+title: 'Probability Distributions'
+subject: 'Mathematics'
+showToc: true
+---
+
+# Discrete distributions
+
+## Hypergeometric distribution
+
+Suppose that we a *dichotomous* population $D$ consisting of two types of objects, referred to as type 1 and type 0. Let $R$ denote the subset of $D$ consisting of type $1$ objects, and supose that $|D| = m$ and $|R| = r$. Likewise $R^C = D \setminus R$ denotes the subset of $D$ consisting of type $0$ objects with $|R^C| = m - r$. This gives rise to a probability model with three parameters:
+1. the population size $m$
+2. the number of type $1$ objects $r\leq m$ (or the number of type $0$ objects $m - r$)
+3. the sample size $n\leq m$
+
+Let $X_i$ denote the type of the $i$th chosen object for $i=1,\dots,n$. Then $X_i$ is an indicator variable.
+
+<MathBox title='' boxType='proposition' tag='proposition-1'>
+A hypergeometric sample $\mathbf{X} = (X_i)_{i=1}^n$ has probability density function given by
+
+$$
+\begin{equation}
+  f(x_1,\dots,x_n) = \frac{r^{(y)} (m - r)^{(n-y)}}{m^{(n)}},\; (x_1,\dots,x_n)\in\set{0,1}^n \tag{\label{equation-1}}
+\end{equation}
+$$
+
+where $y = \sum_{i=1}^n x_i$.
+
+<details>
+<summary>Proof</summary>
+
+Note that the ordered samples are equally likely, and there are $m^{(n)}$ such samples. The number of ways to select the $y$ type $1$ objects and place them in the positions where $x_i = 1$ is $r^{(y)}$. The number of ways to select the $n - y$ type $0$ objects and place them in the positions where $x_i = 0$ is $(m - r)^{(n-y)}$. Thus, the result follows from the multiplication principle.
+</details>
+</MathBox>
+
+From $\ref{equation-1}$ we see that the value of $f(x_1,\dots,x_n)$ depends only on $y = \sum_{i=1}^n x_i$, and hence is unchanged if $(x_i)_{i=1}^n$ is permuted. This means that $(X_i)_{i=1}^n$ is exchangeable. In particular, the distribution of $X_i$ is the same as the distribution of $X_1$, so $\mathbb{P}(X_i = 1) = \frac{r}{m}$. Thus, the variables $X_i$ are *identically distributed*. Also, the distribution of $(X_i, X_j)$ is the same as the distribution of $(X_1, X_2)$, of $\mathbf{P}(X_i = 1, X_j = 1) = \frac{r(r-1)}{m(m-1)}$. Thus, $X_i$ and $X_j$ are not independent, and are in fact negatively correlated.
+
+Let $Y$ denote the number of type $1$ objects in the sample. As a counting variable, $Y$ can be written as a sum of indicator variables
+
+$$
+  Y = \sum_{i=1}^n X_i
+$$
+
+<MathBox title='Hypergeometric distribution' boxType='proposition' tag='proposition-2'>
+The probability density function of $Y$ is given by
+
+$$
+  g(y) = \mathbb{P}(Y = y) = \frac{\binom{r}{y} \binom{m - r}{n - y}}{\binom{m}{n}},\; y\in{\max{0, n - (m - r)},\dots,\min{n,r}}
+$$
+
+or equivalently
+
+$$
+  \mathbb{P}(Y = y) = \binom{n}{y}\frac{r^{(y)} (m - r)^{(n - y)}}{m^{(n)}},\; y\in{\max{0, n - (m - r)},\dots,\min{n,r}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Consider the unordered outcome, which is uniformly distributed on the set of combinations of size $n$ chosen from the population of size $m$ By the multiplication principle, the number of samples with exactly $y$ type $1$ objects and $n - y$ type $0$ objects is $\binom{m}{y}\binom{m - r}{n - y}$. Finally the number of ways to select the sample of size $n$ from the population of size $m$ is $\binom{m}{n}$.
+</details>
+</MathBox>
+
+<MathBox title='Properties of the hypergeometric distribution' boxType='proposition' tag='proposition-3'>
+The hypergeometric distribution is unimodal. Let $v = \frac{(r + 1)(n + 1)}{m + 2}$. Then
+1. $\mathbb{P}(Y = y) > \mathbb{P}(Y = y - 1)$ if and only if $y < v$
+2. The mode occurs at $\lfloor v \rfloor$ if $v$ is not an integer, and at $v$ and $v - 1$ if is an integer greater than $0$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Note that $\mathbb{P}(Y = y) > \mathbb{P}(Y = y - 1)$ if and only if $\binom{r}{y-1}\binom{m - r}{n + 1 - y} < \binom{r}{y}\binom{m - r}{n - r}$. The result follows from writing out the binomial coefficients in terms of factorials and canceling terms.
+
+**(2):** By the same argument $f(y - 1) = f(y)$ if and only if $y = v$. If $v$ is not an integer, then this cannot happen. Lettin $z = \lfloor t \rfloor$, it follows from **(1)** that $\mathbb{P}(Y = y) < \mathbb{P}(Y = z)$ if $y < z$ or $y > z$.
+
+If $v$ is a positive integer, then from the previous argument $\mathbb{P}(Y = v - 1) = \mathbf{P}(Y = v)$ and by **(1)** we have $\mathbb{P}(Y = y) < \mathbb{P}(Y = v - 1)$ if $y < v - 1$ and $\mathbb{P}(Y = y) < \mathbb{P}(Y = v)$ if $y > v$.
+</details>
+</MathBox>
+
+<MathBox title='Probability generating function for the hypergeometric distribution' boxType='proposition' tag='proposition-4'>
+The probability generating function of the hypergeometric distribution is
+
+$$
+  P(t) = \sum_{k=0}^n g(k)t^k
+$$
+
+where $g$ is the hypergeometric probability density function (Proposition $\ref{proposition-2}$). This is a hypergeometric series with
+
+$$
+  \frac{f(k + 1)}{f(k)} = \frac{(r - k)(n - k)}{(k + 1)(N - r - n + k + 1)}
+$$
+</MathBox>
+
+<MathBox title='Relation of the hypergeometric and the binomial distribution' boxType='proposition' tag='proposition-5'>
+Suppose taht $r_m \in\set{0,1,\dots,m}$ for each $m\in\N_+$ and that $\lim_{m\to\infty} r_m / m = p\in [0,1]$. Then for fixed $n$, the hypergeometric probability density function with parameters $m$, $r_m$ and $n$ converges to the binomial probability density function with parameters $n$ and $p$ as $m\to\infty$.
+
+<details>
+<summary>Proof</summary>
+
+Consider the second form of the hypergeometric probability density function
+
+$$
+  \mathbb{P}(Y = y) = \binom{n}{y}\frac{r^{(y)} (m - r)^{(n - y)}}{m^{(n)}},\; y\in{\max{0, n - (m - r)},\dots,\min{n,r}}
+$$
+
+In the fraction, note that there are $n$ factors in the numerator and $n$ in the denominator. Suppose we pair the factors to write the original fraction as the product of $n$ fractions. The first $y$ fractions have the form $\frac{r_m - i}{m - i}$ where $i$ does not depend on $m$. Hence each of these fractions converge to $p$ as $m\to\infty$. The remaining $n - y$ fractions have the form $\frac{m - r_m - j}{m - y - j}$, where again $j$ does not depend on $m$. Hence each these fractions converges to $1 - p$ as $m \to\infty$.
+</details>
+</MathBox>
+
+### Moments
+
+<MathBox title='Moments of the hypergeometric distribution' boxType='proposition' tag='proposition-6'>
+If $\mathbf{X} = (X_i)_{i=1}^n$ is a hypergeometric sample, then
+1. $\mathbb{E}(X_i) = \frac{r}{m}$ for each $i$
+2. $\operatorname{var}(X_i) = \frac{r}{m}\left(1 - \frac{r}{n}\right)$ for each $i$
+3. $\operatorname{cov}(X_i, X_j) = -\frac{r}{m}\left(1 - \frac{r}{m} \right)\frac{1}{m - 1}$
+4. $\operatorname{cor}(X_i, X_j) = -\frac{1}{m - 1}$
+5. $\mathbb{E}(Y) = n\frac{r}{m}$
+6. $\operatorname{var}(Y) = n\frac{r}{m}(1 - \frac{r}{m}\frac{m - n}{m - 1}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This follows from the fact that $X_i$ is an indicator variable with $\mathbb{P}(X_i = 1) = r/m$ for each $i$.
+
+**(2):** This follows from the fact that $X_i$ is an indicator variable with $\mathbb{P}(X_i = 1) = r/m$ for each $i$:
+
+$$
+  \operatorname{var}(X_i) = \mathbb{E}(X_i^2) - \mathbb{E}(X_i)^2 = \frac{r}{m} - \left(\frac{r}{m}\right)^2
+$$
+
+**(3):** By the exchangeable property, $\mathbb{P}(X_i X_j = 1) = \mathbb{P}(X_i = 1)\mathbb{P}(X_j = 1 | X_i = 1) = \frac{r}{m}\frac{r - 1}{m - 1}$. The covariance is given by
+
+$$
+  \operatorname{cov}(X_i, X_j) = \mathbb{E}(X_i X_j) - \mathbb{E}(X_i)\mathbb{E}(X_j)
+$$
+
+**(4):**
+
+**(5):** From the additive property of expected value we get
+
+$$
+  \mathbb{E}(Y) = \mathbb{E}\left(\sum_{i=1}^n X_i \right) = \sum_{i=1}^n \mathbb{E}(X_i) = n\frac{r}{m}
+$$
+
+**(6):**
+</details>
+</MathBox>
+
+## Bernoulli distribution
+
+The Bernoulli trials process can be considered as the mathematical abstraction of coin tossing.
+
+<MathBox title='Bernoulli trials' boxType='definition'>
+A sequence of *Bernoulli trials* satisfies the following assumptions:
+1. Each trial has two possible outcomes, in the language of reliability called *success* and *failure*.
+2. Trials are independent. Intuitively, the outcome of one trial has no influence over the outcome of another trial.
+3. On each trial, the probability of success is $p$ and the probability of failure is $1 - p$ where $p\in[0,1]$ is the *success parameter* of the process.
+</MathBox>
+
+A Bernoulli trials process can be represented by a sequence of indicator random variables $\mathbf{X} = (X_i)_{i\in I\subseteq\N_+}$ that take binary values $0$ and $1$ denoting failure and success, respectively. Each indicator variable $X_i$ records the outcome of trial $i$. Since the indicator variables are independent, they have the same probability density function
+
+$$
+  \mathbb{P}(X_i = 1) = p, \quad \mathbb{P}(X_i = 0) = 1 - p
+$$
+
+The distribution defined by the probability density function is known as the *Bernoulli distribution*. In statistical terms, the Bernoulli trials process corresponds to sampling from the Bernoulli distribution.
+
+<MathBox title='Joint probability density function of Bernoulli trials' boxType='proposition'>
+The joint probability density functions of Bernoulli trials $\mathbf{X} = (X_i)_{i=1}^n$ is given by
+
+$$
+  f_n (x_1,\dots,x_n) = p^{\sum_{i=1}^n x_i} (1-p)^{n - \sum_{i=1}^n x_i},\; (x_1,\dots,x_n) \in\set{0,1}^n 
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from the basic assumptions of independence and the constant probabilities $p$ for success and $1 - p$ for failure.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Suppose that $\mathbf{U} = (U_i)_{i\in I\subseteq\N_+}$ is a sequence of independent random variables, each with the uniform distribution on the interval $[0,1]$. For $p\in [0,1]$ and $i\in\N_+$, let $X_i (p) = \mathbf{1}_{U_i \leq p}$. Then $\mathbf{X}(p) = (X_i(p))_{i\in\N_+}$ is a Bernoulli trials process with probability $p$.
+</MathBox>
+
+### Moments
+
+<MathBox title='Moments of the Bernoulli distribution' boxType='proposition'>
+Let $X$ be an indicator variable with $\mathbb{P}(X = 1) = p\in [0,1]$.
+1. $\mathbb{E}(X) = p$
+2. $\operatorname{var}(X) = 1 - p$
+3. $\operatorname{skew}(X) = \frac{1 - 2p}{\sqrt{p(1 - p)}}$
+4. $\operatorname{kurt}(X) = -3 + \frac{1}{p(1 - p)}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+  \mathbb{E}(X) = 1p + 0(1 - p) = p
+$$
+
+**(2):**
+
+$$
+  \operatorname{var}(X) = \mathbb{E}(X^2) - [\mathbb{E}(X)]^2 = \mathbb{E}(X) - [\mathbb{E}(X)]^2 = p - p^2
+$$
+</details>
+</MathBox>
+
+<GraphFigure 
+  expression="x*(1 - x)"
+  points={100}
+  xAxis={{scale: "linear", domain: [0,1]}}
+  yAxis={{scale: "linear", domain: [0,0.25]}}
+  caption="$\operatorname{var}(X)$ as a function of $p$"
+/>
+
+<MathBox title='Probability generating function of the Bernoulli distribution' boxType='proposition'>
+Let $X$ be an indicator variable with $\mathbb{P}(X = 1) = p\in [0,1]$. The probability generating function of $X$ is
+
+$$
+  P(t) = \mathbb{E}(t^X) = (1 - p) + pt,\; t\in\R
+$$
+</MathBox>
+
+### Reliability
+
+In the standard model of structural reliability, a system is composed of $n$ components operating independently of each other. Let $X_i$ denote the state of component $i$, where $1$ means working and $0$ means failure. If the components are all of the same type, then our basic assumption is that the state vector $\mathbf{X} = (X_i)_{i=1}^n$ is a sequence of Bernoulli trials. The state of the system depends only on the states of the components, forming a random variable
+
+$$
+  Y = s(X_1,\dots,X_n)
+$$
+
+where $s:\set{0,1}^n \to\set{0,1}$ is the *structure function*. Generally, the probability that a device is working is the *reliability* of the device, so the parameter $p$ of the Bernoulli trials sequence is the common reliability of the components. By independence, the *system reliability* $r$ is a function of the component reliability
+
+$$
+  r(p) = \mathbb{P}_p (Y = 1),\; p\in[0,1]
+$$
+
+known as the *relability function*.
+
+<MathBox title='Series system' boxType='example'>
+A *series system* is working if and only if each component is working.
+1. The state of the system is $Y = \prod_{i=1}^n X_i = \min\Set{X_i}_{i=1}^n$.
+2. The reliability function is $r(p) = p^n$ for $p\in [0,1]$.
+</MathBox>
+
+<MathBox title='Parallel system' boxType='example'>
+A *parallel system* is working if and only if at least one component is working.
+1. The state of the system is $Y = 1 - \sum_{i=1}^n (1 - X_i) = \max\set{X_i}_{i=1}^n$.
+2. The reliability function is $r(p) = 1 - (1 - p)^n$ for $p\in [0,1]$.
+</MathBox>
+
+## Binomial distribution
+
+Consider a sequence of Bernoulli trials $\mathbf{X} = (X_i)_{i\in I\subseteq\N_+}$. For $n\in\N$, the number of successes in the first $n$ trials is the random variable
+
+$$
+  Y_n = \sum_{i=1}^n X_i
+$$
+
+The distribution of $Y_n$ is the binomial distribution with trial parameter $n$ and success parameter $p$.
+
+<MathBox title='Probability density function of the binomial distribution' boxType='proposition'>
+The probability density function $f_n$ of the binomial distributed variable $Y_n$ is
+
+$$
+  f_n (y) = \binom{n}{y} p^y (1 - p)^{n - y},\; y\in {0,1,\dots,n}
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $(x_i)_{i=1}^n \in\set{0,1}^n$ with $\sum_{i=1}^n x_i = y$, then by independence
+
+$$
+  \mathbb{P}\left[(X_i)_{i=1}^n = (x_i)_{i=1}^n] = p^y (1 - p)^{n - y}
+$$
+
+Moreover, the number of buit strings of length $n$ with $1$ occuring exactly $y$ times is the binomial coefficient $\binom{n}{y}$. By the additive property of probability
+
+$$
+  \mathbb{P}(Y_n = y) = \binom{n}{y} p^y (1 - p)^{n - y},\; y\in{0,1,\dots,n}
+$$
+
+Clearly $f_n (y) \geq 0$ for $y\in\set{0,1,\dots,n}$. From the binomial theorem
+
+$$
+  \sum_{y=0}^n f_n (y) = \sum_{y=0}^n \binom{n}{y} p^y (1 - p)^{n-y} = [p + (1 - p)]^n = 1
+$$
+</details>
+</MathBox>
+
+<MathBox title='Properties of the binomial distribution' boxType='proposition'>
+The binomial distribution is unimodal. That is, for $k\in\set{1,\dots,n}$
+1. $f_n (k) > f_n (k - 1)$ if and only if $k < (n + 1)p$
+2. $f_n (k) = f_n (k - 1)$ if and only if $k = (n + 1)p$ is an integer between $1$ and $n$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  f_n (k) > f_n (k-1) \iff& \binom{n}{k}p^k (1 - p)^{n - k} > \binom{n}{k - 1}p^{k - 1} (1 - p)^{n - k + 1} \\
+  \iff& \frac{p}{k} > \frac{1 - p}{n - k + 1} \\
+  \iff& k < (n + 1)p
+\end{align*}
+$$
+
+**(2):** Similarly, $f_n (k) = f_n (k - 1)$ if and only if $k = (n + 1)p$, which must be an integer.
+</details>
+</MathBox>
+
+<MathBox title='Distribution of the binomial distribution' boxType='proposition'>
+The distribution function $F_n$ of the binomial distributed variable $Y_n$ is
+
+$$
+\begin{equation}
+\begin{split}
+  F_n (y) =& \mathbb{P}(Y_n \leq y) = \sum_{k=0}^y f_n (k) \\
+  =& \sum_{k=0}^y \binom{n}{k} p^k (1 - p)^{n-k},\; y\in\set{0,1,\dots,n}
+\end{split}
+\tag{\label{equation-2}}
+\end{equation}
+$$
+
+The distribution function $F_n$ can be written in the form
+
+$$
+  F_n (k) = \frac{n!}{(n - k - 1)! k!} \int_0^{1-p} x^{n - k -1} (1 - x)^k \;\d x,\; k\in\set{0,1,\dots,n}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $G_n (k)$ denote the right-hand side of $\eqref{equation-2}$. Substitution and simple integration shows that
+
+$$
+  G_n (0) = (1 - p)^n = f_n (0) = F_n (0). 
+$$
+
+For $k\in\set{1,\dots,n}$, integrating by parts with $u = (1 - x)^k$ and $\d u = x^{n - k - 1}$ gives
+
+$$
+  G_n (k) = \binom{n}{k} p^k (1 - p)^{n - k} + \frac{n!}{(n - k)!(k - 1)!} \int_0^{1 - p} x^{n - k} (1 - x)^k \;\d x = f_n (k) + G_n (k - 1)
+$$
+
+It follows that $G_n (k) = \sum_{j=0}^k f_n (j) = F_n (k)$ for $k\in\set{0,1,\dots,n}$.
+</details>
+</MathBox>
+
+### Moments
+
+<MathBox title='Expectation and variance of the binomial distribution' boxType='proposition'>
+The moments of the binomial distributed variable $Y_n$ is
+1. $\mathbb{E}(Y_n) = np$
+2. $\operatorname{var}(Y_n) = np(1 - p)$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** From the additive property of the expectation we have
+
+$$
+  \mathbb{E}(Y_n) = \mathbb{E}\left(\sum_{i=1}^n X_i \right) = \sum_{i=1}^n \mathbb{E}(X_i) = \sum_{i=1}^n p = np
+$$
+
+**(2):** From the additive property of variance for independent variables we get
+
+$$
+  \operatorname{var}(Y_n) = \sum_{i=1}^n \operatorname{var}(X_i) = \sum_{i=1}^n p(1 - p) = np(1 - p)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Probability generating function of the binomial distribution' boxType='proposition'>
+The probability generating function of a binomial distributed variable $Y_n$ is
+
+$$
+  P_n (t) = \mathbb{E}(t^{Y_n}) = [(1 - p) + pt]^n,\; t\in\R
+$$
+
+The factorial moments of the binomial distribution is given by
+
+$$
+  \mathbb{E}\left( Y_n^{(k)} \right) = n^{(k)} p^k,\; k\in\N
+$$
+
+where $n^{(k)} = n(n - 1)\cdots (n - k + 1)$ is the falling power of $n$ of order $k$.
+
+<details>
+<summary>Proof</summary>
+
+Recall that the probability generating function for an indicator variable $X_i$ is $P(t) = \mathbb{E}(t^{X_i}) = (1 - p) + pt$ for each $i$. Furthermore, the probability generating function of a sum of indpendent variables is the product of the probability generating functions of the terms. Hence, $P_n (t) = P^n (t)$
+
+Alternatively, by the binomial theorem
+
+$$
+\begin{align*}
+  \mathbb{E}(t^{Y_n}) =& \sum_{y=0}^n t^y \binom{n}{y} p^y (1 - p)^{n - y} \\
+  =& \sum_{y=0}^n \binom{n}{y} (pt)^y (1 - p)^{n - y} \\
+  =& [pt + (1 - p)]^n
+\end{align*}
+$$
+
+To show the formula for the factorial moments of the binomial distribution, we have $P_n^{(k)} (1) = \mathbb{E}\left(Y_n^{(k)} \right)$ where $P_n^{(k)}$ denotes the $k$th derivative of $P_n$. Since
+
+$$
+  P_n^{(k)} (t) = n^{(k)} [(1 - p) + pt]^{n - k} p^k
+$$
+
+it follows that $P_n^{(k)} = n^{(k)} p^k$.
+</details>
+</MathBox>
+
+<MathBox title='Recursion equation for moments of the binomial distribution' boxType='proposition'>
+If $Y_n$ is binomial distributed, then
+1. $\mathbb{E}(Y_n^k) = nå\mathbb{E}\left[(Y_{n-1} + 1)^{k - 1} \right]$ for $n,k\in\N_+$
+2. $\mathbb{E}(Y_n^0) = 1$ for $n\in\N$
+3. $\mathbb{E}(Y_0^k = 0$ for $k\in\N_+$
+
+<details>
+<summary>Proof</summary>
+
+Using the identity $y\binom{n}{y} = n\binom{n - 1}{y - 1}$ we have
+
+$$
+\begin{align*}
+  \mathbb{E}(Y_n^k) =& \sum_{y=0}^n y^k \binom{n}{y} p^y (1 - p)^{n - y} \\
+  =& \sum_{y=1}^n y^{k-1} y\binom{n}{y} p^y (1 - p)^{n - y} \\
+  =& \sum_{y=1}^n y^{k-1} n\binom{n - 1}{y - 1} p^y (1 - p)^{n - 1} \\
+  =& nå \sum_{y = 1}^n y^{k - 1} \binom{n - 1}{y - 1} p^{y - 1} (1 - p)^{(n - 1)-(y - 1)} \\
+  =& np\sum_{j=0}^{n - 1} (j + 1)^{k - 1} \binom{n - 1}{j} p^j (1 - p)^{n - 1 -j} \\
+  =& np\mathbb{E}[(Y_{n - 1} + 1)^{k - 1}] 
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Skewness of the binomial distribution' boxType='proposition'>
+For $p\in(0,1)$, the skewness of the binomial variable $Y_n$ is
+
+$$
+  \operatorname{skew}(Y_n) = \frac{1 - 2p}{\sqrt{np(1 - p)}}
+$$
+
+which satisfies
+1. $\operatorname{skew}(Y_n) > 0$ if $p < 1/2$, $\operatorname{skew}(Y_n) < 0$ if $p > 1/2$, and $\operatorname{skew}(Y_n) = 0$ if $p = 1/2$
+2. For fixed $n$, $\operatorname{skew}(Y_n) \to\infty$ as $p\downarrow 0$ and as $p\uparrow 1$
+3. For fixed $p$, $\operatorname{skew}(Y_n) \to 0$ as $n\to\infty$
+</MathBox>
+
+<MathBox title='Kurtosis of the binomial distribution' boxType='proposition'>
+For $p\in(0,1)$, the kurtosis of the binomial variable $Y_n$ is
+
+$$
+  \operatorname{kurt}(Y_n) = 3 - \frac{6}{n} + \frac{1}{np(1 - p)}
+$$
+
+which satisfies
+1. For fixed $n$, $\operatorname{kurt}(Y_n)$ decreases and then increases as a function of $p$ with minimum value $3 - \frac{2}{n}$ at the point of symmetry $p = 1/2$
+2. For fixed $n$, $\operatorname{kurt}(Y_n) \to\infty$ as $p\downarrow 0$ and as $p\uparrow 1$
+3. For fixed $p$, $\operatorname{skew}(Y_n) \to 3$ as $n\to\infty$
+</MathBox>
+
+## Multinomial distribution
+
+A *multinomial trials process* is a sequence of independent, identically distributed random variables $\mathbf{X} = (X_i)_{i\in I\subseteq\N}$ each taking $k$ possible values. Thus, a multinomial trial generalizes the Bernoulli trial, which corresponds to $k = 2$. For simplicity, we will denote the set of outcomes by $\set{1,\dots,k}$ and we will denote the common probability density function of trial variables by
+
+$$
+  p_i = \mathbb{P}(X_j = i),\; i\in\set{1,\dots,k}
+$$
+
+Of course $p_i > 0$ for each $i$ and $\sum_{i=1}^k p_i = 1$. In statistical terms, the sequence $\mathbf{X}$ is formed by sampling from the distribution.
+
+For $n\in\N$, we can introduce a random variable that count the number of times each outcome occured in the first $n$
+
+$$
+  Y_n = |\set{j\in\set{1,\dots,n} : X_j = i}| = \sum_{j=1}^n \mathbf{1}(X_j = 1),\; i\in\set{1,\dots,k}
+$$
+
+Note that $\sum_{i=1}^k Y_i = n$; if we know the values of $k - 1$ of the counting variables, we can find the value of the remaining variable.
+
+<MathBox title='Multinomial distribution' boxType='proposition'>
+Let $\mathbf{Y} = (Y_i)_{i=1}^k$ be a sequence of multinomial trials. For nonnegative integers $(j_i)_{i=1}^k$ with $\sum_{i=1}^k j_i = n$ we have
+
+$$
+\begin{align*}
+  \mathbb{P}(Y_1 = j_1,\dots,Y_k = j_k) =& \binom{n}{j_1,\dots,j_k} \prod_{i=1}^k p_i^{j_i} \\
+  \frac{n!}{j_1!\cdots j_k!} \prod_{i=1}^k p_i^{j_i}
+\end{align*}
+$$
+
+The distribution of $\mathbf{Y}$ is called the *multinomial distribution* with parameters $n$ and $\mathbf{p} = (p_i)_{i=1}^k$.
+
+<details>
+<summary>Proof</summary>
+
+By independence, any sequence of trials in which outcome $i$ occurs exactly $j_i$ times for $i\in\set{1,\dots,k}$ has probability $\prod_{i=1}^k p_i^{j_i}$. The number of such sequences is the multinomial coefficient $\binom{n}{j_1,\dots,j_2}$. Thus, the result follows from the additive property of probability.
+</details>
+</MathBox>
+
+<MathBox title='Marginal distribution of the multinomial distribution' boxType='proposition'>
+Let $\mathbf{Y} = (Y_i)_{i=1}^k$ be a sequence of multinomial trials. Each $Y_i$ has the binomial distribution with parameters $n$ and $p$
+
+$$
+  \mathbb{P}(Y_i = j) = \binom{n}{j} p_i^j (1 - p_i)^{n-j},\; j\in\set{0,1,\dots,n}
+$$
+
+<details>
+<summary>Proof</summary>
+
+If we think of each trial as resulting in outcome $i$ or not, then clearly we have a sequence of $n$ Bernoulli trials with success parameter $p_i$. Random variable $Y_i$ is the number of successes in the $n$ trials.
+</details>
+</MathBox>
+
+<MathBox title='Grouping of the multinomial distribution' boxType='proposition'>
+Suppose $(A_j)_{j=1}^m$ is a partition of the index set $\set{1,\dots,k}$ into nonempty subsets. For $j\in\set{1,\dots,m}$ let
+
+$$
+  Z_j = \sum_{i\in A_j} Y_i,\; q_j = \sum_{i\in A_j} p_i
+$$
+
+Then $\mathbf{Z} = (Z_j)_{j=1}^m$ has the multinomial distribution with parameters $n$ and $\mathbf{q} = (q_j)_{j=1}^m$.
+
+<details>
+<summary>Proof</summary>
+
+Each trial, independently of the others, results in an outome in $A_j$ with probability $q_j$. For each $j$, $Z_j$ counts the number of trails which result in an outcome in $A_j$. 
+</details>
+</MathBox>
+
+<MathBox title='Conditional multinomial distribution' boxType='proposition'>
+Suppose $(A, B)$ is a partition of the index set $\set{1,\dots,k}$ into nonempty subsets. Let $(j_i)_{i\in B}$ be a sequence of nonnegative integers, indexed by $B$ such that $j = \sum_{i\in B} j_i \leq n$. Let $p = \sum_{i\in A} p_i$. The condition distribution of $(Y_i)_{i\in A}$ given $(Y_i = j_i)_{i\in B}$ is multinomial with parameters $n - j$ and $(p_i / p)_{i\in A}$.
+
+<details>
+<summary>Proof</summary>
+
+If we know $Y_i= j_i$ for $i\in B$, then there are $n - j$ trials remaining, each of which, independently of the others, must result in an outcome in $A$. The conditional probability of a trial resulting in $i\in A$ is $p_i/p$.
+</details>
+</MathBox>
+
+### Moments
+
+<MathBox title='Expectation and variance of the multinomial distribution' boxType='proposition' tag='proposition-7'>
+Let $\mathbf{Y} = (Y_i)_{i=1}^k$ be a sequence of multinomial trials.
+1. $\mathbb{E}(Y_i) = np_i$
+2. $\operatorname{var}(Y_i) = np_i (1 - p_i)$
+
+<details>
+<summary>Proof</summary>
+
+The results follows from the fact that $Y_i$ has the binomial distribution with parameters $n$ and $p_i$.
+</details>
+</MathBox>
+
+<MathBox title='Covariance and correlation of the multinomial distribution' boxType='proposition'>
+Let $\mathbf{Y} = (Y_i)_{i=1}^k$ be a sequence of multinomial trials.
+1. $\operatorname{cov}(Y_i, Y_j) = -np_i p_j$
+2. $\operatorname{cor}(Y_i, Y_j) = -\sqrt{\frac{p_i p_j}{(1 - p_i)(1 - p_j)}}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** From the bi-linearity of the covariance operator, we have
+
+$$
+  \operatorname{cov}(Y_i, Y_j) = \sum_{s=1}^n \sum_{t = 1} \operatorname{cov}[\mathbf{1}(X_s = i), \mathbf{1}(X_t = j)]
+$$
+
+If $s = t$, the covariance of the indicator variables is $-p_i p_j$. If $s\neq t$ the covariance is $0$ by independence.
+
+**(2):** This follows from **(1)** and the variance of $Y_i$ and $Y_j$ (Proposition $\ref{proposition-7}$)
+</details>
+</MathBox>

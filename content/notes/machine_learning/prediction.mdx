@@ -474,3 +474,251 @@ $$
 $$
 
 and $x_+ = \max(x, 0)$ is the positive part of $x$. This is called *soft thresholding*. In contrast, *hard thresholding* sets values of $w_p$ to $0$ if $-\lambda \leq c_p \leq \lambda$, but it does not shrink the values of $w_p$ outside this interval. The slope of the soft thresholding line does does not coincide with the diagonal, which means that even large coefficients are shrunk towards zero. Consequently, LASSO regression is a biased estimator.
+
+# Logistic regression
+
+Logistic regression is a discriminative classification model $p(y|\mathbf{x};\boldsymbol{\theta})$, where $\mathbf{x}\in\R^p$ is a fixed-dimensional input, $y\in\Set{1,\dots,C}$ is the class label, $\boldsymbol{\theta}$ are the parameters. If $C = 2$ this is known as *binary logistic regression*, and if $C > 2$, it is known as *multinomial logistic regression*.
+
+## Binary logistic regression
+
+Binary logistic regression uses class labels $y\in\set{0,1}$ and corresponds to the model
+
+$$
+\begin{equation}
+  p(y|\mathbf{x};\boldsymbol{\theta}) = \operatorname{Bernoulli}(y|\sigma(\mathbf{w}^\top \mathbf{x} + b)) \tag{\label{equation-2}}
+\end{equation}
+$$
+
+where $\operatorname{Bernoulli}(y|\theta) = \theta^y (1 - \theta)^{-1}$ is the Bernoulli distribution and $\sigma$ is the sigmoid function
+
+$$
+  \sigma(\lambda) = \frac{1}{1 + e^{-\lambda}}
+$$
+
+Pluging the sigmoid function into $\eqref{equation-2}$ with $a = \mathbf{w}^\top \mathbf{x} + b$ we get
+
+$$
+\begin{align*}
+  p(y = 1|\mathbf{x};\boldsymbol{\theta}) =& \frac{1}{1 + e^{-a}} = \sigma(a) \\
+  p(y = 0|\mathbf{x};\boldsymbol{\theta}) =& 1 - \frac{1}{e + e^{-a}} = \frac{1}{1 + e^a} = \sigma(-a)
+\end{align*}
+$$
+
+Note that for $p = p(y = 1|\mathbf{x};\boldsymbol{\theta})$
+
+$$
+  \ln\left(\frac{1}{1 - p}\right) = \ln\left(\frac{e^a}{1 + e^a} \frac{1 + e^a}{1}\right) = \ln(e^a) = a
+$$
+
+This shows that $a$ is equal to the *log-odds* $\ln[1/(1 - p)]$. The inverse of the sigmoid function is called the *logit function*, defined by
+
+$$
+  \operatorname{logit}(p) = \sigma^{-1} (p) := \ln\left(\frac{p}{1 - p}\right)
+$$
+
+Sometimes we choose to use the labels $\tilde{y}\in\set{\pm 1}$ instead of $y\in\set{0, 1}$. We can compute the probability of these alternative labels using
+
+$$
+  p(\tilde{y}|\mathbf{x};\boldsymbol{\theta}) = \sigma(\tilde{y}a)
+$$
+
+since $\sigma(-a) = 1 - \sigma(a)$.
+
+### Linear classifier
+
+The sigmoid gives the probability that the class label is $y = 1$. If the loss for misclassifying each class is the same, then the optimal decision rule is to predict $y = 1$ if and only if class $1$ is more likely than class $0$. Thus
+
+$$
+\begin{align*}
+  f(\mathbf{x}) =& \mathbf{1}[p(y = 1|\mathbf{x}) > p(y = 0|\mathbf{x})] \\
+  =& \mathbf{1}\left(\ln\frac{p(y = 1)}{}\right) = \mathbf{1}_{a > 0}
+\end{align*}
+$$
+
+where $a = \mathbf{w}^\top \mathbf{x} + b$. Writing the prediction function as
+
+$$
+  f(\mathbf{x};\boldsymbol{\theta}) = b + \mathbf{w}^\top \mathbf{x} = b + \langle\mathbf{w},\mathbf{x}\rangle
+$$
+
+we see that $f$ defines a linear hyperplane with normal vector $\mathbf{w} \in\R^p$ and an offset $b\in\R$ from the origin. This linear plane is known as a *decision boundary* and splits the output space into two *half-spaces*. If we can perfectly separate the training examples by such a linear boundary without any classification errors, we say that the data is *linearly separable*.
+
+In general, there will be uncertainty about the correct class label, so we need to predict a probability distribution over labels, and not just decide which side of the decision boundary we are on. The normal $\mathbf{w}$ defines the orientation of the decision boundary, while its magnitude $\lVert\mathbf{w}\rVert$ controls the steepness of the sigmoid, and hence the confidence of the predictions.
+
+### Nonlinear classifiers
+
+A logistical regression problem can be made linearly separable by preprocessing the inputs with a suitable transformation $\phi(\mathbf{x})$. The transformed prediction function takes the form
+
+$$
+  f(\phi(\mathbf{x});\boldsymbol{\theta}) = b + \mathbf{w}^\top \phi(\mathbf{x})
+$$
+
+which remains linear in $\mathbf{w}$.
+
+<MathBox title='Quadratic decision boundary' boxType='example'>
+Suppose we apply a transformation $\phi(x_1,x_2) = [1, x_1^2, x_2^2]$ and let $\mathbf{w} = [-r^2, 1, 1]$. Then $\mathbf{w}^\top \phi(\mathbf{x}) = x_1^2 + x_2^2 - r^2$. In this case the decision boundary $f(\mathbf{x}) = b + \mathbf{w}^\top \phi(\mathbf{x})$ defines a circle with radius $r$.
+</MathBox>
+
+### Maximum likelihood estimation
+
+Suppose we have a sample $\set{(\mathbf{x}_n, y_n) | y_n\in\set{0,1}}_{n=1}^N$ of $N$ binary classification. Assuming that the bias term $b$ is absorbed into the weight vector $\mathbf{w}\in\R^p$, the scaled negative log likelihood is given by
+
+$$
+\begin{align*}
+  -\ln(\mathbf{w}) =& -\frac{1}{N} \ln P(\mathcal{D}|\mathbf{w}) = -\frac{1}{N}\ln\prod_{n=1}^N \operatorname{Bernoulli}(y_n | \mu_n) \\
+  =& -\frac{1}{N} \sum_{n=1}^N \ln[\mu_n^{y_n} (1 - \mu_n)^{1 - y_n}] \\
+  =& -\frac{1}{N} \sum_{n=1}^N [y_n \ln\mu_n + (1 - y_n) \ln(1 - \mu_n)] \\
+  =& \frac{1}{N} \sum_{n=1}^N H_{ce} (y_n, \mu_n)
+\end{align*}
+$$
+
+where $\mu_n = \sigma(a_n)$ is the probability of class $1$, $a_n = \mathbf{w}^\top \mathbf{x}_n$ is the logit, and $H_{ce} (y_n, \mu_n)$ is the binary cross entropy defined by
+
+$$
+  H_{ce}(p,q) = -\left[p \ln q + (1 - p) \ln(1 - q) \right]
+$$
+
+If we use $\tilde{y}_n \in\set{\pm 1}$ instead of $y\in\set{0,1}$, we can rewrite this as follows
+
+$$
+\begin{align*}
+  -\ln(\mathbf{w}) =& -\frac{1}{N} \sum_{n=1}^N [\mathbf{1}(\tilde{y}_n = 1) \ln(\sigma(a_n)) + \mathbf{1}(\tilde{y}_n = -1)\ln(\sigma(-a_n))] \\
+  =& -\frac{1}{N}\sum_{n=1}^N \ln(\sigma(\tilde{y}_n a_n)) \\
+  =& \frac{1}{N} \sum_{n=1}^N \ln(1 + e^{-\tilde{y}_n a_n})
+\end{align*}
+$$
+
+To find the maximum likelihood estimation we must solve $\nabla_\mathbf{w} (-\ln(\mathbf{w})) = \mathbf{0}$. To start note that
+
+$$
+  \frac{\d\mu_n}{\d a_n} = \sigma(a_n)(1 - \sigma(a_n))
+$$
+
+Thus, by the chain rule we have
+
+$$
+  \frac{\partial}{\partial w_i}\mu_n = \frac{\partial}{\partial} \sigma(\mathbf{w}^\top \mathbf{x}_n) = \frac{\partial}{\partial a_n}\sigma(a_n) \frac{\partial a_n}{\partial w_i} = \mu_n (1 - \mu_n) x_{ni}
+$$
+
+The gradient for the bias term can be derived in the same way, by using the input $x_{n0} = 1$ in the above equation. Combining the results we get
+
+$$
+  \nabla_\mathbf{w} \ln(\mathbf{\mu_n}) = \frac{1}{\mu_n} \nabla_\mathbf{w} \mu_n = (1 - \mu_n)\mathbf{x}_n
+$$
+
+Similarly,
+
+$$
+  \nabla_\mathbf{w} \ln(1 - \mu_n) = -\frac{\mu_n (1 - \mu_n)\mathbf{x}_n}{1 - \mu_n} = -\mu_n \mathbf{x}_n
+$$
+
+Thus, the gradient of the negative log-likelihood is given by
+
+$$
+\begin{equation}
+\begin{split}
+  \nabla_\mathbf{w} (-\ln(\mathbf{w})) =& -\frac{1}{N}\sum_{n=1}^N [y_n (1 - \mu_n)\mathbf{x}_n - (1 - y_n)\mu_n \mathbf{x}_n] \\
+  =& -\frac{1}{N} \sum_{n=1}^N [y_n \mathbf{x}_n - y_n \mathbf{x}_n \mu_n - \mathbf{x}_n \mu_n + y_n \mathbf{x}_n \mu_n] \\
+  =& \frac{1}{N} \sum_{n=1}^N (\mu_n - y_n)\mathbf{x}_n
+\end{split}\tag{\label{equation-3}}
+\end{equation}
+$$
+
+If we interpret $\epsilon_n = \mu_n - y_n$ as an error signal, the gradient weights each input $\mathbf{x}_n$ by its error, and then averages the result. In matrix form, the gradient can be written as
+
+$$
+  \nabla_\mathbf{w} (-\ln (\mathbf{w})) = \frac{1}{N} (\mathbf{1}_N^T \operatorname{diag}(\boldsymbol{\mu} - y)\mathbf{X})^T
+$$
+
+where $\mathbf{X}$ is the $N\times p$ design matrix containin the examples $\mathbf{x}_n$ in each row.
+
+We can show that the Hessian is given by
+
+$$
+  \mathbf{H}(\mathbf{w}) = \nabla_\mathbf{w} \nabla_\mathbf{w}^\top (-\ln(\mathbf{w})) = \sum_{n=1}^N (\mu_n (1 - \mu_n)\mathbf{x}_n)\mathbf{x}_n^\top = \frac{1}{D} \mathbf{X}^\top \mathbf{SX}
+$$
+
+where $\mathbf{S} := \operatorname{diag}(\mu_n (1 - \mu_n))_{n=1}^N$. We see that $\mathbf{H}$ is positive definite, since for any nonzero vector $\mathbf{v}\in\R^p$ we have
+
+$$
+  \mathbf{v}^\top \mathbf{X}^\top \mathbf{SXv} = (\mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2})(\mathbf{S}^{1/2} \mathbf{Xv}) = \lVert \mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2} \rVert_2^2 > 0
+$$
+
+This follows since $\mu_n > 0$ for all $n$, because of the use of the sigmoid function. Consequently the negative log-likelihood function is strictly convex. However, in practice, values of $\mu_n$ which are close to $0$ and $1$ might cause the Hessian to be close to singular. This can be avoided by using $\ell_2$ regularization.
+
+### Stochastic gradient descent update (SGD)
+
+Using stochastic gradient descent to minimize the negative log likelihood with minibatch of size $1$ gives the following update
+
+$$
+\begin{equation}
+  \mathbf{w}_{t+1} = \mathbf{w}_t - \eta_t \nabla_\mathbf{w} (-\ln(\mathbf{w})) = \mathbf{w}_t - \eta_t (\mu_n - y_n)\mathbf{x}_n \tag{\label{equation-4}}
+\end{equation}
+$$
+
+where we replaced the average over all $N$ examples in the gradient $\eqref{equation-3}$ with a single stochastically chose sample $n$.
+
+### Perceptron algorithm
+
+A perceptron is a deterministic binary classifier of the following form
+
+$$
+  f(\mathbf{x}_n; \boldsymbol{\theta}) = \mathbf{1}(\mathbf{w}^\top \mathbf{x}_n + b > 0)
+$$
+
+This can be seen to be a limiting case of a binary logistic regression classifier, in which the sigmoid function $\sigma(a)$ is replace by the Heaviside step function $H(a) := \mathbf{1}_{a > 0}$. Since the Heaviside function is not differentiable, we cannot use gradient-based optimization methods to fit this model. However, Rosenblatt proposed the *perceptron learning algorithm* instead. The basic idea ist to start with random weights, and then iteratively update them whenever the model makes a predicition mistake. The weights are updated via
+
+$$
+\begin{equation}
+  \mathbf{w}_{t + 1} = \mathbf{w}_t - \eta_t (\hat{y}_n - y_n)\mathbf{x}_n \tag{\label{equation-5}}
+\end{equation}
+$$
+
+The perceptron update rule can be interpreted intuitively: if the prediction is correct, no change is made, otherwise we move the weights in a direction so as to make the correct answer more likely.
+
+Comparing $\eqref{equation-5}$ to $\eqref{equation-4}$, we see that the perceptron update rule is equivalent to the SGD update rule for binary logistic regression using the approximation where we replace the soft probabilities $\mu_n = p(y_n = 1|\mathbf{x}_n)$ with hard labels $\hat{y}_n = f(\mathbf{x}_n)$. The advantage of the perceptron method is that we do not need to compute probabilities, which can be useful when the label space is very large. The disadvantage is that the method will only converge when the data is linearly separable, whereas SGD will always converge to the globaly optimal MLE, even if the data is not linearly separable. 
+
+## Multinomial classification
+
+The categorical distribution is a discrete probability distribution with one parameter per class
+
+$$
+  \operatorname{Cat}(y|\boldsymbol{\theta}) := \prod_{c=1}^C \theta_c^{\mathbf{1}_{y = c}}
+$$
+
+In other words, $p(y = c|\boldsymbol{\theta}) = \theta_c$. Note that the parameters are constrained so that $\theta_c \in [0,1]$ and $\sum_{c=1}^C \theta_c = 1$. Thus, there are only $C - 1$ independent parameters.
+
+We can write the categorical distribution in another way by converting the discrete variable $y$ into a *one-hot vector* with $C$ elements, all of which are $0$ except for the entry corresponding to the class label. More generally, we can encode the classes using *unit vectors*, where $\mathbf{e}_c$ is all zeroes except for dimension $c$. Using one-hot encodings, we can write the categorical distribution as
+
+$$
+  \operatorname{Cat}(\mathbf{y}|\boldsymbol{\theta}) := \prod_{c=1}^C \theta_c^{y_c}
+$$
+
+The categorical distribution is a special case of the *multinomial distribution*.
+
+In the conditional case, we can define
+
+$$
+  p(y|\mathbf{x};\boldsymbol{\theta}) = \operatorname{Cat}(y|f(\mathbf{x};\boldsymbol{\theta})) = \mathcal{M}(\mathbf{y}|1, f(\mathbf{x};\boldsymbol{\theta}))
+$$
+
+We require that $f_c(\mathbf{x};\boldsymbol{\theta}) \in [0,1]$ and $\sum_{c=1}^C f_c (\mathbf{x};\boldsymbol{\theta}) = 1$. This can be achieved by applying the softmax function on $f$. The softmax function $\operatorname{softmax}:\R^n \to [0,1]^n$ is also called the multinomial logit and is defined as
+
+$$
+  \operatorname{softmax}(\mathbf{a}) := \left[\frac{e^{a_1}}{\sum_{c'=1}^C e^{a_{c'}}},\dots,\frac{e^{a_C}}{\sum_{c' = 1}^C e^{a_{c'}}} \right]
+$$
+
+The inputs to the softmax, $\mathbf{a} = f(\mathbf{x};\boldsymbol{\theta})$, are called logits and are a generalization of the log odds. 
+
+If we use a linear predictor of the form $f(\mathbf{x};\boldsymbol{\theta}) = \mathbf{Wx} + \mathbf{b}$, where $\mathbf{W}$ is a $C\times P$ matrix, and $\mathbf{b}\in\R^C$ is a bias vector, the final model becomes
+
+$$
+  p(y|\mathbf{x};\boldsymbol{\theta}) = \operatorname{Cat}(y|\operatorname{softmax}(\mathbf{Wx} + \mathbf{b}))
+$$
+
+Let $\mathbf{a} = \mathbf{Wx} + \mathbf{b}$ be the $C$-dimensional vector of logits. Then we can rewrite the above as follows
+
+$$
+  p(y = c|\mathbf{x};\boldsymbol{\theta}) = \frac{e^{a_c}}{\sum_{c'=1}^C e^{a_{c'}}}
+$$
+

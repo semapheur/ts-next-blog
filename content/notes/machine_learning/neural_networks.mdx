@@ -21,7 +21,7 @@ $$
 where
 - $\mathbf{W}\in\mathbb{F}^{m\times n}$ represents linear weights
 - $\mathbf{b}\in\mathbb{F}^m$ is the bias
-- $\sigma: \mathcal{F}^m \to \mathbb{F}^m$
+- $\sigma: \mathbb{F}^m \to \mathbb{F}^m$
 
 The input and output spaces can take any form, e.g.
 - $\set{0,1}$: binary
@@ -49,9 +49,13 @@ $$
 
 ### Sigmoid
 
+The (logistic) sigmoid function $\sigma:\R\to[0,1]$ is given by 
+
 $$
   \sigma(\lambda) := \frac{1}{1 + e^{-\lambda}}
 $$
+
+The term "sigmoid" means S-shaped. The sigmoid function can be thought of as a "soft" version of the Heaviside step function.
 
 <GraphFigure 
   expression="1/(1 + exp(-x))"
@@ -60,6 +64,14 @@ $$
   yAxis={{scale: "linear", domain: [0,1]}}
   caption="Sigmoid function"
 />
+
+<MathBox title='Properties of the sigmoid function' boxType='proposition'>
+1. $\sigma'(\lambda) = \sigma(\lambda)(1 - \sigma(\lambda))$
+2. $1 - \sigma(\lambda) = \sigma(\lambda)$
+3. $\sigma^{-1} (\lambda) = \ln\left(\frac{\lambda}{1 - \lambda} \right) =: \operatorname{logit}(\lambda)$
+4. $\sigma_+ (\lambda) := \ln(1 + e^\lambda) =: \operatorname{softplus}(\lambda)$
+5. $\sigma'_+ (\lambda) = \sigma(\lambda)$
+</MathBox>
 
 ### Hyperbolic tangent
 
@@ -96,7 +108,7 @@ Softmax has the useful property that its output is a discrete probability distri
 $\operatorname{maxpool}:\R^n \to\R^m$
 
 $$
-  \operatorname{maxpool}\left(\begin{bmatrix} x_1 \\ \vdot \\ x_n \end{bmatrix} \right) := \begin{bmatrix}
+  \operatorname{maxpool}\left(\begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix} \right) := \begin{bmatrix}
     \max_{j\in I_1} x_j \\
     \vdots \\
     \max_{j\in I_m} x_j
@@ -329,14 +341,14 @@ To describe the backpropagation algorithm, let us decompose $V$ into the layers 
 Next we discuss how to calculate the partial derivatives with respect to the edges from $V_{t-1}$ to $V_t$, that is, with respect to the elements in $\mathbf{W}_{t-1}$. Since we fix all other weights of the network, it follows that the outputs of all the neurons in $V_{t-1}$ are fixed numbers which do not depend on the weights in $\mathbf{W}_{t-1}$. Denote the corresponding vector by $\mathbf{o}_{t-1}$. Additionally, let us denote by $\ell_t : \R^{k_t} \to\R$ the loss function of the subnetwork defined by layers $V_t,\dots,V_T$ as a function of the outputs of the neurons in $V_t$. The input to the neurons of $V_t$ can be written as $\mathbf{a}_t = \mathbf{W}_{t-1} \mathbf{o}_{t-1}$ and the output of the neurons of $V_t$ is $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{a}_t)$. That is, for every $j$ we have $o_{t,j} = \sigma(a_{t,j})$. We obtain that the loss, as a function of $\mathbf{W}_{t-1}$, can be written as
 
 $$
-  g_t (\mathbf{W}_{t-1}) =& \ell_t (\mathbf{o}_t) = \ell_t (\boldsymbol{\sigma}(\mathbf{a}_t)) = \ell_t (\boldsymbol{\sigma(\mathbf{W}_{t-1} \mathbf{o}_{t-1})})
+  g_t (\mathbf{W}_{t-1}) = \ell_t (\mathbf{o}_t) = \ell_t (\boldsymbol{\sigma}(\mathbf{a}_t)) = \ell_t (\boldsymbol{\sigma(\mathbf{W}_{t-1} \mathbf{o}_{t-1})})
 $$
 
 For convenience, we rewrite this as follows. Let $\mathbf{w}_{t-1} \in\R^{k_{t-1}k_t}$ be the column vector obtained by concatenating the rows of $\mathbf{W}_t$ and then taking the transpose of the resulting long vector. Define by $\mathbf{O}_{t-1}$ the $k_t \times (k_{t-1} k_t)$ matrix
 
 $$
   \mathbf{O}_{t-1} = \begin{bmatrix}
-    \mathbf{o}_{t-1}^top & \mathbf{0} & \cdots & \mathbf{0} \\
+    \mathbf{o}_{t-1}^\top & \mathbf{0} & \cdots & \mathbf{0} \\
     \mathbf{0} & \mathbf{o}_{t-1}^\top & \cdots & \mathbf{0} \\
     \vdots & \vdots & \ddots & \vdots \\
     \mathbf{0} & \mathbf{0} & \cdots & \mathbf{o}_{t-1}^\top
@@ -352,7 +364,7 @@ $$
 Therefore, applying the chain rule, we obtain that
 
 $$
-  J_{\mathbf{w}_{t-1}}(g_t) = J_{\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1})} (\ell_t) \operatorname{\diag}(\boldsymbol{\sigma}' (\mathbf{O}_{t-1}\mathbf{w}_{t-1}))\mathbf{O}_{t-1}
+  J_{\mathbf{w}_{t-1}}(g_t) = J_{\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1})} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{O}_{t-1}\mathbf{w}_{t-1}))\mathbf{O}_{t-1}
 $$
 
 Using our nation we have $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{O}_{t-1}\mathbf{w}_{t-1})$ and $\mathbf{a}_t = \mathbf{O}_{t-1} \mathbf{w}_{t-1}$, which yields
@@ -385,7 +397,7 @@ $$
 \begin{align*}
   \boldsymbol{\delta}_t =& J_{\mathbf{o}_t} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{o}_t)} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{o}_t))\mathbf{W}_t \\
   =& J_{\mathbf{o}_{t+1}} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{a}_{t+1}))\mathbf{W}_t \\
-  =& \boldsymbol{\diag}_{t+1} \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_{t+1}))\mathbf{W}_t
+  =& \boldsymbol{\delta}_{t+1} \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_{t+1}))\mathbf{W}_t
 \end{align*}
 $$
 
