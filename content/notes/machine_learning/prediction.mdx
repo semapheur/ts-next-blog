@@ -481,7 +481,7 @@ Logistic regression is a discriminative classification model $p(y|\mathbf{x};\bo
 
 ## Binary logistic regression
 
-Binary logistic regression uses class labels $y\in\set{0,1}$ and corresponds to the model
+Binary logistic regression is a discriminative classification model of the form
 
 $$
 \begin{equation}
@@ -489,8 +489,13 @@ $$
 \end{equation}
 $$
 
-where $\operatorname{Bernoulli}(y|\theta) = \theta^y (1 - \theta)^{-1}$ is the Bernoulli distribution and $\sigma$ is the sigmoid function
-
+where 
+- $y\in\set{0,1}$ is the class label
+- $\mathbf{x}\in\R^P$ is the input vector
+- $\mathbf{w}\in \R^n$ is a weight vector
+- $b\in\R$ is a bias scalar
+- $\operatorname{Bernoulli}(y|\theta) = \theta^y (1 - \theta)^{-1}$ is the Bernoulli distribution
+- $\sigma:\R\to [0,1]$ is the sigmoid function
 $$
   \sigma(\lambda) = \frac{1}{1 + e^{-\lambda}}
 $$
@@ -531,7 +536,7 @@ The sigmoid gives the probability that the class label is $y = 1$. If the loss f
 $$
 \begin{align*}
   f(\mathbf{x}) =& \mathbf{1}[p(y = 1|\mathbf{x}) > p(y = 0|\mathbf{x})] \\
-  =& \mathbf{1}\left(\ln\frac{p(y = 1)}{}\right) = \mathbf{1}_{a > 0}
+  =& \mathbf{1}\left(\ln\frac{p(y = 1)}{p(y = 0)}\right) = \mathbf{1}_{a > 0}
 \end{align*}
 $$
 
@@ -679,6 +684,99 @@ The perceptron update rule can be interpreted intuitively: if the prediction is 
 Comparing $\eqref{equation-5}$ to $\eqref{equation-4}$, we see that the perceptron update rule is equivalent to the SGD update rule for binary logistic regression using the approximation where we replace the soft probabilities $\mu_n = p(y_n = 1|\mathbf{x}_n)$ with hard labels $\hat{y}_n = f(\mathbf{x}_n)$. The advantage of the perceptron method is that we do not need to compute probabilities, which can be useful when the label space is very large. The disadvantage is that the method will only converge when the data is linearly separable, whereas SGD will always converge to the globaly optimal MLE, even if the data is not linearly separable. 
 
 ## Multinomial classification
+
+Multinomial logistic regression is a discriminative classification model of the following form
+
+$$
+  p(y|\mathbf{x};\boldsymbol{\theta}) = \operatorname{Cat}(y|\operatorname{softmax}(\mathbf{Wx} + \mathbf{b}))
+$$
+
+where
+- $\mathbf{x}\in\R^P$ is the input vector
+- $y\in\set{1,\dots,C}$ is the class label
+- $\mathbf{W}\in\R^{C\times P}$ is a weight matrix
+- $\mathbf{b}\in\R^C$ is a bias vector
+- $\operatorname{Cat}$ is the categorical distribution
+- $\operatorname{softmax}:\R^C \to [0,1]$
+
+Absorbing the bias $\mathbf{b}$ into $\mathbf{W}$ (by prepending each $\mathbf{x}$ with a $1$) we can write this as
+
+$$
+  p(y = c|\mathbf{x};\boldsymbol{\theta}) = \frac{e^{a_c}}{\sum_{c' = 1}^C e^{a_{c'}}}
+$$
+
+where $\mathbf{a} = \mathbf{Wx}$. Because of the normalization condition $\sum_{c=1}^C p(y_n = c|\mathbf{x}_n;\boldsymbol{\theta}) = 1$, we can set $\mathbf{w}_c = \mathbf{0}$. Thus, the parameters $\boldsymbol{\theta}$ correspond to a weight matrix $\mathbf{W}$ of size $(C - 1) \times P$, where $\mathbf{x}_n \in\R^P$.
+
+Note that this model assumes the labels are mutually exclusive. For some applications, e.g. image tagging, we want to predict one or more labels for an input. In this case, the output space is the set of subsets of $\set{1,\dots,C}$. This is called *multi-label classification* as opposed to *multi-class classification*. This can be viewed as a bit vector $\mathbf{y} = \set{0,1}^C$, where the $c$th output is set to $1$ if it is present. We can handle this using a modified version of binary logistic regression with multiple outputs
+
+$$
+  p(\mathbf{y}|\mathbf{x};\boldsymbol{\theta}) = \prod_{c=1}^C \operatorname{Bernoulli}(y_c | \sigma(\mathbf{w}_c^\top \mathbf{x}))
+$$
+
+### Maximum likelihood estimation
+
+Suppose we have a sample $\Set{(\mathbf{x}_n, \mathbf{y}_n)| \mathbf{y}_n \in\set{0,1}^n}_{n=1}^N$ of $N$ multinomial classifications. The scaled negative log likelihood function is given by
+
+$$
+\begin{align*}
+  -\ln(\boldsymbol{\theta}) =& \frac{1}{N} \ln\prod_{n=1}^N \prod_{c=1}^C \mu_{nc}^{y_{nc}} \\
+  =& -\frac{1}{N} \sum_{n=1}^N \sum_{c=1}^C y_{nc} \ln(\mu_{nc}) \\
+  =& \frac{1}{N} \sum_{n=1}^N H_{ce} (\mathbf{y}_n, \boldsymbol{\mu}_n)
+\end{align*}
+$$
+
+where 
+- $\mu_{nc} = p(y_{nc} = 1 | \mathbf{x}_n;\operatorname{\theta}) = \operatorname{softmax}(f(\mathbf{x}_n;\boldsymbol{\theta}))_c$
+- $\mathbf{y}_n$ is the one-hot encoding of the label, so $y_{nc} = \mathbf{1}(y_n = c)$
+- $H_{ce} (\mathbf{y}_n, \boldsymbol{\mu}_n) = -\sum_{c=1}^C y_{nc} \ln \mu_{nc}$ is the cross-entropy
+
+To find the maximum likelihood estimation, we must solve $\nabla_\mathbf{w} (-\ln(\mathbf{w})) = \mathbf{0}$, where $\mathbf{w}$ is a vectorized version of the weight matrix $\mathbf{W}$. To derive the gradient of the negative log likelihood, we need to use the Jacobian of the softmax function, which is as follows
+
+$$
+  \frac{\partial\mu_c}{\partial a_j} = \mu_c (\delta_{cj} - \mu_j)
+$$
+
+In matrix form, this can be written as
+
+$$
+  \frac{\partial\boldsymbol{\mu}}{\partial\mathbf{a}} = (\boldsymbol{\mu}\mathbf{1}^\top) \odot (\mathbf{I} - \mathbf{1}\boldsymbol{\mu}^\top)
+$$
+
+where $\odot$ is elementwise product, $\boldsymbol{\mu}\mathbf{1}^\top$ copies $\boldsymbol{\mu}$ across each column, and $\mathbf{1}\boldsymbol{\mu}^\top$ copes $\boldsymbol{mu}$ across each row.
+
+We now derive the gradient of the negative log likelihood for a single example, indexed by $n$. To do this, we flatten the the weight matrix $\mathbf{W}\in\R^{P\times C}$ into a vector $\mathbf{w}\in\R^{CD}$ by concatenating the rows, and then transposing into a column vector. We use $\mathbf{w}_j$ to denote the vector of weights associated with class $j$. The gradient with respect to $\mathbf{w}_j$ is
+
+$$
+\begin{align*}
+  \nabla_{\mathbf{w}_c} (-\ln(\mathbf{w}_j))_n =& \sum_c^C \frac{\partial(-\ln(\mathbf{w}_j))}{\mu_{nc}} \frac{\partial\mu_{nc}}{\partial_{nj}}\frac{\partial a_{nj}}{\partial\mathbf{w}_j} \\
+  =& -\sum_{c=1}^C \frac{y_{nc}}{\mu_{nc}} \mu_{nc}(\delta - \mu_{nj})\mathbf{x}_n \\
+  =& \sum_{c=1}^C y_{nc} (\mu_{nj} - \delta_{jc})\mathbf{x}_n \\
+  =& \left(\sum_{c=1}^C \mu_{nc} \right) \mu_{nj} \mathbf{x}_n - \sum_{c=1}^C \delta_{jc} y_{nj} \mathbf{x}_n \\
+  =& (\mu_{nj} - y_{nj})\mathbf{x}_n
+\end{align*}
+$$
+
+Repeating this computation for each class and summing over all examples, we get
+
+$$
+  \mathbf{g}(\mathbf{w}) = \frac{1}{N} sum_{n=1}^N \mathbf{x}_n (\boldsymbol{\mu}_n - \mathbf{y}_n)^\top
+$$
+
+The Hessian matrix is given by
+
+$$
+  \mathbf{H}(\mathbf{w}) = \frac{1}{N} \sum_{n=1}^N (\operatorname{diag}(\boldsymbol{\mu_n}) - \boldsymbol{\mu}_n \boldsymbol{\mu}_n^\top) \otimes (\mathbf{x}_n \mathbf{x}_n^\top)
+$$
+
+where $\mathbf{A}\otimes\mathbf{B}$ is the Kronecker product. In other words, the block $c, c'$ submatrix is given by
+
+$$
+  \mathbf{H}_{c,c'} (\mathbf{w}) = \frac{1}{N} \sum_{n=1}^N \mu_{nc} (\delta_{c,c'} - \mu_{n,c'})\mathbf{x}_n \mathbf{x}_n^\top
+$$
+
+The Hessian $\mathbf{H}(\mathbf{w})$ is a positive matrix, so the objective is convex.
+
+### Categorical distribution
 
 The categorical distribution is a discrete probability distribution with one parameter per class
 
