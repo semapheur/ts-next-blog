@@ -247,11 +247,101 @@ $$
 
 ## Regression problems
 
+In regression problems the action and state spaces continuous, i.e. $A, H\subseteq\R$.
+
 ### Quadratic loss ($\ell_2$ loss)
 
-### $\ell_1$ loss
+The quadratic loss, also known as the $\ell_2$ loss or squared error, is defined as
+
+$$
+  \ell_2 (h,a) = (h - a)^2
+$$
+
+In this case, the risk is given by
+
+$$
+  \rho(a|\mathbf{x}) = \mathbb{E}[(h-a)^2 | \mathbf{x}] = \mathbb{E})(h^2 | \mathbf{x}) - 2a\mathbb{E}[h|\mathbf{x}] + a^2
+$$
+
+The optimal action must satisfy that the derivative of the risk is zero. Hence, the optimal action is to pick the posterior mean
+
+$$
+  \frac{\partial}{\partial a} \rho(a|\mathbf{x}) = -2\mathbb{E}(h|\mathbf{x}) + 2a \implies \pi(\mathbf{x}) = \mathbb{E}[h|\mathbf{x}] = \int h p(h|\mathbf{x})\;\d h
+$$
+
+This called the minimum mean squared error (MMSE) estimate. Since the $\ell_2$ loss penalizes deviations from the truth quadratically, it is sensitive to *outliers*.
+
+### Absolute loss ($\ell_1$ loss)
+
+The absolute loss, or $\ell_1$ loss is given by
+
+$$
+  \ell_1 (h, a) = |h-a|
+$$
+
+The optimal estimate is the *posterior medien*, i.e. value such that $p(h < a|\mathbf{x}) = p(h\geq a | \mathbf{x}) = 0.5$
+
+### Huber loss
+
+The *Huber loss* is defined as follows
+
+$$
+  \ell_\delta(h,a) = \begin{cases}
+    r^2 / 2,\quad |r|\leq\delta \\
+    \delta|r| - \delta^2 / 2,\quad |r| > \delta
+  \end{cases}
+$$
 
 ## Probabilistic prediction problems
+
+In probabilistic predictions problem, we assume that the state and action spaces are distributions, denoted $h = p(Y|\mathbf{x})$ dn $a = q(Y|\mathbf{x})$, respectively. In this setting, we want to pick $q$ to to minimize $\mathbb{E}[\ell(p,q)]$ for each given $\mathbf{x}$
+
+### Kullback-Leibler divergence
+
+A common loss function for comparing two distributions is the *Kullback-Leibler (KL) divergence*, which is defined as
+
+$$
+  D_{\text{KL}} (p \lVert q) := \sum_{y\in Y} p(y) \ln\frac{p(y)}{q(y)}
+$$
+
+where we have assumed that $Y$ is discrete. We can expand the KL as follows
+
+$$
+\begin{align*}
+  D_{KL} (p \lVert q) =& \sum_{y\in Y} p(y) \ln[p(y)] - \sum_{y\in Y} p(y) \ln[q(y)] \\
+  =& -\mathbb{H}(p) + \mathbb{H}_{\text{ce}} (p,q) \\
+  \mathbb{H}(p) :=& -\sum_{y\in Y} p(y) \ln[p(y)]\\
+  \mathbb{H}_{\text{ce}}(p,q) := -\sum_{y\in Y} p(y) \ln[q(y)] 
+\end{align*}
+$$
+
+The $\mathbb{H}(p)$ term is known as the entropy. This is a measure of uncertainty or variance of $p$; it is maximal if $p$ is uniform, and is zero if $p$ is a degenerate or deterministic delta function. The $\mathbb{H}_{\text{ce}}(p,q)$ term is known as the cross-entropy. This measures the expected number of bits we need to use to compess a dataset coming from distribution $p$ if we design our code using distribution $q$. Thus, the KL is the extra number of bits we need to use to compress the data due to using the incorrect distribution $q$. If the KL is zero, it means that we can correctly predict the probabilities of all possible future events.
+
+To find the optimal distribution to use when predicting futute data, we can minimize $D_{\text{KL}} (p \lVert q)$. Since the entropy $\mathbb{H}(p)$ is independent of $q$, we can equivalently minimize the cross-entropy $\mathbb{H}_{\text{ce}} (p,q)$ 
+
+$$
+  q^* (Y) = \argmin_q \mathbb{H}_{\text{ce}}(p(Y), q(Y))
+$$
+
+Now consider the secial case in which the true state is a degenerate distribution, which put all its mass on a single outcome, say $c$, i.e. $h = p(Y) = \mathbf{1}(Y = c)$. This is called a *one-hot* distribution, since it "turns on" the $c$th element of the vector, and leaves the other elements "off". In this case, the cross entropy becomes
+
+$$
+  \mathbb{H}_{\text{ce}} (\delta(Y = c), q) = -\sum_{y\in Y} \delta (y = c) \ln[q(y)] = -\ln[q(y)]
+$$
+
+This is known as the *log loss* of the predictive distribution $q$ when given target label $c$.
+
+# Model selection
+
+## Information criteria
+
+### Bayesian information criterion (BIC)
+
+### Akaike information criterion (AIC)
+
+### Minimum description length (MDL)
+
+### Widely applicable information criterion (WAIC)
 
 # Frequentist decision theory
 
