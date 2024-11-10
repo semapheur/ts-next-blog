@@ -1,0 +1,204 @@
+---
+title: 'Decision Theory'
+subject: 'Machine Learning'
+showToc: true
+references:
+  - book_murphy_2022
+---
+
+# Bayesian decision theory
+
+In decision theory, we asumme the decision maker, or *agent*, has a set of possible actions $A$ to choose from. Each action $a\in A$ has costs and benefits depending on the underlying state $h \in H$. This can be encoded into a *loss function* $\ell(h,a)$ specifying the loss we incur if we take action $a\in A$ when the state is $h\in H$.
+
+The *posterior expected loss* measures the *risk* for each possible action $a\in A$ given all the relevant evidence $\mathbf{x}\in E$, and is defined as
+
+$$
+  \rho(a|\mathbf{x}) := \mathbb{E}_{p(h|\mathbf{x})} [\ell(h,a)]
+$$
+
+The *optimal policy* $\pi^* (\mathbf{x})$, also called the *Bayes estimator* or *Bayes decision rule* $\delta^* (\mathbf{x})$, specifies what action to take when presented with evidence so as to minimize the risk, i.e.
+
+$$
+  \pi^* (\mathbf{x}) = \argmin{a\in A} \mathbb{E}_{p(h|\mathbf{x})} [\ell(h,a)]
+$$
+
+Equivalently, we can define a *utility function* $U(h,a)$ to be the desirability of each possible action in each possible state. Setting $U(h,a) = -\ell(h,a)$, the optimal policy is
+
+$$
+  \pi^* (\mathbf{x}) = \argmax{a\in A} \mathrm{E}_h [U(h,a)]
+$$
+
+This is called the *maximum expected utility principle*.
+
+Standard Bayesian decision theory implicitly assumes that the agent is *risk neutral*, which means that its decision is not affected by the degree of certainty in a set of outcomes. The theory can be generalized by introducing *risk sensitivity*, in which case the agent can have the following risk profiles:
+- *risk averse*
+
+## Classification problems
+
+### Zero-one loss
+
+Suppose the states correspond to class labels, i.e. $H = Y = \set{1,\dots, C}$. Furthermore, suppose the actions also class labels, i.e. $A = Y$. In this setting, a very commonly used loss function is the *zero-one-loss* $\ell_{01} (y^*, \hat{y})$ defined as
+
+$$
+\begin{array}{c|cc}
+  & \hat{y} = 0 & \hat{y} = 1 \\ \hline
+  y^* = 0 & 0 & 1 \\
+  y^* = 1 & 1 & 0 
+\end{array}
+$$
+
+We can write this concisely as $\ell_{01} (y^*, \hat{y}) = \mathbf{1}(y^* \neq\hat{y})$. In this case, the posterior expected loss is
+
+$$
+  \rho(\hat{y}|\mathbf{x}) = p(\hat{y}\neq y^* | \mathbf{x}) = 1 - p(y^* = \hat{y} | \mathbf{x})
+$$
+
+The action that minimizes the expected loss is to choose the most probable label, i.e. $\pi^* (\mathbf{x}) = \argmax_{y\in Y} p(y|\mathbf{x})$. This corresponds to the *mode* of the posterior distribution, also known as the *maximum a posteriori estimate*. 
+
+### Cost-sensitive classification
+
+Consider a binary classification problem where the loss function $\ell(y^*, \hat{y})$ is defined as
+
+$$
+  \begin{bmatrix}
+    \ell_{00} & \ell_{01} \\
+    \ell_{10} & \ell_{11}
+  \end{bmatrix}
+$$
+
+Let $p_0 = p(y^* = 0 | \mathbf{x})$ and $p_1 = 1 - p_0$. Thus we should choose label $\hat{y} = 0$ if and only if
+
+$$
+  \ell_{00} p_0 + \ell_{10} p_1 < \ell_{01} p_0 + \ell_{11} p_1
+$$
+
+If $\ell_{00} = \ell_{11} = 0$, this simplifies to
+
+$$
+  p_1 < \frac{\ell_{01}}{\ell_{01} + \ell_{10}}
+$$
+
+Now suppose $\ell_{10} = c\ell_{01}$, so a false negative costs $c$ times more than a false position. In this case, the optimal policy is to pick $a = 0$ if and only if $p_1 < 1/(1 + c)$.
+
+### Classification with rejection
+
+A risk averse agent may choose to ignore a classification due to high uncertainty, which is called the *reject option*. Suppose the states are $H = Y = \set{1,\dots,C}$, and the actions are $A = Y\cup\set{0}$, where action $0$ represents the reject action. Define the following loss function:
+
+$$
+  \ell(y^*, a) = \begin{cases}
+    0,\quad& y^* = a \in\set{1,\dots,C} \\
+    \lambda_r,\quad& a=&0 \\
+    \lambda_e,\quad& \text{otherwise}
+  \end{cases}
+$$
+
+where $\lambda_r$ is the cost of the rejection action, and $\lambda_e$ is the cost of a classification error. In this case, the optimal policy is given by *Chow's rule*
+
+$$
+  a^* = \begin{cases}
+    y^*, \quad& p^* > y^* \\
+    0, \quad& \text{otherwise}
+  \end{cases}
+$$
+
+where
+
+$$
+\begin{align*}
+  y^* =& \argmax_{y\in\set{1,\dots,C}} \\
+  p^* =& p(y^* | \mathbf{x}) = \max_{y\in\set{1,\dots,C}} p(y|\mathbf{x}) \\
+  \lambda^* = 1 - \frac{\lambda_r}{\lambda_e}
+\end{align*}
+$$
+
+### Class confusion matrix
+
+For any fixed threshold $\tau\in(0,1)$, we consider the decision rule
+
+$$
+  \hat{y}_\tau (\mathbf{x}) = \mathbf{1}(p(y = 1|\mathbf{x})\geq 1 - \tau)
+$$
+
+We can compute the empirical number of false positives (FP) that arise from using this policy on a set of $N$ labeled examples as follows:
+
+$$
+  \operatorname{FP}_\tau = \sum_{n=1}^N \mathbf{1}(\hat{y}_\tau(\mathbf{x}) = 1, y_n = 0)
+$$
+
+Similarly, we can compute the empirical number of false negatives (FN), true positives (TP) and true negatives. We can store these result in a $2\times 2$ *class confution matrix* $C$, where $C_{ij}$ is the number of times an item with true class label $i$ wa (mis)classified as having label $j$. In the case of binary classification problems, the class confusion matrix is
+
+$$
+\begin{array}{cc|c|c}
+  & & \text{Estimate} & \text{Row sum} \\
+  & & \begin{array}{cc} 0 & 1 \end{array} & \\ \hline
+  \text{True} & \begin{array}{cc} 0 \\ 1 \end{array} & \begin{array}{c} \operatorname{TN} & \operatorname{FP} \\ \operatorname{FN} & \operatorname{TP} \end{array} & \begin{array}{c} N \\ P \end{array} \\ \hline \\
+  \text{Col. sum} & & \begin{array}{cc} \hat{N} & \hat{P} \end{array}
+\end{array}
+$$
+
+We can derive various summary statistics from these distributions. In terms of $p(\hat{y}|y)$, we have the following statistics:
+- The *true negative rate* (TNR), also called the *specificity* given by
+$$
+  \operatorname{TNR}_\tau = p(\hat{y} = 0 | y = 0, \tau) = \frac{\operatorname{TN}_\tau}{\operatorname{TN}_\tau + \operatorname{FP}_\tau}
+$$
+- The *false positive rate* (FPR), also called the *false alarm rate*, or the *type I error rate* given by
+$$
+  \operatorname{FPR}_\tau = p(\hat{y} = 1 | y = 0, \tau) = \frac{\operatorname{FP}_\tau}{\operatorname{FP}_\tau + \operatorname{TN}_\tau}
+$$
+- The *false negative rate* (FNR), also called the *miss rate*, or the *type II error rate* given by
+$$
+  \operatorname{FNR}_\tau = p(\hat{y} = 0 | y = 1, \tau) = \frac{\operatorname{FN}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
+$$
+- The *true positive rate* (TPR), also known as the *sensitivity*, *recall* or *hit rate* given by
+$$
+  \operatorname{TPR}_\tau = p(\hat{y} = 1 | y = 1, \tau) = \frac{\operatorname{TP}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
+$$
+
+<TableFigure caption="Class confusion matrix for a binary classification problem normalized per row to get $p(\hat{y}|y)$.">
+$$
+\begin{array}{cc|c}
+  & & \text{Estimate} \\
+  & & \begin{array}{cc} 0 & 1 \end{array} \\ \hline
+  \text{Truth} & \begin{array}{c} 0 \\ 1 \end{array} & \begin{array}{cc}
+    \operatorname{TN}/N = \operatorname{TNR} & \operatorname{FP}/N = \operatorname{FPR} \\
+    \operatorname{FN}/P = \operatorname{FNR} & \operatorname{TP}/P = \operatorname{TPR}
+  \end{array}
+\end{array}
+$$
+</TableFigure>
+
+For $p(y|\hat{y})$, we have the following statistics
+- The *negative predictive value* (NPV) given by
+$$
+  \operatorname{NPV}_\tau = p(y = 0 | \hat{y} = 0, \tau) = \frac{TN_\tau}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
+$$
+- The *false discovery rate* (FDR) given by
+$$
+  \operatorname{FDR}_\tau = p(y = 0 | \hat{y} = 1, \tau ) = \frac{FP_\tau}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
+$$
+- The *false omission rate* (FOR) given by
+$$
+  \operatorname{FOR}_\tau = p(y = 1 | \hat{y} = 0, \tau ) = \frac{FN}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
+$$
+- The *positive predictive value* (PPV), also known as the precision, given by
+$$
+  \operatorname{PPV}_\tau = p(y = 1 | \hat{y} = 1, \tau ) = \frac{TP}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
+$$
+
+<TableFigure caption="Class confusion matrix for a binary classification problem normalized per columb to get $p(y|\hat{y})$.">
+$$
+\begin{array}{cc|c}
+  & & \text{Estimate} \\
+  & & \begin{array}{cc} 0 & 1 \end{array} \\ \hline
+  \text{Truth} & \begin{array}{c} 0 \\ 1 \end{array} & \begin{array}{cc}
+    \operatorname{TN}/\hat{N} = \operatorname{NPV} & \operatorname{FP}/\hat{P} = \operatorname{FDR} \\
+    \operatorname{FN}/\hat{N} = \operatorname{FOR} & \operatorname{TP}/\hat{P} = \operatorname{PPV}
+  \end{array}
+\end{array}
+$$
+</TableFigure>
+
+## Regression problems
+
+# Frequentist decision theory
+

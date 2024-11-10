@@ -6,7 +6,7 @@ type Props = {
   children: string
 }
 
-export default function LatexFig({ width = 70, src, alt, caption }: Props) {
+export default function Figure({ width = 70, src, alt, caption }: Props) {
   if (!alt) {
     alt = src.match(/(?<=\/)\w+(?=.(svg|png|gif))/)![0]
   }

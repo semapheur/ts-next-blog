@@ -13,7 +13,7 @@ references:
   caption='Optimization problem types'
 />
 
-The core problem in machine learing is parameter estimation (or model fitting) by minimizing a scalar-valued *loss/cost function* $\mathcal{L}:\theta\to\R$. This optimization problem can be stated as
+The core problem in machine learing is parameter estimation (or model fitting) by minimizing a scalar-valued *loss/cost function* $\mathcal{L}:\Theta\to\R$. This optimization problem can be stated as
 
 $$
 \begin{equation}
@@ -177,7 +177,6 @@ Since the gradient points in the direction of steepest accent, the negative grad
 $$
   \mathbf{d}^\top \mathbf{g}_t = \lVert\mathbf{d}\rVert\cdot\lVert\mathbf{g}_t \rVert \cos(\theta) < 0
 $$
-
 
 ## Learning rate
 
@@ -723,7 +722,7 @@ $$
 \end{equation}
 $$
 
-This requires summing over all $n$ training, which can be slow if $n$ is large. On the other hand, we can approximate this by sampling a *minibatch* of $b \ll n$ samples to get
+This requires summing over all $n$ training examples, which can be slow if $n$ is large. On the other hand, we can approximate this by sampling a *minibatch* of $b \ll n$ samples to get
 
 $$
   \mathbf{g}_t \approx \frac{1}{|\mathcal{B}_t|} \sum_{i\in\mathcal{B}_t} \nabla_{\boldsymbol{\theta}} \mathcal{L}_i (\boldsymbol{\theta}_t) = \frac{1}{|\mathcal{B}_t|} \sum_{i\in\mathcal{B}_t} \nabla_{\boldsymbol{\theta}} \ell(\mathbf{y}_i, f(\mathbf{x}_i;\boldsymbol{\theta}_t))
@@ -733,13 +732,13 @@ where $\mathcal{B}_t$ is a set of randomly chosen examples to use at iteration $
 
 In practive we usually sample $\mathcal{B}_t$ without replacement. Once we reach the end of a dataset after a single training *epoch*, we can perform a random shuffling of the examples, to ensure that each minibatch on the epoch is different from the last.
 
-Although the theoretical rate of convergence of $SGD$ is slower than batch GD (in particular, SGD has a sublinear convergence rate), in practice SGD is often faster, since the per-step time is much lower. To see why SGD can make faster progress than full batch GD, suppose we have a dataset consisting of a single example duplicated $K$ timese. Batch training will be (at least) $K$ times slower than $SGD$, since it will waste time computing the gradient for the repeated examples. Even if there are no duplicates, batch training can be wasteful, since early on in training the parameters are not well estimated, so it is not worth carefully evaluating the gradient.
+Although the theoretical rate of convergence of SGD is slower than batch GD (in particular, SGD has a sublinear convergence rate), in practice SGD is often faster, since the per-step time is much lower. To see why SGD can make faster progress than full batch GD, suppose we have a dataset consisting of a single example duplicated $K$ times. Batch training will be (at least) $K$ times slower than $SGD$, since it will waste time computing the gradient for the repeated examples. Even if there are no duplicates, batch training can be wasteful, since early on in training the parameters are not well estimated, so it is not worth carefully evaluating the gradient.
 
 <MathBox title='SGD for fitting linear regression' boxType='example' tag=''>
 Recall the objective for a linear regression problem has the form
 
 $$
-  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{x}_i^\top \boldsymbol{\theta} - y_i)^2 = \frac{1}{n}\lvert\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\rVert_2^2
+  \mathcal{L}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{x}_i^\top \boldsymbol{\theta} - y_i)^2 = \frac{1}{n}\lVert\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\rVert_2^2
 $$
 
 with gradient

@@ -8,6 +8,7 @@ import GraphFigure from "lib/components/GraphFigure"
 import LatexFigure from "lib/components/LatexFigure"
 import MathBox from "lib/components/MathBox"
 import MathTooltip from "lib/components/MathTooltip"
+import TableFigure from "lib/components/TableFigure"
 import TikzFigure from "lib/components/TikzFigure"
 
 export const mdxComponents: MDXComponents = {
@@ -19,5 +20,6 @@ export const mdxComponents: MDXComponents = {
   LatexFigure,
   MathBox,
   MathTooltip,
+  TableFigure,
   TikzFigure,
 }
