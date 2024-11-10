@@ -139,19 +139,19 @@ $$
 We can derive various summary statistics from these distributions. In terms of $p(\hat{y}|y)$, we have the following statistics:
 - The *true negative rate* (TNR), also called the *specificity* given by
 $$
-  \operatorname{TNR}_\tau = p(\hat{y} = 0 | y = 0, \tau) = \frac{\operatorname{TN}_\tau}{\operatorname{TN}_\tau + \operatorname{FP}_\tau}
+  \operatorname{TNR}_\tau := p(\hat{y} = 0 | y = 0, \tau) = \frac{\operatorname{TN}_\tau}{\operatorname{TN}_\tau + \operatorname{FP}_\tau}
 $$
 - The *false positive rate* (FPR), also called the *false alarm rate*, or the *type I error rate* given by
 $$
-  \operatorname{FPR}_\tau = p(\hat{y} = 1 | y = 0, \tau) = \frac{\operatorname{FP}_\tau}{\operatorname{FP}_\tau + \operatorname{TN}_\tau}
+  \operatorname{FPR}_\tau := p(\hat{y} = 1 | y = 0, \tau) = \frac{\operatorname{FP}_\tau}{\operatorname{FP}_\tau + \operatorname{TN}_\tau}
 $$
 - The *false negative rate* (FNR), also called the *miss rate*, or the *type II error rate* given by
 $$
-  \operatorname{FNR}_\tau = p(\hat{y} = 0 | y = 1, \tau) = \frac{\operatorname{FN}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
+  \operatorname{FNR}_\tau := p(\hat{y} = 0 | y = 1, \tau) = \frac{\operatorname{FN}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
 $$
 - The *true positive rate* (TPR), also known as the *sensitivity*, *recall* or *hit rate* given by
 $$
-  \operatorname{TPR}_\tau = p(\hat{y} = 1 | y = 1, \tau) = \frac{\operatorname{TP}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
+  \mathcal{R}(\tau) = \operatorname{TPR}_\tau := p(\hat{y} = 1 | y = 1, \tau) = \frac{\operatorname{TP}_\tau}{\operatorname{FN}_\tau + \operatorname{TP}_\tau}
 $$
 
 <TableFigure caption="Class confusion matrix for a binary classification problem normalized per row to get $p(\hat{y}|y)$.">
@@ -170,19 +170,19 @@ $$
 For $p(y|\hat{y})$, we have the following statistics
 - The *negative predictive value* (NPV) given by
 $$
-  \operatorname{NPV}_\tau = p(y = 0 | \hat{y} = 0, \tau) = \frac{TN_\tau}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
+  \operatorname{NPV}_\tau = p(y = 0 | \hat{y} = 0, \tau) := \frac{TN_\tau}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
 $$
 - The *false discovery rate* (FDR) given by
 $$
-  \operatorname{FDR}_\tau = p(y = 0 | \hat{y} = 1, \tau ) = \frac{FP_\tau}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
+  \operatorname{FDR}_\tau = p(y = 0 | \hat{y} = 1, \tau ) := \frac{FP_\tau}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
 $$
 - The *false omission rate* (FOR) given by
 $$
-  \operatorname{FOR}_\tau = p(y = 1 | \hat{y} = 0, \tau ) = \frac{FN}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
+  \operatorname{FOR}_\tau = p(y = 1 | \hat{y} = 0, \tau ) := \frac{FN}{\operatorname{TN}_\tau + \operatorname{FN}_\tau}
 $$
 - The *positive predictive value* (PPV), also known as the precision, given by
 $$
-  \operatorname{PPV}_\tau = p(y = 1 | \hat{y} = 1, \tau ) = \frac{TP}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
+  \mathcal{P}(\tau) = \operatorname{PPV}_\tau := p(y = 1 | \hat{y} = 1, \tau ) = \frac{TP}{\operatorname{FP}_\tau + \operatorname{TP}_\tau}
 $$
 
 <TableFigure caption="Class confusion matrix for a binary classification problem normalized per columb to get $p(y|\hat{y})$.">
@@ -198,7 +198,60 @@ $$
 $$
 </TableFigure>
 
+### Receiver operating characteristic (ROC) curves
+
+The relation between the true positive and false positive rates is called *receiver operating characteristic* (ROC). The quality of a ROC curve is often summarized as a single number using the area under the curve (AUC). Higher AUC scores are better. Another summary statistic is the *equal error rate* (EER), also called the *cross-over rate*, defined as the value which satisfies $\operatorname{FPR} = \operatorname{FNR}$. Since $\operatorname{FNR} = 1 - \operatorname{TPR}$, we can compute the EER by drawing a line from the top left to the bottom right and seeing where it intersects the ROC curve. Lower EER scores are better.
+
+The ROC curve is unaffected by class imbalance, as the TPR and FRP are fractions within the positive and negatives, respectively. The usefulness of the ROC curve may be reduced in such cases, since a large change in the absolute number of false positives will not change the false positive rate very much.
+
+### Precision-recall (PR) curves
+
+An alternative to ROC curves are precision-recall (PR) curves. The quality of a PR curve is often summarized in a single number. First, we can quote the precision for a fixed recall level. This is called the precision at $K$ score. Alternatively, we can compute the are under the PR curve. However, it is possible that the precision does not drop monotonically with recal. In this case, rather than measuring the precision at $K$ score. This is called the *interpolated precision*. The average of the interpolated precision is called the average precision; it is equal to are under the interpolated PR curve, but may not be equal to the area under the PR curve. The *mean average precision* (mAP) is the mean of the AP over a set of different PR curves.
+
+### F-scores
+
+For a fixed threshold, corresponding to a single point on the PR curve, we compute a single precision and recall value, which we wil denote by $\mathcal{P}$ and $\mathcal{R}$. These are often combined into a single statistic called $F_\beta$, defined as follows
+
+$$
+  \frac{1}{F_\beta} = \frac{1}{1 + \beta^2}\frac{1}{\mathcal{P}} + \frac{\beta^2}{1 + \beta^2}\frac{1}{\mathcal{R}}
+$$
+
+Setting $\beta = 1$, we get the harmonic mean of presicion and recall
+
+$$
+\begin{align*}
+  \frac{1}{F_1} = \frac{1}{2}\left(\mathbf{1}{\mathcal{P}} + \frac{1}{\mathcal{R}}) \\
+  F_1 = \frac{2}{1/\mathcal{R} + 1/\mathcal{P}} = 2\frac{\mathcal{P}\mathcal{R}}{\mathcal{p} + \mathcal{R}} = \frac{\operatorname{TP}}{\operatorname{TP} + \frac{1}{2}(\operatorname{FP} + \operatorname{FN})}
+\end{align*}
+$$
+
+In general, the harmonic mean is more conservative thant then the artithmetic mean.
+
+Contrary to ROC case, PR curves are sensitive to class imbalance. To see this, let the fration of positive in the dataset be $\pi = P/(P + N)$, and define the ratio $r = P/N = \pi/(1 - \pi)$. Let $n = P+N$ be the population size. ROC curves are not affected by changes in $r$, since the TPR is defined as a ratio within the positive examples, and FPR is defined as a ratio within the negative examples. This means it does not matter which class we define as positive, and which we define as negative.
+
+Now consider PR curves. The precision can be expressed as
+
+$$
+  \operatorname{PPV} = \frac{\operatorname{TP}}{\operatorname{TP} + \operatorname{FP}} = \frac{P\cdot\operatorname{TPR}}{P\cdot\operatorname{TPR} - N\cdot\operatorname{FPR}} = \frac{\operatorname{TPR}}{\operatorname{TPR} + \frac{1}{r}\operatorname{FPR}}
+$$
+
+Thus, $\operatorname{PPV}\xrightarrow{\pi\to 1, r\to\infty} 1$ and $\operatorname{PPV}\xrightarrow{\pi\to 0, r\to 0}$. The $F$-score is also affected by class imbalance. To see this, note that we can rewrite the $F$-score as
+
+$$
+\begin{align*}
+  \frac{1}{F_\beta} =& \frac{1}{1 + \beta^2}\frac{1}{\mathcal{P}} + \frac{\beta^2}{1 + \beta^2}\frac{1}{\mathcal{R}} \\
+  =& \frac{1}{1 + \beta^2} \frac{\operatorname{TPR} + \frac{N}{P}\operatorname{FPR}}{\operatorname{TPR}} + \frac{1}{1 + \beta} \frac{1}{\operatorname{TPR}} \\
+  F_\beta =& \frac{(1 + \beta^2) \operatorname{TPR}}{\operatorname{TPR} + \frac{1}{r}\operatorname{FPR} + \beta^2}
+\end{align*}
+$$
+
 ## Regression problems
+
+### Quadratic loss ($\ell_2$ loss)
+
+### $\ell_1$ loss
+
+## Probabilistic prediction problems
 
 # Frequentist decision theory
 
