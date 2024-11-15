@@ -357,6 +357,104 @@ Since it can be hard to interpret absolyte Brier score values, a relative perfor
 
 # Model selection
 
+## Bayesian hypothesis testing
+
+Suppose we have to hypotheses (models), commonly called the *null hypothesis* $M_0$, and the *alternative hypothesis* $M_1$. The process of finding the hypothesis which is more likely to be true is called *hypothesis testing*.
+
+If we use $0$-$1$ loss, the optimal decision is to pick the alternative hypothesis if and only if $p(M_1|\mathcal{D}) > p(M_0|\mathcal{D})$, or equivalently, if $p(M_1 | \mathcal{D}) / p(M_0 | \mathcal{D}) > 1$. If we use a uniform prior, $p(M_0) = p(M_1) = 0.5$, the decision rule becomes: select $M_1$ if and only if $p(\mathcal{D}|M_1)/p(\mathbb{D}|M_0) > 0$. This quantity, which is the ratio of marginal likelihoods of the two models, is known as the *Bayes factor*
+
+$$
+  \operatorname{BF}(1,0) := \frac{p(\mathcal{D}|M_0)}{p(\mathcal{D}|M_1)}
+$$
+
+This is like a *likelihood ratio*, except we integrate out the parameters, which allows us to compare models of different complexity, due to the Bayesian Occam's razor effect. If $\operatorname{BF}(1,0) > 1$, then we prefer model $1$, otherwise we prefer model $0$.  
+
+<TableFigure caption="Jeffrey scale of evidence for interpreting Bayes factor">
+| Bayes factor $BF(1,0)$ | Intepretation |
+| :-: | --- |
+| $BF < 1/100$ | Decisive evidence for $M_0$ |
+| $BF < 1/10$ | Strong evidence for $M_0$ |
+| $1/10 < BF < 1/3$ | Moderate evidence for $M_0$ |
+| $1/3 < BF < 1$ | Weak evidence for $M_0$ |
+| $1 < BF < 3$ | Weak evidence for $M_1$ |
+| $3 < BF < 10$ | Moderate evidence for $M_1$ |
+| $BF > 10$ | Strong evidence for $M_1$ |
+| $BF > 100$ | Decisive evidence for $M_1$ |
+</TableFigure>
+
+## Bayesian model selection
+
+Suppose we have a set $\mathcal{M}$ of more than two models. The process of picking the most likely model is called *model selection*. If we have a $0$-$1$ loss, the optimal action is to pick the most probable mode
+
+$$
+  \hat{m} = \argmax_{m\in\mathcal{M}} p(m|\mathcal{D})
+$$
+
+where
+
+$$
+  p(m|\mathcal{D}) = \frac{p(\mathcal{D}|m) p(m)}{\sum_{m\in\mathcal{M}} p(\mathcal{D}|m)p(m)}
+$$
+
+is the posterior over model. If the prior model is uniform, $p(m) = 1/|\mathcal{M}|$, then the MAP model is given by
+
+$$
+  \hat{m}  = argmax_{m\in\mathcal{M}} p(\mathcal{D}|m)
+$$
+
+The posterior over models is given by
+
+$$
+  p(\mathcal{D}|m) = \int p(\mathcal{D}|\boldsymbol{\theta},m) p(\boldsymbol{\theta}|m)\;\d\boldsymbol{\theta}
+$$
+
+This is known as the *marginal likelihood*, or the *evidence* for model $m$. Intuitively, it is the likelihood of the data averages over all parameter values, weighted by the prior $p(\operatorname{\theta}|m)$. If all settings of $\boldsymbol{\theta}$ assigns high probability to the data, then this is probably a good model. 
+
+### Occam's razor
+
+Consider two models, a simple one, $m_1$, and a more complex one, $m_2$. Suppose that both can explain the data by suitable optimizing their parameters, i.e. for which $p(\mathcal{D}|\hat{\boldsymbol{\theta}}_1, m_1)$ and $p(\mathcal{D}|\hat{\boldsymbol{\theta}}_2, m_2)$ are both large. Intuitively, we should prefer $m_1$, since it is simpler and just as good as $m_2$. This principle is known as *Occam's razor*.
+
+Let us see how ranking models based on their marignal likelihood, which involces averaging the likelihood with respect to the prior, explains this behaviour. The complex model will put less prior probability on the "good" parameters that explain the data, $\hat{\boldsymbol{\theta}_2}$, since the prior must integrate to $1$ over the entire parameter space. Thus, it will take averages in parts of parameter space with low likelihood. By contrast, the simpler model has fewer parameters, so the prior is concentrated over a smaller volume. Thus, its averages will mostly be on the goor parts of parameters space, near $\hat{\boldsymbol{\theta}_1}$. Hence, we see that the marignal likelihood will prefer the simpler model.
+
+Another way to understand the Bayesian Occam's razor effect is to compare the relative predictive abilities of simple and complex models. Since probabilities must sum to one, we have $\sum_{\mathcal{D}'} p(\mathcal{D}'|m) = 1$, where the sum is over all possible datasets. Complex models, which can predict many things, must spread their predicted probability mas thinly, and hence will not obtain a large a probability for any given data set as simples models. This is sometimes called the *conservation of probability mass* principle.
+
+### Connection between cross validation and margianl likelihood
+
+Marginal likelihood is closely related to the leave-one-out cross-validation estimate. Too see this, we start with the marginal likelihood for model $m$, which we write in sequential form as follows
+
+$$
+  p(\mathcal{D}|m) = \prod_{n=1}^N p(y_n|y_{1:n-1}, x_{1:N}, m) = \prod_{n=1}^N p(y_n|x_n, \mathcal{D}_{1:n-1}, m)
+$$
+
+where
+
+$$
+  p(y|\mathbf{x}, \mathcal{D}_{1:n-1}, m) = \int p(y|\mathbf{x},\boldsymbol{\theta}) p(\boldsymbol{\theta}|\operatorname{D}_{1:n-1}, m)\; \d\boldsymbol{\theta}
+$$
+
+Suppose we use a plugin approximation to the above distribution to get
+
+$$
+\beign{align*}
+  p(y|\mathbf{x}, \mathcal{D}_{1:n-1}, m) \approx& \int p(y|\mathbf{x},\boldsymbol{\theta}) \delta(\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}_m (\mathcal{D}_{1:n-1}))\;\d\boldsymbol{\theta} \\
+  =& p(y|\mathbf{x}, \hat{\boldsymbol{\theta}}_m (\mathcal{D}_{1:n-1}))
+\end{align*}
+$$
+
+Then we get
+
+$$
+  \ln[p(\mathcal{D}|m)] \approx \sum_{n=1}^N \ln[p(y_n | x_n, \hat{\boldsymbol{\theta}}_m (\mathcal{D}_{1:n-1}))]
+$$
+
+This is similar to a leave-one-out cross-validation estimate of the likelihood, which has the form
+
+$$
+  \frac{1}{N} \sum_{n=1}^N \ln[p(y_n | x_n, \hat{\boldsymbol{\theta}} (\mathcal{D}_{1:n-1, n+1:N}))]
+$$
+
+except we ignore the $\mathcal{D}_{n+1:N}$ part. This connection can be explained as follows: an overly comples model will overfit the "early" examples and will then predict the remaining ones poorly, and thus will also get a low cross-validation score.
+
 ## Information criteria
 
 ### Bayesian information criterion (BIC)
