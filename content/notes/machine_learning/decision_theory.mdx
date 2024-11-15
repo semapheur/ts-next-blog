@@ -511,7 +511,90 @@ where $D_m = \dim(\boldsymbol{\theta})$. This penalizes complex models less heav
 
 ### Minimum description length (MDL)
 
+Suppose we want to choose a model so that the sender can send some data to the receiver using the fewest number of bits. Choosing models this way is known as the *minimum description length* (MDL) principle. This principle can be derived as follows. Let $\hat{\boldsymbol{\theta}}\in\R^{D_m}$ be the parameters estimated using $N$ data samples. Since we can only reliably estimate each parameter to an accuracy of $\mathcal{O}(1/\sqrt{N})$, we only need to use $\log_2 (1/\ln(N)) = \frac{1}{2}\log_2 (N)$ bits to encode each parameter. The sender needs to use this model to encode the data, which takes $-\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] = -\sum_n \ln[p(y_n |\hat{\boldsymbol{\theta}},m)]$ bits. The total cost is
+
+$$
+  \mathcal{L}_{\text{MDL}} (m) = -\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] + \frac{D_m}{2}\ln N
+$$
+
 ### Widely applicable information criterion (WAIC)
+
+The main problem with BIC, AIC and MDL is that it can be har to compute the degrees of a freedom of a model, needed to define the complexity term, since most parameters are highly correlated and not uniquely identifiable from the likelihood. In particular, if the mapping from parameters to the likelihood is not injective, the model is called a *singular static model*, since the corresponding Fisher information matrix may be singular.
+
+An alternative criterion that works even in the singular case is known as the *widely applicable information criterion* (WAIC), also known as the *Watanabe-Akaike information criterion*. The WAIC replaces the plug-in approximation to the marginal likelihood $\ell(m) = \sum_{n=1}^N \ln[p(y_n|\hat{\boldsymbol{\theta}}, m)$ iwth the *expected log pointwise density* (ELPD) defined as
+
+$$
+  \operatorname{ELPD}(m) = \sum_{n=1}^N \ln[p(y_n|\mathcal{D},m)] = \sum_{n=1}^N \ln \mathbb{E}_{\boldsymbol{\theta}|\mathbb{D}, m}[p(y_n|\boldsymbol{\theta}, m)]
+$$
+
+which is usually approximated by Monte Carlo. Additionally, the complexity term is defined by $C(m) = \sum_{n=1}^N$, which again is usually approximated by Monte Carlo. The intuition for this is a follows: if, for a given datapoint $y_n$, the different posterior samples $\boldsymbol{\theta}_s$ make very different predictions, then the model is uncertain, and likely too flexible. The WAIC loss is defined as
+
+$$
+  \mathcal{L}_{\text{WAIC}} (m) = -2\operatorname{LPPD}(m) + 2C(m)
+$$
+
+Note that the WAIC evaluates the expected log likelihood using the posterior of the parameters. By contrast, the marginal likelihood averages the log likelihood with respect to the prior. This makes the marginal likelihood more sensitive to the prior. It is therefore generally better to use WAIC for model selection.
+
+## Posterior influence over effect sizes and Bayesian significance testing
+
+Recall that Bayesian hypothesis testing relies on computing the Bayes factors for the null vs the alternative model $p(\mathbb{D}|H_0)/p(\mathcal{D}|H_1)$. Computing the necessary marginal likelihoods can be computationally difficul, and results can be sensitive to the choice of prior. Furthermore, we are often more interested in estimating an *effect size*, which is the difference in magnitude between two parameters, rather than in deciding if an effect size is $0$ (null hypothesis) or not (alternative hypothesis). The latter is called a *point null hypothesis*.
+
+Suppose we have two classifiers, $m_1$ and $m_2$, and we want to know which one is better. That is, we want to perform a comparison of classifiers. Let $\mu_1$ and $\mu_2$ be their average accuracies, and let $\Delta = \mu_1 - \mu_2$ be the difference in their accuracies. The probability that model $1$ is more accurate, on average, than model $2$ is given by $p(\Delta > 0|\mathcal{D})$. However, even if this probability is large, the improvement may be not practically significant. So it is better to compute a probability such as $p(\Delta > \epsilon | \mathcal{D})$ or $p(|\Delta| > \epsilon|\mathcal{D}|)$, where $\epsilon$ represents the minimal magnitude of effect size that is meaningful for the problem at hand. This a called a *one-sided test* or *two-sided test*.
+
+More generally, let $R = [-\epsilon,\epsilon]$ represent a *region of practical equivalence* (ROPE). We can define $3$ events of interest:
+- the null hypothesis $H_0 : \Delta\in R$, which says both methods are practically the same (which is a more realistic assumption than $H_0: \Detla = 0$)
+- $H_A: \Delta > \epsilon$, which says $m_1$ is better than $m_2$
+- $H_B: \Delta < -\epsilon$, which says $m_2$ is better than $m_1$
+
+To choose amongst these $3$ hypotheses, we just have to compute $p(\Delta|\mathcal{D})$, which avoids the need to compute Bayes factors. 
+
+### Bayesian t-test for difference in means
+
+Suppose we have two classifiers, $m_1$ and $m_2$, which are evaluated on the same set of $N$ test examples. Let $e_i^{(m)}$ be the error of method $m$ on the test example $i$ (or this could be the conditional log likelihood $e_i^{(m)} = \ln[p^{(m)}(y_n|x_n)]$). Since the classifiers are applied to the same data, we can use a *paired test* for comparing them, which is more sensitive than looking at average performance, since the factors that make one example easy or hard to classify will be shared by both methods. Thus we will work with the differences $d_n = e_n^{(1)} - e_n^{(2)}$. We assume $d_n \sim\mathcal{N}(\Delta, \sigma^2)$. We are interested in $p(\Delta|\mathbf{d})$, where $\mathbf{d} = (d_n)_{n=1}^N$.
+
+If we use an uninformative prior for the unknown parameters $(\Delta, \sigma)$, one can show that the posterior marginal for the mean is given by a Student distribution
+
+$$
+  p(\Delta|\mathbf{d}) = \mathcal{T}_{N-1} (\Delta | \mu, s^2/N)
+$$
+
+where $\mu = \frac{1}{N}\sum_{n=1}^N d_n$ is the sample mean, and $s^2 = \frac{1}{N-1} \sum_{n=1}^N (d_n - \mu)^2$ is an unbiased estimate of the variance. Hence, we can easily compute $p(|\Delta| > \epsilon|\mathbf{d}|)$ for a given ROPE $\epsilon$. This is known as a *Bayesian t-test*.
+
+An alternative to a formal test is to examine the distribution of the posterior $p(\Delta|\mathbf{d})$. If this distribution is tightly centered on $0$, we can conclude that there is no significant difference between the methods. 
+
+### Bayesian $\chi^2$-test for difference in rates
+
+Suppose we have two classifiers which are evaluated on different test sets. Let $y_m$ be the number of correct examples from method $m\in\Set{1,2}$ out of $N_m$ trials, so the accuracy rate is $y_m / N_m$. We assume $y_m\sim\operatorname{Bin}(N_m, \theta_m)$, so we are interested in $p(\Delta|\mathcal{D})$, where $\Delta = \theta_1 - \theta_2$ and $\mathcal{D} = (y_1, N_1, y_2, N_2)$ is all the data.
+
+If we use a uniform prior for $\theta_1$ and $\theta_2$, i.e. $p(\theta_j) = \operatorname{Beta}(\theta_j|1,1)$, the posterior is given by
+
+$$
+  p(\theta_1, \theta_2|\mathcal{D}) = \operatorname{Beta}(\theta_1 | y_1 + 1, N_1 - y_1 + 1)\operatorname{Beta}(\theta_2|y_2 + 1, N_2 - y_2 + 1)
+$$
+
+The posterior for $\Delta$ is given by
+
+$$
+\begin{align*}
+  p(\Delta|\mathcal{D}) =& \int_0^1 \int_0^1 \mathbf{1}(\Delta = \theta_1 - \theta_2)p(\theta_1 | \mathcal{D}_1)p(\theta_2 | \mathcal{D}_2) \\
+  =& \int_0^1 \operatorname{Beta}(\theta_1 | y_1 + 1, N_1 - y_1 + 1)\operatorname{Beta}(\theta_1 - \Delta | y_2 + 1, N_2 - y_2 + 1)\;\d\theta_1
+\end{align*}
+$$
+
+We can then evaluate this for any value of $\Delta$ that we choose. For example, we can compute
+
+$$
+  p(\Delta > \epsilon|\mathcal{D}) = \int_\epsilon^\infty p(\Delta|\mathcal{D})\;\d\Delta
+$$
+
+This is called a *Bayesian $\chi^2$-test*.
 
 # Frequentist decision theory
 
+# Empirical risk minimization
+
+## Empirical risk
+
+## Structural risk
+
+## Cross-validation
