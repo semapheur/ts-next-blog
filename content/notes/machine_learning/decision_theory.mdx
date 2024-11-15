@@ -410,6 +410,8 @@ $$
 
 This is known as the *marginal likelihood*, or the *evidence* for model $m$. Intuitively, it is the likelihood of the data averages over all parameter values, weighted by the prior $p(\operatorname{\theta}|m)$. If all settings of $\boldsymbol{\theta}$ assigns high probability to the data, then this is probably a good model. 
 
+The marginal likelihood, $p(\mathcal{D}|m) = \int p(\mathcal{D}|\boldsymbol{\theta}, m)p(\boldsymbol{\theta})\;\d\boldsymbol{\theta}$, can be difficult to compute, since it requires marginalizing over the entire parameter space. Furthermore, the result can be quite sensitive to the choice of prior.
+
 ### Occam's razor
 
 Consider two models, a simple one, $m_1$, and a more complex one, $m_2$. Suppose that both can explain the data by suitable optimizing their parameters, i.e. for which $p(\mathcal{D}|\hat{\boldsymbol{\theta}}_1, m_1)$ and $p(\mathcal{D}|\hat{\boldsymbol{\theta}}_2, m_2)$ are both large. Intuitively, we should prefer $m_1$, since it is simpler and just as good as $m_2$. This principle is known as *Occam's razor*.
@@ -457,9 +459,55 @@ except we ignore the $\mathcal{D}_{n+1:N}$ part. This connection can be explaine
 
 ## Information criteria
 
+Information criteria are metric for model selection of the following form
+
+$$
+  \mathcal{L}(m) = -log[p(\mathcal{D}\hat{\boldsymbol{\theta}}, m)] + C(m)
+$$
+
+where $C(m)$ is a *complexity penalty* term added to the negative log likelihood. It is convenction, when working with information criteria, to scale the negative log likelihood by $-2$ to get the *deviance*, $\operatorname{dev}(m) = -2\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)]$.
+
 ### Bayesian information criterion (BIC)
 
+The *Bayesian information criterion* (BIC) can be thought of as a simple approximation to the log marginal likelihood. In particular, if we make a Gaussian approximation to the posterior, we get
+
+$$
+  \ln[p(\mathcal{D}|m)] \approx \ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}_{\text{map}})] + \ln[p(\hat{\boldsymbol{\theta}}_{\text{map}})] - \frac{1}{2}\ln|\mathbf{H}|
+$$
+
+where $\mathbf{H}$ is the Hessian of the negative log joint, $-\ln[p(\mathcal{D},\boldsymbol{\theta})]$, evaluated at the maximum a posterior estimate $\hat{\boldsymbol{\theta}}_{\text{map}}$. If we have a uniform prior, $p(\boldsymbol{\theta}) \propto 1$, we can drop the prior term, and replace the MAP estime with the MLE, $\hat{\boldsymbol{\theta}}$, yielding
+
+$$
+  \ln[p(\mathcal{D}|m)] \approx \ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}})] - \frac{1}{2}\ln|\mathbf{H}|
+$$
+
+The $ln|\mathbf{H}|$ term is sometimes called the *Occam factor*, since it is a measure of model complexity. Furthermore, we have $\mathbf{H} = \sum_{n=1}^N \mathbf{H}_n$, where $\boldsymbol{H}_i = \nabla^2 \ln[p(y_n|\boldsymbol{\theta})$ is the empirical Fisher information matrix. Approximating each $\mathbf{H}_n$ by a fixed matrix $\hat{\mathbf{H}}$ yields
+
+$$
+  \ln|\mathbf{H}| = \ln|N\hat{\mathbf{H}}| = \ln(N^{D_m} |\hat{\mathbf{H}}|) = D_m \ln N + \ln|\mathbf{H}|
+$$
+
+where $D_m = \dim(\boldsymbol{\theta})$ and we have assume $\mathbf{H}$ is full rank. We can drop the $\ln|\hat{\mathbf{H}}|$ term, since it is independent of $N$, and thus will get dominated by the likelihood. Combining the steps, we the BIC score
+
+$$
+  J_{\text{BIC}} (m) = \ln[p(\mathcal{D}|m)] \approx \ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] - \frac{D_m}{2} \ln N
+$$
+
+We can also define the BIC loss, by scaling by $-2$
+
+$$
+  \mathcal{L}_{\text{BIC}} = -2\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] + D_m \ln N
+$$
+
 ### Akaike information criterion (AIC)
+
+The *Akaike information criterion* (AIC) is close related to the BIC. It has the form
+
+$$
+  \mathcal{L}_{\text{AIC}} (m) = -2\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] + 2D_m
+$$
+
+where $D_m = \dim(\boldsymbol{\theta})$. This penalizes complex models less heavily than BIC, since the regularization term is independent of $N$. This estimator can be derived from a frequentist perspective.
 
 ### Minimum description length (MDL)
 
