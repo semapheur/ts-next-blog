@@ -19,7 +19,9 @@ $$
 The *optimal policy* $\pi^* (\mathbf{x})$, also called the *Bayes estimator* or *Bayes decision rule* $\delta^* (\mathbf{x})$, specifies what action to take when presented with evidence so as to minimize the risk, i.e.
 
 $$
-  \pi^* (\mathbf{x}) = \argmin{a\in A} \mathbb{E}_{p(h|\mathbf{x})} [\ell(h,a)]
+\begin{equation}
+  \pi^* (\mathbf{x}) = \argmin{a\in A} \mathbb{E}_{p(h|\mathbf{x})} [\ell(h,a)] \tag{\label{equation-1}}
+\end{equation}
 $$
 
 Equivalently, we can define a *utility function* $U(h,a)$ to be the desirability of each possible action in each possible state. Setting $U(h,a) = -\ell(h,a)$, the optimal policy is
@@ -590,6 +592,184 @@ $$
 This is called a *Bayesian $\chi^2$-test*.
 
 # Frequentist decision theory
+
+In frequentist decision theory, we treat the unknown state, denoted by $\boldsymbol{\theta}$, as a fixed but unkown quantity, and we treat the data $\mathbf{x}\in\mathcal{D}$ as a random. Thus, instead of conditioning on $\mathbf{x}$ as in Bayesian decision theory, we average over it, to compute the loss we expect to incur if we apply our decision estimator $\delta(\mathbf{x})$ to many different datasets.
+
+The frequentist *risk* of an estimator $\delta$ given an unknown state $\boldsymbol{\theta}$ is defined as the expected loss when applying that estimator to data $\mathbf{x}$, where the expectation is over the data, sampled from $p(\mathbf{x}|\boldsymbol{\theta})$
+
+$$
+\begin{equation}
+  R(\boldsymbol{\theta}, \delta) := \mathbb{E}_{p(\mathbf{x}|\boldsymbol{\theta})}[\ell(\boldsymbol{\theta}, \delta(\mathbf{x}))]\tag{\label{equation-2}}
+\end{equation}
+$$
+
+<MathBox title='Mean estimator of a Gaussian' boxType='example'>
+Consider a Gaussian sampled data set $\mathbf{x} = (x_n)_{n=1}^N$ with $x_n \sim\mathcal{N}(\theta^*, \sigma^2 = 1)$. Using a quadratic loss $\ell_2 (\theta,\hat{\theta}) = (\theta - \hat{\theta})$ for estimating the mean $\theta$, the corresponding risk function is the mean squared error. Let $\hat{\theta}(\mathbf{x}) = \delta(\mathbf{x})$ be the estimated mean. The risk of this estimator is given by the mean squared error, which can be decomposed into squared bias and variance, i.e.
+
+$$
+  \operatorname{MSE}(\hat{\theta}|\theta^*) = \operatorname{var}(\hat{theta}) + \operatorname{bias}^2 (\hat{\theta})
+$$
+
+where, $\operatorname{bias}(\hat{\theta}) = \mathbb{E}(\hat{\theta} - \theta^*)$. We now consider $5$ different estimators for computing $\theta$:
+- $\delta_1 (\mathbf{x}) = \bar{x}$, the sample mean. 
+
+The sample mean is an unbiased estimator, so its risk is
+
+$$
+  \operatorname{MSE}(\delta_1|\theta^*) = \operatorname{var}(\bar{x}) = \frac{\sigma^2}{N}
+$$
+
+- $\delta_2 (\mathbf{x}) = \operatorname{median}(\mathbf{x})$, the sample median
+
+The sample median is an unbiased estimator with variance $\pi/(2N)$, so the risk is
+
+$$
+  \operatorname{MSE}(\delta_2 | \theta^*) = \frac{\pi}{2N}
+$$
+
+- $\delta_3 (\mathbb{x}) = \theta_0$, a fixed value
+
+The fixed estimator returns the constant $\theta_0$, so its bias if $(\theta^* - \theta_0)$ and its variance is null. Hence the risk is
+
+$$
+  \operatorname{MSE}(\delta_3 | \theta^*) = (\theta^* - \theta_0)^2
+$$
+
+- $\delta_\kappa (\mathbf{x})$, the posterior mean under a $\mathcal{N}(\theta|theta_0, \sigma^2 /\kappa)$ prior
+$$
+  \delta_\kappa (\mathbf{x}) = \frac{N}{N + \kappa}\bar{x} + \frac{\kappa}{N + \kappa}\theta_0 = w\bar{x} + (1 - w)\theta_0
+$$
+
+For $\delta_\kappa$, we use $\theta_0 = 0$, and consider a weak prior, $\kappa = 1$, and a stronger prior, $\kappa = 5$. In this case we derive the MSE as follows:
+
+$$
+\begin{align*}
+  \operatorname{MSE}(\delta_k | \theta^*) =& \mathbb{E}\left[(w\bar{x} + (1 - w)\theta_0 - \theta^*)^2\right] \\
+  =& \mathbb{E}\left[(w(\bar{x} - \theta^*) + (1 - w)(\theta_0 - \theta^*))^2 \right] \\
+  =& w^2 \frac{\sigma^2}{N} + (1 - w)^2 (\theta_0 - \theta^*)^2 \\
+  =& \frac{1}{(N + \kappa)^2} (N\sima^2 + \kappa^2 (\theta_0 - \theta^*)^2)
+\end{align*}
+$$
+</MathBox>
+
+## Bayes risk
+
+In general, the true state $\boldsymbol{\theta}$ that generates the data $\mathbf{x}$ is unknown, so we cannot compute the risk given in $eqref{equation-2}$. One solution to this is to assume a prior $\pi_0$ for $\boldsymbol{\theta}$, and then average it out. This gives the *Bayes risk*, or the *integrated risk*, defined as
+
+$$
+  R_{\pi_0} (\delta) := \mathbb{E}_{\pi_0 (\boldsymbol{\theta})} [R(\boldsymbol{\theta}, \delta)] = \int \pi_0(\boldsymbol{\theta}) p(\mathbf{x}|\boldsymbol{\theta}) \ell(\boldsymbol{\theta},\delta(\mathbf{x}))\;\d\boldsymbol{\theta}\;\d\mathbf{x}
+$$
+
+A decision rule that minimizes the Bayes risk is called a *Bayes estimator*. This is equivalent to the optimal policy given by Bayesian decision theory in equation $\eqref{equation-1}$ since
+
+$$
+\begin{align*}
+  \delta(\boldsymbol{\theta}) =& \argmin_a \int \pi_0(\boldsymbol{\theta}) p(\mathbf{x}|a) \ell(\boldsymbol{\theta},a)\;\d\boldsymbol{\theta}\;\d\mathbf{x} \\
+  =& \argmin_a \int p(\boldsymbol{\theta}|\mathbf{x}) \ell(\boldsymbol{\theta}, a)
+\end{align*}
+$$
+
+Hence, we see that picking the optimal action on a case-by-case basis (as in the Bayesian approach) is optimal on average (as in the frequentist approach).
+
+## Maxumum risk
+
+The use of a propr seem undesirable in the context of frequentist statistics. We can avoid this by defining the *maximum risk*
+
+$$
+  R_{\text{max}} (\delta) := \sup_{\boldsymbol{\theta}} R(\boldsymbol{\theta}, \delta)
+$$
+
+A decision rule that minimizes the maximum risk is called a *minimax estimator*, and is denoted $\delta_{\text{MM}}$. Minimax estimators have a certain appeal. However, computing them can be hard. They are also very pessimistic. In fact, one can show that all minima estimators are equivalent to Bayes estimators under a *least favorable prior*.
+
+## Consistent estimators
+
+Suppose we have a dataset $\mathbf{x} = \Set{x_n}_{n=1}^N$ where the samples $x_n \in\mathcal{X}$ are generated i.i.d. from a distribution $p(\mathbf{X}|\operatorname{\theta}^*)$, where $\boldsymbol{\theta}^* \in\Theta$ is the true parameter. Furthermore, suppose the parameters are *identifiable*, meaning that $p(\mathbf{x}|\boldsymbol{\theta}) = p(\mathbf{x}|\theta')$ if and only if $\boldsymbol{\theta} = \boldsymbol{\theta}^*$. Then we say that an estimator $\delta:\mathcal{X}^N \to\Theta$ is a *consistent estimator* if $\hat{\boldsymbol{\theta}}(\mathbf{x}) \xrightarrow{N\to\infty} \boldsymbol{\theta}$ converges in probability. In other words, the estimator $\delta$ recovers the true parameter (or a subset of it) in the limit of infinite data. This is equivalent to minimizing the $0-1$ loss, $\mathcal{L}(\boldsymbol{\theta}^*, \hat{\boldsymbol{\theta}}) = \mathbf{1}(\boldsymbol{\theta}^* \neq\hat{\boldsymbol{\theta}}$.
+
+Note that an estimator can be unbiased but not consistent. For example, consider the estimator $\delta(\mathbf{x}) = \delta(\set{\mathbf{x}}_{i=1}^N)$. This is an unbiased estimator of the true mean $\boldsymbol{\theta}$, since $\mathbb{E}[\delta(\mathbf{x})] = \boldsymbol{\mu}$. However, the sampling distribution of $\delta(\mathbf{x})$ does not converge to a fixed values, so it cannot converge to the point $\boldsymbol{\theta}^*$.
+
+Although consistency is a desirable property, it is of samewhot limited usefulness in practice since most real datasets od not come from our chosen model family, i.e. there is no $\boldsymbol{\theta}^*$ such that $p(\cdot|\boldsymbol{\theta}^*)$.
+
+## Admissible estimators
+
+Let $\delta_1, \delta_2$ be two random variables. We say that $\delta_1$ dmoniates $\delta_2$ if $R(\boldsymbol{\theta}, \delta_1) < R(\boldsymbol{\theta}, \delta_2)$ for all $\boldsymbol{\theta}$. The domination is strict if the inequality of strict for some $\boldsymbol{\theta}^*$. An estimator is *admissible* if it is not stricty dominated by any athor estimator. It can be shown that all admissible decision rules are equivalent to some kind of Bayesian decision rule, under some technical conditions.
+
+<MathBox title='James-Stein estimator' boxType='example'>
+Let $\mathbf{X} = (X_n)_{n=1}^N$ with $X_n \sim\mathcal{N}(\theta_n, 1)$ be independent Gaussian variables with unit variance. Assuming a quadratic loss function $\ell_2 (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}) = \lVert\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}\rVert^2$, the corresponding risk function $R(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta}) = \mathbb{E}[\ell(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta})]$ is the mean squared error. It can be shown that the unbiased ordinary estimator $\hat{\boldsymbol{\theta}}_0 (\mathbf{X}) = \mathbf{X}$ with $R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta}) = N$ is admissible for squared error loss when $N = \Set{1,2}$. However, for $N \geq 3$, the James-Stein estimator 
+
+$$
+  \hat{\boldsymbol{\theta}}_{\text{JS}}(\mathbf{X}) = \left(1 - \frac{N - 2}{\lVert\mathbf{X}\rVert^2} \right)\mathbf{X}
+$$
+
+dominates $\boldsymbol{\theta}^0$, i.e. $R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) \leq R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta})$. Geometrically, the James-Stein estimator shrinks each component of $\mathbf{X}$ towards $\boldsymbol{\theta}$ by reducing the variance (at the expense of introducing bias). This can be shown by computing the risk of the James-Stein estimator:
+
+$$
+\begin{align*}
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& \mathbb{E}\left(\left\lVert \left(1 - \frac{N - 2}{\lVert\mathbf{X}\rVert^2} \right)\mathbf{X} - \boldsymbol{\theta} \right\rVert^2 \right) \\
+  =& \mathbb{E}\left(\left\lVert \mathbf{X} - \boldsymbol{\theta} - \frac{(N - 2)\mathbf{X}}{\lVert\mathbf{X}\rVert^2} \right\rVert^2 \right) \\
+  =& \mathbb{E}(\lVert\mathbf{X} - \boldsymbol{\theta}\rVert^2) + \mathbb{E}\left(\left\lVert \frac{(N - 2)\mathbf{X}}{\lVert\mathbf{X}\rVert^2} \right\rVert^2 \right) \\
+  &- \mathbb{E}\left(2(N - 2) \sum_{n=1}^N \frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2} \right) \\
+  =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2}\right) - 2(N - 2) \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right)
+\end{align*}
+$$
+
+For $n=1$, the expectation inside the sum is given by
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\lVert\mathbf{X}\rVert^2} \right) =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{(x_1 - \theta_1)x_1}{\lVert\mathbf{x}\rVert^2} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \;\d x_1\cdots\d x_N
+\end{align*}
+$$
+
+Noting that
+
+$$
+  \frac{\partial}{\partial x_1} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} = -\frac{x_1 -\ theta_1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2}
+$$
+
+we integrate by parts to obtain
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\lVert\mathbf{X}\rVert^2} \right) =& \frac{1}{(2\pi)^{N/2}} \int_{-\infty}^\infty \cdots \big(\underbrace{\left[-\frac{x_1}{\lVert\mathbf{x}\rVert^2} e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \right]_{-\infty}^\infty}_{=0} \\
+  &+ \left. \int_{-\infty}^\infty e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \d\left(\frac{x_1}{\lVert\mathbf{x}\rVert^2}\right) \right) \cdots\d x_N \\
+  =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{\lVert\mathbf{x}\rVert^2 - 2x_1^2}{\lVert\mathbf{x}\rVert^4} \frac{1}{(2\pi)^{N/2}} e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \;\d x_1 \cdots\d x_N \\
+  =& \mathbb{E}\left(\frac{\lVert\mathbf{X}\rVert^2 - 2X_1^2}{\lVert\mathbf{X}\rVert^4}\right)
+\end{align*}
+$$
+
+where we have used that 
+
+$$
+\frac{\d}{\d x_1} \left(\frac{x_1}{\lVert\mathbf{x}\rVert^2}\right) = \frac{\lVert\mathbf{x}\rVert^2 - 2x_1^2}{\lVert\mathbf{x}\rVert^4}
+$$  
+
+Repeating the process for $n = 2,\dots,N$, we can write the summed expectation as
+
+$$
+\begin{align*}
+  \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right) = \mathbb{E}\left(\sum_{n=1}^N \frac{\lVert\mathbf{X}\rVert^2 - 2X_i^2}{\lVert\mathbf{X}\rVert^4} \right) \\
+  =& \mathbb{E}\left(\frac{N\lVert\mathbf{X}\rVert^2 - 2\lVert\mathbf{X}\rVert^2}{\lVert\mathbf{X}\rVert^4}\right) \\
+  =& (N - 2)\mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right)
+\end{align*}
+$$
+
+Inserting back into $R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta})$ yields
+
+$$
+\begin{align*}
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) - 2(N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) \\
+  =& N - (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right)
+\end{align*}
+$$
+
+Hence, it follows that
+
+$$
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) = N - (N - 2)\mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) < N = R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta})
+$$
+
+for $N \geq 3$.
+</MathBox>
 
 # Empirical risk minimization
 
