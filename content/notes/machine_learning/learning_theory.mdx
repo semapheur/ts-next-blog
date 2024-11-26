@@ -30,6 +30,109 @@ Machine learning techniques can be divided into seven approaches:
 - **Reinforcement learning:** To collect information, the learner actively interacts with the environment and in some cases affects the environment, and receives an immediate reward for each action. The goal is to maximize the reward over a course of actions and iterations with the environment. However, no long-term reward feedback is provided by the environment, and the learner is faced with the *exploration versus exploitation* dilemma, since it must choose between exploring unknown actions to gain more information versus exploiting the information already collected.
 - **Active learning:** The learner adaptively or interactively collects training examples, typically by quering an oracle to request labels for new points. The goal is to achieve a performance comparable to supervised learning.
 
+# Empirical risk
+
+Let $\mathcal{S} = \Set{(\mathbf{x}_n, \mathbf{y}_n)}_{n=1}^N$ be a sample and $\Theta$ a parameter space. In frequentist decision theory, we are interested in finding an estimator $\hat{\boldsymbol{\theta}} = \delta(\mathcal{S})$ miniziming the risk
+
+$$
+  R(\delta, \boldsymbol{\theta}^*) = \mathbb{E}_{\Pr (\mathcal{D}|\boldsymbol{\theta}^*)} [\ell(\boldsymbol{\theta}^*, \delta(\mathcal{S}))]
+$$
+
+where $\ell$ is a loss function. In supervised learning, the estimator $\delta$ is a prediction function $\hat{\mathbf{y}} = f(\mathbf{x})$, and the state of nature is the true distribution $\Pr^* (\mathbf{x}, \mathbf{y})$. The risk of an estimator $f$ is given by
+
+$$
+  R(f, \Pr^*) = R(f) := \mathbb{E}_{\Pr^* (\mathbf{x})\Pr^* (\mathbf{y}|\mathbf{x})} [\ell(\mathbf{y}, f(\mathbf{x}))]
+$$
+
+This is called the *population risk*, since the expectation are taken with respect to the true joint distribution $\Pr^* (\mathbf{x}, \mathbf{y})$. Because $\Pr^*$ is unknown, we can approximate it using the empirical distribution with $N$ samples:
+
+$$
+  \Pr_\mathcal{S} (\mathbf{x}, \mathbf{y}|\mathcal{S}) := \frac{1}{|\mathcal{S}|} \sum_{(\mathbf{x}_n, \mathbf{y}_n \in\mathcal{S})} \delta(\mathbf{x} - \mathbf{x}_n) \delta(\mathbf{y} - \mathbf{y}_n)
+$$
+
+Plugging this in gives the *empirical risk*
+
+$$
+  R(f,\mathcal{S}) := \mathbb{E}_{\Pr_\mathcal{S} (\mathbf{x}, \mathbf{y})} [\ell(\mathbf{y}, f(\mathbf{x}))] = \frac{1}{N} \sum_{n=1}^N \ell(\mathbf{y}_n, f(\mathbf{x}_n))
+$$
+
+Note that $R(f,\mathcal{S})$ is a random variable, since it depends on the training set. An optimal predictor is given by
+
+$$
+  \hat{f}_{\text{ERM}} = \argmin_{f\in\mathcal{H}} R(f,\mathcal{S}) = \argmin_{f\in\mathcal{H}} \frac{1}{N} \sum_{n=1}^N \ell(\mathbf{y}_n, f(\mathbf{x}_n))
+$$
+
+where $\mathcal{H}$ is a *hypothesis space* of functions. This is called *empirical risk minization* (ERM).
+
+## Approximation and estimation error
+
+Let $f^{**} = \argmin_f R(f)$ be the predictor that achieves the minimal possible population risk, where we optimize over all possible function. Since we cannot consider all possible functions, we can restrict the optimization to a hypothesis space $\mathcal{H}$ giving the predictor $f_\mathcal{H}^* = \argmin_{f\in\mathcal{H}} R(f)$. Unfortunately, we cannot compute the population risk $R(f)$, and we are thus limited to optimize the empirical risk in $\mathcal{H}$ given a fixed training set $\mathcal{S}$:
+
+$$
+  f_\mathcal{S}^* = \argmin_{f\in\mathcal{H}} R(f,\mathcal{S})
+$$
+
+This is a random function since $\mathcal{S}\sim \Pr^*$ is random. By adding and subtracting the deterministic population risks $R(f^**)$ and $R(f_\mathcal{H}^*)$, the expected risk of our chosen predictor compared to the best possible predictor can be decomposed into two terms as follows
+
+$$
+  \mathbb{E}_{\mathcal{S}\sim\Pr^*} [R(f_\mathcal{S}^*) - R(f^{**})] = \underbrace{R(f_\mathcal{H}^*) - R(f^{**})}_{\varepsilon_{\text{a}}(\mathcal{H})} + \underbrace{\mathbb{E}_{\mathcal{S}\sim\Pr^*} [R(f_{\mathcal{S}}^*) - R(f_\mathcal{H}^*)]}_{\varepsilon_{\text{e}}(\mathcal{H}, N)}
+$$
+
+where
+- $\varepsilon_{\text{a}}(\mathcal{H})$ is the *approximation error* measuring how closely $f_\mathcal{H}^*$ can model the true optimal function $f^{**}$
+- $\varepsilon_{\text{e}}(\mathcal{H}, N)$ is the *estimation error*, which measures the error in finding the best function in the class, due to having a finite training set of size $N$ to evaluate performance
+
+We can decrease the approximation error by using a more complex set of functions $\mathcal{H}$. However, this usually increases overfitting, which increases the estimation error. We can quantify the degree of overfitting of any model $f$ by computing the *generalization gap*, defined as
+
+$$
+  \operatorname{GenGap}(f) = R(f) - R(f, \mathcal{S}_{\text{train}}) \approx R(f, \mathcal{S}_{\text{test}}) - R(f, \mathcal{D}_{train})
+$$
+
+Thus we need to find model that tradeoff approximation error and estimation error.
+
+## Regularized risk
+
+To avoid the chance of overfitting, it is common to add a complexity penalty to the objective function, giving us the *regularized empirical risk*
+
+$$
+  R_\lambda (f,\mathcal{S}) = R(f,\mathcal{D}) + \lambda C(f)
+$$
+
+where $C(f)$ measures the complexity of the predictor $f(\mathbf{x},\boldsymbol{\theta})$ and $\lambda\geq 0$, which is known as a *hyperparameter* controls the strength of the complexity penalty. In practive, we usually work with parametric functions, and apply the regularizer to the parameters themselves. This yields the following form of the risk:
+
+$$
+  R_\lambda (\boldsymbol{\theta},\mathcal{S}) = R(\boldsymbol{\theta},\mathcal{S}) + \lambda C(\boldsymbol{\theta})
+$$
+
+Note that, if the loss function is logarithmic loss, and the regularizer is a negative log prior, the regularized risk is given by
+
+$$
+  R_\lambda (\boldsymbol{\theta}, \mathcal{S}) = -\frac{1}{N} \sum_{n=1}^N \ln[\Pr(\mathbf{y}_n | \mathbf{x}_n, \boldsymbol{\theta})] - \ln[\Pr(\boldsymbol{\theta})]
+$$
+
+Minimizing this is equivalent to a maximum aposteriori estimation.
+
+## Structural risk
+
+A natural way to estimate the hyperparameters is to minimize for the lowest achievable empirical risk, i.e.
+
+$$
+  \hat{\lambda} = \argmin_\lambda \min_{\boldsymbol{\theta}} R_\lambda (\boldsymbol{\theta}, \mathcal{S})
+$$
+
+This is an example of *bilevel optimization*, or *nested information*. Unfortunately, this technique will not work, since it always pick the least amount of regularization, i.e. $\hat{\lambda} = 0$. To see this, note that
+
+$$
+  \argmin_\lambda \min_{\mathbf{\theta}} R_\lambda (\boldsymbol{\theta},\mathcal{S}) = \argmin_\lambda \min_{\boldsymbol{\theta}} R(\boldsymbol{\theta},\mathcal{S}) + \lambda C(\lambda)
+$$
+
+which is minimized for $\lambda = 0$. The problem is that the empirical risk underestimates the population risk, resulting in overfitting when we choose $\lambda$. This is called *optimism of the training error*.
+
+If we knew the regularized population risk $R_\lambda (\boldsymbol{\theta})$, instead of the regularized empirical risk $R_\lambda (\boldsymbol{\theta},\mathcal{S})$, we could use it to pick a model of the right complexity. This is know as *structural risk minimization*. There are two main ways to estimate the population risk for a given model: cross-validation and statistical learning theory.
+
+## Cross-validation
+
+
 # Probably approximately correct (PAC) learning
 
 Let $X$ be the set of all possible examples, also referred to as the input space, and let $Y$ be the set of all possible labels or target values. A *concept* is a mapping $c:X\to Y$, while a concept class $C$ is a set of concepts that can be learnt. We assume the examples are independently and identically distributed (i.i.d.) according to some fixed yet unknown distribution $\mathcal{D}$. 
@@ -254,7 +357,7 @@ Where $\hat{\mathcal{R}}_S (G)$ is the empirical Rademacher complexity of $G$.
 </MathBox>
 
 <MathBox title='' boxType='theorem' tag='theorem-1'>
-Let $G$ be a collection of functions mapping from $Z$ to $[0,1]$. For any $\delta > 0$, with probability at least $1 - \delat$, each of the following holds for all $g\in G$:
+Let $G$ be a collection of functions mapping from $Z$ to $[0,1]$. For any $\delta > 0$, with probability at least $1 - \delta$, each of the following holds for all $g\in G$:
 
 $$
 \begin{equation}
@@ -516,7 +619,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Growth function generalization bounds' boxType='corollary-2'>
+<MathBox title='Growth function generalization bounds' boxType='corollary' tag='corollary-2'>
 Let $H$ be a collection of functions taking values in $\set{\pm 1}$. Then, for any $\delta$, with probability at least $1 - \delta$, for any $h\in H$
 
 $$
@@ -535,6 +638,7 @@ Growth function bound can be also derived directly (without using Rademacher com
 $$
 \begin{equation}
   \Pr\left(|R(h) - \hat{R}(h)| > \epsilon \right) \leq 4\Pi_H (2m) \exp\left(-\frac{me^2}{8} \right) \tag{\label{equation-16}}
+\end{equation}
 $$
 
 The computation of the growth function is not always convient since, by definition, it requires computing $\Pi_H (m)$ for all $m\geq 1$.

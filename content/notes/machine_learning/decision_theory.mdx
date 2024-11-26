@@ -109,7 +109,7 @@ $$
 \begin{align*}
   y^* =& \argmax_{y\in\set{1,\dots,C}} \\
   p^* =& p(y^* | \mathbf{x}) = \max_{y\in\set{1,\dots,C}} p(y|\mathbf{x}) \\
-  \lambda^* = 1 - \frac{\lambda_r}{\lambda_e}
+  \lambda^* =& 1 - \frac{\lambda_r}{\lambda_e}
 \end{align*}
 $$
 
@@ -162,8 +162,8 @@ $$
   & & \text{Estimate} \\
   & & \begin{array}{cc} 0 & 1 \end{array} \\ \hline
   \text{Truth} & \begin{array}{c} 0 \\ 1 \end{array} & \begin{array}{cc}
-    \operatorname{TN}/N = \operatorname{TNR} & \operatorname{FP}/N = \operatorname{FPR} \\
-    \operatorname{FN}/P = \operatorname{FNR} & \operatorname{TP}/P = \operatorname{TPR}
+    \frac{\operatorname{TN}}{N} = \operatorname{TNR} & \frac{\operatorname{FP}}{N} = \operatorname{FPR} \\
+    \frac{\operatorname{FN}}{P} = \operatorname{FNR} & \frac{\operatorname{TP}}{P} = \operatorname{TPR}
   \end{array}
 \end{array}
 $$
@@ -222,7 +222,7 @@ Setting $\beta = 1$, we get the harmonic mean of presicion and recall
 
 $$
 \begin{align*}
-  \frac{1}{F_1} = \frac{1}{2}\left(\mathbf{1}{\mathcal{P}} + \frac{1}{\mathcal{R}}) \\
+  \frac{1}{F_1} = \frac{1}{2}\left(\mathbf{1}{\mathcal{P}} + \frac{1}{\mathcal{R}}\right) \\
   F_1 = \frac{2}{1/\mathcal{R} + 1/\mathcal{P}} = 2\frac{\mathcal{P}\mathcal{R}}{\mathcal{p} + \mathcal{R}} = \frac{\operatorname{TP}}{\operatorname{TP} + \frac{1}{2}(\operatorname{FP} + \operatorname{FN})}
 \end{align*}
 $$
@@ -317,7 +317,7 @@ $$
   D_{KL} (p \Vert q) =& \sum_{y\in Y} p(y) \ln[p(y)] - \sum_{y\in Y} p(y) \ln[q(y)] \\
   =& -\mathbb{H}(p) + \mathbb{H}_{\text{ce}} (p,q) \\
   \mathbb{H}(p) :=& -\sum_{y\in Y} p(y) \ln[p(y)]\\
-  \mathbb{H}_{\text{ce}}(p,q) := -\sum_{y\in Y} p(y) \ln[q(y)] 
+  \mathbb{H}_{\text{ce}}(p,q) :=& -\sum_{y\in Y} p(y) \ln[q(y)] 
 \end{align*}
 $$
 
@@ -372,16 +372,16 @@ $$
 This is like a *likelihood ratio*, except we integrate out the parameters, which allows us to compare models of different complexity, due to the Bayesian Occam's razor effect. If $\operatorname{BF}(1,0) > 1$, then we prefer model $1$, otherwise we prefer model $0$.  
 
 <TableFigure caption="Jeffrey scale of evidence for interpreting Bayes factor">
-| Bayes factor $BF(1,0)$ | Intepretation |
+| Bayes factor $\operatorname{BF}(1,0)$ | Intepretation |
 | :-: | --- |
-| $BF < 1/100$ | Decisive evidence for $M_0$ |
-| $BF < 1/10$ | Strong evidence for $M_0$ |
-| $1/10 < BF < 1/3$ | Moderate evidence for $M_0$ |
-| $1/3 < BF < 1$ | Weak evidence for $M_0$ |
-| $1 < BF < 3$ | Weak evidence for $M_1$ |
-| $3 < BF < 10$ | Moderate evidence for $M_1$ |
-| $BF > 10$ | Strong evidence for $M_1$ |
-| $BF > 100$ | Decisive evidence for $M_1$ |
+| $\operatorname{BF} < 1/100$ | Decisive evidence for $M_0$ |
+| $\operatorname{BF} < 1/10$ | Strong evidence for $M_0$ |
+| $1/10 < \operatorname{BF} < 1/3$ | Moderate evidence for $M_0$ |
+| $1/3 < \operatorname{BF} < 1$ | Weak evidence for $M_0$ |
+| $1 < \operatorname{BF} < 3$ | Weak evidence for $M_1$ |
+| $3 < \operatorname{BF} < 10$ | Moderate evidence for $M_1$ |
+| $\operatorname{BF} > 10$ | Strong evidence for $M_1$ |
+| $\operatorname{BF} > 100$ | Decisive evidence for $M_1$ |
 </TableFigure>
 
 ## Bayesian model selection
@@ -401,7 +401,7 @@ $$
 is the posterior over model. If the prior model is uniform, $p(m) = 1/|\mathcal{M}|$, then the MAP model is given by
 
 $$
-  \hat{m}  = argmax_{m\in\mathcal{M}} p(\mathcal{D}|m)
+  \hat{m}  = \argmax_{m\in\mathcal{M}} p(\mathcal{D}|m)
 $$
 
 The posterior over models is given by
@@ -439,7 +439,7 @@ $$
 Suppose we use a plugin approximation to the above distribution to get
 
 $$
-\beign{align*}
+\begin{align*}
   p(y|\mathbf{x}, \mathcal{D}_{1:n-1}, m) \approx& \int p(y|\mathbf{x},\boldsymbol{\theta}) \delta(\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}_m (\mathcal{D}_{1:n-1}))\;\d\boldsymbol{\theta} \\
   =& p(y|\mathbf{x}, \hat{\boldsymbol{\theta}}_m (\mathcal{D}_{1:n-1}))
 \end{align*}
@@ -464,7 +464,7 @@ except we ignore the $\mathcal{D}_{n+1:N}$ part. This connection can be explaine
 Information criteria are metric for model selection of the following form
 
 $$
-  \mathcal{L}(m) = -log[p(\mathcal{D}\hat{\boldsymbol{\theta}}, m)] + C(m)
+  \mathcal{L}(m) = -log[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)] + C(m)
 $$
 
 where $C(m)$ is a *complexity penalty* term added to the negative log likelihood. It is convenction, when working with information criteria, to scale the negative log likelihood by $-2$ to get the *deviance*, $\operatorname{dev}(m) = -2\ln[p(\mathcal{D}|\hat{\boldsymbol{\theta}}, m)]$.
@@ -526,7 +526,7 @@ The main problem with BIC, AIC and MDL is that it can be har to compute the degr
 An alternative criterion that works even in the singular case is known as the *widely applicable information criterion* (WAIC), also known as the *Watanabe-Akaike information criterion*. The WAIC replaces the plug-in approximation to the marginal likelihood $\ell(m) = \sum_{n=1}^N \ln[p(y_n|\hat{\boldsymbol{\theta}}, m)$ iwth the *expected log pointwise density* (ELPD) defined as
 
 $$
-  \operatorname{ELPD}(m) = \sum_{n=1}^N \ln[p(y_n|\mathcal{D},m)] = \sum_{n=1}^N \ln \mathbb{E}_{\boldsymbol{\theta}|\mathbb{D}, m}[p(y_n|\boldsymbol{\theta}, m)]
+  \operatorname{ELPD}(m) = \sum_{n=1}^N \ln[p(y_n|\mathcal{D},m)] = \sum_{n=1}^N \ln \mathbb{E}_{\boldsymbol{\theta}|\mathcal{D}, m}[p(y_n|\boldsymbol{\theta}, m)]
 $$
 
 which is usually approximated by Monte Carlo. Additionally, the complexity term is defined by $C(m) = \sum_{n=1}^N$, which again is usually approximated by Monte Carlo. The intuition for this is a follows: if, for a given datapoint $y_n$, the different posterior samples $\boldsymbol{\theta}_s$ make very different predictions, then the model is uncertain, and likely too flexible. The WAIC loss is defined as
@@ -544,7 +544,7 @@ Recall that Bayesian hypothesis testing relies on computing the Bayes factors fo
 Suppose we have two classifiers, $m_1$ and $m_2$, and we want to know which one is better. That is, we want to perform a comparison of classifiers. Let $\mu_1$ and $\mu_2$ be their average accuracies, and let $\Delta = \mu_1 - \mu_2$ be the difference in their accuracies. The probability that model $1$ is more accurate, on average, than model $2$ is given by $p(\Delta > 0|\mathcal{D})$. However, even if this probability is large, the improvement may be not practically significant. So it is better to compute a probability such as $p(\Delta > \epsilon | \mathcal{D})$ or $p(|\Delta| > \epsilon|\mathcal{D}|)$, where $\epsilon$ represents the minimal magnitude of effect size that is meaningful for the problem at hand. This a called a *one-sided test* or *two-sided test*.
 
 More generally, let $R = [-\epsilon,\epsilon]$ represent a *region of practical equivalence* (ROPE). We can define $3$ events of interest:
-- the null hypothesis $H_0 : \Delta\in R$, which says both methods are practically the same (which is a more realistic assumption than $H_0: \Detla = 0$)
+- the null hypothesis $H_0 : \Delta\in R$, which says both methods are practically the same (which is a more realistic assumption than $H_0: \Delta = 0$)
 - $H_A: \Delta > \epsilon$, which says $m_1$ is better than $m_2$
 - $H_B: \Delta < -\epsilon$, which says $m_2$ is better than $m_1$
 
@@ -607,7 +607,7 @@ $$
 Consider a Gaussian sampled data set $\mathbf{x} = (x_n)_{n=1}^N$ with $x_n \sim\mathcal{N}(\theta^*, \sigma^2 = 1)$. Using a quadratic loss $\ell_2 (\theta,\hat{\theta}) = (\theta - \hat{\theta})$ for estimating the mean $\theta$, the corresponding risk function is the mean squared error. Let $\hat{\theta}(\mathbf{x}) = \delta(\mathbf{x})$ be the estimated mean. The risk of this estimator is given by the mean squared error, which can be decomposed into squared bias and variance, i.e.
 
 $$
-  \operatorname{MSE}(\hat{\theta}|\theta^*) = \operatorname{var}(\hat{theta}) + \operatorname{bias}^2 (\hat{\theta})
+  \operatorname{MSE}(\hat{\theta}|\theta^*) = \operatorname{var}(\hat{\theta}) + \operatorname{bias}^2 (\hat{\theta})
 $$
 
 where, $\operatorname{bias}(\hat{\theta}) = \mathbb{E}(\hat{\theta} - \theta^*)$. We now consider $5$ different estimators for computing $\theta$:
@@ -635,7 +635,7 @@ $$
   \operatorname{MSE}(\delta_3 | \theta^*) = (\theta^* - \theta_0)^2
 $$
 
-- $\delta_\kappa (\mathbf{x})$, the posterior mean under a $\mathcal{N}(\theta|theta_0, \sigma^2 /\kappa)$ prior
+- $\delta_\kappa (\mathbf{x})$, the posterior mean under a $\mathcal{N}(\theta|\theta_0, \sigma^2 /\kappa)$ prior
 $$
   \delta_\kappa (\mathbf{x}) = \frac{N}{N + \kappa}\bar{x} + \frac{\kappa}{N + \kappa}\theta_0 = w\bar{x} + (1 - w)\theta_0
 $$
@@ -647,7 +647,7 @@ $$
   \operatorname{MSE}(\delta_k | \theta^*) =& \mathbb{E}\left[(w\bar{x} + (1 - w)\theta_0 - \theta^*)^2\right] \\
   =& \mathbb{E}\left[(w(\bar{x} - \theta^*) + (1 - w)(\theta_0 - \theta^*))^2 \right] \\
   =& w^2 \frac{\sigma^2}{N} + (1 - w)^2 (\theta_0 - \theta^*)^2 \\
-  =& \frac{1}{(N + \kappa)^2} (N\sima^2 + \kappa^2 (\theta_0 - \theta^*)^2)
+  =& \frac{1}{(N + \kappa)^2} (N\sigma^2 + \kappa^2 (\theta_0 - \theta^*)^2)
 \end{align*}
 $$
 </MathBox>
@@ -723,7 +723,7 @@ $$
 Noting that
 
 $$
-  \frac{\partial}{\partial x_1} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} = -\frac{x_1 -\ theta_1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2}
+  \frac{\partial}{\partial x_1} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} = -\frac{x_1 -\theta_1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2}
 $$
 
 we integrate by parts to obtain
@@ -747,7 +747,7 @@ Repeating the process for $n = 2,\dots,N$, we can write the summed expectation a
 
 $$
 \begin{align*}
-  \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right) = \mathbb{E}\left(\sum_{n=1}^N \frac{\lVert\mathbf{X}\rVert^2 - 2X_i^2}{\lVert\mathbf{X}\rVert^4} \right) \\
+  \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right) =& \mathbb{E}\left(\sum_{n=1}^N \frac{\lVert\mathbf{X}\rVert^2 - 2X_i^2}{\lVert\mathbf{X}\rVert^4} \right) \\
   =& \mathbb{E}\left(\frac{N\lVert\mathbf{X}\rVert^2 - 2\lVert\mathbf{X}\rVert^2}{\lVert\mathbf{X}\rVert^4}\right) \\
   =& (N - 2)\mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right)
 \end{align*}
