@@ -2,6 +2,8 @@
 title: 'Statistics'
 subject: 'Mathematics'
 showToc: true
+references:
+  - book_siegrist_2021
 ---
 
 # Statistical model
@@ -834,10 +836,12 @@ A statistical hypothesis is a statement about the distribution of a sample $\mat
 
 In hypothesis testing, the goal is to see if there is sufficient statistical evidence to reject a presumed *null hypothesis* in favour of a conjectured *alternative hypothesis*. The null hypothesis is usually denoted $H_0$, while the alternative hypothesis is usually denoted $H_1$.
 
+<TableFigure caption="Hypothesis test">
 | State/decision | Fail to reject $H_0$ | Reject $H_0$ |
 | ::: | ::: | ::: |
 | $H_0$ true | Correct | Type 1 error |
 | $H_1$ true | Type 2 error | Correct |
+</TableFigure>
 
 An hypothesis test is a statistical decision; the conclusion will either be to reject the null hypothesis in favour of the alternative, or to fail to reject the null hypothesis. The decision is based on the observed value $\mathbf{x}$ of the sample $\mathbf{X}$. Thus, we will find an appropriate subset $\mathbf{R}$ of the sample space $S$ and reject $H_0$ if and only if $\mathbf{x}\in R$. The set $R$ is known as the rejection/critical region.
 
@@ -884,9 +888,44 @@ If a test has significance level $\alpha$ and is uniformly more powerful than an
 
 <MathBox title='P-value' boxType='definition'>
 The $P$-value of the observed value $\mathbf{x}$ of $\mathbf{X}$, denoted $P(\mathbf{x})$, is defined to be the smallest $\alpha$ for which $\mathbf{x}\in R_\alpha$, i.e. the smallest significance level for which $H_0$ is rejected given $\mathbf{X} = \mathbf{x}$. Note that $P(\mathbf{x})$ is a statistic.
+
+If $t(\mathbf{X})$ is an observed test statistic from an uknown distribution $T$, the $P$-value is what the prior probability would be of observing a test-statistic value at least as extreme as $t$ if the null hypothesis $H_0$ were true. That is:
+- $P = \mathbb{P}(T \geq t | H_0)$ for a one-sided right-tail test statistic distribution
+- $P = \mathbb{P}(T \leq t | H_0)$ for a one-sided left-tail test-statistic distribution
+- $P = 2\min\Set{\mathbb{P}(T \geq t : H_0), \mathbb{P}(T \leq t : H_0)}$ for a two-sided test-statistic distribution. If the distribution of $T$ is symmetric about zero, then $P = \mathbb{P}(|T| \geq |t| : H_0)$
 </MathBox>
 
 Knowing $P(\mathbf{x})$ allows us to test $H_0$ at any significance level for the given data $\mathbf{x}$. If $P(\mathbf{x})\leq\alpha$ then we would reject $H_0$ at significance level $\alpha$; if $P(\mathbf{x})> \alpha$ then we fail to reject $H_0$ at significance level $\alpha$.
+
+<MathBox title='The relation of $P$-values to posterior probabilities' boxType='definition'>
+A $P$-value is often misinterpreted as the likelihood of the data under the null hypothesis, so small value are intepreted to mean that $H_0$ is unlikely. This is reasoned as follows:
+
+> If $H_0$ is true, then this test statistic would probably not occur. This statistic did occur. Therefore $H_0$ is probably false.
+
+However, this is invalid reasoning. To see why, consider the following example:
+
+> If a person is an American, then he is probably not a member of Congress. This person is a member of Congress. Therefore he is probably not an American.
+
+This is obviously fallacious reasoning. By contrast, the following logical argument is valid reasoning:
+
+> If a person is a Martian, then he is not a member of Congress. This person is a member of Congress. Therefore he is not a Martian.
+
+The difference between these two cases is that the Martian example is using deduction, that is, reasoning forward from logical definitions to their consequences. More precisely, this example uses a rule from logic called *modus tollens*, in which we start out with a definition of the form $A\implies B$; when we observe $\lnot B$, we can conclude $\lnot A$. By contrast, the American example concerns *induction*, that is, reasoning backwards from observed evidence to probable (but not necessarily true) causes using statistical regularities, not logical definitions.
+
+To perform induction, we need to probabilistic inference. Using Bayes' rule the probability of the null hypothesis given the observed data is
+
+$$
+  p(M_0 | \mathcal{S}) = \frac{p(\mathcal{S}|M_0)p(M_0)}{p(\mathcal{S}|M_0)p(M_0)p(M_0) + p(\mathcal{S}|M_1)p(M_1)}
+$$
+
+If the prior is uniform, i.e. $p(M_0) = p(M_1) = 0.5$, this can be rewritten in terms of the likelihood ratio $\operatorname{LR} = p(\mathcal{D}|M_0) / p(\mathcal{D}|M_1)$ as
+
+$$
+  p(M_0|\mathcal{D}) = \frac{\operatorname{LR}}{\operatorname{LR} + 1}
+$$
+
+In the American example, $\mathcal{S}$ is the observation that the person is a member of Congress. The null hypothesis $M_0$ is that the person is American, and the alternative hypothesis $M_1$ is that the person is not American. We assume that $p(\mathcal{S}|M_0)$ is low, since most Americans are not members of Congress. However, in this case $p(\mathcal{S}|M_1) = 0$ since only Americans can be members of Congress. Hence $\operatorname{LR} = \infty$, si $p(M_0|\mathcal{D}) = 1$, as intuition suggests. Note that NHST ignores $p(\mathcal{S}|M_1)$ as well as the prior $p(M_0)$, so it gives the wrong results.
+</MathBox>
 
 ## Test of an unknown parameter
 
@@ -939,6 +978,83 @@ In each case below, the confidence interval has confidence level $1 - \alpha$ an
 1. Suppose $L(\mathbf{X})$ is a confidence lower bound for $\theta$. Reject $H_0 : \theta\leq\theta_0$ versus $H_1: \theta > \theta_0$ if and only if $\theta_0 < L(\mathbf{X})$.
 2. Suppose $U(\mathbf{X})$ is a confidence upper bound for $\theta$. Reject $H_0 : \theta\geq\theta_0$ versus $H_1: \theta < \theta_0$ if and only if $\theta_0 > U(\mathbf{X})$.
 3. Suppose $[L(\mathbf{X}), U(\mathbf{X})]$ is a two-sided confidence interval for $\theta$. Reject $H_0 : \theta = \theta_0$ versus $H_1: \theta \neq \theta_0$ if and only if $\theta_0 < L(\mathbf{X})$ or $\theta_0 > U(\mathbf{X})$.
+
+Confidence sets of an unknown parameter $\theta$ are often constructed through a *pivot variable*, i.e. a random variable $W(\mathbf{X},\theta)$ that depends on the data vector $\mathbf{X}$ and the parameter $\theta$, but whose distribution does not depend on $\theta$ and is known. In this case, a natural test statistic for the basic test given above is $W(\mathbf{X},\theta_0)$.
+
+## Likelihood ratio tests
+
+Let $\mathbf{X}$ be an observable random variable taking values in a set $S$. Suppose $\mathbf{X}$ has one of two possible distributions. This gives the following two simple hypotheses
+- Null hypothessis $H_0:\mathbf{X}$ has probability density function $f_0$
+- Alternative hypothesis $H_1:\mathbf{X}$ has probability density function $f_1$
+
+<MathBox title='Likelihood ratio function' boxType='definition' tag='definition-1'>
+Let $\mathbf{X}$ be a random variable in $S$. If $f_0, f_1: S\to (0,\infty)$ are probability density functions in $S$, the *likelihood ratio function* $L:S\to(0,\infty)$ is defined by
+
+$$
+  L(\mathbf{x}) = \frac{f_0 (\mathbf{x})}{f_1 (\mathbf{x})},\; \mathbf{x}\in S
+$$
+
+The statistic $L(\mathbf{X})$ is the *likelihood ratio statistic*.
+</MathBox>
+
+The likelihood ratio test is based on the fact that if we observe $\mathbf{X} = \mathbf{x}$, then the condition $f_1(\mathbf{x}) > f_0 (\mathbf{x})$ is evidence in favour of the alternative hypothesis $H_1$; the opposite inequality is evidence against $H_1$. Consequently, we reject $H_0$ if and only if $L \leq l$, where $l$ is a constant to be determined. The significance level of the test is $\alpha = \mathbb{P}_0 (L \leq l)$.
+
+As usual, we can try to construct a test by choosing $l$ so that $\alpha$ is a prescribed value. If $\mathbf{X}$ has a discrete distribution, this will only be possible when $\alpha$ is a value of the distribution function of $L(\mathbf{X})$.
+
+An important special case of this model occurs when the distribution of $\mathbf{X}$ depends on a parameter $\theta$ that has two possible values. Thus, the parameter space is $\set{\theta_0, \theta_1}$, and $f_i$ denotes the probability density function of $\mathbf{X}$ when $\theta = \theta_i$ for $i\in\set{0,1}$. In this case, the hypotheses are equivalent to $H_0 : \theta = \theta_0$ versus $H_1 : \theta = \theta_1$.
+
+Another important special case is when $\mathbf{X} = (X_i)_{i=1}^n$ is a random sample of size $n$ from a distribution of an underlying random variable $X$ taking values in a set $R$. In this case, $S = R^n$ and the probability density function $f:R^n \to (0,\infty)$ of $\mathbf{X}$ has the form
+
+$$
+  f(x_1,\dots,x_n) = \prod_{i=1}^n g(x_i),\; (x_1,\dots,x_n) \in S
+$$
+
+where $g$ is the probability density function of $X$. In this case, the hypotheses simplify to
+- $H_0: X$ has probability density function $g_0$
+- $H_1: X$ has probability density function $g_1$
+
+and the likelihood statistic is
+
+$$
+  L(X_1,\dots,X_n) = \prod_{i=1}^n \frac{g_0 (X_i)}{g_1 (X_i)}
+$$
+
+### Neyman-Pearson lemma
+
+The Neyman-Pearson lemma shows that the the likelihood ratio test is a most powerful test.
+
+<MathBox title='Neyman-Pearson lemma' boxType='lemma'>
+Let $\mathbf{X}$ be a random variable in $S$. Consider that test with rejection regions $R = \Set{\mathbf{x}\in S | L(\mathbf{x}) \leq l}$ and an arbitrary $A\subseteq S$. If the size of $R$ is at least as large as the size of $A$, then the test with rejection region $R$ is more powerful than the test with rejection region $A$. That is, if $\mathbb{P}_0 (\mathbf{X}\in R) \geq \mathbb{P}_0 (\mathbf{X}\in A)$ then $\mathbb{P}_1 (\mathbf{X}\in A)$.
+
+<details>
+<summary>Proof</summary>
+
+Note that from the definitions of $R$ and $L$ (Definition $\ref{definition-1})$, the following inequalities hold
+
+$$
+\begin{align*}
+  \mathbb{P}_0 (\mathbf{X}\in A) \leq& l\mathbb{P}_1 (\mathbf{X}\in A),\; A\subseteq R \\
+  \mathbb{P}_0 (\mathbf{X}\in A) \geq& l\mathbf{P}_1 (\mathbf{X}\in A),\; A\subseteq R^c
+\end{align*}
+$$
+
+For arbitrary $A\subseteq S$, write $R = (R \cap A) \cup (R\setminus A)$ and $A = (A \cap R) \cup (A\setminus R)$. From the additivity of probability and the inequalities above, it follows that
+
+$$
+  \mathbb{P}_1 (\mathbf{X}\in R) - \mathbb{P}_1 (\mathbf{X}\in A) \geq \frac{1}{l} [\mathbf{P}_0 (\mathbf{X}\in R) - \mathbb{P}_0 (\mathbf{X} \in A)]
+$$
+
+Hence, if $\mathbb{P}_0 (\mathbf{X}\in R) \geq \mathbb{P}_0 (\mathbf{X} \in A)$ then $\mathbb{P}_1 (\mathbf{X}\in R) \geq \mathbb{P}_1 (\mathbf{X}\in A)$.
+</details>
+</MathBox>
+
+### Generalized likelihood ratio
+
+The likelihood ratio statistic can be generalized to composite hypotheses. Suppose the probability density function $f_\theta$ of the data variable $\mathbf{X}$ depends on a parameter $\theta$, taking values in a parameter space $\Theta$. Consider the hypotheses $\theta \in \Theta_0$ versus $\theta \notin \Theta_0$, where $\Theta_0 \subseteq\Theta$. In this case that likelihood ratio function $L:S\to (0,\infty)$ is defined as
+
+$$
+  L(\mathbf{x}) = \frac{\sup\Set{f_\theta (\mathbf{x})|\theta\in\Theta_0}}{\sup\Set{f_\theta (\mathbf{x})|\theta\in\Theta}}
+$$
 
 # Time series analysis
 

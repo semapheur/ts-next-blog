@@ -363,13 +363,19 @@ Since it can be hard to interpret absolyte Brier score values, a relative perfor
 
 Suppose we have to hypotheses (models), commonly called the *null hypothesis* $M_0$, and the *alternative hypothesis* $M_1$. The process of finding the hypothesis which is more likely to be true is called *hypothesis testing*.
 
-If we use $0$-$1$ loss, the optimal decision is to pick the alternative hypothesis if and only if $p(M_1|\mathcal{D}) > p(M_0|\mathcal{D})$, or equivalently, if $p(M_1 | \mathcal{D}) / p(M_0 | \mathcal{D}) > 1$. If we use a uniform prior, $p(M_0) = p(M_1) = 0.5$, the decision rule becomes: select $M_1$ if and only if $p(\mathcal{D}|M_1)/p(\mathbb{D}|M_0) > 0$. This quantity, which is the ratio of marginal likelihoods of the two models, is known as the *Bayes factor*
+If we use $0$-$1$ loss, we can think of the hypothesis test as a binary classification problem, where $H\in\set{0,1}$ represents the identity of the true model. Given a sample $\mathcal{S}$, the optimal decision is to pick the alternative hypothesis if and only if $p(M_1|\mathcal{S}) > p(M_0|\mathcal{S})$, or equivalently, if $p(M_1 | \mathcal{S}) / p(M_0 | \mathcal{S}) > 1$. If we use a uniform prior, $p(M_0) = p(M_1) = 0.5$, the optimal decision rule is to accept $M_1$ if and only if $p(\mathcal{S}|M_1)/p(\mathbb{S}|M_0) > 1$. This is called a likelihood ratio test.
+
+If the parameters for the null and alternative hypotheses are fully specified, the hypothesis test is called *simple*. A hypothesis that does specify all its parameters is known as a *compound hypothesis*. In Bayesian hypothesis testing, we compare compound hypotheses by integrating out their unknown parameters. This allows us to compare models of different complexity, due to the Bayesian Occam's razor effect. In this case the ratio of marginal likelihoods is known as the *Bayes factor*
 
 $$
-  \operatorname{BF}(1,0) := \frac{p(\mathcal{D}|M_0)}{p(\mathcal{D}|M_1)}
+  \operatorname{BF}(1,0) := \frac{p(\mathcal{S}|M_0)}{p(\mathcal{S}|M_1)}
 $$
 
-This is like a *likelihood ratio*, except we integrate out the parameters, which allows us to compare models of different complexity, due to the Bayesian Occam's razor effect. If $\operatorname{BF}(1,0) > 1$, then we prefer model $1$, otherwise we prefer model $0$.  
+If $\operatorname{BF}(1,0) > 1$, then we prefer model $1$, otherwise we prefer model $0$. An alternative approach is to maximize out the parameters, giving the maximum likelihood ratio
+
+$$
+  \frac{p(M_1|\mathcal{S})}{p(M_0|\mathcal{S})} = \frac{\int_{\boldsymbol{\theta\in M_1}} p(\boldsymbol{\theta}) p_{\boldsymbol{\theta}} (\mathcal{S})}{\int_{\boldsymbol{\theta}\in M_0} p(\boldsymbol{\theta}) p_{\boldsymbol{\theta}} (\mathcal{S})} \approx \frac{\max_{\boldsymbol{\theta}\in M_1} p_{\boldsymbol{\theta}}(\mathcal{S})}{\max_{\boldsymbol{\theta}\in M_0} p_{\boldsymbol{\theta}}(\mathcal{S})}
+$$
 
 <TableFigure caption="Jeffrey scale of evidence for interpreting Bayes factor">
 | Bayes factor $\operatorname{BF}(1,0)$ | Intepretation |
@@ -383,6 +389,67 @@ This is like a *likelihood ratio*, except we integrate out the parameters, which
 | $\operatorname{BF} > 10$ | Strong evidence for $M_1$ |
 | $\operatorname{BF} > 100$ | Decisive evidence for $M_1$ |
 </TableFigure>
+
+<MathBox title='Testing if a coin is fair' boxType='example'>
+Let $\theta \in [0,1]$ represent the bias of a coin and $\mathcal{S}$ denote the outcome of $N$ coin tosses. To test if a coin is fair with $\theta = 0.5$, we can formulate two hypothesis. The null hypothesis $M_0$ for $\theta = 0.5$ has marginal likelihood
+
+$$
+  p(\mathcal{S}|M_0) = \left(\frac{1}{2}\right)^N
+$$
+
+Using a Beta prior, the marginal likelihood for the alternative hypothesis $M_1$ with $\theta\neq 0.5$ is
+
+$$
+  p(\mathcal{S}|M_1) = \int p(\mathcal{S}|\theta)p(\theta)\;\d\theta = \frac{\operatorname{Beta}(\alpha_1 + N, \alpha_0 + N_0)}{\operatorname{Beta}(\alpha_1, \alpha_0)}
+$$
+
+where $N_1$ and $N_0$ are the number of heads and tails, respectively. 
+
+If $N_1 / N \approx 0.5$, the unbiased coiin hypothesis $M_0$ is more likely than $M_1$, since $M_0$ is a simpler model with no free parameters. However as the head counts become more extreme, we favor the biased coin hypothesis.
+</MathBox>
+
+<MathBox title='Comparing Gaussian means' boxType='example'>
+Suppose we are interested in testing whether some data comes from a Gaussian with mean $\mu_0$ or $\mu_1$, where we assume a known shared variance $\sigma^2$. Given observed data $\mathcal{S} = \set{x_n}_{n=1}^N$, the likelihood ratio is given by 
+
+$$
+\begin{align*}
+  \frac{p[\mathcal{S}(M_1)]}{p[\mathcal{S}(M_0)]} =& \frac{\exp\left(-\frac{1}{2\sigma^2} \sum_{n=1}^N (x_n - \mu_1)^2 \right)}{-\frac{1}{2\sigma^2} \sum_{n=1}^N (x_n - \mu_0)^2} \\ \\
+  =& \exp\left(\frac{1}{2\sigma^2} (2N\bar{x}(\mu_1 - \mu_0) + N\mu_0^2 - N\mu_1^2) \right)
+\end{align*}
+$$
+
+We see that this ratio only depend on the observed data via its mean $\bar{x}$. In general $p(\mathcal{S}|M_1) > p(\mathcal{S}|M_0) > 1$ if and only if $\bar{x} < x^*$, where $x^*$ is the point where the two probability density functions interact.
+
+The type I error rate $\alpha$ for false positive is given by
+
+$$
+\begin{align*}
+  \alpha(\mu_0) =& p(\text{type I error}) = p(\text{reject $H_0$}|\text{$H_0$ is true}) \\
+  =& p(\bar{X}(\tilde{\mathcal{S}}) > x^* | \tilde{\mathcal{S}}\sim H_0) \\
+  =& p\left(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{N}} > \frac{x^* - \mu_0}{\sigma/\sqrt{N}} \right)
+\end{align*}
+$$
+
+Hence $x^* = z_\alpha \sigma/\sqrt{N} + \mu_0$, where $z_\alpha$ is the upper $\alpha$ quantile of the standard normal distribution. The type II error rate $\beta$ for false negatives is given by
+
+$$
+\begin{align*}
+  \beta(\mu_1) =& p(\text{type II error}) = p(\text{accept $M_0$}|\text{$M_1$ is true}) \\
+  =& p(\bar{X}(\tilde{\mathcal{S}}) < x^* | \tilde{\mathcal{S}}\sim M_1)
+\end{align*}
+$$
+
+The power of the hypothesis test given by $1 - \beta(\mu_1)$ is the probability that we reject $M_0$ given that $M_1$ is true, also known as the true positive rate. Clearly, the least power occurs if $\mu_1 = \mu_0$ giving $1 - \beta(\mu_1) = \alpha(\mu_0)$. As $\mu_1$ and $\mu_0$ becomes further apart, the power approaches $1$.
+</MathBox>
+
+### Null hypothesis significance testing (NHST)
+
+Another way of testing a hypothesis is to compare it to some test statistic in a method known as null hypothesis significance testing (NHST). In this method, we define a test statistic $t(\mathcal{S})$ of an unknown distribution $T$ and compare its observed value to value we would expect if the null hypothesis $M_0$ were true. If the observed value is unexpected given $M_0$, we reject the null hypothesis. This is quantified by the $P$-value, which is defined as the smallest significance level $\alpha$ (type I error for false positives) for which the null hypothesis $M_0$ would be rejected, given the observed value of the test statistic.
+
+Depending on the test statistic distribution $T$, the $P$-value is given by:
+- $P = p(T \geq t | M_0)$ for a one-sided right-tail test statistic distribution
+- $P = p(T \leq t | M_0)$ for a one-sided left-tail test statistic distribution
+- $P = 2\min\Set{p(T \geq t : M_0), p(T \leq t : M_0)}$ for a two-sided test-statistic distribution. If the distribution of $T$ is symmetric about zero, then $P = p(|T| \geq |t| : M_0)$
 
 ## Bayesian model selection
 
@@ -420,7 +487,7 @@ Consider two models, a simple one, $m_1$, and a more complex one, $m_2$. Suppose
 
 Let us see how ranking models based on their marignal likelihood, which involces averaging the likelihood with respect to the prior, explains this behaviour. The complex model will put less prior probability on the "good" parameters that explain the data, $\hat{\boldsymbol{\theta}_2}$, since the prior must integrate to $1$ over the entire parameter space. Thus, it will take averages in parts of parameter space with low likelihood. By contrast, the simpler model has fewer parameters, so the prior is concentrated over a smaller volume. Thus, its averages will mostly be on the goor parts of parameters space, near $\hat{\boldsymbol{\theta}_1}$. Hence, we see that the marignal likelihood will prefer the simpler model.
 
-Another way to understand the Bayesian Occam's razor effect is to compare the relative predictive abilities of simple and complex models. Since probabilities must sum to one, we have $\sum_{\mathcal{D}'} p(\mathcal{D}'|m) = 1$, where the sum is over all possible datasets. Complex models, which can predict many things, must spread their predicted probability mas thinly, and hence will not obtain a large a probability for any given data set as simples models. This is sometimes called the *conservation of probability mass* principle.
+Another way to understand the Bayesian Occam's razor effect is to compare the relative predictive abilities of simple and complex models. Since probabilities must sum to one, we have $\sum_{\mathcal{D}'} p(\mathcal{D}'|m) = 1$, where the sum is over all possible datasets. Complex models, which can predict many things, must spread their predicted probability mas thinly, and hence will not obtain a large a probability for any given data set as simple models. This is sometimes called the *conservation of probability mass* principle.
 
 ### Connection between cross validation and margianl likelihood
 
@@ -770,11 +837,3 @@ $$
 
 for $N \geq 3$.
 </MathBox>
-
-# Empirical risk minimization
-
-## Empirical risk
-
-## Structural risk
-
-## Cross-validation

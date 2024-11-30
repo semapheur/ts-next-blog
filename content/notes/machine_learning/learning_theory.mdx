@@ -132,6 +132,33 @@ If we knew the regularized population risk $R_\lambda (\boldsymbol{\theta})$, in
 
 ## Cross-validation
 
+One way of estimating the population risk for supervised models is to partition the dataset into two parts: one part used for training the model, and a second part, called the *validation/holdout set*, used for assessing the risk. We can fit the model in the training set, and use its performance on the validation set as an approximation to the population risk.
+
+To explain this method, we write out the regularized empirical risk as
+
+$$
+  R_\lambda (\boldsymbol{\theta}, \mathcal{S}) = \frac{1}{|\mathcal{S}|} \sum_{(\mathbf{x},\mathbf{y})\in\mathcal{S}} \ell(\mathbf{y}, f(\mathbf{x},\boldsymbol{\theta})) + \lambda C(\boldsymbol{\theta}) 
+$$
+
+Let us also define $\hat{\boldsymbol{\theta}}_\lambda (\mathcal{S}) = \argmin_{\boldsymbol{\theta}} R_\lambda (\mathcal{S}, \boldsymbol{\theta})$. Finally, let $\mathcal{S} = \mathcal{S}_{\text{train}} \sqcup \mathcal{S}_{\text{valid}}$ be a partition of $\mathcal{S}$ into a training set and validation set.
+
+For each model $\lambda$, we fit it to the training set to get $\hat{\boldsymbol{\theta}}_\lambda (\mathcal{S}_{\text{train}})$. We then use the unregularized empirical risk on the validation set as an estimate of the population risk, i.e.
+
+$$
+  R_\lambda^{\text{val}} := R_0 (\hat{\boldsymbol{\theta}}_\lambda (\mathcal{S}_{\text{train}}), \mathcal{S}_{\text{valid}})
+$$
+
+which is called the validation risk.
+
+For small datasets, the number of training cases is insufficient for the model to learn the underlying patterns. The number of validation cases is also to small to estimate the performance of the model. One way to overcome lacking data is to use *cross-validation* (CV). This works by splitting the training data into $K$ folds. For each fold $k\in\set{1,\dots,K}$, we train on all the the folds but the $k$th, and test on the $k$th folds, in a round-robin fashion. Formally, we have the *cross-validation risk*
+
+$$
+  R_\lambda^{\text{cv}} := \frac{1}{K} \sum_{k=1}^K R_0 (\hat{\boldsymbol{\theta}}(\mathcal{S}_k^c))
+$$
+
+where $\mathcal{S}_k$ is the $k$th fold and $\mathcal{S}_k^c = \mathcal{S} \setminus \mathcal{S}_k$ are the remaining folds. For $K = N$, we get a method known as *leave-one-out cross-validation*, since we always train on $N - 1$ items and test on the remaining one.
+
+We can use the CV estimate as an objective inside of an optimization routine to pick the optimal hyperparameter, $\hat{\lambda} = \argmin_\lambda R_\lambda^{\text{cv}}$. Finally we combine all the available data and re-estimate the model parameters using $\hat{\boldsymbol{\theta}} = \argmin_{\boldsymbol{\theta}} R_{\hat{\lambda}} (\boldsymbol{\theta}, \mathcal{S})$.
 
 # Probably approximately correct (PAC) learning
 
