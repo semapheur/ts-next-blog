@@ -103,16 +103,16 @@ This shows that $\langle f,g\rangle = 0$ for $f,g\in\mathcal{U}$ with $f\neq g$.
 </details>
 </MathBox>
 
-<MathBox title='Orthonormal trigonometric bases' boxType='proposition'>
+<MathBox title='Orthonormal trigonometric bases' boxType='proposition' tag='proposition-1'>
 1. The basis $\mathcal{B}_1 = \set{x\mapsto\sqrt{2}\cos{nx}}_{n\in\N} \cup \set{x\mapsto\sqrt{2}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_1 := \frac{1}{2\pi} \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
-2. The basis $\mathcal{B}_2 = \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos{nx}}_{n\in\N} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+2. The basis $\mathcal{B}_2 = \set{x\mapso 1} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_2 := \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
-3. The basis $\mathcal{B}_3 = \set{x\mapsto\cos{nx}}_{n\in\N} \cup \set{x\mapsto\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+3. The basis $\mathcal{B}_3 =  \set{x\mapsto 1/\sqrt{2}} \cup \set{x\mapsto\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_3 := \frac{1}{\pi}\int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
@@ -181,6 +181,83 @@ $$
 </MathBox>
 
 # Fourier series
+
+Let $\mathcal{B}_n = \set{x \mapsto 1/\sqrt{2}} \cup \set{\cos(kx)}_{k=1}^n \cup \set{\sin(kx)}_{k=1}^n$ be a finite trigonometric basis for $n\in\N$. By Proposition $\ref{proposition-1}$, this is an orthonormal system in $L_{2\pi}^2 (\R,\mathbb{F})$ with respect to the inner product
+
+$$
+	\langle f, g\rangle = \frac{1}{\pi} \int_{-\pi}^\pi \overline{f(x)}g(x) \;\d x
+$$
+
+If $\mathcal{U}_n = \operatorname{span}(\mathcal{B}_n)$ is a finite-dimensional subspace defined by $\mathcal{B}_n$, the orthogonal projection of a square integrable $2\pi$-periodic function $f\in L_{2\pi}^2 (\R,\mathbb{F})$ onto $\mathcal{U}_n$ is given by
+
+$$
+	\mathcal{F}_n (f) = \frac{1}{\sqrt{2}}\langle x\mapsto \frac{1}{\sqrt{2}}, f \rangle \sum_{k=1}^n \cos(kx) \langle x\mapsto\cos(kx), f \rangle + \sum_{k=1}^n \sin(kx) \langle x\mapsto\sin(kx), f \rangle
+$$
+
+<MathBox title='Fourier series in $L^2$' boxType='definition'>
+Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $\n\in\N$ define
+
+$$
+	\mathcal{F}_n (f)(x) = \tilde{a}_0 \frac{1}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx)
+$$
+
+with
+
+$$
+\begin{align*}
+	\tilde{a_0} =& \langle x\mapsto \frac{1}{\sqrt}, f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \frac{1}{\sqrt(x)} f(x) \;\d x \\
+	a_k =& \langle x\mapsto x\mapsto\cos(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \cos(kx) f(x) \;\d x \\
+	b_k =& \langle x\mapsto x\mapsto\sin(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx) f(x) \;\d x \\
+\end{align*}
+$$
+
+The map $n\mapsto \mathcal{F}_n (f)(x)$ is the Fourier series of $f$
+</MathBox>
+
+Fourier series can also be expressed in terms of trigonometric exponential functions. If $\mathcal{B}_n = \set{x \mapsto 1/\sqrt{2}} \cup \set{\cos(kx)}_{k=1}^n \cup \set{\sin(kx)}_{k=1}^n$ and $\mathcal{E}_n = \set{x\mapsto e^{ikx}}_{k=-n}^n$ for $n\in\N$, then
+
+$$
+	\operatorname{span}(\mathcal{B}_n) = \operatorname{span}(\mathcal{E}_n)
+$$
+
+and
+
+$$
+	\tilde{a}_0 \frac{1}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx) = \sum_{k=-n}^n c_k e^{ikx}
+$$
+
+with
+
+$$
+	c_k = \begin{cases}
+		\frac{1}{2} \left(a_k + \frac{b_k}{i} \right), \quad& k > 0 \\
+		\tilde{a_0} \frac{1}{\sqrt{2}}, \quad& k = 0 \\
+		\frac{1}{2} \left(a_{-k} - \frac{b_{-k}}{i} \right), \quad& k < 0
+	\end{cases}
+$$
+
+If $\mathcal{U}_n = \operatorname{span}(\mathcal{E}_n)$ is a finite-dimensional subspace defined by $\mathcal{E}_n$, the orthogonal projection of a square integrable $2\pi$-periodic function $f\in L_{2\pi}^2 (\R,\mathbb{F})$ onto $\mathcal{U}_n$ is given by
+
+$$
+	\mathcal{F}_n (f) = \sum_{k=-n}^n e^{ikx} \langle x \mapsto e^{ikx}, f \rangle
+$$
+
+<MathBox title='Complex Fourier series in $L^2$' boxType='definition'>
+Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $\n\in\N$ define
+
+
+$$
+	\mathcal{F}_n (f)(x) = \sum_{k=-n}^n c_k e^{ikx}
+$$
+
+with
+
+$$
+	c_k = \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} f(x) \;\d x
+$$
+
+The map $n\mapsto \mathcal{F}_n (f)$ is the complex Fourier series of $f$.
+</MathBox>
 
 The set of exponential functions $\Set{ e_n := e^{inx} = \cos nx + i\sin nx : n \in\Z }$ is an orthogonal basis for the Hilbert space $L^2\left([-\pi, \pi ]\right)$ of square integrable functions with an inner product given by
 
