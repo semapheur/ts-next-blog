@@ -328,13 +328,15 @@ $$
 	c_n = \frac{1}{L}\langle f(x), e_n \rangle = \frac{1}{L}\int_0^L f(x)e^{-\frac{i2\pi n x}{L}}\;\d x
 $$
 
-<MathBox title='Geometric properties of Fourier series' boxType='proposition'>
+<MathBox title='Geometric properties of Fourier series' boxType='proposition' tag='proposition-2'>
 If $f\in L_{2\pi}^2 (\R, \mathbb{F})$ and $\mathcal{F}_n (f) = \sum_{k=-n}^n c_k e^{ikx}$ with $c_k = \langle x\mapsto e^{ikx}, f\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{e^{ikx}} f(x) \;\d x$, then
 
 1. $\lVert f - \mathcal{F}_n (f)\rVert^2 = \lVert f \rVert^2 - \sum_{k=-n}^n |c_k|^2$
 2. **Bessel's inequality:** $\sum_{k=-n}^n |c_k|^2 \leq \lVert f \rVert^2$ for all $n\in\N$
 		- Consequently $\sum_{k=-\infty}^\infty |c_k|^2 \leq \lVert f \rVert^2$ and $\lim_{k\to\infty} c_k = 0$
 3. **Parseval's identity:** $\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert = 0 \iff \sum_{k=-\infty}^\infty |c_k|^2 = \lVert f \rVert^2$
+
+It follows directly from Parseval's identity that any $f\in L_{2\pi}^2 (\R,\mathbb{F})$ can be written $f = \mathcal{F}_n (f) + r_n$ with $\lVert f_n \rVert \xrightarrow{n\to\infty} 0$.
 
 <details>
 <summary>Proof</summary>
@@ -348,15 +350,79 @@ $$
 \end{gather*}
 $$
 
-Since $\Set{x\mapsto e^{ikx}}_{k\in\Z}$, it follows that 
+Since $\Set{x\mapsto e^{ikx}}_{k\in\Z}$ is orthonormal with respect to the the inner product, it follows that 
 
 $$
 \begin{align*}
 	\lVert \mathcal{F}_n (f) \rVert^2 =& \langle \mathcal{F}_n (f), \mathcal{F}_n (f) \rangle \\
-	=& \left\langle \sum_{k=-n}^n c_k e^{ikx}, \sum_{k=-n}^n c_k e^{ikx} \right\rangle \\
-	=& \sum_{k=-n}^n c_k \overline{c_k} \sunderbrace{\langle e^{ikx}, e^{ikx} \rangle}_{=\lVert e^{ikx} \rVert^2 = 1} \\
+	=& \left\langle \sum_{k=-n}^n c_k e^{ikx}, \sum_{\ell=-n}^n c_k e^{i\ell x} \right\rangle \\
+	=& \sum_{k=-n}^n \sum_{\ell = -n}^n c_k \overline{c_\ell} \underbrace{\langle e^{ikx}, e^{i \ell x} \rangle}_{=\delta_{k\ell}} \\
 	=& \sum_{k=-n}^n |c_k|^2
 \end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+If $f\in L_{2\pi}^2 (\R,\mathbb{F})$ with $\mathcal{F}_n (f) = \sum_{k=-n}^n c_k e^{ikx}$ with $c_k = \langle x\mapsto e^{ikx}, f\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{e^{ikx}} f(x) \;\d x$, then the the following are equivalent
+1. **Parseval's identity:** $\lVert f \rVert^2 = \sum_{k=-\infty}^\infty |\langle x\mapsto e^{ikx}, f \rangle|^2$
+2. The orthonormal system $\mathcal{E} = \Set{x\mapsto e^{ikx}}_{k\in\Z}$ is complete, i.e. 
+$$
+	\lim_{n\to\infty} \lVert f - \sum_{k=-n}^n e^{ikx} \langle x\mapsto e^{ikx}, f \rangle \rVert = 0
+$$
+3. The orthonormal system $\mathcal{E}$ gives the inner product
+$$
+	\langle f, g \rangle = \sum_{k=-\infty}^\infty \langle f, x\mapsto e^{ikx} \rangle \langle x\mapsto e^{ikx}, g \rangle
+$$
+4. The orthonormal system $\mathcal{E}$ is total such that $\operatorname{span}(\set{x\mapsto e^{ikx}}_{k\in\Z})$ is dense in $L_{2\pi}^2 (\R, \mathbb{F})$. Equivalently,
+$$
+\begin{gather}
+	\forall f\in L_{2\pi}^2 (\R,\mathbb{F}) \; \forall \epsilon > 0 \; \exists N\in\N, \; \lambda_1,\dots,\lambda_N \in \mathbb{F}: \\
+	\lVert f - \sum_{k=-N}^N \lambda_k e^{ikx} \rVert < \epsilon
+\end{gather}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We want to express to inner product of $f,g\in L_{2\pi}^2 (\R,\mathbb{F})$ in terms of Fourier coefficients. By Parseval's identity (Proposition $\ref{proposition-2}$) we can write
+
+$$
+\begin{align*}
+	f =& \mathcal{F}_n (f) + r_n\; \lim_{n\to\infty} \lVert r_n \rVert = 0 \\
+	g =& \mathcal{F}_n (g) + \tilde{r}_n\; \lim_{n\to\infty} \lVert \tilde{r}_n \rVert = 0 \\
+\end{align*}
+$$
+
+By the Cauchy-Schwarz and Bessel inequalities, we have
+
+$$
+	|\langle \mathcal{F}_n (g), r_n \rangle| \leq \lVert \mathcal{F}_n (g) \rVert \cdot \lVert r_n \rVert\leq\lVert g \rVert\cdot\lVert r_n \rVert \xrightarrow{n\to\infty} 0
+$$
+
+Thus, we can write the inner product of $f$ and $g$ as
+
+$$
+\begin{align*}
+	\langle f, g \rangle =& \langle \mathcal{F}_n (f) + r_n, \mathcal{F}_n (g) + \tilde{r}_n \rangle \\
+	=& \langle \mathcal{F}_n (f), \mathcal{F}_n (g) \rangle + \langle r_n, \mathcal{F}_n (g) \rangle + \langle \mathcal{F}_n (f), \tilde{r}_n \rangle + \langle r_n, \tilde{r}_n \rangle \tag{\label{equation-1}}
+\end{align*}
+$$
+
+The first term can be expressed as
+
+$$
+\begin{align*}
+	\langle \mathcal{F}_n (f), \mathcal{F}_n (g) \rangle =& \left\langle \sum_{k=-n}^n e^{ikx} \langle x\mapsto e^{ikx}, f \rangle, \sum_{\ell=-n}^n e^{i\ell x} \langle x\mapsto e^{i\ell x}, g \rangle \right\rangle \\
+	=& \sum_{k=-n}^n \sum_{\ell=-n}^n \overline{\langle x\mapsto e^{ikx}, f \rangle} \langle x\mapsto e^{i\ell x} \underbrace{\langle x\mapsto e^{ikx}, x\mapsto e^{i\ell x}}_{=\delta_{k\ell}} \\
+	=& \sum_{k=-n}^n \langle f, x\mapsto e^{ikx}\rangle \langle x\mapsto e^{ikx}, g
+\end{align*}
+$$
+
+Taking the limit $n\to\infty$, the residual terms of $\eqref{equation-1}$ vanish, such that we obtain
+
+$$
+	\langle f, g \rangle = \langle \mathcal{F}_n (f) + r_n, \mathcal{F}_n (g) + \tilde{r}_n \rangle \xrightarrow{n\to\infty} \sum_{k=-\infty}^\infty \langle f, x\mapsto e^{ikx}\rangle \langle x\mapsto e^{ikx}, g \rangle
 $$
 </details>
 </MathBox>
