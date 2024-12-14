@@ -63,7 +63,7 @@ type Props = {
 }
 
 export default function Blob({ className }: Props) {
-  const requestRef = useRef<number>()
+  const requestRef = useRef<number>(0)
   const pathRef = useRef<SVGPathElement>(null)
   const pointsRef = useRef<Vector[]>(points)
   const offsetsRef = useRef<Vector[]>(offsets)

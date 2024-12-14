@@ -12,9 +12,7 @@ type Props = {
   caption: string
 }
 
-const SVGPlot = dynamic(() => import("lib/components/SvgPlot"), {
-  ssr: false,
-})
+const SVGPlot = dynamic(() => import("lib/components/SvgPlot"))
 
 export default function GraphFigure({
   expression,

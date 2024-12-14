@@ -108,7 +108,7 @@ This shows that $\langle f,g\rangle = 0$ for $f,g\in\mathcal{U}$ with $f\neq g$.
 $$
 	\langle f, g \rangle_1 := \frac{1}{2\pi} \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
-2. The basis $\mathcal{B}_2 = \set{x\mapso 1} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+2. The basis $\mathcal{B}_2 = \set{x\mapsto 1} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_2 := \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
@@ -195,7 +195,7 @@ $$
 $$
 
 <MathBox title='Fourier series in $L^2$' boxType='definition'>
-Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $\n\in\N$ define
+Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $n\in\N$ define
 
 $$
 	\mathcal{F}_n (f)(x) = \tilde{a}_0 \frac{1}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx)
@@ -205,9 +205,9 @@ with
 
 $$
 \begin{align*}
-	\tilde{a_0} =& \langle x\mapsto \frac{1}{\sqrt}, f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \frac{1}{\sqrt(x)} f(x) \;\d x \\
+	\tilde{a_0} =& \langle x\mapsto \frac{1}{\sqrt{2}}, f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \frac{1}{\sqrt{2}} f(x) \;\d x \\
 	a_k =& \langle x\mapsto x\mapsto\cos(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \cos(kx) f(x) \;\d x \\
-	b_k =& \langle x\mapsto x\mapsto\sin(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx) f(x) \;\d x \\
+	b_k =& \langle x\mapsto x\mapsto\sin(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx) f(x) \;\d x
 \end{align*}
 $$
 
@@ -243,7 +243,7 @@ $$
 $$
 
 <MathBox title='Complex Fourier series in $L^2$' boxType='definition'>
-Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $\n\in\N$ define
+Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $n\in\N$ define
 
 
 $$
@@ -328,7 +328,38 @@ $$
 	c_n = \frac{1}{L}\langle f(x), e_n \rangle = \frac{1}{L}\int_0^L f(x)e^{-\frac{i2\pi n x}{L}}\;\d x
 $$
 
-## Parseval's identity
+<MathBox title='Geometric properties of Fourier series' boxType='proposition'>
+If $f\in L_{2\pi}^2 (\R, \mathbb{F})$ and $\mathcal{F}_n (f) = \sum_{k=-n}^n c_k e^{ikx}$ with $c_k = \langle x\mapsto e^{ikx}, f\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{e^{ikx}} f(x) \;\d x$, then
+
+1. $\lVert f - \mathcal{F}_n (f)\rVert^2 = \lVert f \rVert^2 - \sum_{k=-n}^n |c_k|^2$
+2. **Bessel's inequality:** $\sum_{k=-n}^n |c_k|^2 \leq \lVert f \rVert^2$ for all $n\in\N$
+		- Consequently $\sum_{k=-\infty}^\infty |c_k|^2 \leq \lVert f \rVert^2$ and $\lim_{k\to\infty} c_k = 0$
+3. **Parseval's identity:** $\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert = 0 \iff \sum_{k=-\infty}^\infty |c_k|^2 = \lVert f \rVert^2$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By the Pythagorean theorem we have
+
+$$
+\begin{gather*}
+	\lVert f \rVert^2 = \lVert \mathcal{F}_n (f) \rVert^2 + \lVert f - \mathcal{F}_n (f) \rVert^2 \\
+	\implies \lVert f - \mathcal{F}_n (f)\rVert^2 = \lVert f \rVert^2 - \lVert f - \mathcal{F}_n (f) \rVert^2
+\end{gather*}
+$$
+
+Since $\Set{x\mapsto e^{ikx}}_{k\in\Z}$, it follows that 
+
+$$
+\begin{align*}
+	\lVert \mathcal{F}_n (f) \rVert^2 =& \langle \mathcal{F}_n (f), \mathcal{F}_n (f) \rangle \\
+	=& \left\langle \sum_{k=-n}^n c_k e^{ikx}, \sum_{k=-n}^n c_k e^{ikx} \right\rangle \\
+	=& \sum_{k=-n}^n c_k \overline{c_k} \sunderbrace{\langle e^{ikx}, e^{ikx} \rangle}_{=\lVert e^{ikx} \rVert^2 = 1} \\
+	=& \sum_{k=-n}^n |c_k|^2
+\end{align*}
+$$
+</details>
+</MathBox>
 
 # Fourier transform
 
@@ -341,7 +372,7 @@ $$
 \end{gather*}
 $$
 
-Defining $\xi = \frac{n}{L}$ and $\Delta\xi = \frac{1}{L}$. Taking the limit $L\to\infty  \iff \Delta\xi\to 0$ we get
+Defining $\xi = \frac{n}{L}$ and $\Delta\xi = \frac{1}{L}$. Taking the limit $L\to\infty \iff \Delta\xi\to 0$ we get
 
 $$
 \begin{align*}
@@ -353,7 +384,7 @@ $$
 Defining $\omega = \frac{n\pi}{L}$ and $\Delta\omega = \frac{\pi}{L}$. Taking the limit $L\to\infty$ or $\Delta\omega\to 0$ we get
 
 $$
-\end{align*}
+\begin{align*}
 	f(x) =& \lim_{\Delta\omega\to 0} \sum_{n=-\infty}^\infty \frac{\Delta\omega}{2\pi} \int_{-\frac{\pi}{\Delta\omega}}^{\frac{\pi}{\Delta\omega}} f(\xi) e^{-i\omega\xi}\;\d\xi e^{in\Delta\omega x} \\
 	=& \lim_{\Delta\omega\to 0}\sum_{n=-\infty}^\infty \frac{\Delta\omega}{2\pi}\langle f(x), e_i\omega x \rangle e^{in\Delta\omega x}
 \end{align*}

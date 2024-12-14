@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { MDXRemote } from "next-mdx-remote"
+//import { MDXRemote } from "next-mdx-remote"
 import useScrollspy from "lib/hooks/useScrollspy"
 import type { NoteHeading } from "lib/utils/types"
 import { BookIcon } from "lib/utils/icons"
+import MathText from "lib/components/MathText"
 
 type TocItem = {
   heading: NoteHeading
@@ -62,11 +63,7 @@ function TocItem({ heading, activeIds }: TocItem) {
           activeIds.includes(heading.slug) ? "text-secondary" : "text-text"
         }`}
       >
-        {heading.text.includes('{"compiledSource"') ? (
-          <MDXRemote {...JSON.parse(heading.text)} />
-        ) : (
-          heading.text
-        )}
+        <MathText mathString={heading.text} />
       </a>
       {heading.children && (
         <ul
@@ -145,7 +142,7 @@ export default function Toc({ headings }: Props) {
           </div>
           <nav key="nav.toc" className="overflow-y-scroll">
             <ul className="list-none h-auto">
-              {headings?.map((h, index) => (
+              {headings?.map((h: NoteHeading, index: number) => (
                 <TocItem
                   key={`tocitem.${index}`}
                   heading={h}

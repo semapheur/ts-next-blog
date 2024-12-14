@@ -1,16 +1,14 @@
-'use client'
+"use client"
 
-import {RefObject, useEffect, useState} from 'react'
+import { type RefObject, useEffect, useState } from "react"
 
 export default function useMousePosition<
-  T extends HTMLElement = HTMLDivElement
->(
-  elementRef: RefObject<T>
-): DOMPoint {
+  T extends HTMLElement = HTMLDivElement,
+>(elementRef: RefObject<T>): DOMPoint {
   const [position, setPosition] = useState<DOMPoint>(new DOMPoint(0, 0))
 
   const updatePosition = (e: MouseEvent) => {
-    const {left, top} = elementRef.current!.getBoundingClientRect()
+    const { left, top } = elementRef.current!.getBoundingClientRect()
     setPosition(new DOMPoint(e.clientX - left, e.clientY - top))
   }
 
@@ -18,10 +16,10 @@ export default function useMousePosition<
     const element = elementRef.current
     if (!element) return
 
-    window.addEventListener('mousemove', updatePosition)
+    window.addEventListener("mousemove", updatePosition)
 
     return () => {
-      element.removeEventListener('mousemove', updatePosition)
+      element.removeEventListener("mousemove", updatePosition)
     }
   }, [elementRef])
 

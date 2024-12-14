@@ -9,11 +9,11 @@ type Props = {
 
 export default function ChessFigure({ fen, caption }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGChess>()
+  const svgRef = useRef<SVGChess | null>(null)
 
   useEffect(() => {
     const wrapper = wrapRef.current
-    if (!svgRef.current && wrapper) {
+    if (wrapper && !svgRef.current) {
       svgRef.current = new SVGChess(wrapper)
       svgRef.current.boardPosition(fen)
     }

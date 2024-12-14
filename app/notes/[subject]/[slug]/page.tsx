@@ -5,18 +5,14 @@ import fs from "node:fs"
 import path from "node:path"
 import matter from "gray-matter"
 
-import {
-  markdownHeadings,
-  remarkPlugins,
-  rehypePlugins,
-} from "lib/utils/mdxParse"
+import { remarkPlugins, rehypePlugins } from "lib/utils/mdxParse"
+import { markdownHeadings } from "lib/utils/mdParse"
 import { mdxComponents } from "lib/utils/mdxComponents"
 import Loader from "lib/components/Loader"
 import type { NoteHeading } from "lib/utils/types"
 import type { MDXProps } from "mdx/types"
 
 const Toc = dynamic(() => import("./Toc"), {
-  ssr: false,
   loading: () => (
     <div
       className="z-[1] w-10 h-10 lg:w-full lg:h-full 
@@ -37,7 +33,7 @@ type Params = {
 }
 
 type Props = {
-  params: Params
+  params: Promise<Params>
 }
 
 const MDXOptions = (noCite: string[] = []) => {
@@ -55,7 +51,7 @@ const MDXOptions = (noCite: string[] = []) => {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { subject, slug } = params
+  const { subject, slug } = await params
   const { source, headings } = await getNote(subject, slug)
 
   const frontmatter = matter(source)
@@ -69,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: frontmatter.data.title,
-    description: result.join("\n"),
+    description: result.join(";"),
   }
 }
 
@@ -100,7 +96,8 @@ async function getNote(subject: string, slug: string) {
   return { source, headings }
 }
 
-export default async function NotePage({ params: { subject, slug } }: Props) {
+export default async function NotePage({ params }: Props) {
+  const { subject, slug } = await params
   const { source, headings } = await getNote(subject, slug)
   const frontmatter = matter(source)
   const { content } = await compileMDX({
