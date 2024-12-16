@@ -4,10 +4,163 @@ subject: 'Mathematics'
 showToc: true
 ---
 
+# Trigonometric sum formulas
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+If $x\in\R\setminus\set{2\pi n}_{n\in\Z}$, then
+
+$$
+\begin{equation}
+	\frac{1}{2} + \sum_{k=1}^n \cos(kx) = \frac{1}{2} \frac{\sin\left[\left(n + \frac{1}{2}\right)x\right]}{\sin\left(\frac{1}{2}x \right)} \tag{\label{equation-2}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Writing the left side of $\eqref{equation-2}$ as a geometric sum of trigonometric exponential functions, we get
+
+$$
+\begin{align*}
+	\frac{1}{2} + \sum_{k=1}^n \cos(kx) =& \frac{1}{2} + \sum_{k=1}^n \frac{1}{2} (e^{ikx} + e^{ikx}) = \frac{1}{2} \sum_{k=-n}^n e^{ikx} \\
+	=& \frac{1}{2} e^{-inx} \sum_{k=0}^{2n} e^{ikx}
+\end{align*}
+$$
+
+Applying the geometric sum formula $\sum_{k=0}^n q^k = \frac{1 - q^{n+1}}{1 - q}$ with $q = e^{ix}$, we obtain
+
+$$
+\begin{align*}
+	\frac{1}{2}e^{-inx} \sum_{k=0}^{2n} e^{ikx} =& \frac{1}{2}e^{-inx} \frac{1 - e^{i(2n+1)x}}{1 - e^{ix}} \\
+	=& \frac{1}{2}\frac{e^{-inx} - e^{i(n+1)x}}{1 - e^{ix}} \frac{-e^{-ix/2}}{-e^{-ix/2}} \\
+	=& \frac{1}{2} \frac{e^{i\left(n + 1/2\right)x} - e^{-i\left(n + 1/2\right)x}}{e^{ix/2} - e^{-ix/2}} \frac{\frac{1}{2i}}{\frac{1}{2i}} \\
+	=& \frac{1}{2} \frac{\sin\left[\left(n + \frac{1}{2}\right)x\right]}{\sin\left(\frac{1}{2}x \right)}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+If $x\in(0,2\pi)$, then
+
+$$
+	\sum_{k=1}^\infty \frac{\sin(kx)}{k} = \frac{\pi - x}{2}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Noting that $\sin(kx)/k = \int_{\pi}^x \cos(kt)\;\d t$ and applying Lemma $\ref{lemma-1}$, we get
+
+$$
+\begin{align*}
+	\sum_{k=1}^n \frac{\sin(kx)}{k} =& \sum_{k=1}^n \int_\pi^x \cos(kt) \;\d t = \int_\pi^x \sum_{k=1}^n \cos(kt)\;\d t \\
+	=& \int_\pi^x \left(\frac{1}{2} \frac{\sin\left[\left(n + \frac{1}{2}\right)x\right]}{\sin\left(\frac{1}{2}x \right)} - \frac{1}{2} \right)\;\d t \\
+	=& \underbrace{\int_\pi^x \frac{\sin\left[\left(n + \frac{1}{2}\right)t\right]}{2\sin\left(\frac{1}{2}t\right)}\;\d t}_{f_n (x)} - \frac{1}{2}(x - \pi)
+\end{align*}
+$$
+
+Integrating the first term, $f_n$, by parts with 
+
+$$
+\begin{aligned}
+	u =& \frac{1}{2\sin\left(\frac{1}{2}t\right)} \\
+	u' =& -\frac{1}{2} \frac{\frac{1}{2}\cos(\frac{1}{2}t)}{\sin^2 (\frac{1}{2}t)}
+\end{aligned}\quad
+\begin{aligned}
+	v' =& \sin\left[\left(n + \frac{1}{2}\right)t\right] \\
+	v =& -\frac{1}{n + \frac{1}{2}} \cos\left[\left(n + \frac{1}{2}\right)t\right]
+\end{aligned}
+$$
+
+we get
+
+$$
+\begin{align*}
+	f_n (x) =& \left. -\frac{1}{n + \frac{1}{2}} \cos\left[\left(n + \frac{1}{2}\right)t\right] \right|_\pi^x \\
+	&- \int_\pi^x \frac{1}{n + \frac{1}{2}} \frac{(-1)\cos\left[\left(n + \frac{1}{2}\right) t \right]\cos\left(\frac{1}{2}t\right)}{(-4)\sin^2 \left(\frac{1}{2}t\right)} \;\d t \\
+	=& \frac{1}{n + \frac{1}{2}} \left(\frac{-\cos\left[\left(n + \frac{1}{2}\right) x \right]}{2\sin\left(\frac{1}{2}x \right)} \right. \\
+	&- \left. \frac{1}{4}\int_\pi^x \frac{\cos\left[\left(n + \frac{1}{2}\right) t \right]\cos\left(\frac{1}{2}t\right)}{\sin^2 \left(\frac{1}{2}t\right)}\right) \\
+	=& \frac{1}{n + \frac{1}{2}} \left(a(x) + b(x) \right)
+\end{align*}
+$$
+
+To show uniform convergence, we require that $\lVert f_n \rVert_\infty \xrightarrow{n\to 0}$, where $\lVert\cdot\rVert_\infty$. For $\epsilon > 0$, choose $x\in[\epsilon, 2\pi - \epsilon]$. Then, by the triangle inequality we get
+
+$$
+\begin{align*}
+	\lVert f_n \rVert_\infty \overset{\triangle}{\leq} \frac{1}{n + \frac{1}{2}} (\left \lVert a \rVert_\infty + \lVert b \rVert_\infty \right) \\
+	\leq& \frac{1}{n + \frac{1}{2}} \left(\frac{1}{2\delta} + \frac{1}{4\delta^2} \pi \right) \xrightarrow{n\to\infty} 0 
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-3'>
+If $x\in[0,2\pi]$, then
+
+$$
+	\sum_{k=1}^\infty \frac{\cos(kx)}{k^2} = \frac{(x - \pi)^2}{4} - \frac{\pi^2}{12}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Applying Lemma $\ref{lemma-2}$ and noting that $\sin(kx)/k = -\int_{x_0}^x \cos(kt)/k^2 \;\d t$, we get for $\epsilon > 0$ and $x, x_0 \in [\epsilon, 2\pi - \epsilon]$
+
+$$
+\begin{align*}
+	\int_{x_0}^x \sum_{k=1}^\infty \frac{\sin(kt)}{k}\;\d t =& \int_{x_0}^x \frac{\pi - t}{2}\;\d t = \left. \frac{(\pi - t)^2}{4}\right|_{x_0}^x \\
+	=& -\frac{(x - \pi)^2}{4} + \underbrace{\frac{(x_0 - \pi)^2}{4}}_{C_0}
+\end{align*}
+$$
+
+By uniform convergence, we have
+
+$$
+\begin{align*}
+	\int_{x_0}^x \sum_{k=1}^\infty \frac{\sin(kt)}{k}\;\d t =& \sum_{k=1}^\infty \int_{x_0}^x \frac{\sin(kx)}{k}\;\d t \\
+	=& \sum_{k=1}^\infty \left.-\frac{-\cos(kt)}{k^2}\right|_{x_0}^x \\
+	=& -\sum_{k=1}^\infty \frac{\cos(kx)}{k^2} + \underbrace{\sum_{k=1}^\infty \frac{\cos(kx_0)}{k^2}}_{C_1} 
+\end{align*}
+$$
+
+Combining the results, we get
+
+$$
+\begin{equation}
+	\sum_{k=1}^\infty \frac{\cos(kx)}{k^2} = \frac{(x - \pi)^2}{4} + C \tag{\label{equation-3}}
+\end{equation}
+$$
+
+By Weierstrass M-test, the left-hand side of $\eqref{equation-3}$ is uniformly convergent on $[0,2\pi]$ since $\left|\frac{\cos(kx)}{k^2}\right|\leq \frac{1}{k^2}$. It follows that
+
+$$
+	[0,2\pi] \ni x \mapsto \sum_{k=1}^\infty \frac{\cos(kx)}{k^2}
+$$
+
+is continuous. Furthermore, the right-hand side of $\eqref{equation-3}$ is also continous for $x\in[0,2\pi]$. Thus, $\eqref{equation-3}$ is uniformly convergent on $[0,2\pi]$.
+
+Integrating $\eqref{equation-1}$, we find
+
+$$
+	\int_0^{2\pi} \sum_{k=1}^\infty \frac{\cos(kx)}{k^2} \;\d x = \int_0^{2\pi} \left( \frac{(x - \pi)^2}{4} + C \right)\;\d x = \underbrace{\left. \frac{(x - \pi)^3}{12}\right|_0^{2\pi}}_{=\pi^3 / 6} + 2\pi C
+$$
+
+By uniform convergence the left-hand integral can be written
+
+$$
+	\int_0^{2\pi} \sum_{k=1}^\infty \frac{\cos(kx)}{k^2} \;\d x = \sum_{k=1}^\infty \int_0^{2\pi} \frac{\cos(kx)}{k^2} \;\d x = 0
+$$
+
+which follows since $\cos(kx)$ is integrated over a full period $2\pi$. Hence it follows that $C = -\pi^2 / 12$, completing the proof.
+</details>
+</MathBox>
+
 # Trigonometric polynomials
 
 <MathBox title='Periodic function' boxType='definition'>
-Let $k\in\R$. A function $f:\R\to\mathbb{F}$ is $k$-periodic if $f(x + k) = x$ for all $x\in\R$. The set of all $k$-period real functions is denoted
+Let $k\in\R$. A function $f:\R\to\mathbb{F}$ is $k$-periodic if $f(x + k) = f(x)$ for all $x\in\R$. The set of all $k$-period real functions is denoted
 
 $$
 	\mathcal{F}_k (\R,\R) = \Set{f:\R\to\mathbb{F} | f(x + k) = f(x)\; \forall x\in\R}
@@ -34,7 +187,7 @@ $$
 A linear combination of $f\in\operatorname{span}(\mathcal{U})$ for $f:\R\to\R$ is called a (real) trigonometric polynomial and takes the form
 
 $$
-	f(x) = a_0 + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \cos(kx),\; a_i, b_i \in\R
+	f(x) = a_0 + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \cos(kx),\; a_k, b_k \in\R
 $$
 
 If $\mathcal{U}\subseteq\mathcal{F}_{2\pi} (\R,\mathbb{C})$, the linear combination is called a complex trigonometric polynomial and takes the form
@@ -51,19 +204,19 @@ $$
 	\langle f, g\rangle := \frac{1}{2\pi} \int_{-\pi}^\pi f(x)g(x)\;\d x,\; f,g\in\mathcal{F}_{2\pi}
 $$
 
-The set of $2\pi$-periodic functions $\mathcal{U}\subseteq\mathcal{F}_{2\pi} (\R,\R)$ given by
+The set of $2\pi$-periodic functions $\mathcal{B}\subseteq\mathcal{F}_{2\pi} (\R,\R)$ given by
 
 $$
-	\mathcal{U} := \set{x\mapsto\sin(nx)}_{n\in\N_+} \cup \set{x\mapsto\cos(nx)}_{n\in\N}
+	\mathcal{B} := \set{x\mapsto\sin(kx)}_{k\in\N_+} \cup \set{x\mapsto\cos(kx)}_{k\in\N}
 $$
 
-forms an orthogonal basis.
+forms an orthogonal basis for $\mathcal{F}_{2\pi}$.
 
 
 <details>
 <summary>Proof</summary>
 
-We calculate the inner product for all possible combinations from $\mathcal{U}$. For $x\mapto 1$ we trivially have
+We calculate the inner product for all possible combinations from $\mathcal{B}$. For $x\mapsto 1$ we trivially have
 
 $$
 	\langle x\mapsto 1, x\mapsto 1 \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi 1\;\d x = 1
@@ -72,47 +225,80 @@ $$
 Next
 
 $$
-	\langle x\mapsto 1, x\mapto\cos(nx) \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \cos(nx)\;\d x = \frac{1}{2\pi n} [\sin(n x)]_{-\pi}^\pi = 0
-$$
-
-Since $x\mapsto\cos(mx)\sin(nx)$ for $m,n\in\N$ is an odd function, it follows that
-
-$$
 \begin{align*}
-	\langle x\mapto\cos(mx), x\mapsto\sin(nx) \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \cos(mx)\sin(kx)\;\d x = 0
+	\langle x\mapsto 1, x\mapsto\cos(kx) \rangle =& \frac{1}{2\pi} \int_{-\pi}^\pi \cos(kx)\;\d x \\
+	=& \frac{1}{2\pi k} [\sin(kx)]_{-\pi}^\pi = 0
 \end{align*}
 $$
 
-Noting that $\cos(x) = \frac{1}{2}(e^{ix} + e^{-ix})$, we get for $m\neq n$
+Since $x\mapsto\cos(kx)\sin(lx)$ for $m,n\in\N$ is an odd function, it follows that
 
 $$
 \begin{align*}
-	\langle x\to\cos(mx), x\to\cos(nx)\rangle =& \frac{1}{8\pi} \int_{-\pi}^{\pi} e^{i(m+n)x} + e^{-i(m+n)x} + e^{i(m-n)x} + e^{-i(m-n)x}\;\d x \\
-	=& \frac{1}{4\pi}\left[\frac{1}{m+n}\frac{1}{2i} (e^{i(m+n)x} + e^{-i(m+n)x}) +  \frac{1}{m-n}\frac{1}{2i}\left(e^{i(m-n)} + e^{-i(m-n)}\right) \right]_{-\pi}^{\pi} \\
-	=& \frac{1}{4\pi} \left[\frac{1}{m+n} \sin[(m+n)x] + \frac{1}{m-n}\sin[(m-n)x] \right]_{-\pi}^\pi = 0
+	\langle x\mapsto\cos(kx), x\mapsto\sin(lx) \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \cos(kx)\sin(lx)\;\d x = 0
+\end{align*}
+$$
+
+Noting that $\cos(x) = \frac{1}{2}(e^{ix} + e^{-ix})$, we get for $k\neq l$
+
+$$
+\begin{align*}
+	&\langle x\mapsto\cos(kx), x\mapsto\cos(lx)\rangle \\ 
+	=& \frac{1}{8\pi} \int_{-\pi}^{\pi} e^{i(k+l)x} + e^{-i(k+l)x} + e^{i(k-l)x} + e^{-i(k-l)x}\;\d x \\
+	=& \frac{1}{4\pi}\left[\frac{1}{k+l}\frac{1}{2i} (e^{i(k+l)x} + e^{-i(k+l)x}) +  \frac{1}{k-l}\frac{1}{2i}\left(e^{i(k-l)} + e^{-i(k-l)}\right) \right]_{-\pi}^{\pi} \\
+	=& \frac{1}{4\pi} \left[\frac{1}{k+l} \sin[(k+l)x] + \frac{1}{k-l}\sin[(k-l)x] \right]_{-\pi}^\pi = 0
 \end{align*}
 $$
 
 Similarly, we find
 
 $$
-	\langle x\to\sin(mx), x\to\sin(nx)\rangle = \int{-\pi}^\pi \sin(nx) \sin(mx)\;\d x = 0
+	\langle x\to\sin(kx), x\to\sin(lx)\rangle = \int_{-\pi}^\pi \sin(kx) \sin(lx)\;\d x = 0
 $$
 
 This shows that $\langle f,g\rangle = 0$ for $f,g\in\mathcal{U}$ with $f\neq g$.
 </details>
 </MathBox>
 
+<MathBox title='Complex trigonometric basis is orthogonal' boxType='proposition'>
+Let $\mathcal{F}_{2\pi} (\R,\mathbb{C})$ be equipped with the inner product
+
+$$
+	\langle f, g\rangle := \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)}g(x)\;\d x,\; f,g\in\mathcal{F}_{2\pi}
+$$
+
+The set of $2\pi$-periodic functions $\mathcal{E}\subseteq\mathcal{F}_{2\pi} (\R,\mathbb{C})$ given by
+
+$$
+	\mathcal{E} := \Set{e_k := e^{ikx} = \cos(kx) + i\sin(kx)}_{k\in\Z}
+$$
+
+forms an orthogonal basis for $\mathcal{F}_{2\pi}$.
+
+<details>
+<summary>Proof</summary>
+
+This is easily shown by calculating the inner product
+
+$$
+\begin{align*}
+	\left\langle e_k, e_k \right\rangle =& \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} e^{ilx}\;\d x = \int_{-\pi}^\pi e^{i(l - k)x}\;\d x \\
+	=& \left.\frac{1}{i2\pi(l - k)}e^{i(l - k)x}\right|_{-\pi}^\pi = \delta_{kl}
+\end{align*}
+$$
+</details>
+</MathBox>
+
 <MathBox title='Orthonormal trigonometric bases' boxType='proposition' tag='proposition-1'>
-1. The basis $\mathcal{B}_1 = \set{x\mapsto\sqrt{2}\cos{nx}}_{n\in\N} \cup \set{x\mapsto\sqrt{2}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+1. The basis $\mathcal{B}_1 = \set{x\mapsto\sqrt{2}\cos(nx)}_{n\in\N} \cup \set{x\mapsto\sqrt{2}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_1 := \frac{1}{2\pi} \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
-2. The basis $\mathcal{B}_2 = \set{x\mapsto 1} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+2. The basis $\mathcal{B}_2 = \set{x\mapsto 1} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\cos(nx)}_{n\in\N_+} \cup \set{x\mapsto\frac{1}{\sqrt{\pi}}\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_2 := \int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
-3. The basis $\mathcal{B}_3 =  \set{x\mapsto 1/\sqrt{2}} \cup \set{x\mapsto\cos{nx}}_{n\in\N_+} \cup \set{x\mapsto\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
+3. The basis $\mathcal{B}_3 =  \set{x\mapsto 1/\sqrt{2}} \cup \set{x\mapsto\cos(nx)}_{n\in\N_+} \cup \set{x\mapsto\sin(nx)}_{n\in\N_+}$ is orthonormal with respect to the inner product
 $$
 	\langle f, g \rangle_3 := \frac{1}{\pi}\int_{-\pi}^\pi f(x)g(x)\;\d x
 $$
@@ -182,20 +368,20 @@ $$
 
 # Fourier series
 
-Let $\mathcal{B}_n = \set{x \mapsto 1/\sqrt{2}} \cup \set{\cos(kx)}_{k=1}^n \cup \set{\sin(kx)}_{k=1}^n$ be a finite trigonometric basis for $n\in\N$. By Proposition $\ref{proposition-1}$, this is an orthonormal system in $L_{2\pi}^2 (\R,\mathbb{F})$ with respect to the inner product
-
-$$
-	\langle f, g\rangle = \frac{1}{\pi} \int_{-\pi}^\pi \overline{f(x)}g(x) \;\d x
-$$
-
-If $\mathcal{U}_n = \operatorname{span}(\mathcal{B}_n)$ is a finite-dimensional subspace defined by $\mathcal{B}_n$, the orthogonal projection of a square integrable $2\pi$-periodic function $f\in L_{2\pi}^2 (\R,\mathbb{F})$ onto $\mathcal{U}_n$ is given by
-
-$$
-	\mathcal{F}_n (f) = \frac{1}{\sqrt{2}}\langle x\mapsto \frac{1}{\sqrt{2}}, f \rangle \sum_{k=1}^n \cos(kx) \langle x\mapsto\cos(kx), f \rangle + \sum_{k=1}^n \sin(kx) \langle x\mapsto\sin(kx), f \rangle
-$$
-
 <MathBox title='Fourier series in $L^2$' boxType='definition'>
-Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $n\in\N$ define
+Let $f\in L_{2\pi}^2 (\R,\R)$ be a square integrable $2\pi$-periodic function with respect to the inner product
+
+$$
+	\langle f, g\rangle = \frac{1}{\pi} \int_{-\pi}^\pi f(x)g(x) \;\d x
+$$
+
+If $\mathcal{U}_n = \operatorname{span}(\mathcal{B}_n)$ for $n\in\N$ is a finite-dimensional subspace spanned by the trigonometric basis
+
+$$
+	\mathcal{B}_n = \set{x \mapsto 1/\sqrt{2}} \cup \set{\cos(kx)}_{k=1}^n \cup \set{\sin(kx)}_{k=1}^n
+$$
+
+the orthogonal projection of $f$ onto $\mathcal{U}_n$ is given by
 
 $$
 	\mathcal{F}_n (f)(x) = \tilde{a}_0 \frac{1}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx)
@@ -205,16 +391,25 @@ with
 
 $$
 \begin{align*}
-	\tilde{a_0} =& \langle x\mapsto \frac{1}{\sqrt{2}}, f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \frac{1}{\sqrt{2}} f(x) \;\d x \\
-	a_k =& \langle x\mapsto x\mapsto\cos(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \cos(kx) f(x) \;\d x \\
-	b_k =& \langle x\mapsto x\mapsto\sin(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx) f(x) \;\d x
+	\tilde{a}_0 =& \left\langle x\mapsto \frac{1}{\sqrt{2}}, f \right\rangle = \frac{1}{\pi} \int_{-\pi}^\pi \frac{1}{\sqrt{2}} f(x) \;\d x \\
+	a_k =& \langle x\mapsto\cos(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \cos(kx) f(x) \;\d x \\
+	b_k =& \langle x\mapsto\sin(kx), f \rangle = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx) f(x) \;\d x
 \end{align*}
 $$
 
 The map $n\mapsto \mathcal{F}_n (f)(x)$ is the Fourier series of $f$
 </MathBox>
 
-Fourier series can also be expressed in terms of trigonometric exponential functions. If $\mathcal{B}_n = \set{x \mapsto 1/\sqrt{2}} \cup \set{\cos(kx)}_{k=1}^n \cup \set{\sin(kx)}_{k=1}^n$ and $\mathcal{E}_n = \set{x\mapsto e^{ikx}}_{k=-n}^n$ for $n\in\N$, then
+Fourier series can also be expressed in terms of trigonometric exponential functions. If 
+
+$$
+\begin{align*}
+	\mathcal{B}_n =& \Set{x \mapsto \frac{1}{\sqrt{2}}} \cup \Set{\cos(kx)}_{k=1}^n \cup \Set{\sin(kx)}_{k=1}^n \\
+	\mathcal{E}_n =& \Set{x\mapsto e^{ikx} = \cos(kx) + i\sin(kx)}_{k=-n}^n, \; n\in\N
+\end{align*}
+$$
+
+then
 
 $$
 	\operatorname{span}(\mathcal{B}_n) = \operatorname{span}(\mathcal{E}_n)
@@ -223,7 +418,7 @@ $$
 and
 
 $$
-	\tilde{a}_0 \frac{1}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx) = \sum_{k=-n}^n c_k e^{ikx}
+	\frac{\tilde{a}_0}{\sqrt{2}} + \sum_{k=1}^n a_k \cos(kx) + \sum_{k=1}^n b_k \sin(kx) = \sum_{k=-n}^n c_k e^{ikx}
 $$
 
 with
@@ -236,15 +431,20 @@ $$
 	\end{cases}
 $$
 
-If $\mathcal{U}_n = \operatorname{span}(\mathcal{E}_n)$ is a finite-dimensional subspace defined by $\mathcal{E}_n$, the orthogonal projection of a square integrable $2\pi$-periodic function $f\in L_{2\pi}^2 (\R,\mathbb{F})$ onto $\mathcal{U}_n$ is given by
-
-$$
-	\mathcal{F}_n (f) = \sum_{k=-n}^n e^{ikx} \langle x \mapsto e^{ikx}, f \rangle
-$$
-
 <MathBox title='Complex Fourier series in $L^2$' boxType='definition'>
-Let $f\in L_{2\pi}^2 (\R,\mathbb{F})$ be a square integrable $2\pi$-periodic function. For any $n\in\N$ define
+Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$ be a square integrable $2\pi$-periodic function with respect to the inner product
 
+$$
+	\langle f, g\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)}g(x) \;\d x
+$$
+
+If $\mathcal{U}_n = \operatorname{span}(\mathcal{E}_n)$ for $n\in\N$ is a finite-dimensional subspace spanned by the trigonometric exponential basis
+
+$$
+	\mathcal{E}_n = \Set{x\mapsto e^{ikx}}_{k=-n}^n,
+$$
+
+the orthogonal projection of $f$ onto $\mathcal{U}_n$ is given by
 
 $$
 	\mathcal{F}_n (f)(x) = \sum_{k=-n}^n c_k e^{ikx}
@@ -253,90 +453,98 @@ $$
 with
 
 $$
-	c_k = \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} f(x) \;\d x
+	c_k = \langle x \mapsto e^{ikx}, f \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} f(x) \;\d x
 $$
 
 The map $n\mapsto \mathcal{F}_n (f)$ is the complex Fourier series of $f$.
 </MathBox>
 
-The set of exponential functions $\Set{ e_n := e^{inx} = \cos nx + i\sin nx : n \in\Z }$ is an orthogonal basis for the Hilbert space $L^2\left([-\pi, \pi ]\right)$ of square integrable functions with an inner product given by
+If $f \in L_{2\pi}^2 (\R,\mathbb{C})$ is a $2\pi$-periodic square integrable function, its complex Fourier series is given by
 
 $$
-	\langle f, g \rangle := \int_{-\pi}^\pi f(x)\overline{g(x)}\;\d x \quad f, g \in L^2\left([-\pi, \pi ]\right)
+	\mathcal{F}_n (f)(x) = \sum_{k=-n}^n \langle x\mapsto e^{ikx}, f\rangle e^{ikx} = \sum_{k=-n}^n c_k e^{ikx},\; n\in\N
 $$
 
-This is easily shown by calculating the inner product
+Assuming $L_{2\pi}^2 (\R,\mathbb{C})$ is equipped with the inner product
 
 $$
-	\left\langle e_m, e_n \right\rangle = \int_{-\pi}^\pi e^{imx} e^{-inx}\;\d x = \int_{-\pi}^\pi e^{i(m - n)x}\;\d x = \left.\frac{1}{i(n - m)}e^{i(m - n)x}\right|_{-\pi}^\pi = 2\pi \delta_{nm}
+	\langle f, g\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)}g(x) \;\d x
 $$
 
-The Fourier series of $f \in L^2\left([-\pi, \pi ]\right)$ is an expansion of $f$ in terms of this exponential basis
-
-$$
-	f(x) = \frac{1}{2\pi}\sum_{n=-\infty}^\infty \left\langle f, e_n \right\rangle e_n = \sum_{n=-\infty}^\infty \frac{1}{2\pi}\left\langle f, e^{inx} \right\rangle e^{inx} = \sum_{n=-\infty}^\infty c_n e^{inx} \\
-$$
-
-Writing out the coefficients $c_n$ gives
+we can write out the complex coefficients $c_k\in\mathbb{C}$ as
 
 $$
 \begin{align*}
-	c_n :=& \frac{1}{2\pi}\left\langle f, e^{inx} \right\rangle = \frac{1}{2\pi}\int_{-\pi}^\pi f(x) e^{-inx}\;\d x \\ 
-	=& \frac{1}{2\pi}\int_{-\pi}^\pi f(x) \left[\cos(nx) - i \sin(nx) \right]\;\d x \\
-	=& \frac{1}{2\pi} \langle f(x), \cos nx\rangle - \frac{1}{2\pi} \langle f(x), \sin nx\rangle = \alpha_n + i\beta_n
+	c_k =& \left\langle f, e^{ikx} \right\rangle = \frac{1}{\pi}\int_{-\pi}^\pi e^{-ikx} f(x) \;\d x \\ 
+	=& \frac{1}{\pi}\int_{-\pi}^\pi \left[\cos(kx) - i \sin(kx) \right]f(x)\;\d x \\
+	=& \langle x\mapsto \cos(kx), f \rangle - i\langle x\mapsto \sin(kx), f \rangle = \alpha_k - i\beta_k
 \end{align*}
 $$
 
-The Fourier series of $f$ can thus be rewritten as
+The complex Fourier series of $f$ can thus be rewritten as
 
 $$
 \begin{align*}
-	f(x) =& \sum_{n=-\infty}^\infty c_n e^{inx} \\
-	=& \sum_{n=-\infty}^\infty \left( \alpha_k + i\beta_k \right) \left(\cos nx + i\sin nx \right) \\
-	=& \left(\alpha_0 + i\beta_0 \right) + \sum_{n=1}^\infty \left[\left(\alpha_{-n} + \alpha_{n} \right)\cos nx + \left(\beta_{-n} - \beta_n \right)\sin nx\right] \\
-	&+ i\sum_{n=1}^\infty \left[\left(\beta_{-n} + \beta_{n} \right)\cos nx + \left(\alpha_{-n} - \alpha_n \right)\sin nx\right]
+	\mathcal{F}_n (f)(x) =& \sum_{k=-n}^n c_n e^{inx} = \sum_{k=-n}^n \left( \alpha_k - i\beta_k \right) \left(\cos kx + i\sin kx \right) \\
+	=& \left(\alpha_0 - i\beta_0 \right) + \sum_{k=1}^n \left[\left(\alpha_{-k} + \alpha_{k} \right)\cos kx + \left(\beta_{-k} - \beta_k \right)\sin kx\right] \\
+	&+ i\sum_{k=1}^n \left[\left(\beta_{-k} + \beta_{k} \right)\cos kx + \left(\alpha_{-k} - \alpha_k \right)\sin kx\right]
 \end{align*}
 $$
 
-If $f$ is real-valued, then $\alpha_{-k} = \alpha_{k}$, $\beta_{-k} = -\beta_{k}$ and $\beta_0 = 0$, so that the Fourier transform reduces to
+If $f$ is real-valued, then $\alpha_{-k} = \alpha_{k}$, $\beta_{-k} = -\beta_{k}$ and $\beta_0 = 0$, so that the Fourier series reduces to
 
 $$
-	f(x) = \frac{a_0}{2} + \sum_{n=1}^\infty \left[a_n \cos nx + b_n\sin nx \right]
+	\mathcal{F}_n (f)(x) = \frac{a_0}{\sqrt{2}} + \sum_{k=1}^n \left[a_k \cos(kx) + b_k \sin(kx) \right]
 $$
 
 with 
 
 $$
 \begin{align*}
-	a_n =& 2\alpha_n = \frac{1}{\pi} \int_{-\pi}^\pi f(x)\cos(nx)\;\d x \\
-	b_n =& 2\beta_n = \frac{1}{\pi} \int_{-\pi}^\pi f(x)\sin(nx)\;\d x
+	a_k =& 2\alpha_k = \frac{1}{\pi} \int_{-\pi}^\pi \cos(kx)f(x)\;\d x \\
+	b_k =& 2\beta_k = \frac{1}{\pi} \int_{-\pi}^\pi \sin(kx)f(x)\;\d x
 \end{align*}
 $$
 
-The Fourier series for an $L$-periodic function $f\in L^2\left([0, L]\right)$ can be similarly found using the orthogonal basis $\Set{ e_n := e^{\frac{i2\pi n x}{L}} }$ giving
+The Fourier series for a $p$-periodic function $f\in L_p^2 (\R, \mathbb{C})$ can be similarly found using the orthogonal basis $\Set{ e_k := x\mapsto\exp\left(i\frac{2\pi k}{p}x\right)}_{k\in\Z}$ giving
 
 $$
 \begin{align*}
-	f(x) =& \frac{a_0}{2} + \sum_{n=1}^\infty \left[ a_n \cos\left( \frac{2\pi n x}{L} \right) + b_n \sin\left( \frac{2\pi n x}{L} \right) \right] \\
-	=& \sum_{n=-\infty}^\infty c_n e^{\frac{i2\pi n x}{L}}
+	\mathcal{F}_n (f) =& \frac{a_0}{\sqrt{2}} + \sum_{k=1}^n \left[ a_k \cos\left( \frac{2\pi k}{p} x\right) + b_k \sin\left( \frac{2\pi k}{p} x\right) \right] \\
+	=& \sum_{k=-n}^\infty c_k \exp\left(i\frac{2\pi k}{p}x\right)
 \end{align*}
 $$
 
 with coefficients
 
 $$
-	c_n = \frac{1}{L}\langle f(x), e_n \rangle = \frac{1}{L}\int_0^L f(x)e^{-\frac{i2\pi n x}{L}}\;\d x
+	c_n = \langle e_k, f \rangle = \frac{1}{p}\int_0^L \exp\left(i\frac{2\pi k}{p}x\right) f(x)\;\d x
 $$
 
 <MathBox title='Geometric properties of Fourier series' boxType='proposition' tag='proposition-2'>
-If $f\in L_{2\pi}^2 (\R, \mathbb{F})$ and $\mathcal{F}_n (f) = \sum_{k=-n}^n c_k e^{ikx}$ with $c_k = \langle x\mapsto e^{ikx}, f\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{e^{ikx}} f(x) \;\d x$, then
+Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$ have complex Fourier series 
+
+$$
+	\mathcal{F}_n (f) = \sum_{k=-n}^n \langle x\mapsto e^{ikx}, f\rangle e^{ikx} = \sum_{k=-n}^n c_k e^{ikx}
+$$
+
+with respect to the inner product
+
+$$
+	\langle f, g \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)} g(x) \;\d x,\; f,g\in L_{2\pi}^2 (\R,\mathbb{C})
+$$
+
+then
 
 1. $\lVert f - \mathcal{F}_n (f)\rVert^2 = \lVert f \rVert^2 - \sum_{k=-n}^n |c_k|^2$
 2. **Bessel's inequality:** $\sum_{k=-n}^n |c_k|^2 \leq \lVert f \rVert^2$ for all $n\in\N$
-		- Consequently $\sum_{k=-\infty}^\infty |c_k|^2 \leq \lVert f \rVert^2$ and $\lim_{k\to\infty} c_k = 0$
-3. **Parseval's identity:** $\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert = 0 \iff \sum_{k=-\infty}^\infty |c_k|^2 = \lVert f \rVert^2$
+		- Consequently $\sum_{k=-\infty}^\infty |c_k|^2 \leq \lVert f \rVert^2$ and $c_k \xrightarrow{k\to\infty} 0$
+3. **Parseval's identity:** 
+$$
+	\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert = 0 \iff \sum_{k=-\infty}^\infty |c_k|^2 = \lVert f \rVert^2
+$$
 
-It follows directly from Parseval's identity that any $f\in L_{2\pi}^2 (\R,\mathbb{F})$ can be written $f = \mathcal{F}_n (f) + r_n$ with $\lVert f_n \rVert \xrightarrow{n\to\infty} 0$.
+It follows directly from Parseval's identity that any $f\in L_{2\pi}^2 (\R,\mathbb{F})$ can be written $f = \mathcal{F}_n (f) + r_n$ with $\lVert r_n \rVert \xrightarrow{n\to\infty} 0$.
 
 <details>
 <summary>Proof</summary>
@@ -364,22 +572,36 @@ $$
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
-If $f\in L_{2\pi}^2 (\R,\mathbb{F})$ with $\mathcal{F}_n (f) = \sum_{k=-n}^n c_k e^{ikx}$ with $c_k = \langle x\mapsto e^{ikx}, f\rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{e^{ikx}} f(x) \;\d x$, then the the following are equivalent
+Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$ have complex Fourier series 
+
+$$
+	\mathcal{F}_n (f) = \sum_{k=-n}^n \langle x\mapsto e^{ikx}, f\rangle e^{ikx} = \sum_{k=-n}^n c_k e^{ikx}
+$$
+
+with respect to the inner product
+
+$$
+	\langle f, g \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)} g(x) \;\d x,\; f,g\in f,g\in L_{2\pi}^2 (\R,\mathbb{C})
+$$
+
+then
+
+then the following are equivalent:
 1. **Parseval's identity:** $\lVert f \rVert^2 = \sum_{k=-\infty}^\infty |\langle x\mapsto e^{ikx}, f \rangle|^2$
 2. The orthonormal system $\mathcal{E} = \Set{x\mapsto e^{ikx}}_{k\in\Z}$ is complete, i.e. 
 $$
-	\lim_{n\to\infty} \lVert f - \sum_{k=-n}^n e^{ikx} \langle x\mapsto e^{ikx}, f \rangle \rVert = 0
+	\lim_{n\to\infty} \left\lVert f - \sum_{k=-n}^n e^{ikx} \langle x\mapsto e^{ikx}, f \rangle \right\rVert = 0
 $$
 3. The orthonormal system $\mathcal{E}$ gives the inner product
 $$
 	\langle f, g \rangle = \sum_{k=-\infty}^\infty \langle f, x\mapsto e^{ikx} \rangle \langle x\mapsto e^{ikx}, g \rangle
 $$
-4. The orthonormal system $\mathcal{E}$ is total such that $\operatorname{span}(\set{x\mapsto e^{ikx}}_{k\in\Z})$ is dense in $L_{2\pi}^2 (\R, \mathbb{F})$. Equivalently,
+4. The orthonormal system $\mathcal{E}$ is total such that $\operatorname{span}(\mathcal{E})$ is dense in $L_{2\pi}^2 (\R, \mathbb{F})$. Equivalently,
 $$
-\begin{gather}
+\begin{gather*}
 	\forall f\in L_{2\pi}^2 (\R,\mathbb{F}) \; \forall \epsilon > 0 \; \exists N\in\N, \; \lambda_1,\dots,\lambda_N \in \mathbb{F}: \\
-	\lVert f - \sum_{k=-N}^N \lambda_k e^{ikx} \rVert < \epsilon
-\end{gather}
+	\left\lVert f - \sum_{k=-N}^N \lambda_k e^{ikx} \right\rVert < \epsilon
+\end{gather*}
 $$
 
 <details>
@@ -425,6 +647,80 @@ $$
 	\langle f, g \rangle = \langle \mathcal{F}_n (f) + r_n, \mathcal{F}_n (g) + \tilde{r}_n \rangle \xrightarrow{n\to\infty} \sum_{k=-\infty}^\infty \langle f, x\mapsto e^{ikx}\rangle \langle x\mapsto e^{ikx}, g \rangle
 $$
 </details>
+</MathBox>
+
+## Parseval's identity
+
+<MathBox title='' boxType='example'>
+Let $h_a \in L_{2\pi}^2 (\R,\R)$ be a simple step function defined by
+
+$$
+	h_a (x) = \begin{cases}
+		1,\quad& x\in[-\pi, a] \\
+		0,\quad& x\in(a, \pi)
+	\end{cases},\; a\in [-\pi, \pi]
+$$
+
+The Fourier coefficients for $h_a$ is given by
+
+$$
+\begin{align*}
+	c_k =& \langle x\mapsto e^{ikx}, h_a \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} h_a \;\d x = \frac{1}{2\pi} \int_{-\pi}^a e^{-ikx} \;\d x \\
+	=& \begin{cases}
+		\frac{a + \pi}{2\pi},\quad& k = 0 \\
+		\frac{1}{2\pi(-ik)} (e^{-ika} - e^{ik\pi}),\quad& k \neq 0
+	\end{cases}
+\end{align*}
+$$
+
+To show Parseval's identity for $h_a$ we calculate the modulus of $c_k$ for $k\neq 0$
+
+$$
+\begin{align*}
+	|c_k|^2 =& \frac{1}{2\pi (-ik)} (e^{-ika} - e^{ik\pi}) \overline{\frac{1}{2\pi(-ik)} (e^{-ika} - e^{ik\pi})} \\
+	=& \frac{1}{4\pi^2 k^2} (e^{-ika} - e^{ik\pi})(e^{ika} - e^{-ik\pi}) \\
+	=& \frac{1}{4\pi^2 k^2} (1 - e^{ik(\pi + a)} - e^{-ik(\pi + a)} + 1) \\
+	=& \frac{1}{4\pi^2 k^2} (2 - 2\cos[k(\pi + a)]) \\
+	=& \frac{1}{2\pi^2 k^2} (1 - \cos[k(\pi + a)])
+\end{align*}
+$$
+
+Taking the sum gives
+
+$$
+\begin{align*}
+	\sum_{k=-n}^n |c_k|^2 =& \left(\frac{a + \pi}{2\pi}\right)^2 + \frac{1}{2\pi^2} \sum_{\begin{subarray}{l} k=-n \\ k\neq 0 \end{subarray}}^n \left(\frac{1}{k^2} - \frac{\cos[k(\pi + a)]}{k^2} \right) \\
+	=& \left(\frac{a + \pi}{2\pi}\right)^2 + \frac{1}{2\pi} \left(\sum_{k=1}^n \frac{1}{k^2} - \sum_{k=1}^n \frac{\cos[k(\pi + a)]}{k^2} \right)
+\end{align*}
+$$
+
+From the general formula 
+
+$$
+	\sum_{k=1}^\infty \frac{\cos(kx)}{k^2} = \frac{(x - \pi)^2}{4} - \frac{\pi^2}{12},\; x\in[0,2\pi]
+$$
+
+we get 
+
+$$
+\begin{gather*}
+	\sum_{k=1}^\infty \frac{1}{k^2} = \frac{\pi^2}{6} \\
+	\sum_{k=1}^\infty \frac{\cos[k(\pi + a)]}{k^2} = \frac{a^2}{4} - \frac{\pi^2}{12}
+\end{gather*}
+$$
+
+Taking the limit $n\to\infty$, we obtain
+
+$$
+\begin{align*}
+	\sum_{k=-\infty}^\infty |c_k|^2 =& \left(\frac{a + \pi}{2\pi} \right)^2 + \frac{1}{\pi^2}\left(\frac{\pi^2}{6} - \frac{a^2}{4} + \frac{\pi^2}{12} \right) \\
+	=& \left(\frac{a + \pi}{2\pi}\right)^2 + \frac{1}{4} - \frac{a^2}{4\pi} = \frac{2a\pi + \pi^2}{4\pi^2} + \frac{1}{4} \\
+	=& \frac{a}{2\pi} + \frac{1}{2} = \frac{1}{2\pi}(a + \pi) = \frac{1}{2\pi} \int_{-\pi}^a 1 \;\d x = \langle h_a, h_a \rangle \\
+	=& \lVert h_a \rVert^2
+\end{align*}
+$$
+
+proving Parseval's identity for $h_a$.
 </MathBox>
 
 # Fourier transform
