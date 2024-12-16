@@ -1,22 +1,19 @@
-import dynamic from 'next/dynamic'
-import Loader from 'lib/components/Loader'
+import dynamic from "next/dynamic"
+import Loader from "lib/components/Loader"
 
-const Landscape = dynamic(() => import('lib/components/Landscape'), {
+const Landscape = dynamic(() => import("lib/components/Landscape"), {
   loading: () => (
-    <div className='h-full flex justify-center'>
-      <Loader width='10%' />
+    <div className="flex h-full justify-center">
+      <Loader width="10%" />
     </div>
   ),
 })
-const Greet = dynamic(() => import('lib/components/Greeting'))
-const Wave = dynamic(() => import('lib/components/WaveFooter'))
+const Greet = dynamic(() => import("lib/components/Greeting"))
+const Wave = dynamic(() => import("lib/components/WaveFooter"))
 
 export default function Home() {
   return (
-    <main
-      className='absolute top-0 h-screen w-screen perspective-[1px] perspective-origin-[bottom_left]
-      overflow-y-auto overflow-x-hidden scroll-smooth'
-    >
+    <main className="perspective-[1px] perspective-origin-[bottom_left] absolute top-0 h-screen w-screen overflow-y-auto overflow-x-hidden scroll-smooth">
       <Landscape />
       <Greet />
       <Wave />

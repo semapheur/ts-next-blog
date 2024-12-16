@@ -1,20 +1,17 @@
-import Loader from 'lib/components/Loader'
-import dynamic from 'next/dynamic'
+import Loader from "lib/components/Loader"
+import dynamic from "next/dynamic"
 
-const Search = dynamic(() => import('./SearchNotes'), {
+const Search = dynamic(() => import("./SearchNotes"), {
   loading: () => (
-    <div className='h-full flex justify-center'>
-      <Loader width='10%' />
+    <div className="flex h-full justify-center">
+      <Loader width="10%" />
     </div>
   ),
 })
 
 export default function NotesPage() {
   return (
-    <main
-      className='lg:grid grid-cols-2 h-full w-full
-      bg-primary divide-x shadow-inner-l dark:shadow-black/50'
-    >
+    <main className="h-full w-full grid-cols-2 divide-x bg-primary shadow-inner-l lg:grid dark:shadow-black/50">
       <Search />
     </main>
   )

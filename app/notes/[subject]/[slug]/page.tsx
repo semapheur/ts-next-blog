@@ -14,14 +14,7 @@ import type { MDXProps } from "mdx/types"
 
 const Toc = dynamic(() => import("./Toc"), {
   loading: () => (
-    <div
-      className="z-[1] w-10 h-10 lg:w-full lg:h-full 
-      absolute lg:static top-[10%] right-0 lg:z-auto
-      grid place-items-center cursor-pointer lg:hidden
-      bg-primary/50 backdrop-blur-sm lg:backdrop-blur-none
-      -mr-2 pr-1 lg:mr-0 lg:pr-0 rounded-l-full lg:rounded-none
-      shadow-tlb dark:shadow-black/50 lg:shadow-none"
-    >
+    <div className="-mr-2 absolute top-[10%] right-0 z-[1] grid h-10 w-10 cursor-pointer place-items-center rounded-l-full bg-primary/50 pr-1 shadow-tlb backdrop-blur-sm lg:static lg:z-auto lg:mr-0 lg:hidden lg:h-full lg:w-full lg:rounded-none lg:pr-0 lg:shadow-none lg:backdrop-blur-none dark:shadow-black/50">
       <Loader width="75%" />
     </div>
   ),
@@ -106,21 +99,14 @@ export default async function NotePage({ params }: Props) {
   })
 
   return (
-    <main
-      className="relative grid grid-cols-[1fr_auto] h-full w-full overflow-y-clip 
-      bg-primary shadow-inner-l dark:shadow-black/50"
-    >
+    <main className="relative h-full w-full overflow-y-clip bg-primary shadow-inner-l lg:grid lg:grid-cols-[3fr_1fr] dark:shadow-black/50">
       <>
         <div
           key="div.note"
-          className="h-full flex justify-center overflow-y-scroll"
+          className="@container flex h-full justify-center overflow-y-scroll"
         >
-          <article
-            className="max-w-full md:max-w-read
-            prose prose-stone prose-sm md:prose-base dark:prose-invert 
-            py-8 px-2 md:px-0"
-          >
-            <h1 className="text-center text-5xl font-extrabold">
+          <article className="prose prose-stone prose-sm md:prose-base dark:prose-invert @md:max-w-read @xl:max-w-3xl max-w-full px-2 py-8">
+            <h1 className="text-center font-extrabold text-5xl">
               {frontmatter.data.title}
             </h1>
             {content}

@@ -1,42 +1,39 @@
-import Link from 'next/link'
+import Link from "next/link"
 
-import SearchHeader from './SearchHeader'
-import ThemeToggle from 'lib/components/ThemeToggle'
-import MobileNav from 'lib/components/MobileNav'
+import SearchHeader from "./SearchHeader"
+import ThemeToggle from "lib/components/ThemeToggle"
+import MobileNav from "lib/components/MobileNav"
 
 export default function Header() {
   const nav = [
-    { title: 'Notes', url: '/notes' },
-    { title: 'Apps', url: '/apps' },
+    { title: "Notes", url: "/notes" },
+    { title: "Apps", url: "/apps" },
   ]
 
   return (
-    <header
-      className='grid grid-cols-[auto_1fr_auto] justify-items-center content-start gap-4
-      p-2 bg-primary/50 border-b border-b-secondary backdrop-blur-sm z-[1] transition-[height]'
-    >
+    <header className="z-[1] grid grid-cols-[auto_1fr_auto] content-start justify-items-center gap-4 border-b border-b-secondary bg-primary/50 p-2 backdrop-blur-sm transition-[height]">
       <>
         <Link
-          key='logo'
-          href='/'
-          className='text-text hover:text-secondary text-4xl leading-none'
+          key="logo"
+          href="/"
+          className="text-4xl text-text leading-none hover:text-secondary"
         >
           Γ
         </Link>
-        <MobileNav width='1.75rem' bar='0.25rem' gap='0.5rem'>
+        <MobileNav width="1.75rem" bar="0.25rem" gap="0.5rem">
           {nav.map((n) => (
             <Link
               key={n.url}
               href={n.url}
-              className='text-2xl text-text hover:text-secondary'
+              className="text-2xl text-text hover:text-secondary"
             >
               {n.title}
             </Link>
           ))}
         </MobileNav>
-        <div className='flex items-start gap-2'>
-          <ThemeToggle key='theme' />
-          <SearchHeader key='search' />
+        <div className="flex items-start gap-2">
+          <ThemeToggle key="theme" />
+          <SearchHeader key="search" />
         </div>
       </>
     </header>
