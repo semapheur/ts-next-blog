@@ -12,6 +12,5 @@ export default function useUpdateEffect(
     if (!isFirst) {
       return effect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effect, isFirst])
+  }, [isFirst, ...(deps ?? [])])
 }

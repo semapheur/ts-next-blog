@@ -571,7 +571,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-6'>
 Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$ have complex Fourier series 
 
 $$
@@ -583,8 +583,6 @@ with respect to the inner product
 $$
 	\langle f, g \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)} g(x) \;\d x,\; f,g\in f,g\in L_{2\pi}^2 (\R,\mathbb{C})
 $$
-
-then
 
 then the following are equivalent:
 1. **Parseval's identity:** $\lVert f \rVert^2 = \sum_{k=-\infty}^\infty |\langle x\mapsto e^{ikx}, f \rangle|^2$
@@ -602,6 +600,12 @@ $$
 	\forall f\in L_{2\pi}^2 (\R,\mathbb{F}) \; \forall \epsilon > 0 \; \exists N\in\N, \; \lambda_1,\dots,\lambda_N \in \mathbb{F}: \\
 	\left\lVert f - \sum_{k=-N}^N \lambda_k e^{ikx} \right\rVert < \epsilon
 \end{gather*}
+$$
+
+Equivalently, we can state $(3)$ as
+
+$$
+	\sum_{k=-\infty}^\infty \ket{x\mapsto e^{ikx}}\bra{x\mapsto e^{ikx}} = \mathbf{1}
 $$
 
 <details>
@@ -651,8 +655,8 @@ $$
 
 ## Parseval's identity
 
-<MathBox title='' boxType='example'>
-Let $h_a \in L_{2\pi}^2 (\R,\R)$ be a simple step function defined by
+<MathBox title="Parseval's identity for simple step functions" boxType='lemma' tag='lemma-3'>
+Parseval's identity holds for simple step functions $h_a \in L_{2\pi}^2 (\R,\R)$ defined by
 
 $$
 	h_a (x) = \begin{cases}
@@ -660,6 +664,9 @@ $$
 		0,\quad& x\in(a, \pi)
 	\end{cases},\; a\in [-\pi, \pi]
 $$
+
+<details>
+<summary>Proof</summary>
 
 The Fourier coefficients for $h_a$ is given by
 
@@ -673,7 +680,7 @@ $$
 \end{align*}
 $$
 
-To show Parseval's identity for $h_a$ we calculate the modulus of $c_k$ for $k\neq 0$
+Taking the square modulus of $c_k$ for $k\neq 0$ yields
 
 $$
 \begin{align*}
@@ -685,7 +692,7 @@ $$
 \end{align*}
 $$
 
-Taking the sum gives
+Summing over $k = -n,\dots,0,\dots,n$ gives
 
 $$
 \begin{align*}
@@ -715,12 +722,145 @@ $$
 \begin{align*}
 	\sum_{k=-\infty}^\infty |c_k|^2 =& \left(\frac{a + \pi}{2\pi} \right)^2 + \frac{1}{\pi^2}\left(\frac{\pi^2}{6} - \frac{a^2}{4} + \frac{\pi^2}{12} \right) \\
 	=& \left(\frac{a + \pi}{2\pi}\right)^2 + \frac{1}{4} - \frac{a^2}{4\pi} = \frac{2a\pi + \pi^2}{4\pi^2} + \frac{1}{4} \\
-	=& \frac{a}{2\pi} + \frac{1}{2} = \frac{1}{2\pi}(a + \pi) = \frac{1}{2\pi} \int_{-\pi}^a 1 \;\d x = \langle h_a, h_a \rangle \\
-	=& \lVert h_a \rVert^2
+	=& \frac{a}{2\pi} + \frac{1}{2} = \frac{1}{2\pi}(a + \pi) = \frac{1}{2\pi} \int_{-\pi}^a 1 \;\d x \\
+	=& \langle h_a, h_a \rangle = \lVert h_a \rVert^2
 \end{align*}
 $$
 
 proving Parseval's identity for $h_a$.
+</details>
+</MathBox>
+
+<MathBox title="Parseval's identity for simple functions" boxType='proposition'>
+Parseval's identity holds for the set of $2\pi$-periodic simple functions $\mathcal{S}_{2\pi} (\R,\mathbb{C}) \subseteq L_{2\pi}^2 (\R,\mathbb{C})$ defined as
+
+$$
+	\mathcal{S}_{2\pi} (\R,\mathbb{C}) := \Set{g\in\mathcal{F}_{2\pi}| \exists m\in\N, a_i \in[-\pi,\pi], \lambda_i\in\mathbb{C}: g = \sum_{i=1}^m \lambda_i h_{a_i}}
+$$
+
+where $h_a \in L_{2\pi}^2 (\R,\R)$ is a simple step function defined by
+
+$$
+	h_a (x) = \begin{cases}
+		1,\quad& x\in[-\pi, a] \\
+		0,\quad& x\in(a, \pi)
+	\end{cases},\; a\in [-\pi, \pi]
+$$
+
+<details>
+<summary>Proof</summary>
+
+The Fourier coefficients for $g$ are given by 
+
+$$
+	c_k = \langle x\mapsto e^{ikx}, g \rangle = \left\langle x\mapsto e^{ikx}, \sum_{i=1}^m \lambda_i h_{a_i} \right\rangle = \sum_{i=1}^m \lambda_i \langle x\mapsto e^{ikx}, h_{a_i} \rangle
+$$
+
+Taking the square modulus of $c_k$ gives
+
+$$
+\begin{align*}
+	|c_k|^2 =& \overline{c_k} c_k = \sum_{j=1}^m \overline{\lambda_j \langle x\mapsto e^{ikx}, h_{a_j}\rangle} \sum_{l=1}^m \lambda_i \langle x\mapsto e^{ikx}, h_{a_l} \rangle \\
+	=& \sum_{j=1}^m \sum_{l=1}^m \overline{\lambda_j} \lambda_l \langle h_{a_j}, x\mapsto e^{ikx} \rangle \langle x\mapsto e^{ikx}, h_{a_l} \rangle
+\end{align*}
+$$
+
+Summing over $k = -n,\dots,0,\dots,n$ gives
+
+$$
+	\sum_{k=-n}^n |c_k|^2 = \sum_{i,l=1}^m \overline{\lambda_j} \lambda_l \left(\langle h_{a_j}, x\mapsto e^{ikx} \rangle \langle x\mapsto e^{ikx}, h_{a_l} \right)
+$$
+
+By Proposition $\ref{proposition-6}$, we have $\sum_{k=-\infty}^\infty \ket{x\mapsto e^{ikx}}\bra{x\mapsto e^{ikx}} = \mathbf{1}$.From Lemma $\ref{lemma-3}$, we know that Parseval's identity holds for each $h_{a_i}$. Thus, in the limit $n\to\infty$ we obtain
+
+$$
+\begin{align*}
+	\sum_{k=-\infty}^\infty |c_k|^2 =& \sum_{i,l=1}^m \overline{\lambda_j} \lambda_l \left(\langle h_{a_j}, x\mapsto e^{ikx} \rangle \langle x\mapsto e^{ikx}, h_{a_l} \right) \\
+	=& \sum_{i,l=1}^m \overline{\lambda_j} \lambda_l \langle h_{a_j}, h_{a_l} \rangle \\
+	=& \left\langle \sum_{j=1}^m \lambda_j h_{a_j}, \sum_{l=1}^m \lambda_l h_{a_l} \right\rangle \\
+	=& \langle g, g \rangle = \lVert g \rVert^2
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Square integrable simple periodic functions are dense" boxType='proposition' tag='proposition-4'>
+The set of simple $2\pi$-periodic functions $\mathcal{S}_{2\pi} (\R,\mathbb{C})$ is dense in $L_{2\pi} (\R, \mathbb{C})$. That is, for $f\in\mathcal{S}_{2\pi} (\R,\mathbb{C})$ and $\epsilon > 0$, there is a $2\pi$-periodic simple function $g:\R\mathbb{C}$ with $\lVert f - g \rVert < \epsilon$.
+
+<details>
+<summary>Proof</summary>
+
+Let $\epsilon > 0$ and suppose $f:[-\pi,\pi]\to\mathbb{C}$ is square integrable. Then there is a continuous function $g:[-\pi,\pi]$ with $\lVert f - g \rVert < \epsilon$. Since the domain $[-\pi,\pi]$ is compact, if follows that $g$ is uniformly continuous. Thus, for $\epsilon > 0$, there is $\delta > 0$ such that
+
+$$
+	|x - y| \implies |g(x) - g(y)| < \epsilon
+$$
+
+Next, we decompose $[-\pi,\pi]$ into $N\in\N$ open intervals $I_j$ with $\operatorname{length}(I_j) < \delta$. Taking the supremum for each interval $I_j$, i.e. $c_j := \sup\set{g(x)|x\in I_j}$, we can define a simple step function $h(x) = c_j$ for $x\in I_j$. It follows that for $x\in I_j$
+
+$$
+	|g(x) - h(x)| = |g(x) - g(y)| < \epsilon ,\; y\in \overline{I}_j
+$$
+
+because $|x - y| < \delta$. In total we have
+
+$$
+	\lVert f - h \rVert \leq \lVert f - g \rVert + \lVert g - h \rVert = \underbrace{\lVert f - g \rVert}_{<\epsilon} + \left(\int_{-\pi}^\pi \smash[b]{\underbrace{|g(x) - h(x)|^2}_{<\epsilon}} \;\d x \right)^{1/2} < C\epsilon
+$$
+
+where $C\in\R$ is a constant.
+</details>
+</MathBox>
+
+<MathBox title="Parseval's identity" boxType='theorem'>
+Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$ have complex Fourier series 
+
+$$
+	\mathcal{F}_n (f) = \sum_{k=-n}^n \langle x\mapsto e^{ikx}, f\rangle e^{ikx} = \sum_{k=-n}^n c_k e^{ikx}
+$$
+
+with respect to the inner product
+
+$$
+	\langle f, g \rangle = \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)} g(x) \;\d x,\; f,g\in f,g\in L_{2\pi}^2 (\R,\mathbb{C})
+$$
+
+Then
+
+$$
+	\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert_2 = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $\epsilon > 0$ and choose $h \in\mathcal{S}_{2\pi} (\R,\mathbb{C})$ with $\lVert f - h \rVert < \epsilon$. Applying the triangle inequality and Proposition $\ref{proposition-4}$ we get
+
+$$
+\begin{align*}
+	\lVert f - \mathbb{F}_n (f) \rVert =& \lVert f + h - h - \mathcal{F}_n (f) + \mathcal{F}_n (h) - \mathcal{F}_n (h) \rVert \\
+	\tleq& \lVert (f - h) - \mathcal{F}_n (f - h) \rVert + \underbrace{\lVert h - \mathcal{F}_n (h) \rVert}_{\xrightarrow{n\to\infty 0}} 
+\end{align*}
+$$
+
+Note that $\mathcal{F}_n (f - h)$ is the orthogonal projection of $(f - h)$ onto $\operatorname{span}(\set{x\mapsto e^{ikx}}_{k\in\Z})$. The Pythagorean theorem implies that
+
+$$
+	\lVert (f - h) - \mathcal{F}_n (f - h) \rVert^2 = \lVert \mathcal{F}_n (f - h)\rVert^2 + \lVert f - h \rVert^2
+$$
+
+from which it follows that
+
+$$
+	\lVert (f - h) - \mathcal{F}_n (f - h) \rVert \leq \lVert f - h \rVer < \epsilon
+$$
+
+Hence, by the sandwhich theorem it follows that
+
+$$
+	\lim_{n\to\infty} \lVert f - \mathcal{F}_n (f) \rVert = 0
+$$
+</details>
 </MathBox>
 
 # Fourier transform

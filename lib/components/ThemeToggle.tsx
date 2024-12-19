@@ -48,20 +48,13 @@ export default function ThemeToggle() {
 
   return (
     <button
-      className="relative cursor-pointer before:absolute 
-		before:text-sm before:px-1
-		before:right-[110%] before:top-1/2 before:-translate-y-1/2
-		before:min-w-max before:rounded
-		before:bg-text/50 before:text-primary before:border-secondary
-		before:shadow-md before:backdrop-blur-sm
-		hover:before:content-[attr(aria-label)]"
+      className="before:-translate-y-1/2 relative cursor-pointer before:absolute before:top-1/2 before:right-[110%] before:min-w-max before:rounded before:border-secondary before:bg-text/50 before:px-1 before:text-primary before:text-sm before:shadow-md before:backdrop-blur-sm hover:before:content-[attr(aria-label)]"
       type="button"
       aria-label={`Switch to ${inactiveTheme} theme`}
       onClick={() => setActiveTheme(inactiveTheme)}
     >
       <svg
-        className={`transition-transform duration-700 ease-out
-				${activeTheme === "light" ? "rotate-[0.5turn]" : ""}`}
+        className={`transition-transform duration-700 ease-out ${activeTheme === "light" ? "rotate-[0.5turn]" : ""}`}
         viewBox={`0 0 ${VB_SIZE} ${VB_SIZE}`}
         width="2rem"
         height="2rem"
@@ -70,8 +63,7 @@ export default function ThemeToggle() {
         <g className="origin-center fill-text">
           <path d={sunPath(UNIT)} fillRule="evenodd" />
           <circle
-            className={`transition-transform duration-500 ease-out 
-						${activeTheme === "light" ? "-translate-x-[15%] translate-y-[15%]" : ""}`}
+            className={`transition-transform duration-500 ease-out ${activeTheme === "light" ? "-translate-x-[15%] translate-y-[15%]" : ""}`}
             cx={VB_SIZE / 2}
             cy={VB_SIZE / 2}
             r={UNIT - 3}
