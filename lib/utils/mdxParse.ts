@@ -39,6 +39,7 @@ export function rehypePlugins(noCite: string[] = []) {
         macros: {
           "\\d": "\\mathrm{d}",
           "\\D": "\\mathrm{D}",
+          "\\atanh": "\\operatorname{atanh}",
           "\\tleq": "\\overset{\\tiny{\\mathbf{\\triangle}}}{\\leq}",
           "\\eqref": "\\href{###1}{(\\text{#1})}",
           "\\ref": "\\href{###1}{\\text{#1}}",
