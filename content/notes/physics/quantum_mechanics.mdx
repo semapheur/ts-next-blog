@@ -2,6 +2,8 @@
 title: 'Quantum Mechanics'
 subject: 'Physics'
 showToc: true
+references:
+  - book_griffiths_shcroeter_2018
 ---
 
 # Mathematical foundation
@@ -1710,7 +1712,7 @@ $$
 The components of $\hat{\mathbf{L}}$ are incompatible observables with uncertainty
 
 $$
-  \sigma_{\hat{L}_i}^2 \sigma_{\hat{L}_j}^2 \geq \left(\frac{1}{2i} \langle [\hat{L}_i, \hat{L}_j] \rangle \right)^2 = \left(\frac{1}{2i} \langle i\hbar\hat{L}_k \rangle \right)^2 = \frac{\hbar^2}{4} \langle \hat{L}_j \rangle^2
+  \sigma_{\hat{L}_i} \sigma_{\hat{L}_j} \geq \left(\frac{1}{2i} \langle [\hat{L}_i, \hat{L}_j] \rangle \right) = \left(\frac{1}{2i} \langle i\hbar\hat{L}_k \rangle \right) = \frac{\hbar}{2} \langle \hat{L}_k \rangle
 $$
 
 The cross product of $\hat{\mathbf{L}}$ with itself is 
@@ -1761,7 +1763,7 @@ $$
 
 This means that $\hat{\mathbf{L}}^2$ is compatible with any one of the components of $\hat{\mathbf{L}}$. 
 
-### Eigenvalues using ladder operators
+### Derivation of eigenvalues using ladder operators
 
 The simultaneous eigenvalues of $\hat{\mathbf{L}}^2$ and $\hat{L}_3$ can be determined algebraically using ladder operators
 
@@ -2004,9 +2006,9 @@ $$
 \end{aligned}
 \quad
 \begin{aligned}
-  r =& (x_1^2 + x_2^2 + x_3^2)^{1/2} \\
-  \theta =& \acos(x_3 / r) \\
-  \phi =& \atan(x_2 / x_1)
+  r =& \sqrt{x_1^2 + x_2^2 + x_3^2} \\
+  \theta =& \arccos(x_3 / r) \\
+  \phi =& \arctan(x_2 / x_1)
 \end{aligned}
 $$
 
@@ -2020,7 +2022,7 @@ so that
 
 $$
 \begin{align*}
-  \hat{\mathbf{L}} = \hat{\mathbf{x}}\times\hat{\mathbf{p}} = -i\hbar\hat{\mathbf{x}}\times\nabla \\
+  \hat{\mathbf{L}} =& \hat{\mathbf{x}}\times\hat{\mathbf{p}} = -i\hbar\hat{\mathbf{x}}\times\nabla \\
   =& -i\hbar r \left(\hat{\mathbf{r}}\times\hat{\mathbf{r}} \frac{\partial}{\partial r} + \hat{\mathbf{r}}\times\hat{\boldsymbol{\theta}} \frac{1}{r}\frac{\partial}{\partial\theta} + \hat{\mathbf{r}}\times\hat{\boldsymbol{\phi}} \frac{1}{r\sin\theta} \frac{\partial}{\partial\phi} \right) \\
   =& i\hbar\left(\hat{\boldsymbol{\phi}}\frac{\partial}{\partial\theta} - \hat{\boldsymbol{\theta}} \frac{1}{\sin\theta} \frac{\partial}{\partial\phi} \right)
 \end{align*}
@@ -2038,8 +2040,10 @@ $$
 Substituting into $\hat{\mathbf{L}}$ gives
 
 $$
+\begin{align*}
   \hat{\mathbf{L}} =& -i\hbar\left[(-\sin\phi\hat{\mathbf{x}}_1 + \cos\phi\hat{\mathbf{x}}_2) \frac{\partial}{\partial\theta} \right. \\
   &- \left. (\cos\theta \cos\phi\hat{\mathbf{x}}_1 + \cos\theta\sin\phi\hat{\mathbf{x}}_2 - \sin\theta\hat{\mathbf{x}}_3) \frac{1}{\sin\theta} \frac{\partial}{\partial\phi} \right]
+\end{align*}
 $$
 
 with componentwise operators
@@ -2058,7 +2062,7 @@ $$
 \begin{align*}
   \hat{L}_\pm =& \hat{L}_1 \pm i\hat{L}_2 \\
   =& -i\hbar\left[(-\sin\phi \pm i\cos\phi)\frac{\partial}{\partial\theta} - (\cos\theta \pm i\sin\phi)\cot\theta \frac{\partial}{\partial\phi} \right] \\
-  =& \pm\hbar e^{\pm i\phi}\left(\frac{\parital}{\partial\theta} \pm \cot(\theta) \frac{\partial}{\partial\phi}\right) \tag{\label{equation-30}}
+  =& \pm\hbar e^{\pm i\phi}\left(\frac{\partial}{\partial\theta} \pm \cot(\theta) \frac{\partial}{\partial\phi}\right) \tag{\label{equation-30}}
 \end{align*}
 $$
 
@@ -2074,28 +2078,164 @@ $$
   \hat{\mathbf{L}}^2 = -\hbar^2 \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right]
 $$
 
-To find the eigenfunctions $Y_\ell^n (\theta, \phi)$, we start from the definition $\hat{L}_+ Y_\ell^\ell = 0$ giving
+The eigenfunctions $Y_\ell^n (\theta, \phi)$ can be determined from the eigenvalue equations
+
+$$
+\begin{align*}
+  \hat{\mathbf{L}}^2 Y_\ell^n =& \hbar^2 \ell (\ell + 1) Y_\ell^n \\
+  \hat{L}_3 Y_\ell^n =& \hbar n Y_\ell^n
+\end{align*}
+$$
+
+In spherical coordinates, the $\hat{L}_3$ equation takes the form
+
+$$
+\begin{align*}
+  -i\hbar \frac{\partial Y_\ell^n}{\partial\phi} =& \hbar n Y_\ell^n \\
+  -i \frac{\partial Y_\ell^n}{\partial\phi} =& Y_\ell^n
+\end{align*}
+$$
+
+Assuming $Y_\ell^n (\theta, \phi) = \Theta_\ell^n(\theta) \Phi_n(\phi)$ and dividing by $\Theta$, gives the ordinary differential equation
+
+$$
+  -i \frac{\partial \Phi_n}{\partial\phi} = \Phi^n
+$$
+
+with solution
+
+$$
+  \Phi_n (\phi) = \frac{1}{\sqrt{2\pi}} e^{in\phi}
+$$
+
+Physically, when $\phi$ advances by $2\pi$, the eigenfunction $Y_\ell^n$ must return to the same point in space. Thus, we require $\Phi_n (2\pi) = \Phi_n (0)$, from which we find $e^{i2\pi n} = 1$. This is satisfied for $n\in\Z$.
+
+In spherical coordinates, the $\hat{\mathbf{L}}^2$ equation takes the form
+
+$$
+\begin{align*}
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^n =& \hbar^2 \ell(\ell + 1) Y_\ell^n \\
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^n =& 0
+\end{align*}
+$$
+
+which can be solved by separation of variables. Assuming $Y_\ell^n (\theta, \phi) = \Theta_\ell^n(\theta) \Phi_n(\phi)$, the equation can be refactored as
+
+$$
+\begin{align*}
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\sqrt{2\pi}}{e^{in\phi}}\frac{1}{\sqrt{2\pi}}\smash[t]{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-n^2 e^{in\phi}}} \right] \Theta_\ell^n =& 0 \vphantom{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-n^2 e^{in\phi}}} \\
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)- \frac{n^2}{\sin^2 \theta} \right] \Theta_\ell^n =& 0
+\end{align*}
+$$
+
+Substituting $w = \cos\theta$ and $F_\ell^m (w) = \Theta_\ell^n (\theta)$ with 
+
+$$
+  \frac{\d}{\d\theta} = \frac{\d}{\d w}\frac{\d w}{\d \theta} = -\sin(\theta) \frac{\d}{\d w}
+$$
+
+and noting that
+
+$$
+\begin{align*}
+  \frac{1}{\sin\theta}\frac{\d}{\d\theta}\left(\sin\theta \frac{\d}{\d\theta}\right) =& \frac{\d}{\d w} \left(\sin^2 \theta \frac{\d}{\d w} \right) \\
+  =& \frac{\d}{\d w} \left[(1 - w^2)\frac{\d}{\d w}\right] \\
+  =& (1 - w^2) \frac{\d^2}{\d w^2} - 2w^2 \frac{\d}{\d w}
+\end{align*}
+$$
+
+we arrive at
+
+$$
+  \left[(1 - w^2) \frac{\d^2}{\d w^2} - 2w \frac{\d}{\d w} + \ell(\ell + 1) - \frac{n^2}{1 - w^2} \right] F_\ell^n (w) = 0
+$$
+
+which is known as Legendre's associated differential equation. The solutions to this equation are given by the associated Legendre functions $P_\ell^m (w)$ defined by
+
+$$
+  P_\ell^n (w) = (1 - w^2)^{|n|/2} \left(\frac{\d}{\d w}\right)^{|n|} P_\ell (w)
+$$
+
+where $P_\ell (w)$ is the $\ell$-th Legendre polynomial given by the Rodrigues formula
+
+$$
+  P_\ell (w) = \frac{1}{2^\ell \ell!} \left(\frac{\d}{\d w} \right)^\ell (w^2 - 1)^\ell
+$$
+
+Using the Rodrigues formula and integrating by parts, we can show that the associated Legendre's functions $P_\ell^n$ are orthogonal to each other
+
+$$
+  \int_{-1}^1 P_\ell^{|n|} (w) P_{\ell'}^{|n|}(w) \;\d w = \frac{2}{2\ell + 1} \frac{(\ell + |n|)!}{(\ell - |n|)!} \delta_{\ell\ell'}
+$$
+
+The corresponding physical solutions $\Theta_\ell^n (\theta)$ are given by
+
+$$
+  \theta_\ell^n (\theta) = \begin{cases}
+    (-1)^n \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - n)!}{(\ell + n)!}} P_\ell^n (\cos\theta),\quad& n\geq 0 \\
+    (-1)^n \Theta_\ell^{|n|} (\theta), \quad& n < 0
+  \end{cases}
+$$
+
+which are orthonormal
+
+$$
+  \int_0^\pi (\Theta_{\ell'}^n)^*(\theta) \Theta_\ell^n (\theta) \sin(\theta)\;\d\theta = \delta_{\ell\ell'}
+$$
+
+Combining the solutions for $\Theta_\ell^n$ and $\Phi_n$, we arrive at the eigenfunctions
+
+$$
+  Y_\ell^n (\theta, \phi) = \begin{cases}
+    (-1)^n \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - n)!}{(\ell + n)!}} P_\ell^n (\cos\theta) e^{in\phi},\quad& n\geq 0 \\
+    (-1)^n (Y_\ell^{-n})^* (\theta), \quad& n < 0
+  \end{cases}
+$$
+
+which are known as spherical harmonics. These are normaliezd to unity on a unit sphere and are orthogonal:
+
+$$
+  \int (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta) \;\d\Omega = \int_0^{2\pi} \d\phi \int_0^\pi (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta, \phi) \sin(\theta) \;\d\theta = \delta_{\ell\ell'} \delta_{nn'}
+$$
+
+
+| $\ell$ | $n$ | $Y_\ell^n (\theta, \phi)$ |
+| --- | --- | --- |
+| $0$ | $0$ | $Y_0^0 = \frac{1}{\sqrt{4\pi}}$ |
+| $1$ | $0$ | $Y_1^0 = \left(\frac{3}{8\pi}\right)^{1/2} \cos\theta$ |
+| $1$ | $\pm 1$ | $Y_1^{\pm 1} = \mp \left(\frac{3}{8\pi}\right)^{1/2} \cos(\theta) e^{\pm i\phi}$ |
+| $2$ | $0$ | $Y_2^0 = \mp \left(\frac{5}{16\pi}\right)^{1/2} [3\cos^2 (\theta) - 1]$ |
+| $2$ | $\pm 1$ | $Y_2^{\pm 1} = \mp \left(\frac{15}{8\pi}\right)^{1/2} \sin(\theta) \cos(\theta) e^{\pm i\phi}$ |
+| $2$ | $\pm 2$ | $Y_2^{\pm 2} = \mp \left(\frac{15}{32\pi}\right)^{1/2} \sin^2(\theta) e^{\pm i2\phi}$ |
+| $3$ | $0$ | $Y_3^0 = \mp \left(\frac{7}{16\pi}\right)^{1/2} [5\cos^3(\theta) - 3\cos(\theta)]$ |
+| $3$ | $\pm 1$ | $Y_3^{\pm 1} = \mp \left(\frac{21}{64\pi}\right)^{1/2} \sin(\theta)[5\cos^2(\theta) - 1] e^{\pm i\phi}$ |
+| $3$ | $\pm 2$ | $Y_3^{\pm 2} = \mp \left(\frac{105}{32\pi}\right)^{1/2} \sin^2(\theta) \cos(\theta) e^{\pm i2\phi}$ |
+| $3$ | $\pm 3$ | $Y_3^{\pm 3} = \mp \left(\frac{35}{64\pi}\right)^{1/2} \sin^3(\theta) e^{\pm i3\phi}$ |
+
+#### Derivation using ladder operators
+
+We can also find the eigenfunctions $Y_\ell^n (\theta, \phi)$ using ladder operators. Starting from the definition $\hat{L}_+ Y_\ell^\ell = 0$, we have
 
 $$
   \frac{\partial Y_\ell^\ell}{\partial\theta} + i\cot\theta \frac{\partial Y_\ell^\ell}{\partial\phi} = 0
 $$
 
-Using separation of variables with $Y_\ell^\ell (\theta,\phi) = T(\theta)F(\phi)$ the equation can refactored as
+Using separation of variables with $Y_\ell^\ell (\theta,\phi) = \Theta(\theta)\Phi(\phi)$ the equation can refactored as
 
 $$
 \begin{align*}
-  F\frac{\partial T}{\partial\theta} =& -i T \cot\theta \frac{\partial F}{\partial\phi} \\
-  \frac{1}{T\cot\theta} \frac{\partial T}{\partial\theta} =& -i\frac{1}{F}\frac{\partial F}{\partial\phi}
+  \Phi\frac{\partial \Theta}{\partial\theta} =& -i \Theta \cot\theta \frac{\partial \Phi}{\partial\phi} \\
+  \frac{1}{\Theta\cot\theta} \frac{\partial \Theta}{\partial\theta} =& -i\frac{1}{\Phi}\frac{\partial \Phi}{\partial\phi}
 \end{align*}
 $$
 
 The separated equation hold if both sides equal some constant, say $k$. In this case, the zenital equation becomes
 
 $$
-  \frac{\d F}{F} = ik\d\phi
+  \frac{\d \Phi}{\Phi} = ik\d\phi
 $$
 
-which has solution $F(\phi) = e^{ik\phi}$ up to normalization. Since $Y_\ell^\ell$ is an eigenfunction of $L_3 = -i\hbar (\partial/\partial\phi)$ with eigenvalue $\ell\hbar$, then so is $F(\phi)$ (where $T(\theta)$ just cancels out). This means that
+which has solution $\Phi(\phi) = e^{ik\phi}$ up to normalization. Since $Y_\ell^\ell$ is an eigenfunction of $L_3 = -i\hbar (\partial/\partial\phi)$ with eigenvalue $\ell\hbar$, then so is $\Phi(\phi)$ (where $\Theta(\theta)$ just cancels out). This means that
 
 $$
   -i\hbar\frac{\partial e^{ik\phi}}{\partial\phi} = k\hbar e^{ik\phi} := \ell\hbar e^{ik\phi}
@@ -2104,16 +2244,16 @@ $$
 showing that we must have $k = \ell$ so that, up to normalization
 
 $$
-  Y_\ell^\ell = e^{il\phi} T(\theta)
+  Y_\ell^\ell = e^{il\phi} \Theta(\theta)
 $$  
 
 With $k = \ell$, the azimuthal equation becomes
 
 $$
-  \frac{\d T}{T} = \ell\cot\theta \;\d\theta = \ell\frac{\cos\theta}{\sin\theta} \;\d\theta = \ell\frac{\d\sin\theta}{\sin\theta}
+  \frac{\d\Theta}{\Theta} = \ell\cot\theta \;\d\theta = \ell\frac{\cos\theta}{\sin\theta} \;\d\theta = \ell\frac{\d\sin\theta}{\sin\theta}
 $$
 
-which has solution $T(\theta) = \sin^\ell \theta$ up to normalization. Thus, we can write
+which has solution $Theta(\theta) = \sin^\ell \theta$ up to normalization. Thus, we can write
 
 $$
   Y_\ell^\ell = c_\ell^\ell \sin^\ell (\theta) e^{il\phi},
@@ -2127,7 +2267,7 @@ $$
 \end{equation}
 $$
 
-To solve the integral, we use the relation
+where $\d\Omega = \sin(\theta) \;\d\theta \;\d\phi$. To solve the integral, we use the relation
 
 $$
   \int \sin^n x \;\d x = -\frac{1}{n} (\sin x)^{n-1} \cos x + \frac{n - 1}{n} \int (\sin x)^{n-2} \;\d x
@@ -2143,7 +2283,7 @@ $$
   =& \left(\frac{2\ell}{2\ell + 1}\right) \left(\frac{2\ell - 2}{2\ell - 1}\right) \left(\frac{2\ell - 4}{2\ell - 3}\right) \\
   &\times\cdots\times \left(\frac{2\ell - (2\ell - 2)}{2\ell - (2\ell - 3)} \right) \underbrace{\int_0^\pi \sin x \;\d x}_{=2} \\
   =& \frac{2^\ell \ell (\ell - 1)(\ell - 2)\cdots (\ell - (\ell - 1))}{(2\ell + 1)!!} 2 \\
-  =& 2\frac{2^\ell \ell!}{(2\ell + 1)!!} = 2\frac{(2\ell \ell!)^2}{(2\ell + 1)!}
+  =& 2\frac{2^\ell \ell!}{(2\ell + 1)!!} = 2\frac{(2^\ell \ell!)^2}{(2\ell + 1)!}
 \end{align*}
 $$
 
@@ -2160,7 +2300,7 @@ $$
 Substituting $n = 2\ell + 1$ yields
 
 $$
-  (2\ell + 1)!! = 2\frac{(2\ell \ell!)^2}{(2\ell + 1)!}
+  (2\ell + 1)!! = 2\frac{(2^\ell \ell!)^2}{(2\ell + 1)!}
 $$
 
 Using the results, $\eqref{equation-29}$ becomes
@@ -2172,7 +2312,7 @@ $$
 \end{gather*}
 $$
 
-where we included a conventional arbitrary phase factor $(-1)^\ell$. Putting this all together, we have the top orbital angular momentum state
+where we included a conventional arbitrary phase factor $(-1)^\ell$. Putting this all together, the top orbital angular momentum becomes
 
 $$
   Y_\ell^\ell (\theta, \phi) = (-1)^\ell \left[\frac{(2\ell + 1)!}{4\pi}\right]^{1/2} \frac{1}{2^\ell \ell!} \sin^\ell (\theta) e^{i\ell\phi}
@@ -2186,7 +2326,6 @@ $$
   &\times e^{in\phi} \sin^{-n} (\theta) \frac{\d^{\ell - n}}{\d(\cos\theta)^{\ell - n}} \sin^{2\ell} (\theta)
 \end{align*}
 $$
-
 
 # Non-relativistic quantum particle systems
 
