@@ -371,10 +371,10 @@ $$
   \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \psi^* \psi \;\d^3x = 1
 $$
 
-The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_1$ and $\psi_2$ are possible states of the system, then so too is the linear combination
+The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_i (\mathbf{x},t)$ for $i\in I\subseteq\N$ are possible states of the system, then so is the linear combination
 
 $$
-  \psi_3 (\mathbf{x}, t) = \alpha \psi_1 (\mathbf{x}, t) + \beta \psi_2 (\mathbf{x}, t) \quad \alpha, \beta \in \mathbb{C} 
+  \psi (\mathbf{x}, t) = \sum_{i\in I} c_i \psi_i (\mathbf{x}, t) 
 $$
 
 which is known as the principle of superposition. The wavefunction $\psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\psi(t)}$, i.e.
@@ -415,10 +415,10 @@ $$
   \mathbf{p} \to\hat{\mathbf{p}} = -i\hbar\nabla
 $$
 
-For a non-relativistic particle with mass $m$ subject to a potential $V(\mathbf{x})$, the Hamiltonian takes the form
+For a non-relativistic particle with mass $m$ subject to a potential $V(\mathbf{x},t)$, the Hamiltonian takes the form
 
 $$
-  \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})
+  \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x},t)
 $$
 
 In terms of state space vector $\ket{\psi(t)} = \int \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x$, the Schrödinger equation takes the form
@@ -508,6 +508,80 @@ $$
 
 where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
 
+### Stationary states
+
+If the Hamiltonian operator has a time-independent potential, the Schrödinger equation can be solved by separation of variables. Assuming a wavefunction of the form $\Psi(\mathbf{x},t) = \psi(\mathbf{x})\phi(t)$ with partial derivatives
+
+$$
+  \frac{\partial\Psi}{\partial t} = \psi \frac{\d\phi}{\d t}, \quad \nabla^2 \Psi = (\nabla^2 \psi) \phi
+$$
+
+the Schrödinger equation reads
+
+$$
+\begin{align}
+  i\hbar \psi \frac{\d\phi}{\partial t} =& -\frac{\hbar^2}{2m} (\nabla^2 \psi)\phi + V\psi\phi \\
+  i\hbar \frac{1}{\phi} \frac{\d\phi}{\d t} =& -\frac{\hbar^2}{2m} \frac{1}{\psi} \nabla^2 \psi + V
+\end{align*}
+$$
+
+The equation holds if both sides equal a separation constant, which in this case corresponds with the systems total energy $E$. This results in the temporal equation
+
+$$
+  \frac{\d\phi}{\d t} = -\frac{iE}{\hbar} \phi
+$$
+
+and the spatial equation
+
+$$
+\begin{align*}
+  -\frac{\hbar^2}{2m} \nabla^2 \psi + V\psi =& E\psi \\
+  \hat{H}\psi =& E\psi 
+\end{align*}
+$$
+
+which is called the time-independent Schrödinger equation. The temporal equation has general solution
+
+$$
+  \phi(t) = C e^{-iEt/\hbar}
+$$
+
+Absorbing the normalization constant $C$ into $\psi$, the wavefunction becomes
+
+$$
+  \Psi(\mathbf{x}, t) = \psi(\mathbf{x}) e^{-iEt/\hbar}
+$$
+
+Although $\Psi$ depends on $t$, the probability density
+
+$$
+  |\Psi(\mathbf{x},t)|^2 = \Psi^* \Psi = \psi^* e^{iEt/\hbar} \psi e^{-iEt/\hbar} = |\psi(x)|^2
+$$
+
+is time-independent. Taking the expectation value of $\hat{H}$, we get
+
+$$
+\begin{align*}
+  \langle \hat{H} \rangle_\Psi =& \braket{\Psi|\hat{H}\Psi} = \int_{\R^3} (\psi e^{-iEt/\hbar})^* \underbrace{\hat{H}\psi}_{=E\psi} e^{-iEt/\hbar} \;\d^3 x \\
+  =& E \int_{\R^3} \psi^* e^{iEt/\hbar} \psi e^{-iEt/\hbar} \; \d^3 x \\
+  =& E \underbrace{\int_{\R^3} |\psi|^2 \;\d^3 x}_{=1} = E
+\end{align*}
+$$
+
+Since
+
+$$
+  \hat{H}^2 \psi = \hat{H}(\hat{H}\psi) = \hat{H}(E\psi) = E(\hat{H}\psi) = E^2 \psi
+$$
+
+it follows that $\langle\hat{H}^2 \rangle = E^2$. Thus, the variance of $H$ is
+
+$$
+  \sigma_H^2 = \langle H^2 \rangle - \langle H \rangle^2 = E^2 - E^2 = 0
+$$
+
+showing that the total energy is a determinate state.
+
 ## Observables
 
 In quantum mechanics, all observables are represented by Hermitian operators on the Hilbert space. The expectation (average measurement) of an observable $\hat{Q}(\mathbf{x}, \mathbf{p})$ in state $\Psi$ is given by the inner product
@@ -548,56 +622,64 @@ $$
 
 ## Measurement
 
-The possible measurements of an observable $\hat{O}$ in a quantum system lies in its spectrum of eigenvalues. The eigenvalues of $\hat{O}$ is given by
+The possible measurements of an observable $\hat{Q}$ in a quantum system lies in its spectrum of eigenvalues. In terms of an orthonormal eigenbasis $\set{\phi_n}_{n\in\N}$, the eigenvalues of $\hat{Q}$ is given by
 
 $$
-  \hat{O}\phi_i = \lambda_i \phi_i
+  \hat{Q}\phi_n = \lambda_n \phi_n
 $$
 
-The wavefunction $\psi$ of quantum system can thus be decomposed in terms of the orthonormal eigenstates of $\hat{O}$
+The wavefunction $\psi$ of quantum system can therefore be exanded in terms of the orthonormal eigenstates of $\hat{Q}$
 
 $$
-  \psi (\mathbf{x}) = \sum_i a_i \phi_i (\mathbf{x}) \quad \sum_i \left| a_i \right|^2 = 1
+  \psi (\mathbf{x}) = \sum_n a_n \phi_n (\mathbf{x}) \quad \sum_n \left| a_n \right|^2 = 1
 $$
 
-Assuming that the spectrum is non-degenerate, the probability that the measurement yields the eigenstate $\lambda_i$ is given by the Born rule
+Assuming that the spectrum is non-degenerate, the expectation value of $\hat{Q}$ is 
 
 $$
-  P(\lambda_i) = \left| a_i \right|^2
+  \left\langle \hat{Q} \right\rangle_\psi = \sum_{n\in\N} \left| a_n \right|^2 \lambda_n
 $$
 
-After the measurement, the wavefunction discontinuously collapses into the eigenvector $\phi_i$ corresponding to the measured eigenstate $\lambda_i$
+<details>
+<summary>Details</summary>
 
-$$
-  \phi(\mathbf{x}) \rightarrow \phi_i (\mathbf{x})
-$$
-
-When the spectrum is degenerate, the probability is given by
-
-$$
-  P(\lambda) = \sum_{i|\lambda_i = \lambda} \left| a_i \right|^2
-$$
-
-in which case, the wavefunction collapses to
-
-$$
-  \psi(\mathbf{x}) \rightarrow C \sum_{i|\lambda_i = \lambda} a_i \phi_n
-$$
-
-where $C$ is the appropriate normalization factor.
-
-### Expectation values
-
-The expectation value of an observable $\hat{O}$ in a system of state $\psi$ is given by
+Using the definition of expecation value $\left\langle \hat{Q} \right\rangle_\psi = \Braket{\psi | \hat{Q} \psi}$ and the fact that $\psi_n$ are orthornormal we find
 
 $$
 \begin{align*}
-  \left\langle \hat{O} \right\rangle_\psi = \Braket{\psi | \hat{O} \psi} &= \Braket{\sum_i a_i \phi_i | \sum_h a_j \hat{O} \phi_j} \\
+  \left\langle \hat{Q} \right\rangle_\psi = \Braket{\psi | \hat{Q} \psi} &= \Braket{\sum_i a_i \phi_i | \sum_h a_j \hat{Q} \phi_j} \\
   &= \sum_i \sum_j a_i^* a_j \lambda_j \braket{\phi_i | \phi_j} \\
   &= \sum_i \sum_j a_i^* a_j \lambda_j \delta_{ij} \\
   &= \sum_i \left| a_i \right|^2 \lambda_i
 \end{align*}
 $$
+</details>
+
+The probability that the measurement yields the eigenstate $\lambda_n$ is given by the Born rule
+
+$$
+  P(\lambda_n) = \left| a_n \right|^2
+$$
+
+After the measurement, the wavefunction discontinuously collapses into the eigenvector $\phi_n$ corresponding to the measured eigenstate $\lambda_n$
+
+$$
+  \phi(\mathbf{x}) \rightarrow \phi_n (\mathbf{x})
+$$
+
+When the spectrum is degenerate, the probability is given by
+
+$$
+  P(\lambda) = \sum_{n|\lambda_n = \lambda} \left| a_n \right|^2
+$$
+
+in which case, the wavefunction collapses to
+
+$$
+  \psi(\mathbf{x}) \rightarrow C \sum_{n|\lambda_n = \lambda} a_n \phi_n
+$$
+
+where $C$ is the appropriate normalization factor.
 
 ### Determinate states
 
@@ -2927,48 +3009,135 @@ where $\lambda$ is the de Broglie wavelength of the particle. The wavefunction $
 
 ### Infinite potential well 
 
-The infinite potential well is used as a plot device to model a spatially trapped quantum particle. This is achieved by setting
+The infinite potential well is used as a hypothetical model to describe a spatially trapped quantum particle. This is achieved by setting
 
 $$
-  V(x) = \begin{cases} 0 &\quad 0 < x < L \\ \infty &\quad \textrm{otherwise} \end{cases}
+  V(x) = \begin{cases} 0 &\quad 0 < x < a \\ \infty &\quad \textrm{otherwise} \end{cases}
 $$
 
 Inside the well, the time-independent Schrödinger equation is
 
 $$
-  -\frac{\hbar^2}{2m}\frac{\d^2 \psi}{\d x^2} = E\psi
+\begin{align*}
+  -\frac{\hbar^2}{2m}\frac{\d^2 \psi}{\d x^2} =& E\psi \\
+  \frac{\d^2 \psi}{\d x^2} =& -k^2 \psi
+\end{align*}
 $$
 
-with boundary conditions $\psi(0) = \psi(L) = 0$. The general solution is given by
+where $k = \sqrt{2mE}/\hbar$. This is the simple harmonic oscillator equation with general solution
 
 $$
-  \psi(x) = Ae^{ikx} + Be^{ikx}
+  \psi(x) = A \sin(kx) + B\cos(kx)
 $$
 
-which is the superposition of two states, with momentums $p_\pm = \pm \hbar k$. This configuration is thus similar to that of standing waves, bouncing backwards and forwards inside the well.
-
-The boundary condition $\psi(0) = 0$ implies $B = -A$, so that the wavefunction must be of the form
+which is the superposition of two states, with momentums $p_\pm = \pm \hbar k$. This configuration is therefore similar to that of standing waves, bouncing backwards and forwards inside the well. To ensure continuity of $\psi$, the boundary conditions are $\psi(0) = \psi(a) = 0$. The boundary condition $\psi(0) = 0$ implies $B = 0$, so that the wavefunction must be of the form
 
 $$
-  \psi(x) = A\left(e^{ikx} - e^{-ikx} \right) = 2iA \sin(kx)
+  \psi(x) = A \sin(kx)
 $$
 
-When normalized, the wavefunction becomes
+The boundary conditon $\psi(a) = 0$ implies that $A = 0$, resulting in a trivial non-normalizable solution, or 
 
 $$
-  \psi(x) = \sqrt{\frac{2}{L}} \sin kx
+  \sin(ka) = n\pi, \; n \in\Z
 $$
 
-The boundary conditon $\psi(L) = 0$ implies that
+For $k = 0$ we again get a trivial solution $\psi(x) = 0$, and for negative $k$, we can absorb the minus sign into $A$ since $\sin(-\theta) = -\sin(\theta)$. Hence,
 
 $$
-  \sin kL = 0 \implies k = \frac{\pi n}{L} \, , n \in \Z^+
+  k_n = \frac{n\pi}{a},\; n\in\N_+
 $$
 
-The energy states are given by
+and the possible energy states are given by
 
 $$
-  E_n = \frac{\left( \hbar \pi n \right)^2}{2m L^2}
+  E_n = = \frac{(\hbar k_n)^2}{2m} =  \frac{(\hbar \pi n)^2}{2m a^2}
+$$
+
+Normalizing $\psi$, we find
+
+$$
+  \braket{\psi|\psi} = \int_0^a |A|^2 \sin^2 (kx) \;\d x = |A|^2 \frac{a}{2} = 1 \implies |A|^2 = \frac{2}{a} 
+$$
+
+since the phase of $A$ carries no physical significance, we can set $A = \sqrt{2/a}$, giving the solutions
+
+$$
+  \psi_n (x) = \sqrt{\frac{2}{a}} \sin\left(\frac{n\pi}{a} x\right)
+$$
+
+The wavefunctions $\psi_n$ are orthonormal since
+
+$$
+\begin{align*}
+  \braket{\psi_m|\psi_n} =& \int_0^a \psi_m^* (x) \psi_n (x) \;\d x = \frac{2}{a} \int_0^a \sin\left(\frac{m\pi}{a}x \right) \sin\left(\frac{n\pi}{a}x \right) \;\d x \\
+  =& \frac{1}{a} \int_0^a \left[\cos\left(\frac{m - n}{a}\pi x\right) - \cos\left(\frac{m+n}{a}\pi x \right)\right] \;\d x \\
+  =& \left[\frac{1}{(m - n)\pi} \sin\left(\frac{m-n}{a}\pi x\right) - \frac{1}{(m + n)\pi} \sin\left(\frac{m + n}{a} \pi x \right)\right]_0^a \\
+  =& \frac{1}{\pi} \left(\frac{\sin[(m-n)\pi]}{m - n} - \frac{\sin[(m+n)\pi]}{m + n} \right) = \delta_{mn}
+\end{align*}
+$$
+
+From Fourier theory, we know that $\sin(n\pi/a)$ forms a basis for the Hilbert space $L^2 ([0,a])$. This means that $\psi_n$ are complete, in the sense that any function $f(x)$ can be expressed as a linear combination
+
+$$
+  f(x) = \sum_{n=1}^\infty c_n \psi_n (x) = \sqrt{\frac{2}{a}} \sum_{n=1}^\infty c_n \sin\left(\frac{n\pi}{a}x\right)
+$$
+
+where the coefficients are given by 
+
+$$
+  c_n = \braket{\psi_n|f} = \int_0^a \psi_n^* (x) f(x) \;\d x
+$$
+
+<details>
+<summary>Details</summary>
+
+For any $\psi_m$ we have
+
+$$
+\begin{align*}
+  \braket{\psi_m | f} =& \int_0^a \psi_m^* (x) f(x) \;\d x = \sum_{n=1}^\infty c_n \int_0^a \psi_m^* (x) \psi_n \;\d x \\
+  =& \sum_{n=1}^\infty c_n \delta_{mn} = c_n
+\end{align*}
+$$
+</details>
+
+The stationary states of the infinite square well are
+
+$$
+  \Psi_n (x, t) = \psi_n (x) e^{-iEt/\hbar} = \sqrt{\frac{2}{a}} \sin\left(\frac{n\pi}{a} x \right) \exp\left(-\frac{i n^2 \pi^2 \hbar}{2ma^2}t \right)
+$$
+
+The general solution to the time-dependent Schrödinger equation for the infinite potential well is a linear combination of stationary states:
+
+$$
+  \Psi(x,t) = \sum_{n=1}^\infty c_n \sqrt{\frac{2}{a}} \sin\left(\frac{n\pi}{a} x \right) \exp\left(-\frac{i n^2 \pi^2 \hbar}{2ma^2}t \right)
+$$
+
+By the completenes of $\psi_n$ it follows that $\Psi(x, 0) = \sum_{n=1}^\infty c_n \psi_n (x)$ so that
+
+$$
+  c_n = \sqrt{\frac{2}{a}} \int_0^a \sin\left(\frac{n\pi}{a} x \right) \Psi(x, 0) \;\d x
+$$
+
+The general state $\Psi(x,t)$ is normalized since
+
+$$
+\begin{align*}
+  \braket{\Psi|\Psi} =& \int \Psi^* \Psi \; \d x = \int |\psi|^2 \;\d x \\
+  =& \int \left(\sum_{m=1}^\infty c_m \psi_m (x) \right)^* \left(\sum_{n=1}^\infty c_n \psi_n (x) \right) \;\d x \\
+  =& \sum_{m=1}^\infty \sum_{n=1}^\infty c_m^* c_n \int \psi_m^* (x) \psi_n (x) \;\d x \\
+  =& \sum_{n=1}^\infty \sum_{m=1}^\infty c_m^* c_n \delta_{mn} = \sum_{n=1}^\infty |c_n|^2
+\end{align*}
+$$
+
+The expected value for the total energy is
+
+$$
+\begin{align*}
+  \langle H \rangle =& \braket{\Psi|\hat{H}\Psi} = \int \Psi^* \hat{H} \Psi \;\d x = \int \left(\sum_{m=1}^\infty c_m \psi_m \right)^* \hat{H} \left(\sum_{n=1}^\infty c_n \psi_n \right) \;\d x \\
+  =& \sum_{m=1}^\infty \sum_{n=1}^\infty c_m^* c_n E_n \int \psi_m^* \psi_n \;\d x = \sum_{n=1}^\infty |c_n|^2 E_n
+\end{align*}
 $$
 
 ### Gaussian wavepacket
