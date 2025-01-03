@@ -3533,80 +3533,131 @@ $$
 This only holds if $\braket{\psi_m | \psi_n} = 0$ for $m \neq n$, showing that the wavefunctions $\psi_n$ are orthonormal.
 
 ### Analytic method
-The equation can be simplified by defining
+
+To solve $\eqref{equation-58}$ analytically, we introduce the dimensionless variables
 
 $$
-\begin{aligned}
-  y = \sqrt{\frac{m\omega}{\hbar}}x
-\end{aligned}\quad
-\begin{aligned}
-  \tilde{E} = \frac{2E}{\hbar\omega}
-\end{aligned}\quad
+  u = \sqrt{\frac{m\omega}{\hbar}}x, \quad K = \frac{2E}{\hbar\omega}
 $$
 
-reducing the equation to
+reducing the time-independent Schrödinger equation to
 
 $$
-  \frac{\d^2\psi}{\d y^2} - y^2 \psi = -\tilde{E}\psi
+\begin{equation}
+  \frac{\d^2\psi}{\d u^2} = (u^2 -K)\psi \tag{\label{equation-60}}
+\end{equation}
 $$
 
-An apparant solution is the Gaussian wavefunction $\psi(y) = e^{-y^2/2}$ with derivatives $\psi' = -y\psi$ and $\psi'' = y^2\psi - \psi$. This wavefunction obeys the Schrödinger equation with energy $\tilde{E} = 1$.
-
-As $y \to \infty$, the $\tilde{E}\psi$ term becomes negligable. This shows that all normalisable solutions should fall as $\psi \sim e^{-y^2/2}$. A general solution therefore takes the form
+In the limit $u\to\infty$, the equation approximates to
 
 $$
-  \psi(y) = h(y)e^{-y/2}
+  \frac{\d^2\psi}{\d u^2} \approx u^2 \psi
 $$
 
-where $h(y)$ is a polynomial. The derivatives are $\psi' = (h' - hy)e^{-y^2/2}$ and $\psi'' = \left(h'' - 2h'y + hy^2 - h \right)e^{-y^2/2}$. Plugging into the Schrödinger equation gives
+with general solution in the form of the Gaussian wavefunction
 
 $$
-  \frac{\d^2 h}{\d y^2} - 2y \frac{\d h}{\d y} + \left(\tilde{E} - 1 \right)h = 0
+  \psi(u) \approx Ae^{-u^2 / 2} + B e^{u^2 / 2}
 $$
 
-Assuming a general solution of the form
+The $B$ term blows up as $|u| \to \infty$, suggesting that physically solutions have the asymptotic form
 
 $$
-  h(y) = \sum_{n=0}^\infty a_n y^n
+  \psi(u) \approx Ae^{-u^2 / 2}
 $$
 
-and inserting it into the equation
+This motivates us to seek solutions of the form
+
+$$
+\begin{equation}
+  \psi(u) = h(u) e^{-u^2 / 2} \tag{\label{equation-60}}
+\end{equation}
+$$
+
+where $h(u)$ is a polynomial. The derivatives of $\psi(u)$ are
 
 $$
 \begin{align*}
-  \sum_{n=0}^\infty n(n-1) a_n y^{n-2} - 2\sum_{n=0}^\infty n a_n y^n \left(\tilde{E} - 1 \right) \sum_{n=0}^\infty a_n y^n = 0 \\
-  \sum_{n=0} \left[ (n + 2)(n + 1)a_{n+2} - 2na_n - \left(\tilde{E} - 1 \right)a_n \right] y = 0
+  \frac{\d\psi}{\d u} =& \left(\frac{\d h}{\d u} - uh \right) e^{-u^2 / 2} \\
+  \frac{\d^2 \psi}{\d u^2} =& \left(\frac{\d^2 h}{\d u^2} - 2u \frac{\d h}{\d u} + (u^2 - 1)h \right) e^{-u^2 / 2}
 \end{align*}
+$$
+
+Substituting $\psi(u) = h(u) e^{-u^2 / 2}$ into $\eqref{equation-60}$ yields a second order ordinary diffential equation with respect to $h$:
+
+$$
+\begin{equation}
+  \frac{\d^2 h}{\d u^2} - 2u \frac{\d h}{\d u} + (K - 1)h = 0 \tag{\label{equation-61}}
+\end{equation}
+$$
+
+This equation can be solved using the power series method assuming a solution of the form
+
+$$
+  h(u) = \sum_{j=0}^\infty a_j u^j
+$$
+
+with derivatives
+
+$$
+\begin{align*}
+  \frac{\d h}{\d u} =& \sum_{j=0}^\infty j a_j u^{j-1}
+  \frac{\d^2 h}{\d u^2} =& \sum_{j=0}^\infty (j + 1)(j + 2) a_{j+2} u^j 
+\end{align*}
+$$
+
+Inserting the power series into $\eqref{equation-61}$ gives
+
+$$
+\begin{align*}
+  \sum_{j=0}^\infty j(j-1) a_j u^{j-2} - 2\sum_{j=0}^\infty j a_j u^j (K - 1) \sum_{j=0}^\infty a_j u^j = 0 \\
+  \sum_{j=0}^\infty \left[(j + 2)(j + 1)a_{j+2} - 2ja_j - (K - 1)a_j \right] u = 0
+\end{align*}
+$$
+
+From the uniqueness of power series expansions, it follows that the coefficient of each power of $u$ must vanish, i.e.
+
+$$
+  (j + 1)(j + 2) a_{j + 2} - 2j a_j + (K - 1)a_j = 0
 $$
 
 This results in the recursive relation
 
 $$
-  a_{n+2} = \frac{2n - \tilde{E} + 1}{(n + 2)(n + 1)}a_n
+\begin{equation}
+  a_{j+2} = \frac{2j + 1 - K}{(j + 1)(j + 2)}a_j \tag{\label{equation-62}}
+\end{equation}
 $$
 
-If the series does not terminate, then the recursion relation approximates to $a_{p+2} \approx 2a_p / p$ as $p \to \infty$. This results in an exponentially growing power series like
+If the series does not terminate, then the recursion relation approximates to $a_{j+2} \approx 2a_j / j$ as $j \to \infty$ with approximate solution
 
 $$
-  e^{y^2} = \sum_{n=0}^\infty \frac{y^{2p}}{n!} = \sum_{n=0}^\infty b_n y^n \quad b_n = \begin{cases} \frac{1}{(p/2)!} &\quad \textrm{for even }p \\ 0 &\quad \textrm{for odd }p \end{cases}
+  a_j \approx \frac{C}{(j/2)!}
 $$
 
-The recursive relation for this non-normalisable exponential function is
+for some constant $C$. This means that $h(u)$ gets the asymptotic form
 
 $$
-  b_{n+2} = \lim_{n\to\infty}\frac{(n/2)!}{(n/2 + 1)!}b_n = \lim_{n\to\infty} \frac{1}{n/2 + 1}b_n = \frac{2}{n}b_n
+  h(u) \approx C \sum_{j=0}^\infty \frac{1}{(j/2)!} u^j \approx C \sum_{j=0}^\infty \frac{1}{j!} u^{2j} \approx C^2
 $$
 
-The power series must therefore terminate for some $n$ to be normalisable. This then requires $2n - \tilde{E} + 1 = 0$, which yields the energy spectrum for the harmonic oscillator
+which blows up as $|u| \to \infty$. The power series must therefore terminate for some $j$ to be normalisable. From the recursive relation $\eqref{equation-62}$, we require $K = 2n + 1$ for $n\in\N$. This mean that the total energy is given by
 
 $$
-\begin{gather*}
-  \tilde{E}_n = 1 + 2n \\
-  E_n = \hbar\omega\left(\frac{1}{2} + n\right)
-\end{gather*}
+  E_n = \left(n + \frac{1}{2} \right)\hbar\omega, \; n\in\N
 $$
 
-With these energy states, the polynomial component $h(y)$ of the wavefunctions are the Hermite polynomials.
+in general, the recursive relation $\eqref{equation-62}$ defines the Hermite polynomials $H_n$ given by the Rodrigues formula
+
+$$
+  H_n (u) = (-1)^n e^{u^2} \left(\frac{\d}{\d u})^n e^{-u^2}
+$$
+
+The stationary states for the harmonic oscialltor are
+
+$$
+  \psi_n (x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} \frac{1}{\sqrt{2^n n!}} H_n (u) e^{-u^2 / 2}
+$$
 
 ## Particle in a central potential
 
