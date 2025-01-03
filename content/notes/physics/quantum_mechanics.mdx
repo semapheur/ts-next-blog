@@ -3051,7 +3051,7 @@ $$
 and the possible energy states are given by
 
 $$
-  E_n = = \frac{(\hbar k_n)^2}{2m} =  \frac{(\hbar \pi n)^2}{2m a^2}
+  E_n = \frac{(\hbar k_n)^2}{2m} = \frac{(\hbar \pi n)^2}{2m a^2}
 $$
 
 Normalizing $\psi$, we find
@@ -3238,26 +3238,301 @@ $$
 \end{align*}
 $$
 
-## Particle on a circle 
-
-## Infinite potential well
-
 ## Harmonic oscillator
 
-The harmonic oscillator describes a particle subject to a quadratic potential $V(x) = \frac{1}{2}m\omega^2 x^2$. With this potential, the Hamiltonian becomes
+The classical harmonic oscillator consists of a mass $m$ attached to a spring of forces constant $k$. The oscillatory motion is given by Hooke's law
+
+$$
+  F = -kx = m \frac{\d^2 x}{\d t^2}
+$$
+
+with solution
+
+$$
+  x(t) = A\sin(\omega t) + B\cos(\omega t)
+$$
+
+where $\omega = \sqrt{k/m}$ is the angular frequency of oscillation. The potential energy has the quadratic form
+
+$$
+\begin{equation}
+  V(x) = \frac{1}{2}kx^2 = \frac{1}{2}m\omega^2 x^2 \tag{\label{equation-55}}
+\end{equation}
+$$
+
+The harmonic oscillator is an ideal model. However, any potential can be approximated by a parabolic function in the neighbourhood of a local minimum. The Taylor expansion of a potential $V(x)$ about a minimum $x_0$ is
+
+$$
+  V(x) = V(x_0) + \underbrace{V' (x_0)}_{=0} (x - x_0) + \frac{1}{2} V'' (x_0) (x - x_0)^2 +\cdots
+$$
+
+We are free to substract the constant $V(x_0)$ because that does not change to force. This means that
+
+$$
+  V(x) \approx \frac{1}{2} V''(x_0) (x - x_0)^2
+$$
+
+which describes simple harmonic oscillation about $x_0$ with an effective spring constant $k = V''(x_0)$.
+
+With the quadratic potential $\eqref{equation-55}$, the Hamiltonian becomes
 
 $$
   \hat{H} = -\frac{\hbar^2}{2m}\frac{\d^2}{\d x^2} + \frac{1}{2}m\omega^2 x^2
 $$
 
-Almost any system subject to small perturbations about a minimum can be approximated by a Hamiltonian of this form through Taylor expansion. The harmonic oscillator is therefore an important system in quantum mechanics.
-
-The time-independent Shrödinger equation a harmonic oscillator reads
+giving the time-independent Shrödinger equation
 
 $$
-  -\frac{\hbar^2}{2m}\frac{\d^2\psi}{\d x^2} + \frac{1}{2}m\omega^2 x^2 \psi = E\psi
+\begin{equation}
+  -\frac{\hbar^2}{2m}\frac{\d^2\psi}{\d x^2} + \frac{1}{2}m\omega^2 x^2 \psi = E\psi \tag{\label{equation-56}}
+\end{equation}
 $$
 
+### Algebraic method
+
+To solve $\eqref{equation-56}$ algebraically using ladder operators, we write the Hamiltonian as
+
+$$
+  \hat{H} = \frac{1}{2m} \left[\hat{p}^2 + (m\omega x)^2 \right]
+$$
+
+We want to find operators that factor the Hamiltonian. This motivates us to define the operators
+
+$$
+  \hat{a}_\pm := \frac{1}{\sqrt{2\hbar m}} (\mp i\hbar\hat{p} + m\omega x)
+$$
+
+Calculating $\hat{a}_- \hat{a}_+$, we find
+
+$$
+\begin{align*}
+  \hat{a}_- \hat{a}_+ =& \frac{1}{2\hbar m\omega} (i\hat{p} + m\omega x) (-i\hat{p} + m\omega x) \\
+  =& \frac{1}{2\hbar m \omega} \left[\hat{p}^2 + (m\omega x)^2 - i m \omega (x\hat{p} - \hat{p}x)\right] \\
+  =& \frac{1}{2\hbar m \omega} \left[\hat{p}^2 + (m\omega x)^2 \right] - \frac{i}{2\hbar} \underbrace{[\hat{x},\hat{p}]}_{=i\hbar} \\
+  =& \frac{1}{\hbar\omega} \hat{H} + \frac{1}{2}
+\end{align*}
+$$
+
+or
+
+$$
+  \hat{H} = \hbar\omega\left(\hat{a}_- \hat{a}_+ - \frac{1}{2} \right)
+$$
+
+Similarly, we find
+
+$$
+  \hat{a}_+ \hat{a}_- = \frac{1}{\hbar\omega}\hat{H} - \frac{1}{2}
+$$
+
+giving
+
+$$
+  \hat{H} = \hbar\omega\left(\hat{a}_+ \hat{a}_- + \frac{1}{2} \right)
+$$
+
+Furthermore, we note that
+
+$$
+  [\hat{a}_- \hat{a}_+] = \hat{a}_- \hat{a}_+ - \hat{a}_+ \hat{a}_- = 1
+$$
+
+In terms of $\hat{a}_\pm$, the time-independent Schrödinger equation takes the form
+
+$$
+\begin{equation}
+  \hbar\omega\left(\hat{a}_\pm \hat{a}_\mp \pm \frac{1}{2}\right) \psi = E\psi \tag{\label{equation-57}}
+\end{equation}
+$$
+
+Applying $\hat{H}$ to $\hat{a}_+ \psi$ and using $\hat{a}_- \hat{a}_+ = \hat{a}_+ \hat{a}_- + 1$ we get
+
+$$
+\begin{align*}
+  \hat{H}(\hat{a}_+ \psi) =& \hbar\omega\left(\hat{a}_+ \hat{a}_- + \frac{1}{2} \right) (\hat{a}_+ \psi) = \hbar\omega\left(\hat{a}_+ \hat{a}_- \hat{a}_+ + \frac{1}{2}\hat{a}_+ \right)\psi \\
+  =& \hbar\omega\hat{a}_+ \left(\hat{a}_- \hat{a}_+ + \frac{1}{2} \right)\psi = \hat{a}_+ \left[\hbar\omega\left(\hat{a}_+ \hat{a}_- + 1 +\frac{1}{2} \right)\psi \right] \\
+  =& \hat{a}_+ (\hat{H} + \hbar\omega)\psi  = \hat{a}_+ (E + \hbar\omega)\psi = (E + \hbar\omega)(\hat{a}_+ \omega)
+\end{align*}
+$$
+
+Likewise, applying $\hat{H}$ to $\hat{a}_- \psi$ and using $\hat{a}_+ \hat{a}_- = \hat{a}_- \hat{a}_+ - 1$ yields
+
+$$
+\begin{align*}
+  \hat{H}(\hat{a}_- \psi) =& \hbar\omega\left(\hat{a}_- \hat{a}_+ - \frac{1}{2} \right) (\hat{a}_- \psi) = \hbar\omega\left(\hat{a}_- \hat{a}_+ \hat{a}_- - \frac{1}{2}\hat{a}_- \right)\psi \\
+  =& \hbar\omega\hat{a}_- \left(\hat{a}_+ \hat{a}_- - \frac{1}{2} \right)\psi = \hat{a}_- \left[\hbar\omega\left(\hat{a}_- \hat{a}_+ - 1 - \frac{1}{2} \right)\psi \right] \\
+  =& \hat{a}_- (\hat{H} - \hbar\omega)\psi  = \hat{a}_- (E - \hbar\omega)\psi = (E - \hbar\omega)(\hat{a}_- \omega)
+\end{align*}
+$$
+
+This shows that $\hat{a}_\pm$ act as ladder operators such that when applied to $\psi$, the raise or lower the energy by $\hbar\omega$. If we apply the lowering operator $\hat{a}_-$ act on the ground state $\psi_0$, we expect that $\hat{a}_- \psi_0 = 0$. This gives the ordinary differential equation
+
+$$
+\begin{gather*}
+  \frac{1}{\sqrt{2\hbar m \omega}}\left(\hbar\frac{\d}{\d x} + m\omega x \right)\psi_0 = 0 \\
+  \frac{\d\psi_0}{\d x} = -\frac{m\omega}{\hbar} x\psi_0
+\end{gather*}
+$$
+
+Integrating the equation gives
+
+$$
+\begin{gather*}
+  \int \frac{\d\psi_0}{\psi_0} = -\frac{m\omega}{\hbar} \int x \;\d x \\
+  \implies \ln\psi_0 = -\frac{m\omega}{2\hbar} x^2 + \tilde{A}
+\end{gather*}
+$$
+
+so that the solution is
+
+$$
+  \psi_0 (x) = A \exp\left(-\frac{m\omega}{2\hbar} x^2 \right)
+$$
+
+Normalizing $\psi_0$ yields
+
+$$
+  1 = |A|^2 \int_{-\infty}^\infty e^{-m\omega x^2 / \hbar} \;\d x = |A|^2 \sqrt{\frac{\pi\hbar}{m \omega}} \implies A = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4}
+$$
+
+resulting in the wavefunction
+
+$$
+  \psi_0 (x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} \exp\left(-\frac{m\omega}{2\hbar} x^2 \right)
+$$
+
+Using the fact that $\hat{a}_0 \psi_0 = 0$ we get from $\eqref{equation-57}$ that
+
+$$
+\begin{align*}
+  \hbar\omega\left(\hat{a}_+ \hat{a}_-  +\frac{1}{2}\right)\psi_0 =& E_0 \psi_0 \\
+  \frac{1}{2}\hbar\omega \psi_0 = E\psi_0
+\end{align*}
+$$
+
+implying that the energy for the ground state is
+
+$$
+  E_0 = \frac{1}{2}\hbar\omega
+$$
+
+Having determined the ground state, we can find the excited states by repeatedly applying the raising operator $\hat{a}_+$, i.e.
+
+$$
+  \psi_n (x) = A_n (\hat{a}_+)^n \psi_0 (x)
+$$
+
+The corresponding energies are given by
+
+$$
+\begin{equation}
+  E_n = \left(n + \frac{1}{2}\right)\hbar\omega \tag{\label{equation-58}}
+\end{equation}
+$$
+
+To find the normalization constants we note that $\hat{a}_\pm \psi_n$ is proportional to $\psi_{n\pm 1}$, i.e.
+
+$$
+  \hat{a}_+ \psi_n = c_n \psi_{n+1}, \quad \hat{a}_- \psi_n = d_n \psi_{n-1}
+$$
+
+Furthermore, we have
+
+$$
+\begin{equation}
+\begin{split}
+  \braket{\hat{a}_\pm \psi_n | \hat{a}_\pm \psi_n} =& \int_{-\infty}^\infty (\hat{a}_\pm \psi_n)^* (\hat{a}_\pm \psi_n) \;\d x \\
+  =& \int_{-\infty}^\infty (\hat{a}_\mp \hat{a}_\pm \psi_n)^* \psi_n \;\d x \\
+  =& \braket{\hat{a}_\mp \hat{a}_\pm \psi_n|\psi_n}
+\end{split}
+\tag{\label{equation-59}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $f, g \in L^2 (\R)$ be square integrable functions. Noting that $\hat{a}_\pm^* = \hat{a}_\mp$ we find using integration by parts that
+
+$$
+\begin{align*}
+  \braket{f|\hat{a}_\pm g} =& \int_{-\infty}^\infty f^* (\hat{a}_\pm g) \;\d x \\
+  =& \frac{1}{\sqrt{2\hbar m \omega}} \int_{-\infty}^\infty f^* \left(\mp \hbar \frac{\d}{\d x} + m\omega x \right) g \;\d x
+\end{align*}
+$$
+
+Using integration by parts, we get
+
+$$
+  \int_{-\infty}^\infty f^* \frac{\d g}{\d x} \; \d x = \underbrace{\left[ f^* g \right]_{-\infty}^\infty}_{=0} - \int_{-\infty}^\infty \frac{\d f^*}{\d x}
+$$
+
+so
+
+$$
+\begin{align*}
+  \int_{-\infty}^\infty f^* (\hat{a}_\pm g) \;\d x =& \frac{1}{\sqrt{2\hbar m \omega}} \int_{-\infty}^\infty \left[\left(\pm\hbar\frac{\d}{\d x} + m\omega x \right) f \right]^* g \;\d x \\
+  =& \int_{-\infty}^\infty (\hat{a}_\pm f)^* g \;\d x = \braket{\hat{a}_\mp f| g}
+\end{align*}
+$$
+
+This shows that
+
+$$
+  \braket{f|\hat{a}_\pm g} = \braket{\hat{a}_\mp f| g}
+$$
+</details>
+
+Using $\eqref{equation-57}$ and $\eqref{equation-58}$, we obtain
+
+$$
+\begin{equation}
+  \hat{a}_+ \hat{a}_- \psi_n = n\psi_n, \quad \hat{a}_- \hat{a}_+ \psi_n = (n + 1)\psi_n \tag{\label{equation-60}}
+\end{equation}
+$$
+
+so
+
+$$
+\begin{align*}
+  \braket{\hat{a}_+ \psi_n | \hat{a}_+ \psi_n} =& \braket{c_n \psi_{n+1} | c_n \psi_{n+1}} \\
+  =& |c_n|^2 \braket{\psi_{n+1}|\psi_{n+1}} = (n + 1) \braket{\psi_n|\psi_n}
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \braket{\hat{a}_- \psi_n | \hat{a}_- \psi_n} =& \braket{d_n \psi_{n-1} | d_n \psi_{n-1}} \\
+  =& |d_n|^2 \braket{\psi_{n-1}|\psi_{n-1}} = n \braket{\psi_n|\psi_n}
+\end{align*}
+$$
+
+Since $\psi_n$ and $\psi_{n+1}$ are normalized, it follows that $|c_n|^2 = n + 1$ and $|d_n|^2 = n$, resulting in
+
+$$
+  \hat{a}_+ \psi_n = \sqrt{n + 1} \psi_{n+1}, \quad \hat{a}_- \psi_n = \sqrt{n} \psi_{n-1}
+$$
+
+This shows that the normalization factor is $A_n = 1/\sqrt{n!}$ so that
+
+$$
+  \psi_n = \frac{1}{\sqrt{n!}} (\hat{a}_+)^n \psi_0
+$$
+
+Furthermore, using $\eqref{equation-59}$ and $\eqref{equation-60}$ we have
+
+$$
+\begin{align*}
+  \braket{\psi_m | \hat{a}_+ \hat{a}_- \psi_n} =& n\braket{\psi_m|\psi_n} = \braket{\hat{a}_- \psi_m| \hat{a}_- \psi_n} \\
+  =& \braket{\hat{a}_+ \hat{a}_- \psi_m | \psi_n} = m \braket{\psi_m | \psi_n}
+\end{align*}
+$$
+
+This only holds if $\braket{\psi_m | \psi_n} = 0$ for $m \neq n$, showing that the wavefunctions $\psi_n$ are orthonormal.
+
+### Analytic method
 The equation can be simplified by defining
 
 $$
