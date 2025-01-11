@@ -489,9 +489,9 @@ $$
 
 ## Quantum states and observables
 
-The state of a quantum particle is represented by a vector $\ket{psi (t)}\in\mathcal{H}$ in a Hilbert space $\mathcal{H}$. The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
+The state of a quantum particle is represented by a vector $\ket{\psi}\in\mathcal{H}$ in a Hilbert space $\mathcal{H}$. The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
 
-All quantum observables are represented by Hermitian operators on $\mathcal{H}$. The possible values of an observable are given by the spectrum of the operator, which can be discrete (finite or infinite-dimensional), continuous or a combination of both. In general, systems with bound states (e.g., a particle confined in a potential well) have discrete spectra, corresponding to quantized energy levels. In contrast, for scattering states (e.g., a free particle or a particle with energy above a potential barrier), the spectrum is continuous, corresponding to a range of energies.
+An observable refers to a physcial quantity that can be measured in a quantum system. All quantum observables are represented by Hermitian operators on $\mathcal{H}$. The possible values of an observable are given by the spectrum of the operator, which can be discrete (finite or infinite-dimensional), continuous or a combination of both. In general, systems with bound states (e.g., a particle confined in a potential well) have discrete spectra, corresponding to quantized energy levels. In contrast, for scattering states (e.g., a free particle or a particle with energy above a potential barrier), the spectrum is continuous, corresponding to a range of energies.
 
 <details>
 <summary>Details</summary>
@@ -528,12 +528,12 @@ $$
 The relation $\hat{Q}\ket{q_k} = q_k \ket{q_k}$ is called the eigenvalue equation of $\hat{Q}$. If the spectrum of $\hat{Q}$ is finite-dimensional, the set of eigenvectors span $\mathcal{H}$, i.e. 
 
 $$
-  \operatorname{span}(\set{\ket{q_n}_n}) = \mathcal{H}
+  \operatorname{span}(\set{\ket{q_n}}_n) = \mathcal{H}
 $$
 
-Furthermore, if the eigenvalues of $\hat{Q}$ are all distinct, then the eigenvectors $\set{\ket{q_n}_n}$ form an orthonormal basis on $\mathcal{H}$. If $\mathbf{Q}$ has degenerate eigenvalues with multiplicity $k$, the corresponding eigenspace is $k$-dimensional. In this subspace, there are $k$ linearly independent (but not necessarily orthogonal) eigenvectors corresponding to the degenerate eigenvalue. A complete orthonormal basis can be found by applying the Gram-Schmidt procedure to degenerate eigenspace.
+Furthermore, if the eigenvalues of $\hat{Q}$ are all distinct, then the eigenvectors $\set{\ket{q_n}}_n$ form an orthonormal basis on $\mathcal{H}$. If $\hat{Q}$ has degenerate eigenvalues with multiplicity $k\in\N_+$, the corresponding eigenspace is $k$-dimensional. In this subspace, there are $k$ linearly independent (but not necessarily orthogonal) eigenvectors corresponding to the degenerate eigenvalue. A complete orthonormal basis can be found by applying the Gram-Schmidt procedure to degenerate eigenspace.
 
-Since the eigenvectors $\set{\ket{q_n}_n}$ of $\hat{Q}$ form an orthonormal basis on $\mathcal{H}$, a state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
+Since the eigenvectors $\set{\ket{q_n}}_n$ of $\hat{Q}$ form an orthonormal basis on $\mathcal{H}$, a state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
 
 $$
   \ket{\psi} = \sum_n c_n \ket{q_n}
@@ -545,17 +545,48 @@ $$
   \braket{q_k | \psi} = \sum_n c_n \braket{q_k|q_n} = \sum_n c_n \delta_{kn} = c_k
 $$
 
-showing that $c_k$ is the projection of $\ket{\psi}$ onto $\ket{q}$. Since state vectors are normalized, i.e. $\braket{psi|\psi} = 1$, it follows that
+showing that $c_k$ is the projection of $\ket{\psi}$ onto $\ket{q}$.
+
+#### Matrix representation of observables
+
+The matrix representation of an observable $\hat{Q}$ with finite-dimensional discrete spectrum can be obtained by expanding $\mathbf{Q}$ in terms of an orthonormal basis $\set{\ket{b_j}}_j$. Using the completeness relation $\sum_j \ket{b_j}\bra{b_j} = \hat{I}$, we write
+
+$$
+  \hat{Q} = \sum_j \ket{b_j} \bra{b_j} \hat{Q} = \sum_{j,k} \ket{b_j} \braket{b_j|\hat{Q}|b_k} \bra{b_k}
+$$
+
+The matrix elements of $\hat{Q}$ in this basis are given by
+
+$$
+  \mathbf{Q}_{jk} = \braket{b_j|\hat{Q}|b_k}
+$$
+
+An observable $\hat{Q}$ with a non-degenerate spectrum $\set{q_j}_{j=1}^n$ can be diagonalized. The resulting matrix representation has diagonal elements corresponding to the eigenvalues of $\hat{Q}$:
+
+$$
+  \mathbf{Q}_{jk} = q_j \delta_{jk} 
+$$
+
+The $n\times n$ matrix $\mathbf{U}$ that diagonalizes $\hat{Q}$ is formed by using the eigenvectors $\ket{q_j}$ as its columns. In a basis $\set{\ket{b_k}}_k$, the eigenvector $\ket{q_j}$ can be expanded as
+
+$$
+  \ket{q_j} = \sum_k q_{jk} \ket{b_k}, \; q_{jk} = \braket{b_k | q_j}
+$$
+
+showing that $\mathbf{U}$ has matrix elements $\mathbf{U}_{jk} = q_{jk}$. Since the eigenbasis $\set{\ket{q_j}}_j$ is orthonormal, we have
+
+$$
+  \sum_\ell (q_{k\ell})^* q_{j\ell} = \braket{q_k | q_j} = \delta_{kj}
+$$
+
+This can be used to verify that $\mathbf{U}$ is unitary:
 
 $$
 \begin{align*}
-  \braket{\psi|\psi} =& \Braket{\sum_m c_m \ket{q_m} | \sum_n c_n \ket{q_n}} \\
-  =& \sum_m \sum_n c_m^* c_n \underbrace{\braket{q_m | q_n}}_{\delta_{mn}} \\
-  =& \sum_m |c_m|^2 = 1
+  (\mathbf{U}^\dagger \mathbf{U})_{kj} =& \sum_\ell \mathbf{U}_{k\ell}^\dagger \mathbf{U}_{\ell j} = \sum_\ell \mathbf{U}_{\ell k}^* \mathbf{U}_{\ell j} \\
+  =& \sum_\ell (q_{k\ell})^* q_{j\ell} = \braket{q_k | q_j} = \delta_{kj}
 \end{align*}
 $$
-
-By the Born rule, the probability of measuring a particular eigenvalue $q_m$ is $|c_m|^2 = |\braket{q_m | psi}|^2$. 
 
 ### Continuous observables
 
@@ -571,13 +602,13 @@ $$
   \braket{q' | q} = \delta(q - q')
 $$
 
-where $\delta$ is the Dirac delta function. In this representation, any state vector $\ket{psi}$ can be expanded as
+where $\delta$ is the Dirac delta function. In this representation, any state vector $\ket{\psi}$ can be expanded as
 
 $$
   \ket{\psi} = \int c(q) \ket{q} \; \d q
 $$
 
-where $c(q) = \braket{q|\psi}$ is the projection of $\ket{\psi}$ onto $\ket{q}$. The function $c(q)$ is typically a complex-valued function that describes how $\ket{psi}$ is distributed over the eigenstates of $\hat{Q}$.
+where $c(q) = \braket{q|\psi}$ is the projection of $\ket{\psi}$ onto $\ket{q}$. The function $c(q)$ is typically a complex-valued function that describes how $\ket{\psi}$ is distributed over the eigenstates of $\hat{Q}$.
 
 ### Change of basis
 
@@ -625,7 +656,6 @@ A change of basis has the following properties:
 
 <details>
 <summary>Proof</summary>
-
 
 **(1):** If $\mathbf{U}_{j,k} = \braket{a_j | b_k}$, then
 
@@ -725,52 +755,341 @@ $$
   \ket{\psi} = \int c(\xi) \ket{\xi} \;\d \xi
 $$
 
-We can expand $\ket{\psi}$ in terms of another orthonormal basis $\set{\ket{\vu}}$:
+We can expand $\ket{\psi}$ in terms of another orthonormal basis $\set{\ket{\eta}}$:
 
 $$
 \begin{align*}
-
+  \ket{\psi} =& \int c'(\eta) \ket{\eta} \;\d\eta \\
+  =& \int c'(\eta) \;\d\eta \int \ket{\xi}\braket{\xi|\eta} \;\d\xi \\
+  =& \iint c'(\eta) \braket{\xi|\eta}\ket{\xi} \;\d\eta \;\d\xi
 \end{align*}
 $$
 
-
-
-### Expectation
-The expectation (average measurement) of an observable $\hat{Q}(\mathbf{x}, \mathbf{p})$ in state $\Psi$ is given by the inner product
+from which we find
 
 $$
-  \langle Q \rangle_\Psi = \braket{\Psi|\hat{Q}|\Psi} = \int \Psi^* \hat{Q} \Psi \;\d\mathbf{x} 
+  c(\xi) = \int \braket{\xi|\eta} c'(\eta) \;\d\eta
 $$
 
-In order for the observable to represent a physical quantity, we require that the expectation is real, i.e. $\langle Q \rangle_\Psi = \langle Q \rangle_\Psi^*$. This holds if $\hat{Q}$ is Hermitian in which case
+## Measurements
+
+Let $\hat{Q}$ be a Hermitian operator on $\mathcal{H}$ with a non-degenerate discrete spectrum $\set{q_n}_n$ and an orthonormal eigenbasis $\set{\ket{q}_n}_n$. If $Q$ is the corresponding observable on a quantum system in state 
 
 $$
-  \underbrace{\braket{\Psi|\hat{Q}\Psi}}_{\langle Q \rangle} = \underbrace{\braket{\hat{Q}\Psi|\Psi}}_{\langle Q \rangle^*}
+  \ket{\psi} = \sum_n c_n \ket{q_n}, \; c_n = \braket{q_n | \psi}
 $$
 
-The position operator $\hat{\mathbf{x}}$ can be shown to be Hermitian by noting that
+then the probability of measuring the eigenvalue $q_n$ is $|c_n|^2 = |\braket{q_n | \psi}|^2$. This statistical interpretation of quantum observables is known as *Born's rule*. Since the state vector is normalized, i.e. $\braket{\psi|\psi} = 1$, we have
 
 $$
 \begin{align*}
-  \braket{\psi|\hat{\mathbf{x}}|\phi} =& \int_{\R^3} \psi^*(\mathbf{x}) \mathbf{x} \phi(\mathbf{x}) \;\d^3 x = \int_{\R^3} \phi(\mathbf{x}) \mathbf{x} \psi^*(\mathbf{x}) \;\d^3 x \\
-  =& \left(\int_{\R^3} \phi^*(\mathbf{x}) \mathbf{x} \psi(\mathbf{x}) \;\d^3 x\right)^* = \braket{\phi|\hat{\mathbf{x}}|\psi}^*
+  \braket{\psi|\psi} =& \Braket{\sum_m c_m \ket{q_m} | \sum_n c_n \ket{q_n}} \\
+  =& \sum_m \sum_n c_m^* c_n \underbrace{\braket{q_m | q_n}}_{\delta_{mn}} \\
+  =& \sum_m |c_m|^2 = 1
 \end{align*}
 $$
 
-Some common operators for a non-relativistic particle with mass $m$ are:
+Thus, the normalization condition of quantum states ensures that the total probability sums to $1$. The expectation value of $Q$ is defined as
 
-- Momentum operator
 $$
-  \hat{\mathbf{p}} = -i\hbar \nabla
+  \braket{\hat{Q}}_\psi := \braket{\psi|\hat{Q}|\psi} = \sum_n |c_n|^2 q_n
 $$
-- Angular momentum operator
+
+<details>
+<summary>Details</summary>
+
+Using the definition of expecation value $\braket{\hat{Q}}_\psi = \Braket{\psi|\hat{Q}|\psi}$ and the fact that $\set{\ket{q_n}}_n$ is orthornormal we find
+
 $$
-  \hat{\mathbf{L}} = \hat{\mathbf{x}} \times \hat{\mathbf{p}} = -i\hbar \hat{\mathbf{x}} \times \nabla
+\begin{align*}
+  \braket{\hat{Q}}_\psi = \Braket{\psi | \hat{Q} | \psi} &= \Braket{\sum_m c_m^* \ket{q} | \sum_n c_n \hat{Q} \ket{q_n}} \\
+  &= \sum_{m,n} c_m^* c_n q_n \underbrace{\braket{q_m | q_n}}_{\delta_{mn}} \\
+  &= \sum_m |c_m|^2 q_m
+\end{align*}
 $$
-- Hamiltonian (energy operator)
+</details>
+
+Since $\hat{Q}$ is Hermitian, we have
+
 $$
-  \hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V\left(\hat{\mathbf{x}} \right)
+\begin{align*}
+  \braket{\hat{Q}}_\psi^* =& \braket{\psi|\hat{Q}|\psi}^* = \braket{\psi|\hat{Q}^\dagger|\psi} \\
+  =& \braket{\psi|\hat{Q}|\psi} = \langle Q \rangle_\psi
+\end{align*}
 $$
+
+showing that $\braket{Q}_\psi \in\R$ must be real. Two observables $\hat{Q}$ and $\hat{Q}'$ are equal if and only if
+
+$$
+  \braket{\psi|\hat{Q}|\psi} = \braket{\psi|\hat{Q}'|\psi}, \; \forall\ket{\psi}
+$$
+
+Consequently, any global phase factor $e^{i\pi}$ associated with a state vector $\ket{\psi}$ cancels out when calculating the mean value of an observable onto $\ket{\psi}$
+
+### Continuous spectrum
+
+Let $\hat{Q}$ be a Hermitian operator on $\mathcal{H}$ with a continuous spectrum $\set{q_n}_n$ and eigenfunctions $\ket{q}$. If $Q$ is the corresponding observable on a quantum system in state 
+
+$$
+  \ket{\psi} = \int c(q) \ket{q} \;\d q, \; c(q) = \braket{q|\psi}
+$$
+
+then, by Born's rule, the probability of measuring the eigenvalue in the interval $(q, q + \d q)$ is $|c(q)|^2$. The normalization condition ensures that
+
+$$
+  \int |c(q)|^2 \;\d q = 1
+$$
+
+It is also possible that $\hat{Q}$ has both a discrete and continuous spectrum. Assuming that the discrete spectrum ranges between $-\infty$ and $\tilde{q}$, then 
+
+$$
+\begin{align*}
+  \hat{P}_\text{d} =& \sum_n \ket{q_n} \bra{q_n} \\
+  \hat{P}_\text{c} =& \int_{\tilde{q}}^\infty \ket{q} \bra{q} \; \d q
+\end{align*}
+$$
+
+and we must have $\hat{P}_\text{c} + \hat{P}_\text{d} = \hat{I}$.
+
+### Compatible observables
+
+Two observables $P$ and $Q$ are compatible if they are simultaneously measurable with arbitrary precision. This means that there exists a common eigenbasis for their corresponding operators $\hat{P}$ and $\hat{Q}$, allowing them to be jointly diagonalized. This condition holds if and only if $\hat{P}$ and $\hat{Q}$ commute. In summary, the following statements are equivalent:
+1. $P$ and $Q$ are compatible observables
+2. $\hat{P}$ and $\hat{Q}$ have a common eigenbasis
+3. $\hat{P}$ and $\hat{Q}$ commute, i.e. $[\hat{P}, \hat{Q}] = 0$
+
+<details>
+<summary>Proof</summary>
+
+**(2) $\implies$ (3):**
+Assuming $\hat{P}$ and $\hat{Q}$ have a common basis of eigenvectors, $\set{\ket{b_k}}_k$, we have
+
+$$
+  \hat{P}\ket{b_k} = p_k \ket{b_k}, \quad \hat{Q} \ket{b_k} = q_k \ket{b_k}
+$$
+
+It follows that
+
+$$
+\begin{align*}
+  \hat{P}\hat{Q}\ket{b_k} = \hat{P} q_k \ket{b_k} = q_k \hat{P} \ket{b_k} = q_k p_k \ket{b_k}
+  \hat{Q}\hat{P}\ket{b_k} = \hat{Q} p_k \ket{b_k} = p_k \hat{P} \ket{b_k} = p_k q_k \ket{b_k}
+\end{align*}
+$$
+
+Since $p_k, q_k \in\mathbb{C}$ are scalars it follows that $\hat{P}\hat{Q} = \hat{Q}\hat{P}$.
+
+**(3) $\implies$ (2):**
+We now assume that $\mathbf{P}$ and $\mathbf{Q}$ commute. In a basis $\set{\ket{a_k}}$ we have
+
+$$
+\begin{equation}
+\begin{split}
+  (\mathbf{P}\mathbf{Q})_{jk} =& \braket{a_j | \hat{P}\hat{Q} | a_k} \\
+  =& \sum_\ell \braket{a_j | \hat{P} | a_\ell} \braket{a_\ell | \hat{Q} | a_k} \\
+  =& \sum_\ell \mathbf{P}_{k\ell} \mathbf{Q}_{\ell j}
+\end{split}
+\tag{\label{equation-79}}
+\end{equation}
+$$
+
+If $\set{\ket{a_k}}_k$ is an eigenbasis of $\hat{P}$, we can rewrite $\eqref{equation-79}$ as
+
+$$
+\begin{align*}
+  (\mathbf{P}\mathbf{Q})_{jk} =& \sum_\ell \braket{a_j | \hat{P} | a_\ell} \braket{a_\ell | \hat{Q} | a_k} \\
+  =& \sum_\ell p_\ell \delta_{j\ell} \mathbf{Q}_{\ell k} = p_j \mathbf{Q}_{jk}
+\end{align*}
+$$
+
+Inverting the orders of the operators, we have
+
+$$
+\begin{align*}
+  (\mathbf{Q}\mathbf{P})_{jk} =& \sum_\ell \braket{a_j | \hat{Q} | a_\ell} \braket{a_\ell | \hat{P} | a_k} \\
+  =& \sum_\ell \mathbf{Q}_{j\ell} p_k \delta_{\ell k} = p_k \mathbf{Q}_{jk}
+\end{align*}
+$$
+
+Since $[\hat{P}, \hat{Q}] = 0$, we must have $(p_j - p_k) \mathbf{Q}_{jk} = 0$. This condition is trivially satisfied for $j = k$. In the non-degenerate case, if $p_k \neq p_j$ for $j \neq k$, it follows that $\mathbf{Q}_{jk} = 0$ for $j \neq k$, or equivalently $\mathbf{Q}_{jk} = \mathbf{Q}_{jj} \delta_{jk}$. This implies that the operator $\hat{Q}$ is diagonal in the eigenbasis of $\hat{P}$, proving the result.
+
+In the degenerate case, where $p_j = p_k$ for $j \neq k$, we can consider the subspace spanned by the eigenvectors corresponding to the degenerate eigenvalues. Since $\hat{Q}$ is Hermitian and commutes with $\hat{P}$, we can diagonalize $\hat{Q}$ within this subspace, where $\hat{P} = p_k \hat{I}$. This shows that $\hat{P}$ and $\hat{Q}$ can be jointly diagonlized, and therefore, they share a common eigenbasis.
+</details>
+
+In general, a quantum system can be fully characterized by a set of mutually commuting observables, which collectively determine the eigenbasis describing the system's physical states. Such a set is called a *complete set of commuting observables* (CSCO). 
+
+In the simplest case, an observable has a non-degenerate discrete spectrum, meaning each eigenvalue uniquely corresponds to a single eigenstate. In such cases, the observable itself is sufficient to form a CSCO. However, when the spectrum is degenerate, multiple eigenstates may correspond to the same eigenvalue. In such cases, additional commuting observables are needed to distinguish between the degenerate eigenvectors and uniquely specify the system's state.
+
+For finite-dimensional Hilbert spaces, Schur's lemma guarantees that a complete set of commuting observables always exists. This means that in such systems, it is always possible to find a set of commuting operators whose eigenvalues uniquely determine the system's state. In infinite-dimensional systems, there is no universal guarantee for a CSCO, but in many cases - such as systems with continuous symmetries - there can still be a sufficient set of commuting variables to determine the quantum states.
+
+<MathBox title='Complete set of commuting variables' boxType='definition'>
+A set of observables $\mathcal{S} = \set{A, B, C, \dots}$ is a complete set of commuting observables (CSCO) if:
+1. All the observables commute by pairs
+2. Specifying the eigenvalues of all the operators in the CSCO identifies a unique common eigenvector
+</MathBox>
+
+## Uncertainty principle
+
+Two quantum observables $P$ and $Q$ are incompatible if they cannot be simultaneously measurable with arbitrary precision. This implies that there is no common eigenbasis for the corresponding operators $\hat{P}$ and $\hat{Q}$. In this case, measuring one observable disturbs the system's state in such a way that it affects the measurement of the other observable. Incompatibility occurs if $\hat{P}$ and $\hat{Q}$ do not commute.
+
+To quantify the uncertainty of an observable $Q$, we define the operator
+
+$$
+  \Delta_\psi \hat{Q} = \hat{Q} - \braket{\hat{Q}}_\psi
+$$
+
+as the deviation of $\hat{Q}$ from its expectation value in the state $\ket{\psi}$. The variance $\sigma_Q^2$ of $Q$ in the state $\ket{\psi}$ is given by $\sigma_Q^2 = \langle (\Delta_\psi \hat{Q})^2 \rangle$. Expanding this expression we get
+
+$$
+\begin{align*}
+  \braket{(\Delta_\psi \hat{Q} )^2} &= \Braket{(\hat{Q} - \langle \hat{Q} \rangle_\psi )^2}_\psi \\
+  &= \Braket{\hat{Q}^2 - 2 \braket{\hat{Q}}_\psi \hat{Q} + \braket{\hat{Q}}_\psi^2 }_\psi \\
+  &= \braket{\hat{Q}^2}_\psi - \braket{\hat{Q}}_\psi^2 \\
+  &= \braket{\psi|\hat{Q}^2|\psi} - \braket{\psi |\hat{Q}|\psi}^2
+\end{align*}
+$$
+
+For two Hermitian operators $\hat{P}$ and $\hat{Q}$, the generalized uncertainty principle, also known as the Robertson-Schrödinger uncertainty relation, states that
+
+$$
+\begin{align*}
+  \sigma_P^2 \sigma_Q^2 \geq& \left|\frac{1}{2} \Braket{\{\hat{P},\hat{Q}\}} - \braket{\hat{P}} \braket{\hat{Q}} \right|^2 + \left|\frac{1}{2i}\Braket{[\hat{P},\hat{Q}]} \right|^2 \\
+  =& |\operatorname{cov}(\hat{P}, \hat{Q})|^2 + \left|\frac{1}{2i}\Braket{[\hat{P},\hat{Q}]} \right|^2
+\end{align*}
+$$
+
+where $\operatorname{cov}(\hat{P}, \hat{Q})$ is the covariance of $\hat{P}$ and $\hat{Q}$. If $\operatorname{cov}(\hat{P}, \hat{Q}) = 0$, the uncertainty principle reduces to
+
+$$
+  \sigma_P \sigma_Q \geq \frac{1}{2} \left|\Braket{[\hat{P},\hat{Q}]} \right|
+$$
+
+which is known as the Heisenberg-Robertson uncertainty relation.
+
+<details>
+<summary>Proof</summary>
+
+Let $\hat{P}$ and $\hat{Q}$ be Hermitian operators and define
+
+$$
+\begin{align*}
+  \ket{f} :=& \Delta\hat{P}\ket{\psi} = (\hat{P} - \braket{\hat{P}})\ket{\psi} \\
+  \ket{g} :=& \Delta\hat{Q}\ket{\psi} = (\hat{Q} - \braket{\hat{Q}})\ket{\psi}
+\end{align*}
+$$
+
+By Hermiticity, $\braket{\hat{P}}, \braket{\hat{Q}}\in\R$ such that $\Delta{P}$ and $\Delta{Q}$ are also Hermitian. Thus,
+
+$$
+  \braket{f|f} = \braket{\psi|\Delta \hat{P}^\dagger \Delta\hat{P}|\psi} = \braket{\psi|(\Delta\hat{P})^2|\psi} = \sigma_P^2
+$$
+
+and similarly $\braket{g|g} = \sigma_Q^2$. Furthermore
+
+$$
+  \braket{f|g} = \braket{\psi|\Delta\hat{P}^\dagger \Delta\hat{Q}|\psi} = \braket{\psi|\Delta\hat{P} \Delta\hat{Q}|\psi} = \braket{\Delta\hat{P}\Delta\hat{Q}}
+$$
+
+To find $\braket{\Delta\hat{P}\Delta\hat{Q}}$ we decompose $\Delta\hat{P}\Delta\hat{Q}$ it into its commutator and anti-commutator:
+
+$$
+  \Delta\hat{P}\Delta\hat{Q} = \frac{1}{2}[\Delta\hat{P},\Delta\hat{Q}] + \frac{1}{2}\{\Delta\hat{P},\Delta\hat{Q}\}
+$$
+
+By Hermiticity, $[\Delta\hat{P},\Delta\hat{Q}]$ is anti-Hermitian and thus $\Braket{[\Delta\hat{P},\Delta\hat{Q}]}$ is purely imaginary. Meanwhile, $\{\Delta\hat{P},\Delta\hat{Q}\}$ is Hermitian and thus $\Braket{\{\Delta\hat{P},\Delta\hat{Q}\}}$ is real. This implies that $\braket{\Delta\hat{P}\Delta\hat{Q}}\in\mathbb{C}$ is a complex number with modulus given by
+
+$$
+  |\braket{\Delta\hat{P}\Delta\hat{Q}}|^2 = \left|\frac{1}{2}[\Delta\hat{P},\Delta\hat{Q}]\right|^2 + \left|\frac{1}{2}\{\Delta\hat{P},\Delta\hat{Q}\}\right|^2
+$$
+
+Computing $[\Delta\hat{P},\Delta\hat{Q}]$, we find
+
+$$
+\begin{align*}
+  [\Delta\hat{P},\Delta\hat{Q}] =& (\hat{P} - \braket{\hat{P}})(\hat{Q} - \braket{\hat{Q}}) - (\hat{Q} - \braket{\hat{Q}})(\hat{P} - \braket{\hat{P}}) \\
+  =& \hat{P}\hat{Q} - \braket{\hat{Q}}\hat{P} - \braket{\hat{P}}\hat{Q} + \braket{\hat{Q}}\braket{\hat{P}} \\
+  &- \hat{Q}\hat{P} + \braket{\hat{P}}\hat{Q} + \braket{\hat{Q}}\hat{P} - \braket{\hat{P}}\braket{\hat{Q}} \\
+  =& \hat{P}\hat{Q} - \hat{Q}\hat{P} = [\hat{P},\hat{Q}]
+\end{align*}
+$$
+
+Computing $\braket{\{\Delta\hat{P},\hat{Q}\}}$, we find
+
+$$
+\begin{align*}
+  \Braket{\{\Delta\hat{P},\hat{Q}\}} =& \Braket{(\hat{P} - \braket{\hat{P}})(\hat{Q} - \braket{\hat{Q}}) + (\hat{Q} - \braket{\hat{Q}})(\hat{P} - \braket{\hat{P}})} \\
+  =& \left\langle \hat{P}\hat{Q} - \braket{\hat{Q}}\hat{P} - \braket{\hat{P}}\hat{Q} + \braket{\hat{Q}}\braket{\hat{P}} \right. \\
+  &\left. +\hat{Q}\hat{P} - \braket{\hat{P}}\hat{Q} - \braket{\hat{Q}}\hat{P} + \braket{\hat{P}}\braket{\hat{Q}} \right\rangle \\
+  =& \braket{\hat{P}\hat{Q} + \hat{Q}\hat{P}} - 4\braket{\hat{P}}\braket{\hat{Q}} + 2\braket{\hat{P}}\braket{\hat{Q}} \\
+  =& \Braket{\{\hat{P}, \hat{Q}\}} - 2\braket{\hat{P}}\braket{\hat{Q}}
+\end{align*}
+$$
+
+Combining the results, we obtain
+
+$$
+\begin{align*}
+  |\braket{\Delta\hat{P}\Delta\hat{Q}}|^2 =& \left|\frac{1}{2}\Braket{[\Delta\hat{P},\Delta\hat{Q}]}\right|^2 + \left|\frac{1}{2}\Braket{\{\Delta\hat{P},\Delta\hat{Q}\}}\right|^2 \\
+  =& \left|\frac{1}{2}\Braket{[\hat{P},\hat{Q}]}\right|^2 + \left|\frac{1}{2}\Braket{\{\hat{P},\hat{Q}\}} - \braket{\hat{P}}\braket{\hat{Q}}\right|^2
+\end{align*}
+$$
+
+Invoking the Cauchy-Schwarz inequality, we get
+
+$$
+\begin{align*}
+  \braket{f|f}\braket{g|g} \geq& |\braket{f|g}|^2 \\
+  \sigma_P^2 \sigma_Q^2 \geq& |\braket{\Delta\hat{P}\Delta\hat{Q}}|^2
+\end{align*}
+$$
+
+from which it follows that
+
+$$
+  \sigma_P^2 \sigma_Q^2 \geq \left|\frac{1}{2}\Braket{[\hat{P},\hat{Q}]}\right|^2 + \left|\frac{1}{2}\Braket{\{\hat{P},\hat{Q}\}} - \braket{\hat{P}}\braket{\hat{Q}}\right|^2
+$$
+</details>
+
+In particular, the Heisenberg uncertainty principle states that 
+
+$$
+  \Delta_\psi x \Delta_\psi p \geq \frac{\hbar}{2}
+$$
+
+The principle can be derived by consider the one-parameter family of states defined by
+
+$$
+  \psi_s (\mathbf{x}) = \left( \hat{p} - is\hat{x} \right)\psi(\mathbf{x}) \quad s \in \mathbf{R}
+$$
+
+with norm given by
+
+$$
+\begin{align*}
+  0 \leq \Braket{\psi_s | \psi_s} &= \Braket{\left( \hat{p} - is\hat{x} \right)\psi | \left( \hat{p} - is\hat{x} \right)\psi} \\
+  &= \Braket{\psi | \left( \hat{p} + is\hat{x} \right)\left( \hat{p} - is\hat{x} \right)\psi} \\
+  &= \Braket{\psi | \left( \hat{p}^2 + is\left[\hat{x}, \hat{p} \right] s^2\hat{x}^2 \right)\psi} \\
+  &= \Braket{\psi | \left( \hat{p}^2 - s\hbar + s^2\hat{x}^2 \right)\psi} \\
+  &= \left(\Delta_\psi p \right)^2 - s\hbar + s^2\left(\Delta_\psi x \right)^2
+\end{align*}
+$$
+
+where the commutation $\left[\hat{x}, \hat{p} \right] = i\hbar$ is used. To satisfy the inequality, the derived quadratic equation in $s$
+
+$$
+  \left(\Delta_\psi p \right)^2 - s\hbar + s^2\left(\Delta_\psi x \right)^2 \geq 0
+$$
+
+has either one or no roots. This is only true if the discriminant is non-positive, i.e.
+
+$$
+\begin{gather*}
+  4\left(\Delta_\psi x \right)^2\left(\Delta_\psi p \right)^2 \geq \hbar^2 \\
+  \Delta_\psi x \Delta_\psi p \geq \frac{\hbar}{2}
+\end{gather*}
+$$
+
+which is the Heisenberg uncertainty principle.
 
 
 ## Wave function
@@ -843,21 +1162,6 @@ $$
   \left\langle \hat{Q} \right\rangle_\psi = \sum_{n\in\N} \left| a_n \right|^2 \lambda_n
 $$
 
-<details>
-<summary>Details</summary>
-
-Using the definition of expecation value $\left\langle \hat{Q} \right\rangle_\psi = \Braket{\psi | \hat{Q} \psi}$ and the fact that $\psi_n$ are orthornormal we find
-
-$$
-\begin{align*}
-  \left\langle \hat{Q} \right\rangle_\psi = \Braket{\psi | \hat{Q} \psi} &= \Braket{\sum_i a_i \phi_i | \sum_h a_j \hat{Q} \phi_j} \\
-  &= \sum_i \sum_j a_i^* a_j \lambda_j \braket{\phi_i | \phi_j} \\
-  &= \sum_i \sum_j a_i^* a_j \lambda_j \delta_{ij} \\
-  &= \sum_i \left| a_i \right|^2 \lambda_i
-\end{align*}
-$$
-</details>
-
 The probability that the measurement yields the eigenstate $\lambda_n$ is given by the Born rule
 
 $$
@@ -900,127 +1204,6 @@ $$
 
 which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
 
-## Heisenberg uncertainty principle
-
-The uncertainty of an observable $\hat{Q}$ in a state $\psi$ is denoted $\Delta_\psi Q = \sigma_{Q}$ and is defined as the variance of the state's probability distribution:
-
-$$
-\begin{align*}
-  (\Delta_\psi Q )^2 &= \left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi \\
-  &= \left\langle \hat{Q}^2 - 2 \langle \hat{Q} \rangle_\psi \hat{Q} + \langle \hat{Q} \rangle_\psi^2 \right\rangle_\psi \\
-  &= \langle \hat{Q}^2  \rangle_\psi - \langle \hat{Q} \rangle_\psi^2 \\
-  &= \Braket{\psi | \hat{Q}^2 \psi} - \Braket{\psi | \hat{Q}\psi}^2
-\end{align*}
-$$
-
-For two operators $\hat{A}$ and $\hat{B}$, Heisenberg's uncertainty principle states that
-
-$$
-  \sigma_A^2 \sigma_B^2 \geq \left(\frac{1}{2i} \langle [\hat{A}, \hat{B}] \rangle \right)^2
-$$
-
-<details>
-<summary>Proof</summary>
-
-For any observables $A$ and $B$ we have
-
-$$
-\begin{align*}
-  \sigma_A^2 =& \Braket{(\hat{A} - \langle A \rangle)\psi | (\hat{A} - \langle A \rangle)\psi} =: \braket{f|f} \\
-  \sigma_B^2 =& \Braket{(\hat{B} - \langle B \rangle)\psi | (\hat{B} - \langle B \rangle)\psi} =: \braket{g|g}
-\end{align*}
-$$
-
-Invoking the Cauchy-Schwarz inequlity, we obtain
-
-$$
-  \sigma_A^2 \sigma_B^2 = \braket{f|f}\braket{g|g} \geq |\braket{f|g}|^2
-$$
-
-For any complex number $z\in\mathbb{C}$ we have
-
-$$
-  |z|^2 = \Re^2{z} + \Im^2 {z} \geq \Im^2{z} = \left(\frac{1}{2i} (z - z^*)\right)^2^
-$$
-
-Therefore, letting $z = \braket{f|g}$
-
-$$
-  \sigma_A^2 \sigma_B^2 \geq \left(\frac{1}{2i} [\braket{f|g} - \braket{g|f}] \right)^2
-$$
-
-From the Hermiticity of $\hat{A} - \langle A \rangle$ we get
-
-$$
-\begin{align*}
-  \braket{f|g} =& \Braket{(\hat{A} - \langle A \rangle)\psi | (\hat{B} - \langle B \rangle)\psi} \\
-  =& \Braket{\psi|(\hat{A} - \langle A \rangle) (\hat{B} - \langle B \rangle B)\psi} \\
-  =& \Braket{\psi | (\hat{A}\hat{B} - \hat{A}\langle B \rangle - \hat{B} \langle A \rangle + \langle B \rangle \langle B \rangle)\psi} \\
-  =& \Braket{\psi | \hat{A}\hat{B}\psi} - \langle B \rangle \Braket{\psi|\hat{A}\psi} - \langle A \rangle \Braket{\psi|\hat{B}\psi} + \langle A \rangle \langle B \rangle \underbrace{\braket{\psi|\psi}}_{=1} \\
-  =& \langle \hat{A}\hat{B}\rangle - \langle B \rangle \langle A \rangle - \langle A \rangle \langle B \rangle + \langle A \rangle \langle B \rangle \\
-  =& \langle \hat{A}\hat{B}\rangle - \langle A \rangle \langle B \rangle
-\end{align*}
-$$
-
-Similarly,
-
-$$
-  \braket{g|f} = \langle \hat{A}\hat{B} \rangle - \langle A \rangle \langle B \rangle
-$$
-
-so
-
-$$
-  \braket{f|g} - \braket{g|f} = \langle\hat{A}\hat{B}\rangle - \langle\hat{A}\hat{B}\rangle = \langle\hat{A}\hat{B} - \hat{A}\hat{B}\rangle = \langle[\hat{A},\hat{B}]\rangle
-$$
-
-Hence
-
-$$
-  \sigma_A^2 \sigma_B^2 \geq \left(\frac{1}{2i} \langle [\hat{A}, \hat{B}] \rangle \right)^2
-$$
-</details>
-
-In particular, the Heisenberg uncertainty principle states that 
-
-$$
-  \Delta_\psi x \Delta_\psi p \geq \frac{\hbar}{2}
-$$
-
-The principle can be derived by consider the one-parameter family of states defined by
-
-$$
-  \psi_s (\mathbf{x}) = \left( \hat{p} - is\hat{x} \right)\psi(\mathbf{x}) \quad s \in \mathbf{R}
-$$
-
-with norm given by
-
-$$
-\begin{align*}
-  0 \leq \Braket{\psi_s | \psi_s} &= \Braket{\left( \hat{p} - is\hat{x} \right)\psi | \left( \hat{p} - is\hat{x} \right)\psi} \\
-  &= \Braket{\psi | \left( \hat{p} + is\hat{x} \right)\left( \hat{p} - is\hat{x} \right)\psi} \\
-  &= \Braket{\psi | \left( \hat{p}^2 + is\left[\hat{x}, \hat{p} \right] s^2\hat{x}^2 \right)\psi} \\
-  &= \Braket{\psi | \left( \hat{p}^2 - s\hbar + s^2\hat{x}^2 \right)\psi} \\
-  &= \left(\Delta_\psi p \right)^2 - s\hbar + s^2\left(\Delta_\psi x \right)^2
-\end{align*}
-$$
-
-where the commutation $\left[\hat{x}, \hat{p} \right] = i\hbar$ is used. To satisfy the inequality, the derived quadratic equation in $s$
-
-$$
-  \left(\Delta_\psi p \right)^2 - s\hbar + s^2\left(\Delta_\psi x \right)^2 \geq 0
-$$
-
-has either one or no roots. This is only true if the discriminant is non-positive, i.e.
-
-$$
-\begin{gather*}
-  4\left(\Delta_\psi x \right)^2\left(\Delta_\psi p \right)^2 \geq \hbar^2 \\
-  \Delta_\psi x \Delta_\psi p \geq \frac{\hbar}{2}
-\end{gather*}
-$$
-
-which is the Heisenberg uncertainty principle.
 
 ## Schrödinger equation
 
@@ -2058,6 +2241,18 @@ $$
 $$
 
 # Quantum operators
+
+## Position operator
+
+The position operator $\hat{\mathbf{x}}$ can be shown to be Hermitian by noting that
+
+$$
+\begin{align*}
+  \braket{\psi|\hat{\mathbf{x}}|\phi} =& \int_{\R^3} \psi^*(\mathbf{x}) \mathbf{x} \phi(\mathbf{x}) \;\d^3 x = \int_{\R^3} \phi(\mathbf{x}) \mathbf{x} \psi^*(\mathbf{x}) \;\d^3 x \\
+  =& \left(\int_{\R^3} \phi^*(\mathbf{x}) \mathbf{x} \psi(\mathbf{x}) \;\d^3 x\right)^* = \braket{\phi|\hat{\mathbf{x}}|\psi}^*
+\end{align*}
+$$
+
 
 ## Canonical commutation relations
 

@@ -90,8 +90,6 @@ function relabelLatexEquations(mdxFile: string) {
 }
 
 console.log(
-  findMismatchedInlineMath(
-    "./content/notes/machine_learning/decision_theory.mdx",
-  ),
+  findMismatchedInlineMath("./content/notes/physics/quantum_mechanics.mdx"),
 )
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
