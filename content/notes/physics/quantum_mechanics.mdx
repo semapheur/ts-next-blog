@@ -24,7 +24,7 @@ Bra-ket properties
 - Anti-linearity in the first argument: $\braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}$
 - Positive definite: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi|\psi} = 0 \iff \ket{\psi} = 0$
 - Triangle inequality: $\sqrt{\braket{\psi + \phi | \psi + \phi}} \leq \sqrt{\braket{\psi|\psi}} + \sqrt{\braket{\phi|\phi}}$
-- Schwarz inequality: $\left[\braket{\psi|\phi}\right]^2 \leq \left[\braket{\psi|\psi}\right] \left[\braket{\phi|\phi}\right]$
+- Schwarz inequality: $\left|\braket{\psi|\phi}\right|^2 \leq \braket{\psi|\psi} \braket{\phi|\phi}$
 - Orthogonality: $\braket{\psi|\phi} = 0$ if and only if $\psi$ and $\phi$ are orthogonal
 - Hermitian adjoint/conjugate: 
 $$
@@ -545,7 +545,7 @@ $$
   \braket{q_k | \psi} = \sum_n c_n \braket{q_k|q_n} = \sum_n c_n \delta_{kn} = c_k
 $$
 
-showing that $c_k$ is the projection of $\ket{\psi}$ onto $\ket{q}$.
+showing that $c_k$ is the projection of $\ket{\psi}$ onto $\ket{q_k}$.
 
 #### Matrix representation of observables
 
@@ -588,15 +588,15 @@ $$
 \end{align*}
 $$
 
-### Continuous observables
+### Continuous observables and wavefunction
 
-A quantum observable with a continuous spectrum has spectral representation
+A quantum observable $\hat{Q}$ with a continuous spectrum has spectral representation
 
 $$
   \hat{Q} = \int q \hat{P}(q) \;\d q = \int q \ket{q}\bra{q} \;\d q
 $$
 
-where $q$ is a continuous eigenvalue, and $\ket{q}$ is the corresponding generalized eigenvector. These eigenvectors are not normalizable in the usual sense, but satisfy the orthogonality condition
+where $q$ is a continuous eigenvalue, and $\ket{q}$ is the corresponding eigenfunction. These eigenvectors are not normalizable in the usual sense, but satisfy the orthogonality condition
 
 $$
   \braket{q' | q} = \delta(q - q')
@@ -605,10 +605,10 @@ $$
 where $\delta$ is the Dirac delta function. In this representation, any state vector $\ket{\psi}$ can be expanded as
 
 $$
-  \ket{\psi} = \int c(q) \ket{q} \; \d q
+  \ket{\psi} = \int \psi(q) \ket{q} \; \d q
 $$
 
-where $c(q) = \braket{q|\psi}$ is the projection of $\ket{\psi}$ onto $\ket{q}$. The function $c(q)$ is typically a complex-valued function that describes how $\ket{\psi}$ is distributed over the eigenstates of $\hat{Q}$.
+where $\psi(q) = \braket{q|\psi}$ is called the wave function. The wave function $\psi(q)$ is the projection of $\ket{\psi}$ onto $\ket{q}$. It is describes how $\ket{\psi}$ is distributed over the eigenstates of $\hat{Q}$.
 
 ### Change of basis
 
@@ -828,19 +828,70 @@ Consequently, any global phase factor $e^{i\phi}$ associated with a state vector
 
 ### Continuous spectrum
 
-Let $\hat{Q}$ be a one-dimensional Hermitian operator on $\mathcal{H}$ with a continuous spectrum $\set{q_n}_n$ and eigenfunctions $\ket{q}$. If $Q$ is the corresponding observable on a quantum system in state 
+Let $\hat{Q}$ be a Hermitian operator on the Hilbert space $\mathcal{H}$ with a continuous spectrum, and let $\ket{q}$ denote its eigenstates. The correspodning observable $Q$ in a quantum system described by the state vector $\ket{\psi}$ can be expanded as 
 
 $$
-  \ket{\psi} = \int c(q) \ket{q} \;\d q, \; c(q) = \braket{q|\psi}
+  \ket{\psi} = \int \psi(q) \ket{q} \;\d q, \; \psi(q) = \braket{q|\psi}
 $$
 
-then, by Born's rule, the probability of measuring the eigenvalue in the interval $(q, q + \d q)$ is $|c(q)|^2$. The normalization condition ensures that
+where $\psi(q) = \braket{q|\psi}$ is the wave function in the eigenbasis $\set{\ket{q}}$. By Born's rule, the probability of measuring $Q$ and finding the eigenvalue in the interval $(q, q + \d q)$ is given by the square modulus of the wave function, i.e. $|\psi(q)|^2 \d q$. Expanding the normalization condition on $\ket{\psi}$, we find
 
 $$
-  \int |c(q)|^2 \;\d q = 1
+\begin{align*}
+  \braket{\psi|\psi} =& \int \braket{\psi|q} \braket{q|\psi} \;\d q \\
+  =& \int \psi^* (q) \psi(q) \;\d q \\
+  =& \int |\psi(q)|^2 \;\d q = 1
+\end{align*}
 $$
 
-It is also possible that $\hat{Q}$ has both a discrete and continuous spectrum. Assuming that the discrete spectrum ranges between $-\infty$ and $\tilde{q}$, then 
+#### Generalized orthonormality condition
+
+Let $\hat{O}$ be a one-dimensional observable with a continuous spectrum, and let $\set{\ket{o}}$ be its eigenbasis. The state vector $\ket{\psi}$ of the system can be expanded as
+
+$$
+  \ket{\psi} = \int c(o)\ket{o} \;\d o
+$$
+
+where $c(o) = \braket{o|\psi}$ is the projection of $\psi$ onto $\ket{o}$. If $\psi(q) = \ket{q|\psi}$ is a wave function in terms of another continuous eigenbasis $\set{\ket{q}}$, the normalization condition requires that
+
+$$
+  \int |c(o)|^2 \;\d o = \int |\psi(q)|^2 \;\d q 
+$$
+
+Substituting $\psi^* (q) = \braket{\psi|q}$ into the right hand side and applying the completeness relation $\int \ket{q}\bra{q} \;\d q = \hat{I}$ we obtain
+
+$$
+\begin{align*}
+  \int c^* (o) c(o) \;\d o =& \int \d o \;c^* (o) \left(\int \d q \braket{o|q} \braket{q|\psi} \right) \\
+  =& \int \d o\; c^*(o) \left(\int \d q\; \psi(q) \phi_{o}^* (q) \right)
+\end{align*}
+$$
+
+where $\phi_o (q) = \braket{q|o}$, which yields
+
+$$
+  c(o) = \braket{o|\psi} = \int \psi(q) \phi_{o}^* (q) \;\d q
+$$
+
+Back-substituting $\psi(q) = \braket{q|\psi}$, we get
+
+$$
+\begin{align*}
+  c(o) =& \int \d o'\; c(o') \left(\int \d q\; \phi_{o'} (q) \phi_o^* (q) \right) \\
+  =& \int \d o'\; c(o') \left(\int \d q\; \braket{o|q} \braket{q|o'} \right) \\
+  =& \int c(o') \braket{o|o'} \;\d o' 
+\end{align*}
+$$
+
+from which it follows that
+
+$$
+  \braket{o|o'} = \left(\int \d q\; \phi_{o'} (q) \phi_o^* (q) \right) = \delta(o - o')
+$$
+
+### Mixed spectrum
+
+Let $\hat{Q}$ be a Hermitian operator on the Hilbert space $\mathcal{H}$ with both a discrete and a continuous spectrum. In this case, the eigenvalues corresponding to the discrete spectrum are labeled by $q_n$, while the continuous spectrum is parametrized by $q$. Assuming that the continuous spectrum is in the range $q\in(\tilde{q},\infty)$, the projection operators for the discrete are continuous components are given by:
 
 $$
 \begin{align*}
@@ -849,7 +900,27 @@ $$
 \end{align*}
 $$
 
-and we must have $\hat{P}_\text{c} + \hat{P}_\text{d} = \hat{I}$.
+These projection operators must satisfy the completeness relation 
+
+$$
+  \hat{P}_\text{c} + \hat{P}_\text{d} = \hat{I}
+$$
+
+where $\hat{I}$ is the identity operator on $\mathcal{H}$. In terms of this eigenbasis, a state vector $\ket{\psi}$ can be expanded as
+
+$$
+  \ket{\psi} = \sum_n c(q_n) \ket{q_n} + \int_{\tilde{q}}^\infty \psi(q) \ket{\psi} \; d q
+$$
+
+where
+- $c(q_n) = \ket{q_n |\psi}$ is the expansion coefficient for the discrete eigenbasis $\set{\ket{q_n}}_n$
+- $\psi(q) = \ket{q|\psi}$ is the wave function in the continuous eigenbasis $\set{\ket{q}}$
+
+According to Born's rule, the probability of measuring $q_n$ in the discrete spectrum is given by $|c(q_n)|^2$, while the probability of measuring the eigenvalue in the interval $(q, q + \d q)$ is given by $|\psi(q)|^2 \d q$. The normalization condition implies that
+
+$$
+  \braket{\psi|\psi} = \sum_n |c(q_n)|^2 + \int_{\tilde{q}}^\infty |\psi(q)|^2 \;\d q = 1
+$$
 
 ### Compatible observables
 
@@ -1091,125 +1162,6 @@ $$
 
 which is the Heisenberg uncertainty principle.
 
-## Wave functions
-
-Let $\hat{q}$ be a one-dimensional observable with continuous eigenbasis $\ket{\xi}$. Using the completeness relation 
-
-$$
-  \int \ket{q}\bra{q} \;\d q = \hat{I}
-$$
-
-a state vector $\ket{\psi}$ can be expanded as
-
-$$
-  \ket{\psi} = \int \ket{q}\braket{q|\psi} \;\d q = \int \psi(q) \ket{q} \;\d q 
-$$
-
-where $\psi(\xi) = \braket{q|\psi}$ is called the wave function. The wave function $\psi(q)$ is the projection of $\ket{\psi}$ onto the eigenbasis $\ket{\xi}$. It represents the continuous probability amplitude of finding the system in state $\ket{q}$ with corresponding probability density $|\psi(q)|^2 \d q$. The normalization condition requires that
-
-$$
-\begin{align*}
-  \braket{\psi|\psi} =& \int \braket{\psi|q} \braket{q|\psi} \;\d q \\
-  =& \int \psi^* (q) \psi(q) \;\d q \\
-  =& \int |\psi(q)|^2 \;\d q = 1
-\end{align*}
-$$
-
-### Generalized orthonormality condition
-
-Let $\hat{o}$ be an another observable with a continuous spectrum. The state vector of the particle can be expanded as
-
-$$
-  \ket{\psi} = \int c(o)\ket{o} \;\d o, \; c(o) = \braket{o|\psi}
-$$
-
-where $\ket{o}$ are the eigenfunctions of the observable $\hat{o}$ and $|c(o)|^2 \;\d o$ represent the probability that the value of $\hat{q}$ can be found in the interval $(o, o + \d o)$. We can then write the following identity
-
-$$
-  \int |c(o)|^2 \;\d o = \int |\psi(q)|^2 \;\d q 
-$$
-
-Substituting $\psi^* (q) = \braket{\psi|q}$ into the right hand side and applying the completeness relation $\int \ket{q}\bra{q} \;\d q = \hat{I} $ we obtain
-
-$$
-\begin{align*}
-  \int c^* (o) c(o) \;\d o =& \int \d o \;c^* (o) \left(\int \d q \braket{o|q} \braket{q|\psi} \right) \\
-  =& \int \d o\; c^*(o) \left(\int \d q\; \psi(q) \phi_{o}^* (q) \right)
-\end{align*}
-$$
-
-where $\phi_o (q) = \braket{q|o}$, which yields
-
-$$
-  c(o) = \braket{o|\psi} = \int \psi(q) \phi_{o}^* (q) \;\d q
-$$
-
-Back-substituting $\psi(q) = \braket{q|\psi}$, we get
-
-$$
-\begin{align*}
-  c(o) =& \int \d o'\; c(o') \left(\int \d q\; \phi_{o'} (q) \phi_o^* (q) \right) \\
-  =& \int \d o'\; c(o') \left(\int \d q\; \braket{o|q} \braket{q|o'} \right) \\
-  =& \int c(o') \braket{o|o'} \;\d o' 
-\end{align*}
-$$
-
-from which it follows that
-
-$$
-  \braket{o|o'} = \left(\int \d q\; \phi_{o'} (q) \phi_o^* (q) \right) = \delta(o - o')
-$$
-
-represents the continuous probability amplitude of finding the particle in the interval $(\xi, \xi + \d\xi)$.
-
-The position operator has eigenvalue equation
-
-$$
-  \hat{\mathbf{x}}\ket{\mathbf{x}} = \mathbf{x}\ket{\mathbf{x}}
-$$
-
-The state of a quantum particle is described by a complex-valued wavefunction $\psi(\mathbf{x}, t)$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
-
-$$
-  P(\mathbf{x}, t) = |\psi(\mathbf{x}, t)|^2
-$$
-
-This is known as the Born rule. The probabilistic interpretation requires the wavefunction to be a square normalisable function
-
-$$
-  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \psi^* \psi \;\d^3x = 1
-$$
-
-The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_i (\mathbf{x},t)$ for $i\in I\subseteq\N$ are possible states of the system, then so is the linear combination
-
-$$
-  \psi (\mathbf{x}, t) = \sum_{i\in I} c_i \psi_i (\mathbf{x}, t) 
-$$
-
-which is known as the principle of superposition. The wavefunction $\psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\psi(t)}$, i.e.
-
-$$
-  \ket{\psi(t)} = \int_{\R^3} \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
-$$
-
-Thus, the wave function can be written as an inner product of the state space vector $\ket{\psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
-
-$$
-  \psi(\mathbf{x}, t) = \braket{\mathbf{x}|\psi(t)}
-$$
-
-In bra-ket notation the normalization integral takes the form
-
-$$
-\begin{align*}
-  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int_{\R^3} \braket{\mathbf{x}|\psi}^* \braket{\mathbf{x}|\psi}\;\d^3 x \\
-  =& \int_{\R^3} \braket{\psi|\mathbf{x}} \braket{\mathbf{x}|\psi}\;\d^3 x \\
-  =& \braket{\psi|\psi} = \lVert \psi \rVert^2 = 1
-\end{align*}
-$$
-
-This shows that the state space vector $\ket{\psi(t)}$ has unit norm.
-
 ## Schrödinger equation
 
 The time evolution of a state vector $\ket{\psi}$ is given by the Schrödinger equation
@@ -1347,69 +1299,6 @@ $$
 $$
 
 showing that the total energy is a determinate state.
-
-## Measurement
-
-The possible measurements of an observable $\hat{Q}$ in a quantum system lies in its spectrum of eigenvalues. In terms of an orthonormal eigenbasis $\set{\phi_n}_{n\in\N}$, the eigenvalues of $\hat{Q}$ is given by
-
-$$
-  \hat{Q}\phi_n = \lambda_n \phi_n
-$$
-
-The wavefunction $\psi$ of quantum system can therefore be exanded in terms of the orthonormal eigenstates of $\hat{Q}$
-
-$$
-  \psi (\mathbf{x}) = \sum_n a_n \phi_n (\mathbf{x}) \quad \sum_n \left| a_n \right|^2 = 1
-$$
-
-Assuming that the spectrum is non-degenerate, the expectation value of $\hat{Q}$ is 
-
-$$
-  \left\langle \hat{Q} \right\rangle_\psi = \sum_{n\in\N} \left| a_n \right|^2 \lambda_n
-$$
-
-The probability that the measurement yields the eigenstate $\lambda_n$ is given by the Born rule
-
-$$
-  P(\lambda_n) = \left| a_n \right|^2
-$$
-
-After the measurement, the wavefunction discontinuously collapses into the eigenvector $\phi_n$ corresponding to the measured eigenstate $\lambda_n$
-
-$$
-  \phi(\mathbf{x}) \rightarrow \phi_n (\mathbf{x})
-$$
-
-When the spectrum is degenerate, the probability is given by
-
-$$
-  P(\lambda) = \sum_{n|\lambda_n = \lambda} \left| a_n \right|^2
-$$
-
-in which case, the wavefunction collapses to
-
-$$
-  \psi(\mathbf{x}) \rightarrow C \sum_{n|\lambda_n = \lambda} a_n \phi_n
-$$
-
-where $C$ is the appropriate normalization factor.
-
-### Determinate states
-
-An interesting case arises when an observable $Q$ is in a determinate state $\psi$ with measurement $\langle Q \rangle_\psi = q$. In this case the variance of $\hat{Q}$ in state $\psi$ is zero, i.e.
-
-$$
-  (\Delta_\psi Q)^2 =\left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi = \Braket{\psi|(\hat{Q} - q)^2 \psi} = \Braket{(\hat{Q} - q)\psi|(\hat{Q} - q)\psi} = 0
-$$
-
-where we have used the fact that $\hat{Q} - q$ is Hermitian from the assumed Hermiticity of $\hat{Q}$. The vanishing variance implies that
-
-$$
-  \hat{Q}\psi = q\psi
-$$
-
-which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
-
 
 ## Time evolution operator
 
@@ -2277,6 +2166,119 @@ $$
   =& \left(\int_{\R^3} \phi^*(\mathbf{x}) \mathbf{x} \psi(\mathbf{x}) \;\d^3 x\right)^* = \braket{\phi|\hat{\mathbf{x}}|\psi}^*
 \end{align*}
 $$
+
+### Wave function in position space
+
+The position operator has eigenvalue equation
+
+$$
+  \hat{\mathbf{x}}\ket{\mathbf{x}} = \mathbf{x}\ket{\mathbf{x}}
+$$
+
+The state of a quantum particle is described by a complex-valued wavefunction $\psi(\mathbf{x}, t)$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
+
+$$
+  P(\mathbf{x}, t) = |\psi(\mathbf{x}, t)|^2
+$$
+
+This is known as the Born rule. The probabilistic interpretation requires the wavefunction to be a square normalisable function
+
+$$
+  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \psi^* \psi \;\d^3x = 1
+$$
+
+The set of square normalisable functions forms the Hilbert space $\mathcal{H} \in L^2 (M)$, which is a vector space. This means that if $\psi_i (\mathbf{x},t)$ for $i\in I\subseteq\N$ are possible states of the system, then so is the linear combination
+
+$$
+  \psi (\mathbf{x}, t) = \sum_{i\in I} c_i \psi_i (\mathbf{x}, t) 
+$$
+
+which is known as the principle of superposition. The wavefunction $\psi(\mathbf{x},t)$ gives the components of the state space vector $\ket{\psi(t)}$, i.e.
+
+$$
+  \ket{\psi(t)} = \int_{\R^3} \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
+$$
+
+Thus, the wave function can be written as an inner product of the state space vector $\ket{\psi(t)}$ with position eigenstates $\bra{\mathbf{x}}$, i.e.
+
+$$
+  \psi(\mathbf{x}, t) = \braket{\mathbf{x}|\psi(t)}
+$$
+
+In bra-ket notation the normalization integral takes the form
+
+$$
+\begin{align*}
+  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x =& \int_{\R^3} \braket{\mathbf{x}|\psi}^* \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  =& \int_{\R^3} \braket{\psi|\mathbf{x}} \braket{\mathbf{x}|\psi}\;\d^3 x \\
+  =& \braket{\psi|\psi} = \lVert \psi \rVert^2 = 1
+\end{align*}
+$$
+
+This shows that the state space vector $\ket{\psi(t)}$ has unit norm.
+
+### Measurement
+
+The possible measurements of an observable $\hat{Q}$ in a quantum system lies in its spectrum of eigenvalues. In terms of an orthonormal eigenbasis $\set{\phi_n}_{n\in\N}$, the eigenvalues of $\hat{Q}$ is given by
+
+$$
+  \hat{Q}\phi_n = \lambda_n \phi_n
+$$
+
+The wavefunction $\psi$ of quantum system can therefore be exanded in terms of the orthonormal eigenstates of $\hat{Q}$
+
+$$
+  \psi (\mathbf{x}) = \sum_n a_n \phi_n (\mathbf{x}) \quad \sum_n \left| a_n \right|^2 = 1
+$$
+
+Assuming that the spectrum is non-degenerate, the expectation value of $\hat{Q}$ is 
+
+$$
+  \left\langle \hat{Q} \right\rangle_\psi = \sum_{n\in\N} \left| a_n \right|^2 \lambda_n
+$$
+
+The probability that the measurement yields the eigenstate $\lambda_n$ is given by the Born rule
+
+$$
+  P(\lambda_n) = \left| a_n \right|^2
+$$
+
+After the measurement, the wavefunction discontinuously collapses into the eigenvector $\phi_n$ corresponding to the measured eigenstate $\lambda_n$
+
+$$
+  \phi(\mathbf{x}) \rightarrow \phi_n (\mathbf{x})
+$$
+
+When the spectrum is degenerate, the probability is given by
+
+$$
+  P(\lambda) = \sum_{n|\lambda_n = \lambda} \left| a_n \right|^2
+$$
+
+in which case, the wavefunction collapses to
+
+$$
+  \psi(\mathbf{x}) \rightarrow C \sum_{n|\lambda_n = \lambda} a_n \phi_n
+$$
+
+where $C$ is the appropriate normalization factor.
+
+#### Determinate states
+
+An interesting case arises when an observable $Q$ is in a determinate state $\psi$ with measurement $\langle Q \rangle_\psi = q$. In this case the variance of $\hat{Q}$ in state $\psi$ is zero, i.e.
+
+$$
+  (\Delta_\psi Q)^2 =\left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi = \Braket{\psi|(\hat{Q} - q)^2 \psi} = \Braket{(\hat{Q} - q)\psi|(\hat{Q} - q)\psi} = 0
+$$
+
+where we have used the fact that $\hat{Q} - q$ is Hermitian from the assumed Hermiticity of $\hat{Q}$. The vanishing variance implies that
+
+$$
+  \hat{Q}\psi = q\psi
+$$
+
+which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
+
 
 ### Schrödinger equation
 
