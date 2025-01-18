@@ -752,24 +752,62 @@ $$
 If $\mathcal{H}$ is an infinite-dimensional Hilbert space with basis $\set{\ket{\xi}}$, then any state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
 
 $$
-  \ket{\psi} = \int c(\xi) \ket{\xi} \;\d \xi
+  \ket{\psi} = \int \psi_\xi (\xi) \ket{\xi} \;\d \xi, \; \psi_\xi (\xi) = \braket{\xi|\psi}
 $$
 
-We can expand $\ket{\psi}$ in terms of another orthonormal basis $\set{\ket{\eta}}$:
+We can expand $\ket{\psi}$ in terms of another orthonormal basis $\set{\ket{\eta}}$ as
+
+$$
+  \ket{\psi} = \int \psi_\eta (\eta) \ket{\eta}, \; \psi_\eta (\eta) = \braket{\eta|\psi}
+$$
+
+Using the completeness relation of $\ket{\eta}$, we can express $\psi_\xi$ as
+
+$$
+  \psi_\xi (\xi) =& \braket{\xi|\psi} = \int \overbrace{\braket{\xi\|eta}}^{\phi_\eta (\xi)} \overbrace{\braket{\eta|\psi}}^{\psi_\eta (\eta)} \;\d\eta \\
+  =& \int \phi_\eta (\xi) \psi_\eta (\eta) = \hat{U}(\eta,\xi) \psi(\eta)
+$$
+
+In the following we show that the transformation
+
+$$
+  \hat{U}(\eta,\xi) = \int \phi_\eta (\xi) \;\d\eta
+$$
+
+is unitary. The scalar product of two wavefunctions $\psi_\eta$ and $\psi'_\eta$ in the $\eta$-representation is given by
+
+$$
+  \braket{\psi_\eta, \psi_\eta'} = \int \psi_\eta^* (\eta) \psi'_\eta (\eta) \;\d\eta
+$$
+
+Applying $\hat{U}$ to $\psi_eta$ and $\psi'_\eta$ and taking the scalar product yields
 
 $$
 \begin{align*}
-  \ket{\psi} =& \int c'(\eta) \ket{\eta} \;\d\eta \\
-  =& \int c'(\eta) \;\d\eta \int \ket{\xi}\braket{\xi|\eta} \;\d\xi \\
-  =& \iint c'(\eta) \braket{\xi|\eta}\ket{\xi} \;\d\eta \;\d\xi
+  \braket{\hat{U}\psi_\eta, \hat{U} \psi'_\eta} = \int \d\xi \left(\int \phi_\eta^* (\xi) \psi_\eta^* (\eta) \;\d\eta \right) \left(\int \phi_{\eta'} (\xi) \psi'_\eta (\eta') \;\d\eta' \right) \\
+  =& \int \eta' \psi_\eta^* (\eta) \psi'_\eta (\eta') \;\d \int \phi_\eta^* (\eta) \phi_{\eta'} (\eta) \;\d\xi \tag{\label{equation-94}}
 \end{align*}
 $$
 
-from which we find
+Since $\phi_\eta (\xi) = \braket{\xi|\eta'}$ and $\phi_\eta (\xi) = \braket{\xi|\eta}$, we obtain
 
 $$
-  c(\xi) = \int \braket{\xi|\eta} c'(\eta) \;\d\eta
+\begin{align*}
+  \int \phi_\eta^* (\xi) \phi_{\eta'} (\xi) =& \int \braket{\eta|\xi}\braket{\xi|\eta'} \\
+  =& \braket{\eta|\eta'} = \delta(\eta - \eta')
+\end{align*}
 $$
+
+Substituting this into $\eqref{equation-94}$, we get
+
+$$
+\begin{align*}
+  \braket{\hat{U}\psi, \hat{U}\psi'} =& \int \eta' \psi_\eta^* (\eta) \psi'_\eta (\eta') \delta(\eta - \eta') \\
+  =& \int \psi_\eta^* (\eta) \psi_\eta (\eta) \;\d\eta = \braket{\psi,\psi'}
+\end{align*}
+$$
+
+showing that $\hat{U}$ preserves the inner product. Hence, it follows that $\hat{U}$ is unitary.
 
 ## Measurements
 
@@ -998,6 +1036,25 @@ A set of observables $\mathcal{S} = \set{A, B, C, \dots}$ is a complete set of c
 1. All the observables commute by pairs
 2. Specifying the eigenvalues of all the operators in the CSCO identifies a unique common eigenvector
 </MathBox>
+
+### Determinate states
+
+An interesting case arises when an observable $Q$ is in a determinate state $\psi$ with measurement $\langle Q \rangle_\psi = q$. In this case the variance of $\hat{Q}$ in state $\psi$ is zero, i.e.
+
+$$
+\begin{align*}
+  (\Delta_\psi Q)^2 =\left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi = \Braket{\psi|(\hat{Q} - q)^2 \psi} \\
+  =& \Braket{(\hat{Q} - q)\psi|(\hat{Q} - q)\psi} = 0
+\end{align*}
+$$
+
+where we have used the fact that $\hat{Q} - q$ is Hermitian from the assumed Hermiticity of $\hat{Q}$. The vanishing variance implies that
+
+$$
+  \hat{Q}\psi = q\psi
+$$
+
+which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
 
 ## Uncertainty principle
 
@@ -2244,7 +2301,13 @@ $$
   \hat{\mathbf{x}} \psi(\mathbf{x}) = \mathbf{x}\psi(\mathbf{x})
 $$
 
-where $\psi(\mathbf{x}) = \braket{\mathbf{x}|\psi}$ is the wavefunction in position space. In terms of the wavefunction, the state vector $\ket{\psi}$ is expended as
+where $\psi(\mathbf{x}) = \braket{\mathbf{x}|\psi}$ is the wavefunction in position space. The modulus squared of the wavefunction 
+
+$$
+  P(\mathbf{x}) = |\psi(\mathbf{x})|^2
+$$
+
+represents the probability density for measuring the position in the interval $(\mathbf{x}, \mathbf{x} + \d\mathbf{x})$. In terms of the wavefunction, the state vector $\ket{\psi}$ is expended as
 
 $$
   \ket{\psi(t)} = \int_{\R^3} \psi(\mathbf{x},t)\ket{\mathbf{x}}\;\d^3 x
@@ -2262,7 +2325,11 @@ Likewise, we have
 
 $$
 \begin{equation}
-  \braket{\mathbf{x}}_\psi = \int_{\R^3} \mathbf{x}| \psi(\mathbf{x})|^2 \;\d^3 x = \int_{\R^3} \psi^*(\mathbf{x}) \psi (\mathbf{x}) \mathbf{x} \;\d^3 x = \int_{\R^3} \braket{\psi|\mathbf{x}}\braket{\mathbf{x}|\psi} \;\d^3 x = \mathbf{x}\braket{\psi|\psi} \tag{\label{equation-93}}
+\begin{split}
+  \braket{\mathbf{x}}_\psi =& \int_{\R^3} \mathbf{x}| \psi(\mathbf{x})|^2 \;\d^3 x = \int_{\R^3} \psi^*(\mathbf{x}) \psi (\mathbf{x}) \mathbf{x} \;\d^3 x \\
+  =& \int_{\R^3} \braket{\psi|\mathbf{x}}\braket{\mathbf{x}|\psi} \;\d^3 x = \mathbf{x}\braket{\psi|\psi}
+\end{split}
+\tag{\label{equation-93}}
 \end{equation}
 $$
 
@@ -2281,86 +2348,9 @@ $$
 \end{align*}
 $$
 
-### Wavefunction in position space
+### Schrödinger equation in position space
 
-The position wavefunction $\psi(\mathbf{x})$ in position space. The mod square of the wavefunction represents the probability density for the particle's position
-
-$$
-  P(\mathbf{x}, t) = |\psi(\mathbf{x}, t)|^2
-$$
-
-This is known as the Born rule. The probabilistic interpretation requires the wavefunction to be a square normalisable function
-
-$$
-  \int |\psi(\mathbf{x}, t)|^2 \;\d^3 x = \int \psi^* \psi \;\d^3x = 1
-$$
-
-### Measurement
-
-The possible measurements of an observable $\hat{Q}$ in a quantum system lies in its spectrum of eigenvalues. In terms of an orthonormal eigenbasis $\set{\phi_n}_{n\in\N}$, the eigenvalues of $\hat{Q}$ is given by
-
-$$
-  \hat{Q}\phi_n = \lambda_n \phi_n
-$$
-
-The wavefunction $\psi$ of quantum system can therefore be exanded in terms of the orthonormal eigenstates of $\hat{Q}$
-
-$$
-  \psi (\mathbf{x}) = \sum_n a_n \phi_n (\mathbf{x}) \quad \sum_n \left| a_n \right|^2 = 1
-$$
-
-Assuming that the spectrum is non-degenerate, the expectation value of $\hat{Q}$ is 
-
-$$
-  \left\langle \hat{Q} \right\rangle_\psi = \sum_{n\in\N} \left| a_n \right|^2 \lambda_n
-$$
-
-The probability that the measurement yields the eigenstate $\lambda_n$ is given by the Born rule
-
-$$
-  P(\lambda_n) = \left| a_n \right|^2
-$$
-
-After the measurement, the wavefunction discontinuously collapses into the eigenvector $\phi_n$ corresponding to the measured eigenstate $\lambda_n$
-
-$$
-  \phi(\mathbf{x}) \rightarrow \phi_n (\mathbf{x})
-$$
-
-When the spectrum is degenerate, the probability is given by
-
-$$
-  P(\lambda) = \sum_{n|\lambda_n = \lambda} \left| a_n \right|^2
-$$
-
-in which case, the wavefunction collapses to
-
-$$
-  \psi(\mathbf{x}) \rightarrow C \sum_{n|\lambda_n = \lambda} a_n \phi_n
-$$
-
-where $C$ is the appropriate normalization factor.
-
-#### Determinate states
-
-An interesting case arises when an observable $Q$ is in a determinate state $\psi$ with measurement $\langle Q \rangle_\psi = q$. In this case the variance of $\hat{Q}$ in state $\psi$ is zero, i.e.
-
-$$
-  (\Delta_\psi Q)^2 =\left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi = \Braket{\psi|(\hat{Q} - q)^2 \psi} = \Braket{(\hat{Q} - q)\psi|(\hat{Q} - q)\psi} = 0
-$$
-
-where we have used the fact that $\hat{Q} - q$ is Hermitian from the assumed Hermiticity of $\hat{Q}$. The vanishing variance implies that
-
-$$
-  \hat{Q}\psi = q\psi
-$$
-
-which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
-
-
-### Schrödinger equation
-
-The Schrödinger equation describes the time evolution of the wavefunction $\psi(\mathbf{x},t)$ by the differential equation
+In position space, the Schrödinger equation describes the time evolution of the wavefunction $\psi(\mathbf{x},t)$ by the differential equation
 
 $$
   i\hbar \frac{\partial}{\partial t}\psi(\mathbf{x},t) = \hat{H}\psi(\mathbf{x},t)
@@ -2430,13 +2420,153 @@ $$
 
 where $S_\infty^2$ is the asymptotic $2$-sphere at the infinity of $\R^3$. However, any normalized wavefunction vanishes asymptotically, i.e. $\psi \xrightarrow{|\mathbf{x}|\to\infty} 0$. Consequently, we have $\mathbf{J}\xrightarrow{|\mathbf{x}|\to\infty} 0$. Furthermore, we can check that $\mathbf{J}$ falls off quickly enough so that $\frac{\partial P}{\partial t} = 0$.
 
+## Momentum operator
 
-## Canonical commutation relations
-
-The commutation relations of $\hat{\mathbf{x}} = (\hat{x}_x, \hat{x}_y, \hat{x}_z)$ and $\hat{\mathbf{p}} = (\hat{p}_x, \hat{p}_y, \hat{p}_z)$ are
+In classical mechanics, momentum is defined as the quantity which is conserved under global spatial translation, or alternatively, as the generator of spatial translation. Let us consider a system of $N$ partical described by the wavefunction $\psi(\mathbf{x}_1,\dots,\mathbf{x}_N)$. A rigid translation by $\mathbf{a}$ of this system will change $\psi$ into
 
 $$
-  [\hat{x}_i, \hat{x}_j] = [\hat{p}_i, \hat{p}_j] = 0, \quad [\hat{x}_i, \hat{p}_i] = i\hbar\delta_{ij}
+\begin{align*}
+  \psi(\mathbf{x}_1 + \mathbf{a},\dots,\mathbf{x}_N + \mathbf{a}) = \sum_{j=0}^\infty \sum_{n=1}^N \frac{\mathbf{a}^j}{j!} \cdot \nabla_n^j \psi(\mathbf{x}_1,\dots,\mathbf{x}_N) \\
+  =& \exp\left(\mathbf{a} \cdot \sum_{n=1}^N \nabla_n \psi(\mathbf{x}_1,\dots,\mathbf{x}_N) \right) = \hat{U}_a \psi(\mathbf{x}_1,\dots,\mathbf{x}_N)
+\end{align*}
+$$
+
+where $\hat{U}_\mathbf{a}$ is the unitary translating operator acting on the wavefunction. The translation operator $\hat{U}_\mathbf{x}$ for an arbitrary displacement $\mathbf{x}$ can be written as
+
+$$
+  \hat{U}_\mathbf{x} = e^{i\mathbf{x} \cdot \hat{G}}
+$$
+
+where $\hat{G}$ is the generator of spatial translation. Consequently, $\hat{G}$ can be identified as
+
+$$
+  \hat{G} = -i \sum_{n=1}^N \nabla_n
+$$
+
+Thus, $\hat{G}$ represents, up to a constant factor, the total quantum mechanical momentum operator of the $N$-particle system. For dimensional reasons, and following the correspondence principle, this constant is taken to be $\hbar$, so that the momentum operator for a single particle is
+
+$$
+  \hat{\mathbf{p}} = -i\hbar\nabla
+$$
+
+To find the eigenfunctions of $\hat{\mathbf{p}}$, we have to solve the eigenvalue equation
+
+$$
+  \hat{\mathbf{p}} \phi (\mathbf{x}) =& \mathbf{p} \phi (\mathbf{x})
+$$
+
+where $\phi(\mathbf{x}) = \braket{\mathbf{x}|\mathbf{p}}$ is the eigenfunctions position space, and $\mathbf{p}$ is the eigenvalue corresponding to the. Inserting $\hat{\mathbf{p}} = i\hbar\nabla$ gives the first-order partial differential equation
+
+$$
+  \nabla \phi(\mathbf{x}) = \frac{i}{\hbar} \mathbf{p} \phi(\mathbf{x})
+$$
+
+with solution
+
+$$
+  \phi_\mathbf{p} (\mathbf{x}) = C e^{\frac{i}{\hbar} \mathbf{p}\cdot\mathbf{x}}
+$$
+
+for some integration constant $C$. Using the de Broglie relation, linking the momentum $\mathbf{p}$ to the wave vector $\mathbf{k}$,
+
+$$
+  \mathbf{p} = \hbar \mathbf{k}
+$$
+
+the eigenfunctions can be rewritten as
+
+$$
+  \phi_\mathbf{k} (\mathbf{x}) = C e^{i \mathbf{k} \cdot \mathbf{x}}
+$$
+
+which represents spherical waves with wave vector $\mathbf{k}$.
+
+Since $\hat{\mathbf{p}}$ has a continuous spectrum, the eigenfunctions $\phi_\mathbf{k}$ are not normalizable in the usual sence. Using the following identity for the Dirac delta function 
+
+$$
+  \frac{1}{2\pi} \int_{-\infty}^\infty e^{i\alpha x} \;\d x = \delta(\alpha)
+$$
+
+we find that
+
+$$
+\begin{align*}
+  \braket{\phi_\mathbf{k}|\phi_{\mathbf{k}'}} =& \int_{\R^3} \phi_\mathbf{k}^* (\mathbf{x}) \phi_{\mathbf{k}'} (\mathbf{x}) \;\d^3 x \\
+  =& |C|^2 \int_{\R^3} e^{i(\mathbf{k}' - \mathbf{k})\cdot\mathbf{x}} \;\d x \\
+  =& (2\pi)^3 |C|^2 \delta(\mathbf{k}' - \mathbf{k})
+\end{align*}
+$$
+
+showing that $\phi_\mathbf{k}$ are normalized in the distributional sense. To ensure that the eigenfunctions satisfy the generalized orthonormality condition, we choose $C = (2\pi)^{-3/2}$ so that
+
+$$
+  \braket{\phi_\mathbf{k}|\phi_{\mathbf{k}'}} = \delta(\mathbf{k} - \mathbf{k}')
+$$
+
+Thus, the eigenfunctions become
+
+$$
+  \phi_\mathbf{k} (\mathbf{x}) = \frac{1}{\sqrt{8\pi^3}} e^{i\mathbf{k}\cdot\mathbf{x}}
+$$
+
+### Momentum representation
+
+In momentum space, a state vector $\ket{\psi}$ is expanded in terms of the momentum eigenbasis $\ket{\mathbf{p}}$ with wavefunctions $\tilde{\psi}(\mathbf{p}) = \braket{\mathbf{p}|\psi}$. In the momentum representation, the momentum operator act as a multiplication operator, and the eigenvalue equation for $\tilde{\psi}(\mathbf{p})$ is:
+
+$$
+  \hat{\mathbf{p}} \tilde{\psi}(\mathbf{p}) = \mathbf{p}\tilde{\psi}(\mathbf{p})
+$$
+
+To find the connection between the momentum and position representation of the wavefunction, we use that completeness relation of the momentum eigenstates $\ket{\mathbf{p}}$ and express the position-space wavefunction $\psi(\mathbf{x})$ as
+
+$$
+  \psi(\mathbf{x}) = \int \braket{\mathbf{x}|\mathbf{p}}\braket{\mathbf{p}|\psi} \;\d^3 p = \int \phi_\mathbf{p} (\mathbf{x}) \tilde{\psi}(\mathbf{p}) \;\d^3 p
+$$
+
+Recalling that
+
+$$
+  \phi_\mathbf{p} (\mathbf{x}) = \frac{1}{\sqrt{8\pi^3}} e^{\frac{i}{\hbar}\mathbf{p}\cdot\mathbf{x}}
+$$
+
+we obtain
+
+$$
+  \psi(\mathbf{x}) = \frac{1}{\sqrt{8\pi^3}} \int e^{\frac{i}{\hbar}\mathbf{p}\cdot\mathbf{x}} \tilde{\psi}(\mathbf{p}) \;d^3 p
+$$
+
+which is the inverse Fourier transform of $\tilde{\psi}(\mathbf{p})$. Thus, the momentum representation of the wavefunction is related to the position representation by the Fourier transform:
+
+$$
+  \tilde{\psi}(\mathbf{p}) = \frac{1}{\sqrt{8\pi^3}} \int e^{-\frac{i}{\hbar} \mathbf{p}\cdot\mathbf{x}} \psi(\mathbf{x}) \;\d^3 x
+$$
+
+Using the completeness relation of the position eigenbasis $\ket{\mathbf{x}}$, we can write $\tilde{\psi}(\mathbf{p})$ as
+
+$$
+  \tilde{\psi}(\mathbf{p}) = \int \braket{\mathbf{p}|\mathbf{x}}\braket{\mathbf{x}|\psi} \;\d^3 x = \braket{\mathbf{p}|\mathbf{x}} \psi(\mathbf{x}) \;\d^3 x
+$$
+
+From the Bessel-Parseval relationship it follows that
+
+$$
+  \int_{\R^3} |\psi(\mathbf{x})|^2 \;\d^3 x = 1 \implies \int_{\R^3} |\tilde{\psi}(\mathbf{p})|^2 \;\d^3 x = 1
+$$
+
+In the momentum representation, it can be shown that the position operator is given by
+
+$$
+  \hat{\mathbf{x}} = i\hbar \nabla_\mathbf{p}
+$$
+
+### Canonical commutation relations
+
+In Cartesian coordinates, the commutation relations of $\hat{\mathbf{x}} = (\hat{x}_x, \hat{x}_y, \hat{x}_z)$ and $\hat{\mathbf{p}} = (\hat{p}_x, \hat{p}_y, \hat{p}_z)$ are
+
+$$
+\begin{equation}
+  [\hat{x}_i, \hat{x}_j] = [\hat{p}_i, \hat{p}_j] = 0, \quad [\hat{x}_i, \hat{p}_i] = i\hbar\delta_{ij} \tag{\label{equation-95}}
+\end{equation}
 $$
 
 <details>
@@ -2457,7 +2587,7 @@ $$
 By equality of mixed partials, the commutation of momentum operators is
 
 $$
-  [\hat{p}_i, \hat{p}_j]\psi(\mathbf{x}) = -i\hbar\left(\frac{\partial}{\partial x_i}\frac{\partial}{\partial x_j} \frac{\partial}{\partial x_j}\frac{\partial}{\partial x_i}\right)\psi(\mathbf{x}) = 0, \;\forall\psi(\mathbf{x})
+  [\hat{p}_i, \hat{p}_j]\psi(\mathbf{x}) = -i\hbar\left(\frac{\partial}{\partial x_i}\frac{\partial}{\partial x_j} - \frac{\partial}{\partial x_j}\frac{\partial}{\partial x_i}\right)\psi(\mathbf{x}) = 0, \;\forall\psi(\mathbf{x})
 $$
 
 Finally,
@@ -2467,13 +2597,18 @@ $$
   [\hat{x}_i, \hat{p}_j]\psi(\mathbf{x}) =& -i\hbar\left(x_i \frac{\partia}{\partial x_j} - \frac{\partial}{\partial x_j} x_i \right)\psi(\mathbf{x}) \\
   =& -i\hbar\left(x_i \frac{\partial\psi(\mathbf{x})}{\partial x_j} - \psi(\mathbf{x})\frac{\partial x_i}{\partial x_j} - x_i \frac{\partial \psi(\mathbf{x})}{\partial x_j} \right) \\
   =& i\hbar\psi(\mathbf{x}) \frac{\partial x_i}{\partial x_j} = i\hbar_{ij} \psi(\mathbf{x}), \;\forall\psi(\mathbf{x})
-\begin{align*}
+\end{align*}
 $$
-
-
 </details>
 
-where $\delta_{ij}$ is the Kronecker delta. These are known as the *canonical commutation relations*.
+where $\delta_{ij}$ is the Kronecker delta. These are known as the *canonical commutation relations*. From $\eqref{equation-95}$, we have eight complete sets of commuting observables:
+
+$$
+\begin{align*}
+  \set{\hat{x},\hat{y},\hat{z}}, & \set{\hat{x}, \hat{p}_y, \hat{p}_z} & \set{\hat{x}, \hat{p}_y, \hat{z}}, & \set{\hat{x}, \hat{y}, \hat{p}_z} \\
+  \set{\hat{p}_x, \hat{p}_y, \hat{p}_z}, & \set{\hat{p}_x, \hat{y}, \hat{z}}, & \set{\hat{p}_x, \hat{y}, \hat{p}_z}, & \set{\hat{p}_x, \hat{p}_y, \hat{z}}
+\end{align*}
+$$
 
 ## Orbital angular momentum
 
