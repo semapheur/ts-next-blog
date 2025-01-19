@@ -1918,3 +1918,234 @@ For the equation $\mathbb{E}(\sigma, b)$, we say that there is
 
 A solution $X$ of $\mathbb{E}_x (\sigma, b)$ is strong if $X$ is $(\mathcal{B}_t)$-adapted, where $\mathcal{B}_t = \sigma(B_s, s\leq t)$.
 </MathBox>
+
+# Ornstein-Uhlenbeck process
+
+<MathBox title='Ornstein-Uhlenbeck process' boxType='proposition'>
+The Ornstein-Uhlenbeck process $X_t$ is defined by the stochastic differential equation
+
+$$
+\begin{equation}
+  \d X_t = \theta (\mu - X_t) \d t + \sigma \d W_t \tag{\label{equation-1}}
+\end{equation}
+$$
+
+where
+- $\theta > 0$ and $\sigma > 0$ are parameters
+- $\mu$ is a constant drift coefficient
+- $W_t$ is a Wiener process
+
+The solution is
+
+$$
+  X_t = X_0 e^{-\mu T} + \theta(1 - e^{-\mu T}) + \sigma \int_0^T e^{-\mu(T - t)} \d W_t
+$$
+
+<details>
+<summary>Proof</summary>
+
+First, we write Ornstein-Uhlenbeck equation $\eqref{equation-1}$ as
+
+$$
+  \d X_t + \mu X_t \d t = \mu\theta \d t + \sigma \d W_t
+$$
+
+To find the integrating factor, we consider the deterministic part
+
+We first solve the deterministic part of $\eqref{equation-1}$
+
+$$
+  \d x + \mu x \d t = \mu\theta \d t
+$$
+
+Introducing $b = \mu\theta$, the equation is refactored as
+
+$$
+  \frac{\d x}{\d t} + \mu x = b
+$$
+
+Since $\mu$ is constant, the integrating factor is
+
+$$
+  \exp\left(\int_0^t \mu \;\d s \right) = e^{\mu t} 
+$$
+
+Multiplying by the integrating factor, we get the equation
+
+$$
+\begin{gather*}
+  e^{\mu t} \frac{\d x}{\d t} + e^{\mu t} \mu x = e^{\mu t} b \\
+  \frac{\d}{\d t}(e^{\mu t} x) = e^{\mu t} b \\
+  \d (e^{\mu t} x) = e^{\mu} b \dt
+\end{gather*}
+$$
+
+Multiplying the stochastic equation by the integrating factor, we obtain
+
+$$
+\begin{gather*}
+  e^{\mu t} \d X_t + \mu e^{\mu t} X_t \d t = \mu\theta \\
+  \d (e^{\mu t} X_t) = \mu\theta e^{\mu t} \d t + \sigma e^{\mu t} \;\d W_t
+\end{gather*}
+$$
+
+Integrating, we get the solution
+
+$$
+\begin{gather*}
+  \int_0^T \d (e^{\mu t} X_t) \int_0^T \mu\theta e^{\mu t} \;\d t + \int_0^T \sigma e^{\mu t} \;\d W_t \\
+  e^{\mu T} X_T - e^0 X_0 = \mu\theta \frac{e^{\mu T} - e^0}{\mu} + \sigma \int_0^T e^{\mu} \;\d W_t \\
+  X_T - X_0 e^{-\mu T} = \theta(1 - e^{-\mu T}) + \sigma e^{-\mu T} \int_0^T e^{\mu t} \;\d W_t \\
+  X_T = X_0 e^{-\mu T} + \theta(1 - e^{-\mu T}) + \sigma \int_0^T e^{-\mu(T - t)} \;\d W_t
+\end{gather*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Momenta of the Ornstein-Uhlenbeck process' boxType='proposition'>
+Let $X_t, X_s$ be Ornstein-Uhlenbeck processes. Then:
+1. The expectation value of $X_t$ is
+$$
+  \mathbb{E}(X_T) = X_0 e^{-\mu T} + \theta (1 - e^{-\mu T})
+$$
+2. The variance of $X_t$ is
+$$
+  \operatorname{var}(X_t) = \frac{\sigma^2}{2\mu} (1 - e^{-2\mu T})
+$$
+3. The covariance of $X_t$ and $X_s$ is
+$$
+  \operatorname{cov}(X_t, X_s) = \frac{\sigma^2}{2\mu} \left(e^{-\mu |T - S| + 2\mu S} - e^{-\mu (S + T)} \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Recall that the expectation of an integral of a deterministic function with respect to a Wiener process is zero. Taking the expectation of $X_t$ gives
+
+$$
+\begin{align*}
+  \mathbb{E}(X_t) =& \mathbb{E}\left(X_0 e^{-\mu T} + \theta (1 - e^{-\mu T}) + \sigma \int_0^T e^{-\mu(T - t)} \;\d W_t \right) \\
+  =& \mathbb{E}(X_0 e^{-\mu T}) + \mathbb{E}[\theta(1 - e^{-\mu T})] + \underbrace{\mathbb{E}\left(\sigma \int_0^T e^{-\mu (T - t)} \;\d W_t \right)}_{=0} \\
+  =& X_0 e^{-\mu T} + \theta (1 - e^{-\mu T})
+\end{align*}
+$$
+
+**(2):** Calculating the variance of $X_t$ using Itô's isometry rule gives
+
+$$
+\begin{align*}
+  \operatorname{var}(X_t) =& \mathbb{E}\left[(X_t - E(X_t))^2 \right] \\
+  =& \mathbb{E}\left[\left(\sigma \int_0^T e^{-\mu (T - t)} \;\d W_t \right)\right] \\
+  =& \sigma^2 \int_0^T e^{-2\mu (T - t)} \;\d t \\
+  =& \sigma^2 e^{-2\mu T} \int_0^T e^{2\mu t} \;\d t
+  =& \frac{\sigma^2}{2\mu} e^{-2\mu T} (e^{2\mu T} - e^0) \\
+  =& \frac{\sigma^2}{2\mu} (1 - e^{-2\mu T})
+\end{align*}
+$$
+
+**(3):** Calculating the covarianc of $X_t$ and $X_s$ gives
+
+$$
+\begin{align*}
+  \operatorname{cov}(X_t, X_s) =& \mathbb{E}\left[(X_t - \mathbb{E}(X_t))(X_s - \mathbb{E}(X_s)) \right] \\
+  =& \mathbb{E}\left[\left(\sigma \int_0^T e^{-\mu(T - t)} \;\d W_t \right)\left(\sigma \int_0^S e^{-\mu(S - s)} \d W_s \right) \right] \\
+  =& \sigma^2 e^{-\mu(S + T)} \mathbb{E}\left(\int_0^T e^{\mu t} \; \right)
+\end{align*}
+$$
+
+We assume that $s < t$ and note that the covariance over non-overlapping periods is zero. Applying Itô's isometry, we find
+
+$$
+\begin{align*}
+  \operatorname{cov}(X_t, X_s) =& \sigma^2 e^{-\mu (S + T)} \mathbb{E}\left(\int_0^T e^{\mu t} \; \right) \\
+  =& \sigma^2 e^{-\mu (S + T)} int_0^S e^{2\mu s} \;\d s \\
+  =& \frac{\sigma^2}{2\mu} e^{-\mu(S + T)} (e^{2\mu S} - 1) \\
+  =& \frac{\sigma^2}{2\mu} \left(e^{-\mu (T - S) + 2\mu S} - e^{-\mu (S + T)} \right)
+\end{align*}
+$$
+
+Similarly, assuming $t < s$, we obtain
+
+$$
+  \operatorname{cov}(X_t, X_s) = \frac{\sigma^2}{2\mu} \left(e^{-\mu (S - T) + 2\mu S} - e^{-\mu (S + T)} \right)
+$$
+
+Hence,
+
+$$
+  \operatorname{cov}(X_t, X_s) = \frac{\sigma^2}{2\mu} \left(e^{-\mu |T - S| + 2\mu S} - e^{-\mu (S + T)} \right)
+$$
+</details>
+</MathBox>
+
+<MathBox title='Limiting Ornstein-Uhlenbeck process' boxType='proposition'>
+Let $X_t$ be an Ornstein-Uhlenbeck process. In the limit $T\to\infty$, we have
+
+1. $\lim_{T\to\infty} \mathbb{E}(X_t) = \theta$
+2. $\lim_{T\to\infty} \operatorname{var}(X_t) = \frac{\sigma^2}{\mu}$
+
+The halving period $H$, which is the time required for the expected value of $X_t$ to reach the midpoint between its initial value $X_0$ and its long-term mean $\theta$, i.e.
+
+$$
+  \mathbb{E}(X_H) = X_0 + \frac{\theta - X_0}{2}
+$$
+
+is given by 
+
+$$
+  H = \frac{\ln(2)}{\mu}
+$$ 
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Taking the limit $T\to\infty$ of $\mathbb{E}(X_T)$, we have
+
+$$
+\begin{align*}
+  \lim_{T\to\infty} \mathbb{E}(X_T) =& \lim_{T\to\infty} \left(X_0 e^{-\mu T} + \theta (1 - e^{-\mu T}) \right) \\
+  =& X_0 \lim_{T\to\infty} e^{-\mu T} + \theta \left(1 - \lim_{T\to\infty} e^{-\mu T} \right) \\
+  =& \theta
+\end{align*}
+$$
+
+**(2):** Taking the limit $T\to\infty$ of $\operatorname{var}(X_T)$, we have
+
+$$
+\begin{align*}
+  \lim_{T\to\infty} \operatorname{var}(X_T) =& \lim_{T\to\infty} \left( \frac{\sigma^2}{2\mu} (1 - e^{-2\mu T}) \right) \\
+  =& \frac{\sigma^2}{2\mu} \left(1 - \lim_{T\to\infty} e^{-2\mu T} \right) \\
+  =& \frac{\sigma^2}{2\mu}
+\end{align*}
+$$
+
+**Halving period:** Calculating $\mathbb{E}(X_H)$, we find
+
+$$
+\begin{align*}
+  X_0 e^{-\mu H} + \theta(1 - e^{-\mu H}) =& X_0 + \frac{\theta - X_0}{2} \\
+  e^{-\mu H} (X_0 - \theta) + \theta =& X_0 + \frac{\theta - X_0}{2} \\
+  e^{-\mu H} (X_0 - \tehta) =& \frac{-2\theta + 2X_0 + \theta - X_0}{2} \\
+  e^{-\mu H} (X_0 - \theta) =& \frac{X_0 - \theta}{2} \\
+  e^{-\mu H} =& \frac{1}{2}
+\end{align*}
+$$
+
+Taking the logarithm and refactoring yields $H = \ln(2)/\mu$.
+</details>
+</MathBox>
+
+Discretizing the Ornstein-Uhlenbeck equation with time steps $\Delta t$, we find
+
+$$
+\begin{align*}
+  \mathbb{E}(X_{t + \Delta t}) =& X_t e^{-\mu\Delta t} + \theta (1 - e^{-\mu\Delta t}) \\
+  \operatorname{var}(X_{t + \Delta t}) =& \frac{\sigma^2}{2\mu} (1 - e^{-2\mu\Delta t}) 
+\end{align*}
+$$
+
+This gives the time series
+
+$$
+  X_{t + \Delta t} = X_t e^{-\mu\Delta t} + \theta (1 - e^{-\mu\Delta t}) + \sigma\sqrt{\frac{1 - e^{-2\mu\Delta t}}{2\mu}} \mathcal{N}(0,1)
+$$
