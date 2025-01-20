@@ -2068,6 +2068,101 @@ $$
 
 Due to the time-ordering operator, the right-hand side cannot be evaluated using Lie's expansion formula (Hadamard's lemma). The proper expression of the right-hand side is given by the Campbell-Baker-Hausdorff expansion.
 
+## Density matrix
+
+Any state vector $\ket{\psi}$ is associated with a projector $\hat{P}_\psi = \ket{\psi}\bra{\psi}$. The density matrix (or density operator) is a generalization of the projector $\hat{P}_\psi$. If $\set{\ket{j}}_j$ is an orthonormal basis on the Hilbert space, the density matrix is defined as
+
+$$
+\begin{align*}
+  \hat{\rho} =& \sum_j \sum_k \ket{j}\braket{j|\hat{\rho}|k}\bra{k} \\
+  =& \sum_{j,k} \rho_{jk} \ket{j}\bra{k}
+\end{align*}
+$$
+
+where $\rho_{jk} = \braket{j|\hat{\rho}|k}$ are the matrix elements of $\hat{\rho}$. This definition utilizes the fact that
+
+$$
+  \sum_j \ket{j}\bra{k} = \hat{I} \left(\sum_k \ket{k}\bra{k} \right)
+$$
+
+A density matrix $\hat{\rho}$ has the following properties:
+- **Hermiticity:** $\hat{\rho}^\dagger = \hat{\rho}$
+- **Unit trace:** $\operatorname{tr}(\hat{\rho}) = 1$ if $\hat{\rho}$ is normalized
+
+The density matrix describes an ensemble of quantum systems that can be divided into pure and mixed states. The density matrix $\hat{\rho}$ describes a pure state if and only if it satisfies 
+- **Idempotens:** $\hat{\rho}^2 = \hat{\rho}$.
+    - This implies that $\rho$ is a projector, meaning that $\hat{\rho} = \ket{\psi}\bra{psi}$ for any state vector $\ket{\psi}$
+- **Unit trace:** $\operatorname{tr}(\hat{\rho}^2) = \operatorname{tr}(\hat{\rho}) = 1$
+
+The density matrix $\hat{\rho}$ describes a mixed state if 
+- $\hat{\rho}^2 \neq \hat{\rho}$
+- $\operatorname{tr}(\hat{\rho}^2) < \operatorname{tr}(\hat{\rho}) = 1$
+
+<MathBox title='Qubit' boxType='example'>
+A two-state quantum system is known as a qubit. It is represented by a two-dimensional Hilbert space. An arbitrary mixed state for a qubit can be written as a linear combination
+
+$$
+  \rho = \frac{1}{2} \begin{bmatrix} 
+    1 + r_z & r_x - i r_y \\
+    r_x + i r_y & 1 - a_z 
+  \end{bmatrix} = \frac{1}{2} (1 + \mathbf{r}\cdot\boldsymbol{\sigma})
+$$
+
+where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$ are the Pauli matrices. The density matrix $\rho$ represents a pure state if and only if $\rVert\mathbf{r}\rVert = 1$. For a mixed state we have $\lVert\mathbf{r}\rVert < 1$.
+
+<details>
+<summary>Proof</summary>
+
+A general density matrix for a qubit has the form
+
+$$
+  \rho = \begin{bmatrix} \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11} \end{bmatrix}
+$$
+
+Since $\boldsymbol{tr}(\rho) = 1$, we must have $\rho_{00} + \rho_{11} = 1 \iff $\rho_{00} = 1 - \rho_{11}$. Also, since $\rho$ is Hermitian, i.e. $\rho = \rho^\dagger$ it follows that
+
+$$
+\begin{align*}
+  \rho_{00} =& \rho_{00}^* \implies \rho_{00} \in\R \\
+  \rho_{11} =& \rho_{11}^* \implies \rho_{11} \in\R \\
+  \rho_{10} =& \rho_{01}^*
+\end{align*}
+$$
+
+meaning that the diagonal elements are real, while the off-diagonal elements are complex conjugates. We can thus parametrize $\rho_{10} = r_x + i r_y$ and $\rho_{01} = r_x - i r_y$. The Hermiticity of $\rho$ also implies that it can be written as a linear combination of the Pauli matrices and the identity matrix, i.e.
+
+$$
+\begin{align*}
+  \rho =& c_0 I_2 + c_x \sigma_x + c_y \sigma_y + c_z \sigma_z \\
+  =& \begin{bmatrix}
+    c_0 + c_3 & c_1 - i c_2 \\
+    c_1 + i c_2 & c_0 - c_3
+  \end{bmatrix} = \begin{bmatrix} \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11} \end{bmatrix}
+\end{align*}
+$$
+
+This gives the equations
+
+$$
+\begin{align*}
+  c_0 + c_3 =& \rho_{00} \\
+  c_0 - c_3 =& \rho_{11} \\
+  c_1 - ic_2 =& \rho_{01} \\
+  c_1 + ic_2 =& \rho_{10}
+\end{align*}
+$$
+
+Solving these equations, we obtain
+
+$$
+\begin{align*}
+  c_0 =& \frac{1}{2} (\rho_{00} + \rho_{11}) = \frac{1}{2} \\
+  c_1 =& \frac{1}{2} (\rho_{01} + \rho_{10}) = \frac{1}{2} r_x
+\end{align*}
+$$
+</details>
+</MathBox>
+
 # Matter wave formulation
 
 A free particle moving in a $3$-dimensional Euclidean space with momentum $\mathbf{p}$ is described by a plane wave $\psi_\mathbf{p}: \R^3 \times\R\to\mathbb{C}$, which in Cartesian coordinates takes the form
