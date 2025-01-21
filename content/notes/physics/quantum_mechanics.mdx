@@ -2088,6 +2088,7 @@ $$
 A density matrix $\hat{\rho}$ has the following properties:
 - **Hermiticity:** $\hat{\rho}^\dagger = \hat{\rho}$
 - **Unit trace:** $\operatorname{tr}(\hat{\rho}) = 1$ if $\hat{\rho}$ is normalized
+- **Positive semi-definiteness**
 
 The density matrix describes an ensemble of quantum systems that can be divided into pure and mixed states. The density matrix $\hat{\rho}$ describes a pure state if and only if it satisfies 
 - **Idempotens:** $\hat{\rho}^2 = \hat{\rho}$.
@@ -2104,7 +2105,7 @@ A two-state quantum system is known as a qubit. It is represented by a two-dimen
 $$
   \rho = \frac{1}{2} \begin{bmatrix} 
     1 + r_z & r_x - i r_y \\
-    r_x + i r_y & 1 - a_z 
+    r_x + i r_y & 1 - r_z 
   \end{bmatrix} = \frac{1}{2} (1 + \mathbf{r}\cdot\boldsymbol{\sigma})
 $$
 
@@ -2113,53 +2114,55 @@ where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$
 <details>
 <summary>Proof</summary>
 
-A general density matrix for a qubit has the form
-
-$$
-  \rho = \begin{bmatrix} \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11} \end{bmatrix}
-$$
-
-Since $\boldsymbol{tr}(\rho) = 1$, we must have $\rho_{00} + \rho_{11} = 1 \iff $\rho_{00} = 1 - \rho_{11}$. Also, since $\rho$ is Hermitian, i.e. $\rho = \rho^\dagger$ it follows that
+Since $\rho\in\mathcal{M}_2 (\mathbb{C})$ is a complex $2\times 2$ matrix, it can be written as a linear combination
 
 $$
 \begin{align*}
-  \rho_{00} =& \rho_{00}^* \implies \rho_{00} \in\R \\
-  \rho_{11} =& \rho_{11}^* \implies \rho_{11} \in\R \\
-  \rho_{10} =& \rho_{01}^*
-\end{align*}
-$$
-
-meaning that the diagonal elements are real, while the off-diagonal elements are complex conjugates. We can thus parametrize $\rho_{10} = r_x + i r_y$ and $\rho_{01} = r_x - i r_y$. The Hermiticity of $\rho$ also implies that it can be written as a linear combination of the Pauli matrices and the identity matrix, i.e.
-
-$$
-\begin{align*}
-  \rho =& c_0 I_2 + c_x \sigma_x + c_y \sigma_y + c_z \sigma_z \\
+  \rho =& c_0 I_2 + c_x \sigma_x + c_y \sigma_y + c_z \sigma_z = c_0 I_2 + \mathbf{c}\cdot\boldsymbol{\sigma} \\
   =& \begin{bmatrix}
-    c_0 + c_3 & c_1 - i c_2 \\
-    c_1 + i c_2 & c_0 - c_3
-  \end{bmatrix} = \begin{bmatrix} \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11} \end{bmatrix}
+    c_0 + c_z & c_x - i c_y \\
+    c_x + i c_y & c_0 - c_z
+  \end{bmatrix}
 \end{align*}
 $$
 
-This gives the equations
+By Hermiticity, the diagonal elements of $\rho$ are real, while the off-diagonal elements are complex conjugates. Since $\operatorname{tr}(\rho) = 1$, it follows that
+
+$$
+  1 = (c_0 + c_z) + (c_0 + c_z) = 2c_0 \iff c_0 = \frac{1}{2}
+$$
+
+Since $\rho$ is semi-definite, its determinant is positive 
+
+$$
+  \det(\rho) = c_0^2 - c_z^2 - |c_x + ic_y|^2 = c_0^2 - c_x^2 - c_y^2 - c_z^2 \get 0
+$$
+
+This implies that
+
+$$
+  \lVert \mathbf{c} \rVert \leq |c_0| = \frac{1}{2}
+$$
+
+Writing $\mathbf{r} = \frac{1}{2}\mathbf{c}$, we get that
+
+$$
+  \rho = \frac{1}{2} (I_2 + \mathbf{r}\cdot\boldsymbol{\sigma})
+$$
+
+with $\lVert \mathbf{r} \rVert \leq 1$.
+
+If $\rho$ describes a pure state, then $\rho^2 = \rho$. Calculating $\rho^2$ yields
 
 $$
 \begin{align*}
-  c_0 + c_3 =& \rho_{00} \\
-  c_0 - c_3 =& \rho_{11} \\
-  c_1 - ic_2 =& \rho_{01} \\
-  c_1 + ic_2 =& \rho_{10}
+  \rho^2 =& \frac{1}{4}[I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + (\mathbf{r}\cdot\boldsymbol{\sigma})^2] \\
+  =& \frac{1}{4}(I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + \mathbf{r}^2 I_2) \\
+  =& \frac{1}{4}[(1 + \mathbf{r}^2) I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma}] \\
 \end{align*}
 $$
 
-Solving these equations, we obtain
-
-$$
-\begin{align*}
-  c_0 =& \frac{1}{2} (\rho_{00} + \rho_{11}) = \frac{1}{2} \\
-  c_1 =& \frac{1}{2} (\rho_{01} + \rho_{10}) = \frac{1}{2} r_x
-\end{align*}
-$$
+where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilon_{ijk} \sigma_k$. We see that $\rho^2 = \rho$ if and only if $\mathbf{r}^2 = \lVert\mathbf{r}\rVert^2 = 1$.
 </details>
 </MathBox>
 
@@ -3626,6 +3629,100 @@ Additionally
 $$
   (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
 $$
+
+The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ form a basis form the set of complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
+
+<details>
+<summary>Proof</summary>
+
+We need to show two things:
+1. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is linearly independent
+2. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ spans $\mathbb{M}_2 (\mathbb{C})$
+
+To prove linear independence, we must show that for $c_0, c_1, c_2, c_3 \in\mathbb{C}$
+
+$$
+  c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z = \mathbf{0}_2
+$$
+
+implies $c_0 = c_1 = c_2 = c_3 = 0$. This gives the matrix equation
+
+$$
+\begin{bmatrix}
+  c_0 + c_3 & c_1 - ic_2 \\
+  c_1 + ic_2 & c_0 - c_3
+\end{bmatrix} = \mathbf{0}_2
+$$
+
+and the matrix elements must satisfy
+
+$$
+\begin{align*}
+  c_0 + c_3 =& 0 \\
+  c_1 - ic_2 =& 0 \\
+  c_1 + ic_2 =& 0 \\
+  c_0 - c_3 =& 0
+\end{align*}
+$$
+
+The first and fourth equations imply $c_0 = -c_3$ and $c_0 = c_3$, so $c_0 = c_3 = 0$. The second and third equations imply $c_1 = ic_2$ and $c_1 = -ic_2$, so $c_1 = c_2 = 0$.
+
+An arbitrary complex $2\times 2$ matrix $A = \mathcal{M}_2 (\mathbb{C})$ is of the form
+
+$$
+  A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
+$$
+
+We need to show that $\mathbf{A}$ can be written as a linear combination
+
+$$
+  A = c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z
+$$
+
+where $c_0, c_1, c_2, c_3 \in\mathbb{C}$. This gives the matrix equation
+
+$$
+\begin{bmatrix}
+  c_0 + c_3 & c_1 - ic_2 \\
+  c_1 + ic_2 & c_0 - c_3
+\end{bmatrix} = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
+$$
+
+and the matrix elements must satisfy
+
+$$
+\begin{align*}
+  c_0 + c_3 =& a_{00} \\
+  c_1 - ic_2 =& a_{01} \\
+  c_1 + ic_2 =& a_{10} \\
+  c_0 - c_3 =& a_{11}
+\end{align*}
+$$
+
+Adding the first and fourth equations gives
+
+$$
+  2c_0 = a_{00} + a_{11} \implies c_2 = \frac{1}{2}(a_{00} + a_{11})
+$$
+
+Adding the second and third equation gives
+
+$$
+  2c_1 = a_{01} + a_{10} \implies c_1 = \frac{1}{2}(a_{01} + a_{10})
+$$
+
+Subtracting the third equation from the second gives
+
+$$
+  -i2 c_2 = a_{01} - a_{10} \implies i\frac{1}{2}(a_{01} - a_{10})
+$$
+
+Subtracting the first equation from the first gives
+
+$$
+  -2c_3 = a_{11} - a_{00} \implies c_3 = \frac{1}{2}(a_{00} - a_{11})
+$$
+</details>
 
 ## Total angular momentum
 
