@@ -2259,7 +2259,6 @@ $$
 
 In the Heisenberg picture, the density matrix evolves as
 
-
 $$
   \hat{\rho}_\text{H} = \hat{U}_t^\dagger \hat{\rho}_\text{S} \hat{U}_t = \hat{\rho}_\text{S} (0)
 $$
@@ -2273,6 +2272,85 @@ $$
 where $\hat{U}_{H_0, t}$ is the evolution operator in the interaction picture corresponding to the free Hamiltonian $\hat{H}_0$.
 
 ### Compound systems
+
+#### Entanglement
+
+Two systems $\mathcal{S}_1$ and $\mathcal{S}_2$ are entangled with respect to a certain degree of freedom if their total state $\ket{\Psi}_{12}$, relative to that degree of freedom, cannot be factored into a product of individual states, i.e. $\ket{\Psi}_{12} = \ket{\psi}_1 \otimes\ket{\varphi}_2$.
+
+In simpler terms, an entangled state describes a situation where the quantum state of the entire system cannot be separated into independent states for each subsystem. This means that the subsystems are not probabilistically independent, and the measurement outcomes of one system can affect the other, even when they are spatially separated.
+
+It's important to note that entanglement implies superposition, but the reverse is not true. In other words, while entangled states always involve superposition, not all superpositions are necessarily entangled.
+
+On the other hand, a state $\hat{\rho}$ is separable (i.e., non-entangled) if it can be written as a statistical mixture of product states:
+
+$$
+  \hat{\rho} = \sum_j w_j \hat{\rho}_1^{(j)} \otimes \hat{\rho}_2^{(j)}
+$$
+
+where $w_j \geq 0$ and $\sum_j w_j = 1$ with the $w_j$ representing probabilities of the different product states $\hat{\rho}_1^{(j)}$ and $\hat{\rho}_2^{(j)}$ for subsystems $\mathcal{S}_1$ and $\mathcal{S}_2$ respectively. In such a separable state, the subsystems are described by independent statistical mixtures, and no non-classical correlations (like entanglement) exist between them.
+
+#### Schmidt decomposition
+
+Let us consider a composite system made of two finite subsystems with the same dimension $N$, in the state
+
+$$
+  \ket{\Psi} = \sum_{j,k=1}^N C_{jk} \ket{a_j} \ket{b_k}
+$$
+
+where $\braket{a_k | a_j} = \braket{b_k | b_j} = \delta_{jk}$. The double sum can be converted into a single sum
+
+$$
+  \ket{\Psi} = \sum_{n=1}^N c_n \ket{v_n} \ket{w_n}
+$$
+
+by means of the unitary transformations
+
+$$
+\begin{align*}
+  \ket{v_n} =& \sum_j U_{nj} \ket{a}_j \\
+  \ket{w_n} =& \sum_k U'_{nk} \ket{b}_k
+\end{align*}
+$$
+
+where the coefficients $C_{jk}$ satisfy
+
+$$
+  C_{jk} = \sum_n U_{nj}^T D_{nn} U'_{nk}
+$$
+
+Here $c_n = D_{nn}$ are the singular values of the matrix $\hat{C}$, and the sets $\set{\ket{v_n}}$ and $\set{\ket{w_n}}$ are orthonormal bases for their respective Hilbert spaces. This is called the Schmidt decomposition, and the number of nonzero coefficients $c_n$ is called the *Schmidt number*, which measures the entanglement of the state $\ket{\Psi}$. A pure state $\ket{\Psi}$ of a composite system is a product state if and only if its Schmidt number is $1$. Equivalently, it is a product state if and only if the corresponding reduced density matrices of the two subsystems are pure.
+
+The Schmidt decomposition generalizes to composite systems of different dimensions. For any pure state $\ket{\Psi}_{12}$ of a composite system $\mathcal{S}_{12}$ there exists orthonormal sets of vectors $\set{\ket{j}_1}$ for system $\mathcal{S}_1$ and $\set{\ket{j}_2}$ for system $\mathcal{S}_2$ such that
+
+$$
+  \ket{\Psi}_{12} = \sum_j c_j \ket{j}_1 \ket{j}_2
+$$
+
+where $c_j$ are non-negative real numbers with $\sum_j c_j^2 = 1$. If $\set{\ket{a_j}}$ and $\set{\ket{b_k}}$ are orthonormal bases for two distinct Hilbert spaces with different dimensions, then $\set{\ket{j}_1}$ and $\set{\ket{j}_2}$ are possibly incomplete orthonormal sets in these spaces. It is important to note that Schmidt decomposition does not reduce the total Hilbert space, but rather represents the state using transformations that depend on the specific coefficients $C_{jk}$.
+
+Suppose we have a system $\mathcal{S}$ in a mixed state
+
+$$
+  \hat{\tilde{\rho}}_\mathcal{S} = \sum_n w_n \ket{a_n} \bra{a_n}
+$$
+
+where $w_n \geq 0$ and $\set{\ket{a_n}}$ is a basis for the Hilbert space $\mathcal{H}_\mathcal{S}$. It is always possible to find a larger system $\mathcal{S} + \mathcal{S}'$, where $\mathcal{S}'$ has at least $k\geq 2$ independent vectors, such that the pure state of the total system $\mathcal{S} + \mathcal{S}'$ is
+
+$$
+  \ket{\Psi}_{\mathcal{S} + \mathcal{S}'} = \sum_n \sqrt{w_n} \ket{a_n} \bra{b_n}
+$$
+
+where $\set{\ket{b_n}}$ is a basis for the Hilbert space $\mathcal{H}_{\mathcal{S}'}$. Tracing out $\mathcal{S}'$, we recover the origonal mixed state:
+
+$$
+\begin{align*}
+  \operatorname{tr}_{\mathcal{S}'} (\ket{\Psi}_{\mathcal{S} + \mathcal{S}'} \bra{\Psi}) =& \sum_{mn} \sqrt{w_m w_n} \ket{a_m} \bra{a_n | \operatorname{tr}(\ket{b_m} \bra{b_n})} \\
+  =& \sum_{mn} \sqrt{w_m w_n} \ket{a_m} \bra{a_n} \delta_{mn} \\
+  =& \hat{\tilde{\rho}}_\mathcal{S}
+\end{align*}
+$$
+
+This shows that a mixed state of a system $\mathcal{S}$ can always be represented as the partial trace of a pure state in a larger composite system $\mathcal{S} + \mathcal{S}'$.
 
 # Matter wave formulation
 
