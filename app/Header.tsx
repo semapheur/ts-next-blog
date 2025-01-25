@@ -11,7 +11,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="z-[1] grid grid-cols-[auto_1fr_auto] content-start justify-items-center gap-4 border-b border-b-secondary bg-primary/50 p-2 backdrop-blur-sm transition-[height]">
+    <header className="z-1 grid grid-cols-[auto_1fr_auto] content-start justify-items-center gap-4 border-b border-b-secondary bg-primary/50 p-2 backdrop-blur-xs transition-[height]">
       <>
         <Link
           key="logo"

@@ -40,12 +40,12 @@ function TocItem({ heading, activeIds }: TocItem) {
             key={`input.${heading.slug}`}
             id={heading.slug}
             type="checkbox"
-            className="peer absolute top-1 left-0 z-[1] h-5 w-5 cursor-pointer opacity-0"
+            className="peer absolute top-1 left-0 z-1 h-5 w-5 cursor-pointer opacity-0"
           />
           <label
             key={`label.${heading.slug}`}
             htmlFor={heading.slug}
-            className='after:-rotate-45 absolute top-0 left-0 inline-block h-5 w-5 translate-y-1 after:absolute after:top-[50%] after:left-[50%] after:box-border after:block after:h-1/3 after:w-1/3 after:translate-x-[-50%] after:translate-y-[-75%] after:border-text after:border-r after:border-b after:transition-transform after:content-[""] after:peer-checked:rotate-45'
+            className='after:-rotate-45 absolute top-0 left-0 inline-block h-5 w-5 translate-y-1 after:absolute after:top-[50%] after:left-[50%] after:box-border after:block after:h-1/3 after:w-1/3 after:translate-x-[-50%] after:translate-y-[-75%] after:border-text after:border-r after:border-b after:transition-transform after:content-[""] peer-checked:after:rotate-45'
           />
         </>
       )}
@@ -82,7 +82,7 @@ function Toggle() {
       <label
         key="label.toc"
         htmlFor="toc-toggle"
-        className="-mr-2 absolute top-[10%] right-0 z-[1] grid h-10 w-10 cursor-pointer place-items-center rounded-l-full bg-primary/50 pr-1 shadow-tlb backdrop-blur-sm lg:hidden dark:shadow-black/50"
+        className="-mr-2 absolute top-[10%] right-0 z-1 grid h-10 w-10 cursor-pointer place-items-center rounded-l-full bg-primary/50 pr-1 shadow-tlb backdrop-blur-xs lg:hidden dark:shadow-black/50"
       >
         <BookIcon className="h-6 w-6 stroke-text hover:stroke-secondary" />
       </label>
@@ -111,7 +111,7 @@ export default function Toc({ headings }: Props) {
   return (
     <>
       <Toggle />
-      <aside className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 hidden h-min max-h-[80%] min-h-0 flex-col rounded-md bg-primary/50 p-2 shadow-md backdrop-blur-sm peer-checked:flex lg:static lg:m-2 lg:flex lg:max-h-[calc(100%-16px)] lg:min-w-min lg:translate-x-0 lg:translate-y-0 dark:shadow-black/50">
+      <aside className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 hidden h-min max-h-[80%] min-h-0 flex-col rounded-md bg-primary/50 p-2 shadow-md backdrop-blur-xs peer-checked:flex lg:static lg:m-2 lg:flex lg:max-h-[calc(100%-16px)] lg:min-w-min lg:translate-x-0 lg:translate-y-0 dark:shadow-black/50">
         <>
           <div
             key="div.toc"

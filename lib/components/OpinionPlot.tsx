@@ -38,7 +38,7 @@ function OpinionPlot() {
         ref={wrapRef}
         className="relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50"
       >
-        <ul className="absolute right-2 top-2 p-2 rounded-md shadow text-text">
+        <ul className="absolute right-2 top-2 p-2 rounded-md shadow-sm text-text">
           <b>Opinion</b>
           <li>
             <b>Belief: </b>

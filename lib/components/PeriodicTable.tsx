@@ -96,7 +96,7 @@ export default function PeriodicTable() {
         <div
           key={element.name}
           id={element.number.toString()}
-          className="@container relative grid rounded-sm hover:border border-text"
+          className="@container relative grid rounded-xs hover:border border-text"
           onPointerEnter={handleHover}
           onFocus={() => {}}
           style={{

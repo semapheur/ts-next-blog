@@ -107,8 +107,8 @@ function PlotInput({
         name="fn"
         value={values.fn}
         onChange={(e) => handleChangeFn(index, e)}
-        className="peer w-[calc(100%-5rem)] pl-2 focus:outline-none
-          bg-transparent text-transparent z-[1]"
+        className="peer w-[calc(100%-5rem)] pl-2 focus:outline-hidden
+          bg-transparent text-transparent z-1"
       />
       <Tex
         math={values.tex.value}

@@ -68,7 +68,7 @@ export default function RangeBar({ markers, min, max, width, height }: Props) {
       <div className="grid grid-cols-[auto_1fr_auto] gap-1 content-center">
         <span>{min}</span>
         <div className="relative size-full">
-          <div className="absolute top-1/2 w-full h-0.5 bg-text/50 rounded" />
+          <div className="absolute top-1/2 w-full h-0.5 bg-text/50 rounded-sm" />
           {markers.map((marker) => {
             const left = ((marker.value - min) / (max - min)) * 100
             return marker.positon === "over" ? (

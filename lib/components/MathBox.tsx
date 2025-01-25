@@ -45,7 +45,7 @@ before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
 
 export default function MathBox({ title, boxType, children, tag }: Props) {
   return (
-    <aside className="my-5 bg-primary rounded shadow-md dark:shadow-black/50">
+    <aside className="my-5 bg-primary rounded-sm shadow-md dark:shadow-black/50">
       <div className={`px-2 py-1 bg-${boxType} rounded-t break-words`}>
         <span
           id={tag}
@@ -66,7 +66,7 @@ function MathBoxOld({ title, boxType, children, tag }: Props) {
     >
       <span
         id={tag}
-        className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-sm before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
+        className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-xs before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
       >
         {title}
       </span>

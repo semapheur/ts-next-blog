@@ -12,14 +12,14 @@ export default function SearchBox({ query, onChange }: Props) {
   return (
     <form
       className="p-2 flex justify-center items-center gap-2 
-      bg-primary border rounded-md focus-within:border-none hover:shadow
+      bg-primary border rounded-md focus-within:border-none hover:shadow-sm
       focus-within:ring-2 focus-within:ring-secondary"
     >
       <button className="" type="submit">
         <SearchIcon className="h-6 w-6 stroke-secondary" />
       </button>
       <input
-        className="peer w-full bg-inherit text-text focus:outline-none"
+        className="peer w-full bg-inherit text-text focus:outline-hidden"
         type="text"
         placeholder="Search..."
         value={query}

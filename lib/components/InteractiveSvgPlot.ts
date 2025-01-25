@@ -721,7 +721,7 @@ export class InteractiveSVGPlot {
       this.xmlns,
       "filter",
     ) as SVGFilterElement
-    setAttributes(filter, { id: "inset-shadow" })
+    setAttributes(filter, { id: "inset-shadow-sm" })
 
     // Shadow offset
     const feOffset = document.createElementNS(
@@ -772,7 +772,7 @@ export class InteractiveSVGPlot {
       operator: "in",
       in: "color",
       in2: "inverse",
-      result: "shadow",
+      result: "shadow-sm",
     })
     filter.appendChild(feComposite2)
 
@@ -783,7 +783,7 @@ export class InteractiveSVGPlot {
     ) as SVGFECompositeElement
     setAttributes(feComposite3, {
       operator: "over",
-      in: "shadow",
+      in: "shadow-sm",
       in2: "ShadowGraphic",
     })
     filter.appendChild(feComposite3)

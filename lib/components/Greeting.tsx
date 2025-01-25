@@ -150,7 +150,7 @@ export default function Greeting() {
           y="40%"
           textAnchor="middle"
           strokeDasharray="0 50%"
-          className="fill-transparent stroke-secondary stroke-[1.5] md:stroke-[3] 
+          className="fill-transparent stroke-secondary stroke-[1.5] md:stroke-3 
           text-3xl md:text-7xl font-bold font-mono"
         />
       </svg>

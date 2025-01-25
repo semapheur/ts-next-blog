@@ -14,7 +14,7 @@ import type { MDXProps } from "mdx/types"
 
 const Toc = dynamic(() => import("./Toc"), {
   loading: () => (
-    <div className="-mr-2 absolute top-[10%] right-0 z-[1] grid h-10 w-10 cursor-pointer place-items-center rounded-l-full bg-primary/50 pr-1 shadow-tlb backdrop-blur-sm lg:static lg:z-auto lg:mr-0 lg:hidden lg:h-full lg:w-full lg:rounded-none lg:pr-0 lg:shadow-none lg:backdrop-blur-none dark:shadow-black/50">
+    <div className="-mr-2 absolute top-[10%] right-0 z-1 grid h-10 w-10 cursor-pointer place-items-center rounded-l-full bg-primary/50 pr-1 shadow-tlb backdrop-blur-xs lg:static lg:z-auto lg:mr-0 lg:hidden lg:h-full lg:w-full lg:rounded-none lg:pr-0 lg:shadow-none lg:backdrop-blur-none dark:shadow-black/50">
       <Loader width="75%" />
     </div>
   ),

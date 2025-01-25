@@ -26,7 +26,7 @@ function Toggle() {
       <label
         key={"label.sidebar"}
         htmlFor="sidebar-toggle"
-        className="-ml-2 after:-rotate-45 absolute bottom-[10%] left-full z-[1] flex h-10 w-10 cursor-pointer items-center rounded-r-full bg-primary/50 shadow-trb backdrop-blur-sm after:h-1/3 after:w-1/3 after:translate-x-[90%] after:border-text after:border-r-2 after:border-b-2 after:transition-transform after:hover:border-secondary peer-checked:ml-0 peer-checked:after:rotate-[135deg] md:hidden dark:shadow-black/50"
+        className="-ml-2 after:-rotate-45 absolute bottom-[10%] left-full z-1 flex h-10 w-10 cursor-pointer items-center rounded-r-full bg-primary/50 shadow-trb backdrop-blur-xs after:h-1/3 after:w-1/3 after:translate-x-[90%] after:border-text after:border-r-2 after:border-b-2 after:transition-transform hover:after:border-secondary peer-checked:ml-0 peer-checked:after:rotate-[135deg] md:hidden dark:shadow-black/50"
       />
     </>
   )
@@ -34,7 +34,7 @@ function Toggle() {
 
 export default function Sidebar({ noteDetails }: Props) {
   return (
-    <aside className="absolute top-0 left-0 z-[1] h-full w-auto flex-none bg-primary/50 shadow-r backdrop-blur md:relative dark:shadow-black/50">
+    <aside className="absolute top-0 left-0 z-1 h-full w-auto flex-none bg-primary/50 shadow-r backdrop-blur-sm md:relative dark:shadow-black/50">
       <Toggle />
       <nav className="h-full w-0 overflow-y-scroll bg-primary/0 transition-transform peer-checked:w-max md:min-w-max">
         {Object.entries(noteDetails).map(([subject, notes]) => (

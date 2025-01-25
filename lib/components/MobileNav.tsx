@@ -41,12 +41,12 @@ export default function MobileNav({
           flex md:hidden flex-col justify-center gap-[var(--gap)]
           bg-transparent cursor-pointer
           before:w-full before:h-[var(--bar)] before:content-[""] 
-          before:bg-text before:hover:bg-secondary before:rounded-full
+          before:bg-text hover:before:bg-secondary before:rounded-full
           before:transition-transform
           peer-checked:before:translate-y-[var(--shift)]
           peer-checked:before:rotate-45
           after:w-full after:h-[var(--bar)] after:content-[""] 
-          after:bg-text after:hover:bg-secondary after:rounded-full
+          after:bg-text hover:after:bg-secondary after:rounded-full
           after:transition-transform
           peer-checked:after:-translate-y-[var(--shift)]
           peer-checked:after:-rotate-45'

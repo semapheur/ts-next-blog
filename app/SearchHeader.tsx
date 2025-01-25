@@ -46,7 +46,7 @@ export default function SearchBar() {
       >
         <div className="grid h-auto w-auto grid-rows-[auto_1fr] p-1">
           <input
-            className="rounded px-2 focus:outline-none focus:ring-2 focus:ring-secondary"
+            className="rounded-sm px-2 focus:outline-hidden focus:ring-2 focus:ring-secondary"
             type="text"
             placeholder="Seek, and you shall find"
             value={query}

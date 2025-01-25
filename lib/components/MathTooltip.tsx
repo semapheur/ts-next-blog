@@ -9,7 +9,7 @@ export default function MathTooltip({ content, children }: Props) {
       data-tooltip={content}
       className="relative after:absolute after:left-full
       after:bg-text/50 after:text-primary after:text-sm
-      after:backdrop-blur-md after:p-1 after:rounded
+      after:backdrop-blur-md after:p-1 after:rounded-sm
       hover:after:block hover:after:content-[attr(data-tooltip)]"
     >
       {children}

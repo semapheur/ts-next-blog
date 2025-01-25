@@ -140,10 +140,10 @@ export default function Landscape() {
   }, [size])
 
   return (
-    <div ref={wrapRef} className="relative h-full transform-style-3d z-[-1]">
+    <div ref={wrapRef} className="transform-style-3d relative z-[-1] h-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-full w-full origin-bottom-left translate-z-[-5px] scale-[6]"
+        className="translate-z-[-5px] size-full origin-bottom-left scale-[6]"
       >
         <title>{"Landscape"}</title>
         <defs>
@@ -154,50 +154,39 @@ export default function Landscape() {
         </defs>
         <rect width="100%" height="100%" filter="url(#starsky)" />
       </svg>
-      <div
-        className="absolute inset-0 h-full w-full 
-        origin-bottom-left translate-z-[-5px] scale-[6]
-        opacity-0 dark:opacity-100 transition-opacity delay-[2s] duration-1000 
-        bg-[linear-gradient(rgb(0,11,22,0.1)40%,rgb(13,98,245,1)80%,rgb(57,167,255,1)100%)]"
-      />
-      <div
-        className="absolute inset-0 h-full w-full 
-        origin-bottom-left translate-z-[-5px] scale-[6] 
-        bg-[length:100%_200%] bg-bottom dark:bg-top dark:opacity-0
-        [transition:opacity_2s_ease-in,background-position_1s_ease-out]
-        bg-[radial-gradient(circle_at_50%_60%,rgb(242,248,247,1)0%,rgb(249,249,28,1)3%,rgb(247,214,46,1)8%,rgb(248,200,95,1)12%,rgb(201,165,132,1)30%,rgb(115,130,133,1)51%,rgb(46,97,122,1)85%,rgb(24,75,106,1)100%)]"
-      />
+      <div className="translate-z-[-5px] absolute inset-0 size-full origin-bottom-left scale-[6] bg-[linear-gradient(rgb(0,11,22,0.1)40%,rgb(13,98,245,1)80%,rgb(57,167,255,1)100%)] opacity-0 transition-opacity delay-[2s] duration-1000 dark:opacity-100" />
+      <div className="translate-z-[-5px] absolute inset-0 size-full origin-bottom-left scale-[6] bg-[length:100%_200%] bg-[radial-gradient(circle_at_50%_60%,rgb(242,248,247,1)0%,rgb(249,249,28,1)3%,rgb(247,214,46,1)8%,rgb(248,200,95,1)12%,rgb(201,165,132,1)30%,rgb(115,130,133,1)51%,rgb(46,97,122,1)85%,rgb(24,75,106,1)100%)] bg-bottom [transition:opacity_2s_ease-in,background-position_1s_ease-out] dark:bg-top dark:opacity-0" />
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full origin-bottom-left translate-z-[-4px] scale-[5]"
+        className="translate-z-[-4px] absolute inset-0 size-full origin-bottom-left scale-[5]"
       >
         <title>{"Mountain"}</title>
         <path ref={hill5Ref} className="fill-amber-900 dark:fill-stone-200" />
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full origin-bottom-left translate-z-[-3px] scale-[4]"
+        className="translate-z-[-3px] absolute inset-0 size-full origin-bottom-left scale-[4]"
       >
         <title>{"Rolling hills"}</title>
         <path ref={hill4Ref} className="fill-amber-700 dark:fill-stone-300" />
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full origin-bottom-left translate-z-[-2px] scale-[3]"
+        className="translate-z-[-2px] absolute inset-0 size-full origin-bottom-left scale-[3]"
       >
         <title>{"Rolling hills"}</title>
         <path ref={hill3Ref} className="fill-amber-500 dark:fill-stone-400" />
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full origin-bottom-left translate-z-[-1px] scale-[2]"
+        className="translate-z-[-1px] absolute inset-0 size-full origin-bottom-left scale-[2]"
       >
         <title>{"Rolling hills"}</title>
         <path ref={hill2Ref} className="fill-amber-300 dark:fill-stone-500" />
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 size-full"
       >
         <title>{"Rolling hills"}</title>
         <path ref={hill1Ref} className="fill-amber-100 dark:fill-stone-600" />

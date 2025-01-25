@@ -48,7 +48,7 @@ export default function ThemeToggle() {
 
   return (
     <button
-      className="before:-translate-y-1/2 relative cursor-pointer before:absolute before:top-1/2 before:right-[110%] before:min-w-max before:rounded before:border-secondary before:bg-text/50 before:px-1 before:text-primary before:text-sm before:shadow-md before:backdrop-blur-sm hover:before:content-[attr(aria-label)]"
+      className="before:-translate-y-1/2 relative cursor-pointer before:absolute before:top-1/2 before:right-[110%] before:min-w-max before:rounded-sm before:border-secondary before:bg-text/50 before:px-1 before:text-primary before:text-sm before:shadow-md before:backdrop-blur-xs hover:before:content-[attr(aria-label)]"
       type="button"
       aria-label={`Switch to ${inactiveTheme} theme`}
       onClick={() => setActiveTheme(inactiveTheme)}

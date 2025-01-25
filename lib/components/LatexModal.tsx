@@ -20,7 +20,7 @@ type Props = {
 } & HTMLProps<HTMLDialogElement>
 
 const modalStyle =
-  "fixed m-auto p-0 inset-0 overflow-hidden max-w-[min(90vw,60ch)] bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur backdrop:bg-stone-500/50"
+  "fixed m-auto p-0 inset-0 overflow-hidden max-w-[min(90vw,60ch)] bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur-sm backdrop:bg-stone-500/50"
 
 export default function LatexModal({
   isOpen,
