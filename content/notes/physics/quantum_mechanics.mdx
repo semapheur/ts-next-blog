@@ -1224,7 +1224,9 @@ which is the Heisenberg uncertainty principle.
 The time evolution of a state vector $\ket{\psi}$ is given by the Schrödinger equation
 
 $$
-  i\hbar \frac{\partial}{\partial t}\ket{\psi} = \hat{H} \ket{\psi}
+\begin{equation}
+  i\hbar \frac{\partial}{\partial t}\ket{\psi} = \hat{H} \ket{\psi} \tag{\label{equation-98}}
+\end{equation}
 $$
 
 If $\ket{\psi}$ can be expanded in a continuous eigenbasis $\ket{q}$ as
@@ -1345,7 +1347,85 @@ This expression vanishes if and only if $\braket{\psi|\hat{H}|\psi} = \braket{\p
 
 ### Stationary states
 
-If the Hamiltonian operator has a time-independent potential, the Schrödinger equation can be solved by separation of variables. Assuming a wavefunction of the form $\Psi(\mathbf{x},t) = \psi(\mathbf{x})\phi(t)$ with partial derivatives
+If the Hamiltonian operator has a time-independent potential, the solution to the Schrödinger equation is obtained by integrating $\eqref{equation-98}$, giving
+
+$$
+  \ket{\psi(t)} = e^{-i\hat{H}t/\hbar} \ket{\psi(0)}
+$$
+
+where $\ket{\psi(0)}$ is the state vector at time $t_0 = 0$. If the initial state vector is an eigenstate of the Hamiltonian, i.e.
+
+$$
+  \hat{H} \ket{\psi(0)} = E\ket{\psi(0)}
+$$
+
+where $E$ is the corresponding eigenvalue of $\hat{H}$, then the action of the operator $e^{i\hat{H}t/\hbar}$ on the state vector $\ket{\psi(0)}$ becomes trivial. In this case, the state vector at time $t$ is simply
+
+$$
+  \ket{\psi(t)} = e^{-iEt/\hbar} \ket{\psi(0)}
+$$
+
+Consequently, an energy eigenstate does not evolve with time since the phase factor $e^{-iEt/\hbar}$ is irrelevant for the physical state. In order to find a time-evolved state vector $\ket{\psi(t)}$, we first need to solve the eigenvalue equation for the Hamiltonian, called the time-independent Schrödinger equation. In the case of a discrete spectrum, this reads
+
+$$
+  \hat{H}\ket{\psi_n} = E_n \ket{\psi_n}
+$$
+
+where $\ket{\psi_n}$ are the stationary states and $E_n$ are the corresponding eigenvalues, representing the energy levels of the system. Next, we expand the intial state vector $\ket{\psi(0)}$ in terms of the basis $\set{\ket{\psi_n}}$ by determining the complex coefficients $c_n^(0)$ such that
+
+$$
+  \ket{\psi(0)} = \sum_n c_n^{(0)} \ket{\psi_n}
+$$
+
+The time-evolved state is the given by
+
+$$
+  \ket{\psi(t)} = \sum_n e^{-iE_nt/\hbar} c_n^{(0)} \ket{\psi_n}
+$$
+
+For a continuous spectrum, the eigenvalue equation becomes
+
+$$
+  \hat{H}\ket{\psi_E} = E\ket{\psi_E}
+$$
+
+and the expansion of $\ket{\psi(0)}$ onto the continuous basis $\ket{\psi_E}$ is 
+
+$$
+  \ket{\psi(0)} = \int c^{(0)} (E) \ket{\psi_E} \;\d E
+$$
+
+The time-evolved state is then
+
+$$
+  \ket{\psi(t)} = \int e^{-iEt/\hbar} c^{(0)} (E) \ket{\psi_E} \;\d E
+$$
+
+Taking the expectation value of $\hat{H}$ with respect to an initial eigenstate $\ket{\psi(0)}$, we get
+
+$$
+\begin{align*}
+  \braket{\hat{H}}_\psi =& \braket{\psi|\hat{H}|\psi} = E\underbrace{\braket{\psi|\psi}}_{=1} = E
+\end{align*}
+$$
+
+Since
+
+$$
+  \hat{H}^2 \ket{\psi} = \hat{H}(\hat{H}\ket{\psi}) = \hat{H}(E\ket{\psi}) = E(\hat{H}\ket{\psi}) = E^2 \ket{\psi}
+$$
+
+it follows that $\braket{\hat{H}^2} = E^2$. Thus, the variance of $H$ is
+
+$$
+  \sigma_H^2 = \braket{H^2} - \braket{H}^2 = E^2 - E^2 = 0
+$$
+
+showing that the total energy is a determinate state.
+
+#### Wavefunction formulation
+
+In terms of a wavefunction $\psi(x,t)$, the Schrödinger equation for a time-independent potential can be solved by separation of variables. Assuming a wavefunction of the form $\Psi(\mathbf{x},t) = \psi(\mathbf{x})\phi(t)$ with partial derivatives
 
 $$
   \frac{\partial\Psi}{\partial t} = \psi \frac{\d\phi}{\d t}, \quad \nabla^2 \Psi = (\nabla^2 \psi) \phi
@@ -1393,29 +1473,43 @@ $$
   |\Psi(\mathbf{x},t)|^2 = \Psi^* \Psi = \psi^* e^{iEt/\hbar} \psi e^{-iEt/\hbar} = |\psi(x)|^2
 $$
 
-is time-independent. Taking the expectation value of $\hat{H}$, we get
+is time-independent.
+
+### Degenerate eigenvalues
+
+Energy eigenstate can be degenerate, in which case two or more eigenstates share the same eigenvalue. A neccessary and sufficient condition for energy degeneracy is that an observable $\hat{Q}$ commutes with the Hamiltonian, and is not the identity operator. Specifically, if
 
 $$
-\begin{align*}
-  \langle \hat{H} \rangle_\Psi =& \braket{\Psi|\hat{H}\Psi} = \int_{\R^3} (\psi e^{-iEt/\hbar})^* \underbrace{\hat{H}\psi}_{=E\psi} e^{-iEt/\hbar} \;\d^3 x \\
-  =& E \int_{\R^3} \psi^* e^{iEt/\hbar} \psi e^{-iEt/\hbar} \; \d^3 x \\
-  =& E \underbrace{\int_{\R^3} |\psi|^2 \;\d^3 x}_{=1} = E
-\end{align*}
+  [\hat{H}, \hat{Q}] = 0
 $$
 
-Since
+and $\hat{Q}$ is not a function of $\hat{H}$ alone, then
 
 $$
-  \hat{H}^2 \psi = \hat{H}(\hat{H}\psi) = \hat{H}(E\psi) = E(\hat{H}\psi) = E^2 \psi
+  \hat{H}\hat{Q} \ket{\psi_j} = \hat{Q}\hat{H}\ket{\psi_j} = E_j \hat{Q} \ket{\psi_j}
 $$
 
-it follows that $\langle\hat{H}^2 \rangle = E^2$. Thus, the variance of $H$ is
+which shows that $\hat{Q}\ket{\psi_j}$ is an eigenvector of $\hat{H}$ with eigenvalue $E_j$. Moreover, $\hat{Q}\ket{\psi_j}$ cannot be proportional to $\ket{\psi_j}$. In other words, it cannot be written as $\hat{Q}\ket{\psi_j} = f(E_j) \ket{\psi_j}$, where $f(E_j)$ is a function of the $j$-th energy eigenvalue. If this were the case, $\hat{Q}$ would be equal to $f(\hat{H})$, which contradicts the assumptions that $\hat{Q}$ is not a function of $\hat{H}$.
+
+Let us prove that degeneracy implies commutativity in the case of a discrete spectrum. If degeneracy exists, the whole Hilbert space $\mathcal{H}$ can always be partitioned into subspaces $\mathcal{H}_k$ for $k\in\N_+$, each of which is associated with a constant energy eigenvalue $E_k$. In this case, we can write
 
 $$
-  \sigma_H^2 = \langle H^2 \rangle - \langle H \rangle^2 = E^2 - E^2 = 0
+  \mathcal{H} = \bigoplus_k \mathcal{H}_k
 $$
 
-showing that the total energy is a determinate state.
+For any $\ket{\varphi}\in\mathcal{H}_k$, we have
+
+$$
+  \hat{H}\ket{\varphi} = E_k \ket{\varphi}
+$$
+
+Thus, within each subspace $\mathcal{H}_k$, the Hamiltonian $\hat{H}_k$ acts as multiple of the identity, i.e. $\hat{H}_k = E_k \hat{I}$. The dimension of $\mathcal{H}_k$ is equal to the degeneracy of the eigenvalue $E_k$. Next, we can define a Hermitian operator $\hat{Q}$
+
+$$
+  \hat{Q} = \bigotimes_n \hat{Q}_n
+$$
+
+where $\hat{Q}_k$ is an arbitrary operator acting within $\mathcal{H}_k$. Furthermore, since $\hat{H}_k = E_k \hat{I}$, it follows that $[\hat{Q}_k, \hat{H}_k] = 0$. This implies that $\hat{Q}$ commutes with $\hat{H}$, i.e. $[\hat{Q},\hat{H}] = 0$.
 
 ## Time evolution operator
 
