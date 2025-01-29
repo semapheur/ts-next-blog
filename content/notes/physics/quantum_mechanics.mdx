@@ -807,8 +807,10 @@ $$
 Using the completeness relation of $\ket{\eta}$, we can express $\psi_\xi$ as
 
 $$
+\begin{align*}
   \psi_\xi (\xi) =& \braket{\xi|\psi} = \int \overbrace{\braket{\xi\|eta}}^{\phi_\eta (\xi)} \overbrace{\braket{\eta|\psi}}^{\psi_\eta (\eta)} \;\d\eta \\
   =& \int \phi_\eta (\xi) \psi_\eta (\eta) = \hat{U}(\eta,\xi) \psi(\eta)
+\end{align*}
 $$
 
 In the following we show that the transformation
@@ -1817,6 +1819,56 @@ $$
 
 This equation reflects an instance of Huygens' principle: if the wwave function $\psi(\mathbf{r},t)$ is known at a time $t$, it can be determined at any later time $t'$ by considering each point $\mathbf{r}$ at time $t$ is a source of waves propagating outward. The amplitude of the wave arriving at point $\mathbf{r}'$ at time $t'$ from the point $\mathbf{r}$ is proportional to the original wave amplitude $\psi(\mathbf{r},t)$, with proportionality constant given by $iG(\mathbf{r}', t'; \mathbf{r}, t)$.
 
+Green's functions are related to the resolvent of the Hamiltonian as the latter is the Fourier transform of the relative unitary operator, i.e.
+
+$$
+  \hat{R}_{\hat{H}}(\eta) = i \int_0^\infty e^{-\eta\tau} e^{-i\hat{H}\tau/\hbar} \;\d\tau
+$$
+
+where $\tau = t' - t$. For a linear operator $\hat{Q}$ on the Hilbert space $\mathcal{H}$, the resolvent $\hat{R}_{\hat{Q}}(\eta)$ is the operator-valued function
+
+$$
+  \hat{R}_{\hat{Q}}(\eta) = (\hat{Q} - \eta)^{-1s}
+$$
+
+which is defined for all complex values of $\eta$ where $(\hat{Q} - \eta)^{-1}$ exists. For the case of the Hamiltonian, we can use the projectors $\hat{P}_j$ onto the eigenvalues $E_j$ of $\hat{H}$. This gives the relation:
+
+$$
+  \hat{R}_{\hat{H}} (\eta) \hat{P}_j = \frac{\hat{P}_j}{E_j - \eta}
+$$
+
+This allows us to interpret the projectors $\hat{P}_j$ as the residues of the closed contour $f_j$ in the complex plane, enclosing the point $E_j$ on the real axis of the complex plane, i.e.
+
+$$
+  \hat{P}_j = \frac{1}{2\pi i} \oint_{f_j} \hat{R}_{\hat{H}} (\eta) \;\d\eta
+$$
+
+For the continuous part of the spectrum, we have
+
+$$
+  \hat{P}(\Delta j) = \frac{1}{2\pi i} \oint_{f(\Delta j)} \hat{R}_{\hat{H}} (\eta) \;\d\eta
+$$
+
+where $\hat{P}(\Delta j)$ is a projector on a small interval around the continuous eigenvalue $E_j$. 
+
+In the case of a free particle, the Hamiltonian has a pure continuous spectrum in the iterval $[0,\infty)$. The resolvent of the free particle Hamiltonian $\hat{H}_0$ is
+
+$$
+  \hat{R}_{\hat{H}_0} (\eta) = \frac{1}{\hat{H}_0 - \eta}
+$$
+
+which is defined for all $\eta$ outside the spectrum. This resolvent is a bounded operator on the entire Hilbert space when $\Re(\eta) < 0$ or $\Im(\eta) \neq 0$, i.e. when the argument of $\eta$ is within the open interval $(0,2\pi)$. Using Green's functions, the evolution of a free particle in space and time takes the form
+
+$$
+  \psi(\mathbf{r}', t') = i\int G_0 (\mathbf{r}', t'; \mathbf{r}, t) \psi(\mathbf{r},t) \;\d\mathbf{r}
+$$
+
+for $t' > t$ and for all values $0 < \eta < 2\pi$. Here $G_0$ is called the free Green's function and its explicit expression is
+
+$$
+  G_0 (\mathbf{r}', t'; \mathbf{r}, t) = -i\left(\frac{m}{2\pi i \hbar(t' - t)} \right)^{3/2} \exp\left( i\frac{m|\mathbf{r}' - \mathbf{r}|^2}{2\hbar (t' - t)} \right)
+$$
+
 ## Propagator
 
 The matrix elements of the time evolution operator in the localized basis states $\set{\ket{\mathbf{x}}}_{\mathbf{x}\in\R^3}$ defines a function
@@ -2034,30 +2086,67 @@ $$
 
 The continuum causes a branch cut along in the complex energy plan, such that $\eqref{equation-13}$ also includes an integral over the discontinuity along the cut.
 
-## Heisenberg picture
+## Time-evolution spectrums
 
-The Heisenberg picture gives an alternate formulation of quantum mechanics which is more closely related to classical mechanics than the Schrödinger picture. In the Heisenberg picture of quantum mechanics, the state vectors are time-independent, with all the time dependence shifted to the operators.
+### Heisenberg picture
 
-In the Heisenberg picture, the canonical variables $\mathbf{p}(t)$ and $\mathbf{x}(t)$ in phase space are replaced by Heisenberg operators, denoted $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}_H(t)$, respectively. In Cartesian coordinates, the canonical equal-time commutation rules are
+The Heisenberg picture offers an alternate formulation of quantum mechanics that is more closely related to classical mechanics than the Schrödinger picture. In the Heisenberg picture, the time dependence is entirely transferred from the state vector to the observable.
+
+In the Schrödinger picture the expectation value of an arbitrary observable $\hat{O}$ is given by
+
+$$
+  {}_\text{S}\braket{\psi(t)|\hat{O}^\text{S}|\psi(t)}_\text{S}
+$$
+
+Applying the time evolution operator $\hat{U}_t$, this expectation value can be written as
+
+$$
+\begin{equation}
+\begin{split}
+  {}_\text{S}\braket{\psi(t)|\hat{O}^\text{S}|\psi(t)}_\text{S} =& {}_\text{S}\braket{\psi(0)|\hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t|\psi(0)}_\text{S} \\
+  =& {}_\text{H}\braket{\psi|\hat{O}^\text{H} (t)|\psi}_\text{H} \tag
+\end{split}
+\tag{\label{equation-99}}
+\end{equation}
+$$
+
+where $\ket{\psi}_\text{H} = \ket{\psi(0)}_\text{S}$ is the state vector in the Heisenberg picture, and $\hat{O}^\text{H} (t) = \hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t$ is the time-dependent observable in the Heisenberg picture. Since the transformation from the Schrödinger to the Heisenberg picture is unitary, the Hamiltonian is invariant, i.e.
+
+$$
+  \hat{H}^\text{H} = \hat{H}^\text{S} = \hat{H}
+$$
+
+To find the equation of motion for an observable, we take the time derivative of $\eqref{equation-99}$:
 
 $$
 \begin{align*}
-  [\hat{\mathbf{p}}_H (t) , \hat{\mathbf{x}}_H] =& -i\hbar \\
-  [\hat{\mathbf{p}}_H (t) , \hat{\mathbf{p}}_H] =& 0 \\
-  [\hat{\mathbf{x}}_H (t) , \hat{\mathbf{x}}_H] =& 0 \\
+  &\frac{\d}{\d t} \left({}_\text{S}\braket{\psi(t)|\hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t|\psi(t)}_\text{S} \right) \\
+  =& {}_\text{S}\Braket{\psi(0)|\left(\frac{i}{\hbar}\hat{H}\hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t - \frac{i}{\hbar}\hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t \hat{H} + \hat{U}_t^\dagger \frac{\partial\hat{O}^\text{S}}{\partial t} \hat{U}_t \right)|\psi(0)}_\text{S} \\
+  =& {}_\text{H} \Braket{\psi|\left(\frac{i}{\hbar}[\hat{H},\hat{O}^\text{H}] + \frac{\partial}{\partial t} \hat{O}^\text{H} (t) \right)|\psi}_\text{H}
 \end{align*}
 $$
 
-According to Heisenberg, classical equations involving Poisson brackets remain valied if the Poisson brackets are replace by $i/\hbar$ times the matrix commutators at equal times. The Hamilton equations of motion turn into the Heisenberg equations
+Since the expectation value of an observable is idependent of the time-evolution picture, this must equal the time derivative of the expectation value in the Heisenberg picture, i.e.
 
 $$
-\begin{align*}
-  \frac{\d}{\d t}\hat{\mathbf{p}}_H (t) =& \frac{i}{\hbar}[\hat{H}_H, \hat{\mathbf{p}}_H (t)] \\
-  \frac{\d}{\d t}\hat{\mathbf{x}}_H (t) =& \frac{i}{\hbar}[\hat{H}_H, \hat{\mathbf{x}}_H (t)]
-\end{align*}
+  \frac{\d}{\d t} {}_\text{H}\braket{\psi|\hat{O}^\text{H} (t)|\psi}_\text{H}
 $$
 
-where $\hat{H} = H(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H, t)$ is the Hamiltonian in the Heisenberg picture. In Hamiltonian mechanics, an arbitrary observable function $O(\mathbf{p}(t), \mathbf{x}(t), t)$ satisfies the equation of motion
+Thus, we obtain the Heisenberg equation of motion
+
+$$
+  i\hbar \frac{\d}{\d t} \hat{O}^\text{H} (t) = i\hbar \frac{\partial}{\partial t} \hat{O}^text{H} (t) + [\hat{O}^\text{H}, \hat{H}]
+$$
+
+If the operator $\hat{O}$ does not explicitly depend on time in the Schrödinger picture, this simplifies to
+
+$$
+  i\hbar \frac{\d}{\d t} \hat{O}^\text{H} (t) = [\hat{O}^\text{H} (t), \hat{H}]
+$$
+
+which is the Heisenberg equation. This equation shows that an observable that does not explicitly on time and commutes with the Hamiltonian is a conserved quantity, or a constant of motion. 
+
+In Hamiltonian mechanics, an observable function $O(\mathbf{p}(t), \mathbf{x}(t), t)$, satisfies the equation of motion
 
 $$
 \begin{align*}
@@ -2066,87 +2155,21 @@ $$
 \end{align*}
 $$
 
-The corresponding Heisenberg operator $\hat{O}_H (t) = O(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H (t), t)$ satisfies
+If $O$ is time-independent, this reduces to
 
 $$
-  \frac{\d}{\d t}\hat{O}_H = \frac{i}{\hbar} [\hat{H}_H, \hat{O}_H] + \frac{\partial}{\partial t} \hat{O}_H
+  \frac{\d O}{\d t} = \{H, O\}
 $$
 
-These rules are called *Heisenberg's correspondence principle*.
-
-The relation between Schrödinger's and Heisenberg's picture is provided by the time evolution operator. Let $\hat{O}(t) = O(\hat{\mathbf{p}}, \hat{\mathbf{x}}, t)$ be an arbitrart observable in the Schrödinger picture. If the states $\ket{\psi_a (t)}$ are an arbitrary complete set of solution of the Schrödinger equation, where $a$ runs through discrete and continuous indices, the operator $\hat{O}(t)$ can be specified in terms of its functional matrix elements
+This shows that the Heisenberg equation can be retrived by the substitution
 
 $$
-  O_{ab} (t) = \braket{\psi_a (t)|\hat{O}(t)|\psi_b (t)}
+  \{H,O} \to \frac{1}{i\hbar}[\hat{H},\hat{O}]
 $$
 
-We can now use the time evolution operator $\hat{U}(t, 0)$ to go to a new time-independent basis $\ket{\psi_{H;a}}$ defined by
+This can be seen as a formal rule for transitioning from classical to quantum mechanics. Specifically, in classical mechanics, if the Poisson bracket between a classical variable and the Hamiltonian is zero, this variable is conserved. Similarly, the Heisenberg evolution is formally analogous to classical time evolution. In fact, in classical mechanics, there is no direct analogue to the Schrödinger evolution. More accurately, the classical time evolution coincides with the "Heisenberg evolution" in quantum mechanics, since in classical mechanics, the state is simply a set of properties, and thus it itself can be considered an observable.
 
-$$
-  \ket{\psi_a (t)} = \hat{U}(t, 0) \ket{\psi_{H;a}}
-$$
-
-Likewise, we transform the Schrödinger operators of the canonical coordinates $\hat{\mathbf{p}}$ and $\hat{\mathbf{x}}$ into the time-dependent canonical Heisenberg operators $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}_H (t)$ via
-
-$$
-\begin{align*}
-  \hat{\mathbf{p}}_H (t) =& \hat{U}(t,0)^{-1} \hat{\mathbf{p}} \hat{U}(t, 0) \\
-  \hat{\mathbf{x}}_H (t) =& \hat{U}(t,0)^{-1} \hat{\mathbf{x}} \hat{U}(t, 0)
-\end{align*}
-$$
-
-At the time $t = 0$, the Heisenberg operators $\hat{\mathbf{p}}_H (t)$ and $\hat{\mathbf{x}}_H (t)$ coincide with the time-independent Schrödinger oeprators $\hat{\mathbf{p}}$ and $\hat{\mathbf{x}}$, respectively. An arbitrary observable $\hat{O}(t)$ is transformed into the associated Heisenberg operator as
-
-$$
-\begin{equation}
-\begin{split}
-  \hat{O}_H (t) =& \hat{U}^{-1}(t, t_a) O(\hat{\mathbf{p}}, \hat{\mathbf{x}}, t) \hat{U}(t, t_a) \\
-  =& O(\hat{\mathbf{p}}_H (t), \hat{\mathbf{x}}_H (t), t)
-\end{split}\tag{\label{equation-7}}
-\end{equation}
-$$
-
-The Heisenberg matrices $O_H (t)_{ab}$ are given by
-
-$$
-  O_H (t)_{ab} = \braket{\psi_{H;a}|\hat{O}_H (t)|\psi_{H;b}}
-$$
-
-To verify that $\eqref{equation-7}$ satisfy Heisenberg's correspondence principle, we take its time derivative to get
-
-$$
-\begin{align*}
-  \frac{\d}{\d t} \hat{O}_H (t) =& \left(\frac{\d}{\d t} \hat{U}^{-1} (t, t_a) \right) \hat{O}(t) \hat{U}(t, t_a) \\
-  &+ \hat{U}^{-1} (t, t_a) \left(\frac{\partial}{\partial t} \hat{O}(t) \right) \hat{U}(t, t_a) \\
-  &+ \hat{U}^{-1} (t, t_a) \hat{O}(t)\left(\frac{\d}{\d t} \hat{U}(t, t_a) \right)
-\end{align*}
-$$
-
-which can be rearranged as
-
-$$
-\begin{align*}
-  &\left[\left(\frac{\d}{\d t} \hat{U}^{-1} (t, t_a) \right)\hat{U}(t, t_a)\right] \hat{U}^{-1} (t, t_a) \hat{O}(t)\hat{U}(t, t_a) \\
-  &+ \left[\hat{U}^{-1} (t, t_a) \hat{O}(t) \hat{U}(t, t_a) \right] \hat{U}^{-1} (t, t_a) \frac{\d}{\d t} \hat{U}(t, t_a) \\
-  &+ \hat{U}^{-1} (t, t_a) \left(\frac{\partial}{\partial t} \hat{O}(t)\right)\hat{U}(t, t_a)
-\end{align*}
-$$
-
-Using $\eqref{equation-8}$, we obtain
-
-$$
-  \frac{\d}{\d} \hat{O}_H (t) = \frac{i}{\hbar} [\hat{U}^{-1} \hat{H}\hat{U}, \hat{O}_H] + \hat{U}^{-1}\left(\frac{\partial}{\partial t} \hat{O}(t) \right)\hat{U}
-$$
-
-Inserting $\eqref{equation-7}$, we retrieve the Heisenberg equation
-
-$$
-  \frac{\d}{\d t}\hat{O}_H = \frac{i}{\hbar} [\hat{H}_H, \hat{O}_H] + \frac{\partial}{\partial t} \hat{O}_H
-$$
-
-This shows equivalence of the Heisenberg and Schrödinger pictures of quantum mechanics.
-
-## Dirac's interaction picture
+### Dirac's interaction picture
 
 Dirac's interaction picture is an intermediate representation between the Heisenberg and Schrödinger pictures, where both the state vectors and the operators carry part of the time dependence of observables. The interaction picture is formed by splitting the Hamiltonian operator in the Schrödinger picture into two contributions
 
@@ -2154,48 +2177,111 @@ $$
   \hat{H} = \hat{H}_0 + \hat{V}
 $$
 
-where $\hat{H}_0$ is the unperturbed Hamiltonian for which the Schrödinger equation can be solved, and $\hat{V}$ is a (possibly time-dependent) interaction potential which perturbs these solutions slightly.
+where $\hat{H}_0$ is the unperturbed Hamiltonian, whose eigenvalues satisfy the time-independent Schrödinger equation, and $\hat{V}$ is a (possibly time-dependent) interaction potential which perturbs these solutions.
 
-We remove the time evolution of the unperturbed Schrödinger solutions and define the states
-
-$$
-  \ket{\psi_I (t)} = e^{i\hat{H}_0 t/\hbar} \ket{\psi(t)}
-$$
-
-Their time evolution comes entirely from the interaction potential $\hat{V}$ and is governed by the time evolution operator
+To transition to the interaction picture, we remove the time evolution associated with the unperturbed Hamiltionian and the define the transformed state as
 
 $$
 \begin{equation}
-  \hat{U}_I (t_b, t_a) = e^{i\hat{H}_0 t_b /\hbar} e^{-i\hat{H}(t_b - t_a)/\hbar} e^{-i \hat{H}_0 t_a /\hbar} \tag{\label{equation-10}}
+  \ket{\psi(t)}_\text{I} = \hat{U}_{H_0, t}^\dagger \ket{\psi(t)}_\text{S} \tag{\label{equation-100}}
 \end{equation}
 $$
 
-and reads
+where the unitary operator
 
 $$
-  \ket{\psi_I (t_b)} = \hat{U}_I (t_b, t_a) \ket{\psi_I (t_a)}
+  \hat{U}_{H_0, t}^\dagger = e^{i\hat{H}_0 t/\hbar}
 $$
 
-If $\hat{V} = 0$, the states $\ket{\psi_I (t_b)}$ are time-independent and coincide with the Heisenberg states of the operator $\hat{H}_0$. The operator $\hat{U}_I (t_b, t_a)$ satisfies the equation of motion
-
-$$
-  i\hbar\frac{\partial}{\partial t_b} \hat{U}_I (t_b, t_a) = \hat{V}_I (t_b) \hat{U}_I (t_b, t_a)
-$$
-
-where $\hat{V}_I = e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar}$ is the potential in the interaction picture. This equation of motion can be turned into an integral equation
+accounts for the free evolution generated by $\hat{H}_0$. In order to establish the corresponding transformation for observables, we apply $\hat{U}_{H_0, t}^\dagger$ to the expectation value of an arbitrary observable $\hat{Q}$:
 
 $$
 \begin{align*}
-  \hat{U}_I (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} \hat{V}_I \hat{U}_I (t, t_a)\;\d t \\
-  =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \hat{U}_I (t, t_a)\;\d t
+  {}_\text{S} \braket{\psi(t)|\hat{Q}^\text{S}|\psi(t)}_\text{S} =& {}_\text{I} \braket{\psi(t)|\hat{U}_{H_0, t}^\dagger \hat{Q}^\text{S} \hat{U}_{H_0, t}|\psi(t)}_\text{I} \\
+  =& {}_\text{I} \braket{\psi(t)|\hat{Q}^\text{I} (t)|\psi(t)}_\text{I}
 \end{align*}
 $$
 
-This equation can be iterated to find a perturbation expansion for the operator $\hat{U}_I (t_b, t_a)$ in powers of the interaction potential
+This relation implies that the observable in the interaction picture is obtained from its counterpart in the Schrödinger picture by the unitary transformation
+
+$$
+\begin{equation}
+  \hat{Q}^\text{I} (t) = \hat{U}_{H_0, t}^\dagger \hat{Q}^\text{S} \hat{U}_{H_0, t} \tag{\label{equation-101}}
+\end{equation}
+$$
+
+It follows that the free part of the Hamiltonian is invariant under the transformation to the interaction picture, i.e.
+
+$$
+  \hat{H}_0^\text{I} = \hat{H}_0^\text{S} = \hat{H}_0
+$$
+
+whereas in the Heisenberg picture, the transformation generally modifies $\hat{H}_0^\text{I}$:
+
+$$
+  \hat{H}_0^\text{H} = \hat{U}_t^\dagger \hat{H}_0 \hat{U}_t
+$$
+
+Differentiating $\eqref{equation-100}$, we obtain the evolution equation for the state in the Dirac picture:
+
+$$
+  i\hbar \frac{\d}{\d t} \ket{\psi(t)}_\text{I} = \hat{V}^\text{I} (t) \ket{\psi(t)}_\text{I}
+$$
+
+where the interaction Hamiltonian in the interaction picture is given by
+
+$$
+  \hat{V}^\text{I} = e^{i\hat{H}_0 t/\hbar} \hat{H}_\text{I} e^{-i\hat{H}_0 t/\hbar}
+$$
+
+Similarly, differentiating $\eqref{equation-101}$, we obtain the equation of motion for the observable in the Dirac picture:
+
+$$
+  i\hbar \frac{\d}{\d t} \hat{Q}^\text{I} (t) = i\hbar \frac{\partial}{\partial t} \hat{Q}^\text{I} (t) + [\hat{Q}^\text{I} (t), \hat{H}_0]
+$$
+
+where the partial time derivative transforms as
+
+$$
+  \frac{\partial}{\partial t} \hat{Q}^\text{I} (t) = \hat{U}_{H_0, t}^\dagger \left( \frac{\partial}{\partial t} \hat{Q}^\text{S} \right) \hat{U}_{H_0, t}
+$$
+
+#### Perturbed equation of motion
+
+In the interaction picture, state vectors evolve according to
+
+$$
+  \ket{\psi (t_b)}_\text{I} = \hat{U}_\text{I} (t_b, t_a) \ket{\psi (t_a)}_\text{I}
+$$
+
+where $\hat{U}_\text{I}$ is the time evolution operator given by
+
+$$
+\begin{equation}
+  \hat{U}_\text{I} (t_b, t_a) = e^{i\hat{H}_0 t_b /\hbar} e^{-i\hat{H}(t_b - t_a)/\hbar} e^{-i \hat{H}_0 t_a /\hbar} \tag{\label{equation-10}}
+\end{equation}
+$$
+
+If $\hat{V} = 0$, the states $\ket{\psi (t_b)}_\text{I}$ are time-independent and coincide with the Heisenberg states of the operator $\hat{H}_0$. The operator $\hat{U}_\text{I} (t_b, t_a)$ satisfies the equation of motion
+
+$$
+  i\hbar\frac{\partial}{\partial t_b} \hat{U}_\text{I} (t_b, t_a) = \hat{V}_\text{I} (t_b) \hat{U}_\text{I} (t_b, t_a)
+$$
+
+where $\hat{V}_\text{I} = e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar}$ is the potential in the interaction picture. This differential equation can be turned into an integral equation
 
 $$
 \begin{align*}
-  \hat{U}_I (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \\
+  \hat{U}_\text{I} (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} \hat{V}_\text{I} \hat{U}_\text{I} (t, t_a)\;\d t \\
+  =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \hat{U}_\text{I} (t, t_a)\;\d t
+\end{align*}
+$$
+
+This equation can be iterated to find a perturbation expansion for the operator $\hat{U}_\text{I} (t_b, t_a)$ in powers of the interaction potential
+
+$$
+\begin{align*}
+  \hat{U}_\text{I} (t_b, t_a) =& 1 - \frac{i}{\hbar} \int_{t_a}^{t_b} e^{i\hat{H}_0 t/\hbar} \hat{V} e^{-i\hat{H}_0 t/\hbar} \\
   &+ \left(-\frac{i}{\hbar}\right)^2 \int_{t_a}^{t_b} \d t \int_{t_a}^t \d t' e^{i\hat{H}_0 t/\hbar}\hat{V}e^{-i\hat{H}_0 (t - t')/\hbar} \hat{V} e^{-i\hat{H}_0 t'/\hbar} + \cdots
 \end{align*}
 $$
@@ -2209,7 +2295,7 @@ $$
 \end{align*}
 $$
 
-This expansion is seen to bee the recursive solution of the integral equation
+This expansion is recognized as the recursive solution of the integral equation
 
 $$
   e^{-i\hat{H}_0 (t_b - t_a)/\hbar} = e^{-i\hat{H}_0 (t_b - t_a)/\hbar} - \frac{i}{\hbar}\int_{t_a}^{t_b} e^{-i\hat{H}_0 (t_b - t)/\hbar} \hat{V} e^{-i\hat{H}_0 (t-t_a)/\hbar} \;\d t
@@ -2227,7 +2313,32 @@ $$
   e^{T(\hat{A} + \hat{B})} = \hat{T}\exp\left(\int_0^T e^{(T - t)\hat{A}} \hat{B} e^{t\hat{A}} \; \d t \right) = e^{T\hat{A}}\hat{T} \exp\left(\int_0^T e^{-t\hat{A}} \hat{B} e^{t\hat{A}} \;\d t \right)
 $$
 
-Due to the time-ordering operator, the right-hand side cannot be evaluated using Lie's expansion formula (Hadamard's lemma). The proper expression of the right-hand side is given by the Campbell-Baker-Hausdorff expansion.
+Due to the time-ordering operator, the right-hand side cannot be evaluated using Lie's expansion formula (Hadamard's lemma). Instead, the proper formulation requires the use Campbell-Baker-Hausdorff expansion.
+
+## Time-derivatives of observables
+
+The most natural way to define the time derivative $\hat{\dot{Q}}$ of a quantum mechanical observable $\hat{Q}$ in the Schrödinger picture is to assume that its expectation value $\braket{\hat{\dot{Q}}}$ is equal to the time derivative of the expectation value of $\hat{Q}$, i.e.
+
+$$
+  {}_\text{S} \braket{\psi|\hat{\dot{Q}}^\text{S}|\psi}_\text{S} = \frac{\d}{\d t} \left({}_\text{S} \braket{\psi|\hat{Q}^\text{S}|\psi}_\text{S} \right)
+$$
+
+Appying the Schrödinger equation and its Hermitian adjoint to the right-hand side, we obtain
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} \left({}_\text{S} \braket{\psi|\hat{Q}^\text{S}|\psi}_\text{S} \right) =& {}_\text{S} \Braket{\psi|\left(\frac{i}{\hbar} \hat{H}\hat{Q}^\text{S} - \frac{i}{\hbar} \hat{Q}^\text{S} \hat{H} + \frac{\partial}{\partial t} \hat{Q}^\text{S} \rigth)|\psi} \\
+  =& {}_\text{S} \Braket{\psi|\left(\frac{i}{\hbar}[\hat{H}, \hat{Q}] + \frac{\partial}{\partial t} \hat{Q}^\text{S} \right)|\psi}
+\end{align*}
+$$
+
+Hence,
+
+$$
+  \braket{\hat{\dot{Q}}} = \frac{i}{\hbar} \braket{[\hat{H},\hat{Q}]} + \Braket{\frac{\partial}{\partial t} \hat{Q}}
+$$
+
+which is known as Ehrenfest's theorem.
 
 ## Density matrix
 
