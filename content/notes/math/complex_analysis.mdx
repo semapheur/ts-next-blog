@@ -1000,3 +1000,202 @@ $$
   \oint_\gamma f(z)\;\d z = 2\pi i \sum_{j=1}^n \mathrm{wind}(\gamma, z_j)\cdot \mathrm{res}(f, z_j)
 $$
 </MathBox>
+
+# Special functions
+
+## Gamma function
+
+The gamma function, denoted $\Gamma$, is a meromorphic function defined for all complex number except the non-positive integers, i.e. $\Gamma: \mathbb{C}\setminus \Z_- \to\mathbb{C}$. It can be defined by the Euler integral of the second kind for complex numbers with positive real part:
+
+$$
+\begin{equation}
+  \Gamma(z) = \int_0^\infty e^{-t} t^{z - 1} \;\d t,\; \Re(z) > 0 \tag{\label{equation-1}}
+\end{equation}
+$$
+
+<details>
+<summary>Derivation</summary>
+
+It can be shown by induction that for $n\in\N$ and $x\in [0,1]$ 
+
+$$
+\begin{equation}
+  (-1)^n n! = \int_0^1 \ln^n (x) \;\d x \tag{\label{equation-2}}
+\end{equation}
+$$
+
+In the base case $n = 0$, we have
+
+$$
+  \int_0^1 \ln^0 (x) \;\d x = \int_0^1 \d x = 1 = 0!
+$$
+
+In the induction step, we integrate by parts, choosing
+
+$$
+  u =& \ln^{n+1}(x), \quad \d v = \d x
+$$
+
+so that
+
+$$
+  \d u = \frac{n+1}{x} \ln^n (x) \d x, \quad v =& x
+$$
+
+Carrying out the integration yields
+
+$$
+  \int_0^1 \ln^{n+1} (x) \;\d x = \left[x \ln^{n+1} (x)\right]_0^1 - (n + 1) \underbrace{\int_0^1 \frac{x}{x} \ln^n (x) \;\d x}_{(-1)^n n!}
+$$
+
+Applying l'Hôpital's rule to the boundary term at $x = 0$, we find
+
+$$
+\begin{align*}
+  \lim_{x\to 0} x\ln^{n+1} (x) =& \lim_{x\to 0} \frac{\ln^{n+1 (x)}}{1/x} \\
+  =& \lim_{x\to 0} \frac{(n + 1) ln^n(x)/x}{-1/x^2} = \lim_{x\to 0} (n+1)x \ln^n (x)
+\end{align*}
+$$
+
+Repeating the process $n + 1$, we eventually reduce the problem to
+
+$$
+  \lim_{x\to 0} x\ln(x) = \lim_{x\to 0} \frac{\ln(x)}{1/x} = \lim_{x\to 0} \frac{1/x}{-1/x^2} = \lim_{x\to 0} -x = 0
+$$
+
+Since the boundary term also vanishes at $t = 1$, we arrive at
+
+$$
+  \int_0^1 \ln^{n+1} (x) \;\d x = (-1)(n + 1)(-1)^n n! = (-1)^{n+1} (n + 1)!
+$$
+
+Rearranging $\eqref{equation-2}$, we obtain
+
+$$
+\begin{align*}
+  n! =& \int_0^1 \frac{\ln^n (x)}{(-1)^n} \;\d x = \int_0^1 (-\ln(x))^n \;\d x \\
+  =& \int_0^1 \ln^n \left(\frac{1}{x}\right) \;\d x
+\end{align*}
+$$
+
+Substituting $t = \ln(1/x)$ so that
+
+$$
+  -t = \ln(x) \iff x = e^{-t}, \quad \d x = -e^{-t} \d u
+$$
+
+we get
+
+$$
+  n! = -\int_\infty^0 t^n e^{-t} \;\d t = \int_0^\infty e^{-t} t^n \;\d t
+$$
+</details>
+
+For every positive integer $n \in\N_+$, the gamma function satisfies the factorial relation
+
+$$
+  \Gamma(n) = (n - 1)!
+$$
+
+Thus, the gamma function serves as a generalization of the factorial to the complex plane.
+
+The gamma function has the following properties
+1. $\Gamma(1) = 1$
+2. $\Gamma(z + 1) = z\Gamma(z)$ for $z > 0$
+3. $\Gamma(n + 1) = n!$ for $n\in\N_+$
+4. $\Gamma\left(\frac{1}{2}\right) = \sqrt{\pi}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** From the definition $\eqref{equation-1}$, we have
+
+$$
+  \Gamma(1) = \int_0^\infty e^{-t} \;\d t = \left. -e^{-t} \right|_0^\infty = 0 - (-1) = 1
+$$
+
+**(2):** From the definition $\eqref{equation-1}$ and integrating by parts, we have
+
+$$
+\begin{align*}
+  \Gamma(z + 1) =& \int_0^\infty e^{-t} t^{z} \;\d t \\
+  =& \left[-e^{-t} t^z \right]_0^\infty + \int_0^\infty e^{-t} z t^{z-1} \;\d t
+\end{align*}
+$$
+
+To evaluate the boundary term for $t=\infty$, we consider the limit
+
+$$
+  \lim_{t\to\infty} -\frac{t^z}{e^t}
+$$
+
+Using l'Hôpital's rule iteratively, we find that the numerator grows polynomially while the denominator grows exponentially, leading to
+
+$$
+  \lim_{t\to\infty} -\frac{t^z}{e^t} = 0
+$$
+
+Since the lower limit at $t = 0$ also vanishes, the boundary term disappears. For the remaining integral, we recognize that
+
+$$
+  z \int_0^\infty e^{-t} t^{z-1} \;\d t = z\Gamma(z)
+$$
+
+Hence, we arrive at
+
+$$
+  \Gamma(z + 1) = z\Gamma(z)
+$$
+
+**(3):** This can be shown by induction. In the base case for $n = 0$, we have using **(1)**
+
+$$
+  \Gamma(1) = 1 = 0!
+$$
+
+Assuming $\Gamma(n) = (n - 1)!$, then using **(2)** in the induction step, we get
+
+$$
+  \Gamma(n + 1) = n\Gamma(n) = n(n - 1)! = n!
+$$
+
+**(4):** From the definition $\eqref{equation-1}$, we have
+
+$$
+  \Gamma\left(\frac{1}{2} \right) = \int_0^\infty e^{-t} t^{-1/2} \;\d t
+$$
+
+Substituting $t = u^2$ with $\d t = 2u \d u$, we get
+
+$$
+  \Gamma\left(\frac{1}{2}\right) =& \int_0^\infty e^{-u^2} u^{-1} 2u \;\d u \\
+  =& 2 \int_0^\infty e^{-u^2} \;\d u
+$$
+
+Squaring both sides we get a double integral
+
+$$
+\begin{align*}
+  \Gamma\left(\frac{1}{2}\right)^2 =& 4\int_0^\infty e^{-u^2} \;\d u \int_0^\infty e^{-v^2} \;\d v \\
+  =& 4 \iint_0^\infty e^{-(u^2 + v^2)} \;\du\;\dv
+\end{align*}
+$$
+
+Converting to polar coordinates with $u = r\cos\theta$, $v = r\sin\theta$ and $\d u \d v = r\d r \d \theta$, we obtain
+
+$$
+  \Gamma\left(\frac{1}{2}\right)^2 = 4 \underbrace{\int_0^{\pi/2} \d\theta}_{=\pi/2} \int_0^\infty e^{-r^2} r \d r
+$$
+
+Since we are only integrating over the positive half-plane, $\theta\in[0,\pi/2]$. Substituting $q = r^2$ with $\d q = 2 r \d r$, we get
+
+$$
+  \Gamma\left(\frac{1}{2}\right)^2 = \frac{4\pi}{2}\frac{1}{2} \underbrace{\int_0^\infty e^{-q} \;\d q}_{=1} = \pi 
+$$
+
+Taking the square root, we arrive at
+
+$$
+  \Gamma\left(\frac{1}{2}\right) = \sqrt{\pi}
+$$
+</details>
