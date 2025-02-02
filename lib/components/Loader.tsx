@@ -18,7 +18,7 @@ export default function Loader({ ...props }: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox={`0 0 ${size.x} ${size.y}`}
       fill="none"
-      className={"stroke-text/50 self-center"}
+      className={"self-center stroke-text/50"}
       {...props}
     >
       <title>Infinity loader</title>

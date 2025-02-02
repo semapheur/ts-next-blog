@@ -15,7 +15,7 @@ type Props = {
     | "proposition"
     | "remark"
     | "theorem"
-  children: string //{children: ReactNode};
+  children: string
   tag?: string
 }
 
