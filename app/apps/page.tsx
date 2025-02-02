@@ -23,6 +23,11 @@ const content = [
     slug: "apps/opinion-plot",
   },
   {
+    title: "Bloch sphere",
+    description: "Bloch sphere visualization of qubit logic",
+    slug: "apps/bloch-sphere",
+  },
+  {
     title: "Periodic table",
     description: "Periodic table of elements",
     slug: "apps/periodic-table",

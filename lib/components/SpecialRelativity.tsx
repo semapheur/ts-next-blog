@@ -177,7 +177,7 @@ export default function SpecialRelativity() {
   }, [])
 
   return (
-    <div ref={wrapperRef} className="h-full">
+    <div ref={wrapperRef} className="size-full">
       <canvas ref={canvasRef} />
     </div>
   )
