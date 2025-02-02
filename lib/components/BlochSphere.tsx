@@ -1,21 +1,27 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { GUI } from "dat.gui"
 
 type vec3 = [number, number, number]
 
 export default function BlochSphere() {
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const qubitArrowRef = useRef<THREE.ArrowHelper | null>(null)
+
+  const thetaRef = useRef(0)
+  const phiRef = useRef(Math.PI / 2)
 
   useEffect(() => {
     const wrapper = wrapperRef.current
     const canvas = canvasRef.current
     if (!(canvas && wrapper)) return
 
-    const { width, height } = wrapper.getBoundingClientRect()
+    const DEG2RAD = Math.PI / 180
+    const { width, height, left, top } = wrapper.getBoundingClientRect()
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: false })
     renderer.setPixelRatio(window.devicePixelRatio)
@@ -108,18 +114,61 @@ export default function BlochSphere() {
     createLabel("|+⟩", [0, 0, 1.1])
     createLabel("|-⟩", [0, 0, -1.1])
 
+    // Qubit
+    const updateQubit = () => {
+      const qubitVector = new THREE.Vector3()
+      qubitVector.z = Math.cos(thetaRef.current) * Math.sin(phiRef.current)
+      qubitVector.x = Math.sin(thetaRef.current) * Math.sin(phiRef.current)
+      qubitVector.y = Math.cos(phiRef.current)
+
+      if (qubitArrowRef.current) {
+        scene.remove(qubitArrowRef.current)
+      }
+
+      const qubitArrow = new THREE.ArrowHelper(
+        qubitVector.clone().normalize(),
+        new THREE.Vector3(0, 0, 0),
+        1,
+        0xffff00,
+      )
+      scene.add(qubitArrow)
+      qubitArrowRef.current = qubitArrow
+    }
+
     // Orbit controls
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.rotateSpeed = 0.5
 
+    // GUI
+    const gui = new GUI()
+    gui.domElement.style.position = "absolute"
+    gui.domElement.style.left = `${left + 1}rem`
+    gui.domElement.style.top = `${top + 1}rem`
+    wrapper.appendChild(gui.domElement)
+
+    const params = {
+      theta: 0,
+      phi: 90,
+    }
+    gui.add(params, "theta", 0, 360).onChange((value: number) => {
+      thetaRef.current = value * DEG2RAD
+      updateQubit()
+    })
+    gui.add(params, "phi", 0, 180).onChange((value: number) => {
+      phiRef.current = value * DEG2RAD
+      updateQubit()
+    })
+
     // Handle window resize
     const onResize = () => {
-      const { width, height } = wrapper.getBoundingClientRect()
+      const { width, height, left, top } = wrapper.getBoundingClientRect()
       camera.aspect = width / height
       camera.updateProjectionMatrix()
       renderer.setSize(width, height)
+      gui.domElement.style.left = `${left + 1}rem`
+      gui.domElement.style.top = `${top + 1}rem`
     }
     window.addEventListener("resize", onResize)
 
@@ -131,10 +180,13 @@ export default function BlochSphere() {
     }
 
     render()
+    updateQubit()
 
     return () => {
       window.removeEventListener("resize", onResize)
       renderer.dispose()
+      wrapper.removeChild(gui.domElement)
+      gui.destroy()
     }
   }, [])
 
