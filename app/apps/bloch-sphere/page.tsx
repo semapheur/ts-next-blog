@@ -1,12 +1,10 @@
+"use client"
+
 import dynamic from "next/dynamic"
-import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Bloch Sphere",
-  description: "A WebGL-based visualization of the Bloch sphere.",
-}
-
-const BlochSphere = dynamic(() => import("lib/components/BlochSphere"))
+const BlochSphere = dynamic(() => import("lib/components/BlochSphere"), {
+  ssr: false,
+})
 
 export default function Page() {
   return <BlochSphere />

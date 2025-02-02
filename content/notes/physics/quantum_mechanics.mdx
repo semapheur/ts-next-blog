@@ -14,7 +14,7 @@ references:
 
 ## Dirac notation (bra-ket)
 
-Let $V$ be a Hilbert space over a field $\mathbb{F}$ with dual space $V^*$.
+Let $V$ be an inner product space over a field $\mathbb{F}$ with dual space $V^*$.
 - A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
 - A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \to\mathbb{F}$ and is a covector to $\ket{f}$
 - A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product
@@ -36,6 +36,94 @@ $$
   \bra{\phi}^\dagger &= \ket{\phi}
 \end{align*}
 $$
+
+## Hilbert space
+
+<MathBox title='Hilbert space' boxType='definition'>
+A *Hilbert space* $\mathcal{H}$ is a complete vector space over a field $\mathbb{F}$ equipped with an inner product $\braket{\cdot|\cdot}:\mathcal{H}\times\mathbb{H}\to\mathbb{F}$. The vector space structure og $\mathcal{H}$ ensures that for all $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ and all scalars $a, b\in\mathbb{F}$, we have
+
+$$
+  a\ket{\psi} + b\ket{\varphi} \in\mathcal{H}
+$$
+
+For all $\ket{\psi}, \ket{\psi_1},\ket{\psi_2} \in\mathcal{H}$ and $a_1, a_2 \in\mathbb{F}$, the inner product satisfies
+- **Positive definitess**: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi|\psi} = 0 \iff \ket{\psi} = 0$
+- **Linearity in the second argument:** $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi|\phi_1} + a_2\braket{\psi|\phi_2}$ .
+- **Conjugate symmetry:** $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
+
+By conjugate symmetry, the inner product is anti-linear in the first argument:
+
+$$
+  \braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}
+$$
+
+This inner product induces a norm $\lVert\cdot\rVert:\mathcal{H}\to\R$ defined by $\lVert\psi\rVert \mapsto \sqrt{\braket{\psi|\psi}}$. Completeness of $\mathcal{H}$ in the norm $\lVert\cdot\rVert$ means that every Cauchy sequence $(\ket{\psi_n})_{n\in\N} \subset\mathcal{H}$, satisfying
+
+$$
+  \forall \epsilon > 0, \exists N\in\N: m,n \geq N \implies \lVert \ket{\psi_m} - \ket{\psi_n} \rVert < \epsilon
+$$
+
+converges to an element $\ket{\psi}\in\mathcal{H}$.
+
+A subset $\mathcal{H}' \subset\mathcal{H}$ which is a vector space and inherits the inner product and the norm from $\mathcal{H}$ is called a subspace of $\mathcal{H}$.
+</MathBox>
+
+<MathBox title='Normed and orthogonal vectors' boxType='definition'>
+A vector $\ket{\psi}\in\mathcal{H}$ is *normed* if $\lVert\psi\rVert = 1$. A normed vector is also called a *unit vector*. Two vectors $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ are orthogonal if $\braket{\psi|\varphi} = 0$. The subspace in $\mathcal{H}$ of vector orthogonal to $\ket{\psi}$ is denoted
+
+$$
+  \mathcal{H}_{\psi^\perp} := \set{\varphi\in\mathcal{H} | \braket{\psi|\varphi} = 0}
+$$
+</MathBox>
+
+<MathBox title='Linear independence, span and basis' boxType='definition'>
+Let $I\subseteq\N$ be an index set. A set of vectors $\set{\ket{\varphi_j}}_{j\in I} \subseteq\mathcal{H}$ is *linearly independent* if for every finite subset $\set{\ket{\varphi}_j}_{j=1}^n$ and $a_k \in\mathbb{F}$ with $k=1,\dots,n$
+
+$$
+  \sum_{j=1}^n a_i \varphi_i = 0
+$$
+
+holds only if all $a_k = 0$.
+
+A Hilbert space $\mathcal{H}$ is finite-dimensional $\mathcal{H}$ contains at most $n = \dim(\mathcal{H}) < \infty$ linearly independent vectors. Otherwise $\mathcal{H}$ is called infinite-dimensional, i.e. $\dim(\mathcal{H}) = \infty$.
+
+A set of vectors $\set{\ket{\varphi_j}}_{j\in I} \subseteq\mathcal{H}$ *spans* $\mathcal{H}$ if for every vector $\varphi\in\mathcal{H}$, there are $a_j \in\mathbb{F}$ with $j\in I$ such that
+
+$$
+  \varphi = \sum_{j\in I} a_j \varphi_j
+$$
+
+In this case we write
+
+$$
+  \mathcal{H} = \operatorname{span}\set{\ket{\varphi_j}}_{j\in I}
+$$
+
+A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ whose vectors satisfy
+
+$$
+  \braket{e_j|e_k} = \delta_{jk} := \begin{cases}
+    0,\quad& j\neq k \\
+    1,\quad& j = k
+  \end{cases}
+$$
+
+is called an *orthonormal basis*. The Hilbert space $\mathcal{H}$ is separable if it has a countable basis.
+</MathBox>
+
+Let $\d^3 \mathbf{x}$ denote the Lebesgue measure in $\R^3$. Then the set of square integrable functions
+
+$$
+  \mathcal{L}^2 (\R^3) := \Set{\psi\in\R^3 \to \mathbb{C} : \int_{\R^3} |\psi(\mathbf{x})|^2 \;\d^3 \mathbf{x} < \infty}
+$$
+
+with the inner product
+
+$$
+  \braket{\psi|\varphi} := \int_{\R^3} \psi^*(\mathbf{x}) \varphi(\mathbf{x}) \;\d^3 \mathbf{x}
+$$
+
+is an infinite-dimensional Hilbert space.
 
 ## Basis
 
