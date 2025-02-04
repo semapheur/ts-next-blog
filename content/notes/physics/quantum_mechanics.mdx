@@ -339,7 +339,7 @@ $$
   \hat{A}\ket{e_{j,\alpha}} = a_j \ket{e_{j,\alpha}}
 $$
 
-where $j$ labels distinct eigenvalues $a_j$, while $\alpha$ indexes the eigenvectors associated with each eigenvalue in the case of degeneracy.
+where $\alpha\in\set{1,\dots,d_j}$ indexes the eigenvectors associated with the possibly $d_j$-fold degerate eigenvalue $a_j$.
 
 The matrix elements in this basis have the form $\mathbf{A}_{j,\alpha;k,\beta} = a_j \delta_{j,k} \delta_{\alpha,\beta}$ such that
 
@@ -350,92 +350,9 @@ $$
 \end{align*}
 $$
 
-Expressing a Hermitian operator with the help of its eigenvalues and eigenvectors is referred to as writing the operator in its diagonal form.
+This is referred to as the spectral decomposition or the diagonal form of the operator.
 
-In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and uppe bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
-
-### Projection operator
-
-<MathBox title='Projection' boxType='definition'>
-Let $\mathcal{H}$ be a Hilber space. An operator $\hat{P}\in\mathcal{L}(\mathcal{H})$ satisfying $\hat{P}^2 = \hat{P}$ is called a *projection* or *projector*. If in addition $\hat{P}^\dagger = \hat{P}$, then $\hat{P}$ is called an *orthogonal projection*. The orthogonal complement of $\hat{P}$ is the projection operator $\hat{Q} = \hat{I} - \hat{P}$. 
-</MathBox>
-
-If $\ket{v}\in V$ is a unit vector, i.e. $\braket{v|v} = 1$, the projection onto $\ket{v}$ is given by
-
-$$
-  \hat{P}_v = \ket{v}\bra{v}
-$$
-
-To see that this is a projection, we have
-
-$$
-  \hat{P}_v^2 = (\ket{v}\bra{v})(\ket{v}\bra{v}) = \ket{v}(\underbrace{\braket{v|v}}_{=1})\bra{v} = \ket{v}\bra{v} = \hat{P}_v
-$$
-
-Also $\hat{P}$ is Hermitian since
-
-$$
-  \hat{P}_v^\dagger = (\ket{v}\bra{v})^\dagger = \ket{v}\bra{v} = \hat{P}_v
-$$
-
-The projection of $\ket{u}\in V$ onto $\ket{v}$ becomes
-
-$$
-  \hat{P}_v \ket{u} = \ket{v}\braket{v|u} = \braket{v|u}\ket{v} = c \ket{v}
-$$
-
-The eigenvalues of $\hat{P}_v$ are found from
-
-$$
-\begin{align*}
-  \hat{P}_v \ket{x} =& \lambda\ket{x} \\
-  \ket{v}\underbrace{\braket{v|x}}_{=c\in\R} =& \lambda\ket{x} \\
-  c\ket{v} =& \lambda\ket{x}
-\end{align*}
-$$
-
-If $\ket{x} = \ket{v}$, then $\lambda = \braket{v|x} = \braket{v|v} = 1$. Otherwise, for $\ket{x}\neq\ket{v}$ we have $\lambda = \braket{v|x} = 0$.
-
-In terms of $\hat{P}_v$, any $\ket{u}\in V$ can be decomposed as 
-
-$$
-\begin{align*}
-  \ket{u} =& \hat{I}\ket{u} + \hat{P}_v \ket{v} - \hat{P}_v \\
-  =& \hat{P}_v \ket{u} + (\hat{I} - \hat{P})\ket{u}
-\end{align*}
-$$
-
-Since 
-
-$$
-  \hat{P}_v (\hat{P}_v \ket{u}) = \hat{P}_v^2 \ket{u} = \hat{P}_v \ket{u}
-$$
-
-then $\hat{P}_v \ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $1$. Since
-
-$$
-  \hat{P}_v [(\hat{I} - \hat{P}_v)\ket{u}] = (\hat{P}_v - \underbrace{\hat{P}_v^2}_{=\hat{P}_v})\ket{u} = 0 
-$$
-
-then $(\hat{I} - \hat{P}_v)\ket{u}$ is an eigenstate of $\hat{P}_v$ with eigenvalue $0$.
-
-In particular, if $\set{\ket{e}_n}_{n\in\N}$ is an orthonormal basis, i.e. $\braket{e_i | e_j} = \delta_{ij}$, then
-
-$$
-  \sum_{n\in\N} \ket{e_n} \bra{e_n} = 1
-$$
-
-defines the identity operator. If we let this operator act on any vector $\ket{v}$, we recover the expansion of $\ket{v}$ in the $\set{\ket{e}_n}_{n\in\N}$ basis:
-
-$$
-  \sum_{n\in\N} (\braket{e_n|v})\ket{e_n} = \ket{v}
-$$
-
-If $W\subset$ is an $n$-dimensional subspace with orthonormal basis $\set{\ket{e}_i}_{i=1}^n$, the projection onto $W$ is given by
-
-$$
-  \hat{P}_W = \sum_{i=1}^n \ket{e_i}\bra{e_i}
-$$
+In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and upper bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
 
 #### Spectral decomposition
 
@@ -531,6 +448,165 @@ $$
   =& \sum_{k=0}^\infty \frac{1}{k!} \left(\sum_{n=1}^\infty a_n^k \ket{e_n} \bra{e_n} \right) \\
   =& \sum_{k=0}^\infty \frac{1}{k!} \hat{A}^k
 \end{align*}
+$$
+</details>
+
+### Projection operator
+
+<MathBox title='Projection' boxType='definition'>
+Let $\mathcal{H}$ be a Hilbert space. A projection operator (or simply projector) is a linear operator $\hat{P}\in\mathcal{L}(\mathcal{H})$ that is idempotent, i.e. $\hat{P}^2 = \hat{P}$. If, in addition $\hat{P}$ is Hermitian, i.e. $\hat{P}^\dagger = \hat{P}$, then $\hat{P}$ is called an *orthogonal projection*.
+</MathBox>
+
+The complement of a projection $\hat{P}\in\mathcal{L}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ is the operator $\hat{Q} = \hat{I} - \hat{P}$, which is also a projection since it satisfies idempotency:
+
+$$
+\begin{align*}
+  \hat{Q}^2 =& (\hat{I} - \hat{P})^2 \\
+  =& \hat{I} - 2\hat{P} + \underbrace{\hat{P}^2}_{=\hat{P}} \\
+  =& \hat{I} - \hat{P} = \hat{Q}
+\end{align*}
+$$
+
+If $\hat{P}$ is Hermitian, then so is $\hat{Q}$ since
+
+$$
+  \hat{Q}^\dagger = (\hat{I} - \hat{P})^\dagger = \hat{I} - \underbrace{\hat{P}^\dagger}_{=\hat{P}} = \hat{Q}
+$$
+
+meaning that $\hat{Q}$ is an orthogonal projection. In this case $\hat{P}$ and $\hat{Q}$ are mutually orthogonal projectors, satisfying
+
+$$
+  \hat{P}\hat{Q} = \hat{Q}\hat{P} = 0
+$$
+
+Thus, $\hat{P}$ and $\hat{Q}$ define an orthogonal decomposition of $\mathcal{H}$ into two subspaces, i.e. $\mathcal{H} = \operatorname{ran}(\hat{P}) \oplus \operatorname{ran}(\hat{Q})$. This orthogonal decomposition allows us to express any vector $\ket{\psi}\in\mathcal{H}$ uniquely as a sum components in the ranges of $\hat{P}$ and $\hat{Q}$:
+
+$$
+  \ket{\psi} = \hat{P}\ket{\psi} + \hat{Q}\ket{\psi}
+$$
+
+#### Projections onto unit vectors
+
+If $\ket{psi}\in \mathcal{H}$ is a unit vector in the Hilbert space $\mathcal{H}$, i.e. $\braket{\psi|\psi} = 1$, the projection onto $\ket{\psi}$ is given by
+
+$$
+  \hat{P}_\psi = \ket{psi}\bra{\psi}
+$$
+
+To see that $\hat{P}_\psi$ is a projection, we compute
+
+$$
+\begin{align*}
+  \hat{P}_\psi^2 =& (\ket{\psi}\bra{\psi})(\ket{\psi}\bra{\psi}) \\
+  =& \ket{\psi}(\underbrace{\braket{\psi|\psi}}_{=1})\bra{\psi} \\
+  =& \ket{\psi}\bra{\psi} = \hat{P}_\psi
+\end{align*}
+$$
+
+showing that $\hat{P}_\psi$ is idempotent as required. Additionally, $\hat{P}$ is Hermitian, since
+
+$$
+  \hat{P}_\psi^\dagger = (\ket{\psi}\bra{\psi})^\dagger = \ket{\psi}\bra{\psi} = \hat{P}_\psi
+$$
+
+The projection of $\ket{\varphi}\in\mathcal{H}$ onto $\ket{\psi}$ becomes
+
+$$
+  \hat{P}_\psi \ket{\varphi} = \ket{\psi}\braket{\psi|\varphi} = \braket{\psi|\varphi}\ket{\psi}
+$$
+
+Since $\braket{\psi|\varphi}\in\mathbb{F}$ is a scalar, this means that $\hat{P}_\psi \ket{\varphi}$ projects $\ket{\varphi}$ onto the one-dimensional subspace spanned by $\ket{\psi}$.
+
+The find the eigenvalues of $\hat{P}_\psi$, we solve
+
+$$
+\begin{align*}
+  \hat{P}_\psi \ket{\lambda} =& \lambda\ket{\lambda} \\
+  \ket{\psi}\underbrace{\braket{\psi|\lambda}}_{=c\in\mathbb{F}} =& \lambda\ket{\lambda} \\
+  c\ket{\psi} =& \lambda\ket{\lambda}
+\end{align*}
+$$
+
+If $\ket{\lambda} = \ket{psi}$, then $\lambda = \braket{\psi|\lambda} = \braket{\psi|\psi} = 1$. Otherwise, for $\ket{\lambda}\neq\ket{\psi}$ we have $\lambda = \braket{\psi|\lambda} = 0$, implying that $\ket{\lambda}$ and $\ket{\psi}$ are orthogonal. Thus, the eigenvalues of $\hat{P}_\psi$ are $0$ and $1$, with the eigenspace corresponding to $\lambda = 1$ being spanned by $\ket{\psi}$, and the eigenspace corresponding to $\lambda = 0$ being the ortogonal complement of $\ket{\psi}$.
+
+In terms of $\hat{P}_\psi$, any vector $\ket{\varphi}\in\mathcal{H}$ can be uniquely decomposed as 
+
+$$
+\begin{align*}
+  \ket{\varphi} =& \hat{I}\ket{\varphi} + \hat{P}_\psi \ket{\varphi} - \hat{P}_\psi \ket{\varphi} \\
+  =& \hat{P}_\psi \ket{\varphi} + (\hat{I} - \hat{P})\ket{\varphi}
+\end{align*}
+$$
+
+Since 
+
+$$
+  \hat{P}_\psi (\hat{P}_\psi \ket{\varphi}) = \hat{P}_\psi^2 \ket{\varphi} = \hat{P}_\psi \ket{\varphi}
+$$
+
+then $\hat{P}_\psi \ket{\varphi}$ is an eigenvector of $\hat{P}_\psi$ with eigenvalue $1$. Since
+
+$$
+  \hat{P}_\psi [(\hat{I} - \hat{P}_\psi)\ket{\varphi}] = (\hat{P}_\psi - \underbrace{\hat{P}_\psi^2}_{=\hat{P}_psi})\ket{\varphi} = 0 
+$$
+
+then $(\hat{I} - \hat{P}_\psi)\ket{\varphi}$ is an eigenvector of $\hat{P}_\psi$ with eigenvalue $0$.
+
+In particular, if $\set{\ket{e}_n}_{n\in\N}$ is an orthonormal basis, i.e. $\braket{e_i | e_j} = \delta_{ij}$, then
+
+$$
+  \sum_{n\in\N} \ket{e_n} \bra{e_n} = 1
+$$
+
+defines the identity operator. If we let this operator act on any vector $\ket{v}$, we recover the expansion of $\ket{\psi}$ in the $\set{\ket{e}_n}_{n\in\N}$ basis:
+
+$$
+  \sum_{n\in\N} (\braket{e_n|\psi})\ket{e_n} = \ket{\psi}
+$$
+
+If $\mathcal{H}' \subset\mathcal{H}$ is an $n$-dimensional subspace with orthonormal basis $\set{\ket{e}_i}_{i=1}^n$, the projection onto $W$ is given by
+
+$$
+  \hat{P}_{\mathcal{H}'} = \sum_{i=1}^n \ket{e_i}\bra{e_i}
+$$
+
+#### Spectral projection
+
+If $\hat{A}$ is a Hermitian operator on an finite-dimensional Hilbert space $\mathcal{H}$, its eigenvectors form an orthonormal basis. Let $\ket{e_{j,\alpha}}$ denoted an eigenvector of $\hat{A}$ corresponding to the eigenvalue $a_j$, where $\alpha\in\set{1,\dots,d_j}$ indexes he possibly $d_j$-fold degenerate eigenvalue $a_j$ of $\hat{A}$. The orthogonal projection onto the eigenspace $\operatorname{eig}(\hat{A}, a_j)$ with $\dim[\operatorname{eig}(\hat{A}, d_j)] = d_j$ is given by
+
+
+$$
+  \hat{P}_j = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}
+$$
+
+
+<details>
+<summary>Proof</summary>
+
+To verify that $\hat{P}_j$ is a projection, we check idempotency
+
+$$
+\begin{align*}
+  \hat{P}_j^2 =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)  \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right) \\
+  =& \sum_{\alpha=1}^{\d_j} \sum_{\alpha=1}^{\d_j} \ket{e_{j,\alpha}} \underbrace{\braket{e_{j,\alpha}|e_{j,\alpha}}}_{=1} \bra{e_{j,\alpha}} \\
+  =& \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \hat{P}_j
+\end{align*}
+$$
+
+Since $\hat{P}_j^2 = \hat{P}_j$, it is a projection. Next, we check that $\hat{P}_j$ is Hermitian taking its adjoint:
+
+$$
+\begin{align*}
+  \hat{P}_j^\dagger =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)^\dagger \\
+  =& \sum_{\alpha=1}^{d_j} (\ket{e_{j,\alpha}} \bra{e_{j,\alpha}})^\dagger \\
+  =& \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \hat{P}_j
+\end{align*}
+$$
+
+Since $\hat{P}_j^\dagger = \hat{P}_j$, the operator is self-adjoint. Because $\set{\ket{e_{j,\alpha}}|j\in I\subset\N, \alpha\in\set{1,\dots,d_j}}$ is an orthonormal eigenbasis of $\hat{A}$, any eigenvector $\operatorname{eig}(\hat{A}, a_j)$ can be written in the form
+
+$$
+  \ket{\psi} = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \braket{e_{j,\alpha}|\psi} = \hat{P}_j \ket{\psi}
 $$
 </details>
 
