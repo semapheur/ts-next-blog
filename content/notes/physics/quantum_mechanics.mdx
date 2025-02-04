@@ -133,6 +133,16 @@ is called an *orthonormal basis*. The Hilbert space $\mathcal{H}$ is separable i
 
 <MathBox title='Linear operator' boxType='definition'>
 A linear map $\hat{A}:\mathcal{H}\to\mathcal{H}$ is called an operator on the Hilbert space $\mathcal{H}$. The set of all operators on $\mathcal{H}$ is denoted by $\mathcal{L}(\mathcal{H})$. A linear map $\hat{T}:\mathcal{L}(\mathcal{H}) \to \mathcal{L}(\mathcal{H})$, that is, an operator acting on operators, is called a *super-operator*.
+
+The operator norm of $\hat{A}\in\mathcal{L}(\mathcal{H})$ is given by
+
+$$
+  \lVert\hat{A}\rVert := \sup\Set{\lVert\hat{A}\psi\rVert : \ket{\psi}\in\mathcal{H}, \lVert\ket{\psi}\rVert = 1}
+$$
+
+This norm measures the largest possible stretching effect that $\hat{A}$ can have on unit vectors in $\mathcal{H}$.
+
+An operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ is bounded if $\lVert\hat{A}\rVert < \infty$. The set of bounded operators on $\mathcal{H}$ is denoted $\mathcal{B}(\hat{H})$.
 </MathBox>
 
 A linear operator is a mapping between two vector spaces that is preserved under vector addition and scalar multiplication
@@ -188,13 +198,13 @@ Properties of the trace
 The $\hat{A}:\mathcal{H}\to\mathcal{H}$ be a linear operator on a Hilbert space $\mathcal{H}$. The Hermitian adjoint $\hat{A}$ is the unique linear operator $\hat{A}^\dagger :\mathcal{H}\to\mathcal{H}$ that satisfies
 
 $$
-  \braket{\varphi | \hat{A} \psi} = \braket{\hat{A}^\dagger \varphi | \psi},\; \forall \ket{\psi},\ket{\varphi} \in\mathcal{H}
+  \braket{\varphi|\hat{A}\psi} = \braket{\hat{A}^\dagger \varphi|\psi},\; \forall \ket{\psi},\ket{\varphi} \in\mathcal{H}
 $$
 
 Equivalently, using Dirac notation, this condition can be rewritten as 
 
 $$
-  \braket{\varphi | \hat{A} | \psi} = \braket{\psi | \hat{A}^\dagger | \varphi}^*
+  \braket{\varphi|\hat{A}|\psi} = \braket{\psi|\hat{A}^\dagger |\varphi}^*
 $$
 
 An operator $\hat{A}$ is Hermitian (or self-adjoint) if it it equal to its own adjoint:
@@ -208,6 +218,20 @@ An operator $\hat{A}$ is anti-Hermitian if it is the negative of its own adjoint
 $$
   \hat{A} = -\hat{A}^\dagger
 $$
+
+A Hermitian operator $\hat{A}$ is *positive* if for all $\ket{\psi}\in\mathcal{H}$,
+
+$$
+  \braket{\psi|\hat{A}|\psi} \geq 0
+$$
+
+which is written $\hat{A}\geq 0$. The operator $\hat{A}$ is *strictly positive* if for all nonzero $\ket{\psi}\in\mathcal{H}\setminus\set{0}$
+
+$$
+  \braket{\psi|\hat{A}|\psi} > 0
+$$
+
+which is written $\hat{A} > 0$.
 </MathBox>
 
 Hermitian adjoint properties
@@ -253,18 +277,18 @@ $$
 where $\hat{I}$ is the identity operator on $\mathcal{H}$. The set of all unitary operators on $\mathcal{H}$ is denoted $\mathcal{U}(\mathcal{H})$.
 </MathBox>
 
-A unitary operator $hat{U}\in\mathcal{U}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ has the following properties:
+A unitary operator $\hat{U}\in\mathcal{U}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ has the following properties:
 
 - **Preservation of inner products:** 
 
 $$
-  \braket{U\psi|U\varphi} = \braket{\psi|U^\dagger U \varphi} = \braket{\psi|\varphi},\; \forall \ket{\psi},\ket{\varphi}\in\mathcal{H}
+  \braket{\hat{U}\psi|\hat{U}\varphi} = \braket{\psi|\hat{U}^\dagger U \varphi} = \braket{\psi|\varphi},\; \forall \ket{\psi},\ket{\varphi}\in\mathcal{H}
 $$
 
 - **Preservation of norm:**
 
 $$
-  \lVert U\ket{\psi}\rVert = \sqrt{\braket{U\psi|U\psi}} = \sqrt{\braket{\psi|U^\dagger U \psi}} = \sqrt{\braket{\psi|\psi}} = \lVert\ket{\psi}\rVert
+  \lVert \hat{U}\ket{\psi}\rVert = \sqrt{\braket{\hat{U}\psi|\hat{U}\psi}} = \sqrt{\braket{\psi|\hat{U}^\dagger \hat{U} \psi}} = \sqrt{\braket{\psi|\psi}} = \lVert\ket{\psi}\rVert
 $$
 
 - **Preservation of trace:** Any normal operator $\hat{Q}$ can be written in terms of a orthonormal eigenbasis $\set{\ket{q_j}}$ as
@@ -354,7 +378,7 @@ This is referred to as the spectral decomposition or the diagonal form of the op
 
 In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and upper bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
 
-#### Spectral decomposition
+#### Spectral decomposition of operators
 
 If $\hat{A}$ is an operator with a complete set of orthonormal eigenvectors, i.e.
 
@@ -570,15 +594,13 @@ $$
   \hat{P}_{\mathcal{H}'} = \sum_{i=1}^n \ket{e_i}\bra{e_i}
 $$
 
-#### Spectral projection
+#### Spectral decomposition of Hermitian operators
 
-If $\hat{A}$ is a Hermitian operator on an finite-dimensional Hilbert space $\mathcal{H}$, its eigenvectors form an orthonormal basis. Let $\ket{e_{j,\alpha}}$ denoted an eigenvector of $\hat{A}$ corresponding to the eigenvalue $a_j$, where $\alpha\in\set{1,\dots,d_j}$ indexes he possibly $d_j$-fold degenerate eigenvalue $a_j$ of $\hat{A}$. The orthogonal projection onto the eigenspace $\operatorname{eig}(\hat{A}, a_j)$ with $\dim[\operatorname{eig}(\hat{A}, d_j)] = d_j$ is given by
-
+If $\hat{A}$ is a Hermitian operator on an finite-dimensional Hilbert space $\mathcal{H}$, its eigenvectors form an orthonormal basis. Let $\ket{e_{j,\alpha}}$ denote an eigenvector of $\hat{A}$ corresponding to the eigenvalue $a_j$, where $\alpha\in\set{1,\dots,d_j}$ indexes the possibly $d_j$-fold degenerate eigenvalue $a_j$ of $\hat{A}$. The orthogonal projection onto the eigenspace $\operatorname{eig}(\hat{A}, a_j)$ with $\dim[\operatorname{eig}(\hat{A}, d_j)] = d_j$ is given by
 
 $$
   \hat{P}_j = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}
 $$
-
 
 <details>
 <summary>Proof</summary>
@@ -587,8 +609,8 @@ To verify that $\hat{P}_j$ is a projection, we check idempotency
 
 $$
 \begin{align*}
-  \hat{P}_j^2 =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)  \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right) \\
-  =& \sum_{\alpha=1}^{\d_j} \sum_{\alpha=1}^{\d_j} \ket{e_{j,\alpha}} \underbrace{\braket{e_{j,\alpha}|e_{j,\alpha}}}_{=1} \bra{e_{j,\alpha}} \\
+  \hat{P}_j^2 =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)  \left(\sum_{\beta=1}^{d_j} \ket{e_{j,\beta}} \bra{e_{j,\beta}}\right) \\
+  =& \sum_{\alpha=1}^{\d_j} \sum_{\alpha=1}^{\d_j} \ket{e_{j,\alpha}} \underbrace{\braket{e_{j,\alpha}|e_{j,\beta}}}_{=\delta_{\alpha\beta}} \bra{e_{j,\beta}} \\
   =& \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \hat{P}_j
 \end{align*}
 $$
@@ -609,6 +631,33 @@ $$
   \ket{\psi} = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \braket{e_{j,\alpha}|\psi} = \hat{P}_j \ket{\psi}
 $$
 </details>
+
+A Hermitian operator $\hat{A}$ can be expressed in terms of its spectral projections as
+
+$$
+  \hat{A} = \sum_{j,\alpha} a_j \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \sum_j a_j \hat{P}_j
+$$
+
+In particular, since any orthonormal basis $\set{\ket{e_j}}$ constitutes an eigenbasis of the identity operator $\hat{I}$ with eigenvalue $1$, we have
+
+$$
+\begin{align*}
+  \hat{I} =& \sum_{j,k} \ket{e_j} \braket{e_j|e_k} \bra{e_k} \\
+  =& \sum_{j,k} \delta_{jk} \ket{e_j} \bra{e_k} \\
+  =& \sum_j \ket{e_j} \bra{e_j} = \sum_j \hat{P}_j
+\end{align*}
+$$
+
+which is known as the completeness relation. Moreover, the projection satisfy the orthogonality relation
+
+$$
+\begin{align*}
+  \hat{P}_j \hat{P}_k =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} \right) \left(\sum_{\beta=1}^{d_j} \ket{e_{j,\beta}} \bra{e_{j,\beta}} \right) \\
+  =& \sum_{\alpha=1}^{d_j} \sum_{\beta=1}^{d_k} \ket{e_{j,\alpha}} \braket{e_{j,\alpha}|e_{k,\beta}} \bra{e_{k,\beta}} \\
+  =& \delta_{jk} \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} \\
+  =& \delta_{jk} \hat{P}_j
+\end{align*}
+$$
 
 #### Continuous projectors
 
