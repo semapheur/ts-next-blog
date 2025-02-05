@@ -14,12 +14,12 @@ references:
 
 ## Dirac notation (bra-ket)
 
-Let $V$ be an inner product space over a field $\mathbb{F}$ with dual space $V^*$.
+Let $V$ be an inner product space over a field $\mathbb{F}$ with dual space $V^*$. In Dirac notation:
 - A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
 - A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \to\mathbb{F}$ and is a covector to $\ket{f}$
-- A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product
+- A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product $\braket{\cdot|\cdot}: V\times V \to\mathbb{F}$
 - A *ket-bra* $\ket{v}\bra{f}$ denotes an outer product
-- A *ket-ket* $\ket{v}\ket{w}$ denotes a tensor product $\ket{v}\otimes\ket{w}$
+- A *ket-ket* $\ket{v}\ket{w} = \ket{v}\otimes\ket{w}$ denotes a tensor product $\otimes: V \times V \to V \otimes V$
 
 Bra-ket properties
 - Conjugate symmetry: $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
@@ -177,6 +177,28 @@ $$
 $$ 
 </MathBox>
 
+If $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$ is a basis on a Hilbert space $\mathcal{H}$, a vector $\ket{\psi}\in\mathcal{H}$ can be expanded as 
+
+$$
+  A\ket{\psi} =& \sum_j \ket{e_j} \braket{e_j|\psi}
+$$
+
+Applying an operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ on $\ket{\psi}$ gives
+
+$$
+\begin{align*}
+  \hat{A}\ket{\psi} =& \ket{\hat{A}\psi} = \sum_j \ket{e_j} \braket{e_j|\hat{A}\psi} \\
+  =& \sum_j \ket{e_j} \Braket{e_j|\hat{A}\sum_k|e_k \braket{e_k|\psi}} \\
+  =& \sum_{j,k} \ket{e_j}\braket{e_j|\hat{A}|e_k} \braket{e_k|\psi}
+\end{align*}
+$$
+
+Thus, we can express $\hat{A}$ in the form
+
+$$
+  \hat{A} = \sum_{j,k} \ket{e_j} \braket{e_j|\hat{A}|e_k}\bra{e_k} = \sum_{j,k} \ket{e_j} A_{jk} \bra{e_k} 
+$$
+
 ### Trace
 
 <MathBox title='Trace' boxType='definition'>
@@ -314,7 +336,7 @@ $$
 ### Eigenvalues
 
 <MathBox title='Eigenvalue, eigenvector, eigenspace and spectrum' boxType='definition'>
-Let $\hat{A}$ be a linear operator on a Hilbert space $\mathcal{H}$. A nonzero vector $\ket{\psi}\in\mathcal{H}$ is an *eigenvector* of $\hat{A}$ with *eigenvalue* $a\in\mathbb{F}$ if
+Let $\hat{A}$ be a linear operator on a Hilbert space $\mathcal{H}$. A nonzero vector $\ket{\psi}\in\mathcal{H}$ is an *eigenvector* of $\hat{A}$ with *eigenvalue* $a\in\mathbb{F}$ if it satisfies the eigenvalue equation
 
 $$
   \hat{A}\ket{\psi} = a\ket{\psi}
@@ -331,11 +353,40 @@ An eigenvalue $a$ is called non-degenerate if its eigenspace is one-dimensional,
 The spectrum of $\hat{A}$, denoted $\sigma(\hat{A})$, is the set of all scalars $a\in\mathbb{F}$ for which the operator $(\hat{A} - a\hat{I})^{-1}$ does not, exist, i.e.
 
 $$
-  \sigma(\hat{A}) := \set{\a\in\mathbb{F} | (\hat{A} - a\hat{I})^{-1} \text{ does not exist}}
+  \sigma(\hat{A}) := \set{a\in\mathbb{F} | (\hat{A} - a\hat{I})^{-1} \text{ does not exist}}
 $$
 </MathBox>
-    
-For a Hermitian operator $\hat{A}$ on a Hilbert space $\mathcal{H}$, the eigenvalue equation satisfies
+
+Let $\hat{A}\in\mathcal{L}(\mathcal{H})$ be an operator in a Hilbert space $\mathcal{H}$, and let $a$ be an eigenvalue with eigenvector $\ket{\psi}$, so that
+
+$$
+  \hat{A}\ket{\psi} = a\ket{\psi}
+$$
+
+Taking the adjoint on both sides, we get
+
+$$
+\begin{align*}
+  (\hat{A}\ket{\psi})^\dagger =& (a\ket{\psi})^\dagger \\
+  \bra{\psi}\hat{A} =& a^* \bra{\psi}
+\end{align*}
+$$
+
+To confirm the result, consider the inner product with $\ket{\varphi}\in\mathcal{H}$:
+
+$$
+  \braket{\psi|\hat{A}^\dagger|\varphi} = \braket{\hat{A}\psi|\varphi} \braket{a\psi|\varphi} = a^* \braket{\psi|\varphi}
+$$
+
+This verifies that
+
+$$
+  \bra{\psi}\hat{A} = a^* \bra{\psi}
+$$
+
+#### Eigenvalues of Hermitian operators
+
+Let $\hat{A}$ be a Hermitian operator on a Hilbert space $\mathcal{H}$, and consider the eigenvalue equation
 
 $$
   \hat{A} \ket{\psi_i} = a_i \ket{\psi_i}
@@ -357,6 +408,20 @@ This leads to two conclusions:
 1. If $i = j$, then $\lambda_i = \lambda_i^*$, meaning that all eigenvalue of a Hermitian operator are real. 
 2. If $i \neq j$, then $\braket{\psi_i | \psi_j} = 0$, meaning that the eigenvectors corresponding to distinct eigenvalues are orthogonal.
 
+In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and upper bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
+
+#### Eigenvalues of unitary operators
+
+Let $\hat{U}\in\mathcal{U}(\mathcal{H})$ be a unitary operator on the Hilbert space $\mathcal{H}$ and let $u$ be an eigenvalue with eigenvector $\ket{\psi}\in\mathcal{H}$. Since unitary operators preserve norms, we get
+
+$$
+  \lVert\psi\rVert = \lVert \hat{U}\psi\rVert = \lVert u\psi\rVert = |u|\cdot\lVert\psi\rVert
+$$
+
+and thus $|u| = 1$, meaning that the eigenvalues of a unitary operator always lie on the unit circle in the complex plane.
+
+#### Spectral decomposition of operators
+
 A Hermitian operator $\hat{A}$ is diagonalizable, meaning that there is an orthonormal basis consisting of eigenvectors $\set{\ket{e_{j,\alpha}}}$ of $\hat{A}$ such that
 
 $$
@@ -376,9 +441,7 @@ $$
 
 This is referred to as the spectral decomposition or the diagonal form of the operator.
 
-In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and upper bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
-
-#### Spectral decomposition of operators
+##### Infinite-dimensional case
 
 If $\hat{A}$ is an operator with a complete set of orthonormal eigenvectors, i.e.
 
@@ -395,25 +458,25 @@ $$
 <details>
 <summary>Proof</summary>
 
-By completeness of the orthonormal eigenvectors, any vector $\ket{v}$ can be expanded as a linear combination
+By completeness of the orthonormal eigenvectors, any vector $\ket{\psi}$ can be expanded as a linear combination
 
 $$
-  \ket{v} = \sum_{n\in\N} v_n \ket{e_n}
+  \ket{\psi} = \sum_{n\in\N} \psi_n \ket{e_n}
 $$
 
-where $v_n$ is given by the inner product
+where $\psi_n$ is given by the inner product
 
 $$
-  \braket{e_i|v} = \ket{e_i} \sum_{n\in\N} v_n \ket{e_n} = \sum_{n\in\N} v_n \braket{e_i|e_n} = \sum_{n\in\N} v_n \delta_{in}
+  \braket{e_i|\psi} = \ket{e_i} \sum_{n\in\N} \psi_n \ket{e_n} = \sum_{n\in\N} \psi_n \braket{e_i|e_n} = \sum_{n\in\N} \psi_n \delta_{in}
 $$
 
-Hence, $v_n = \braket{e_n | v}$. Applying $\hat{A}$ to $\ket{v}$ yields
+Hence, $\psi_n = \braket{e_n | \psi}$. Applying $\hat{A}$ to $\ket{\psi}$ yields
 
 $$
 \begin{align*}
-  \hat{A}\ket{v} =& \hat{v} \sum_{n\in\N} v_n \ket{e_n} = \sum_{n\in\N} v_n (\hat{A}\ket{e_n}) \\
-  =& \sum_{n\in\N} v_n (a_n \ket{e_n}) = \sum_{n\in\N} (a_n \ket{e_n}) v_n \\
-  =& \sum_{n\in\N} v_n \ket{e_n} \braket{e_n | v} = \left(\sum_{n\in\N} a_n \ket{e_n} \bra{e_n} \right)\ket{v}  
+  \hat{A}\ket{\psi} =& \hat{\psi} \sum_{n\in\N} \psi_n \ket{e_n} = \sum_{n\in\N} \psi_n (\hat{A}\ket{e_n}) \\
+  =& \sum_{n\in\N} \psi_n (a_n \ket{e_n}) = \sum_{n\in\N} (a_n \ket{e_n}) \psi_n \\
+  =& \sum_{n\in\N} \psi_n \ket{e_n} \braket{e_n | \psi} = \left(\sum_{n\in\N} a_n \ket{e_n} \bra{e_n} \right)\ket{\psi}  
 \end{align*}
 $$
 </details>
