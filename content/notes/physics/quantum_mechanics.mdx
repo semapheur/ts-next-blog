@@ -57,10 +57,10 @@ $$
   \braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}
 $$
 
-This inner product induces a norm $\lVert\cdot\rVert:\mathcal{H}\to\R$ defined by $\lVert\psi\rVert \mapsto \sqrt{\braket{\psi|\psi}}$. Completeness of $\mathcal{H}$ in the norm $\lVert\cdot\rVert$ means that every Cauchy sequence $(\ket{\psi_n})_{n\in\N} \subset\mathcal{H}$, satisfying
+This inner product induces a norm $\norm{\cdot}:\mathcal{H}\to\R$ defined by $\norm{\psi} \mapsto \sqrt{\braket{\psi|\psi}}$. Completeness of $\mathcal{H}$ in the norm $\norm{\cdot}$ means that every Cauchy sequence $(\ket{\psi_n})_{n\in\N} \subset\mathcal{H}$, satisfying
 
 $$
-  \forall \epsilon > 0, \exists N\in\N: m,n \geq N \implies \lVert \ket{\psi_m} - \ket{\psi_n} \rVert < \epsilon
+  \forall \epsilon > 0, \exists N\in\N: m,n \geq N \implies \norm{\ket{\psi_m} - \ket{\psi_n}} < \epsilon
 $$
 
 converges to an element $\ket{\psi}\in\mathcal{H}$.
@@ -71,7 +71,7 @@ A subset $\mathcal{H}' \subset\mathcal{H}$ which is a vector space and inherits 
 Let $\d^3 \mathbf{x}$ denote the Lebesgue measure in $\R^3$. Then the set of square integrable functions
 
 $$
-  \mathcal{L}^2 (\R^3) := \Set{\psi\in\R^3 \to \mathbb{C} : \int_{\R^3} |\psi(\mathbf{x})|^2 \;\d^3 \mathbf{x} < \infty}
+  \mathcal{L}^2 (\R^3) := \Set{\psi\in\R^3 \to \mathbb{C} : \int_{\R^3} \norm{\psi(\mathbf{x})}^2 \;\d^3 \mathbf{x} < \infty}
 $$
 
 with the inner product
@@ -83,7 +83,7 @@ $$
 is an infinite-dimensional Hilbert space.
 
 <MathBox title='Normed and orthogonal vectors' boxType='definition'>
-A vector $\ket{\psi}\in\mathcal{H}$ is *normed* if $\lVert\psi\rVert = 1$. A normed vector is also called a *unit vector*. Two vectors $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ are orthogonal if $\braket{\psi|\varphi} = 0$. The subspace in $\mathcal{H}$ of vector orthogonal to $\ket{\psi}$ is denoted
+A vector $\ket{\psi}\in\mathcal{H}$ is *normed* if $\norm{\psi} = 1$. A normed vector is also called a *unit vector*. Two vectors $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ are orthogonal if $\braket{\psi|\varphi} = 0$. The subspace in $\mathcal{H}$ of vector orthogonal to $\ket{\psi}$ is denoted
 
 $$
   \mathcal{H}_{\psi^\perp} := \set{\varphi\in\mathcal{H} | \braket{\psi|\varphi} = 0}
@@ -136,12 +136,14 @@ A linear map $\hat{A}:\mathcal{H}\to\mathcal{H}$ is called an operator on the Hi
 The operator norm of $\hat{A}\in\mathcal{L}(\mathcal{H})$ is given by
 
 $$
-  \lVert\hat{A}\rVert := \sup\Set{\lVert\hat{A}\psi\rVert : \ket{\psi}\in\mathcal{H}, \lVert\ket{\psi}\rVert = 1}
+\begin{equation}
+  \norm{\hat{A}} := \sup\Set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\ket{\psi}} = 1} \tag{\label{equation-107}}
+\end{equation}
 $$
 
 This norm measures the largest possible stretching effect that $\hat{A}$ can have on unit vectors in $\mathcal{H}$.
 
-An operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ is bounded if $\lVert\hat{A}\rVert < \infty$. The set of bounded operators on $\mathcal{H}$ is denoted $\mathcal{B}(\hat{H})$.
+An operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ is bounded if $\norm{\hat{A}} < \infty$. The set of bounded operators on $\mathcal{H}$ is denoted $\mathcal{B}(\hat{H})$.
 </MathBox>
 
 A linear operator is a mapping between two vector spaces that is preserved under vector addition and scalar multiplication
@@ -156,17 +158,75 @@ A linear operator is a mapping between two vector spaces that is preserved under
 The outer product $\ket{\psi}\bra{\phi}$ is a linear operator.
 
 Operator properties
-1. **Anticommutativity:** $\hat{A}\hat{B} \neq \hat{B}\hat{A}$
-2. **Associativity:** $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
-3. **Power property:** $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
-4. **Inner product:** $\braket{\psi|\hat{A}|\phi} = \braket{\psi|\phi'} \in \mathbb{C}$ where $\ket{\phi'} = \hat{A}\ket{\phi}$
-5. **Expectation:** $\langle\hat{A}\rangle_\psi = \frac{\braket{\psi | \hat{A} | \psi}}{\braket{\psi|\psi}}$
+1. **Associativity:** $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
+2. **Power property:** $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
+3. **Inner product:** $\braket{\psi|\hat{A}|\phi} = \braket{\psi|\phi'} \in \mathbb{C}$ where $\ket{\phi'} = \hat{A}\ket{\phi}$
+4. **Expectation:** $\langle\hat{A}\rangle_\psi = \frac{\braket{\psi | \hat{A} | \psi}}{\braket{\psi|\psi}}$
 
-Bounded operator properties
-1. $\lVert\hat{A}\ket{\psi}\rVert \leq \lVert\hat{A}\rVert\cdot\lVert\ket{\psi}\rVert$
-2. $\lVert\hat{A}\hat{B}\rVert \leq \lVert\hat{A}\rVert\cdot\lVert\hat{B}\rVert$
-3. $\lVert\hat{A} + \hat{B}\rVert \leq \lVert\hat{A}\rVert + \lVert\hat{B}\rVert$
-4. $\lVert a\hat{A}\rVert = |a|\cdot\lVert\hat{A}\rVert$
+Bounded operator properties for $\hat{A},\hat{B}\in\mathcal{B}(\mathcal{H})$ and $a\in\mathbb{F}$
+1. $\norm{\hat{A}\ket{\psi}} \leq \norm{\hat{A}}\cdot\norm{\ket{\psi}}$
+2. $\norm{\hat{A}\hat{B}} \leq \norm{\hat{A}}\cdot\norm{\hat{B}}$
+3. $\norm{\hat{A} + \hat{B}} \leq \norm{\hat{A}} + \norm{\hat{B}}$
+4. $\norm{ a\hat{A}} = |a|\cdot\norm{\hat{A}}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Let $\ket{\psi}\in\mathcal{H}$ be nonzero. Then 
+
+$$
+  \norm{\frac{\psi}{\lVert\psi}}\rVert = 1
+$$
+
+and
+
+$$
+\begin{align*}
+  \frac{1}{\norm{\psi}} \norm{ \cdot \lVert\hat{A}\psi} =& \norm{\hat{A}\frac{\psi}{\lVert\psi}}\rVert \\
+  \leq& \sup\set{\norm{\hat{A}\varphi} : \ket{\varphi}\in\mathcal{H},\norm{\varphi} = 1} = \norm{\hat{A}} 
+\end{align*}
+$$
+
+Hence,
+
+$$
+  \norm{\hat{A}\ket{\psi}} \leq \norm{\hat{A}}\cdot\norm{\ket{\psi}}
+$$
+
+**(2):** From the definition $\eqref{equation-107}$ and **(1)**, we have
+
+$$
+\begin{align*}
+  \norm{\hat{A}\hat{B}} =& \sup\set{\norm{\hat{A}\hat{B}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
+  =& \sup\set{\norm{\hat{A}}\cdot\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  \leq& \norm{\hat{A}} \sup\set{\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  =& \norm{\hat{A}}\cdot\norm{\hat{B}}
+\end{align*}
+$$
+
+**(3):** From the definition $\eqref{equation-107}$, we have
+
+$$
+\begin{align*}
+  \norm{\hat{A} + \hat{B}} =& \sup\set{\norm{(\hat{A} + \hat{B})\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  \leq& \sup\set{\norm{\hat{A}\psi} + \norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  \leq& \sup\set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
+  &+ \sup\set{\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
+  =& \norm{\hat{A}} + \norm{\hat{B}}
+\end{align*}
+$$
+
+**(4):** From the definition $\eqref{equation-107}$, we have
+
+$$
+\begin{align*}
+  \norm{a\hat{A}} =& \sup\set{\norm{a\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  =& \sup\set{|a|\cdot\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  =& |a| \sup\set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
+  =& |a|\cdot\norm{\hat{A}}
+\end{align*}
+$$
+</details>
 
 <MathBox title='Matrix representation of linear operators' boxType='definition'>
 If $\mathcal{H}$ is a finite-dimensional Hilbert space with orthonormal basis $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$, the matrix elements of a linear operator $\hat{A}$ on $\mathcal{H}$ is given by
@@ -319,7 +379,7 @@ $$
 - **Preservation of norm:**
 
 $$
-  \lVert \hat{U}\ket{\psi}\rVert = \sqrt{\braket{\hat{U}\psi|\hat{U}\psi}} = \sqrt{\braket{\psi|\hat{U}^\dagger \hat{U}|\psi}} = \sqrt{\braket{\psi|\psi}} = \lVert\ket{\psi}\rVert
+  \norm{ \hat{U}\ket{\psi}} = \sqrt{\braket{\hat{U}\psi|\hat{U}\psi}} = \sqrt{\braket{\psi|\hat{U}^\dagger \hat{U}|\psi}} = \sqrt{\braket{\psi|\psi}} = \norm{\ket{\psi}}
 $$
 
 - **Preservation of trace:** Any normal operator $\hat{Q}$ can be written in terms of a orthonormal eigenbasis $\set{\ket{q_j}}$ as
@@ -341,6 +401,80 @@ $$
   \operatorname{tr}(\hat{Q}_U) = \operatorname{tr}(\hat{U}\hat{Q}\hat{U}^\dagger) = \operatorname{tr}(\hat{U}^\dagger \hat{U} \hat{Q}) = \operatorname{tr}(\hat{Q})
 \end{align*}
 $$
+
+<MathBox title='' boxType='proposition'>
+Let $\set{\ket{e_j}}_{j=1}^{n\in\N}$ be an orthonormal basis of an $n$-dimensional Hilbert space $\mathcal{H}$. For $\hat{A},\hat{U}\in\mathcal{L}(\mathcal{H})$, we have
+
+1. $\set{\ket{\tilde{e}_j} = \hat{U}\ket{e_j}}$ is an orthonormal basis in $\mathcal{H}$ if an only if $\hat{U}\in\mathcal{U}(\mathcal{H})$ is unitary
+2. 
+$$
+  \sum_{j=1}^n \braket{e_j|\hat{A}|e_j} = \sum_j \braket{\tilde{e}_j|\hat{A}|\tilde{e}_j}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** To show $\implies$, let $\set{\ket{\tilde{e}_j} = \hat{U}\ket{e_j}}$ be an orthonormal basis in $\mathcal{H}$. If follows that $U_{jk} = \braket{e_j |\hat{U}|e_k} = \braket{e_j|\tilde{e}_k}$ and thus
+
+$$
+\begin{align*}
+  (\mathbf{U}\mathbf{U}^\dagger)_{kl} =& \sum_{j=1}^n \mathbf{U}_{kj} \mathbf{U}_{jl}^* = \sum_{j=1}^n \mathbf{U}_{kj} \mathbf{U}_{jk} \\
+  =& \sum_{j=1}^n \braket{e_k|\tilde{e}_j} \braket{e_l|\tilde{e}_j}^* = \sum_{j=1}^n \braket{e_k|\tilde{e}_j}\braket{\tilde{e}_j|e_l} \\
+  =& \Braket{e_k | \sum_{j=1}^n \tilde{e}_j \braket{\tilde{e}_j | e_l}} = \braket{e_k|e_l} \\
+  =& \delta_{kl}
+\end{align*}
+$$
+
+such that $U\in\mathcal{U}(\mathcal{H})$.
+
+To show $\impliedby$, let $U\in\mathcal{U}(\mathcal{H})$ and $\ket{\tilde{e}_j} = \hat{U}\ket{e_j}$. For any $\set{a_j}\subset\mathbb{F}$ it follows that
+
+$$
+\begin{align*}
+  &\sum_{j=1}^n a_j \ket{\tilde{e}_j} = 0 \implies& \sum_{j=1}^n a_j \hat{U}\ket{e_j} = 0 \\
+  \implies& \hat{U} \sum_{j=1}^m a_j \ket{e_j} = 0 \implies& \hat{U}^\dagger \hat{U} \sum_{j=1}^n a_j \ket{e_j} \\
+  \implies& \sum_{j=1}^n a_j\ ket{e_j} = 0 \implies& a_j = 0, \; \forall j
+\end{align*}
+$$
+
+such that the $\set{\tilde{e}_j} \subset\mathcal{H}$ are linearly independent. Moreover, we have for any $\ket{\psi}\in\mathcal{H}$
+
+$$
+\begin{align*}
+  \hat{U}^\dagger \ket{\psi} =& \sum_{j=1}^n \braket{e_j|\hat{U}^\dagger|\psi}\ket{e_j} = \sum_{j=1}^n \braket{\hat{U}e_j | \psi}\ket{e_j} \\
+  =& \sum_{j=1}^n \braket{\tilde{e}_j |\psi} \ket{e_j}
+\end{align*}
+$$
+
+This implies that
+
+$$
+\begin{align*}
+  \ket{\psi} =& \hat{U}\hat{U}^\dagger \ket{\psi} = \sum_{j=1}^n \braket{\tilde{e}_j | \psi}\hat{U}\ket{e_j} \\
+  =& \sum_{j=1}^n \braket{\tilde{e}_j|\psi} \ket{\tilde{e}_j}
+\end{align*}
+$$
+
+showing that any vector in $\mathcal{H}$ can be written as a linear combination of $\set{\ket{\tilde{e}_j}}$. Finally, we have
+
+$$
+  \braket{\tilde{e}_j|\tilde{e}_k} =& \braket{\hat{U}e_j | \hat{U}e_k} = \braket{e_j | \hat{U}^\dagger \hat{U}| e_k} \\
+  =& \braket{e_j|e_k} = \delta_{jk}
+$$
+
+**(2):** We have that
+
+$$
+\begin{align*}
+  \sum_j \braket{\tilde{e}_j|\hat{A}|\tilde{e}_j} =& \sum_j \braket{\hat{U}e_j|hat{A}\hat{U}|e_j} = \sum_j \braket{e_j | \hat{U}^* \hat{A} \hat{U} e_j} \\
+  =& \sum_j (\hat{U}^\dagger \hat{A} \hat{U})_{jj} \\
+  =& \sum_{j,k,l} \mathbf{U}_{jk}^\dagger \mathbf{A}_{jk} \mathbf{U}_{lj} = \sum_{k,l} \mathbf{A}_{kl} \sum_j \mathbf{U}_{lj} \mathbf{U}_{jl}^\dagger \\
+  =& \sum_{k,l} \mathbf{A}_{kl} \sum_j \underbrace{(\mathbf{U}\mathbf{U}^\dagger)_{lk}}_{\delta_{lk}} = \sum_k \mathbf{A}_{kk} \\
+  =& \sum_k \braket{e_k |\hat{A}| e_k}
+\end{align*}
+$$
+</details>
+</MathBox>
 
 ### Eigenvalues
 
@@ -424,7 +558,7 @@ In the finite-dimensional case, the smallest and larget eigenvalues of a Hermiti
 Let $\hat{U}\in\mathcal{U}(\mathcal{H})$ be a unitary operator on the Hilbert space $\mathcal{H}$ and let $u$ be an eigenvalue with eigenvector $\ket{\psi}\in\mathcal{H}$. Since unitary operators preserve norms, we get
 
 $$
-  \lVert\psi\rVert = \lVert \hat{U}\psi\rVert = \lVert u\psi\rVert = |u|\cdot\lVert\psi\rVert
+  \norm{\psi} = \norm{ \hat{U}\psi} = \norm{ u\psi} = |u|\cdot\norm{\psi}
 $$
 
 and thus $|u| = 1$, meaning that the eigenvalues of a unitary operator always lie on the unit circle in the complex plane.
@@ -834,7 +968,7 @@ which is known as the completeness relation.
 
 ## Postulates
 
-1. **Description of system states:** The configuration space of a quantum system is a complex separable Hilbert space $\mathcal{H}$ and the possible states of this system are represented by state vectors $\ket{\psi}\in\mathcal{H}$ with unit norm, i.e. $\lVert\ket{\psi}\rVert = 1$.
+1. **Description of system states:** The configuration space of a quantum system is a complex separable Hilbert space $\mathcal{H}$ and the possible states of this system are represented by state vectors $\ket{\psi}\in\mathcal{H}$ with unit norm, i.e. $\norm{\ket{\psi}} = 1$.
 2. **Description of system observables:** Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $\mathcal{H}$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distribution functions. 
 3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the eigenvalues of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
     - The probability $P_n$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_n = |\braket{n|\psi}|^2$.
@@ -2687,7 +2821,7 @@ $$
   \end{bmatrix} = \frac{1}{2} (1 + \mathbf{r}\cdot\boldsymbol{\sigma})
 $$
 
-where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$ are the Pauli matrices. The density matrix $\rho$ represents a pure state if and only if $\rVert\mathbf{r}\rVert = 1$. For a mixed state we have $\lVert\mathbf{r}\rVert < 1$.
+where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$ are the Pauli matrices. The density matrix $\rho$ represents a pure state if and only if $\rVert\mathbf{r}\rVert = 1$. For a mixed state we have $\norm{\mathbf{r}} < 1$.
 
 <details>
 <summary>Proof</summary>
@@ -2719,7 +2853,7 @@ $$
 This implies that
 
 $$
-  \lVert \mathbf{c} \rVert \leq |c_0| = \frac{1}{2}
+  \norm{ \mathbf{c} } \leq |c_0| = \frac{1}{2}
 $$
 
 Writing $\mathbf{r} = \frac{1}{2}\mathbf{c}$, we get that
@@ -2728,7 +2862,7 @@ $$
   \rho = \frac{1}{2} (I_2 + \mathbf{r}\cdot\boldsymbol{\sigma})
 $$
 
-with $\lVert \mathbf{r} \rVert \leq 1$.
+with $\norm{ \mathbf{r} } \leq 1$.
 
 If $\rho$ describes a pure state, then $\rho^2 = \rho$. Calculating $\rho^2$ yields
 
@@ -2740,7 +2874,7 @@ $$
 \end{align*}
 $$
 
-where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilon_{ijk} \sigma_k$. We see that $\rho^2 = \rho$ if and only if $\mathbf{r}^2 = \lVert\mathbf{r}\rVert^2 = 1$.
+where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilon_{ijk} \sigma_k$. We see that $\rho^2 = \rho$ if and only if $\mathbf{r}^2 = \norm{\mathbf{r}}^2 = 1$.
 </details>
 </MathBox>
 
@@ -5400,7 +5534,9 @@ $$
 and the possible energy states are given by
 
 $$
-  E_n = \frac{(\hbar k_n)^2}{2m} = \frac{(\hbar \pi n)^2}{2m a^2}
+\begin{equation}
+  E_n = \frac{(\hbar k_n)^2}{2m} = \frac{(\hbar \pi n)^2}{2m a^2} \tag{\label{equation-108}}
+\end{equation}
 $$
 
 Normalizing $\psi$, we find
@@ -6238,7 +6374,7 @@ This is a transcendental equation for $z$ as a function of $z_0$ and must be sol
 $$
   E_n + V_0 \approx \frac{n^2 \pi^2 \hbar^2}{2m(2a)^2}, \; n\in (\N/2)^C
 $$
-The right-hand size coincides with the infinite square well energies $\eqref{equation-}$. In the limit $V_0 \to\infty$, the finite square well goes over to the infinite square well.
+The right-hand size coincides with the infinite square well energies $\eqref{equation-108}$. In the limit $V_0 \to\infty$, the finite square well goes over to the infinite square well.
 2. **Shallow, narrow well:** As $z_0$ decreases, there are fewer and fewer bound states, until only one remains for $z_0 < \pi/2$.
 
 Next, we consider scattering states, $E > 0$. Outside the well for $x z -a$, the wavefunctions take the form

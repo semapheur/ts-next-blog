@@ -93,10 +93,10 @@ which is known as the *maximum a posteriori estimation* (MAP).
 A common regularization technique is to penalize the magnitude of the weights (regression coefficients) by introducing a zero-mean Gaussian prior $p(\mathbf{w})$. The resulting MAP estimate is given by
 
 $$
-  \hat{\mathbf{w}}_\text{MAP} = \argmin_{\mathbf{w}} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2
+  \hat{\mathbf{w}}_\text{MAP} = \argmin_{\mathbf{w}} \operatorname{NLL}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_2^2
 $$
 
-where $\lVert\mathbf{w}\rVert_2^2 = \sum_{i=1}^d w_i^2$ is the $\ell_2$ norm. This is known as $\ell_2$ regularization or weight decay. The larger the value of $\lambda$, the more the weights are penalized for deviating from the zero-mean prior, and thus the less flexible the model.
+where $\norm{\mathbf{w}}_2^2 = \sum_{i=1}^d w_i^2$ is the $\ell_2$ norm. This is known as $\ell_2$ regularization or weight decay. The larger the value of $\lambda$, the more the weights are penalized for deviating from the zero-mean prior, and thus the less flexible the model.
 
 ## Cross-validation
 
@@ -230,7 +230,7 @@ and
 
 $$
 \begin{align*}
-  \operatorname{RSS}(\mathbf{w}) =& \frac{1}{2} \sum_{n=1}^N (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 = \frac{1}{2}\lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 \\
+  \operatorname{RSS}(\mathbf{w}) =& \frac{1}{2} \sum_{n=1}^N (y_n - \mathbf{w}^\top \mathbf{x}_n)^2 = \frac{1}{2}\norm{ \mathbf{Xw} - \mathbf{y}}_2^2 \\
   =& \frac{1}{2}(\mathbf{Xw} - \mathbf{w})^\top (\mathbf{Xw} - \mathbf{y})
 \end{align*}
 $$
@@ -274,7 +274,7 @@ $$
 If $\mathbf{X}$ is full rank, $H$ is positive definite since for any $\mathbf{v} \neq 0$, we have
 
 $$
-  \mathbf{v}^\top (\mathbf{X}^\top \mathbf{X})\mathbf{v} = (\mathbf{Xv})^\top (\mathbf{Xv}) = \lVert\mathbf{Xv}\rVert^2 > 0
+  \mathbf{v}^\top (\mathbf{X}^\top \mathbf{X})\mathbf{v} = (\mathbf{Xv})^\top (\mathbf{Xv}) = \norm{\mathbf{Xv}}^2 > 0
 $$
 
 #### Solving using QR decomposition
@@ -319,14 +319,14 @@ To avoid overfitting, maximum likelihood estimation can be modified by introduci
 $$
 \begin{align*}
   \hat{\mathbf{w}}_\text{MAP} =& \frac{1}{2\sigma^2}(\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \frac{1}{2\tau^2} \mathbf{w}^\top \mathbf{w} \\
-  =& \argmin_{\mathbf{w}} \operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2
+  =& \argmin_{\mathbf{w}} \operatorname{RSS}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_2^2
 \end{align*}
 $$
 
 where $\lambda = \sigma^2 / \tau^2$ is proportional to the strength of the prior, and
 
 $$
-  \lVert\mathbf{w}\rVert_2 = \left(\sum_{i=1}^d |w_i|^2 \right)^{1/2} = \sqrt{\mathbf{w}^\top \mathbf{w}}
+  \norm{\mathbf{w}}_2 = \left(\sum_{i=1}^d |w_i|^2 \right)^{1/2} = \sqrt{\mathbf{w}^\top \mathbf{w}}
 $$
 
 Note that we do not penalize th offset term $w_0$, since that only affects the global mean of the output, and does not contribute to overfitting.
@@ -335,12 +335,12 @@ Taking the gradient of the MAP estimation with respect to $\mathbf{w}$ gives
 
 $$
 \begin{align*}
-  \nabla_\mathbf{w} (2\operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2) =& \nabla_\mathbf{w} \left((\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \lambda\lVert\mathbf{w}\rVert_2^2 \right) \\
+  \nabla_\mathbf{w} (2\operatorname{RSS}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_2^2) =& \nabla_\mathbf{w} \left((\mathbf{y} - \mathbf{Xw})^\top (\mathbf{y} - \mathbf{Xw}) + \lambda\norm{\mathbf{w}}_2^2 \right) \\
   =& 2(\mathbf{X}^\top \mathbf{Xw} - \mathbf{X}^\top \mathbf{y} + \lambda\mathbf{w}) \\
 \end{align*}
 $$
 
-Solving for $\nabla_\mathbf{w} (\operatorname{RSS}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_2^2) = 0$ gives
+Solving for $\nabla_\mathbf{w} (\operatorname{RSS}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_2^2) = 0$ gives
 
 $$
   \hat{\mathbf{w}}_\text{MAP} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I}_P)^{-1} \mathbf{X}^\top \mathbf{y}
@@ -407,10 +407,10 @@ $$
 where $\lambda$ is the sparsity parameter. To perform a MAP estimation of a linear regression model with this prior, we just have to minimize the following objective function
 
 $$
-  \operatorname{PNN}(\mathbf{w}) = -\ln(p(S|\mathbf{w})) - \ln(p(\mathbf{w}|\lambda)) = \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = \lVert \mathbf{Xw} - \mathbf{y}\rVert_2^2 + \lambda\lVert\mathbf{w}\rVert_1
+  \operatorname{PNN}(\mathbf{w}) = -\ln(p(S|\mathbf{w})) - \ln(p(\mathbf{w}|\lambda)) = \operatorname{NLL}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_1 = \norm{ \mathbf{Xw} - \mathbf{y}}_2^2 + \lambda\norm{\mathbf{w}}_1
 $$
 
-where $\lVert\mathbf{w}\rVert = \sum_{p=1}^P |w_p|$ is the $\ell_1$ norm of $\mathbf{w}$. This method is called *LASSO regression*, which stands for "least absolute shrinkage and selection operator".
+where $\norm{\mathbf{w}} = \sum_{p=1}^P |w_p|$ is the $\ell_1$ norm of $\mathbf{w}$. This method is called *LASSO regression*, which stands for "least absolute shrinkage and selection operator".
 
 #### Thresholding
 
@@ -427,16 +427,16 @@ $$
 where $\mathbf{w}_{-p}$ is $\mathbf{w}$ without the $p$th component, and similarly $\mathbf{x}_{n,-p}$ is $\mathbf{x}_n$ withouth the $p$th component. We see that $c_p$ is proportional to the correlation between $p$th column of features $\mathbf{x}_{:,p}$ and the residual error obtained by predicting using all the other features, $\mathbf{r}_{-p} = \mathbf{y} - \mathbf{X}_{:,-p} \mathbf{w}_{-p}$. Hence the magnitude of $c_p$ is an indication of how relevant feature $p$ is for predictin $\mathbf{y}$, relative to the other features and the current parameters. Setting the gradient to $0$ gives the optimal update for $w_p$, keeping all other weights fixed
 
 $$
-  w_p = c_p / a_p = \frac{\mathbf{x}_{:,p}^\top \mathbf{r}_{-p}}{\lVert\mathbf{x}_{:,p}\rVert_2^2}
+  w_p = c_p / a_p = \frac{\mathbf{x}_{:,p}^\top \mathbf{r}_{-p}}{\norm{\mathbf{x}_{:,p}}_2^2}
 $$
 
 The corresponding new prediction for $\mathbf{r}_{-p}$ becomes $\hat{\mathbf{r}}_{-p} = w_p \mathbf{x}_{:,p}$, which is the orthogonal projection of the residual onto the column vector $\mathbf{x}_{:,p}$.
 
-Unfortunately, the $\lVert\mathbf{w}\rVert_1$ term is not differentiable whenever $w_p = 0$. However, we can compute a subgradient at this point
+Unfortunately, the $\norm{\mathbf{w}}_1$ term is not differentiable whenever $w_p = 0$. However, we can compute a subgradient at this point
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 =& (a_p w_p - c_p) + \lambda \partial_{w_p} \lVert\mathbf{w}\rVert_1 \\
+  \frac{\partial}{\partial w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_1 =& (a_p w_p - c_p) + \lambda \partial_{w_p} \norm{\mathbf{w}}_1 \\
   =& \begin{cases}
     a_p w_p - c_p - \lambda, \quad& w_p < 0 \\
     [-c_p - \lambda, -c_p + \lambda] \quad& w_p = 0 \\
@@ -445,7 +445,7 @@ $$
 \end{align*}
 $$
 
-Depending on the value of $c_p$, the solutino to $\partial_{w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\lVert\mathbf{w}\rVert_1 = 0$ can occur at $3$ different values of $w_p$
+Depending on the value of $c_p$, the solutino to $\partial_{w_p} \operatorname{NLL}(\mathbf{w}) + \lambda\norm{\mathbf{w}}_1 = 0$ can occur at $3$ different values of $w_p$
 
 1. If $c_p < -\lambda$, the feature is strongly negatively correlated with the residual, such that the subgradient is zero at $\hat{w}_p = (c_p + \lambda)/a_p < 0$
 2. If $c_p \in [-\lambda, \lambda]$, the feature is only weakly correlated with the residual, such that the subgradient is zero at $\hat{w}_p = 0$
@@ -548,7 +548,7 @@ $$
 
 we see that $f$ defines a linear hyperplane with normal vector $\mathbf{w} \in\R^p$ and an offset $b\in\R$ from the origin. This linear plane is known as a *decision boundary* and splits the output space into two *half-spaces*. If we can perfectly separate the training examples by such a linear boundary without any classification errors, we say that the data is *linearly separable*.
 
-In general, there will be uncertainty about the correct class label, so we need to predict a probability distribution over labels, and not just decide which side of the decision boundary we are on. The normal $\mathbf{w}$ defines the orientation of the decision boundary, while its magnitude $\lVert\mathbf{w}\rVert$ controls the steepness of the sigmoid, and hence the confidence of the predictions.
+In general, there will be uncertainty about the correct class label, so we need to predict a probability distribution over labels, and not just decide which side of the decision boundary we are on. The normal $\mathbf{w}$ defines the orientation of the decision boundary, while its magnitude $\norm{\mathbf{w}}$ controls the steepness of the sigmoid, and hence the confidence of the predictions.
 
 ### Nonlinear classifiers
 
@@ -646,7 +646,7 @@ $$
 where $\mathbf{S} := \operatorname{diag}(\mu_n (1 - \mu_n))_{n=1}^N$. We see that $\mathbf{H}$ is positive definite, since for any nonzero vector $\mathbf{v}\in\R^p$ we have
 
 $$
-  \mathbf{v}^\top \mathbf{X}^\top \mathbf{SXv} = (\mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2})(\mathbf{S}^{1/2} \mathbf{Xv}) = \lVert \mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2} \rVert_2^2 > 0
+  \mathbf{v}^\top \mathbf{X}^\top \mathbf{SXv} = (\mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2})(\mathbf{S}^{1/2} \mathbf{Xv}) = \norm{ \mathbf{v}^\top \mathbf{X}^\top \mathbf{S}^{1/2} }_2^2 > 0
 $$
 
 This follows since $\mu_n > 0$ for all $n$, because of the use of the sigmoid function. Consequently the negative log-likelihood function is strictly convex. However, in practice, values of $\mu_n$ which are close to $0$ and $1$ might cause the Hessian to be close to singular. This can be avoided by using $\ell_2$ regularization.

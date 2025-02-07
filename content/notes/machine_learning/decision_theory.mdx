@@ -761,21 +761,21 @@ Although consistency is a desirable property, it is of samewhot limited usefulne
 Let $\delta_1, \delta_2$ be two random variables. We say that $\delta_1$ dmoniates $\delta_2$ if $R(\boldsymbol{\theta}, \delta_1) < R(\boldsymbol{\theta}, \delta_2)$ for all $\boldsymbol{\theta}$. The domination is strict if the inequality of strict for some $\boldsymbol{\theta}^*$. An estimator is *admissible* if it is not stricty dominated by any athor estimator. It can be shown that all admissible decision rules are equivalent to some kind of Bayesian decision rule, under some technical conditions.
 
 <MathBox title='James-Stein estimator' boxType='example'>
-Let $\mathbf{X} = (X_n)_{n=1}^N$ with $X_n \sim\mathcal{N}(\theta_n, 1)$ be independent Gaussian variables with unit variance. Assuming a quadratic loss function $\ell_2 (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}) = \lVert\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}\rVert^2$, the corresponding risk function $R(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta}) = \mathbb{E}[\ell(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta})]$ is the mean squared error. It can be shown that the unbiased ordinary estimator $\hat{\boldsymbol{\theta}}_0 (\mathbf{X}) = \mathbf{X}$ with $R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta}) = N$ is admissible for squared error loss when $N = \Set{1,2}$. However, for $N \geq 3$, the James-Stein estimator 
+Let $\mathbf{X} = (X_n)_{n=1}^N$ with $X_n \sim\mathcal{N}(\theta_n, 1)$ be independent Gaussian variables with unit variance. Assuming a quadratic loss function $\ell_2 (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}) = \norm{\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}}^2$, the corresponding risk function $R(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta}) = \mathbb{E}[\ell(\hat{\boldsymbol{\theta}}, \boldsymbol{\theta})]$ is the mean squared error. It can be shown that the unbiased ordinary estimator $\hat{\boldsymbol{\theta}}_0 (\mathbf{X}) = \mathbf{X}$ with $R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta}) = N$ is admissible for squared error loss when $N = \Set{1,2}$. However, for $N \geq 3$, the James-Stein estimator 
 
 $$
-  \hat{\boldsymbol{\theta}}_{\text{JS}}(\mathbf{X}) = \left(1 - \frac{N - 2}{\lVert\mathbf{X}\rVert^2} \right)\mathbf{X}
+  \hat{\boldsymbol{\theta}}_{\text{JS}}(\mathbf{X}) = \left(1 - \frac{N - 2}{\norm{\mathbf{X}}^2} \right)\mathbf{X}
 $$
 
 dominates $\boldsymbol{\theta}^0$, i.e. $R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) \leq R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta})$. Geometrically, the James-Stein estimator shrinks each component of $\mathbf{X}$ towards $\boldsymbol{\theta}$ by reducing the variance (at the expense of introducing bias). This can be shown by computing the risk of the James-Stein estimator:
 
 $$
 \begin{align*}
-  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& \mathbb{E}\left(\left\lVert \left(1 - \frac{N - 2}{\lVert\mathbf{X}\rVert^2} \right)\mathbf{X} - \boldsymbol{\theta} \right\rVert^2 \right) \\
-  =& \mathbb{E}\left(\left\lVert \mathbf{X} - \boldsymbol{\theta} - \frac{(N - 2)\mathbf{X}}{\lVert\mathbf{X}\rVert^2} \right\rVert^2 \right) \\
-  =& \mathbb{E}(\lVert\mathbf{X} - \boldsymbol{\theta}\rVert^2) + \mathbb{E}\left(\left\lVert \frac{(N - 2)\mathbf{X}}{\lVert\mathbf{X}\rVert^2} \right\rVert^2 \right) \\
-  &- \mathbb{E}\left(2(N - 2) \sum_{n=1}^N \frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2} \right) \\
-  =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2}\right) - 2(N - 2) \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right)
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& \mathbb{E}\left(\Norm{ \left(1 - \frac{N - 2}{\norm{\mathbf{X}}^2} \right)\mathbf{X} - \boldsymbol{\theta} }^2 \right) \\
+  =& \mathbb{E}\left(\Norm{ \mathbf{X} - \boldsymbol{\theta} - \frac{(N - 2)\mathbf{X}}{\norm{\mathbf{X}}^2} }^2 \right) \\
+  =& \mathbb{E}(\norm{\mathbf{X} - \boldsymbol{\theta}}^2) + \mathbb{E}\left(\Norm{ \frac{(N - 2)\mathbf{X}}{\norm{\mathbf{X}}^2} }^2 \right) \\
+  &- \mathbb{E}\left(2(N - 2) \sum_{n=1}^N \frac{(X_n - \theta_n)X_n}{\norm{\mathbf{X}}^2} \right) \\
+  =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2}\right) - 2(N - 2) \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\norm{\mathbf{X}}^2}\right)
 \end{align*}
 $$
 
@@ -783,40 +783,40 @@ For $n=1$, the expectation inside the sum is given by
 
 $$
 \begin{align*}
-  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\lVert\mathbf{X}\rVert^2} \right) =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{(x_1 - \theta_1)x_1}{\lVert\mathbf{x}\rVert^2} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \;\d x_1\cdots\d x_N
+  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\norm{\mathbf{X}}^2} \right) =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{(x_1 - \theta_1)x_1}{\norm{\mathbf{x}}^2} \frac{1}{(2\pi)^{N/2}}e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2} \;\d x_1\cdots\d x_N
 \end{align*}
 $$
 
 Noting that
 
 $$
-  \frac{\partial}{\partial x_1} \frac{1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} = -\frac{x_1 -\theta_1}{(2\pi)^{N/2}}e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2}
+  \frac{\partial}{\partial x_1} \frac{1}{(2\pi)^{N/2}}e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2} = -\frac{x_1 -\theta_1}{(2\pi)^{N/2}}e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2}
 $$
 
 we integrate by parts to obtain
 
 $$
 \begin{align*}
-  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\lVert\mathbf{X}\rVert^2} \right) =& \frac{1}{(2\pi)^{N/2}} \int_{-\infty}^\infty \cdots \big(\underbrace{\left[-\frac{x_1}{\lVert\mathbf{x}\rVert^2} e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \right]_{-\infty}^\infty}_{=0} \\
-  &+ \left. \int_{-\infty}^\infty e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \d\left(\frac{x_1}{\lVert\mathbf{x}\rVert^2}\right) \right) \cdots\d x_N \\
-  =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{\lVert\mathbf{x}\rVert^2 - 2x_1^2}{\lVert\mathbf{x}\rVert^4} \frac{1}{(2\pi)^{N/2}} e^{-\lVert\mathbf{x} - \boldsymbol{\theta}\rVert^2 / 2} \;\d x_1 \cdots\d x_N \\
-  =& \mathbb{E}\left(\frac{\lVert\mathbf{X}\rVert^2 - 2X_1^2}{\lVert\mathbf{X}\rVert^4}\right)
+  \mathbb{E}\left(\frac{(X_1 - \theta_1)X_1}{\norm{\mathbf{X}}^2} \right) =& \frac{1}{(2\pi)^{N/2}} \int_{-\infty}^\infty \cdots \big(\underbrace{\left[-\frac{x_1}{\norm{\mathbf{x}}^2} e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2} \right]_{-\infty}^\infty}_{=0} \\
+  &+ \left. \int_{-\infty}^\infty e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2} \d\left(\frac{x_1}{\norm{\mathbf{x}}^2}\right) \right) \cdots\d x_N \\
+  =& \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \frac{\norm{\mathbf{x}}^2 - 2x_1^2}{\norm{\mathbf{x}}^4} \frac{1}{(2\pi)^{N/2}} e^{-\norm{\mathbf{x} - \boldsymbol{\theta}}^2 / 2} \;\d x_1 \cdots\d x_N \\
+  =& \mathbb{E}\left(\frac{\norm{\mathbf{X}}^2 - 2X_1^2}{\norm{\mathbf{X}}^4}\right)
 \end{align*}
 $$
 
 where we have used that 
 
 $$
-\frac{\d}{\d x_1} \left(\frac{x_1}{\lVert\mathbf{x}\rVert^2}\right) = \frac{\lVert\mathbf{x}\rVert^2 - 2x_1^2}{\lVert\mathbf{x}\rVert^4}
+\frac{\d}{\d x_1} \left(\frac{x_1}{\norm{\mathbf{x}}^2}\right) = \frac{\norm{\mathbf{x}}^2 - 2x_1^2}{\norm{\mathbf{x}}^4}
 $$  
 
 Repeating the process for $n = 2,\dots,N$, we can write the summed expectation as
 
 $$
 \begin{align*}
-  \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\lVert\mathbf{X}\rVert^2}\right) =& \mathbb{E}\left(\sum_{n=1}^N \frac{\lVert\mathbf{X}\rVert^2 - 2X_i^2}{\lVert\mathbf{X}\rVert^4} \right) \\
-  =& \mathbb{E}\left(\frac{N\lVert\mathbf{X}\rVert^2 - 2\lVert\mathbf{X}\rVert^2}{\lVert\mathbf{X}\rVert^4}\right) \\
-  =& (N - 2)\mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right)
+  \sum_{n=1}^N \mathbb{E}\left(\frac{(X_n - \theta_n)X_n}{\norm{\mathbf{X}}^2}\right) =& \mathbb{E}\left(\sum_{n=1}^N \frac{\norm{\mathbf{X}}^2 - 2X_i^2}{\norm{\mathbf{X}}^4} \right) \\
+  =& \mathbb{E}\left(\frac{N\norm{\mathbf{X}}^2 - 2\norm{\mathbf{X}}^2}{\norm{\mathbf{X}}^4}\right) \\
+  =& (N - 2)\mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2} \right)
 \end{align*}
 $$
 
@@ -824,15 +824,15 @@ Inserting back into $R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta
 
 $$
 \begin{align*}
-  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) - 2(N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) \\
-  =& N - (N - 2)^2 \mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right)
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) =& N + (N - 2)^2 \mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2} \right) - 2(N - 2)^2 \mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2} \right) \\
+  =& N - (N - 2)^2 \mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2} \right)
 \end{align*}
 $$
 
 Hence, it follows that
 
 $$
-  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) = N - (N - 2)\mathbb{E}\left(\frac{1}{\lVert\mathbf{X}\rVert^2} \right) < N = R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta})
+  R(\hat{\boldsymbol{\theta}}_{\text{JS}}, \boldsymbol{\theta}) = N - (N - 2)\mathbb{E}\left(\frac{1}{\norm{\mathbf{X}}^2} \right) < N = R(\hat{\boldsymbol{\theta}}_0, \boldsymbol{\theta})
 $$
 
 for $N \geq 3$.

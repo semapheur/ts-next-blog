@@ -40,6 +40,8 @@ export function rehypePlugins(noCite: string[] = []) {
           "\\d": "\\mathrm{d}",
           "\\D": "\\mathrm{D}",
           "\\atanh": "\\operatorname{atanh}",
+          "\\norm": "\\lVert{#1}\\rVert",
+          "\\Norm": "\\left\\lVert{#1}\\right\\rVert",
           "\\tleq": "\\overset{\\tiny{\\mathbf{\\triangle}}}{\\leq}",
           "\\eqref": "\\href{###1}{(\\text{#1})}",
           "\\ref": "\\href{###1}{\\text{#1}}",
