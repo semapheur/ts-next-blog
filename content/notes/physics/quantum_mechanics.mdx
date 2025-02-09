@@ -90,6 +90,35 @@ $$
 $$
 </MathBox>
 
+<MathBox title='Ray' boxType='definition'>
+Let $\mathcal{H}$ be a complex Hilbert space. For any normalized vector $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$, the *ray* associated with $\ket{\psi}$ is the set
+
+$$
+  S_\psi := \set{e^{i\alpha} \ket{\psi} | \alpha\in\R}
+$$
+
+That is, a ray $S_\psi$ consists of all vectors that differ from $\ket{\psi}$ by a global phase factor.
+</MathBox>
+
+Define the equivalence relation $\sim$ on the complex Hilbert space $\mathcal{H}$ such that for $\ket{\psi}, \ket{\varphi}\in\mathcal{H}$,
+
+$$
+  \ket{\psi}\sim\ket{\varphi} \iff \ket{\varphi} = e^{i\alpha} \ket{\psi},\; \alpha\in\R
+$$
+
+This relation satisfies
+- **Reflexivity**: $\ket{\psi} = e^{i0}\ket{\psi}$, so $\ket{\psi}\sim\ket{\psi}$
+- **Symmetry**: If $\ket{\psi}\sim\ket{\varphi}$, then $\ket{\varphi} = e^{i\alpha} \ket{\psi}$, and its inverse $\ket{\psi} = e^{-i\alpha} \ket{\varphi}$ also holds, implying $\ket{\varphi}\sim\ket{\psi}$
+
+- **Transitivity:** If $\ket{\psi}\sim\ket{\varphi}$ and $\ket{\varphi}\sim\ket{\xi}$, then there exists $\alpha,\beta\in\R$ such that $\ket{\varphi} = e^{i\alpha}$ and $\ket{\xi} = e^{i\beta} \ket{\varphi}$. Thus,
+
+$$
+  \ket{\xi} = e^{i\beta} (e^{i\alpha}\ket{\psi}) = e^{i(\alpha + \beta)} \ket{\psi}
+$$
+
+so $\ket{\psi}\sim\ket{\varphi}$. 
+
+The equivalence class of $\ket{\psi}\in\mathcal{H}$ under $\sim$ is precisely the ray associated with $\ket{\psi}$, i.e. $[\psi]_\sim = S_\psi$. The projective Hilbert space is the quotient space $\mathcal{PH} = \mathcal{H}/\sim$, which represents the space of quantum states modulo global phase factors.
 
 ## Basis
 
@@ -127,6 +156,179 @@ $$
 
 is called an *orthonormal basis*. The Hilbert space $\mathcal{H}$ is separable if it has a countable basis.
 </MathBox>
+
+Let $\mathcal{H}$ be a Hilbert space with orthonormal basis $\set{\ket{e_j}}$. For $\ket{\psi}, \ket{\varphi} \in\mathcal{H}$ with $\psi_j = \braket{e_j|\psi}$ and $\varphi_j = \braket{e_j|\varphi}$, then
+
+1. $\ket{\psi} = \sum_j \ket{e_j}\braket{e_j|\psi} = \sum_j \psi_j e_j$
+2. $\braket{\varphi|\psi} = \sum_j \braket{e_j|\varphi}^* \braket{e_j|\psi} = \sum_j \braket{\varphi|e_j}\braket{e_j|\psi} = \sum_j \varphi_j^* \psi_j$
+3. $\norm{\psi}^2 = \sum_j |\braket{e_j|\psi}|^2 = \sum_j |\psi_j|^2$
+4. If $\varphi\in\mathcal{H}_{\psi^\perp}$, then $\norm{\varphi + \psi}^2 = \norm{\varphi}^2 + \norm{\psi}^2$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** If $\ket{\psi} = \sum_j a_j \ket{e_j}$, then
+
+$$
+\begin{align*}
+  \braket{e_k|\psi} =& \Braket{e_k | \sum_j a_j e_j} \\
+  =& \sum_j a_j \underbrace{\braket{e_k|e_j}}_{\delta_{kj}} \\
+  =& a_k
+\end{align*}
+$$
+
+and thus $\ket{\psi} = \sum_j \ket{e_j}\braket{e_j|\psi}$.
+
+**(2):** From **(1)**, we have
+
+$$
+\begin{align*}
+  \braket{\varphi} =& \Braket{\sum_j \varphi_j e_j | \sum_k \psi_k e_k} \\
+  =& \sum_j \sum_k \varphi_j^* \psi_k \underbrace{\braket{e_j|e_k}}_{\delta_{jk}} \\
+  =& \sum_j \varphi_j^* \psi_j = \sum_j \braket{e_j|\varphi}* \braket{e_j|\psi} \\
+  =& \sum_j \braket{\varphi|e_j} \braket{e_j|\psi}
+\end{align*}
+$$
+
+**(3):** Calculating $\norm{\psi}^2$
+
+$$
+  \norm{\psi}^2 = \braket{\psi|\psi} = \sum_j \braket{e_j|\psi}^* \braket{e_j|\psi} = \sum_j |\braket{e_j|\psi}|^2
+$$
+</details>
+
+**(4):** For $\varphi\in\mathcal{H}_{\psi^\perp}$, we have
+
+$$
+  \braket{\psi|\varphi} = 0 = \braket{\psi|\varphi}^* = \braket{\varphi|\psi}
+$$
+
+such that
+
+$$
+\begin{align*}
+  \norm{\varphi + \psi}^2 =& \braket{\varphi + \psi|\varphi + \psi} \\
+  =& \braket{\varphi|\varphi} + \underbrace{\braket{\varphi|\psi}}_{=0} + \underbrace{\braket{\psi|\varphi}}_{=0} + \braket{\psi|\psi} \\
+  =& \norm{\varphi}^2 + \norm{\psi}^2
+\end{align*}
+$$
+
+### Pauli matrices
+
+The Pauli matrices is a set of three complex $2\times 2$ matrices $\sigma_j \in\mathcal{M}_2 (\mathbb{C})$ defined as
+
+$$
+\begin{align*}
+  \sigma_1 = \sigma_x = X :=& \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \\
+  \sigma_2 = \sigma_y = Y :=& \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix} \\
+  \sigma_3 = \sigma_z = Y :=& \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}
+\end{align*}
+$$
+
+The Paul matrices satisfy
+- $\sigma_i = \sigma_j = \delta_{ij} I_2 + i\varepsilon_{ijk} \sigma_k$ 
+- $[\sigma_i, \sigma_j] = 2i\varepsilon_{ijk} \sigma_k$
+- $[\sigma_i, \sigma_j]_+ = 2 \delta_{ij} I_2$
+
+Additionally
+
+$$
+  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
+$$
+
+The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ form a basis form the set of complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
+
+<details>
+<summary>Proof</summary>
+
+We need to show two things:
+1. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is linearly independent
+2. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ spans $\mathbb{M}_2 (\mathbb{C})$
+
+To prove linear independence, we must show that for $c_0, c_1, c_2, c_3 \in\mathbb{C}$
+
+$$
+  c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z = \mathbf{0}_2
+$$
+
+implies $c_0 = c_1 = c_2 = c_3 = 0$. This gives the matrix equation
+
+$$
+\begin{bmatrix}
+  c_0 + c_3 & c_1 - ic_2 \\
+  c_1 + ic_2 & c_0 - c_3
+\end{bmatrix} = \mathbf{0}_2
+$$
+
+and the matrix elements must satisfy
+
+$$
+\begin{align*}
+  c_0 + c_3 =& 0 \\
+  c_1 - ic_2 =& 0 \\
+  c_1 + ic_2 =& 0 \\
+  c_0 - c_3 =& 0
+\end{align*}
+$$
+
+The first and fourth equations imply $c_0 = -c_3$ and $c_0 = c_3$, so $c_0 = c_3 = 0$. The second and third equations imply $c_1 = ic_2$ and $c_1 = -ic_2$, so $c_1 = c_2 = 0$.
+
+An arbitrary complex $2\times 2$ matrix $A = \mathcal{M}_2 (\mathbb{C})$ is of the form
+
+$$
+  A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
+$$
+
+We need to show that $\mathbf{A}$ can be written as a linear combination
+
+$$
+  A = c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z
+$$
+
+where $c_0, c_1, c_2, c_3 \in\mathbb{C}$. This gives the matrix equation
+
+$$
+\begin{bmatrix}
+  c_0 + c_3 & c_1 - ic_2 \\
+  c_1 + ic_2 & c_0 - c_3
+\end{bmatrix} = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
+$$
+
+and the matrix elements must satisfy
+
+$$
+\begin{align*}
+  c_0 + c_3 =& a_{00} \\
+  c_1 - ic_2 =& a_{01} \\
+  c_1 + ic_2 =& a_{10} \\
+  c_0 - c_3 =& a_{11}
+\end{align*}
+$$
+
+Adding the first and fourth equations gives
+
+$$
+  2c_0 = a_{00} + a_{11} \implies c_2 = \frac{1}{2}(a_{00} + a_{11})
+$$
+
+Adding the second and third equation gives
+
+$$
+  2c_1 = a_{01} + a_{10} \implies c_1 = \frac{1}{2}(a_{01} + a_{10})
+$$
+
+Subtracting the third equation from the second gives
+
+$$
+  -i2 c_2 = a_{01} - a_{10} \implies i\frac{1}{2}(a_{01} - a_{10})
+$$
+
+Subtracting the first equation from the first gives
+
+$$
+  -2c_3 = a_{11} - a_{00} \implies c_3 = \frac{1}{2}(a_{00} - a_{11})
+$$
+</details>
 
 ## Linear operators
 
@@ -968,11 +1170,26 @@ which is known as the completeness relation.
 
 ## Postulates
 
-1. **Description of system states:** The configuration space of a quantum system is a complex separable Hilbert space $\mathcal{H}$ and the possible states of this system are represented by state vectors $\ket{\psi}\in\mathcal{H}$ with unit norm, i.e. $\norm{\ket{\psi}} = 1$.
+1. **Description of quantum states** The state space of a quantum system is described a complex separable Hilbert space $\mathcal{H}$. The possible states of the system can be categorized into *pure states* and *mixed states*:
+
+    - **Pure states**: The pure states are represented by rays in the projective Hilbert space $\mathcal{PH} = \mathcal{H}/\sim$, where each ray is an equivalence class of normalized vectors $\ket{\psi}\in\mathcal{H}$ with $\norm{1}$ differing by a global phase, i.e.
+
+    $$
+      [\psi]_\sim = \set{e^{i\alpha} \ket{\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi}, \alpha\in\R}
+    $$
+
+    - **Mixed states:** A mixed state is described by a *density matrix* $\rho$, which is a positive semidefinite operator $\mathcal{H}$ with unit trace, i.e. $\operatorname{tr}(\rho) = 1$. The density matrix $\rho$ represents a statistical mixture of pure states and can be expressed as
+
+    $$
+      \rho = \sum_i p_i \ket{\psi_i} \bra{\psi_i}
+    $$
+
+    where $\set{\ket{\psi_i}}$ are pure states, $p_i$ are probabilities such that $p_i \geq 0$ and $\sum_i p_i = 1$.
+
 2. **Description of system observables:** Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $\mathcal{H}$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distribution functions. 
-3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the eigenvalues of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
-    - The probability $P_n$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_n = |\braket{n|\psi}|^2$.
-    - The expected value of $A$ is $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$
+3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the spectrum of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
+    - The probability $P_\psi (n)$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_\psi (n) = \norm{\hat{P}_n \ket{\psi}} |\braket{n|\psi}|^2$, where $\hat{P}_n$ is the projection onto the eigenspace $\operatorname{eig}(\hat{A}, n)$.
+    - The expected value of $A$ is given by $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$, which represents the expectation of the measurement outcome.
 4. **Effect of measurement on the state:** An ideal measurement of an observable $A$ that yields the eigenvalue $a_n$, projects the quantum system from its initial state $\ket{\psi}$ to a final state
 $$
   \ket{\psi'} = \frac{\hat{P}_n \ket{\psi}}{\sqrt{\braket{\psi|\hat{P}_n|\psi}}}
@@ -1000,7 +1217,23 @@ $$
 
 ## Quantum states and observables
 
-The state of a quantum particle is represented by a vector $\ket{\psi}\in\mathcal{H}$ in a Hilbert space $\mathcal{H}$. The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
+The pure state of a quantum particle is represented by a ray $[\ket{\psi}]_\sim \in \mathcal{PH}$, where $\mathcal{PH} = \mathcal{H}/\sim$ is the projective Hilbert space of a complex separable Hilbert space $\mathcal{H}$, and $\sim$ is an equivalence relation on $\mathcal{H}$. For $\ket{\psi},\ket{\varphi}\in\mathcal{H}$, this relation is defined as
+
+$$
+  \ket{\psi}\sim\ket{\varphi} \iff \ket{\varphi} = e^{i\alpha} \ket{\psi}, \alpha\in\R
+$$
+
+Each ray $S_\psi$ associated with a normalized vector $\ket{\psi}\in\mathcal{H}$, i.e. $\norm{\psi} = 1$, is the equivalence class
+
+$$
+  S_\psi = [\ket{\psi}]_\sim := \set{e^{i\alpha} \ket{\psi} | \alpha\in\R}
+$$
+
+representing a pure state of the quantum system. All vectors in $S_\psi$ differ only by a global phase factor and correspond to the same physical state.
+
+For convenience, the global phase factor $e^{i\alpha}$ is typically ignored when dealing with pure states. In practice, we often identify a pure state with a normalized vector $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$, rather than considering the entire equivalence class of vectors that differ only by a global phase. This is because the global phase does not affect physical observables or measure quantities, which are invariant under such transformations. Thus, we can simplify the description of pure states by associating them directly with normalized vectors in $\mathcal{H}$, leaving the equivalence class formalism implicit.
+
+The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
 
 An observable refers to a physcial quantity that can be measured in a quantum system. All quantum observables are represented by Hermitian operators on $\mathcal{H}$. The possible values of an observable are given by the spectrum of the operator, which can be discrete (finite or infinite-dimensional), continuous or a combination of both. In general, systems with bound states (e.g., a particle confined in a potential well) have discrete spectra, corresponding to quantized energy levels. In contrast, for scattering states (e.g., a free particle or a particle with energy above a potential barrier), the spectrum is continuous, corresponding to a range of energies.
 
@@ -1016,47 +1249,53 @@ $$
 The operator norm of $\hat{Q}$ is defined as the lower bound of $c$.
 </details>
 
-The Hermiticity of a quantum operator ensures that its spectrum is reals. Furthermore, the eigenvectors corresponding to distinct eigenvalues are orthogonal and can be normalized to form an orthonormal basis. In the case of degenerate eigenvalues, the corresponding eigenspace can be spanned by orthonormal eigenvectors. For continuous spectra, generalized eigenstates may be used.
+The Hermiticity of a quantum operator ensures that its spectrum is real. Furthermore, the eigenvectors corresponding to distinct eigenvalues are orthogonal and can be normalized to form an orthonormal basis. In the case of degenerate eigenvalues, the corresponding eigenspace can be spanned by orthonormal eigenvectors. For continuous spectra, generalized eigenstates may be used.
 
 ### Discrete observables
 
-A quantum observable $\hat{Q}$ with discrete spectrum has spectral representation
+A discrete quantum observable is represented by a Hermitian operator $\hat{Q}$ on a Hilbert space $\mathcal{H}$ with a discrete spectrum $\set{q_j}_j$. If $\hat{Q}$ has eigenbasis $\set{\ket{q_{j,\alpha}}}$, where $\alpha \in\set{1,\dots,d_j}$ denotes the degeneracy of $q_j$, i.e. $d_j = \dim[\operatorname{eig}(\hat{Q}, q_j)]$, the spectral representation of $\hat{Q}$ is
 
 $$
-  \hat{Q} = \sum_n q_n \hat{P}_n = \sum_n q_n \ket{q_n} \bra{q_n}
+  \hat{Q} = \sum_j q_j \hat{P}_j = \sum_j q_j \sum_{\alpha=1}^{d_j} \ket{q_{j,\alpha}} \bra{q_{j,\alpha}}
 $$
 
-where $q_n$ are the eigenvalues of $\hat{Q}$ with corresponding eigenvectors $\ket{q_n}$, and $\hat{P}_n$ are the projector onto the eigenspace. From the spectral representation, it follows that
+where $\hat{P}_j$ is the projector onto the eigenspace $\operatorname{eig}(\hat{Q}, q_j)$. Since $\hat{Q}$ is Hermitian, the eigenbasis $\set{\ket{q_{j,\alpha}}}$ is orthonormal, i.e.
+
+$$
+  \braket{q_{j,\alpha}|a_{k,\beta}} = \delta_{jk} \delta_{\alpha\beta}
+$$
+
+From the spectral representation, we can derive the action of $\hat{Q}$ on the eigenvectors $\ket{q_{k,\beta}$
 
 $$
 \begin{align*}
-  \hat{Q}\ket{q_k} =& \sum_n q_n \hat{P}_n \ket{q_k} \\
-  =& \sum_n q_n \ket{q_n} \underbrace{\braket{q_n|q_k}}_{\delta_{nk}} \\
-  =& q_k \ket{q_k}
+  \hat{Q}\ket{q_{k,\beta}} =& \sum_j q_{j,\alpha} \hat{P}_j \ket{q_{k\beta}} \\
+  =& \sum_j q_j \sum_{\alpha=1}^{d_j} \ket{q_{j,\alpha}} \underbrace{\braket{q_{j,\alpha}|q_{k,\beta}}}_{\delta_{jk} \delta_{\alpha\beta}} \\
+  =& q_k \ket{q_{k,\beta}}
 \end{align*}
 $$
 
-The relation $\hat{Q}\ket{q_k} = q_k \ket{q_k}$ is called the eigenvalue equation of $\hat{Q}$. If the spectrum of $\hat{Q}$ is finite-dimensional, the set of eigenvectors span $\mathcal{H}$, i.e. 
+The relation $\hat{Q}\ket{q_{k,\beta}} = q_k \ket{q_{k,\beta}}$ is the eigenvalue equation of $\hat{Q}$. 
+
+If the spectrum of $\hat{Q}$ is finite-dimensional, the set of eigenvectors forms a complete orthonormal basis for $\mathcal{H}$, meaning that: 
 
 $$
-  \operatorname{span}(\set{\ket{q_n}}_n) = \mathcal{H}
+  \operatorname{span}(\set{\ket{q_{j,\alpha}}}_j) = \mathcal{H}
 $$
 
-Furthermore, if the eigenvalues of $\hat{Q}$ are all distinct, then the eigenvectors $\set{\ket{q_n}}_n$ form an orthonormal basis on $\mathcal{H}$. If $\hat{Q}$ has degenerate eigenvalues with multiplicity $k\in\N_+$, the corresponding eigenspace is $k$-dimensional. In this subspace, there are $k$ linearly independent (but not necessarily orthogonal) eigenvectors corresponding to the degenerate eigenvalue. A complete orthonormal basis can be found by applying the Gram-Schmidt procedure to degenerate eigenspace.
-
-Since the eigenvectors $\set{\ket{q_n}}_n$ of $\hat{Q}$ form an orthonormal basis on $\mathcal{H}$, a state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
+Thus, the Hilbert space $\mathcal{H}$ is spanned by the eigenstates of $\hat{Q}$, and any state $\ket{\psi}\in\mathcal{H}$ can be expressed as a linear combination (or superposition):
 
 $$
-  \ket{\psi} = \sum_n c_n \ket{q_n}
+  \ket{\psi} = \sum_{j,\alpha} c_{j,\alpha} \ket{q_{j,\alpha}}
 $$
 
-where $c_k$ are complex coefficients representing probability amplitudes. Applying $\bra{q_k}$ to $\ket{\psi}$ yields
+where $c_{j,\alpha}$ are complex coefficients representing probability amplitudes. Applying $\bra{q_{k,\beta}}$ to $\ket{\psi}$ yields
 
 $$
-  \braket{q_k | \psi} = \sum_n c_n \braket{q_k|q_n} = \sum_n c_n \delta_{kn} = c_k
+  \braket{q_{k,\beta} | \psi} = \sum_{j,\alpha} c_{j,\alpha} \underbrace{\braket{q_{k,\beta}|q_{j,\alpha}}}_{\delta_{kj}\delta_{\beta\alpha}} = c_{k,\beta}
 $$
 
-showing that $c_k$ is the projection of $\ket{\psi}$ onto $\ket{q_k}$.
+showing that $c_{k,\beta}$ is the projection of $\ket{\psi}$ onto $\ket{q_{k,\beta}}$.
 
 #### Matrix representation of observables
 
@@ -1251,11 +1490,13 @@ $$
 The trace of $\hat{Q}$ in the orthonormal basis $\set{\ket{b_j}}$ can be written
 
 $$
+\begin{align*}
   \operatorname{tr}(\hat{Q}) =& \sum_j \braket{b_j |\hat{Q}|b_j} \\
   =& \sum_{j,k,\ell} \braket{b_j | a_k} \braket{a_k | \hat{Q} | a_\ell} \braket{a_\ell | b_j} \\
   =& \sum_{j,k,\ell} \braket{a_\ell | b_j} \braket{b_j | a_k} \braket{a_k | \hat{Q} | a_\ell} \\
   =& \sum_{k, \ell} \braket{a_\ell | a_k} \braket{a_k |\hat{Q}| a_k} \\
   =& \sum_\ell \braket{a_\ell | \hat{Q} | a_\ell}
+\end{align*}
 $$
 </details>
 
@@ -1298,7 +1539,7 @@ Applying $\hat{U}$ to $\psi_eta$ and $\psi'_\eta$ and taking the scalar product 
 
 $$
 \begin{align*}
-  \braket{\hat{U}\psi_\eta, \hat{U} \psi'_\eta} = \int \d\xi \left(\int \phi_\eta^* (\xi) \psi_\eta^* (\eta) \;\d\eta \right) \left(\int \phi_{\eta'} (\xi) \psi'_\eta (\eta') \;\d\eta' \right) \\
+  \braket{\hat{U}\psi_\eta, \hat{U} \psi'_\eta} =& \int \d\xi \left(\int \phi_\eta^* (\xi) \psi_\eta^* (\eta) \;\d\eta \right) \left(\int \phi_{\eta'} (\xi) \psi'_\eta (\eta') \;\d\eta' \right) \\
   =& \int \eta' \psi_\eta^* (\eta) \psi'_\eta (\eta') \;\d \int \phi_\eta^* (\eta) \phi_{\eta'} (\eta) \;\d\xi \tag{\label{equation-94}}
 \end{align*}
 $$
@@ -1325,58 +1566,166 @@ showing that $\hat{U}$ preserves the inner product. Hence, it follows that $\hat
 
 ## Measurements
 
-Let $\hat{Q}$ be a Hermitian operator on $\mathcal{H}$ with a non-degenerate discrete spectrum $\set{q_n}_n$ and an orthonormal eigenbasis $\set{\ket{q}_n}_n$. If $Q$ is the corresponding observable on a quantum system in state 
+Let $\hat{Q}$ be a Hermitian operator on $\mathcal{H}$ with a discrete spectrum $\set{q_j}_j$, and an orthonormal eigenbasis $\set{\ket{q_{j,\alpha}}}$, where $\alpha\in\set{1,\dots,d_j}$ denotes the degeneracy $q_j$, i.e. $d_j = \dim[\operatorname{eig}(\hat{Q}, q_j)]$. If $Q$ is the corresponding observable on a quantum system in state 
 
 $$
-  \ket{\psi} = \sum_n c_n \ket{q_n}, \; c_n = \braket{q_n | \psi}
+  \ket{\psi} = \sum_{j,\alpha} c_{j,\alpha} \ket{q_{j,\alpha}}, \; c_{j,\alpha} = \braket{q_{j,\alpha} | \psi}
 $$
 
-then the probability of measuring the eigenvalue $q_n$ is $|c_n|^2 = |\braket{q_n | \psi}|^2$. This statistical interpretation of quantum observables is known as *Born's rule*. Since the state vector is normalized, i.e. $\braket{\psi|\psi} = 1$, we have
+then the probability of measuring the eigenvalue $q_j$ is given by
+
+$$
+  \Pr_\psi (q_j) = \norm{\hat{P}_j \ket{\psi}}^2 = \Norm{\sum_{\alpha=1}^{d_j} \ket{q_{j,\alpha}}\braket{q_{j,\alpha}|\psi}} = \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 = \sum_{\alpha=1}^{d_j} |c_{j,\alpha}|^2
+$$
+
+This statistical interpretation of quantum observables is known as *Born's rule*, which states that the probability of obtaining an eigenvalue $q_j$ in a measurement of $Q$ is given by the square modulus of the projection of $\ket{\psi}$ onto the corresponding eigenspace.
+
+To see that the map $\Pr_psi : \sigma(\hat{Q}) \to [0,1]$ defines a probability measure on $\sigma(\hat{Q})$, we note that $\Pr_\psi (q_j) \geq 0$ because square moduli are non-negative. Furthermore, since $\set{\ket{q_{j,\alpha}}}$ forms an orthonormal basis for $\mathcal{H}$ and $\ket{\psi}$ is normalized, it follows that
+
+$$
+  \sum_j \Pr_\psi (q_j) = \sum_j \norm{\hat{P}_{q_j} \ket{\psi}}^2 = \sum_j \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 = \norm{\psi} = 1
+$$
+
+Thus, the normalization condition of quantum states ensures that the total probability sums to $1$, validating that $\Pr_\psi$ is a probability measure over the spectrum $\sigma(\hat{Q})$.
+
+If a quantum system has been prepared in the state $\ket{\psi}\in\mathcal{H}$, the probability to observe it in the state $\ket{\varphi}\in\mathcal{H}$ is given by $\Pr(\varphi|\psi) = |\braket{\varphi|\psi}|^2$, assuming both states are normalized, i.e. $\norm{\psi}^2 = 1 = \norm{\varphi}$. To see this, note that the measurement corresponds to the observable given by the orthogonal projection $\hat{P}_\varphi = \ket{\varphi}\bra{\varphi}$ onto $\ket{\varphi}$. This operator has the eigenvalues $0$ and $1$. The eigenvalue $\lambda = 1$ is non-degenerate and its eigenspace is spanned by $\ket{\varphi}$. Hence, the projection onto the eigenspace for eigenvalue $\lambda = 1$ is given by
 
 $$
 \begin{align*}
-  \braket{\psi|\psi} =& \Braket{\sum_m c_m \ket{q_m} | \sum_n c_n \ket{q_n}} \\
-  =& \sum_m \sum_n c_m^* c_n \underbrace{\braket{q_m | q_n}}_{\delta_{mn}} \\
-  =& \sum_m |c_m|^2 = 1
+  \Pr_\psi (\lambda = 1) =& \norm{\hat{P}_\varphi \ket{\psi}}^2 = \norm{\ket{\varphi}\braket{\varphi|\psi}}^2 \\
+  =& |\braket{\varphi|\psi}|^2 \underbace{\norm{\varphi}^2}_{=1} = |\braket{\varphi|\psi}|^2
 \end{align*}
 $$
 
-Thus, the normalization condition of quantum states ensures that the total probability sums to $1$. The expectation value of $Q$ is defined as
+### Expectation value
+
+The expectation value of an observable $Q$ in the normalized state $\ket{\psi}\in\mathcal{H}$ is defined as
 
 $$
-  \braket{\hat{Q}}_\psi := \braket{\psi|\hat{Q}|\psi} = \sum_n |c_n|^2 q_n
+  \braket{Q}_\psi := \frac{\braket{\psi|\hat{Q}|\psi}}{\braket{\psi|\psi}} = \braket{\psi|\hat{Q}|\psi}
 $$
 
-<details>
-<summary>Details</summary>
+If $\hat{Q}$ has spectral decomposition
 
-Using the definition of expecation value $\braket{\hat{Q}}_\psi = \Braket{\psi|\hat{Q}|\psi}$ and the fact that $\set{\ket{q_n}}_n$ is orthornormal we find
+$$
+  \hat{Q} = \sum_{j,\alpha} q_j \ket{q_{j,\alpha}}\bra{q_{j,\alpha}}
+$$
+
+the expectation value is given by
 
 $$
 \begin{align*}
-  \braket{\hat{Q}}_\psi = \Braket{\psi | \hat{Q} | \psi} &= \Braket{\sum_m c_m^* \ket{q} | \sum_n c_n \hat{Q} \ket{q_n}} \\
-  &= \sum_{m,n} c_m^* c_n q_n \underbrace{\braket{q_m | q_n}}_{\delta_{mn}} \\
-  &= \sum_m |c_m|^2 q_m
+  \braket{Q}_\psi =& \braket{\psi|\hat{Q}|\psi} = \Braket{\psi|\sum_{j,\alpha} q_j \ket{q_{j,\alpha}}\braket{q_{j,\alpha}|\psi}} \\
+  =& \sum_{j,\alpha} q_j \braket{\psi|q_{j,\alpha}}\braket{q_{j,\alpha}|\psi} \\
+  =& \sum_{j,\alpha} q_j |\braket{\psi|q_{j,\alpha}}|^2 = \sum_{j,\alpha} q_j |c_{j,\alpha}|^2
+\end{align*}
+$$
+
+Properties of expectation values
+1. **Reality:** $\braket{Q}_\psi$ is real since $\hat{Q}$ is Hermitian
+2. *Invariance unde global phase:* For any global phase factor $e^{i\phi}$, where $\phi\in\R$, we have $\braket{Q}_{e^{i\phi} \psi} = \braket{Q}_\psi$
+3. **Equality of observable:** Two observables $\hat{Q}$ and $\hat{Q}'$ are equal if and only if $\braket{\psi|\hat{Q}|\psi} = \braket{\psi|\hat{Q}'|\psi}$ for all $\ket{\psi}\in\mathcal{H}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Taking the complex conjugate of $\braket{Q}_\psi$, we find
+
+$$
+\begin{align*}
+  \braket{Q}_\psi^* =& \braket{\psi|\hat{Q}|\psi}^* = \braket{\psi|\hat{Q}^\dagger|\psi} \\
+  =& \braket{\psi|\hat{Q}|\psi} = \braket{Q}_\psi
+\end{align*}
+$$
+
+Since $\braket{Q}_\psi^* = \braket{Q}_\psi$, it follows that $\braket{Q}_\psi \in\R$ is real.
+
+**(2):** Calculating $\braket{Q}_{e^{i\phi}\psi}$, we find 
+
+$$
+\begin{align*}
+  \braket{Q}_{e^{i\phi} \psi} =& \braket{e^{i\phi}\psi |\hat{Q}|e^{i\phi} \psi} = e^{-i\phi} e^{i\phi} \braket{\psi|\hat{Q}|\psi} \\
+  =& \braket{\psi|\hat{Q}|\psi} = \braket{Q}_\psi
 \end{align*}
 $$
 </details>
 
-Since $\hat{Q}$ is Hermitian, we have
+The expectation value of any observable $Q$ in the state $\ket{\psi}\in\mathcal{H}$ is unaffected under a global phase transformation $e^{i\phi} \ket{\psi}$. In an orthonormal basis $\set{\ket{q_j}}$, we have
+
+$$
+  |\braket{e^{i\phi}\psi|q_j}|^2 = |e^{-i\phi}|^2 \cdot |\braket{\psi|q_j}|^2 = |\braket{\psi|q_j}|
+$$
+
+showing that the measurement probabilities remain the same. This means that the states $e^{i\phi}\ket{\psi}$ and $\ket{\psi}$ are physically indistinguishable.
+
+While global phase is physically irrelevant, relative phases between components in a quantum superposition can have physical consequences. Specifically, consider two orthonormal states $\ket{\eta},\ket{\psi}\in\mathcal{H}$ satisfying $\braket{\eta|\psi} = 0$. Then 
 
 $$
 \begin{align*}
-  \braket{\hat{Q}}_\psi^* =& \braket{\psi|\hat{Q}|\psi}^* = \braket{\psi|\hat{Q}^\dagger|\psi} \\
-  =& \braket{\psi|\hat{Q}|\psi} = \langle Q \rangle_\psi
+  \ket{a} =& 2^{-1/2} (\ket{\eta} + \ket{\psi}) \\ 
+  \ket{b} =& 2^{-1/2} (\ket{\eta} + e^{i\phi} \psi)
 \end{align*}
 $$
 
-showing that $\braket{Q}_\psi \in\R$ must be real. Two observables $\hat{Q}$ and $\hat{Q}'$ are equal if and only if
+are normalized state vectors. However, while $\ket{\psi}$ and $e^{i\phi} \ket{\psi}$ represents the same state, the states $\ket{a}$ and $\ket{b}$ are physically distinct because they lead to different measurement outcomes. The expectation value of an observable $A$ in state $\ket{a}$ is
 
 $$
-  \braket{\psi|\hat{Q}|\psi} = \braket{\psi|\hat{Q}'|\psi}, \; \forall\ket{\psi}
+\begin{align*}
+  \braket{A}_{\ket{\eta} + \ket{\psi}/\sqrt{2}} =& \frac{1}{2} (\braket{\eta + \psi|\hat{A}|\vaphi + \psi}) \\
+  =& \frac{1}{2}(\braket{\eta|\hat{A}|\eta} + \braket{\psi|\hat{A}|\psi} + \braket{\eta|\hat{A}|\psi} + \underbrace{\braket{\psi|\hat{A}|\eta}}_{\braket{\hat{A}\psi|\eta}}) \\
+  =& \frac{1}{2}(\braket{A}_\eta + \braket{A}_\psi) + \Re(\braket{\eta|\hat{A}|\psi})
+\end{align*}
 $$
 
-Consequently, any global phase factor $e^{i\phi}$ associated with a state vector $\ket{\psi}$ cancels out when calculating the mean value of an observable onto $\ket{\psi}$
+where $\Re(\braket{\eta|\hat{A}|\psi})$ is called the interference terms, which arises du to quantum superposition. Similarly, for $\ket{b}$, we find
+
+$$
+\begin{align*}
+  \braket{A}_{\ket{\eta} + e^{i\phi}\ket{\psi}/\sqrt{2}} =& \frac{1}{2} (\braket{\eta + e^{i\phi} \psi|\hat{A}|\vaphi + e^{i\phi} \psi}) \\
+  =& \frac{1}{2}(\braket{\eta|\hat{A}|\eta} + \braket{e^{i\phi} \psi|\hat{A}|e^{i\phi} \psi} + e^{i\phi} \braket{\eta|\hat{A}|\psi} + e^{-i\phi} \underbrace{\braket{\psi|\hat{A}|\eta}}_{\braket{\hat{A}\psi|\eta}}) \\
+  =& \frac{1}{2}(\braket{A}_\eta + \braket{A}_\psi) + \Re(e^{i\phi} \braket{\eta|\hat{A}|\psi})
+\end{align*}
+$$
+
+Thus, whenever $\braket{\eta|\hat{A}|\psi} \neq 0$ the real part of $\braket{\eta|\hat{A}|\psi}$ and of $e^{i\phi}\braket{\eta|\hat{A}|\psi}$ differ.
+
+### Determinate states
+
+The uncertainty of an observable $Q$ is state $\ket{\psi}\in\mathcal{H}$ is defined as
+
+$$
+  \Delta_\psi (Q) := \sqrt{\braket{\psi|(\hat{Q} - \braket{Q}_\psi \hat{I})^2|\psi}} = \sqrt{\braket{(\hat{Q} - \braket{Q}\hat{I})^2}}
+$$
+
+where $\hat{I}$ is the identity operator. If the uncertainty vanishes, i.e. $\Deta_\psi (Q) = 0$, the observable $Q$ in the state $\ket{\psi}$ is said to have a *sharp* value. This is the case if and only if $\ket{\psi}$ is an eigenvector of $\hat{Q}$, i.e.
+
+$$
+  \Delta_\psi (Q) = 0 \iff \hat{Q}\ket{\psi} = \braket{Q}_\psi \ket{\psi}
+$$
+
+Since $\hat{Q}$ is Hermitian, its expectation value $\braket{Q}_\psi \in\R$ is real, i.e. $\braket{Q}_\psi = \braket{Q}_\psi^*$. Consequently,
+
+$$
+  (\hat{Q} - \braket{Q}_\psi \hat{I})^\dagger = \hat{Q} - \braket{Q}_\psi \hat{I} 
+$$
+
+and thus
+
+$$
+\begin{align*}
+  (\Delta_\psi (Q))^2 =& \braket{\psi|(\hat{Q} - \braket{Q}_\psi \hat{I})^2|\psi} \\
+  =& \braket{(\hat{Q} - \braket{Q}_\psi \hat{I})\psi | (\hat{Q} - \braket{Q}_\psi \hat{I})\psi} \\
+  =& \Norm{(\hat{Q} - \braket{Q}_\psi \hat{I})\psi}^2
+\end{align*}
+$$
+
+This shows that
+
+$$
+  \Delta_\psi (Q) = 0 \iff \hat{Q}\ket{\psi} = \braket{Q}_\psi \ket{\psi}
+$$
+
+A state $\ket{\psi}$ that is an eigenvector of an operator associated with an observable is called an *eigenstate* of that operator.
 
 ### Continuous spectrum
 
@@ -1550,25 +1899,6 @@ A set of observables $\mathcal{S} = \set{A, B, C, \dots}$ is a complete set of c
 1. All the observables commute by pairs
 2. Specifying the eigenvalues of all the operators in the CSCO identifies a unique common eigenvector
 </MathBox>
-
-### Determinate states
-
-An interesting case arises when an observable $Q$ is in a determinate state $\psi$ with measurement $\langle Q \rangle_\psi = q$. In this case the variance of $\hat{Q}$ in state $\psi$ is zero, i.e.
-
-$$
-\begin{align*}
-  (\Delta_\psi Q)^2 =\left\langle (\hat{Q} - \langle \hat{Q} \rangle_\psi )^2 \right\rangle_\psi = \Braket{\psi|(\hat{Q} - q)^2 \psi} \\
-  =& \Braket{(\hat{Q} - q)\psi|(\hat{Q} - q)\psi} = 0
-\end{align*}
-$$
-
-where we have used the fact that $\hat{Q} - q$ is Hermitian from the assumed Hermiticity of $\hat{Q}$. The vanishing variance implies that
-
-$$
-  \hat{Q}\psi = q\psi
-$$
-
-which is the eigenvalue equation for $\hat{Q}$ with eigenvalue $q$ and corresponding eigenfunction $\psi$. This shows that determinate states of $Q$ are eigenfunctions of $\hat{Q}$
 
 ## Uncertainty principle
 
@@ -4790,7 +5120,6 @@ $$
 
 Thus, the probability of measuring the $x$ component of spin to be $\hbar/2$ is $|\alpha + \beta|^2 / 2$ and the probability of measuring the value to be $-\hbar/2$ is $|\alpha - \beta|^2 / 2$.
 
-#### Pauli matrices
 In terms of the standard basis, it is conventional to write $\hat{\mathbf{S}}$ in terms of the Pauli matrices $\boldsymbol{\sigma}$ defined by
 
 $$
@@ -4802,112 +5131,6 @@ where
 $$
   \sigma_1 = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}, \quad \sigma_2 = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}, \quad \sigma_2 = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}
 $$
-
-The Paul matrices satisfy
-- $[\sigma_i, \sigma_j] = 2i\varepsilon_{ijk} \sigma_k$
-- $\sigma_i \sigma_j = i\varepsilon_{ijk} \sigma_k$ for $i\neq j$
-- $[\sigma_i, \sigma_j]_+ = 2I_2 \delta_{ij}$
-- $\sigma_i = \sigma_j = I_2 \delta_{ij} + i\varepsilon_{ijk} \sigma_k$ 
-
-Additionally
-
-$$
-  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
-$$
-
-The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ form a basis form the set of complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
-
-<details>
-<summary>Proof</summary>
-
-We need to show two things:
-1. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is linearly independent
-2. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ spans $\mathbb{M}_2 (\mathbb{C})$
-
-To prove linear independence, we must show that for $c_0, c_1, c_2, c_3 \in\mathbb{C}$
-
-$$
-  c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z = \mathbf{0}_2
-$$
-
-implies $c_0 = c_1 = c_2 = c_3 = 0$. This gives the matrix equation
-
-$$
-\begin{bmatrix}
-  c_0 + c_3 & c_1 - ic_2 \\
-  c_1 + ic_2 & c_0 - c_3
-\end{bmatrix} = \mathbf{0}_2
-$$
-
-and the matrix elements must satisfy
-
-$$
-\begin{align*}
-  c_0 + c_3 =& 0 \\
-  c_1 - ic_2 =& 0 \\
-  c_1 + ic_2 =& 0 \\
-  c_0 - c_3 =& 0
-\end{align*}
-$$
-
-The first and fourth equations imply $c_0 = -c_3$ and $c_0 = c_3$, so $c_0 = c_3 = 0$. The second and third equations imply $c_1 = ic_2$ and $c_1 = -ic_2$, so $c_1 = c_2 = 0$.
-
-An arbitrary complex $2\times 2$ matrix $A = \mathcal{M}_2 (\mathbb{C})$ is of the form
-
-$$
-  A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
-$$
-
-We need to show that $\mathbf{A}$ can be written as a linear combination
-
-$$
-  A = c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z
-$$
-
-where $c_0, c_1, c_2, c_3 \in\mathbb{C}$. This gives the matrix equation
-
-$$
-\begin{bmatrix}
-  c_0 + c_3 & c_1 - ic_2 \\
-  c_1 + ic_2 & c_0 - c_3
-\end{bmatrix} = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
-$$
-
-and the matrix elements must satisfy
-
-$$
-\begin{align*}
-  c_0 + c_3 =& a_{00} \\
-  c_1 - ic_2 =& a_{01} \\
-  c_1 + ic_2 =& a_{10} \\
-  c_0 - c_3 =& a_{11}
-\end{align*}
-$$
-
-Adding the first and fourth equations gives
-
-$$
-  2c_0 = a_{00} + a_{11} \implies c_2 = \frac{1}{2}(a_{00} + a_{11})
-$$
-
-Adding the second and third equation gives
-
-$$
-  2c_1 = a_{01} + a_{10} \implies c_1 = \frac{1}{2}(a_{01} + a_{10})
-$$
-
-Subtracting the third equation from the second gives
-
-$$
-  -i2 c_2 = a_{01} - a_{10} \implies i\frac{1}{2}(a_{01} - a_{10})
-$$
-
-Subtracting the first equation from the first gives
-
-$$
-  -2c_3 = a_{11} - a_{00} \implies c_3 = \frac{1}{2}(a_{00} - a_{11})
-$$
-</details>
 
 ## Total angular momentum
 
