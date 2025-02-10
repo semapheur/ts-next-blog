@@ -311,14 +311,15 @@ $$
   (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
 $$
 
-The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ form a basis form the set of complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
+<MathBox title='Pauli matrices form a basis for $\mathbb{C}^{2\times 2}$' boxType='proposition'>
+The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
 
 <details>
 <summary>Proof</summary>
 
-We need to show two things:
-1. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is linearly independent
-2. The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ spans $\mathbb{M}_2 (\mathbb{C})$
+To show that $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for $\mathcal{M}_2 (\mathbb{C})$, we need to verify:
+1. The set is linearly independent
+2. The set spans $\mathcal{M}_2 (\mathbb{C})$, i.e. $\operatorname{span}\set{I_2, \sigma_x, \sigma_y, \sigma_z} = \mathcal{M}_2 (\mathbb{C})$
 
 To prove linear independence, we must show that for $c_0, c_1, c_2, c_3 \in\mathbb{C}$
 
@@ -395,7 +396,7 @@ $$
 Subtracting the third equation from the second gives
 
 $$
-  -i2 c_2 = a_{01} - a_{10} \implies i\frac{1}{2}(a_{01} - a_{10})
+  -i2 c_2 = a_{01} - a_{10} \implies c_2 = i\frac{1}{2}(a_{01} - a_{10})
 $$
 
 Subtracting the first equation from the first gives
@@ -403,7 +404,10 @@ Subtracting the first equation from the first gives
 $$
   -2c_3 = a_{11} - a_{00} \implies c_3 = \frac{1}{2}(a_{00} - a_{11})
 $$
+
+Since $c_j$ exist for all $a_{kl}$, we conclude that any matrix in $\mathcal{M}_2 (\mathbb{C})$ can be written as a linear combination of $I_2, \sigma_x, \sigma_y, \sigma_$.
 </details>
+</MathBox>
 
 ## Linear operators
 
@@ -1247,40 +1251,55 @@ which is known as the completeness relation.
 
 1. **Description of quantum states** The state space of a quantum system is described a complex separable Hilbert space $\mathcal{H}$. The possible states of the system can be categorized into *pure states* and *mixed states*:
 
-    - **Pure states**: The pure states are represented by rays in the projective Hilbert space $\mathcal{PH} = \mathcal{H}/\sim$, where each ray is an equivalence class of normalized vectors $\ket{\psi}\in\mathcal{H}$ with $\norm{1}$ differing by a global phase, i.e.
-
+    - A pure state is described by a ray $[\psi]_\sim \in\mathcal{PH}$ in the projective Hilbert space $\mathcal{PH} = \mathcal{H}/\sim$, where vectors differing only by a global phase are equivalent. Formally, a pure state is given by an equivalence classes of normalized vectors $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$:
     $$
-      [\psi]_\sim = \set{e^{i\alpha} \ket{\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi}, \alpha\in\R}
+      [\psi]_\sim = \set{e^{i\phi} \ket{\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1, \phi\in\R}
     $$
+    For convenience, the equivalence class notation is often omitted, as the the global phase has no physical significance.
 
-    - **Mixed states:** A mixed state is described by a *density matrix* $\rho$, which is a positive semidefinite operator $\mathcal{H}$ with unit trace, i.e. $\operatorname{tr}(\rho) = 1$. The density matrix $\rho$ represents a statistical mixture of pure states and can be expressed as
-
+    - A mixed state is described by a *density operator* $\hat{\rho}$, which is a positive semidefinite operator on $\mathcal{H}$ with unit trace, i.e. $\operatorname{tr}(\hat{\rho}) = 1$. The operator $\hat{\rho}$ represents a statistical mixture of pure states and can be expressed as
     $$
-      \rho = \sum_i p_i \ket{\psi_i} \bra{\psi_i}
+      \hat{\rho} = \sum_i p_i \ket{\psi_i} \bra{\psi_i}
     $$
+    where $\set{\ket{\psi_i}}$ are pure states, $p_i$ are probabilities satisfying $p_i \geq 0$ and $\sum_i p_i = 1$.
 
-    where $\set{\ket{\psi_i}}$ are pure states, $p_i$ are probabilities such that $p_i \geq 0$ and $\sum_i p_i = 1$.
+2. **Description of system observables:** Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $\mathcal{H}$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, its eigenstates form a generalized orthonormal basis, expressed using distribution functions. 
+3. **Measurement of physical observables:** The possible measurable values of an observable $A$ corresponds to the spectrum of its associated operator $\hat{A}$. The probability of measuring an eigenvalue $\lambda$ of $\hat{A}$ depends on whether the system is in a pure state or a mixed state.
+    - If the quantum system is in a pure state $\ket{\psi}\in\mathcal{H}$, the probability $\Pr_\psi (\lambda)$ of measuring $A$ and obtaining $\lambda$ is given by
+    $$
+      \Pr_\psi (\lambda) = \norm{\hat{P}_\lambda \ket{\psi}}
+    $$
+    where $\hat{P}_\lambda$ is the projection onto the eigenspace $\operatorname{eig}(\hat{A}, \lambda)$. The expectation value of $A$ is given by $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$.
+    - If the system is in a mixed state $\hat{\rho}$, the probability $\Pr_\hat{\rho} (\lambda)$ that a measurement of $A$ yields the eigenvalue $\lambda$ is given by
+    $$
+      \Pr_\hat{\rho} (\lambda) = \operatorname{tr}(\hat{\rho}\hat{P}_\lambda)
+    $$
+    The expectation values is given by $\braket{A}_\hat{\rho} = \operatorname{tr}(\hat{\rho}\hat{A})$.
 
-2. **Description of system observables:** Each physical observable $A$ of a quantum system is associated with a Hermitian operator $\hat{A}$ acting on $\mathcal{H}$. Since $\hat{A}$ is Hermitian, its eigenvalues are real, and its eigenstates form a complete, orthonormal set that spans $\mathcal{H}$, provided that $\hat{A}$ has a discrete spectrum. If $\hat{A}$ has a continuous spectrum, the eigenstates may form a generalized orthonormal basis, typically in terms of distribution functions. 
-3. **Measurement of physical observables:** The possible measurable values of an observable $A$ are defined by the spectrum of its associated operator $\hat{A}$. When the quantum system is in state $\ket{\psi}\in\mathcal{H}$
-    - The probability $P_\psi (n)$ for measuring a particular eigenvalue $a_n$, corresponding to an eigenstate $n$ is $P_\psi (n) = \norm{\hat{P}_n \ket{\psi}} |\braket{n|\psi}|^2$, where $\hat{P}_n$ is the projection onto the eigenspace $\operatorname{eig}(\hat{A}, n)$.
-    - The expected value of $A$ is given by $\langle A \rangle = \braket{\psi|\hat{A}|\psi}$, which represents the expectation of the measurement outcome.
-4. **Effect of measurement on the state:** An ideal measurement of an observable $A$ that yields the eigenvalue $a_n$, projects the quantum system from its initial state $\ket{\psi}$ to a final state
+4. **Effect of measurement on the state:** A measurement of an observable $A$ modifies the quantum state depending on whether the quantum system was initially in a pure state or a mixed state.
+    - If the system initially exists in a pure state $\ket{\psi}$, measuring $A$ and obtaining eigenvalue $\lambda$ transforms the state to
+    $$
+      \ket{\psi'} = \frac{\hat{P}_\lambda \ket{\psi}}{\sqrt{\braket{\psi|\hat{P}_\lambda|\psi}}}
+    $$
+    where $\hat{P}_\lambda$ is the projection onto the eigenspace $\operatorname{eig}(\hat{A}, \lambda)$.
+
+    - If the system is initially described by a mixed state $\hat{\rho}$, a measurement of $A$ yielding $\lambda$, projects the state to
+    $$
+      \hat{\rho}' = \frac{\hat{P}_\lambda \hat{\rho} \hat{P}_\lambda}{\operatorname{tr}(\hat{\rho}\hat{P}_\lambda)}
+    $$
+5. **Time evolution of a system:** In the Schrödinger picture, any time evolution of a pure state $\ket{\psi(t)}\in\mathcal{H}$ that is not caused by a measurement is governed by a unitary evolution operator $\hat{U}(t, t_0)$ satisfying
 $$
-  \ket{\psi'} = \frac{\hat{P}_n \ket{\psi}}{\sqrt{\braket{\psi|\hat{P}_n|\psi}}}
+  \ket{\psi(t)} = U(t,t_0)\ket{\psi (t_0)}
 $$
-where $\hat{P}_n$ is the projection operator onto the eigenstate $\ket{n}$ corresponding to the eigenvalue $a_n$.
-
-5. **Time evolution of a system:** In the Schrödinger picture, the time evolution of a state vector $\ket{\psi(t)}$ is governed by the Schrödinger equation
+which is equivalent to the Schrödinger equation
 $$
   i\hbar\frac{\d}{\d t}\ket{\psi(t)} = \hat{H}\ket{\psi(t)}
 $$
 where $\hat{H}$ is the Hamiltonian of the quantum system.
-
-    - The time evolution of a closed quantum system is described by a unitary transformation $\hat{U}$ acting on the initial state $\ket{\psi(t_0)}$
-$$
-  \ket{\psi(t)} = U(t,t_0)\ket{\psi (t_0)}
-$$
+    - For a mixed state $\hat{\rho}$, the time evolution is given by
+    $$
+      \hat{\rho}(t) = \hat{U}(t, t_0) \hat{\rho}(t_0) \hat{U}^\dagger(t, t_0)
+    $$
 
 ### Time evolution pictures
 
@@ -1292,7 +1311,7 @@ $$
 
 ## Quantum states and observables
 
-The pure state of a quantum particle is represented by a ray $[\ket{\psi}]_\sim \in \mathcal{PH}$, where $\mathcal{PH} = \mathcal{H}/\sim$ is the projective Hilbert space of a complex separable Hilbert space $\mathcal{H}$, and $\sim$ is an equivalence relation on $\mathcal{H}$. For $\ket{\psi},\ket{\varphi}\in\mathcal{H}$, this relation is defined as
+The pure state of a quantum system is represented by a ray $[\ket{\psi}]_\sim \in \mathcal{PH}$, where $\mathcal{PH} = \mathcal{H}/\sim$ is the projective Hilbert space of a complex separable Hilbert space $\mathcal{H}$, and $\sim$ is an equivalence relation on $\mathcal{H}$. For $\ket{\psi},\ket{\varphi}\in\mathcal{H}$, this relation is defined as
 
 $$
   \ket{\psi}\sim\ket{\varphi} \iff \ket{\varphi} = e^{i\alpha} \ket{\psi}, \alpha\in\R
@@ -2921,7 +2940,7 @@ $$
 
 The continuum causes a branch cut along in the complex energy plan, such that $\eqref{equation-13}$ also includes an integral over the discontinuity along the cut.
 
-## Time-evolution spectrums
+## Time-evolution pictures
 
 ### Heisenberg picture
 
@@ -2939,7 +2958,7 @@ $$
 \begin{equation}
 \begin{split}
   {}_\text{S}\braket{\psi(t)|\hat{O}^\text{S}|\psi(t)}_\text{S} =& {}_\text{S}\braket{\psi(0)|\hat{U}_t^\dagger \hat{O}^\text{S} \hat{U}_t|\psi(0)}_\text{S} \\
-  =& {}_\text{H}\braket{\psi|\hat{O}^\text{H} (t)|\psi}_\text{H} \tag
+  =& {}_\text{H}\braket{\psi|\hat{O}^\text{H} (t)|\psi}_\text{H}
 \end{split}
 \tag{\label{equation-99}}
 \end{equation}
@@ -2970,7 +2989,7 @@ $$
 Thus, we obtain the Heisenberg equation of motion
 
 $$
-  i\hbar \frac{\d}{\d t} \hat{O}^\text{H} (t) = i\hbar \frac{\partial}{\partial t} \hat{O}^text{H} (t) + [\hat{O}^\text{H}, \hat{H}]
+  i\hbar \frac{\d}{\d t} \hat{O}^\text{H} (t) = i\hbar \frac{\partial}{\partial t} \hat{O}^\text{H} (t) + [\hat{O}^\text{H}, \hat{H}]
 $$
 
 If the operator $\hat{O}$ does not explicitly depend on time in the Schrödinger picture, this simplifies to
@@ -3001,7 +3020,7 @@ $$
 This shows that the Heisenberg equation can be retrived by the substitution
 
 $$
-  \{H,O} \to \frac{1}{i\hbar}[\hat{H},\hat{O}]
+  \{H,O\} \to \frac{1}{i\hbar}[\hat{H},\hat{O}]
 $$
 
 This can be seen as a formal rule for transitioning from classical to quantum mechanics. Specifically, in classical mechanics, if the Poisson bracket between a classical variable and the Hamiltonian is zero, this variable is conserved. Similarly, the Heisenberg evolution is formally analogous to classical time evolution. In fact, in classical mechanics, there is no direct analogue to the Schrödinger evolution. More accurately, the classical time evolution coincides with the "Heisenberg evolution" in quantum mechanics, since in classical mechanics, the state is simply a set of properties, and thus it itself can be considered an observable.
@@ -3010,7 +3029,7 @@ In terms of expectation values, the Heisenberg equation of motion becomes
 
 $$
 \begin{equation}
-  i\hbar \frac{\d}{\d t} \Braket{\hat{O}^\text{H} (t)} = i\hbar \Braket{\frac{\partial}{\partial t} \hat{O}^text{H} (t)} + \Braket{[\hat{O}^\text{H}, \hat{H}]} \tag{\label{equation-105}}
+  i\hbar \frac{\d}{\d t} \Braket{\hat{O}^\text{H} (t)} = i\hbar \Braket{\frac{\partial}{\partial t} \hat{O}^\text{H} (t)} + \Braket{[\hat{O}^\text{H}, \hat{H}]} \tag{\label{equation-105}}
 \end{equation}
 $$
 
@@ -3185,9 +3204,126 @@ $$
 
 which is known as Ehrenfest's theorem.
 
-## Density matrix
+## Density operator
 
-Any state vector $\ket{\psi}$ is associated with a projector $\hat{P}_\psi = \ket{\psi}\bra{\psi}$. The density matrix (or density operator) is a generalization of the projector $\hat{P}_\psi$. If $\set{\ket{j}}_j$ is an orthonormal basis on the Hilbert space, the density matrix is defined as
+In the most general sense, quantum systems can exist in mixed states, which include pure states as a special case. A quantum system is described by a mixed state when it is in one of a set of possible states $\set{\ket{\psi_j}}$, each occuring with probability $p_j$. Unlike a pure state, which represents a coherent quantum superposition, a mixed state represents a statistical ensemble of quantum states. This contrasts with a pure state $\ket{\psi} = \sum_j \sqrt{p_j} \ket{\psi_j}$, where the quantum system exists in a coherent superposition of the $\ket{\psi_j}$. In this case, the system is described entirely by $\ket{\psi}$, rather than by a statistical mixture of the $\ket{\psi_j}$.
+
+A mixed state is represented by a density operator (or density matrix) $\hat{\rho}$ on a Hilbert space $\mathcal{H}$, which satisfies the properties
+1. **Hermiticity:** $\hat{\rho}^\dagger = \hat{\rho}$
+2. **Positive semidefiniteness:** $\braket{\psi|\hat{\rho}|\psi} \geq 0$ for all $\ket{\psi}\in\mathcal{H}$
+3. **Unit trace:** $\operatorname{tr}(\hat{\rho}) = 1$
+
+The set of all density operators on $\mathcal{H}$ is denoted $\mathcal{D}(\mathcal{H})$, that is
+
+$$
+  \mathcal{D}(\mathcal{H}) := \set{\hat{\rho}\in\mathcal{L}(\mathcal{H}) | \hat{\rho}^\dagger = \hat{\rho}, \hat{\rho}\geq 0, \operatorname{tr}(\hat{\rho}) = 1}
+$$
+
+If $\hat{U}\in\mathcal{U}(\mathcal{H})$ is a unitary operator, then $\hat{U}\hat{\rho}\hat{U}\in\mathcal{D}(\mathcal{H})$ is a density operator.
+
+<details>
+<summary>Proof</summary>
+
+Since $\hat{\rho}^\dagger = \hat{\rho}$, we have
+
+$$
+  (\hat{U}\hat{\rho}\hat{U}^\dagger)^\dagger = (\hat{U}^\dagger)^\dagger \hat{\rho}^\dagger \hat{U}^\dagger = \hat{U}\hat{\rho}\hat{U}
+$$
+
+Since $\braket{\psi|\hat{\rho}|\psi} \geq 0$, we have
+
+$$
+  \braket{\psi|\hat{U}\hat{\rho}\hat{U}^\dagger|\psi} = \braket{\hat{U}^\dagger \psi|\hat{\rho}\hat{U}^\dagger \psi} \geq 0
+$$
+
+Since $\operatorname{tr}(hat{\rho}) = 1$ and using the commutativity of trace, we have
+
+$$
+  \operatorname{tr}(\hat{U}\hat{\rho}\hat{U}^\dagger) = \operatorname{tr}(\hat{U}^\dagger \hat{U} \rho) = \operatorname{tr}(\hat{\rho}) = 1
+$$
+
+Hence, $\hat{U}\hat{\rho}\hat{U}^\dagger \in\mathcal{D}(\mathcal{H})$.
+</details>
+
+Let $\set{\ket{\psi_j}}$ be an orthonormal basis of a Hilbert space $\mathcal{H}$. Since a density operator $\rho$ is Hermitian, it admits a diagonal spectral decomposition
+
+$$
+  \hat{\rho} = \sum_j p_j \ket{\psi_j} \bra{\psi_j} = \sum_j p_j \hat{P}_{\psi_j}
+$$
+
+where $p_j$ are the eigenvalues of $\hat{\rho}$ and $\hat{P}_{\psi_j}$ are the associated rank-one projectors. The density operator satisfies:
+1. **Probability conditions:** $p_j \geq 0$ and $\sum_j p_j = 1$
+2. **Positivity constraint:** $0 \leq \hat{\rho^2} \leq \rho$
+3. **Operator norm bound:** $\norm{\rho}\leq 1$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Since $\hat{\rho}$ is Hermitian, its eigenvalues $p_j$ are real. By the positivity of $\hat{\rho}$, we have for any $\ket{\psi}\in\mathcal{H}$
+
+$$
+  0 \leq \braket{\psi|\hat{\rho}|\psi} = \sum_j p_j \braket{\psi|\psi_j} \braket{\psi_j|\psi} = \sum_j p_j |\braket{\psi_j|\psi}|^2
+$$
+
+Since $\operatorname{tr}(\rho) = 1$, we have
+
+$$
+\begin{align*}
+  1 =& \operatorname{tr}(\hat{\rho}) = \sum_k \braket{\psi_k|\hat{\rho}|\psi_k} \\
+  =& \sum_{k,j} p_j \underbrace{\braket{\psi_k|\psi_j}}_{=\delta_{kj}} \underbrace{\braket{\psi_j|\psi_k}}_{=\delta_{jk}} \\
+  =& \sum_k p_k
+\end{align*}
+$$
+
+**(2):** The positivity of $\hat{\rho}^2$ follows from the fact that for any $\ket{\psi}\in\mathcal{H}$
+
+$$
+\begin{align*}
+  \braket{\psi|\hat{\rho}^2|\psi} =& \braket{\hat{\rho}^\dagger \psi|\hat{\rho} \psi} \\
+  =& \braket{\hat{\rho}\psi|\hat{\rho}\psi} = \norm{\hat{\rho}\ket{\psi}}^2 \geq 0
+\end{align*}
+$$
+
+Since $0 \leq p_j \leq 1$, it follows that $p_j^2 \leq p_j$ and
+
+$$
+\begin{align*}
+  \hat{\rho}^2 =& \left(\sum_j p_j \ket{\psi_j} \bra{\psi_j} \right)^2 \\
+  =& \sum_{j,k} p_j p_k \ket{\psi_j} \underbrace{\braket{\psi_j|\psi_k}}_{=\delta_{jk}} \bra{\psi_k} \\
+  =& \sum_j p_j^2 \ket{\psi_j} \bra{\psi_j}
+\end{align*}
+$$
+
+and thus for any $\ket{\psi}\in\mathcal{H}$
+
+$$
+\begin{align*}
+  \braket{\psi|\hat{\rho} - \hat{\rho}^2|\psi} =& \bra{\psi} \sum_j (p_j - p_j^2) \ket{\psi_j}\braket{\psi_j|\psi} \\
+  =& \sum_j (p_j - p_j^2) \braket{\psi|\psi_j}\braket{\psi_j|\psi} \\
+  =& \sum_j \underbrace{(p_j - p_j^2)}_{\geq 0} \underbrace{|\braket{\psi_j|\psi}|^2}_{\geq 0} \geq 0
+\end{align*}
+$$
+
+Hence, $0 \leq \hat{\rho^2} \leq \rho$.
+
+**(3):** From **(2)** it follows that
+
+$$
+\begin{align*}
+  \norm{\hat{\rho}}^2 =& \braket{\hat{\rho}|\hat{\rho}} = \braket{\hat{\rho}^\dagger \psi|\hat{\rho}\psi} \\
+  =& \braket{\psi|\hat{\rho}^2|\psi} = \braket{\psi|\hat{\rho}|\psi} \\
+  \leq& \norm{\psi}\cdot\norm{\hat{\rho} \psi}
+\end{align*}
+$$
+
+which implies
+
+$$
+  \frac{\norm{\hat{\rho}\ket{\psi}}}{\norm{\psi}} \leq 1 \implies \norm{\hat{\rho}} \leq 1
+$$
+</details>
+
+If $\set{\ket{j}}_j$ is an orthonormal basis on $\mathcal{H}$, the density matrix is defined as
 
 $$
 \begin{align*}
@@ -3202,19 +3338,316 @@ $$
   \sum_j \ket{j}\bra{k} = \hat{I} \left(\sum_k \ket{k}\bra{k} \right)
 $$
 
-A density matrix $\hat{\rho}$ has the following properties:
-- **Hermiticity:** $\hat{\rho}^\dagger = \hat{\rho}$
-- **Unit trace:** $\operatorname{tr}(\hat{\rho}) = 1$ if $\hat{\rho}$ is normalized
-- **Positive semi-definiteness**
+### Density operator for pure states
 
-The density matrix describes an ensemble of quantum systems that can be divided into pure and mixed states. The density matrix $\hat{\rho}$ describes a pure state if and only if it satisfies 
-- **Idempotens:** $\hat{\rho}^2 = \hat{\rho}$.
-    - This implies that $\rho$ is a projector, meaning that $\hat{\rho} = \ket{\psi}\bra{\psi}$ for any state vector $\ket{\psi}$
-- **Unit trace:** $\operatorname{tr}(\hat{\rho}^2) = \operatorname{tr}(\hat{\rho}) = 1$
+A pure state $\ket{\psi}\in\mathcal{H}$ can be represented by the rank-one projector $\hat{P}_\psi = \ket{\psi}\bra{\psi}$. Since $\operatorname{tr}(\hat{P}_\psi) = 1$ and $\hat{P}_\psi^2 = \hat{P}_\psi$, pure states can be viewed as a special case of mixed states with density operator
 
-The density matrix $\hat{\rho}$ describes a mixed state if 
-- $\hat{\rho}^2 \neq \hat{\rho}$
-- $\operatorname{tr}(\hat{\rho}^2) < \operatorname{tr}(\hat{\rho}) = 1$
+$$
+  \hat{\rho}_\psi := \hat{P}_\psi = \ket{\psi}\bra{\psi}
+$$
+
+Thus, the density operator formalism generalizes the description of quantum states, encompassing both pure states and statistical mixtures.
+
+<details>
+<summary>Details</summary>
+
+To show that the density operator for a pure state $\ket{\psi}\in\mathcal{H}$ given by $\rho_\psi = \ket{\psi}\bra{\psi}$ satisfies the quantum postulates for mixed states, we verify the following properties.
+
+**Expectation value**
+
+Consider an observable $A$ with spectral decomposition
+
+$$
+  \hat{A} = \sum_j \lambda_j \ket{e_j} \bra{e_j} 
+$$
+
+where $\set{\lambda}_j$ are the eigenvalues of $\hat{A}$ and $\set{\ket{e_j}}$ is an orthonormal basis of $\mathcal{H}$. The expectation value of $\hat{A}$ in the state $\hat{\rho}_\psi$ is
+
+$$
+\begin{align*}
+  \braket{A}_{\rho_\psi} =& \operatorname{tr}(\rho_\psi \hat{A}) = \operatorname{tr}(\ket{\psi}\braket{\psi|\hat{A}}) \\
+  =& \operatorname{tr}\left(\ket{\psi}\bra{\psi} \sum_j \lambda_j \ket{e_j} \bra{e_j} \right) \\
+  =& \sum_j \lambda_j \operatorname{tr}(\ket{\psi}\braket{\psi|e_j}\bra{e_j}) \\
+  =& \sum_{j,k} \lambda_j \braket{e_j|\psi}\braket{\psi|e_j}\underbrace{\braket{e_j|e_k}}_{=\delta_{jk}} \\
+  =& \sum_j \lambda_j \braket{\psi|e_j} \braket{e_j|\psi} \\
+  =& \braket{\psi} \sum_j \lambda_j \ket{e_j} \braket{e_j|\psi} \\
+  =& \braket{\psi|\hat{A}|\psi} = \braket{\hat{A}}_\psi
+\end{align*}
+$$
+
+**Measurement probability**
+
+The probability of measuring an eigenvalue $\lambda$ associated with the projector $\hat{P}_\lambda$ is given by
+
+$$
+\begin{align*}
+  \Pr_{\rho_\psi} (\lambda) =& \operatorname{tr}(\hat{\rho}\hat{P}_\lambda) = \operatorname{tr}(\ket{\psi}\bra{\psi}\hat{P}_\lambda) \\
+  =& \operatorname{tr}(\ket{\psi}\bra{\psi}\hat{P}_\lambda^2) = \operatorname{tr}(\hat{P}_\lambda \ket{\psi}\braket{\psi|\hat{P}_\lambda}) \\
+  =& \sum_j \braket{e_j|\hat{P}_\lambda|\psi} \braket{\psi|\hat{P}_\lambda|e_k} \\
+  =& \sum_j \braket{e_j|\hat{P}_\lambda|\psi} \braket{\hat{P}_\lambda \psi|e_j} \\
+  =& \braket{\hat{P}_\lambda \psi} \underbrace{\sum_j \ket{e_j} \braket{e_j|\hat{P}_\lambda|\psi}}_{=\hat{P}_\lambda \ket{\psi}} \\
+  =& \braket{\hat{P}_\lambda \psi| \hat{P}_\lambda \psi} = \norm{\hat{P}_\lambda \ket{\psi}}^2 = \Pr_\psi (\lambda) 
+\end{align*}
+$$
+
+**Projection**
+
+If a measurement of an observable $A$ yields the eigenvalue $\lambda$, the post-measurement state is given by the normalized projection of $\rho_\psi$:
+
+$$
+\begin{align*}
+  \frac{\hat{P}_\lambda \hat{\rho}_\psi \hat{P}_\lambda}{\operatorname{tr}(\hat{\rho}_\psi \hat{P}_\lambda)} =& \frac{\hat{P}_\lambda \ket{\psi}\bra{\psi} \hat{P}_\lambda}{\norm{\hat{P}_\lambda \ket{\psi}}^2} = \frac{\hat{P}_\lambda \ket{\psi}\bra{\psi} \hat{P}_\lambda^\dagger}{\norm{\hat{P}_\lambda \ket{\psi}}^2} \\
+  =& \frac{\hat{P}_\lambda \ket{\psi} \bra{\hat{P}_\lambda \psi}}{\norm{\hat{P}_\lambda \ket{\psi}}^2} = \frac{\hat{P}_\lambda \ket{\psi}}{\norm{\hat{P}_\lambda \ket{\psi}}} \frac{\bra{\hat{P}_\lambda \psi}}{\norm{\hat{P}_\lambda \ket{\psi}}} \\
+  =& \hat{\rho}_{\hat{P}_\lambda \ket{\psi} / \norm{\hat{P}_\lambda \ket{\psi}}}
+\end{align*}
+$$
+
+Thus, $\frac{\hat{P}_\lambda \hat{\rho}_\psi \hat{P}_\lambda}{\operatorname{tr}(\hat{\rho}_\psi \hat{P}_\lambda)}$ os the density operator of the pure state $\hat{\rho}_{\hat{P}_\lambda \ket{\psi} / \norm{\hat{P}_\lambda \ket{\psi}}}$.
+
+**Time evolution**
+
+Let $\hat{\rho} (t_0) = \rho_{\psi(t_0)} = \ket{\psi(t_0)}\bra{\psi(t_0)}$ be the initial state and $\hat{\rho}(t)$ be the state at time $t$. Then
+
+$$
+\begin{align*}
+  \hat{\rho}(t) =& \hat{U}(t, t_0) \hat{\rho} (t_0) \hat{U}^\dagger (t, t_0) \\
+  =& \hat{U}(t, t_0) \ket{\psi(t_0)} \bra{\psi(t_0)} \hat{U}^\dagger (t, t_0) \\
+  =& \ket{\hat{U}(t, t_0) \psi(t_0)} \bra{\hat{U}(t, t_0) \psi(t_0)} \\
+  =& \hat{\rho}_{\hat{U}(t, t_0)\ket{\psi(t_0)}} \\
+  =& \rho_\psi (t)
+\end{align*}
+$$
+</details>
+
+A density operator $\hat{\rho}$ describes a pure state if and only it is a projector, i.e. $\hat{\rho}^2 = \hat{\rho} = \ket{\psi}\bra{\psi}$ for some normalized $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$.
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$): If $\hat{\rho}$ describes a pure state, then $\hat{\rho}^2 = \hat{\rho}$**
+
+By definition, a pure state is represented by a rank-one density operator $\hat{\rho} = \ket{\psi}\bra{\psi}$ for $\ket{\psi}\in\mathcal{H}$. If $\set{\ket{e_j}}$ is an orthonormal basis of $\mathcal{H}$, then since $\operatorname{tr}(\hat{\rho}) = 1$, we have
+
+$$
+\begin{align*}
+  1 =& \operatorname{tr}(\hat{\rho}) = \operatorname{tr}(\ket{\psi}\bra{\psi}) \\
+  =& \sum_j |\braket{e_j|\psi}|^2 = \norm{\psi}^2
+\end{align*}
+$$
+
+verifying that $\ket{\psi}$ is normalized. It follows that
+
+$$
+  \hat{\rho}^2 = \ket{\psi}\underbrace{\braket{\psi|\psi}}_{=\norm{\psi}^2}\bra{\psi} = \ket{\psi}\bra{\psi} = \hat{\rho}
+$$
+
+**($\impliedby$): If $\hat{\rho}$ satisfies $\hat{\rho}^2 = \hat{\rho}$, it is a pure state**
+
+Since $\hat{\rho}$ is a density operator, it admits a spectral decomposition in an orthonormal basis $\set{\ket{\psi_j}}$
+
+$$
+  \hat{\rho} = \sum_j p_j \ket{\psi_j} \bra{\psi_j}
+$$
+
+where $p_j \geq 0$ are real eigenvalues summing to $1$. Calculating $\hat{\rho}^2$, we obtain
+
+$$
+\begin{align*}
+  \hat{\rho}^2 =& \left(\sum_j p_j \ket{\psi_j} \bra{\psi_j} \right) \left(\sum_k p_k \ket{\psi_k} \bra{\psi_k} \right) \\
+  =& \sum_{j,k} p_j p_k \ket{\psi_j} \underbrace{\braket{\psi_j|\psi_k}}_{=\delta_{jk}} \bra{\psi_k} \\
+  =& \sum_j p_j^2 \ket{\psi_j} \bra{\psi_j} 
+\end{align*}
+$$
+
+Using idempotency, $\hat{\rho}^2 = \hat{\rho}$, we find that $p_j^2 = p_j$. Taking the expectation of $\hat{\rho}^2 - \hat{\rho}$ in $\ket{\psi_k} \in\mathcal{H}$, we get
+
+$$
+\begin{align*}
+  0 =& \braket{\psi_k|\hat{\rho}^2 - \hat{\rho}|\psi_k} \\
+  =& \bra{\psi_k} \sum_j (p_j^2 - p_j) \ket{\psi_j} \underbrace{\braket{\psi_j|\psi_k}}_{=\delta_{jk}} \\
+  =& p_k^2 - p_k = p_k (p_k - 1)
+\end{align*}
+$$
+
+Consequently, $p_j = 1$ or $p_j = 0$ for each $j$. Since $\sum_j p_j = 1$, exactly one $p_j$ is equal to $1$, while all others are $0$. If $\check{\jmath}$ is the index where $p_j = 1$, then
+
+$$
+  \hat{\rho} = \ket{\psi_\check{\jmath}}\bra{\psi_\check{\jmath}}
+$$
+
+describes a pure state.
+</details>
+
+A density operator $\hat{\rho}$ describe a true mixture if and only if $\hat{\rho}^2 < \hat{\rho}$. This means that mixed states satisfy $\hat{\rho}^2 \neq \hat{\rho}$.
+
+<details>
+<summary>Proof</summary>
+
+We prove the statement by contraposition, showing that $\hat{\rho}^2 = \hat{\rho}$ if and only if there exists $\ket{\psi}\in\mathcal{H}$ such that for every Hermitian operator $\hat{A}\in\mathcal{B}(\mathcal{H})$, we have $\braket{A}_\psi = \braket{A}_\rho$. 
+
+**($\implies$): If $\hat{\rho}^2 = \hat{\rho}$, then $\hat{\rho}$ represents a pure state**
+
+Consider an orthonormal basis $\set{\ket{e_j}}$ in $\mathcal{H}$ and let $\ket{\psi}\in\mathcal{H}$ be such that $\hat{\rho} = \ket{\psi}\bra{\psi}$. Expanding $\ket{\psi}$ as
+
+$$
+  \ket{\psi} = \sum_j \ket{e_j} \braket{e_j|\psi}
+$$
+
+the expectation value of an Hermitian operator $\mathcal{A}\in\mathcal{B}(\mathcal{H})$ is
+
+$$
+\begin{align*}
+  \braket{A}_\rho =& \operatorname{tr}(\hat{\rho}\hat{A}) = \sum_j \braket{e_j}\ket{\psi}\braket{\psi|\hat{A}|e_j} \\
+  =& \Braket{\psi|\hat{A}| \sum_j \braket{e_j|\psi} e_j} = \braket{\psi|\hat{A}|\psi} \\
+  =& \braket{A}_\psi
+\end{align*}
+$$
+
+Hence, $\hat{\rho}$ is indistinguishable from the pure state $\ket{\psi}$.
+
+**($\impliedby$): If $\braket{A}_\rho = \braket{A}_\psi$, then $\hat{\rho}^2 = \hat{\rho}$**
+
+Suppose $\hat{\rho}$ has the form
+
+$$
+  \hat{\rho} = \sum_{j_1, j_2} \rho_{j_1 j_2} \ket{e_{j_1}} \bra{e_{j_2}}
+$$
+
+If there exists a state $\ket{\psi} = \sum_j \psi_j \ket{e_j}\in\mathcal{H}$ is such that $\braket{A}_\rho = \braket{A}_\psi$ for all Hermitian operators $\hat{A}\in\mathcal{B}(\mathcal{H})$, then
+
+$$
+\begin{align*}
+  \braket{A}_\rho =& \operatorname{tr}(\hat{\rho}\hat{A}) = \sum_j \braket{e_j|\hat{\rho}\hat{A}|e_j} \\
+  =& \sum_j \ket{e_j} \sum_{j_1, j_2} \rho_{j_1, j_2} \ket{e_{j_1}} \braket{e_{j_2} |\hat{A}| e_{j_1}} \\
+  =& \sum_{j_1, j_2} \hat{\rho}_{j_1, j_2} \sum_j \underbrace{\braket{e_j | e_{j_1}}}_{\delta_{j j_1}} A_{j_2 j} \\
+  =& \sum_{j_1, j_2} \rho_{j_1, j_2} A_{j_2 j_1}
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \braket{A}_\psi =& \braket{\psi|\hat{A}|\psi} = \Braket{\sum_{j_2} \psi_{j_2} e_{j_2}|\hat{A}| \sum_{j_1} \psi_{j_1} e_{j_1}} \\
+  =& \sum_{j_1, j_2} \psi_{j_2}^* \psi_{j_1} \braket{e_{j_2}|\hat{A}|e_{j_1}} \\
+  =& \sum_{j_1, j_2} \psi_{j_2}^* \psi_{j_1} A_{j_2 j_1}
+\end{align*}
+$$
+
+Since $\braket{A}_\psi = \braket{A}_\psi$ for all $\hat{A}$, the matrix elements of $\hat{\rho}$ must be of the form $\rho_{j_1 j_2} = \psi_{j_1} \psi_{j_2}^*$. Consequently,
+
+$$
+  \hat{\rho} = \sum_{j_1,j_2} \psi_{j_1} \psi_{j_2}^* \ket{e_{j_1}} \bra{e_{j_2}} = \ket{\psi}\bra{\psi}
+$$
+
+which is equivalent to $\hat{\rho}^2 = \hat{\rho}$.
+</details>
+
+<MathBox title='' boxType='proposition'>
+Let $\mathcal{H}$ be a finite-dimensional Hilbert space and $\hat{\rho}\in\mathcal{D}(\mathcal{H})$ be a density operator with diagonal form
+
+$$
+  \hat{\rho} = \sum_{i=1}^n p_j \ket{\psi_j} \bra{\psi_j}
+$$
+
+where $p_j \in (0,1]$ for $j\in\set{1,\dots,n}$ with $n \leq \dim(\mathcal{H})$ are the nonzero eigenvalues of $\hat{\rho}$ and $\set{\ket{\psi_j}}_{j=1}^{\dim(\mathcal{H})}$ is an orthonormal eigenbasis. For $m\leq\dim(\mathcal{H})$, suppose we have normalized states $\set{\ket{\varphi_i}}_{i=1}^m \subset\mathcal{H}$ and probabilities $q_i \in (0,1]$ such that $\sum_{j=1}^m q_i = 1$. Then,
+
+$$
+  \hat{\rho} = \sum_{j=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
+$$
+
+if and only if $m \geq n$ and there is a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that
+
+$$
+  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}, \; i \in\set{1,\dots,m}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):**
+
+Since $\set{\ket{\psi_j}}_{j=1}^n$ is an orthonormal eigenbasis, the range of $\hat{\rho}$ has dimension
+
+$$
+  \dim[\operatorname{ran}(\hat{\rho})] = \dim\left(\operatorname{span}\set{ket{\psi_j}}_{j=1}^n \right) = n
+$$
+
+On the other hand, $\hat{\rho}[\mathcal{H}] \subseteq \operatorname{span}\set{\ket{\psi_i}}_{i=1}^m$ such that
+
+$$
+  \dim[\operatorname{ran}(\hat{\rho})] \leq \dim\left(\operatorname{span}\set{ket{\varphi_i}}_{i=1}^n \right) \leq m
+$$
+
+and it follows that $n \leq m$. By assumption, the eigenvectors of $\hat{\rho}$ for the eigenvalue $0$ are given by $\ket{\psi_k}$, where $k \in \set{n+1,\dots,\dim(\mathcal{H})}$. They satisfy
+
+$$
+  0 = \braket{\psi_k | \psi_k} = \sum_{i=1}^m q_i |\braket{\psi_k|\varphi_i}|^2
+$$
+
+which implies $\braket{\psi_k|\varphi_i} = 0$ for all $k\in\set{n+1,\dots,\dim(\mathcal{H})}$ and $i\in\set{1,\dots,m}$. We can thus expand $\ket{\varphi_i}$ as
+
+$$
+  \ket{\varphi_i} = \sum_{k=1}^{\dim(\mathcal{H})} \braket{\psi_k|\varphi_i} \ket{\psi_k} = \sum_{k=1}^n \braket{\psi_k | \varphi_i} \ket{\psi_k}
+$$
+
+Since $\hat{\rho}$ is unchanged under either decomposition, we must have
+
+$$
+  \sum_{j=1}^n p_j \ket{\varphi_j} \bra{\varphi_j} = \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
+$$
+
+Next, we define the $m\times n$ matrix $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbf{C})$ by
+
+$$
+  \mathbf{V}_{ij} = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}
+$$
+
+for $i\in\set{1,\dots,m}$ and $j\in\set{1,\dots,n}$ such that
+
+$$
+  \sum_{j=1}^n \mathbf{V}_{ij} \sqrt{p_j} \ket{\psi_j} = \sum_{j=1}^n \sqrt{q_i} \braket{\psi_j|\varphi_i} \ket{\psi_j} = \sqrt{q_i} \ket{\varphi_i}
+$$
+
+We proceed to show that we can extend $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbb{C})$ to a unitary $m\times m$ matrix $\mathbf{U}$. For this, we first note that
+
+$$
+  \mathbf{V}_{ji}^\dagger = \mathbf{V}_{ij}^* = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}^* = \sqrt{\frac{q_i}{p_j}} \braket{\varphi_i|\psi_j}
+$$
+
+and thus for $i,j\in\set{1,\dots,n}$
+
+$$
+\begin{align*}
+  \sum_{i=1}^m \mathbf{V}_{ji}^\dagger \mathbf{V}_{ik} =& \frac{1}{\sqrt{p_j p_k}} \sum_{i=1}^m q_i \braket{\psi_j|\varphi_i} \braket{\varphi_i|\psi_k} \\
+  =& \frac{1}{\sqrt{p_j p_k}} \braket{\psi_j |\hat{\rho}|\psi_k} \\
+  =& \frac{1}{\sqrt{p_j p_k}} \bra{\psi_j} \sum_{l=1}^n p_l \ket{\psi_l} \braket{\psi_l|\psi_k} \\
+  =& \sum_{l=1}^n \frac{p_l \delta_{jl} \delta_{lk}}{\sqrt{p_j p_k}} = \delta_{jk}
+\end{align*}
+$$
+
+We have specified $\mathbf{V} \in\mathcal{M}_{m,n} (\mathbb{C})$, where $n\leq m$, such that $\mathbf{V}^\dagger \mathbf{V} = \mathbf{I}_n$. This means that the $n$ column vectors of $\mathbf{V}$ viewed as vectors in $\mathbb{C}^m$ are mutually orthogonal and normalized to $1$. Applying the Gram-Schmidt orthogonalization procedure, we can add $m - n$ orthonormal columns vectors such that all $m$ column vectors of the resulting $m\times m$ matrix $\mathbf{U}$ form a basis in $\mathbb{C}^m$. By this procedure, we extend $\mathbf{V}$ to form a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that $\mathbf{U}_{ij} = \mathbf{V}_{ij}$ for $j\in\set{1,\dots,n}$.
+
+**($\impliedby$):**
+
+Let $m \geq n$ and $\mathbf{U} \in\mathrm{U}(m)$ be a unitary matrix such that for $j\in\set{1,\dots,m}$
+
+$$
+  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}
+$$
+
+This implies
+
+$$
+\begin{align*}
+  \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i} =& \sum_{j=1}^m q_i \left(\frac{1}{\sqrt{q_i}} \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j} \right) \left(\frac{1}{\sqrt{q_i}} \sum_{k=1}^n \mathbf{U}_{ik}^* \sqrt{p_k} \ket{\psi_k} \right) \\
+  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \left(\sum_{i=1}^m \mathbf{U}_{ki}^\dagger \mathbf{U}_{ij} \right) \ket{\psi_j} \bra{\psi_k} \\
+  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \underbrace{(\mathbf{U}^\dagger \mathbf{U})_{ij}}_{=\delta_{ij}} \ket{\psi_j} \bra{\psi_k} \\
+  =& \sum_{j=1}^n p_j \ket{\psi_j} \bra{\psi_j} = \hat{\rho}
+\end{align*}
+$$
+</details>
+</MathBox>
 
 <MathBox title='Qubit' boxType='example'>
 A two-state quantum system is known as a qubit. It is represented by a two-dimensional Hilbert space. An arbitrary mixed state for a qubit can be written as a linear combination
@@ -3285,13 +3718,61 @@ where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilo
 
 ### Measurement
 
-In terms of a density matrix $\hat{\rho}$, the expectation value of an observable $\hat{Q}$ is defined as
+<MathBox title="Gleason's theorem" boxType='theorem'>
+Let $\mathcal{H}$ be a Hilbert space with finite dimension $\dim(\mathcal{H}) \geq 3$. Any map $\Pr$ that assigns probabilities to the orthogonal projections of $\mathcal{H}$ and satisfies
+
+- $\Pr(\hat{0}) = 0$
+- $\Pr(\hat{I}) = 1$
+- $\hat{P}_1 \hat{P}_2 = 0 \implies \Pr(\hat{P}_1 + \hat{P}_2) = \Pr(\hat{P}_1) + \Pr(\hat{P}_2)$ for any orthogonal projections $\hat{P}_1, \hat{P}_2$ 
+
+must be of the form
+
+$$
+  \Pr (\hat{P}) = \operatorname{tr}(\hat{\rho}\hat{P})
+$$
+
+where $\hat{\rho}$ is a unique positive semidefinite, Hermitian operator $\hat{\rho}$ with $\operatorname{tr}(\hat{\rho}) = 1$.
+</MathBox>
+
+In terms of a density operator $\hat{\rho}$, the expectation value of an observable $\hat{Q}$ is defined as
 
 $$
 \begin{equation}
-  \braket{\hat{Q}}_{\hat{\rho}} = \operatorname{tr}(\hat{\rho} \hat{Q}) \tag{\label{equation-96}}
+  \braket{\hat{Q}}_\rho = \operatorname{tr}(\hat{\rho} \hat{Q}) \tag{\label{equation-96}}
 \end{equation}
 $$
+
+The probability that a measurement of $\hat{Q} = \sum_j \lambda_j \ket{q_j} \bra{q_j}$ yields an eigenvalue $\lambda_j$ corresponding to the eigenstate $\ket{q_j}$ is given by
+
+$$
+\begin{align*}
+  \Pr_\rho (\lambda) =& \braket{P_{q_j}}_\rho = \operatorname{tr}(\rho \hat{P}_{q_j}) \\
+  =& \operatorname{tr}(\hat{\rho}\ket{q_j}\bra{q_j}) \\
+  =& \sum_{k,l} p_j \braket{q_l|\psi_k} \braket{\psi_k|q_j} \underbrace{\braket{q_j|q_l}}_{\delta_{jl}} \\
+  =& \sum_k p_k |\braket{e_j|\psi_k}|^2 
+\end{align*}
+$$
+
+If $\hat{\rho} = \ket{\psi}\bra{\psi}$ is a pure state, the probability of measuring the eigenvalue $\lambda_j$ of $Q$ is
+
+$$
+\begin{align*}
+  \braket{P_{q_j}}_{\rho_\psi} =& \operatorname{tr}(\hat{\rho}_\psi \hat{P}_{q_j}) = \operatorname{tr}(\ket{\psi}\braket{\psi|q_j}\bra{q_j}) \\
+  =& \sum_k \braket{q_k|\psi} \braket{\psi|q_j}\underbrace{\braket{q_j|q_k}}_{=\delta_{jk}} \\
+  =& |\braket{q_j|\psi}|^2
+\end{align*}
+$$
+
+The expectation value of $Q$ in this case is
+
+$$
+\begin{align*}
+  \braket{Q}_{\rho_\psi} =& \operatorname{tr}(\hat{\rho}_\psi \hat{Q}) \\
+  =& \sum_{j,k} \braket{q_k|\psi}\braket{\psi|q_j}\lambda_j \underbrace{\braket{q_j|q_k}}_{=\delta_{jk}} \\
+  =& \sum_j \lambda_j |\braket{q_j|\psi}|^2 
+\end{align*}
+$$
+
 
 For a pure state $\ket{\psi}$, the expectation value can be written
 
