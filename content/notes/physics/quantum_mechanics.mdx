@@ -225,10 +225,85 @@ $$
 \end{align*}
 $$
 
+The Pauli matrices can be written in the general form 
+
+$$
+  \sigma_j = \begin{bmatrix} 
+    \delta_{j3} & \delta_{j1} - i\delta_{j2} \\
+    \delta_{j1} + i\delta_{j2} & -\delta_{j3}
+  \end{bmatrix}
+$$
+
+where $\delta_{jk}$ is the Kronecker delta. The Hermitian adjoint of $\sigma_j$ is
+
+$$
+  \sigma_j^\dagger = \begin{bmatrix} 
+    \delta_{j3} & \delta_{j1} + i\delta_{j2} \\
+    \delta_{j1} - i\delta_{j2} & -\delta_{j3}
+  \end{bmatrix}^\top = \sigma^j
+$$
+
+showing that the Pauli matrices are Hermitian.
+
 The Paul matrices satisfy
-- $\sigma_i = \sigma_j = \delta_{ij} I_2 + i\varepsilon_{ijk} \sigma_k$ 
-- $[\sigma_i, \sigma_j] = 2i\varepsilon_{ijk} \sigma_k$
-- $[\sigma_i, \sigma_j]_+ = 2 \delta_{ij} I_2$
+1. $\sigma_j \sigma_k = \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l$ 
+2. $[\sigma_j, \sigma_k] = \sigma_j \sigma_k - \sigma_k \sigma_j = 2i\varepsilon_{jkl} \sigma_l$
+3. $[\sigma_j, \sigma_k]_+ = \sigma_j \sigma_k + \sigma_k \sigma_j = 2 \delta_{jk} I_2$
+
+From the first property, we see that 
+
+$$
+  \sigma_j \sigma_j = \sigma_j^\dagger \sigma_j = \sigma_j \sigma_j^\dagger = \delta_{jj} I_2 = I_2
+$$
+
+meaning that the Pauli matrices are unitary.
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  \sigma_j \sigma_k =& \begin{bmatrix} 
+    \delta_{j3} & \delta_{j1} - i\delta_{j2} \\
+    \delta_{j1} + i\delta_{j2} & -\delta_{j3}
+  \end{bmatrix} \cdot \begin{bmatrix} 
+    \delta_{k3} & \delta_{k1} - i\delta_{k2} \\
+    \delta_{k1} + i\delta_{k2} & -\delta_{k3}
+  \end{bmatrix} \\
+  =& \begin{bmatrix} 
+    \delta_{j1}\delta_{k1} + \delta_{j2}\delta_{k2} + \delta_{j3}\delta_{k3} + i(\delta_{j1}\delta_{k2} - \delta_{j2}\delta_{k1}) & \delta_{j3}\delta_{k1} - \delta_{j1}\delta_{k3} + i(\delta_{j2}\delta_{k3} - \delta_{j3}\delta_{k2}) \\
+    \delta_{j1}\delta_{k3} - \delta_{j3}\delta_{k1} + i(\delta_{j2}\delta_{k3} - \delta_{j3}\delta_{k2}) & \delta_{j1}\delta_{k1} + \delta_{j2}\delta_{k2} + \delta_{j3}\delta_{k3} - i(\delta_{j1}\delta_{k2} + \delta_{j2}\delta_{k1})
+  \end{bmatrix} \\
+  =& \begin{bmatrix}
+      \delta_{jk} + i\varepsilon_{jkl}\delta_{l3} & \varepsilon_{jkl}\delta_{l1} - i\varepsilon_{jkl}\delta_{l2} \\
+      \varepsilon_{jkl}\delta_{l1} + i\varepsilon_{jkl}\delta_{l2} & \delta_{jk} - i\varepsilon_{jkl}\delta_{l3}
+    \end{bmatrix} \\
+  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l
+\end{align*}
+$$
+
+**(2):** Using **(1)**, we have
+
+$$
+\begin{align*}
+  [\sigma_j, \sigma_k] =& \sigma_j \sigma_k - \sigma_k \sigma_j \\
+  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l - (\underbrace{\delta_{kj}}_{=\delta_{kj}} I_2 + i\underbrace{\varepsilon_{kjl}}_{=-\varepsilon_{jkl}} \sigma_l) \\
+   = 2i\varepsilon_{jkl} \sigma_l
+\end{align*}
+$$
+
+**(3):** Using **(1)**, we have
+
+$$
+\begin{align*}
+  [\sigma_j, \sigma_k]_+ =& \sigma_j \sigma_k + \sigma_k \sigma_j \\
+  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l + \underbrace{\delta_{kj}}_{=\delta_{kj}} I_2 + i\underbrace{\varepsilon_{kjl}}_{=-\varepsilon_{jkl}} \sigma_l \\
+   = 2 \delta_{jk} I_2
+\end{align*}
+$$
+</details>
 
 Additionally
 
@@ -1697,7 +1772,7 @@ $$
   \Delta_\psi (Q) := \sqrt{\braket{\psi|(\hat{Q} - \braket{Q}_\psi \hat{I})^2|\psi}} = \sqrt{\braket{(\hat{Q} - \braket{Q}\hat{I})^2}}
 $$
 
-where $\hat{I}$ is the identity operator. If the uncertainty vanishes, i.e. $\Deta_\psi (Q) = 0$, the observable $Q$ in the state $\ket{\psi}$ is said to have a *sharp* value. This is the case if and only if $\ket{\psi}$ is an eigenvector of $\hat{Q}$, i.e.
+where $\hat{I}$ is the identity operator. If the uncertainty vanishes, i.e. $\Delta_\psi (Q) = 0$, the observable $Q$ in the state $\ket{\psi}$ is said to have a *sharp* value. This is the case if and only if $\ket{\psi}$ is an eigenvector of $\hat{Q}$, i.e.
 
 $$
   \Delta_\psi (Q) = 0 \iff \hat{Q}\ket{\psi} = \braket{Q}_\psi \ket{\psi}
@@ -1952,7 +2027,7 @@ $$
 \end{align*}
 $$
 
-By Hermiticity of $\hat{P}$ and $\hat{Q}$, it follows that $\braket{\hat{P}}, \braket{\hat{Q}}\in\R$ such that $\Delta{P}$ and $\Delta{Q}$ are also Hermitian. Thus,
+By Hermiticity of $\hat{P}$ and $\hat{Q}$, it follows that $\braket{\hat{P}}, \braket{\hat{Q}}\in\R$ such that $\Delta\hat{P}$ and $\Delta\hat{Q}$ are also Hermitian. Thus,
 
 $$
   \braket{f|f} = \braket{\psi|\Delta \hat{P}^\dagger \Delta\hat{P}|\psi} = \braket{\psi|(\Delta\hat{P})^2|\psi} = \sigma_P^2
@@ -7040,7 +7115,6 @@ $$
   \int_{\R^3} \psi_{k \ell n}^* \psi_{k' \ell' n'} r^2 \;\d r \; \d\Omega = \delta_{kk'} \delta_{\ell\ell'} \delta_{nn'}
 $$
 
-
 | $k$ | $\ell$ | $R_{k\ell} (r)$ |
 | --- | --- | --- |
 | $1$ | $0$ | $R_{10} = 2a^{-3/2} \exp(-r/a)$ |
@@ -7053,7 +7127,6 @@ $$
 | $4$ | $1$ | $R_{41} = \frac{5}{16\sqrt{15}}a^{-3/2} \left[1 - \frac{1}{4}\frac{r}{a} + \frac{1}{80}\left(\frac{r}{a}\right)^2\right]\left(\frac{r}{a}\right) \exp(-r/4a)$ |
 | $4$ | $2$ | $R_{41} = \frac{1}{64\sqrt{5}}a^{-3/2} \left(1 - \frac{1}{12}\frac{r}{a}\right)\left(\frac{r}{a}\right)^2 \exp(-r/4a)$ |
 | $4$ | $3$ | $R_{41} = \frac{1}{768\sqrt{35}}a^{-3/2} \left(\frac{r}{a}\right)^3 \exp(-r/4a)$ |
-
 
 # Relativistic particles
 
