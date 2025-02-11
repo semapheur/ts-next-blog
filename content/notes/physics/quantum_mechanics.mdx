@@ -305,11 +305,28 @@ $$
 $$
 </details>
 
-Additionally
+Additionally, for $\mathbf{a},\mathbf{b}\in\R^3$, the Pauli matrices satisfy the identity
 
 $$
-  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
+\begin{equation}
+  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma} \tag{\label{equation-109}}
+\end{equation}
 $$
+
+<details>
+<summary>Proof</summary>
+
+Recall that the cross-product of $\mathbf{a},\mathbf{b}\in\R^3$ can be written $\mathbf{a} \times \mathbf{b} = \sum_{j,k} a_j b_k \varepsilon_{jkl}$. Expanding the left-hand side of $\eqref{equation-109}$ gives
+
+$$
+\begin{align*}
+  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) =& \sum_{j,k} a_j b_k \sigma_j \sigma_k \\
+  =& \sigma_{j,k} a_j b_k (\delta_{jk}\hat{I}_2 + i\varepsilon_{jkl}\sigma_l) \\
+  =& \left(\sum_{j,k} a_j b_k \delta_{jk} \right)\hat{I}_2 + i \sum_{j,k} a_j b_k \varepsilon_{jkl} \sigma_l \\
+  =& (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
+\end{align*}
+$$
+</details>
 
 <MathBox title='Pauli matrices form a basis for $\mathbb{C}^{2\times 2}$' boxType='proposition'>
 The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
@@ -3253,7 +3270,7 @@ $$
 
 where $p_j$ are the eigenvalues of $\hat{\rho}$ and $\hat{P}_{\psi_j}$ are the associated rank-one projectors. The density operator satisfies:
 1. **Probability conditions:** $p_j \geq 0$ and $\sum_j p_j = 1$
-2. **Positivity constraint:** $0 \leq \hat{\rho^2} \leq \rho$
+2. **Positivity constraint:** $0 \leq \hat{\rho}^\2 \leq \hat{\rho}$
 3. **Operator norm bound:** $\norm{\rho}\leq 1$
 
 <details>
@@ -3323,20 +3340,204 @@ $$
 $$
 </details>
 
-If $\set{\ket{j}}_j$ is an orthonormal basis on $\mathcal{H}$, the density matrix is defined as
+If $\set{\ket{\psi_j}}_j$ is an orthonormal basis on $\mathcal{H}$, the density matrix is defined as
 
 $$
 \begin{align*}
-  \hat{\rho} =& \sum_j \sum_k \ket{j}\braket{j|\hat{\rho}|k}\bra{k} \\
-  =& \sum_{j,k} \rho_{jk} \ket{j}\bra{k}
+  \hat{\rho} =& \sum_j \sum_k \ket{\psi_j}\braket{\psi_j|\hat{\rho}|\psi_k}\bra{\psi_k} \\
+  =& \sum_{j,k} \boldsymbol{\rho}_{jk} \ket{\psi_j}\bra{\psi_k}
 \end{align*}
 $$
 
-where $\rho_{jk} = \braket{j|\hat{\rho}|k}$ are the matrix elements of $\hat{\rho}$. This definition utilizes the fact that
+where $\boldsymbol{\rho}_{jk} = \braket{\psi_j|\hat{\rho}|\psi_k}$ are the matrix elements of $\hat{\rho}$. This definition utilizes the fact that
 
 $$
-  \sum_j \ket{j}\bra{k} = \hat{I} \left(\sum_k \ket{k}\bra{k} \right)
+  \sum_j \ket{\psi_j}\bra{\psi_k} = \hat{I} \left(\sum_k \ket{\psi_k}\bra{\psi_k} \right)
 $$
+
+In a mixture described by $\hat{\rho} = \sum_j p_j \ket{\psi_j} \bra{\psi_j}$ the relative phases of the $\ket{\psi_j}$ are not physically observable. This is because for $\phi_j \in\R$, we have
+
+$$
+\begin{align*}
+  \sum_j p_j \ket{e^{i\phi_j} \psi_j} \bra{e^{i\phi_j} \psi_j} =& \sum_j p_j e^{-i\phi_j} e^{i\phi_j} \ket{\psi_j} \bra{\psi_j} \\
+  =& \sum_j p_j \ket{\psi_j} \bra{\psi_j} = \hat{\rho}
+\end{align*}
+$$
+
+showing that the states $e^{i\phi_j} \ket{\psi_j}$ generate the same mixture as the $\ket{\phi_j}$.
+
+<MathBox title='' boxType='proposition'>
+Let $\mathcal{H}$ be a finite-dimensional Hilbert space and $\hat{\rho}\in\mathcal{D}(\mathcal{H})$ be a density operator with diagonal form
+
+$$
+  \hat{\rho} = \sum_{i=1}^n p_j \ket{\psi_j} \bra{\psi_j}
+$$
+
+where $p_j \in (0,1]$ for $j\in\set{1,\dots,n}$ with $n \leq \dim(\mathcal{H})$ are the nonzero eigenvalues of $\hat{\rho}$ and $\set{\ket{\psi_j}}_{j=1}^{\dim(\mathcal{H})}$ is an orthonormal eigenbasis. For $m\leq\dim(\mathcal{H})$, suppose we have normalized states $\set{\ket{\varphi_i}}_{i=1}^m \subset\mathcal{H}$ and probabilities $q_i \in (0,1]$ such that $\sum_{j=1}^m q_i = 1$. Then,
+
+$$
+  \hat{\rho} = \sum_{j=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
+$$
+
+if and only if $m \geq n$ and there is a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that
+
+$$
+  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}, \; i \in\set{1,\dots,m}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):**
+
+Since $\set{\ket{\psi_j}}_{j=1}^n$ is an orthonormal eigenbasis, the range of $\hat{\rho}$ has dimension
+
+$$
+  \dim[\operatorname{ran}(\hat{\rho})] = \dim\left(\operatorname{span}\set{ket{\psi_j}}_{j=1}^n \right) = n
+$$
+
+On the other hand, $\hat{\rho}[\mathcal{H}] \subseteq \operatorname{span}\set{\ket{\psi_i}}_{i=1}^m$ such that
+
+$$
+  \dim[\operatorname{ran}(\hat{\rho})] \leq \dim\left(\operatorname{span}\set{ket{\varphi_i}}_{i=1}^n \right) \leq m
+$$
+
+and it follows that $n \leq m$. By assumption, the eigenvectors of $\hat{\rho}$ for the eigenvalue $0$ are given by $\ket{\psi_k}$, where $k \in \set{n+1,\dots,\dim(\mathcal{H})}$. They satisfy
+
+$$
+  0 = \braket{\psi_k | \psi_k} = \sum_{i=1}^m q_i |\braket{\psi_k|\varphi_i}|^2
+$$
+
+which implies $\braket{\psi_k|\varphi_i} = 0$ for all $k\in\set{n+1,\dots,\dim(\mathcal{H})}$ and $i\in\set{1,\dots,m}$. We can thus expand $\ket{\varphi_i}$ as
+
+$$
+  \ket{\varphi_i} = \sum_{k=1}^{\dim(\mathcal{H})} \braket{\psi_k|\varphi_i} \ket{\psi_k} = \sum_{k=1}^n \braket{\psi_k | \varphi_i} \ket{\psi_k}
+$$
+
+Since $\hat{\rho}$ is unchanged under either decomposition, we must have
+
+$$
+  \sum_{j=1}^n p_j \ket{\varphi_j} \bra{\varphi_j} = \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
+$$
+
+Next, we define the $m\times n$ matrix $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbf{C})$ by
+
+$$
+  \mathbf{V}_{ij} = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}
+$$
+
+for $i\in\set{1,\dots,m}$ and $j\in\set{1,\dots,n}$ such that
+
+$$
+  \sum_{j=1}^n \mathbf{V}_{ij} \sqrt{p_j} \ket{\psi_j} = \sum_{j=1}^n \sqrt{q_i} \braket{\psi_j|\varphi_i} \ket{\psi_j} = \sqrt{q_i} \ket{\varphi_i}
+$$
+
+We proceed to show that we can extend $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbb{C})$ to a unitary $m\times m$ matrix $\mathbf{U}$. For this, we first note that
+
+$$
+  \mathbf{V}_{ji}^\dagger = \mathbf{V}_{ij}^* = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}^* = \sqrt{\frac{q_i}{p_j}} \braket{\varphi_i|\psi_j}
+$$
+
+and thus for $i,j\in\set{1,\dots,n}$
+
+$$
+\begin{align*}
+  \sum_{i=1}^m \mathbf{V}_{ji}^\dagger \mathbf{V}_{ik} =& \frac{1}{\sqrt{p_j p_k}} \sum_{i=1}^m q_i \braket{\psi_j|\varphi_i} \braket{\varphi_i|\psi_k} \\
+  =& \frac{1}{\sqrt{p_j p_k}} \braket{\psi_j |\hat{\rho}|\psi_k} \\
+  =& \frac{1}{\sqrt{p_j p_k}} \bra{\psi_j} \sum_{l=1}^n p_l \ket{\psi_l} \braket{\psi_l|\psi_k} \\
+  =& \sum_{l=1}^n \frac{p_l \delta_{jl} \delta_{lk}}{\sqrt{p_j p_k}} = \delta_{jk}
+\end{align*}
+$$
+
+We have specified $\mathbf{V} \in\mathcal{M}_{m,n} (\mathbb{C})$, where $n\leq m$, such that $\mathbf{V}^\dagger \mathbf{V} = \mathbf{I}_n$. This means that the $n$ column vectors of $\mathbf{V}$ viewed as vectors in $\mathbb{C}^m$ are mutually orthogonal and normalized to $1$. Applying the Gram-Schmidt orthogonalization procedure, we can add $m - n$ orthonormal columns vectors such that all $m$ column vectors of the resulting $m\times m$ matrix $\mathbf{U}$ form a basis in $\mathbb{C}^m$. By this procedure, we extend $\mathbf{V}$ to form a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that $\mathbf{U}_{ij} = \mathbf{V}_{ij}$ for $j\in\set{1,\dots,n}$.
+
+**($\impliedby$):**
+
+Let $m \geq n$ and $\mathbf{U} \in\mathrm{U}(m)$ be a unitary matrix such that for $j\in\set{1,\dots,m}$
+
+$$
+  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}
+$$
+
+This implies
+
+$$
+\begin{align*}
+  \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i} =& \sum_{j=1}^m q_i \left(\frac{1}{\sqrt{q_i}} \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j} \right) \left(\frac{1}{\sqrt{q_i}} \sum_{k=1}^n \mathbf{U}_{ik}^* \sqrt{p_k} \ket{\psi_k} \right) \\
+  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \left(\sum_{i=1}^m \mathbf{U}_{ki}^\dagger \mathbf{U}_{ij} \right) \ket{\psi_j} \bra{\psi_k} \\
+  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \underbrace{(\mathbf{U}^\dagger \mathbf{U})_{ij}}_{=\delta_{ij}} \ket{\psi_j} \bra{\psi_k} \\
+  =& \sum_{j=1}^n p_j \ket{\psi_j} \bra{\psi_j} = \hat{\rho}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Qubit' boxType='example'>
+A two-state quantum system is known as a qubit. It is represented by a two-dimensional Hilbert space. An arbitrary mixed state for a qubit can be written as a linear combination
+
+$$
+  \rho = \frac{1}{2} \begin{bmatrix} 
+    1 + r_z & r_x - i r_y \\
+    r_x + i r_y & 1 - r_z 
+  \end{bmatrix} = \frac{1}{2} (1 + \mathbf{r}\cdot\boldsymbol{\sigma})
+$$
+
+where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$ are the Pauli matrices. The density matrix $\rho$ represents a pure state if and only if $\rVert\mathbf{r}\rVert = 1$. For a mixed state we have $\norm{\mathbf{r}} < 1$.
+
+<details>
+<summary>Proof</summary>
+
+Since $\rho\in\mathcal{M}_2 (\mathbb{C})$ is a complex $2\times 2$ matrix, it can be written as a linear combination
+
+$$
+\begin{align*}
+  \rho =& c_0 I_2 + c_x \sigma_x + c_y \sigma_y + c_z \sigma_z = c_0 I_2 + \mathbf{c}\cdot\boldsymbol{\sigma} \\
+  =& \begin{bmatrix}
+    c_0 + c_z & c_x - i c_y \\
+    c_x + i c_y & c_0 - c_z
+  \end{bmatrix}
+\end{align*}
+$$
+
+By Hermiticity, the diagonal elements of $\rho$ are real, while the off-diagonal elements are complex conjugates. Since $\operatorname{tr}(\rho) = 1$, it follows that
+
+$$
+  1 = (c_0 + c_z) + (c_0 + c_z) = 2c_0 \iff c_0 = \frac{1}{2}
+$$
+
+Since $\rho$ is semi-definite, its determinant is positive 
+
+$$
+  \det(\rho) = c_0^2 - c_z^2 - |c_x + ic_y|^2 = c_0^2 - c_x^2 - c_y^2 - c_z^2 \geq 0
+$$
+
+This implies that
+
+$$
+  \norm{ \mathbf{c} } \leq |c_0| = \frac{1}{2}
+$$
+
+Writing $\mathbf{r} = \frac{1}{2}\mathbf{c}$, we get that
+
+$$
+  \rho = \frac{1}{2} (I_2 + \mathbf{r}\cdot\boldsymbol{\sigma})
+$$
+
+with $\norm{ \mathbf{r} } \leq 1$.
+
+If $\rho$ describes a pure state, then $\rho^2 = \rho$. Calculating $\rho^2$ yields
+
+$$
+\begin{align*}
+  \rho^2 =& \frac{1}{4}[I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + (\mathbf{r}\cdot\boldsymbol{\sigma})^2] \\
+  =& \frac{1}{4}(I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + \mathbf{r}^2 I_2) \\
+  =& \frac{1}{4}[(1 + \mathbf{r}^2) I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma}] \\
+\end{align*}
+$$
+
+where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilon_{ijk} \sigma_k$. We see that $\rho^2 = \rho$ if and only if $\mathbf{r}^2 = \norm{\mathbf{r}}^2 = 1$.
+</details>
+</MathBox>
 
 ### Density operator for pure states
 
@@ -3543,179 +3744,6 @@ $$
 which is equivalent to $\hat{\rho}^2 = \hat{\rho}$.
 </details>
 
-<MathBox title='' boxType='proposition'>
-Let $\mathcal{H}$ be a finite-dimensional Hilbert space and $\hat{\rho}\in\mathcal{D}(\mathcal{H})$ be a density operator with diagonal form
-
-$$
-  \hat{\rho} = \sum_{i=1}^n p_j \ket{\psi_j} \bra{\psi_j}
-$$
-
-where $p_j \in (0,1]$ for $j\in\set{1,\dots,n}$ with $n \leq \dim(\mathcal{H})$ are the nonzero eigenvalues of $\hat{\rho}$ and $\set{\ket{\psi_j}}_{j=1}^{\dim(\mathcal{H})}$ is an orthonormal eigenbasis. For $m\leq\dim(\mathcal{H})$, suppose we have normalized states $\set{\ket{\varphi_i}}_{i=1}^m \subset\mathcal{H}$ and probabilities $q_i \in (0,1]$ such that $\sum_{j=1}^m q_i = 1$. Then,
-
-$$
-  \hat{\rho} = \sum_{j=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
-$$
-
-if and only if $m \geq n$ and there is a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that
-
-$$
-  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}, \; i \in\set{1,\dots,m}
-$$
-
-<details>
-<summary>Proof</summary>
-
-**($\implies$):**
-
-Since $\set{\ket{\psi_j}}_{j=1}^n$ is an orthonormal eigenbasis, the range of $\hat{\rho}$ has dimension
-
-$$
-  \dim[\operatorname{ran}(\hat{\rho})] = \dim\left(\operatorname{span}\set{ket{\psi_j}}_{j=1}^n \right) = n
-$$
-
-On the other hand, $\hat{\rho}[\mathcal{H}] \subseteq \operatorname{span}\set{\ket{\psi_i}}_{i=1}^m$ such that
-
-$$
-  \dim[\operatorname{ran}(\hat{\rho})] \leq \dim\left(\operatorname{span}\set{ket{\varphi_i}}_{i=1}^n \right) \leq m
-$$
-
-and it follows that $n \leq m$. By assumption, the eigenvectors of $\hat{\rho}$ for the eigenvalue $0$ are given by $\ket{\psi_k}$, where $k \in \set{n+1,\dots,\dim(\mathcal{H})}$. They satisfy
-
-$$
-  0 = \braket{\psi_k | \psi_k} = \sum_{i=1}^m q_i |\braket{\psi_k|\varphi_i}|^2
-$$
-
-which implies $\braket{\psi_k|\varphi_i} = 0$ for all $k\in\set{n+1,\dots,\dim(\mathcal{H})}$ and $i\in\set{1,\dots,m}$. We can thus expand $\ket{\varphi_i}$ as
-
-$$
-  \ket{\varphi_i} = \sum_{k=1}^{\dim(\mathcal{H})} \braket{\psi_k|\varphi_i} \ket{\psi_k} = \sum_{k=1}^n \braket{\psi_k | \varphi_i} \ket{\psi_k}
-$$
-
-Since $\hat{\rho}$ is unchanged under either decomposition, we must have
-
-$$
-  \sum_{j=1}^n p_j \ket{\varphi_j} \bra{\varphi_j} = \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i}
-$$
-
-Next, we define the $m\times n$ matrix $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbf{C})$ by
-
-$$
-  \mathbf{V}_{ij} = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}
-$$
-
-for $i\in\set{1,\dots,m}$ and $j\in\set{1,\dots,n}$ such that
-
-$$
-  \sum_{j=1}^n \mathbf{V}_{ij} \sqrt{p_j} \ket{\psi_j} = \sum_{j=1}^n \sqrt{q_i} \braket{\psi_j|\varphi_i} \ket{\psi_j} = \sqrt{q_i} \ket{\varphi_i}
-$$
-
-We proceed to show that we can extend $\mathbf{V}\in\mathcal{M}_{m,n} (\mathbb{C})$ to a unitary $m\times m$ matrix $\mathbf{U}$. For this, we first note that
-
-$$
-  \mathbf{V}_{ji}^\dagger = \mathbf{V}_{ij}^* = \sqrt{\frac{q_i}{p_j}} \braket{\psi_j|\varphi_i}^* = \sqrt{\frac{q_i}{p_j}} \braket{\varphi_i|\psi_j}
-$$
-
-and thus for $i,j\in\set{1,\dots,n}$
-
-$$
-\begin{align*}
-  \sum_{i=1}^m \mathbf{V}_{ji}^\dagger \mathbf{V}_{ik} =& \frac{1}{\sqrt{p_j p_k}} \sum_{i=1}^m q_i \braket{\psi_j|\varphi_i} \braket{\varphi_i|\psi_k} \\
-  =& \frac{1}{\sqrt{p_j p_k}} \braket{\psi_j |\hat{\rho}|\psi_k} \\
-  =& \frac{1}{\sqrt{p_j p_k}} \bra{\psi_j} \sum_{l=1}^n p_l \ket{\psi_l} \braket{\psi_l|\psi_k} \\
-  =& \sum_{l=1}^n \frac{p_l \delta_{jl} \delta_{lk}}{\sqrt{p_j p_k}} = \delta_{jk}
-\end{align*}
-$$
-
-We have specified $\mathbf{V} \in\mathcal{M}_{m,n} (\mathbb{C})$, where $n\leq m$, such that $\mathbf{V}^\dagger \mathbf{V} = \mathbf{I}_n$. This means that the $n$ column vectors of $\mathbf{V}$ viewed as vectors in $\mathbb{C}^m$ are mutually orthogonal and normalized to $1$. Applying the Gram-Schmidt orthogonalization procedure, we can add $m - n$ orthonormal columns vectors such that all $m$ column vectors of the resulting $m\times m$ matrix $\mathbf{U}$ form a basis in $\mathbb{C}^m$. By this procedure, we extend $\mathbf{V}$ to form a unitary matrix $\mathbf{U} \in\mathrm{U}(m)$ such that $\mathbf{U}_{ij} = \mathbf{V}_{ij}$ for $j\in\set{1,\dots,n}$.
-
-**($\impliedby$):**
-
-Let $m \geq n$ and $\mathbf{U} \in\mathrm{U}(m)$ be a unitary matrix such that for $j\in\set{1,\dots,m}$
-
-$$
-  \sqrt{q_i} \ket{\varphi_i} = \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j}
-$$
-
-This implies
-
-$$
-\begin{align*}
-  \sum_{i=1}^m q_i \ket{\varphi_i} \bra{\varphi_i} =& \sum_{j=1}^m q_i \left(\frac{1}{\sqrt{q_i}} \sum_{j=1}^n \mathbf{U}_{ij} \sqrt{p_j} \ket{\psi_j} \right) \left(\frac{1}{\sqrt{q_i}} \sum_{k=1}^n \mathbf{U}_{ik}^* \sqrt{p_k} \ket{\psi_k} \right) \\
-  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \left(\sum_{i=1}^m \mathbf{U}_{ki}^\dagger \mathbf{U}_{ij} \right) \ket{\psi_j} \bra{\psi_k} \\
-  =& \sum_{j,k=1}^n \sqrt{p_j p_k} \underbrace{(\mathbf{U}^\dagger \mathbf{U})_{ij}}_{=\delta_{ij}} \ket{\psi_j} \bra{\psi_k} \\
-  =& \sum_{j=1}^n p_j \ket{\psi_j} \bra{\psi_j} = \hat{\rho}
-\end{align*}
-$$
-</details>
-</MathBox>
-
-<MathBox title='Qubit' boxType='example'>
-A two-state quantum system is known as a qubit. It is represented by a two-dimensional Hilbert space. An arbitrary mixed state for a qubit can be written as a linear combination
-
-$$
-  \rho = \frac{1}{2} \begin{bmatrix} 
-    1 + r_z & r_x - i r_y \\
-    r_x + i r_y & 1 - r_z 
-  \end{bmatrix} = \frac{1}{2} (1 + \mathbf{r}\cdot\boldsymbol{\sigma})
-$$
-
-where $\mathbf{r} = (r_x, r_y, r_z)$ is a Bloch vector and $\boldsymbol{\sigma}$ are the Pauli matrices. The density matrix $\rho$ represents a pure state if and only if $\rVert\mathbf{r}\rVert = 1$. For a mixed state we have $\norm{\mathbf{r}} < 1$.
-
-<details>
-<summary>Proof</summary>
-
-Since $\rho\in\mathcal{M}_2 (\mathbb{C})$ is a complex $2\times 2$ matrix, it can be written as a linear combination
-
-$$
-\begin{align*}
-  \rho =& c_0 I_2 + c_x \sigma_x + c_y \sigma_y + c_z \sigma_z = c_0 I_2 + \mathbf{c}\cdot\boldsymbol{\sigma} \\
-  =& \begin{bmatrix}
-    c_0 + c_z & c_x - i c_y \\
-    c_x + i c_y & c_0 - c_z
-  \end{bmatrix}
-\end{align*}
-$$
-
-By Hermiticity, the diagonal elements of $\rho$ are real, while the off-diagonal elements are complex conjugates. Since $\operatorname{tr}(\rho) = 1$, it follows that
-
-$$
-  1 = (c_0 + c_z) + (c_0 + c_z) = 2c_0 \iff c_0 = \frac{1}{2}
-$$
-
-Since $\rho$ is semi-definite, its determinant is positive 
-
-$$
-  \det(\rho) = c_0^2 - c_z^2 - |c_x + ic_y|^2 = c_0^2 - c_x^2 - c_y^2 - c_z^2 \geq 0
-$$
-
-This implies that
-
-$$
-  \norm{ \mathbf{c} } \leq |c_0| = \frac{1}{2}
-$$
-
-Writing $\mathbf{r} = \frac{1}{2}\mathbf{c}$, we get that
-
-$$
-  \rho = \frac{1}{2} (I_2 + \mathbf{r}\cdot\boldsymbol{\sigma})
-$$
-
-with $\norm{ \mathbf{r} } \leq 1$.
-
-If $\rho$ describes a pure state, then $\rho^2 = \rho$. Calculating $\rho^2$ yields
-
-$$
-\begin{align*}
-  \rho^2 =& \frac{1}{4}[I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + (\mathbf{r}\cdot\boldsymbol{\sigma})^2] \\
-  =& \frac{1}{4}(I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma} + \mathbf{r}^2 I_2) \\
-  =& \frac{1}{4}[(1 + \mathbf{r}^2) I_2 + 2\mathbf{r}\cdot\boldsymbol{\sigma}] \\
-\end{align*}
-$$
-
-where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilon_{ijk} \sigma_k$. We see that $\rho^2 = \rho$ if and only if $\mathbf{r}^2 = \norm{\mathbf{r}}^2 = 1$.
-</details>
-</MathBox>
-
 ### Measurement
 
 <MathBox title="Gleason's theorem" boxType='theorem'>
@@ -3753,7 +3781,7 @@ $$
 \end{align*}
 $$
 
-If $\hat{\rho} = \ket{\psi}\bra{\psi}$ is a pure state, the probability of measuring the eigenvalue $\lambda_j$ of $Q$ is
+If the system is in a pure state, $\hat{\rho} = \ket{\psi}\bra{\psi}$, the probability of measuring the eigenvalue $\lambda_j$ of $Q$ is
 
 $$
 \begin{align*}
@@ -3773,62 +3801,49 @@ $$
 \end{align*}
 $$
 
-
 For a pure state $\ket{\psi}$, the expectation value can be written
 
 $$
   \braket{\hat{Q}}_\psi = \sum_j \braket{q_j | \hat{\rho} \hat{Q} | q_j} = \sum_j \braket{q_j | \psi} \braket{\psi|\hat{Q}|q_j}
 $$
 
-However, this form becomes problematic when the system is in a mixed state. If the density operator is given by
+Let $\set{\ket{\psi_j}}_{j\in I\subset\N}$ be an orthonormal basis of a Hilbert space $\mathcal{H}$. If the density operator is $\hat{\rho} = \sum_{j\in I} p_j \ket{\psi_j} \bra{\psi_j}$ and the state $\ket{\psi}\in\mathcal{H}$ is given by 
 
 $$
-  \hat{\tilde{\rho}} = \sum_j w_j \ket{\psi_j} \bra{\psi_j}
+  \ket{\psi} = \sum_{j\in I} \sqrt{p_j} \ket{\psi_j}
 $$
 
-where $\set{\tilde{\psi}_j}$ is an orthonormal basis on the Hilbert space, then $\eqref{equation-96}$ becomes
+then for any observable $Q$, the expectation value is
 
 $$
-  \braket{\hat{Q}}_{\hat{\tilde{\rho}}} = \operatorname{tr}(\hat{\tilde{\rho}} \hat{Q}) = \sum_j w_j \braket{\psi_j | \hat{Q} | \psi_j}
+  \braket{Q}_\psi = \braket{Q}_\rho 0 \sum_{j,k\in I:j\neq k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k}
 $$
 
-If $\ket{\varphi}$ is an eigenstate of an observable $\hat{Q}$ such that
+<details>
+<summary>Proof</summary>
+
+The expectation value of $Q$ in terms of $\hat{rho}$ is
 
 $$
-  \hat{Q}\ket{\varphi} = q \ket{\varphi}
+\begin{align*}
+  \braket{Q}_\rho =& \operatorname{tr}(\hat{\rho}\hat{Q}) = \operatorname{tr}\left(\sum_j p_j \ket{\psi_j} \bra{\psi_j} \right) \\
+  =& \sum_j p_j \operatorname{tr}(\ket{\psi_j} \bra{\psi_j}\hat{Q}) \\
+  =& \sum_j p_j \sum_k \underbrace{\braket{\psi_k|\psi_j}}_{=\delta_{jk}} \braket{\psi_j|\hat{Q}|\psi_k} \\
+  =& \sum_j p_j \braket{\psi_j|\hat{Q}|\psi_j}
+\end{align*}
 $$
 
-then the probability of obtaining the outcome $q$ when measuring $\hat{Q}$ in the state $\ket{\psi}$ is given by
+and thus
 
 $$
-\begin{equation}
-  |\braket{\varphi|\psi}|^2 = \braket{\varphi|\psi} \braket{\psi|\varphi} = \braket{\varphi|\hat{\rho}|\varphi} \tag{\label{equation-97}}
-\end{equation}
+\begin{align*}
+  \braket{Q}_\psi =& \braket{\psi|\hat{Q}|\psi} = \Braket{\sum_j \sqrt{p_j}\psi_j|\hat{Q}|\sum_k \sqrt{p_k} \psi_k} \\
+  =& \sum_{j,k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k} \\
+  =& \sum_j p_j \braket{\psi_j|\hat{Q}|\psi_j} + \sum_{j\neq k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k} \\
+  =& \braket{Q}_\rho + \sum_{j\neq k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k}
+\end{align*}
 $$
-
-or
-
-$$
-  |\braket{\varphi|\psi}|^2 = \operatorname{tr}(\hat{\rho} \hat{P}_\varphi)
-$$
-
-where $\hat{P}_\varphi = \ket{\varphi}\bra{\varphi}$ is the projector onto $\ket{\psi}$. Since any density matrix can be written as
-
-$$
-  \hat{\rho} = \sum_j w_j \hat{P}_j
-$$
-
-where $\hat{P}_j$ are projectors, it is always possible to find an eigenbasis of $\hat{\rho}$. From $\eqref{equation-97}$ it is clear that $\braket{\varphi|\hat{\rho}|\varphi}$ represents the probability of the system being in the state $\ket{\varphi}$. As such, the weights $w_j$ are non-negative and satisfy the normalization condition $\sum_j w_j = 1$. Consequently, the density operator must be Hermitian and positive semi-definite.
-
-If $\set{\ket{b_k}}$ is an orthonormal eigenbasis of $\hat{\rho}$, we can write
-
-$$
-  \hat{\rho} \ket{b_k} = r_k \ket{b_k}
-$$
-
-This shows that the state of a quantum system cannot be determined from a single measurement, which only yields one of its eigenvalues and not the full probability distribution associate with the state.
-
-If $\hat{\rho}$ is a pure state, then $r_k = 1$ for a single value $k = j$ when $\ket{b_j}$ is the state vector such that $\hat{\rho} = \ket{b_j} \bra{b_j}$, and $0$ in all other cases. However, measuring the projector $\hat{P}_j = \ket{b_j} \bra{b_j}$ does not determine the state of the system. Rather, it tests whether the system is in the state $\ket{b_j}$. In the case of a mixed state, measuring a projector provides only partial information about the system's state.
+</details>
 
 ### Time-evolution
 
