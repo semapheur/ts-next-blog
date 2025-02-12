@@ -5,7 +5,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { GUI } from "dat.gui"
 import useIsMounted from "lib/hooks/useIsMounted"
-import { createSmoothWireframeSphere, wireframeSphere } from "lib/utils/3d"
+import { gridSphere } from "lib/utils/3d"
 
 type vec3 = [number, number, number]
 
@@ -57,7 +57,7 @@ export default function BlochSphere() {
       opacity: 0.6,
     })
 
-    const sphere = wireframeSphere(1, 12, 12, sphereMaterial, lineMaterial)
+    const sphere = gridSphere(1, 12, 12, sphereMaterial, lineMaterial)
     scene.add(sphere)
 
     // Coordinate axes

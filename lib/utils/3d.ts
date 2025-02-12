@@ -55,7 +55,7 @@ function createLongitudeLines(
 }
 
 // Create the smooth wireframe sphere
-export function wireframeSphere(
+export function gridSphere(
   radius: number,
   latSegments: number,
   lonSegments: number,
