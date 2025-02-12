@@ -66,7 +66,7 @@ The physical realization of a two-dimensional quantum state space is accomplishe
 
 <TableFigure caption="Representation of classical bits by qubits">
 | Observed value of $\boldsymbol{\sigma}_z$ | Qubit state | Classical bit value |
-| ::: | ::: | ::: |
+| --- | --- | --- |
 | $1$ | $\ket{0} = \ket{\uparrow_{\hat{\mathbf{z}}}}$ | $0$ |
 | $-1$ | $\ket{1} = \ket{\downarrow_{\hat{\mathbf{z}}}}$ | $1$ |
 </TableFigure>
@@ -80,7 +80,7 @@ $$
 Since global phase factors do not affect quantum states, the physically equivalent representative in the same ray $[\psi]_\sim \in \mathcal{H}\mathrm{P}$ is obtained by factoring out $e^{-(\alpha + beta)/2}$. Defining $\phi = \beta - \alpha$ yields the parametrization
 
 $$
-  \ket{\psi(\theta,\phi)} := e^{-i\frac{\phi}{2}} \cos\left(\frac{\theta}{2}\right) \ket{0} + e^{i\frac{\phi}{2}} \sin\left(\frac{\theta}{2}\right)
+  \ket{\psi(\theta,\phi)} := e^{-i\phi/2} \cos\left(\frac{\theta}{2}\right) \ket{0} + e^{i\phi/2} \sin\left(\frac{\theta}{2}\right)
 $$
 
 which is called the the Bloch sphere representation of a qubit state.
@@ -179,8 +179,8 @@ The state $\ket{\psi(\theta,\phi)} = \ket{\uparrow_{\hat{\mathbf{n}}}}$ parametr
   \draw[canvas is zx plane at y=0, green, dashed] (0,0) circle (\rvec);
 
   % Eigenstates
-  \draw plot [mark=*, mark size=1] (0, 0, \rvec) node[anchor=south, shift=({-0.3,0})] {\scriptsize $\ket{1} = \ket{\uparrow_{\hat{\mathbf{z}}}}$};
-  \draw plot [mark=*, mark size=1] (0, 0, -\rvec) node[anchor=north, shift=({0.3,0})] {\scriptsize $\ket{0} = \ket{\downarrow_{\hat{\mathbf{z}}}}$};
+  \draw plot [mark=*, mark size=1] (0, 0, \rvec) node[anchor=south, shift=({-0.3,0})] {\scriptsize $\ket{0} = \ket{\uparrow_{\hat{\mathbf{z}}}}$};
+  \draw plot [mark=*, mark size=1] (0, 0, -\rvec) node[anchor=north, shift=({0.3,0})] {\scriptsize $\ket{1} = \ket{\downarrow_{\hat{\mathbf{z}}}}$};
 
   \draw plot [mark=*, mark size=1] (0, \rvec, 0) node[anchor=west, shift=({0,0.2})] {\scriptsize $\ket{i} = \ket{\uparrow_{\hat{\mathbf{y}}}}$};
   \draw plot [mark=*, mark size=1] (0, -\rvec, 0) node[anchor=east, shift=({0,-0.2})] {\scriptsize $\ket{-i} = \ket{\downarrow_{\hat{\mathbf{y}}}}$};
@@ -751,7 +751,6 @@ $$
 </details>
 </MathBox>
 
-
 <MathBox title='' boxType='corollary'>
 Every unitary operator $\hat{U}\in\mathcal{U}({}^\P \mathcal{H})$ has a root, that is, there exists an operator $\sqrt{\hat{U}} \in\mathcal{U}({}^\P \mathcal{U})$ such that
 
@@ -786,10 +785,87 @@ $$
 </MathBox>
 
 <MathBox title='Hadamard transformation' boxType='definition'>
-The Hadamad transfomation $\hat{H}: {}^\P \mathcal{H} \to {}^\P \mathcal{H}$ is defined as
+The Hadamard transfomation $\hat{H}: {}^\P \mathcal{H} \to {}^\P \mathcal{H}$ is defined as
 
 $$
   \mathbf{H} := \frac{1}{\sqrt{2}}(\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z)
 $$
 </MathBox>
+
+<MathBox title='Properties of Hadamard transformations' boxType='proposition'>
+In the basis $\set{\ket{0},\ket{1}}$, the matrix representation of the Hadamard transformation $\mathbf{H}$ is
+
+$$
+  \mathbf{H} = \frac{1}{\sqrt} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}
+$$
+
+It satisfies the following properties:
+1. $\mathbf{H}\ket{0} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$
+2. $\mathbf{H}\ket{1} = \frac{1}{\sqrt{2}} (\ket{0} - \ket{1})$
+3. $\mathbf{H}\ket{x_j} = \frac{1}{\sqrt{2}}(\ket{0} + e^{\pi ix_j} \ket{1})$
+4. $\mathbf{H}^2 = \mathbf{I}_2$
+5. $\mathbf{H} = e^{i \frac{3\pi}{2}} \mathbf{D}_{\hat{\mathbf{z}}} (0) \mathbf{D}_{\hat{\mathbf{y}}} \left(\frac{\pi}{2}\right) \mathbf{D}_{\mathbf{z}} (-\pi)$
+</MathBox>
+
+## Computational basis
+
+The $n$-fold tensor product of qubit spaces is defined as
+
+$$
+  {}^\P \mathcal{H}^{\otimes n} := \bigotimes_{j=n-1}^{0} {}^\P \mathcal{H}_j
+$$
+
+We denote the $(j+1)$th factor space counting from the right in ${}^\P \mathcal{H}^{\otimes n}$ by ${}^\P \mathcal{H}_j$. In other words, we can write
+
+$$
+  {}^\P \mathcal{H}^{\otimes n} = {}^\P \mathcal{H}_{n-1} \otimes\cdots\otimes \overbrace{{}^\P \mathcal{H}_j}^{\text{$(j+1)$th factor}} \otimes\cdots\otimes {}^\P \mathcal{H}_0
+$$
+
+The Hilbert tensor product space ${}^\P \mathcal{H}^{\otimes n}$ has dimension $2^n$. Every natural number $x\in\N_0$ with $x < 2^n$ can be expressed in binary form as
+
+$$
+  x = \sum_{j=0}^{n-1} x_j 2^j, \; x_j \in\set{0,1}
+$$
+
+which results in the usual binary representation
+
+$$
+  (x)_2 = x_{n-1} \dots x_0, \; x_j \in\set{0,1}
+$$
+
+For each $x$ we define a vector $\ket{x}\in {}^\P \mathcal{H}^{\otimes n}$ as
+
+$$
+\begin{align*}
+  \ket{x}^n :=& \ket{x_{n-1} \dots x_0} \\
+  =& \bigotimes_{j=n-1}^0 \ket{j} 
+\end{align*}
+$$
+
+If the context of the product space ${}^\P \mathcal{H}^{\otimes}$ is clear, we will also simply write $\ket{x} := \ket{x}^n$.
+
+For the smallest and largest representable numbers, $0$ and $2^n - 1$ in ${}^\P \mathcal{H}^{\otimes n}$, we have
+
+$$
+\begin{align*}
+  \ket{2^n - 1}^n =& \bigotimes_{j=0}^{n-1} \ket{1} \in {}^\P \mathcal{H}^{\otimes n} \\
+  \ket{0}^n =& \bigotimes_{j=0}^{n-1} \ket{0} \in {}^\P \mathcal{H}^{\otimes n}
+\end{align*}
+$$
+
+The set of vectors $\set{\ket{x}\in {}^\P \mathcal{H}^{\otimes n} | x\in\N_0, x < 2^n}$ forms an orthonormal basis in ${}^\P \mathcal{H}^{\otimes n}$, called the computational basis.
+
+<details>
+<summary>Proof</summary>
+
+The inner product of $\ket{x},\ket{y} \in {}^\P \mathcal{H}^{\otimes n}$ is
+
+$$
+  \braket{x|y} =& \braket{x_{n-1} \dots x_0 | y_{n-1} \dots y_0} \\
+  =& \sum_{j=0}^{n-1} \braket{x_j | y_j} = \begin{cases} 1, \quad& x_j = y_j \; \forall j \\ 0, \quad& \text{else} \\
+  =& \delta_{xy}
+$$
+
+Hence, $\set{\ket{x} | x\in\N_0, x < 2^n}$ forms a set of $2^n = \dim({}^\P \mathcal{H}^{\otimes n})$ orthonormal vectors in ${}^\P \mathcal{H}^{\otimes n}$. Since the numbe of orthonormal vectors in this set is equal to the dimension of ${}^\P \mathcal{H}^{\otimes n}$, this set constitutes is an orthonormal basis of this Hilbert space.
+</details>
 

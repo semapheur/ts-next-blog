@@ -33,12 +33,12 @@ function OpinionPlot() {
   })
 
   return (
-    <div className="h-full grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2">
+    <div className="grid h-full grid-rows-2 lg:grid-cols-2 lg:grid-rows-none">
       <div
         ref={wrapRef}
         className="relative h-full w-full bg-primary shadow-inner-l dark:shadow-black/50"
       >
-        <ul className="absolute right-2 top-2 p-2 rounded-md shadow-sm text-text">
+        <ul className="absolute top-2 right-2 rounded-md p-2 text-text shadow-sm">
           <b>Opinion</b>
           <li>
             <b>Belief: </b>

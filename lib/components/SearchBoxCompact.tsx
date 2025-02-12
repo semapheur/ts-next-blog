@@ -8,15 +8,10 @@ type Props = {
 
 export default function SearchBoxCompact({ query, onChange }: Props) {
   return (
-    <form
-      className="peer relative flex items-center h-8 w-8 p-1 max-w-xs 
-      bg-text rounded-full focus-within:w-full overflow-hidden"
-    >
+    <form className="peer relative flex h-8 w-8 max-w-xs items-center overflow-hidden rounded-full bg-text p-1 focus-within:w-full">
       <SearchIcon className="h-6 w-6 stroke-primary" />
       <input
-        className="absolute left-0 w-full px-1 bg-transparent opacity-0
-        text-primary cursor-pointer focus:outline-hidden focus:opacity-100
-        focus:cursor-text focus:static transition-opacity"
+        className="absolute left-0 w-full cursor-pointer bg-transparent px-1 text-primary opacity-0 transition-opacity focus:static focus:cursor-text focus:opacity-100 focus:outline-hidden"
         type="text"
         placeholder="Search..."
         value={query}

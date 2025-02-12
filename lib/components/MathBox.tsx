@@ -45,8 +45,8 @@ before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
 
 export default function MathBox({ title, boxType, children, tag }: Props) {
   return (
-    <aside className="my-5 bg-primary rounded-sm shadow-md dark:shadow-black/50">
-      <div className={`px-2 py-1 bg-${boxType} rounded-t break-words`}>
+    <aside className="my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
+      <div className={`px-2 py-1 bg-${boxType} break-words rounded-t`}>
         <span
           id={tag}
           className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
@@ -62,11 +62,11 @@ export default function MathBox({ title, boxType, children, tag }: Props) {
 function MathBoxOld({ title, boxType, children, tag }: Props) {
   return (
     <div
-      className={`relative px-3 pt-2 my-8 md:my-8 bg-main border-2 border-${boxType} rounded-lg shadow-md`}
+      className={`relative my-8 border-2 bg-main px-3 pt-2 md:my-8 border-${boxType} rounded-lg shadow-md`}
     >
       <span
         id={tag}
-        className={`inline-block absolute top-0 translate-y-[-50%] px-2 max-w-[calc(100%-1.5rem)] overflow-x-scroll whitespace-nowrap bg-${boxType} rounded-md font-bold shadow-xs before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
+        className={`absolute top-0 inline-block max-w-[calc(100%-1.5rem)] translate-y-[-50%] overflow-x-scroll whitespace-nowrap px-2 bg-${boxType} rounded-md font-bold shadow-xs before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
       >
         {title}
       </span>

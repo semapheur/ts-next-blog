@@ -5,11 +5,8 @@ type Props = {
 
 export default function TableFigure({ caption, children }: Props) {
   return (
-    <figure className="flex flex-col relative">
-      <figcaption
-        className="text-center before:font-bold before:[counter-increment:tbl] 
-        before:content-['Table_'_counter(tbl)_':_']"
-      >
+    <figure className="relative flex flex-col">
+      <figcaption className="text-center before:font-bold before:content-['Table_'_counter(tbl)_':_'] before:[counter-increment:tbl]">
         {caption}
       </figcaption>
       {children}

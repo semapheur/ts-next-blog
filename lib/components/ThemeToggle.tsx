@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useDarkMode } from "lib/hooks/useDarkMode"
-import useHasMounted from "lib/hooks/useHasMounted"
+import useIsMounted from "lib/hooks/useIsMounted"
 
 const UNIT = 100
 const root = Math.sqrt(2)
@@ -43,8 +43,8 @@ export default function ThemeToggle() {
     }
   }, [activeTheme])
 
-  const hasMounted = useHasMounted()
-  if (!hasMounted) return null
+  const isMounted = useIsMounted()
+  if (!isMounted) return null
 
   return (
     <button

@@ -52,7 +52,7 @@ export default function MathParser({ text }: Props) {
               key={`${part.content}.${index}`}
               mathString={part.content}
             />
-          ) // Render LaTeX
+          )
         }
         return null
       })}

@@ -49,7 +49,7 @@ const Divider = forwardRef<HTMLDivElement, DividerProps>(function Divider(
     <div
       ref={ref}
       style={style}
-      className="opacity-0 hover:opacity-100 transition-opacity delay-300"
+      className="opacity-0 transition-opacity delay-300 hover:opacity-100"
       onMouseDown={(e: React.MouseEvent) => {
         e.preventDefault
         onDragStart(index, e)

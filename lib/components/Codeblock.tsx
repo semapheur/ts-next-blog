@@ -25,26 +25,18 @@ export default function Codeblock({ children, ...props }: Props) {
     <pre
       ref={preRef}
       {...props}
-      className={`group relative h-full m-0 overflow ${props.className ?? ""}`}
+      className={`group overflow relative m-0 h-full ${props.className ?? ""}`}
     >
       <button
-        className={`sticky top-6 right-0 float-right hidden group-hover:block
-        p-1 border-2 rounded
-        after:absolute after:text-sm after:px-1
-        after:right-[130%] after:top-[50%] after:translate-y-[-50%]
-        after:min-w-max after:rounded-sm after:content-[attr(aria-label)]  
-        after:bg-header-accent after:text-main after:opacity-0 
-        after:shadow-md after:transition-opacity 
-        hover:after:opacity-100 hover:after:scale-100
-        ${copied ? "border-green-400" : "border-gray-300"}`}
+        className={`sticky top-6 right-0 float-right hidden rounded border-2 p-1 after:absolute after:top-[50%] after:right-[130%] after:min-w-max after:translate-y-[-50%] after:rounded-sm after:bg-header-accent after:px-1 after:text-main after:text-sm after:opacity-0 after:shadow-md after:transition-opacity after:content-[attr(aria-label)] hover:after:scale-100 hover:after:opacity-100 group-hover:block ${copied ? "border-green-400" : "border-gray-300"}`}
         aria-label={`${copied ? "Copied" : "Copy"} to clipboard`}
         type="button"
         onClick={handleCopy}
       >
         {copied ? (
-          <ClipboardCheckIcon className="w-6 h-6 stroke-green-400" />
+          <ClipboardCheckIcon className="h-6 w-6 stroke-green-400" />
         ) : (
-          <ClipboardIcon className="w-6 h-6 stroke-gray-300" />
+          <ClipboardIcon className="h-6 w-6 stroke-gray-300" />
         )}
       </button>
       {children}

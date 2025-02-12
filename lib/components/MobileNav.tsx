@@ -26,7 +26,7 @@ export default function MobileNav({
   } as CSSProperties
 
   return (
-    <div className="h-full grid grid-rows-[1fr_auto] place-items-center">
+    <div className="grid h-full grid-rows-[1fr_auto] place-items-center">
       <input
         key="input.hamburger"
         type="checkbox"
@@ -37,25 +37,11 @@ export default function MobileNav({
         key="label.hamburger"
         style={style}
         htmlFor="hamburger"
-        className='peer w-[var(--width)] h-[var(--height)]
-          flex md:hidden flex-col justify-center gap-[var(--gap)]
-          bg-transparent cursor-pointer
-          before:w-full before:h-[var(--bar)] before:content-[""] 
-          before:bg-text hover:before:bg-secondary before:rounded-full
-          before:transition-transform
-          peer-checked:before:translate-y-[var(--shift)]
-          peer-checked:before:rotate-45
-          after:w-full after:h-[var(--bar)] after:content-[""] 
-          after:bg-text hover:after:bg-secondary after:rounded-full
-          after:transition-transform
-          peer-checked:after:-translate-y-[var(--shift)]
-          peer-checked:after:-rotate-45'
+        className="peer peer-checked:after:-translate-y-[var(--shift)] peer-checked:after:-rotate-45 flex h-[var(--height)] w-[var(--width)] cursor-pointer flex-col justify-center gap-[var(--gap)] bg-transparent before:h-[var(--bar)] before:w-full before:rounded-full before:bg-text before:transition-transform before:content-[''] after:h-[var(--bar)] after:w-full after:rounded-full after:bg-text after:transition-transform after:content-[''] hover:after:bg-secondary hover:before:bg-secondary peer-checked:before:translate-y-[var(--shift)] peer-checked:before:rotate-45 md:hidden"
       />
       <nav
         key="nav.header"
-        className="h-0 flex flex-col gap-2 overflow-hidden
-        md:h-full md:flex md:flex-row md:gap-8
-        peer-checked:h-min"
+        className="flex h-0 flex-col gap-2 overflow-hidden peer-checked:h-min md:flex md:h-full md:flex-row md:gap-8"
       >
         {children}
       </nav>

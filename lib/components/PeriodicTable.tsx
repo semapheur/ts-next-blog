@@ -25,21 +25,21 @@ function ElementInfo({ element }: ElementProps) {
 
   return (
     <>
-      <h1 className="m-auto text-[clamp(1rem,1cqw+1rem,2rem)] text-text leading-none col-span-3">
+      <h1 className="col-span-3 m-auto text-[clamp(1rem,1cqw+1rem,2rem)] text-text leading-none">
         {`${element.number} - ${element.name} `}
         <small>{`(${element.group_block})`}</small>
         <br />
-        <small className="italic text-sm">{description}</small>
+        <small className="text-sm italic">{description}</small>
       </h1>
       {element?.shells && (
         <BohrAtom
           number={element.number as number}
           symbol={element.symbol}
           shells={element.shells}
-          className="h-full row-span-2"
+          className="row-span-2 h-full"
         />
       )}
-      <section className="text-text text-center">
+      <section className="text-center text-text">
         <h2 className="text-[3cqw]">
           Atomic mass <abbr title="Atomic mass unit: 1.66×10−27 kg">(u)</abbr>
         </h2>
@@ -47,13 +47,13 @@ function ElementInfo({ element }: ElementProps) {
           {element.atomic_mass?.toFixed(3)}
         </strong>
       </section>
-      <section className="text-text text-center">
+      <section className="text-center text-text">
         <h2 className="text-[3cqw]">
           Density <abbr>(g/cm³)</abbr>
         </h2>
         <strong className="text-[5cqw]">{element.density?.toFixed(3)}</strong>
       </section>
-      <section className="text-text text-center">
+      <section className="text-center text-text">
         <h2 className="text-[3cqw]">Spectral lines</h2>
         <SpectralLines
           wavelengths={element.emission_wavelengths_nm}
@@ -88,15 +88,15 @@ export default function PeriodicTable() {
   }
 
   return (
-    <div className="h-full min-h-0 min-w-0 grid gap-1 grid-cols-[repeat(18,minmax(0,1fr))] grid-rows-[repeat(10,minmax(0,1fr))]">
-      <div className="h-full @container row-span-3 col-start-3 col-span-10 grid grid-rows-[1fr_2fr] grid-cols-4">
+    <div className="grid h-full min-h-0 min-w-0 grid-cols-[repeat(18,minmax(0,1fr))] grid-rows-[repeat(10,minmax(0,1fr))] gap-1">
+      <div className="@container col-span-10 col-start-3 row-span-3 grid h-full grid-cols-4 grid-rows-[1fr_2fr]">
         <ElementInfo element={selElement} />
       </div>
       {data.map((element) => (
         <div
           key={element.name}
           id={element.number.toString()}
-          className="@container relative grid rounded-xs hover:border border-text"
+          className="@container relative grid rounded-xs border-text hover:border"
           onPointerEnter={handleHover}
           onFocus={() => {}}
           style={{
@@ -105,13 +105,13 @@ export default function PeriodicTable() {
             backgroundColor: `rgb(var(--color-${element.group_block?.replaceAll(" ", "-")}))`,
           }}
         >
-          <span className="invisible @[3rem]:visible absolute top-0 left-1 text-text text-[15cqw] font-bold">
+          <span className="@[3rem]:visible invisible absolute top-0 left-1 font-bold text-[15cqw] text-text">
             {element.number}
           </span>
-          <span className="m-auto text-text text-[clamp(0.25rem,0.5rem+20cqw,1.5rem)]">
+          <span className="m-auto text-[clamp(0.25rem,0.5rem+20cqw,1.5rem)] text-text">
             {element.symbol}
           </span>
-          <span className="invisible @[3rem]:visible absolute bottom-1 left-1/2 -translate-x-1/2 text-text text-[15cqw]">
+          <span className="-translate-x-1/2 @[3rem]:visible invisible absolute bottom-1 left-1/2 text-[15cqw] text-text">
             {element.name}
           </span>
         </div>

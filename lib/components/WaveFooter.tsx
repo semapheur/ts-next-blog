@@ -69,9 +69,9 @@ export default function WaveFooter() {
       </svg>
       <Link
         href="https://github.com/semapheur/ts-next-blog"
-        className="absolute bottom-[10%] left-1/2 -translate-x-1/2"
+        className="-translate-x-1/2 absolute bottom-[10%] left-1/2"
       >
-        <GithubIcon className="w-10 h-10 fill-primary" />
+        <GithubIcon className="h-10 w-10 fill-primary" />
       </Link>
     </footer>
   )

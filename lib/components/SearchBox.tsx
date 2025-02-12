@@ -10,11 +10,7 @@ type Props = {
 
 export default function SearchBox({ query, onChange }: Props) {
   return (
-    <form
-      className="p-2 flex justify-center items-center gap-2 
-      bg-primary border rounded-md focus-within:border-none hover:shadow-sm
-      focus-within:ring-2 focus-within:ring-secondary"
-    >
+    <form className="flex items-center justify-center gap-2 rounded-md border bg-primary p-2 focus-within:border-none focus-within:ring-2 focus-within:ring-secondary hover:shadow-sm">
       <button className="" type="submit">
         <SearchIcon className="h-6 w-6 stroke-secondary" />
       </button>

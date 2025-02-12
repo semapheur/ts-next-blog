@@ -57,11 +57,7 @@ export default function SearchBar() {
     <div className="group relative">
       <SearchBoxCompact query={query} onChange={handleChange} />
       {query && searchResult && (
-        <nav
-          className="hidden peer-focus-within:block hover:block delay-200
-            absolute top-8 left-4 px-2 
-            bg-primary/50 rounded-b backdrop-blur-xs z-1"
-        >
+        <nav className="absolute top-8 left-4 z-1 hidden rounded-b bg-primary/50 px-2 backdrop-blur-xs delay-200 hover:block peer-focus-within:block">
           <h4 className="text-text">{`${searchResult.length} results`}</h4>
           {searchResult.map((note) => (
             <Link
