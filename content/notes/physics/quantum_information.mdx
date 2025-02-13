@@ -884,3 +884,573 @@ $$
 
 of qubits on which the $\hat{A}_{j_{n-1}} \otimes\cdot\otimes\hat{A}_{j_0}$ act non-trivially satisfy $|I_j| \leq k$.
 </MathBox>
+
+## Quantum operations
+
+According to the quantum postulates, a quantum system can change in two fundamental ways:
+1. **Unitary evolution** governed by a Hamiltonian
+2. **State transformation** induced by measurement
+
+However, yet another way to generate a state transformation is to couple our system of interest with another system, forming a composite system. Once combined, we can apply time evolution or measurements to the larger system. Afterward, the added system is discarded, leaving only the transformed state of the original system. This process of extending the system and then discarding part of it occurs in two scenarios:
+- **Deliberate use (on purpose):** This happens when we introduce an auxilliary system as a computational resource, typically using ancillary qubits (ancillas). This includes cases where we intentionally measure these ancillas, influencing the evolution of our principal system.
+- **Unintended interaction (by error):** This happens when our system of interest cannot be perfectly isolated and interacts with its surrounding environment. Such interactions can lead to decoherence, effectively entangling the system with the environment. If the environment is late observed, it can have measurable effects on the principal system.
+
+The process of transforming a quantum state through enlargement to a composite system can be described in the following steps:
+1. **Preparation of the principal system:** We with the principle system $A$ in the initial state
+$$
+  \hat{\rho}_A \in \mathcal{D}(\mathcal{H}_A)
+$$
+2. **Enlargement to a composite system:** We introduce an auxilliary system $B$, initially in state  $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$. Assuming the that system $A$ and $B$ are initially separable, the composite system is described by the tensor product state $\hat{\rho}_A \otimes\hat{\rho}_B$. Mathematically, this is represented by the embedding
+$$
+\begin{align*}
+  \iota_{\hat{\rho}_B} : \mathcal{D}(\mathcal{H}_A) \to& \mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B) \\
+  \hat{\rho}_A \mapsto& \hat{\rho}_A \otimes \hat{\rho}_B
+\end{align*}
+$$
+3. **Time evolution of the composite system:** The combined system undergoes unitary evolution given by $\hat{U}\in\mathcal{U}(\mathcal{H}_A \otimes \mathcal{H}_B)$ transforming the state as
+$$
+\begin{align*}
+  \hat{U} : \mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B) \\
+  \hat{\rho}_A \otimes \hat{\rho}_B \mapsto& \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger
+\end{align*}
+$$
+In general, this operation can generate entanglement between $A$ and $B$.
+
+4. **Measurement on system $B$:** Suppose we measure an observable of system $B$, with a corresponding projector $\hat{P}_B$ onto the eigenspace of the observable. Upon otaining an eigenvalue associated with $\hat{P}_B$, the post-measurement state is transformed as
+$$
+  \hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \to \frac{(\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)}
+$$
+
+If no measurement is performed on $B$, we set $\hat{P}_B = \hat{I}_B$, in which case the state remains $\hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger$. This follows from the fact that
+$$
+\begin{align*}
+  \operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right) =& \operatorname{\tr}\left(\hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \right) \\
+  =& \operatorname{tr}\left((\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \hat{U} \right) \\
+  =& \operatorname{tr}(\hat{\rho}_A \otimes \hat{\rho}_B) = \operatorname{tr}(\hat{\rho}_A) \operatorname{tr}(\hat{\rho}_B) \\
+  =& 1
+\end{align*}
+$$
+
+5. **Tracing out system $B$:** Discarding or ignoring system $B$, the final state of $A$ is obtained by taking the partial trace over $B$:
+$$
+  \frac{(\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)} \to \frac{\operatorname{tr}_B \left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\right)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)}
+$$
+
+Altogether the initial state $\hat{\rho}_A$ of the principal system $A$ of interest is thus transformed as
+
+$$
+  \hat{\rho}_A \mapsto \frac{\operatorname{tr}_B \left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\right)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)} \in\mathcal{D}(\mathcal{H}_A)
+$$
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $\mathcal{H}$ be a Hilbert space and for $l\in\set{1,\dots,m}$ let $\hat{K}_l \in \mathcal{L}(\mathcal{H})$. Then for any density operator $\hat{\rho}\in\mathcal{D}(\mathcal{H})$ the operator
+
+$$
+  \hat{K}(\hat{\rho}) = \sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger
+$$
+
+satifies $\hat{K}^\dagger (\hat{\rho}) = \hat{K}(\hat{\rho})$ and $0 \leq \hat{K}(\hat{\rho})$. Moreover, for any $\kappa\in (0,1]$ we have
+
+$$
+\begin{equation}
+  \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I} \iff \operatorname{tr}(\hat{K}(\hat{\rho})) \leq \kappa, \;\forall \hat{\rho}\in\mathcal{D}(\mathcal{H}) \tag{\label{equation-5}}
+\end{equation}
+$$
+
+and the equality in one side implies equality in the other.
+
+<details>
+<summary>Proof</summary>
+
+By Hermiticity of $\hat{\rho}$ we have
+
+$$
+\begin{align*}
+  \hat{K}^\dagger =& \left(\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger \right)^\dagger = \sum_{l=1}^m (\hat{K}_l \hat{\rho} \hat{K}_l^\dagger)^\dagger \\
+  =& \sum_{l=1}^m (\hat{K}_l^\dagger)^\dagger \hat{\rho}^\dagger \hat{K}_l^\dagger = \sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger \\
+  =& \hat{K}(\rho)
+\end{align*}
+$$
+
+and likewise by Hermiticity of $\hat{K}(\hat{\rho})$
+
+$$
+\begin{align*}
+  \left(\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \right)^\dagger =& \sum_{l=1}^m (\hat{K}_l^\dagger \hat{K}_l)^\dagger = \sum_{l=1}^m \hat{K}_l^\dagger (\hat{K}_l^\dagger)^\dagger \\
+  =& \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l
+\end{align*}
+$$
+
+By positivity of $\hat{\rho}$, we have for any $\ket{\psi}\in\mathcal{H}$
+
+$$
+\begin{align*}
+  \braket{\psi|\hat{K}(\hat{\rho})|\psi} =& \Braket{\psi|\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger|\psi} \\
+  =& \sum_{l=1}^m \braket{\psi|\hat{K}_l \hat{\rho}\hat{K}_l^\dagger|\psi} \\
+  =& \sum_{l=1}^m \braket{\ha{K}_l^\dagger \psi|\hat{\rho}|\hat{K}_l^\dagger \psi} \geq 0
+\end{align*}
+$$
+
+Next, we show $\implies$ in $\eqref{equation-5}$. Since $\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l$ is Hermitian it admits a spectral decomposition
+
+$$
+\begin{equation}
+  \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l = \sum_a \lambda_a \ket{e_a} \bra{e_a} \tag{\label{equation-6}}
+\end{equation}
+$$
+
+where $\set{\ket{e_a}} \subset\mathcal{H}$ is an orthonormal eigenbasis for eigenvectors $\set{\lambda_a}$ eigen. Consequently, we find for every eigenvalue $\lambda_a$ that
+
+$$
+\begin{align*}
+  \lambda_a =& \Braket{e_a|\sum_{a'} \lambda_{a'} \ket{e_{a'}} \bra{e_{a'}}| e_a} = \Braket{e_a|\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l|e_a} \\
+  \leq& \braket{e_a|\kappa e_a} = \kappa
+\end{align*}
+$$
+
+Thus, we obtain for any $\hat{\rho}\in\mathcal{D}(\mathcal{H})$
+
+$$
+\begin{align*}
+  \operatorname{tr}\left(\hat{K}(\hat{\rho})\right) =& \operatorname{tr}\left(\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_ \right) = \sum_{l=1}^m \operatorname{tr}(\hat{K}_l \hat{\rho} \hat{K}_l^\dagger) \\
+  =& \sum_{l=1}^m \operatorname{tr}(\hat{\rho}\hat{K}_l^\dagger \hat{K}_l) = \operatorname{tr}\left(\hat{\rho} \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \right) \\
+  =& \operatorname{tr}\left(\hat{\rho} \sum_a \lambda_a \ket{e_a} \bra{e_a} \right) = \sum_a \lambda_a \operatorname{tr}(\hat{\rho}\ket{e_a}\bra{e_a}) \\
+  \leq& \kappa \sum_a \operatorname{tr} (\hat{\rho}\ket{e_a}\bra{e_a}) = \kappa \sum_{a,a'} \braket{e_{a'}|\hat{\rho}|e_a} \underbace{\braket{e_a|e_{a'}}}_{=\delta_{aa'}} \\
+  =& \kappa \sum_a \braket{e_a|\hat{\rho}|e_a} = \kappa \operatorname{tr}(\hat{\rho}) \\
+  =& \kappa
+\end{align*}
+$$
+
+proving
+
+$$
+  \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I} \implies \operatorname{tr}\left(\hat{K}(\hat{\rho}) \right) \leq \kappa, \; \forall \hat{\rho}\in\mathcal{D}(\mathcal{H})
+$$
+
+We also see that $\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l = \kappa\hat{I}$ implies
+
+$$
+  \operatorname{tr}\left(\hat{K}(\hat{\rho})\right) = \operatorname{tr}(\hat{\rho}\kappa) = \kappa \operatorname{tr}(\hat{\rho}),\;\forall \hat{\rho}\in\mathcal{D}(\mathcal{H})
+$$
+
+To show $\impliedby$ in $\eqref{equation-5}$, we also note that $\operatorname{tr}\left(\hat{K}(\hat{\rho}) \right) \leq \kappa$ implies for every $\hat{\rho}\in\mathcal{D}(\mathcal{H})$
+
+$$
+  \kappa \geq \operatorname{tr}\left(\hat{\rho} \sum_{l=1}^m  \hat{K}_l^\dagger \hat{K}_l \right) = \sum_a \lambda_a \operatorname{tr}(\hat{\rho}\ket{e_a} \bra{e_a})
+$$
+
+Choosing $\hat{\rho} = \ket{e_{a'}} \bra{e_{a'}}$, we have $\operatorname{tr}(\hat{\rho}\ket{e_a}\bra{e_a}) = \delta_{aa'}$. It follows that $\lambda_a \leq \kappa$ for all $a$ and thus from $\eqref{equation-6}$ that
+
+$$
+  \sum_{l=1}^m \ha{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}
+$$
+
+Similarly, $\operatorname{tr}(\hat{K}(\rho)) = \kappa$ implies $\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l = \kappa\hat{I}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces and let $\hat{V}\in\mathcal{B}(\mathcal{H}_A \otimes \mathcal{H}_B)$ be a bounded operator satisfying $\hat{V}^\dagger \hat{V} \leq \kappa \hat{I}_{AB}$ for any $\kappa\in (0,1]$. For $b_1, b_2 \in\set{1,\dots,\dim(\mathcal{H}_B)}$, define the operators $\hat{K}_{(b_1, b_2)}$ by specifying their matrix elements $(\hat{K}_{(b_1, b_2)})_{a_1 a_2}$ in the orthonormal basis $\set{\ket{e_a}}$ as
+
+$$
+  (\hat{K}_{(b_1, b_2)})_{a_1 a_2} = \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}_B})\right)_{a_1 b_2, a_2 b_2}
+$$
+
+Then for any nonzero $\ket{\psi}\in\mathcal{H}_A$, we have
+
+$$
+  \Braket{\psi | \sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|\psi} = \frac{1}{\norm{\psi}^2} \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \right)
+$$
+
+where
+
+$$
+  \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \right) \leq \kappa \norm{\psi}^4
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that for any nonzero $\ket{\psi}\in\mathcal{H}_A$ we have
+
+$$
+\begin{align*}
+  (\ket{\psi}\bra{\psi} \otimes\hat{I}_B)^2 =& \ket{\psi}\braket{\psi|\psi} \ket{\psi} \otimes \hat{I}_B \\
+  =& \norm{\psi}^2 (\ket{\psi}\bra{\psi} \otimes\hat{I}_B) 
+\end{align*}
+$$
+
+Using an orthonormal basis $\set{\ket{e_a}}\subset\mathcal{H}_A$, we find
+
+$$
+\begin{align*}
+  &\Braket{\psi|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|\psi} \\
+  =& \sum_{a_1, a_2} \braket{\psi|e_{a_1}} \Braket{e_{a_1}|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|e_{a_2}} \braket{e_{a_2}|\psi} \\
+  =& \sum_{a_1, a_2} \braket{e_{a_2}|\psi} \braket{\psi|e_{a_1}} \Braket{e_{a_1}|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|e_{a_2}} \\
+  =& \operatorname{tr}\left(\ket{\psi}\bra{\psi} \sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)} \right) \\
+  =& \operatorname{tr}\left(\ket{\psi}\bra{\psi} \operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right) \right) \\
+  =& \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \hat{I}_B) (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B})\right) \\
+  =& \frac{1}{\norm{\psi}^2} \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \hat{I}_B)^2 (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B})\right) \\
+  =& \frac{1}{\norm{\psi}^2} \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \hat{I}_B)^2 (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B})(\ket{\psi}\bra{\psi}\otimes\hat{I}_B)\right) \\
+  =& \frac{1}{\norm{\psi}^2} \operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \right)
+\end{align*}
+$$
+
+To prove the upper bound of the trace, let $\set{\ket{e_a \otimes f_b}}$ be an orthonormal basis of $\mathcal{H}_A \otimes \mathcal{H}_B$. Then
+
+$$
+\begin{align*}
+  &\operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \right) \\
+  =& \sum_{a,b} \Braket{e_a \otimes f_b|(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B})\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B})^\dagger e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi}^\dagger \otimes\sqrt{\hat{\rho}_B}^\dagger) e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B}) e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{\ket{\psi}\braket{\psi|e_a} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| (\ket{\psi}\braket{\psi|e_a}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
+  =& \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| (\ket{\psi}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
+  \leq& \kappa \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} | (\ket{\psi}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
+  =& \kappa\norm{\psi}^2 \sum_b \braket{\psi|\psi} \Braket{\sqrt{\hat{\rho}_B}\ket{f_b}|\sqrt{\hat{\rho}_B}\ket{f_b}} \\
+  =& \kappa\norm{\psi}^4 \sum_b \Norm{\sqrt{\rho}_B f_b}^2 = \kappa \norm{\psi}^4 \sum_b \norm{\sqrt{q_b} f_b}^2 \\
+  =& \kappa\norm{\psi}^4 \sum_b q_b \underbrace{\norm{f_b}^2}_{=1} = \kappa\norm{\psi}^4 \underbrace{\sum_b q_b}_{=1} \\
+  =& \kappa\norm{\psi}^4
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem' tag='theorem-1'>
+Let $\mathcal{H}_A$ be a finite-dimensional Hilbert space, and consider the convex-linear map
+
+$$
+\begin{align*}
+  K:\mathcal{D}(\mathcal{H}_A) \to& \mathcal{D}_\leq (\mathcal{H}_A) \\
+  \hat{\rho}_A \mapsto& \hat{K}(\hat{\rho}_A)
+\end{align*}
+$$
+
+where
+
+$$
+  \mathcal{D}_\leq (\mathcal{H}_A) := \set{\hat{\rho} \in\mathcal{H}_A | \hat{\rho}^\dagger = \hat{\rho}, \hat{\rho}\geq 0, \operatorname{tr}(\hat{\rho}) \leq 1}
+$$
+
+Then for any $\kappa\in (0,1]$, the following equivalence holds: There exists a finite-dimensional Hilbert space $\mathcal{H}_B$, a bounded operator $\hat{V}\in\mathcal{B}(\mathcal{H}_A \otimes \mathcal{H}_B)$ and a density operator $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$ such that 
+
+$$
+\begin{equation}
+  \hat{V}^\dagger \hat{V} \leq \kappa \hat{I}_{AB} \tag{\label{equation-7}}
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+  \hat{K}(\hat{\rho}_A) = \operatorname{tr}^B \left(\hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger \right) \tag{\label{equation-8}}
+\end{equation}
+$$
+
+if and only if there exist operators $\hat{K}_l \in\mathcal{L}(\mathcal{H}_A)$ for $l \in\set{1,\dots,m}$ with $m\leq \dim(\mathcal{H}_B)^2$ such that
+
+$$
+\begin{equation}
+  \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \tag{\label{equation-9}}
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+  \hat{K}(\hat{\rho}_A) =& \sum_{l=1}^m \hat{K}_l \hat{\rho}_A \hat{K}_l^\dagger \tag{\label{equation-10}}
+\end{equation}
+$$
+
+Within this equivalence we have the special case
+
+$$
+  \hat{V}^\dagger \hat{V} = \kappa\hat{I}_{AB} \iff \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l = \kappa\hat{I}_A
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Lemma $\ref{lemma-1}$ we know that any superoperator of the form $\eqref{equation-10}$ maps into $\mathcal{D}_\leq (\mathcal{H}_A)$. Hence, it remains to prove the equivalence.
+
+**($\implies$):** Let $\hat{V}\in\mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ be such that it satisfies $\eqref{equation-7}$ and $\eqref{equation-8}$. Let $\set{\ket{e_a}}$ be an orthonormal basis of $\mathcal{H}_A$. From properties of density operators, we know that there exists an orthonormal basis $\set{\ket{f_b}}\subset\mathcal{H}_B$ and a set of eigenvectors $q_b \geq 0$ with $\sum_b q_b = 1$ admitting the spectral decomposition
+
+$$
+  \hat{\rho}_B = \sum_b q_b \ket{f_b} \bra{f_b}
+$$
+
+Using this, we also define
+
+$$
+  \sqrt{\hat{\rho}_B} = \sum_b \sqrt{q_b} \ket{f_b} \bra{f_b}
+$$
+
+which satisfies
+
+$$
+\begin{align*}
+  (\sqrt{\hat{\rho}})^2 =& \sum_{b_1, b_2} \sqrt{q_{b_1} q_{b_2}} \ket{f_{b_1}} \underbrace{\braket{f_{b_1}|f_{b_2}}}_{=\delta_{b_1 b_2}} \bra{f_{b_2}} \\
+  =& \sum_b q_b \ket{f_b} \bra{f_b} = \hat{\rho}_B
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  (\sqrt{\hat{\rho}_B})^\dagger =& \left(\sum_b \sqrt{q_b} \ket{f_b} \bra{f_b} \right) \\
+  =& \sum_b \sqrt{q_b} (\ket{f_b} \bra{f_b})^\dagger \\
+  =& \sum_b \sqrt{q_b} \ket{f_b} \bra{f_b} = \sqrt{\hat{\rho}_B}
+\end{align*}
+$$
+
+For $b_1, b_2 \in\set{1,\dots,\dim(\mathcal{\mathcal{H}_B})}$ we then define the operators $\hat{K}_{(b_1, b_2)}$ by specifying their matrix elements $(\hat{K}_{(b_1, b_2)})_{a_1 a_2}$ in the orthonormal basis $\set{\ket{e_a}}$ as
+
+$$
+  (\hat{K}_{(b_1, b_2)})_{a_1 a_2} = (\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}_B}))_{a_1 b_1, a_2 b_2}
+$$
+
+Then we have
+
+$$
+\begin{align*}
+  (\hat{K}_{(b_1, b_2)}^\dagger)_{a_1 a_2} =& (\hat{K}_{(b_1, b_2)})_{a_1 a_2}^* \\
+  =& (\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}_B}))_{a_1 b_1, a_2 b_2}^* \\
+  =& (\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}_B}))_{a_1 b_1, a_2 b_2}^\dagger \\
+  =& ((\hat{I}_A \otimes \sqrt{\hat{\rho}_B})^\dagger \hat{V}^\dagger)_{a_1 b_1, a_2 b_2} \\
+  =& ((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}^\dagger) \hat{V}^\dagger)_{a_1 b_1, a_2 b_2} \\
+  =& ((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger)_{a_1 b_1, a_2 b_2}
+\end{align*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  & \left(\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)} \hat{\rho}_A \hat{K}_{(b_1, b_2)}^\dagger \right) = \sum_{b_1, b_2} \sum_{a_3, a_4} (\hat{K}_{(b_1, b_2)})_{a_1 a_3} \boldsymbol{\rho}_{a_3 a_4}^{(A)} (\hat{K}_{(b_1, b_2)}^\dagger)_{a_4 a_2} \\
+  =& \sum_{b_1, b_2} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \boldsymbol{\rho}_{a_3 a_4}^{(A)} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_2, a_2 b_1} \\
+  =& \sum_{b_1, b_2, b_3} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \boldsymbol{\rho}_{a_3 a_4}^{(A)} \delta{b_2, b_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_3, a_2 b_1} \\
+  =& \sum_{b_1, b_2, b_3} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \underbrace{(\hat{\rho}_A \otimes \hat{I}_B)_{a_3 b_2, a_4, b_3}}_{=\boldsymbol{\rho}_{a_3 a_4}^{(A)} \delta_{b_2, b_3}} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_3, a_2 b_1} \\
+  =& \sum_b \left((\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})) (\hat{\rho}_A \otimes \hat{I}_B) (\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger \right)_{a_1 b, a_2 b} \\
+  =& \sum_b \left(\hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger\right)_{a_1 b, a_2 b} \\
+  =& \operatorname{tr}_B \left(\hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B)\hat{V}^\dagger \right)_{a_1 a_2} \\
+  =& \hat{K}(\hat{\rho}_A) _{a_1 a_2}
+\end{align*}
+$$
+
+proving $\eqref{equation-10}$. The sums $\sum_{b_1, b_2}$ run over the index sets indexing an orthonormal basis of $\mathcal{H}_B$ and thus the total number $m$ of operators $\hat{K}_{b_1, b_2}$ cannot exceed $\dim(\mathcal{H}_B)^2$. To show that $\eqref{equation-7}$ implies $\eqref{equation-9}$ we first note that
+
+$$
+\begin{align*}
+  & \sum_{b_1, b_2} (\hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)})_{a_1 a_2} = \sum_{b_1, b_2, a_3} (\hat{K}_{(b_1, b_2)}^\dagger)_{a_1 a_3} (\hat{K}_{(b_1, b_2)})_{a_3 a_2} \\
+  =& \sum_{b_1, b_2, a_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}}_B)\hat{V}^\dagge \right)_{a_1 b_2, a_3 b_1} \left(\hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right)_{a_3 b_1, a_2 b_2} \\
+  =& \sum_b \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B})\right)_{a_1 b, a_2 b} \\
+  =& \operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right)_{a_1 a_2}
+\end{align*}
+$$
+
+such that
+
+$$
+  \sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)} = \operatorname{tr}\left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}\hat{V}^\dagger (\hat{I}_A \otimes \sqrt{\hat{\rho}}_B) \right)
+$$
+
+From Lemma $\ref{lemma-2}$, it follows that for any $\ket{\psi}\in\mathcal{H}_A$
+
+$$
+  \Braket{\psi|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|\psi} \leq \kappa\norm{psi}^2 = \braket{\psi|\kappa\hat{I}_A|\psi}
+$$
+
+which is equivalent to $\eqref{equation-9}$. For the special case $\hat{V}^\dagger \hat{V} = \kappa\hat{I}_{AB}$ we have
+
+$$
+\begin{align*}
+  \sum_{b_1, b_2} =& \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)} =& \operatorname{tr}\left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right) \\
+  =& \kappa\operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}})(\hat{I}_A \otimes\sqrt{\hat{\rho}_B}) \right) \\
+  =& \kappa\operatorname{tr}_B (\hat{I}_A \otimes \hat{\rho}_B) = \kappa\operatorname{tr}(\hat{\rho}_B) \hat{I}_A \\
+  =& \kappa{I}_A 
+\end{align*}
+$$
+
+To prove $\impliedby$ let $\hat{K}_l \in\mathcal{L}(\mathcal{H}_A)$ for $l\in\set{1,\dots,m}$ be such that they satisfy $\eqref{equation-9}$ and $\eqref{equation-10}$. Furthermore, let $\mathcal{H}_B$ be a Hilbert space with an orthonormal basis $\set{\ket{f_b}}_{b=1}^m$. We embed $\mathcal{H}_A$ in $\mathcal{H}_A \otimes \mathcal{H}_B$ by
+
+$$
+\begin{align*}
+  \iota : \mathcal{H}_A \to& \hat{H}_B \\
+  \ket{\psi} \mapsto& \ket{\psi\otimes f_1} = \ket{\psi}\otimes\ket{f_1}
+\end{align*}
+$$
+
+and define
+
+$$
+  \check{V} : \iota\set{\mathcal{H}_A} \to& \mathcal{H}_A \otimes \mathcal{H}_B \\
+  \ket{\psi\otimes f_1} \mapsto& \sum_{l=1}^m \hat{K}_l \ket{\psi} \otimes \ket{f_l}
+$$
+
+Noting that
+
+$$
+\begin{align*}
+  \braket{\check{V}^\dagger (e_a \otimes f_b)|\psi\otimes f_1} =& \braket{e_a \otimes f_b | \check{V}(\psi \otimes f_1)} \\
+  =& \Braket{e_a \otimes | \sum_l \hat{K}_l \ket{\psi}\otimes \ket{f_l}} \\
+  =& \sum_l \braket{e_a|\hat{K}_l \psi} \underbrace{\braket{f_b|f_l}}_{\delta_{bl}} \\
+  =& \braket{e_a|K_b \psi}
+\end{align*}
+$$
+
+then for any $\ket{\psi\otimes f_1}\in\iota\set{\mathcal{H}_A}$ the linear operator $\check{V}$ satisfies
+
+$$
+\begin{align*}
+  \braket{\psi\otimes f_1 | \check{V}^\dagger (e_a \otimes f_b)} =& \braket{\check{V}^\dagger (e_a \otimes f_b)|\psi\otimes f_1}^\dagger \\
+  =& \braket{e_a|\hat{K}_b \psi}^\dagger = \braket{\hat{K}_b \psi|e_a} = \braket{\psi|\hat{K}_b^\dagger e_a} \\
+  =& \sum_l \braket{\psi|\hat{K}_l^\dagger e_a} \braket{f_l|f_b}_{=\delta_{lb}} \\
+  =& \left(\sum_l \bra{\psi} \hat{K}_l^\dagger \otimes \ket{f_l} \right) \left(\ket{e_a \otimes f_b} \right)
+\end{align*}
+$$
+
+For every $\ket{\psi\otimes f_1}\in\iota\set{\mathcal{H}_A}$ the linear operator $\check{V}$ also satisfies
+
+$$
+\begin{align*}
+  \braket{\psi\otimes f_1 | \check{V}^\dagger \check{V} (\psi\otimes f_1)} =& \braket{\check{V}(\psi\otimes f_1)|\check{V}(\psi\otimes f_1)} \\
+  =& \sum_{l_1, l_2} \braket{\hat{K}_{l_1} \psi\otimes f_{l_1}|\hat{K}_{l_2} \psi \otimes f_{l_2}} \\
+  =& \sum_{l_1, l_2} \braket{\hat{K}_{l_1} \psi|\hat{K}_{l_2} \psi} \underbrace{f_{l_1}|f_{l_2}}_{=\delta_{l_1 l_2}} \\
+  =& \sum_l \braket{\hat{K}_l \psi| \hat{K}_l \psi} \\
+  =& \Braket{\psi|\sum_l \hat{K}_l^\dagger \hat{K}_l|\psi}
+\end{align*}
+$$
+
+We thus have
+
+$$
+\begin{align*}
+  & \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \\
+  \implies& \Braket{\psi|\sum_l \hat{K}_l^\dagger \hat{K}_l|\psi} \leq \kappa\norm{\psi}^2 = \kappa\norm{\psi}^2 \norm{f_1}^2, \;\forall \ket{\psi}\in\mathcal{H}_A \\
+  \implies& \braket{\psi\otimes f_1| \check{V}^\dagger \check{V}|\psi\otimes f_1} \leq \kappa\norm{\psi\otimes f_1}^2, \;\ket{\psi}\otimes f_1 \in \iota\set{\mathcal{H}_A} \\
+  \implies& \check{V}^\dagger \check{V} \leq \kappa\hat{I}_{\iota\set{\mathcal{H}_A}}
+\end{align*}
+$$
+
+where equality implies equality in each step. The operator $\check{V}$ is defined on the $\dim(\mathcal{H}_A)$-dimensional subspace $\iota\set{\mathcal{H}_A}$ of $\mathcal{H}_A \otimes \mathcal{H}_B$ with dimension $\dim(\mathcal{H}_A)\dim(\mathcal{H}_B)$. We can extend $\check{V}$ to an operator $\hat{V}$ on all of $\mathcal{H}_A \otimes \mathcal{H}_B$ by setting
+
+$$
+  \mathbf{V}^\dagger \mathbf{V} = \begin{bmatrix}
+    \check{\mathbf{V}}^\dagger \check{\mathbf{V}} & \mathbf{0}_{\dim(\mathcal{H}_A) \times \dim(\mathcal{H}_B)} \\
+    \mathbf{0}_{\dim(\mathcal{H}_B) \times \dim(\mathcal{H}_A)} & \kappa \mathbf{I}_{\dim(\mathcal{H}_B)}
+  \end{bmatrix}
+$$
+
+which satisfies $\hat{V}^\dagger \hat{V} \leq \kappa\hat{I}_{AB}$ if $\sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A$ or $\hat{V}^\dagger \hat{V} = \kappa\hat{I}_{AB}$ if $\sum_l \hat{K}_l^\dagger \hat{K}_l = \kappa\hat{I}_A$.
+
+It remains to show $\eqref{equation-8}$. For this we set
+
+$$
+  \hat{\rho}_B = \ket{f_1} \bra{f_1} \in\mathcal{D}(\mathcal{H}_B)
+$$
+
+and recall that any $\hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)$ can be written in the form
+
+$$
+  \hat{\rho}_A = \sum_a p_a \ket{e_a} \bra{e_a}
+$$
+
+where $p_a \in [0,1]$ satisfy $\sum_a p_a = 1$ and $\set{\ket{e_a}}$ forms an orthonormal basis of $\mathcal{H}_A$. Thus, we obtain
+
+$$
+\begin{align*}
+  \hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger =& \sum_a p_a \hat{V} (\ket{e_a}\bra{e_a} \otimes \ket{f_1}\bra{f_1}) \hat{V}^\dagger \\
+  =& \sum_a p_a \hat{V} \ket{e_a \otimes f_1} \bra{e_a \otimes f_1} \hat{V}^\dagger
+\end{align*}
+$$
+
+where
+
+$$
+\begin{align*}
+  V\ket{e_a \otimes f_1} =& \check{V} \ket{e_a \otimes f_1} = \sum_l \hat{K}_l \ket{e_a} \otimes \ket{f_1} \\
+  \bra{e_a \otimes f_1} \hat{V}^\dagger =& \bra{e_a \otimes f_1} \check{V}^\dagger = \sum_l \bra{e_a}\hat{K}_l^\dagger \otimes \bra{f_l}
+\end{align*}
+$$
+
+This yields
+
+$$
+\begin{align*}
+  \hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger =& \sum_{a, l_1, l_2} p_a \left(\hat{K}_{l_1} \ket{e_a} \otimes \ket{f_{l_1}} \right) \left(\bra{e_a} \hat{K}_{l_2}^\dagger \otimes \bra{f_{l_2}} \right) \\
+  =& \sum_{a, l_1, l_2} p_a \hat{K}_{l_1} \ket{e_a} \bra{e_a} \hat{K}_{l_2}^\dagger \otimes \ket{f_{l_1}} \bra{f_{l_2}} \\
+  =& \sum_{l_1, l_2} \hat{K}_{l_1} \left(\sum_a p_a \ket{e_a} \bra{e_a} \right) \hat{K}_{l_2}^\dagger \otimes \ket{f_{l_1}} \bra{f_{l_2}} \\
+  =& \sum_{l_1, l_2} \hat{K}_{l_1} \rho^A \hat{K}_{l_2}^\dagger \otimes \ket{f_{l_1}} \bra{f_{l_2}}
+\end{align*}
+$$
+
+Taking the partial trace over $\mathcal{H}_B$ it follows that
+
+$$
+\begin{align*}
+  \operatorname{tr}_B \left(\hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger \right) =& \operatorname{tr}_B \left( \sum_{l_1, l_2} \hat{K}_{l_1} \hat{\rho}_A \hat{K}_{l_2}^\dagger \otimes \ket{f_{l_1}} \bra{f_{l_2}} \right) \\
+  =& \sum_{l_1, l_2} \operatorname{tr}_B \left(\hat{K}_{l_1} \hat{\rho}_A \hat{K}_{l_2}^\dagger \otimes \ket{f_{l_1}}\bra{f_{l_2}} \right) \\
+  =& \sum_{l_1, l_2} \operatorname{tr}(\ket{f_{l_1}}\bra{f_{l_2}}) \hat{K}_{l_1} \hat{\rho}_A \hat{K}_{l_2}^\dagger
+\end{align*}
+$$
+
+where we can use
+
+$$
+\begin{align*}
+  \operatorname{tr}(\ket{f_{l_1}}\bra{f_{l_2}}) =& \sum_b \braket{f_b|f_{l_1}} \braket{f_{l_2}|f_b} \\
+  =& \sum_b \delta_{bl_1} \delta_{l_2} b = \delta_{l_1 l_2}
+\end{align*}
+$$
+
+leading to
+
+$$
+  \operatorname{tr}_B \left(\hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger \right) = \sum_l \hat{K}_l \hat{\rho}_A \hat{K}_l^\dagger = \hat{K}(\hat{\rho}_A)
+$$
+
+This verifies $\eqref{equation-8}$, completing the proof.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces and let $\hat{K}: \mathcal{D}(\mathcal{H}_A) \to\mathcal{D}_\leq (\mathcal{H}_A)$ have the equivalent representations given in Theorem $\ref{theorem-1}$ with $\hat{V}\in\mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$, $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$ and $\hat{K}_l \in\mathcal{L}(\mathcal{H}_A)$ for $l\in\set{1,\dots,m}$. For any $\kappa\in (0,1]$ we then have
+
+$$
+\begin{align*}
+  \hat{V}^\dagger \hat{V} \leq \kappa\hat{I}_{AB} \iff \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \\
+  \iff& \operatorname{tr}\left(\hat{K}(\hat{\rho}^A) \right) \leq \kappa, \forall \hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
+\end{align*}
+$$
+
+and equality in one relation is equivalent to equality in the other two relations. In particular, for equality with $\kappa = 1$ we have
+
+$$
+\begin{align*}
+  \hat{V} \in\mathcal{U}(\mathcal{H}_A \otimes H_B) \iff& \sum_l \hat{K}_l^\dagger \hat{K}_l = \hat{I}_A \\
+  \iff& \operatorname{tr}\left(\hat{K}(\rho_A) \right) = 1, \forall \hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Theorem $\ref{theorem-1}$ we know that
+
+$$
+  \hat{V}^\dagger \ha{V} \leq \kappa\hat{I}_{AB} \iff \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A
+$$
+
+with equality on one side implying equality on the other and from Lemma $\ref{lemma-1}$ we know that
+
+$$
+  \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \iff \operatorname{tr}\left(\hat{K}(\hat{\rho}_A)\right) \leq \kappa, \; \forall\hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
+$$
+
+where again equality on one side implies equality on the other.
+</details>
+</MathBox>
