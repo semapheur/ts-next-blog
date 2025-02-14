@@ -36,6 +36,7 @@ export function rehypePlugins(noCite: string[] = []) {
       rehypeKatex,
       {
         trust: (context) => ["\\htmlId", "\\href"].includes(context.command),
+        maxExpand: 10000,
         macros: {
           "\\d": "\\mathrm{d}",
           "\\D": "\\mathrm{D}",

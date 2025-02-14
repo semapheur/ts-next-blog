@@ -311,7 +311,7 @@ $$
 \begin{align*}
   \operatorname{tr}(\boldsymbol{\rho}_\mathbf{x} \boldsymbol{\sigma}_j) =& \operatorname{tr}\left(\frac{1}{2}\left(\mathbf{I}_2 + \mathbf{x}\cdot\boldsymbol{\sigma})\boldsymbol{\sigma}_j \right) \\
   =& \frac{1}{2}\left(\boldsymbol{\sigma}_j + \sum_{k=1}^3 x_k \boldsymbol{\sigma}_k \boldsymbol{\sigma}_j \right) \\
-  =& \frac{1}{2} \underbrace{\operatorname{\tr}(\boldsymbol{\sigma}_j)}_{=0} + \frac{1}{2} \sum_{k=1}^3 x_k \\operatorname{\tr}(\boldsymbol{\sigma}_k \boldsymbol{\sigma}_j) \\
+  =& \frac{1}{2} \underbrace{\operatorname{tr}(\boldsymbol{\sigma}_j)}_{=0} + \frac{1}{2} \sum_{k=1}^3 x_k \\operatorname{tr}(\boldsymbol{\sigma}_k \boldsymbol{\sigma}_j) \\
   =& \frac{1}{2} \sum_{k=1}^3 x_k \operatorname{tr}(\mathbf{I}_2 \delta_{kj} + i\epsilon_{kjl} \boldsymbol{\sigma}_l) \\
   =& \frac{1}{2} x_k [\delta_{kj} \underbrace{\operatorname{tr}(\mathbf{I}_2)}_{=2} + i\epsilon_{kjl} \underbrace{\operatorname{tr}(\boldsymbol{\sigma}_l)}_{=0}] \\
   =& x_j
@@ -924,7 +924,7 @@ $$
 If no measurement is performed on $B$, we set $\hat{P}_B = \hat{I}_B$, in which case the state remains $\hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger$. This follows from the fact that
 $$
 \begin{align*}
-  \operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right) =& \operatorname{\tr}\left(\hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \right) \\
+  \operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right) =& \operatorname{tr}\left(\hat{U}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \right) \\
   =& \operatorname{tr}\left((\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \hat{U} \right) \\
   =& \operatorname{tr}(\hat{\rho}_A \otimes \hat{\rho}_B) = \operatorname{tr}(\hat{\rho}_A) \operatorname{tr}(\hat{\rho}_B) \\
   =& 1
@@ -939,8 +939,280 @@ $$
 Altogether the initial state $\hat{\rho}_A$ of the principal system $A$ of interest is thus transformed as
 
 $$
-  \hat{\rho}_A \mapsto \frac{\operatorname{tr}_B \left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\right)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)} \in\mathcal{D}(\mathcal{H}_A)
+\begin{equation}
+  \hat{\rho}_A \mapsto \frac{\operatorname{tr}_B \left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\right)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)} \in\mathcal{D}(\mathcal{H}_A) \tag{\label{equation-15}}
+\end{equation}
 $$
+
+<MathBox title='Quantum operation' boxType='definition'>
+Let $\mathcal{H}$ be a finite-dimensional Hilbert space. A *quantum operation* is a convex-linear map
+
+$$
+\begin{align*}
+  \hat{K} : \mathcal{D}(\mathcal{H}) \to& \mathcal{D}_\leq (\mathcal{H}) \\
+  \hat{\rho} \mapsto& \hat{K}(\hat{\rho})
+\end{align*}
+$$
+
+where
+
+$$
+  \mathcal{D}_\leq (\mathcal{H}_A) := \set{\hat{\rho} \in\mathcal{H}_A | \hat{\rho}^\dagger = \hat{\rho}, \hat{\rho}\geq 0, \operatorname{tr}(\hat{\rho}) \leq 1}
+$$
+
+is the set of positive semi-definite operators with trace at most one. A quantum operation $\hat{K}$ admits two equivalent representations
+
+1. **Operator-sum representation (Kraus representation)**
+
+There exists operators \hat{K}_l \in\mathcal{L}(\mathcal{H}) for $l\in\set{1,\dots,m}$, called *Kraus operators* or *operation elements*, such that 
+
+$$
+\begin{equation}
+  \hat{K}(\hat{\rho}) =& \sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger \tag{\label{equation-13}}
+\end{equation}
+$$
+
+where $\hat{K}_l$ satisfy $\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \leq \hat{I}$.
+
+2. **Environmental representation (Stinespring representation):**
+
+There exists an auxilliary Hilbert space $\mathcal{H}_B$, a density operator $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$ and an isometry $\hat{V}\in\mathcal{B}(\mathcal{H} \otimes \mathcal{H}_B)$ satisfying $\hat{V}^\dagger \hat{V} \leq \hat{I}$ such that
+
+$$
+\begin{equation}
+  \hat{K}(\rho) = \operatorname{tr}_B \left(\hat{V}(\hat{\rho}\otimes\hat{\rho}_B)\hat{V}^\dagger \right) \tag{\label{equation-14}}
+\end{equation}
+$$
+
+A quantum operation $\hat{K}$ is called *trace-preserving* (or a *quantum channel*) if
+
+$$
+  \sum_{k=1}^m \mathbf{K}_l^\dagger \mathbf{K}_l = \hat{I}
+$$
+
+which is equivalent to $\operatorname{tr}\left(\hat{K}(\rho)\right) = 1 = \operatorname{tr}(\rho)$ for all $\hat{\rho}\in\mathcal{D}(\mathcal{H})$. In this case, $\hat{K}$ is an operator on $\mathcal{D}(\mathcal{H})$, i.e. $\hat{K}:\mathcal{D}(\mathcal{H}) \to\mathcal{D}(\mathcal{H})$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $\hat{K}: \mathcal{D}(\mathcal{H}) \to\mathcal{D}_\leq (\mathcal{H})$ be a quantum operation with Kraus operators $\hat{K}_l \in\mathcal{L}(\mathcal{H})$ for $l\in\set{1,\dots,m}$. Additionally, let $\tilde{m}\geq m$ and consider a unitary matrix $\mathbf{U}\in\mathrm{U}(\tilde{m})$ be a unitary $\tilde{m}\times\tilde{m}$ matrix. Then the operators $\tilde{K}_j \in\mathcal{L}(\mathcal{H})$ with $j\in\set{1,\dots,\tilde{m}}$ given by
+
+$$
+  \tilde{\hat{K}}_j = \sum_{l=1}^m \mathbf{U}_{jl} \mathbf{K}_l
+$$
+
+are Kraus operators for $\hat{K}$ as well.
+
+<details>
+<summary>Proof</summary>
+
+Note that the Hermitian of adjoint of $\tilde{\hat{K}}$ is
+
+$$
+  \tilde{\hat{K}}_j^\dagger = \sum_{l=1}^m \mathbf{U}_{jl}^* \hat{K}_l^\dagger = \sum_{l=1}^m \mathbf{U}_{lj}^\dagger \hat{K}_l
+$$
+
+We expand $\eqref{equation-13}$ for $\tilde{\hat{K}}$
+
+$$
+\begin{align*}
+  \sum_{j=1}^{\tilde{m}} \tilde{\hat{K}}_j^\dagger \tilde{\hat{K}}_j =& \sum_{j=1}^{\tilde{m}} \left(\sum_{l=1}^m \mathbf{U}_{lj}^\dagger \hat{K}_l^\dagger \right) \left(\sum_{k=1}^m \mathbf{U}_{jk} \hat{K}_k \right) \\
+  =& \sum_{l, k=1}^m \left(\sum_{j=1}^{\tilde{m}} \mathbf{U}_{lj}^\dagger \mathbf{U}_{jk} \right) \hat{K}_l^\dagger \hat{K}_k \\
+  =& \sum_{l,k=1}^m \underbrace{(\mathbf{U}^\dagger \mathbf{U})}_{\delta_{lk}} \hat{K}_l^* \hat{K}_k = \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \\
+  \leq& \hat{I}
+\end{align*}
+$$
+
+This shows that $\tilde{\hat{K}}_l$ are valid Kraus operators.
+
+The proof of $\eqref{equation-14}$ is almost identical since for any $\hat{\rho}\in\mathcal{D}(\mathcal{H})$, we have
+
+$$
+\begin{align*}
+  \sum_{j=1}^{\tilde{m}} \tilde{\hat{K}}_j^\dagger \tilde{\hat{K}}_j =& \sum_{j=1}^{\tilde{m}} \left(\sum_{l=1}^m \mathbf{U}_{lj}^* \hat{K}_l^\dagger \right)\hat{\rho}\left( \sum_{k=1}^m \mathbf{U}_{jk}^* \hat{K}_k^\dagger \right) \\
+  =& \sum_{l,k=1}^m \left(\sum_{j=1}^{\tilde{m}} \mathbf{U}_{lj}^\dagger \mathbf{U}_{jk} \right) \hat{K}_l^\dagger \hat{\rho}\hat{K}_k \\
+  =& \sum_{l,k=1}^m \underbrace{\left(\mathbf{U}^\dagger \mathbf{U} \right)_{lk}}_{=\delta_{lk}} \hat{K}_l^\dagger \hat{\rho} \hat{K}_k = \sum_{l=1}^m \hat{K}_l^\dagger \hat{\rho} \hat{K}_l \\
+  =& \hat{K}(\hat{\rho})
+\end{align*}
+$$
+
+This shows that $\tilde{\hat{K}}$ is a valid operator-sum representation.
+</details>
+</MathBox>
+
+A state transformation $\eqref{equation-15}$ can be formulated with the help of the quantum operation
+
+$$
+  \hat{K}(\hat{\rho}_A) = \operatorname{tr}_B \left(\hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger \right)
+$$
+
+in its environmental representation, where $\hat{V} = (\hat{I}_A \otimes \hat{P}_B)\hat{U}$ with $\hat{U}\in\mathcal{U}(\mathcal{H}_A \otimes \mathcal{H}_B)$.
+
+<details>
+<summary>Details</summary>
+
+Since the orthogonal projection $\hat{P}_2$ satisfies
+
+$$
+  \hat{I}_A \otimes \hat{P}_B = \hat{I}_A \otimes \hat{P}_B^2 = \left(\hat{I}_A \otimes \hat{P}_B \right)^2
+$$
+
+and
+
+$$
+  \hat{I}_A \otimes \hat{P}_B = \hat{I}_A \otimes \hat{P}_B^\dagger = (\hat{I}_A \otimes \hat{P}_B)^\dagger
+$$
+
+we have
+
+$$
+\begin{align*}
+  \operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \right) =& \operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)^2 \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger \right) \\
+  =& \operatorname{tr}\left( (\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I} _A \otimes \hat{P}_B) \right) \\
+  =& \operatorname{tr}\left( (\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I} _A \otimes \hat{P}_B)^\dagger \right) \\
+  =& \operatorname{tr}\left( (\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \left((\hat{I} _A \otimes \hat{P}_B) \hat{U}\right)^\dagger \right) \\
+  =& \operatorname{tr}\left(\hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger \right) \\
+  =& \operatorname{tr}\left(\operatorname{tr}_B \left(\hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B) \right) \right) \\
+  =& \operatorname{tr}\left(\hat{K}(\hat{\rho})\right)
+\end{align*}
+$$
+</details>
+
+In terms of $\hat{K}$, the state transformation $\eqref{equation-15}$ can be expressed as
+
+$$
+  \frac{\operatorname{tr}_B \left((\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\right)}{\operatorname{tr}\left((\hat{I}_A \otimes \hat{P}_B)\hat{U}(\hat{\rho}^A \otimes \hat{\rho}_B) \hat{U}^dagger \right)} \in\mathcal{D}(\mathcal{H}_A) = \frac{\hat{K}(\hat{\rho}_A)}{\operatorname{tr}\left(\hat{K}(\hat{\rho}_A) \right)}
+$$
+
+Consequently, the total state transformation can be expressed succintly with the help of a quantum operation $\hat{K}$ in the form
+
+$$
+\begin{align*}
+  \mathcal{D}(\mathcal{H}_A) \to& \mathcal{D}(\mathcal{H}_A) \\
+  \hat{\rho}_A \mapsto& \frac{\hat{K}(\hat{\rho}_A)}{\operatorname{tr}\left(\hat{K}(\hat{\rho})\right)}
+ \end{align*}
+$$
+
+<MathBox title='' boxType='proposition'>
+Let $\hat{K}:\mathcal{D}(\mathcal{H}_A) \to\mathcal{D}_\leq (\mathcal{H}_A)$ be a quantum operation in the environmental representation given by
+
+$$
+  \hat{K}(\hat{\rho}_A) = \operatorname{tr}_B \left( (\hat{I}_A \otimes \hat{P}_B) \hat{U} (\hat{\rho}_A \otimes \hat{\rho}_B) \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B) \right)
+$$
+
+where $\hat{P}_B \in\mathcal{L}(\mathcal{H}_B)$ is an orthonormal projection, $\hat{U}\in\mathcal{U}(\mathcal{H}_A \otimes \mathcal{H}_B)$ and $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$. Then we have
+
+$$
+  [\hat{I}^A \otimes \hat{P}_B, \hat{U}] = 0 \implies \operatorname{tr}\left(\hat{K}(\hat{\rho}_A) \right) = \operatorname{tr}\left(\hat{\rho}_B \hat{P}_B \right), \; \hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
+$$
+
+and in particular fo $\hat{P}_B = \hat{I}_B$ it follows that
+
+$$
+  \operatorname{tr}\left(\hat{K}(\hat{\rho}_A)\right) = 1, \; \forall \hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
+$$
+
+<details>
+<summary>Proof</summary>
+
+The quantum operation $\hat{K}$ is in environmental representation with $\hat{V} = (\hat{I}_A \otimes \hat{P}_B)\hat{U}$ such that
+
+$$
+\begin{align*}
+  \hat{V}^\dagger =& \left((\hat{I}_A \otimes \hat{P}_B)\hat{U}\right)^\dagger = \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B) \\
+  =& \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B^\dagger) = \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)
+\end{align*}
+$$
+
+and thus since $[\hat{I}_A \otimes \hat{P}_B, \hat{U}] = 0$
+
+$$
+\begin{align*}
+  \hat{V}^\dagger \hat{V} =& \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)(\hat{I}_A \otimes \hat{P}_B)\hat{U} \\
+  =& \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B^2)\hat{U} = \hat{U}^\dagger (\hat{I}_A \otimes \hat{P}_B)\hat{U} \\
+  =& \hat{U}^\dagger \hat{U} (\hat{I}_A \otimes\hat{P}_B) = \hat{I}_A \otimes \hat{P}_B
+\end{align*}
+$$
+
+Furthermore, we have a set of Kraus operators $\hat{K}_l$ for $\hat{K}$ such that
+
+$$
+\begin{align*}
+  \sum_l \hat{K}_l^\dagger \hat{K}_l =& \operatorname{tr}_B \left((\hat{I}_A \otimes\sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right) \\
+  =& \operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B})(\hat{I}_A \otimes\hat{P}_B)(\hat{I}_A \otimes\sqrt{\hat{P}_B}) \right) \\
+  =& \operatorname{tr}_B \left(\hat{I}_A \otimes\sqrt{\hat{\rho}_B} \hat{P}_B \sqrt{\hat{\rho}_B} \right) \\
+  =& \operatorname{tr}\left(\sqrt{\hat{\rho}_B} \hat{P}_B \sqrt{\hat{\rho}_B} \right) \hat{I}_A \\
+  =& \operatorname{tr}\left( \sqrt{\hat{\rho}_B^2} \hat{P}_B \right) \hat{I}_A \\
+  =& \operatorname{tr}(\hat{\rho}_B \hat{P}_B) \hat{I}_A
+\end{align*}
+$$
+
+Applying Proposition $\ref{proposition-}$ with $\kappa = \operatorname{tr}(\hat{\rho}_B \hat{P}_B)$ then implies that $\operatorname{tr}\left(\hat{K}(\hat{\rho}) \rigth) = \operatorname{tr}(\hat{\rho}_B \hat{P}_B)$. If $\hat{P}_B = \hat{I}_B$, then $\operatorname{tr}\left(\hat{K}(\hat{\rho})\right) = \operatorname{tr}(\hat{\rho}_B) = 1$ since $\hat{\rho}_B \in\mathcal{D}(\mathcal{H}_B)$.
+</details>
+</MathBox>
+
+If the time evolution $\hat{U}\in\mathcal{U}(\mathcal{H}_A \otimes\mathcal{H}_B)$ of the combined system acts separably on the two subsystems $\mathcal{H}_A$ and $\mathcal{H}_B$ in the sense that it commutes with the measurement projections $\hat{I}_A \otimes\hat{P}_B$ on subsystem $\mathcal{H}_B$, the trace of the overall quantum operation can be determined from the product $\hat{\rho}_B \hat{P}_B$.
+
+Since the domain $\mathcal{D}(\mathcal{H})$ of a quantum operation $\hat{K}$ is convex, it follows that for each $\hat{\rho}_1, \hat{\rho}_2 \in\mathcal{D}(\mathcal{H})$ and $u\in[0,1]$, we have
+
+$$
+  u\hat{\rho}_1 + (1 - u)\hat{\rho}_2 \in\mathcal{D}(\mathcal{H})
+$$
+
+Every quantum operation $\hat{K}$ is convex-linear, meaning it satisfies
+
+$$
+  \hat{K}\left(u\hat{\rho}_1 + (1 - u) \hat{\rho}_2 \right) = u\hat{K}(\hat{\rho}_1) + (1 - u)\hat{K}(\hat{\rho}_2)
+$$
+
+For a single qubit system $\mathcal{H} = {}^\P \mathcal{H}$, every $\hat{\rho}\in\mathcal{D}({}^\P \mathcal{H})$ can be parametrized by a Bloch vector $\mathbf{x}\in \mathcal{B}_1 (\R^3)$ expressed as
+
+$$
+  \hat{\rho}_\mathbf{x} = \frac{1}{2}(\mathbf{I}_2 + \mathbf{x}\cdot\boldsymbol{\sigma})
+$$
+
+where $\boldsymbol{\sigma}$ is the vector of Pauli matrices. Thus, the image of a trace-preserving quantum operation $\hat{K}:\mathcal{D}({}^\P \mathcal{H}) \to\mathcal{D}({}^\P \mathcal{H})$ on a single qubit must be of the form
+
+$$
+  \hat{K}(\hat{\rho}) = \frac{1}{2}\left(\mathbf{I}_2 + \mathbf{y}(\mathbf{x}) \cdot\hat{\sigma} \right)
+$$
+
+where $\mathbf{y}(\mathbf{x}) = \operatorname{tr}\left(\hat{K}(\hat{\rho}_\mathbf{x}) \hat{\sigma} \right)$. Consequently, every trace-preserving quantum operation $\hat{K}$ on a single qubit defines a tranformation $\hat{K} :\mathcal{B}_1 (\R^3) \to \mathcal{B}_1 (\R^3)$ given by 
+
+$$
+\begin{equation}
+  \mathbf{x} \mapsto& \operatorname{tr}\left(\hat{K}(\hat{\rho}_\mathbf{x}) \hat{\sigma} \right) \tag{\label{equation-16}}
+\end{equation}
+$$
+
+<details>
+<summary>Proof</summary>
+
+To show that $\hat{K}(\hat{\rho})$ for a single qubit is convex-linear, note that for any Bloch vectors $\mathbf{x}_1, \mathbf{x}_2 \in\mathcal{B}_1 (\R^3)$, we have
+
+$$
+\begin{align*}
+  \hat{\rho}_{u\mathbf{x}_1 + (1 - u)\mathbf{x}_2} =& \frac{1}{2}\left(\hat{I}_2 + (u\mathbf{x}_1 + (1 - u)\mathbf{x}_2) \cdot\boldsymbol{\sigma} \right) \\
+  =& \u \frac{1}{2} (\mathbf{I}_2 + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) + (1 - u) \frac{1}{2}(\mathbf{I} + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) \\
+  =& u\hat{rho}_{\mathbf{x}_1} + (1 - u)\hat{\rho}_{\mathbf{x}_2}
+\end{align*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \hat{K}(u\mathbf{x}_1 + (1 - \mu)\mathbf{x}_2) =& \operatorname{tr}\left(\hat{K}(\hat{\rho}_{u\mathbf{x}_1 + (1 - u)\mathbf{x}_2})\hat{\sigma} \right) \\
+  =& \operatorname{tr}\left(\hat{K}(u \hat{\rho}_{\mathbf{x}_1} + (1 - u) \hat{\rho}_{\mathbf{x}_2} )\hat{\sigma} \right) \\
+  =& \operatorname{tr}\left(u \hat{K}_(\hat{\rho}_{\mathbf{x}_1}) \sigma +(1 - u) \hat{K}(\hat{\rho}_{\mathbf{x}_2}) \hat{\sigma} \right) \\
+  =& u \operatorname{tr}\left(\hat{K}(\hat{\rho}_{\mathbf{x}_1} \hat{\sigma}) + (1 - u)\boldsymbol{tr}\left(\hat{K}(\hat{\rho}_{\mathbf{x}_2})\right) \hat{\sigma} \right) \\
+  =& u \hat{K}(\mathbf{x}_1) + (1 - u)\hat{K}(\mathbf{x}_2)
+\end{align*}
+$$
+
+completing the proof.
+</details>
+
+### Equivalence of quantum operation representations
 
 <MathBox title='' boxType='lemma' tag='lemma-1'>
 Let $\mathcal{H}$ be a Hilbert space and for $l\in\set{1,\dots,m}$ let $\hat{K}_l \in \mathcal{L}(\mathcal{H})$. Then for any density operator $\hat{\rho}\in\mathcal{D}(\mathcal{H})$ the operator
@@ -987,7 +1259,7 @@ $$
 \begin{align*}
   \braket{\psi|\hat{K}(\hat{\rho})|\psi} =& \Braket{\psi|\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger|\psi} \\
   =& \sum_{l=1}^m \braket{\psi|\hat{K}_l \hat{\rho}\hat{K}_l^\dagger|\psi} \\
-  =& \sum_{l=1}^m \braket{\ha{K}_l^\dagger \psi|\hat{\rho}|\hat{K}_l^\dagger \psi} \geq 0
+  =& \sum_{l=1}^m \braket{\hat{K}_l^\dagger \psi|\hat{\rho}|\hat{K}_l^\dagger \psi} \geq 0
 \end{align*}
 $$
 
@@ -1012,7 +1284,7 @@ Thus, we obtain for any $\hat{\rho}\in\mathcal{D}(\mathcal{H})$
 
 $$
 \begin{align*}
-  \operatorname{tr}\left(\hat{K}(\hat{\rho})\right) =& \operatorname{tr}\left(\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_ \right) = \sum_{l=1}^m \operatorname{tr}(\hat{K}_l \hat{\rho} \hat{K}_l^\dagger) \\
+  \operatorname{tr}\left(\hat{K}(\hat{\rho})\right) =& \operatorname{tr}\left(\sum_{l=1}^m \hat{K}_l \hat{\rho} \hat{K}_l^\dagger \right) = \sum_{l=1}^m \operatorname{tr}(\hat{K}_l \hat{\rho} \hat{K}_l^\dagger) \\
   =& \sum_{l=1}^m \operatorname{tr}(\hat{\rho}\hat{K}_l^\dagger \hat{K}_l) = \operatorname{tr}\left(\hat{\rho} \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \right) \\
   =& \operatorname{tr}\left(\hat{\rho} \sum_a \lambda_a \ket{e_a} \bra{e_a} \right) = \sum_a \lambda_a \operatorname{tr}(\hat{\rho}\ket{e_a}\bra{e_a}) \\
   \leq& \kappa \sum_a \operatorname{tr} (\hat{\rho}\ket{e_a}\bra{e_a}) = \kappa \sum_{a,a'} \braket{e_{a'}|\hat{\rho}|e_a} \underbace{\braket{e_a|e_{a'}}}_{=\delta_{aa'}} \\
@@ -1042,7 +1314,7 @@ $$
 Choosing $\hat{\rho} = \ket{e_{a'}} \bra{e_{a'}}$, we have $\operatorname{tr}(\hat{\rho}\ket{e_a}\bra{e_a}) = \delta_{aa'}$. It follows that $\lambda_a \leq \kappa$ for all $a$ and thus from $\eqref{equation-6}$ that
 
 $$
-  \sum_{l=1}^m \ha{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}
+  \sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}
 $$
 
 Similarly, $\operatorname{tr}(\hat{K}(\rho)) = \kappa$ implies $\sum_{l=1}^m \hat{K}_l^\dagger \hat{K}_l = \kappa\hat{I}$.
@@ -1100,24 +1372,25 @@ To prove the upper bound of the trace, let $\set{\ket{e_a \otimes f_b}}$ be an o
 
 $$
 \begin{align*}
-  &\operatorname{tr}\left((\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}) \right) \\
-  =& \sum_{a,b} \Braket{e_a \otimes f_b|(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B})\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
-  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B})^\dagger e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
-  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi}^\dagger \otimes\sqrt{\hat{\rho}_B}^\dagger) e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
-  =& \sum_{a,b} \Braket{(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B}) e_a \otimes f_b |\hat{V}^\dagger \hat{V} (\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B})|e_a \otimes f_b} \\
-  =& \sum_{a,b} \Braket{\ket{\psi}\braket{\psi|e_a} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| (\ket{\psi}\braket{\psi|e_a}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
-  =& \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| (\ket{\psi}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
-  \leq& \kappa \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} | (\ket{\psi}\otimes\sqrt{\hat{\rho}_B}|f_b)} \\
+  &\operatorname{tr}\left(\left(\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}\right) \hat{V}^\dagger \hat{V} \left(\ket{\psi}\bra{\psi} \otimes \sqrt{\hat{\rho}_B}\right) \right) \\
+  =& \sum_{a,b} \Braket{e_a \otimes f_b|\left(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B}\right)\hat{V}^\dagger \hat{V} \left(\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B}\right)|e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{\left(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B}\right)^\dagger e_a \otimes f_b |\hat{V}^\dagger \hat{V}| \left(\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B}\right) e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{\left(\ket{\psi}\bra{\psi}^\dagger \otimes\sqrt{\hat{\rho}_B}^\dagger\right) e_a \otimes f_b |\hat{V}^\dagger \hat{V}| \left(\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B}\right) e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{\left(\ket{\psi}\bra{\psi} \otimes\sqrt{\hat{\rho}_B}\right) e_a \otimes f_b |\hat{V}^\dagger \hat{V}| \left(\ket{\psi}\bra{\psi}\otimes\sqrt{\hat{\rho}_B}\right) e_a \otimes f_b} \\
+  =& \sum_{a,b} \Braket{\ket{\psi}\braket{\psi|e_a} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| \ket{\psi}\braket{\psi|e_a}\otimes\sqrt{\hat{\rho}_B} \ket{f_b}} \\
+  =& \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} |\hat{V}^\dagger \hat{V}| \ket{\psi}\otimes\sqrt{\hat{\rho}_B} \ket{f_b}} \\
+  \leq& \kappa \sum_{a,b} |\braket{e_a|\psi}|^2 \Braket{\ket{\psi} \otimes \sqrt{\hat{\rho}_B}\ket{f_b} | \ket{\psi}\otimes\sqrt{\hat{\rho}_B} \ket{f_b}} \\
   =& \kappa\norm{\psi}^2 \sum_b \braket{\psi|\psi} \Braket{\sqrt{\hat{\rho}_B}\ket{f_b}|\sqrt{\hat{\rho}_B}\ket{f_b}} \\
   =& \kappa\norm{\psi}^4 \sum_b \Norm{\sqrt{\rho}_B f_b}^2 = \kappa \norm{\psi}^4 \sum_b \norm{\sqrt{q_b} f_b}^2 \\
   =& \kappa\norm{\psi}^4 \sum_b q_b \underbrace{\norm{f_b}^2}_{=1} = \kappa\norm{\psi}^4 \underbrace{\sum_b q_b}_{=1} \\
   =& \kappa\norm{\psi}^4
 \end{align*}
 $$
+
 </details>
 </MathBox>
 
-<MathBox title='' boxType='theorem' tag='theorem-1'>
+<MathBox title='Equivalence of operator-sum and environmental representation of quantum operations' boxType='theorem' tag='theorem-1'>
 Let $\mathcal{H}_A$ be a finite-dimensional Hilbert space, and consider the convex-linear map
 
 $$
@@ -1161,7 +1434,7 @@ and
 
 $$
 \begin{equation}
-  \hat{K}(\hat{\rho}_A) =& \sum_{l=1}^m \hat{K}_l \hat{\rho}_A \hat{K}_l^\dagger \tag{\label{equation-10}}
+  \hat{K}(\hat{\rho}_A) = \sum_{l=1}^m \hat{K}_l \hat{\rho}_A \hat{K}_l^\dagger \tag{\label{equation-10}}
 \end{equation}
 $$
 
@@ -1232,9 +1505,9 @@ $$
 \begin{align*}
   & \left(\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)} \hat{\rho}_A \hat{K}_{(b_1, b_2)}^\dagger \right) = \sum_{b_1, b_2} \sum_{a_3, a_4} (\hat{K}_{(b_1, b_2)})_{a_1 a_3} \boldsymbol{\rho}_{a_3 a_4}^{(A)} (\hat{K}_{(b_1, b_2)}^\dagger)_{a_4 a_2} \\
   =& \sum_{b_1, b_2} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \boldsymbol{\rho}_{a_3 a_4}^{(A)} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_2, a_2 b_1} \\
-  =& \sum_{b_1, b_2, b_3} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \boldsymbol{\rho}_{a_3 a_4}^{(A)} \delta{b_2, b_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_3, a_2 b_1} \\
+  =& \sum_{b_1, b_2, b_3} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \boldsymbol{\rho}_{a_3 a_4}^{(A)} \delta_{b_2, b_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_3, a_2 b_1} \\
   =& \sum_{b_1, b_2, b_3} \sum_{a_3, a_4} \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\right)_{a_1 b_1, a_3 b_2} \underbrace{(\hat{\rho}_A \otimes \hat{I}_B)_{a_3 b_2, a_4, b_3}}_{=\boldsymbol{\rho}_{a_3 a_4}^{(A)} \delta_{b_2, b_3}} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger\right)_{a_4 b_3, a_2 b_1} \\
-  =& \sum_b \left((\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B})) (\hat{\rho}_A \otimes \hat{I}_B) (\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger \right)_{a_1 b, a_2 b} \\
+  =& \sum_b \left(\hat{V}(\hat{I}_A \otimes \sqrt{\hat{\rho}^B}) (\hat{\rho}_A \otimes \hat{I}_B) (\hat{I}_A \otimes \sqrt{\hat{\rho}^B})\hat{V}^\dagger \right)_{a_1 b, a_2 b} \\
   =& \sum_b \left(\hat{V}(\hat{\rho}_A \otimes \hat{\rho}_B) \hat{V}^\dagger\right)_{a_1 b, a_2 b} \\
   =& \operatorname{tr}_B \left(\hat{V} (\hat{\rho}_A \otimes \hat{\rho}_B)\hat{V}^\dagger \right)_{a_1 a_2} \\
   =& \hat{K}(\hat{\rho}_A) _{a_1 a_2}
@@ -1246,7 +1519,7 @@ proving $\eqref{equation-10}$. The sums $\sum_{b_1, b_2}$ run over the index set
 $$
 \begin{align*}
   & \sum_{b_1, b_2} (\hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)})_{a_1 a_2} = \sum_{b_1, b_2, a_3} (\hat{K}_{(b_1, b_2)}^\dagger)_{a_1 a_3} (\hat{K}_{(b_1, b_2)})_{a_3 a_2} \\
-  =& \sum_{b_1, b_2, a_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}}_B)\hat{V}^\dagge \right)_{a_1 b_2, a_3 b_1} \left(\hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right)_{a_3 b_1, a_2 b_2} \\
+  =& \sum_{b_1, b_2, a_3} \left((\hat{I}_A \otimes \sqrt{\hat{\rho}}_B)\hat{V}^\dagger \right)_{a_1 b_2, a_3 b_1} \left(\hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right)_{a_3 b_1, a_2 b_2} \\
   =& \sum_b \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B})\right)_{a_1 b, a_2 b} \\
   =& \operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right)_{a_1 a_2}
 \end{align*}
@@ -1261,17 +1534,17 @@ $$
 From Lemma $\ref{lemma-2}$, it follows that for any $\ket{\psi}\in\mathcal{H}_A$
 
 $$
-  \Braket{\psi|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|\psi} \leq \kappa\norm{psi}^2 = \braket{\psi|\kappa\hat{I}_A|\psi}
+  \Braket{\psi|\sum_{b_1, b_2} \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)}|\psi} \leq \kappa\norm{\psi}^2 = \braket{\psi|\kappa\hat{I}_A|\psi}
 $$
 
 which is equivalent to $\eqref{equation-9}$. For the special case $\hat{V}^\dagger \hat{V} = \kappa\hat{I}_{AB}$ we have
 
 $$
 \begin{align*}
-  \sum_{b_1, b_2} =& \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)} =& \operatorname{tr}\left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right) \\
+  \sum_{b_1, b_2} =& \hat{K}_{(b_1, b_2)}^\dagger \hat{K}_{(b_1, b_2)} = \operatorname{tr}\left((\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \hat{V}^\dagger \hat{V} (\hat{I}_A \otimes \sqrt{\hat{\rho}_B}) \right) \\
   =& \kappa\operatorname{tr}_B \left((\hat{I}_A \otimes \sqrt{\hat{\rho}})(\hat{I}_A \otimes\sqrt{\hat{\rho}_B}) \right) \\
   =& \kappa\operatorname{tr}_B (\hat{I}_A \otimes \hat{\rho}_B) = \kappa\operatorname{tr}(\hat{\rho}_B) \hat{I}_A \\
-  =& \kappa{I}_A 
+  =& \kappa\hat{I}_A 
 \end{align*}
 $$
 
@@ -1287,8 +1560,10 @@ $$
 and define
 
 $$
+\begin{align*}
   \check{V} : \iota\set{\mathcal{H}_A} \to& \mathcal{H}_A \otimes \mathcal{H}_B \\
   \ket{\psi\otimes f_1} \mapsto& \sum_{l=1}^m \hat{K}_l \ket{\psi} \otimes \ket{f_l}
+\end{align*}
 $$
 
 Noting that
@@ -1422,7 +1697,7 @@ Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces and
 
 $$
 \begin{align*}
-  \hat{V}^\dagger \hat{V} \leq \kappa\hat{I}_{AB} \iff \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \\
+  \hat{V}^\dagger \hat{V} \leq \kappa\hat{I}_{AB} \iff& \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A \\
   \iff& \operatorname{tr}\left(\hat{K}(\hat{\rho}^A) \right) \leq \kappa, \forall \hat{\rho}_A \in\mathcal{D}(\mathcal{H}_A)
 \end{align*}
 $$
@@ -1442,7 +1717,7 @@ $$
 From Theorem $\ref{theorem-1}$ we know that
 
 $$
-  \hat{V}^\dagger \ha{V} \leq \kappa\hat{I}_{AB} \iff \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A
+  \hat{V}^\dagger \hat{V} \leq \kappa\hat{I}_{AB} \iff \sum_l \hat{K}_l^\dagger \hat{K}_l \leq \kappa\hat{I}_A
 $$
 
 with equality on one side implying equality on the other and from Lemma $\ref{lemma-1}$ we know that
