@@ -252,14 +252,6 @@ The Paul matrices satisfy
 2. $[\sigma_j, \sigma_k] = \sigma_j \sigma_k - \sigma_k \sigma_j = 2i\varepsilon_{jkl} \sigma_l$
 3. $[\sigma_j, \sigma_k]_+ = \sigma_j \sigma_k + \sigma_k \sigma_j = 2 \delta_{jk} I_2$
 
-From the first property, we see that 
-
-$$
-  \sigma_j \sigma_j = \sigma_j^\dagger \sigma_j = \sigma_j \sigma_j^\dagger = \delta_{jj} I_2 = I_2
-$$
-
-meaning that the Pauli matrices are unitary.
-
 <details>
 <summary>Proof</summary>
 
@@ -307,7 +299,13 @@ $$
 $$
 </details>
 
-Additionally, for $\mathbf{a},\mathbf{b}\in\R^3$, the Pauli matrices satisfy the identity
+From the first property, we see that 
+
+$$
+  \sigma_j \sigma_j = \sigma_j^\dagger \sigma_j = \sigma_j \sigma_j^\dagger = \delta_{jj} I_2 = I_2
+$$
+
+meaning that the Pauli matrices are unitary. Additionally, for $\mathbf{a},\mathbf{b}\in\R^3$, the Pauli matrices satisfy the identity
 
 $$
 \begin{equation}
@@ -329,6 +327,14 @@ $$
 \end{align*}
 $$
 </details>
+
+Actions on qubit basis vectors $\ket{0} = \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right]$ and $\ket{1} = \left[\begin{smallmatrix} 0 // 1 \end{smallmatrix}\right]$:
+- $\boldsymbol{\sigma}_x \ket{0} = \left[\begin{smallmatrix} 0 & 1 // 1 & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 // 1 \end{smallmatrix}\right] = \ket{1}$
+- $\boldsymbol{\sigma}_x \ket{1} = \left[\begin{smallmatrix} 0 & 1 // 1 & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 // 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right] = \ket{0}$
+- $\boldsymbol{\sigma}_y \ket{0} = \left[\begin{smallmatrix} 0 & -i // i & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 // i \end{smallmatrix}\right] = i\ket{1}$
+- $\boldsymbol{\sigma}_y \ket{1} = \left[\begin{smallmatrix} 0 & -i // i & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 // 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} -i // 0 \end{smallmatrix}\right] = -i\ket{0}$
+- $\boldsymbol{\sigma}_z \ket{0} = \left[\begin{smallmatrix} 1 & 0 // 0 & -1 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 1 // 0 \end{smallmatrix}\right] = \ket{0}$
+- $\boldsymbol{\sigma}_z \ket{1} = \left[\begin{smallmatrix} 1 & 0 // 0 & -1 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 // 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 // -1 \end{smallmatrix}\right] = -\ket{1}$
 
 <MathBox title='Pauli matrices form a basis for $\mathbb{C}^{2\times 2}$' boxType='proposition'>
 The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
@@ -1733,7 +1739,7 @@ Similarly, the partial trace $\operatorname{tr}_A$ over $\mathcal{H}_B$ is defin
 $$
 \begin{align*}
   \operatorname{tr}_A : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_B) \\
-  \hat{M} \mapsto& \operatorname_A {tr} (\hat{M}) 
+  \hat{M} \mapsto& \operatorname{tr}_A (\hat{M}) 
 \end{align*}
 $$
 
@@ -5341,6 +5347,206 @@ $$
 \end{align*}
 $$
 </details>
+
+The spin operators $\hat{\sigma}_j^{(A)} \otimes \hat{\sigma}_j^{(B)}$ act on the Bell basis of the composite system ${}^\P \mathcal{H}_{AB} = {}^\P \mathcal{H} \otimes {}^\P \mathcal{H}$ in the following way
+
+- $(\hat{\sigma}_x \otimes \hat{\sigma}_x) \ket{\Phi^\pm} = \pm\ket{\Phi}$
+- $(\hat{\sigma}_x \otimes \hat{\sigma}_x) \ket{\Psi^\pm} = \pm\ket{\Psi}$
+- $(\hat{\sigma}_x \otimes \hat{\sigma}_y) \ket{\Phi^\pm} = -\ket{\Phi^\mp}$
+- $(\hat{\sigma}_x \otimes \hat{\sigma}_y) \ket{\Psi^\pm} = \pm\ket{\Psi^\pm}$
+- $(\hat{\sigma}_z \otimes \hat{\sigma}_z) \ket{\Phi^\pm} = \ket{\Phi}$
+- $(\hat{\sigma}_z \otimes \hat{\sigma}_z) \ket{\Psi^\pm} = -\ket{\Psi}$
+
+<details>
+<summary>Details</summary>
+
+Calculating $(\hat{\sigma}_x \otimes \hat{\sigma}_x)\ket{\Phi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_x \otimes \hat{\sigma}_x)\ket{\Phi^\pm} =& (\hat{\sigma}_x \otimes \hat{\sigma}_x) \frac{1}{\sqrt{2}}(\ket{00} \pm\ket{11}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_x \otimes \hat{\sigma}_x)(\ket{0} \otimes \ket{0} \pm \ket{1} \otimes \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_x \ket{0} \otimes \hat{\sigma}_x \ket{0} \pm \hat{\sigma}_x \ket{1} \otimes \hat{\sigma}_x \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} (\ket{1} \otimes \ket{1} \pm \ket{0} \otimes \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} (\ket{11}\pm\ket{00}) = \pm\ket{\Phi}
+\end{align*}
+$$
+
+Calculating $(\hat{\sigma}_x \otimes \hat{\sigma}_x)\ket{\Psi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_x \otimes \hat{\sigma}_x)\ket{\Psi^\pm} =& (\hat{\sigma}_x \otimes \hat{\sigma}_x) \frac{1}{\sqrt{2}}(\ket{01} \pm\ket{10}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_x \otimes \hat{\sigma}_x)(\ket{0} \otimes \ket{1} \pm \ket{1} \otimes \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_x \ket{0} \otimes \hat{\sigma}_x \ket{1} \pm \hat{\sigma}_x \ket{1} \otimes \hat{\sigma}_x \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} (\ket{1} \otimes \ket{0} \pm \ket{0} \otimes \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} (\ket{10}\pm\ket{01}) = \pm\ket{\Phi^\pm}
+\end{align*}
+$$
+
+Calculating $(\hat{\sigma}_y \otimes \hat{\sigma}_y)\ket{\Phi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_y \otimes \hat{\sigma}_y)\ket{\Phi^\pm} =& (\hat{\sigma}_y \otimes \hat{\sigma}_y) \frac{1}{\sqrt{2}}(\ket{00} \pm\ket{11}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_y \otimes \hat{\sigma}_y)(\ket{0} \otimes \ket{0} \pm \ket{1} \otimes \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_y \ket{0} \otimes \hat{\sigma}_y \ket{0} \pm \hat{\sigma}_y \ket{1} \otimes \hat{\sigma}_y \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} [i\ket{1} \otimes i\ket{1} \pm (-i\ket{0}) \otimes (-i\ket{0})] \\
+  =& \frac{1}{\sqrt{2}} (-\ket{11} \mp \ket{00}) = -\ket{\Phi^\mp}
+\end{align*}
+$$
+
+Calculating $(\hat{\sigma}_y \otimes \hat{\sigma}_y)\ket{\Psi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_y \otimes \hat{\sigma}_y)\ket{\Psi^\pm} =& (\hat{\sigma}_y \otimes \hat{\sigma}_y) \frac{1}{\sqrt{2}}(\ket{01} \pm\ket{10}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_y \otimes \hat{\sigma}_y)(\ket{0} \otimes \ket{1} \pm \ket{1} \otimes \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_y \ket{0} \otimes \hat{\sigma}_y \ket{1} \pm \hat{\sigma}_y \ket{1} \otimes \hat{\sigma}_y \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} [i\ket{1} \otimes (-i\ket{0}) \pm (-i\ket{0}) \otimes i\ket{1}] \\
+  =& \frac{1}{\sqrt{2}} (\ket{10} \pm \ket{01}) = \pm\ket{\Psi^\pm}
+\end{align*}
+$$
+
+Calculating $(\hat{\sigma}_z \otimes \hat{\sigma}_z)\ket{\Phi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_z \otimes \hat{\sigma}_z)\ket{\Psi^\pm} =& (\hat{\sigma}_z \otimes \hat{\sigma}_z) \frac{1}{\sqrt{2}}(\ket{00} \pm\ket{11}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_z \otimes \hat{\sigma}_z)(\ket{0} \otimes \ket{0} \pm \ket{1} \otimes \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_z \ket{0} \otimes \hat{\sigma}_z \ket{0} \pm \hat{\sigma}_z \ket{1} \otimes \hat{\sigma}_z \ket{1}) \\
+  =& \frac{1}{\sqrt{2}} [\ket{0} \otimes \ket{0} \pm (-\ket{1}) \otimes (-\ket{1})] \\
+  =& \frac{1}{\sqrt{2}} (\ket{00} \pm \ket{11}) = \ket{\Psi^\pm}
+\end{align*}
+$$
+
+Calculating $(\hat{\sigma}_z \otimes \hat{\sigma}_z)\ket{\Psi^\pm}$:
+
+$$
+\begin{align*}
+  (\hat{\sigma}_z \otimes \hat{\sigma}_z)\ket{\Psi^\pm} =& (\hat{\sigma}_z \otimes \hat{\sigma}_z) \frac{1}{\sqrt{2}}(\ket{01} \pm\ket{10}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_z \otimes \hat{\sigma}_z)(\ket{0} \otimes \ket{1} \pm \ket{1} \otimes \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} (\hat{\sigma}_z \ket{0} \otimes \hat{\sigma}_z \ket{1} \pm \hat{\sigma}_z \ket{1} \otimes \hat{\sigma}_z \ket{0}) \\
+  =& \frac{1}{\sqrt{2}} [\ket{0} \otimes (-\ket{1}) \pm (-\ket{1}) \otimes \ket{0}] \\
+  =& \frac{1}{\sqrt{2}} (-\ket{01} \mp \ket{10}) = -\ket{\Psi^\pm}
+\end{align*}
+$$
+</details>
+
+In the Bell basis, the operators $\hat{\sigma}_x \otimes \hat{\sigma}_x$ and $\hat{\sigma}_z \otimes \hat{\sigma}_z$ have matrix representations
+
+$$
+  \hat{\sigma}_x \otimes \hat{\sigma}_x = \left[\begin{smallmatrix} 
+    1 & 0 & 0 & 0 \\
+    0 & -1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+  \end{smallmatrix}\right]
+  ,\quad 
+  \hat{\sigma}_z \otimes \hat{\sigma}_z = \left[\begin{smallmatrix} 
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & -1 & 0 \\
+    0 & 0 & 0 & -1
+  \end{smallmatrix}\right]
+$$
+
+from which it is evident that these operators commute, i.e. $[\hat{\sigma}_x \otimes \hat{\sigma}_x, \hat{\sigma}_z \otimes \hat{\sigma}_z] = 0$.
+
+In a composite system ${}^\P \mathcal{H}_A \otimes {}^\P \mathcal{H}_B$, the Bell basis vectors have partial traces
+
+$$
+  \hat{\rho}_A (\Phi^\pm) = \hat{\rho}_A (\Psi^\pm) = \frac{1}{2}(\ket{0}_A \bra{0} + \ket{1}_A \bra{1}) = \frac{1}{2}\hat{I}_A
+$$
+
+and
+
+$$
+  \hat{\rho}_B (\Phi^\pm) = \hat{\rho}_A (\Psi^\pm) = \frac{1}{2}(\ket{0}_B \bra{0} + \ket{1}_B \bra{1}) = \frac{1}{2}\hat{I}_B
+$$
+
+<details>
+<summary>Details</summary>
+
+In the Bell basis, the partial trace coefficients are
+
+$$
+\begin{align*}
+  \Phi_{00}^\pm = \pm\Phi_{11}^\pm = \Psi_{01}^\pm = \pm\Psi_{10}^\pm =& \frac{1}{\sqrt{2}} \\
+  \Phi_{01}^\pm = \pm\Phi_{10}^\pm = \Psi_{00}^\pm = \pm\Psi_{11}^\pm =& 0
+\end{align*}
+$$
+
+The partial trace of $\ket{\Phi^\pm}$ over $\mathcal{H}_X$ for $X\in\set{A,B}$ is
+
+$$
+\begin{align*}
+  \hat{\rho}_X (\ket{\Phi^\pm}) =& (\overline{\Phi_{00}^\pm} \Phi_{00}^\pm + \underbrace{\overline{\Phi_{01}^\pm} \Phi_{01}^\pm}_{=0}) \ket{0}^X \bra{0} \\
+  +& (\overline{\Phi_{00}^\pm} \underbrace{\Phi_{10}^\pm}_{=0} + \underbrace{\overline{\Phi_{01}^\pm}}_{=0} \Phi_{11}^\pm) \ket{1}^X \bra{0} \\
+  +& (\underbrace{\overline{\Phi_{10}^\pm}}_{=0} \Phi_{00}^\pm + \overline{\Phi_{11}^\pm} \underbrace{\Phi_{01}^\pm}_{=0}) \ket{0}^X \bra{1} \\
+  +& (\underbrace{\overline{\Phi_{10}^\pm} \Phi_{10}^\pm}_{=0} + \overline{\Phi_{11}^\pm} \Phi_{11}) \ket{1}^X \bra{1} \\
+  =& \frac{1}{2}(\ket{0}^X \bra{0} + \ket{1}^X \bra{1})
+\end{align*}
+$$
+
+The partial trace of $\ket{\Psi^\pm}$ over $\mathcal{H}_X$ for $X\in\set{A,B}$ is
+
+$$
+\begin{align*}
+  \hat{\rho}_X (\ket{\Psi^\pm}) =& (\underbrace{\overline{\Psi_{00}^\pm} \Psi_{00}^\pm}_{=0} + \overline{\Psi_{01}^\pm} \Psi_{01}^\pm) \ket{0}^X \bra{0} \\
+  +& (\overline{\underbrace{\Psi_{00}^\pm}}_{=0} \Psi_{10}^\pm + \overline{\Psi_{01}^\pm} \underbrace{\Psi_{11}^\pm}_{=0}) \ket{1}^X \bra{0} \\
+  +& (\overline{\Psi_{10}^\pm} \underbrace{\Psi_{00}^\pm}_{=0} + \underbrace{\overline{\Psi_{11}^\pm}}_{=0} \Psi_{01}^\pm) \ket{0}^X \bra{1} \\
+  +& (\overline{\Psi_{10}^\pm} \Psi_{10}^\pm + \underbrace{\overline{\Psi_{11}^\pm} \Psi_{11}}_{=0}) \ket{1}^X \bra{1} \\
+  =& \frac{1}{2}(\ket{0}^X \bra{0} + \ket{1}^X \bra{1})
+\end{align*}
+$$
+</details>
+
+### Entanglement swapping
+
+Entanglement swapping is a phenomenon in which quantum systems become entangled without direct interaction between them. This can be illustrated as follows.
+
+Consider a four-qubit state
+
+$$
+  \ket{\Phi}_{ABCD} \in {}^\P \mathcal{H}_A \otimes {}^\P \mathcal{H}_B \otimes {}^\P \mathcal{H}_C \otimes {}^\P \mathcal{H}_D =: \mathcal{H}_{ABCD}
+$$
+
+prepared as a separable product-state of two entangled two-qubit Bell states $\ket{\Psi^-}_{AB} \in {}^\P \mathcal{H}_A \otimes {}^\P \mathcal{H}_B =: \mathcal{H}_{AB}$ and $\ket{\Psi^-}_{CD} \in {}^\P \mathcal{H}_C \otimes {}^\P \mathcal{H}_D =: \mathcal{H}_{CD}$ such that
+
+$$
+\begin{align*}
+  \ket{\Phi}_{ABCD} =& \ket{\Psi^-}_{AB} \otimes\ket{\Psi^-}_{CD} \\
+  =& \frac{1}{\sqrt{2}}(\ket{01}_{AB} - \ket{10}_{AB}) \otimes \frac{1}{\sqrt{2}}(\ket{01}_{CD} - \ket{10}_{CD})
+  =& \frac{1}{2}(\ket{0101} - \ket{0110} - \ket{1001} + \ket{1010}) \\
+  =& \frac{1}{2}(\ket{\Psi^+}_{AD} \otimes \ket{\Psi^+}_{BC} - \ket{\Psi^-}^{AD} \otimes \ket{\Psi^-}_{BC} \\
+  &- \ket{\Phu^+}_{AD} \otimes \ket{\Phi^+}_{BC} + \ket{\Phi^-}_{AD} \otimes \ket{\Phi^-}_{BC}) 
+\end{align*}
+$$
+
+Here, systems $A$ and $B$ may have interacted in some way to form the entangled state $\ket{\Psi^-}_{AB}$. Likewise, systems $C$ and $D$ may have interacted to form the entangled state $\ket{\Psi^-}_{CD}$. However, it is possible to prepare the entangled states $\ket{\Psi^-}_{AB}$ and $\ket{\Psi^-}_{CD}$ such that system $A$ has never interacted with either $C$ or $D$. Nevertheless, by suitable measurement in the state $\ket{\Phi}_{ABCD}$ it is possible to create entangled states in the system $AD$ composed of the subsystems $A$ and $D$. 
+
+Since $[\hat{\sigma}_z \otimes \hat{\sigma}_z, \hat{\sigma}_x \otimes \hat{\sigma}_x] = 0$, it follows that the operators
+
+$$
+\begin{align*}
+  \Sigma_z^{(BC)} := \hat{I}_A \otimes \hat{\sigma}_z \otimes \hat{\sigma}_z \otimes \hat{I}_D \\
+  \Sigma_x^{(BC)} := \hat{I}_A \otimes \hat{\sigma}_x \otimes \hat{\sigma}_x \otimes \hat{I}_D
+\end{align*}
+$$
+
+commute. Consequently, the corresponding observables, $BC$-spin in the $z$-direction and $BC$-spin in the $x$-direction, can both be measured sharply in a given state. The measurement of the these observables in the state $\ket{\Phi}_{ABCD}$ collapses the $BC$-state state to one of the states $\ket{\Psi^\pm}_{BC}$ or $\ket{\Phi^\pm}_{BC}$, depending on the values observed.
+
+After measurement, the composite system of subsystems $AD$ and $BC$ will always be separable in the Bell basis states in $\mathcal{H}_{AD}$ and $\mathcal{H}_{BC}$. The observed $BC$-state is determined by the pair of measured values for $\Sigma_z^{(BC)}$ and $\Sigma_x^{(BC)}$, while the qubit-pair $AD$ becomes entangled with the observed $BC$-state. As a result, the qubits $A$ and $D$ are entangled even though they have never interacted directly.
+
+<TableFigure caption="Determination of post-measurement state by measurement of $\Sigma_z^{(BC)}$ and $\Sigma_x^{(BC)}$ on $\ket{\Phi}_{ABCD}$">
+| Measured value of $\Sigma_z^{(BC)}$ | Measured value of $\Sigma_x^{(BC)}$ | Composite state after measurement | State of subsystem $AD$ after measurement |
+| --- | --- | --- |
+| $1$ | $1$ | $\ket{\Phi^+}_{AD} \otimes \ket{\Phi^+}_{BC}$ | $\ket{\Phi^+}_{AD}$ |
+| $1$ | $-1$ | $\ket{\Phi^-}_{AD} \otimes \ket{\Phi^-}_{BC}$ | $\ket{\Phi^-}_{AD}$ |
+| $-1$ | $1$ | $\ket{\Psi^+}_{AD} \otimes \ket{\Psi^+}_{BC}$ | $\ket{\Psi^+}_{AD}$ |
+| $-1$ | $-1$ | $\ket{\Phi^-}_{AD} \otimes \ket{\Phi^-}_{BC}$ | $\ket{\Phi^-}_{AD}$ |
+</TableFigure>
 
 ### Einstein-Podolsky-Rosen (EPR) paradox
 

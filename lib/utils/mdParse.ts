@@ -23,7 +23,7 @@ export async function markdownHeadings(source: string) {
     const text: string = h.replace(/^#+\s/, "").replace(/\r|\n/g, "").trim()
     let slug = text
       .toLowerCase()
-      .replace(/[\\${}()']|/g, "")
+      .replace(/[\\${}()/']|/g, "")
       .replaceAll(" ", "-")
 
     //if (text.match(/\$.+?\$/g)) {
