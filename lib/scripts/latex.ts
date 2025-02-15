@@ -1,34 +1,101 @@
 import * as fs from "node:fs"
 
-function findMismatchedInlineMath(mdxFile: string) {
+function findLatexIssues(mdxFile: string) {
   const mdxContent = fs.readFileSync(mdxFile, "utf8")
-
-  // Split the content into lines
   const lines = mdxContent.split("\n")
 
   let inMath = false
+  let inDisplayMath = false
   let lastOpenLine = -1
   let lastOpenCol = -1
+  const latexOutsideMath: { command: string; line: number; column: number }[] =
+    []
+
+  // Regular expression for common LaTeX commands
+  const latexCommandRegex = /\\[a-zA-Z]+(?:\{[^}]*\})*|\\\[|\\\]|\\\(|\\\)/g
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
     const line = lines[lineNum]
 
-    // Skip double dollar expressions
-    if (line.includes("$$")) continue
+    // Handle display math blocks
+    if (line.includes("$$")) {
+      const matches = line.match(/\$\$/g) || []
+      for (let i = 0; i < matches.length; i++) {
+        inDisplayMath = !inDisplayMath
+      }
+      continue
+    }
 
-    for (let colNum = 0; colNum < line.length; colNum++) {
-      if (line[colNum] === "$") {
-        if (inMath) {
-          inMath = false
-        } else {
-          inMath = true
-          lastOpenLine = lineNum
-          lastOpenCol = colNum
+    if (inDisplayMath) continue
+
+    // Track inline math mode and find LaTeX commands
+    let pos = 0
+    while (pos < line.length) {
+      // Handle escaped dollar signs
+      if (
+        line[pos] === "\\" &&
+        pos + 1 < line.length &&
+        line[pos + 1] === "$"
+      ) {
+        pos += 2
+        continue
+      }
+
+      // Handle math mode transitions
+      if (line[pos] === "$") {
+        // Check if it's not escaped
+        let backslashCount = 0
+        let checkPos = pos - 1
+        while (checkPos >= 0 && line[checkPos] === "\\") {
+          backslashCount++
+          checkPos--
+        }
+
+        if (backslashCount % 2 === 0) {
+          if (inMath) {
+            inMath = false
+          } else {
+            inMath = true
+            lastOpenLine = lineNum
+            lastOpenCol = pos
+          }
+        }
+      }
+      pos++
+    }
+
+    // Check for LaTeX commands outside math mode
+    if (!inMath && !inDisplayMath) {
+      let match: RegExpExecArray | null
+      while ((match = latexCommandRegex.exec(line)) !== null) {
+        // Verify this isn't inside an inline math block
+        let dollarCount = 0
+        for (let i = 0; i < match.index; i++) {
+          if (line[i] === "$") {
+            // Check if it's not escaped
+            let backslashCount = 0
+            let checkPos = i - 1
+            while (checkPos >= 0 && line[checkPos] === "\\") {
+              backslashCount++
+              checkPos--
+            }
+            if (backslashCount % 2 === 0) {
+              dollarCount++
+            }
+          }
+        }
+        if (dollarCount % 2 === 0) {
+          // Even number of $ means we're outside math mode
+          latexOutsideMath.push({
+            command: match[0],
+            line: lineNum + 1,
+            column: match.index + 1,
+          })
         }
       }
     }
 
-    // Check if we're still in math mode at the end of the line
+    // Check for unclosed math mode at end of line
     if (inMath && lineNum !== lastOpenLine) {
       return {
         message: "Unclosed inline math expression",
@@ -38,7 +105,7 @@ function findMismatchedInlineMath(mdxFile: string) {
     }
   }
 
-  // Check if we're still in math mode at the end of the file
+  // Check for unclosed math mode at end of file
   if (inMath) {
     return {
       message: "Unclosed inline math expression",
@@ -47,7 +114,23 @@ function findMismatchedInlineMath(mdxFile: string) {
     }
   }
 
-  return { message: "No mismatched inline math delimiters found" }
+  if (inDisplayMath) {
+    return {
+      message: "Unclosed display math expression",
+      line: lines.length,
+      column: 1,
+    }
+  }
+
+  // Return results
+  if (latexOutsideMath.length > 0) {
+    return {
+      message: "Found LaTeX commands outside of math mode",
+      commands: latexOutsideMath,
+    }
+  }
+
+  return { message: "No issues found" }
 }
 
 function relabelLatexEquations(mdxFile: string) {
@@ -89,7 +172,5 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(
-  findMismatchedInlineMath("./content/notes/physics/quantum_mechanics.mdx"),
-)
+console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")

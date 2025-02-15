@@ -44,6 +44,8 @@ export function rehypePlugins(noCite: string[] = []) {
           "\\norm": "\\lVert{#1}\\rVert",
           "\\Norm": "\\left\\lVert{#1}\\right\\rVert",
           "\\tleq": "\\overset{\\tiny{\\mathbf{\\triangle}}}{\\leq}",
+          "\\unitvec": "\\hat{\\mathbf{#1}}",
+          "\\unitsym": "\\hat{\\boldsymbol{#1}}",
           "\\eqref": "\\href{###1}{(\\text{#1})}",
           "\\ref": "\\href{###1}{\\text{#1}}",
           "\\label": "\\htmlId{#1}{\\text{#1}}",
