@@ -84,7 +84,7 @@ $$
 Since global phase factors do not affect quantum states, the physically equivalent representative in the same ray $[\psi]_\sim \in \mathcal{H}\mathrm{P}$ is obtained by factoring out $e^{-(\alpha + beta)/2}$. Defining $\phi = \beta - \alpha$ yields the parametrization
 
 $$
-  \ket{\psi(\theta,\phi)} := e^{-i\phi/2} \cos\left(\frac{\theta}{2}\right) \ket{0} + e^{i\phi/2} \sin\left(\frac{\theta}{2}\right)
+  \ket{\psi(\theta,\phi)} := e^{-i\phi/2} \cos\left(\frac{\theta}{2}\right) \ket{0} + e^{i\phi/2} \sin\left(\frac{\theta}{2}\right)\ket{1}
 $$
 
 which is called the the Bloch sphere representation of a qubit state.
@@ -1196,7 +1196,7 @@ To show that $\hat{K}(\hat{\rho})$ for a single qubit is convex-linear, note tha
 $$
 \begin{align*}
   \hat{\rho}_{u\mathbf{x}_1 + (1 - u)\mathbf{x}_2} =& \frac{1}{2}\left(\hat{I}_2 + (u\mathbf{x}_1 + (1 - u)\mathbf{x}_2) \cdot\boldsymbol{\sigma} \right) \\
-  =& \u \frac{1}{2} (\mathbf{I}_2 + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) + (1 - u) \frac{1}{2}(\mathbf{I} + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) \\
+  =& u \frac{1}{2} (\mathbf{I}_2 + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) + (1 - u) \frac{1}{2}(\mathbf{I} + \mathbf{x}_2 \cdot\boldsymbol{\sigma}) \\
   =& u\hat{rho}_{\mathbf{x}_1} + (1 - u)\hat{\rho}_{\mathbf{x}_2}
 \end{align*}
 $$
@@ -1733,3 +1733,36 @@ $$
 where again equality on one side implies equality on the other.
 </details>
 </MathBox>
+
+# Quantum gates and circuits
+
+## Classical gates
+
+<MathBox title='Classical logic gate' boxType='definition'>
+A classical logic gate is a function $g:\set{0,1}^n \to \set{0,1}$ that maps an $n$-bit input to a single output bit. An extended classical logic gate generalizes this concept to multiple outputs as a function $g: \set{0,1}^n \to\set{0,1}^m$ given by
+
+$$
+  (x_1,\dots,x_n) \mapsto (g_1(x_1,\dots,x_n),\dots,g_m(x_1,\dots,x_n))
+$$
+
+where each $g_j$ is an elementary gate. 
+
+A classical gate $g$ is *reversible* if it is a bijection.
+</MathBox>
+
+<MathBox title='Binary addition' boxType='definition'>
+For $u,v\in\set{0,1}$ we define binary addition as
+
+$$
+  u \overset{2}{\oplus} v := (u + v) \mod 2
+$$
+</MathBox>
+
+<TableFigure caption="Classical logic gates">
+| Name | Symbol | Function | Truth table |
+| --- | --- | --- | --- |
+| NOT | <img src="/fig/not_gate.svg"/> | $x_1 \mapsto 1 \overset{2}{\oplus} x_1$ | $$\begin{array}{c:c} x_1 & \operatorname{NOT}(x_1) \\ \hline 0 & 1 \\ 1 & 0 \end{array}$$ |
+| AND | <img src="/fig/and_gate.svg"/> | $(x_1, x_2) \mapsto x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{AND}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 0 \\ 1 & 0 & 0 \\ 1 & 1 & 1 \end{array}$$ |
+| OR | <img src="/fig/or_gate.svg"/> | $(x_1, x_2) \mapsto x_1 \overset{2}{\oplus} x_2 \overset{2}{\oplus} x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{OR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 1 \end{array}$$ |
+| XOR | <img src="/fig/xor_gate.svg"/> | $x_1 \overset{2}{\oplus} x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{XOR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{array}$$ |
+</TableFigure>
