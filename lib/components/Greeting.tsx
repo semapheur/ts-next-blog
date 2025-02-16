@@ -139,8 +139,7 @@ export default function Greeting() {
   return (
     <div
       ref={wrapRef}
-      className="h-[7.5rem] md:h-60 flex justify-center items-center  
-      bg-amber-100 dark:bg-stone-600"
+      className="flex h-[7.5rem] items-center justify-center bg-amber-100 md:h-60 dark:bg-stone-600"
     >
       <svg width="100%" height="100%">
         <title>Random greeting</title>
@@ -150,8 +149,7 @@ export default function Greeting() {
           y="40%"
           textAnchor="middle"
           strokeDasharray="0 50%"
-          className="fill-transparent stroke-secondary stroke-[1.5] md:stroke-3 
-          text-3xl md:text-7xl font-bold font-mono"
+          className="fill-transparent stroke-[1.5] stroke-secondary font-bold font-mono text-3xl md:stroke-3 md:text-7xl"
         />
       </svg>
     </div>

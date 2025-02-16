@@ -57,10 +57,10 @@ export default function DomainColoring() {
   }, [])
 
   return (
-    <TransformDiv viewRange={viewRange} className="relative w-full h-full">
-      <canvas ref={plotCanvasRef} className="absolute inset-0 w-full h-full" />
-      <canvas ref={gridCanvasRef} className="absolute inset-0 w-full h-full" />
-      <ComplexInput expression={expression} className="absolute left-0 top-0" />
+    <TransformDiv viewRange={viewRange} className="relative size-full">
+      <canvas ref={plotCanvasRef} className="absolute inset-0 size-full" />
+      <canvas ref={gridCanvasRef} className="absolute inset-0 size-full" />
+      <ComplexInput expression={expression} className="absolute top-0 left-0" />
     </TransformDiv>
   )
 }

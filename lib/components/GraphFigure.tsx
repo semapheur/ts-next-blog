@@ -36,12 +36,9 @@ export default function GraphFigure({
   }
 
   return (
-    <figure className="flex flex-col relative">
+    <figure className="relative flex flex-col">
       <SVGPlot data={data} xAxis={xAxis} yAxis={yAxis} />
-      <figcaption
-        className="text-center before:font-bold before:[counter-increment:fig] 
-        before:content-['Figure_'_counter(fig)_':_']"
-      >
+      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
         {caption}
       </figcaption>
     </figure>

@@ -44,26 +44,23 @@ export default function LatexFigure({
 
   return (
     <figure
-      className="flex flex-col relative"
+      className="relative flex flex-col"
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onFocus={() => {}}
     >
       <img
-        className="mx-auto bg-white mb-0"
+        className="mx-auto mb-0 bg-white"
         alt={alt}
         src={src}
         width={`${width}%`}
       />
-      <figcaption
-        className="text-center before:font-bold before:[counter-increment:fig] 
-        before:content-['Figure_'_counter(fig)_':_']"
-      >
+      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
         {caption}
       </figcaption>
       {isHovered && (
         <button
-          className="absolute -top-10 left-1/2 -translate-x-1/2"
+          className="-top-10 -translate-x-1/2 absolute left-1/2"
           type="button"
           onClick={() => setShowModal(true)}
         >

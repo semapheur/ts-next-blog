@@ -87,9 +87,9 @@ function PlotInput({
       ref={formRef}
       action=""
       onSubmit={(e) => handleAddPlot(index, e)}
-      className="relative h-12 flex border-b border-text/30 focus-within:border-secondary overflow-y-scroll"
+      className="relative flex h-12 overflow-y-scroll border-text/30 border-b focus-within:border-secondary"
     >
-      <label className="w-10 relative border-r border-text/50 overflow-hidden">
+      <label className="relative w-10 overflow-hidden border-text/50 border-r">
         <svg className="h-full w-full">
           <title>Change color</title>
           <circle cx="50%" cy="50%" r="20%" fill={values.color} />
@@ -99,7 +99,7 @@ function PlotInput({
           name="color"
           value={values.color}
           onChange={(e) => handleChangeColor(index, e)}
-          className="absolute inset-0 opacity-0 cursor-pointer"
+          className="absolute inset-0 cursor-pointer opacity-0"
         />
       </label>
       <input
@@ -107,13 +107,12 @@ function PlotInput({
         name="fn"
         value={values.fn}
         onChange={(e) => handleChangeFn(index, e)}
-        className="peer w-[calc(100%-5rem)] pl-2 focus:outline-hidden
-          bg-transparent text-transparent z-1"
+        className="peer z-1 w-[calc(100%-5rem)] bg-transparent pl-2 text-transparent focus:outline-hidden"
       />
       <Tex
         math={values.tex.value}
         errorColor={"red"}
-        className={`${values.tex.style} w-[calc(100%-5rem)] absolute left-10 top-2 px-2`}
+        className={`${values.tex.style} absolute top-2 left-10 w-[calc(100%-5rem)] px-2`}
       />
       <button
         type="button"
@@ -220,7 +219,7 @@ function Panel() {
   }
 
   return (
-    <div className="h-full pr-4 bg-primary">
+    <div className="h-full bg-primary pr-4">
       {plotForms.map((field, i) => (
         <PlotInput
           key={`form.${i}`}
