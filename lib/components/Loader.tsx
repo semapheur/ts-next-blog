@@ -4,7 +4,7 @@ export default function Loader({ ...props }: SVGProps<SVGSVGElement>) {
   const size = { x: 100, y: 50 }
   const o = { x: size.x / 2, y: size.y / 2 }
   const r = 15
-  const a = r / Math.sqrt(2) //Math.sin(Math.PI/4)
+  const a = r / Math.sqrt(2)
   const l = Math.PI * r
   const g = Math.ceil((3 * Math.PI + 4) * r)
 
