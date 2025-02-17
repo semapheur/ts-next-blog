@@ -1738,6 +1738,19 @@ where again equality on one side implies equality on the other.
 
 ## Classical gates
 
+<TableFigure caption="Classical logic gates">
+| Name | Symbol | Function | Truth table |
+| --- | --- | --- | --- |
+| NOT | <img src="/fig/not_gate.svg"/> | $x_1 \mapsto 1 \overset{2}{\oplus} x_1$ | $$\begin{array}{c:c} x_1 & \operatorname{NOT}(x_1) \\ \hline 0 & 1 \\ 1 & 0 \end{array}$$ |
+| AND | <img src="/fig/and_gate.svg"/> | $(x_1, x_2) \mapsto x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{AND}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 0 \\ 1 & 0 & 0 \\ 1 & 1 & 1 \end{array}$$ |
+| OR | <img src="/fig/or_gate.svg"/> | $(x_1, x_2) \mapsto x_1 \overset{2}{\oplus} x_2 \overset{2}{\oplus} x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{OR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 1 \end{array}$$ |
+| XOR | <img src="/fig/xor_gate.svg"/> | $(x_1, x_2) \mapsto x_1 \overset{2}{\oplus} x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{XOR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{array}$$ |
+| ID | | $x_1 \mapsto x_1$ | $$\begin{array}{c:c} x_1 & \operatorname{ID}(x_1) \\ \hline 0 & 0 \\ 1 & 1 \end{array}$$ |
+| FALSE | | $x_1 \mapsto 0$ | $$\begin{array}{c:c} x_1 & \operatorname{FALSE}(x_1) \\ \hline 0 & 0 \\ 1 & 0 \end{array}$$ |
+| TRUE | | $x_1 \mapsto 1$ | $$\begin{array}{c:c} x_1 & \operatorname{TRUE}(x_1) \\ \hline 0 & 1 \\ 1 & 1 \end{array}$$ |
+| COPY | | $x_1 \mapsto (x_1, x_1)$ | $$\begin{array}{c:c} x_1 & \operatorname{TRUE}(x_1) \\ \hline 0 & (0,0) \\ 1 & (1,1) \end{array}$$ |
+</TableFigure>
+
 <MathBox title='Classical logic gate' boxType='definition'>
 A classical logic gate is a function $g:\set{0,1}^n \to \set{0,1}$ that maps an $n$-bit input to a single output bit. An extended classical logic gate generalizes this concept to multiple outputs as a function $g: \set{0,1}^n \to\set{0,1}^m$ given by
 
@@ -1758,11 +1771,218 @@ $$
 $$
 </MathBox>
 
-<TableFigure caption="Classical logic gates">
-| Name | Symbol | Function | Truth table |
-| --- | --- | --- | --- |
-| NOT | <img src="/fig/not_gate.svg"/> | $x_1 \mapsto 1 \overset{2}{\oplus} x_1$ | $$\begin{array}{c:c} x_1 & \operatorname{NOT}(x_1) \\ \hline 0 & 1 \\ 1 & 0 \end{array}$$ |
-| AND | <img src="/fig/and_gate.svg"/> | $(x_1, x_2) \mapsto x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{AND}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 0 \\ 1 & 0 & 0 \\ 1 & 1 & 1 \end{array}$$ |
-| OR | <img src="/fig/or_gate.svg"/> | $(x_1, x_2) \mapsto x_1 \overset{2}{\oplus} x_2 \overset{2}{\oplus} x_1 x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{OR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 1 \end{array}$$ |
-| XOR | <img src="/fig/xor_gate.svg"/> | $x_1 \overset{2}{\oplus} x_2$ | $$\begin{array}{c:c:c} x_1 & x_2 & \operatorname{XOR}(x_1, x_2) \\ \hline 0 & 0 & 0 \\ 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{array}$$ |
-</TableFigure>
+<MathBox title='Logical circuits' boxType='definition' tag='definition-1'>
+We denote by $\mathcal{F}[g_1,\dots,g_K]$ the set og all gates which can be constructed from $g_1,\dots,g_K$. This set is defined by the following construction rules:
+1. the $g_1,\dots,g_K$ are elements of this set, i.e. $g_1,\dots,g_K\in\mathcal{F}[g_1,\dots,g_K]$ 
+2. padding operations of the form
+$$
+\begin{align*}
+  p_{y_1,\dots,y_l;j_1,\dots,j_l}^{(n)} : \set{0,1}^n to& \set{0,1}^{n+1} \\
+  (x_1,\dots,x_n) \mapsto& (x_1,\dots,x_{j_1} - 1, y_{j_1}, x_{j_1 + 1},\dots,x_n)
+\end{align*}
+$$
+
+which insert pre-determined bit values $y_1,\dots,y_l \ini\set{0,1}$ at pre-determined slots $j_1,\dots,j_l \in\set{1,\dots,n+1}$ are lelemts of the set, that is, for any $l,n\in\N_+, y_1,\dots,y_l\in\set{0,1}$ and pairwise distinct $j_1,\dots,j_l\in\set{1,\dots,n+1}$
+$$
+  p_{y_1,\dots,y_l;j_1,\dots,j_l}^{(n)} \in\mathcal{F}[g_1,\dots,g_K]
+$$
+
+3. restriction and/or re-ordering operations
+$$
+\begin{align*}
+  r_{j_1,\dots,j_}^{(n)} : \set{0,1}^n \to& \set{0,1}^l \\
+  (x_1,\dots,x_n) \mapsto& (x_{j_1},\dots,x_{j_l})
+\end{align*}
+$$
+are elements of the set, that is, for any $l,n\in\N_+$, and pairwise distinct $j_1,\dots,j_k\in\set{1,\dots,l}$
+$$
+  r_{j_1,\dots,j_}^{(n)} \in\mathcal{F}[g_1,\dots,g_K]
+$$
+
+4. compositions of elements of the set belong to the set, that is, for any $h_1:\set{0,1}^n \to\set{0,1}^m$ and $h_2 :\set{0,1}^l \to\set{0,1}^n$ we have that
+$$
+  h_1, h_2 \in\mathcal{F}[g_1,\dots,g_k] \implies h_1 \circ h_2 \in\mathcal{F}[g_1,\dots,g_K]
+$$
+
+5. cartesian products of elements of the set belong to the set, that is, for any $h:\set{0,1}^n \to\set{0,1}^m$ and $k:\set{0,1}^p \to\set{0,1}^q$ we have that
+$$
+  h, k \in\mathcal{F}[g_1,\dots,g_K] \implies h\times k \in\mathcal{F}[g_1,\dots,g_K]
+$$
+where $h\times k :\set{0,1}^{n+p} \to \set{0,1}^{m+q}$ with
+$$
+\begin{align*}
+  &h\times k (x_1,\dots,x_{n+p}) \\
+  =& (h(x_1,\dots,x_n)_1,\dots,h(x_1,\dots,x_n)_m, k(x_{n+1},\dots,x_{n+p})_1,\dots,k(x_{n+1},\dots,x_{n+p})_q)
+\end{align*}
+$$
+
+A set $G = \set{g_1,\dots,g_J}$ of classical gates is universal if any gate $g$ can be constructed with gates from $G$, that is, for every gate $g$
+$$
+  g\in\mathcal{F}[g_1,\dots,g_J], \; g_1,\dots,g_J \in G
+$$
+
+When multiple gates are connected the resulting arrays are called classical digital logical circuits.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+For gates $h_1,\dots,h_L,g_1,\dots,g_K$ we have
+
+$$
+  h_1,\dots,h_L \in\mathcal{F}[g_1,\dots,g_K] \implies \mathcal{F}[h_1,\dots,h_L]\subset \mathcal{F}[g_1,\dots,g_K]
+$$
+
+such that in particular
+
+$$
+  \mathcal{F}[\mathcal{F}[g_1,\dots,g_K]] \subset \mathcal{F}[g_1,\dots,g_K]
+$$
+
+<details>
+<summary>Proof</summary>
+
+The stated inclusion is a direct consequence of Definition $\ref{definition-1}$ since the operations to build any element in $\mathcal{F}[h_1,\dots,h_L]$ from the $h_1,\dots,h_L$ are the same as to build any element in $\mathcal{F}[g_1,\dots,g_K]$ from its elements and since the $h_1,\dots,h_L$ are members of this set.
+</details>
+</MathBox>
+
+<MathBox title='Toffoli gate' boxType='example'>
+For $(x_1,x_2,x_3)\in\set{0,1}^3$ we have
+
+$$
+\begin{align*}
+  &(\operatorname{ID}\times\operatorname{ID}\times\operatorname{XOR})\circ(\operatorname{ID}\times\operatorname{ID}\times\operatorname{AND}\times\operatorname{ID}) \\
+  &\circ r_{1,3,2,4,5}^{(5)} \circ (\operatorname{COPY}\times\operatorname{COPY}\times\operatorname{ID})(x_1,x_2,x_3) \\
+  =& (\operatorname{ID}\times\operatorname{ID}\times\operatorname{XOR})\circ(\operatorname{ID}\times\operatorname{ID}\times\operatorname{AND}\times\operatorname{ID}) \\
+  &\circ r_{1,3,2,4,5}^{(5)} (x_1,x_1,x_2,x_2,x_3) \\
+  =& (\operatorname{ID}\times\operatorname{ID}\times\operatorname{XOR})\circ(\operatorname{ID}\times\operatorname{ID}\times\operatorname{AND}\times\operatorname{ID}) (x_1,x_1,x_2,x_2,x_3) \\
+  =& (\operatorname{ID}\times\operatorname{ID}\times\operatorname{XOR}) (x_1,x_1,x_2,x_2,x_3) \\
+  =& (x_1,x_2,x_1 x_2 \overset{2}{\oplus} x_3) \\
+  =& \operatorname{TOF}(x_1,x_2,x_3)
+\end{align*}
+$$
+
+Hence,
+
+$$
+\begin{align*}
+  \operatorname{TOF} =& (\operatorname{ID}\times\operatorname{ID}\times\operatorname{XOR})\circ(\operatorname{ID}\times\operatorname{ID}\times\operatorname{AND}\times\operatorname{ID}) \\
+  &\circ r_{1,3,2,4,5}^{(5)} \circ (\operatorname{COPY}\times\operatorname{COPY}\times\operatorname{ID})
+\end{align*}
+$$
+
+so that $\operatorname{TOF}\in\mathcal{F}[\operatorname{ID},\operatorname{AND},\operatorname{XOR},\operatorname{COPY}]$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The classical Toffoli gate is universal and reversible.
+
+<details>
+<summary>Proof</summary>
+
+Since every gate $g:\set{0,1}^n \to\set{0,1}^m$ can be decomposed in $m$ gates $g_j : \set{0,1}^n \to\set{0,1}$, where $j\in\set{1,\dots,m}$ it suffices to show universality only for a gate of the form $f:\set{0,1}^n \to\set{0,1}$, which we shall do by induction in $n$.
+
+Consider the base case $n = 1$. From the elementary gates, we see that $\operatorname{ID}$, $\operatorname{FALSE}$, $\operatorname{TRUE}$ and $\operatorname{NOT}$ can be replicated by the various channels of $\operatorname{TO}$ as follows:
+
+$$
+\begin{equation}
+\begin{split}
+  \operatorname{ID}(x_1) =& x_1 = \operatorname{TOF}_1 (x_1, 1, 1) = r_1^{(3)} \circ \operatorname{TOF}\circ p_{1,1;2,3}^{(1)} (x_1) \\
+  \operatorname{FALSE}(x_1) =& 0 = \operatorname{TOF}_1 (0,0,0) = r_1^{(3)} \circ \operatorname{TOF}\circ p_{0,0,0;1,2,3}^{(0)} (x_1) \\
+  \operatorname{TRUE}(x_1) =& 1 = \operatorname{TOF}_1 (1,0,0) = r_1^{(3)} \circ \operatorname{TOF}\circ p_{1,0,0;1,2,3}^{(1)} (x_1) \\
+  \operatorname{NOT}(x_1) =& 1\overset{2}{\oplus} = \operatorname{TOF}_3 (1,1,x_1) = r_1^{(3)} \circ \operatorname{TOF}\circ p_{1,1;1,2}^{(1)} (x_1)
+\end{split}
+\tag{\label{equation-11}}
+\end{equation}
+$$
+
+Consequently, every gate $f:\set{0,1}\to\set{0,1}$ can be constructed with $\operatorname{TOF}$. Morevover, the following shows that we can also build $\operatorname{AND}$, $\operatorname{XOR}$, $\operatorname{COPY}^{(1)}$ and $\operatorname{COPY}^{(n)}$ with $\operatorname{TOF}$, i.e.
+
+$$
+\begin{equation}
+\begin{split}
+  \operatorname{AND}(x_1, x_2) =& x_1 x_2 = \operatorname{TOF}_3 (x_1,x_2,0) = r_3^{(3)} \circ \operatorname{TOF}\circ p_{0;3}^{(2)} (x_1, x_2) \\
+  \operatorname{XOR}(x_1, x_2) =& x_1 \overset{2}{\oplus} x_2 = \operatorname{TOF}_3 (1,x_1,x_2) = r_3^{(3)} \circ \operatorname{TOF}\circ p_{1;1}^{(2)} (x_1, x_2)
+\end{split}
+\tag{\label{equation-12}}
+\end{equation}
+$$
+
+and
+
+$$
+\begin{align*}
+  \operatorname{COPY}^{(1)}(x_1) =& (x_1, x_2) = (\operatorname{TOF}_3 (x_1,1,0), \operatorname{TOF}_3 (x_1, 1, 0)) \\
+  =& r_{1,3}^{(3)} \circ \operatorname{TOF} \circ p_{1,0;2,3}^{(1)} (x_1) \\
+  \operatorname{COPY}^{(n)}(x_1,\dots,x_n) =& (x_1,\dots,x_n,x_1,\dots,x_n) \\
+  =& r_{1,3,5,\dots,2n-1,2,4,\dots,2n}^{(2n)} \circ \operatorname{COPY}^{(1)} \times\cdots\times \operatorname{COPY}^{(1)} (x_1,\dots,x_n)
+\end{align*}
+$$
+
+Hence, according to Definition $\ref{definition-1}$, it follows that
+
+$$
+\begin{equation}
+  \operatorname{ID},\operatorname{FALSE},\operatorname{TRUE},\operatorname{NOT},\operatorname{AND},\operatorname{XOR},\operatorname{COPY}^{(n)}\in\mathcal{F}[\operatorname{TOF}] \tag{\label{equation-14}}
+\end{equation}
+$$
+
+For the inductive step from $n-1$ to $n$, assume $\operatorname{TOF}$ is universal for gates of the form $g:\set{0,1}^{n-1} \to \set{0,1}$. Let $f:\set{0,1}^n \to\set{0,1}$ be arbitrary. Then, for $x_n \in\set{0,1}$ define
+
+$$
+  g_{x_n} (x_1,\dots,x_{n-1}) := f(x_1,\dots,x_{n-1},x_n)
+$$
+
+and
+
+$$
+\begin{equation}
+\begin{split}
+  h(x_1,\dots,x_n) := \operatorname{XOR}\left(&\operatorname{AND}(g_0(x_1,\dots,x_{n-1}), \operatorname{NOT}(x_n)), \right. \\
+  &\left. \operatorname{AND}(g_1(x_1,\dots,x_{n-1}), x_n) \right)
+\end{split}
+\tag{\label{equation-13}}
+\end{equation}
+$$
+
+Due to the induction assumption, $g_0$ and $g_1$ can be built with $\operatorname{TOF}$, and because of $\eqref{equation-11}$ and $\eqref{equation-12}$, we know that $\operatorname{NOT}$, $\operatorname{AND}$ and $\operatorname{XOR}$ can be constructed with $\operatorname{TOF}$. Altogether thus $h$ in $\eqref{}$ can be built with $\operatorname{TOF}$. At the same time, we have $h=f$, since
+
+$$
+\begin{equation}
+  h(x_1,\dots,x_{n-1},0) =& \operatorname{XOR}\left(&\operatorname{AND}(g_0(x_1,\dots,x_{n-1}), \operatorname{NOT}(0)), \right. \\
+  &&\left. \operatorname{AND}(g_1(x_1,\dots,x_{n-1}), 0) \right) \\
+  &= \operatorname{XOR}(& g_0(x_1,\dots,x_{n-1}), 0) \\
+  =& g_0 (x_1,\dots,x_{n-1}) \\
+  =& f(x_1,\dots,x_{n-1},0)
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+  h(x_1,\dots,x_{n-1},1) =& \operatorname{XOR}\left(&\operatorname{AND}(g_0(x_1,\dots,x_{n-1}), \operatorname{NOT}(1)), \right. \\
+  &&\left. \operatorname{AND}(g_1(x_1,\dots,x_{n-1}), 1) \right) \\
+  &= \operatorname{XOR}(& 0, g_0(x_1,\dots,x_{n-1}), 0) \\
+  =& g_0 (x_1,\dots,x_{n-1}) \\
+  =& f(x_1,\dots,x_{n-1},1)
+\end{equation}
+$$
+
+In other words, we have
+
+$$
+  f = \operatorname{XOR}\circ(\operatorname{AND}\times\operatorname{AND})\circ((g_0 \times \operatorname{NOT})\times(g_1 \times\operatorname{ID})) \circ \operatorname{COPY}^{(n)}
+$$
+
+and because of $\eqref{equation-14}$ and the induction-assumption $g_0, g_1 \in\mathcal{F}[\operatorname{TOF}]$, it follows from Definition $\ref{definition-1}$ that $f\in\operatorname{TOF}$. Consequently, $\operatorname{TOF}$ is universall. The invertibility of $\operatorname{TOF}$ follows fomr
+
+$$
+\begin{align*}
+  \operatorname{TOF}\circ\operatorname{TOF}(x_1,x_2,x_3) =& \operatorname{TOF}(x_1,x_2,x_3 \overset{2}{\oplus} x_1 x_2) \\
+  =& (x_1,x_2,x_3 \overset{2}{\oplus} \underbrace{x_1 x_2 \overset{2}{\oplus} x_1 x_2}_{=0}) \\
+  =& (x_1,x_2,x_3)
+\end{align*}
+$$
+
+which means that $\operatorname{TOF}$ is its own inverse gate and thus reversible.
+</details>
+</MathBox>
