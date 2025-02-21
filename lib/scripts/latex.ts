@@ -6,6 +6,7 @@ function findLatexIssues(mdxFile: string) {
 
   let inMath = false
   let inDisplayMath = false
+  let inCodeBlock = false
   let lastOpenLine = -1
   let lastOpenCol = -1
   const latexOutsideMath: { command: string; line: number; column: number }[] =
@@ -16,6 +17,15 @@ function findLatexIssues(mdxFile: string) {
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
     const line = lines[lineNum]
+
+    // Check for code block start/end
+    if (line.trim().startsWith("```")) {
+      inCodeBlock = !inCodeBlock
+      continue
+    }
+
+    // Skip processing if we're inside a code block
+    if (inCodeBlock) continue
 
     // Handle display math blocks
     if (line.includes("$$")) {
@@ -122,6 +132,15 @@ function findLatexIssues(mdxFile: string) {
     }
   }
 
+  // Check for unclosed code block at end of file
+  if (inCodeBlock) {
+    return {
+      message: "Unclosed code block",
+      line: lines.length,
+      column: 1,
+    }
+  }
+
   // Return results
   if (latexOutsideMath.length > 0) {
     return {
@@ -172,5 +191,5 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
+console.log(findLatexIssues("./content/notes/physics/quantum_information.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
