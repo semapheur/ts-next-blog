@@ -8,6 +8,7 @@ import useIsMounted from "lib/hooks/useIsMounted"
 import { gridSphere } from "lib/utils/3d"
 
 type vec3 = [number, number, number]
+type Gate = "H" | "X" | "Y" | "Z"
 
 export default function BlochSphere() {
   const isMounted = useIsMounted()
@@ -91,8 +92,6 @@ export default function BlochSphere() {
       const context = canvas2d.getContext("2d")
       if (!context) return
 
-      //canvas2d.width = 256
-      //canvas2d.height = 128
       context.fillStyle = "rgba(0, 0, 0, 0)"
       context.fillRect(0, 0, canvas2d.width, canvas2d.height)
       context.font = "30px Arial"
@@ -153,6 +152,25 @@ export default function BlochSphere() {
       labelRef.current.innerText = `Qubit state: ${alpha.toFixed(2)}|0⟩ + (${betaStr})|1⟩`
     }
 
+    const applyGate = (gate: Gate) => {
+      if (gate === "X") {
+        thetaRef.current = Math.PI - thetaRef.current
+        phiRef.current += Math.PI
+      } else if (gate === "Y") {
+        thetaRef.current = Math.PI - thetaRef.current
+        phiRef.current = -phiRef.current
+      } else if (gate === "Z") {
+        phiRef.current += Math.PI
+      } else if (gate === "H") {
+        const newTheta = Math.acos(Math.cos(thetaRef.current) / Math.sqrt(2))
+        const newPhi = phiRef.current + Math.PI / 2
+        thetaRef.current = newTheta
+        phiRef.current = newPhi
+      }
+      updateQubit()
+      updateQubitLabel()
+    }
+
     // Orbit controls
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
@@ -167,12 +185,12 @@ export default function BlochSphere() {
     gui.domElement.style.top = "1rem"
     wrapper.appendChild(gui.domElement)
 
-    const params = {
+    const angleParams = {
       theta: thetaRef.current / DEG2RAD,
       phi: phiRef.current,
     }
     gui
-      .add(params, "theta", 0, 180)
+      .add(angleParams, "theta", 0, 180)
       .name("θ (polar angle)")
       .onChange((value: number) => {
         thetaRef.current = value * DEG2RAD
@@ -180,13 +198,24 @@ export default function BlochSphere() {
         updateQubitLabel()
       })
     gui
-      .add(params, "phi", 0, 360)
+      .add(angleParams, "phi", 0, 360)
       .name("ϕ (azimuth angle)")
       .onChange((value: number) => {
         phiRef.current = value * DEG2RAD
         updateQubit()
         updateQubitLabel()
       })
+
+    const gateParams = {
+      x_gate: () => applyGate("X"),
+      y_gate: () => applyGate("Y"),
+      z_gate: () => applyGate("Z"),
+      h_gate: () => applyGate("H"),
+    }
+    gui.add(gateParams, "x_gate").name("X gate")
+    gui.add(gateParams, "y_gate").name("Y gate")
+    gui.add(gateParams, "z_gate").name("Z gate")
+    gui.add(gateParams, "h_gate").name("H gate")
 
     // Handle window resize
     const onResize = () => {
