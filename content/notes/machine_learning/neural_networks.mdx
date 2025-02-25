@@ -149,6 +149,256 @@ $$
 
 # Feedforward neural network (FFNN)
 
+<MathBox title='Parametric affine function' boxType='definition'>
+Let $\boldsymbol{\theta} \in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. For $m, n\in\N_+$ and $s\in\N_0$ satisfying $p \geq s + mn + m$, we define an affine function $A_{m,n}^{\boldsymbol{\theta}, s} :\R^n \to \R^m$ associated with parameters $\boldsymbol{\theta}$, starting from index $s$, as
+
+$$
+  A_{m,n}^{\boldsymbol{\theta}, s} (\mathbf{x}) = \mathbf{Wx} + \mathbf{b}
+$$
+
+where the weight matrix $\mathbf{W}\in\R^{m\times n}$ and bias vector $\mathbf{b}\in\R^m$
+
+$$
+  \mathbf{W} = \begin{bmatrix} 
+    \theta_{s+1} & \cdots & \theta_{s + n} \\
+    \theta_{s + n + 1} & \cdots & \theta_{s + 2n} \\
+    \vdots & \ddots & \vdots \\
+    \theta_{s + (m - 1)n + 1} & \cdots & \theta_{s + mn}  
+  \end{bmatrix},\quad \mathbf{b} \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} + \begin{bmatrix} \theta_{s + mn + 1} \\ \theta_{s + mn + 2} \\ \vdots \\ \theta_{s + mn + m} \end{bmatrix}
+$$
+
+Explicitly, the function can be written component-wise as
+
+$$
+  A_{m,n}^{\boldsymbol{\theta}, s} (\mathbf{x}) = \begin{bmatrix} 
+    \left(\sum_{k=1}^n x_k \theta_{s + k} \right) + \theta_{s + mn + 1} \\ 
+    \left(\sum_{k=1}^n x_k \theta_{s + n + k} \right) + \theta_{s + mn + 2} \\
+    \vdots \\
+    \left(\sum_{k=1}^n x_k \theta_{s + (m - 1)n + k} \right) + \theta_{s + mn + m}
+  \end{bmatrix}
+$$
+</MathBox>
+
+<MathBox title='Fully-connected feedforward neural network' boxType='definition'>
+Let $\boldsymbol{\theta}\in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. A fully connected feedforward neural network (FFNN) is characterized by: 
+- $L \in\N_+$, the number of layers, where 
+    - $\ell = 0$ is the input layer
+    - $\ell = L$ is the output layer
+    - $\ell = 1,\dots,L-1$ are the hidden layers 
+- $n_0, n_L, n_\ell \in \N_+$, representing the number of neurons in the input, output, and $\ell$-th hidden layer
+- activations function $\sigma_\ell : \R^{n_\ell} \to \R^{n_\ell}$ for $\ell=1,\dots,L$
+
+The width and depth of the FNNN architecture are given by $\lVert N \rVert_\infty$ and $L$, respectively, where $N = \sum_{\ell=0}^L n_\ell$ is the total number of neurons. The architecture is called deep if $L > 2$ and shallow if $L = 2$.
+
+The realization function of the FFNN is given by
+
+$$
+\begin{align*}
+  \Phi_{\sigma_1,\dots,\sigma_L}^{\boldsymbol{\theta}, n_0}(\mathbf{x}) =& \sigma_L \circ A_{n_L, n_{L-1}}^{\boldsymbol{\theta}, s_{L-1}} \circ \sigma_{L-1} \circ A_{n_{L-1}, n_{L-2}}^{\boldsymbol{\theta}, s_{L-2}} \circ\cdots \\
+  & \circ \sigma_1 \circ A_{n_1, n_0}^{\boldsymbol{\theta, 0}}(\mathbf{x})
+\end{align*}
+$$
+
+where the shift indices $s_\ell$ are defined as
+
+$$
+  s_\ell = \sum_{k=1}^\ell n_k (n_{k-1} + 1),\; \ell = 1,\dots,L - 1
+$$
+
+For each hidden layer $\ell = 1,\dots, L - 1$, we define the pre-activation $\Phi_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}$ and activation $\bar{\Phi}_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}$ as
+
+$$
+  \bar{\Phi}_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}} = \sigma_\ell \left(\Phi_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}\right)
+$$
+
+Each affine functions $A_{n_\ell, n_{\ell-1}}^{\boldsymbol{\theta}, s_{n_{\ell-1}}}$ for $\ell = 1,\dots,L$, is given by
+
+$$
+  A_{n_\ell, n_{\ell-1}}^{\boldsymbol{\theta}, s_{\ell-1}} (\mathbf{x}) = \mathbf{W}^{(\ell)} \mathbf{x} + \mathbf{b}^{(\ell)}
+$$
+
+where the weights $\mathbf{W}^{(\ell)} \in \R^{n_\ell \times n_{\ell-1}}$ and biases $\mathbf{b}^{(\ell)} \in \R^{n_\ell}$ from layer $\ell - 1$ to $\ell$ are given by
+
+$$
+  \mathbf{W}^{(\ell)} = \begin{bmatrix}
+    \theta_{s_{\ell - 1} + 1} & \cdots & \theta_{s_{\ell - 1} + n_{\ell - 1}} \\
+    \theta_{s_{\ell - 1} + n_{\ell - 1} + 1} & \cdots & \theta_{s_{\ell - 1} + 2n_{\ell - 1}} \\
+    \vdots & \ddots & \vdots \\
+    \theta_{s_{\ell - 1} + (n_\ell - 1)n_{\ell - 1} + 1} & \cdots & \theta_{s_{\ell - 1} + n_\ell n_{\ell - 1}} 
+  \end{bmatrix},\quad \mathbf{b}^{(\ell)} = \begin{bmatrix} \theta_{s_{\ell - 1} + n_\ell n_{\ell - 1} + 1} \\ \cdots \\ \theta_{s_{\ell - 1} + n_\ell n_{\ell - 1} + n_\ell} \end{bmatrix}
+$$
+
+In terms of $\mathbf{W}^{(\ell)}$ and  $\mathbf{b}^{(\ell)}$, the parameters $\boldsymbol{\theta}$ can be written as
+
+$$
+  \boldsymbol{\theta} = \left((\mathbf{W}^{(\ell)}, \mathbf{b}^{(\ell)})\right)_{\ell=1}^L \in \prod_{\ell=1}^L (\R^{n_\ell \times n_{\ell-1}} \times \R^{n_\ell}) \cong \R^p
+$$
+
+where the parameter dimension satisfies
+
+$$
+  p \geq \sum_{\ell=1}^L n_\ell (n_{\ell - 1} + 1)
+$$
+</MathBox>
+
+<LatexFigure width={75} src='/fig/feedforward_neural_network.svg' alt=''
+  caption='Feedforward neural network'
+>
+```latex
+\documentclass[border=5pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta, graphs, graphdrawing, positioning, backgrounds, fit, calc}
+\usegdlibrary{layered}
+
+\begin{document}
+\begin{tikzpicture}[
+    neuron/.style={circle, draw, minimum size=1.2cm, inner sep=0.5pt, font=\footnotesize},
+    transformation/.style={font=\footnotesize, align=center},
+    layer label/.style={font=\small\bfseries, align=center},
+    dots/.style={font=\large},
+    input background/.style={fill=red!5, rounded corners, draw=red!40, dashed,
+        inner sep=10pt},
+    hidden background/.style={fill=blue!5, rounded corners, draw=blue!40, dashed,
+        inner sep=10pt},
+    output background/.style={fill=green!5, rounded corners, draw=green!40, dashed,
+        inner sep=10pt}
+  ]
+
+  % Constants for better layout
+  \def\layerdist{3.5cm}
+  \def\nodedist{1.8cm}
+  \def\numLayers{6}
+
+  % Layer 1: Input
+  \node[neuron] (x1) at (0,0) {$x_1$};
+  \node[neuron] (x2) at (0,-\nodedist) {$x_2$};
+  \node[dots] (xdots) at (0,-2*\nodedist) {$\vdots$};
+  \node[neuron] (x3) at (0,-3*\nodedist) {$x_{n_0}$};
+
+  % Layer 2: First hidden layer
+  \node[neuron] (h11) at (\layerdist,0) {$\Phi_1^{(1)}$};
+  \node[neuron] (h12) at (\layerdist,-\nodedist) {$\Phi_2^{(1)}$};
+  \node[dots] (h1dots) at (\layerdist,-2*\nodedist) {$\vdots$};
+  \node[neuron] (h13) at (\layerdist,-3*\nodedist) {$\Phi_{n_1}^{(1)}$};
+
+  % Layer 3: First hidden layer activated
+  \node[neuron] (ph11) at (2*\layerdist,0) {$\bar{\Phi}_1^{(1)}$};
+  \node[neuron] (ph12) at (2*\layerdist,-\nodedist) {$\bar{\Phi}_2^{(1)}$};
+  \node[dots] (ph1dots) at (2*\layerdist,-2*\nodedist) {$\vdots$};
+  \node[neuron] (ph13) at (2*\layerdist,-3*\nodedist) {$\bar{\Phi}_{n_1}^{(1)}$};
+
+  % Middle layers indication
+  \node[dots] (ldots) at (2.5*\layerdist,-1.5*\nodedist) {$\cdots$};
+
+  % Layer 4: Last hidden layer activated
+  \node[neuron] (ph21) at (3*\layerdist,0) {$\bar{\Phi}_1^{(L-1)}$};
+  \node[neuron] (ph22) at (3*\layerdist,-\nodedist) {$\bar{\Phi}_2^{(L-1)}$};
+  \node[dots] (ph2dots) at (3*\layerdist,-2*\nodedist) {$\vdots$};
+  \node[neuron] (ph23) at (3*\layerdist,-3*\nodedist) {$\bar{\Phi}_{n_{L-1}}^{(L-1)}$};
+
+  % Layer 5: Last layer
+  \node[neuron] (h21) at (4*\layerdist,0) {$\Phi_1^{(L)}$};
+  \node[neuron] (h22) at (4*\layerdist,-\nodedist) {$\Phi_2^{(L)}$};
+  \node[dots] (h2dots) at (4*\layerdist,-2*\nodedist) {$\vdots$};
+  \node[neuron] (h23) at (4*\layerdist,-3*\nodedist) {$\Phi_{n_L}^{(L)}$};
+
+  % Layer 6: Output
+  \node[neuron] (y1) at (5*\layerdist,0) {$y_1$};
+  \node[neuron] (y2) at (5*\layerdist,-\nodedist) {$y_2$};
+  \node[dots] (ydots) at (5*\layerdist,-2*\nodedist) {$\vdots$};
+  \node[neuron] (y3) at (5*\layerdist,-3*\nodedist) {$y_{n_L}$};
+
+  % Layer backgrounds
+  \begin{pgfonlayer}{background}
+    \node[input background, fit=(x1) (x3)] (layer1) {};
+    \node[hidden background, fit=(h11) (h13)] (layer2) {};
+    \node[hidden background, fit=(ph11) (ph13)] (layer3) {};
+    \node[hidden background, fit=(ph21) (ph23)] (layer4) {};
+    \node[hidden background, fit=(h21) (h23)] (layer5) {};
+    \node[output background, fit=(y1) (y3)] (layer6) {};
+  \end{pgfonlayer}
+
+  % Layer labels
+  \node[layer label, above=0.3cm of layer1] {Input\\Layer};
+  \node[layer label, above=0.3cm of layer2] {First Hidden\\Layer};
+  \node[layer label, above=0.3cm of layer3] {Activated\\Layer 1};
+  \node[layer label, above=0.3cm of layer4] {Activated\\Layer $L-1$};
+  \node[layer label, above=0.3cm of layer5] {Final Hidden\\Layer $L$};
+  \node[layer label, above=0.3cm of layer6] {Output\\Layer};
+
+  % Transformations
+  \node (x) at ($(layer1.south)+(0, -0.3)$) {$\mathbf{x}$};
+
+  \node[transformation] (t1) at ($(layer1.east)!0.5!(layer2.west)+(0,-2.75*\nodedist)$)
+  {$\mathbf{W}^{(1)}\mathbf{x} + \mathbf{b}^{(1)}$};
+
+  \node (h1) at ($(layer2.south)+(0, -0.3)$) {$\boldsymbol{\Phi}^{(1)}$};
+
+  \node[transformation] (t2) at ($(layer2.east)!0.5!(layer3.west)+(0,-2.75*\nodedist)$)
+  {$\sigma_1(\boldsymbol{\Phi}^{(1)})$};
+
+  \node (a1) at ($(layer3.south)+(0, -0.3)$) {$\bar{\boldsymbol{\Phi}}^{(1)}$};
+
+  \node (a2) at ($(layer4.south)+(0, -0.3)$) {$\bar{\boldsymbol{\Phi}}^{(L-1)}$};
+
+  \node[transformation] (t3) at ($(layer4.east)!0.5!(layer5.west)+(0,-2.75*\nodedist)$)
+  {$\mathbf{W}^{(L)}\bar{\boldsymbol{\Phi}}^{(L-1)} + \mathbf{b}^{(L)}$};
+
+  \node (h2) at ($(layer5.south)+(0, -0.3)$) {$\boldsymbol{\Phi}^{(L)}$};
+
+  \node[transformation] (t4) at ($(layer5.east)!0.5!(layer6.west)+(0,-2.75*\nodedist)$)
+  {$\sigma_L(\boldsymbol{\Phi}^{(L)})$};
+
+  \node (y) at ($(layer6.south)+(0, -0.3)$) {$\mathbf{y}$};
+
+  \draw[|->] (x) -- (t1);
+  \draw[|->] (t1) -- (h1);
+  \draw[|->] (h1) -- (t2);
+  \draw[|->] (t2) -- (a1);
+
+  \draw[|->] (a2) -- (t3);
+  \draw[|->] (t3) -- (h2);
+
+  \draw[|->] (h2) -- (t4);
+  \draw[|->] (t4) -- (y);
+
+  % Connect nodes with edges
+  % Layer 1 to Layer 2 (complete bipartite)
+  \foreach \i in {1,2,3} {
+      \foreach \j in {1,2,3} {
+          \draw[->, gray] (x\i) -- (h1\j);
+        }
+    }
+
+  % Layer 2 to Layer 3 (matching)
+  \foreach \i in {1,2,3} {
+      \draw[->, gray] (h1\i) -- (ph1\i);
+    }
+
+  % Layer 3 to Layer 4 (indicated by dots)
+  \draw[->, gray, dashed] (ph11) to[bend left=15] (ph21);
+  \draw[->, gray, dashed] (ph13) to[bend right=15] (ph23);
+
+  % Layer 4 to Layer 5 (complete bipartite)
+  \foreach \i in {1,2,3} {
+      \foreach \j in {1,2,3} {
+          \draw[->, gray] (ph2\i) -- (h2\j);
+        }
+    }
+
+  % Layer 5 to Layer 6 (complete bipartite)
+  \foreach \i in {1,2,3} {
+      \foreach \j in {1,2,3} {
+          \draw[->, gray] (h2\i) -- (y\j);
+        }
+    }
+
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
+
 A feedforward neural network (FFNN) is described by a directed asyclic graph, $G = (V,E)$, and a weight function over the edges, $w = E\to\R$. Nodes of the graph correspond to neurons. Each single neuron is modeled as a real function $\sigma:\R\to\R$ called the activation function of the neuron. Each edge in the graph link the output of some neuron to the input of another neuron. The input of a neuron is obtained by taking a weighted sum of the outputs of all the neurons connected to it, where the weighting is according to $w$.
 
 To network is further organized into layers. The set of nodes can be decomposed into a union a disjoint subsets $V = \sqcup_{t=0}^T V_t$ such that every edge in $E$ connects some node in $V_{t-1}$ to some node in $V_t$ for some $t \in [T]$. The bottom layer, $V_0$, is called the input layer and contains $n + 1$ neurons, where $n$ is the dimensionality of the input space. For every $i\in [n]$, the output of neuron $i$ is simply $x_i$. The last neuron in $V_0$ is the intercept node, which always outputs $1$. Layers $V_1,\dots, V_{T-1}$ are often called *hidden layers*. The top layer, $V_T$ is called the output layers.
@@ -440,3 +690,98 @@ $$
 4. calculate learning step $\eta_i = \eta(i)$
 3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
 </MathBox>
+
+### Derivation of the backpropagation algorithm
+
+In this section we derive the backpropagation algorithm for training a feedforward neural netork (FFNN) using a quadratic cost function. The notation and methodology follow the framework established in [@book_nielsen_2015] and [@notes_smets_2024].
+
+Suppose we have a training set $\set{(\mathbf{x}_n, \mathbf{y}_n) | \mathbf{x}\in\mathbb{F}^{n_0}, \mathbb{F}^{n_{L+1}}}_{n=1}^N$ of $N\in\N$ samples. We are interested in minimizing the mean squared error given by
+
+$$
+\label{equation-ffnn-cost-mse}
+  C(\mathbf{W}, \mathbf{b}) = \frac{1}{2N} \sum_{n=1}^N \lVert \hat{\mathbf{y}}_n - \mathbf{y} \rVert^2,
+$$
+
+where $\hat{\mathbf{y}} = \mathbf{a}^{(L+1)} = \sigma(\mathbf{z}^{(L+1)})$ is the output of FFNN for the $n$th input. The cost of training example $n$, given by
+
+$$
+\label{equation-ffnn-cost-mse-example}
+  C_n (\mathbf{W}, \mathbf{b}) = \frac{1}{2} \lVert \mathbf{a}^{(L+1)} - \mathbf{y}_n \rVert^2 = \frac{1}{2} \sum_{j=1}^{n_{L+1}} (a_j^{(L+1)} - y_n)^2
+$$
+
+To derive the backpropagation equations, we need to calculate the partial derivatives of $C_n$ with respect to the bias and the weights. From [](#equation-neuron-activation), we obtain the partial derivatives
+
+$$
+  \frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}} = a_k^{(\ell - 1)},\quad
+  \frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}} = 1,\quad
+  \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} = \sigma'_{\ell}(\mathbf{z}_j^{\ell})
+$$
+
+We also define the error $\delta_j^{(\ell)}$ for neuron $j$ in layer $\ell$ by 
+
+$$
+  \delta_j^{(\ell)} := \frac{\partial C_n}{\partial z_j^{(\ell)}} = \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{(\ell)}} = \sigma'_\ell (z_j^{(\ell)}) \frac{\partial C_n}{\partial a_j^{(\ell)}} 
+$$
+
+In matrix form, this can be written as
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)})
+$$
+
+where $\odot$ denotes the Hadamard (elementwise) product. For the output layer $\ell = L + 1$ we find from [](#equation-ffnn-cost-mse), that $\nabla_{\mathbf{a}^{(L+1)}} C_n = \mathbf{a}^{(L)} - \mathbf{y}_n$ leading to the output error
+
+$$
+  \boldsymbol{\delta}^{(L)} = (\mathbf{a}^{(L)} - \mathbf{y}_n) \odot \sigma'_{L+1} (\mathbf{z}^{(L)})
+$$
+
+For any hidden layer $\ell < L + 1$, the partial derivative of $C_n$ with respect to an activation $a_k^{(\ell)}$ is found by summing up the errors $\delta_j^{(\ell + 1)}$ of the next layer $\ell + 1$, i.e.,
+
+$$
+\label{equation-neuron-error-hidden}
+  \frac{\partial C_n}{\partial a_k^{(\ell)}} = \sum_{j=1}^{n_{\ell+1}} \underbrace{\frac{\partial z_j^{(\ell + 1)}}{\partial a_k^{(\ell)}}}_{=w_{kj}^{(\ell+1)}} \underbrace{\frac{\partial a_j^{(\ell + 1)}}{\partial z_j^{(\ell+1)}} \frac{\partial C_n}{\partial a_j^{(\ell+1)}}}_{=\delta_j^{(\ell+1)}} = \sum_{j=1}^{n_{\ell+1}} w_{kj}^{(\ell + 1)} \delta_{j}^{(\ell+1)}.
+$$
+
+In matrix form this can be expressed as $\nabla_{\mathbf{a}^{(\ell)}} C_n = (\mathbf{W}^{(\ell+1)})^\top \boldsymbol{\delta}^{(\ell+1)}$. Thus, for any hidden layer $\ell < L + 1$, the error $\boldsymbol{\delta}^{(\ell)}$ can be expressed as
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+#### Gradient Computation
+
+It remains to calculate the partial derivatives of the cost $C_n$ with respect to the bias and the weights. For any layer $\ell$, the partial derivative of $C_n$ with respect to a weight $w_{kj}^{(\ell)}$ is given by the chain rule
+
+$$
+  \frac{\partial C_n}{\partial w_{kj}^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}}}_{=a_k^{(\ell-1)}} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = a_k^{(\ell-1)} \delta_j^{(\ell)}
+$$
+
+Likewise, the partial derivative of $C_n$ with respect a bias $b_j^{(\ell)}$ is given by
+
+$$
+  \frac{\partial C_n}{\partial b_j^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}}}_{=1} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = \delta_j^{(\ell)}
+$$
+
+The backpropagation algorithm can be summed up as follows:
+- **Find the output error:** Calculate the output error $\boldsymbol{\delta}^{(L+1)}$ using the gradient of the cost with respect to the activations:
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+- **Backpropagate the errors:** For each layer $\ell = L,L-1,\dots,1$ calculate the error $\boldsymbol{\delta}^{(\ell)}$ using
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+- **Update weights and biases:** For each layer $\ell = L,L-1,\dots,1$ adjust the biases $\mathbf{b}^{(\ell)}$ and weights $\mathbf{W}^{(\ell)}$ according to the updates
+
+$$
+\begin{align*}
+  \hat{w}_{jk}^{(\ell)} =& w_{jk}^{(\ell)} - \eta \delta_j^{(\ell)} a_k^{(\ell - 1)} \\
+  \hat{b}_j^{(\ell)} =& b_j^{(\ell)} - \eta \delta_j^{(\ell)},
+\end{align*}
+$$
+
+where $\eta$ is the learning rate.
