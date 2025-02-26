@@ -809,6 +809,23 @@ It satisfies the following properties:
 3. $\mathbf{H}\ket{x_j} = \frac{1}{\sqrt{2}}(\ket{0} + e^{\pi ix_j} \ket{1})$
 4. $\mathbf{H}^2 = \mathbf{I}_2$
 5. $\mathbf{H} = e^{i \frac{3\pi}{2}} \mathbf{D}_{\hat{\mathbf{z}}} (0) \mathbf{D}_{\hat{\mathbf{y}}} \left(\frac{\pi}{2}\right) \mathbf{D}_{\mathbf{z}} (-\pi)$
+6. $\mathbf{H}\boldsymbol{\sigma}_x \mathbf{H} = \boldsymbol{\sigma}_z$
+7. $\mathbf{H}\boldsymbol{\sigma}_y \mathbf{H} = -\boldsymbol{\sigma}_y = \boldsymbol{\sigma}_x \boldsymbol{\sigma}_y \boldsymbol{\sigma}_x$
+8. $\mathbf{H}\boldsymbol{\sigma}_z \boldsymbol{H} = \boldsymbol{\sigma}_x$
+
+<details>
+<summary>Proof</summary>
+
+**(6):**
+
+$$
+\begin{align*}
+  \mathbf{H}\boldsymbol{\sigma}_x \mathbf{H} =& \frac{1}{\sqrt{2}}(\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z)\boldsymbol{\sigma_z} \frac{1}{\sqrt{2}}(\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z) \\
+  =& \frac{1}{2} (\underbrace{\boldsymbol{\sigma}_x^2}_{=\hat{I}_2} \boldsymbol{\sigma}_x + \boldsymbol{\sigma}_x^2 \boldsymbol{\sigma}_z + \boldsymbol{\sigma}_z \underbrace{\boldsymbol{\sigma}_x^2}_{=\hat{I}_2} + \underbrace{\boldsymbol{\sigma}_z \boldsymbol{\sigma}_x \boldsymbol{\sigma}_z}_{=-\boldsymbol{\sigma}_x}) \\
+  =& \boldsymbol{\sigma}_z
+\end{align*}
+$$
+</details>
 </MathBox>
 
 ## Computational basis
@@ -2026,6 +2043,16 @@ For $n = 1$ a gate $\hat{U}$ is called a *unary quantum gate* and for $n = 2$ a 
 | Controlled V | <img src="/fig/controlled_v_gate.svg"/> | $ \Lambda^1 (\hat{V}) = \ket{0}\bra{0}\otimes\hat{I} + \ket{1}\bra{1}\otimes\hat{V} = (P(\alpha)\otimes\hat{A})\Lambda^1 (\hat{X}) (\hat{I}\otimes\hat{B})\Lambda^1 (\hat{X}) (\hat{I}\otimes\hat{C}) $ where $\hat{V} = \hat{M}(\alpha) \hat{A}\hat{X}\hat{B}\hat{X}\hat{C}$ and $\hat{I} = \hat{A}\hat{B}\hat{C}$ | $\begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & \nu_{00} & \nu_{01} \\ 0 & 0 & \nu_{10} & \nu_{11} \end{bmatrix}$ |
 </TableFigure>
 
+Controlled gate identities
+- $\hat{C}_x \hat{X}_0 \hat{C}_x = \hat{X}_0 \hat{X}_1$
+- $\hat{C}_x \hat{Y}_0 \hat{C}_x = \hat{Y}_0 \hat{X}_1$
+- $\hat{C}_x \hat{Z}_0 \hat{C}_x = \hat{Z}_0$
+- $\hat{C}_x \hat{X}_1 \hat{C}_x = \hat{X}_1$
+- $\hat{C}_x \hat{Y}_1 \hat{C}_x = \hat{Z}_0 \hat{Y}_1$
+- $\hat{C}_x \hat{Z}_1 \hat{C}_x = \hat{Z}_0 \hat{Z}_1$
+- $\hat{R}_{z,0} (\phi) \hat{C}_x = C_x \hat{R}_{z,0} (\phi)$
+- $\hat{R}_{x,1} (\phi) \hat{C}_x = C_x \hat{R}_{x,1} (\phi)$
+
 ## General quantum gates
 
 <MathBox title='' boxType='definition'>
@@ -2372,3 +2399,57 @@ $$
   \hat{S}^{(n)} := \prod_{j=0}^{\lfloor \frac{n}{2} \rfloor - 1} S_{n-1-j, j}^{(n)} 
 $$
 </MathBox>
+
+# Variational quantum eigensolver (VQE)
+
+The variational quantum eigensolver (VQE) is a hybrid classical-quantum alogorithm designed to estimate the ground state energy of a Hamiltonian. 
+
+The energy levels of a quantum system $\mathcal{H}$ with Hamiltonian $\hat{H}$ are given by the time-independent Schrödinger equation
+
+$$
+  \hat{H}\ket{\psi} = E \ket{\psi}
+$$
+
+Since the Hamiltonian is Hermitian, it has a complete orthonormal eigenbasis $\set{\ket{q}_j}_{j=0}^n$, meaning that any state $\ket{\psi}\in\mathcal{H}$ can be expanded as
+
+$$
+  \ket{\psi} = \sum_{j=0}^n c_0 \ket{q_j}
+$$
+
+If $\hat{H}$ has non-degenerate eigenvalues $\set{E_j}_{j=0}^n$, the expectation value of $\hat{H}$ in terms of $\ket{\psi}$ is given by
+
+$$
+  \braket{\hat{H}}_\psi = \braket{\psi|\hat{H}|\psi} = \sum_{j=0}^n |c_j|^2 E_j \geq E_0
+$$
+
+By the variational principle, this expectation value provides an upper bound for the ground state energy $E_0$
+
+$$
+  E_0 \leq \braket{\psi|\hat{H}|\psi} = \braket{\hat{H}}
+$$
+
+The objective of the VQE is therefore to pind a parametrization of $\ket{\psi(\boldsymbol{\theta})}$ that minimizes the expectation value $\braket{\hat{H}}_\psi$. To implement this on a quantum computer, we express $\ket{\psi}$ in terms of a generic parametrized unitary operator $\hat{U}(\boldsymbol{\theta})$ applied to an initial state $\ket{\psi_0}$:
+
+$$
+  \ket{\psi(\boldsymbol{\theta})} = \hat{U}(\boldsymbol{\theta}) \ket{\psi_0}
+$$
+
+where $\boldsymbol{\theta}$ is a set of tunable parameteters, typically constrained to $(-\pi,\pi]$. The initial state is usually set as the computational basis $\ket{0}^{\otimes N} = \ket{\mathbf{0}}$. The VQE cost function is teh defined as
+
+$$
+  E_\text{VQE} = \argmin_{\theta} \braket{\mathbf{0}|\hat{U}^\dagger (\boldsymbol{\theta}) \hat{H} \hat{U} (\boldsymbol{\theta})|\mathbf{0}}
+$$
+
+For practical implementation using quantum circuits, the Hamiltionian must be expressed as a weighted sum of Pauli operators $\hat{P}_A \in \set{\hat{I}_2, \hat{X}, \hat{Y}, \hat{Z}}^{\otimes N}$:
+
+$$
+  \hat{H} = \sum_a^\mathcal{P} w_a \hat{P}_a
+$$
+
+Substituting this into the cost function yields the minimization problem
+
+$$
+  E_\text{VQE} = \argmin_{\boldsymbol{\theta}} \sum_a^\mathcal{P} w_a \braket{\boldsymbol{0}|\hat{U}^\dagger (\boldsymbol{\theta}) \hat{P}_a \hat{U}(\boldsymbol{\theta})|\boldsymbol{0}}
+$$
+
+Each term $E_{P_a} = \braket{\boldsymbol{0}|\hat{U}^\dagger (\boldsymbol{\theta}) \hat{P}_a \hat{U}(\boldsymbol{\theta})|\boldsymbol{0}}$ corresponds to the expectation value of a Pauli string $\hat{P}_a$, which can be measured on a quantum device, while the summation and parameter optimization $E_\text{VQE} = \argmin_{\boldsymbol{\theta}} \sum_a w_a E_{P_a}$ are performed using a classical optimization algorithm, making VQE a hybrid quantum-classical method.
