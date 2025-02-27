@@ -595,7 +595,19 @@ $$
 </details>
 </MathBox>
 
-In $\R^3$, rotations about an arbitrary unit vector $\unitvec{n} \in \mathbb{S}^2$ is given by
+In terms of the Pauli matrices, any unitary operator $\hat{U}\in\mathrm{U}(2)$ takes the form
+
+$$
+  \mathbf{U} = u_0 \mathbf{I}_2 + i(u_x \boldsymbol{\sigma}_x + u_y \boldsymbol{\sigma}_y + u_z \boldsymbol{\sigma}_z) = u_0 \mathbf{I}_2 + i \mathbf{u}\cdot\boldsymbol{\sigma} 
+$$
+
+where $u_0^2 + |\mathbf{u}|^2 = 1$. This last restriction allows us to parametrize $u_0$ and $\mathbf{u}\in\R^3$ in terms of a real unit vector $\unitvec{n}\in\mathbb{S}^2 \subset\R^3$ parallel to $\mathbf{u}$ and a real number $\theta\in\R$ such that
+
+$$
+  \mathbf{U} = \cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right) \unitvec{n}\cdot\boldsymbol{\sigma} = e^{-i\theta \unitvec{n}\cdot\boldsymbol{\sigma} / 2}
+$$
+
+The unitary matrix $\mathbf{U}$ represents a counterclockwise rotation through an angle $\theta$ about $\unitvec{n}$. This operator is usually denoted 
 
 $$
   \hat{R}_{\unitvec{n}}(\theta) = e^{-i\theta \unitvec{n}\cdot\boldsymbol{\sigma}}
@@ -605,9 +617,35 @@ where $\boldsymbol{\sigma}$ are the Pauli matrices. Since the Pauli matrices are
 
 $$
 \begin{align*}
-  \hat{R}_x (\theta) =& e^{-i\frac{\theta}{2}\hat{X}} = \cos(\theta)\hat{I} - i\sin(\theta)\hat{\sigma}_x = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\ -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
-  \hat{R}_y (\theta) =& e^{-i\frac{\theta}{2}\hat{Y}} = \cos(\theta)\hat{I} - i\sin(\theta)\hat{\sigma}_y = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\ \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
-  \hat{R}_z (\theta) =& e^{-i\frac{\theta}{2}\hat{Z}} = \cos(\theta)\hat{I} - i\sin(\theta)\hat{\sigma}_z = \begin{bmatrix} e^{-i\frac{\theta}{2}} & 0 \\ 0 & e^{-i\frac{\theta}{2}} \end{bmatrix}
+  \hat{R}_x (\theta) =& e^{-i\theta\hat{\sigma}_x / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_x = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\ -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
+  \hat{R}_y (\theta) =& e^{-i\theta\hat{\sigma}_y / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_y = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\ \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
+  \hat{R}_z (\theta) =& e^{-i\theta\hat{\sigma}_z / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_z = \begin{bmatrix} e^{-i\frac{\theta}{2}} & 0 \\ 0 & e^{i\frac{\theta}{2}} \end{bmatrix}
+\end{align*}
+$$
+
+Let $V$ be a 3-dimensional vector space of $2\times 2$ Hermitian matrices with zero trace. Every such matrix $\mathbf{S}\in V$ can be written as $\mathbf{S} = \mathbf{s}\cdot\boldsymbol{\sigma}$, where $\mathbf{s}\in\R^3$ is a real vector. A unitary operator $\hat{U}\in\mathrm{U}(2)$ acts on $V$ by $\mathbf{S} \mapsto S' = \mathbf{USU}^\dagger$. In component form, this can be written as
+
+$$
+  \mathbf{s}\cdot\boldsymbol{\sigma} \mapsto \mathbf{s}' \cdot \boldsymbol{\sigma} = \mathbf{U}(\mathbf{s}\cdot\boldsymbol{\sigma}) \mathbf{U}^\dagger
+$$
+
+which defines a linear map $\hat{R}_U :\R^3 \to\R^3$. This is an isometry because it preserves the inner product. To verify this, consider $\mathbf{S} = \mathbf{s}\cdot\boldsymbol{\sigma}$ and $\mathbf{T} = \mathbf{t}\cdot\boldsymbol{\sigma}$ for $\mathbf{s},\mathbf{t}\in\R^3$. Then
+
+$$
+\begin{align*}
+  \mathbf{s}'\cdot \mathbf{t}' =& \frac{1}{2}\operatorname{tr}(\mathbf{S}' \mathbf{T}') \\
+  =& \frac{1}{2}\operatorname{tr}\left[(\mathbf{USU}^\dagger)(\mathbf{UTU}^\dagger) \right] \\
+  =& \frac{1}{2}\operatorname{tr}(\boldsymbol{ST}) \\
+  =& \mathbf{s}\cdot\mathbf{t}
+\end{align*}
+$$
+
+This means that $\hat{R}_U \in \mathrm{SO}(3)$ represents a rotation in $\R^3$. We have thus establish a group homomorphism
+
+$$
+\begin{align*}
+  \operatorname{U}(2)\to& \operatorname{SO}(3) \\
+  \hat{U} \mapsto \hat{R}_U
 \end{align*}
 $$
 
