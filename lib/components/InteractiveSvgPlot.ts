@@ -708,7 +708,7 @@ export class InteractiveSVGPlot {
     this.svgDefs.appendChild(pattern)
 
     // Grid rectangle
-    const rect = addChildElement(this.gridGroup, "rect", {
+    addChildElement(this.gridGroup, "rect", {
       class: "grid-rect",
       width: "100%",
       height: "100%",
