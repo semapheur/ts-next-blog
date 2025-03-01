@@ -806,28 +806,10 @@ $$
 $$
 
 It satisfies the following properties:
-1. $\mathbf{H}\ket{0} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$
-2. $\mathbf{H}\ket{1} = \frac{1}{\sqrt{2}} (\ket{0} - \ket{1})$
+
 3. $\mathbf{H}\ket{x_j} = \frac{1}{\sqrt{2}}(\ket{0} + e^{\pi ix_j} \ket{1})$
 4. $\mathbf{H}^2 = \mathbf{I}_2$
 5. $\mathbf{H} = e^{i \frac{3\pi}{2}} \mathbf{D}_{\unitvec{z}} (0) \mathbf{D}_{\unitvec{y}} \left(\frac{\pi}{2}\right) \mathbf{D}_{\mathbf{z}} (-\pi)$
-6. $\mathbf{H}\boldsymbol{\sigma}_x \mathbf{H} = \boldsymbol{\sigma}_z$
-7. $\mathbf{H}\boldsymbol{\sigma}_y \mathbf{H} = -\boldsymbol{\sigma}_y = \boldsymbol{\sigma}_x \boldsymbol{\sigma}_y \boldsymbol{\sigma}_x$
-8. $\mathbf{H}\boldsymbol{\sigma}_z \boldsymbol{H} = \boldsymbol{\sigma}_x$
-
-<details>
-<summary>Proof</summary>
-
-**(6):**
-
-$$
-\begin{align*}
-  \mathbf{H}\boldsymbol{\sigma}_x \mathbf{H} =& \frac{1}{\sqrt{2}}(\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z)\boldsymbol{\sigma_z} \frac{1}{\sqrt{2}}(\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z) \\
-  =& \frac{1}{2} (\underbrace{\boldsymbol{\sigma}_x^2}_{=\hat{I}_2} \boldsymbol{\sigma}_x + \boldsymbol{\sigma}_x^2 \boldsymbol{\sigma}_z + \boldsymbol{\sigma}_z \underbrace{\boldsymbol{\sigma}_x^2}_{=\hat{I}_2} + \underbrace{\boldsymbol{\sigma}_z \boldsymbol{\sigma}_x \boldsymbol{\sigma}_z}_{=-\boldsymbol{\sigma}_x}) \\
-  =& \boldsymbol{\sigma}_z
-\end{align*}
-$$
-</details>
 </MathBox>
 
 ## Computational basis
@@ -2024,24 +2006,92 @@ For $n = 1$ a gate $\hat{U}$ is called a *unary quantum gate* and for $n = 2$ a 
 | Name | Symbol | Operator | Matrix in basis $\set{\ket{0},\ket{1}}$ |
 | --- | --- | --- | --- |
 | Identity | <img src="/fig/identity_gate.svg"/> | $\mathbf{I} = \ket{0}\bra{0} + \ket{1}\bra{1}$ | $\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$ |
-| Phase-factor | <img src="/fig/phasefactor_gate.svg"/> | $\mathbf{M}(\alpha) := e^{i\alpha}\mathbf{I}$ | $\begin{bmatrix} e^{i\alpha} & 0 \\ 0 & e^{i\alpha} \end{bmatrix}$ |
-| Phase-shift | <img src="/fig/phaseshift_gate.svg"/> | $\mathbf{P}(\alpha) := \ket{0}\bra{0} + e^{i\alpha}$ | $\begin{bmatrix} 1 & 0 \\ 0 & e^{i\alpha} \end{bmatrix}$ |
-| Pauli-X or Q-NOT | <img src="/fig/pauli_x_gate.svg"/> | $\mathbf{X} := \boldsymbol{\sigma}_x = \ket{0}\bra{1} + \ket{1}\ket{0}$ | $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ |
-| Pauli-Y | <img src="/fig/pauli_y_gate.svg"/> | $\mathbf{Y} := \boldsymbol{\sigma}_y = -i\ket{0}\bra{1} + i\ket{1}\ket{0}$ | $\begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}$ |
+| Pauli-X or Q-NOT | <img src="/fig/pauli_x_gate.svg"/> | $\mathbf{X} := \boldsymbol{\sigma}_x = \ket{0}\bra{1} + \ket{1}\bra{0}$ | $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ |
+| Pauli-Y | <img src="/fig/pauli_y_gate.svg"/> | $\mathbf{Y} := \boldsymbol{\sigma}_y = -i\ket{0}\bra{1} + i\ket{1}\bra{0}$ | $\begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}$ |
 | Pauli-Z | <img src="/fig/pauli_z_gate.svg"/> | $\mathbf{Z} := \boldsymbol{\sigma}_z = \ket{0}\bra{0} - \ket{1}\bra{1}$ | $\begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$ |
-| Rotation-X | <img src="/fig/rotation_x_gate.svg"/> | $\mathbf{R}_x (\theta) := e^{-i\theta\boldsymbol{\sigma}_x / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{X}$ | $\begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\ -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix}$ |
-| Rotation-Y | <img src="/fig/rotation_y_gate.svg"/> | $\mathbf{R}_y (\theta) := e^{-i\theta\boldsymbol{\sigma}_y / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{Y}$ | $\begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\ \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix}$ |
-| Rotation-Z | <img src="/fig/rotation_z_gate.svg"/> | $\mathbf{R}_z (\theta) := e^{-i\theta\boldsymbol{\sigma}_z / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{Z}$ | $\begin{bmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{bmatrix}$ |
-| Hadamard | <img src="/fig/hadamard_gate.svg"/> | $\mathbf{H} := \frac{\boldsymbol{\sigma}_x + \boldsymbol{\sigma}_z}{\sqrt{2}}$ | $\frac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ |
+| Rotation-X | <img src="/fig/rotation_x_gate.svg"/> | $\mathbf{R}_x (\theta) := e^{-i\theta\mathbf{X} / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{X}$ | $\begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\ -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix}$ |
+| Rotation-Y | <img src="/fig/rotation_y_gate.svg"/> | $\mathbf{R}_y (\theta) := e^{-i\theta\mathbf{Y} / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{Y}$ | $\begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\ \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix}$ |
+| Rotation-Z | <img src="/fig/rotation_z_gate.svg"/> | $\mathbf{R}_z (\theta) := e^{-i\theta\mathbf{Z} / 2} = \cos\left(\frac{\theta}{2}\right)\mathbf{I} - i\sin\left(\frac{\theta}{2}\right)\mathbf{Z}$ | $\begin{bmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{bmatrix}$ |
+| X power | <img src="/fig/x_power_gate.svg"/> | $\mathbf{X}^t := \exp\left(-i\frac{\pi}{2}t(\mathbf{X} - \mathbf{I})\right) = e^{i\pi t/2} \mathbf{R}_x (\pi t)$ | $e^{-i\pi t/2} \begin{bmatrix} \cos\left(\frac{\pi}{2} t\right) & -i\sin\left(\frac{\pi}{2} t\right) \\ -i\sin\left(\frac{\pi}{2} t\right) & \cos\left(\frac{\pi}{2} t\right) \end{bmatrix}$ |
+| Y power | <img src="/fig/y_power_gate.svg"/> | $\mathbf{Y}^t := \exp\left(-i\frac{\pi}{2}t(\mathbf{Y} - \mathbf{I})\right) = e^{i\pi t/2} \mathbf{R}_y (\pi t)$ | $e^{-i\pi t/2}\begin{bmatrix} \cos\left(\frac{\pi}{2} t\right) & -\sin\left(\frac{\pi}{2} t\right) \\ \sin\left(\frac{\pi}{2} t\right) & \cos\left(\frac{\pi}{2} t\right) \end{bmatrix}$ |
+| Z power | <img src="/fig/y_power_gate.svg"/> | $\mathbf{Z}^t := \exp\left(-i\frac{\pi}{2}t(\mathbf{Z} - \mathbf{I})\right) = e^{i\pi t/2} \mathbf{R}_z (\pi t)$ | $\begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi t} \end{bmatrix}$ |
+| Phase shift | <img src="/fig/phaseshift_gate.svg"/> | $\mathbf{P}(\alpha) := \ket{0}\bra{0} + e^{i\alpha}\ket{1}\bra{1} = \mathbf{Z}^{\alpha/\pi}$ | $\begin{bmatrix} 1 & 0 \\ 0 & e^{i\alpha} \end{bmatrix}$ |
+| Discrete phase shift | <img src="/fig/discrete_phaseshift_gate.svg"/> | $\mathbf{P}_k := \mathbf{P}\left(\frac{2\pi}{2^k}\right) = \mathbf{Z}^{2^{1-k}}$ | $\begin{bmatrix} 1 & 0 \\ 0 & e^{i 2\pi /2^k} \end{bmatrix}$ |
+| V | <img src="/fig/v_gate.svg"/> | $\mathbf{V} := \mathbf{X}^{1/2}$ | $\frac{1}{2}\begin{bmatrix} 1 + i & 1 - i \\ 1 - i & 1 + i \end{bmatrix}$ |
+| S | <img src="/fig/s_gate.svg"/> | $\mathbf{S} := \mathbf{Z}^{1/2}$ | $\begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}$ |
+| Phase-factor | <img src="/fig/phasefactor_gate.svg"/> | $\mathbf{K}(\alpha) := e^{i\alpha}\mathbf{I}$ | $\begin{bmatrix} e^{i\alpha} & 0 \\ 0 & e^{i\alpha} \end{bmatrix}$ |
+| Hadamard | <img src="/fig/hadamard_gate.svg"/> | $\mathbf{H} := \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z})$ | $\frac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ |
 </TableFigure>
 
-#### Pauli gates
+<MathBox title='Preparing a single qubit in an arbitrary state' boxType='example'>
+A qubit initially in state $\ket{0}$ can be prepared in in an arbitrary state $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ using the quantum gate $\mathbf{R}_y (2 \arccos\alpha)$, assuming $\alpha,\beta\in\R$ are real with $\alpha^2 + \beta^2 = 1$, i.e.
 
-Applying the Pauli-X gate to a qubit $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ gives
+$$
+  \mathbf{R}_y (2 \arccos\alpha)\ket{0} = \alpha\ket{0} + \beta\ket{1}
+$$
+
+If $\alpha = r_1 e^{i\theta_1}$ and $\beta = r_2 e^{i\theta_2}$ are complex, the state preparation requires an additional  phase $\mathbf{P}(\theta_2 - \theta_1)$ to adjust the relative phase. In this case, the qubit can be initialized using the sequence of gates
+
+$$
+  \mathbf{P}(\theta_2 - \theta_1) \mathbf{R}_y (2\arccos r_1) = r_1 \ket{0} + r_2 e^{i(\theta_2 - \theta_1)}\ket{1}
+$$
+
+<details>
+<summary>Details</summary>
+
+Since $\mathbf{R}_y (2\theta) = \left[\begin{smallmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{smallmatrix}\right]$, we obtain
+
 
 $$
 \begin{align*}
-  \mathbf{X}(\alpha\ket{0} + \beta\ket{1}) =& (\ket{0}\bra{1} + \ket{1}\bra{0})(\alpha\ket{0} + \beta\ket{1}) \\
+  \mathbf{R}_y (2\theta) \ket{0} =& \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}\cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \\
+  =& \cos(\theta)\ket{0} + \sin(\theta)\ket{1} \\
+  =& \cos(\theta)\ket{0} + \sqrt{1 - \cos^2 (\theta)} \ket{1}
+\end{align*}
+$$
+
+If $\alpha,\beta\in\R$ with $\alpha^2 + \beta^2 = 0$, it follows that $\beta = \sqrt{1 - \alpha^2}$. Setting $\cos(\theta) = \alpha$ or $\theta = \arccos(\alpha)$ yields
+
+$$
+\begin{align*}
+  \mathbf{R}_y (2\arccos\alpha) \ket{0} =& \cos(\arccos(\alpha))\ket{0} + \sqrt{1 - \cos^2(\arccos\alpha)}\ket{1} \\
+  =& \alpha\ket{0} + \beta\ket{1}
+\end{align*}
+$$
+
+If $\alpha = r_1 e^{i\theta_1}$ and $\beta = r_2 e^{i\theta_2}$, then
+
+$$
+\begin{align*}
+  \ket{\psi} =& r_1 e^{i\theta_1} \ket{0} + r_2 e^{i\theta_2} \ket{1} \\
+  =& e^{i\theta_1} (r_1 \ket{0} + r_2 e^{i(\theta_2 - \theta_1)}\ket{1}) \\
+  \equiv& r_1 \ket{0} + r_2 e^{i(\theta_2 - \theta_1)}\ket{1}
+\end{align*}
+$$
+
+Since $r_1^2 + r_2^2 = 1$, it follows from the previous argument that
+
+$$
+  \mathbf{R}_y (2\arccos r_1) \ket{0} = r_1 \ket{0} + r_2 \ket{1}
+$$
+
+To add the phase $\theta_2 - \theta_1$, we apply the phase gate $\mathbf{P}(\theta_2 - \theta_1)$ giving
+
+$$
+  \mathbf{P}(\theta_2 - \theta_1)(r_1 \ket{0} + r_2\ket{1}) =& (\ket{0}\bra{0} + e^{i(\theta_2 - \theta_1)}\ket{1}\bra{1})(r_1 \ket{0} + r_2\ket{1}) \\
+  =& r_1 \ket{0} + r_2 e^{i(\theta_2 - \theta_1)}\ket{1}
+$$
+</details>
+</MathBox>
+
+#### Pauli gates
+
+##### Pauli-X gate
+The Pauli-X gate generates a half-turn in the Bloch sphere about the $x$ axis. Applying the X gate to a qubit $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ gives
+
+$$
+\begin{align*}
+  \mathbf{X}(\alpha\ket{0} + \beta\ket{1}) =& \big(\ket{0}\bra{1} + \ket{1}\bra{0}\big)\big(\alpha\ket{0} + \beta\ket{1}\big) \\
   =& \beta\ket{1} + \alpha\ket{0}
 \end{align*}
 $$
@@ -2058,24 +2108,30 @@ $$
   \mathbf{X}\ket{+} = \ket{+},\quad \mathbf{X}\ket{-} = -\ket{-}
 $$
 
-Since $-\ket{-} = e^{i\pi} \ket{-}$, it follows that $\ket{-}$ and $-\ket{-}$ are equivalent up to a global phase.
+Since $-\ket{-} = e^{i\pi} \ket{-}$, it follows that $\ket{-}$ and $-\ket{-}$ are equivalent up to a global phase. 
 
-Applying the Pauli-Y gate to a qubit $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ yields
+<MathBox title='The Pauli-X gate is not a true quantum NOT gate' boxType='remark'>
+The Pauli-X gate is also known as the quantum not gate because it is equivalent to a classical NOT operation, or logical notation. However, it is not a true quantum NOT gate, since it only logically negates the state in the computational basis. A true quantum negation would require mapping every point on the Bloch sphee to its antipodal point. This would required an inversion of the sphere which cannot be generated by rotations alone. There is no general quantum NOT operation that would negate an arbitrary qubit state.
+</MathBox>
+
+##### Pauli Y-gate
+The Pauli-Y generates a half-turn in the Bloch sphere about the $y$ axis. Applying the Y gate to a qubit $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ yields
 
 $$
 \begin{align*}
-  \mathbf{Y}(\alpha\ket{0} + \beta\ket{1}) =& (-i\ket{0}\bra{1} + i\ket{1}\bra{0})(\alpha\ket{0} + \beta\ket{1}) \\
-  =& i(\alpha\ket{1} - \beta\ket{0})
+  \mathbf{Y}(\alpha\ket{0} + \beta\ket{1}) =& \big(-i\ket{0}\bra{1} + i\ket{1}\bra{0}\big)\big(\alpha\ket{0} + \beta\ket{1}\big) \\
+  =& i\big(\alpha\ket{1} - \beta\ket{0}\big)
 \end{align*}
 $$
 
 whichs shows that it flips the qubit and multiplies the phase by $i$.
 
+##### Pauli Z gate
 Applying the Pauli-Z gate to a qubit $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$ gives
 
 $$
 \begin{align*}
-  \mathbf{Z}(\alpha\ket{0} + \beta\ket{1}) =& (\ket{0}\bra{0} - \ket{1}\bra{1})(\alpha\ket{0} + \beta\ket{1}) \\
+  \mathbf{Z}(\alpha\ket{0} + \beta\ket{1}) =& \big(\ket{0}\bra{0} - \ket{1}\bra{1}\big)\big(\alpha\ket{0} + \beta\ket{1}\big) \\
   =& \alpha\ket{0} - \beta\ket{1} = \alpha\ket{0} + e^{i\pi}\ket{1}
 \end{align*}
 $$
@@ -2086,25 +2142,266 @@ $$
   \mathbf{Z}\ket{+} = \ket{-}, \quad \mathbf{Z}\ket{-} = \ket{+}
 $$
 
+##### Pauli gate identities
+1. $\mathbf{XY} = -\mathbf{YX} = i\mathbf{Z}$
+2. $\mathbf{YZ} = -\mathbf{ZY} = i\mathbf{X}$
+3. $\mathbf{ZX} = -\mathbf{XZ} = i\mathbf{Y}$
+4. $\mathbf{XYZ} = \mathbf{YZX} = \mathbf{ZXY} = i\mathbf{I}_2$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  \mathbf{XY} =& \big(\ket{0}\bra{1} + \ket{1}\bra{0}\big)\big(-i\ket{0}\bra{1} + i\ket{1}\bra{0}\big) \\
+  =& i\ket{0}\bra{0} - i\ket{1}\bra{1} = i\mathbf{Z}
+\end{align*}
+$$
+
+**(2):**
+
+$$
+\begin{align*}
+  \mathbf{YZ} =& \big(-i\ket{0}\bra{1} + i\ket{1}\bra{0}\big)\big(\ket{0}\bra{0} - \ket{1}\bra{1}\big) \\
+  =& i\ket{0}\bra{1} + i\ket{1}\bra{0} = i\mathbf{X}
+\end{align*}
+$$
+
+**(3):**
+
+$$
+\begin{align*}
+  \mathbf{ZX} =& \big(\ket{0}\bra{0} - \ket{1}\bra{1}\big)\big(\ket{0}\bra{1} + \ket{1}\bra{0}\big) \\
+  =& \ket{0}\bra{1} - \ket{1}\bra{0} = -i^2 \ket{0}\bra{1} + i^2 \ket{1}\bra{0}\\
+  =& i\big(-i \ket{0}\bra{1} + i\ket{1}\bra{0}\big) = i\mathbf{Y}
+\end{align*}
+$$
+
+</details>
+
 #### Rotation gates
 
-The rotation gates are related to the Pauli gates as follows
+The Pauli rotation gates $\mathbf{R}_x$, $\mathbf{R}_y$ and $\mathbf{R}_z$ rotate the qubit by an arbitrary angle anti-clockwise about the corresponding axis in the Bloch sphere.
+
+<details>
+<summary>Details</summary>
+
+Apply $\mathbf{R}_z (\theta')$ to a qubit $\ket{\psi} = \cos\left(\frac{\theta}{2}\right)\ket{0} + e^{i\phi} \sin\left(\frac{\theta}{2}\right)\ket{1}$ yields
+
+$$
+\begin{align*}
+  \mathbf{R}_z (\theta') =& \left(e^{-i\theta'/2} \ket{0}\bra{0} + e^{i\theta'/2} \ket{1}\bra{1} \right)\left(\cos\left(\frac{\theta}{2}\right)\ket{0} + e^{i\phi} \sin\left(\frac{\theta}{2}\right)\ket{1} \right) \\
+  =& e^{-i\theta'/2} \left(\cos\left(\frac{\theta}{2}\right)\ket{0} + e^{i(\phi + \theta')} \sin\left(\frac{\theta}{2}\right)\ket{1} \right) \\
+  \equiv& \cos\left(\frac{\theta}{2}\right)\ket{0} + e^{i(\phi + \theta')} \ket{1}
+\end{align*}
+$$
+
+This shows that the $\mathbf{R}_z$ gate leaves the polar angle unchanged and adds $\theta'$ to the azimuth angle, which corresponds to a rotation about the $z$ axis.
+</details>
+
+#### Phase shift gates
+
+The phase shift gate is defined in terms of $\mathbf{R}_z$ as
+
+$$
+  \mathbf{P}(\theta) = e^{-i\theta/2} \mathbf{R}_z (\theta) = \mathbf{Z}^{\theta/\pi}
+$$
+
+Discrete fractional power of the Z gate define discete phase gates
+
+$$
+  \mathbf{P}_k = \mathbf{P}\left(\frac{2\pi}{2^k}\right) = \mathbf{Z}^{2 - k}
+$$
+
+#### Pauli power gates
+
+The Pauli power gates are defined in terms of the Pauli rotation gates. Noting that that a $\pi$ rotation correspond to a Pauli gate up to a phase factor $\pm i = e^{\pm i\pi/2}$, we have
 
 $$
   \mathbf{R}_x (\pi) = -i\mathbf{X}, \quad \mathbf{R}_y (\pi) = -i\mathbf{Y}, \quad \mathbf{R}_z (\pi) = i\mathbf{Z}
 $$
 
-#### Phase shift gates
-
-The phase shift gates are related to each other as follows
+This allows us to express fractional powers of the Pauli matrices using the corresponding rotation operators: 
 
 $$
 \begin{align*}
-  \mathbf{Z} =& \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi} \end{bmatrix} = \mathbf{P}(\pi) \\
-  \mathbf{S} =& \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/2} \end{bmatrix} = \mathbf{P}\left(\frac{\pi}{2}\right) = \sqrt{\mathbf{Z}} \\
-  \mathbf{T} =& \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{bmatrix} = \mathbf{P}\left(\frac{\pi}{4}\right) = \sqrt{\mathbf{S}} = \sqrt[4]{\mathbf{Z}}
+  \mathbf{X}^t =& e^{-i\frac{\pi}{2}(\mathbf{X} - \mathbf{I})} \equiv \mathbf{R}_x (\pi t) \\
+  \mathbf{Y}^t =& e^{-i\frac{\pi}{2}(\mathbf{Y} - \mathbf{I})} \equiv \mathbf{R}_y (\pi t) \\
+  \mathbf{Z}^t =& e^{-i\frac{\pi}{2}(\mathbf{Z} - \mathbf{I})} \equiv \mathbf{R}_z (\pi t)
 \end{align*}
 $$
+
+Special cases of the Pauli power gates include
+- **V gate (square root of X)**
+
+The V gate is the square root of $X$, representing a quarter-turn about the $x$-axis on the Bloch sphere:
+$$
+  \mathbf{V} = \mathbf{X}^{1/2} \equiv \mathbf{R}_x \left(\frac{\pi}{2}\right),\quad \mathbf{V}^\dagger = \mathbf{X}^{-1/2} \equiv \mathbf{R}_x \left(-\frac{\pi}{2}\right)
+$$
+
+- **Pseudo-Hadamard gate**
+
+The inverse square root of the Y defines the pseudo-Hadamard gate, generating a quarter turn about the $y$-axis on the Bloch sphere 
+$$
+  \tilde{\mathbf{H}} = \frac{\sqrt{2}}{1 + i} \mathbf{Y}^{-1/2}, \quad \tilde{\mathbf{H}}^\dagger = \frac{\sqrt{2}}{1 + i} \mathbf{Y}^{1/2}
+$$
+
+- **S-gate (square root of Z)** 
+
+The S gate is the square root of the Z gate, generating a quarter turn counterclockwise about the $z$-axis on the Bloch sphere
+$$
+  \mathbf{S} = \mathbf{Z}^{1/2} = \mathbf{P}\left(\frac{\pi}{2}\right) = \mathbf{P}_2 \equiv \mathbf{R}_z \left(\frac{\pi}{2}\right)
+$$
+
+Its Hermitian adjoint $\mathbf{S}^\dagger = \mathbf{Z}^{-1/2}$, representing a quarter turn clockwise about the $z$ axis, also defines a square root of $\mathbf{Z}$ since
+
+$$
+\begin{align*}
+  \mathbf{S}^\dagger \mathbf{S}^\dagger =& \big(\ket{0}\bra{0} - i\ket{1}\bra{i} \big)\big(\ket{0}\bra{0} - i\ket{1}\bra{i} \big) \\
+  =& \ket{0}\bra{0} + i^2 \ket{1}\bra{1} = \ket{0}\bra{0} - \ket{1}\bra{1} = \mathbf{Z}
+\end{align*}
+$$
+
+Properties of the S gate:
+1. $\mathbf{S}^{4-k} = \mathbf{S}^{-k} = (\mathbf{S}^\dagger)^k$
+2. $\mathbf{SXS}^\dagger = \mathbf{Y}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** This follows from the fact that $\mathbf{S}^n = \mathbf{Z}^{n/2} = \exp\left(-i\frac{\pi}{2} n \mathbf{Z} \right)$. In particular
+
+$$
+  \mathbf{S}^4 = e^{-i2\pi \mathbf{Z}} = \mathbf{I}_2
+$$
+
+meaning that $\mathbf{S}^{4 + n} = \mathbf{S}^n$
+
+**(2):**
+
+$$
+\begin{align*}
+  \mathbf{SXS}^\dagger =& \big(\ket{0}\bra{0} + i\ket{1}\bra{1} \big)\big(\ket{0}\bra{1} + \ket{1}\bra{0} \big)\big(\ket{0}\bra{0} - i\ket{1}\bra{1} \big) \\
+  =& \big(\ket{0}\bra{1} + i\ket{1}\bra{0}\big) \big(\ket{0}\bra{0} - i\ket{1}\bra{1} \big) \\
+  =& -i\ket{0}\bra{i} + i\ket{1}\bra{0} = \mathbf{Y}
+\end{align*}
+$$
+</details>
+
+- **T-gate**: The square root of the S gate
+$$
+  \mathbf{T} = \mathbf{S}^{1/2} = \mathbf{Z}^{1/4} = \mathbf{P}_3
+$$
+
+#### Hadamard gate
+
+Applying the Hadamard gate to $\ket{0}$ and $\ket{1}$ creates superpositions:
+
+$$
+  \mathbf{H}\ket{0} = \frac{1}{\sqrt{2}}(\underbrace{\mathbf{X}\ket{0}}_{=\ket{1}} + \underbrace{\mathbf{Z}\ket{0}}_{=\ket{0}}) = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})
+$$
+
+and similarly
+
+$$
+  \mathbf{H}\ket{1} = \frac{1}{\sqrt{2}}(\underbrace{\mathbf{X}\ket{1}}_{=\ket{0}} + \underbrace{\mathbf{Z}\ket{0}}_{=-\ket{1}}) = \frac{1}{\sqrt{2}} (\ket{0} - \ket{1})
+$$
+
+The Hadamard gate is related to the Pauli gates as follows
+
+1. $\mathbf{HXH} = \mathbf{Z}$
+2. $\mathbf{HYH} = -\mathbf{Y}$
+3. $\mathbf{HZH} = \mathbf{X}$
+4. $\mathbf{HS}^\dagger \mathbf{ZHS} = \mathbf{Y}$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  \mathbf{HXH} =& \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z})\mathbf{X} \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \\
+  =& \frac{1}{2} (\underbrace{\mathbf{X}^2}_{=\hat{I}_2} \mathbf{X} + \mathbf{X}^2 \mathbf{Z} + \mathbf{Z} \underbrace{\mathbf{X}^2}_{=\hat{I}_2} + \underbrace{\mathbf{Z} \mathbf{X} \mathbf{Z}}_{=-\mathbf{X}}) \\
+  =& \mathbf{Z}
+\end{align*}
+$$
+
+**(2):**
+
+$$
+\begin{align*}
+  \mathbf{HYH} =& \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \mathbf{Y} \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \\
+  =& \frac{1}{2} (\underbrace{\mathbf{XYX}}_{=-\mathbf{Y}} + \underbrace{\mathbf{XYZ}}_{=i\mathbf{I}_2} + \underbrace{\mathbf{ZYX}}_{=-i\mathbf{I}_2} + \underbrace{\mathbf{ZYZ}}_{=-\mathbf{Y}}) \\
+  =& -\mathbf{Y}
+\end{align*}
+$$
+
+**(3):**
+
+$$
+\begin{align*}
+  \mathbf{HZH} =& \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z})\mathbf{Z} \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \\
+  =& \frac{1}{2} (\underbrace{\mathbf{XZX}}_{=-\mathbf{Z}} + \mathbf{X}\underbrace{\mathbf{Z}^2}_{=\mathbf{I}_2} + \underbrace{\mathbf{Z}^2}_{=\mathbf{I}_2} \mathbf{X} + \underbrace{\mathbf{Z}^2}_{=\mathbf{I}_2} \mathbf{Z}) \\
+  =& \mathbf{X}
+\end{align*}
+$$
+
+**(4):**
+
+$$
+\begin{align*}
+  \mathbf{HS}^\dagger \mathbf{ZHS} =& \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \mathbf{Z}^{-1/2} \mathbf{Z} \frac{1}{\sqrt{2}}(\mathbf{X} + \mathbf{Z}) \mathbf{Z}^{1/2} \\
+  =& \frac{1}{2}(\mathbf{X}\mathbf{Z}^{1/2} \mathbf{X} \mathbf{Z}^{1/2})
+\end{align*}
+$$
+
+</details>
+
+The Hadamard gate is related to the rotation gates as follows
+
+1. $\mathbf{H} \mathbf{R}_x (\theta) \mathbf{H} = \mathbf{R}_z (\theta)$
+2. $\mathbf{H} \mathbf{R}_y (\theta) \mathbf{H} = \mathbf{R}_y (-\theta)$
+3. $\mathbf{H} \mathbf{R}_z (\theta) \mathbf{H} = \mathbf{R}_x (\theta)$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  \mathbf{H} \mathbf{R}_x (\theta) \mathbf{H} =& \mathbf{H}\left(\cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right)\mathbf{X}\right)\mathbf{H} \\
+  =& \cos\left(\frac{\theta}{2}\right) \underbrace{\mathbf{H}^2}_{=\mathbf{I}_2} - i\sin\left(\frac{\theta}{2}\right) \underbrace{\mathbf{HXH}}_{=\mathbf{Z}} \\
+  =& \cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right) \mathbf{Z} = \mathbf{R}_z (\theta)
+\end{align*}
+$$
+
+**(2):**
+
+$$
+\begin{align*}
+  \mathbf{H} \mathbf{R}_y (\theta) \mathbf{H} =& \mathbf{H}\left(\cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right)\mathbf{Y}\right)\mathbf{H} \\
+  =& \cos\left(\frac{\theta}{2}\right) \underbrace{\mathbf{H}^2}_{=\mathbf{I}_2} - i\sin\left(\frac{\theta}{2}\right) \underbrace{\mathbf{HYH}}_{=\mathbf{-Y}} \\
+  =& \cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 + i\sin\left(\frac{\theta}{2}\right) \mathbf{Y} = \mathbf{R}_y (-\theta)
+\end{align*}
+$$
+
+**(3):**
+
+$$
+\begin{align*}
+  \mathbf{H} \mathbf{R}_z (\theta) \mathbf{H} =& \mathbf{H}\left(\cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right)\mathbf{Z}\right)\mathbf{H} \\
+  =& \cos\left(\frac{\theta}{2}\right) \underbrace{\mathbf{H}^2}_{=\mathbf{I}_2} - i\sin\left(\frac{\theta}{2}\right) \underbrace{\mathbf{HZH}}_{=\mathbf{X}} \\
+  =& \cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right) \mathbf{X} = \mathbf{R}_x (\theta)
+\end{align*}
+$$
+</details>
+
+The Hadamard gate is related to the quarter turn gates as follows
+1. $\mathbf{V} = \mathbf{HSH}$
 
 ### Binary quantum gates
 

@@ -27,7 +27,7 @@ export type ViewRange = {
 }
 
 export class InteractiveSVGPlot {
-  private xmlns = "http://www.w3.org/2000/svg"
+  private readonly xmlns = "http://www.w3.org/2000/svg"
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
@@ -40,6 +40,12 @@ export class InteractiveSVGPlot {
   private minGridScreenSize = 50
   private plots: SvgPlots = {}
   private eventListeners = new EventListenerStore()
+  private crosshairGroup: SVGGElement
+  private gridGroup: SVGGElement
+  private axisGroup: SVGGElement
+
+  private onPointerMoveBound: (event: PointerEvent) => void
+  private onPointerLeaveBound: () => void
 
   constructor(
     container: HTMLDivElement,
@@ -91,9 +97,24 @@ export class InteractiveSVGPlot {
     this.setViewTransform(width, height)
     this.frameGroup.appendChild(this.plotGroup)
 
+    this.crosshairGroup = document.createElementNS(
+      this.xmlns,
+      "g",
+    ) as SVGGElement
+    this.frameGroup.appendChild(this.crosshairGroup)
+
+    this.gridGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
+    this.frameGroup.appendChild(this.gridGroup)
+
+    this.axisGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
+    this.frameGroup.appendChild(this.axisGroup)
+
     addChildElement(this.frameGroup, "g", { id: "crosshair-group" })
     addChildElement(this.frameGroup, "g", { id: "grid-group" })
     addChildElement(this.frameGroup, "g", { id: "axis-group" })
+
+    this.onPointerMoveBound = this.onPointerMove.bind(this)
+    this.onPointerLeaveBound = this.onPointerLeave.bind(this)
 
     // Add functionality
     this.crosshair()
@@ -122,8 +143,8 @@ export class InteractiveSVGPlot {
   private setFrameTransform(margin?: Vector, width?: number, height?: number) {
     let transform = this.frameGroup.getCTM()!
 
-    if (!width) width = this.svgElement.getBoundingClientRect().width // svgElement.height.baseVal.value
-    if (!height) height = this.svgElement.getBoundingClientRect().height // svgElement.height.baseVal.value
+    if (!width) width = this.svgElement.getBoundingClientRect().width
+    if (!height) height = this.svgElement.getBoundingClientRect().height
     if (!margin) {
       margin = new Vector((1 - transform.a) / 2, (1 - transform.d) / 2)
     }
@@ -161,164 +182,153 @@ export class InteractiveSVGPlot {
   }
 
   private crosshair() {
-    const crosshairGroup = document.getElementById("crosshair-group")!
-
-    const onPointerEnterBound = onPointerEnter.bind(this)
+    const onPointerEnterBound = this.onPointerEnter.bind(this)
     this.eventListeners.storeEventListener(
       "pointerenter",
       this.svgElement,
       onPointerEnterBound,
     )
+  }
 
-    function onPointerEnter() {
-      // Text element displaying cursor position
-      const attr = {
-        id: "crosshair-text",
-        "font-size": "0.75em",
-        fill: "rgb(var(--color-text) / 1)",
-      }
-      addChildElement(crosshairGroup, "text", attr)
+  private onPointerEnter() {
+    if (!this.crosshairGroup) return
 
-      // Crosshair lines
-      const path = {
-        id: "crosshair-line-x",
-        d: "",
-        stroke: "rgb(var(--color-text) / 1)",
-        "stroke-width": "1px",
-        "stroke-dasharray": "5px",
-        opacity: "0.5",
-        "vector-effect": "non-scaling-stroke",
-      }
-      addChildElement(crosshairGroup, "path", path)
+    // Text element displaying cursor position
+    const attr = {
+      id: "crosshair-text",
+      "font-size": "0.75em",
+      fill: "rgb(var(--color-text) / 1)",
+    }
+    addChildElement(this.crosshairGroup, "text", attr)
 
-      path["id"] = "crosshair-line-y"
-      addChildElement(crosshairGroup, "path", path)
+    // Crosshair lines
+    const pathAttr = {
+      d: "",
+      stroke: "rgb(var(--color-text) / 1)",
+      "stroke-width": "1px",
+      "stroke-dasharray": "5px",
+      opacity: "0.5",
+      "vector-effect": "non-scaling-stroke",
+    }
+    addChildElement(this.crosshairGroup, "path", {
+      ...pathAttr,
+      id: "crosshair-line-x",
+    })
 
-      this.frameGroup.addEventListener("pointermove", onPointerMove.bind(this))
-      this.frameGroup.addEventListener(
-        "pointerleave",
-        onPointerLeave.bind(this),
-      )
+    addChildElement(this.crosshairGroup, "path", {
+      ...pathAttr,
+      id: "crosshair-line-y",
+    })
+
+    this.frameGroup.addEventListener("pointermove", this.onPointerMoveBound)
+    this.frameGroup.addEventListener("pointerleave", this.onPointerLeaveBound)
+  }
+
+  private onPointerMove(event: PointerEvent) {
+    const text = document.getElementById("crosshair-text")
+    const xLine = document.getElementById("crosshair-line-x")
+    const yLine = document.getElementById("crosshair-line-y")
+    if (!text || !xLine || !yLine) return
+
+    const transform = this.plotGroup.getCTM()!
+    const svgPos = mousePosition(this.frameGroup, event)
+    if (!svgPos || !transform) return
+
+    const drawPos = screenToDrawPosition(svgPos, transform)!
+
+    const coordText = (coord: number, ix: number): string => {
+      return this.gridSize[ix] < 0.01 || this.gridSize[ix] > 999
+        ? coord.toExponential(2)
+        : coord.toFixed(2)
     }
 
-    function onPointerMove(event: PointerEvent) {
-      const coordText = (coord: number, ix: number): string => {
-        if (this.gridSize[ix] < 0.01 || this.gridSize[ix] > 999) {
-          return coord.toExponential(2)
-        }
-        return coord.toFixed(2)
-      }
+    text.setAttribute("x", `${svgPos.x + 15}`)
+    text.setAttribute("y", `${svgPos.y + 20}`)
+    text.textContent = `(${coordText(drawPos.x, 0)}, ${coordText(
+      -drawPos.y,
+      1,
+    )})`
 
-      const transform = this.plotGroup.getCTM()!
-      const svgPos = mousePosition(this.frameGroup, event)
-      if (!svgPos || !transform) return
-      const drawPos = screenToDrawPosition(svgPos, transform)!
+    xLine.setAttribute(
+      "d",
+      `M${svgPos.x},${transform.f}L${svgPos.x},${svgPos.y}`,
+    )
+    yLine.setAttribute(
+      "d",
+      `M${transform.e},${svgPos.y}L${svgPos.x},${svgPos.y}`,
+    )
+  }
 
-      const text = document.getElementById("crosshair-text")!
-      text.setAttribute("x", `${svgPos.x + 15}`)
-      text.setAttribute("y", `${svgPos.y + 20}`)
-
-      text.innerHTML = `(${coordText(drawPos.x, 0)}, ${coordText(
-        -drawPos.y,
-        1,
-      )})`
-
-      const xLine = document.getElementById("crosshair-line-x")!
-      xLine.setAttribute(
-        "d",
-        `M${svgPos.x},${transform.f}L${svgPos.x},${svgPos.y}`,
-      )
-
-      const yLine = document.getElementById("crosshair-line-y")!
-      yLine.setAttribute(
-        "d",
-        `M${transform.e},${svgPos.y}L${svgPos.x},${svgPos.y}`,
-      )
+  private onPointerLeave() {
+    for (const i of ["text", "line-x", "line-y"]) {
+      const el = document.getElementById(`crosshair-${i}`)
+      el?.remove()
     }
-
-    function onPointerLeave() {
-      for (const i of ["text", "line-x", "line-y"]) {
-        const el = document.getElementById(`crosshair-${i}`)
-        el?.remove()
-      }
-      this.frameGroup.removeEventListener(
-        "pointermove",
-        onPointerMove.bind(this),
-      )
-      this.frameGroup.removeEventListener(
-        "pointerleave",
-        onPointerLeave.bind(this),
-      )
-    }
+    this.frameGroup.removeEventListener("pointermove", this.onPointerMoveBound)
+    this.frameGroup.removeEventListener(
+      "pointerleave",
+      this.onPointerLeaveBound,
+    )
   }
 
   private panOnDrag() {
     const dragButton = 1
-
     let startPos = new DOMPoint(0, 0)
     let isPanning = false
 
-    const onClickBound = onClick.bind(this)
+    const onClickBound = (event: PointerEvent) => {
+      if (event.button !== dragButton) return
+      event.preventDefault()
+
+      // Click position
+      const pos = mousePosition(this.frameGroup, event)
+      if (!pos) return
+      startPos = pos
+      isPanning = true
+
+      const onPointerMoveBound = (e: PointerEvent) => {
+        if (!isPanning) return
+
+        const transform = this.plotGroup.getCTM()!
+        const panPos = mousePosition(this.frameGroup, e)
+        if (!panPos) return
+
+        const dist = {
+          x: (startPos.x - panPos.x) / transform.a,
+          y: (startPos.y - panPos.y) / transform.d,
+        }
+
+        this.viewRange.x.addScalarInplace(dist.x)
+        this.viewRange.y.addScalarInplace(dist.y)
+
+        this.transformView(true)
+
+        startPos = panPos
+      }
+
+      const onPointerUpBound = () => {
+        isPanning = false
+        this.redrawPlots()
+
+        // Clean up event listeners
+        this.frameGroup.removeEventListener("pointermove", onPointerMoveBound)
+        this.frameGroup.removeEventListener("pointerup", onPointerUpBound)
+      }
+
+      // Add temporary event listeners
+      this.frameGroup.addEventListener("pointermove", onPointerMoveBound)
+      this.frameGroup.addEventListener("pointerup", onPointerUpBound)
+    }
+
     this.eventListeners.storeEventListener(
       "pointerdown",
       this.frameGroup,
       onClickBound,
     )
-
-    function onClick(event: PointerEvent) {
-      if (event.button !== dragButton) return
-
-      event.preventDefault()
-
-      // Click position
-      startPos = mousePosition(this.frameGroup, event)!
-      isPanning = true
-
-      this.frameGroup.addEventListener("pointerup", onPointerUp.bind(this))
-      this.frameGroup.addEventListener("pointermove", onPointerMove.bind(this))
-    }
-
-    function onPointerMove(event: PointerEvent) {
-      if (!isPanning) return
-
-      const transform = this.plotGroup.getCTM()!
-      const panPos = mousePosition(this.frameGroup, event)!
-
-      const dist = {
-        x: (startPos.x - panPos.x) / transform.a,
-        y: (startPos.y - panPos.y) / transform.d,
-      }
-
-      this.viewRange.x.addScalarInplace(dist.x)
-      this.viewRange.y.addScalarInplace(dist.y)
-
-      this.transformView(true)
-
-      startPos = mousePosition(this.frameGroup, event)!
-    }
-
-    function onPointerUp() {
-      isPanning = false
-      this.redrawPlots()
-      this.frameGroup.removeEventListener(
-        "pointermove",
-        onPointerMove.bind(this),
-      )
-      this.frameGroup.removeEventListener("pointerup", onPointerUp.bind(this))
-    }
   }
 
   private zoomOnWheel() {
-    //const zoomStep = 1
-
-    const onWheelBound = onWheel.bind(this)
-    this.eventListeners.storeEventListener(
-      "wheel",
-      this.frameGroup,
-      onWheelBound,
-    )
-
-    function onWheel(event: WheelEvent) {
+    const onWheelBound = (event: WheelEvent) => {
       const viewLength = new Vector(
         this.viewRange.x.diff() as number,
         this.viewRange.y.diff() as number,
@@ -329,48 +339,51 @@ export class InteractiveSVGPlot {
 
       const drawPos = screenToDrawPosition(svgPos, transform)!
 
-      const dw = viewLength.x * Math.sign(-event.deltaY) * 0.05
-      const dh = viewLength.y * Math.sign(-event.deltaY) * 0.05
+      // Calculate zoom deltas
+      const zoomFactor = 0.05
+      const dw = viewLength.x * Math.sign(-event.deltaY) * zoomFactor
+      const dh = viewLength.y * Math.sign(-event.deltaY) * zoomFactor
 
+      // Calculate position-based adjustments
       const dx = dw * ((drawPos.x - this.viewRange.x[0]) / viewLength.x)
       const dy = dh * ((drawPos.y - this.viewRange.y[0]) / viewLength.y)
 
+      // Update view range
       this.viewRange.x[0] += dx
       this.viewRange.y[0] += dy
-
       this.viewRange.x[1] = this.viewRange.x[0] + (viewLength.x - dw)
       this.viewRange.y[1] = this.viewRange.y[0] + (viewLength.y - dh)
 
       this.transformView()
     }
+
+    this.eventListeners.storeEventListener(
+      "wheel",
+      this.frameGroup,
+      onWheelBound,
+    )
   }
 
   private resizeOnDrag() {
     const dragButton = 0
-    let dragged: boolean
-    let dragPos: DOMPoint | null
+    let dragged = false
+    let dragPos: DOMPoint | null = null
+    let clickPos: DOMPoint | null = null
 
-    const onClickBound = onClick.bind(this)
-    this.eventListeners.storeEventListener(
-      "pointerdown",
-      this.frameGroup,
-      onClickBound,
-    )
-
-    function onClick(event: PointerEvent) {
+    const onClickBound = (event: PointerEvent) => {
       if (event.button !== dragButton) return
       event.preventDefault()
 
       dragged = true
 
       // Click coordinates
-      const clickPos = mousePosition(this.frameGroup, event)
+      clickPos = mousePosition(this.frameGroup, event)
       if (!clickPos) {
         dragged = false
         return
       }
 
-      // Coverage rectangle
+      // Create coverage rectangle
       const path = {
         id: "zoom-rect",
         fill: "rgb(var(--color-secondary))",
@@ -378,81 +391,104 @@ export class InteractiveSVGPlot {
       }
       addChildElement(this.frameGroup, "path", path)
 
-      this.frameGroup.addEventListener(
-        "pointermove",
-        onDrag.bind(this, clickPos),
-      )
-      this.frameGroup.addEventListener(
-        "pointerup",
-        endDrag.bind(this, clickPos),
-      )
-    }
+      const onDragBound = (e: PointerEvent) => {
+        if (!dragged || !clickPos) return
 
-    // Draw coverage rectangle on drag
-    function onDrag(clickPos: DOMPoint, event: PointerEvent) {
-      if (!dragged) return
+        dragPos = mousePosition(this.frameGroup, e)
+        if (!dragPos) return
 
-      dragPos = mousePosition(this.frameGroup, event)
-      if (!dragPos || !clickPos) return
+        const rect = document.getElementById("zoom-rect")
+        if (!rect) return
 
-      const path = document.getElementById("zoom-rect")
-      const d = `M${clickPos.x},${clickPos.y} L${dragPos.x},${clickPos.y} ${dragPos.x},${dragPos.y} ${clickPos.x},${dragPos.y}Z`
-      path?.setAttribute("d", d)
-    }
-
-    // Resize on pointerup
-    function endDrag(clickPos: DOMPoint) {
-      dragged = false
-      if (!clickPos || !dragPos) return
-
-      const path = document.getElementById("zoom-rect")
-      path?.remove()
-      const transform = this.plotGroup.getCTM()!
-
-      const svgTopLeft = new DOMPoint(
-        Math.min(clickPos.x, dragPos.x),
-        Math.min(clickPos.y, dragPos.y),
-      )
-      const topLeft = screenToDrawPosition(svgTopLeft, transform)
-
-      const svgBottomRight = new DOMPoint(
-        Math.max(clickPos.x, dragPos.x),
-        Math.max(clickPos.y, dragPos.y),
-      )
-      const bottomRight = screenToDrawPosition(svgBottomRight, transform)
-
-      this.viewRange = {
-        x: new Vector(topLeft.x, bottomRight.x),
-        y: new Vector(topLeft.y, bottomRight.y),
+        const d = `M${clickPos.x},${clickPos.y} L${dragPos.x},${clickPos.y} ${dragPos.x},${dragPos.y} ${clickPos.x},${dragPos.y}Z`
+        rect.setAttribute("d", d)
       }
-      this.transformView()
 
-      // Cleanup event handlers
-      this.frameGroup.removeEventListener("pointermove", onDrag.bind(this))
-      this.frameGroup.removeEventListener("pointerup", endDrag.bind(this))
+      const endDragBound = () => {
+        dragged = false
+        if (!clickPos || !dragPos) return
+
+        const rect = document.getElementById("zoom-rect")
+        if (rect) rect.remove()
+
+        const transform = this.plotGroup.getCTM()!
+
+        // Calculate new view range based on drag rectangle
+        const svgTopLeft = new DOMPoint(
+          Math.min(clickPos.x, dragPos.x),
+          Math.min(clickPos.y, dragPos.y),
+        )
+        const topLeft = screenToDrawPosition(svgTopLeft, transform)
+
+        const svgBottomRight = new DOMPoint(
+          Math.max(clickPos.x, dragPos.x),
+          Math.max(clickPos.y, dragPos.y),
+        )
+        const bottomRight = screenToDrawPosition(svgBottomRight, transform)
+
+        // Only update if we have valid coordinates and a meaningful drag distance
+        if (
+          topLeft &&
+          bottomRight &&
+          Math.abs(dragPos.x - clickPos.x) > 10 &&
+          Math.abs(dragPos.y - clickPos.y) > 10
+        ) {
+          this.viewRange = {
+            x: new Vector(topLeft.x, bottomRight.x),
+            y: new Vector(topLeft.y, bottomRight.y),
+          }
+          this.transformView()
+        }
+
+        // Cleanup event handlers
+        this.frameGroup.removeEventListener("pointermove", onDragBound)
+        this.frameGroup.removeEventListener("pointerup", endDragBound)
+      }
+
+      // Add temporary event listeners
+      this.frameGroup.addEventListener("pointermove", onDragBound)
+      this.frameGroup.addEventListener("pointerup", endDragBound)
     }
+
+    this.eventListeners.storeEventListener(
+      "pointerdown",
+      this.frameGroup,
+      onClickBound,
+    )
   }
 
-  public fitViewToPlots(fn?: string, offset = 0.1) {
-    let yMin: number
-    let yMax: number
-    if (fn) {
+  public fitViewToPlots(fn?: string, offset = 0.1): void {
+    let yMin = Number.POSITIVE_INFINITY
+    let yMax = Number.NEGATIVE_INFINITY
+
+    if (fn && this.plots[fn]) {
       yMin = this.plots[fn].yBounds[0]
       yMax = this.plots[fn].yBounds[1]
     } else {
-      yMin = this.viewRange.y[0]
-      yMax = this.viewRange.y[1]
+      // Find min/max y bounds across all plots
+      for (const plotFn in this.plots) {
+        const bounds = this.plots[plotFn].yBounds
+        if (bounds[0] < yMin) yMin = bounds[0]
+        if (bounds[1] > yMax) yMax = bounds[1]
+      }
 
-      for (const fn in this.plots) {
-        if (this.plots[fn].yBounds[0] > yMin) yMin = this.plots[fn].yBounds[0]
-        if (this.plots[fn].yBounds[1] < yMax) yMax = this.plots[fn].yBounds[1]
+      // If no plots, use current view range
+      if (
+        yMin === Number.POSITIVE_INFINITY ||
+        yMax === Number.NEGATIVE_INFINITY
+      ) {
+        yMin = this.viewRange.y[0]
+        yMax = this.viewRange.y[1]
       }
     }
+
+    // Apply offset and update view range
     const newViewRange = {
-      x: new Vector(this.viewRange.x[0], yMin - offset),
-      y: new Vector(this.viewRange.x[1], yMax + offset),
+      x: new Vector(this.viewRange.x[0], this.viewRange.x[1]),
+      y: new Vector(yMin - offset, yMax + offset),
     }
-    if (newViewRange !== this.viewRange) this.viewRange = newViewRange
+
+    this.viewRange = newViewRange
     this.transformView()
   }
 
@@ -469,7 +505,6 @@ export class InteractiveSVGPlot {
   }
 
   private ticks(redraw = false) {
-    const axis = document.getElementById("axis-group")!
     const transform = this.plotGroup.getCTM()!
 
     const svgSize = {
@@ -514,26 +549,22 @@ export class InteractiveSVGPlot {
       return tick.toFixed(0)
     }
 
-    const iterateTicks = (index: number, key: string) => {
+    const createTicks = (index: number, key: "x" | "y") => {
       const perp = key === "x" ? "y" : "x"
-
       const step = this.gridSize[index]
-
       const scale = index === 0 ? transform.a : transform.d
-
       const translate = index === 0 ? transform.e : transform.f
 
       let tick = index === 0 ? this.viewRange.x[0] : this.viewRange.y[0]
-
       if (tick % step !== 0) {
         tick += tick < 0 ? -tick % step : step - (tick % step)
       }
-      let i = tick * scale + translate
+      let screenPos = tick * scale + translate
 
-      while (i < svgSize[key]) {
+      while (screenPos < svgSize[key]) {
         if (tick === 0) {
           tick += step
-          i += step * scale
+          screenPos += step * scale
           continue
         }
         const attr = {
@@ -541,25 +572,24 @@ export class InteractiveSVGPlot {
           "font-size": "0.75rem",
           fill: "rgb(var(--color-text) / 1)",
         }
-        attr[`${key}`] = i
+        attr[`${key}`] = String(screenPos)
         attr[`${perp}`] = clamp(perp)
-        const txt = document.createElementNS(this.xmlns, "text")
-        setAttributes(txt, attr)
-        axis.appendChild(txt)
-        txt.innerHTML = `${tickFormat(tick, index)}`
+        const text = document.createElementNS(this.xmlns, "text")
+        setAttributes(text, attr)
+        this.axisGroup.appendChild(text)
+        text.textContent = tickFormat(tick, index)
 
         tick += step
-        i += step * scale
+        screenPos += step * scale
       }
     }
 
     if (redraw) {
-      removeElementsByClass(axis, "tick-text")
+      removeElementsByClass(this.axisGroup, "tick-text")
     }
 
-    for (const [index, key] of ["x", "y"].entries()) {
-      iterateTicks(index, key)
-    }
+    createTicks(0, "x")
+    createTicks(1, "y")
   }
 
   public axes() {
@@ -574,8 +604,9 @@ export class InteractiveSVGPlot {
     setAttributes(pattern, attr)
 
     const transform = this.plotGroup.getCTM()!
-    // Axis lines
-    const line = {
+
+    // x axis
+    addChildElement(pattern, "line", {
       class: "x-axis",
       x1: "0",
       y1: `${transform.f}`,
@@ -583,48 +614,51 @@ export class InteractiveSVGPlot {
       y2: `${transform.f}`,
       stroke: "rgb(var(--color-text) / 1)",
       "stroke-width": "0.3",
-    }
-    addChildElement(pattern, "line", line)
+    })
 
-    line["class"] = "y-axis"
-    line["x1"] = `${transform.e}`
-    line["y1"] = "0"
-    line["x2"] = `${transform.e}`
-    line["y2"] = "100%"
-    addChildElement(pattern, "line", line)
+    // y axis
+    addChildElement(pattern, "line", {
+      class: "y-axis",
+      x1: `${transform.e}`,
+      y1: "0",
+      x2: `${transform.e}`,
+      y2: "100%",
+      stroke: "rgb(var(--color-text) / 1)",
+      "stroke-width": "0.3",
+    })
 
     this.svgDefs.appendChild(pattern)
 
     // Axis rectangle
-    const rect = {
+    const axis = document.getElementById("axis-group")!
+    addChildElement(this.axisGroup, "rect", {
       class: "axis-rect",
       width: "100%",
       height: "100%",
       fill: "url(#axis-pattern)",
       "vector-effect": "non-scaling-stroke",
-    }
-
-    const axis = document.getElementById("axis-group")!
-    addChildElement(axis, "rect", rect)
+    })
 
     // Ticks
     this.ticks()
   }
 
   private transformAxis() {
-    const pattern = document.getElementById("axis-pattern")!
+    const pattern = document.getElementById("axis-pattern")
+    if (!pattern) return
+
     const transform = this.plotGroup.getCTM()!
 
     // x axis
-    let line = pattern.getElementsByClassName("x-axis")[0]
-
-    const xAttr = { y1: `${transform.f}`, y2: `${transform.f}` }
-    setAttributes(line, xAttr)
+    const xAxis = pattern.getElementsByClassName("x-axis")[0]
+    setAttributes(xAxis, { y1: `${transform.f}`, y2: `${transform.f}` })
 
     // y axis
-    line = pattern.getElementsByClassName("y-axis")[0]
-    const yAttr = { x1: `${transform.e}`, x2: `${transform.e}` }
-    setAttributes(line, yAttr)
+    const yAxis = pattern.getElementsByClassName("y-axis")[0]
+    setAttributes(yAxis, {
+      x1: `${transform.e}`,
+      x2: `${transform.e}`,
+    })
 
     // Ticks
     this.ticks(true)
@@ -632,26 +666,25 @@ export class InteractiveSVGPlot {
 
   public grid() {
     const transform = this.plotGroup.getCTM()!
-    const grid = document.getElementById("grid-group")!
 
     const min = [
       this.minGridScreenSize / transform.a,
       this.minGridScreenSize / transform.d,
     ]
     this.gridSize = new Vector(gridUnit(min[0]), gridUnit(min[1]))
+
     // Pattern
-    const attr = {
+    const pattern = document.createElementNS(this.xmlns, "pattern")
+    setAttributes(pattern, {
       id: "grid-pattern",
       patternUnits: "userSpaceOnUse",
       patternTransform: DOMMatrix.fromMatrix(transform).toString(),
       width: `${this.gridSize.x}`,
       height: `${this.gridSize.y}`,
-    }
-    const pattern = document.createElementNS(this.xmlns, "pattern")
-    setAttributes(pattern, attr)
+    })
 
-    // Horizontal line
-    const line = {
+    // Horizontal grid line
+    addChildElement(pattern, "line", {
       class: "y-grid",
       x1: "0",
       y1: "0",
@@ -659,27 +692,29 @@ export class InteractiveSVGPlot {
       y2: "0",
       stroke: "rgb(var(--color-text) / 0.2)",
       "stroke-width": `${1 / transform.d}`,
-    }
-    addChildElement(pattern, "line", line)
+    })
 
-    // Vertical line
-    line["class"] = "x-grid"
-    line["x2"] = "0"
-    line["y2"] = `${this.gridSize.y}`
-    line["stroke-width"] = `${1 / transform.a}`
-    addChildElement(pattern, "line", line)
+    // Vertical grid line
+    addChildElement(pattern, "line", {
+      class: "x-grid",
+      x1: "0",
+      y1: "0",
+      x2: "0",
+      y2: `${this.gridSize.y}`,
+      stroke: "rgb(var(--color-text) / 0.2)",
+      "stroke-width": `${1 / transform.a}`,
+    })
 
     this.svgDefs.appendChild(pattern)
 
     // Grid rectangle
-    const rect = {
+    const rect = addChildElement(this.gridGroup, "rect", {
       class: "grid-rect",
       width: "100%",
       height: "100%",
       fill: "url(#grid-pattern)",
       "vector-effect": "non-scaling-stroke",
-    }
-    addChildElement(grid, "rect", rect)
+    })
   }
 
   public transformGrid() {
@@ -692,28 +727,25 @@ export class InteractiveSVGPlot {
     ]
     this.gridSize = new Vector(gridUnit(min[0]), gridUnit(min[1]))
 
-    const attr = {
+    setAttributes(pattern, {
       patternTransform: DOMMatrix.fromMatrix(transform).toString(),
       width: `${this.gridSize.x}`,
       height: `${this.gridSize.y}`,
-    }
-    setAttributes(pattern, attr)
+    })
 
     // Horizontal grid line
-    let line = pattern.getElementsByClassName("y-grid")[0]
-    const yAttr = {
+    const horizontalLine = pattern.getElementsByClassName("y-grid")[0]
+    setAttributes(horizontalLine, {
       x2: `${this.gridSize.x}`,
       "stroke-width": `${1 / transform.d}`,
-    }
-    setAttributes(line, yAttr)
+    })
 
     // Vertical grid line
-    line = pattern.getElementsByClassName("x-grid")[0]
-    const xAttr = {
+    const verticalLine = pattern.getElementsByClassName("x-grid")[0]
+    setAttributes(verticalLine, {
       y2: `${this.gridSize.y}`,
       "stroke-width": `${1 / transform.a}`,
-    }
-    setAttributes(line, xAttr)
+    })
   }
 
   public innerShadow() {
@@ -791,16 +823,17 @@ export class InteractiveSVGPlot {
     this.svgDefs.appendChild(filter)
   }
 
-  public plot(fn: string, clr = "red", redraw = false, points?: number) {
+  public plot(fn: string, color = "red", redraw = false, points?: number) {
     // Check if the same function has been plotted already
-    if (!redraw) {
-      if (fn in this.plots) {
-        console.warn(`Function already plotted: ${fn}`)
-        return null
-      }
+    if (!redraw && fn in this.plots) {
+      console.warn(`Function already plotted: ${fn}`)
+      return null
     }
     const lambda = mathParse(fn).compile()
-    if (!lambda) return null
+    if (!lambda) {
+      console.error(`Invalid function of x: ${fn}`)
+      return null
+    }
 
     const viewWidth = this.viewRange.x.diff() as number
 
@@ -821,13 +854,31 @@ export class InteractiveSVGPlot {
 
     let yMin = y
     let yMax = y
-    for (let i = 1; i < path.length; i++) {
+    for (let i = 1; i < domain.length; i++) {
       const y = -lambda.evaluate({ x: domain[i] })
 
-      if (y < yMin) yMin = y
-      if (y > yMax) yMax = y
+      if (!Number.isFinite(y)) {
+        // Add a move command to handle discontinuities
+        if (i < domain.length - 1) {
+          const nextValidY = -lambda.evaluate({ x: domain[i + 1] })
+          if (Number.isFinite(nextValidY)) {
+            path.push(`M${domain[i + 1]},${nextValidY}`)
+            i++ // Skip to the next point as we've already used it
+          }
+        }
+        continue
+      }
 
-      path[i] = `${domain[i]},${y}`
+      // Update y bounds
+      yMin = Math.min(yMin, y)
+      yMax = Math.max(yMax, y)
+
+      if (path[path.length - 1].startsWith("M")) {
+        // Add line segment or start new path segment
+        path.push(`L${domain[i]},${y}`)
+      } else {
+        path.push(`${domain[i]},${y}`)
+      }
     }
     path[1] = `L${path[1]}`
 
@@ -836,7 +887,7 @@ export class InteractiveSVGPlot {
       class: "plot-path",
       d: path.join(" "),
       fill: "none",
-      stroke: clr,
+      stroke: color,
       "stroke-width": "2px",
       "vector-effect": "non-scaling-stroke",
       //'stroke-width': `${1/((this.transform[0] + this.transform[3])/2)}`
@@ -845,7 +896,7 @@ export class InteractiveSVGPlot {
 
     this.plots[fn] = {
       yBounds: [yMin, yMax],
-      color: clr,
+      color: color,
     }
   }
 
