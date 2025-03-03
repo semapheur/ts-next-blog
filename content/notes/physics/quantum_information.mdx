@@ -2925,19 +2925,11 @@ $$
   E_0 \leq \braket{\psi|\hat{H}|\psi} = \braket{\hat{H}}
 $$
 
-The objective of the VQE is therefore to find a parametrization of $\ket{\psi(\boldsymbol{\theta})}$ that minimizes the expectation value $\braket{\hat{H}}_\psi$, where $\boldsymbol{\theta}\in\Theta$ is a vector of tunable parameters. To implement this on a quantum computer, we express $\ket{\psi}$ in terms of a generic parametrized unitary operator $\hat{U}(\boldsymbol{\theta})$ applied to an initial state $\ket{\psi_0}$:
+The objective of the VQE is therefore to find a parametrization of $\ket{\psi(\boldsymbol{\theta})}$, called an ansatz, that minimizes the expectation value $\braket{\hat{H}}_\psi$, where $\boldsymbol{\theta}\in\Theta$ is a vector of tunable parameters. To implement this on a quantum circuit, we express the ansatz $\ket{\psi}$ in terms of a generic parametrized unitary operator $\hat{U}(\boldsymbol{\theta})$ applied to an initial state $\ket{\psi_0}$:
 
 $$
   \ket{\psi(\boldsymbol{\theta})} = \hat{U}(\boldsymbol{\theta}) \ket{\psi_0}
 $$
-
-A state of $N\in\N_+$ qubits is initialized as
-
-$$
-  \ket{\psi_0} = \bigotimes_{j=0}^{N-1} \ket{\psi_j}
-$$
-
-
 
 The initial state is usually set as the computational basis $\ket{0}^{\otimes N} = \ket{\mathbf{0}}$. The VQE cost function is then defined as
 
@@ -2970,7 +2962,7 @@ $$
 In an $n$-qubit system, an arbitrary Pauli string $\hat{P}$ acting non-trivially on a subset $Q$ of qubit can be expressed as
 
 $$
-  \bigotimes_{p\in Q} \hat{\sigma}_p = = \left(\bigotimes_{p\in Q} \hat{R}_{\sigma_p}^\dagger \hat{Z} \hat{R}_{\sigma_p}\right)
+  \bigotimes_{p\in Q} \hat{\sigma}_p = \left(\bigotimes_{p\in Q} \hat{R}_{\sigma_p}^\dagger \hat{Z} \hat{R}_{\sigma_p}\right)
 $$
 
 The expectation value of $\hat{P}$ is given by a linear combination of probabilities:
@@ -3023,11 +3015,110 @@ $$
 
 ## Gradient of the expectation value
 
-Assume that a parameter $\mu\in\boldsymbol{\theta}$ only affects a single gate $\hat{G}(\mu)$ in the sequence $\hat{U}(\boldsymbol{\theta}) = \hat{V}\hat{G}(\mu) \hat{W}$. The partial derivative of $E(\boldsymbol{\theta})$ is given by
+Assume that a parameter $\theta_j \in\boldsymbol{\theta}$ only affects a single gate $\hat{R}(\theta_j) = e^{i\theta_j \hat{G}}$ in the sequence $\hat{U}(\boldsymbol{\theta}) = \hat{V}\hat{G}(\theta_j) \hat{W}$. The partial derivative of $E(\boldsymbol{\theta})$ is given by the product rule
 
 $$
-  \frac{\partial}{\partial\mu} E(\boldsymbol{\theta}) = \frac{\partial}{}
+\begin{align*}
+  \frac{\partial}{\partial \theta_j} E(\boldsymbol{\theta}) = \frac{\partial}{\partial} \braket{\psi|\hat{G}^\dagger \hat{Q} \hat{G}|\psi} \\
+  =& \Braket{\psi|\hat{G}^\dagger \hat{Q} \partial_{\theta_j} \hat{G}|\psi_0} + \Braket{\psi_0| (\partial_{theta_j} \hat{G}^\dagger) \hat{Q} \hat{G}|\psi}
+\end{align*}
 $$
+
+where we have absorbed $V$ into the Hermitian observable $\hat{Q} = \hat{V}^\dagger \hat{B}\hat{V}$, and $\hat{W}$ into the state $\ket{\psi} = \hat{W}\ket{\psi_0}$. The partial derivative of $\hat{G}(\theta_j)$ is
+
+$$
+  \frac{\partial}{\partial\theta_j} \hat{G}(\theta_j) = i\hat{G}e^{i\theta_j \hat{G}}
+$$
+
+Substituting back, we get
+
+$$
+  \frac{\partial}{\partial \theta_j} E(\boldsymbol{\theta}) = \braket{\psi'|\hat{Q}(-i\hat{G})|\psi'} + \braket{\psi'|i\hat{G}\hat{Q}|\psi'}
+$$
+
+where $\ket{\psi'} = \hat{G}\ket{\psi}$. If $\hat{G}$ has just two distinct eigenvalues (which can be repeated), we can without loss of generality, shift the eigenvalues to $\pm r$, since the global phase is unobservable.
+
+Using the identity
+
+$$
+\begin{align*}
+  \braket{\psi|\hat{B}^\dagger \hat{Q} \hat{C}\psi} + \braket{\psi|\hat{C}^\dagger \hat{Q} \hat{B}} =& \frac{1}{2}\left( \braket{\psi|(\hat{B} + \hat{C})^\dagger \hat{Q} (\hat{B} + \hat{C})}\right) \\
+  &- \left. \braket{\psi|(\hat{B} - \hat{C})^\dagger|\hat{Q}|(\hat{B} - \hat{C})} \right)
+\end{align*}
+$$
+
+with $\hat{B} = \hat{I}$ and $\hat{C} = -ir^{-1} \hat{G}$, we can write
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial\theta_j} E(\boldsymbol{\theta}) =& \frac{r}{2}\left(\braket{\psi'|(\hat{I} - ir^{-1} \hat{G})^\dagger \hat{Q} (\hat{I} - ir^{-1} \hat{G})|\psi'} \right. \\
+  &- \left. \braket{\psi'|(\hat{I} + ir^{-1} \hat{G})^\dagger \hat{Q} (\hat{I} + ir^{-1} \hat{G})|\psi'} \right)
+\end{align*}
+$$
+
+If $\hat{G}(\theta_j) = \cos(r\theta_j) - ir^{-1} \sin(r\theta_j) \hat{G}$ has at most two unique eigenvalues $\pm r$, the following identity holds
+
+$$
+  \hat{G}\left(\frac{\pi}{4r}\right) = \frac{1}{\sqrt{2}} (\hat{I} - ir^{-1}\hat{G})
+$$
+
+This gives the parameter shift rule
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial\theta_j} E(\boldsymbol{\theta}) =& r\left(\Braket{\hat{G}^\dagger \left(\theta_j + \frac{\pi}{4}\right)\hat{Q}\hat{G}\left(\theta_j + \frac{\pi}{4}\right)} \right. \\
+  &- \left. \Braket{\psi|\hat{G}^\dagger \left(\theta_j - \frac{\pi}{4} \right)\hat{Q}\hat{G}\left(\theta_j - \frac{\pi}{4}\right)|\psi} \right) \\
+  =& r\left[E\left(\boldsymbol{\theta} + \frac{\pi}{4}\unitvec{j}\right) - E\left(\boldsymbol{\theta} - \frac{\pi}{4}\unitvec{j}\right)\right]
+\end{align*}
+$$
+
+
+## Ansatz methods
+
+- Hardware-Efficient Ansatz (HEA)
+- Unitary Coupled Cluster (UCC)
+    - Orbital-Optimized UCC (OO-UCC)
+    - UCC with Generalized Singles and Doubles (UCCGSD)
+    - Unitary pair CCGSD (k-UpCCGSD)
+    - Pair-natural orbital UpCCGSD (PNO-UpCCGSD)
+    - Double UCC (DUCC)
+    - Unitary Selective CC (USCC)
+- Symmetry-Preserving Ansatz (SPA)
+  - Efficient SPA (ESPA)
+- Hamiltonian Variational Ansatz (HVA)
+  - Fourier-transform HVA (FTHVA)
+  - Symmetry-breaking HVA
+
+<TableFigure caption="Summary of circuit depth, parameters and entangling gates scaling across a selection of fixed structure ansätze. The scaling in the number of entangling gtes assumes full connectivity of the qubit lattice.">
+| Method | Depth | Parameters | Entangling gates | Comment |
+| --- | --- | --- | --- | --- |
+| HEA | $\mathcal{O}(L)$ | $\mathcal{O}(NL)$ | $\mathcal{O}((N - 1)L)$ | $L$ is an arbitrary number of layers, whose scaling for exact ground state is unknown and exponential in the worst case if the entire Hilbert space needs to be spanned to find the ground state |
+| UCCSD | $\mathcal{O}((N - m)^2 m\tau)$ | $\mathcal{O}((N - m)^2 m^2 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | $\bar{q}$ is the average Pauli weigh across the operators used to build the ansatz. As an indication, maximum Pauli weight under Jordan-Wigner is $N$, and $\ln(N)$ under Bravyi-Kitaev. $\tau$ is the number of Trotter steps used. |
+| UCCGSD | $\mathcal{O}(N^3 \tau)$ | $\mathcal{O}(N^4 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | |
+| k-UpUCCGSD | $\mathcal{O}(kN \tau)$ | $\mathcal{O}(k\tau N^2 / 4)$ | $\mathcal{O}(k\tau(\bar{q} - 1)N^2 / 2)$ | $k$ is an arbitrary constant which determines the accuracy of the result. Scaling is unknown. |
+| OO-UCCD | $\mathcal{O}((N - m)^2 m\tau)$ | $\mathcal{O}((N - m)^2 m^2 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | Same as UCCSD. It is worth noting that OO-UCCD is a nested loop between orbital (one-body terms) optimization, done on a conventional machine, and two-body terms optimization done on the quantum computer. |
+| SPA | $\mathcal{O}((N - 1)L)$ | $\mathcal{O}(2(N - 1)L)$ | $\mathcal{O}(3(N - 1)L)$ | This ansatz spans a wider range of the Hilbert space than the EPS. It is therefore likely it requires more circuit resources suggesting that $L$ grows exponentially in $N$ for exact resolution of the ground state. This logic also applies to HEA |
+| ESPA | $\mathcal{O}\left(2\binom{N-1}{m}\right)$ | $\mathcal{O}\left(2\binom{N}{m} - 2\right)$ | $\mathcal{O}\left(3\binom{N}{m}\right)$ | Scaling range from linear when $m = 1$ $m = N - 1$, to exponential if $m \sim N/2$ |
+| HVA | $\mathcal{O}(\tilde{C}L)$ | $\mathcal{O}(\tilde{CL})$ | $\mathcal{O}(2(\bar{q} - 1)CL)$ | $L$ is the number of repetition of the ansatz required to achieve the desired accuracy. $C$ is the number of terms in the Hamiltonian, and $\tilde{C}$ the number of commutative groups among these terms |
+</TableFigure>
+
+### Hardware-efficient ansatz (HEA)
+
+A hardware-efficient ansatz (HEA) is a parameterized quantum circuit designed to be compatible with the native gate set of quantum hardware, reducing depth and error rates. Various HEA architectures have been proposed, but they all follow a common structure: the ansatz is constructed by repeating layers of interleaved single-qubit parametrized rotation gates, $\hat{U}_\text{r} (\theta)$, and entangling gates $\hat{U}_\text{e}$. Formally, an HEA of $N$ qubits and $L$ layers is expressed as
+
+$$
+  \ket{\psi(\boldsymbol{\theta})} = \left(\prod_{\ell = 1}^L \hat{U}_\text{r} (\theta_i) \times \hat{U}_\text{e}\right) \times \hat{U}_text{r} (\theta_{L+1}) \ket{\psi_0}^{\otimes N}
+$$
+
+where the single-qubit rotation layer is defined as
+
+$$
+  \hat{U}_text{r} (\theta_i) = \prod_{q=1}^N \prod_{p\in P} \hat{R}_p^{(q)} (\theta_i^{(pq)})
+$$
+
+Here, $q$ indexes qubits, and $p \in P \subseteq \set{\hat{X}, \hat{Y}, \hat{Z}}$ corresponds to the selected Pauli rotation axis. The set of rotation gates and entangling operations is hardware-dependent, adapting to the native gate set and circuit connectivity constraints.
+
+The key advantage of HEAs is their hardware compatibility and expressiveness—they can efficiently explore the Hilbert space while conforming to device limitations. However, they also suffer from notable challenges. First, an HEA must span a sufficiently large region of the Hilbert space to accurately represent the ground state wavefunction, which can lead to inefficiency. In the worst case, an exponential circuit depth may be required. A direct consequence is the onset of barren plateaus, where gradient magnitudes vanish exponentially with system size, making optimization intractable.
 
 ## Single qubit system
 
