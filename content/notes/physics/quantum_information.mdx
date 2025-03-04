@@ -11,7 +11,7 @@ references:
 # Qubit
 
 <MathBox title='Qubit' boxType='definition'>
-A *qubit* is a quantum system described by a two-dimensional Hilbert space, denoted ${}^\P \mathcal{H} \simeq \mathbb{C}^2$, known as the *qubit space*. The information stored in a qubit is described by a unit vector in ${}^\P \mathcal{H}$, which evolves according to the postulates of quantum mechanics. 
+A *qubit* is a quantum system described by a two-dimensional Hilbert space, denoted ${}^\P \mathcal{H} \cong \mathbb{C}^2$, known as the *qubit space*. The information stored in a qubit is described by a unit vector in ${}^\P \mathcal{H}$, which evolves according to the postulates of quantum mechanics. 
 
 Since ${}^\P \mathcal{H}$ is isomorphic to $\mathbb{C}^2$, the standard mathematical representation of a qubit state is a normalized vector in $\mathbb{C}^2$ with orthonormal basis $\set{\ket{0}, \ket{1}}$:
 
@@ -2953,7 +2953,7 @@ Each term $E_{P_a} = \braket{\psi(\boldsymbol{\theta})|\hat{P}_a|\psi(\boldsymbo
 
 ## Measurements in the computational basis
 
-Quantum circuits typically measure in the $\hat{Z}$-basis, so we express all Pauli operators in terms of $\hat{Z}$ using the identities
+Quantum circuits typically measure in the $\hat{Z}$-basis, so we express all Pauli operators in terms of $\hat{Z}$ using the basis transformations
 
 $$
   \hat{X} = \hat{HZH},\quad \hat{Y} = \hat{SHZHS}^\dagger
@@ -3015,63 +3015,96 @@ $$
 
 ## Gradient of the expectation value
 
-Assume that a parameter $\theta_j \in\boldsymbol{\theta}$ only affects a single gate $\hat{R}(\theta_j) = e^{i\theta_j \hat{G}}$ in the sequence $\hat{U}(\boldsymbol{\theta}) = \hat{V}\hat{G}(\theta_j) \hat{W}$. The partial derivative of $E(\boldsymbol{\theta})$ is given by the product rule
+To apply gradient descent methods to optimize the ansatz state $\ket{\psi(\boldsymbol{\theta})} = \hat{U}(\boldsymbol{\theta})\ket{\psi_0}$, we need to compute the gradient of $\braket{\hat{H}(\boldsymbol{\theta})}$. Suppose the ansatz is composed of a sequence of unitary transformations,
+
+$$
+  \hat{U}(\boldsymbol{\theta}) = \prod_{\ell=1}^L \hat{U}_\ell (\theta_\ell) \hat{V}_\ell
+$$
+
+where $\hat{V}_\ell$ are fixed (non-parametrized) gates. To comptute the partial derivative of $\braket{\hat{H}(\boldsymbol{\theta})}$ with respect to $\theta_j$, we absorb all preceeding gates into the initial state:
+
+$$
+  \ket{\psi_{j-1}} = \left(\prod_{\ell=j-1}^1 \hat{U}(\theta_\ell) \hat{V}_\ell \right) \ket{\psi_0}
+$$
+
+Similarly, all subsequent gates are combined with the Hamiltonian $\hat{H}$:
+
+$$
+  \hat{H}_{i+1} = \left(\prod_{\ell=j+1}^1 \hat{V}_\ell^\dagger \hat{U}_\ell^\dagger(\theta_\ell) \right) \hat{H} \left(\prod_{\ell=1}^{j-1} \hat{U}_\ell (\theta_\ell) \hat{V}_\ell\right)
+$$
+
+Thus, the expecation value simplifies to
+
+$$
+  \braket{\hat{H}(\boldsymbol{\theta})} = \Braket{\psi_{j-1}|\hat{U}_j^\dagger (\theta_j) \hat{H}_{j+1} \hat{U}_j (\theta_j) |\psi_{j-1}}
+$$
+
+The partial derivative of $\braket{\hat{H}(\boldsymbol{\theta})}$ with respect to $\theta_j$ is given by the product rule
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial \theta_j} E(\boldsymbol{\theta}) = \frac{\partial}{\partial} \braket{\psi|\hat{G}^\dagger \hat{Q} \hat{G}|\psi} \\
-  =& \Braket{\psi|\hat{G}^\dagger \hat{Q} \partial_{\theta_j} \hat{G}|\psi_0} + \Braket{\psi_0| (\partial_{theta_j} \hat{G}^\dagger) \hat{Q} \hat{G}|\psi}
+  \frac{\partial}{\partial\theta_j} \braket{\hat{H}(\boldsymbol{\theta})} =& \Braket{\psi_{j-1}|\hat{U}_j^\dagger (\theta_j) \hat{H}_{j+1} \partial_{\theta_j} \left(\hat{U}_j (\theta_j)\right) |\psi_{j-1}} \\
+  &+ \Braket{\psi_{j-1}|\partial_{\theta_j} \left(\hat{U}_j^\dagger (\theta_j)\right) \hat{H}_{j+1} \hat{U}_j (\theta_j) |\psi_{j-1}}
 \end{align*}
 $$
 
-where we have absorbed $V$ into the Hermitian observable $\hat{Q} = \hat{V}^\dagger \hat{B}\hat{V}$, and $\hat{W}$ into the state $\ket{\psi} = \hat{W}\ket{\psi_0}$. The partial derivative of $\hat{G}(\theta_j)$ is
+Assuming that every parametrized gate is in the exponential form $\hat{U}_j (\theta_j) = \exp(-i\theta_j \hat{P})$, where $\hat{P}^\dagger = \hat{P}$ is Hermitian, its partial derivatives with respect to $\theta_j$ is
 
 $$
-  \frac{\partial}{\partial\theta_j} \hat{G}(\theta_j) = i\hat{G}e^{i\theta_j \hat{G}}
+  \frac{\partial}{\partial\theta_j} \hat{U}(\theta_j) = -i\hat{P}e^{-i\theta_j \hat{P}} = -i\hat{P}\hat{U}_j (\theta_j)
 $$
 
-Substituting back, we get
+we get by absorbing $\ket{\psi'_{j-1}} = \hat{U}_j (\theta_j) \ket{\psi_{j-1}}$
 
 $$
-  \frac{\partial}{\partial \theta_j} E(\boldsymbol{\theta}) = \braket{\psi'|\hat{Q}(-i\hat{G})|\psi'} + \braket{\psi'|i\hat{G}\hat{Q}|\psi'}
+  \frac{\partial}{\partial\theta_j} \braket{\hat{H}(\boldsymbol{\theta})} = \Braket{\psi'_{j-1}| \hat{H}_{j+1} (-i\hat{P}) |\psi'_{j-1}} + \Braket{\psi_{j-1}'|i\hat{P}\hat{H}_{j+1}|\psi_{j-1}'}
 $$
-
-where $\ket{\psi'} = \hat{G}\ket{\psi}$. If $\hat{G}$ has just two distinct eigenvalues (which can be repeated), we can without loss of generality, shift the eigenvalues to $\pm r$, since the global phase is unobservable.
 
 Using the identity
 
 $$
-\begin{align*}
-  \braket{\psi|\hat{B}^\dagger \hat{Q} \hat{C}\psi} + \braket{\psi|\hat{C}^\dagger \hat{Q} \hat{B}} =& \frac{1}{2}\left( \braket{\psi|(\hat{B} + \hat{C})^\dagger \hat{Q} (\hat{B} + \hat{C})}\right) \\
-  &- \left. \braket{\psi|(\hat{B} - \hat{C})^\dagger|\hat{Q}|(\hat{B} - \hat{C})} \right)
-\end{align*}
+  \hat{A}^{\dagger}\hat{B}\hat{C} + \hat{C}^{\dagger}\hat{B}\hat{A} = \frac{1}{2}\left[(\hat{A}+\hat{C})^{\dagger}\hat{B}(\boldsymbol{A}+\hat{C}) - (\hat{A}-\hat{C})^{\dagger} \hat{B}(\boldsymbol{A}-\hat{C})\right]
 $$
 
-with $\hat{B} = \hat{I}$ and $\hat{C} = -ir^{-1} \hat{G}$, we can write
+with $\hat{A} = \hat{I}$, $\hat{B} = \hat{H}_{i+1}$ and $\hat{C} = -ir^{-1} \hat{P}$, we rewrite:
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial\theta_j} E(\boldsymbol{\theta}) =& \frac{r}{2}\left(\braket{\psi'|(\hat{I} - ir^{-1} \hat{G})^\dagger \hat{Q} (\hat{I} - ir^{-1} \hat{G})|\psi'} \right. \\
-  &- \left. \braket{\psi'|(\hat{I} + ir^{-1} \hat{G})^\dagger \hat{Q} (\hat{I} + ir^{-1} \hat{G})|\psi'} \right)
+  \frac{\partial}{\partial\theta_j} \braket{\hat{H}(\boldsymbol{\theta})} =& \frac{r}{2}\left(\Braket{\psi'_{j-1}|\left(\hat{I} - \frac{i}{r}\right)^\dagger \hat{H}_{j+1} \left(\hat{I} - \frac{i}{r}\right)|\psi'_{j-1}}\right. \\
+  &- \left. \Braket{\psi'_{j-1}|\left(\hat{I} + \frac{i}{r}\right)^\dagger \hat{H}_{j+1} \left(\hat{I} + \frac{i}{r}\right)|\psi'_{j-1}} \right)
 \end{align*}
 $$
-
-If $\hat{G}(\theta_j) = \cos(r\theta_j) - ir^{-1} \sin(r\theta_j) \hat{G}$ has at most two unique eigenvalues $\pm r$, the following identity holds
+ 
+If the Hermitian generator $\hat{P}$ of the unitary operator $\hat{U}_j (\theta) = \exp(-i\theta \hat{P})$ has at most two unique eigenvalues $\pm r$, then
 
 $$
-  \hat{G}\left(\frac{\pi}{4r}\right) = \frac{1}{\sqrt{2}} (\hat{I} - ir^{-1}\hat{G})
+  \hat{U} \left(\frac{\pi}{4r}\right) = \frac{1}{\sqrt{2}} \left(\hat{I} - \frac{i}{r} \hat{P}\right)
 $$
 
-This gives the parameter shift rule
+<details>
+<summary>Proof</summary>
+
+If $\sigma(\hat{P}) = \set{\pm r}$, then $\hat{P}^2 = r^2 \hat{I}$. Thus, the Taylor expansion of $\hat{U}(\theta) = \exp(-i\theta \hat{P})$ simplifies to
 
 $$
 \begin{align*}
-  \frac{\partial}{\partial\theta_j} E(\boldsymbol{\theta}) =& r\left(\Braket{\hat{G}^\dagger \left(\theta_j + \frac{\pi}{4}\right)\hat{Q}\hat{G}\left(\theta_j + \frac{\pi}{4}\right)} \right. \\
-  &- \left. \Braket{\psi|\hat{G}^\dagger \left(\theta_j - \frac{\pi}{4} \right)\hat{Q}\hat{G}\left(\theta_j - \frac{\pi}{4}\right)|\psi} \right) \\
-  =& r\left[E\left(\boldsymbol{\theta} + \frac{\pi}{4}\unitvec{j}\right) - E\left(\boldsymbol{\theta} - \frac{\pi}{4}\unitvec{j}\right)\right]
+  e^{-i\theta \hat{P}} =& \sum_{k=0}^\infty \frac{(-i\theta)^k \hat{P}^k}{k!} \\
+  =& \sum_{k=0}^\infty \frac{(-i\theta)^{2k} \hat{P}^{2k}}{(2k)!} + \sum_{k=0}^\infty \frac{(-i\theta)^{2k + 1} \hat{P}^{2k + 1}}{(2k + 1)!} \\
+  =& \hat{I} \sum_{k=0}^\infty \frac{(-1)^k (r\theta)^{2k}}{(2k)!} - \frac{i}{r} \hat{G} \sum_{k=0}^\infty \frac{(-1)^k (r\theta)^{2k + 1}}{(2k + 1)!} \\
+  =& \cos(r\theta) \hat{I} - \frac{i}{r} \sin(r\theta)\hat{G}
 \end{align*}
 $$
+</details>
 
+Thus, we obtain
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial\theta_j} \braket{H(\boldsymbol{\theta})} =& r\left(\Braket{\psi'_{j-1}|\hat{U}_j^\dagger \left(\theta_j + \frac{\pi}{4r} \right) \hat{H}_{j+1} \hat{U}_j \left(\theta_j + \frac{\pi}{4r} \right)|\psi'_{j-1}} \right. \\
+  &- \left. \Braket{\psi'_{j-1}|\hat{U}_j^\dagger \left(\theta_j - \frac{\pi}{4r} \right) \hat{H}_{j+1} \hat{U}_j \left(\theta_j - \frac{\pi}{4r} \right)|\psi'_{j-1}} \right) \\
+  =& r\left(\hat{H}\left(\boldsymbol{\theta} + \frac{\pi}{4r}\unitvec{e}_j \right) - \hat{H}\left(\boldsymbol{\theta} - \frac{\pi}{4r}\unitvec{e}_j \right) \right)
+\end{align*}
+$$
 
 ## Ansatz methods
 
@@ -3107,16 +3140,16 @@ $$
 A hardware-efficient ansatz (HEA) is a parameterized quantum circuit designed to be compatible with the native gate set of quantum hardware, reducing depth and error rates. Various HEA architectures have been proposed, but they all follow a common structure: the ansatz is constructed by repeating layers of interleaved single-qubit parametrized rotation gates, $\hat{U}_\text{r} (\theta)$, and entangling gates $\hat{U}_\text{e}$. Formally, an HEA of $N$ qubits and $L$ layers is expressed as
 
 $$
-  \ket{\psi(\boldsymbol{\theta})} = \left(\prod_{\ell = 1}^L \hat{U}_\text{r} (\theta_i) \times \hat{U}_\text{e}\right) \times \hat{U}_text{r} (\theta_{L+1}) \ket{\psi_0}^{\otimes N}
+  \ket{\psi(\boldsymbol{\theta})} = \left(\prod_{\ell = 1}^L \hat{U}_\text{r} (\theta_\ell) \times \hat{U}_\text{e}\right) \times \hat{U}_\text{r} (\theta_{L+1}) \ket{\psi_0}^{\otimes N}
 $$
 
 where the single-qubit rotation layer is defined as
 
 $$
-  \hat{U}_text{r} (\theta_i) = \prod_{q=1}^N \prod_{p\in P} \hat{R}_p^{(q)} (\theta_i^{(pq)})
+  \hat{U}_text{r} (\theta_\ell) = \prod_{q=1}^N \prod_{p\in P} \hat{R}_p^{(q)} (\theta_\ell^{(pq)})
 $$
 
-Here, $q$ indexes qubits, and $p \in P \subseteq \set{\hat{X}, \hat{Y}, \hat{Z}}$ corresponds to the selected Pauli rotation axis. The set of rotation gates and entangling operations is hardware-dependent, adapting to the native gate set and circuit connectivity constraints.
+Here, $q$ indexes qubits, and $p \in P \subseteq\set{\hat{X}, \hat{Y}, \hat{Z}}$ corresponds to the selected Pauli rotation axes. The set of rotation gates and entangling operations is hardware-dependent, adapting to the native gate set and circuit connectivity constraints.
 
 The key advantage of HEAs is their hardware compatibility and expressiveness—they can efficiently explore the Hilbert space while conforming to device limitations. However, they also suffer from notable challenges. First, an HEA must span a sufficiently large region of the Hilbert space to accurately represent the ground state wavefunction, which can lead to inefficiency. In the worst case, an exponential circuit depth may be required. A direct consequence is the onset of barren plateaus, where gradient magnitudes vanish exponentially with system size, making optimization intractable.
 
