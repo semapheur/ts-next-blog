@@ -3013,6 +3013,26 @@ $$
   \braket{P}_\psi \approx \frac{M_0 - M_1}{M}
 $$
 
+<TableFigure caption="Quantum gates for two-qubit Pauli measurements">
+| Pauli measurement | Quantum gate $\hat{U}$ |
+| --- | --- |
+| $\hat{Z}\otimes\hat{I}$ | $\hat{I}_2 \otimes\hat{I}_2$ |
+| $\hat{X}\otimes\hat{I}$ | $\hat{H} \otimes\hat{I}_2$ |
+| $\hat{Y}\otimes\hat{I}$ | $\hat{H}\hat{S}^\dagger \otimes\hat{I}_2$ |
+| $\hat{I}\otimes\hat{Z}$ | $(\hat{I}_2 \otimes\hat{I}_2) \operatorname{SWAP}$ |
+| $\hat{I}\otimes\hat{X}$ | $(\hat{H} \otimes\hat{I}_2) \operatorname{SWAP}$ |
+| $\hat{I}\otimes\hat{X}$ | $(\hat{H}\hat{S}^\dagger \otimes\hat{I}_2) \operatorname{SWAP}$ |
+| $\hat{Z}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0}$ |
+| $\hat{X}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{I}_2)$ |
+| $\hat{Y}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0} (\hat{H}\hat{S}^\dagger \otimes\hat{I}_2)$ |
+| $\hat{Z}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{I}_2 \otimes\hat{H})$ |
+| $\hat{X}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H})$ |
+| $\hat{Y}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H})$ |
+| $\hat{Z}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{I}_2 \otimes\hat{H}\hat{S}^\dagger)$ |
+| $\hat{X}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H}\hat{S}^\dagger)$ |
+| $\hat{Y}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{H}\hat{S}^\dagger \otimes\hat{H}\hat{S}^\dagger)$ |
+</TableFigure>
+
 ## Gradient of the expectation value
 
 To apply gradient descent methods to optimize the ansatz state $\ket{\psi(\boldsymbol{\theta})} = \hat{U}(\boldsymbol{\theta})\ket{\psi_0}$, we need to compute the gradient of $\braket{\hat{H}(\boldsymbol{\theta})}$. Suppose the ansatz is composed of a sequence of unitary transformations,
@@ -3203,24 +3223,215 @@ $$
 $$
 </details>
 
-## Two-qubit system
+## Lipkin model
 
-<TableFigure caption="Quantum gates for two-qubit Pauli measurements">
-| Pauli measurement | Quantum gate $\hat{U}$ |
-| --- | --- |
-| $\hat{Z}\otimes\hat{I}$ | $\hat{I}_2 \otimes\hat{I}_2$ |
-| $\hat{X}\otimes\hat{I}$ | $\hat{H} \otimes\hat{I}_2$ |
-| $\hat{Y}\otimes\hat{I}$ | $\hat{H}\hat{S}^\dagger \otimes\hat{I}_2$ |
-| $\hat{I}\otimes\hat{Z}$ | $(\hat{I}_2 \otimes\hat{I}_2) \operatorname{SWAP}$ |
-| $\hat{I}\otimes\hat{X}$ | $(\hat{H} \otimes\hat{I}_2) \operatorname{SWAP}$ |
-| $\hat{I}\otimes\hat{X}$ | $(\hat{H}\hat{S}^\dagger \otimes\hat{I}_2) \operatorname{SWAP}$ |
-| $\hat{Z}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0}$ |
-| $\hat{X}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{I}_2)$ |
-| $\hat{Y}\otimes\hat{Z}$ | $\operatorname{CX}_{1,0} (\hat{H}\hat{S}^\dagger \otimes\hat{I}_2)$ |
-| $\hat{Z}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{I}_2 \otimes\hat{H})$ |
-| $\hat{X}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H})$ |
-| $\hat{Y}\otimes\hat{X}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H})$ |
-| $\hat{Z}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{I}_2 \otimes\hat{H}\hat{S}^\dagger)$ |
-| $\hat{X}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{H} \otimes\hat{H}\hat{S}^\dagger)$ |
-| $\hat{Y}\otimes\hat{Y}$ | $\operatorname{CX}_{1,0} (\hat{H}\hat{S}^\dagger \otimes\hat{H}\hat{S}^\dagger)$ |
-</TableFigure>
+The Lipkin model is a schematic model describing the interaction among two or more fermions that can occupy two distinct energy levels, labeled by quantum numbers $\sigma = \pm 1$.
+
+For the four fermion case, we define the single particle states
+
+$$
+  \ket{u_{\sigma=-1, p}} = a^\dagger_{-p} \ket{0},\quad \ket{u_{\sigma = 1, p}} = a^\dagger_{+p} \ket{0} 
+$$
+
+which span an orthonormal basis. The Hamiltonian of the system is given by
+
+$$
+\begin{align*}
+  \hat{H} =& \hat{H}_0 + \hat{H}_1 + \hat{H}_2 \\
+  \hat{H}_0 =& \frac{1}{2} \varepsilon \sum_{\sigma, p} \sigma a_{\sigma, p}^\dagger a_{\sigma, p} \\
+  \hat{H}_1 =& \frac{1}{2} V \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{\sigma, p'}^\dagger a_{-\sigma, p'} a_{-\sigma, p} \\
+  \hat{H}_2 =& \frac{1}{2} W \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{-\sigma, p'}^\dagger a_{\sigma, p'} a_{-\sigma, p}
+\end{align*}
+$$
+
+where $V$ and $W$ are constant. The operator $\hat{H}_1$ enables movement of pairs of fermions, while $\hat{H}_2$ introduces a spin-exchange term. The latter term moves a pair of fermions from a state $(p\sigma, p' - \sigma)$ to a state $(p - \sigma, p' \sigma)$.
+
+We aim to rewrite the Hamiltionian in terms of so-called quasispin operators
+
+$$
+\begin{align*}
+  \hat{J}_\pm =& \sum_p a_{\pm}^\dagger a_{p\mp} \\
+  \hat{J}_z =& \frac{1}{2} \sum_{p\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} \\
+  \hat{J}^2 =& \hat{J}_+ \hat{J}_- + \hat{J}_z^2 - \hat{J}_z
+\end{align*}
+$$
+
+with the commutator relations
+
+1. $[\hat{J}_+, \hat{J}_\pm] = \pm\hat{J}_\pm$
+2. $[\hat{J}_+, \hat{J}_] = \hat{J}_z$
+3. $[\hat{J}^2, \hat{J}_\pm] = 0$
+4. $[\hat{J}^2, \hat{J}_z] = 0$
+
+<details>
+<summary>Proof</summary>
+
+**(1):**
+
+$$
+\begin{align*}
+  [\hat{J}_z, \hat{J}_\pm] =& \hat{J}_z \hat{J}_\pm - \hat{J}_\pm \hat{J}_z \\
+  =& \left(\frac{1}{2} \sum_{p, \sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} \right) \left(\sum_{p'} a_{p' \pm}^\dagger a_{p' \mp} \right) - \left(\sum_{p'} a_{p' \pm}^\dagger a_{p' \mp} \right) \left(\frac{1}{2} \sum_{p, \sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+  =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger a_{p' \mp} a_{p\sigma}^\dagger a_{p\sigma} \right)
+\end{align*}
+$$
+
+Using the commutation relations for the creation and annihilation operators
+
+$$
+\begin{align*}
+  \{ a_l, a_k \} =& 0 \\
+  \{ a_l^\dagger, a_k^\dagger \} =& 0 \\
+  \{ a_l^\dagger, a_k \} =& \delta_{lk}
+\end{align*}
+$$
+
+in order to move the operators in the right product to be in the same order as those in the lefthand product
+
+$$
+\begin{align*}
+  [\hat{J}_z, \hat{J}_\pm] =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger (\delta_{p' p} \delta_{\mp\sigma} - a_{p\sigma}^\dagger a_{p' \mp}) a_{p\sigma} \right) \\
+  =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger \delta_{p' p} \delta_{\mp\sigma} a_{p\sigma} + a_{p' \pm}^\dagger a_{p\sigma}^\dagger a_{p' \mp} a_{p\sigma} \right) \\
+  =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger \delta_{p' p} \delta_{\mp\sigma} a_{p\sigma} + a_{p\sigma}^\dagger a_{p' \pm}^\dagger a_{p\sigma} a_{p' \mp} \right) \\
+  =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger \delta_{p' p} \delta_{\mp\sigma} a_{p\sigma} + a_{p\sigma}^\dagger (\delta_{pp'} \delta_{\pm\sigma} - a_{p\sigma} a_{p' \pm}^\dagger) a_{p' \mp} \right) \\
+  =& \frac{1}{2} \sum_{p,p',\sigma} \sigma\left(a_{p\sigma}^\dagger \delta_{pp'} \delta_{\pm\sigma} a_{p' \mp} - a_{p' \pm}^\dagger \delta_{pp'} \delta_{\mp\sigma} a_{p\sigm} \right)
+\end{align*}
+$$
+
+which leads to
+
+$$
+\begin{align*}
+  [\hat{J}_z, \hat{J}_\pm] =& \frac{1}{2} \left( (\pm 1) a_{p\pm}^\dagger a_{p\mp} - (\mp 1) a_{p\pm}^\dagger a_{p\mp} \right) \\
+  =& \pm\frac{1}{2} \sum_p \left(a_{p\pm}^\dagger a_{p\mp} + (\pm 1) a_{p\pm}^\dagger a_{p\mp} \right) \\
+  =& \pm \sum_p a_{p\pm}^\dagger a_{p\mp} = \pm\hat{J}_{\pm}
+\end{align*}
+$$
+
+**(2):**
+
+$$
+\begin{align*}
+  [\hat{J}_+, \hat{J}_-] =& \hat{J}_+ \hat{J}_- - \hat{J}_- \hat{J}_+ \\
+  =& \left(\sum_p a_{p' +}^\dagger a_{p-} \right) \left(\sum_{p'} a_{p' -}^\dagger a_{p' +} \right) - \left(\sum_p a_{p' -}^\dagger a_{p'+} \right) \left(\sum_p a_{p +}^\dagger a_{p-} \right) \\
+  =& \sum_{p,p'} \left(a_{p' +}^\dagger a_{p-} a_{p'-}^\dagger a_{p'}^\dagger - a_{p' -}^\dagger a_{p' +} a_{p+}^\dagger a_{p-} \right) \\
+  =& \sum_{p,p'} \left(a_{p' +}^\dagger a_{p-} a_{p'-}^\dagger a_{p'}^\dagger - a_{p' -}^\dagger (\delta_{++} \delta_{pp'} - a_{p+}^\dagger a_{p'}) a_{p-} \right) \\
+  =& \sum_{p,p'} \left(a_{p' +}^\dagger a_{p-} a_{p'-}^\dagger a_{p'}^\dagger - a_{p' -}^\dagger \delta_{pp'} a_{p' -} + a_{p'-}^\dagger a_{p+}^\dagger a_{p'+} a_{p-} \right) \\
+  =& \sum_{p,p'} \left(a_{p' +}^\dagger a_{p-} a_{p'-}^\dagger a_{p'}^\dagger - a_{p' -}^\dagger \delta_{pp'} a_{p' -} + a_{p+}^\dagger a_{p'-}^\dagger a_{p-} a_{p'+} \right) \\
+  =& \sum_{p,p'} \left(a_{p' +}^\dagger a_{p-} a_{p'-}^\dagger a_{p'}^\dagger - a_{p' -}^\dagger (\delta_{--} \delta_{pp'} - a_{p-} a_{p'-}^\dagger) a_{p'+} \right) \\
+  =& \sum_{p, p'} (a_{p+}^\dagger \delta_{pp'} a_{p'+} - a_{p'-}^\dagger \delta_{pp'} a_{p-}) \\
+  =& \sum_p \left(a_{p+}^\dagger a_{p+} - a_{p-}^\dagger a_{p-} \right) = 2\hat{J}_z
+\end{align*}
+$$
+
+**(3):**
+
+$$
+\begin{align*}
+  [\hat{J}^2, \hat{J}_\pm] =& [\hat{J}_+ \hat{J}_- + \hat{J}_z^2 - \hat{J}_z, \hat{J}_\pm] \\
+  =& [\hat{J}_+ \hat{J}_-, \hat{J}_\pm] + [\hat{J}_z^2, \hat{J}_\pm] - [\hat{J}_z, \hat{J}_\pm]
+\end{align*}
+$$
+
+Using the relations
+
+$$
+\begin{align*}
+  [\hat{A}\hat{B}, \hat{C}] =& \hat{A}[\hat{B}, \hat{C}] + [\hat{A}, \hat{C}] \hat{B} \\
+  [\hat{A}, \hat{B}\hat{C}] =& [\hat{A}, \hat{B}]\hat{C} + \hat{B}[\hat{A},\hat{C}]
+\end{align*}
+$$
+
+we obtain
+
+$$
+  [\hat{J}^2, \hat{J}_\pm] = \hat{J}_+ [\hat{J}_-, \hat{J}_\pm] + [\hat{J}_+, \hat{J}_\pm] \hat{J}_- + \hat{J}_z [\hat{J}_z, \hat{J}_\pm] + [\hat{J}_z, \hat{J}_\pm]\hat{J}_z - [\hat{J}_z, \hat{J}_\pm]
+$$
+
+It follows that
+
+$$
+\begin{align*}
+  [\hat{J}^2, \hat{J}_+] =& -2\hat{J}_+ \hat{J}_z + \hat{J}_z [\hat{J}_z, \hat{J}_+] + [\hat{J}_z, \hat{J}_+]\hat{J}_z - [\hat{J}_z \hat{J}_+] \\
+  =& -2\hat{J}_+ \hat{J}_z + \hat{J}_z \hat{J}_+ + \hat{J}_+ \hat{J}_z - \hat{J}_+ \\
+  =& -2\hat{J}_+ \hat{J}_z + \hat{J}_+ + \hat{J}_+ \hat{J}_z + \hat{J}_+ \hat{J}_z - \hat{J}_+ = 0
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  [\hat{J}^2, \hat{J}_-] =& -2\hat{J}_z \hat{J}_- + \hat{J}_z [\hat{J}_z, \hat{J}_-] + [\hat{J}_z, \hat{J}_-]\hat{J}_z - [\hat{J}_z \hat{J}_-] \\
+  =& -2\hat{J}_z \hat{J}_- - \hat{J}_z \hat{J}_- + \hat{J}_- \hat{J}_z - \hat{J}_- \\
+  =& \hat{J}_z \hat{J}_- - (\hat{J}_z \hat{J}_- + \hat{J}_-) + \hat{J}_- = 0
+\end{align*}
+$$
+
+**(4)**
+
+$$
+\begin{align*}
+  [\hat{J}^2, \hat{J}_z] =& [\hat{J}_+ \hat{J}_- + \hat{J}_z^2 - \hat{J}_z, \hat{J}_z] \\
+  =& [\hat{J}_+ \hat{J}_-, \hat{J}_z] + [\hat{J}_z^2, \hat{J}_z] - [\hat{J}_z, \hat{J}_z] \\
+  =& \hat{J}_+ [\hat{J}_-, \hat{J}_z] + [\hat{J}_+, \hat{J}_z] \hat{J}_- \\
+  =& \hat{J}_+ \hat{J}_- - \hat{J}_+ \hat{J}_- = 0
+\end{align*}
+$$
+<details>
+
+In terms of the quasispin operators, we can rewrite
+
+$$
+  \hat{H}_0 = \frac{1}{2}\varepsilon \sum_{p\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} = \varepsilon\hat{J}_z
+$$
+
+Moreover, using the anti-commutation relations, we obtain
+
+$$
+\begin{align*}
+  \hat{H}_1 =& \frac{1}{2}V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p' -\sigma} a_{p-\sigma} \\
+  =& \frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p-\sigma} a_{p' - \sigma} \\
+  =& \frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{\sigma-\sigma} - a_{p-\sigma} a_{p'\sigma}^\dagger) a_{p'-\sigm} \\
+  =& \frac{1}{2} V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'\sigma}^\dagger a_{p'-\sigm}
+\end{align*}
+$$
+
+Rewriting the sum over $\sigma$, we arrive at
+
+$$
+\begin{align*}
+  \hat{H}_1 =& \frac{1}{2} V \sum_{p,p'} a_{p+}^\dagger a_{p-} a_{p'+}^\dagger a_{p'-} + a_{p-}^\dagger a_{p+} a_{p'-}^\dagger a_{p'+} \\
+  =& \frac{1}{2}V \left[\sum_p \left( a_{p+}^\dagger a_{p-} \right) \sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) + \sum_p \left( a_{p-}^\dagger a_{p+} \right) \sum_{p'} \left( a_{p'}^\dagger a_{p'+} \right) \right] \\
+  =& \frac{1}{2} V (\hat{J}_+^2 + \hat{J}_-^2)
+\end{align*}
+$$
+
+Finally
+
+$$
+\begin{align*}
+  \hat{H}_2 =& \frac{1}{2} W \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p'\sigma} a_{p-\sigma} \\
+  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p-\sigma} a_{p' \sigma} \\
+  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{-\sigma-\sigma} - a_{p-\sigma} a_{p'-\sigma}^\dagger) a_{p' \sigma} \\
+  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger \delta_{pp'} a_{p' \sigma} + a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \\
+  =& \frac{1}{2} W \left( -\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} + \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \right)
+\end{align*}
+$$
+
+Rewriting the second sum over $\sigma$, we get
+
+$$
+\begin{align*}
+  \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} =& \sum_{p, p'} a_{p+}^\dagger a_{p-} a_{p'-}^\dagger + a_{p-}^\dagger a_{p+} a_{p'+}^\dagger a_{p'-} \\
+  =& \sum_p \left(a_{p+}^\dagger a_{p-} \right) \sum_{p'} \left( a_{p'-}^\dagger a_{p'+} \right) + \sum_p \left(a_{p-}^\dagger a_{p+} \right) \sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) \\
+  =& \hat{J}_+ \hat{J}_- + \hat{J}_- \hat{J}_+
+\end{align*}
+$$
+
+Introducing the number operator $\hat{N} = \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma}$ we get
+
+
+$$
+  \hat{H}_2 = \frac{1}{2} W (-\hat{N} + \hat{J}_+ \hat{J}_ + \hat{J}_- \hat{J}_+)
+$$
