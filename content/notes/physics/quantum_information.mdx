@@ -3223,30 +3223,39 @@ $$
 $$
 </details>
 
-## Lipkin model
+## Lipkin, Meshkov and Glick (LMG) model
 
-The Lipkin model is a schematic model describing the interaction among two or more fermions that can occupy two distinct energy levels, labeled by quantum numbers $\sigma = \pm 1$.
+The Lipkin, Meshkov and Glick (LMG) model describes a many-body system of $N$ fermions occupying two distinct energy levels, each with $N$-fold degeneracy. Each level is associated with a quantum number $\sigma$, which takes the values $-1$ for the lower energy level and $1$ for the upper level. Within each energy level, the degeneracy is specified by a quantum number $p \in {1,\dots, N}$. The model considers only two-body interactions that scatter pairs of particles between the two energy levels without altering the value of $p$.
 
-For the four fermion case, we define the single particle states
+To construct the Hamiltonian of the system, we define the single particle states
 
 $$
-  \ket{u_{\sigma=-1, p}} = a^\dagger_{-p} \ket{0},\quad \ket{u_{\sigma = 1, p}} = a^\dagger_{+p} \ket{0} 
+  \ket{u_{p, \sigma=-1}} = a^\dagger_{p-} \ket{0},\quad \ket{u_{p, \sigma = 1}} = a^\dagger_{p+} \ket{0}
 $$
 
-which span an orthonormal basis. The Hamiltonian of the system is given by
+where $a_{p\pm}^\dagger$ and $a_{p\pm}$ are the fermion creation and annihilation operators, respectively, satisfying the anti-commutation relations
 
 $$
 \begin{align*}
-  \hat{H} =& \hat{H}_0 + \hat{H}_1 + \hat{H}_2 \\
-  \hat{H}_0 =& \frac{1}{2} \varepsilon \sum_{\sigma, p} \sigma a_{\sigma, p}^\dagger a_{\sigma, p} \\
-  \hat{H}_1 =& \frac{1}{2} V \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{\sigma, p'}^\dagger a_{-\sigma, p'} a_{-\sigma, p} \\
-  \hat{H}_2 =& \frac{1}{2} W \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{-\sigma, p'}^\dagger a_{\sigma, p'} a_{-\sigma, p}
+  \{a_l, a_k \} =& 0 \\
+  \{a_l^\dagger, a_k^\dagger \} =& 0 \\
+  \{a_l^\dagger, a_k \} =& \delta_{lk}
 \end{align*}
 $$
 
-where $V$ and $W$ are constant. The operator $\hat{H}_1$ enables movement of pairs of fermions, while $\hat{H}_2$ introduces a spin-exchange term. The latter term moves a pair of fermions from a state $(p\sigma, p' - \sigma)$ to a state $(p - \sigma, p' \sigma)$.
+The single particle states span an orthonormal basis for the system. The Hamiltonian of the system in second quantization is given by $\hat{H} = \hat{H}_0 + \hat{H}_1 + \hat{H}_2$ with the components
 
-We aim to rewrite the Hamiltionian in terms of so-called quasispin operators
+$$
+\begin{align*}
+  \hat{H}_0 =& \frac{1}{2} \varepsilon \sum_{\sigma, p} \sigma a_{\sigma, p}^\dagger a_{\sigma, p} \\
+  \hat{H}_1 =& -\frac{1}{2} V \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{\sigma, p'}^\dagger a_{-\sigma, p'} a_{-\sigma, p} \\
+  \hat{H}_2 =& -\frac{1}{2} W \sum_{\sigma, p, p'} a_{\sigma, p}^\dagger a_{-\sigma, p'}^\dagger a_{\sigma, p'} a_{-\sigma, p}
+\end{align*}
+$$
+
+where $\varepsilon$ is the difference between upper and lower energy levels, and $V$ and $W$ are scattering constants. The operator $\hat{H}_1$ describes the scattering of pairs of fermions between the two energy levels. The operator $\hat{H}_2$ introduces a spin-exchange term, which transitions a pair of fermions from a state $(p\sigma, p' - \sigma)$ to a state $(p - \sigma, p' \sigma)$.
+
+The Hamiltionian can be rewritten in terms of the quasispin operators
 
 $$
 \begin{align*}
@@ -3256,7 +3265,7 @@ $$
 \end{align*}
 $$
 
-with the commutator relations
+satisfying the commutator relations
 
 1. $[\hat{J}_+, \hat{J}_\pm] = \pm\hat{J}_\pm$
 2. $[\hat{J}_+, \hat{J}_] = \hat{J}_z$
@@ -3276,17 +3285,7 @@ $$
 \end{align*}
 $$
 
-Using the commutation relations for the creation and annihilation operators
-
-$$
-\begin{align*}
-  \{ a_l, a_k \} =& 0 \\
-  \{ a_l^\dagger, a_k^\dagger \} =& 0 \\
-  \{ a_l^\dagger, a_k \} =& \delta_{lk}
-\end{align*}
-$$
-
-in order to move the operators in the right product to be in the same order as those in the lefthand product
+Using the anti-commutation relations for the creation and annihilation operators, we can move the operators in the right-hand product to be in the same order as those in the left-hand product
 
 $$
 \begin{align*}
@@ -3378,22 +3377,31 @@ $$
   =& \hat{J}_+ \hat{J}_- - \hat{J}_+ \hat{J}_- = 0
 \end{align*}
 $$
+</details>
+
+In terms of the quasispin operators, the Hamiltonian components can be rewritten as
+1. $\hat{H}_0 = \varepsilon\hat{J}_z$
+2. $\frac{1}{2} -V (\hat{J}_+^2 + \hat{J}_-^2)$
+3. $\hat{H}_2 = -\frac{1}{2} W (-\hat{N} + \hat{J}_+ \hat{J}_- + \hat{J}_- \hat{J}_+)$
+
+where $\hat{N} = \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma}$ is the number operator.
+
 <details>
+<summary>Proof</summary>
 
-In terms of the quasispin operators, we can rewrite
-
+**(1):** This follows directly by substiting $\hat{J}_z$ into $\hat{H}_0$:
 $$
   \hat{H}_0 = \frac{1}{2}\varepsilon \sum_{p\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} = \varepsilon\hat{J}_z
 $$
 
-Moreover, using the anti-commutation relations, we obtain
+**(2):** Using the anti-commutation relations of the creation and annihilation operators, we obtain
 
 $$
 \begin{align*}
-  \hat{H}_1 =& \frac{1}{2}V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p' -\sigma} a_{p-\sigma} \\
-  =& \frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p-\sigma} a_{p' - \sigma} \\
-  =& \frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{\sigma-\sigma} - a_{p-\sigma} a_{p'\sigma}^\dagger) a_{p'-\sigm} \\
-  =& \frac{1}{2} V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'\sigma}^\dagger a_{p'-\sigm}
+  \hat{H}_1 =& -\frac{1}{2}V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p' -\sigma} a_{p-\sigma} \\
+  =& -\frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p' \sigma}^\dagger a_{p-\sigma} a_{p' - \sigma} \\
+  =& -\frac{1}{2} V \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{\sigma-\sigma} - a_{p-\sigma} a_{p'\sigma}^\dagger) a_{p'-\sigm} \\
+  =& -\frac{1}{2} V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'\sigma}^\dagger a_{p'-\sigm}
 \end{align*}
 $$
 
@@ -3401,21 +3409,21 @@ Rewriting the sum over $\sigma$, we arrive at
 
 $$
 \begin{align*}
-  \hat{H}_1 =& \frac{1}{2} V \sum_{p,p'} a_{p+}^\dagger a_{p-} a_{p'+}^\dagger a_{p'-} + a_{p-}^\dagger a_{p+} a_{p'-}^\dagger a_{p'+} \\
-  =& \frac{1}{2}V \left[\sum_p \left( a_{p+}^\dagger a_{p-} \right) \sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) + \sum_p \left( a_{p-}^\dagger a_{p+} \right) \sum_{p'} \left( a_{p'}^\dagger a_{p'+} \right) \right] \\
-  =& \frac{1}{2} V (\hat{J}_+^2 + \hat{J}_-^2)
+  \hat{H}_1 =& -\frac{1}{2} V \sum_{p,p'} a_{p+}^\dagger a_{p-} a_{p'+}^\dagger a_{p'-} + a_{p-}^\dagger a_{p+} a_{p'-}^\dagger a_{p'+} \\
+  =& -\frac{1}{2}V \left[\sum_p \left( a_{p+}^\dagger a_{p-} \right) \sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) + \sum_p \left( a_{p-}^\dagger a_{p+} \right) \sum_{p'} \left( a_{p'}^\dagger a_{p'+} \right) \right] \\
+  =& -\frac{1}{2} V (\hat{J}_+^2 + \hat{J}_-^2)
 \end{align*}
 $$
 
-Finally
+**(3):** Using the anti-commutation relations of the creation and annihilation operators, we obtain
 
 $$
 \begin{align*}
-  \hat{H}_2 =& \frac{1}{2} W \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p'\sigma} a_{p-\sigma} \\
-  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p-\sigma} a_{p' \sigma} \\
-  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{-\sigma-\sigma} - a_{p-\sigma} a_{p'-\sigma}^\dagger) a_{p' \sigma} \\
-  =& \frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger \delta_{pp'} a_{p' \sigma} + a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \\
-  =& \frac{1}{2} W \left( -\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} + \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \right)
+  \hat{H}_2 =& -\frac{1}{2} W \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p'\sigma} a_{p-\sigma} \\
+  =& -\frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p-\sigma} a_{p' \sigma} \\
+  =& -\frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger (\delta_{pp'} \delta_{-\sigma-\sigma} - a_{p-\sigma} a_{p'-\sigma}^\dagger) a_{p' \sigma} \\
+  =& -\frac{1}{2} W \sum_{p,p',\sigma} -a_{p\sigma}^\dagger \delta_{pp'} a_{p' \sigma} + a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \\
+  =& -\frac{1}{2} W \left( -\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} + \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \right)
 \end{align*}
 $$
 
@@ -3429,9 +3437,203 @@ $$
 \end{align*}
 $$
 
-Introducing the number operator $\hat{N} = \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma}$ we get
-
+In terms of the number operator $\hat{N} = \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma}$ we get
 
 $$
-  \hat{H}_2 = \frac{1}{2} W (-\hat{N} + \hat{J}_+ \hat{J}_ + \hat{J}_- \hat{J}_+)
+  \hat{H}_2 = -\frac{1}{2} W (-\hat{N} + \hat{J}_+ \hat{J}_ + \hat{J}_- \hat{J}_+)
 $$
+</details>
+
+The Hamiltonian commute with the quasispin operators. In particular, $[\hat{H}, \hat{J}^2] = 0$ means that $\hat{J}$ is a good quantum number, implying that the total spin is a conserved quntum number.
+
+<details>
+<summary>Proof</summary>
+
+Expanding $[\hat{H}, \hat{J}^2]$ gives
+
+$$
+\begin{align*}
+  [\hat{H}, \hat{J}^2] =& [\hat{H}_0 + \hat{H}_1 + \hat{H}_2, \hat{J}^2] \\
+  =& [\hat{H}_0, \hat{J}^2] + [\hat{H}_1, \hat{J}^2] + [\hat{H}_2, \hat{J}^2] \\
+  =& \varepsilon [\hat{J}_z, \hat{J}^2] - \frac{1}{2} V[\hat{J}_+^2 + \hat{J}_-^2, \hat{J}^2] - \frac{1}{2}W [-\hat{N} + \hat{J}_+ \hat{J}_- + \hat{J}_- \hat{J}_+, \hat{J}^2] \\
+  =& -\frac{1}{2} V\left([\hat{J}_+^2, \hat{J}^2] + [\hat{J}_-^2, \hat{J}^2] \right) - \frac{1}{2} W\left(-[\hat{N}, \hat{J}^2] + [\hat{J}_+ \hat{J}_-, \hat{J}^2] + [\hat{J}_- \hat{J}_+, \hat{J}^2] \right)
+\end{align*}
+$$
+
+Since $[\hat{J}_\pm, \hat{J}^2] = 0$, it follows that
+
+$$
+\begin{align*}
+  [\hat{J}_\pm^2, \hat{J}^2] =& \hat{J}_\pm \underbrace{[\hat{J}_\pm, \hat{J}^2]}_{=0} + \underbrace{[\hat{J}_\pm, \hat{J}^2]}_{=0} \hat{J}_\pm = 0
+  [\hat{J}_+ \hat{J}_-, \hat{J}^2] =& \hat{J}_+ \underbrace{[\hat{J}_-, \hat{J}^2]}_{=0} + \underbrace{[\hat{J}_+, \hat{J}^2]}_{=0} \hat{J}_- = 0 \\
+  [\hat{J}_- \hat{J}_+, \hat{J}^2] =& \hat{J}_- \underbrace{[\hat{J}_+, \hat{J}^2]}_{=0} + \underbrace{[\hat{J}_-, \hat{J}^2]}_{=0} \hat{J}_+ = 0 \\
+\end{align*}
+$$
+
+Thus, we are left with
+
+$$
+\begin{align*}
+  [\hat{H}, \hat{J}^2] =& \frac{1}{2} W[\hat{N}, \hat{J}^2] \\
+  =& \frac{1}{2} W \left(-[\hat{N}, \hat{J}_+ \hat{J}_-] - [\hat{N}, \hat{J}_z^2] + [\hat{N}, \hat{J}_z] \right) \\
+  =& \frac{1}{2} W \left(-[\hat{N}, \hat{J}_+] \hat{J}_- - \hat{J}_+ [\hat{N}, \hat{J}_-] - [\hat{N}, \hat{J}_z] \hat{J}_z - \hat{J}_z [\hat{N}, \hat{J}_z] + [\hat{N}, \hat{J}_z] \right)
+\end{align*}
+$$
+
+Evaluating $[\hat{N}, \hat{J}_\pm]$ gives
+
+$$
+\begin{align*}
+  [\hat{N}, \hat{J}_\pm] =& \hat{N}\hat{J}_\pm - \hat{J}_\pm \hat{N} \\
+  =& \left(\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \left(\sum_{p'} a_{p' \pm}^\dagger a_{p' \mp} \right) - \left(\sum_{p'} a_{p' \pm}^\dagger a_{p' \mp} \right) \left(\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+  =& \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger a_{p' \mp} a_{p\sigma}^\dagger a_{p\sigma} \\
+  =& \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger \left(\delta_{\mp\sigma} \delta_{pp'} - a_{p\sigma}^\dagger a_{p' \mp} \right) a_{p\sigma} \\
+  =& \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} - a_{p' \pm}^\dagger \delta_{\mp\sigma} \delta_{pp'} a_{p\sigma} + a_{p' \pm}^\dagger a_{p' \mp} \right) a_{p\sigma}^\dagger a_{p' \mp} a_{p\sigma} \\
+  =& sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} + a_{p\sigma}^\dagger a_{p'\pm} a_{p\sigma} a_{p' \mp} - \sum_p a_{p\pm}^\dagger a_{p\mp} \\
+  =& sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p\sigma} a_{p' \pm}^\dagger a_{p' \mp} + a_{p\sigma}^\dagger \left(\delta_{pp'} \delta_{\pm\sigma} - a_{p\sigma} a_{p'\pm}^\dagger \right) a_{p' \mp} - \sum_p a_{p\pm}^\dagger a_{p\mp} \\
+  =& \sum_p a_{p\pm}^\dagger a_{p\mp} - \sum_p a_{p\pm}^\dagger a_{p\mp} = 0
+\end{align*}
+$$
+
+Evalutating $[\hat{N}, \hat{J}_z]$ yields
+
+$$
+\begin{align*}
+  [\hat{N}, \hat{J}_z] =& \hat{N}\hat{J}_z - \hat{J}_z \hat{N} \\
+  =& \left(\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \left(\frac{1}{2} \sum_{p',\sigma} \sigma a_{p'\sigma}^\dagger a_{p'\sigma} \right) - \left(\frac{1}{2} \sum_{p',\sigma} \sigma a_{p'\sigma}^\dagger a_{p'\sigma} \right) \left(\sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+  =& \sum_{p,p',\sigma} \sigma a_{p\sigma}^\daagger a_{p\sigma} a_{p' \sigma}^\dagger a_{p' \sigma} - \sigma a_{p' \sigma}^\dagger a_{p' \sigma} a_{p\sigma}^\dagger a_{p\sigma} = 0
+\end{align*}
+$$
+
+Hence $[\hat{H}, \hat{J}^2] = 0$.
+</details>
+
+To find the matrix representation of the LMG Hamiltonian, we use the spin operator equations
+
+$$
+\begin{align*}
+  \hat{J}^2 \ket{j, j_z} =& j(j + 1) \ket{j, j_z} \\
+  \hat{J}_z \ket{j, j_z} =& j_z \ket{j, j_z} \\
+  \hat{J}_\pm \ket{j, j_z} =& \sqrt{j(j + 1) - j_z (j_z \pm 1)} \ket{j, j_z \pm 1} \\
+  \hat{N} \ket{j, j_z} =& 2j \ket{j, j_z}
+\end{align*}
+$$
+
+where $j$ denote the total spin and $j_z$ the $z$-projection of the spin. For a system with $N$ fermions, the total spin is $j = N/2$. The creation and annihilation structure of $\hat{J}_z$ reflects the number of fermions in the upper energy level relative to those in the lower level. Specifically, the eigenvalues of $\hat{J}_z$ correspond to half the difference between the number of particles in the upper level and the number in the lower level. When all $N$ particles occupy the upper level, the eigenvalue of $\hat{J}_z$ is $N/2$, while when all particles are in the lower level, the eigenvalue is $-N/2$. Between these extremes, the eigenvalues of $\hat{J}_z$ form a discrete sequence $j_z \in \set{-N/2, -N/2 + 1,\dots,N/2 - 1, N/2}$, which results in $N + 1$ possible states for the system.
+
+To calculate the matrix elements of the Hamiltonian, we solve the time-independent Schrödinger equation $\hat{H}_j \ket{\psi_j} = E_{j, j_z}\ket{\psi_j}$, where 
+
+$$
+  \ket{\psi_j} = \sum_{j_z = -j}^j c_{j_z} \ket{j, j_z}
+$$
+
+Applying $\bra{j, j'_z}$ to both sides, we get
+
+$$
+  \sum_{j'_z, j_z=-N/2}^{N/2} c_{j_z} \braket{j, j'_z |\hat{H}_j |j, j_z} = \sum_{j'_z, j_z=-N/2}^{N/2} c_{j_z} E_{j, j_z} \underbrace{\braket{j, j'_z|j, j_z}}_{=\delta_{j_z j'_z}} = E_{j, j_z} c_{j_z}
+$$
+
+In terms of the quantum numbers, the non-zero matrix elements are
+
+$$
+\begin{align*}
+  \braket{j, j_z |\hat{H}_j|j, j_z} =& j_z \epsilon - W [j(j + 1) - j_z^2] \\
+  \braket{j, j_z |\hat{H}_j|j, j_z + 2} =& -\frac{V}{2} \sqrt{[j(j + 1) - j_z (j_z - 1)][j(j + 1) - (j_z - 1)(j_z - 2)]} \\
+  \braket{j, j_z + 2|\hat{H}_j|j, j_z} =& \braket{j, j_z|\hat{H}_j|j, j_z + 2}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The matrix elements of $\hat{H}$ in the $\ket{j,j_z}$ basis are given by
+
+$$
+  \braket{j, j'_z |\hat{H}_j |j, j_z} = \braket{j, j'_z |\hat{H}_{0,j} |j, j_z} + \braket{j, j'_z |\hat{H}_{1,j} |j, j_z} + \braket{j, j'_z |\hat{H}_{2,j} |j, j_z}
+$$
+
+The matrix elements of $\hat{H}_{0,j}$ are given by
+
+$$
+\begin{align*}
+  \braket{j, j'_z |\hat{H}_{0,j} |j, j_z} =& \braket{j, j'_z | \varepsilon \hat{J}_z |j, j_z} \\
+  =& \varepsilon j_z \braket{j, j'_z | j, j_z} \\
+  =& \varepsilon j_z \delta_{j_z j'_z}
+\end{align*}
+$$
+
+To find the matrix elements of $\hat{H}_{j,1}$, we evaluate
+
+$$
+\begin{align*}
+  \braket{j, j'_z |\hat{H}_{1,j} |j, j_z} =& \Braket{j, j'_z | -\frac{1}{2} V (\hat{J}_+^2 + \hat{J}_-^2) |j, j_z} \\
+  =& -\frac{1}{2} V \left( \braket{j, j'_z | \hat{J}_+^2 | j, j_z} + \braket{j, j'_z | \hat{J}_-^2 | j, j_z} \right) \\
+\end{align*}
+$$
+
+Since 
+
+$$
+\begin{align*}
+  \hat{J}_\pm^2 \ket{j, j_z \pm 1} =& \sqrt{j(j + 1) - j_z (j_z \pm 1)} \hat{J}_\pm \ket{j, j_z \pm 1} \\
+  =& \sqrt{[j(j + 1) - j_z (j_z \pm 1)][j(j + 1) - (j_z \pm 1)(j_z \pm 2)]} \ket{j, j_z \pm 2}
+\end{align*}
+$$
+
+we get 
+
+$$
+\begin{align*}
+  \braket{j, j'_z |\hat{H}_{1,j} |j, j_z} =& -\frac{1}{2} V \left(\sqrt{[j(j + 1) - j_z (j_z + 1)][j(j + 1) - (j_z + 1)(j_z + 2)]} \braket{j, j'_z | j, j_z + 2} \right. \\
+  &+ \left. \sqrt{[j(j + 1) - j_z (j_z - 1)][j(j + 1) - (j_z - 1)(j_z - 2)]} \braket{j, j'_z |j, j_z - 2} \right)
+\end{align*}
+$$
+
+Using the orthonormality condition $\braket{j, j'_z | j, j_z + 2} = \delta_{j'_z, j_z + 2}$, the matrix elements are nonzero for $j'_z = j_z + 2$ and thus
+
+$$
+  \braket{j, j_z + 2 |\hat{H}_{1,} |j, j_z} = -\frac{1}{2} V \sqrt{[j(j + 1) - j_z (j_z + 1)][j(j + 1) - (j_z + 1)(j_z + 2)]}
+$$
+
+From the Hermiticity of $\hat{H}_{1,}$, we have 
+
+$$
+  \braket{j, j_z + 2|\hat{H}_{1,}|j, j_z} = \braket{j, j_z|\hat{H}_{1,}|j, j_z + 2}^* = \braket{j, j_z|\hat{H}_{1,j}|j, j_z + 2}
+$$
+
+To find the matrix elements of $\hat{H}_{2,j}$, we evaluate
+
+$$
+\begin{align*}
+  \braket{j, j'_z |\hat{H}_{2,j} |j, j_z} =& \Braket{j, j'_z | \frac{1}{2} W \left(-\hat{N} + \hat{J}_+ \hat{J}_- + \hat{J}_- \hat{J}_+ \right) |j, j_z} \\
+  =& \frac{1}{2} W \left( -\braket{j, j'_z | \hat{N}|j, j_z} + \braket{j, j'_z | \hat{J}_+ \hat{J}_-| j, j_z} + \braket{j, j'_z| \hat{J}_- \hat{J}_+ |j, j_z} \right)
+\end{align*}
+$$
+
+Since
+
+$$
+\begin{align*}
+  \hat{J}_+ \hat{J}_- \ket{j, j_z} =& \sqrt{j(j + 1) - j_z (j_z - 1)} \hat{J}_+ \ket{j, j_z - 1} \\
+  =& \sqrt{j(j + 1) - j_z (j_z - 1)}\sqrt{j(j + 1) - (j_z - 1)[(j_z - 1) + 1]} \ket{j, j_z} \\
+  =& j(j + 1) - j_z (j_z - 1) \ket{j, j_z}
+\end{align*}
+$$
+
+and similarly
+
+$$
+  \hat{J}_- \hat{J}_+ \ket{j, j_z} = j(j + 1) - j_z (j_z + 1) \ket{j, j_z}
+$$
+
+we get
+
+$$
+\begin{align*}
+  \Braket{j, j'_z | \hat{J}_+ \hat{J}_- + \hat{J}_- \hat{J}_+ |j, j_z} =& j(j + 1) - j_z (j_z - 1) \braket{j, j'_z | j, j_z} \\
+  &+ j(j + 1) - j_z (j_z + 1) \braket{j, j'_z | j, j_z} \\
+  =& [j(j + 1) - j_z (j_z - 1) + j(j + 1) - j_z (j_z + 1)]\delta_{j_z, j'_z} \\
+  =& 2[j(j + 1) - j_z^2] \delta_{j_z, j'_z}
+\end{align*}
+$$
+</details>
