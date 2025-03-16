@@ -9132,7 +9132,7 @@ $$
 where the energy eigenvalue $E_n$ corresponds to the eigenvector $\ket{n}$, i.e.
 
 $$
-  E_n = \mathbf{H}_{nn} = \braket{n|\hat{H}|n}
+  E_n = H_{nn} = \braket{n|\hat{H}|n}
 $$
 
 since $\braket{m|n} = \delta_{nm}$. Working in the Heisenberg picture, we preliminary compute the matric elements of $\dot{\mathbf{O}}_{nm}$ of the time derivative of a generic operator $\hat{O}$ given its matrix elements $\mathbf{O}_{nm}$. If $\hat{O}$ does not explicitly depend on time, then from
@@ -9155,10 +9155,12 @@ $$
 where $\boldsymbol{\omega}_{nm}$ are Bohr's quantized angular frequencies
 
 $$
-  \boldsymbol{\omega}_{nm} = \frac{E_n - E_m}{\hbar}
+\begin{equation}
+  \boldsymbol{\omega}_{nm} = \frac{E_n - E_m}{\hbar} \tag{\label{equation-144}}
+\end{equation}
 $$
 
-To find the energy levels of the harmonic oscillator, let us consider the quantum counterpart of the Hamiltonian equations for the harmonic oscillator:
+To find the energy levels of the harmonic oscillator, we consider its quantum Hamiltonian equation:
 
 $$
   \hat{\dot{x}} = \frac{\partial\hat{H}}{\patial p} = \frac{\hat{p}}{m}, \quad \hat{\dot{p}}_x = -\frac{\partial\hat{H}}{\partial x} = -m\omega^2 \hat{x}
@@ -9187,7 +9189,7 @@ $$
 \end{align*}
 $$
 
-where $\psi_k (x) = \braket{x|k}$ is the eigenfunction corresponding to the eigenvalu $E_k$. To find the matrix elements of $\hat{\ddot{x}}$ we differentiate $\eqref{equation-143}$ with respect to time, yielding
+where $\psi_k (x) = \braket{x|k}$ is the eigenfunction corresponding to the eigenvalu $E_k$. To find the matrix elements of $\hat{\ddot{x}}$ we differentiate $\eqref{equation-141}$ with respect to time, yielding
 
 $$
   \ddot{x}_{nm} = -\omega_{nm}^2 x_{nm}
@@ -9201,19 +9203,19 @@ $$
 \end{equation}
 $$
 
-It is evident that the matrix elements $x_{nk}$ cannot be zero for all $n$ and $k$ as this would imply no physical transitions between energy states. From $\eqref{equation-143}$, it follows that $x_{nk}$ is non-zero only when $\omega^2 = \omega_{nk}^2$, i.e. when $\omega_{nk} = \pm\omega$. This means that
+For allowed energy transitions, we must have $x_{nk} \neq 0$, in which case $\omega_{nk} = \pm\omega$. This implies that the energy difference is given by
 
 $$
   E_n - E_k = \pm\hbar\omega
 $$
 
-which shows that the energy levels of the harmonic oscillator are equally spaced. This allows us to order the levels in terms of growing energy values, i.e. $E_{j+1} - E_j = \hbar\omega$ for any $j > 0$.
+which shows that the energy levels of the harmonic oscillator are equally spaced, i.e. $E_{j+1} - E_j = \hbar\omega$ for any $j \geq 0$.
 
 Since $\hat{H}$ is Hermitian, we can choose real eigenfunctions $\psi_n (x) = \braket{x|n} = \psi_n^* (x)$. Moreover, $\hat{H}$ is positive definite, i.e.
 
 $$
 \begin{align*}
-  \mathbf{H}_{nn} =& \braket{n|\hat{H}|n} = \int \psi_n^* (x) \hat{H} \psi_n (x) \;\d x \\
+  H_{nn} =& \braket{n|\hat{H}|n} = \int \psi_n^* (x) \hat{H} \psi_n (x) \;\d x \\
   =& \int \psi_n (x) \hat{H} \psi_n (x) > 0
 \end{align*}
 $$
@@ -9227,39 +9229,167 @@ $$
 \end{align*}
 $$
 
-The positive definiteness of $\hat{H}$ implies that there is a minimum energy value $E$, which can be taken for $n = 0$.
+The positive definiteness of $\hat{H}$ implies a minimum energy value $E$ at $n = 0$. 
+
+To find the matrix elements of $\hat{x}$, we note from $\eqref{equation-143}$ that $x_{nk} \neq 0$ only if $k = n \pm 1$, meaning that energy transitions occur only between neighbouring levels. Since $\hat{x}$ is Hermitian, it must be symmetric, i.e. $x_{nk} = x_{kn}$. Invoking the commutation relation $[\hat{x},\hat{p}] = i\hbar\hat{I}$ we get
+
+$$
+  \hat{x}\hat{\dot{x}} - \hat{\dot{x}}\hat{x} = i\frac{\hbar}{m}\hat{I}
+$$
+
+or
+
+$$
+  \sum_{lk} (x_{nl}\dot{x}_{lk} - \dot{x}_{nl} x_{lk}) = i\frac{\hbar}{m}\delta_{nk}
+$$
+
+which implies
+
+$$
+  \sum_{lk} (x_{nl} \dot{x}_{lk} - \dot{x}_{nl} x_{lk}) = i\frac{\hbar}{m}
+$$
+
+Using $\eqref{equation-141}$, we can rewrite this as
+
+$$
+  \sum_{lk} (x_{nl} \omega_{ln} x_{ln} - \omega_{nl} x_{nl} x_{lk}) = \frac{\hbar}{m}\delta_{nk}
+$$
+
+where $\omega$ is an antisymmetric matrix, since from $\eqref{equation-144}$ we have $\omega_{nm} = -\omega_{mn}$. Hence
+
+$$
+  2\sum_l x_{nl}^2 \omega_{ln} = \frac{\hbar}{m}
+$$
+
+Since $l$ can only take values $l = n \pm 1$, we finally obtain
+
+$$
+  x_{n, n-1}^2 \omega_{n - 1,n} + x_{n,n+1}^2 \omega_{n+1,n} = \frac{\hbar}{2m}
+$$
+
+Furthermore, $\omega_{n+1, n} = \omega$ and $\omega_{n-1, n} = -\omega$, so that we may start with $n = 0$ and construct the matrix element
+
+$$
+  x_{01} = \sqrt{\frac{(n+1)\hbar}{2m\omega}}
+$$
+
+Proceeding recursively for increasing values of $n$, we find
+
+$$
+  x_{n, n+1} = \sqrt{\frac{\hbar}{2m\omega}}
+$$
+
+The knowledge of the matrix elements of $\hat{x}$ allows us to fine the matrix elements of all the other operators. In particular
+
+$$
+\begin{align*}
+  E_n =& H_{nn} = \frac{1}{2} (\dot{x}^2)_{nn} + \frac{1}{2} m\omega^2 (x^2)_{nn} \\
+  =& \frac{1}{2} m \sum_l \dot{x}_{nl} \dot{x}_{ln} + \frac{1}{2} m\omega^2 \sum_l x_{nl} x_{ln} \\
+  =& -\frac{1}{2} m \sum_l \omega_{nl} \omega_{ln} x_{nl} x_{ln} + \frac{1}{2} m\omega^2 \sum_l x_{nl} x_{ln}
+\end{align*}
+$$
+
+Since $x_{nl}$ is symmetric and $\omega_{nl}$ anti-symmetric, we have
+
+$$
+\begin{align*}
+  E_n =& \frac{1}{2} m \sum_l \omega_{nl}^2 x_{nl}^2 + \omega^2 x_{nl}^2 \\
+  =& \frac{1}{2}m (\omega^2 x_{n,n+1} + \omega^2 x_{n,n-1} + \omega^2 x_{n,n+1} + \omega^2 x_{n,n-1}) \\
+  =& m\omega^2 (x_{n,n+1}^2 + x_{n,n-1}^2) \\
+  =& m\omega^2 \left(\frac{(n+1)\hbar}{2m\omega} + \frac{n\hbar}{2m\omega} \right) \\
+  =& \left(n + \frac{1}{2} \right)\hbar\omega
+\end{align*}
+$$
 
 ### Algebraic method
 
 The harmonic oscillator problem $\eqref{equation-56}$ can be solved algebraically using ladder operators. To see this, we write the Hamiltonian as
 
 $$
-  \hat{H} = \frac{1}{2m} \left[\hat{p}^2 + (m\omega x)^2 \right]
+  \hat{H} = \frac{1}{2m} \left[(m\omega x)^2 + \hat{p}^2 \right]
 $$
 
 We want to find operators that factor the Hamiltonian. This motivates us to define the ladder operators
 
 $$
-  \hat{a}_\pm := \frac{1}{\sqrt{2\hbar m}} (\mp i\hat{p} + m\omega x) = \sqrt{\frac{m\omega}{2\hbar\omega}}\left(\hat{x} \pm\frac{i}{m\omega}\hat{p})
+  \hat{a}_\pm := \frac{1}{\sqrt{2\hbar m}} (m\omega x \mp i\hat{p}) = \sqrt{\frac{m}{2\hbar\omega}}\left(\omega\hat{x} \mp i\hat{\dot{x}})
 $$
 
-where $\hat{a}_- = \hat{a}_+^\dagger$ is is called the lowering (annihilation) operator and $\hat{a}_+$ is called the raising (creation) operator. The reason for their names lies in the way they act on the energy eigenstates. In particular, we have
-
-$$
-  \braket{\psi_m|\hat{a}_-|\psi_n} =  \sqrt{\frac{m\omega}{2\hbar}} \left(\braket{\psi_m|\hat{x}|\psi_n|} - i(i\omeg) \right)
-$$
-
-
-
-Calculating $\hat{a}_- \hat{a}_+$, we find
+where $\hat{a}_- = \hat{a}$ is is called the lowering (annihilation) operator and $\hat{a}_+ = \hat{a}^\dagger$ is called the raising (creation) operator. The reason for their names lies in the way they act on the energy eigenstates. In particular, we have
 
 $$
 \begin{align*}
-  \hat{a}_- \hat{a}_+ =& \frac{1}{2\hbar m\omega} (i\hat{p} + m\omega x) (-i\hat{p} + m\omega x) \\
-  =& \frac{1}{2\hbar m \omega} \left[\hat{p}^2 + (m\omega x)^2 - i m \omega (x\hat{p} - \hat{p}x)\right] \\
-  =& \frac{1}{2\hbar m \omega} \left[\hat{p}^2 + (m\omega x)^2 \right] - \frac{i}{2\hbar} \underbrace{[\hat{x},\hat{p}]}_{=i\hbar} \\
-  =& \frac{1}{\hbar\omega} \hat{H} + \frac{1}{2}
+  a_{nk}^\dagger = \braket{n|\hat{a}_-|k} = \sqrt{\frac{m}{2\hbar\omega}}\braket{n|\omega\hat{x} - i\hat{\dot{x}}|k} \\
+  =& \sqrt{\frac{m}{2\hbar\omega}} [\omega x_{nk} - i(i\omega_{nk} x_{nk})] \\
+  =& \sqrt{\frac{m}{2\bar\omega}} (\omega + \omega_{nk}) x_{nk}
 \end{align*}
+$$
+
+For $k = n + 1$, we have $x_{nk} \neq 0$ and $\omega_{n,n+1} = -\omega$, hence $a_{n,n+1}^\dagger = 0$. The only non-zero matrix element of $\hat{a}^\dagger$ is then $a_{n,n - 1}^\dagger$, for which we have
+
+$$
+  \omega_{n, n-1} = \omega,\quad x_{n,n-1} = \sqrt{\frac{n\hbar}{2m\omega}}
+$$
+
+It follows that
+
+$$
+  a_{nk}^\dagger = \delta_{k, n-1} \sqrt{n}
+$$
+
+Similarly, we have
+
+$$
+  a_{nk} = \delta_{k, n+1} \sqrt{n + 1}
+$$
+
+Calculating the product operator $\hat{a}_+ \hat{a}_-$, we find
+
+$$
+\begin{align*}
+  \hat{a}_+ \hat{a}_- =& \frac{1}{2\hbar m\omega} (m\omega\hat{x} - i\hat{p}) (m\omega\hat{x} + i\hat{p}) \\
+  =& \frac{1}{2\hbar m \omega} \left[(m\omega x)^2 + \hat{p}^2 + i m \omega (x\hat{p} - \hat{p}x)\right] \\
+  =& \frac{1}{2\hbar m \omega} \left[(m\omega x)^2 + \hat{p}^2 \right] + \frac{i}{2\hbar} \underbrace{[\hat{x},\hat{p}]}_{=i\hbar} \\
+  =& \frac{1}{\hbar\omega} \hat{H} - \frac{1}{2}
+\end{align*}
+$$
+
+showing that that
+$$
+  \hat{H} = \hbar\omega\left(\hat{a}_- \hat{a}_+ - \frac{1}{2} \right)
+$$
+
+In matrix form, we have
+
+$$
+  H_{nn} = \hbar\omega \left[(\hat{a}^\dagger \hat{a})_{nn} + \frac{1}{2}\right]
+$$
+
+where
+
+$$
+  (\hat{a}_- \hat{a}_+)_{nn} = \sum_k a_{nk}^\dagger a_{kn} = a_{n,n-1}^\dagger a_{n-1, n} = n
+$$
+
+Therefore, in the energy representation the operator $\hat{N} = \hat{a}^\dagger \hat{a}$ is diagonal and its $n$-th diagonal term is just equal to $n$, i.e.
+
+$$
+  \hat{N}\ket{n} = n\ket{n}
+$$
+
+Consequently, the eigenstates of $\hat{N}$ are also the eigenstates of $\hat{H}$ since
+
+$$
+\begin{align*}
+  \hat{H}\ket{n} =& \hbar\omega\left(\hat{N} + \frac{1}{2}\hat{I} \right)\ket{n} \\
+  =& \hbar\omega \left(n + \frac{1}{2}\right)\ket{n}
+\end{align*}
+$$
+
+Similarly, we find
+
+$$
+  \hat{a}_- \hat{a}_+ = \frac{1}{\hbar\omega}\hat{H} + \frac{1}{2}
 $$
 
 or
@@ -9268,58 +9398,43 @@ $$
   \hat{H} = \hbar\omega\left(\hat{a}_- \hat{a}_+ - \frac{1}{2} \right)
 $$
 
-Similarly, we find
+We now see that the ladder operators satisfy the commutation relation
 
 $$
-  \hat{a}_+ \hat{a}_- = \frac{1}{\hbar\omega}\hat{H} - \frac{1}{2}
+  [\hat{a}_- \hat{a}_+] = \hat{a}_- \hat{a}_+ - \hat{a}_+ \hat{a}_- = \hat{I}
 $$
 
-giving
-
-$$
-  \hat{H} = \hbar\omega\left(\hat{a}_+ \hat{a}_- + \frac{1}{2} \right)
-$$
-
-Furthermore, we note that
-
-$$
-  [\hat{a}_- \hat{a}_+] = \hat{a}_- \hat{a}_+ - \hat{a}_+ \hat{a}_- = 1
-$$
-
-In terms of $\hat{a}_\pm$, the time-independent Schrödinger equation takes the form
-
-$$
-\begin{equation}
-  \hbar\omega\left(\hat{a}_\pm \hat{a}_\mp \pm \frac{1}{2}\right) \psi = E\psi \tag{\label{equation-57}}
-\end{equation}
-$$
-
-Applying $\hat{H}$ to $\hat{a}_+ \psi$ and using $\hat{a}_- \hat{a}_+ = \hat{a}_+ \hat{a}_- + 1$ we get
+On the other hand, we have
 
 $$
 \begin{align*}
-  \hat{H}(\hat{a}_+ \psi) =& \hbar\omega\left(\hat{a}_+ \hat{a}_- + \frac{1}{2} \right) (\hat{a}_+ \psi) = \hbar\omega\left(\hat{a}_+ \hat{a}_- \hat{a}_+ + \frac{1}{2}\hat{a}_+ \right)\psi \\
-  =& \hbar\omega\hat{a}_+ \left(\hat{a}_- \hat{a}_+ + \frac{1}{2} \right)\psi = \hat{a}_+ \left[\hbar\omega\left(\hat{a}_+ \hat{a}_- + 1 +\frac{1}{2} \right)\psi \right] \\
-  =& \hat{a}_+ (\hat{H} + \hbar\omega)\psi  = \hat{a}_+ (E + \hbar\omega)\psi = (E + \hbar\omega)(\hat{a}_+ \omega)
+  \hat{a}\ket{n} =& \sum_k \ket{k} \braket{k|\hat{a}|n} = \sum_k a_{kn} \ket{k} \\
+  =& \sum_k \delta_{n-1, k} \sqrt{k+1} \ket{k} = \sqrt{n} \ket{n - 1}
 \end{align*}
 $$
 
-Likewise, applying $\hat{H}$ to $\hat{a}_- \psi$ and using $\hat{a}_+ \hat{a}_- = \hat{a}_- \hat{a}_+ - 1$ yields
+and similarly
 
 $$
 \begin{align*}
-  \hat{H}(\hat{a}_- \psi) =& \hbar\omega\left(\hat{a}_- \hat{a}_+ - \frac{1}{2} \right) (\hat{a}_- \psi) = \hbar\omega\left(\hat{a}_- \hat{a}_+ \hat{a}_- - \frac{1}{2}\hat{a}_- \right)\psi \\
-  =& \hbar\omega\hat{a}_- \left(\hat{a}_+ \hat{a}_- - \frac{1}{2} \right)\psi = \hat{a}_- \left[\hbar\omega\left(\hat{a}_- \hat{a}_+ - 1 - \frac{1}{2} \right)\psi \right] \\
-  =& \hat{a}_- (\hat{H} - \hbar\omega)\psi  = \hat{a}_- (E - \hbar\omega)\psi = (E - \hbar\omega)(\hat{a}_- \omega)
+  \hat{a}^\dagger \ket{n} =& \sum_k \ket{k} \braket{k|\hat{a}^\dagger |n} = \sum_k a_{kn}^\dagger \ket{k} \\
+  =& \sum_k \delta_{n+1, k} \sqrt{k} \ket{k} = \sqrt{n+1} \ket{n + 1}
 \end{align*}
 $$
 
-This shows that $\hat{a}_\pm$ act as ladder operators such that when applied to $\psi$, the raise or lower the energy by $\hbar\omega$. If we apply the lowering operator $\hat{a}_-$ to the ground state $\psi_0$, we expect that $\hat{a}_- \psi_0 = 0$. This gives the ordinary differential equation
+This shows that $\hat{a}$ and $\hat{a}^\dagger$ lowers and raises the energy by a unit $\hbar\omega$, respectively.
+
+Applying $\hat{a}$ to the ground state $\ket{0}$ we expect that $\hat{a}\ket{0} = 0$, or
+$$
+  (m\omega\hat{x} + i\hat{p}) \ket{0} = 0
+$$
+
+In terms of the wavefunction $\psi_n (x) = \braket{x|n}$, this translates into the ordinary differential equation
 
 $$
 \begin{gather*}
-  \frac{1}{\sqrt{2\hbar m \omega}}\left(\hbar\frac{\d}{\d x} + m\omega x \right)\psi_0 = 0 \\
-  \frac{\d\psi_0}{\d x} = -\frac{m\omega}{\hbar} x\psi_0
+  \left(m\omega\hat{x} + \hbar\frac{\d}{\d x} \right) \psi_0 (x) = 0
+  \frac{\d}{\d x} \psi_0 (x) = -\frac{m\omega}{\hbar} x\psi_0 (x)
 \end{gather*}
 $$
 
