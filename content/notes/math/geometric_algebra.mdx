@@ -173,13 +173,13 @@ where $S_{p,q,r}\subset S_{p+q+r}$ contains all $\sigma$ such that $\sigma(i) < 
 From the associativity and bilinearity of the exterior product, we can generalize $\eqref{equation-1}$ as follows: Let $\mathbf{A}_{[p]} \in\Lambda_p (V)$ and $\mathbf{B}_{[q]} \in\Lambda_q (V)$ have the form
 
 $$
-\begin{equation}
+\begin{equation*}
 \begin{split}
   \mathbf{A}_{[p]} =& \bigwedge_{i=1}^p \mathbf{u}_i \\
   \mathbf{B}_{[q]} =& \bigwedge_{j=1}^q \mathbf{v}_j
 \end{split}
 \tag{\label{equation-2}}
-\end{equation}
+\end{equation*}
 $$
 
 The exterior product $\mathbf{A}_{[p]} \wedge \mathbf{B}_{[q]}$ can thus be written
@@ -388,6 +388,239 @@ The conjugation is known to the be composition of the two operations
 $$
   \widebar{\mathbf{A}}_{[p]} = \widetilde{\wildehat{\mathbf{A}}}_{[p]} = \widehat{\widetilde{\mathbf{A}}}_{[p]}
 $$
+
+<MathBox title="Cramer's rule" boxType='example'>
+Cramer's rule for solving linear equations can be derived in terms of exterior algebras. Consider a system of $n$ linear equations in $n$ unknowns
+
+$$
+  \mathbf{Ax} = \mathbf{y}
+$$
+
+where $\mathbf{A}\in\R^{n\times n}$ and $\mathbf{x},\mathbf{y}\in\R^n$. In terms of basis $\set{\mathbf{e}_i}_{i=1}^n$ of $\R^n$, we can expand the columns of $\mathbf{A}$ explicitly as
+
+$$
+  \sum_{i=1}^n x_i \mathbf{a}_i = \mathbf{y}
+$$
+
+where each $\mathbf{a}_j \in\R^n$ is the $j$th column of $\mathbf{A}$. Taking the exterior product with $\mathbf{a}_1,\dots,\widehat{\mathbf{a}}_k,\dots,\mathbf{a}_n$, i.e. all $\mathbf{a}_j$ except $\mathbf{a}_k$ for $k\in\set{1,\dots,n}$, annihilates all terms in the sum except $x_k \mathbf{a}_k$:
+
+$$
+\begin{align*}
+  \left(\sum_{i=1}^n x_i \mathbf{a}_i \right) \wedge \bigwedge_{j\neq k} \mathbf{a}_i =& \mathbf{y} \wedge \bigwedge_{j\neq k} \mathbf{a}_j \\
+  x_k \bigwedge_{i=1}^n \mathbf{a}_i =& \mathbf{y} \wedge \bigwedge_{i\neq k} \mathbf{a}_j
+\end{align*}
+$$
+
+Solving for $x_k$ yields
+
+$$
+  x_k = \frac{\mathbf{y}\wedge \bigwedge_{j\neq k} \mathbf{a}_j}{\bigwedge_{j=1}^n \mathbf{a}_j}
+$$
+
+Each exterior product of $n$ vectors in $\R^n$ corresponds to a determinant:
+
+$$
+  \bigwedge_{i=1}^n \mathbf{a}_i = \det(\mathbf{A}) \bigwedge_{i=1}^n \mathbf{e}_i
+$$
+
+Likewise,
+
+$$
+  \mathbf{y} \bigwedge_{j\neq k} \mathbf{a}_j = \det(\mathbf{A}_k) \bigwedge_{i=1}^n \mathbf{e}_i
+$$
+
+where $\mathbf{A}_k$ is the matrix formed by replacing the $k$-column of $\mathbf{A}$ wwith $\mathbf{y}$. Hence, we arrive at
+
+$$
+  x_k = \frac{\det(\mathbf{A}_k)}{\det{\mathbf{A}}}
+$$
+
+which is precisely Cramer's rule.
+</MathBox>
+
+### The exterior algebra as the quotient of the tensor algebra
+
+<MathBox title='Ideals' boxType='definition'>
+Let $\mathcal{A}$ denote an algebra. A subset $I_\text{L} \subseteq \mathcal{A}$ is a *left ideal* of $\mathcal{A}$ if, for all $a\in\mathcal{A}$ and for all $x\in I_\text{L}$, the relation $ax\in I_\text{L}$ holds. Similarly, $I_\text{R} \subset\mathcal{A}$ is a *right ideal* of $\mathcal{A}$ if, for all $a\in\mathcal{A}$ and $x\in I_\text{R}$, it follows that $xa \in I_\text{R}$. The set $I \subset \mathcal{A}$ is a *two-sided ideal*, or, *bilateral idela* of $\mathcal{A}$ if, for all $a,b\in\mathcal{A}$ and $i\in I$, we have $axb \in I$. Two-sided ideals are also simply called ideals.
+</MathBox>
+
+<MathBox title='Quotient algebra by an ideal' boxType='proposition'>
+Let $\mathcal{A}$ be an algebra given as a sum of two subspaces:
+
+$$
+  \mathbf{A} = \mathcal{B} + \mathcal{C}
+$$
+
+Here, we do not assume a priori that $\mathcal{B}$ or $\mathcal{C}$ are subalgebras, nor that the sum i direct. If $\mathcal{C}$ is a two-sided ideal, then the quotient space $\mathcal{A}/\mathcal{C}$ becomes an algebra, called the quotient algebra $\mathcal{A}$ by the ideal $\mathcal{C}$. In particular if $\mathcal{A} = \mathcal{B} \oplus \mathcal{C}$, then $\mathbf{A}/\mathcal{C} = \mathcal{B}$.
+
+<details>
+<summary>Proof</summary>
+
+Given $a,b\in\mathcal{A}$, define following equivalence relation $\sim$ on $\mathcal{A}$:
+
+$$
+  a \sim b \iff a = b + x,\; x\in\mathcal{C}
+$$
+
+The set of equivalence classes under this relation is denoted $\mathcal{A}/\mathcal{C}$, and inherits a natural vector space structure defined by
+
+$$
+\begin{align*}
+  [a] + [b] :=& [a + b], \\
+  \alpha[a] :=& [\alpha a], \; \alpha\in\mathbb{F} 
+\end{align*}
+$$
+
+To endow $\mathcal{A}/\mathcal{C}$ with an algebra structure, we define the product of equivalence classes by
+
+$$
+  [a][b] := [ab]
+$$
+
+To ensure this is well-defined, we must verify that the product is independent of the choice of representatives. Suppose
+
+$$
+  [a] = [a + x],\quad [b] = [b + y],\; x,y\in\mathcal{C}
+$$
+
+then
+
+$$
+\begin{align*}
+  [a][b] =& [a + x] [b + y] = [(a + x)(b + y)] \\
+  =& [ab + ay + xb + xy]
+\end{align*}
+$$
+
+Thus, for the product to be well-defined, $ay + xb + xy$ must belong to $\mathcal{C}$, i.e.
+
+$$
+  ay + xb + xy \in \mathcal{C},\quad \forall a,b \in \mathcal{A},\; \forall x, y \in\mathcal{C}
+$$
+
+which only holds if $\mathcal{C}$ is a two-sided ideal.
+</details>
+</MathBox>
+
+Let $\operatorname{T}(V)$ denote the algebra of contravariant tensors over a vector space $V$. Let $\mathcal{I}_E$ be the ideal of $\operatorname{T}(V)$, generated by the elements $\mathbf{v}\otimes\mathbf{v}$ for $\mathbf{v}\in V$. Explicitly, $\mathcal{I}_E$ consists of finite sums
+
+$$
+  \sum_i \mathbf{A}_i \otimes \mathbf{v}_i \otimes \mathbf{v}_i \otimes \mathbb{B}_i
+$$
+
+where $\mathbf{v}_i \in V$, and $\mathbf{A}_i, \mathbf{B}_i \in \mathcal{T}(V)$. Equivalently, $\mathcal{I}_E$ is generated by the set of symmetric tensors of rank $2$, which lie in the kernel of the alternation map $\operatorname{alt}: \operatorname{T}(V) \to \Lambda (V)$:
+
+$$
+  \mathbf{v}\otimes\mathbf{u} + \mathbf{u}\otimes\mathbf{v} \in \operatorname{ker}(\operatorname{alt}) = \mathcal{I}_E,\; \forall  \mathbf{v},\mathbf{u}\in V
+$$
+
+We now show that the exterior algebra $\Lambda(V)$ is isomorphic to the quotient algebra $\operatorname{T}(V)/\mathcal{I}_E$. The underlying equivalence relation of this quotient is given by
+
+$$
+  \mathbf{A} \sim \mathbf{B} \iff \mathbf{A} = \mathbf{B} + \mathbf{x},\; \mathbf{x} \in \mathcal{I}_E
+$$
+
+The equivalence class of $\mathbf{A}$ is denoted $[\mathbf{A}]$, and the exterior product of equivalence classes is given by
+
+$$
+\begin{equation*}
+  [\mathbf{A}] \wedge [\mathbf{B}] = [\mathbf{A} \otimes \mathbf{B}]
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+For all $\mathbf{u}, \mathbf{v}\in V$, we have $[\mathbf{u}] \sim \mathbf{u}$, and similarly for $\mathbf{v}$. Applying $\eqref{equation-4}$, we can compute $\mathbf{v}\wedge\mathbf{u}$ by noting
+
+$$
+  \mathbf{v}\otimes\mathbf{u} = \frac{1}{2} (\mathbf{v}\otimes\mathbf{u} - \mathbf{u}\otimes\mathbf{v}) + \frac{1}{2}(\mathbf{v}\otimes\mathbf{u} + \mathbf{u}\otimes\mathbf{v})
+$$
+
+where the symmetric part $\frac{1}{2}(\mathbf{v}\otimes\mathbf{u} + \mathbf{u}\otimes\mathbf{v})$ belongs to $\mathcal{I}_E$, as shown by the identity
+
+$$
+  (\mathbf{v}\otimes\mathbf{u} + \mathbf{u}\otimes\mathbf{v}) = (\mathbf{v} + \mathbf{u})\otimes(\mathbf{v} + \mathbf{u}) - \mathbf{v}\otimes\mathbf{v} - \mathbf{u}\otimes\mathbf{u}
+$$
+
+Hence, in the quotient algebra:
+
+$$
+  \mathbf{v}\otimes\mathbf{u} \sim \mathbf{v}\wedge\mathbf{u} = \frac{1}{2} (\mathbf{v}\otimes\mathbf{u} - \mathbf{u}\otimes\mathbf{v})
+$$
+
+or $[\mathbf{v}\otimes\mathbf{u}] = [\mathbf{v}\wedge\mathbf{u}]$ and $[\mathbf{v}]\wedge[\mathbf{u}] = [\mathbf{v}\wedge\mathbf{u}]$. This result can be generalized as
+
+$$
+  \bigotimes_{i=1}^p \mathbf{v}_i \sim \operatorname{alt}\left(\bigotimes_{i=1}^p \mathbf{v}_i \right) = \bigwedge_{i=1}^p \mathbf{v}_i
+$$
+
+In fact, $\bigotimes_{i=1}^p \mathbf{v}_i$ is congruent to every permutation $\left(\bigotimes_{i=1}^p \mathbf{v}_i \right)^\sigma$, since this assertion holds when $\sigma$ is the transposition of to consecutive elements of $\set{1,\dots,p}$. These transpositions generate the symmetric group $S_p$.
+
+<MathBox title='' boxType='proposition'>
+Let $\operatorname{T}(V)$ denote the algebra of contravariant tensors over a vector space $V$. Suppose $\mathcal{I}_E$ is the ideal of $\operatorname{T}(V)$, generated by the elements $\mathbf{v}\otimes\mathbf{v}$ for $\mathbf{v}\in V$. Then $\operatorname{T}(V)$ is the direct sum of $\Lambda(V)$ and $\operatorname{ker}(\operatorname{alt})$, which is equal $\mathbf{I}_E$, i.e.
+
+$$
+  \operatorname{T}(V) = \Lambda(V) \oplus \operatorname{ker}(\operatorname{alt}) = \Lambda (V) + \mathcal{I}_E
+$$
+
+It follows immediately that
+
+$$
+\begin{equation}
+  \Lambda(V) = \operatorname{T}(V) / \mathcal{I}_E
+\tag{\label{equation-5}}
+\end{equation}
+$$
+
+and that for all $\mathbf{A}, \mathbf{B} \in \Lambda(V)$
+
+$$
+  \mathbf{A} \wedge \mathbf{B} \sim \mathbf{A} \otimes \mathbf{B} \mod \mathcal{I}_E
+$$
+</MathBox>
+
+The universal property of $\Lambda(V)$ follows from $\eqref{equation-5}$. Specifically, since $\mathcal{I}_E$ is the ideal of $\operatorname{T}(V)$ generated by all $\mathbf{v}\otimes\mathbf{v}$, this property can be states as follows: Let $\mathbf{A}$ be associative unital algebra. Then there is a bijection between
+- the set of algebra homomorphisms $\varphi: \Lambda(V)\to\mathcal{A}$ and
+- the set of linear maps $f: V\to\mathcal{A}$ satisfying $f(\mathbf{v})^2 = 0_\mathcal{A}$ for all $\mathbf{v}\in V$
+
+This bijection is given by restricting each algebra homomorphism $\varphi$ to $V\subset \Lambda(V)$, yielding a linear map $f = \varphi|_V$. Conversely, given a linear map $f: V\to\mathcal{A}$ with $f(\mathbf{v})^2 = 0$, there exists a unique algebra homomorphism $\varphi: \Lambda(V) \to\mathcal{A}$ such that $\varphi|_V = f$.
+
+By definition, all algebra homomorphism are assumed to preserve the multiplicative identity, i.e. theu map the unit element of $\Lambda(V)$ to the unit of $\mathcal{A}$.
+
+## Contractions
+
+Given a vector $\mathbf{v}\in V$ and a covector $\alpha\in V^*$, the scalar $\alpha(\mathbf{v})$ can be understood in two equivalent ways:
+1. **As a linear evaluation:** Interpreting $\alpha: V\to\mathbb{F}$, we regard $\alpha(\mathbf{v})$ as the action of the linear functional $\alpha$ on $\mathbf{v}$.
+2. **As dual action:** Alternatively, viewing $\xi_\mathbf{v}: V^* \to \mathbb{F}$, we interpret $\xi_\mathbf{v} (\alpha) = \alpha (\mathbf{v})$ as the action of the linear functional $\xi_\mathbf{v}$ on $\alpha$.
+
+These perspectives reveal a symmetry between vectors and covectors, and the quantity $\alpha(\mathbf{v})$ may be thought as a kind of bilinear pairing, i.e. an operation $V \times V^* \to\mathbb{F}$ or $V^* \times V\to\mathbb{F}$.
+
+In terms of the exterior algebra, the covector $\alpha$ can be regarded as a linear map $\alpha: \Lambda_1 (V) \to\Lambda_0 (V)$, which naturally extends to a general operation $\Lambda_p (V) \to \Lambda_{p-1} (V)$ for $0\leq p \leq n$, known as left contraction, or interior product. This contraction captures the idea of inserting a covector into a differential form, reducing its degree by one and preserving the alternating multilinear structure.
+
+<MathBox title='Left contraction (interior product)' boxType='definition'>
+Let $\mathbf{A}_{[p]}\in\Lambda_p (V)$ be a $p$-vector and let $\alpha \in V^*$ be a covector. The left contraction of $\mathbf{A}_{[p]}$ by $\alpha$, denoted $\underline{\alpha}|$ is defined as
+
+$$
+  (\underline{\alpha}|\mathbf{A}_{[p]})(\alpha_1,\dots,\alpha_{p-1}) = p\mathbf{A}_{[p]} (\alpha, \alpha_1,\dots,\alpha_{p-1})
+$$
+
+where $\alpha_1,\dots,\alpha_{p-1}\in V^*$ are arbitrary covectors. Taking $\mathbf{A}_{[p]} = \bigwedge_{i=1}^p$ on the right-hand side means that
+
+$$
+  \left(\sum_{i=1}^p \mathbf{v}_i \right)(\alpha, \alpha_1,\dots,\alpha_{p-1}) = \frac{1}{p!} \sum_{\sigma\in S_p} \varepsilon(\sigma) \alpha(\mathbf{v}_{\sigma(1)}) \alpha_1 (\mathbf{v}_{\sigma(2)}) \cdots \alpha_{p-1} (\mathbf{v}_{\sigma(p)})
+$$
+
+This definition clearly shows that $\underline{\alpha}|\mathbf{A}_{[p]}$ is a $(p - 1)$-vector. In particular, the left contraction of a vector $\mathbf{v}\in \Lambda_1 (V)$ is
+
+$$
+  \underline{\alpha}|\mathbf{v} = \alpha(\mathbf{v})
+$$
+
+while for element of $\Lambda_0 (V)$, it is assumed that
+
+$$
+  \underline{\alpha}|1 = 0
+$$
+</MathBox>
 
 # Clifford algebra
 

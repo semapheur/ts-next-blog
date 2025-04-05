@@ -2,7 +2,6 @@ import { Inter } from "next/font/google"
 import "./app.css"
 import "katex/dist/katex.min.css"
 import Header from "./Header"
-import StyledComponentsRegistry from "lib/components/StyledComponentsRegistry"
 
 // Metadata
 export const metadata = {
@@ -63,7 +62,6 @@ export default function RootLayout({
       <body className="flex flex-col bg-primary">
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         <Header />
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
     </html>
   )
