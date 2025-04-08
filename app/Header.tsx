@@ -4,8 +4,6 @@ import SearchHeader from "./SearchHeader"
 import ThemeToggle from "lib/components/ThemeToggle"
 import MobileNav from "lib/components/MobileNav"
 
-import Hypercube from "lib/components/Hypercube"
-
 export default function Header() {
   const nav = [
     { title: "Notes", url: "/notes" },
@@ -20,7 +18,7 @@ export default function Header() {
           href="/"
           className="text-4xl text-text leading-none hover:text-secondary"
         >
-          <Hypercube dim={4} className="size-10"/>
+          Γ
         </Link>
         <MobileNav width="1.75rem" bar="0.25rem" gap="0.5rem">
           {nav.map((n) => (

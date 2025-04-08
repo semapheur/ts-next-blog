@@ -62,6 +62,7 @@ export default function RootLayout({
       <body className="flex flex-col bg-primary">
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         <Header />
+        {children}
       </body>
     </html>
   )

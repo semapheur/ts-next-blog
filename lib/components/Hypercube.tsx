@@ -5,38 +5,45 @@ import Algebra from "ganja.js"
 
 declare global {
   interface Window {
-    dim: number
-    wrapper: HTMLElement
-    animationSpeed: number
+    dim?: number
+    wrapper?: HTMLElement
+    animationSpeed?: number
   }
 }
 
 type Props = {
   dim: number
-  animationSpeed?: number
+  animationSpeed: number
 } & HTMLAttributes<HTMLDivElement>
 
-export default function Hypercube({
-  dim,
-  animationSpeed = 1e-3,
-  ...props
-}: Props) {
+export default function Hypercube({ dim, animationSpeed, ...props }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
+  //const [scriptReady, setScriptReady] = useState(false)
 
   useEffect(() => {
     const wrapper = wrapRef.current
-    if (!wrapper) return
+    if (
+      !wrapper ||
+      typeof window === "undefined" ||
+      typeof animationSpeed === "undefined"
+    )
+      return
 
     window.dim = dim
     window.wrapper = wrapper
     window.animationSpeed = animationSpeed
 
     Algebra(dim, 0, 1, () => {
+      // Basis
+      const basis = Array.from({ length: dim + 1 }, (_, i) =>
+        this.Coeff(i + 1, 1),
+      )
+
       // Vertices
       const p = [...Array(2 ** dim)]
         .map((_, i) => i.toString(2).padStart(dim, "0"))
         .map((x) => x.split("").map((x) => Number.parseFloat(x) - 0.5))
-        .map((x: Algebra) => !(1e0 + x * ([1e1, 1e2, 1e3, 1e4] as Algebra))) // Disable biome.js to preserve 1e0
+        .map((x: any) => !(basis[0] + x * (basis.slice(1) as any)))
 
       // Edges
       const e = p.flatMap((a, i) =>
@@ -44,23 +51,21 @@ export default function Hypercube({
       )
 
       // State
-      let state: [Algebra, Algebra] = [Math.E ** 0.1e12, 1e12 + 1.3e13 + 0.5e24]
+      let state: any = [0.1e12, 1e12 + 1.3e13 + 0.5e24]
 
       // Derivative
-      const dS = ([M, B]: [Algebra, Algebra]): [Algebra, Algebra] => [
+      const dS = ([M, B]) => [
         -0.5 * M * B,
-        -0.5 * ((B.Dual * B - B * B.Dual) as Algebra).UnDual,
+        -0.5 * ((B.Dual * B - B * B.Dual) as any).UnDual,
       ]
 
       // Render
       const svg = this.graph(
         () => {
           for (let i = 0; i < 10; ++i) {
-            // @ts-ignore
-            state = state + animationSpeed * dS(state)
+            state = state + animationSpeed * (dS(state) as any)
           }
-          // @ts-ignore
-          return [0xffffff, ...(state[0] >>> e)]
+          return [0xffffff, ...((state[0] >>> (e as any)) as any)]
         },
         {
           lineWidth: 10,
@@ -68,6 +73,7 @@ export default function Hypercube({
           scale: 2,
         },
       )
+
       Object.assign(svg.style, {
         background: "none",
         width: "100%",
@@ -80,6 +86,9 @@ export default function Hypercube({
       while (wrapper.firstChild) {
         wrapper.removeChild(wrapper.firstChild)
       }
+      window.dim = undefined
+      window.animationSpeed = undefined
+      window.wrapper = undefined
     }
   }, [dim, animationSpeed])
 

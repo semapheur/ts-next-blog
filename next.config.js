@@ -5,7 +5,7 @@ const isProd = process.env.NODE_ENV === 'production'
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com;
   style-src 'self';
   font-src 'self';  
 `
@@ -47,7 +47,7 @@ const nextConfig = {
       },
     ]
   },
-  webpack: (config, options) => {
+  webpack: (config, _) => {
     config.module.rules.push({
       test: /\.(glsl|fs|vs|frag|vert)$/,
       use: ['raw-loader']
