@@ -3749,6 +3749,138 @@ $$
 </details>
 </MathBox>
 
+# Quantum circuits
+
+Quantum circuits are composed of quantum gates arranged to perform specific transformations on an input/output register $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n}$. The following three types of circuits are commonly employed:
+- **Plain circuits:** These are simple compositions of quatum gates acting solely on the input/output register.
+- **Circuits with ancillas:** In this type, the input/output register is first extended by adding an auxiliary quantum system, called an *ancilla*. At the end the ancilla is discarded and only the original system is processed further. Unlike in classical circuits, any quantum entanglement between the ancilla and the main system has to be disentangled prior to discarding the ancilla, to ensure the remaining system remains in a valid quantum state.
+- **Circuits with classical in/output and/or measurements:** These circuits involve classical data, either as input or output. The quantum system may be manipulated conditionally on classical input, subjected to measurements, and may produce partly classical output. In general, such operations are irreversible and may fundamentally alter the quantum state of the system.
+
+<MathBox title='Plain quantum circuit' boxType='definition'>
+Let $n, L\in\N$ and $\hat{U}_1,\dots,\hat{U}_L \in\mathcal{U}({}^\P \mathcal{H}^{\otimes n})$ be a set of quantum $n$-gates as given in Definition $\ref{definition-2}$. We call
+
+$$
+  \hat{U} = \hat{U}_L \cdots \hat{U}_1 \in\mathcal{U}({}^\P \mathcal{H}^{\otimes n})
+$$
+
+a plain quantum circuit with depth $L$ relative to the gate set $\set{U_i}_{i=1}^L$. When acting a system in state $\rho\in D(\mathcal{H})$, then plain circuit $\hat{U}$ transforms into it to a new state $\hat{U}\rho\hat{U}^\dagger$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $\mathcal{H}^\text{I/O}$ and $\mathcal{H}^W$ be Hilbert spaces and let $\ket{\omega_i}, \ket{\omega_f} \in\mathcal{H}^W$ be such that $\norm{\omega_i} = 1 = \norm{\omega_f}$. Moreover, let $\hat{U}'\in\mathcal{U}(\mathcal{H}^\text{I/O} \otimes\mathcal{H}^W)$ be such that for all $\ket{\Psi}\in\mathcal{H}^\text{I/O}$
+
+$$
+\begin{equation*}
+  \hat{U}'\ket{\Psi\otimes\omega_i} = (\hat{U}\ket{\Psi})\otimes\ket{\omega_f}
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+and let $\rho_{\omega_i} = \ket{\omega_i}\bra{\omega_i}$ be the density operator of the pure state $\ket{\omega_i}\in\mathcal{H}^W$. Then $\hat{U}\in\mathcal{U}(\mathcal{H}^\text{I/O})$ and we have for any density operator $\rho\in D(\mathcal{H}^{I/O})$ that
+
+$$
+\begin{equation*}
+  \rho\otimes\rho_{\omega_i} \in D(\mathcal{H}^\text{I/O} \otimes\mathcal{H}^W)
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+as well as
+
+$$
+  \operatorname{tr}^W (\hat{U}' (\rho\otimes\rho_{\omega_i})\hat{U}'^\dagger) = \hat{U}\rho\hat{U}^\dagger
+$$
+
+that is, $\hat{U}$ is unitary and in a state $\hat{U}' (\rho\otimes\rho_{\omega_i}) \hat{U}'^\dagger$ of the composite system, the sub-system I/O is described by the state $\hat{U}\rho\hat{U}^\dagger$.
+
+<details>
+<summary>Proof</summary>
+
+We show the unitarity of $\hat{U}$ first. Since $\ket{\omega_i}$ and $\ket{\omega_f}$ are normalized to $1$, on has for arbitrary $\ket{\Psi}\in\mathcal{H}^\text{I/O}$
+
+$$
+\begin{align*}
+  \norm{\hat{U}\Psi}^2 =& \braket{\hat{U}\Psi|\hat{U}\Psi} = \ket{\hat{U}\Psi|\hat{U}\Psi} \underbrace{\braket{\omega_f|\omega_f}}_{=1} \\
+  =& \braket{(\hat{U}\Psi) \otimes\omega_f | (\hat{U}\Psi) \otimes\omega_f} \\
+  =& \braket{\hat{U}\ket{\Psi\otimes\omega_i}|\hat{U}|\ket{\Psi\otimes\omega_i}} \\
+  =& \Norm{\hat{U}\ket{\Psi\otimes\omega_i}}^2 = \norm{\Psi\otimes\omega_i}^2 \\
+  =& \norm{\Psi}^2 \underbrace{\omega_i}_{=1} \\
+  =& \norm{\Psi}^2 
+\end{align*}
+$$
+
+Hence, for all $\ket{\Psi}\in\mathcal{H}^\text{I/O}$ then $\norm{\hat{U}\Psi} = \norm{\Psi}$ holds, implying that $\hat{U}\in\mathcal{U}(\mathcal{H}^\text{I/O})$ is unitary.
+
+Let now $\rho\in D(\mathcal{H}^{I/O})$ and $\rho_{\omega_i} = \bra{\omega_i}\ket{\omega_i} \in D(\mathcal{H}^W)$. Then $\eqref{equation-37}$ follows by properties of the density operator. Moreover, we know that there exist $p_j \in[0,1]$ and an orthonormal basis $\ket{\Psi_j}$ for $\mathcal{H}^\text{I/O}$ such that
+
+$$
+  \rho = \sum_j p_j \bra{\Psi_j}\ket{\Psi_j}
+$$
+
+Consequently, we have
+
+$$
+\begin{align*}
+  \hat{U}' (\rho\otimes\rho_{\omega_i})\hat{U}'^\dagger =& \hat{U}'\left(\sum_j p_j \ket{\Psi_j}\bra{\Psi_j} \otimes \bra{\omega_i}\ket{\omega_i} \right)\hat{U}'^\dagger \\
+  =& \sum_j p_j \hat{U}' (\ket{\Psi_j}\bra{\Psi_j} \otimes\ket{\omega_i}\bra{\omega_i}) \hat{U}'^\dagger \\
+  =& \sum_j p_j \hat{U}' \ket{\Psi_j \otimes\omega_i} \bra{\Psi_j \otimes\omega_i} \hat{U}^\dagger  \tag{\label{equation-39}}
+\end{align*}
+$$
+
+Using
+
+$$
+\begin{align*}
+  \bra{\Psi_j \otimes\omega_i}\hat{U}'^\dagger =& \bra{\hat{U}' (\Psi_j \otimes\omega_i)} = \bra{(\hat{U}' \Psi_j)\otimes\omega_j} \\
+  =& \bra{\hat{U}\Psi_j} \otimes\bra{\omega_f} = \bra{\Psi_j}\hat{U}^\dagger \otimes\bra{\omega_f}
+\end{align*}
+$$
+
+and $\eqref{equation-38}$ in $\eqref{equation-39}$ we obtain
+
+$$
+\begin{align*}
+  \hat{U}' (\rho\otimes\rho_{\omega_i})\hat{U}'^\dagger =& \sum_j p_j (\hat{U}\ket{\Psi_j} \otimes\ket{\omega_f})(\bra{\Psi_j} \hat{U}^\dagger \otimes\bra{\omega_f}) \\
+  =& \sum_j p_j \hat{U}\ket{\Psi_j}\bra{\Psi_j}\hat{U}^\dagger \otimes\ket{\omega_f} \bra{\omega_f} \\
+  =& \hat{U}\left(\sum_j p_j \ket{\Psi_j}\bra{\Psi_j} \right)\hat{U}^\dagger \otimes\ket{\omega_f}\bra{\omega_f} \\
+  =& \hat{U}\rho\hat{U}^\dagger \otimes\ket{\omega_f}\bra{\omega_f}
+\end{align*}
+$$
+
+such that finally
+
+$$
+\begin{align*}
+  \operatorname{tr}^W \left(\hat{U}'(\rho\otimes\rho_{\omega_i})\hat{U}'^\dagger \right) =& \operatorname{tr}^W (\hat{U}\rho\hat{U}^\dagger \otimes\ket{\omega_f} \bra{\omega_f}) \\
+  =& \operatorname{tr}(\ket{\omega_f}\bra{\omega_f}) \hat{U}\rho\hat{U}^\dagger = \hat{U}\rho\hat{U}^\dagger
+\end{align*}
+$$
+
+where in the last equation we have used that
+
+$$
+\begin{align*}
+  \operatorname{tr}(\ket{\omega_f}\bra{\omega_f}) =& \sum_j \braket{e_j|\omega_f} \braket{\omega_f|e_j} = \sum_j |\braket{e_j|\omega_f}|^2 \\
+  =& \norm{\omega_f}^2 = 1
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Quantum circuit iwth ancilla' boxType='definition'>
+Let $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n}$ and $\mathcal{H}^W = {}^\P \mathcal{H}^{\otimes w}$. A circuit $\hat{U}$ on $\mathcal{H}^\text{I/O}$ is a circuit implemented with ancilla $\ket{\omega_i}$ in an auxilliary register $\mathcal{H}^W$ if there exists states $\ket{\omega_i}, \ket{\omega_f}\in\mathcal{H}^W$ and a plain circuit $\hat{U}'\in\mathcal{U}({}^\P \mathcal{H}^{\otimes n + w})$ on the composite system $\mathcal{H}^{I/O} \otimes\mathcal{H}^W$ such that for all $\ket{\Psi}\in\mathcal{H}^{I/O}$
+
+$$
+  \hat{U}' \ket{\Psi\otimes\omega_i} = (\hat{U}\ket{\Psi}) \otimes\ket{\omega_f}
+$$
+
+The depth of $\hat{U}$ with respect to a given gate set is defined as the depth of the plain circuit $\hat{U}'$ as defined in Definition $\ref{definition-2}$. When acting on a system in the state $\rho\in D(\mathcal{H}^{I/O})$ the circuit transform it to a new state $\hat{U}\rho\hat{U}^\dagger = \operatorname{tr}^W (\hat{U}' (\rho\otimes\rho_{\omega_i}) \hat{U}'^\dagger)$.
+</MathBox>
+
+<MathBox title='Quantum circuit iwth ancilla' boxType='corollary'>
+
+</MathBox>
+
 # Variational quantum eigensolver (VQE)
 
 The variational quantum eigensolver (VQE) is a hybrid classical-quantum alogorithm designed to estimate the ground state energy of a Hamiltonian. 
