@@ -3756,7 +3756,7 @@ Quantum circuits are composed of quantum gates arranged to perform specific tran
 - **Circuits with ancillas:** In this type, the input/output register is first extended by adding an auxiliary quantum system, called an *ancilla*. At the end the ancilla is discarded and only the original system is processed further. Unlike in classical circuits, any quantum entanglement between the ancilla and the main system has to be disentangled prior to discarding the ancilla, to ensure the remaining system remains in a valid quantum state.
 - **Circuits with classical in/output and/or measurements:** These circuits involve classical data, either as input or output. The quantum system may be manipulated conditionally on classical input, subjected to measurements, and may produce partly classical output. In general, such operations are irreversible and may fundamentally alter the quantum state of the system.
 
-<MathBox title='Plain quantum circuit' boxType='definition'>
+<MathBox title='Plain quantum circuit' boxType='definition' tag='definition-5'>
 Let $n, L\in\N$ and $\hat{U}_1,\dots,\hat{U}_L \in\mathcal{U}({}^\P \mathcal{H}^{\otimes n})$ be a set of quantum $n$-gates as given in Definition $\ref{definition-2}$. We call
 
 $$
@@ -3766,7 +3766,7 @@ $$
 a plain quantum circuit with depth $L$ relative to the gate set $\set{U_i}_{i=1}^L$. When acting a system in state $\rho\in D(\mathcal{H})$, then plain circuit $\hat{U}$ transforms into it to a new state $\hat{U}\rho\hat{U}^\dagger$.
 </MathBox>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-6'>
 Let $\mathcal{H}^\text{I/O}$ and $\mathcal{H}^W$ be Hilbert spaces and let $\ket{\omega_i}, \ket{\omega_f} \in\mathcal{H}^W$ be such that $\norm{\omega_i} = 1 = \norm{\omega_f}$. Moreover, let $\hat{U}'\in\mathcal{U}(\mathcal{H}^\text{I/O} \otimes\mathcal{H}^W)$ be such that for all $\ket{\Psi}\in\mathcal{H}^\text{I/O}$
 
 $$
@@ -3867,18 +3867,305 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Quantum circuit iwth ancilla' boxType='definition'>
+<MathBox title='Quantum circuit with ancilla' boxType='definition' tag='definition-6'>
 Let $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n}$ and $\mathcal{H}^W = {}^\P \mathcal{H}^{\otimes w}$. A circuit $\hat{U}$ on $\mathcal{H}^\text{I/O}$ is a circuit implemented with ancilla $\ket{\omega_i}$ in an auxilliary register $\mathcal{H}^W$ if there exists states $\ket{\omega_i}, \ket{\omega_f}\in\mathcal{H}^W$ and a plain circuit $\hat{U}'\in\mathcal{U}({}^\P \mathcal{H}^{\otimes n + w})$ on the composite system $\mathcal{H}^{I/O} \otimes\mathcal{H}^W$ such that for all $\ket{\Psi}\in\mathcal{H}^{I/O}$
 
 $$
+\begin{equation*}
   \hat{U}' \ket{\Psi\otimes\omega_i} = (\hat{U}\ket{\Psi}) \otimes\ket{\omega_f}
+\tag{\label{equation-41}}
+\end{equation*}
 $$
 
 The depth of $\hat{U}$ with respect to a given gate set is defined as the depth of the plain circuit $\hat{U}'$ as defined in Definition $\ref{definition-2}$. When acting on a system in the state $\rho\in D(\mathcal{H}^{I/O})$ the circuit transform it to a new state $\hat{U}\rho\hat{U}^\dagger = \operatorname{tr}^W (\hat{U}' (\rho\otimes\rho_{\omega_i}) \hat{U}'^\dagger)$.
 </MathBox>
 
-<MathBox title='Quantum circuit iwth ancilla' boxType='corollary'>
+In Defintion $\ref{definition-6}$, the ancilla state $\ket{\omega_i}$ is a fixed initial state and $\ket{\omega_f}$ is a fixed final state of the auxilliary register. While both are often chosen to be $\ket{0}^w$, they need not be identical. In fact, one can always make them coincide through a suitable unitary transformation applied to $\ket{\omega_f}$.
 
+Any plain circuit $\hat{U}\in\mathcal{U}(\mathcal{H}^\text{I/O})$ as defined in Definition $\ref{definition-5}$ can be implemented with an ancilla by simply taking $\hat{U}' = \hat{U}\otimes\hat{I} \in \mathcal{U}(\mathcal{H}^\text{I/O} \otimes\mathcal{H}^W)$. In this sense, circuits with ancillas are a superset of plain ciruits.
+
+Ancilla registers are, as their name suggests, auxilliary subsystems $\mathcal{H}^W$ used to store intermediate information during a computation. This information may be recalled or processed at later stages, but the ancilla is not observed at the end of the computation. Throughout the circuit's execution, the ancilla register may become entangled with the input/output registers during successibe application of intermediate gates. Consequently, any measurement of the ancilla register during this process can disturb the input or output state.
+
+Performing a measurement of an ancillary register can be necessary to reset the to a known initial state. However, to ensure that such operations do not alter the desired output, any entanglement between the ancilla and the input/output registers must be eliminated beforehand. This disentangling must be achieved via appropriate unitary transformations that restore the ancilla to a known final state while preserving the input/output state of the computation.
+
+<LatexFigure width={75} src='/fig/ancilla_circuit.svg' alt=''
+  caption='Generic quantum circuit with ancilla'
+>
+```latex
+\documentclass[tikz, border=1pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={q,n,n,n,q,n,n,n,n,n}]
+  \lstick{\ket{\psi_{n-1}}} \gategroup[5, style={draw=none, xshift=-1cm}]{\textbf{Input} $\left({}^\P \mathcal{H}^{\otimes n}\right)$} &[2.5cm] \gategroup[10, steps=5, style={inner xsep=2.4cm, inner ysep=0.8cm}]{$\hat{U}$} & \gate[10]{U_1} \gategroup[10, steps=3]{$\hat{U}'$} & & & &[2.5cm] \rstick{\ket{\varphi_{n-1}}} \gategroup[5, style={draw=none, xshift=1.2cm}]{\textbf{Output} $\left({}^\P \mathcal{H}^{\otimes n}\right)$} \\
+  \lstick{\otimes} &&&&&& \rstick{\otimes} \\
+  \lstick{\vdots} &&& \ddots &&& \rstick{\vdots} \\
+  \lstick{\otimes} &&&&&& \rstick{\otimes} \\
+  \lstick{\ket{\psi_0}} &&&& \gate[2]{U_L} && \rstick{\ket{\varphi_{n-1}}} \\[0.5cm]
+  & \lstick{\ket{\omega_i^{(w-1)}}} \gategroup[5, style={draw=none, xshift=-1.1cm}]{\textbf{Ancilla} $\left({}^\P \mathcal{H}^W\right)$} & \setwiretype{q} &&& \rstick{\ket{\omega_f^{(w-1)}}} \gategroup[5, style={draw=none, xshift=1.1cm}]{\textbf{Ancilla} $\left({}^\P \mathcal{H}^W\right)$} & \setwiretype{n} \\
+  & \lstick{\otimes} &&&& \rstick{\otimes} & \\
+  & \lstick{\vdots} && \ddots && \rstick{\vdots} & \\
+  & \lstick{\otimes} &&&& \rstick{\otimes} & \\
+  & \lstick{\ket{\omega_i^{(0)}}} & \setwiretype{q} &&& \rstick{\ket{\omega_f^{(0)}}} & \setwiretype{n}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
+From the right-hand side of $\eqref{equation-41}$, we observe that the result of applying $\hat{U}'$ decomposes into factors in $\mathcal{H}^\text{I/O}$ and $\mathcal{H}^W$. As shown in the proof of Proposition $\ref{proposition-6}$, this factorization ensures that an initial state $\rho\otimes\rho_{\omega_i}$ in the composite system $\mathcal{H}^\text{I/O} \otimes\mathcal{H}^W$ is then transformed by $\hat{U}'$ into the state $(\hat{U}\rho\hat{U}^\dagger)\otimes\rho_{\omega_f}$. Taking the partial trace of $\mathcal{H}^W$ yields the reduced state $\hat{U}\rho\hat{U}^\dagger$ in $\mathcal{H}^\text{I/O}$. This shows that any measurement or observation on the subsystem $\mathcal{H}^\text{I/O}$ depends only on the transformed state $\hat{U}\rho\hat{U}^\dagger$ and is independent of the final state of the the anicalla register $\mathcal{H}^W$. For this reason, the ancilla register can be safely after the application of $\hat{U}'$ in the implementation of $\hat{U}$.
+
+<MathBox title='' boxType='corollary'>
+A circuit $\hat{U}$ that has been implemented with the help of a unitary $\hat{U}$ and initial and final states $\ket{\omega_i}$ and $\ket{\omega_f}$ in the auxilliary register satisfies
+
+$$
+\begin{equation*}
+  \hat{U}'^\dagger \ket{\Psi\otimes\omega_f} = (\hat{U}^\dagger \ket{\Psi}) \otimes\ket{\omega_i}
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-38}$ and the unitarity of $\hat{U}$ shown in Proposition $\ref{proposition-6}$, it follows that
+
+$$
+  \hat{U}'^\dagger (\hat{U}^\dagger \ket{\Psi} \otimes\ket{\omega_i}) = (\hat{U}\hat{U}^\dagger \ket{\Psi}) \otimes\ket{\omega_f} = \ket{\Psi}\otimes\ket{\omega_f}
+$$
+
+proving $\eqref{equation-40}$.
+</details>
+</MathBox>
+
+# Quantum Fourier transform
+
+<MathBox title='Quantum Fourier transform' boxType='definition'>
+The quantum Fourier transform $\hat{F}$ on ${}^\P \mathcal{H}^{\otimes n}$ is defined as the operator
+
+$$
+\begin{equation*}
+  \hat{F} := \frac{1}{\sqrt{2^n}} \sum_{x,y=0}^{2^n - 1} \exp\left( 2\pi i \frac{xy}{2^n} \right) \ket{x}\bra{y}
+\tag{\label{equation-42}}
+\end{equation*}
+$$
+
+where $\ket{x}$ and $\ket{y}$ denoted vectors of the computational basis of ${}^\P \mathcal{H}^{\otimes n}$.
+</MathBox>
+
+By defining
+
+$$
+  \omega_n := \exp\left(\frac{2\pi i}{2^n}\right)
+$$
+
+the matrix representation of $\hat{F}$ in the computational basis can be given as
+
+$$
+  \mathbb{F} = \frac{1}{\sqrt{2^n}} \begin{bmatrix}
+    1 & 1 & \cdots & 1 \\
+    1 & \omega_n & \cdots & \omega_n^{2^n - 1} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    1 & \omega_n^{(2^n - 1)} & \cdots & \omega_n^{(2^n - 1)^2} 
+  \end{bmatrix}
+$$
+
+<MathBox title='Quantum Fourier transform is unitary' boxType='proposition'>
+The quantum Fourier transform is unitary, i.e. $\hat{F}\in\mathcal{U}({}^\P \mathcal{H})$.
+
+<details>
+<summary>Proof</summary>
+
+For any arbitrary vector $\ket{u}$ in the computational basis ${}^\P \mathcal{H}^{\otimes n}$, it follows from $\eqref{equation-42}$ that
+
+$$
+\begin{align*}
+  \hat{F}\ket{u} = \frac{1}{2^{n/2}} \sum_{x,y=0}^{2^n - 1} \exp\left(2\pi i \frac{xy}{2^n} \right) \ket{x} \underbrace{\braket{y|u}}_{=\delta_{yu}} \\
+  =& \frac{1}{2^{n/2}} \sum_{x=0}^{2^n - 1} \exp\left(2\pi i \frac{xu}{2^n} \right) \ket{x}
+\end{align*}
+$$
+
+For arbitrary vector $\ket{u}$ and $\ket{v}$ in the computational basis this implies
+
+$$
+\begin{align*}
+  \braket{Fu|Fv} =& \frac{1}{2^n} \Braket{\sum_{x=0}^{2^n - 1} \exp\left(2\pi i \frac{xu}{2^n} \right)\ket{x}| \sum_{y=0}^{2^n - 1} \exp\left(2\pi i \frac{yv}{2^n} \right)\ket{y}} \\
+  =& \frac{1}{2^n} \sum_{x,y=0}^{2^n - 1} \exp\left(2\pi i \frac{yv - xu}{2^n} \right) \underbrace{\braket{x|y}}_{=\delta_{xy}} \\
+  =& \frac{1}{2^n} \sum_{x=0}^{2^n - 1} \exp\left(2\pi i x\frac{v - u}{2^b} \right) \\
+  =& \frac{1}{2^n} \sum_{x=0}^{2^n - 1} \left(\exp\left(2\pi i \frac{v - u}{2^n} \right) \right)^x \\
+  =& \begin{cases}
+    1, \quad& u = v \\
+    \frac{1 - \left(\exp\left(2\pi i \frac{v - u}{2^n} \right) \right)^{2^n}}{1 - \exp\left(2\pi i \frac{v - u}{2^n} \right)} = 0, \quad& u\neq v 
+  \end{cases} \\
+  =& \delta_{uv}
+\end{align*}
+$$
+
+For arbitrary vectors
+
+$$
+\begin{align*}
+  \ket{\varphi} =& \sum_{u=0}^{2^n - 1} \varphi_u \ket{u} \\
+  \ket{\psi} =& \sum_{v=0}^{2^n - 1} \psi_v \ket{v}
+\end{align*}
+$$
+
+in ${}^\P \mathcal{H}^{\otimes n}$ thus
+
+$$
+\begin{align*}
+  \braket{\hat{F}\varphi|\hat{F}\psi} =& \sum_{u,v=0}^{2^n - 1} \varphi_u^* \psi_v \underbrace{\hat{F}u|\hat{F}v}_{\delta_{uv}} \\
+  =& \sum_{u,v=0}^{2^n - 1} \varphi_u^* \psi_v = \braket{\varphi|\psi}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n, N\in\N_+$ with $N = 2^n$ and
+
+$$
+  \ket{\Psi} = \sum_{x=0}^{2^n - 1} \Psi_x \ket{x} \in {}^\P \mathcal{H}^{\otimes n}
+$$
+
+Moreover, let $\mathbf{c}\in\mathbb{C}^N$ be the vector with components $c_x = \Psi_x = \ket{x|\Psi}$ for $x\in{0,\dots,N_1}$. Then we have
+
+$$
+  \ket{k|\hat{F}\Psi} = F_\text{d} (\mathbf{c})_k
+$$
+
+where $F_\text{d} :\mathbb{C}^N \to \mathbb{C}^N$ is the discrete Fourier transform defined component-wise by
+
+$$
+  F_\text{d} (\mathbb{c})_k = \frac{1}{\sqrt{N}} \sum_{l=0}^{N-1} \exp\left(\frac{2\pi i}{N} kl \right) c_l
+$$
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-42}$ we have
+
+$$
+\begin{align*}
+  \hat{F}\ket{\Psi} =& \sum_{x=0}^{2^n - 1} \Psi_x \hat{F}\ket{x} =& \sum_{x=0}^{2^n - 1} \Psi_x \frac{1}{\sqrt{2^n}} \sum_{z,y=0}^{2^n - 1} \exp\left(2\pi i \frac{zy}{2^n} \right) \ket{z} \underbrace{\braket{y|x}}_{=\delta_{xy}} \\
+  =& \frac{1}{\sqrt{2^n}} \sum_{x,z=0}^{2^n - 1} \Psi_x \exp\left(\frac{2\pi i}{2^n} zx \right) \ket{z} \\
+  =& \frac{1}{\sqrt{N}} \sum_{x,z=0}^{N-1} c_x \exp\left(\frac{2\pi i}{N} zx \right) \ket{z}
+\end{align*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \ket{k|\hat{F}\Psi} =& \frac{1}{\sqrt{N}} \sum_{x,z=0}^{N-1} c_x \exp\left(\frac{2\pi i}{N} zx \right) \underbrace{\braket{\delta_{kz}}} \\
+  =& \frac{1}{\sqrt{N}} \sum_{x=0}^{N-1} c_x \exp\left(\frac{2\pi i}{N} kx \right) \\
+  =& F_\text{d} (\mathbf{c})_z
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Binary fractions' boxType='definition' tag='definition-7'>
+For $a_1,\dots,a_m \in\set{0,1}$ we define
+
+$$
+  0_{.a_1\dots a_m} := \sum_{l=1}^m a_l 2^{-l}
+$$
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n\in\N$ and
+
+$$
+\begin{equation*}
+  x = \sum_{j=0}^{n-1} x_j 2^j
+\tag{\label{equation-44}}
+\end{equation*}
+$$
+
+where $x_j \in\set{0,1}$ for $j\in{0,\dots,n-1}$. Then the action of the quantum Fourier transform on any vector $\ket{x}$ of the computational basis of ${}^\P \mathcal{H}$ can be written as
+
+$$
+  \hat{F}\ket{x} = \frac{1}{\sqrt{2^n}} \bigotimes_{j=0}^{n-1} \left[ \ket{0} + e^{2\pi i 0_{.x_j \dots x_0}} \ket{1} \right]
+$$
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-42}$, we have
+
+$$
+\begin{align*}
+  \hat{F}\ket{x} =& \frac{1}{\sqrt{2^n}} \sum_{y=0}^{2^n - 1} \exp\left(\frac{2\pi i}{2^n} \right) \ket{y} \\
+  =& \frac{1}{\sqrt{2^n}} \sum_{y=0}^{2^n - 1} \exp\left(\frac{2\pi i}{2^n} x \sum_{j=0}^{n-1} y_j 2^j \right) \ket{y_{n-1} \dots y_0} \\
+  =& \frac{1}{\sqrt{2^n}} \sum_{y=0}^{2^n - 1} \prod_{j=0}^{n-1} \exp\left(\frac{2\pi i}{2^n} xy_j 2^j \right) \ket{y_{n-1}\dots y_0} \\
+  =& \frac{1}{\sqrt{2^n}} \sum_{y_0 \dots y_{n-1} \in\set{0,1}} \bigotimes_{k=n-1}^0 \exp\left(\frac{2\pi i}{2^n} xy_k 2^k \right)\ket{y_k} \\
+  =& \frac{1}{\sqrt{2^n}} \bigotimes_{k=n-1}^0 \sum_{y_k \in\set{0,1}} \exp\left(\frac{2\pi i}{2^n} xy_k 2^k \right) \ket{y_k} \\
+  =& \frac{1}{\sqrt{2^n}} \bigotimes_{k=n-1} \sum_{y_k \in\set{0,1}} \exp\left(\frac{2\pi i}{2^n} xy_k 2^k \right) \ket{y_k} \\
+  =& \frac{1}{\sqrt{2^n}} \bigotimes_{k=n-1}^0 \left[\ket{0} + \exp\left(\frac{2\pi i}{2^n} x 2^k \right)\ket{1}\right] \tag{\label{equation-43}}
+\end{align*}
+$$
+
+In the last equation we further use $\eqref{equation-44}$ and the binary fraction notation from Definition $\ref{definition-7}$ in order to obtain
+
+$$
+\begin{align*}
+  \exp\left(\frac{2\pi i}{2^^n} x2^k \right) =& \exp\left(2\pi i \sum_{l=0}^{n-1} x_l 2^{l+k-n} \right) \\
+  =& \exp\left(2\pi i \left[\sum_{l=0}^{n-k-1} x_l 2^{l+k-n} + \sum_{l=n-k}^{n-1} x_l 2^{l+k-n}\right] \right) \\
+  =& \exp\left(2\pi i \sum_{l=0}^{n-k-1} x_l 2^{l+k-n} \right) \\
+  =& e^{2\pi i 0_{.x_{n-1-k} \dots x_0}} \tag{\label{equation-45}}
+\end{align*}
+$$
+
+Substituting $\eqref{equation-45}$ into $\eqref{equation-43}$ yields
+
+$$
+\begin{align*}
+  \hat{F}\ket{x} =& \frac{1}{\sqrt{2^n}} \bigotimes_{k=n-1}^0 \left[\ket{0} + e^{2\pi i 0_{.x_{n-1-k} \dots x_0}} \right] \\
+  =& \frac{1}{\sqrt{2^n}} \bigotimes_{j=0}^{n-1} \left[\ket{0} + e^{2\pi i 0_{. x_j \dots x_0}} \ket{1}\right]
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n\in\N_+$ and $j\in\N_0$ with $j < n$ and let $\ket{x}$ be a vector in the computational basis in ${}^\P \mathcal{H}^{\otimes n}$. Then
+
+$$
+\begin{equation*}
+  \hat{H}\ket{x_j} = \frac{\ket{0} + e^{2\pi i 0_{.x_j}} \ket{1}}{\sqrt{2}}
+\tag{\label{equation-46}}
+\end{equation*}
+$$
+
+holds, and with
+
+$$
+\begin{equation*}
+  \hat{H}_j := \hat{I}_2^{\otimes (n-1-j)} \otimes \hat{H} \otimes\hat{I}_2^{\otimes j},\; j\in\set{0,\dots,n-1}
+\tag{\label{equation-47}}
+\end{equation*}
+$$
+
+we have
+
+$$
+\begin{equation*}
+  \hat{H}_j \ket{x} = \ket{x_{n-1}}\otimes\cdots\otimes\ket{x_{j+1}} \otimes \frac{\ket{0} + e^{2\pi i 0_{.x_j}}\ket{1}}{\sqrt{2}} \otimes\ket{x_{j-1}} \otimes\cdots\otimes\ket{x_0}
+\tag{\label{equation-48}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We know that
+
+$$
+  \hat{H}\ket{x_j} = \frac{\ket{0} + e^{\pi i x_j} \ket{1}}{\sqrt{2}}
+$$
+
+Then $\eqref{equation-46}$ follows from Definition $\ref{definition-7}$ of the binary fraction. The action of $\hat{H}_j$ as claimed in $\eqrfe{equation-48}$ folows directly from $\eqref{equation-46}$ and $\eqref{equation-47}$.
+</details>
 </MathBox>
 
 # Variational quantum eigensolver (VQE)
