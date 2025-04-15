@@ -4,53 +4,135 @@ subject: 'Mathematics'
 showToc: true
 ---
 
-# Hurst exponential
+# Hurst exponent
 
-Let $X$ be a stochastic process. Then $X$ is self-similar (self-affine) if
+<MathBox title='Stochastic process with long-term memory' boxType='definition'>
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. Suppose $X_t: \Omega\times\R \to\R$ is a stationary stochastic process with autocorrelation function $\rho: \N\to [-1,1]$. If there exists a real number $\alpha\in (0,1)$ and a constant $c_\rho > 0$ such that the $\rho$ satisfy the asymptotic relation
 
 $$
-  X(t) \simeq \lambda^{-H} X(\lambda x)\quad\forall \lambda < 0
+  \lim_{k\to\infty} \frac{\rho(k)}{c_\rho k^{-\alpha}} = 1
 $$
 
-where the Hurst exponent $H\in[0, 1]$ expresses the tendency for $\d X = \frac{\d X(t)}{\d t}\d t$ to change sign
-- when $H = \frac{1}{2}$, the sign changes randomly. In this case $X$ is a Brownian motion.
-- when $\frac{1}{2}< H\leq 1$, the sign tends not to change. In this case $X$ is called persistent.
-- when $0\leq H < \frac{1}{2}$, the sign tends to change (anti-correlation). In this case $X$ is called anti-persistent.
+then $X_t$ is called a stationary process with long-term memory (or long-range dependence). This means that the autocorrelations decay according to a power law with a non-integrable tail:
 
-The unconditional moments of $X(t)$, if they exist, behave as power laws of time
+$$
+  \sum_{k=1}^\infty \rho(k) = \infty
+$$
+</MathBox>
+
+The slow decay of the autocorrelation function in a time series with long-range dependence implies that observations remain significantly correlated even at large time lags. In contrast, a process with short-range dependence exhibits autocorrelations that decay exponentially fast to zero as the lag increases, meaning that correlations between distant observations are negligible.
+
+<MathBox title='Self-similar stochastic process' boxType='definition'>
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. A stochastic process $X_t: \Omega\times\R \to\R$ is self-similar (or self-affine) with Hurst exponent $H\in [0,1]$ if
+
+$$
+  X(t) \sim \lambda^{-H} X(\lambda t)\quad\forall \lambda < 0
+$$
+
+where $\sim$ denotes equality in distribution. The Hurst exponent $H$ expresses the tendency for increments $\d X = \frac{\d X(t)}{\d t}\d t$ to change sign:
+- When $H = \frac{1}{2}$, increments are uncorrelated and the sign changes randomly. This corresponds to a standard Wiener process (geometric Brownian motion).
+- When $\frac{1}{2}< H\leq 1$, the increments tend to persist in the same direction. This behaviour is called persistence.
+- When $0\leq H < \frac{1}{2}$, the increments tend to switch sign more frequently. This is known as anti-persistence (or negative autocorrelation)
+
+The unconditional moments of $X_t$, if they exist, behave as power laws of time
 
 $$
   \mathrm{E}\left[ |X(t) | \right]^q = \mathrm{E}\left[ |X(1)|^q \right]|t|^{qH}
 $$
 
-The Hurst exponent $H$ of a time series is defined in terms of the asymptotic behaviour of the rescaled range as a function of the time span $n$
+Moreover, the Hurst exponent is related to the fractal dimension $D$ of the graph of $X_t$ via the identity
+
+$$
+  D + H = 2
+$$
+</MathBox>
+
+## Estimation methods
+
+Estimation methods for the Hurst exponent can be broadly categorized into two main groups:
+1. Sequence representation methods ocus on how the time series is structured or transformed to reveal scaling behavior. They can be further divided into:
+    - Time-domain methods, which analyze the time series directly. The Hurst exponent is estimated by examining how certain statistical properties (e.g., rescaled range or variance) change with varying observation periods.
+    - Frequency-domain (spectrum-domain) methods, which apply transformations such as the Discrete Fourier Transform (DFT) or Discrete Wavelet Transform (DWT) to the time series, enabling analysis in the spectral domain.
+2. Parameter estimation methods aim to fit statistical models to the data in order to estimate the Hurst exponent. They include:
+    - Linear regression techniques
+    - Bayesian methods, which incorporate prior knowledge and probabilistic inference to estimate the Hurst exponent in a more flexible and robust manner.
+
+### Rescaled range analysis
+
+Let $\set{X_i}_{i=1}^n$ be a sample of stochastic process $X_t$ with mean 
+
+$$
+  \bar{X} = \frac{1}{n} \sum_{i=1}^n X_i
+$$
+
+The range of $X_t$ up to time $n$, denoted $R(n)$, is defined as
+
+$$
+  R(n) = \max_{1\leq t\leq n} Z_t - \min_{1\leq t\leq n} Z_t
+$$
+
+where $Z_t$ is the cumulative deviation from the mean, given by 
+
+$$
+  Z_t = \sum_{i=1}^t X_i - \bar{X} 
+$$
+
+Here $Y_i = X_i - \bar{X}$, is the mean-adjusted series, and $Z_t$ represents the accumulated deviation from the mean up to time $t$.
+
+The rescaled range statistic, denoted $R(n)/S(n)$ normalizes the cumulative range $R(n)$ by the standard deviation of the process, given by
+
+$$
+  S(n) = \sqrt{\frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2}
+$$
+
+The Hurst exponent $H\in (0,1)$ is defined in terms of the asymptotic behaviour of the expected rescaled range as a function of the time span $n$. If the underlying process $X_t$ exhibits long-range dependence, the rescaled range grows exponentially like a power law:
 
 $$
   \lim_{n\to\infty} \mathrm{E}\left[ \frac{R(n)}{S(n)} \right] = Cn^H
 $$
 
-where
-- $R(n)$ is the range of the first $n$ cumulative deviations from the mean
-- $S(n)$ is the sum of the first $n$ standard deviations
-- $C$ is a constant
+where $C > 0$ is a constant.
 
-## Estimation techniques
+Rescaled range analysis estimates the Hurst exponent $H$ by quantifying the scaling behaviour of fluctuations in a time series acrros multiple time scales. The method proceeds as follows:
 
-### Rescaled range analysis
-The rescaled range is calculated as follows
-1. Calculate the mean $m = \frac{1}{n}\sum_{i=1}^n X_i$
-2. Create a mean-adjusted series $Y_t = X_t - m$ for $t \in [1, n]$
-3. Calculate the cumulative deviate series $Z_t = \sum_{i=1}^t Y_i$
-4. Compute the range $R(n) = \max[(Z_i)_{i\in[1, n]}] - \min[(Z_i)_{i\in[1, n]}]$
-5. Compute the standard deviation $S(n) = \sqrt{\frac{1}{n}\sum_{i=1}^n \left(X_i - m \right)^2}$
+1. **Segment the series**
 
-The Hurst exponent is estimated by
+Given a time series $\set{X_i}_{i=1}^N$, choose a minimal segment size $w\in\N_+$. Let $N' \leq N$ be the largest number such that such that $N' = mk$, where
+- $m\in S_\text{bpf} (N',w) = \set{m_j}_{j=1}^n$ is a bounded proper factor of $N'$, satisfying $m \geq w$
+- $k = N'/m \in\N_+$ is the number of non-overlapping segments of size $m$
+- $n = |S_\text{bpf} (N', w)|$ is the number of valid segment lengths considered
+
+2. **Construct the cumulative deviation series**
+
+For each segment:
+- Calculate the sample mean $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$ 
+- Form the mean-adjusted series $Y_t = X_t - \bar{X}$ for $1 \leq t \leq m$.
+- Compute the cumulative deviate series $Z_t = \sum_{i=1}^t Y_i$.
+
+3. **Compute the rescaled range**
+
+For each segment:
+- Compute the range $R(n, \tau) = \max_{1\leq i\leq m} Z_i - \min_{1\leq i\leq m} Z_i$ 
+- Compute the standard deviation $S(n, \tau) = \sqrt{\frac{1}{n}\sum_{i=1}^n \left(X_i - \bar{X}\right)^2}$
+- Calculate the rescaled range $\operatorname{RS}(m, \tau) = R(m,\tau)/S(m,\tau)$
+
+Average over all $k$ segments of size $m$ to obtain the mean rescaled range
 
 $$
-  H = \frac{\ln\left[ R(n)/S(n) \right]}{\ln(Cn)}
+  \widebar{\operatorname{RS}}(m) = \frac{1}{k} \sum_{\tau=1}^k \frac{R(m,\tau)}{S(m,\tau)}
 $$
 
-Generalized Hurts exponent for a time series $x(t)$
+4. **Estimate the Hurst exponent**
+
+By repeating the above steps over a range of segment sizes $m \in S_\text{bpf} (N', w)$, the rescaled range $\widebar{\operatorname{RS}}(m, \tau)$ is expected to scale asymptotically as a power-law:
+
+$$
+  \widebar{\operatorname{RS}}(m, \tau) \propto m^H \iff \ln[\widebar{\operatorname{RS}}(m, \tau)] \sim \gamma + H \ln(m)
+$$
+
+The Hurst exponent $H$ is estimated as the slope of the linear regression of $\ln[\widebar{\operatorname{RS}}(m, \tau)]$ against $\ln(m)$.
+
+Generalized Hurst exponent for a time series $x(t)$
 
 $$
   \langle \left| g(t + \tau) - g(t) \right|^q \rangle_t \sim \tau^{qH(q)}
@@ -102,6 +184,99 @@ $$
 
 The moment-based approach is retrieved for $a = (1, -1)$.
 
+### Detrended fluctuation analysis (DFA)
+
+Detrended fluctuation analysis is a method used to estimate the Hurst exponent of a time series, particularly effective for detecting long-range correlations in non-stationary signals. The procedure is as follows:
+
+1. **Segment the series**
+
+Given a time series $\set{X_i}_{i=1}^N$, choose a minimal segment size $w\in\N_+$. Let $N' \leq N$ be the largest number such that such that $N' = mk$, where
+- $m\in S_\text{bpf} (N',w) = \set{m_j}_{j=1}^n$ is a bounded proper factor of $N'$, satisfying $m \geq w$
+- $k = N'/m \in\N_+$ is the number of non-overlapping segments of size $m$
+- $n = |S_\text{bpf} (N', w)|$ is the number of valid segment lengths considered
+
+2. **Construct the cumulative deviation series**
+
+Compute the mean of the truncated seires
+
+$$
+  \bar{X} = \frac{1}{N'} \sum_{i=1}^{N'} X_i
+$$
+
+Then form the cumulative deviation series
+
+$$
+  Z_t = \sum_{j=1}^t X_j - \bar{X},\; 1\leq t\leq N'
+$$
+
+3. **Divide into non-overlapping segments**
+
+Partition $Z_t$ into the $k = N'/m$ non-overlapping segments of length $m$. For each segment $\tau = 1,\dots,k$ define
+
+$$
+  \mathbf{Y}_\tau = [Z_{(\tau - 1)m+1},Z_{(\tau - 1)m+2}\dots,Z_{\tau m}]^\top,\; 1\leq\tau\leq k
+$$
+
+4. **Fit and detrend each segment**
+
+For each seqment $\mathbf{Y}_\tau$, perform a linear least squares regression
+
+$$
+  \hat{Z}_{i,\tau} = \alpha_\tau + \beta_\tau i,\; 1\leq i \leq m
+$$
+
+Compute the residuals (detrended signal):
+
+$$
+  \varepsilon_{i, \tau} = Z_{(\tau-1)m + i} - \hat{Z}_{i,\tau}
+$$
+
+5. **Calculate detrended fluctuation**
+
+Compute the root-mean-square deviation (local fluctuation) for each segment:
+
+$$
+  F(m, \tau) = \sqrt{\frac{1}{m} \sum_{i=\tau m + 1}^{jm + m} (X_i - Y_{i, \tau})}
+$$
+
+Average the local fluctuations over all segments:
+
+$$
+  F(m) = \sqrt{\frac{1}{k} \sum_{\tau=1}^k F(m, \tau)^2}
+$$
+
+6. **Estimate asymptotic behaviour**
+
+By repeating the above steps over a range of segment sizes $m \in S_\text{bpf} (N', w)$, the fluctuation function $F(m)$ is expected to scale asymptotically as a power-law
+
+$$
+  F(m) \propto m^\alpha \iff \ln[F(m)] \sim \gamma + \alpha \ln(m)
+$$
+
+where the scaling exponent $\alpha$ is a generalization of the Hurst exponent. The exponent $\alpha$ is estimated as the slope of the linear regression of $\ln[F(m)]$ against $\ln(m)$, and describes trends about the series auto-correlation:
+- $\alpha < 1/2$: anti-correlated
+- $\alpha = 1/2$: uncorrelated (white noise)
+- $\alpha > 1/2$: correlated
+- $\alpha = 1$: $1/f$-noise (pink noise)
+- $\alpha > 1$: non-station, unbounded
+- $\alpha = 3/2$: Brownian noise 
+
+#### Multifractal detrended fluctuation analysis (MDFA)
+
+Multifractal detrended flucutation analysis generalizes (DFA) by computing $q$-th order detrended fluctuation function:
+
+$$
+  F_q (m) = \left(\frac{1}{k} \sum_{\tau=1}^k F(m, \tau)^q \right)^{1/q},\; q\in\R\setminus\set{0}
+$$
+
+Multifractal time series exhibits the power-law scaling relation
+
+$$
+  F_q (m) \propto m^{\alpha(q)}
+$$
+
+where $\alpha(q)$ is the generalized Hurst exponent, which depends on $q$. The classical DFA corresponds to the special case $q = 2$.
+
 ### Averaged wavelet coefficient method
 
 Applying the wavelet transform to a self-similar stochastic process $X(t)$ gives
@@ -132,7 +307,10 @@ $$
 The variational smoothing $\mathcal{H}$ of a noisy parameter $\hat{H}$ aims at minimizing the quadratic distance between $\mathcal{H}$ and $\hat{H}$ 
 
 $$
-  \mathcal{H} = \underset{h \in C^2([0, 1], \R)}{\mathrm{argmin}} \int_0^1 \left[ \left( h(t) - \hat{H}(t) \right)^2 + \lambda h'(t)^2 \right]\d t = \underset{h \in C^2([0, 1], \R)}{\mathrm{argmin}} \int_0^1 \mathcal{L} \left[ t, h(t), h'(t)\right]\d t
+\begin{align*}
+  \mathcal{H} =& \argmin_{h \in C^2([0, 1], \R)} \int_0^1 \left[ \left( h(t) - \hat{H}(t) \right)^2 + \lambda h'(t)^2 \right]\d t \\
+  =& \argmin_{h \in C^2([0, 1], \R)} \int_0^1 \mathcal{L} \left[ t, h(t), h'(t)\right]\d t
+\end{align*}
 $$
 
 where $\lambda \geq 0$ is a smoothness factor. The Euler-Lagrange equation becomes
@@ -150,7 +328,10 @@ $$
 with the general solution
 
 $$
-  \mathcal{H}(t) = e^{t/\sqrt{\lambda}} \left( A - \frac{1}{2\sqrt{\lambda}} \int_0^t e^{-s/\sqrt{\lambda}} \hat{H}(s) \d s \right) + e^{-t/\sqrt{\lambda}} \left( B + \frac{1}{2\sqrt{\lambda}} \int_0^t e^{s/\sqrt{\lambda}} \hat{H}(s) \d s \right)
+\begin{align*}
+  \mathcal{H}(t) =& e^{t/\sqrt{\lambda}} \left( A - \frac{1}{2\sqrt{\lambda}} \int_0^t e^{-s/\sqrt{\lambda}} \hat{H}(s) \d s \right) \\
+  &+ e^{-t/\sqrt{\lambda}} \left( B + \frac{1}{2\sqrt{\lambda}} \int_0^t e^{s/\sqrt{\lambda}} \hat{H}(s) \d s \right)
+\end{align*}
 $$
 
 The unique solution that minimizes $\int_0^1 \left[ \mathcal{H}(t) - \hat{H}(t) \right]^2 \d t$ is 
