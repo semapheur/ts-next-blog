@@ -51,14 +51,6 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <head>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://tikzjax.com/v1/fonts.css"
-        />
-        <script src="https://tikzjax.com/v1/tikzjax.js" />
-      </head>
       <body className="flex flex-col bg-primary">
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         <Header />

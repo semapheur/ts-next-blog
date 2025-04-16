@@ -4168,6 +4168,56 @@ Then $\eqref{equation-46}$ follows from Definition $\ref{definition-7}$ of the b
 </details>
 </MathBox>
 
+<MathBox title='Conditional phase shift' boxType='definition'>
+Let $j,k\in\set{0,\dots,n-1}$ ith $j > k$ and define $\theta_{jk} := \frac{\pi}{2^{j-k}}$. The *conditional phase shift* is a linear transformation on ${}^\P \mathcal{H}^{\otimes n}$ defined as
+
+$$
+\begin{align*}
+  \hat{P}_{jk} := \hat{I}_2^{\otimes(n-1-k)} \otimes \ket{0}\bra{0}\otimes\hat{I}_2^{\otimes k} \\
+  +& \hat{I}_2^{\otimes(n-1-j)} \otimes \left[\ket{0}\bra{0} + e^{i\theta_{jk}} \ket{1}\bra{1} \right] \otimes\hat{I}_2^{\otimes(j-k-1)} \otimes\ket{1}\bra{1}\otimes\hat{I}_2^{\otimes k}
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+The quantum Fourier transform can be constructed from the swap operator, Hadamard transforms and conditional phase shifts as follows
+
+$$
+\begin{equation*}
+  \hat{F} = S^{(n)} \prod_{j=0}^{n-1} \left(\left[\prod_{k=0}^{j-1} \hat{P}_{jk} \right] \hat{H}_j \right) 
+\tag{\label{equation-49}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $\hat{F}$ be the quantum Fourier transform on ${}^\P \mathcal{H}^{\otimes n}$. Then the number of required computational steps $S_F$ to perform $\hat{F}$ as a function of $n\in\N_+$ satisfies
+
+$$
+  S_F (n) \in O(n^2),\; \n\to\infty
+$$
+
+<details>
+<summary>Proof</summary>
+
+The application of Hadamard gates $\hat{H}_j$ and conditional shift gates $\hat{P}_{jk}$ each required a fixed number of computational steps independent of $n$, i.e. $S_{H_j} (n), S_{P_{jk}} (n) \in O(1)$. The application of swap gates $S^{(n)}$ requires instead $S_{S^{(n)}} \in O(n)$ steps for $n\to\infty$. From $\eqref{equation-49}$ we can perform $\hat{F}$ by
+- an $n$-fold application of $\hat{H}_j$ for $j\in\set{0,\dots,n-1}$ with $S_H (n) \in O(n)$
+- an $\frac{n(n-1)}{2}$-fold application of $\hat{P}_{jk}$ for $j\in\set{0,\dots,n-1}$ and $k\in\set{0,\dots,j-1}$ with $S_P (n) \inO(n^2)$
+- a single application of $S^{(n)}$ with $S_{S^{(n)}} (n) \inO(n)$
+
+Hence, we find for the number of computational steps $S_F$ to perform $\hat{F}$
+
+$$
+  S_F (n) = S_H (n) + S_P (n) + S_{S^{(n)}} \in O(n^2)
+$$
+</details>
+</MathBox>
+
 # Variational quantum eigensolver (VQE)
 
 The variational quantum eigensolver (VQE) is a hybrid classical-quantum alogorithm designed to estimate the ground state energy of a Hamiltonian. 
@@ -4280,7 +4330,7 @@ $$
 
 where $M\in\N_+$ is the number of measurements. By the law of large numbers, the approximation of $\Pr(\ket{\varphi}\to\ket{x})$ converges to its true value as $M\to\infty$.
 
-For precision $\epsilon$, each expectation subroutine within VQE requires $\mathcal{O}(1/\epsilon^2)$ samples from circuits with depth $\mathcal{O}(1)$.
+For precision $\epsilon$, each expectation subroutine within VQE requires $O(1/\epsilon^2)$ samples from circuits with depth $O(1)$.
 
 Given $M_0$ and $M_1$ as the number of $0$ and $1$ measurement outcomes, the expectation value of $\hat{P}_a$ approximated as
 
@@ -4420,14 +4470,14 @@ $$
 <TableFigure caption="Summary of circuit depth, parameters and entangling gates scaling across a selection of fixed structure ansätze. The scaling in the number of entangling gtes assumes full connectivity of the qubit lattice.">
 | Method | Depth | Parameters | Entangling gates | Comment |
 | --- | --- | --- | --- | --- |
-| HEA | $\mathcal{O}(L)$ | $\mathcal{O}(NL)$ | $\mathcal{O}((N - 1)L)$ | $L$ is an arbitrary number of layers, whose scaling for exact ground state is unknown and exponential in the worst case if the entire Hilbert space needs to be spanned to find the ground state |
-| UCCSD | $\mathcal{O}((N - m)^2 m\tau)$ | $\mathcal{O}((N - m)^2 m^2 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | $\bar{q}$ is the average Pauli weigh across the operators used to build the ansatz. As an indication, maximum Pauli weight under Jordan-Wigner is $N$, and $\ln(N)$ under Bravyi-Kitaev. $\tau$ is the number of Trotter steps used. |
-| UCCGSD | $\mathcal{O}(N^3 \tau)$ | $\mathcal{O}(N^4 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | |
-| k-UpUCCGSD | $\mathcal{O}(kN \tau)$ | $\mathcal{O}(k\tau N^2 / 4)$ | $\mathcal{O}(k\tau(\bar{q} - 1)N^2 / 2)$ | $k$ is an arbitrary constant which determines the accuracy of the result. Scaling is unknown. |
-| OO-UCCD | $\mathcal{O}((N - m)^2 m\tau)$ | $\mathcal{O}((N - m)^2 m^2 \tau)$ | $\mathcal{O}(2(\bar{q} - 1)N^4 \tau)$ | Same as UCCSD. It is worth noting that OO-UCCD is a nested loop between orbital (one-body terms) optimization, done on a conventional machine, and two-body terms optimization done on the quantum computer. |
-| SPA | $\mathcal{O}((N - 1)L)$ | $\mathcal{O}(2(N - 1)L)$ | $\mathcal{O}(3(N - 1)L)$ | This ansatz spans a wider range of the Hilbert space than the EPS. It is therefore likely it requires more circuit resources suggesting that $L$ grows exponentially in $N$ for exact resolution of the ground state. This logic also applies to HEA |
-| ESPA | $\mathcal{O}\left(2\binom{N-1}{m}\right)$ | $\mathcal{O}\left(2\binom{N}{m} - 2\right)$ | $\mathcal{O}\left(3\binom{N}{m}\right)$ | Scaling range from linear when $m = 1$ $m = N - 1$, to exponential if $m \sim N/2$ |
-| HVA | $\mathcal{O}(\tilde{C}L)$ | $\mathcal{O}(\tilde{CL})$ | $\mathcal{O}(2(\bar{q} - 1)CL)$ | $L$ is the number of repetition of the ansatz required to achieve the desired accuracy. $C$ is the number of terms in the Hamiltonian, and $\tilde{C}$ the number of commutative groups among these terms |
+| HEA | $O(L)$ | $O(NL)$ | $O((N - 1)L)$ | $L$ is an arbitrary number of layers, whose scaling for exact ground state is unknown and exponential in the worst case if the entire Hilbert space needs to be spanned to find the ground state |
+| UCCSD | $O((N - m)^2 m\tau)$ | $O((N - m)^2 m^2 \tau)$ | $O(2(\bar{q} - 1)N^4 \tau)$ | $\bar{q}$ is the average Pauli weigh across the operators used to build the ansatz. As an indication, maximum Pauli weight under Jordan-Wigner is $N$, and $\ln(N)$ under Bravyi-Kitaev. $\tau$ is the number of Trotter steps used. |
+| UCCGSD | $O(N^3 \tau)$ | $O(N^4 \tau)$ | $O(2(\bar{q} - 1)N^4 \tau)$ | |
+| k-UpUCCGSD | $O(kN \tau)$ | $O(k\tau N^2 / 4)$ | $O(k\tau(\bar{q} - 1)N^2 / 2)$ | $k$ is an arbitrary constant which determines the accuracy of the result. Scaling is unknown. |
+| OO-UCCD | $O((N - m)^2 m\tau)$ | $O((N - m)^2 m^2 \tau)$ | $O(2(\bar{q} - 1)N^4 \tau)$ | Same as UCCSD. It is worth noting that OO-UCCD is a nested loop between orbital (one-body terms) optimization, done on a conventional machine, and two-body terms optimization done on the quantum computer. |
+| SPA | $O((N - 1)L)$ | $O(2(N - 1)L)$ | $O(3(N - 1)L)$ | This ansatz spans a wider range of the Hilbert space than the EPS. It is therefore likely it requires more circuit resources suggesting that $L$ grows exponentially in $N$ for exact resolution of the ground state. This logic also applies to HEA |
+| ESPA | $O\left(2\binom{N-1}{m}\right)$ | $O\left(2\binom{N}{m} - 2\right)$ | $O\left(3\binom{N}{m}\right)$ | Scaling range from linear when $m = 1$ $m = N - 1$, to exponential if $m \sim N/2$ |
+| HVA | $O(\tilde{C}L)$ | $O(\tilde{CL})$ | $O(2(\bar{q} - 1)CL)$ | $L$ is the number of repetition of the ansatz required to achieve the desired accuracy. $C$ is the number of terms in the Hamiltonian, and $\tilde{C}$ the number of commutative groups among these terms |
 </TableFigure>
 
 ### Hardware-efficient ansatz (HEA)
