@@ -4179,6 +4179,76 @@ $$
 $$
 </MathBox>
 
+The action of $\hat{P}_{jk}$ is an application of $\hat{\Lambda}_{\ket{1}^1} (\hat{P}(\theta_{jk}))$ on the $(k+1)$th and $(j+1)$th factor space in ${}^\P \mathcal{H}^{\otimes n}$. This can be illustrated if we consider the restriction onto the respective subspaces. Let ${}^\P \mathcal{H}_k$ denote the $(k+1)$th factor spacec counted from the right and ${}^\P \mathcal{H}_j$ the $(j+1)$th factor space in ${}^\P \mathcal{H}^{\otimes n}$. Furthermore, let
+
+$$
+  \ket{0}_j \otimes \ket{0}_k,\quad \ket{1}_j \otimes\ket{0}_k,\quad \ket{0}_j \otimes\ket{1}_k,\quad \ket{1}_j \otimes\ket{1}_k
+$$
+
+be the four vectors of the computational basis in ${}^\P \mathcal{H}_j \otimes {}^\P \mathcal{H}_k$. Then the matrix representation of the restriction of these to factor spaces is given by
+
+$$
+  \hat{P}_{jk}|_{{}^\P \mathcal{H}_j \otimes {}^\P \mathcal{H}_k} = \begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 1 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & e^{i\theta_{jk}}
+  \end{bmatrix} = \Lambda_{\ket{1}^1} (\hat{P}(\theta_{jk}))
+$$
+
+The action of $\hat{P}_{jk}$ is thus only non-trivial if both states in the $(j+1)$th as well as the $(k+1)$th factor space each have a non-vanishing component along $\ket{1}$ in which case it consists of a multiplication with a phase factor $e^{i\theta_{jk}}$. Otherwise, $\hat{P}_{jk}$ leaves the total state unchanged, in other words, acts as the identity.
+
+<MathBox title='' boxType='lemma' tag='lemma-4'>
+Let $j,k\in\set{0,\dots,n-1}$ with $j > k$ and let $l\in\set{j+1,\dots,n-1}$. Moreover, let $\ket{\psi_l}\in {}^\P \mathcal{H}$ and $\psi_{0j}, \psi_{1j} \in\mathbb{C}$ as well as $x_0,\dots,x_{j-1} \in\set{0,1}$. Then we have
+
+$$
+\begin{align*}
+  & \hat{P}_{jk} \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes [\psi_{0j}\ket{0} + \psi_{1j} \ket{1}] \otimes\left(\bigotimes_{l=j-1}^0 \ket{x_l} \ket{} \right) \\
+  =& \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes \left[\psi_{0j}\ket{0} + \psi_{1j} \exp\left(i\pi \frac{x_k}{2^{j-k}}\right) \ket{1}\right] \otimes \left(\bigotimes_{l=j-1}^0 \ket{x_l} \right)
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+With $\ket{x_k} = (1 - x_k) \ket{0} + x_k \ket{1}$ and $\theta_{jk} = \frac{\pi}{2^{j-k}}$, we have
+
+$$
+\begin{align*}
+  & \hat{P}_{jk} \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes [\psi_{0j}\ket{0} + \psi_{1j} \ket{1}] \otimes\left(\bigotimes_{l=j-1}^0 \ket{x_l} \right) \\
+  =& (1 - x_k) \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes [\psi_{0j}\ket{0} + \psi_{1j} \ket{1}] \otimes\left(\bigotimes_{l=j-1}^0 \ket{x_l} \right) \\
+  &+ x_k \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes [\psi_{0j}\ket{0} + \psi_{1j} e^{i\theta_{jk}} \ket{1}] \otimes\left(\bigotimes_{l=j-1}^0 \ket{x_l} \right) \\
+  =& \left(\bigotimes_{l=n-1}^{j+1} \ket{\psi_l} \right) \otimes \left[\psi_{0j}\ket{0} + \psi_{1j} \exp\left(i\pi \frac{x_k}{2^{j-k}}\right) \ket{1}\right] \otimes \left(\bigotimes_{l=j-1}^0 \ket{x_l} \right)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<LatexFigure width={75} src='/fig/fourier_circuit.svg' alt=''
+  caption='Quantum circuit for the quantum Fourier transform using Hadamard gates, conditional phase shift gates and swap gates'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={q,n,q,n,q,n,n,n,q,n,q}]
+  \lstick{\ket{x_{n-1}}} & \gate{H} \gategroup[11, steps=18]{$F$} & \gate{P} & \gate{P} & \ \ldots\ & \gate{P} & \gate{P} &&& \ \ldots\ &&& \ \ldots\ &&&& \swap{10} &&& \rstick[11]{$\hat{F}\ket{x}^n$} \\
+  \lstick{\otimes} &&&&&&&&&&&&&&&&&&& \\
+  \lstick{\ket{x_{n-2}}} && \ctrl{-2} && \ \ldots\ &&& \gate{H} & \gate{P} & \ \ldots\ & \gate{P} & \gate{P} & \ \ldots\ &&&&& \swap{6} && \\
+  \lstick{\otimes} &&&&&&&&&&&&&&&&&&& \\
+  \lstick{\ket{x_{n-3}}} &&& \ctrl{-4} & \ \ldots\ &&&& \ctrl{-2} & \ \ldots\ &&& \ \ldots\ &&&&&& \swap{1} & \\
+  \lstick{\otimes} &&&&&&&&&&&&&&&&&&& \\
+  \lstick{\vdots} &&&&&&&&&&&&&&&&&& \ddots & \\
+  \lstick{\otimes} &&&&&&&&&&&&&&&&&&& \\
+  \lstick{\ket{x_1}} &&&& \ \ldots\ & \ctrl{-8} &&&& \ \ldots\ & \ctrl{-6} && \ \ldots\ & \gate{H} & \gate{P} &&& \targX{} && \\
+  \lstick{\otimes} &&&&&&&&&&&&&&&&&&& \\
+  \lstick{\ket{x_0}} &&&&&& \ctrl{-10} &&&&& \ctrl{-8} &&& \ctrl{-2} & \gate{H} & \targX{} &&&
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
 <MathBox title='' boxType='theorem'>
 The quantum Fourier transform can be constructed from the swap operator, Hadamard transforms and conditional phase shifts as follows
 
@@ -4192,6 +4262,57 @@ $$
 <details>
 <summary>Proof</summary>
 
+From $\eqref{equation-48}$, we obtain
+
+$$
+  \hat{H}_{n-1} \ket{x} = \frac{\ket{0} + e^{2\pi i0_{.x_{n-1}}} \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-2}^0 \ket{x_j} \right)
+$$
+
+By Lemma $\ref{lemma-4}$, this implies
+
+$$
+\begin{align*}
+  \hat{P}_{n-1, n-2} \hat{H}_{n-1} \ket{x} =& \frac{\ket{0} + \exp\left(2\pi i0_{.x_{n-1}} + i\pi \frac{x_{n-2}}{2}\right) \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-2}^0 x_j \right) \\
+  =& \frac{\ket{0} + e^{2\pi i0_{.x_{n-1}x_{n-2}}} \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-2}^0 \ket{x_j} \right)
+\end{align*}
+$$
+
+and
+
+$$
+  \hat{P}_{n-1, 0} \cdots \hat{P}_{n-1, n-2} \hat{H}_{n-1} \ket{x} = \frac{\ket{0} + e^{2\pi i0_{.x_{n-1} \dots x_0}} \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-2}^0 \ket{x_j} \right)
+$$
+
+Furthermore
+
+$$
+  \hat{H}_{n-2} \hat{P}_{n-1, 0} \cdots \hat{P}_{n-1, n-2} \hat{H}_{n-1} = \frac{\ket{0} + e^{2\pi i0_{.x_{n-1} \dots x_0}} \ket{1}}{\sqrt{2}} \otimes \frac{\ket{0} + e^{2\pi i0_{.x_{n-2}}} \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-3}^0 \ket{x_j} \right)
+$$
+
+and
+
+$$
+\begin{align*}
+  &\hat{P}_{n-2,0} \cdots \hat{P}_{n-2, n-3} \hat{H}_{n-2} \hat{P}_{n-1,0} \cdots \hat{P}_{n-1,n-2} \hat{H}_{n-1} \ket{x} \\
+  =& \frac{\ket{0} + e^{2\pi i0_{.x_{n-1} \dots x_0}} \ket{1}}{\sqrt{2}} \otimes \frac{\ket{0} + e^{2\pi i0{.x_{n-2} \dots x_0}} \ket{1}}{\sqrt{2}} \otimes \left(\bigotimes_{j=n-3}^0 \ket{x_j} \right)
+\end{align*}
+$$
+
+Similarly, a repeated application to the remaining tensor products $\bigotimes_{j=n-3}^0 \ket{x_j}$ yields
+
+$$
+  \prod_{j=0}^{n-1} \left(\prod_{k=0}^{j-1} (\hat{P}_{jk}) \hat{H}_j \right) \ket{x} = \frac{1}{\sqrt{2^n}} \bigotimes_{k=n-1}^0 \left[\ket{0} + e^{2\pi i0_{.x_k \dots x_0}} \ket{1} \right]
+$$
+
+This is $\hat{F}\ket{x}$ up to an inversion of the sequences of the factor spaces. Thus, we have
+
+$$
+\begin{align*}
+  \hat{S}^{(n)} \prod_{j=0}^{n-1} \left(\prod_{k=0}^{j-1} (\hat{P}_{jk}) \hat{H}_j \right) \ket{x} =& \frac{1}{\sqrt{2^n}} \hat{S}^{(n)} \bigotimes_{k=n-1}^0 \left[\ket{0} + e^{2\pi i0_{.x_k \dots x_0}} \ket{1} \right] \\
+  =& \frac{1}{\sqrt{2^n}} \bigotimes_{k=0}^{n-1} \left[\ket{0} + e^{2\pi i0_{.x_k \dots x_0}} \ket{1} \right] \\
+  =& \hat{F}\ket{x}
+\end{align*}
+$$
 </details>
 </MathBox>
 
@@ -4205,10 +4326,10 @@ $$
 <details>
 <summary>Proof</summary>
 
-The application of Hadamard gates $\hat{H}_j$ and conditional shift gates $\hat{P}_{jk}$ each required a fixed number of computational steps independent of $n$, i.e. $S_{H_j} (n), S_{P_{jk}} (n) \in O(1)$. The application of swap gates $S^{(n)}$ requires instead $S_{S^{(n)}} \in O(n)$ steps for $n\to\infty$. From $\eqref{equation-49}$ we can perform $\hat{F}$ by
+The application of Hadamard gates $\hat{H}_j$ and conditional shift gates $\hat{P}_{jk}$ each requires a fixed number of computational steps independent of $n$, i.e. $S_{H_j} (n), S_{P_{jk}} (n) \in O(1)$. The application of swap gates $S^{(n)}$ requires instead $S_{S^{(n)}} \in O(n)$ steps for $n\to\infty$. From $\eqref{equation-49}$ we can perform $\hat{F}$ by
 - an $n$-fold application of $\hat{H}_j$ for $j\in\set{0,\dots,n-1}$ with $S_H (n) \in O(n)$
-- an $\frac{n(n-1)}{2}$-fold application of $\hat{P}_{jk}$ for $j\in\set{0,\dots,n-1}$ and $k\in\set{0,\dots,j-1}$ with $S_P (n) \inO(n^2)$
-- a single application of $S^{(n)}$ with $S_{S^{(n)}} (n) \inO(n)$
+- an $\frac{n(n-1)}{2}$-fold application of $\hat{P}_{jk}$ for $j\in\set{0,\dots,n-1}$ and $k\in\set{0,\dots,j-1}$ with $S_P (n) \in O(n^2)$
+- a single application of $S^{(n)}$ with $S_{S^{(n)}} (n) \in O(n)$
 
 Hence, we find for the number of computational steps $S_F$ to perform $\hat{F}$
 
