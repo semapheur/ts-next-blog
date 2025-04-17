@@ -10,16 +10,16 @@ references:
 
 # Qubit
 
-<MathBox title='Qubit' boxType='definition'>
-A *qubit* is a quantum system described by a two-dimensional Hilbert space, denoted ${}^\P \mathcal{H} \cong \mathbb{C}^2$, known as the *qubit space*. The information stored in a qubit is described by a unit vector in ${}^\P \mathcal{H}$, which evolves according to the postulates of quantum mechanics. 
+<MathBox title='Qubit' boxType='definition' tag='definition-9'>
+A *qubit* is a quantum system described by a two-dimensional Hilbert space, denoted ${}^\P \mathcal{H} \cong \mathbb{C}^2$, called the *qubit space*. The state of a qubit is represented by a unit vector in ${}^\P \mathcal{H}$, which evolves according to the postulates of quantum mechanics. 
 
-Since ${}^\P \mathcal{H}$ is isomorphic to $\mathbb{C}^2$, the standard mathematical representation of a qubit state is a normalized vector in $\mathbb{C}^2$ with orthonormal basis $\set{\ket{0}, \ket{1}}$:
+Since ${}^\P \mathcal{H}$ is isomorphic to $\mathbb{C}^2$, a qubit state can be represented by a normalized vector in $\mathbb{C}^2$ with orthonormal basis $\set{\ket{0}, \ket{1}}$:
 
 $$
   \ket{\psi} = \alpha\ket{0} + \beta\ket{1}
 $$
 
-where $\alpha, \beta\in\mathbb{C}$ satisfy the normalization condition $|\alpha|^2 + |\beta|^2 = 1$.
+To associate measurable quantities with the qubit, select an observable corresponding to the Pauli spin operator $\hat{\sigma}_z$ with eigenvalue $1$ for the eigenvector $\ket{0}$ and eigenvalue $-1$ for the eigenvector $\ket{1}$. A measurement of $\hat{\sigma}_z$ on qubit state yields thus $\pm 1$ as observed values and projects the qubit in the eigenstate $\ket{0}$ or $\ket{1}$ corresponding to the observed value.
 </MathBox>
 
 The physical realization of a two-dimensional quantum state space is accomplished by restricting the preparation of two-dimensional eigenspaces of a suitably chosen observable. Example of such quantum systems and observables with two-dimensional eigenspaces are
@@ -4119,9 +4119,51 @@ The claim $\eqref{equation-53}$ about $\hat{U}_f$ then follows from $\eqref{equa
 </details>
 </MathBox>
 
+We extend the definition of $\hat{U}_f$ to arbitrary vectors $\ket{\Phi}\in\mathcal{H}^A \otimes \mathcal{H}^B$ by linearity:
+
+$$
+  \hat{U}_f \ket{\Phi} := \sum_{x=0}^{2^n - 1} \sum_{y=0}^{2^m - 1} \Phi_{xy} \ket{x}\otimes\ket{y \boxplus f(x)} 
+$$
+
+Applying $\hat{U}_f$ to the intial state 
+
+$$
+  \ket{\Psi_0} := (\hat{H}^n \ket{0}^n) \otimes\ket{0}^m \in \mathcal{H}^A \otimes \mathcal{H}^B
+$$
+
+we obtain
+
+$$
+\begin{align*}
+  \hat{U}_f \ket{\Psi_0} =& \hat{U}_f \left((\hat{H}^n \ket{0}^n) \otimes\ket{0}^m \right) \\
+  =& \frac{1}{2^{n/2}} \sum_{x=0}^{2^n - 1} \hat{U}_f (\ket{x}^n \otimes\ket{0}^m) \\
+  =& \frac{1}{2^{n/2}} \sum_{x=0}^{2^n - 1} \underbrace{\ket{x}\otimes\ket{f(x)}}_{\in\mathcal{H}^A \otimes\mathcal{H}^B}
+\end{align*}
+$$
+
+The resulting state is a coherent superposition of all computational basis states $\ket{x}\otimes\ket{f(x)}$ for $x\in\set{0,\dots,2^n - 1}$. This process, where all values $f(x)$ are encoded simultaneously into a single quantim state, is called *quantum parallelism*. 
+
+Classically, generating the full evaluation table $(x,f(x))$ for all $x\in {0\dots 2^n - 1}$ would require $O(2^n)$ computational steps. In contrast, a single application of $\hat{U}_f$ yields a superposition of all possible $\ket{x}\otimes\ket{f(x)}$ at once. However, due to the nature of quantum measurement, it is not possible to extract all values $f(x)$ individually from the state $\hat{U}_f \ket{\Psi_0}$. Accessing information encoded in the linear combination of all $\ket{x}\otimes\ket{f(x)}$ in $\hat{U}_f \ket{\Psi_0}$, requires further transformations that exploit particular structure or symmetry properties of the function $f$.
+
 ### Reading the output register
 
-<MathBox title='Measurement of quantum register' boxType='definition'>
+According to Definition $\ref{definition-9}$, each qubit is associated with an observable $\hat{\sigma}_z$, whose measurement yields one of possible outcomes $\pm 1$, corresponding to the eigenvalues of $\hat{\sigma}_Z$. Such a measurement projects the qubit onto the corresponding eigenstate $\ket{0}$ or $\ket{1}$. 
+
+In a composite system of $n$ qubits, described by states in ${}^\P \mathcal{H}^{\otimes n}$, measurements can be performed on each qubit. That is, for each tensor factor ${}^\P \mathcal{H}_j$ in ${}^\P \mathcal{H}^{\otimes n}$ corresponding to the $j$th qubit, we consider the observable
+
+$$
+  \hat{\Sigma}_z^j = \hat{I}_2^{\otimes n-1-j} \otimes\hat{\sigma}_z \otimes\hat{I}_2^{\otimes j},\; j\in\set{0,\dots,n-1}
+$$
+
+which acts as $\hat{\sigma}_z$ on the $j$th qubit and trivially on all others. Each $\Sigma_z^j$ therefore performs a projective measurment on a single qubit within the register. Since these observables act non-trivially on distinct, non-overlapping tensor factors, they commute pairwise, i.e.
+
+$$
+  [\hat{\Sigma}_z^j, \hat{\Sigma}_z^k] = 0,\; \forall j,k \in\set{0,\dots,n-1}
+$$
+
+Hence, the observables $\Sigma_z^j$ are mutually compatible and can all be measured sharply. This forms the basis of a readout operation on the full quantum register, allowing the measurement of all qubits in the computational basis.
+
+<MathBox title='Measurement of quantum registers' boxType='definition'>
 Let $n\in\N_+$ and for $j\in\set{0,\dots,n-1}$ and $\alpha\in\set{0,\dots,3}$, define
 
 $$
@@ -4131,11 +4173,13 @@ $$
 where $\hat{\sigma}_\alpha$ are the Pauli spin operators. An observation of a quantum state in the register ${}^\P \mathcal{H}^{\otimes n}$ is defined as the simultaneous measurement of all pairwise compatible observables
 
 $$
-  \sum_\alpha^j = \hat{I}^{\otimes n-1-j} \otimes \hat{\sigma}_\alpha \otimes \hat{I}_2^{\otimes j}
+  \hat{\Sigma}_z^j = \hat{I}^{\otimes n-1-j} \otimes \hat{\sigma}_z \otimes \hat{I}_2^{\otimes j}
 $$
 
 for $j\in\set{0,\dots,n-1}$ in the current state of the quantum register. This process corresponds to a projective measurement in the computational basis. Such an observation is also called *read-out* or measurement of the register.
 </MatBox>
+
+The read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ yields $n$ observed values $(s_{n-1},\dots,s_0) \in\set{\pm 1}^n$ after measuring $\hat{\Sigma}_z^{n-1},\dots,\hat{\Sigma}_z^0$. We identify these observed values with corresponding classical bits $x_j \in\set{0,1}$, and use these classical bit values $(x_{n-1},\dots,x_0)$ for the binary representation $x = \sum_{j=0}^{n-1} x_j 2^j$ of a non-negative integer $x < 2^n$. The measurement of the observables $\hat{\Sigma}_z^j$ projects the state in factor space ${}^\P \mathcal{H}_j$ onto the eigenstate $\ket{0}$ or $\ket{1}$ corresponding to the observed value $s_j$. Altogether the read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ therefore reveals a non-negative integer $x < 2^n$ and leaves the register in the computational basis state $\ket{x}$.
 
 # Quantum Fourier transform
 
