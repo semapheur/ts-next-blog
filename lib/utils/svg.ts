@@ -1,10 +1,10 @@
-import Vector from 'lib/utils/vector'
+import type Vector from "lib/utils/vector"
 
 export function setSvgTransform(
   svgEl: SVGGElement | SVGGeometryElement,
   matrix: DOMMatrix | SVGMatrix,
 ) {
-  svgEl.setAttribute('transform', DOMMatrix.fromMatrix(matrix).toString())
+  svgEl.setAttribute("transform", DOMMatrix.fromMatrix(matrix).toString())
 }
 
 export function setAttributes(
@@ -21,13 +21,13 @@ export function addChildElement(
   tagName: string,
   attributes: { [key: string]: string },
 ) {
-  if (typeof parent === 'string') {
+  if (typeof parent === "string") {
     const parentEl = document.getElementById(parent) ?? undefined
     if (!parentEl) return
     parent = parentEl
   }
   const element = document.createElementNS(
-    'http://www.w3.org/2000/svg',
+    "http://www.w3.org/2000/svg",
     tagName,
   )
   setAttributes(element, attributes)
@@ -66,7 +66,7 @@ export function svgPath(
   loop = false,
   shift?: Vector,
 ): string {
-  let d = ''
+  let d = ""
   for (const i in points) {
     if (shift) {
       points[i] = points[i].add(shift)
@@ -75,10 +75,10 @@ export function svgPath(
     d += `L${points[i].print()}`
   }
   if (loop) {
-    d += 'z'
+    d += "z"
   }
 
-  return d.replace('L', 'M')
+  return d.replace("L", "M")
 }
 
 export function svgPoly(points: Vector[]): string {
@@ -87,14 +87,14 @@ export function svgPoly(points: Vector[]): string {
   for (const i in points) {
     p[i] = points[i].print()
   }
-  return p.join(' ')
+  return p.join(" ")
 }
 
 export function svgCatmullRom(
   points: Vector[],
   tension = 1,
   loop = false,
-  close = '',
+  close = "",
 ): string {
   const copy = [...points]
 
@@ -138,7 +138,7 @@ export function svgCatmullRom(
 
     d += `C${cp1.print()},${cp2.print()},${p2.print()}`
   }
-  if (loop) d += 'Z'
+  if (loop) d += "Z"
 
   return d
 }

@@ -150,8 +150,17 @@ export default function Split(props: SplitProps) {
     }
     dividerRefs.current[index].style[posAttr.current] = `${pos}px`
 
+    const newSizes = [...sizes]
+    for (let i = 0; i < paneRefs.current.length; i++) {
+      if (paneRefs.current[i]) {
+        newSizes[i] =
+          paneRefs.current[i].getBoundingClientRect()[sizeAttr.current]
+      }
+    }
+    setSizes(newSizes)
+
     dragState.current = null
-  }, [])
+  }, [sizes])
 
   useEffect(() => {
     if (!splitRef.current) return
@@ -171,6 +180,7 @@ export default function Split(props: SplitProps) {
 
   const splitStyle: CSSProperties = {
     height: "100%",
+    width: "100%",
     position: "relative",
     display: "flex",
     flex: "1",

@@ -1,6 +1,11 @@
-import {Line} from './types'
+import type { Line } from "./types"
 
-export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: string, lineWidth?: number) {
+export function drawLine(
+  ctx: CanvasRenderingContext2D,
+  line: Line,
+  color?: string,
+  lineWidth?: number,
+) {
   if (color) ctx.strokeStyle = color
   if (lineWidth) ctx.lineWidth = lineWidth
 
@@ -10,8 +15,11 @@ export function drawLine(ctx: CanvasRenderingContext2D, line: Line, color?: stri
   ctx.stroke()
 }
 
-export function setCanvasTransform(ctx: CanvasRenderingContext2D, matrix: DOMMatrix) {
-  ctx.setTransform({...matrix})
+export function setCanvasTransform(
+  ctx: CanvasRenderingContext2D,
+  matrix: DOMMatrix,
+) {
+  ctx.setTransform({ ...matrix })
 }
 
 export function transformPoint(ctx: CanvasRenderingContext2D, point: DOMPoint) {
@@ -19,23 +27,20 @@ export function transformPoint(ctx: CanvasRenderingContext2D, point: DOMPoint) {
 }
 
 export function mousePosition(
-  canvas: HTMLCanvasElement, 
-  event: MouseEvent
+  canvas: HTMLCanvasElement,
+  event: MouseEvent,
 ): DOMPoint {
-  const {left, top} = canvas.getBoundingClientRect()
-  return new DOMPoint(
-    event.clientX - left, 
-    event.clientY - top
-  )
+  const { left, top } = canvas.getBoundingClientRect()
+  return new DOMPoint(event.clientX - left, event.clientY - top)
 }
 
 export function resizeCanvas(canvas: HTMLCanvasElement) {
-  const {width, height} = canvas.getBoundingClientRect()
+  const { width, height } = canvas.getBoundingClientRect()
 
   if (canvas.width !== width) {
     canvas.width = width
-  } 
-  
+  }
+
   if (canvas.height !== height) {
     canvas.height = height
   }

@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { parse as mathParse } from "mathjs"
+import { parse as mathParse, or } from "mathjs"
 
 import useResizeObserver from "lib/hooks/useResizeObserver"
 import { InteractiveSVGPlot } from "lib/components/InteractiveSvgPlot"
@@ -219,7 +219,7 @@ function Panel() {
   }
 
   return (
-    <div className="h-full bg-primary pr-4">
+    <div className="h-full overflow-y-scroll bg-primary pr-4">
       {plotForms.map((field, i) => (
         <PlotInput
           key={`form.${i}`}
@@ -241,6 +241,25 @@ export default function InteractivePlot() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<InteractiveSVGPlot | null>(null)
   const size = useResizeObserver(wrapRef)
+  const [orientation, setOrientation] = useState<"row" | "column">("row")
+
+  useEffect(() => {
+    if (!svgRef.current || !size) return
+
+    svgRef.current.resize(size.width, size.height)
+    svgRef.current.fitViewToPlots()
+
+    const checkMobile = () => {
+      const mobile = window.matchMedia("(max-width: 768px)").matches
+      setOrientation(mobile ? "column" : "row")
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [size])
 
   useEffect(() => {
     const wrap = wrapRef.current
@@ -248,19 +267,19 @@ export default function InteractivePlot() {
       svgRef.current = new InteractiveSVGPlot(wrap)
       svgRef.current.axes()
       svgRef.current.grid()
+    }
 
-      //return () => {
-      //  svgRef.current?.cleanup()
-      //}
+    return () => {
+      svgRef.current?.cleanup()
     }
   }, [])
 
-  useEffect(() => {
-    if (!svgRef.current || !size) return
-
-    svgRef.current.resize(size.width, size.height)
-    svgRef.current.fitViewToPlots()
-  }, [size])
+  //useEffect(() => {
+  //  if (!svgRef.current || !size) return
+  //
+  //  svgRef.current.resize(size.width, size.height)
+  //  svgRef.current.fitViewToPlots()
+  //}, [size])
 
   useEffect(() => {
     if (svgRef.current) {
@@ -271,16 +290,16 @@ export default function InteractivePlot() {
   return (
     <Split
       className=""
-      split="row"
-      defaultSizes={[0.2, 0.8]}
-      minSizes={[100, 500]}
+      split={orientation}
+      defaultSizes={orientation === "row" ? [0.2, 0.8] : [0.3, 0.7]}
+      minSizes={[100, 300]}
     >
       <PlotContext.Provider value={contextValue}>
         <Panel />
       </PlotContext.Provider>
       <div
         ref={wrapRef}
-        className="h-full bg-primary shadow-inner-l dark:shadow-black/50"
+        className="size-full bg-primary shadow-inner-l dark:shadow-black/50"
       />
     </Split>
   )

@@ -1,7 +1,7 @@
-import { XorFilter } from 'bloom-filters'
+import { XorFilter } from "bloom-filters"
 
-import { SearchResult, NoteXor } from 'pages/api/searchnotes'
-import tokenize from 'lib/utils/tokenize'
+import type { SearchResult, NoteXor } from "pages/api/searchnotes"
+import tokenize from "lib/utils/tokenize"
 
 export function searchNotes(query: string, notes: NoteXor[]): SearchResult {
   const result: SearchResult = []

@@ -3,7 +3,6 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 export function sum(arr: number[], start?: number, stop?: number): number {
-
   if (!start) start = 0
 
   if (stop === undefined || stop! >= arr.length) {
@@ -22,11 +21,13 @@ export function findAllIndices<T>(arr: Array<T>, value: T): number[] {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === value) indices.push(i)
   }
-  return indices;
+  return indices
 }
 
 export function compareArrays<T>(a: Array<T>, b: Array<T>): boolean {
-  return a.length === b.length && a.every((element, index) => element === b[index])
+  return (
+    a.length === b.length && a.every((element, index) => element === b[index])
+  )
 }
 
 export function intersection<T>(setA: Set<T>, setB: Set<T>): Set<T> {
@@ -42,7 +43,7 @@ export function intersection<T>(setA: Set<T>, setB: Set<T>): Set<T> {
 
 export function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   const result = new Set(setA)
-  
+
   for (const el of setB) {
     result.delete(el)
   }
@@ -51,7 +52,7 @@ export function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
 
 export function union<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   if (setA === undefined && setB === undefined) {
-    throw Error('Both sets are undefined.')
+    throw Error("Both sets are undefined.")
   }
   if (setA === undefined) return setB
   if (setB === undefined) return setA
@@ -70,13 +71,13 @@ export function reorderSet<T>(set: Set<T>, member: T) {
 
 export function gridUnit(minLength: number) {
   const scale = Math.floor(Math.log10(minLength))
-  const base = minLength*10**(-scale)
+  const base = minLength * 10 ** -scale
 
-  if (base < 2) return Math.ceil(base) * 10**scale
+  if (base < 2) return Math.ceil(base) * 10 ** scale
 
-  if (base > 2 && base < 5) return 5 * 10**scale
+  if (base > 2 && base < 5) return 5 * 10 ** scale
 
-  if (base > 5) return 10**(scale + 1)
+  if (base > 5) return 10 ** (scale + 1)
 
   return 0
 }

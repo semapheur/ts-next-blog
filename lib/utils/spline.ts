@@ -1,4 +1,4 @@
-import Vector from 'lib/utils/vector'
+import Vector from "lib/utils/vector"
 
 function catmullRomSpline(
   p0: Vector,
@@ -13,7 +13,7 @@ function catmullRomSpline(
     p1.length !== p2.length ||
     p2.length !== p3.length
   ) {
-    throw new Error('Spline points must have same dimension')
+    throw new Error("Spline points must have same dimension")
   }
 
   function tj(ti: number, pi: Vector, pj: Vector) {

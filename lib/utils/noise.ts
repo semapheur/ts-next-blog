@@ -1,5 +1,5 @@
-import { LinearCongruent } from './random'
-import Vector, {Curve} from './vector'
+import { LinearCongruent } from "./random"
+import Vector, { Curve } from "./vector"
 
 const defaultAmplitude = 1
 const defaultFrequency = 1
@@ -8,14 +8,14 @@ const defaultOffset = 0
 const defaultPersistence = 0.5
 
 type Options = {
-  amplitude: number,
-  frequency: number,
-  octaves: number,
-  offset: number,
+  amplitude: number
+  frequency: number
+  octaves: number
+  offset: number
   persistence: number
 }
 
-type NoiseFn = (v: Vector|number) => number
+type NoiseFn = (v: Vector | number) => number
 
 function permutationTable(): Uint8Array {
   const p = new Uint8Array(256)
@@ -28,24 +28,25 @@ function permutationTable(): Uint8Array {
   return new Uint8Array([...p, ...p])
 }
 
-export function fractalNoise(v: Vector|number, noiseFn: NoiseFn,
+export function fractalNoise(
+  v: Vector | number,
+  noiseFn: NoiseFn,
   {
     amplitude = defaultAmplitude,
     frequency = defaultFrequency,
     octaves = defaultOctaves,
-    persistence = defaultPersistence
-  }: Partial<Options>): number
-{
+    persistence = defaultPersistence,
+  }: Partial<Options>,
+): number {
   let value = 0
 
   for (let o = 0; o < octaves; o++) {
-    const f = frequency * (2**octaves)
-    value += noiseFn(v) * (amplitude * (persistence**o))
+    const f = frequency * 2 ** octaves
+    value += noiseFn(v) * (amplitude * persistence ** o)
   }
 
-  return value / (2 - 1 / (2**(octaves - 1)))
+  return value / (2 - 1 / 2 ** (octaves - 1))
 }
-
 
 export class ValueNoise {
   private size = 256
@@ -68,56 +69,63 @@ export class ValueNoise {
     const xi = Math.floor(x)
     const d = x - xi
 
-    const xMin = xi % this.size;
-    const xMax = (xMin + 1) % this.size;
+    const xMin = xi % this.size
+    const xMax = (xMin + 1) % this.size
 
     return this.interpolate(d, this.r[xMin], this.r[xMax])
   }
 
-  public fractalNoise(x: number, {
+  public fractalNoise(
+    x: number,
+    {
       amplitude = defaultAmplitude,
       frequency = defaultFrequency,
       octaves = defaultOctaves,
       offset = defaultOffset,
-      persistence = defaultPersistence
-    }: Partial<Options>): number
-  {
+      persistence = defaultPersistence,
+    }: Partial<Options>,
+  ): number {
     let value = 0
 
     for (let o = 0; o < octaves; o++) {
-      const f = frequency * (2**o)
-      const a = (amplitude * (persistence**o))
+      const f = frequency * 2 ** o
+      const a = amplitude * persistence ** o
       value += this.noise(offset + x * f) * a
     }
-    return value / (2 - 1 / (2**(octaves - 1)))
+    return value / (2 - 1 / 2 ** (octaves - 1))
   }
 
   //cosine interpolation
   private interpolate(x: number, a: number, b: number): number {
-    const s = (1 - Math.cos(x * Math.PI)) * 0.5;
+    const s = (1 - Math.cos(x * Math.PI)) * 0.5
     //const s = 6*x**5 - 15*x**4 + 10*x**3
-    return (1 - s)*a + s*b;
+    return (1 - s) * a + s * b
   }
 }
 
 export function drawHill(
-  waypoints: Curve, 
-  Noise: ValueNoise, 
-  numPoints: number[], 
-  amplitude: number[], freq: number[], 
-  offset: number[], octaves: number[]
-): Curve
-{
-  const result: Vector[] = [] 
+  waypoints: Curve,
+  Noise: ValueNoise,
+  numPoints: number[],
+  amplitude: number[],
+  freq: number[],
+  offset: number[],
+  octaves: number[],
+): Curve {
+  const result: Vector[] = []
 
-  for (let i = 0; i < waypoints.length-1; i++) {
+  for (let i = 0; i < waypoints.length - 1; i++) {
     const segment = drawCurve(
-      waypoints[i], waypoints[i+1], 
-      Noise, numPoints[i], 
-      amplitude[i], freq[i], 
-      offset[i], octaves[i]
+      waypoints[i],
+      waypoints[i + 1],
+      Noise,
+      numPoints[i],
+      amplitude[i],
+      freq[i],
+      offset[i],
+      octaves[i],
     )
-    
+
     if (i < waypoints.length - 2) {
       segment.pop()
     }
@@ -127,20 +135,26 @@ export function drawHill(
 }
 
 export function drawCurve(
-  a: Vector, b: Vector, 
-  Noise: ValueNoise, 
-  numPoints: number, 
-  amplitude: number, freq: number, 
-  offset = 0, octaves = 1
-): Vector[] 
-{
+  a: Vector,
+  b: Vector,
+  Noise: ValueNoise,
+  numPoints: number,
+  amplitude: number,
+  freq: number,
+  offset = 0,
+  octaves = 1,
+): Vector[] {
   const vecLine = b.subtract(a)
   const normal = new Vector(-vecLine.y, vecLine.x).normalize()
 
   const curve = Vector.line(a, b, numPoints)
   for (let i = 1; i < curve.length - 1; i++) {
-    const noise = Noise.fractalNoise(curve[i].x, {frequency: freq, offset: offset, octaves: octaves}) 
-    curve[i] = curve[i].add(normal.scale(amplitude*(2*noise - 1)))
+    const noise = Noise.fractalNoise(curve[i].x, {
+      frequency: freq,
+      offset: offset,
+      octaves: octaves,
+    })
+    curve[i] = curve[i].add(normal.scale(amplitude * (2 * noise - 1)))
   }
   return curve
 }

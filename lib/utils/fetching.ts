@@ -28,7 +28,7 @@ export async function iterNotes<T>(handler: NoteHandler<T>) {
 
 export function wrapPromise<T>(promise: Promise<T>) {
   let status = "pending"
-  let response
+  let response: T
 
   const suspender = promise.then(
     (res) => {

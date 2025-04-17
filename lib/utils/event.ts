@@ -1,14 +1,14 @@
 export default class EventListenerStore {
-  store: {[event: string]: [Element, EventListenerOrEventListenerObject][]}
+  store: { [event: string]: [Element, EventListenerOrEventListenerObject][] }
 
   constructor() {
     this.store = {}
   }
 
   public storeEventListener(
-    event: string, 
-    el: Element, 
-    handler: EventListenerOrEventListenerObject
+    event: string,
+    el: Element,
+    handler: EventListenerOrEventListenerObject,
   ) {
     if (!Object.hasOwn(this.store, event)) {
       this.store[event] = []
@@ -17,7 +17,7 @@ export default class EventListenerStore {
     this.store[event].push([el, handler])
   }
 
-    public cleanupEventListeners() {
+  public cleanupEventListeners() {
     for (const event in this.store) {
       for (const [el, handler] of this.store[event]) {
         el.removeEventListener(event, handler)

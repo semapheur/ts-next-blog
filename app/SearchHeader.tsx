@@ -56,7 +56,7 @@ export default function SearchBar() {
             {searchResult.map((note) => (
               <Link
                 className="block py-1 text-text hover:text-secondary"
-                href={`notes/${note.slug}`}
+                href={`/notes/${note.slug}`}
                 key={note.slug}
                 onClick={handleClick}
               >
