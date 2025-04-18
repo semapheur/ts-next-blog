@@ -2,6 +2,9 @@
 title: 'Financial Analysis'
 subject: 'Mathematics'
 showToc: true
+references:
+  - paper_leung_li_2014
+  - paper_leung_lu_2024
 ---
 
 # Interest rate
@@ -58,7 +61,7 @@ $$
   V(0) = \frac{P}{r}\left(1 - \frac{1}{(1 + r)^m} \right)
 $$
 
-Solving for $P$ we get
+Solving for $P$ yields
 
 $$
   P = \frac{r(1 + r)^m V(0)}{(1 + r)^m - 1}
@@ -75,3 +78,267 @@ $$
 $$
 
 This shows that the price and yield of the bond are inversely related; higher yield implies lower price and vice versa, because paying less for a bond today means getting a higher return later.
+
+# Pairs trading
+
+## Optimal mean reversion stopping
+
+Consider two risky assets with price $S_t^{(1)}$ and $S_t^{(2)}$ at time $t \geq 0$. We construct a mean-reverting porfolio with value
+
+$$
+  X_t^{\alpha,\beta} = \alpha S_t^{(1)} - \beta S_t^{(2)}
+$$
+
+where $\alpha, \beta \geq 0$ denote the position sizes (in shares) of the respective assets. The pair $(\alpha, \beta)$ represents a strategy adjusted to a level of mean-reversion. For the purpose of testing mean reversion, only the ratio between $\alpha$ and $\beta$ matters, so we can keep $\alpha$ constant while varying $\beta$ without loss of generality.
+
+Let $(\Omega,\mathcal{F},\mathbb{P})$ be a probability space. The resulting portfolio process $X_t: \Omega\times\R\to\R$, generating the filtration $\mathscr{F} = (\mathcal{F}_t)_{t \geq 0}$, is modeled as an Ornstein-Uhlenbeck (OU) process driven by the stochastic differential equation
+
+$$
+\begin{equation*}
+  \d X_t = \mu (\theta - X_t) \d t + \sigma \d W_t
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where
+- $\mu$ the mean-reversion rate
+- $\theta > 0$ is the long-run mean
+- $\sigma > 0$ is the volatility
+- $W_t$ is a standard Wiener process
+
+Given a strategy $(\alpha, \beta)$, we observe a time series $(x_i^{\alpha,\beta})_{i=1}^n$ of realized porfolio values over $n$ discrete time intervals. We estimate the OU parameters $(\theta,\mu,\sigma)$ by maximum likelihood estimation, using the fact that the conditional probability density of $X_{t_i}$ give $X_{t_{i-1}}$ is Gaussian:
+
+$$
+  f(x_i | x_{i-1} ; \theta, \mu, \sigma) = \frac{1}{\sqrt{2\pi\tilde{\sigma}}} \exp\left(-\frac{(x_i - x_{i-1} e^{-\mu\Delta t} - \theta(1 - e^{-\mu\Delta t}))^2}{2\tilde{\sigma}^2} \right)
+$$
+
+where $\Delta t = t_i - t_{i-1}$ and
+
+$$
+  \tilde{\sigma}^2 = \sigma^2 \frac{1 - e^{-2\mu\Delta t}}{2\mu}
+$$
+
+The average log-likelihood over the sample path is given by
+
+$$
+\begin{align*}
+  \ell (\theta,\mu,\sigma|x_0^{\alpha,\beta},\dots,x_n^{\alpha, \beta}) := \frac{1}{n} \sum_{i=1}^n \ln[f(x_i^{\alpha,\beta} | x_{i-1}^{\alpha,\beta} ; \theta, \mu, \sigma)] \\
+  =& -\frac{1}{2} \ln(2\pi) - \ln(\tilde{\sigma}) - \frac{1}{2n\tilde{\sigma}^2} \sum_{i=1}^n [x_i^{\alpha,\beta} - x_{i-1}^{\alpha,\beta} e^{-\mu\Delta t} - \theta(1 - e^{-\mu\Delta t})]^2
+\end{align*}
+$$
+
+We denote by $\hat{l}(\theta^*, \mu^*, \sigma^*)$ the maximum average log-likelihood obtained over all admissible values of $(\theta, \mu, \sigma)$ for a given strategy $(\alpha, \beta)$. For a given $\alpha$, we select the optimal $\beta^*$ by solving 
+
+$$
+  \beta^* = \argmax_\beta \hat{l} (\theta^*,\mu^*,\sigma^* | x_0^{\alpha,\beta},\dots,x_n^{\alpha,\beta})
+$$
+
+and define the optimal strategy $(\alpha,\beta^*)$.
+
+### Optimal double stopping problem
+
+We are interested in finding the optimal timing to enter and subsequently exit a portfolio position, accounting for transaction costs. This leads to a double stopping problem.
+
+**Exit timing**
+
+Suppose the investor holds an existing position with value process $(X_t)_{t\geq 0}$ given by the OU process $\eqref{equation-1}$. If the position is closed (liquidated) at some stopping time $\tau$, the investor will receive the terminal value $X_\tau$ and pay a fixed transaction cost $c\in\R_+$. The maximum expected discounted value starting from $X_0 = x$ is given by optimal stopping problem
+
+$$
+  V(x) = \sup_{\tau\in\mathcal{T}} \mathbb{E}_x [e^{-r\tau} (X_\tau - c)]
+$$
+
+where 
+- $\mathcal{T}$ is the set of all $\mathscr{F}$-stopping times
+- $r > 0$ is the investor's subjective constant discount rate
+- $\mathbb{E}_x = \mathbb{E}[\cdot| X_0 = x]$ denotes the conditional expectation
+
+**Entry timing**
+
+Before entering the position, the investor can choose the optimal time - or opt not enter at all - based on the expected profit from a future optimal exist. Entering at time $\nu$ incurs upfront transaction cost $\hat{c}\in\R_+$ and a purchase price $X_\nu$. The maximum expected discounted return of the investment opportunity considering both entry and exit costs is given by
+
+$$
+\begin{equation*}
+  J(x) = \sup_{\nu\in\mathcal{T}} \mathbb{E}_x [e^{\hat{r}\nu} (V(X_\nu) - X_\nu -\hat{c})]
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where $\hat{r} > 0 \in\R$ is the pre-entry discount rate. We allow for differing entry and exit parameters, provided:
+- $0 < \hat{r} \leq r$ (discounting is at least as strong after entry),
+- $c + \hat{c} > 0$ (overall transaction cost is non-zero).
+
+Since infinite stopping times $\tau = \infty$ and $\nu = \infty$ are admissible, both value functions are nonnegative, i.e.
+
+$$
+  V(x) \geq 0,\quad J(x) \geq 0
+$$
+
+**Stop-loss constraint**
+
+As extension, we can incorporate a stop-loss level $L$ of the pairs trade, representing a lower bound on the acceptable loss. If the portfolio value $X$ ever reaches level $L$, the position is forcibly closed. The stop-loss constraint is modeled via the first hitting time
+
+$$
+  \tau_L := \inf\set{t \geq 0 : X_t \leq L}
+$$
+
+Thus, we determine the entry and liquidation timing from the constrained optimal stopping problem
+
+$$
+\begin{align*}
+  J_L (x) =& \sup_{\nu\in\mathcal{T}} \mathbb{E}_x [e^{\hat{r}\nu} (V_L (X_\nu) - X_\nu -\hat{c})] \\
+  V(x) =& \sup_{\tau\in\mathcal{T}} \mathbb{E}_x [e^{-r(\tau\lan\tau_L)} (X_{\tau\lan\tau_L} - c)]
+\end{align*}
+$$
+
+where $\tau\land\tau_L = \min\set{\tau,\tau_L}$ accounts for the earlier of voluntary liquidation or stop-loss enforcement.
+
+Due to the stop-loss constraint, the investor may be forced to exit at a less favorable level, reducing the achievable value. Thus, the value functions satisfy the inequalities: 
+
+$$
+  x - c \leq V_L (x) \leq V(x),\quad 0\leq J_L (x) \leq J(x)
+$$
+
+**Solution to the optimal stopping problem**
+
+To solve the optimal stopping problem for the OU process $X$, we write its infinitesimal generator ass
+
+$$
+  \mathcal{L} = \frac{\sigma^2}{2}\frac{\d^2}{\d x^2} + \mu (\theta - x) \frac{\d}{\d x}
+$$
+
+We seek solutions to second-order linear ordinary differential equation 
+
+$$
+\begin{equation*}
+  \mathcal{L}u(x) = ru(x)$ for $x\in\R
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+which arise naturally in the analysis of expected discounted payoffs under OU dynamics. Two linearly independent solution to this equation are by the integral representations
+
+$$
+\begin{align*}
+  F(x) \equiv F(x;r) :=& \int_0^\infty u^{r/\mu - 1} \exp\left(\sqrt{\frac{2\mu}{\sigma^2}} (x - \theta)u - \frac{u^2}{2} \right) \;\d u \\
+  G(x) \equiv G(x;r) :=& \int_0^\infty u^{r/\mu - 1} \exp\left(\sqrt{\frac{2\mu}{\sigma^2}} (\theta - x)u - \frac{u^2}{2} \right) \;\d u
+\end{align*}
+$$
+
+Direct differentation shows that
+- $F'(x) > 0$ and $F''(x) > 0$
+- $G'(x) < 0$ and $G''(x) > 0$
+so , both $F(x)$ and $G(x)$ are strictly positive and convex, with $F$ strictly increasing and $G$ strictly decreasing.
+
+Let $\tau_\kappa = \inf\set{t \geq 0 : X_k = \kappa}$ denote the first hitting time of level $\kappa$. The solutions $F$ and $G$ admit the probabilistic expression
+
+$$
+  \mathbb{E}_x (e^{-r\tau_\kappa}) = \begin{cases}
+    \frac{F(x)}{F(\kappa)},\quad& x\leq\kappa \\
+    \frac{G(x)}{G(\kappa)},\quad& x\geq\kappa
+  \end{cases}
+$$
+
+Let $\tau_a \land \tau_b := \inf\set{t\geq 0 | X_t [a,b]}$ denote the first exit time from the interval $[a,b]$ with $-\infty \leq a \leq b \leq \infty$. Define the the reward function $h(x) = x - c$, representing the net liquidation payoff. The expected discounted reward from exiting the interval is therefore
+
+$$
+\begin{align*}
+  \mathbb{E}_x [e^{-r(\tau_a \lor \tau_b)} h(X_{\tau_a \lor \tau_b})] =& h(a) \mathbb{E}_x [e^{-r\tau_a} \mathbf{1}_{\tau_a < \tau_b}] + h(b) \mathbb{E}_x [e^{-r\tau_a} \mathbf{1}_{\tau_a > \tau_b}] \\
+  =& h(a) \frac{F(x)G(b) - F(b)G(x)}{F(a)G(b) - F(b)G(a)} + h(b) \frac{F(a)G(x) - F(x)G(a)}{F(a)G(b) - F(b)G(a)}
+\end{align*}
+$$
+
+which follows from the fact that $f(x) := \mathbb{E}_x [e^{-r (\tau_a \land \tau_b)} \mathbf{1}_{\tau_a < \tau_b}]$ is the unique solution to $\eqref{equation-2}$ with boundary conditions $f(a) = 1$ and $f(b) = 0$. Similarly, $g(x) := \mathbb{E}_x [e^{-r (\tau_a \land \tau_b)} \mathbf{1}_{\tau_a > \tau_b}]$ is the solution to $\eqref{equation-2}$ with boundary conditions $g(a) = 0$ and $g(b) = 1$.
+
+Applying the transformation $\psi(x) := F(x)/G(x)$, the expected discounted reward simplifies to
+
+$$
+  \mathbb{E}_x [e^{-r(\tau_a \lor \tau_b)} h(X_{\tau_a \lor \tau_b})] = G(x) \left[\frac{h(a)}{G(a)} \frac{\psi(b) - \psi(x)}{\psi(b) - \psi(a)} + \frac{h(b)}{G(b)} \frac{\psi(x) - \psi(a)}{\psi(b) - \psi(a)} \right]
+$$
+
+Substituting $y_a = \psi(a)$ and $y_b = \psi(b)$, and defining
+
+$$
+  H(y) := \begin{cases}
+    \frac{h}{G} \circ\psi^{-1} (y),\quad& y > 0 \\
+    \lim_{x\to\infty} \frac{(h(x))^2}{G(x)},\quad y = 0
+  \end{cases}
+$$
+
+where $(h(x))^+ := \max\set{h(x), 0}$ denotes the positive part, we can express the expected discounted reward as a linear interpolation in the $\psi$-coordinate
+
+$$
+  \mathbb{E}_x [e^{-r(\tau_a \lor \tau_b)} h(X_{\tau_a \lor \tau_b})] = G[\psi^{-1} (y)] \left[H(y_a) \frac{y_b - y}{y_b - y_a} + H(y_b) \frac{y - y_a}{y_b - y_a} \right] \tag{\label{equation-4}}
+\end{align*}
+$$
+
+The final step is to determine the optimal exit interval $[a^*, b^*]$, which is found by maximizing the interpolated reward in $\eqref{equation-4}$ over admissible intervals $[y_a, y_b]$ containing $y = \psi(x)$. This leads to the envelope
+
+$$
+\begin{equation*}
+  W(y) := \sup_{\set{y_a, y_b : y_a \leq y \leq y_b}} \left[H(y_a) \frac{y_b - y}{y_b - y_a} + H(y_b) \frac{y - y_a}{y_b - y_a} \right]
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+which is the smallest concave majorant of $H(y)$. Thus, the value function for the optimal stopping problem is
+
+$$
+  V(x) = G(x)W(\psi(x)) = \sup_{\set{a,b : a\leq x\leq b}} \mathbb{E}_x [e^{-r(\tau_a \lor\tau_b)} h(X_{\tau_a \lor \tau_b})]
+$$
+
+<MathBox title='' boxType='remark'>
+If $a = -\infty$, then we have $\tau_a = \infty$ and $\mathbf{1}_{\tau_a < \tau_b} = 0$ almost surely. In effect, this removes the lower exit level, and the corresponding discounted reward is
+
+$$
+\begin{align*}
+  \mathbb{E}_x [e^{-r(\tau_a \lor\tau_b)} h(X_{\tau_a \lor \tau_b})] =& \mathbb{E}_x [e^{-r\tau_a} h(X_{\tau_a}) \mathbf{1}_{\tau_a < \tau_b}] + \mathbb{E}_x [e^{-r\tau_b} h(X_{\tau_a}) \mathbf{1}_{\tau_a > \tau_b}] \\
+  =& \mathbf{E}_x [e^{-\tau_b} h(X_{\tau_b})]
+\end{align*}
+$$
+
+Consequently, by considering interval-type strategies, we also inlcude the class of stopping strategies of reaching a single upper level $b$.
+</MathBox>
+
+To find a solution for the value function $J$ in $\eqref{equation-5}$ corresponding to the optimal entry timing problem, we proceed analogously to the stopping case above. In terms of the pre-entry dicount rate $\hat{r}$, define the associated fundamental functions $\hat{F}(x) = F(x;\hat{r})$ and $\hat{G}(x) = G(x;\hat{r})$, along with the corresponding transformations
+
+$$
+  \hat{\psi(x)} := \frac{\hat{F}}{\hat{G}}(x),\quad \hat{x} = V(x) - x - \hat{c}
+$$
+
+In terms of the transformed variables, we define the analog to the function $H$
+
+$$
+  H(y) := \begin{cases}
+    \frac{\hat{h}}{\hat{G}} \circ\hat{\psi}^{-1} (y),\quad& y > 0 \\
+    \lim_{x\to-\infty} \frac{(\hat{h}(x))^+}{\hat{G}(x)},\quad& y = 0
+  \end{cases}
+$$
+
+Following the same reasoning as before, the smallest concave majorant $\hat{W}$ of $\hat{H}$ is given by the supremum of affine intepolants:
+
+$$
+  \hat{W}(y) := \sup_{\set{y_{\hat{a}}, y_{\hat{b}} : y_{\hat{a}} \leq y \leq y_{\hat{b}}}} \left[\hat{H}(y_{\hat{a}}) \frac{y_{\hat{b}} - y}{y_{\hat{b}} - y_{\hat{a}}} + \hat{H}(y_{\hat{b}}) \frac{y - y_{\hat{a}}}{y_{\hat{b}} - y_{\hat{a}}} \right]
+$$
+
+The optimal entry interval corresponds to the interval $(y_{\hat{a}^*}, y_{\hat{b}^*})$ in the $y = \hat{\psi}(x)$, where $\hat{W}$ touches the majorant. Hence the value function for the entry problem is given by
+$$
+  J(x) = \hat{G}(x)\hat{W}(\hat{\psi(x)})
+$$
+
+<MathBox title='' boxType='remark'>
+An alternative way to solve for $V(x)$ and $J(x)$ is to look for the solutions to the pair of variational inequalities
+
+$$
+\begin{align*}
+  \min\set{rV(x) - \mathcal{L}V(x), V(x) - (x - c)} =& 0 \\
+  \min\set{\hat{r}J(x) - \mathcal{L}J(x), J(x) - (V(x) - x - \hat{c})} =& 0
+\end{align*}
+$$
+
+With sufficient regularity conditions, this approach can verify that the solutions to $V(x)$ an d$J(x)$ correspond to the optimal stopping problems. Nevertheless, this approach does not immediately suggest candidate optimal timing strategies or value functions, and typically begins with a conjecture on the structure of the optimal stopping time, followed by verification.
+</MathBox>
+
+### Optimal exit timing
+
+### Optimal entry timing
+
