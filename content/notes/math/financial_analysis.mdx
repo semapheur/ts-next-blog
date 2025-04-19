@@ -26,7 +26,7 @@ If $f\in\R$ is the annualized compounding frequency, and $r$ is the annual nomin
 $$
   1 + R = \left(1 + \frac{r}{f} \right)^f \iff R = \left(1 + \frac{r}{f} \right)^f - 1
 $$
-c
+
 The *continuously compunded interest rate* is the rate paid at infinite frequency
 
 $$
@@ -122,7 +122,7 @@ The average log-likelihood over the sample path is given by
 
 $$
 \begin{align*}
-  \ell (\theta,\mu,\sigma|x_0^{\alpha,\beta},\dots,x_n^{\alpha, \beta}) := \frac{1}{n} \sum_{i=1}^n \ln[f(x_i^{\alpha,\beta} | x_{i-1}^{\alpha,\beta} ; \theta, \mu, \sigma)] \\
+  \ell (\theta,\mu,\sigma|x_0^{\alpha,\beta},\dots,x_n^{\alpha, \beta}) :=& \frac{1}{n} \sum_{i=1}^n \ln[f(x_i^{\alpha,\beta} | x_{i-1}^{\alpha,\beta} ; \theta, \mu, \sigma)] \\
   =& -\frac{1}{2} \ln(2\pi) - \ln(\tilde{\sigma}) - \frac{1}{2n\tilde{\sigma}^2} \sum_{i=1}^n [x_i^{\alpha,\beta} - x_{i-1}^{\alpha,\beta} e^{-\mu\Delta t} - \theta(1 - e^{-\mu\Delta t})]^2
 \end{align*}
 $$
@@ -144,7 +144,10 @@ We are interested in finding the optimal timing to enter and subsequently exit a
 Suppose the investor holds an existing position with value process $(X_t)_{t\geq 0}$ given by the OU process $\eqref{equation-1}$. If the position is closed (liquidated) at some stopping time $\tau$, the investor will receive the terminal value $X_\tau$ and pay a fixed transaction cost $c\in\R_+$. The maximum expected discounted value starting from $X_0 = x$ is given by optimal stopping problem
 
 $$
+\begin{equation*}
   V(x) = \sup_{\tau\in\mathcal{T}} \mathbb{E}_x [e^{-r\tau} (X_\tau - c)]
+\tag{\label{equation-11}}
+\end{equation*}
 $$
 
 where 
@@ -159,7 +162,7 @@ Before entering the position, the investor can choose the optimal time - or opt 
 $$
 \begin{equation*}
   J(x) = \sup_{\nu\in\mathcal{T}} \mathbb{E}_x [e^{\hat{r}\nu} (V(X_\nu) - X_\nu -\hat{c})]
-\tag{\label{equation-4}}
+\tag{\label{equation-12}}
 \end{equation*}
 $$
 
@@ -185,8 +188,8 @@ Thus, we determine the entry and liquidation timing from the constrained optimal
 
 $$
 \begin{align*}
-  J_L (x) =& \sup_{\nu\in\mathcal{T}} \mathbb{E}_x [e^{\hat{r}\nu} (V_L (X_\nu) - X_\nu -\hat{c})] \\
-  V(x) =& \sup_{\tau\in\mathcal{T}} \mathbb{E}_x [e^{-r(\tau\lan\tau_L)} (X_{\tau\lan\tau_L} - c)]
+  J_L (x) =& \sup_{\nu\in\mathcal{T}} \mathbb{E}_x [e^{\hat{r}\nu} (V_L (X_\nu) - X_\nu -\hat{c})] \tag{\label{equation-23}} \\
+  V_L (x) =& \sup_{\tau\in\mathcal{T}} \mathbb{E}_x [e^{-r(\tau\land\tau_L)} (X_{\tau\land\tau_L} - c)] \tag{\label{equation-24}}
 \end{align*}
 $$
 
@@ -210,7 +213,7 @@ We seek solutions to second-order linear ordinary differential equation
 
 $$
 \begin{equation*}
-  \mathcal{L}u(x) = ru(x)$ for $x\in\R
+  \mathcal{L}u(x) = ru(x),\; x\in\R
 \tag{\label{equation-2}}
 \end{equation*}
 $$
@@ -268,7 +271,6 @@ where $(h(x))^+ := \max\set{h(x), 0}$ denotes the positive part, we can express 
 
 $$
   \mathbb{E}_x [e^{-r(\tau_a \lor \tau_b)} h(X_{\tau_a \lor \tau_b})] = G[\psi^{-1} (y)] \left[H(y_a) \frac{y_b - y}{y_b - y_a} + H(y_b) \frac{y - y_a}{y_b - y_a} \right] \tag{\label{equation-4}}
-\end{align*}
 $$
 
 The final step is to determine the optimal exit interval $[a^*, b^*]$, which is found by maximizing the interpolated reward in $\eqref{equation-4}$ over admissible intervals $[y_a, y_b]$ containing $y = \psi(x)$. This leads to the envelope
@@ -283,8 +285,45 @@ $$
 which is the smallest concave majorant of $H(y)$. Thus, the value function for the optimal stopping problem is
 
 $$
+\begin{equation*}
   V(x) = G(x)W(\psi(x)) = \sup_{\set{a,b : a\leq x\leq b}} \mathbb{E}_x [e^{-r(\tau_a \lor\tau_b)} h(X_{\tau_a \lor \tau_b})]
+\tag{\label{equation-6}}
+\end{equation*}
 $$
+
+<details>
+<summary>Proof</summary>
+
+Since $\tau_a \land \tau_b \in \mathcal{T}$, we have $V(x) \geq \sup_{\set{a,b: a \leq x \leq b}} \mathbb{E}_x [e^{-r(\tau_a \land\tau_b)}h(X_{\tau_a \land\tau_b})] = G(x)W(\psi(x))$.
+
+To show the reverse inequality, we first show that $G(x)W(\psi(x)) \geq \mathbb{E}_x \set{e^{-r(t\land\tau)}G(X_{t\land\tau})W(\psi(X_{t\land\tau}))}$, for $\tau\in\mathcal{T}$ and $t\geq 0$. The concavity of $W$ implies that, for any fixed $y$, there exists an affine function $L_y(z) := m_y z + c_y$ such that $L_y(z) \geq W(z)$ and $L_y(y) = W(y)$ at $z = y$, where $m_y$ and $c_y$ are both constants depending on $y$. This leads to the inequality
+
+$$
+\begin{align*}
+  \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})W(\psi(X_{t\land\tau}))] \leq& \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})L_{\psi(x)}(\psi(X_{t\land\tau}))]  \\
+  =& m_{\psi(x)}\mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})\psi(X_{t\land\tau})] \\
+  &+ c_{\psi(x)} \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})] \\
+  =& m_{\psi(x)}\mathbb{E}_x [e^{-r(t\land\tau)}F(X_{t\land\tau})]+ c_{\psi(x)} \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})] \\
+  =& m_{\psi(x)}F(x) + c_{\psi(x)} G(x) \tag{\label{equation-30}} \\
+  =& G(x) L_{\psi(x)}(\psi(x)) \\
+  =& G(x)W(\psi(x)) \tag{\label{equation-31}}
+\end{align*}
+$$
+
+where $\eqref{equation-30}$ follows from the martingale property of $(e^{-rt}F(X_t))_{t\geq 0}$ and $(e^{-rt} G(X_t))_{t\geq 0}$.
+
+By $\eqref{equation-31}$ and the fact that $W$ majorizes $H$, it follows that
+
+$$
+\begin{align*}
+  G(x)W(\psi(x)) \geq& \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})W(\psi(X_{t\land\tau}))] \\
+  \geq& \mathbb{E}_x [e^{-r(t\land\tau)}G(X_{t\land\tau})H(\psi(X_{t\land\tau}))] \\
+  =& \mathbb{E}_x [e^{-r(t\land\tau)}h(X_{t\land\tau})] \tag{\label{equation-32}}
+\end{align*}
+$$
+
+Maximizing $\eqref{equation-32}$ over all $\tau\in\mathcal{T}$ and $t\geq 0$ yields that $G(x)W(\psi(x)) \geq V(x)$.
+</details>
 
 <MathBox title='' boxType='remark'>
 If $a = -\infty$, then we have $\tau_a = \infty$ and $\mathbf{1}_{\tau_a < \tau_b} = 0$ almost surely. In effect, this removes the lower exit level, and the corresponding discounted reward is
@@ -302,16 +341,22 @@ Consequently, by considering interval-type strategies, we also inlcude the class
 To find a solution for the value function $J$ in $\eqref{equation-5}$ corresponding to the optimal entry timing problem, we proceed analogously to the stopping case above. In terms of the pre-entry dicount rate $\hat{r}$, define the associated fundamental functions $\hat{F}(x) = F(x;\hat{r})$ and $\hat{G}(x) = G(x;\hat{r})$, along with the corresponding transformations
 
 $$
+\begin{equation*}
   \hat{\psi(x)} := \frac{\hat{F}}{\hat{G}}(x),\quad \hat{x} = V(x) - x - \hat{c}
+\tag{\label{equation-18}}
+\end{equation*}
 $$
 
 In terms of the transformed variables, we define the analog to the function $H$
 
 $$
+\begin{equation*}
   H(y) := \begin{cases}
     \frac{\hat{h}}{\hat{G}} \circ\hat{\psi}^{-1} (y),\quad& y > 0 \\
     \lim_{x\to-\infty} \frac{(\hat{h}(x))^+}{\hat{G}(x)},\quad& y = 0
   \end{cases}
+\tag{\label{equation-19}}
+\end{equation*}
 $$
 
 Following the same reasoning as before, the smallest concave majorant $\hat{W}$ of $\hat{H}$ is given by the supremum of affine intepolants:
@@ -321,8 +366,12 @@ $$
 $$
 
 The optimal entry interval corresponds to the interval $(y_{\hat{a}^*}, y_{\hat{b}^*})$ in the $y = \hat{\psi}(x)$, where $\hat{W}$ touches the majorant. Hence the value function for the entry problem is given by
+
 $$
+\begin{equation*}
   J(x) = \hat{G}(x)\hat{W}(\hat{\psi(x)})
+\tag{\label{equation-21}}
+\end{equation*}
 $$
 
 <MathBox title='' boxType='remark'>
@@ -340,5 +389,682 @@ With sufficient regularity conditions, this approach can verify that the solutio
 
 ### Optimal exit timing
 
+<MathBox title='Properties of $H$' boxType='proposition' tag='proposition-1'>
+The function $H:[0,\infty) \to\R$ is continuous on $[0,\infty)$, twice differentiable on $(0,\infty)$, and has the following properties
+1. $H(0) = 0$ and
+$$
+  H(y) \begin{cases}
+    < 0,\quad& y \in (0,\psi(c)) \\
+    > 0,\quad& y \in (\psi(c), \infty)
+  \end{cases}
+$$
+2. Let $x^*$ be the unique solution to $G(x) - (x - c)G'(x) = 0$. Then $H$ is
+    - strictly decreasing if $y\in (0,\psi(x^*))$
+    - strictly increasing if $y\in (\psi(x^*), \infty)$
+and $x^* < c \land L^*$ with
+$$
+  L^* = \frac{\mu\theta + rc}{\mu + r}
+$$
+3. $H$ is
+    - convex if $y\in(0,\psi(L^*)]$
+    - concave if $y\in [\psi(L^*), infty)$
+
+<details>
+<summary>Proof</summary>
+
+The continuity and twice differentiability of $H$ on $(0,\infty)$ follow directly from those of $h$, $G$ and $\psi$. It remains to show the continuity of $H$ at $0$. Since 
+
+$$
+  H(0) = \lim_{x\to -\infty} \frac{(x - c)^+}{G(x)} = 0
+$$
+
+we only need to shows that $\lim_{y\to 0} H(y) = 0$. Note that $y = \psi(x) \xrightarrow{x\to -\infty} 0$. Thus
+
+$$
+  \lim_{y\to 0} H(y) = \lim_{x\to -\infty} \frac{h(x)}{G(x)} = \lim_{x\to -\infty} \frac{x - c}{G(x)} = \lim_{x\to -\infty} \frac{1}{G'} = 0
+$$
+
+showing that $H$ is continuous at $y = 0$.
+
+**(1):** Since $\psi(x) \in (0,\infty)$ for $x\in\R$ and is a strictly increasing function. Then **(1)** follows directly from the fact that $G(x) > 0$.
+
+**(2):** By the definition of $H$
+
+$$
+  H'(y) = \frac{1}{\psi'(x)} \left(\frac{h}{G}\right)' (x) = \frac{h'(x) G(x) - h(x)G'(x)}{\psi'(x) G^2 (x)}
+$$
+
+Since both $\psi'(x)$ and $G^2(x)$ are positive, we only need to determine the sign of the nominator $h'(x) G(x) - h(x)G'(x) = G(x) - (x - c)G'(x)$. Define $u(x) := (x - c) - \frac{G(x)}{G'(x)}$. Then $u(x) + c$ is the intersecting point at $x$ axis of the tangent line of $G(x)$. Since $G(x)$ is a positive, strictly decreasingand convex function, then $u(x)$ is strictly increasing and $\lim_{x\to -\infty} u(x) < 0$. Also, note that
+
+$$
+  u(c) = -\frac{G(c)}{G'(c)} > 0
+$$
+
+and
+
+$$
+\begin{align*}
+  u(L^*) =& (L^* - c) - \frac{G(x)}{G'(x)} \\
+  =& \frac{\mu}{r}(\theta - L^*) - \frac{G(L^*)}{G'(L^*)} \\
+  =& -\frac{\sigma^2}{2r} \frac{G''(L^*)}{G'(L^*)} > 0
+\end{align*}
+$$
+
+Thus, there exists a unique root $x^*$ that solves $u(x) = 0$ and $x^* < c \land L^*$ such that
+
+$$
+  G(x) - (x - c) G'(x) \begin{cases}
+    < 0,\quad& x\in(-\infty, x^*) \\
+    > 0,\quad& x\in(x^*, \infty)
+  \end{cases}
+$$
+
+Hence, $H(y)$ is strictly decreasing if $y\in(0,\psi(x^*))$, and decreasing otherwise.
+
+**(3):** By the definition of $H$
+
+$$
+  H''(y) = \frac{2}{\sigma^2 G(x) (\psi'(x))^2} (\mathcal{L} - r)h(x)
+$$
+
+Since $\sigma^2$, $G(x)$ and $(\psi'(x))^2$ are all positive, we only need to determine the sign of $(\mathcal{L} - r)h(x)$:
+
+$$
+\begin{align*}
+  (\mathcal{L} - r)h(x) =& \mu(\theta - x) - r(x - c) \\
+  =& (\mu\theta + rc) - (\mu + r)x \begin{cases}
+    \geq 0,\quad& x\in(-\infty, L^*] \\
+    \leq 0,\quad& x\in[L^*, \infty)
+  \end{cases}
+\end{align*}
+$$
+
+Hence, $H(y)$ is convex if $y\in(0,\psi(L^*))$, and concave otherwise.
+</details>
+</MathBox>
+
+<MathBox title='Optimal exit solution' boxType='theorem' tag='theorem-1'>
+The optimal exit problem $\eqref{equation-11}$ admits the solution
+
+$$
+\begin{equation*}
+  V(x) = \begin{cases}
+    (b^* - c) \frac{F(x)}{F(b^*)},\quad& x\in(-\infty, b^*) \\
+    x - c,\quad& \text{otherwise}
+  \end{cases}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+where the optimal exit level $b^*$ is found from the equation
+
+$$
+\begin{equation*}
+  F(b) = (b - c) F'(b)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+and is bounded below by $L^* \lor c$. The corresponding optimal exit time is given by
+
+$$
+  \tau^* = \inf\set{t \geq 0 : X_t \geq b^*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Proposition $\ref{proposition-1}$ and the fact that $H'(y) \xrightarrow{y\to\infty} 0$, we infer that there exists a unique number $z > \psi(L^*) \lor \psi(c)$ such that
+
+$$
+\begin{equation*}
+  \frac{H(z)}{z} = H'(z)
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+In turn, the smallest concave majorant is given by
+
+$$
+\begin{equation*}
+  W(y) = \begin{cases}
+    y\frac{H(z)}{z},\quad& y < z \\
+    H(y),\quad& y \geq z
+  \end{cases}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+Substituting $b^* = \psi^{-1} (z)$ into $\eqref{equation-7}$, we get the left-hand side
+
+$$
+\begin{equation*}
+  \frac{H(z)}{z} = H'(z) = \frac{H(\psi(b^*))}{\psi(b^*)} = \frac{b^* - c}{F(b^*)}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+and the right-hand side
+
+$$
+\begin{align*}
+  H'(z) =& \frac{G(\psi^{-1} (z)) - (\psi^{-1} (z) - c)G'(\psi^{-1} (z))}{F'(\psi^{-1} (z)) G(\psi^{-1} (z)) - F(\psi^{-1}(z)) G'(\psi^{-1} (y))} \\
+  =& \frac{G(b^*) - (b^* - c)G'(b^*)}{F'(b^*) G(b^*) - F(b^*) G'(b^*)}
+\end{align*}
+$$
+
+Equivalently, we can express $\eqref{equation-7}$ in terms of $b^*$:
+
+$$
+  \frac{b^* - c}{F(b^*)} = \frac{G(b^*) - (b^* - c)G'(b^*)}{F'(b^*)G(b^*) - F(b^*)G'(b^*)}
+$$
+
+which further simplifies to
+
+$$
+  F(b^*) = (b^* - c) F'(b^*)
+$$
+
+Applying $\eqref{equation-9}$ to $\eqref{equation-8}$, we get
+
+$$
+\begin{equation*}
+  W(\psi(x)) = \begin{cases}
+    \psi(x) \frac{H(z)}{z} = \frac{F(x)}{G(x)} \frac{b^* - c}{F(b^*)},\quad& x < b^* \\
+    H(\psi(x)) = \frac{x - c}{G(x)},\quad& x\geq b^* 
+  \end{cases}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+In turn, we obtain the value function $V(x)$ by substituting $\eqref{equation-10}$ into $\eqref{equation-6}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The value function $V(x)$ of $\eqref{equation-11}$ is decreasing in the transaction cost $c\in\R$ for every $x\in\R$, and the optimal exit level $b^*$ is increasing in $c$.
+
+<details>
+<summary>Proof</summary>
+
+For any $x\in\R$ and $\tau\in\mathcal{T}$, the corresponding expected discounted reward 
+
+$$
+  \mathbb{E}_x [e^{-r\tau} (X_\tau - c)] = \mathbb{E}_x [e^{-r\tau} X_\tau] - c\mathbb{E}_x [e^{-r\tau}]
+$$
+
+is decreasingin $c$. This implies that $V(x)$ is also decreasing in $c$. Next, we treat the optimal threshold $b^* (c)$ as a function of $c$, and differentiate with respect to $c$ to get
+
+$$
+  {b^*}' (c) = \frac{F'(b^*)}{(b^* - c) F''(b^*)} > 0
+$$
+
+Since $F'(x) > 0$, $F''(x) > 0$ and $b^* > 0$ according to Theorem $\ref{theorem-1}$, we conclude that $b^*$ is increasing in $c$.
+</details>
+</MathBox>
+
+#### With stop-loss
+
+<MathBox title='Optimal exit timing solution with stop-loss' boxType='theorem' tag='theorem-3'>
+The optimal liquidation problem $\eqref{equation-23}$ with stop-loss level $L$ admits the solution
+
+$$
+\begin{equation*}
+  V_L(x) = \begin{cases}
+    CF(x) + DG(x),\quad&  x\in (L,b_L^*) \\
+    x - c,\quad& \textrm{ otherwise}
+  \end{cases}
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+where
+
+$$
+\begin{align}
+  C =& \frac{(b_L^* - c)G(L) - (L - c)G(b_L^*) }{F(b_L^*)G(L) - F(L)G(b_L^*) } \\
+  D =& \frac{(L - c)F(b_L^*)-(b_L^* - c)F(L)}{F(b_L^*)G(L) - F(L)G(b_L^*)}
+\end{align}
+$$
+
+The optimal liquidation level $b_L^*$ is found from the equation
+
+$$
+\begin{equation*}
+\begin{split}
+  G(b)F(L) - G(L)F(b) =& [(L - c)G(b) - (b - c)G(L)]F'(b) \\
+  &+ [(b - c)F(L) - (L - c)F(b)]G'(b) 
+\end{split}
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Due to the stop-loss level $L$, we consider the smallest concave majorant of $H(y)$, denoted by $W_L(y)$, over the restricted domain $[\psi(L),\infty)$ and set $W_L(y) = H(y)$ for $y \in [0,\psi(L)]$.
+
+From Proposition $\ref{proposition-1}$, we see that $H(y)$ is convex over $(0, \psi(L^*)]$ and concave in $[\psi(L^*),\infty)$. If $L
+\geq L^*$, then $H(y)$ is concave over $[\psi(L),\infty)$, which implies that $W_L(y) = H(y)$ for $y\geq 0$, and thus $V_L(x) = x - c$ for $x\in\R$. On the other hand, if $L < L^*$, then $H(y)$ is convex on $[\psi(L),\psi(L^*)]$, and concave strictly increasing on $[\psi(L^*),\infty)$. There exists a unique number $z_L > \psi(L^*)$ such that
+
+$$
+\begin{equation*}
+  \frac{H(z_L) - H(\psi(L))}{z_L-\psi(L)} = H'(z_L).
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+In turn, the smallest concave majorant admits the form:
+
+$$
+\begin{equation*}
+  W_L(y) = \begin{cases}
+    H(\psi(L)) + (y-\psi(L))H'(z_L) &\, y\in (\psi(L), z_L),\\
+    H(y) &\, \textrm{ otherwise. }
+  \end{cases}
+\tag{\label{equation-29}}
+\end{equation*}
+$$
+
+Substituting $b_L^* = \psi^{-1}(z_L)$ into $\eqref{equation-25}$, we have from the left-hand side
+
+$$
+\begin{align*}
+  \frac{H(z_L) - H(\psi(L))}{z_L-\psi(L)} =& \frac{H(\psi(b_L^*))- H(\psi(L))}{\psi(b_L^*)-\psi(L)} \\
+  =& \frac{\frac{b_L^*-c}{G(b_L^*)} -\frac{L-c}{G(L)} }{ \frac{F(b_L^*)}{G(b_L^*)}- \frac{F(L)}{G(L)}} = C
+\end{align*}
+$$
+
+and the right-hand side
+
+$$
+\begin{align*}
+  H'(z_L) =& \frac{G(\psi^{-1}(z_L)) - (\psi^{-1}(z_L) - c)G'(\psi^{-1}(z_L))}{F'(\psi^{-1}(z_L))G(\psi^{-1}(z_L)) - F(\psi^{-1}(z_L)) G'(\psi^{-1}(z_L))} \\
+  =& \frac{G(b^*_L) - (b^*-c)G'(b^*_L)}{F'(b^*_L)G(b^*_L) - F(b^*_L)G'(b^*_L)}
+\end{align*}
+$$
+
+Therefore, we can equivalently express $\eqref{equation-25}$ in terms of $b_L^*$:
+
+$$
+  \frac{(b_L^*-c)G(L) - (L-c)G(b_L^*) }{F(b_L^*)G(L) - F(L)G(b_L^*)} = \frac{G(b_L^*) - (b_L^*-c)G'(b_L^*)}{F'(b_L^*)G(b_L^*) - F(b_L^*)G'(b_L^*)}
+$$
+
+which by rearrangement immediately simplifies to $\eqref{equation-26}$. Furthermore, for $x \in (L, b_L^*)$, $H'(z_L) = C$ implies that
+
+$$
+  W_L(\psi(x)) = H(\psi(L))+ (\psi(x) -\psi(L))C
+$$
+
+Substituting this to $V_L(x) = G(x)W_L(\psi(x))$, the value function becomes
+
+$$
+  V_L(x) = G(x) \big[H(\psi(L))+ (\psi(x) -\psi(L))C\big] = CF(x) + G(x)\big[H(\psi(L)) - \psi(L)C\big]
+$$
+
+which resembles $\eqref{equation-27}$ after the observation that
+
+$$
+\begin{align*}
+  H(\psi(L)) - \psi(L)C =& \frac{L-c}{G(L)} - \frac{F(L)}{G(L)} \frac{(b_L^* - c)G(L) - (L - c)G(b_L^*) }{F(b_L^*)G(L) - F(L)G(b_L^*) }\\
+  =& \frac{(L - c)F(b_L^*) - (b_L^* - c)F(L)}{F(b_L^*)G(L) - F(L)G(b_L^*)} = D
+\end{align*}
+$$
+</details>
+</MathBox>
+
+We can interpret the investor's timing strategy in terms of three price intervals, namely, the liquidation region $[b^*_L, +\infty)$, the delay region $(L, b^*_L)$, and the stop-loss region $(-\infty, L]$. In both liquidation and stop-loss regions, the value function $V_L(x) = x-c$, and therefore, the investor will immediately close out the position. From the proof of Theorem $\ref{theorem-3}$, if $L \geq L^* = \frac{\mu \theta + r c}{\mu + r}$, then $V_L(x) = x-c$, for all $x\in\R$. In other words, if the stop-loss level is too high, then the delay region completely disappears, and the investor will liquidate immediately for every initial value $x\in\R$.
+
+<MathBox title='' boxType='corollary'>
+If $L < L^*$, then there exist a unique solution $b_L^* \in (L^*, \infty)$ that solves $\eqref{equation-26}$. If $L \geq L^*$, then $V_L (x) = x - c$, for $x\in\R$
+</MathBox>
+
+The direct effect of a stop-loss exit constraint is forced liquidation whenever the price process reaches $L$ before the upper liquidation level $b^*_L$. Interestingly, there is an additional indirect effect: a higher stop-loss level will induce the investor to *voluntarilty* liquidate earlier at a lower take-profit level.
+
+<MathBox title='' boxType='proposition' tag='proposition-4'>
+The optimal exit level $b_L^*$ of $\eqref{equation-24}$ strictly decreases as the stop-loss level $L$ increases.
+
+<details>
+<summary>Proof</summary>
+
+Recall that $z_L = \psi(b_L^*)$ and $\psi$ is a strictly increasing function. Thus, it suffices to show that $z_L$ strictly decreases as $\tilde{L} := \psi(L)$ increases. As such, we denote $z_L(\tilde{L})$ to highlight its dependence on $\tilde{L}$. Differentiating $\eqref{equation-25}$ with respect to $\tilde{L}$ gives
+
+$$
+\begin{equation*}
+  z'_L(\tilde{L}) = \frac{H'(z_L) - H'(\tilde{L})}{H''(z_L)(z_L - \tilde{L})}
+\tag{\label{equation-28}}
+\end{equation*}
+$$
+
+It follows from the definitions of $W_L$ and $z_L$ that $H'(z_L) > H'(\tilde{L})$ and $z_L > \tilde{L}$. Also, we have $H''(z) < 0$
+since $H$ is concave at $z_L$. Applying these to $\eqref{equation-28}$, we conclude that $z'_L(\tilde{L}) < 0$.
+</details>
+</MathBox>
+
+There is an interesting connection between cases with different long-run means $\theta$ and transaction costs $c$. To this end, let us denote the value function by $V_L(x;\theta,c)$ to highlight the dependence on $\theta$ and $c$, and the corresponding optimal liquidation level by $b_L^*(\theta,c)$. We find that, for any $\theta_1,\theta_2 \in \R$, $c_1, c_2 > 0$, $L_1 \leq\frac{\mu\theta_1 + rc_1}{\mu + r}$, and $L_2 \leq\frac{\mu\theta_2 + rc_2}{\mu + r}$, the associated value functions and optimal liquidation levels satisfy the relationships: 
+
+$$
+\begin{align}
+  V_{L_1}(x + \theta_1;\theta_1,c_1) =& V_{L_2}(x + \theta_2;\theta_2,c_2) \\
+  b_{L_1}^*(\theta_1,c_1) - \theta_1 =& b_{L_2}^*(\theta_2,c_2) - \theta_2
+\end{align}
+$$
+
+as long as $\theta_1- \theta_2= c_1-c_2 = L_1- L_2$. These results also hold in the case without stop-loss.
+
 ### Optimal entry timing
 
+<MathBox title='Properties of $\hat{H}$' boxType='proposition' tag='proposition-2'>
+The function $\hat{H}:[0,\infty) \to\R$ is continuous on $[0,\infty)$, differentiable on $(0,\infty)$, and twice differentiable on $(0, \hat{\psi(b^*)})\cup (\hat{\psi(b^*)}, \infty)$ and has the following properties
+1. $\hat{H}(0) = 0$. Let $\bar{d}$ be the unique solution to $\hat{h}(x) = 0$, then $\bar{d} < b^*$ and
+$$
+  \hat{H}(y) \begin{cases}
+    < 0,\quad& y \in (0,\hat{\psi}(\bar{d})) \\
+    > 0,\quad& y \in (\hat{\psi}(\bar{d}), \infty)
+  \end{cases}
+$$
+2. $\hat{H}$ is strictly decreasing if $y \in (\hat{\psi(b^*)}, \infty)$
+3. Let $\underline{b}$ denote the unique solution to $(\mathcal{L} - \hat{r})\hat{h}(x) = 0$, then $\underline{b} < L^*$ and $H$ is
+    - convex if $y\in(0,\hat{\psi}(\underline{b})]$
+    - concave if $y\in [\hat{\psi}(\underline{b}), infty)$
+
+<details>
+<summary>Proof</summary>
+
+We first show that $V(x)$ and $\hat{x}$ are twice differentiable everywhere, except for $x = b^*$. Differentiating $V(x)$ in $\eqref{equation-12}$ and applying $\eqref{equation-13}$ yields
+
+$$
+  V'(x) = \begin{cases}
+    (b^* - c)\frac{F'(x)}{F(b^*)} = \frac{F'(x)}{F'(b^*)},\quad& x\in(-\infty,b^*) \\
+    1,\quad& x\in(b^*,\infty)
+  \end{cases}
+$$
+
+which implies that $V'(b^*-) = 1 = V'(b^*+)$. Thus, $V(x)$ is differentiable everywhere and so is $\hat{h}(x) = V(x) - x - \hat{c}$. However, $V(x)$ is not twice differentiable because
+
+$$
+  V''(x) = \begin{cases}
+    \frac{F''(x)}{F'(b^*)},\quad& x\in(-\infty,b^*) \\
+    0,\quad& x\in(b^*,\infty)
+  \end{cases}
+$$
+
+and $V''(b^*-) \neq V''(b^*+)$. Consequently, $\hat{h}(x) = V(x) - x - \hat{c}$ is not twice differentiable at $b^*$.
+
+The twice differentiability of $\hat{G}$ and $\hat{\psi}$ are straightforward. The continuity and differentiability of $\hat{H}$ on $(0,\infty)$ and twice differentiability on $(0,\hat{\psi}(b^*))\cup(\hat{\psi}(b^*),\infty)$ follow directly. Noting that $\lim_{x\to-\infty} \hat{h}(x) > 0$, then $\hat{H}$ is also continuous at $0$ by definition. 
+
+**(1):** First, we show that value of $\hat{H}$ at $0$
+
+$$
+\begin{align*}
+  \hat{H}(0) =& \lim_{x\to-\infty} \frac{(\hat{h}(x))^+}{\hat{G}(x)} \\
+  =& \limsup_{x\to -\infty} \frac{\frac{b^* - c}{F(b^*)} F(x) - x - \hat{c}}{\hat{G}(x)} \\
+  =& \limsup_{x\to -\infty} \frac{\frac{b^* - c}{F(b^*)} F'(x) - x - \hat{c} - 1}{\hat{G}'(x)} = 0
+\end{align*}
+$$
+
+Next, not that $\lim_{x\to -\infty} \hat{h}(x) = \infty$ and $\hat{h}(x) = -(c + \hat{c})$ for $x\in [b^*, \infty)$. Since $F'(x)$ is strictly increasing and $F'(x) > 0$ for $x\in\R$, we have, for $x < b^*$
+
+$$
+  \hat{h}'(x) = V'(x) - 1 = \frac{F'(x)}{F'(b^*)} - 1 < \frac{F'(b^*)}{F(b^*)} - 1 = 0
+$$
+
+which implies that $\hat{h}(x)$ is strictly decreasing for $x\in(-\infty,b^*)$. Thus, there exists a unique solution $\bar{d}$ to $\hat{h}(x) = 0$, and $\bar{d} < b^*$, such that $\hat{h}(x) > 0$ if $x\in(-\infty,\bar{d})$ and $\hat{h}(x) < 0$ if $x\in(\bar{d},\infty)$. It is trivial that $\hat{\psi}(x) \in (0,\infty)$ for $x\in\R$ and is a strictly increasing function. Along with the fact that $\hat{G}(x) > 0$, property **(1)** follows directly.
+
+**(2):** With $y = \hat{\psi}(x)$ for $x > b^*$
+
+$$
+\begin{align*}
+  \hat{H}'(x) =& \frac{1}{\psi'(x)} \left(\frac{\hat{h}}{\hat{G}}\right)' = \frac{1}{\hat{\psi'(x)}} \left(\frac{-(c + \hat{c})}{\hat{G}(x)}\right)' \\
+  =& \frac{1}{\hat{\psi}'(x)} \frac{(c + \hat{c})\hat{G}'(x)}{\hat{G}^2 (x)} < 0
+\end{align*}
+$$
+
+since $\hat{\psi}'(x) > 0$, $\hat{G}'(x) < 0$, and $\hat{G}^2 (x) > 0$. Thus, $\hat{H}(y)$ is strictly decreasing for $y > \hat{\psi}(b^*)$.
+
+**(3):** The second derivative of $\hat{H}$ is
+
+$$
+  \hat{H}''(y) = \frac{2}{\sigma^2 \hat{G}(x)(\hat{\psi}'(x))^2}(\mathcal{L} - \hat{r})\hat{h}(x)
+$$
+
+Since $\sigma^2$, $\hat{G}(x)$ and $(\hat{\psi}'(x))^2$ are all positive, we only need to determine the sign of $(\mathcal{L} - \hat{r})\hat{h}(x)$:
+
+$$
+\begin{align*}
+  (\hat{L} - \hat{r})\hat{h}(x) =& \frac{1}{2}\sigma^2 V''(x) + \mu(\theta - x) V'(x) - \mu(\theta - x) - \hat{r}(V(x) - x - \hat{c}) \\
+  =& \begin{cases}
+    (r - \hat{r}) V(x) + (\mu + \hat{r})x - \mu\theta + \hat{r}\hat{c},\quad& x < b^* \\
+    \hat{r}(c + \hat{c}) > 0,\quad& x > b^*
+  \end{cases}
+\end{align*}
+$$
+
+To determine the sign of $(\hat{L} - \hat{r})\hat{h}(x)$ in $(-\infty, b^*)$, first not the $(\hat{L} - \hat{r})\hat{h}(x)$ is a strictly increasing function in $(-\infty, b^*)$, since $V(x)$ is a strictly increasing function and $r \geq \hat{r}$ by assumption. Next, not that for $x\in[L^*, b^*)$
+
+$$
+\begin{align*}
+  (\hat{L} - \hat{r})\hat{h}(x) =& (r - \hat{r})V(x) + (\mu + \hat{r})x - \mu\theta + \hat{r}\hat{c} \\
+  \geq& (r - \hat{r})(x - c) + (\mu + \hat{r})x - \mu\theta + \hat{r}\hat{c} \\
+  =& (r + \mu)x - (\mu\theta + rc) + \hat{r}(c + \hat{c}) \\
+  \geq& (r + \mu)L^* - (\mu\theta + rc) + \hat{r}(c + \hat{c}) = \hat{r}(c + \hat{c}) > 0
+\end{align*}
+$$
+
+Also, note that $(\hat{L} - \hat{r})\hat{h}(x) \xrightarrow{x\to -\infty} -\infty$. Thus, $(\hat{L} - \hat{r})\hat{h}(x) < 0$ if $x\in(-\infty, \underline{b})$ and $(\hat{L} - \hat{r})\hat{h}(x) > 0$ if $x\in(\underline{b},\infty)$ with $\underline{b} < L^*$ being the break-even point.
+</details>
+</MathBox>
+
+<MathBox title='Optimal entry solution' boxType='theorem' tag='theorem-2'>
+The optimal entry timing problem $\eqref{equation-12}$ admits the solution
+
+$$
+\begin{equation*}
+  J(x) = \begin{cases}
+    V(x) - x - \hat{c},\quad& x \in (-\infty,d^*],\\
+    \frac{V(d^*) - d^* - \hat{c}}{\hat{G}(d^*)}\hat{G}(x),\quad& x \in (d^*, \infty),
+  \end{cases}
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where the optimal entry level $d^*$ is found from the equation
+
+$$
+\begin{equation*}
+  \hat{G}(d)(V'(d) - 1) = \hat{G}'(d)(V(d) - d - \hat{c}).
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We look for the value function of the form: $J(x) = \hat{G}(x)\hat{W}(\hat{\psi}(x))$, where $\hat{W}$ is the the smallest concave majorant of $\hat{H}$. From Proposition $\ref{proposition-2}$, we infer that there exists a unique number $\hat{z} < \hat{\psi}(b^*)$ such that
+
+$$
+\begin{equation*}
+  \hat{H}'(\hat{z}) = 0
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+This implies that
+
+$$
+\begin{equation*}
+  \hat{W}(y) = \begin{cases}
+    \hat{H}(y),\quad& y \leq \hat{z} \\
+    \hat{H}(\hat{z}),\quad& y > \hat{z}
+  \end{cases}
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Substituting $d^* = \hat{\psi}^{-1}(\hat{z})$ into $\eqref{equation-14}$, we have
+
+$$
+  \hat{H}'(\hat{z}) = \frac{\hat{G}(d^*)(V'(d^*)  - 1) - \hat{G}'(d^*)(V(d^*)-d^*-\hat{c})}{\hat{F}'(d^*)\hat{G}(d^*)-\hat{F}(d^*)\hat{G}'(d^*)}=0
+$$
+
+which is equivalent to condition $\eqref{equation-15}$. Furthermore, using $\eqref{equation-18}$ and $\eqref{equation-19}$, we get
+
+$$
+\begin{equation*}
+  \hat{H}(\hat{z}) = \frac{V(d^*) - d^* - \hat{c}}{\hat{G}(d^*)}
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+To conclude, we substitute $\hat{H}(\hat{z})$ of $\eqref{equation-17}$ and $\hat{H}(y)$ of $\eqref{equation-18}$ into $\hat{W}$ of  $\eqref{equation-16}$, which by $\eqref{equation-21}$ yields the value function $J(x)$ in $\eqref{equation-20}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The optimal entry level $d^*$ of $\eqref{equation-12}$ is decreasing in the transaction cost $\hat{c}$.
+
+<details>
+<summary>Proof</summary>
+
+Considering the optimal entry level $d^*$ as a function of $\hat{c}$, we differentiate $\eqref{equation-15}$ with respect to $\hat{c}$ to get
+
+$$
+\begin{equation*}
+  {d^*}'(\hat{c}) = \frac{-\hat{G}'(d^*)}{\hat{G}(d^*)} \left[V''(d^*)-\frac{V(d^*)-d^*-\hat{c}}{\hat{G}(d^*)}\hat{G}''(d^*)\right]^{-1}
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+Since $\hat{G}(d^*) > 0$ and $\hat{G}'(d^*)< 0$, the sign of ${d^*}'(\hat{c})$ is determined by $V''(d^*) - \frac{V(d^*) -d^* - \hat{c}}{\hat{G}(d^*)}\hat{G}''(d^*)$. Denote $\hat{f}(x) = \frac{V(d^*) - d^* -\hat{c}}{\hat{G}(d^*)}\hat{G}(x)$. Recall that $\hat{h}(x) = V(x)-x-\hat{c}$
+
+$$
+  J(x) = \begin{cases}
+    \hat{h}(x) &\, \textrm{ if }\, x \in (-\infty, d^*] \\
+    \hat{f}(x)>\hat{h}(x) &\, \textrm{ if }\, x \in (d^*,+\infty)
+  \end{cases}
+$$
+
+and $\hat{f}(x)$ smooth pastes $\hat{h}(x)$ at $d^*$. Since both $\hat{h}(x)$ and $ \hat{f}(x)$ are positive decreasing convex functions, it follows that $\hat{h}''(d^*)\leq \hat{f}''(d^*)$. Observing that $\hat{h}''(d^*) = V''(d^*)$ and $\hat{f}''(d^*) = \frac{V(d^*) - d^* - \hat{c}}{\hat{G}(d^*)}\hat{G}''(d^*)$, we have $V''(d^*)-\frac{V(d^*) -d^* -\hat{c}}{\hat{G}(d^*)}\hat{G}''(d^*) \leq 0$. Applying this to $\eqref{equation-22}$, we conclude that  ${d^{*}}^\prime\!(\hat{c}) \leq 0$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='remark'>
+Setting $\mu = 0$ in $\eqref{equation-1}$, with $r$ and $\hat{r}$ fixed, it follows that $X$ reduces to a standard Wiener process: $X_t = \sigma \d W_t$. In this case, the optimal exit level $b^*$ is
+
+$$
+  b^* = c + \frac{\sigma}{\sqrt{2r}}
+$$
+
+and the optimal entry level $d^*$ is the root to the equation
+
+$$
+  \left(1 + \frac{\hat{r}}{r} \right) \exp\left(\frac{\sqrt{2r}}{\sigma} (d - c - \frac{\sigma}{\sqrt{2r}}) \right) = \frac{\sqrt{2\hat{r}}}{\sigma} (d + \hat{c}) + 1,\; d\in (-\infty, b^*)
+$$
+</MathBox>
+
+#### With stop-loss
+
+Since  $\sup_{x\in\R}( V_L(x) - x - \hat{c})\leq 0$ implies that $J_L(x) = 0$ for $x\in\R$, we can focus on the case with
+
+$$
+  \sup_{x\in\R}( V_L(x)  -x - \hat{c})> 0
+$$
+
+and look for non-trivial optimal timing strategies.
+
+Associated with reward function $\hat{h}_L(x) := V_L(x) - x - \hat{c}$ from entering the market, we define the function $\hat{H}_L$ whose properties are summarized in Proposition $\ref{proposition-3}$.
+
+<MathBox title='Properties of $\hat{H}_L$' boxType='proposition' tag='proposition-3'>
+The function $\hat{H}_L$ is continuous on $[0,+\infty)$, differentiable on $(0,\hat{\psi}(L)) \cup (\hat{\psi}(L), \infty)$, twice differentiable on $(0,\hat{\psi}(L)) \cup (\hat{\psi}(L),\hat{\psi}(b^*_L)) \cup (\hat{\psi}(b^*_L),\infty)$, and has the following properties:
+1. $\hat{H}_L(0) = 0$ and $\hat{H}_L(y) < 0$ for $y \in (0, \hat{\psi}(L)]\cup [\hat{\psi}(b_L^*),\infty)$
+2. $\hat{H}_L(y)$ is strictly decreasing for $y \in (0, \hat{\psi}(L))\cup (\hat{\psi}(b_L^*),+\infty)$.
+3. There exists some constant $\bar{d}_L \in (L,b_L^*)$ such that $(\mathcal{L} - \hat{r})\hat{h}_L(\bar{d}_L) = 0$, and $\hat{H}_L$ is
+    - convex if $y\in (0, \hat{\psi}(L))\cup (\hat{\psi}(\bar{d}_L),\infty)$
+    - concave if $y \in (\hat{\psi}(L), \hat{\psi}(\bar{d}_L))$
+
+In addition, $\hat{z}_1 \in (\hat{\psi}(L), \hat{\psi}(\bar{d}_L))$, where $\hat{z}_1 := \argmax_{y\in [0,\infty)} \hat{H}_L(y)$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** The continuity of  $\hat{H}_L(y)$ on $(0,\infty)$ is implied by the continuities of $\hat{h}_L$, $\hat{G}$ and $\hat{\psi}$. The continuity of $\hat{H}_L(y)$ at $0$ follows from
+
+$$
+\begin{align*}
+  \hat{H}_L(0) =& \lim_{x\to -\infty}\frac{(\hat{h}_L(x))^+}{\hat{G}(x)} = \lim_{x\to -\infty}\frac{0}{\hat{G}(x)}=0 \\
+  \lim_{y\to 0}\hat{H}_L(y) =& \lim_{x\to -\infty}\frac{\hat{h}_L}{\hat{G}}(x) = \lim_{x\to -\infty}\frac{-(c+\hat{c})}{\hat{G}(x)} = 0
+\end{align*}
+$$
+
+where we have used that $y = \hat{\psi}(x) \rightarrow 0$ as $x \to -\infty$.
+
+Furthermore, for $x \in (-\infty, L]\cup [b_L^*,\infty)$, we have $V_L(x) = x - c$, and thus, $\hat{h}_L(x)=-(c + \hat{c})$. Also, with the facts that $\hat{\psi}(x)$ is a strictly increasing function and $\hat{G}(x) > 0$, property **(1)** follows.
+
+**(2):** By the definition of $\hat{H}_L$, since $\hat{G}$ and $\hat{\psi}$ are differentiable everywhere, we only need to show the differentiability of $V_L(x)$. To this end, $V_L(x)$ is differentiable at $b_L^*$ by $\eqref{equation-27}$-$\eqref{equation-26}$, but not at $L$. Therefore, $\hat{H}_L$ is differentiable for $y \in (0,\hat{\psi}(L)) \cup (\hat{\psi}(L), \infty)$.
+
+In view of the facts that $\hat{G}'(x) < 0$, $\hat{\psi}'(x) > 0$, and $ \hat{G}^2(x) > 0$, we have for $x\in (-\infty, L)\cup [b_L^*,\infty)$
+
+$$
+\begin{align*}
+  \hat{H}_L'(y) =& \frac{1}{\hat{\psi}'(x)} \left(\frac{\hat{h}_L}{\hat{G}}\right)'(x) = \frac{1}{\hat{\psi}'(x)} \left(\frac{-(c + \hat{c})}{\hat{G}(x)}\right)' \\
+  =& \frac{(c + \hat{c})\hat{G}'(x)}{\hat{\psi}'(x)\hat{G}^2(x)} < 0.
+\end{align*}
+$$
+
+Thus, $\hat{H}_L(y)$ is strictly decreasing for $y \in (0, \hat{\psi}(L))\cup [\hat{\psi}(b_L^*),+\infty)$.
+
+**(3):** Both $\hat{G}$ and $\hat{\psi}$ are twice differentiable everywhere, while $V_L(x)$ is twice differentiable everywhere except at $x=L$ and $b^*$, and so is $\hat{h}_L(x)$. Thus, $\hat{H}_L(y)$ is twice differentiable on $(0,\hat{\psi}(L)) \cup (\hat{\psi}(L),\hat{\psi}(b^*)) \cup (\hat{\psi}(b^*), \infty)$.
+
+To determine the convexity/concavity of $\hat{H}_L$, we look at the second order derivative:
+
+$$
+  \hat{H}_L''(y) = \frac{2}{\sigma^2\hat{G}(x)(\hat{\psi}'(x))^2}(\mathcal{L} - \hat{r})\hat{h}_L(x),
+$$
+
+whose sign is determined by
+
+$$
+\begin{align*}
+  (\mathcal{L} - \hat{r})\hat{h}_L(x) =& \frac{1}{2} \sigma^2 V_L''(x) + \mu(\theta - x) V_L'(x) - \mu (\theta - x) - \hat{r}(V_L(x) - x -\hat{c}) \\
+  =& \begin{cases}
+    (r - \hat{r})V_L(x) + (\mu + \hat{r})x - \mu\theta + \hat{r}\hat{c},\quad& x \in (L, b_L^*) \\
+    \hat{r}(c + \hat{c}) >0,\quad& x \in (-\infty, L) \cup (b_L^*,\infty).
+  \end{cases}
+\end{align*}
+$$
+
+This implies that $\hat{H}_L$ is convex for $y \in (0, \hat{\psi}(L))\cup (\hat{\psi}(b_L^*),\infty)$.
+
+On the other hand, the condition $\sup_{x\in\R}\hat{h}_L(x) > 0$ implies that $\sup_{y\in [0,\infty)}\hat{H}_L(y) > 0$. By **(1)** and twice differentiability of $\hat{H}_L(y)$ for $y \in (\hat{\psi}(L),\hat{\psi}(b_L^*))$, there must exist an interval $(\hat{\psi}(\underline{a}_L), \hat{\psi}(\bar{d}_L)) \subseteq (\hat{\psi}(L),\hat{\psi}(b_L^*))$ such  that $\hat{H}_L(y)$ is concave, maximized at $\hat{z}_1 \in (\hat{\psi}(\underline{a}_L), \hat{\psi}(\bar{d}_L))$.
+
+Furthermore, if  $V_L(x)$ is strictly increasing on $(L, b_L^*)$, then $(\mathcal{L} - \hat{r})\hat{h}_L(x)$ is also strictly increasing. To prove this, we first recall from Proposition $\ref{proposition-1}$ that $H(y)$ is strictly increasing and concave on $(\psi(L^*), +\infty)$. By Proposition $\ref{proposition-4}$, we have $b_L^* < b^*$, which implies $z_L < z$, and thus, $H'(z_L)>H'(z)$.
+
+Then, it follows from $\eqref{equation-7}$, $\eqref{equation-8}$ and $\eqref{equation-29}$ that $W_L'(y)= H'(z_L) > H'(z) = W'(y)$ for $y\in (\psi(L), z_L)$. Next, since $W_L(y) = \frac{V_L}{G}\circ \psi^{-1}(y)$, we have
+
+$$
+\begin{align*}
+  W_L'(y) &= \frac{1}{\psi'(x)} \left(\frac{V_L}{G}\right)'(x) \\
+  =& \frac{1}{\psi'(x)} (\frac{V_L'(x)G(x) - V_L(x)G'(x)}{G^2(x)}).
+\end{align*}
+$$
+
+The same holds for $W'(y)$ with $V(x)$ replacing $V_L(x)$. As both $\psi'(x)$ and $G^2(x)$ are positive, $W_L'(y)>  W'(y)$ is equivalent to $V_L'(x)G(x) - V_L(x)G'(x) > V'(x)G(x) - V(x)G'(x)$. This implies that
+
+$$
+  V_L'(x) - V'(x) = -\frac{G'(x)}{G(x)}(V(x) - V_L(x)) > 0
+$$
+
+since $G(x) > 0$, $G'(x) < 0$, and $V(x) > V_L(x)$. Recalling that $V'(x) > 0$, we have established that $V_L(x)$ is a strictly increasing function, and so is $(\mathcal{L} - \hat{r})\hat{h}_L(x)$. As we have shown the existence of an interval $(\hat{\psi}(\underline{a}_L), \hat{\psi}(\bar{d}_L)) \subseteq (\hat{\psi}(L),\hat{\psi}(b_L^*))$ over which $\hat{H}(y)$ is concave, or equivalently $(\mathcal{L} - \hat{r})\hat{h}_L(x) < 0$ with $x = \hat{\psi}^{-1}(y)$. Then by the strictly increasing property of $(\mathcal{L} - \hat{r})\hat{h}_L(x)$, we conclude $\underline{a}_L = L$ and $\bar{d}_L \in (L, b_L^*)$ is the unique solution to $(\mathcal{L} - \hat{r})\hat{h}_L(x)=0$, and
+
+$$
+\begin{align*}
+  (\mathcal{L} - \hat{r})\hat{h}_L(x) \begin{cases}
+    < 0,\quad& x \in (L, \bar{d}_L) \\
+    > 0,\quad& x \in (-\infty, L)\cup (\bar{d}_L, b_L^*) \cup (b_L^*, \infty).
+  \end{cases}
+\end{align*}
+$$
+
+Hence, we conclude the convexity and concavity of the function $\hat{H}_L$.
+</details>
+</MathBox>
