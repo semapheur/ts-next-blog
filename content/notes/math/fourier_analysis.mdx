@@ -362,7 +362,7 @@ $$
 In particular, we have
 
 $$
-	L_{2\pi}^1 (\R, \mathbb{F}) \supset L_{2\pi}^1 (\R, \mathbb{F}) \supset\cdots\supset L_{2\pi}^\infty \supset \mathcal{P}_{2\pi} = \operatorname{span}(\set{x\mapsto\cos(mx)}_{m\in\N} \cup \set{x\mapsto\sin(mx)}_{m\in\N_+})
+	L_{2\pi}^1 (\R, \mathbb{F}) \supset L_{2\pi}^2 (\R, \mathbb{F}) \supset\cdots\supset L_{2\pi}^\infty \supset \mathcal{P}_{2\pi} = \operatorname{span}(\set{x\mapsto\cos(mx)}_{m\in\N} \cup \set{x\mapsto\sin(mx)}_{m\in\N_+})
 $$
 </MathBox>
 
@@ -860,6 +860,79 @@ Hence, by the sandwhich theorem it follows that
 $$
 	\lim_{n\to\infty} \norm{ f - \mathcal{F}_n (f) } = 0
 $$
+</details>
+</MathBox>
+
+## Uniform convergence
+
+<MathBox title="" boxType='theorem'>
+Let $f:\R\to\mathbb{C}$ be a $2\pi$-periodic continuous function that is piecewise $C^1$. That is, there exists a finite partition $a_0 = -\pi < a_1 < \cdots < a_m < a_{m+1} = \pi$ such that $f|_{[a_j, a_{j+1}]} \in C^1$ for all $j\in\set{0,1,\dots,m}$. Then the Fourier series of $f$, denoted $\mathcal{F}_n (f)$, converges uniformly to $f$ on $[-\pi,\pi]$, i.e.  $\mathcal{F}_n (f) \xrightarrow{n\to\infty} f$ uniformly.
+
+<details>
+<summary>Proof</summary>
+
+Define the derivative function
+
+$$
+	\tilde{f}(x) := \begin{cases}
+		0,\quad& x\in\set{a_0,a_1,\dots,a_{m+1}} \\
+		f'(x),\quad& \text{otherwise}
+	\end{cases}
+$$
+
+Since $f$ is piecewise $C^1$, it follows that $\tilde{f}$ is a piecewise continuous function in $L_{2\pi}^2 (\R, \mathbb{C})$. By Parseval's identity (Theorem $\ref{theorem-}$), we have
+
+$$
+	\norm{\tilde{f}}^2 = \sum_{k=-\infty}^\infty |\braket{e_k, \tilde{f}}^2 < \infty,\; e_k (x) = e^{ikx}
+$$
+
+where the Fourier coefficients of $f$ are
+
+$$
+	c_k := \braket{e_k, f} = \frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} f(x) \;\d x,\; k\neq 0
+$$
+
+Integrating $c_k$ by parts with $u = f(x)$ and $v = -\frac{1}{ik}e^{-ikx}$ yields
+
+$$
+\begin{align*}
+	\frac{1}{2\pi} \int_{-\pi}^\pi e^{-ikx} f(x) \;\d x =& \frac{1}{2\pi} \left(\frac{1}{-ik}\left[ e^{-ikx} f(x) \right]_{-\pi}^\pi - \frac{1}{-ik}\int_{-\pi}^\pi e^{-ikx} f'(x) \;\d x \right) \\
+	=& \frac{1}{i2\pi k} \int_{-\pi}^\pi e^{-ikx} \tilde{f}(x) \;\d x \\
+	=& \frac{1}{ik} \braket{e_k, \tilde{f}}
+\end{align*}
+$$
+
+Using the inequality $ab \leq (a^2 + b^2) / 2$ for $a,b\in\R$, we obtain
+
+$$
+	|c_k| = \frac{1}{k} |\braket{e_k, \tilde{f}}| \leq \frac{1}{2} \left(\frac{1}{k^2} + |\braket{e_k, \tilde{f}}|^2 \right)
+$$
+
+Summing over $k\neq 0$, we get
+
+$$
+	\sum_{k=-\infty, k\neq 0}^\infty |c_k| \leq \sum_{k=-\infty, k\neq 0}^\infty \frac{1}{k^2} + \sum_{k=-\infty, k\neq 0}^\infty |\braket{e_k, \tilde{f}}|^2 < \infty
+$$
+
+since both series on the right converge. For $f_k = c^k e^{ikx}$, it follows that $|f_k (x)| \leq M_k =: |c_k|$ and $\sum_{k=-\infty}^\infty M_k < \infty$. By the Weierstrass M-test $\sum_{k=-\infty}^\infty f_k$ converges uniformly to a continuous function $h:[-\pi,\pi] \to\mathbb{C}$. That is,
+
+$$
+	\norm{\mathcal{F}_n (f) - h}_\infty \xrightarrow{n\to\infty} 0
+$$
+
+On the other hand, Parseval's identity implies that
+
+$$
+	\norm{\mathcal{F}_n (f) - f}_2 \xrightarrow{n\to\infty} 0
+$$
+
+By the triangle inequality, it follows that
+
+$$
+	\norm{f - h}_2 \leq \norm{f - \mathcal{F}_n (f)}_2 + \norm{\mathcal{F}_n (f) - h}_2 \leq \norm{\mathcal{F}_n (f) - h}_\infty \xrightarrow{n\to\infty} 0
+$$
+
+Hence $\norm{f - h}_2 = 0$, and since both $f$ and $h$ are continuous on a compact interval, it follows that $f = h$.
 </details>
 </MathBox>
 
