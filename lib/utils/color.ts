@@ -56,3 +56,10 @@ export function wavelengthToColor(wavelength: number, hex = false) {
 export function rgbToHex(r: number, g: number, b: number) {
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
 }
+
+export function hexNumberToColorString(hexNumber: number) {
+  // Convert the number to a hexadecimal string and pad with leading zeros
+  const hexString = hexNumber.toString(16).padStart(6, "0")
+  // Add the '#' prefix
+  return `#${hexString}`
+}

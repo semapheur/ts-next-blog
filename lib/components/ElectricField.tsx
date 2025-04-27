@@ -49,8 +49,21 @@ export default function ElectricField() {
     const ambientLight = new THREE.AmbientLight(0x404040, 1)
     scene.add(ambientLight)
 
-    const quiverLength = 10
-    const quivers = quiverGrid(scene, 100, 10, quiverLength, 0x00ff00)
+    const quiverLength = 2
+    const vectorField = (x: number, y: number) => {
+      return new THREE.Vector3(0, 0, 1)
+    }
+    const quivers = quiverGrid(
+      scene,
+      100,
+      2,
+      quiverLength,
+      0x00ff00,
+      vectorField,
+    )
+    const grid = new THREE.GridHelper(200, 50, 0x888888, 0x888888)
+    grid.rotation.x = Math.PI / 2
+    scene.add(grid)
 
     // Charges
     const createCharge = (
@@ -73,10 +86,10 @@ export default function ElectricField() {
       return sphere
     }
 
+    const frequency = 0.5
     const charge = createCharge(1, new THREE.Vector3(0, 0, 0), (time) => {
-      const x = 3 * Math.sin(time * 2 * Math.PI)
-      const y = 3 * Math.cos(time * 2 * Math.PI)
-      return new THREE.Vector3(x, y, 0)
+      const z = 2 * Math.cos(frequency * time * 2 * Math.PI)
+      return new THREE.Vector3(0, 0, z)
     })
 
     const charges = [charge]
@@ -129,7 +142,7 @@ export default function ElectricField() {
 
       const electricField = aPerpendicular
         .clone()
-        .multiplyScalar((-k * chargeData.charge) / rLength)
+        .multiplyScalar((k * chargeData.charge) / rLength)
       return electricField
     }
 
@@ -139,13 +152,13 @@ export default function ElectricField() {
         charges.forEach((charge) => {
           const data = charge.userData.oscillation as ChargeData
           const electricFieldAtCharge = electricFieldAtPoint(
-            charge.position,
+            quiver.position,
             data,
             time,
           )
           totalElectricField.add(electricFieldAtCharge)
         })
-        quiver.setFromVector(totalElectricField.clone().multiplyScalar(1000))
+        quiver.setFromVector(totalElectricField.clone().multiplyScalar(20))
       })
     }
 
@@ -168,12 +181,19 @@ export default function ElectricField() {
 
     const clock = new THREE.Clock()
 
+    let lastUpdateTime = 0
+    const updateFrequency = 30 // updates per second
+    const updateInterval = 1 / updateFrequency
+
     const animate = () => {
       requestAnimationFrame(animate)
 
       const time = clock.getElapsedTime()
-      updateCharges(time)
-      //updateElectricField(time)
+      if (time - lastUpdateTime >= updateInterval) {
+        updateCharges(time)
+        updateElectricField(time)
+        lastUpdateTime = time
+      }
 
       controls.update()
       renderer.render(scene, camera)
