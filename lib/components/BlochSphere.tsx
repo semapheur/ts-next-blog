@@ -32,7 +32,7 @@ export default function BlochSphere() {
     const DEG2RAD = Math.PI / 180
     const { width, height } = wrapper.getBoundingClientRect()
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false })
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(width, height)
 
@@ -244,7 +244,7 @@ export default function BlochSphere() {
       renderer.dispose()
 
       if (guiRef.current) {
-        guiRef.current.destroy()
+        guiRef.current?.destroy()
         guiRef.current = null
         wrapper.removeChild(gui.domElement)
       }
