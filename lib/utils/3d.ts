@@ -108,7 +108,7 @@ class SpriteArrow extends THREE.Sprite {
     }
   }
 }
-export class ThickArrowHelper extends THREE.Object3D {
+export class ThickArrow extends THREE.Object3D {
   private arrowGroup: THREE.Group
   private shaft: THREE.Mesh
   private head: THREE.Mesh
@@ -221,7 +221,7 @@ export class ThickArrowHelper extends THREE.Object3D {
     const shaftLength = Math.max(0.0001, length - headLength)
     const oldShaftLength = Math.max(0.0001, oldLength - oldHeadLength)
 
-    // If dimensions changed significantly or radius changed, recreate geometries
+    // Update shaft
     if (
       Math.abs(shaftLength / oldShaftLength - 1) > 0.01 ||
       shaftRadiusChanged
@@ -246,7 +246,7 @@ export class ThickArrowHelper extends THREE.Object3D {
       this.arrowGroup.add(this.shaft)
     }
 
-    // Same for the head
+    // Updat head
     if (Math.abs(headLength / oldHeadLength - 1) > 0.01 || headRadiusChanged) {
       // Remove old head
       this.arrowGroup.remove(this.head)
@@ -281,6 +281,159 @@ export class ThickArrowHelper extends THREE.Object3D {
 
     this.setPositionAndDirection(this.position, dir)
     this.resize(length)
+  }
+}
+
+export class InstancedArrow extends THREE.Object3D {
+  private instancedShaft: THREE.InstancedMesh
+  private instancedHead: THREE.InstancedMesh
+  private arrows: THREE.Object3D[]
+  private tempQuaternion: THREE.Quaternion
+  private defaultDir: THREE.Vector3
+  private count: number
+  private defaultHeadLength: number
+
+  constructor(
+    count = 100,
+    color = 0xffff00,
+    shaftRadius = 0.05,
+    headLength = 0.2,
+    headRadius = 0.1,
+  ) {
+    super()
+
+    this.count = count
+    this.defaultHeadLength = headLength
+    this.defaultDir = new THREE.Vector3(0, 0, 1)
+    this.arrows = []
+    this.tempQuaternion = new THREE.Quaternion()
+
+    // Create shaft geometry
+    const shaftGeom = new THREE.CylinderGeometry(
+      shaftRadius,
+      shaftRadius,
+      1, // Default unit length (will be scaled)
+      8,
+    )
+    // Position cylinder so its base is at origin, points along +Y
+    shaftGeom.translate(0, 0.5, 0)
+    shaftGeom.rotateX(Math.PI / 2) // Make it point along Z
+
+    // Create head geometry
+    const headGeom = new THREE.ConeGeometry(headRadius, headLength, 8)
+    headGeom.translate(0, headLength / 2, 0)
+    headGeom.rotateX(Math.PI / 2) // Make cone point along Z
+
+    // Create material
+    const material = new THREE.MeshBasicMaterial({ color })
+
+    // Create instanced meshes
+    this.instancedShaft = new THREE.InstancedMesh(shaftGeom, material, count)
+    this.instancedHead = new THREE.InstancedMesh(headGeom, material, count)
+
+    // By default all instances are hidden
+    this.instancedShaft.count = 0
+    this.instancedHead.count = 0
+
+    this.add(this.instancedShaft)
+    this.add(this.instancedHead)
+
+    // Initialize arrow data placeholders
+    for (let i = 0; i < count; i++) {
+      this.arrows.push(new THREE.Object3D())
+    }
+  }
+
+  setArrow(
+    index: number,
+    position: THREE.Vector3,
+    direction: THREE.Vector3,
+    length: number,
+    headLength: number = this.defaultHeadLength,
+  ): void {
+    if (index >= this.count || length <= 0.0001) return
+
+    const arrow = this.arrows[index]
+    const shaftLength = Math.max(0.0001, length - headLength)
+
+    // Position and orientation for the full arrow
+    arrow.position.copy(position)
+    this.tempQuaternion.setFromUnitVectors(
+      this.defaultDir,
+      direction.clone().normalize(),
+    )
+    arrow.quaternion.copy(this.tempQuaternion)
+
+    // Update shaft instance
+    arrow.scale.set(1, 1, shaftLength)
+    arrow.updateMatrix()
+    this.instancedShaft.setMatrixAt(index, arrow.matrix)
+
+    // Position the head at the end of the shaft
+    arrow.position.copy(position)
+    // Move along the direction vector by the shaft length
+    arrow.position.add(
+      direction.clone().normalize().multiplyScalar(shaftLength),
+    )
+    arrow.scale.set(1, 1, 1) // Reset scale for the head
+    arrow.updateMatrix()
+    this.instancedHead.setMatrixAt(index, arrow.matrix)
+
+    // Ensure instance counts are updated
+    this.instancedShaft.count = Math.max(this.instancedShaft.count, index + 1)
+    this.instancedHead.count = Math.max(this.instancedHead.count, index + 1)
+
+    // Mark instance matrices as needing update
+    this.instancedShaft.instanceMatrix.needsUpdate = true
+    this.instancedHead.instanceMatrix.needsUpdate = true
+  }
+
+  setArrowFromVector(
+    index: number,
+    position: THREE.Vector3,
+    vector: THREE.Vector3,
+    scale = 1,
+  ): void {
+    const length = vector.length() * scale
+    if (length < 0.0001) return
+
+    const direction = vector.clone().normalize()
+    this.setArrow(index, position, direction, length)
+  }
+
+  // Set visibility of all instances
+  setVisible(visible: boolean): void {
+    this.instancedShaft.visible = visible
+    this.instancedHead.visible = visible
+  }
+
+  // Set color for all instances
+  setColor(color: number): void {
+    ;(this.instancedShaft.material as THREE.MeshBasicMaterial).color.set(color)
+    ;(this.instancedHead.material as THREE.MeshBasicMaterial).color.set(color)
+  }
+
+  // Get and set the full count
+  get arrowCount(): number {
+    return this.instancedShaft.count
+  }
+
+  set arrowCount(count: number) {
+    this.instancedShaft.count = count
+    this.instancedHead.count = count
+  }
+
+  // Clean up resources
+  dispose(): void {
+    this.instancedShaft.geometry.dispose()
+    this.instancedHead.geometry.dispose()
+
+    if (this.instancedShaft.parent) {
+      this.instancedShaft.parent.remove(this.instancedShaft)
+    }
+    if (this.instancedHead.parent) {
+      this.instancedHead.parent.remove(this.instancedHead)
+    }
   }
 }
 
@@ -368,7 +521,7 @@ export function quiverGrid(
   arrowColor: number,
   vectorField: (x: number, y: number) => THREE.Vector3,
 ) {
-  const arrows: ThickArrowHelper[] = []
+  const arrows: ThickArrow[] = []
 
   for (let x = -gridSize; x <= gridSize; x += gridStep) {
     for (let y = -gridSize; y <= gridSize; y += gridStep) {
@@ -376,7 +529,7 @@ export function quiverGrid(
       const vector = vectorField(x, y)
       const dir = vector.clone().normalize()
       const length = vector.length() * arrowScale
-      const arrow = new ThickArrowHelper(dir, position, length, arrowColor)
+      const arrow = new ThickArrow(dir, position, length, arrowColor)
 
       scene.add(arrow)
       arrows.push(arrow)
@@ -416,4 +569,45 @@ function createArrowTexture(color: string) {
   texture.needsUpdate = true
 
   return texture
+}
+
+export function instancedQuiverGrid(
+  scene: THREE.Scene,
+  gridSize: number,
+  gridStep: number,
+  vectorField: (x: number, y: number) => THREE.Vector3,
+  arrowScale = 1,
+  arrowColor = 0xffff00,
+): InstancedArrow {
+  // Calculate total number of points in the grid
+  const pointsPerSide = Math.floor((gridSize * 2) / gridStep) + 1
+  const totalPoints = pointsPerSide * pointsPerSide
+
+  // Create instanced arrow helper
+  const quiver = new InstancedArrow(
+    totalPoints,
+    arrowColor,
+    0.05, // shaft radius
+    0.2, // head length
+    0.1, // head radius
+  )
+
+  // Position and configure all the arrows
+  let index = 0
+  for (let x = -gridSize; x <= gridSize; x += gridStep) {
+    for (let y = -gridSize; y <= gridSize; y += gridStep) {
+      const position = new THREE.Vector3(x, y, 0)
+      const vector = vectorField(x, y)
+      quiver.setArrowFromVector(index, position, vector, arrowScale)
+      index++
+    }
+  }
+
+  // Add the quiver to the scene
+  scene.add(quiver)
+
+  // Set the actual count of arrows
+  quiver.arrowCount = index
+
+  return quiver
 }
