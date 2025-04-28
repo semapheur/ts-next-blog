@@ -32,6 +32,11 @@ const content = [
     description: "Periodic table of elements",
     slug: "apps/periodic-table",
   },
+  {
+    title: "Radiation field",
+    description: "A WebGL-based visualization of radiating electric field",
+    slug: "apps/radiation-field",
+  },
 ]
 
 export default function Page() {

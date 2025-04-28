@@ -14,7 +14,7 @@ type ChargeData = {
   orbit: (time: number) => THREE.Vector3
 }
 
-export default function ElectricField() {
+export default function RadiationField() {
   const isMounted = useIsMounted()
 
   const wrapperRef = useRef<HTMLDivElement | null>(null)
@@ -29,14 +29,17 @@ export default function ElectricField() {
 
     const { width, height } = wrapper.getBoundingClientRect()
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+    })
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(width, height)
 
     // Scene
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
-    camera.position.set(0, 0, 60)
+    camera.position.set(0, 0, 10)
     camera.lookAt(0, 0, 0)
 
     // Orbit controls
@@ -46,11 +49,12 @@ export default function ElectricField() {
     controls.rotateSpeed = 0.5
 
     // Light
-    const ambientLight = new THREE.AmbientLight(0x404040, 1)
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
     scene.add(ambientLight)
 
-    const gridSize = 100
-    const gridStep = 1
+    // Quiver
+    const gridSize = 10
+    const gridStep = 0.4
     const quiverLength = 2
     const vectorField = (x: number, y: number) => {
       return new THREE.Vector3(0, 0, 1)
@@ -61,9 +65,9 @@ export default function ElectricField() {
       gridStep,
       vectorField,
       quiverLength,
-      0x00ff00,
+      0xaddfff,
     )
-    const grid = new THREE.GridHelper(200, 50, 0x888888, 0x888888)
+    const grid = new THREE.GridHelper(20, 10, 0x888888, 0x888888)
     grid.rotation.x = Math.PI / 2
     scene.add(grid)
 
@@ -73,8 +77,8 @@ export default function ElectricField() {
       position: THREE.Vector3,
       orbit: (time: number) => THREE.Vector3,
     ) => {
-      const geometry = new THREE.SphereGeometry(1, 16, 16)
-      const color = charge > 0 ? 0xff0000 : 0x0000ff
+      const geometry = new THREE.SphereGeometry(0.5, 32, 32)
+      const color = charge > 0 ? 0xe74c3c : 0x2e86c1
       const material = new THREE.MeshBasicMaterial({ color })
       const sphere = new THREE.Mesh(geometry, material)
       sphere.position.copy(position)
@@ -88,11 +92,17 @@ export default function ElectricField() {
       return sphere
     }
 
+    const chargeStrength = 2
     const frequency = 2 * Math.PI * 0.5
-    const charge = createCharge(1, new THREE.Vector3(0, 0, 0), (time) => {
-      const z = 2 * Math.cos(frequency * time)
-      return new THREE.Vector3(0, 0, z)
-    })
+    const amplitude = 1
+    const charge = createCharge(
+      chargeStrength,
+      new THREE.Vector3(0, 0, 0),
+      (time) => {
+        const z = amplitude * Math.cos(frequency * time)
+        return new THREE.Vector3(0, 0, z)
+      },
+    )
 
     const charges = [charge]
 
@@ -145,9 +155,9 @@ export default function ElectricField() {
       chargeData: ChargeData,
       time: number,
     ) => {
-      const c = 1
-      const epsilon0 = 1
-      const k = -1 / (4 * Math.PI * epsilon0 * c * c)
+      const c = 2
+      const epsilon0 = 0.25
+      const k = -chargeData.charge / (4 * Math.PI * epsilon0 * c * c)
 
       const chargePosition = chargeData.orbit(time)
       const r = point.clone().sub(chargePosition)
@@ -158,11 +168,12 @@ export default function ElectricField() {
       const timeRetarded = time - rLength / c
       //const aRetarded = calculateAcceleration(chargeData.orbit, timeRetarded)
       const aRetarded = analyticAcceleration(timeRetarded)
-      const aPerpendicular = transverseAcceleration(aRetarded, r)
+      const rUnit = r.clone().normalize()
+      const aPerpendicular = transverseAcceleration(aRetarded, rUnit)
 
       const electricField = aPerpendicular
-        .clone()
-        .multiplyScalar((k * chargeData.charge) / rLength)
+        .multiplyScalar(k)
+        .divideScalar(rLength)
       return electricField
     }
 
@@ -172,7 +183,6 @@ export default function ElectricField() {
       gridSize: number,
       gridStep: number,
       time: number,
-      scaleFactor = 5,
     ) => {
       let index = 0
 
@@ -190,17 +200,13 @@ export default function ElectricField() {
             totalElectricField.add(electricField)
           })
 
-          // Scale the field for visualization
-          const scaledField = totalElectricField
-            .clone()
-            .multiplyScalar(scaleFactor)
-
           // Update the arrow at this index in the instanced quiver
-          quiver.setArrowFromVector(index, position, scaledField)
+          quiver.setArrowFromVector(index, position, totalElectricField)
 
           index++
         }
       }
+      quiver.finalizeUpdate()
     }
 
     const updateCharges = (time: number) => {
@@ -223,7 +229,7 @@ export default function ElectricField() {
     const clock = new THREE.Clock()
 
     let lastUpdateTime = 0
-    const updateFrequency = 30 // updates per second
+    const updateFrequency = 60 // updates per second
     const updateInterval = 1 / updateFrequency
 
     const animate = () => {

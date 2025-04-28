@@ -1,113 +1,5 @@
 import * as THREE from "three"
-import { hexNumberToColorString } from "./color"
 
-class SpriteArrow extends THREE.Sprite {
-  private direction: THREE.Vector3
-  private length: number
-  private color: number
-
-  constructor(
-    position: THREE.Vector3,
-    direction: THREE.Vector3,
-    length: number,
-    color: number,
-  ) {
-    const material = new THREE.SpriteMaterial({
-      map: createArrowTexture(hexNumberToColorString(color)),
-      color,
-      transparent: true,
-      alphaTest: 0.5,
-    })
-    super(material)
-
-    this.position.copy(position)
-    this.direction = direction.clone().normalize()
-    this.length = length
-
-    this.setLength(length)
-    this.color = color
-  }
-
-  setDirection(direction: THREE.Vector3) {
-    this.direction.copy(direction.clone().normalize())
-    this.quaternion.setFromUnitVectors(
-      new THREE.Vector3(0, 0, 1),
-      this.direction,
-    )
-  }
-
-  setLength(length: number) {
-    this.length = length
-    this.scale.set(length, length, 1)
-  }
-
-  update() {
-    const dir = this.direction
-
-    // Make sprite face camera but indicate 3D direction
-    // Project the 3D direction onto the XY plane for basic rotation
-    const xyProjection = new THREE.Vector2(dir.x, dir.y).normalize()
-    let angleXY = Math.atan2(xyProjection.y, xyProjection.x)
-
-    // Handle case when vector is primarily along Z-axis
-    const zDominant =
-      Math.abs(dir.z) > Math.max(Math.abs(dir.x), Math.abs(dir.y))
-
-    if (zDominant) {
-      // When pointing mostly along Z, use a different visual treatment
-      // We'll make it point straight up/down but modify appearance
-      angleXY = Math.PI / 2 // Point vertically on sprite
-
-      // We apply a special scale to indicate Z direction
-      const scaleX = this.length / 3 // Make it wider/narrower
-      const scaleY = this.length // Keep length proportional to vector magnitude
-      this.scale.set(scaleX, scaleY, 1)
-
-      // Indicate z-direction with opacity and color modification
-      const material = this.material as THREE.SpriteMaterial
-      if (dir.z > 0) {
-        // Coming out of screen - brighter
-        material.opacity = 1.0
-
-        // Optional: tint towards a color to indicate +Z
-        const baseColor = new THREE.Color(material.color.getHex())
-        material.color.setRGB(
-          baseColor.r,
-          Math.min(baseColor.g * 1.5, 1.0),
-          baseColor.b,
-        )
-      } else {
-        // Going into screen - dimmer
-        material.opacity = 0.7
-
-        // Optional: tint towards a color to indicate -Z
-        const baseColor = new THREE.Color(material.color.getHex())
-        material.color.setRGB(
-          baseColor.r,
-          baseColor.g,
-          Math.min(baseColor.b * 1.5, 1.0),
-        )
-      }
-    } else {
-      // Normal case - vector has significant XY component
-
-      // Scale the arrow based on the projection and vector length
-      const scaleX = this.length // Length of arrow
-      const scaleY = this.length / 3 // Width of arrow
-
-      // Adjust for z-component (slant effect)
-      const zFactor = Math.abs(dir.z) / 2
-      const zAdjustedY = scaleY * (1 + zFactor)
-
-      this.scale.set(scaleX, zAdjustedY, 1)
-      this.material.rotation = -angleXY
-
-      // Reset opacity and color if changed from Z-dominant mode
-      this.material.opacity = 1.0
-      this.material.color.setHex(this.color)
-    }
-  }
-}
 export class ThickArrow extends THREE.Object3D {
   private arrowGroup: THREE.Group
   private shaft: THREE.Mesh
@@ -292,6 +184,11 @@ export class InstancedArrow extends THREE.Object3D {
   private defaultDir: THREE.Vector3
   private count: number
   private defaultHeadLength: number
+  private shaftMaterial: THREE.ShaderMaterial
+  private headMaterial: THREE.ShaderMaterial
+  private opacities: Float32Array
+  private shaftColorAttribute: THREE.InstancedBufferAttribute
+  private headColorAttribute: THREE.InstancedBufferAttribute
 
   constructor(
     count = 100,
@@ -307,6 +204,41 @@ export class InstancedArrow extends THREE.Object3D {
     this.defaultDir = new THREE.Vector3(0, 0, 1)
     this.arrows = []
     this.tempQuaternion = new THREE.Quaternion()
+    this.opacities = new Float32Array(count)
+
+    // Fill opacities with 1.0 (fully opaque) initially
+    this.opacities.fill(1.0)
+
+    // Create shader materials with built-in opacity support
+    const colorVector = new THREE.Color(color)
+    const materialParams = {
+      transparent: true,
+      vertexShader: `
+        attribute vec3 instanceColor;
+        attribute float opacity;
+        varying vec3 vColor;
+        varying float vOpacity;
+        
+        void main() {
+          vColor = instanceColor;
+          vOpacity = opacity;
+          vec4 mvPosition = modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        precision mediump float;
+        varying vec3 vColor;
+        varying float vOpacity;
+        
+        void main() {
+          gl_FragColor = vec4(vColor, vOpacity);
+        }
+      `,
+    }
+
+    this.shaftMaterial = new THREE.ShaderMaterial(materialParams)
+    this.headMaterial = new THREE.ShaderMaterial(materialParams)
 
     // Create shaft geometry
     const shaftGeom = new THREE.CylinderGeometry(
@@ -324,12 +256,62 @@ export class InstancedArrow extends THREE.Object3D {
     headGeom.translate(0, headLength / 2, 0)
     headGeom.rotateX(Math.PI / 2) // Make cone point along Z
 
-    // Create material
-    const material = new THREE.MeshBasicMaterial({ color })
-
     // Create instanced meshes
-    this.instancedShaft = new THREE.InstancedMesh(shaftGeom, material, count)
-    this.instancedHead = new THREE.InstancedMesh(headGeom, material, count)
+    this.instancedShaft = new THREE.InstancedMesh(
+      shaftGeom,
+      this.shaftMaterial,
+      count,
+    )
+    this.instancedHead = new THREE.InstancedMesh(
+      headGeom,
+      this.headMaterial,
+      count,
+    )
+
+    // Create and initialize color and opacity attributes
+    const shaftColors = new Float32Array(count * 3)
+    const headColors = new Float32Array(count * 3)
+
+    // Fill colors with the specified color
+    for (let i = 0; i < count; i++) {
+      shaftColors[i * 3] = colorVector.r
+      shaftColors[i * 3 + 1] = colorVector.g
+      shaftColors[i * 3 + 2] = colorVector.b
+
+      headColors[i * 3] = colorVector.r
+      headColors[i * 3 + 1] = colorVector.g
+      headColors[i * 3 + 2] = colorVector.b
+    }
+
+    // Create instance attributes for color
+    this.shaftColorAttribute = new THREE.InstancedBufferAttribute(
+      shaftColors,
+      3,
+    )
+    this.headColorAttribute = new THREE.InstancedBufferAttribute(headColors, 3)
+
+    // Create instance attributes for opacity
+    const shaftOpacityAttribute = new THREE.InstancedBufferAttribute(
+      this.opacities,
+      1,
+    )
+    const headOpacityAttribute = new THREE.InstancedBufferAttribute(
+      this.opacities,
+      1,
+    )
+
+    // Add attributes to geometries
+    this.instancedShaft.geometry.setAttribute(
+      "instanceColor",
+      this.shaftColorAttribute,
+    )
+    this.instancedShaft.geometry.setAttribute("opacity", shaftOpacityAttribute)
+
+    this.instancedHead.geometry.setAttribute(
+      "instanceColor",
+      this.headColorAttribute,
+    )
+    this.instancedHead.geometry.setAttribute("opacity", headOpacityAttribute)
 
     // By default all instances are hidden
     this.instancedShaft.count = 0
@@ -351,7 +333,42 @@ export class InstancedArrow extends THREE.Object3D {
     length: number,
     headLength: number = this.defaultHeadLength,
   ): void {
-    if (index >= this.count || length <= 0.0001) return
+    if (index >= this.count) return
+
+    // Calculate opacity based on length
+    const minLength = 1e-4
+    const fadeStartLength = headLength * 4 // Start fading when length is 4x the head length
+    let opacity = 1.0
+
+    if (length <= minLength) {
+      opacity = 0.0
+    } else if (length < fadeStartLength) {
+      // Linear interpolation between 0 and 1 based on length
+      opacity = Math.max(0.0, length / fadeStartLength)
+    }
+
+    // Update opacity for this arrow instance
+    this.opacities[index] = opacity
+
+    // Mark opacity attributes as needing update
+    ;(
+      this.instancedShaft.geometry.getAttribute(
+        "opacity",
+      ) as THREE.InstancedBufferAttribute
+    ).needsUpdate = true
+    ;(
+      this.instancedHead.geometry.getAttribute(
+        "opacity",
+      ) as THREE.InstancedBufferAttribute
+    ).needsUpdate = true
+
+    // If length is extremely small, we can skip updating the positions
+    if (length <= minLength) {
+      // Ensure instance counts are updated even for invisible arrows
+      this.instancedShaft.count = Math.max(this.instancedShaft.count, index + 1)
+      this.instancedHead.count = Math.max(this.instancedHead.count, index + 1)
+      return
+    }
 
     const arrow = this.arrows[index]
     const shaftLength = Math.max(0.0001, length - headLength)
@@ -388,6 +405,22 @@ export class InstancedArrow extends THREE.Object3D {
     this.instancedHead.instanceMatrix.needsUpdate = true
   }
 
+  // This method can be called at the end of a batch update for better performance
+  finalizeUpdate(): void {
+    ;(
+      this.instancedShaft.geometry.getAttribute(
+        "opacity",
+      ) as THREE.InstancedBufferAttribute
+    ).needsUpdate = true
+    ;(
+      this.instancedHead.geometry.getAttribute(
+        "opacity",
+      ) as THREE.InstancedBufferAttribute
+    ).needsUpdate = true
+    this.instancedShaft.instanceMatrix.needsUpdate = true
+    this.instancedHead.instanceMatrix.needsUpdate = true
+  }
+
   setArrowFromVector(
     index: number,
     position: THREE.Vector3,
@@ -395,8 +428,6 @@ export class InstancedArrow extends THREE.Object3D {
     scale = 1,
   ): void {
     const length = vector.length() * scale
-    if (length < 0.0001) return
-
     const direction = vector.clone().normalize()
     this.setArrow(index, position, direction, length)
   }
@@ -409,8 +440,25 @@ export class InstancedArrow extends THREE.Object3D {
 
   // Set color for all instances
   setColor(color: number): void {
-    ;(this.instancedShaft.material as THREE.MeshBasicMaterial).color.set(color)
-    ;(this.instancedHead.material as THREE.MeshBasicMaterial).color.set(color)
+    const colorObj = new THREE.Color(color)
+
+    // Update all instance colors
+    for (let i = 0; i < this.count; i++) {
+      this.shaftColorAttribute.setXYZ(i, colorObj.r, colorObj.g, colorObj.b)
+      this.headColorAttribute.setXYZ(i, colorObj.r, colorObj.g, colorObj.b)
+    }
+
+    this.shaftColorAttribute.needsUpdate = true
+    this.headColorAttribute.needsUpdate = true
+  }
+
+  // Set fade parameters
+  setFadeParameters(
+    minLength: number,
+    fadeStartLengthMultiplier: number,
+  ): void {
+    // This method allows customizing the fade effect parameters
+    // It doesn't immediately update existing arrows, but will affect future calls to setArrow
   }
 
   // Get and set the full count
@@ -427,6 +475,14 @@ export class InstancedArrow extends THREE.Object3D {
   dispose(): void {
     this.instancedShaft.geometry.dispose()
     this.instancedHead.geometry.dispose()
+
+    if (this.instancedShaft.material instanceof THREE.Material) {
+      this.instancedShaft.material.dispose()
+    }
+
+    if (this.instancedHead.material instanceof THREE.Material) {
+      this.instancedHead.material.dispose()
+    }
 
     if (this.instancedShaft.parent) {
       this.instancedShaft.parent.remove(this.instancedShaft)
@@ -513,71 +569,13 @@ export function gridSphere(
   return sphere
 }
 
-export function quiverGrid(
-  scene: THREE.Scene,
-  gridSize: number,
-  gridStep: number,
-  arrowScale: number,
-  arrowColor: number,
-  vectorField: (x: number, y: number) => THREE.Vector3,
-) {
-  const arrows: ThickArrow[] = []
-
-  for (let x = -gridSize; x <= gridSize; x += gridStep) {
-    for (let y = -gridSize; y <= gridSize; y += gridStep) {
-      const position = new THREE.Vector3(x, y, 0)
-      const vector = vectorField(x, y)
-      const dir = vector.clone().normalize()
-      const length = vector.length() * arrowScale
-      const arrow = new ThickArrow(dir, position, length, arrowColor)
-
-      scene.add(arrow)
-      arrows.push(arrow)
-    }
-  }
-
-  return arrows
-}
-
-function createArrowTexture(color: string) {
-  const canvas = document.createElement("canvas")
-  canvas.width = 64
-  canvas.height = 64
-  const context = canvas.getContext("2d")
-  if (!context) throw new Error("Failed to get canvas context")
-
-  // Clear canvas
-  context.fillStyle = "rgba(0, 0, 0, 0)"
-  context.fillRect(0, 0, canvas.width, canvas.height)
-
-  // Draw arrow
-  context.fillStyle = color
-  context.beginPath()
-
-  // Arrow shaft
-  context.rect(5, 24, 40, 16)
-
-  // Arrow head
-  context.moveTo(45, 16)
-  context.lineTo(45, 48)
-  context.lineTo(64, 32)
-
-  context.closePath()
-  context.fill()
-
-  const texture = new THREE.Texture(canvas)
-  texture.needsUpdate = true
-
-  return texture
-}
-
 export function instancedQuiverGrid(
   scene: THREE.Scene,
   gridSize: number,
   gridStep: number,
   vectorField: (x: number, y: number) => THREE.Vector3,
   arrowScale = 1,
-  arrowColor = 0xffff00,
+  arrowColor = 0x5dade2,
 ): InstancedArrow {
   // Calculate total number of points in the grid
   const pointsPerSide = Math.floor((gridSize * 2) / gridStep) + 1
@@ -587,7 +585,7 @@ export function instancedQuiverGrid(
   const quiver = new InstancedArrow(
     totalPoints,
     arrowColor,
-    0.05, // shaft radius
+    0.04, // shaft radius
     0.2, // head length
     0.1, // head radius
   )
