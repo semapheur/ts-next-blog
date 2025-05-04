@@ -2626,7 +2626,7 @@ Let $n, n_a, n_b \in\N_0$ with $n = n_a + n_b$ and let $\ket{a}\in {}^\P \mathca
 
 $$
 \begin{align*}
-  \Lambda_{\ket{b}}^{\bra{a}} (\hat{U}) :=& \hat{I}^{\otimes n + 1} + \ket{a}\bra{a} \otimes (\hat{U} - \hat{I})\otimes \ket{b}\bra{b} \\
+  \Lambda_{\ket{b}}^{\ket{a}} (\hat{U}) :=& \hat{I}^{\otimes n + 1} + \ket{a}\bra{a} \otimes (\hat{U} - \hat{I})\otimes \ket{b}\bra{b} \\
   =& \hat{I}^{\otimes n+1} + \bigotimes_{j=n_a - 1}^0 \ket{a_j} \bra{a_j} \otimes (\hat{U} - \hat{I}) \otimes \bigotimes_{j = n_b - 1}^0 \ket{b_j} \bra{b_j}
 \end{align*}
 $$
@@ -4792,6 +4792,209 @@ $$
 Hence, measuring $P_\ket{0} = \bra{0}\ket{0}$ in the state $\ket{\Psi_1^A}$, which we have produced by only one application of $\hat{U}_f$, will reveal if $f$ is constant or balanced.
 </details>
 </MathBox>
+
+# Quantum cryptography
+
+<MathBox title='Cipher' boxType='definition'>
+Let $M, C, K$ be finite sets representing the spaces of plaintexts (messages), ciphertexts, and keys, respectively. A *cipher* is a cryptographic protocol encrypting messages $m \in M$ with a key $k \in K$. It consists of two functions
+- an *encryption* $e: K\times M \to C$ mapping a key-plaintext pair $(k,m)$ to some ciphertext $e(k,m)$, and 
+- a *decryption* $d: K\times C \to M$ mapping a key-ciphertext pair $(k,c)$ to the original message $m = d(k,c)$ 
+
+The cipher satisfies the correctness condition
+
+$$
+\begin{equation*}
+  d(k, e(k,m)) = m,\; \forall m \in M, k \in K
+\tag{\label{equation-55}}
+\end{equation*}
+$$
+
+A cipher is *symmetric* if the same key $k\in K$ is used for encryption and decryption. It it *assymmetric* if the key is a pair $k = (k_\text{private}, k_\text{public}) \in K$, where encryption is performed using the public key:
+
+$$
+  m \mapsto e(k_\text{public}, m)
+$$
+
+and decryption is performed using the corresponding private key
+
+$$
+  c \mapsto d(k_\text{private}, c)
+$$
+
+<details>
+<summary>Details</summary>
+
+Effectively, $d$ is the inversion of $e$. Specifically, if we define
+
+$$
+\begin{align*}
+  e_k (\cdot) :=& e(k, \cdot): M\to C \\
+  d_k (\cdot) :=& d(k, \cdot): C\to M
+\end{align*}
+$$
+
+then $\eqref{equation-55}$ implies that
+
+$$
+  d_k \circ e_k = \operatorname{id}_M
+$$
+</details>
+</MathBox>
+
+In digital communication, a message $m\in M$ can be represented as a binary string $(m_{n_M -1},\dots,m_0)$ of a fixed length $n_M$ with $m_j \in\set{0,1}$. Intepreting the message bits $m_j$ as coefficients in a binary expansion, each meassage corresponds to an natural number $m\in\N_0$ given by
+
+$$
+  m = \sum_{j=0}^{n_M - 1} m_j 2^j \in \set{0,\dots, 2^{n_M} - 1}
+$$
+
+Likewise, a ciphertext $c\in C$ can be represented as a binary string of length $n_C$ and a natural number $c \in \set{0, \dots, \leq 2^{n_C} - 1}$. In many ciphers the key $k \in K$ is also represented as a binary string of length $n_K$ and a natural number $k \in\set{0,\dots,2^{n_K} - 1}$.
+
+<MathBox title='Vernam cipher' boxType='example'>
+The Vernam cipher is a *symmetric* cipher in which the plaintext $m\in M$, key $k\in K$ and ciphertext $c\in C$ are all binary string with same length $n_M = n_K = n_C = n$. It offers absolute secresy in the sense that it is impossible to retrieve $m$ from $c$ without knowing $k$. This comes at the cost of requiring a new key for each new message. 
+
+The key $k$ is a uniformly random bit string
+
+$$
+  k = (k_{n-1},\dots,k_0),\; k_j \in\set{0,1}
+$$
+
+Encryption is performed by bitwise addition modulo $2$ (XOR) of the plaintext $m = (m_{n-1},\dots,m_0)$ with the key:
+
+$$
+  e(k,m) = (k_{n-1} \overset{2}{\oplus} m_{n-1}, \dots k_0 \overset{2}{\oplus} m_0)
+$$
+
+The ciphertext $c = e(k,m)$ is a purely random sequence of bits and reveals no information of the original plaintext in the absence of the key $k$. With the key, decryption is conducted by applying XOR betwewen the key-bits and the ciphertext-bits:
+
+$$
+\begin{align*}
+  d(k, e(k,m)) =& (k_{n-1} \overset{2}{\oplus} e(k,m)_{n-1}, \dots, k_0 \overset{2}{\oplus} e(k,m)_0) \\
+  =& (k_{n-1} \overset{2}{\oplus} k_{n-1} \overset{2}{\oplus} m_{n-1},\dots, k_0 \overset{2}{\oplus} k_0 \overset{2}{\oplus} m_0) \\
+  =& (m_{n-1}, \dots, m_0)
+\end{align*}
+$$
+
+since $k_j \overset{2}{\oplus} k_j = 0$ and $0 \oplus m_j = m_j$ for all $j = 0,\dots, n-1$.
+
+The security of the Vernam cipher comas at the cost of practicality: a new random key of length $n$ must be generated and securely shared for each mesagge. The Vernam cipher is therefore a concrete realization of the one-time pad cipher.
+</MathBox>
+
+## The BB84 protocol
+
+In 1984, Bennett and Brassard proposed a method for securely distributing a random bit sequence that can serve as a key for the Vernam cipher. This protocol, known by the acronym BB84, is notable for being the first quantum key distribution (QKD) scheme. While it does not involve quantum entanglement, it exploits the projection postulate telling that measurements disturb the state of a quantum system. This property allows the communicating parties to detect the presence of any eavesdropper.
+
+BB84 allows for two parties, traditionally called Alice and Bob, to establish a shared random bit sequence that is known only to them. Moreover, the protocol allows them to detect whether an eavesdropper (Eve) has intercepted the transmission. This is achieved as follows:
+
+1. **Preparation and transmission:** Alice begins with a supply of qubits. For each qubit, she randomly chooses a basis, either the computational basis $\set{\ket{0},\ket{1}}$, corresponding to a measurement of the observable $\sigma_z$, or the Hadamard basis $\set{\ket{+},\ket{-}}$, corresponding to $\sigma_x$. She prepares the qubit in a state consistent with her chosen basis and records both the basis and the resulting bit (0 or 1). She then sends each qubit to Bob.
+2. **Measurement by Bob**: Upon receiving each qubit, Bob independently and randomly selects a basis (either $\sigma_z$ or $\sigma_x$) and measures the qubit accordingly, recording both his chosen basis and the result.
+3. **Public Basis Comparison:** After the transmission, Alice and Bob communicate over a public classical channel and compare the basis they used for each qubit—but not the measurement results. They discard all bits where their bases differed.
+4. **Error checking and key Extraction:** From the remaining bits (those for which they used the same basis), Alice and Bob randomly select a subset to publicly compare. If the results agree with high probability, they infer that no eavesdropping occurred and keep the remaining undisclosed bits as their shared secret key. Otherwise, they abort the protocol and try again.
+
+**Security against eavesdropping**
+
+Suppose Eve attempts to intercept and measure the qubits en route from Alice to Bob. Her goal is to obtain the same random bit sequence that Alice and Bob are trying to share. However, since Eve does not know Alice's chosen basis for each qubit, she must randomly guess a basis for measurement.
+- If Eve happens to choose the same basis as Alice, she obtains the correct bit value and sends on a qubit in the correct state. Bob will then receive and measure the correct result, assuming he also uses the same basis.
+- However, if Eve chooses the wrong basis, her measurement disturbs the qubit due to the incompatibility of the observables $\sigma_z$ and $\sigma_x$ As a result, the qubit sent to Bob is no longer in the state prepared by Alice. If Bob happens to choose the correct basis (matching Alice's), his measurement will produce a random result, introducing detectable errors.
+
+By publicly comparing a subset of their bits, Alice and Bob can estimate the error rate. A higher-than-expected error rate—beyond what can be attributed to noise or imperfect transmission—reveals the presence of an eavesdropper. In that case, they discard the key and restart the protocol.
+
+## The EK91 protocol
+
+In 1991, Ekert proposed a method for securely distributing keys without transmitting any qubits, which is known as the EK91 protocol. This protocol utilizes violations of teh CHSH form Bell's inequality to detect potential eavesdropping.
+
+EK91 allows for two parties, Alice and Bob, to establish a shared random bit sequence that is known only to them, provided they each have a supply of single qubits that are part of a composite system in an entangled state.
+
+Assume Alice and Bob share a sequence of entangled two-qubit systems, each prepared in the Bell state
+
+$$
+\begin{align*}
+  \ket{\Psi_-} =& \frac{1}{\sqrt{2}} (\ket{0}\otimes\ket{1} - \ket{1}\otimes\ket{0}) \\
+  =& \frac{1}{\sqrt{2}}  (\ket{\uparrow_{\unitvec{n}}}\otimes\ket{\downarrow_{\unitvec{n}}} - \ket{\downarrow_{\unitvec{n}}}\otimes\ket{\uparrow_{\unitvec{n}}})
+\end{align*}
+$$
+
+for unit vector $\unitvec{n} \in \mathbb{S}^2 \subset\R^3$. These qubits are distributed such that Alice and Bob can independently retrieve their halves at times of their choosing.
+
+Each party performs measurements on their qubits. For each qubit, Alice randomly selects a direction. Alice randomly selects a direction $\unitvec{n}_A \in \set{\unitvec{n}_1, \unitvec{n}_2, \unitvec{n}_4}$ and measures the observable $\Sigma_{\unitvec{n}_A}^A \unitvec{n}_A \cdot \boldsymbol{\sigma}$ on her qubits. Bob independently does the same, choosing randomly a direction $\unitvec{n}_B \in\set{\unitvec{n}_1, \unitvec{n}_2, \unitvec{n}_4}$ and measuring $\Sigma_{\unitvec{n}_B}^B$ on each of his qubits. 
+
+After the measurements, Alice and Bob publicly communicate the directions $\unitvec{n}_A$ and $\unitvec{n}_B$ they have used for each entangled pair, keeping their measurement outcomes secret. They partition the measured qubit pairs into two disjoint sets
+- *The key generation set* of pairs measured along the same direction, i.e. $\unitvec{n}_A = \unitvec{n}_B$
+- *The security test set* of pairs measured in different directions, i.e. $\unitvec{n}_A \neq \unitvec{n}_B$
+
+In the key generation set, the outcome pairs are anticorrelated due to the antisymmetry of $\ket{\Psi_-}$: whenever Alice observes $1$ for her qubit, Bob observes $-1$ for his and vice versa. To see this, suppose Alice measures the spin in the direction $\unitvec{n}_2$ and observes the value $1$. The projector onto the corresponding eigenspace in the composite system is
+
+$$
+  \hat{P}_{\unitvec{n}^2, 1} = \ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \otimes \hat{I}_2
+$$
+
+From the projection postulate, we know that Alice's measurement projects the original state
+
+$$
+  \ket{\Psi_-} = \frac{1}{\sqrt{2}} (\ket{\uparrow_{\unitvec{n}_2}}\otimes\ket{\downarrow_{\unitvec{n}_2}} - \ket{\downarrow_{\unitvec{n}_2}}\otimes\ket{\uparrow_{\unitvec{n}_2}})
+$$  
+
+onto
+
+$$
+\begin{align*}
+  \ket{\Psi_{\unitvec{n}_2, 1}} :=& \frac{\hat{P}_{\unitvec{n}_2, 1} \ket{\Psi^-}}{\Norm{\hat{P}_{\unitvec{n}_2, 1} \ket{\Psi^-}}} \\
+  =& \frac{(\ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \otimes \hat{I}_2) \ket{\Psi_-}}{\Norm{(\ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \otimes \hat{I}_2) \ket{\Psi_-}}} \\
+  =& \ket{\uparrow_{\unitvec{n}_2}} \otimes \ket{\downarrow_{\unitvec{n}_2}}
+\end{align*}
+$$
+
+where we used that
+
+$$
+\begin{align*}
+  (\ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \otimes \hat{I}_2) \ket{\Psi_-} =& \frac{1}{\sqrt{2}} (\ket{\uparrow_{\unitvec{n}_2}} \underbrace{\braket{\uparrow_{\unitvec{n}_2} | \uparrow_{\unitvec{n}_2}}}_{=1} \otimes \ket{\downarrow_{\unitvec{n}_2}} \underbrace{\braket{\uparrow_{\unitvec{n}_2} | \downarrow_{\unitvec{n}_2}}}_{=1} \otimes \ket{\uparrow_{\unitvec{n}^2}}) \\
+  =& \frac{1}{\sqrt{2}} \ket{\uparrow_{\unitvec{n}_2}} \otimes \ket{\downarrow_{\unitvec{n}_2}}
+\end{align*}
+$$
+
+This means that Bob's system will be described by the reduced density operator
+
+$$
+\begin{align*}
+  \rho_B (\ket{\Psi_{\unitvec{n}_2, 1}} \bra{\Psi_{\unitvec{n}_2, 1}}) =& \operatorname{tr}_A (\ket{\Psi_{\unitvec{n}_2, 1}} \bra{\Psi_{\unitvec{n}_2, 1}}) \\
+  =& \operatorname{tr}_A \left[(\ket{\uparrow_{\unitvec{n}_2}} \otimes \ket{\downarrow_{\unitvec{n}_2}}) (\ket{\uparrow_{\unitvec{n}_2}} \otimes \ket{\downarrow_{\unitvec{n}_2}})\right] \\
+  =& \operatorname{tr}_A \left(\ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \otimes \ket{\downarrow_{\unitvec{n}_2}} \bra{\downarrow_{\unitvec{n}_2}}\right) \\
+  =& \underbrace{\operatorname{tr}\left( \ket{\uparrow_{\unitvec{n}_2}} \bra{\uparrow_{\unitvec{n}_2}} \right)}_{=1} \ket{\downarrow_{\unitvec{n}_2}} \bra{\downarrow_{\unitvec{n}_2}} \\
+  =& \ket{\downarrow_{\unitvec{n}_2}} \bra{\downarrow_{\unitvec{n}_2}}
+\end{align*}
+$$
+
+which is the density operator of the pure state $\ket{\downarrow_{\unitvec{n}_2}}$. If Bob measures in the same direction $\unitvec{n}_2$, he will observe the value $-1$, since the state $\ket{\downarrow_{\unitvec{n}_2}}$ is an eigenvector of the observable $\Sigma_{\unitvec{n}_2}^B$ with eigenvalue $-1$. Analogously, we Bob will always observe $1$ for his qubit if Alice has measured the value $1$ on her qubit. Hence, in the set of identical measurement directions the measurement results of Alice and Bob are always (with certainty, that is) opposite to each other. Since the measurement results are only known to them, they can thus use this set of measurement results as a random and secret bit-sequence.
+
+To ensure the security of the key, Alice and Bob use the security test set to check for the presence of an eavesdropper (Eve). Eavesdropping can be attempted in two principal ways:
+1. *Intercept-resend attack*: Eve measures one or both qubits before Alice or Bob do, projecting the qubits in a separable state of the form $\ket{\uparrow_{\unitvec{n}}} \otimes \ket{\downarrow_{\unitvec{n}}}$
+2. *Source tampering*: Eve replaces the entangled source with a separable state of the form $\ket{\varphi\otimes\psi}$, for which she knows the individual states
+
+Hence, in both possible types of eavesdropping attacks that Eve can attempt, the composite system will be in a separable state $\ket{\varphi\otimes\psi}$ before Alice and Bob perform their measurements. In such cases, correlations in measurement outcomes satisfy the classical CHSH inequality:
+
+$$
+\begin{equation*}
+  \left| \Braket{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_2}^B}_{\varphi\otimes\psi} - \Braket{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_3}^B}_{\varphi\otimes\psi} + \Braket{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_2}^B}_{\varphi\otimes\psi} + \Braket{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_3}^B}_{\varphi\otimes\psi} \right| \leq 2
+\tag{\label{equation-56}}
+\end{equation*}
+$$
+
+In contrast, for entangled states like $\ket{\Psi_-}$, quantum mechanics predicts a maximal violation:
+
+$$
+  \left| \Braket{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_2}^B}_{\Psi_-} - \Braket{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_3}^B}_{\Psi_-} + \Braket{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_2}^B}_{\Psi_-} + \Braket{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_3}^B}_{\Psi_-} \right| = 2\sqrt{2}
+$$
+
+Thus, Alice and Bob can test for eavesdropping by revealing the outcomes of the security test set. With the results $s_{\unitvec{n}_i}^X$, for $X\in\set{A,B}$ and $i\in\set{1,\dots,4}$, they calculate the empirical expectation values $\overline{\Sigma_{\unitvec{n}_i}^A \Sigma_{\unitvec{n}_j}^B}$. Consequently, Alice and Bob can conclude if eavesdropping has occured as follows
+
+$$
+  \left| \overline{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_2}^B} - \overline{\Sigma_{\unitvec{n}_1}^A \otimes \Sigma_{\unitvec{n}_3}^B} + \overline{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_2}^B} + \overline{\Sigma_{\unitvec{n}_4}^A \otimes \Sigma_{\unitvec{n}_3}^B} \right| = begin{cases}
+    \approx 2\sqrt{2} \implies \text{echange is secure}
+    \leq 2 \implies \text{eavesdropping has occured}
+  \end{cases}
+$$
+
+If the violation of the CHSH inequality is observed, the key bits from the identical-direction measurements are retained as a secure random key. If not, the protocol run is discarded, and Alice and Bob may attempt a new key exchange, potentially under a different setup.
 
 # Shor factorization algorithm
 
