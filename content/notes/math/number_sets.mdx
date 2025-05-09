@@ -391,7 +391,7 @@ $$
 then $a$ and $b$ are *coprimes*.
 </MathBox>
 
-<MathBox title='Extended Euclid algorithm' boxType='theorem'>
+<MathBox title='Extended Euclid algorithm' boxType='theorem' tag='theorem-1'>
 Let $a, b \in\N$. Define
 
 $$
@@ -582,6 +582,130 @@ $$
 
 This proves $\eqref{equation-11}$ and the claim $\eqref{equation-8}$ from the case $j = n$.
 </details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $a,b,c\in\Z$ and $N\in\N$ with $c \neq 0$ and $\gcd(N,c) = 1$. Then
+
+$$
+\begin{equation*}
+  a\mod N = b\mod N \iff ac\mod N = bc\mod N
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):** By definition we have
+
+$$
+\begin{align*}
+  &a\mod N = b\mod N \\
+  \iff& a - \left\lfloor\frac{a}{N}\right\rfloor N = b - \left\lfloor\frac{b}{N}\right\rfloor N \\
+  \iff& ac = bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right) Nc
+\end{align*}
+$$
+
+such that
+
+$$
+\begin{align*}
+  ac\mod N =& ac - \left\lfloor\frac{ac}{N}\right\rfloor N \\
+  =& bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right)Nc - \left\lfloor\frac{bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right)Nc}{N}\right\rfloor N \\
+  =& bc - \left\lfloor\frac{bc}{N}\right\rfloor N = bc\mod N
+\end{align*}
+$$
+
+**($\impliedby$):** Let $ac\mod N = bc\mod N$. Then there exists $z\in\Z$ such that
+
+$$
+  a - b = \frac{z}{n} N \in\Z
+$$
+
+Since $c$ and $N$ are coprime, we must have $z/c\in\Z$. Thus, $(a - b) \mod N = 0$, and it follows from $\eqref{equation-2}$ that $a\mod N = b\mod N$.
+</details>
+</MathBox>
+
+<MathBox title='Multiplicative inverse' boxType='definition'>
+Let $b,N\in\N$ with $\gcd(b,N) = 1$. The *multiplicative invserse* modulo $N$ of $b$ is denoted by $b^{-1} \mod N$ and is defined as the number $x\in\set{1,\dots,N-1}$ that satisfies
+
+$$
+  bx \mod N = 1
+$$
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $b,N\in\N$ with $\gcd(b,N) = 1$ and let $x,y\in\Z$ be a solution of
+
+$$
+\begin{equation*}
+  bx + Ny = 1
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+Then $x\mod N$ is the uniquely determined multiplicative inverse of $b$ modulo $N$, i.e. it satisfies
+
+$$
+  (b(x\mod N)) \mod N = 1
+$$
+
+<details>
+<summary>Proof</summary>
+
+**Uniqueness**
+
+Let $u$ and $v$ be two multiplicative inverses for $b\modulo N$, that is, suppose $u,v\in\set{1,\dots,N-1}$ are such that $bu \mod N = 1 = bv\mod N$. Because of $\gcd(b,N) = 1$ and $\eqref{equation-12}$, then $bu\mod N = bv\mod N$ implies that $u\mod N = v\mod N$. From $\eqref{equation-2}$ we know that $N$ divides $u - v$. Since $0 < u$, $v < N$, it thus follows that $u = v$.
+
+**Existence**
+
+Applying the extended Euclid algorithm (Theorem $\ref{theorem-1})$ to $b$ and $N$, and using the factor that $\gcd(b,N)$ to $x$ and $y$ satisfying $\eqref{equation-13}$. Then we have
+
+$$
+  b(x\mod N) \mod N =& bx\mod N = bx\mod N = (1 - Ny) \mod N =1
+$$
+
+and since $0 < x\mod N < N$, it follows that $x\mod N$ satisfies all the defining properties of the multiplicative inverse of $b$ modulo $N$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Any $a,b,N\in\N_+$ with $N > 1$ satisfy
+
+$$
+  ab\mod N = 0 \implies \gcd(a,N) \gcd(b,N) > 1
+$$
+
+In particular, if $N$ is prime, then
+
+$$
+  ab\mod N = 0 \iff a\mod N = 0 \lor b\mod N = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $ab\mod N = 0$. Then there exists $q\in\N$ such that $ab = qN$. From the prime decomposition of this equation
+
+$$
+  \overbrace{p_1^{\alpha_1} \dots p_s^{\alpha_s}}^{=a} \overbrace{p_1^{\beta_1} \dots p_r^{\beta_r}}^{=b} = \overbrace{p_1^{\kappa} \dots p_v^{\kappa_v}}^{=q} \overbrace{p_1^{\nu_1} \dots p_u^{\nu_u}}^{=N}
+$$
+
+we see that the prime factors of $N$ have to be contained in those of $a$ or $b$, and thus that $a$ or $b$ must have common divisors with $N$, that is, $\gcd(a,N) > 1$ or $\gcd(b,N) > 1$.
+
+If $N$ is prime and $N\mid ab$ holds, then $N$ must be contained in $a$ or $b$ as a prime factor. Conversely, $a\mod N = 0$ implies $N\mid a$ and $b\mod N = 0$ implies $N|b$. Either case has $N\mid ab$ as a consequence.
+</details>
+</MathBox>
+
+<MathBox title='Euler function' boxType='definition'>
+The Euler function $\phi:\N\to\N$ is defined as
+
+$$
+  \phi(n) := \left| \set{r\in{1,\dots,n-1} | \gcd(r,n) = 1} \right|
+$$
+
+That is, $\phi(n)$ is the number of all $r\in\N$ with $1\leq r < n$ that have no common divisor (are coprime) with $n$.
 </MathBox>
 
 # Rational numbers ($\mathbb{Q}$)
