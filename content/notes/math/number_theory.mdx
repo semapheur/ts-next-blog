@@ -13,3 +13,1523 @@ Given $a\in\R$ and any positive integer $N$, there exist integers $n,m$ with $1\
 For any $x\in\R$, let $f(x) = x - \lceil x \rceil$, where $\lceil x \rceil$ is the greatest integer less than or equal to $x$. Since the $N + 1$ numbers $\Set{f(i\alpha)}_{i=0}^N$ all lie in the interval $[0,1)$, by the pigeonhole principle there must exist integers $i$ and $j$ with $0\leq i\leq j\leq N$ such that both $f(i\alpha)$ and $f(j\alpha)$ line in one the $N$ subintervals $\Set{[\frac{i - 1}{N}, \frac{i}{N}]}_{i=1}^{N}$. This means that $|f(j\alpha) - f(i\alpha)| < \frac{1}{N}$, so we can take $n = j-i$ and $m = \lceil j\alpha \rceil - \lceil i\alpha \rceil$.
 </details>
 </MathBox>
+
+# Modular arithmetic
+
+<MathBox title='Congruence' boxType='definition'>
+Given an integer $m\in\Z$, called a *modulus*, two integers $a,b\in\Z$ are congruent mod(ulo) $m$ if $a-b$ is divisible by $b$, i.e. if there is an integer $k\in\Z$ such that $a - b = km$. This relation is written
+
+$$
+  a \equiv b \mod m
+$$
+
+The congruence class modulo $m$, denoted $[a]_m$, is the set of all integers that are congruent modulo $m$, i.e.
+
+$$
+  [a]_n = \Set{b\in\Z | a - b = kn,\; k\in\Z}
+$$
+
+For $m\in\N_+$, any integer is congruent mod $m$ to exactly one of the numbers $0,1,\dots,m-1$. The set of congruence classes is the quotient set
+
+$$
+  \Z_m := \Z / m\Z = \Set{[i]_m}_{i=0}^{n-1}
+$$
+
+where $m\Z = \Set{ma | a\in\Z}$ is the set of $m$-multiples.
+</MathBox>
+
+<MathBox title='' boxType='definition'>
+The integer part of a real number $u\in\R$ is denoted by $\lfloor u \rfloor$ and defined as
+
+$$
+  \lfloor u \rfloor := \max\set{z\in\Z | z\leq u}
+$$
+
+Likewise, we define
+
+$$
+  \lceil u \rceil := \min\set{z \in Z | z\leq u}
+$$
+
+For $a\in Z$, the remainder of $a$ after division by $N \in\N$ is denoted by $a\mod N$ and is defined as
+
+$$
+\begin{equation*}
+  a\mod N := a - \left\lfloor \frac{a}{N} \right\rfloor N
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+1. For $a,b\in\Z$ and $N\in\N$ it follows that 
+$$
+\begin{equation*}
+  a \mod N = b \mod N \iff (a - b) \mod N = 0
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+2. For a $a, N\in\N$ with $a > N$ it follows that 
+$$
+\begin{equation*}
+  a \mod N < \min\Set{\frac{a}{2}, N}
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** To show $\implies$, note that from $\eqref{equation-1}$, we have
+
+$$
+  a\mod N = b\mod N \implies a - \left\lfloor \frac{a}{N} \right\rfloor N = b - \left\lfloor \frac{b}{N} \right\rfloor N
+$$
+
+and it follows that $N$ divides $a - b$, which implies $(a - b) \mod N = 0$.
+
+To show $\impliedby$, let $(a - b) \mod N = 0$. Then it follows from $\eqref{equation-1}$ that there exists a $z\in\Z$ such that $a - b = z N$. Consequently,
+
+$$
+\begin{align*}
+  b \mod N =& b - \left\lfloor\frac{b}{N}\right\rfloor N \\
+  =& a - zN - \left\lfloor\frac{a - zN}{N}\right\rfloor N \\
+  =& a - \left\lfloor\frac{a}{N}\right\rfloor \\
+  =& a \mod N
+\end{align*}
+$$
+
+**(2)** For any $x\in\R$ we have
+
+$$
+  0 \leq x - \lfloor x \rfloor < 1
+$$
+
+such that $\frac{a}{N} - \left\rfloor\frac{a}{N}\right\rfloor < 1$ and thus
+
+$$
+  a\mod N = a - \left\lfloor\frac{a}{N}\right\rfloor N < N
+$$
+
+On the other hand, note that $x > 1$ implies $\frac{1}{2} x < \lfloor x \rfloor$. Because $a > N$ this in turn implies $\frac{1}{2}\frac{a}{N} < \left\lfloor\frac{a}{N}\right\rfloor$ from which it follows that $\frac{a}{2} < \left\lfloor\frac{a}{N}\right\rfloor$ and thus
+
+$$
+  a\mod N = a - \left\lfloor\frac{a}{N} N < \frac{a}{2}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $a,N\in\N_+$. For $a, N \to\infty$ the number of computational steps required for the calculation of $a\mod N$ scales as $O(\log_2^2 [\max\set{a,N}])$.
+
+<details>
+<summary>Proof</summary>
+
+Because of $\eqref{equation-1}$, the computational effort to calculate $a\mod N$ is given by
+
+- the number of operations required for dividing $a$ by $N$ and determining $\left\lfloor\frac{a}{N}\right\rfloor$, which is of order $O(\log_2^2 [\max\set{a,N}])$
+- $+$ the number of operations for the multiplication $\left\lfloor\frac{a}{N}\right\rfloor$ with $N$, which is of order $O(\log_2^2 [\max\set{a,N}])$
+- $+$ the number of operations for subtracting $\left\lfloor\frac{a}{N}\right\rfloor N$ from $a$, which is of order $O(\log_2^2 [\max\set{a,N}])$
+
+From properties of the big-O symbol, it follows that the number of operations to calculate $a\mod N$ is of order $O(\log_2^2 [\max\set{a,N}])$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='definition'>
+If, for $a,b\in\Z$, there is a $z\in\Z$, such that $b = za$, then $a$ *divides* b (or $b$ is *divisible* by $a$). If no such $z$ exists, $a$ does not divide $b$. These two exclusive cases are described by the following notations
+
+$$
+\begin{align*}
+  a\mid b :\iff& \exists z\in\Z : b = za \\
+  a\nmid b :\iff& \not\exists z\in\Z : b = za 
+\end{align*}
+$$
+
+For integers $a_i = \Z$ with $i\in\set{1,\dots,n}$ and $\sum_{i=1}^n |a_i| \neq 0$, we define the *greatest common divisor* as
+
+$$
+  \gcd(a_1,\dots,a_n) := \max\set{k\in\Z : k\mid a_i,\; \forall a_i}
+$$
+
+In case $\prod_{i=1}^n |a_i| \neq 0$, we define the *smallest common multiple* as
+
+$$
+  \operatorname{scm}(a_1,\dots,a_n) := \min\set{k\in\Z : a_i \mid k, \; \forall a_i}
+$$
+
+For $a \neq 0$ we define $\gcd(a,0) = a$. If $a$ and $b$ have no common divisor other than $1$, that is, if
+
+$$
+  \gcd(a,b) = 1
+$$
+
+then $a$ and $b$ are *coprimes*.
+</MathBox>
+
+<MathBox title='Extended Euclid algorithm' boxType='theorem' tag='theorem-1'>
+Let $a, b \in\N$. Define
+
+$$
+\begin{align*}
+  r_{-1} :=& \max\set{a,b}, \quad r_0 :=& \min\set{a,b} \\
+  s_{-1} :=& 1, \quad s_0 :=& 0 \\
+  t_{-1} :=& 0, \quad t_0 :=& 1
+\end{align*}
+$$
+
+and for every $j\in\N$ with $r_{j-1} > 0$
+
+$$
+\begin{align*}
+  r_j :=& r_{j-2} \mod r_{j-1} \tag{\label{equation-4}} \\
+  s_j :=& s_{j-2} - \left\lfloor\frac{r_{j-2}}{r_{j-1}}\right\rfloor s_{j-1} \\
+  t_j :=& t_{j-2} - \left\lfloor\frac{r_{j-2}}{r_{j-1}}\right\rfloor t_{j-1}
+\end{align*}
+$$
+
+Then $r_j < r_{j-1}$ holds and there is an $n\in\N$ after which the sequence terminates, that is, for which
+
+$$
+\begin{equation*}
+  r_{n+1} = 0
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+Furtermore, one has
+
+$$
+\begin{align*}
+  r_n =& \gcd(a,b) \tag{\label{equation-6}} \\
+  n \leq& 2\min\set{\log_2 (a), log_2 (b)} + 1 \tag{\label{equation-7}} \\
+  r_{-1} s_n + r_0 t_n =& \gcd(a,b) \tag{\label{equation-8}}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since we know from $\eqref{equation-3}$ that $u \mod v < v$, if follows from the definition $\eqref{equation-4}$ of the $r_j$ that $0 \leq r_j \leq r_{j-1}$, that is, the $r_j$ are strictly decreasing with increasing $j$. Hence, there must exist an $n\in\N_+$ with $n\leq\min\set{a,b}$, $r_n > 0$ and $r_{n+1} = 0$. This proves $\eqref{equation-5}$.
+
+In order to show $\eqref{equation-5}$, we first prove by descending induction that for all $j\in\set{0,\dots,n+1}$ a $z_{n-j} \in\N_+$ exists such that
+
+$$
+\begin{equation*}
+  r_{n-1} = z_{n-j} r_n
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+For the induction hypothesis, let $n\in\N$ be such that $r_n > 0$ but $r_{n+1} = 0$. From $\eqref{equation-4}$, if follows that
+
+$$
+  0 = r_{n+1} = r_{n-1} \mod r_n = r_{n-1} - \left\lfloor\frac{r_{n-1}}{r_n} \right\rfloor r_n
+$$
+
+Consequently, there exists a $z_{n-1} := \left\lfloor\frac{r_{n-1}}{r_n} \right\rfloor \in\N_+$ that satisfies
+
+$$
+  r_{n-1} = z_{n-1} r_n
+$$
+
+Furthermore, from $\eqref{equation-4}$ it follows that $r_n = r_{n-2} \mod r_{n-1}$ and thus
+
+$$
+\begin{align*}
+  r_{n-2} =& r_n + \left\lfloor\frac{r_{n-2}}{r_{n-1}}\right\rfloor r_{n-1} \\
+  =& \left(\underbrace{:= z_n} + \left\lfloor\frac{r_{n-2}}{r_{n-1}}\right\rfloor z_{n-1} \right)r_n \\
+  =& z_{n-2} r_n
+\end{align*}
+$$
+
+for $z_{n-2} \in\N$. This proves $\eqref{equation-9}$ for $j\in\set{1,2}$. For the induction step, we will show that if there exist $z_{n-(j-1)}, z_{n-j} \in\N$ such that
+
+$$
+\begin{equation*}
+\begin{split}
+  r_{n - (j - 1)} =& z_{n - (j - 1)} r_n \\
+  r_{n-j} = z_{n-j} r_n
+\end{split}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+Then there exists $z_{n-(j+1)}\in\N_+$ satisfying
+
+$$
+  r_{n-(j-1)} = z_{n - (j+1)} r_n
+$$
+
+From the definition $\eqref{equation-4}$ of $r_{n-(j-1)}$ and the assumptions $\eqref{equation-10}$ it follows that
+
+$$
+\begin{align*}
+  r_{n - (j + 1)} =& r_{n - (j-1)} + \left\lfloor\frac{r_{n - (j + 1)}}{r_{n-j}}\right\rfloor r_{n-j} \\
+  =& \underbrace{\left(z_{n-(j-1)} + \left\lfloor\frac{r_{n-(j+1)}}{r_{n-j}}\right\rfloor z_{n-j} \right)}_{:= z_{n - (j + 1)}} r_n \\
+  =& z_{n - (j+1)} r_{n-1}
+\end{align*}
+$$
+
+This completes the inductive proof of $\eqref{equation-9}$. Hence, there xists $z_0, z_{-1} \in\N_+$ such that
+
+$$
+\begin{align*}
+  \min\set{a,b} =& r_0 = z_0 r_n \\
+  \max\set{a,b} =& r_{-1} = z_{-1} r_n
+\end{align*}
+$$
+
+and $r_n$ is a common divisor of $a$ and $b$.
+
+To show that $r_n$ is the greatest such divisior, suppose $g$ is alos a common divisor of $a$ and $b$. Then define $\tilde{a} := a/g \in \N_0$ and $\tilde{b} := b/g \in\N_+$. Applying the algorithm to $\tilde{a}$, $\tilde{b}$ generates $\tilde{r}_j := r_j /g$ and thus $\tilde{r}_n = r_n / g \in\N_+$. In other words, any common divisor of $a$ and $b$ also divides $r_n$. Consequently, $r_n$ is the greatest common divisor of $a$ and $b$. This completes $\eqref{equation-5}$.
+
+To prove $\eqref{equation-6}$, we note that since $r_j < r_{j-1}$, we can apply $\eqref{equation-3}$ to $\eqref{equation-4}$. This implies
+
+$$
+  r_j < \min\Set{\frac{r_{j-2}}{2}, r_{j-1}}
+$$
+
+Repeated application of this yields
+
+$$
+\begin{align*}
+  r_{2k - 1} < \frac{r_{2k - 3}}{2} <\cdots < \frac{r_{-1}}{2^k} =& \frac{\max\set{a,b}}{2^k} \\
+  r_{2k} < \frac{r_{2k - 2}}{2} <\cdots < \frac{r_0}{2^k} =& \frac{\min\set{a,b}}{2^k}
+\end{align*}
+$$
+
+Because of $r_{2k+1} < r_{2k} < r_{2k-1}$, we then have
+
+$$
+  r_{2k + 1} < r_{2k} < \min\Set{\frac{a}{2^k}, \frac{b}{2^k}}
+$$
+
+and thus
+
+$$
+  r_j < \frac{\min\set{a,b}}{2^{\lfloor j/2 \rfloor}}
+$$
+
+Consequently,
+
+$$
+  \left\lfloor\frac{j}{2}\right\rfloor \geq \min\set{\log_2  (a), \log_2 (b)} \implies r_j = 0
+$$
+
+Since $n$ per definition in $\eqref{equation-5}$ is the biggest number that still satisfies $r_n > 0$, it follows that
+
+$$
+  \left\lfloor\frac{n}{2}\right\rfloor < \min\set{\log_2 (a), \log_2 (b)}
+$$
+
+This in turn implies
+
+$$
+  n < 2\min\set{\log_2 (a), \log_2 (b)} + 1
+$$
+
+In order to prove $\eqref{equation-8}$, we show, again by a two-step induction, that
+
+$$
+\begin{equation*}
+  r_{-1} s_j + r_0 t_j = r
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+The induction hypothesis is given by $j\in\set{-1,0}$ because the defining equations $\eqref{equation-6}$-$\eqref{equation-8}$ imply
+
+$$
+\begin{align*}
+  r_{-1} s_{-1} + r_0 t_{-1} =& r_{-1} \\
+  r_{-1} s_0 + r_0 t_0 = r_0
+\end{align*}
+$$
+
+In order to verify the induction step from $j$ to $j+1$, we suppose that $\eqref{equation-11}$ holds for $j$ and $j-1$. Then it follows that
+
+$$
+\begin{align*}
+  r_{-1} s_{j+1} + r_0 t_{j+1} =& r_{-1} \left(s_{j-1} - \left\lfloor \frac{r_{j-1}}{r_j} \right\rfloor s_j \right) + r_0 \left(t_{j-1} - \left\lfloor \frac{r_{j-1}}{r_j} \right\rfloor t_j \right) \\
+  =& \underbrace{r_{-1} s_{j-1} + r_0 t_{j-1}}_{r_{j-1}} + \left\lfloor\frac{r_{j-1}}{r_j}\right\rfloor \underbrace{(r_{-1} s_j + r_0 t_j)}_{=r_j} \\
+  =& r_{j-1} - \left\lfloor\frac{r_{j-1}}{r_j} \right\rfloor r_j = r_{j+1}
+\end{align*}
+$$
+
+This proves $\eqref{equation-11}$ and the claim $\eqref{equation-8}$ from the case $j = n$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $a,b\in\N_+$. For $a,b \to\infty$, the number of computational steps required to calculate $\gcd(a, b)$ scales as $O(\log_2^3 (\min\set{a,b}))$.
+
+<details>
+<summary>Proof</summary>
+
+Applying the extended Euclid algorithm (Theorem $\ref{theorem-1}$) to calculate $\gcd(a,b)$, we need to compute expressions of the for $u\mod b$, starting with $a\mod b$ as shown in $\eqref{equation-4}$. By Lemma $\ref{lemma-1}$, the number of computational steps for each calculation of $a\mod b$ scales as $O(\log_2^2 (\min\set{a,b}))$ for $a,b\to\infty$. From $\eqref{equation-7}$ we infer that in the Euclid algorith the number of times we have to calculate expressions of the form $u\mod v$ grows with $a,b\to\infty$ as $O(\log_2 (\min\set{a,b}))$. By properties of the big O symbol, the total effort to calculate $\gcd(a,b)$ is given by $O(\log_2^3 (\min\set{a,b}))$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-1'>
+Let $u,v,u_j \in\Z$ and $k, a, N\in\N$. Then
+1. $u(v\mod N)\mod N = uv\mod N$
+2. $\left(\prod_{j=1}^k (u_j \mod N) \right) \mod N = \left(\prod_{j=1}^k u_j \right) \mod N$
+3. $(u^a \mod N)^k \mod N = u^{ak} \mod N$
+4. $\left(\sum_{j=1}^k (u_j \mod N) \right) \mod N = \left(\sum_{j=1}^k u_j \right)$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Repeated application of $\eqref{equation-1}$ for evaluating $u(v\mod N) \mod N$ yields
+
+$$
+\begin{align*}
+  u(v\mod N) \mod N =& u(v\mod N) - \left\lfloor\frac{u(v\mod N)}{N}\right\rfloor N \\
+  =& u\left(v - \left\lfloor\frac{v}{N}\right\rfloor N\right) - \left\lfoor\frac{u\left(v - \left\lfloor\frac{v}{N}\right\rfloor N\right) N}{N}\right\rfloor N \\
+  =& uv - u\left\lfloor\frac{v}{N}\right\rfloor N - \left\lfloor \frac{uv}{N} - u \left\lfloor\frac{v}{N}\right\rfloor \right\rfloor N \\
+  =& uv - u \left\lfloor\frac{v}{N}\right\rfloor N - \left\lfloor\frac{uv}{N}\right\rfloor N + u \left\lfloor\frac{v}{N}\right\rfloor N \\
+  =& uv - \left\lfloor\frac{uv}{N}\right\rfloor
+\end{align*}
+$$
+
+**(2):** This follows by repeated application of **(1)**.
+
+**(3):** With $u_j = u$, this follows as a special case of **(2)**.
+
+**(4):** By $\eqref{equation-1}$, we find for $u_1, u_2 \in\Z$
+
+$$
+\begin{align*}
+  (u_1 \mod N + u_2 \mod N)\mod N =& \left(u_1 - \left\lfloor\frac{u_1}{N}\right\rfloor N + u_2 - \left\lfloor\frac{u_2}{N}\right\rfloor N \right) \mod N \\
+  =& u_1 - \left\lfloor\frac{u_1}{N}\right\rfloor N + u_2 - \left\lfloor\frac{u_2}{N}\right\rfloor \\
+  &- \left\lfloor\frac{u_1 - \left\lfloor\frac{u_1}{N}\right\rfloor N + u_2 - \left\lfloor\frac{u_2}{N}}{N}\right\rfloor N \\
+  =& u_1 + u_2 - \left\lfloor\frac{u_1}{N}\right\rfloor N - \left\lfloor\frac{u_2}{N}\right\rfloor \\
+  &- \left\lfloor \frac{u_1 + u_2}{N} - \left\lfloor\frac{u_1}{N}\right\rfloor - \left\lfloor\frac{u_2}{N}\right\rfloor \right\rfloor N \\
+  =& u_1 + u_2 - \left\lfloor\frac{u_1}{N}\right\rfloor N - \left\lfloor\frac{u_2}{N}\right\rfloor N \\
+  &- \left(\left\lfloor\frac{u_1 + u_2}{N}\right\rfloor - \left\lfloor\frac{u_1}{N}\right\rfloor - \left\lfloor\frac{u_2}{N}\right\rfloor \right) N \\
+  =& u_1 + u_2 - \left\lfloor\frac{u_1 + u_2}{N}\right\rfloor \\
+  =& (u_1 + u_2) \mod N
+\end{align*}
+$$
+
+The claim follows by repeating this process.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $a,b,c\in\Z$ and $N\in\N$ with $c \neq 0$ and $\gcd(N,c) = 1$. Then
+
+$$
+\begin{equation*}
+  a\mod N = b\mod N \iff ac\mod N = bc\mod N
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):** By definition we have
+
+$$
+\begin{align*}
+  &a\mod N = b\mod N \\
+  \iff& a - \left\lfloor\frac{a}{N}\right\rfloor N = b - \left\lfloor\frac{b}{N}\right\rfloor N \\
+  \iff& ac = bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right) Nc
+\end{align*}
+$$
+
+such that
+
+$$
+\begin{align*}
+  ac\mod N =& ac - \left\lfloor\frac{ac}{N}\right\rfloor N \\
+  =& bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right)Nc - \left\lfloor\frac{bc + \left(\left\lfloor\frac{a}{N}\right\rfloor - \left\lfloor\frac{b}{N}\right\rfloor \right)Nc}{N}\right\rfloor N \\
+  =& bc - \left\lfloor\frac{bc}{N}\right\rfloor N = bc\mod N
+\end{align*}
+$$
+
+**($\impliedby$):** Let $ac\mod N = bc\mod N$. Then there exists $z\in\Z$ such that
+
+$$
+  a - b = \frac{z}{n} N \in\Z
+$$
+
+Since $c$ and $N$ are coprime, we must have $z/c\in\Z$. Thus, $(a - b) \mod N = 0$, and it follows from $\eqref{equation-2}$ that $a\mod N = b\mod N$.
+</details>
+</MathBox>
+
+<MathBox title='Multiplicative inverse' boxType='definition'>
+Let $b,N\in\N$ with $\gcd(b,N) = 1$. The *multiplicative invserse* modulo $N$ of $b$ is denoted by $b^{-1} \mod N$ and is defined as the number $x\in\set{1,\dots,N-1}$ that satisfies
+
+$$
+  bx \mod N = 1
+$$
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $b,N\in\N$ with $\gcd(b,N) = 1$ and let $x,y\in\Z$ be a solution of
+
+$$
+\begin{equation*}
+  bx + Ny = 1
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+Then $x\mod N$ is the uniquely determined multiplicative inverse of $b$ modulo $N$, i.e. it satisfies
+
+$$
+  (b(x\mod N)) \mod N = 1
+$$
+
+<details>
+<summary>Proof</summary>
+
+**Uniqueness**
+
+Let $u$ and $v$ be two multiplicative inverses for $b$ modulo $N$, that is, suppose $u,v\in\set{1,\dots,N-1}$ are such that $bu \mod N = 1 = bv\mod N$. Because of $\gcd(b,N) = 1$ and $\eqref{equation-12}$, then $bu\mod N = bv\mod N$ implies that $u\mod N = v\mod N$. From $\eqref{equation-2}$ we know that $N$ divides $u - v$. Since $0 < u$, $v < N$, it thus follows that $u = v$.
+
+**Existence**
+
+Applying the extended Euclid algorithm (Theorem $\ref{theorem-1})$ to $b$ and $N$, and using the factor that $\gcd(b,N)$ to $x$ and $y$ satisfying $\eqref{equation-13}$. Then we have
+
+$$
+  b(x\mod N) \mod N = bx\mod N = bx\mod N = (1 - Ny) \mod N =1
+$$
+
+and since $0 < x\mod N < N$, it follows that $x\mod N$ satisfies all the defining properties of the multiplicative inverse of $b$ modulo $N$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Any $a,b,N\in\N_+$ with $N > 1$ satisfy
+
+$$
+  ab\mod N = 0 \implies \gcd(a,N) \gcd(b,N) > 1
+$$
+
+In particular, if $N$ is prime, then
+
+$$
+  ab\mod N = 0 \iff a\mod N = 0 \lor b\mod N = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $ab\mod N = 0$. Then there exists $q\in\N$ such that $ab = qN$. From the prime decomposition of this equation
+
+$$
+  \overbrace{p_1^{\alpha_1} \dots p_s^{\alpha_s}}^{=a} \overbrace{p_1^{\beta_1} \dots p_r^{\beta_r}}^{=b} = \overbrace{p_1^{\kappa} \dots p_v^{\kappa_v}}^{=q} \overbrace{p_1^{\nu_1} \dots p_u^{\nu_u}}^{=N}
+$$
+
+we see that the prime factors of $N$ have to be contained in those of $a$ or $b$, and thus that $a$ or $b$ must have common divisors with $N$, that is, $\gcd(a,N) > 1$ or $\gcd(b,N) > 1$.
+
+If $N$ is prime and $N\mid ab$ holds, then $N$ must be contained in $a$ or $b$ as a prime factor. Conversely, $a\mod N = 0$ implies $N\mid a$ and $b\mod N = 0$ implies $N|b$. Either case has $N\mid ab$ as a consequence.
+</details>
+</MathBox>
+
+<MathBox title='Euler function' boxType='definition'>
+The Euler function $\phi:\N\to\N$ is defined as
+
+$$
+  \phi(n) := \left| \set{r\in{1,\dots,n-1} | \gcd(r,n) = 1} \right|
+$$
+
+That is, $\phi(n)$ is the number of all $r\in\N$ with $1\leq r < n$ that have no common divisor (are coprime) with $n$.
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-5'>
+For $p, k\in\N_+$ with $p$ prime, we have
+
+$$
+  \phi(p^k) = p^{k-1} (p - 1)
+$$
+
+<details>
+<summary>Proof</summary>
+
+In the set $\set{1,\dots,p^k - 1}$, the only numbers sharing a nontrivial common divisor with $p^k$ are the multiplies of $p$, i.e. $p,2p,\dots,(p^{k-1} - 1)p$. There are exactly $p^{k-1} - 1$ such numbers. Thus, the number $\phi(p^k)$ of those which are coprime with $p^k$ is given by $\phi(p^k) = p^k - 1 - (p^{k-1} - 1) = p^{k-1} (p - 1)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $p$ and $q$ be primes such that $p > q$ and let $N = pq$. Then we have
+
+$$
+  \phi(N) = (p - 1)(q - 1)
+$$
+
+and with
+
+$$
+\begin{equation*}
+\begin{split}
+  S :=& N + 1 - \phi(N) \\
+  D :=& \sqrt{S^2 - 4N} > 0
+\end{split}
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+furthermore
+
+$$
+\begin{equation*}
+\begin{split}
+  p =& \frac{S + D}{2} \\
+  q =& \frac{S - D}{2}
+\end{split}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $p$ and $q$ are different primes, we find that among the $N - 1$ natural numbers smaller than $N = pq$ only the muliples of $q$, $\set{q, 2q,\dots, (p-1)q}$, and multiples of $p$, $\set{p, 2p, (q-1)p}$ have a common divisor with $N$. Thus, we have
+
+$$
+\begin{align*}
+  \phi(N) =& N - 1 - (p - 1) - (q - 1) \\
+  =& pq - (p + q) + 1 = (p - 1)(q - 1)
+\end{align*}
+$$
+
+Together with $\eqref{equation-13}$, this implies
+
+$$
+  S = p + q,\quad D = p - q
+$$
+
+from which $\eqref{equation-14}$ follows.
+</details>
+</MathBox>
+
+<MathBox title="Eulers's theorem" boxType='theorem' tag='theorem-2'>
+Any coprime $b,n \in\N$ satisfy
+
+$$
+\begin{equation*}
+  b^{\phi(N)} \mod N = 1
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+First, we define $a_j := r_j b \mod N$ for all $r_j \in\N_+$ with $1 \leq r_j < N$ and $\gcd(r_j, N) = 1$ and set
+
+$$
+  P := \left(\prod_{j=1}^{\phi(N)} a_j \right) \mod N
+$$
+
+From Proposition $\ref{proposition-1}$.2 it follows that
+
+$$
+\begin{equation*}
+  P = \left(b^{\phi(N)} \prod_{j=1}^{\phi(N)} \right) \mod N
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+For $j \neq k$ we have that $a_j \neq a_k$. To see this, suppose $a_j = a_k$, i.e. $r_j b \mod N = r_k b \mod N$. Since $b$ and $N$ are coprime, Lemma $\ref{lemma-2}$ implies that $r_j \mod N = r_k \mod N$. Because of the assumption $1 \leq r_j$, $r_k < N$, it follows that $r_j = r_k$ and thus $j = k$. Hence $a_j \neq a_k$ for $j \neq k$. Since $r_j$ and $N$ as ell as $b$ and $N$ are coprime, it follows that also $r_j b$ and $N$ are coprime, i.e.
+
+$$
+\begin{equation*}
+  \gcd(r_j b, N) = 1
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Suppose $a_j = r_j b \mod N$ has a common divisor $s > 1$ with $N$ such that $a_j = us$ and $N = vs$. Then there exists a $k\in\Z$ such that $us = r_j b + kvs$, which is equivalent to $r_j b = (u - kv)s$. This, however, would imply that $r_j b$ and $N$ have a common divisor $s > 1$, which contradicts $\eqref{equation-16}$. Consequently, all $a_j$ are coprime with $N$ and there exist $\phi(N)$ distinct $a_j$ with $1 \leq a_j < N$. This means that the set of the $a_j$ is a permutation of the set of the $r_j$, and thus
+
+$$
+  P = \left(\prod_{j=1}^{\phi(N)} a_j \right) \mod N = \left(\prod_{j=1}^{\phi(N)} r_j \right) \mod N
+$$
+
+which, together with $\eqref{equation-17}$, yields
+
+$$
+\begin{equation*}
+  \left(b^{\phi(N)} \prod_{j=1}^{\phi(N)} r_j \right) \mod N = \left(\prod_{j=1}^{\phi(N)} \right) \mod N
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+Since $N$ and all $r_j$ are coprime, we can apply Lemma $\ref{lemma-2}$ to $\eqref{equation-18}$ to obtain
+
+$$
+  b^{\phi(N)} \mod N = 1
+$$
+</details>
+</MathBox>
+
+<MathBox title="Fermat's little theorem" boxType='corollary'>
+Any $b\in\N$ and prime $p\in\N$ with the property $p \nmid b$ satisfy
+
+$$
+\begin{equation*}
+  b^{p-1} \mod p = 1
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $p$ is prime, it follows that $\phi(p) = p - 1$. The condition $p \nmid b$ implies that $\gcd(p,b) = 1$. By Euler's theorem (Theorem $\ref{theorem-2}$), we have 
+
+$$
+  b^{p-1} \mod p = 1
+$$
+</details>
+</MathBox>
+
+<MathBox title='Modulo order' boxType='definition' tag='definition-1'>
+For $a,N\in\N$ with $\gcd(a,N) = 1$ we define the order of $a \mod N$ as
+
+$$
+  \operatorname{ord}_N (a) := \min\set{m\in\N_+ | a^m \mod N = 1}
+$$
+
+If $\operatorname{ord}_N (a) = \phi(N)$, then $a$ is called a *primitive root* modulo $N$.
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-2'>
+Let $a,b, N\in\N$ with $\gcd(a,N) = 1 = \gcd(b,N)$. Then the following hold
+1. For all $k\in\N$
+$$
+  a^k \mod N = 1 \iff \operatorname{ord}_N (a) | k
+$$
+2. $\operatorname{ord}_N (a) | \phi(N$
+3. If $\operatorname{ord}_N (a)$ and $\operatorname{ord}_N (b)$ are coprime, then
+$$
+  \operatorname{ord}_N (ab) = \operatorname{ord}_N (a) \operatorname{ord}_N (b)
+$$
+
+If $a$ is a primitive root modulo $N$, that is, if it also satisfies $\operatorname{ord}_N (a) = \phi(N)$, then we also have
+4.
+$$
+  \set{d \in\set{1,\dots,N-1} | \gcd(d,N) = 1} = \set{a^j \mod N | j\in\set{1,\dots,\phi(N)}}
+$$
+5. If $b = a^j \mod N$ for $j\in\N$ then
+$$
+  \operatorname{ord}_N (b) = \operatorname{ord}_N (a^j) = \frac{\phi(N)}{\gcd(j, \phi(j, \phi(N)))}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** To show $\implies$, let $a^k \mod N = 1$ for $k \in\N_+$. Then $k \geq\operatorname{ord}_N (a)$ has to hold since $\operatorname{ord}_N (a)$ is per definition the smallest such number. Let $c = k\mod \operatorname{ord}_N (a)$, i.e. $c \in\N_0$ with $c < \operatorname{ord}_N (a)$ and there is an $l\in\Z$ such that $k = \operatorname{ord}_N (a) l + c$ and thus $a^k = a^{\operatorname{ord}_N (a) l + c} = (a^{\operatorname{ord}_N (a) l}) a^c$. This implies
+
+$$
+\begin{align*}
+  1 =& a^k \mod N = (a^{\operatorname{ord}_N (a) l}) a^c \mod N \\
+  =& (a^{\operatorname{ord}_N (a)l} \mod N) (a^c \mod N) \mod N \\
+  =& (\underbrace{a^{\operatorname{ord}_N (a)} \mod N}_{=1})^l (a^c \mod N) \mod N \\
+  =& (a^c \mod N) \mod N = a^c \mod N
+\end{align*}
+$$
+
+By construction, we have $c < \operatorname{ord}_N (a)$ and since $\operatorname{ord}_N (a)$ is per definition the smallest natural number $k\in\N$ satisfying $a^k \mod N = 1$ it follows that $c$ has to vanish and thus $\operatorname{ord}_N (a) \mid k$.
+
+To show $\impliedby$ let $\operatorname{ord}_N (a) \mid k$. Hence, there is a natural number $l$ such that $k = \operatorname{ord}_N (a)l$ and thus
+
+$$
+\begin{align*}
+  a^k \mod N =& (a^{\operatorname{ord}_N (a)})^l \mod N \\
+  =& (\underbrace{a^{\operatorname{ord}_N (a)} \mod N}_{=1})^l \mod N \\
+  = 1 \mod N = 1
+\end{align*}
+$$
+
+**(2):** By Euler's theorem (Theorem $\ref{theorem-2}$), we have $a^{\phi(N)} \mod N = 1$, and thus **(2)** follows from **(1)**.
+
+**(3):** Consider first that
+
+$$
+\begin{align*}
+  &(ab)^{\operatorname{ord}_N (a) \operatorname{ord}_N (b)} \mod N \\
+  =& \left((a^{\operatorname{ord}_N (a) \operatorname{ord}_N (b)} \mod N)(b^{\operatorname{ord}_N (b) \operatorname{ord}_N (a)} \mod N)\right) \mod N \\
+  =& ((\underbrace{a^{\operatorname{ord}_N (a)} \mod N}_{=1})^{\operatorname{ord}_N (b)} \mod N \\
+  &\times (\underbrace{b^{\operatorname{ord}_N (b)} \mod N}_{=1})^{\operatorname{ord}_N (a)} \mod N) \mod N \\
+  =& 1 \mod N = 1
+\end{align*}
+$$
+
+and from **(1)** it follows that 
+
+$$
+\begin{equation*}
+  \operatorname{ord}_N (ab) \mid \operatorname{ord}_N (a) \operatorname{ord}_N (b)
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+Analogously, it follows that
+
+$$
+\begin{align*}
+  & a^{\operatorname{ord}_N (b) \operatorname{ord}_N (ab)} \mod N \\
+  =& (a^{\operatorname{ord}}_N (b) \operatorname{ord}_N (ab) \mod N) (\underbrace{b^{\operatorname{ord}_N (b)} \mod N}_{=1})^{\operatorname{ord}_N (ab)} \mod N \\
+  =& (ab)^{\operatorname{ord}_N (b) \operatorname{ord}_N (ab)} \mod N \\
+  =& (\underbrace{(ab)^{\operatorname{ord}_N (b) \operatorname{ord}_N (ab)} \mod N}_{=1})^{\operatorname{ord}_N (b)} \mod N \\
+  =& 1
+\end{align*}
+$$
+
+and from **(1)** it follows that 
+
+$$
+  \operatorname{ord}_N (a) \mid \operatorname{ord}_N (b) \operatorname{ord}_N (ab)
+$$
+
+However, by assumption $\operatorname{ord}_N (a)$ and $\operatorname{ord}_N (b)$ are coprimes, which implies
+
+$$
+  \operatorname{ord}_N (a) \mid \operatorname{ord}_N (ab)
+$$
+
+Analogously for $b^{\operatorname{ord}_N (a) \operatorname{ord}_N (ab)} \mod N$, we find
+
+$$
+  \operatorname{ord}_N (b) \mid \operatorname{ord}_N (ab)
+$$
+
+Since $\operatorname{ord}_N (a)$ and $\operatorname{ord}_N (b)$ are coprimes, it follows that
+
+$$
+\begin{equation*}
+  \operatorname{ord}_N (a) \operatorname{ord}_N (b) | \operatorname{ord}_N (ab)
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+Combining $\eqref{equation-20}$ and $\eqref{equation-21}$ leads to $\operatorname{ord}_N (ab) = \operatorname{ord}_N (a) \operatorname{ord}_N (ab)$.
+
+**(4):** We first show the inclusion
+
+$$
+\begin{equation*}
+  \set{a^j \mod N}_{j=1}^{\phi(N)} \subset \set{d|\gcd(d,N) = 1}_{d=1}^{N-1}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+Then we will prove that the two sets share the same cardinality and are thus identical. To verify the inclsuion, wew show that the elements of $\set{a^j \mod N}_{j=1}^{\phi(N)}$ have the property $\gcd(a^j \mod N, N) = 1$. To show this, suppose $l\in\N_+$ is a common divisor of $a^j \mod N$ and $N$. That is, suppose that there exist $u,v\in\N$ satisfying
+
+$$
+\begin{equation*}
+\begin{split}
+  a^j \mod N =& lu \\
+  N =& lv
+\end{split}
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+Then it follows that 
+
+$$
+  lu = a^j \mod N = a^j - \left\lfloor\frac{a^j}{N}\right\rfloor N = a^j - \left\lfloor\frac{a_j}{N}\right\rfloor lv
+$$
+
+and thus $l\mid a^j$. Consequently, every prime factor of $l$ would be a prime factor of $a$ as well. By $\eqref{equation-22}$, such prime factor would then be divisors of $a$ and $N$. However, by assumption we have $\gcd(a,N) = 1$. Hence, we must have $l = 1$, which implies $\gcd(a^j \mod N, N) = 1$ and the inclusion $\eqref{equation-23}$ is proven.
+
+It remains to show that $|\set{a^j \mod N}_{j=1}^{\phi(N)}| = \phi(N)$. Let $i,j\in\N_+$ be such that $1 \leq i \leq j \leq\phi(N)$ and suppose that
+
+$$
+\begin{equation*}
+  a^j \mod N = a^i \mod N
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+With the assumption $\gcd(a,N) = 1$, it follows from $\eqref{equation-24}$ with Lemma $\ref{lemma-2}$ that
+
+$$
+  a^{j-i} \mod N = 1
+$$
+
+which together with $0 < j - i < \phi(N)$, contradicts the assumption that $a$ is a primitive root, which means that $\operatorname{ord}_N (a) = \phi(N)$. Thus, the set $\set{a^j \mod N}_{j=1}^{\phi(N)}$ contains exactly $\phi(N)$ distinct elements each of which is coprime to $N$. This completes the proof of **(3)**.
+
+**(5):** We first show that $b = a^j \mod N$ implies
+
+$$
+\begin{equation*}
+  \operatorname{ord}_N (b) = \operatorname{ord}_N (a^j)
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+We have
+
+$$
+\begin{align*}
+  1 =& b^{\operatorname{ord}_N (b)} \mod N = (a^j \mod N)^{\operatorname{ord}_N (b)} \mod N \\
+  =& (a^j)^{\operatorname{ord}_N (b)} \mod N
+\end{align*}
+$$
+
+which implies $\operatorname{ord}_N (a^j) \leq \operatorname{ord}_N (b)$. Conversely, it follows from
+
+$$
+\begin{align*}
+  1 =& (a^j)^{\operatorname{ord}_N (a^j)} \mod N \\
+  =& (a^j \mod N)^{\operatorname{ord}_N (a_j)} \mod N \\
+  =& (b)^{\operatorname{ord}_N (a^j) \mod N}
+\end{align*}
+$$
+
+that $\operatorname{ord}_N (b) \leq \operatorname{ord}_N (a^j)$ and thus $\eqref{equation-25}$ holds.
+
+For the right side of **(5)** we know from **(1)** that
+
+$$
+  \operatorname{ord}_N (a^j) \mid\phi(N)
+$$
+
+that is, there exists $m_1 \in\N_+$ such that
+
+$$
+\begin{equation*}
+  m_1 \operatorname{ord}_N (a^j) = \phi(N)
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+Furthermore, 
+
+$$
+  1 = (a^j)^{\operatorname{ord}_N (a_j)} \mod N = a^{\operatorname{ord}_N (a^j) j} \mod N
+$$
+
+implies that $\operatorname{ord}_N (a) \mid \operatorname{ord}_N (a^j) j$.
+
+From the assumption $\operatorname{ord}_N (a) = \phi(N)$ follows the existence of $m_2 \in\N_+$ such that
+
+$$
+\begin{equation*}
+  m_2 \phi(N) = \operatorname{ord}_N (a^j)  j
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+Inserting $\eqref{equation-26}$ into $\eqref{equation-27}$ yields $m_1 \mid j$. From $\eqref{equation-26}$ we obtain 
+
+$$
+  \operatorname{ord}_N (a^j) = \frac{\phi(N)}{m_1}
+$$
+
+and $m_1$ divides $\phi(N)$ as well as $j$. That $m_1$ is the greatest such divisor can be seen as follows. Suppose that
+
+$$
+  m_1 < \tilde{m} := \gcd(j, \phi(N))
+$$
+
+Then we would have for
+
+$$
+  \tilde{r} := \frac{\phi(N)}{\tilde{m}} < \frac{\phi(N)}{m_1} = \operatorname{ord}_N (a^j)
+$$
+
+that
+
+$$
+\begin{align*}
+  (a^j)^{\tilde{r}} \mod N =& (a^j)^{\phi(N)/m} \mod N \\
+  =& (a^{\phi(N)})^{j/m} \mod N \\
+  =& (\underbrace{a^{\phi(N)} \mod N}_{=1})^{j/m} \mod N = 1
+\end{align*}
+$$
+
+This contradicts the fact that $\operatorname{ord}_N (a^j)$ is, by definition, the smallest natural number with the property $(a^j)^r \mod N = 1$. Consequently, we must have $m_1 = \gcd(j, \phi(N))$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-3'>
+Let $p\in\N_+$ be prime, $k\in\N_0$ and $\set{f_j}_{j=1}^k \subset\Z$ with $p \nmid f_k$. Define the polynomial $f:\Z\to\Z$ by
+
+$$
+  f(x) := \sum_{j=0}^k f_j x^j
+$$
+
+Then either
+- $f$ has at most $k$ distinct roots modulo $p$ in $\set{1,\dots,p-1}\subset\N$, that is, in $\set{1,\dots,p-1}$ there are no more than $k$ distinct natural numbers $n_j\in\N_+$ that satisfy
+$$
+  f(n_j) \mod p = 0
+$$
+- $f$ is the zero polynomial modulo $p$, i.e. $f(x) \mod p = 0$ for all $x\in\Z$
+
+<details>
+<summary>Proof</summary>
+
+We show this by induction in the degree of the polynomial. For the base case $k = 0$, if $f(x) = f_0 \neq 0$ such that $p \nmid f_0$, then it follows that $f_0 \mod p \neq 0$, and there is no $x\in\Z$ with $f(x) \mod p = 0$. If $f_0 = 0$, then $f$ is the zero polynomial.
+
+For induction hypothesis, suppose the claim holds for all polynomials of degree up to $k - 1$, and $f$ is a polynomial of degree $k$. If $f$ has fewer than $k$ zeros modulo $p$ in $\set{1,\dots,p-1}$, then claim holds already. Otherwise, let $n_1,\dots,n_k$ be $k$ arbitrarily selected zeroes of $f modulo p$ from the set $\set{1,\dots,p-1}$. Then
+
+$$
+\begin{equation*}
+  g(x) := f(x) - f_k \prod_{j=1}^k (x - n_j) = \prod_{l=0}^{k-1} g_l x^l
+\tag{\label{equation-43}}
+\end{equation*}
+$$
+
+is a polynomial of degree not exceeding $k-1$.
+
+Furthemore, every of the $k$ selected zeroes $n_l \in\set{n_1,\dots,n_k}$ satisfies
+
+$$
+\begin{equation*}
+\begin{split}
+  g(n_l) \mod p =& \left(f(n_l) - f_k \prod_{j=1}^k (n_l - n_j) \right) \mod p \\
+  =& f(n_l) \mod p = 0
+\end{split}
+\tag{\label{equation-28}}
+\end{equation*}
+$$
+
+Set $m := \max\set{l | p \nmid g_l}_{l=0}^{k-1}$ and
+
+$$
+  \tilde{g}(x) := \sum_{l=0}^m g_l x^l
+$$
+
+Since then $p | g_l$ for all $l > m$, we have for all $x\in\Z$ that
+
+$$
+\begin{equation*}
+\begin{split}
+  \tilde{g}(x) \mod p =& \left(\sum_{l=0}^m g_l x^l \right) \mod p \\
+  =& \left(\sum_{l=0}^{k-1} g_l x^l \right) \mod p \\
+  =& g(x) \mod p
+\end{split}
+\tag{\label{equation-29}}
+\end{equation*}
+$$
+
+and the set of roots module $p$ of $\tilde{g}$ and $g$ coincide. Because of this and $\eqref{equation-28}$, $\tilde{g}$ has at least $k$ roots modulo $p$. At the same time $\tilde{g}$ is a polynomial of degree not exceeding $k -1 $ and thus satisfies the inductive assumption, which then implies that $\tilde{g}$. By $\eqref{equation-29}$, also $g$ can only be the zero-polynomial modulo $p$, i.e.
+
+$$
+  g(x) \mod p = 0, \; \forall x\in Z
+$$
+
+With $\eqref{equation-43}$
+
+$$
+  f(x) \mod p = f_k \prod_{j=1}^k (x - n_j) \mod p
+$$
+
+and for an arbitrary zero $z$ of $f$ modulo $p$ we have
+
+$$
+  0 = f(z) \mod p = f_k \prod_{j=1}^k (z - n_j) \mod p
+$$
+
+Since by assumption $p \nmid f_k$, one of the factors in $\prod_{j=1}^k (z - n_j)$ has to satisfy
+
+$$
+  (z - n_j) \mod p = 0
+$$
+
+Since we choose $n_j$ from $\set{1_0,\dots,p - 1}$, it follows that $z\mod p = n_j$, and $z$ is either one of the $k$ zeroes selected from $\set{1,\dots,p - 1}$ or differs from one of these by a multiple of $p$ and is thus not an element of the set $\set{1,\dots,p - 1}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-4'>
+Let $p\in\N_+$ be prime, and let $d\in\N_+$ be such that $d\mid p-1$. Define the polynomial $h:\Z\to\Z$ by
+
+$$
+  h(x) := x^d - 1
+$$
+
+Then $h$ has exactly $d$ distinct roots modulo $p$ in $\set{1,\dots,p-1} \subset\N$, that is, in $\set{1,\dots,p-1}$ there are exactly $d$ distinct natural numbers $n_j \in\N_+$ satisfying
+
+$$
+  h(n_j) \mod p = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $d\mid (p-1)$, there exists $k\in\N_+$ such that $p - 1 = dk$. Consider the polynomial
+
+$$
+  f(x) := \sum_{l=0}^{k-1} (x^d)^l
+$$
+
+Then
+
+$$
+\begin{align*}
+  g(x) :=& h(x) f(x) = (x^d - 1) \sum_{l=0}^{k-1} (x^d)^l \\
+  =& x^{p-1} - 1
+\end{align*}
+$$
+
+Since $p - 1 = \phi(p)$, and by Euler's theorem (Theorem $\ref{theorem-2}$), we have $a^{\phi(p)} \mod p = 1$ for all $a\in\set{1,\dot,p-1}$, it follows that for all $z\in\set{1,\dots,p-1}$
+
+$$
+  z^{p-1} \mod p = 1
+$$
+
+Hence, all $p-1 = dk$ natural numbers in $\set{1,\dots,p-1}$ are zeroes modulo $p$ of the polynomial $g$. Since $p$ is prime and $g = hf$, each of the $dk$ zeroes $n_j \in\set{1,\dots,p-1}$ of $g$ modulo $p$ has to satisfy
+
+$$
+  h(n_j) \mod p = 0 \lor f(n_j) \mod p = 0
+$$
+
+By Lemma $\ref{lemma-3}$, the polynomil $h$ has at most $d$ and the polynomial $f$ has at most $d(k-1)$ zeroes modulo $p$ in $\set{1,\dots,p-1}$. Denoting the number of zeroes modulo $p$ in $\set{1,\dots,p-1}$ of the polynomials $g$, $h$ and $f$ by $N_g$, $N_h$ and $N_f$, we have thus
+
+$$
+  dk = N_g \leq N_h + N_f \leq d + d(k-1) = dk
+$$
+
+This can only be true if $f$ has exactly $d(k-1)$ and $h$ has exactly $d$ zeroes.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+For every odd prime $p\in\N_+$ there exists at least one primitive root $a\in\N$ modulo $p$ satisfying
+
+$$
+  \operatorname{ord}_p (a) = \phi(p)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $q\in\N_+$ be a prime factor of $p - 1$, that is, there exists $k_q \in\N_+$ such that $q^{k_q} | p - 1$. From Lemma $\ref{lemma-4}$ we know that the polynomial $h(x) := x^{q^{k_q}} - 1$ has exactly $q^{k_q}$ roots modulo $p$ in $\set{1,\dots,p-1}$. Let $a_q$ be a root of $h$ that satisfies
+
+$$
+  \left(a_q^{q^{k_q}} - 1 \right) \mod p = 0
+$$
+
+and thus
+
+$$
+  a_q^{q^{k_q}} \mod p = 1
+$$
+
+Since $a_q \in\set{1,\dots,p-1}$ and $\gcd(a_q, p) = 1$, it follows from Proposition $\ref{proposition-2}.1$ that
+
+$$
+  \operatorname{ord}_p (a_q) \mid q^{k_q}
+$$
+
+If the root $a_q$ of $h$ has the additional property $\operatorname{ord}_p (a_q) \mid q^j$ for $j\in\N_+$ with $j < k_q$, then $\operatorname{ord}_p (a_q) \mid q^{k_q - 1}$ holds. This means that there is $n\in\N$ with $q^{k_q} - 1 = \operatorname{ord}_p (a_q) n$ and thus by Proposition $\ref{proposition-2}.1$
+
+$$
+  a_q^{q^{k_q} - 1} \mod p = 1
+$$
+
+Hence $a_q \in\set{1,\dots,p-1}$ is a root modulo $p$ of the polynomial $f(x) := x^{q^{k_q - 1}} - 1$. By Lemma $\ref{lemma-4}$, there are exactly $q^{k_q - 1}$ roots modulo $p$ of $f$. Of the  $q^{k_q}$ roots modulo $p$ in $\set{1,\dots,p-1}$ of $h$ at most $q^{k_q - 1}$ can be roots of $f$ as well. This means that of the $q^{k_q}$ roots $a_q$ of $h$ at most $q^{k_q - 1}$ such $a_q$ exist that alos satisfy in addition $\operatorname{ord}_p (a_q) \mid q^j$ with $j < k_q$. Consequently, there remain $q^{k_q} - q^{k_q - 1}$ roots $a_q \in\set{1,\dots,p-1}$ that satisfy
+
+$$
+\begin{equation*}
+  \operatorname{ord}_p (a_q) \mid q^{k_q} \land \operatorname{ord}_p (a_q) \nmid q^j \; \forall j < k_q
+\tag{\label{equation-30}}
+\end{equation*}
+$$
+
+Since $q$ is assumed prime, it follows for the $q^{k_q} - q^{k_q - 1}$ numbers $a_q$ satisfying $\eqref{equation-30}$ that
+
+$$
+  q^{k_q} = \operatorname{ord}_p (a_q)
+$$
+
+Now, let
+
+$$
+  p - 1 = \prod_{q\in \operatorname{Pri}(p-1)} a_q
+$$
+
+For arbitrary $q_1, q_2 \in\operatorname{Pri}(p-1)$ with $q_1 \neq q_2$ we have
+
+$$
+  \gcd(\operatorname{ord}_p (a_{q_1}), \operatorname{ord}_p (a_{q_2})) = \gcd(q_1^{k_{q_1}}, q_2^{k_{q_2}}) = 1
+$$
+
+This, together with Proposition $\ref{proposition-2}$.3 implies
+
+$$
+  \operatorname{ord}_p (a_{q_1} a_{q_2}) = \operatorname{ord}_p (a_{q_1}) \operatorname{ord}_p (a_{q_2}) = q_1^{k_{q_1}} q_2^{k_{q_2}}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \operatorname{ord}_p (a) =& \operatorname{ord}_p \left(\prod_{q\in\operatorname{Pri}(p-1)} a_q \right) \\
+  =& \prod_{q\in\operatorname{Pri}(p-1)} \operatorname{ord}_p (a_q) \\
+  =& \prod_{q\in\operatorname{Pri}(p-1)} q^{k_q} = p - 1 = \phi(p)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-6'>
+Suppose an odd prime $p\in\N_+$ and $a\in\N_+$ modulo $p$ satisfy
+
+$$
+\begin{equation*}
+  a^{\phi(p)} \mod p^2 \neq 1
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+Then for all $k\in\N_+$
+
+$$
+\begin{equation*}
+  a^{\phi(p^k)} \mod p^{k+1} \neq 1
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Euler's theorem (Theorem $\ref{theorem-2}$) we have for all $k\in\N_+$ that
+
+$$
+  a^{\phi(p^k)} \mod p^k = 1
+$$
+
+that is, for every $k\in\N_+$ there exists $n_k \in\N_+$ such that
+
+$$
+\begin{equation*}
+  a^{\phi(p^k)} = 1 + n_k p^k
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+We prove $\eqref{equation-32}$ by induction in $k$. The base case $k = 1$ is given by $\eqref{equation-31}$. For the inductive step from $k$ to $k + 1$ we suppose that $\eqref{equation-32}$ holds for $k$ such that for all $m\in\N_+$ we have
+
+$$
+\begin{equation*}
+  a^{\phi(p^k)} \neq 1 + mp^{k + 1}
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+From $\eqref{equation-34}$ it follows for $n_k$ in $\eqref{equation-33}$ that $p\nmid n_k$. By Lemma $\ref{lemma-5}$
+
+$$
+\begin{align*}
+  \phi(p^{k+1}) =& p^{k+1} - p^k \\
+  =& p(p^k - p^{k-1}) = p\phi(p^k)
+\end{align*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  a^{\phi(p^{k+1})} =& a^{p\phi(p^k)} = \left(a^{\phi(p^k)} \right)^p \\
+  =& (1 + n_k p^k)^p \\
+  =& \sum_{l=0}^p \binom{p}{l} \left(n_k p^k \right)^l \\
+  =& 1 + n_k p^{k+1} + \sum_{l=2}^p \binom{p}{l} n_k^l p^{kl}
+\end{align*}
+$$
+
+where in the last equation the binomial coefficient for $l = 1$ contributed a factor $p$. This implies
+
+$$
+  \frac{a^{\phi(p^{k+1})} - 1}{p^{k+2}} = \underbrace{\frac{n_k}{p}}_{\notin\Z} + \underbrace{\sum_{l=2}^p \binom{p}{l} n_k^l p^{k(l-1)-2}}_{\in\N}
+$$
+
+and thus the claim for $k + 1$
+
+$$
+  a^{\phi(p^{k+1})} \mod p^{k+2} \neq 1
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $p\in\N_+$ be an odd prime and let $a$ be a primitive root modulo $p$. Then for all $k\in\N$ either
+
+$$
+\begin{equation*}
+  \operatorname{ord}_{p^k} (a) = \phi(p^k)
+\tag{\label{equation-35}}
+\end{equation*}
+$$
+
+or
+
+$$
+  \operatorname{ord}_{p^k} (a + p) = \phi(p^k)
+$$
+
+that is, either $a$ or $a + p$ is a primitive root modulo $p^k$.
+
+<details>
+<summary>Proof</summary>
+
+We distinguish between two cases
+1. $a^{\phi(p)} \mod p^2 \neq 1$
+2. $a^{\phi(p)} \mod p^2 = 1$
+
+**Case 1:** We prove $\eqref{equation-35}$ by induction in $k$. The base case $k = 1$ is given by the assumption that $a$ is a primitive root modulo $p$. For the inductive step from $k$ to $k+1$ we suppose that $\eqref{equation-35}$ holds for $k$. By Definition $\ref{definition-1}$, we have
+
+$$
+  a^{\operatorname{ord}_{p^{k+1}} (a)} \mod p^{k+1} = 1
+$$
+
+that is, there exists $n\in\N_+$ such that
+
+$$
+  a^{\operatorname{ord}_{p^{k+1}} (a)} = 1 + np^{k+1} = 1 + npp^k
+$$
+
+Then Theorem $\ref{proposition-2}$.1 implies
+
+$$
+  \operatorname{ord}_{p^k} (a) \mid \operatorname{ord}_{p^{k+1}} (a)
+$$
+
+By the inductive assumption, $\operatorname{ord}_{p^k} (a) = \phi(p^k) = p^{k-1} (p - 1)$ holds and thus
+
+$$
+\begin{equation*}
+  p^{k-1} (p - 1) \mid \operatorname{ord}_{p^{k+1}} (a)
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+Theorem $\ref{proposition-2}$.1 also implies
+
+$$
+\begin{equation*}
+  \operatorname{ord}_{p^{k+1}} (a) \mid \phi(p^{k+1}) = p^k (p - 1)
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+From $\eqref{equation-36}$ and $\eqref{equation-37}$ it follows that there exist $n_1, n_2 \in\N_+$ such that
+
+$$
+\begin{gather*}
+  n_1 p^{k-1} (p - 1) = \operatorname{ord}_{p^{k+1}} (a) \\
+  \operatorname{ord}_{p^{k+1}} (a) n_2 = p^k (p - 1)
+\end{gather*}
+$$
+
+which implies $n_1 n_2 p^{k-1} (p - 1) = p^k (p - 1)$ and thus $n_1 n_2 = p$. Since $p$ is prime, we can only have either
+
+$$
+\begin{equation*}
+  n_1 = 1, \quad n_2 = p
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+or 
+
+$$
+\begin{equation*}
+  n_1 = p, \quad n_2 = 1
+\tag{\label{equation-39}}
+\end{equation*}
+$$
+
+However, $\eqref{equation-38}$ would imply $\operatorname{ord}_{p^{k+1}} (a) = p^{k-1} (p - 1) = \phi(p^k)$ as a consequence and thus
+
+$$
+  a^{\phi(p^k)} \mod p^{k+1} = 1
+$$
+
+This, however, is impossible because of the case assumption and its implications in Lemma $\ref{lemma-6}$. On the other hand, $\eqref{equation-39}$ implies $\operatorname{ord}_{p^{k+1}} (a) = p^k (p - 1) = \phi(p^{k+1})$, which is the claim $\eqref{equation-35}$ for $k + 1$.
+
+**Case 2:** We first show that $a + p$ is a primitive root modulo $p$ and then that is satisfies the conditions of case 1. Setting $r:= \operatorname{ord}_p (a + p)$, it follows that 
+
+$$
+\begin{equation*}
+  r \leq\phi(p)
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+and by definition
+
+$$
+  (a + p)^r \mod p = 1
+$$
+
+The latter means that there exists $m\in\N_+$ such that
+
+$$
+  \sum_{l=0}^r \binom{r}{l} a^{r - l} p^l = 1 + mp
+$$
+
+This in turn leads to
+
+$$
+  a^r = 1 + p(m - \sum_{l=1}^r \binom{r}{l} a^{r - l} p^{l - 1})
+$$
+
+and thus
+
+$$
+  a^r \mod p = 1
+$$
+
+Hence, we must have 
+
+$$
+\begin{equation*}
+  r \geq \operatorname{ord}_p (a) = \phi(p)
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+From $\eqref{equation-36}$, the definition of $r$ and $\eqref{equation-37}$ it follows that
+
+$$
+  \operatorname{ord}_p (a + p) = \phi(p)
+$$
+
+that is, $a + p$ is also a primitive root modulo $p$. From the case assumption it follows that there exist $n_3 \in\N_+$ such that $a^{p-1} = 1 + n_3 p^2$. Hence, there also exist $n_4 \in\N_+$ such that
+
+$$
+\begin{align*}
+  (a + p)^{p-1} =& a^{p-1} + (p - 1)a^{p-2} + \sum_{l=2}^{p-1} \binom{p-1}{l} a^{p - 1 - l} p^l \\
+  =& 1 + n_3 p^2 + p^2 a^{p-2} - pa^{p-2} + \sum_{l=2}^{p-1} \binom{p-1}{l} a^{p-1-l} p^l \\
+  =& 1 + n_4 p^2 - pa^{p-2} \tag{\label{equation-38}}
+\end{align*}
+$$
+
+The assumption $a^{p-1} \mod p = 1$ implies $p \nmid a^{p-2}$. Hence, it follows from $\eqref{equation-38}$ that
+
+$$
+  (a + p)^{p-1} \mod p^2 \neq 1
+$$
+
+implying that $a + $ is a primitive root modulo $p$ that satisfies the condition of case $1$. As shown in that case, it is then a primitive root modulo $p^k$ for all $k \in\N_+$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $N = \prod_{j=1}^J n_j$ with $n_j \in\N_+$ and $\gcd(n_i, n_j) = 1$ if $i\neq j$. Then there is a bijection $g:A\to B$ between the sets
+
+$$
+  A := \set{a | \gcd(a,N) = 1}_{a=1}^{N - 1}
+$$
+
+and
+
+$$
+  B := \set{(b_1,\dots,b_J) | b_j \in \set{1,\dots, n_j - 1} \land \gcd(b_j, n_j) = 1,\; \forall j}
+$$
+
+defined by
+
+$$
+  g(a) := (a\mod n_1,\dots,a \mod n_J) =: (g(a)_1,\dots,g(a)_J)
+$$
+
+<details>
+<summary>Proof</summary>
+
+We first prove that $g\set{A} \subset B$. By definition, we have $g(a)_j \in\set{1,\dots,n_j - 1}$. We sho w that $\gcd(g(a)_j, n_j) = 1$ holds for $a\in A$. Suppose $\gamma$ is a common divisor of $g(a)_j$ and $n_j$. Then there exist $l,k\in\N$ such that $\gamma l = g(a)_j = a - \left\lfloor\frac{a}{n_j}\right\rfloor \gamma k$ and thus $\frac{a}{\gamma} = l + \left\lfloor\frac{a}{n_j}\right\rfloor k \in\N_+$, that is, $\gamma$ divides $a$, and since $\gamma$ per definition also divides $n_j$, it divides $N$ as well. Hence, $\gamma$ is a common divisor of $a, N$, which, because of $a\in A$ and the definition of $A$, implies $\gamma = 1$. This completess the proof of $g\set{A} \subset B$.
+
+Next, we show that $g$ is injective. Let $a_1, a_2 \in A$ and suppose $a_1 \geq a_2$ and $g(a_1) = g(a_2)$. Then it follows for all $j\in\set{1,\dots,J}$ that
+
+$$
+  a_1 \mod n_j = a_2 \mod n_j
+$$
+
+and thus
+
+$$
+  a_1 - a_2 = \left(\left\lfloor\frac{a_1}{n_j}\right\rfloor - \left\lfloor\frac{a_2}{n_j}\right\rfloor \right) n_j
+$$
+
+Consequently, every $n_j$ divides $a_1 - a_2 \in\N_0$, and since $\gcd(n_i, n_j) = 1$ for $i \neq j$, it follows that $N = \prod_{j=1}^J n_j$ has to be a divisor of $a_1 - a_2 \geq 0$. This means that there is $k\in\N_0$ with
+
+$$
+  a_1 = a_2 + kN
+$$
+
+Since $a_1, a_2 \in A \subset\set{1,\dots,N - 1}$ we must have $k = 0$ and $a_1 = a_2$, implying that $g$ is injective.
+
+Lastly, we define $h:B\to A$ and show that $g\circ h = \operatorname{id}_B$. For $\mathbf{b} := (b_1,\dots,b_J) \in B$, we define $h(\mathbf{b})$ as follows. Let $m_j := N/n_j$. We then have $\gcd(m_j, n_j) = 1$ and from $\eqref{equation-8}$ there exist $x_j, y_j \in\Z$ such that $m_j x_j + n_j y_j = 1$. With the $m_j$ we define
+
+$$
+\begin{equation*}
+  h(\mathbf{b}) := \left(\sum_{j=1}^J m_j x_j b_j \right) \mod N
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+We proceed to show that $h$ is well-defined despite the nonuniqueness of the $x_j, y_j$. For this suppose that $\tilde{x}_j, \tilde{y}_j \in\Z$ such that also $m_j \tilde{x}_j + n_j \tilde{y}_j = 1$. Then it follows that for all $k = 1,\dots,k$
+
+$$
+\begin{equation*}
+\begin{split}
+  \frac{1}{n_k} \left(\sum_{j=1}^J m_j (x_j - \tilde{x}_j) b_j \right) =& \sum_{j\neq k} \underbrace{\frac{m_j}{n_k}}_{\in\Z} (x_j - \tilde{x}_j) b_j \\
+  &+ \frac{1 - n_k y_k - (1 - n_k \tilde{y}_k)}{n_k} b_k \in\Z
+\end{split}
+\tag{\label{equation-41}}
+\end{equation*}
+$$
+
+that is, every $n_k$ divides $\sum_{j=1}^J m_j x_j b_j - \sum_{j=1}^J m_j \tilde{x}_j b_j$ for all $k\in\set{1,\dots,J}$. Since $\gcd(n_j, n_i) = 1$ if $i \neq j$, thus $N = \prod_{j=1}^J n_j$ also divides this difference, and there exist $z\in\Z$ with
+
+$$
+  \sum_{j=1}^J m_j x_j b_j = \sum_{j=1}^J m_j \tilde{x}_j b_j + zN
+$$
+
+which implies
+
+$$
+  \left(\sum_{j=1}^J m_j x_j b_j \right) \mod N = \left(\sum_{j=1}^J m_j \tilde{x}_j b_j \right) \mod N
+$$
+
+This shows that the right side of $\eqref{equation-40}$ is independent of the choice of the $x_j$, and $h(\mathbf{b})$ is well-defined for all $\mathbf{b}\in B$.
+
+We now sho that $h\set{B} \subset A$. Similar to $\eqref{equation-41}$, we have for all $\mathbf{b}\in B$ and $k\in\set{1,\dots,J}$ that
+
+$$
+\begin{align*}
+  \frac{1}{n_k} (h(\mathbf{b}) - b_k) =& \frac{1}{n_k} \left(\left(\sum_{j=1}^J m_j x_j b_j \right) \mod N - b_k \right) \\
+  =& \sum_{j\neq k} \underbrace{\frac{m_j}{n_k}}_{\in\Z} x_j b_j + \underbrace{\frac{m_k x_k - 1}{n_k}}_{\in\Z} b_k - \left\lfloor\frac{\sum_{j=1}^J m_j x_j b_j}{N} \right\rfloor \frac{N}{n_k} \in\Z
+\end{align*}
+$$
+
+that is, for every $k\in\set{1,\dots,J}$ there is $z_k \in\Z$ with
+
+$$
+\begin{equation*}
+  h(\mathbf{b}) = b_k + z_k n_k
+\tag{\label{equation-42}}
+\end{equation*}
+$$
+
+Thus, every common divisor $\nu$ of $h(\mathbf{b})$ and $n_k$ is also a common divisor of $b_k$ and $n_k$. Since $\mathbf{b}\in B$, it follows that we must have $\nu = 1$ and thus
+
+$$
+  \gcd(h(\mathbf{b}), n_k) = 1
+$$
+
+By $\eqref{equation-40}$, then $h(\mathbf{b}) \in\set{0,1,\dots,N-1}$. The case $h(\mathbf{b}) = 0$ can be excluded, since, if there were $z\in\Z$ with $\sum_{j=1}^J m_j x_j b_j = zN$, we would have for every $k\in\set{1,\dots,J}$ that
+
+$$
+  \frac{1 - n_k y_k}{n_k} b_k = \frac{m_k x_k b_k}{n_k} = z\frac{N}{n_k} - \sum_{j\neq k} \frac{m_j}{n_k} x_j b_j \in\Z
+$$
+
+Hence, $n_k$ would be a divisor of $b_k$, which, however, is excluded for $\mathbf{b}\in B$. Consequently, $h(\mathbf{b}) \in\set{1,\dots,N-1}$ with $\gcd(h(\mathbf{b}),n_j) = 1$ for all $j$ and thus $h(\mathbf{b}) \in A$. It also follows from $\eqref{equation-42}$ and $b_k < n_k$ that
+
+$$
+  g(h(\mathbf{b}))_k = g(b_k + z_k n_k)_k = (b_k + z_k n_k) \mod n_k = b_k
+$$
+
+This shows that $g \circ h = \operatorname{id}_B$, proving that $g$ is also surjective.
+</details>
+</MathBox>
