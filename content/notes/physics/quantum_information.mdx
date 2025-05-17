@@ -4652,7 +4652,7 @@ $$
 Deutsch's problem is to find the most efficient ay to decide with certainty whether $f$ is constant or balanced.
 </MathBox>
 
-Classical applications to solve Deutsch's problem require at least $2^n + 1$ function calles. In contrast, the quantum algorithm devised by Deutsch and Josza, called the Deutsch-Jozsa algorithm, requires just one application of a suitably implemented unitary operator $\hat{U}_f$ of the form $\eqref{equation-54}$.
+Classical applications to solve Deutsch's problem require at least $2^n + 1$ function calls. In contrast, the quantum algorithm devised by Deutsch and Josza, called the Deutsch-Jozsa algorithm, requires just one application of a suitably implemented unitary operator $\hat{U}_f$ of the form $\eqref{equation-54}$.
 
 <MathBox title='' boxType='lemma'>
 The application of the $n$-fold tensor product of the Hadamard gate on a computional basis vector $\ket{x}$ satisfy
@@ -5245,6 +5245,124 @@ This gives a relation between the number of qubits $n$, the desired presicion $t
 </LatexFigure>
 
 # Shor factorization algorithm
+
+<MathBox title='Period of arithmetic functions' boxType='definition'>
+The period $r\in\N_0$ of a function $f:N_0 \to \N_0$ is defined as
+
+$$
+  r := \min\set{m\in\N_0 | f(n + m) = f(n),\; \forall n\in\N_0}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-7'>
+Let $b,N \in\N_0$ with $b < N$ and $\gcd(b,N) = 1$. Furthermore, let $r$ be the period of the function $f_{b,N} :\N_0 \to\N_0$ given by
+
+$$
+  f_{b,N} (n) := b^n \mod N
+$$
+
+Then
+
+$$
+  r = \operatorname{ord}_N (b) = \min\set{m\in\N_+ | b^m \mod N = 1}
+$$
+
+<details>
+<summary>Proof</summary>
+
+If $r$ is the period of $f$, it follows that $f_{b,N} (n + r) = f_{b,N} (n)$ for all $n\in\N_+$. In particular, for $n = 0$ it follows that
+
+$$
+\begin{equation*}
+  b^r \mod N = f_{b,N} (0 + r) = f_{b,N} (0) = 1
+\tag{\label{equation-59}}
+$$
+
+By definition, the order $\operatorname{ord}_N (b)$ of $b$ modulo $N$ is the smallest number that satisfies $\eqref{equation-59}$. This implies
+
+$$
+  r \geq\operatorname{ord}_N (b)
+$$
+
+On the other hand, we have for all $n\in\N_0$ that
+
+$$
+\begin{align*}
+  f_{b,N} (n + \operatorname{ord}_N (b)) =& b^{n + \operatorname{ord}_N (b)} \mod N \\
+  =& b^n (b^{\operatorname{ord}_N (b)} \mod N) \mod N \\
+  =& b^n \mod N \\
+  =& f_{b,N} (n)
+\end{align*}
+$$
+
+Since the period $r$ is the smallest number with the property $f_{b,N} (n + r) = f_{b,N} (n)$, it follows that
+
+$$
+  r \leq\operatorname{ord}_N (b)
+$$
+
+Consequently, it follows that $r = \operatorname{ord}_N (b)$.
+</details>
+</MathBox>
+
+In 1994, Shor introduced a quantum algorithm for factoring an odd natural number $N\in\N_+$ with at least two distinct prime factors. The algorithm has a quantum computational complexity of
+
+$$
+  S_{\text{Shor}} (N) \in O(\log_2^3 (N) \log_2 (\log_2 (N))),\; N\to\infty
+$$
+
+which grows polynomially with the bit-length of the input. Shor's factorization algorithm for finding a non-trivial divisor of $N$ proceeds in the following three steps.
+
+**Step 1: Random base selection**
+
+Choose a number $b\in\N_+$ with $b < N$. Using Euclid's algorithm we compute the greatest common divisor $\gcd(b, N)$, which takes at most $b$ computational steps. If $\gcd(b,N) > 1$, we have found a nontrivial factor of $N$, in which case the procedure is terminated with the factors $\gcd(b,N)$ and $N/\gcf(b,N)$. Otherwise for coprime $b$ and $N$ with $\gcd(b, N) = 1$, we proceed to the next step.
+
+**Step 2: Period finding**
+
+Define the function $f_{b,N} :\N_0 \to\N_0$ given by
+
+$$
+  f_{b,N} (n) := b^n \mod N
+$$
+
+If $\gcd(b, N) = 1$, Euler's theorem guarantees that $f_{b,N}$ is periodic with period $r \leq \phi(N) < \infty$, where $\phi:\N\to\N$ is Euler's totient function given by
+
+$$
+  \phi(n) := \left| \set{r\in{1,\dots,n-1} | \gcd(r,n) = 1} \right|
+$$
+
+In the second step we compute the period $r$ of $f_{b,N}$. If $r$ is odd we repeat the first step with a different $b\in\N_+$. Otherwise if $r$ is even, we proceed to the next step.
+
+**Step 3: Factoring via period doubling**
+
+From Proposition $\ref{proposition-7}$, we have $r = \operatorname{ord}_N (b)$, which implies that $b^r \mod N = 1$. By properties of modulus we have $(b^r - 1) \mod N = 0$ or $N \mid b^r - 1$. If $r$ is even, we can factor $b^r - 1$ as a difference of squares, yielding
+
+$$
+\begin{equation*}
+  (b^r - 1) \mod N = 0 \iff N \mid (b^{r/2} + 1)(b^{r/2} - 1)
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+which shows that $N$ shares common divisors with $b^{r/2} + 1$ or $b^{r/2} - 1$.
+
+In the third step, we use Euclid's algorithm to compute either $\gcd(b^{r/2} - 1, N)$ or $\gcd(b^{r/2} + 1, N)$. Under the assumption that $r$ is the smallest possible period of $f_{b,N}$, we exclude $\gcd(b^{r/2} - 1, N) = N$ as a possible solution. This would imply $b^{r/2} \mod N = 1$, meaning that $r/2 < r$ is a period of $f_{b,N}$. If $\gcd(b^{r/2} + 1, N) = N$, then $(b^{r/2} + 1) \mod N = 0$, giving the trivial factor $N$. 
+
+We succeed if $\gcd(b^{r/2} \pm 1, N) < N$, in which case $b$ is a nontrivial factor of $N$ and the procedure terminates with the factors $b$ and $N/b$.
+
+Shor's algorithm can be summarized as follows:
+
+- **Input:** An odd natural number $N\in\N_+$ that has at least two distinct prime factors
+- **Step 1:** Choose $b\in\N_+$ with $b < N$ and determine $\gcd(b, N)$. If
+    - $\gcd(b,N) > 1$, then $\gcd(b, N)$ is a non-trivial factor of $N$ and we are done. Go to output and show $\gcd(b,N)$ and $N/\gcd(b,N)$
+    - $\gcd(b, N) = 1$ then got to step 2
+- **Step 2:** Determine the period $r$ of the function $f_{b,N}: \N_0 \to \N_0$ given by $f_{b,N} (n) = b^n \mod N$. If
+    - $r$ is odd, then start anew with step 1
+    - $r$ is even, then go to step 3
+- **Step 3:** Determine $\gcd(b^{r/2} + 1, N)$. If
+    - $\gcd(b^{r/2} + 1, N) = N$, then start anew with step 1
+    - $\gcd(b^{r/2} + 1, N) < N$, then we have found a non-trivial factor of $N$. Calculate $\gcd(b^{r/2} - 1, N)$ as a further factor of $N$. Go to output and show $\gcd(b^{r/2} \pm 1, N)$
+- **Output:** Two nontrivial factors of $N$
 
 # Grover search algorithm
 

@@ -162,6 +162,386 @@ Let $P(n)$ be a property for natural numbers $n \in \N$ (predicate). Then $P(n)$
 1. $P(0)$ is true (base case)
 2. $\forall n \in \N_0: P(n) \implies P(n+1)$ is true (induction step)
 
+## Binary arithmetic
+
+<MathBox title='Binary addition' boxType='definition'>
+For $u,v\in\set{0,1}$ we define binary addition as
+
+$$
+  u \overset{2}{\oplus} v := (u + v) \mod 2
+$$
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $\hat{c}_0^+ := 0$ and
+
+$$
+\begin{align*}
+  \hat{c}_j^+ :=& \left\lfloor\frac{a_{j-1} + b_{j-1} + \hat{c}_{j-1}^+}{2}\right\rfloor,\; j\in\set{1,\dots,n} \\
+  s_j := a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} \hat{c}_j^+, j\in\set{0,\dots,n-1}
+\end{align*}
+$$
+
+Then the sum of $a$ and $b$ is given by
+
+$$
+  a + b = \sum_{j=0}^{n-1} s_j 2^j + \hat{c}_n^+ 2^n
+$$
+
+<details>
+<summary>Proof</summary>
+
+We prove the claim by induction in $n$. In the base case $n = 1$, let $a,b\in\set{0,1}$ such that $a = a_0$, $b = b_0$ and $a_1 = 0 = b_1$. Then we have
+
+$$
+\begin{align*}
+  a + b =& a_0 + b_0 = (a_0 + b_0) \mod 2 + \left\lfloor\frac{a_0 + b_0}{2} 2 \\
+  =& a_0 \overtset{2}{\oplus} b_0 + \left\lfloor\frac{a_0 + b_0}{2}\right\rfloor 2 \\
+  =& s_0 + \hat{c}_1^+ 2
+\end{align*}
+$$
+
+which proves the base case.
+
+For the inductive step from $n$ to $n + 1$ suppose that the claim holds for $n$, i.e.
+
+$$
+  a + b = \sum_{j=0}^{n-1} s_j 2^j + \hat{c}_n^+ 2^n
+$$
+
+For $\tilde{a} = a + \tilde{a} 2^n$ and $\tilde{b} = a + \tilde{b}_n 2^n$ their binary representations $\tilde{a}_j$ and $\tilde{b}_j$ satisfy for $j\in\set{0,\dots,n-1}$
+
+$$
+\begin{equation*}
+  \tilde{a}_j = a_j,\quad \tilde{b}_j = b_j
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \tilde{a} + \tilde{b} =&  a + b + (\tilde{a}_n + \tilde{b}_n) 2^n \\
+  =& \sum_{j=0}^{n-1} s_j 2^j + (\tilde{a}_n + \tilde{b}_n + \hat{c}_n^+) 2^n \\
+  =& \sum_{j=0}^{n-1} s_j 2^j + \left((\tilde{a}_n + \tilde{b}_n + \hat{c}_n^+) \mod 2 + \left\lfloor\frac{\tilde{a}_n + \tilde{b}_n + \hat{c}_n^+}{2}\right\rfloor 2 \right) 2^n \\
+  =& \sum_{j=0}^{n-1} s_j 2^j + \underbrace{(\tilde{a}_n \overset{2}{\oplus} \tilde{b}_n \overset{2}{\oplus} \hat{c}_n^+)}_{s^n} 2^n + \underbrace{\left\lfloor\frac{\tilde{a}_n + \tilde{b}_n + \hat{c}_n^+}{2}}_{\tilde{c}_{n+1}^+} 2^{n+1} \\
+  =& \sum_{j=0}^n s_j 2^j + \hat{c}_{n+1}^+ 2^{n+1}
+\end{align*}
+$$
+
+Because of $\hat{c}_0^+ := 0$ and $\eqref{equation-1}$, we then have
+
+$$
+\begin{align*}
+  \hat{c}_j^+ :=& \left\lfloor\frac{a_{j-1} + b_{j-1} + \hat{c}_{j-1}^+}{2}\right\rfloor,\; j\in\set{1,\dots,n+1} \\
+  s_j := a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} \hat{c}_j^+,\; j\in\set{0,\dots,n}
+\end{align*}
+$$
+
+which proves the induction step.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ $have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $c_0^+ := 0$ and
+
+$$
+\begin{align*}
+  c_j^+ :=& a_{j-1} b_{j-1} \overset{2}{\oplus} a_{j-1} c_{j-1}^+ \overset{2}{\oplus} b_{j-1} c_{j-1}^+,\; j\in\set{1,\dots,n} \\
+  s_j := a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} c_j^+,\; j\in\set{0,\dots,n-1}
+\end{align*}
+$$
+
+Then the sum of $a$ and $b$ can be written as
+
+$$
+  a + b = \sum_{j=0}^{n-1} s_j 2^j + c_n^+ 2^n
+$$
+
+<details>
+<summary>Proof</summary>
+
+Applying Lemma $\ref{lemma-1}$, it suffice to show that for $j\in\set{0,\dots,n}$ we have $c_j^+ = \hat{c}_j^+$. We show this by induction. For $j = 0$ it holds by definition. For the inductive step from $j - 1$ to $j$ suppose $c_{j-1}^+ = c_{j-1}^+$. It remains to show that
+
+$$
+\begin{equation*}
+\begin{split}
+  c_j^+ =& a_{j-1} b_{j-1} \overset{2}{\oplus} a_{j-1} c_{j-1}^+ \overset{2}{\oplus} b_{j-1} c_{j-1}^+ \\
+  =& \left\lfloor\frac{a_{j-1} + b_{j-1} + \hat{c}_{j-1}^+}{2}\right\rfloor = \hat{c}_j^+
+\end{split}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+The carry terms $\hat{c}_j^+$ can only assume the values $0$ or $1$, since we begin with $\hat{c}_0^+ = 0$, and then have successively $0\leq \frac{a_{j-1} + b_{j-1} + \hat{c}_{j-1}^+}{2} \leq 3/2$. The proof of $\eqref{equation-2}$ is given by evaluating all possible combinatio of the left hand side and verifying equality. This is shown in the table below.
+
+<TableFigure caption="Value table for the proof of $\eqref{equation-2}$">
+| $a_{j-1}$ | $b_{j-1}$ | $\hat{c}_{j-1}^+$ | $c_j^+ = a_{j-1} b_{j-1} \overset{2}{\oplus} a_{j-1} c_{j-1}^+ \overset{2}{\oplus} b_{j-1} c_{j-1}^+$ | $\hat{c}_j^+ = \left\lfloor\frac{a_{j-1} + b_{j-1} + \hat{c}_{j-1}^+}{2}\right\rfloor$ |
+| --- | --- | --- | --- | --- |
+| $0$ | $0$ | $0$ | $0$ | $0$ |
+| $0$ | $0$ | $1$ | $0$ | $0$ |
+| $0$ | $1$ | $0$ | $0$ | $0$ |
+| $0$ | $1$ | $1$ | $1$ | $1$ |
+| $1$ | $0$ | $0$ | $0$ | $0$ |
+| $1$ | $1$ | $0$ | $1$ | $1$ |
+| $1$ | $1$ | $1$ | $1$ | $1$ |
+</TableFigure>
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ $have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $\hat{c}_0^- := 0$ and
+
+$$
+\begin{align*}
+  \hat{c}_j^- :=& \left\lfloor\frac{b_{j-1} - a_{j-1} + \hat{c}_{j-1}^-}{2},\; j\in\set{1,\dots,n} \\
+  \hat{d}_j :=& (b_j - a_j + \hat{c}_j^-) \mod 2,\; j\in\set{0,\dots,n-1}
+\end{align*}
+$$
+
+Then the difference between $b$ and $a$ can be written as
+
+$$
+\begin{equation*}
+  b - a \sum_{j=0}^{n-1} \hat{d}_j 2^j + \hat{c}_n^n
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+We prove the claim by induction in $n$. In the base case $n = 1$, let $a,b\in\set{0,1}$ such that $a = a_0$, $b = b_0$ and $a_1 = 0 = b_1$. Then we have
+
+$$
+\begin{align*}
+  b - a =& b_0 - a_0 = (b_0 - a_0) \mod 2 + \left\lfloor\frac{b_0 - a_0}{2} 2 \\
+  =& \hat{d}_0 + \hat{c}_1^- 2
+\end{align*}
+$$
+
+which proves the base case.
+
+For the inductive step from $n$ to $n + 1$ suppose that the claim holds for $n$, i.e.
+
+$$
+  b - a = \sum_{j=0}^{n-1} \hat{d}_j 2^j + \hat{c}_n^- 2^n
+$$
+
+For $\tilde{a} = a + \tilde{a} 2^n$ and $\tilde{b} = a + \tilde{b}_n 2^n$ their binary representations $\tilde{a}_j$ and $\tilde{b}_j$ satisfy for $j\in\set{0,\dots,n-1}$
+
+$$
+\begin{equation*}
+  \tilde{a}_j = a_j,\quad \tilde{b}_j = b_j
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \tilde{b} - \tilde{a} =&  b - a + (\tilde{b}_n - \tilde{a}_n) 2^n \\
+  =& \sum_{j=0}^{n-1} \hat{d}_j 2^j + (\tilde{b}_n - \tilde{a}_n + \hat{c}_n^-) 2^n \\
+  =& \sum_{j=0}^{n-1} \hat{d}_j 2^j + \left((\tilde{b}_n - \tilde{a}_n + \hat{c}_n^-) \mod 2 + \left\lfloor\frac{\tilde{b}_n - \tilde{a}_n + \hat{c}_n^-}{2}\right\rfloor 2 \right) 2^n \\
+  =& \sum_{j=0}^{n-1} \tilde{d}_j 2^j + \underbrace{(\tilde{b}_n - \tilde{a}_n \overset{2}{\oplus} \hat{c}_n^-)}_{\tilde{d}^n} 2^n + \underbrace{\left\lfloor\frac{\tilde{b}_n - \tilde{a}_n + \hat{c}_n^+}{2}}_{\tilde{c}_{n+1}^-} 2^{n+1} \\
+  =& \sum_{j=0}^n \tilde{d}_j 2^j + \hat{c}_{n+1}^- 2^{n+1}
+\end{align*}
+$$
+
+Because of $\hat{c}_0^- := 0$ and $\eqref{equation-3}$, we then have
+
+$$
+\begin{align*}
+  \hat{c}_j^+ :=& \left\lfloor\frac{b_{j-1} + a_{j-1} + \hat{c}_{j-1}^+}{2}\right\rfloor,\; j\in\set{1,\dots,n+1} \\
+  \hat{d}_j := (\tilde{b}_j - \tilde{a}_j + \hat{c}_j^-) \mod 2,\; j\in\set{0,\dots,n}
+\end{align*}
+$$
+
+which proves the induction step.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ $have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $\hat{c}_0^- := 0$ and
+
+$$
+\begin{align*}
+  \hat{c}_j^- :=& \left\lfloor\frac{b_{j-1} - a_{j-1} + \hat{c}_{j-1}^-}{2},\; j\in\set{1,\dots,n} \\
+  \hat{d}_j :=& (b_j - a_j + \hat{c}_j^-) \mod 2,\; j\in\set{0,\dots,n-1}
+\end{align*}
+$$
+
+Then
+1. $\hat{c}_j^- \in\set{0,1}$ and thus $\hat{c}_j^- = -|\hat{c}_j^-|$
+2. In particular, we have
+$$
+\begin{equation*}
+  \hat{c}_n^- = \begin{cases}
+    0 \iff& & b \geq a \\
+    -1 \iff& b < a 
+  \end{cases}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** We show this by induction in $j$. The base case $j = 0$ follows from the assumption $\hat{c}_0^- = 0$. For the inductive step from $j$ to $j + 1$ we suppose that $\hat{c}_j^- \in\set{0,-1}$ holds true for $j$. Then the possible values for $\hat{c}_{j+1}^-$ as function of the possible values of $a_j$, $b_j$ and $\hat{c}_j^-$ are shown in the table table below showing that $\hat{c}_{j+1}^- \in\set{0,-1}$.
+
+<TableFigure caption="Value table for the proof of $\eqref{equation-4}$ and $\eqref{equation-5}$">
+| $a_{j-1}$ | $b_{j-1}$ | $\hat{c}_j^-$ | $\hat{c}_{j+1}^- = \left\lfloor\frac{b_j - a_j + \hat{c}_j}{2}\right\rfloor $ |
+| --- | --- | --- | --- |
+| $0$ | $0$ | $0$ | $0$ |
+| $0$ | $0$ | $-1$ | $-1$ |
+| $0$ | $1$ | $0$ | $0$ |
+| $0$ | $1$ | $-1$ | $0$ |
+| $1$ | $0$ | $0$ | $-1$ |
+| $1$ | $0$ | $-1$ | $-1$ |
+| $1$ | $1$ | $0$ | $0$ |
+| $1$ | $1$ | $-1$ | $-1$ |
+</TableFigure>
+
+**(2):** Note that the assumptions $0 \leq a,b < 2^n$ and $\hat{d}_j \in\set{0,1}$ as well as $\eqref{equation-8}$ imply
+
+$$
+\begin{equation*}
+  -2^n < b - a = \underbrace{\sum_{j=0}^{n-1} \hat{d}_j 2^j}_{\geq 0} + \hat{c}_n^- 2^n < 2^n
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+Hence, in the case $b \geq a$ it follows that $\hat{c}_n^-$ must be $0$ and the case $b < a$ it must be $-1$. Convsersely, it follows from $\eqref{equation-12}$ that $\hat{c}_n^- = 0$ implies $b \geq a$ and that $\hat{c}_n^- = -1$ implies $b < a$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ $have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $\hat{c}_0^- := 0$ and
+
+$$
+\begin{align*}
+  \hat{c}_j^- :=& \left\lfloor\frac{b_{j-1} - a_{j-1} + \hat{c}_{j-1}^-}{2},\; j\in\set{1,\dots,n} \\
+  \hat{d}_j :=& (b_j - a_j + \hat{c}_j^-) \mod 2,\; j\in\set{0,\dots,n-1}
+\end{align*}
+$$
+
+Then
+
+$$
+\begin{align*}
+  |\hat{c}_j^-| =& \left(1 \overset{2}{\oplus} b_{j-1} \right) \left(a_{j-1} \overset{2}{\oplus} |\hat{c}_{j-1}| \right) \overset{2}{\oplus} a_{j-1} |\hat{c}_{j-1}| \in\set{0,1} \tag{\label{equation-4}} \\
+  \hat{d}_j =& a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} |\hat{c}_j^-| \tag{\label{equation-5}}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+The claims follows by direct evaluation according to the table below.
+
+<TableFigure caption="Value table for the proof of $\eqref{equation-4}$ and $\eqref{equation-5}$">
+| $a_{j-1}$ | $b_{j-1}$ | $\hat{c}_{j-1}^-$ | $\lvert\hat{c}_j^- \rvert$ | $\left(1 \overset{2}{\oplus} b_{j-1} \right) \left(a_{j-1} \overset{2}{\oplus} \lvert\hat{c}_{j-1}\rvert \right) \overset{2}{\oplus} a_{j-1} \lvert\hat{c}_{j-1}\rvert $ | $\hat{d}_j$ | $a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} \lvert\hat{c}_j^- \rvert$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| $0$ | $0$ | $0$ | $0$ | $0$ | $0$ | $0$ |
+| $0$ | $0$ | $-1$ | $1$ | $1$ | $1$ | $1$ |
+| $0$ | $1$ | $0$ | $0$ | $0$ | $1$ | $1$ |
+| $0$ | $1$ | $-1$ | $0$ | $0$ | $0$ | $0$ |
+| $1$ | $0$ | $0$ | $1$ | $1$ | $1$ | $1$ |
+| $1$ | $0$ | $-1$ | $1$ | $1$ | $0$ | $0$ |
+| $1$ | $1$ | $0$ | $0$ | $0$ | $0$ | $0$ |
+| $1$ | $1$ | $-1$ | $1$ | $1$ | $1$ | $1$ |
+</TableFigure>
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+Let $n\in\N_+$ and $a,b\in\N_0$ with $a,b < 2^n$ $have the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j
+$$
+
+where $a_j, b_j \in\set{0,1}$. Furthermore, set $c_0^- := 0$ and
+
+$$
+\begin{align*}
+  c_j^- :=& \left(1 \overset{2}{\oplus} b_{j-1} \right) \left(a_{j-1} \overset{2}{\oplus} c_{j-1} \right) \overset{2}{\oplus} a_{j-1} c_{j-1}^-, j\in\set{1,\dots,n} \tag{\label{equation-6}} \\
+  \hat{d}_j :=& a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} c_j^-,\; j\in\set{0,\dots,n-1} \tag{\label{equation-7}}
+\end{align*}
+$$
+
+Then we have
+
+$$
+  \sum_{j=0}^{n-1} d_j 2^j = c_n^- 2^n + b - a
+$$
+
+and
+
+$$
+\begin{equation*}
+  c_n^- = \begin{cases}
+    0 \iff b \geq a \\
+    1 \iff b < a
+  \end{cases}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-4}$ and $\eqref{equation-6}$ we see that $|\hat{c}_j^-|$ and $c_j^-$ satisfy the same recursion formula. Since both start with the value $|\hat{c}_0^-| = c_0^- = 0$, it follows for all $j\in\set{1,\dots,n}$ that
+
+$$
+\begin{equation*}
+  c_j^- = |\hat{c}_j^-| = -\hat{c}_j^-
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+From this and from $\eqref{equation-5}$ together with $\eqref{equation-6}$, it thus follows for all $j\in\set{1,\dots,n}$ that $d_j = \hat{d}_j$. Together with $\eqref{equation-8}$ and $\eqref{equation-9}$, this implies
+
+$$
+  b - a = \sum_{j=0}^{n-1} d_j 2^j - c_n^- 2^n
+$$
+
+Applying $\eqref{equation-9}$ to $\eqref{equation-}$ finally yields $\eqref{equation-10}$.
+</details>
+</MathBox>
+
 # Integers ($\Z$)
 
 The integers can be constructed as the equivalence classes of ordered pairs of natural numbers, $(a, b) \in \N_0^2$, representing the substraction $a - b$ (without explicitly defining subtraction). This can be formulated by an equivalence relation $\sim$ obeying
