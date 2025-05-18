@@ -4613,7 +4613,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='' boxType='corollary'>
+<MathBox title='' boxType='corollary' tag='corollary-2'>
 Let $\hat{F}$ be the quantum Fourier transform on ${}^\P \mathcal{H}^{\otimes n}$. Then the number of required computational steps $S_F$ to perform $\hat{F}$ as a function of $n\in\N_+$ satisfies
 
 $$
@@ -5363,6 +5363,798 @@ Shor's algorithm can be summarized as follows:
     - $\gcd(b^{r/2} + 1, N) = N$, then start anew with step 1
     - $\gcd(b^{r/2} + 1, N) < N$, then we have found a non-trivial factor of $N$. Calculate $\gcd(b^{r/2} - 1, N)$ as a further factor of $N$. Go to output and show $\gcd(b^{r/2} \pm 1, N)$
 - **Output:** Two nontrivial factors of $N$
+
+<MathBox title="Rosser-Schoenfeld bound" boxType='theorem' tag='theorem-2'>
+For $r \geq 3$, the following inequality holds
+
+$$
+  \frac{r}{\phi(r)} < e^\lambda \ln(\ln(r)) + \frac{2.50637}{\ln(\ln(r))}
+$$
+
+where $\gamma := 0.5772156649\dots$ denotes Euler's constant.
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-5'>
+
+$$
+  \operatorname{tr}(\ket{\Psi}_3 \bra{\Psi}_3 (\ket{z}\bra{z} \otimes\hat{I}^{\otimes K})) = \Norm{(\ket{z}\bra{z} \otimes\hat{I}^{\otimes K})\ket{\Psi_3}}^2
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $r, L, K\in\N_+$ such that $19 \leq r < 2^{L/2}$, and suppose $r$ is the period of a function $f:\N_0 \to\N_0$, which is is injective on each period and bounded by $f(x) < 2^K$ for all $x$. Furthermore, let $\hat{U}_f: {}^\P \mathcal{H}^{\otimes L} \otimes \mathcal{H}^{\otimes K} \to \mathcal{H}^{\otimes L} \otimes \mathcal{H}^{\otimes K}$ be a unitary operator implementing $f$ via the mapping
+
+$$
+  \ket{x}\times\ket{y} \mapsto \ket{x}\otimes \ket{y \boxplus f(x)}
+$$
+
+where $\boxplus$ denotes addition modulo $2^K$. Assume that the implementation of $\hat{U}_f$ requires $S_{U_f} (L) \in O(L^{K_f})$ computational steps as $L\to\infty$, for some $K_f \in\N_+$.
+
+Then there exists a quantum algorithm $A$ that determines the period $r$ with success probability at least $1/10\ln(L)$, and whose computational complexity satisfies
+
+$$
+  S_A (L) \in O(L^{\max\set{K_f, 3}}),\; L\to\infty
+$$
+
+<details>
+<summary>Proof</summary>
+
+To find the computational complexity $S_A (L)$ for determining the period $r$ of $f$. We consider each of the five steps of $A$. 
+
+1. **Preparation of the input register and the initial state**
+
+Let $M := \max\set{f(x) | x\in\set{0,\dots, 2^L - 1}}$, choose $K\in\N_+$ such that $M < 2^k$. Define two qubit registers
+
+$$
+  \mathcal{H}^A := {}^\P \mathcal{H}^{\otimes L},\quad \mathcal{H}^B := {}^\P \mathcal{H}^{\otimes K} 
+$$
+
+where $\mathcal{H}^A$ is the input register and $\mathcal{H}^B$ is the output register used to store evaluations of $f$. The initial state of the system, $\ket{\Psi_0}\in\mathcal{H}^A \otimes \mathcal{H}^B$, is prepared in the zero computational basis state:
+
+$$
+  \ket{\Psi_0} := \ket{0}^A \otimes \ket{0}^B = \ket{0}^{\otimes L} \otimes \ket{0}^{\otimes K}
+$$
+
+Next, we apply the Hadamard transform, $\hat{H}^{\otimes L}$ to the input register $\mathcal{H}^A$, producing the state
+
+$$
+  \ket{\Psi_1} := \hat{H}^{\otimes L} \otimes \hat{I}^{\otimes K} \ket{\Psi_0} = \frac{1}{2^{L/2}} \sum_{x=0}^{2^L - 1} \ket{x}^{\otimes L} \otimes \ket{0}^{\otimes K}
+$$
+
+in which the input register is put in a uniform superposition entangled with the output register.
+
+Since the application of $\hat{H}^L$ involves $L$ Hadamard gates, the computational steps of preparing $\ket{\Psi_1}$, denoted $S_0 (L)$, is proportional to $L$:
+
+$$
+  S_0 (L) \in O(L),\; L\to\infty
+$$
+
+2. **Exploiting massive quantum parallelism**
+
+We now apply the unitary operator $\hat{U}_f \in\mathcal{U}(\mathcal{H}^A \otimes \mathcal{H}^B)$, which acts as follows
+
+$$
+\begin{align*}
+  \hat{U}_f (\ket{x}^{\otimes L} \otimes \ket{y}^{\otimes K}) = \ket{x}^{\otimes L} \otimes \ket{y \boxplus f(x)}^{\otimes K} \\
+  =& \ket{x}^{\otimes L} \otimes \bigotimes_{j=K-1}^0 \ket{y_j \overset{2}{\oplus} f(x)}_j
+\end{align*}
+$$
+
+The number of computational steps for performing $\hat{U}_f$, denoted $S_{U_f} (L)$ satisfies
+
+$$
+  S_{U_f} (L) \in O(L^{K_f}),\; L\to\infty
+$$
+
+for some constant $K_f \in\N_+$. 
+
+Applying $\hat{U}_f$ to $\ket{\Psi_1}$ yields
+
+$$
+\begin{align*}
+  \ket{\Psi_2} :=& \hat{U}_f \ket{\Psi_1} \\
+  =& \hat{U}_f \left(\frac{1}{2^{L/2}} \sum_{x=0}^{2^L - 1} \ket{x}^{\otimes L} \otimes\ket{0}^{\otimes K} \right) \\
+  =& \frac{1}{2^{L/2}} \sum_{x=0}^{2^L - 1} \ket{x}^{\otimes L} \otimes \ket{f(x)}^{\otimes K}
+\end{align*}
+$$
+
+This generates a superposition over all $2^L$ states $\ket{x}\otimes\ket{f(x)}$, which allows evaluation of exponentially many values of $f(x)$ simultaneously.
+
+The period of $f$ can be determined by applying the quantum Fourier transform to $\ket{\Psi_2}$. We rewrite $\ket{\Psi_2}$ to reflect the periodicity of $f$. Let $r\in\N_+$ be the (unknown) period of $f$, and define
+
+$$
+\begin{align*}
+  J := \left\lfloor\frac{2^L - 1}{r}\right\rfloor \tag{\label{equation-61}} \\
+  R := (2^L - 1) \mod r \tag{\label{equation-62}}
+\end{align*}
+$$
+
+This partitions the domain $\set{0,\dots,2^L - 1}$ into $J$ complete periods and a final incomplete segment of length $R + 1$. Using this, we can regroup the terms in $\ket{\Psi_2}$ as
+
+$$
+\begin{align*}
+  &\ket{\Psi_2} \\
+  =& \frac{1}{2^{L/2}} \left[ \ket{0}^{\otimes L} \otimes \ket{f(0)}^{\otimes K} +\cdots+ \ket{r - 1}^{\otimes L} \otimes\ket{f(r - 1)}^{\otimes K} \right. \\
+  &+ \ket{r}^{\otimes L} \otimes \underbrace{\ket{f(r)}^{\otimes K}}_{=\ket{f(0)}^{\otimes K}} +\cdots+ \ket{2r - 1}^{\otimes L} \otimes\underbrace{\ket{f(2r - 1)}^{\otimes K}}_{=\ket{f(r - 1)}^{\otimes K}} \\
+  &\vdots \\
+  &+ \ket{(J - 1)r}^{\otimes L} \otimes\underbrace{\ket{f((J-1)r)}^{\otimes K}}_{=\ket{f(0)}^{\otimes K}} +\cdots+ \ket{Jr - 1}^{\otimes L} \otimes\underbrace{\ket{f((Jr - 1))}^{\otimes K}}_{=\ket{f(r - 1)}^{\otimes K}} \\
+  &+ \left. \ket{Jr}^{\otimes L} \otimes\underbrace{\ket{f(Jr)}^{\otimes K}}_{=\ket{f(0)}^{\otimes K}} +\cdots+ \ket{Jr + R}^{\otimes L} \otimes\underbrace{\ket{f(Jr + R)}^{\otimes K}}_{=\ket{f(R)}^{\otimes K}} \right] \\
+  =& \frac{1}{2^{L/2}} \left[\sum_{j=0}^{J-1} \sum_{k=0}^{r - 1} \ket{jr + k}^{\otimes L} \otimes\ket{f(k)}^{\otimes K} + \sum_{k=0}^R \ket{Jr + k}^{\otimes L} \otimes\ket{f(k)}^{\otimes K} \right]
+\end{align*}
+$$
+
+To further streamline notation, define for each $k\in\N_0$ the integer $J_k \in\N_0$ by
+
+$$
+\begin{equation*}
+  J_k := \begin{cases}
+    J,\quad& k \leq R \\
+    J-1, \quad& k > R
+  \end{cases}
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+This allows us to express $\ket{\Psi_2}$ compactly as
+
+$$
+  \ket{\Psi_2} = \frac{1}{2^{L/2}} \sum_{k=0}^{r-1} \sum_{j=0}^{J_k} \ket{jr + k}^{\otimes L} \otimes\ket{f(k)}^{\otimes K}
+$$
+
+This representation makes the periodicity of $f$ explicit, as each value $f(k)$ appears in the second register, paired with inputs of the form $x = jr + k$ for suitable $j$. The structure of this state is key to the success of the quantum Fourier transform in revealing information about the unknown period $r$.
+
+3. **Application of the quantum Fourier transform**
+
+The quantum Fourier transform $\hat{F}:\mathcal{H}^A \to \mathcal{H}^A$ is given by
+
+$$
+  \ket{F}\ket{x} = \frac{1}{2^{L/2}} \sum_{y=0}^{2^L - 1} \exp\left(i2\pi \frac{xy}{2^L} \right) \ket{y}
+$$
+
+Applying $\hat{F}$ to the input register $\mathcal{H}^A$ of $\ket{\Psi_2}$, yields the state
+
+$$
+\begin{align*}
+  \ket{\Psi_3} :=& (\hat{F}\otimes\hat{I}^{\otimes K}) \ket{\Psi_2} \\
+  =& (\hat{F}\otimes\hat{I}^{\otimes K}) \left(\frac{1}{2^{L/2}} \sum_{k=0}^{r - 1} \sum_{j=0}^{J_k} \ket{jr + k}^{\otimes L} \otimes\ket{f(k)}^{\otimes K} \right) \\
+  =& \frac{1}{2^{L/2}} \sum_{k=0}^{r-1} \sum_{j=0}^{J_k} \hat{F}\ket{jr + k}^{\otimes L} \otimes \ket{f(k)}^{\otimes K} \\
+  =& \frac{1}{2^L} \sum_{k=0}^{r-1} \sum_{j=0}^{J_k} \sum_{l=0}^{2^L - 1} \exp\left(i2\pi \frac{l}{2^L} (jr + k) \right) \ket{l}^{\otimes L} \otimes\ket{f(k)}^{\otimes K}
+\end{align*}
+$$
+
+The phase amplitudes of the states $\ket{l}^{\otimes L}$ reveal intereference patterns that encode information about the period $r$. Specifically, for fixed $k$, the sum over $j$ gives a geometric series in the phase factor $\exp(i2\pi lr/2^L)$, leading to constructive interference at certain values of $l$ that are close to integer multiples of $2^L /r$. These are the outcomes that are most likely to be observed upon measurement.
+
+By Corollary $\ref{corollary-2}$, the quantum Fourier transform can be implemented with computational complexity
+
+$$
+  S_\text{F} (L) \in O(L^2),\; L\to\infty
+$$
+
+4. **Probability in measurement of the input register**
+
+In the next step of the algorithm, we observe the input register $\mathcal{H}^A$, ignoring the subsystem $\mathcal{H}^B$. This measurement projects the superposition state $\ket{\Psi_3}$ onto a computational basis state $\ket{z}\in\mathcal{H}^A$ with value $z\in\set{0,\dots,2^L -1}$. The composite system is in the pure state $\ket{\Psi_3}$, whose associated density operator is
+
+$$
+  \hat{\rho}_{\Psi_3} = \ket{\Psi_3}\bra{\Psi_3}
+$$
+
+Focusing on the subsystem $\mathcal{H}^A$, its reduced state is given by taking the partial trace over $\mathcal{H}^B$:
+
+$$
+  \hat{\rho}^A (\hat{\rho}_{\Psi_3}) = \operatorname{tr}_B (\ket{\Psi_3}\bra{\Psi_3})
+$$
+
+The probability of observing a computational state $\ket{z}\in\mathcal{H}^A$ when measuring $\ket{\Psi_3}$, is given by
+
+$$
+\begin{align*}
+  W(z) =& \operatorname{tr}(\hat{\rho}^A (\hat{\rho}_{\Psi_3}) \ket{z}\bra{z}) \\
+  =& \operatorname{tr}\left(\operatorname{tr}_B (\ket{\Psi_3}\bra{\Psi_3}) \ket{z}\bra{z} \right) \\
+  =& \operatorname{tr}(\ket{\Psi_3}\bra{\Psi_3}(\ket{z}\bra{z} \otimes\hat{I}^{\otimes K}))
+\end{align*}
+$$
+
+Applying Lemma $\ref{lemma-5}$, we express this as the squared norm of the projected state:
+
+$$
+\begin{align*}
+  W(z) =& \Norm{(\ket{z}\bra{z} \otimes\hat{I}^{\otimes K})\ket{\Psi}_3}^2 \\
+  =& \Norm{\frac{1}{2^L} \sum_{k=0}^{r-1} \sum_{j=0}^{J_k} \exp\left(i2\pi\frac{z}{2^L} (jr + k)\right) \ket{z}^{\otimes L} \otimes\ket{f(k)}^{\otimes K}}^2 \\
+  =& \frac{1}{2^L} \sum_{k_1, k_2 = 0}^{r-1} \sum_{j_1, j_2 = 0}^{J_{k_1}, J_{k_2}} \exp\left(i2\pi\frac{z}{2^L} [(j_2 - j_1)r + k_2 - k_1] \right) \underbrace{{}^{\otimes L} \braket{z|z}^{\otimes L}}_{=1} \underbrace{{}^{\otimes K} \braket{f(k_1)|f(k_2)}^{\otimes K}}_{=\delta_{k_1, k_2}} \\
+  =& \frac{1}{2^L} \sum_{k=0}^{r-1} \left|\sum_{j=0}^{J_k} \exp\left(i2\pi \frac{zrj}{2^L} \right) \right|^2 \tag{\label{equation-74}}
+\end{align*}
+$$
+
+Since $f$ is injective within each period, the states $\ket{k}$ are orthonormal for distinct $0 \leq k \leq r$, and so $\braket{f(k_1)|f(k_2)} = \delta_{k_1,k_2}$. Using the identity (for $a\in\mathbb{C}$)
+
+$$
+  \sum_{j=0}^D a^j = \begin{cases}
+    D + 1,\quad& a=1 \\
+    \frac{1 - a^{D+1}}{1-a},\quad a\neq 1
+  \end{cases}
+$$
+
+the geometric series of $\eqref{equation-74}$ becomes
+
+$$
+  \sum_{j=0}^{J_k} \exp\left(i2\pi \frac{zrj}{2^L}\right) = \begin{cases}
+    J_k + 1,\quad& \frac{zr}{2^L}\in\N_0 \\
+    \frac{1 - \exp\left(i2\pi \frac{zr(J_k + 1)}{2^L} \right)}{1 - \exp\left(i2\pi\frac{zr}{2^L}\right)},\quad& \text{else}
+  \end{cases}
+$$
+
+Substituting into $W(z)$, we find
+
+$$
+\begin{equation*}
+  W(z) = \begin{cases}
+    W_1 (z) := \frac{1}{2^{2L}} \sum_{k=0}^{r-1} (J_k + 1)^2,\quad \frac{zr}{2^L}\in\N_0 \\
+    W_2 (z) := \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{zr(J_k + 1)}{2^L} \right)}{1 - \exp\left(i2\pi\frac{zr}{2^L}\right)}\right|^2
+  \end{cases}
+\tag{\label{equation-64}}
+\end{equation*}
+$$
+
+The success of the quantum phase estimation hinges on measuring a value $z$ such there there exists $l\in\N_0$ satisfying
+
+$$
+\begin{equation*}
+  |zr - l2^L| \leq \frac{r}{2}
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+To determine how often such a $z$ is observed, we seek a lower bound of $W(z)$ under this constraint.
+
+**Case 1: $zr/2^L \in\N_0$**
+
+In the case $zr/2^L \in\N_0$, where in addition $m =: 2^L/r \in\N_+$, we have 
+
+$$
+  W(z) = \begin{cases}
+    \frac{1}{r},\quad& \frac{z}{m}\in\N_+ \\
+    0,\quad& \text{else}
+  \end{cases}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-61}$, we obtain
+
+$$
+  J = \left\lfloor m - \frac{1}{r}\right\rfloor = m - 1
+$$
+
+and from $\eqref{equation-62}$, we fin
+
+$$
+\begin{align*}
+  R =& 2^L - 1 \mod r \\
+  =& 2^L - 1 \left\lfloor\frac{2^L - 1}{r}\right\rfloor r \\
+  =& 2^L - 1 - (m - 1)r = r - 1
+\end{align*}
+$$
+
+Furthermore, with $\eqref{equation-63}$, we have for all $k\in\N_+$ with $0 \leq k < r-1 = R$ that
+
+$$
+  J_k = J = m - 1
+$$
+
+Inserting this into $\eqref{equation-64}$ yields
+
+$$
+\begin{align*}
+  W(z) =& \begin{cases} 
+    \frac{1}{2^{2L}} \sum_{k=0}^{r-1} m^2, \quad& \frac{z}{m}\in\N_+ \\
+    \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{z}{m}m \right)}{1 - \exp\left(i2\pi\frac{z}{m} \rigth)} \right|^2,\quad& \text{else}
+  \end{cases} \\
+  =& \begin{cases}
+    \frac{1}{2^{2L}} \left(\frac{2^L}{r}\right)^2,\quad& \frac{z}{m}\in\N_+ \\
+    0,\quad& \text{else}
+  \end{cases} \\
+  =& \begin{cases}
+    \frac{1}{r},\quad& \frac{z}{m}\in\N_+ \\
+    0,\quad& \text{else}
+  \end{cases}
+\end{align*}
+$$
+</details>
+
+In contrast, if $2^L/r \notin\N_+$, then from $\eqref{equation-63}$, we obtain
+
+$$
+\begin{align*}
+  \frac{1}{2^{2L}} \sum_{k=0}^{r-1} (J_k + 1)^2 =& \frac{1}{2^{2L}} \left(\sum_{k=0}^R (J_k + 1)^2 + \sum_{k=R+1}^{r-1} (J_k + 1)^2 \right) \\
+  =& \frac{1}{2^{2L}} \left[(R + 1) \left(\left\lfloor\frac{2^L - 1}{r}\right\rfloor + 1\right)^2 + (r - 1 - R) \left\lfloor\frac{2^L - 1}{r}\right\rfloor^2 \right] \\
+  \geq& \frac{1}{r}\left(\frac{r}{2^L} \left\lfloor\frac{2^L - 1}{r}\right\rfloor \right)^2
+\end{align*}
+$$
+
+Note that
+
+$$
+\begin{align*}
+  r - 1 \geq& (2^L - 1) \mod r \\
+  =& (2^L - 1) - \left\lfloor\frac{2^L - 1}{r}\right\rfloor r
+\end{align*}
+$$
+
+implies that
+
+$$
+\begin{equation*}
+\begin{split}
+  \frac{r}{2^L} \left\lfloor\frac{2^L - 1}{r}\right\rfloor =& 1 - \frac{1 + (2^L - 1)\mod r}{2^L} \\
+  \geq& 1 - \frac{r}{2^L} > 1 - \frac{1}{2^{L/2}} 
+\end{split}
+\tag{\label{equation-65}}
+\end{equation*}
+$$
+
+From $\eqref{equation-64}$, $\eqref{equation-60}$ and $\eqref{equation-65}$, we thus have for the case $zr/2^L \in\N_+$ that
+
+$$
+\begin{align*}
+  W_1 (z) \geq& \frac{1}{r} (1 - \frac{1}{2^{L/2}})^2 \\
+  >& \frac \frac{1}{r}\left(1 - \frac{1}{2^{L/2 - 1}} \right)
+\end{align*}
+$$
+
+**Case 2: $zr/2^L \notin\N_+$**
+
+In the case $zr/2^L \notin\N_+$, then from $\eqref{equation-64}$ we express $W(z)$ as
+
+$$
+\begin{align*}
+  W_2 (z) =& \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{zr}{2^{L}} (J_k + 1) \right)}{1 - \exp(i2\pi \frac{zr}{2^L})}\right|^2 \\
+  =& \frac{1}{2^{2L}} \sum_{k=0}{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{zr - l2^L}{2^{L}} (J_k + 1) \right)}{1 - \exp(i2\pi \frac{zr}{2^L})}\right|^2 \\
+  =& \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left(\frac{\sin\left(\pi \frac{zr - l2^L}{2^L} (J_k + 1) \right)}{\sin(\pi\frac{zr}{2^L})} \right)^2 \\
+  =& \frac{1}{2^{2L}} \sum_{k=0}^{r-1} s(\alpha)^2
+\end{align*}
+$$
+
+where
+
+$$
+\begin{align*}
+  s(\alpha) :=& \frac{\sin(\alpha \tilde{J}_k)}{\sin(\alpha)} \\
+  \alpha :=& \pi\frac{zr - l2^L}{2^L} \\
+  \tilde{J}_k :=& J_k + 1
+\end{align*}
+$$
+
+By $\eqref{equation-60}$, it follows that $\alpha$ satisfies
+
+$$
+\begin{equation*}
+\begin{split}
+  |\alpha| =& \frac{\pi}{2^L} (zr - l2^L) \\
+  \leq& \frac{\pi}{2^L} \frac{r}{2} \\
+  <& \frac{\pi}{2^L} 2^{L/2 - 1} \\
+  =& \frac{\pi}{2^{L/2 + 1}} \ll \frac{\pi}{2}
+\end{split}
+\tag{\label{equation-66}}
+\end{equation*}
+$$
+
+while $\tilde{J}_k$ satisfies
+
+$$
+\begin{align*}
+  |\tilde{J}_k| =& J_k + 1 \leq J + 1 \\
+  =& \left\lfloor\frac{2^L - 1}{r} + 1 \\
+  \leq& \frac{2^L - 1}{r} + 1 < \frac{2^L}{r} + 1
+\end{align*}
+$$
+
+It follows that $\alpha \tilde{J}_k$ is bounded by
+
+$$
+\begin{equation*}
+\begin{split}
+  |\alpha\tilde{J}_k| <& \frac{\pi}{2^L} \frac{r}{2} \left(\frac{2^L}{r} + 1 \right) \\
+  <& \frac{\pi}{2}\left(1 + \frac{1}{2^{L/2}} \right)
+\end{split}
+\tag{\label{equation-67}}
+\end{equation*}
+$$
+
+To obtain a lower bound for the probability $W_2$, we determine a lower bound of the function $s(\alpha)$ for a suitable interval of $\alpha$.
+
+If $|\alpha| \leq\alpha_\text{min}$ with $\alpha_\text{min} = \pi r/2^{L+1}$ then
+
+$$
+  s(\alpha)^2 \geq s(\alpha_\text{min})^2
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $n\in\N_0$, Euler's formula gives
+
+$$
+\begin{align*}
+  e^{in\alpha} =& \cos(n\alpha) + i\sin(n\alpha) \\
+  =& (\cos (\alpha) + i\sin(\alpha))^n = (e^{i\alpha})^n
+\end{align*}
+$$
+
+Equating the imaginary parts yields
+
+$$
+  \sin(n\alpha) = \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} \cos^{n-2l - 1} (\alpha) \sin^{2l + 1}(\alpha)
+$$
+
+Dividing by $\sin(\alpha)$, we obtain
+
+$$
+  \frac{\sin(n\alpha)}{\sin(\alpha)} = \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} \cos^{n-2l - 1} (\alpha) \sin^{2l}(\alpha)
+$$
+
+with first derivative
+
+$$
+\begin{align*}
+  \left(\frac{\sin(n\alpha)}{\sin(\alpha)}\right)' =& \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} (n - 2l - 1) \cos^{n-2l - 2} (\alpha) \sin^{2l + 1}(\alpha) \\
+  &+ \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} 2l \cos^{n-2l} (\alpha) \sin^{2l - 1} (\alpha) 
+\end{align*}
+$$
+
+and second derivative
+
+$$
+\begin{align*}
+  \left(\frac{\sin(n\alpha)}{\sin(\alpha)}\right)'' =& \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} (n - 2l - 1)(n - 2l - 2) \cos^{n-2l - 3} (\alpha) \sin^{2l + 2}(\alpha) \\
+  &- \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} (n - 2l - 1)(2l + 1) \cos^{n-2l-1} (\alpha) \sin^{2l} (\alpha) \\
+  &+ \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} 2l (2l - 1) \cos^{n - 2l + 1} (\alpha) \sin^{2l - 2} (\alpha) \\
+  &- \sum_{l=0}^{\lfloor n/2 \rfloor} (-1)^l \binom{n}{2l + 1} 2l (n - 2l) \cos^{n - 2l - 1} (\alpha) \sin^{2l} (\alpha)
+\end{align*}
+$$
+
+At $\alpha = 0$, we thus have
+
+$$
+\begin{align*}
+  \left.\frac{\sin(n\alpha)}{\sin(\alpha)}\right|_{\alpha=0} =& n \\
+  \left.\left(\frac{\sin(n\alpha)}{\sin(\alpha)}\right)' \right|_{\alpha=0} =& 0 \\
+  \left.\left(\frac{\sin(n\alpha)}{\sin(\alpha)}\right)'' \right|_{\alpha=0} =& \frac{n}{3}(1 - n^2) \\
+\end{align*}
+$$
+
+Now consider $s(\alpha) = \frac{\sin(\alpha\tilde{J}_k)}{\sin(\alpha)}$, where $\tilde{J}_k \in\N_+$. Assuming $L > 2$, we have
+
+$$
+\begin{align*}
+  \tilde{J}_k =& J_k + 1 \geq \left\lfloor\frac{2^L - 1}{r}\right\rfloor \\
+  >& \left\lfloor\frac{2^{L/2} - \frac{1}{r}}{r}\right\rfloor > 1
+\end{align*}
+$$
+
+At $\alpha = 0$, we find
+
+$$
+\begin{align*}
+  s(0) =& \tilde{J}_k \\
+  s'(0) =& 0 \\
+  s''(0) =& \frac{\tilde{J}_k}{3} (1 - \tilde{J}_k) < 0
+\end{align*}
+$$
+
+This shows that $s$ has a strict local maximum at $\alpha = 0$. To prove that this is only maximum within the interval $[-\alpha_\text{min}, \alpha_\text{min}]$, we evaluate the derivate of $s(\alpha)$
+
+$$
+\begin{equation*}
+  s'(\alpha) = \frac{\tilde{J}_k \cos(\alpha\tilde{J}_k) \sin(\alpha) - \sin(\alpha\tilde{J}_k) \cos(\alpha)}{\sin^2 (\alpha)}
+\tag{\label{equation-68}}
+\end{equation*}
+$$
+
+and show that $s'(\alpha) < 0$ for all $\alpha\in(0,\alpha_\text{min}]$. By the symmetry of $s$ about $\alpha = 0$, i.e. $s(-\alpha) = s(\alpha)$. It thus follows that $s'(\alpha) > 0$ for all $\alpha\in[-\alpha_\text{min}, 0)$.
+
+Note that $s'(\alpha) < 0$ for $\alpha\tilde{J}_k = \frac{\pi}{2}$. Suppose now that $\alpha\in\left(0, \frac{\pi r}{2^{L+1}} \right)$ and $\alpha\tilde{J}_k \neq \frac{\pi}{2}$. From $\eqref{equation-66}$ and $\eqref{equation-67}$, we get the upper bounds
+
+$$
+\begin{align*}
+  \alpha <& \frac{\pi}{2^{L/2 + 1}} \\
+  \alpha\tilde{J}_k <& \frac{\pi}{2} + \frac{\pi}{2^{L/2 + 1}}
+\end{align*}
+$$
+
+This implies that in the case $\alpha\tilde{J}_k < \frac{\pi}{2}$ as well as $\alpha\tilde{J}_k > \frac{\pi}{2}$, we have
+
+$$
+  \tan(\alpha) < \tan(\alpha\tilde{J}_k)
+$$
+
+so that
+
+$$
+\begin{align*}
+  \tilde{J}_k \tan(\alpha)' =& \tilde{J}_k (1 + \tan^2 (\alpha)) \\
+  <& \tilde{J}_k (1 + \tan^2 (\alpha\tilde{J}_k)) = \tan(\alpha\tilde{J}_k)'
+\end{align*}
+$$
+
+This implies
+
+$$
+  \tilde{J}_k \cos(\alpha\tilde{J}_k) \sin(\alpha) < \sin(\alpha\tilde{J}_k) \cos(\alpha)
+$$
+
+and from $\eqref{equation-68}$, it follows that  $s'(\alpha) < 0$ for all $\alpha\in\left(0, \alpha_\text{min} \right]$. By symmetry, $s'(\alpha) > 0$ for $\alpha\in\left[-\frac{\pi r}{2^{L+1}}, 0 \right)$. Thus, $s(\alpha)$ strictly decreases away from $\alpha = 0$ in both directions within $[-\alpha_\text{min}, \alpha_\text{min}]$. Since $s(\alpha) \geq 0$ in this interval, it follows that $s(\alpha)^2 \geq s(\alpha_\text{min})^2$ for all $|\alpha| \leq\alpha_\text{min}$.
+</details>
+
+Thus,
+
+$$
+  s(\alpha)^2 \geq \frac{\sin^2 \left(\frac{\pi r}{2^{L + 1} (J_k + 1)} \right)}{\sin^2 \left( \frac{\pi r}{2^{L + 1}} \right)}
+$$
+
+and since $\sin^2 (x) \leq x$, it follows that
+
+$$
+  s(\alpha)^2 \geq \left(\frac{2^{L + 1}}{\pi r} \right)^2 \sin^2 \left(\frac{\pi r}{2^{L + 1} (J_k + 1)} \right)
+$$
+
+The definitions $\eqref{equation-61}$, $\eqref{equation-62}$ and $\eqref{equation-63}$ imply
+
+$$
+\begin{align*}
+  \left\lfloor\frac{2^L - 1}{r}\right\rfloor \leq& J_k + 1 \\
+  \implies \underbrace{\frac{r}{2^L} \left\lfloor\frac{2^L - 1}{r}\right\rfloor}_{=1 - \frac{R + 1}{2^L}} \leq& \frac{r}{2^L} (J_k + 1) \\
+  \implies 1 - \frac{R + 1}{2^L} \leq& \frac{r}{2^L} (J_k + 1) \\
+  \implies 1 - \frac{r}{2^L} \leq& \frac{r}{2^L} (J_k + 1)
+\end{align*}
+$$
+
+such that
+
+$$
+  s(\alpha)^2 \geq \frac{2^{2L + 2}}{\pi^2 r^2} \sin^2 \left(\frac{\pi}{2}\left(1 - \frac{r}{2^L} \right) \right)
+$$
+
+Moreover, we have
+
+$$
+\begin{align*}
+  \sin\left(\frac{\pi}{2}(1 + x) \right) =& \cos\left(\frac{\pi x}{2}\right) \\
+  =& \sum_{j=0}^\infty \frac{(-1)^j}{(2j)!} \left(\frac{\pi x}{2} \right)^{2j} \\
+  \leq& 1 - \frac{1}{2}\left(\frac{\pi x}{2}\right)^2
+\end{align*}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  s(\alpha)^2 \geq& \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{1}{2} \left(\frac{\pi}{2} \frac{r}{2^L} \right)^2 \right)^2 \\
+  \geq& \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \left(\frac{\pi}{2} \frac{r}{2^L} \right)^2 \right) \\
+  \geq& \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \left(\frac{\pi}{2} \frac{1}{2^{L/2}} \right)^2 \right) \\
+  =& \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L+2}} \right)
+\end{align*}
+$$
+
+Consequently, the lower bound of $W_2 (z)$ is
+
+$$
+\begin{align*}
+  W_2 (z) \geq \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \\
+  =& \frac{r}{2^{2L}} \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \\
+  =& \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L+2}} \right)
+\end{align*}
+$$
+
+For $L \geq 4$, this lower bound ensures that the probability of measuring a value $z\in\set{0,\dots,2^L - 1}$ satisfying $\eqref{equation-60}$ is at least $\frac{4}{\pi^2}\left(1 - \frac{\pi^2}{2^{L + 2}} \right)$. To justify thus, observe that for $L \geq 4$
+
+$$
+  \frac{1}{2^{L/2 - 1}} \leq \frac{1}{2} < \frac{5}{9} < 1 - \frac{4}{\pi^2}
+$$
+
+which implies
+
+$$
+  \frac{1}{2^{L/2 - 1}} - \frac{1}{2^{2L}} < 1 - \frac{4}{\pi^2}
+$$
+
+Thus, the bounds
+
+$$
+  W_\text{min} := \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \leq W_2 (z) < W_1 (z) < \frac{1}{r}
+$$
+
+hold for all $z$ satisfying $\eqref{equation-60}$.
+
+Now, for each $z\in\set{0,\dots,2^L - 1}$ there exists either none or exactly one number $l\in\N_0$ that satisfies $\eqref{equation-60}$. This uniqueness follows from the observation that if $l_1 \neq l_2$, then the distance between $l_2 2^L$ and $l_2 2^L$ is at least $2^L > r$. If both $l_1$ and $l_2$ satisfy $\eqref{equation-60}$ with the same $z$, their difference must be at most $r$, giving a contradiction. Since there are exactly $r$ such valid $l\in\set{0,\dots,r-1}$, it follows that there are precisely $r$ distinct values $z\in\set{0,\dots, 2^L - 1}$ satisfying $\eqref{equation-60}$.
+
+Therefore, a measurement of the input register $\mathcal{H}^A$ results in a value $z\in\set{0,\dots,2^L - 1}$ for which either
+- no $l\in\N_0$ satifies $\eqref{equation-60}$ or
+- exactly one $l_z \in\set{0,\dots,r-1}$ satisfies $\eqref{equation-60}$
+
+Let $l_z \in\set{0,\dots,r-1}$ denote this unique value corresponding to a given $z$. It then follows from the assumption $\eqref{equation-}$ that
+
+$$
+\begin{equation*}
+  \left|\frac{z}{2^L} - \frac{l_z}{r}\right| < \frac{1}{2r^2}
+\tag{\label{equation-69}}
+\end{equation*}
+$$
+
+Moreover, for any $j\in\set{0,\dots,r-1}$ there is exactly one $z\in\set{0,\dots,2^L - 1}$ such that $|zr - j2^L| \leq r/2$, meaning that $j = l_z$. Consequently, the probability that a given $j\in\set{0,\dots,r-1}$ corresponds to some $z$ (such that $l_z = j$) is at least the probability that $\eqref{equation-60}$ holds. This probability is bounded from below by $W_\text{min}$ such that we have for all $j\in\set{0,\dots,r-1}$ we have
+
+$$
+  \Pr(\exists z \in\set{0,\dots,2^L - 1} : l_z = j) \geq \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L+2}} \right)
+$$
+
+5. **Probability of finding $r$ as the denominator in the continued fraction approximation**
+
+The final step is to determine the period $r$ in $\eqref{equation-69}$, where the measurement outcome $z$ and register length $2^L$ are known. Continued fraction theory implies that if $\eqref{equation-69}$ holds, the reduced fraction $l_z / r$ must be a partial continued fraction approximation of $z / 2^L$. Since $z / 2^L \in\Q$, it follows that its continued fraction expansion is finite, i.e.
+
+$$
+  \frac{z}{2^L} = a_0 + \frac{1}{a_1 + \frac{1}{\ddots + \frac{1}{a_n}}} = [a_0;a_1\dots,a_n]
+$$
+
+Since we know $z$ and $2^L$, we can efficiently compute the coefficients $a_j$ with the continued fraction algorithm as follows.
+
+Define initial values $r_{-1} := z$ and $r_0 := 2^L$ and for $j\in\N$ the recursive relation
+
+$$
+  r_j := r_{j-2} \mod r_{j-1},\; r_{j-1} > 0
+$$
+
+The continued fraction coefficients $a_j$ for $j\in\set{1,\dots,n}$ are given by
+
+$$
+  a_j := \left\lfloor\frac{r_{j-1}}{r_j}\right\rfloor
+$$
+
+The number of computational steps required for this calculation is of the order $O(\log_2^2 (\max\set{r_{j-2}, r_{j-1}}))$. Since $r_{-1}, r_0 \leq 2^L$ and the $r_j$ decrease with increasing $j$, the number of computational steps required to compute one $r_j$ is of the order $O(L^2)$. The number of $r_j$, which we have to compute, grows as a function of $L$ as $2\min\set{\log_2 (2^L), \log_2 (z)} + 1 \leq 2L + 1$. The number of computational steps required to compute all $r_j$ is thus of the order $O(L^3)$. For the calculation of all $a_j$ we have to perform $O(L)$ divisions, each of which requires $O(L)$ steps. Hence, the $a_j$ can be calculated in $O(L^2)$ steps, given the $r_j$ have been computed before.
+
+Using the coefficients $a_j$, we can calculate the partial continued fraction of $z/L$:
+
+$$
+  \frac{p_j}{q_j} := a_0 + \frac{1}{a_1 + \frac{1}{\ddots + \frac{1}{a_j}}},\quad j\in\set{0,\dots,n}
+$$
+
+For this we carry out $O(L)$ divisions, each of which requires $O(L)$ computational stpes. We denote the set of the partial continued fractions by
+
+$$
+  T\left(\frac{z}{2^L}\right) := \Set{\frac{p_j}{q_j}}_{j=0}^n
+$$
+
+Given the $a_j$, the computation of all elements in $T(z/2^L)$ thus requires a number of steps of the order $O(L^2)$. Altoghether, the growth of the number of computational steps needed to calculate the partial continued fractions $S_\text{PCF} (L)$ as a function of $L$ is of the order
+
+$$
+  S_\text{PCF} (L) \in O(L^3),\; L\to\infty
+$$
+
+By property, one of these partial continued fractions satisfies
+
+$$
+\begin{equation*}
+  \frac{p_j}{q_j} = \frac{l_z}{r}
+\tag{\label{equation-70}}
+$$
+
+and we know that the $p_j$ and $q_j$ are coprime, i.e. $\gcd(q_j, p_j) = 1$. To find $r$, we test each $p_j / q_j \in T(z/2^L)$ to check if $q_j$ is a period of $f$ by computing $f(q_j)$.
+
+If $f(q_j) = 1$, then $q_j = vr$ for some $v\in\N$, and $\eqref{equation-70}$ implies $p_j = vl_z$. Since $\gcd(q_j, p_j) = 1$, it follows that $v = 1$ and $q_j = r$, indentifying the period of $f$.
+
+If instead, $f(q_j) \neq 1$ for every $p_j / q_j \in T(z/2^L)$, then either
+- the measurement outcome $z$ does not correspond to a fraction $l_z / r$ that satisfy $\eqref{equation-69}$ for any $l\in\N_0$ or
+- the number $l_z$ satisfies $\gcd(l_z, r) > 1$, in which case $l_z / r$ would not appear in $T(z/2^L)$.
+
+In the cases $f(q_j) \neq 1$, we repeat the algorithm: with the initial state $\ket{\Psi_0}$, measure again the input register to find a new $z$, determine the partial continued fractions of $z/2^L$, and check if now one of the new $q_j$ is the period of $f$. The necessity for this repetition increases with the probability that $\gcd(l_z, r) > 1$ for all possible $l_z \in\set{0,\dots,r-1}$. 
+
+Let $E$ denote the that the measured value $z$ corresponds to a rational approximation $l_z /r$ with $\gcd(l_r, r) = 1$ and 
+
+$$
+  \left|\frac{z}{2^L} - \frac{l_z}{r} \right| < \frac{1}{2r^2}
+$$
+
+This guarantees that $r$ can be found from a partial continued fraction $p_j /q_j \in T(z/2^L)$. There are $\phi(r)$ numbers $l\in\set{0,\dots,r-1}$ with $\gcd(l,r) = 1$, where $\phi$ is the Euler totient function. For each such $l$, the probability that $l/r$ is approximated closely enough by $z/2^L$ is at least $W_\text{min}$. Summing over all $\phi(r)$ such $l$, the probability for $E$ has lower bound given by
+
+$$
+\begin{align*}
+  \Pr(E_2) =& \sum_{\begin{subarray}{c} l\in\set{0,\dots,r-1} \\ \gcd(l,r) = 1 \end{subarray}} \Pr(\exists z \in\set{0,\dots,2^L - 1} : l_z = l) \\
+  \geq& \sum_{\begin{subarray}{c} l\in\set{0,\dots,r-1} \\ \gcd(l,r) = 1 \end{subarray}} \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L+2}} \right) \\
+  =& \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L+2}}\right) \underbrace{\sum_{\begin{subarray}{c} l\in\set{0,\dots,r-1} \\ \gcd(l,r) = 1 \end{subarray}} 1}_{=\phi(r)} \\
+  =& \frac{\phi(r)}{r} \frac{\pi}{\pi^2} \left(1 - \frac{\pi^2}{2^{L+2}} \right) \tag{\label{equation-71}}
+\end{align*}
+$$
+
+We can estimate the totient ratio $\phi/r$ using the Rosser-Schoenfeld bound (Theorem $\ref{theorem-2}$), yielding
+
+$$
+\begin{align*}
+  \frac{r}{\phi(r)} < g(r) :=& \exp(\gamma) \ln(\ln(r)) + \frac{2.50637}{\ln(\ln(r))} \\
+  =& \underbrace{\left(\exp(\gamma) + \frac{2.50637}{\ln^2(\ln(r))}\right)}_{:= h(r)}
+\end{align*}
+$$
+
+Since $g(r)$ is decreasing for large $r$, we define
+
+$$
+  h(\gamma) := \exp(\gamma) + \frac{2.50637}{\ln^2(\ln(r))}
+$$
+
+which is decreasing in $r$. Since $h(r) < 4$ for $r \geq 19$, we find
+
+$$
+  \frac{r}{\phi(r)} < g(r) < 4 \ln(\ln(r))
+$$
+
+Since $r < 2^{L/2}$ by assumption, it follow that
+
+$$
+\begin{equation*}
+  \frac{r}{\phi(r)} < g(r) < 4\ln(\ln(2^{L/2})) < 4 \ln(L)
+\tag{\label{equation-72}}
+\end{equation*}
+$$
+
+or
+
+$$
+  \frac{\phi(r)}{r} > \frac{1}{4\ln(L)},\; r \geq 19
+$$
+
+To estimate $\frac{4}{\pi^2 (1 - \frac{\pi^2}{2^{L+2}})}$, note that $4/\pi^2 > 2/5$ and for $L\geq 15$ also
+
+$$
+\begin{equation*}
+  \frac{4}{\pi^2} \left(1 - \frac{\pi^2}{2^{L+2}} \right) \geq \frac{2}{5}
+\tag{\label{equation-73}}
+\end{equation*}
+$$
+
+Since we are only interested in the asymptotic behaviour for $L \to\infty$, the restriction $L \geq 15$ is immaterial for us, and the estimate $\eqref{equation-73}$ suffices for our purposes.
+
+From $\eqref{equation-71}$, $\eqref{equation-72}$ and $\eqref{equation-73}$ the success probability of measuring $z$ such that the period $r$ can be found as denominator of a partial continued fraction is
+
+$$
+  \Pr(E_2) \geq \frac{2}{5}\frac{1}{4\ln(L)} = \frac{1}{10\ln(L)},\; L \geq 19
+$$
+
+6. **Aggregration of the number of computational steps**
+
+By properties of the Landau big-O symbol, the computational complexity of the quantum algorithm $A$ is given by
+
+$$
+\begin{align*}
+  S_A (L) \in& S_0 (L) + S_{U_f} (L) + S_{F} (L) + S_\text{PCF} (L) \\
+  \in& O(L) + O(L^{K_f}) + O(L^2) + O(L^3) \\
+  \in& O\left(L^{\max\set{K_f, 4}} \right),\; L\to\infty
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition' tag='proposition-8'>
+For $f_{b,N} (x) = b^x \mod N$ there exists a unitary operator $\hat{U}_{f_{b,N}}$ on $\mathcal{H}^A \otimes \mathcal{H}^B$ satisfying
+
+$$
+  \hat{U}_{f_{b,N}} (\ket{x}^A \otimes \ket{0}^B) = \ket{x}^A \otimes \ket{f_{b,N}(x)}^B
+$$
+
+and the number of computational steps $S_{U_{f_{b,N}}}$ required for $U_{f_{b,N}}$ grows as a function of $L = \lfloor 2\log_2 (N) \rfloor + 1$ as
+
+$$
+  S_{U_{f_{b,N}}} (L) \in O(L^3),\; L\to\infty
+$$
+
+<details>
+<summary>Proof</summary>
+
+
+</details>
+</MathBox>
 
 # Grover search algorithm
 
