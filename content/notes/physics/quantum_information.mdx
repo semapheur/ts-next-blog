@@ -5364,15 +5364,37 @@ Shor's algorithm can be summarized as follows:
     - $\gcd(b^{r/2} + 1, N) < N$, then we have found a non-trivial factor of $N$. Calculate $\gcd(b^{r/2} - 1, N)$ as a further factor of $N$. Go to output and show $\gcd(b^{r/2} \pm 1, N)$
 - **Output:** Two nontrivial factors of $N$
 
-<MathBox title="Rosser-Schoenfeld bound" boxType='theorem' tag='theorem-2'>
-For $r \geq 3$, the following inequality holds
+## Quantum period-finding algorithm (step 2)
 
+Quantum circuits can be used to determine the period of a function $f:\N_0 \to\N_0$ provided the following conditions are satifies
+1. **Efficient unitary implementation:** The function $f$ can be implemented as a unitary operator $\hat{U}_f$ on a suitable Hilbert space, and the number of computational steps $S_{U_f}$ required to apply $\hat{U}_f$ is suitably bounded
+2. **Period bound:** The period $r$ of $f$ is bounded above by 
 $$
-  \frac{r}{\phi(r)} < e^\lambda \ln(\ln(r)) + \frac{2.50637}{\ln(\ln(r))}
+\begin{equation*}
+  r < 2^{L/2}
+\tag{\label{equation-75}}
+\end{equation*}
 $$
+for some known number $L\in\N_+$.
 
-where $\gamma := 0.5772156649\dots$ denotes Euler's constant.
-</MathBox>
+3. **Injectivity within a period:** The function $f$ is injective on each period, i.e. $f(n) = f(m)$ implies $n \equiv m \mod r$.
+
+Given these conditions, the quantum period-finding algorithm proceeds in two main steps:
+1. **Quantum phase estimation**
+
+Apply quantum phase estimation using a unitary gate $\hat{U}_{f_{b,N}}$ that implements the function $f_{b,N} :\N_0 \to\N_0$ given by
+$$
+  f_{b, N} (n) = b^n \mod N 
+$$
+for a randomly chonse base $b\in\set{2,\dots,N-1}$. The gate $\hat{U}_{f_{b,N}}$ acts on the initial state $\ket{0}^{\otimes 2n} \otimes \ket{1}$, where the second register $\ket{1}$ is expressible as a superposition of eigenvectors of $\hat{U}_{f_{b,N}}$. The phase estimation yields, with high probability, a measurement outcome close to a rational number of the form 
+$$
+  \frac{j}{r} 2^{2n}
+$$ 
+for some uniformly random $j\in\set{0,\dots, r - 1}$.
+
+2. **Continued fractions algorithm** 
+
+The measurement outcome is classically post-processed using the continued fractions algorithm to recover the unknown period $r$, provided $\gcd(j,r) = 1$. 
 
 <MathBox title='' boxType='lemma' tag='lemma-5'>
 
@@ -5384,6 +5406,16 @@ $$
 <summary>Proof</summary>
 
 </details>
+</MathBox>
+
+<MathBox title="Rosser-Schoenfeld bound" boxType='theorem' tag='theorem-2'>
+For $r \geq 3$, the following inequality holds
+
+$$
+  \frac{r}{\phi(r)} < e^\lambda \ln(\ln(r)) + \frac{2.50637}{\ln(\ln(r))}
+$$
+
+where $\gamma := 0.5772156649\dots$ denotes Euler's constant.
 </MathBox>
 
 <MathBox title='' boxType='theorem'>
@@ -5977,7 +6009,7 @@ Therefore, a measurement of the input register $\mathcal{H}^A$ results in a valu
 - no $l\in\N_0$ satifies $\eqref{equation-60}$ or
 - exactly one $l_z \in\set{0,\dots,r-1}$ satisfies $\eqref{equation-60}$
 
-Let $l_z \in\set{0,\dots,r-1}$ denote this unique value corresponding to a given $z$. It then follows from the assumption $\eqref{equation-}$ that
+Let $l_z \in\set{0,\dots,r-1}$ denote this unique value corresponding to a given $z$. It then follows from the assumption $\eqref{equation-75}$ that
 
 $$
 \begin{equation*}
@@ -6136,6 +6168,323 @@ $$
 </details>
 </MathBox>
 
+### Probability of selecting a suitable base $b\in\N_+$
+
+<MathBox title='' boxType='lemma' tag='lemma-6'>
+Let $p\in\N_+$ be an odd prime, $k\in\N_+$ and $s\in\N_0$. Let $b$ be selected randomly from the set
+
+$$
+  \set{c\in\set{1,\dots,p^k - 1} | \gcd(p^k, c) = 1}
+$$
+
+with uniform probability $1/\phi(p^k)$, where $\phi$ is Euler's totient function. Then, for a fixed triple $(p,k,s)$, the probability that the multiplicative order of $b$ modulo $p^k$ is of the form $\operatorname{ord}_{p^k} (b) = 2^s t$ with $t$ odd, satisfies
+
+$$
+  \Pr(\operatorname{ord}_{p^k} (b) = 2^s t \text{ with }t\text{ odd}) \leq \frac{1}{2}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $p$, $k$ and $s$ be given. By definition of Euler's totient function $\phi$, the number of elements in $\set{c\in\set{1,\dots,p^k - 1} | \gcd(p^k, c) = 1}$ is given by $\phi(p^k)$. Furthermore, there exist uniquely determined $u, v\in\N_+$ with $v$ odd such that
+
+$$
+  \phi(p^k) = p^{k-1} (p - 1) = 2^u v
+$$
+
+By properties of modular order there exist a primitive root $a\in\N_+$ for $p^k$ and it follows that 
+
+$$
+  \set{b\in\set{1,\dots,p^k - 1} | \gcd(p^k, b) = 1} = \set{a^j \mod p^k}_{j=1}^{\phi(p^k)}
+$$
+
+Thus, by the identity $b = a^j \mod p^k$, the random selection of uniformly distributed $b$ is equal to a random selection of the uniformly distributed $j\in\set{1,\dots,\phi(p^k)}$. Moreover, it follows that
+
+$$
+\begin{equation*}
+  \operatorname{ord}_{p^k} (b) = \frac{\phi(p^k)}{\gcd(j, \phi(p^k))}
+\tag{\label{equation-78}}
+\end{equation*}
+$$
+
+which means that the event $\operatorname{ord}_{p^k} (b) = 2^s t$ is the same as
+
+$$
+\begin{equation*}
+  2^s t = \frac{2^u v}{\gcd(j, 2^u v)}
+\tag{\label{equation-76}}
+\end{equation*}
+$$
+
+From this, we deduce that the case $s > u$ cannot occur because in that case we would have
+
+$$
+  v = 2^{s - u} t \gcd(j, 2^u v)
+$$
+
+and therefore $2\mid v$, which contradicts the assumption of an odd $t$ in $\phi(p^k) = 2^u v$. Thus, we have
+
+$$
+\begin{equation*}
+  \Pr(\operatorname{ord}_{p^k} (b) = 2^s t, 2\nmid t \land s > u) = 0
+\tag{\label{equation-81}}
+\end{equation*}
+$$
+
+For the case $s \leq u$, we deduce that $j$ has to be of the form $j = 2^{u - s} x$, where $x$ is odd, as follows. Let
+
+$$
+  n = \prod_{p\in\operatorname{Pri}} p^\nu p,\quad m = \prod_{p\in\operatorname{Pri}} p^\mu p
+$$
+
+be the prime factorizations of $n, m\in\N$. Then, we obtain
+
+$$
+\begin{equation*}
+  \gcd(n,m) = \prod_{p\in\operatorname{Pri}} p^{\min\set{\nu_p, \mu_p}}
+\tag{\label{equation-77}}
+\end{equation*}
+$$
+
+Suppose $j = 2^w x$ with $x$ odd. It then follows from $\eqref{equation-77}$ that
+
+$$
+\begin{equation*}
+  \gcd(j, 2^u v) = 2^{\min\set{w,u}} \prod_{p\in\operatorname{Pri}\setminus\set{2}} p^{\kappa_p}
+\tag{\label{equation-79}}
+\end{equation*}
+$$
+
+with suitably chosen $\kappa_p$. In order to have $\operatorname{ord}_{p^k} (b) = 2^s t$, then $\eqref{equation-78}$ and $\eqref{equation-76}$ require
+
+$$
+\begin{equation*}
+  \gcd(j, 2^u v) = 2^{u - s} \frac{v}{t}
+\tag{\label{equation-80}}
+\end{equation*}
+$$
+
+Since $v$ and $t$ are assumed odd, it follows that $v/t$ has to be odd. From $\eqref{equation-79}$ and $\eqref{equation-80}$ it follows taht $\min\set{w,u} = u - s$ and this $w = u - s$. Because of this, $j$ has to be of the form $j = 2^{u - s} x$ with odd $x\in\set{1,\dots,\phi(p^k) = 2^u v}$. In this set there exist $2^s v$ multiples of $2^{u-s}$:
+
+$$
+  \set{2^{u-s} \cdot 1, 2^{u-s} \cdot 2,\cdots, 2^{u - s} \cdot 2^s v}
+$$
+
+Of these $2^s v$ multiples of $2^{u-s}$ only half are of the form $j = 2^{u-s} x$ with $x$ odd. The fact that all $j$ are chosen with the uniform probability implies
+
+$$
+\begin{align*}
+  \Pr(\operatorname{ord}_{p^k} (b) = 2^s t, 2\nmid t \land s > u) =& \frac{\frac{1}{2} 2^s v}{2^u v} \\
+  =& 2^{s - u - 1} \leq \frac{1}{2}
+\end{align*}
+$$
+
+since $s \leq u$. Together with $\eqref{equation-81}$ this yields
+
+$$
+\begin{align*}
+  &\Pr(\operatorname{ord}_{p^k} (b) = 2^s t, 2\nmid t) \\
+  =& \underbrace{\Pr(\operatorname{ord}_{p^k} (b) = 2^s t, 2\nmid t \land s > u)}_{=0} \\
+  &+ \Pr(\operatorname{ord}_{p^k} (b) = 2^s t, 2\nmid t \land s \leq u) \\
+  \leq& \frac{1}{2}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $N\in\N_+$ be odd with prime factorization $N = \prod_{j=1}^J p_j^{v_j}$ consisting of prime powers of $J$ different prime factors $p_1,\dots,p_J$ and let $b\in\set{c\in\set{0,\dots,N_1} | \gcd(c,N) = 1}$ be randomly chosen. Then
+
+$$
+  \Pr(2\nmid \operatorname{ord}_N (b) \land (b^{\operatorname{ord_N (b)}/2} + 1) \mod N \neq 0) \geq 1 - \frac{1}{2^{J-1}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since by assumption $N$ is odd, all its prime factors $p_1,\dots,p_J$ must be odd as well, and we can apply Lemma $\ref{lemma-6}$ for their powers $p_j^{v_j}$. Defining $r := \operatorname{ord}_N (b)$ we want to show
+
+$$
+  \Pr(2\nmid r \lor (b^{r/2} + 1) \mod N = 0) \leq \frac{1}{2^{J-1}}
+$$
+
+We know that every $b\in\set{1,\dots,N-1}$ with $\gcd(b,N) = 1$ corresponds uniquely to a set of $b_j := b \mod p_j^{v_j} \in\set{1,\dots, p_j^{v_j} - 1}$ with $\gcd(b_j, p_j^{v_j}) = 1$ for $j\in\set{1,\dots,J}$ and vice versa. An arbitrary selection of $b$ is therefore equivalent to an arbitrary selection of the tuple $(b_1 = b \mod p_1^{v_1}, \dots, b_J = b \mod p_J^{v_J})$. By definition of modular order, $r = \operatorname{ord}_N (b)$ satisfies
+
+$$
+  b^r \mod N = 1
+$$
+
+From this it follows that there exist $z\in\Z$ such that 
+
+$$
+\begin{equation*}
+  b^r = 1 + zN = 1 + z \prod_{j=1}^J p_j^{v_j}
+\tag{\label{equation-84}}
+\end{equation*}
+$$
+
+and thus also
+
+$$
+  b^r \mod p_j^{v_j} = 1
+$$
+
+Furthermore, we set $r_j := \operatorname{ord}_{p_j^{v_j}} (b_j)$ for every $j\in\set{1,\dots,J}$. Then
+
+$$
+\begin{equation*}
+\begin{split}
+  1 =&  b_j^{r_j} \mod p_j^{v_j} \\
+  =& (b\mod p_j^{v_j})^{r_j} \mod p_j^{v_j} \\
+  =& b^{r_j} \mod p_j^{v_j}
+\end{split}
+\tag{\label{equation-82}}
+\end{equation*}
+$$
+
+and for every $j\in\set{1,\dots,J}$ also
+
+$$
+\begin{equation*}
+  b^{r_j} \mod p_j^{v_j} = 1
+\tag{\label{equation-83}}
+\end{equation*}
+$$
+
+Since each $r_j$ is, by definition, the smallest positive number satisfying the first line in $\eqref{equation-82}$, it follows that it also is the smallest number satisfying $\eqref{equation-83}$. Together with $\eqref{equation-84}$, this implies that for each $j\in\set{1,\dots,J}$ there exists $k_j \in\N_+$ with $r = k_j r_j$. Conversely, every common multiple $k$ of the $r_j$ satisfies $b^k \mod N = 1$ since
+
+$$
+  \frac{b^k - 1}{p_j^{v_j}} \in\Z,\; \forall j\in\set{1,\dots,J}
+$$
+
+implies, because of $\gcd(p_i, p_j) = 1$ for $i \neq j$, that also
+
+$$
+  \frac{b^k - 1}{\prod_{j=1}^J p_j^{v_j}} \in\Z
+$$
+
+such that $b^k \mod N = 1$. Since $r$ is, by definition, the smallest number satisfying $b^r \mod N = 1$, it follows that it is the smallest common multiple of the $r_j$, i.e.
+
+$$
+\begin{equation*}
+  r = \operatorname{scm}(r_1,\dots,r_J)
+\tag{\label{equation-85}}
+\end{equation*}
+$$
+
+Now let $r = 2^s t$ and $r_j = 2^{s_j} t_j$ with $s, s_j \in\N_0$ and $t$ and $t_j$ odd. Because of $\eqref{equation-85}$, $r$ is odd (which is the same as $s = 0$) if and only if all $r_j$ are odd, which is the same as $s_j = 0$ for every $j\in\set{1\dots,J}$. Consequently, we have
+
+$$
+  r \text{ odd} \iff s_j = 0,\; j\in\set{1,\dots,J}
+$$
+
+Furthermore, because of $\eqref{equation-85}$ we have for all $j\in\set{1,\dots,J}$
+
+$$
+  s_j \leq s
+$$
+
+Let us now consider the case where $r$ is even and $(b^{r/2} + 1) \mod N = 0$, that is, where there is $l\in\N_+$ such that
+
+$$
+\begin{equation*}
+  b^{r/2} + 1 = lN
+\tag{\label{equation-86}}
+\end{equation*}
+$$
+
+Since $N = \prod_{j=1}^J p_j^{v_j}$, it also follows that for every $j$ there is $l_j = lN/p_j^{v_j} \in\N_+$ such that
+
+$$
+  b^{r/2} + 1 = l_j p_j^{v_j}
+$$
+
+We know already that we must have $s_j \leq s$ and now show that $\eqref{equation-86}$ also implies $s_j = s$. To see this, suppose there is some $j$ with $s_j < s$, the it follows from
+
+$$
+  2^s t = r = k_j r_j = k_j 2^{s_j} t_j
+$$
+
+that
+
+$$
+  k_j = 2^{s - s_j} \frac{t}{t_j} \in\N_+
+$$
+
+and thus
+
+$$
+  \frac{r}{2} = \underbrace{2^{s - s_j - 1} \frac{t}{t_j} r_j}_{:= z_j \in\N}
+$$
+
+since we are considering the case when $r$ is even. Thus, for some $j$ with $s_j < s$ there is $z_j \in\N_+$ satisfying
+
+$$
+  \frac{r}{2} = z_j r_j
+$$
+
+Together with $\eqref{equation-}$, this implies
+
+$$
+\begin{align*}
+  b^{r/2} \mod p_j^{v_j} =& b^{z_j r_j} \mod p_j^{v_j} \\
+  =& \left(b^{r_j} \mod p_j^{v_j} \right)^{z_j} \mod p_j^{v_j} \\
+  =& 1 \mod p_j^{v_j}
+\end{align*}
+$$
+
+However, this contradicts $\eqref{equation-}$. Consequently, we have
+
+$$
+  (b^{r/2} + 1) \mod N = 0 \iff s_j = s,\; \forall j\in\set{1,\dots,J}
+$$
+
+Note that with our choice of notations we have for every $j\in\set{1,\dots,J}$
+
+$$
+  \operatorname{ord}_{p_j^{v_j}} \left(b \mod p_j^{v_j} \right) = r_j = 2^{s_j} t_j
+$$
+
+where the $t_j$ are odd. Thus, a random selection of $b$ entails a random selection of the $s_j$, and for the set of events under consideration the statements $\eqref{equation-}$ and $\eqref{equation-}$ imply
+
+$$
+\begin{align*}
+  \set{r \text{ odd}} \subset& \set{s_j = 0 \;\forall j} \\
+  \set{r \text{ even} \land (b^{r/2} + 1) \mod N = 0} \subset& \set{s_j = s \in\N\; \forall j}
+\end{align*}
+$$
+
+and thus
+
+$$
+  \set{r \text{ odd} \lor (r \text{ even} \land (b^{r/2} + 1) \mod N = 0)} \subset \set{s_j = s\in\N_0,\; \forall j}
+$$
+
+Since we can consider the choice of the $s_j$ as independent, we obtain
+
+$$
+\begin{align*}
+  &\Pr(r \text{ odd} \lor [r \text{ even} \land (b^{r/2} + 1) \mod N = 0]) \\
+  \leq& \Pr(s_j = s\in\N_0 \;\forall j) = \sum_{s\in\N_0} \Pr(s_j = s \;\forall j) \\
+  =& \sum_{s\in\N_0} \prod_{j=1}^J \Pr(s_j = s) \\
+  =& \sum_{s\in\N_0} \Pr(s_1 = s) \prod_{j=2}^J \Pr(s_j = s) \\
+  =& \sum_{s\in\N_0} \Pr(s_1 = s) \prod_{j=2}^J \underbrace{\Pr(r_j = 2^s t, 2\nmid t)}_{\leq 1/2} \\
+  \leq& \underbrace{\sum_{s\in\N_0} \Pr(s_1 = s)}_{=1} \frac{1}{2^{J-1}} = \frac{1}{2^{J-1}} 
+\end{align*}
+$$
+
+From this, we finally arrive at
+
+$$
+\begin{align*}
+  &\Pr(r \text{ even} \land (b^{r/2} + 1) \mod N = 0) \\
+  =& 1 - \Pr(r \text{ odd} \lor [r \text{ even} \land (b^{r/2} + 1) \mod N = 0]) \\
+  \geq 1 - \frac{1}{2^{J-1}}
+\end{align*}
+$$
+</details>
+</MathBox>
+
 <MathBox title='' boxType='proposition' tag='proposition-8'>
 For $f_{b,N} (x) = b^x \mod N$ there exists a unitary operator $\hat{U}_{f_{b,N}}$ on $\mathcal{H}^A \otimes \mathcal{H}^B$ satisfying
 
@@ -6152,6 +6501,19 @@ $$
 <details>
 <summary>Proof</summary>
 
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+To factor an odd number $N\in\N_+$ that has at least two distinct prime factors using Shor's algorithm, the number of required computational steps, denoted $S_\text{Shor} (N)$, scales as
+
+$$
+  S_\text{Shor} (N) \in O(\log_2^3 (N) \log_2 (\log_2 (N))),\; N\to\infty
+$$
+
+<details>
+<summary>Proof</summary>
 
 </details>
 </MathBox>
