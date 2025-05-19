@@ -33,9 +33,9 @@ $$
 where
 - $a_{ij} \in R$ are the *entries* or *components* of the matrix
 - $i = 1,\dots,m$ are the row indices
-- $j = 1,\dots,m$ are the column indices
+- $j = 1,\dots,n$ are the column indices
 
-The set of all $m\times n$ matrices over $R$ is denoted by $R^{m \times n}$. When $R$ is a field $\mathbb{F}$, the set of such matrices is denoted by $\mathcal{M}_{m,n} (\mathbb{F}) = \mathbb{F}^{m\times n}$.
+The set of all $m\times n$ matrices over $R$ is denoted by $\mathcal{M}_{m,n} (R) = R^{m \times n}$.
 
 <details>
 <summary>Details</summary>
@@ -44,7 +44,7 @@ It is common to assume that $1 \neq 0$ in $R$. This excludes the trivial case of
 </details>
 </MathBox>
 
-In particular, for $m = 0$ or $m = 0$, we obtain empty matrices size $0\times n$, $m\times 0$ or $0 \times 0$. These matrices matrices by $[\;]$
+In particular, for $m = 0$ or $m = 0$, we obtain empty matrices of size $0\times n$, $m\times 0$ or $0 \times 0$. These matrices matrices by $[\;]$
 
 A matrix $\boldsymbol{A} \in R^{n \times n}$ of size $n\times n$ is called a *square matrix*. The entries $a_{ii} \in R$ for $i=1,\dots,n$ are called the *diagonal entries* of $\boldsymbol{A}$. The *identity matrix* in $R^{n \times n}$ is the matrix $\boldsymbol{I}_n := [\delta_{ij}]$ where
 
@@ -57,7 +57,7 @@ $$
 
 is the *Kronecker delta*.
 
-The $i$th *row* of $\boldsymbol{A}\in R^{m\times n}$ is $[a_{i1}, a_{i2}, \dots, a_{in}] \in R^{1\times n}$ for $i=1,\dots,m$. The $j$th column of $\boldsymbol{A}$ is
+The $i$th *row* of $\boldsymbol{A}\in R^{m\times n}$ is $[a_{i1}, a_{i2}, \dots, a_{in}] \in R^{1\times n}$ for $i=1,\dots,m$. The $j$th *column* of $\boldsymbol{A}$ is
 
 $$
   \begin{bmatrix} a_{1j} \\ a_{2j} \\ \vdots \\ a_{mj} \end{bmatrix} \in R^{m\times 1},\; j = 1,\dots,n
@@ -67,10 +67,10 @@ We can combine $1\times n$ row matrices $\boldsymbol{a}_i \in R^{1\times n}$ for
 
 $$
   \boldsymbol{A} = \begin{bmatrix}
-    - & \boldsymbol{a}_1 & - \\
-    - & \boldsymbol{a}_2 & - \\
-    & \vdots & \\
-    - & \boldsymbol{a}_m & -
+    - \boldsymbol{a}_1 - \\
+    - \boldsymbol{a}_2 - \\
+    \vdots \\
+    - \boldsymbol{a}_m -
   \end{bmatrix} = \begin{bmatrix}
     a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
     a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
@@ -83,9 +83,9 @@ Likewise can combine $m\times 1$ column matrices $\boldsymbol{a}_j \in R^{m\time
 
 $$
   \mathbf{A} = \begin{bmatrix}
-    \shortmid & \shortmid & \cdots & \shortmid \\
+    \shortmid & \shortmid & & \shortmid \\
     \boldsymbol{a}_1 & \boldsymbol{a_2} &  \cdots & \boldsymbol{a}_n \\
-    \shortmid & \shortmid & \cdots & \shortmid
+    \shortmid & \shortmid & & \shortmid
   \end{bmatrix} = \begin{bmatrix}
     a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
     a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
@@ -94,15 +94,45 @@ $$
   \end{bmatrix} \in R^{m\times n}
 $$
 
-Matrix multiplication
+## Matrix operations
+
+<MathBox title='Matrix addition' boxType='definition'>
+Let $R$ be a ring. Matrix addition is a binary operation $+: R^{m\times n} \times R^{m\times n} \to R^{m\times n}$ defined for matrices of the same size. Given two matrices $\boldsymbol{A} = [a_{ij}]$ and $\boldsymbol{B} = [b_{ij}]$ in $R^{m\times n}$, their sum is defined entrywise by
+
+$$
+  \boldsymbol{A} + \boldsymbol{B} := [a_{ij} + b_{ij}]
+$$
+
+where the addition on the right-hand side is the ring addition in $R$.
+</MathBox>
+
+<MathBox title='Matrix addition' boxType='definition'>
+Let $R$ be a ring. Matrix multiplication is a binary operation $\cdot: R^{m\times n} \times R^{n\times p} \to R^{m\times p}$ defined as follows. Given matrices 
+
+$$
+\begin{align*}
+  \boldsymbol{A} =& [a_{ik}] = \begin{bmatrix} - \boldsymbol{a}_1 - \\ \vdots \\ - \boldsymbol{a}_n - \end{bmatrix} \in R^{m\times n} \\
+  \boldsymbol{B} =& [b_{kj}] = \begin{bmatrix} \shortmid & & \shortmid \\ \boldsymbol{b}_i & \cdots & \boldsymbol{b}_n \\ \shortmid & & \shortmid \end{bmatrix} \in R^{n\times p}
+\end{align*}
+$$
+
+their product is the matrix $\boldsymbol{C} = \boldsymbol{AB} = [c_{ij}] \in R^{m\times p}$, with entries given by
+
+$$
+  c_{ij} := \sum_{k=1}^n a_{ik} b_{kj} = \boldsymbol{a}_i \cdot\boldsymbol{b}_j
+$$
+
+Each entry $c_{ij} \in R$ is computed by taking the dot product of the $i$th row of $\boldsymbol{A}$ and the $j$th column of $\boldsymbol{B}$, where both the multiplication and addition are performed in $R$. Thus, the product $\boldsymbol{AB}$ is defined only when the number of columns in $\boldsymbol{A}$ equals the number of rows in $\boldsymbol{B}$. The multiplication process can be illustrated schematically as
 
 $$
 \begin{array}{cc}
-  & \left[\begin{matrix} b_{11} & \cdots \\ \vdots & \\ b_{n1} & \cdots \end{matrix}\right. \begin{bmatrix} b_{1j} \\ \vdots \\ b_{nj}  \end{bmatrix} \left.\begin{matrix} \cdots & b_{1q} \\ & \vdots \\ \cdots & b_{nq} \end{matrix}\right] \\
-  \begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & & \vdots \\ [a_{i1} & \cdots & a_{in}] \\ \vdots & & \vdots \\ a_{m1} & \cdots & a_{mn} \end{bmatrix} & \begin{bmatrix} \hphantom{b_{n1}} & & \hphantom{\begin{bmatrix} b_{nj} \end{bmatrix}} & \hphantom{\cdots} & \hphantom{b_{nq}} \\ \vphantom{\vdots} & & \downarrow & & \\ & \rightarrow & c_{ij} & & \\ \vphantom{\vdots} & & & & \\ & & & & \end{bmatrix}
+  & \left[\begin{matrix} b_{11} & \cdots \\ \vdots & \\ b_{n1} & \cdots \end{matrix}\right. \begin{bmatrix} b_{1j} \\ \vdots \\ b_{nj} \end{bmatrix} \left.\begin{matrix} \cdots & b_{1p} \\ & \vdots \\ \cdots & b_{np} \end{matrix}\right] \in R^{n \times p} \\
+  R^{m\times n} \ni \begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & & \vdots \\ [a_{i1} & \cdots & a_{in}] \\ \vdots & & \vdots \\ a_{m1} & \cdots & a_{mn} \end{bmatrix} & \begin{bmatrix} \hphantom{b_{n1}} & & \hphantom{\begin{bmatrix} b_{nj} \end{bmatrix}} & \hphantom{\cdots} & \hphantom{b_{nq}} \\ \vphantom{\vdots} & & \downarrow & & \\ & \rightarrow & c_{ij} & & \\ \vphantom{\vdots} & & & & \\ & & & & \end{bmatrix} \in R^{m\times p}
 \end{array}
 $$
 
+Matrix multiplication is generally not commutative; even when both products $\boldsymbol{AB}$ and $\boldsymbol{BA}$ are defined (which requires $m = p$), it is typically the case that $\boldsymbol{AB} \neq \boldsymbol{BA}$ except under special conditions.
+</MathBox>
 
 An $m\times n$ matrix $\boldsymbol{A}$ with entries in a field $\mathbb{F}$ is a rectangular array of elements $\boldsymbol{A}_{i,j} = a_{i,j} \in\mathbb{F}$ for $i=1,\dots,m$ and $j=1,\dots,n$ represented as
 

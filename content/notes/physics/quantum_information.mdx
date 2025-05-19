@@ -5315,7 +5315,7 @@ which grows polynomially with the bit-length of the input. Shor's factorization 
 
 **Step 1: Random base selection**
 
-Choose a number $b\in\N_+$ with $b < N$. Using Euclid's algorithm we compute the greatest common divisor $\gcd(b, N)$, which takes at most $b$ computational steps. If $\gcd(b,N) > 1$, we have found a nontrivial factor of $N$, in which case the procedure is terminated with the factors $\gcd(b,N)$ and $N/\gcf(b,N)$. Otherwise for coprime $b$ and $N$ with $\gcd(b, N) = 1$, we proceed to the next step.
+Choose a number $b\in\N_+$ with $b < N$. Using Euclid's algorithm we compute the greatest common divisor $\gcd(b, N)$, which takes at most $b$ computational steps. If $\gcd(b,N) > 1$, we have found a nontrivial factor of $N$, in which case the procedure is terminated with the factors $\gcd(b,N)$ and $N/\gcd(b,N)$. Otherwise for coprime $b$ and $N$ with $\gcd(b, N) = 1$, we proceed to the next step.
 
 **Step 2: Period finding**
 
@@ -5735,7 +5735,7 @@ From $\eqref{equation-64}$, $\eqref{equation-60}$ and $\eqref{equation-65}$, we 
 $$
 \begin{align*}
   W_1 (z) \geq& \frac{1}{r} (1 - \frac{1}{2^{L/2}})^2 \\
-  >& \frac \frac{1}{r}\left(1 - \frac{1}{2^{L/2 - 1}} \right)
+  >& \frac{1}{r}\left(1 - \frac{1}{2^{L/2 - 1}} \right)
 \end{align*}
 $$
 
@@ -5781,7 +5781,7 @@ while $\tilde{J}_k$ satisfies
 $$
 \begin{align*}
   |\tilde{J}_k| =& J_k + 1 \leq J + 1 \\
-  =& \left\lfloor\frac{2^L - 1}{r} + 1 \\
+  =& \left\lfloor\frac{2^L - 1}{r}\right\rfloor + 1 \\
   \leq& \frac{2^L - 1}{r} + 1 < \frac{2^L}{r} + 1
 \end{align*}
 $$
@@ -5977,7 +5977,7 @@ Consequently, the lower bound of $W_2 (z)$ is
 
 $$
 \begin{align*}
-  W_2 (z) \geq \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \\
+  W_2 (z) \geq& \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \\
   =& \frac{r}{2^{2L}} \frac{2^{2L + 2}}{\pi^2 r^2} \left(1 - \frac{\pi^2}{2^{L + 2}} \right) \\
   =& \frac{4}{\pi^2 r} \left(1 - \frac{\pi^2}{2^{L+2}} \right)
 \end{align*}
@@ -6026,7 +6026,7 @@ $$
 
 5. **Probability of finding $r$ as the denominator in the continued fraction approximation**
 
-The final step is to determine the period $r$ in $\eqref{equation-69}$, where the measurement outcome $z$ and register length $2^L$ are known. Continued fraction theory implies that if $\eqref{equation-69}$ holds, the reduced fraction $l_z / r$ must be a partial continued fraction approximation of $z / 2^L$. Since $z / 2^L \in\Q$, it follows that its continued fraction expansion is finite, i.e.
+The final step is to determine the period $r$ in $\eqref{equation-69}$, where the measurement outcome $z$ and register length $2^L$ are known. Continued fraction theory implies that if $\eqref{equation-69}$ holds, the reduced fraction $l_z / r$ must be a partial continued fraction approximation of $z / 2^L$. Since $z / 2^L \in\mathbb{Q}$, it follows that its continued fraction expansion is finite, i.e.
 
 $$
   \frac{z}{2^L} = a_0 + \frac{1}{a_1 + \frac{1}{\ddots + \frac{1}{a_n}}} = [a_0;a_1\dots,a_n]
@@ -6072,6 +6072,7 @@ $$
 \begin{equation*}
   \frac{p_j}{q_j} = \frac{l_z}{r}
 \tag{\label{equation-70}}
+\end{equation*}
 $$
 
 and we know that the $p_j$ and $q_j$ are coprime, i.e. $\gcd(q_j, p_j) = 1$. To find $r$, we test each $p_j / q_j \in T(z/2^L)$ to check if $q_j$ is a period of $f$ by computing $f(q_j)$.
@@ -6171,13 +6172,13 @@ $$
 ### Probability of selecting a suitable base $b\in\N_+$
 
 <MathBox title='' boxType='lemma' tag='lemma-6'>
-Let $p\in\N_+$ be an odd prime, $k\in\N_+$ and $s\in\N_0$. Let $b$ be selected randomly from the set
+Let $p\in\N_+$ be an odd prime, $k\in\N_+$ and $s\in\N_0$. Consider a random element $b$ chosen uniformly from the set
 
 $$
   \set{c\in\set{1,\dots,p^k - 1} | \gcd(p^k, c) = 1}
 $$
 
-with uniform probability $1/\phi(p^k)$, where $\phi$ is Euler's totient function. Then, for a fixed triple $(p,k,s)$, the probability that the multiplicative order of $b$ modulo $p^k$ is of the form $\operatorname{ord}_{p^k} (b) = 2^s t$ with $t$ odd, satisfies
+with probability $1/\phi(p^k)$, where $\phi$ is Euler's totient function. Then, for a fixed triple $(p,k,s)$, the probability that the multiplicative order of $b$ modulo $p^k$ is of the form $\operatorname{ord}_{p^k} (b) = 2^s t$ with $t$ odd, satisfies
 
 $$
   \Pr(\operatorname{ord}_{p^k} (b) = 2^s t \text{ with }t\text{ odd}) \leq \frac{1}{2}
@@ -6186,19 +6187,27 @@ $$
 <details>
 <summary>Proof</summary>
 
-Let $p$, $k$ and $s$ be given. By definition of Euler's totient function $\phi$, the number of elements in $\set{c\in\set{1,\dots,p^k - 1} | \gcd(p^k, c) = 1}$ is given by $\phi(p^k)$. Furthermore, there exist uniquely determined $u, v\in\N_+$ with $v$ odd such that
+Fix $p,k,s\in\N_+$. Since $p$ is an odd prime, it follows that
 
 $$
-  \phi(p^k) = p^{k-1} (p - 1) = 2^u v
+  \phi(p^k) = p^{k-1} (p - 1)
 $$
 
-By properties of modular order there exist a primitive root $a\in\N_+$ for $p^k$ and it follows that 
+Furthermore, since $\phi(p^k)$ is even (because $p - 1$ is even), we can write
+
+$$
+  \phi(p^k) = 2^u v
+$$
+
+for unique $u, v\in\N_+$ with $v$ odd.
+
+By property of multiplicative order, there exist a primitive root $a\in\N_+$ for $p^k$ and it follows that 
 
 $$
   \set{b\in\set{1,\dots,p^k - 1} | \gcd(p^k, b) = 1} = \set{a^j \mod p^k}_{j=1}^{\phi(p^k)}
 $$
 
-Thus, by the identity $b = a^j \mod p^k$, the random selection of uniformly distributed $b$ is equal to a random selection of the uniformly distributed $j\in\set{1,\dots,\phi(p^k)}$. Moreover, it follows that
+implying that $b = a^j \mod p^k$. Because $b$ is chosen uniformly at random, the corresponding exponent $j \in\set{1,\dots,\phi(p^k)}$ is also uniformly random. The multiplicative order of $b$ modulo $p^k$ is thus
 
 $$
 \begin{equation*}
@@ -6207,7 +6216,7 @@ $$
 \end{equation*}
 $$
 
-which means that the event $\operatorname{ord}_{p^k} (b) = 2^s t$ is the same as
+Hence, when $\operatorname{ord}_{p^k} (b) = 2^s t$, we must have
 
 $$
 \begin{equation*}
@@ -6216,13 +6225,13 @@ $$
 \end{equation*}
 $$
 
-From this, we deduce that the case $s > u$ cannot occur because in that case we would have
+Rewriting this as
 
 $$
   v = 2^{s - u} t \gcd(j, 2^u v)
 $$
 
-and therefore $2\mid v$, which contradicts the assumption of an odd $t$ in $\phi(p^k) = 2^u v$. Thus, we have
+we see that this only possible if $s \leq u$, because otherwise $2\mid v$, contradicting $v$ being odd. Thus, we have
 
 $$
 \begin{equation*}
