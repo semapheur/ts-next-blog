@@ -4228,6 +4228,33 @@ for $j\in\set{0,\dots,n-1}$ in the current state of the quantum register. This p
 
 The read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ yields $n$ observed values $(s_{n-1},\dots,s_0) \in\set{\pm 1}^n$ after measuring $\hat{\Sigma}_z^{n-1},\dots,\hat{\Sigma}_z^0$. We identify these observed values with corresponding classical bits $x_j \in\set{0,1}$, and use these classical bit values $(x_{n-1},\dots,x_0)$ for the binary representation $x = \sum_{j=0}^{n-1} x_j 2^j$ of a non-negative integer $x < 2^n$. The measurement of the observables $\hat{\Sigma}_z^j$ projects the state in factor space ${}^\P \mathcal{H}_j$ onto the eigenstate $\ket{0}$ or $\ket{1}$ corresponding to the observed value $s_j$. Altogether the read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ therefore reveals a non-negative integer $x < 2^n$ and leaves the register in the computational basis state $\ket{x}$.
 
+## Quantum circuit for modular exponentiation
+
+
+<MathBox title='' boxType='corollary' tag='corollary-3'>
+Let $b, n, m, N \in \N_+$ with $N < 2^m$ and define the function $f_{b,N} :\N_0 \to \N_0$ by $f_{b,N} (x) = b^x \mod N$. 
+Consider the following quantum registers:
+- $\mathcal{H}^A = {}^\P \mathcal{H}^{\otimes n}$, the input register
+- $\mathcal{H}^B = {}^\P \mathcal{H}^{\otimes m}$, the auxiliary register
+
+Ket $\ket{\omega_i} = \ket{0}^{\otimes m} = \ket{\omega_f}$ be the initial and final states in the auxiliary register $\mathcal{H}^B$. Using these, we define a unitary operator $\hat{U}_{f_{b,N}} : \mathcal{H}^A \otimes \mathcal{H}^B \to \mathcal{H}^A \otimes \mathcal{H}^B$ implementing $f_{b,N}$ via
+
+$$
+  \ket{x}\otimes\ket{y} \mapsto\ket{x}\otimes\ket{y \boxplus f_{b,N} (x)}
+$$
+
+In particular, when then auxiliary register is initialized to $\ket{0}$, unitary implements function evaluation:
+
+$$
+  \hat{U}_{f_{b,N}} (\ket{x} \otimes \ket{0}) = \ket{x} \otimes\ket{f_{b,N} (x)}
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
 # Quantum Fourier transform
 
 <MathBox title='Quantum Fourier transform' boxType='definition'>
@@ -6152,7 +6179,10 @@ Since we are only interested in the asymptotic behaviour for $L \to\infty$, the 
 From $\eqref{equation-71}$, $\eqref{equation-72}$ and $\eqref{equation-73}$ the success probability of measuring $z$ such that the period $r$ can be found as denominator of a partial continued fraction is
 
 $$
+\begin{equation*}
   \Pr(E_2) \geq \frac{2}{5}\frac{1}{4\ln(L)} = \frac{1}{10\ln(L)},\; L \geq 19
+\tag{\label{equation-89}}
+\end{equation*}
 $$
 
 6. **Aggregration of the number of computational steps**
@@ -6498,19 +6528,65 @@ $$
 For $f_{b,N} (x) = b^x \mod N$ there exists a unitary operator $\hat{U}_{f_{b,N}}$ on $\mathcal{H}^A \otimes \mathcal{H}^B$ satisfying
 
 $$
+\begin{equation*}
   \hat{U}_{f_{b,N}} (\ket{x}^A \otimes \ket{0}^B) = \ket{x}^A \otimes \ket{f_{b,N}(x)}^B
+\tag{\label{equation-87}}
+\end{equation*}
 $$
 
-and the number of computational steps $S_{U_{f_{b,N}}}$ required for $U_{f_{b,N}}$ grows as a function of $L = \lfloor 2\log_2 (N) \rfloor + 1$ as
+and the number of computational steps $S_{U_{f_{b,N}}}$ required for $U_{f_{b,N}}$ grows asymptotically with $L = \lfloor 2\log_2 (N) \rfloor + 1$ as
 
 $$
+\begin{equation*}
   S_{U_{f_{b,N}}} (L) \in O(L^3),\; L\to\infty
+\tag{\label{equation-88}}
+\end{equation*}
 $$
 
 <details>
 <summary>Proof</summary>
 
+Equation $\eqref{equation-87}$ follows directly from Corollary $\ref{corollary-3}$. To show $\eqref{equation-88}$, we analyze the quantum arithmetic components used to construct $\hat{U}_{f_{b,N}}$.
 
+Let $a, b < 2^L$. A quantum adder $\hat{U}_+$, which computes $a+b$, need to execute $\hat{U}_s$, $\hat{U}_c$ and $\hat{U}_c^*$ each $O(L)$ times. Thus, the quantum adder satisfies 
+
+$$
+  S_{\hat{U}+} \in O(L),\; L\to\infty
+$$
+
+The same holds for the quantum subtractor $\hat{U}_-$, since it is the inverse of the adder.
+
+A modular adder $\hat{U}_{+\mod N}$ can be constructed using a fixed number of quantum adders and subtractors, independent of $a,b,N$, so its complexity scales as
+
+$$
+  $S_{U_{+\mod N}} (L) \in O(L),\; L\to\infty
+$$
+
+The quantum adder modulo $N$ requires a fixed number of quantum adders $\hat{U}_+$ and subtractors $\hat{U}_-$ that is independent of $a, b$ and $N$. Consequently, the number of computational steps for the quantum adder modulo $N$ grows for $L\to\infty$ as $.
+
+To implement a modular multiplier $\hat{U}_{\times x%N}$ for $a,b,c,N < 2^L$, we perform $O(L)$ additions, leading to
+
+$$
+  S_{U_{\times c% N}} (L) \in O(L^2),\; L\to\infty
+$$
+
+For $x < 2^L$, the unitary $\hat{A}_{f_{b,N}}$ evaluates $f_{b,N} (x)$ by executing $O(L)$ quantum multipliers $\hat{U}_{\times\beta_j \mod N}$, with constants $\beta_j = b^{2^j} \mod N$ for $j\in\set{0,\dots,L_1}$. These constants can be precomputed classically using the recurrence
+
+$$
+  b^{2^j} \mod N = \underbrace{(b^{2^{j-1}} \mod N)^2}_{< N^2} \mod N
+$$
+
+requiring $L$ modular reductions of the form $a\mod N$ in $a < N^2$. Each such reduction requires $O(\log_2^2 (\max\set{a, N})) \in O(L^2)$ steps. The number of computational steps for $\hat{A}_{f_{b,N}}$ therefore scales scales as
+
+$$
+  S_{\hat{A}_{f_{b,N}}} (L) \in O(L^3),\; L\to\infty
+$$
+
+Since $\hat{U}_{f_{b,N}}$ is implemented by applyting $\hat{A}_{f_{b,N}}$ and $\hat{A}_{f_{b,N}}^\dagger$ a fixed number of times, which is independent of $N$, we conclude
+
+$$
+  S_{U_{f_{b,N}}} (L) \in O(L^3), L\to\infty
+$$
 </details>
 </MathBox>
 
@@ -6524,8 +6600,74 @@ $$
 <details>
 <summary>Proof</summary>
 
+First we adapt the estimate $\eqref{equation-89}$ to a statement using $N$ instead of $L$. Since $L = \lfloor 2\log_2 (N) \rfloor + 1$, we have
+
+$$
+\begin{equation*}
+  2\log_2 (N) < L \leq 2\log_2 (N) + 1
+\tag{\label{equation-90}}
+\end{equation*}
+$$
+
+and thus
+
+$$
+\begin{equation*}
+  \frac{1}{\ln(L)} \geq \frac{1}{\ln(2\log_2 (N) + 1)} 
+\tag{\label{equation-91}}
+\end{equation*}
+$$
+
+From $\eqref{equation-90}$, we have at least $\log_2 (N) \geq 7$ for $L \geq 15$. Such $N$ satisfy $\log_2^{17/12} (N) \geq 2\log_2(N) + 1$ and we have
+
+$$
+\begin{align*}
+  \frac{1}{\ln(2\log_2(N) + 1)} \geq& \frac{1}{\frac{17}{12}\ln(\log_2(N))} \\
+  =& \frac{1}{\frac{17}{12}\ln(2) \log_2(\log_2 (N))} \\
+  >& \frac{1}{\log_2 (\log_2 (N))}
+\end{align*}
+$$
+
+where in the last inequality we have used $\frac{17}{12} \ln(2) < 1$. Together with $\eqref{equation-91}$, this implies for $L\geq 15$
+
+$$
+  \frac{1}{\ln(L)} > \frac{1}{\log_2 (\log_2 (N))}
+$$
+
+and with $\eqref{equation-89}$, we have for $L \geq 15$ that
+
+$$
+  \Pr(E_2) > \frac{1}{10\log_2 (\log_2 (N))}
+$$
+
+As seen in table $ref{}$, the probability that $b$ has been chosen such that the even $E_1 \cap E_2$ occurs and this factors of $N$ can be determined satisfies
+
+$$
+  P(E_1 \cap E_2) > \frac{1}{20 \log_2 (\log_2 (N))}
+$$
+
+To find suitable $b$ and $r$ with a probability close to $1$, it thus suffices to repeat steps $1$ to $3$ approximately $20\log_2 (\log_2 N)$ times.
+
+Altogether, the number of computational steps needed to factorize $N$ with a success probability close to $1$ scales as
+
+$$
+\begin{align*}
+  S_\text{Shor} (N) \in& (S_\text{Shor1} (N) + S_\text{Shor2} (N) + S_\text{Shor3} (N)) O(\log_2 (\log_2 (N))) \\
+  \in& (O(\log_2^3 (N)) + O(\log_2^3 (N)) + O(\log_2^3 (N))) O(\log_2 (\log_2 (N))) \\
+  \in& O(\log_2^3 (N) \log_2 (\log_2 (N))),\; N\to\infty
+\end{align*}
+$$
 </details>
 </MathBox>
+
+<TableFigure caption="Relevant events in the Shor factorization alogrithm and their respective probabilities">
+| Step | Event | Description | Probability |
+| --- | --- | --- | --- |
+| 1 | $E_1$ | $b$ has been chosen such that $r$ is even and $(b^{r/2} + 1) \mod N \neq 0$ | $\Pr(E_1) \geq 1/2$ |
+| 2 | $E_2$ | Measurment of $\mathcal{H}^A$ yields a state $\ket{z}$ for some $z\in\set{0,\dots,2^L - 1}$, such that $\exits l_z \in\set{0,\dots,r-1}$ with $\left|\frac{z}{2^L} - \frac{l_z}{r} \right| < \frac{1}{2r^2}$ and $\gcd(l_z, r) = 1$ | $\Pr(E_2) > \frac{1}{10\log_2 (\log_2 (N))}$ for $r \geq 19$ |
+| 2 | Follows from $E_2$ | A partial continued fraction $p_j/q_j$ of $z/2^L$ has a denominator $q_j = r$ which is a period of $f_{b,N}$ | $\Pr(E_1) \geq 1/2$ |
+| 3 | $E_1 \cap E_2$ | A $b < N$ has been chosen such that an $r = q_j$ has been found that is an even period of $f_{b,N}$ and for which $(b^{r/2} + 1) \mod N \neq 0$ | $\Pr(E_1) \geq 1/2$ |
+</TableFigure>
 
 # Grover search algorithm
 
