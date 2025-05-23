@@ -10,6 +10,7 @@ type Props = {
   xAxis: Axis
   yAxis: Axis
   caption: string
+  tag?: string
 }
 
 const SVGPlot = dynamic(() => import("lib/components/SvgPlot"))
@@ -20,6 +21,7 @@ export default function GraphFigure({
   xAxis,
   yAxis,
   caption,
+  tag,
 }: Props) {
   const lambda = mathParse(expression).compile()
 
@@ -36,7 +38,7 @@ export default function GraphFigure({
   }
 
   return (
-    <figure className="relative flex flex-col">
+    <figure id={tag} className="relative flex flex-col">
       <SVGPlot data={data} xAxis={xAxis} yAxis={yAxis} />
       <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
         {caption}

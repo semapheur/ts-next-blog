@@ -2756,8 +2756,7 @@ $$
 \end{equation}
 $$
 
-satisfy $\hat{A}\hat{B}\hat{C} = \hat{I}$ and $\hat{U} = e^{i\alpha} \hat{A}\hat{\sigma}_x \hat{B}\hat{\sigma}_x \hat{C}
-$. From $\eqref{equation-17}$, it follows that
+satisfy $\hat{A}\hat{B}\hat{C} = \hat{I}$ and $\hat{U} = e^{i\alpha} \hat{A}\hat{\sigma}_x \hat{B}\hat{\sigma}_x \hat{C}$. From $\eqref{equation-17}$, it follows that
 
 $$
   \hat{A},\hat{B},\hat{C}\in\mathcal{F}[\hat{D}_{\unitvec{y}}, \hat{D}_{\unitvec{z}}]
@@ -5303,6 +5302,7 @@ $$
 \begin{equation*}
   b^r \mod N = f_{b,N} (0 + r) = f_{b,N} (0) = 1
 \tag{\label{equation-59}}
+\end{equation*}
 $$
 
 By definition, the order $\operatorname{ord}_N (b)$ of $b$ modulo $N$ is the smallest number that satisfies $\eqref{equation-59}$. This implies
@@ -5340,11 +5340,17 @@ $$
 
 which grows polynomially with the bit-length of the input. Shor's factorization algorithm for finding a non-trivial divisor of $N$ proceeds in the following three steps.
 
-**Step 1: Random base selection**
+**Step 1: GCD test via Euclid's algorithm**
 
-Choose a number $b\in\N_+$ with $b < N$. Using Euclid's algorithm we compute the greatest common divisor $\gcd(b, N)$, which takes at most $b$ computational steps. If $\gcd(b,N) > 1$, we have found a nontrivial factor of $N$, in which case the procedure is terminated with the factors $\gcd(b,N)$ and $N/\gcd(b,N)$. Otherwise for coprime $b$ and $N$ with $\gcd(b, N) = 1$, we proceed to the next step.
+Choose a random integer $b\in\N_+$ with $b < N$. Using Euclid's algorithm we compute the greatest common divisor $\gcd(b, N)$. The number of arithmetic operations required scales as
 
-**Step 2: Period finding**
+$$
+  S_\text{Shor1} \in O(\log_2^3 (N)),\; N\to\infty
+$$
+
+If $\gcd(b,N) > 1$, we have found a nontrivial factor of $N$, in which case the procedure is terminated with the factors $\gcd(b,N)$ and $N/\gcd(b,N)$. Otherwise for coprime $b$ and $N$ with $\gcd(b, N) = 1$, we proceed to the next step.
+
+**Step 2: Quantum period finding**
 
 Define the function $f_{b,N} :\N_0 \to\N_0$ given by
 
@@ -5358,7 +5364,13 @@ $$
   \phi(n) := \left| \set{r\in{1,\dots,n-1} | \gcd(r,n) = 1} \right|
 $$
 
-In the second step we compute the period $r$ of $f_{b,N}$. If $r$ is odd we repeat the first step with a different $b\in\N_+$. Otherwise if $r$ is even, we proceed to the next step.
+In the second step we compute the period $r$ of $f_{b,N}$ using quantum phase estimation and continued fractions expansion. The nunmber of computational complexity of this step scales as
+
+$$
+  S_\text{Shor2} (N) \in O(\log_2^3 (N)),\; N\to\infty
+$$
+
+If $r$ is odd we repeat the first step with a different $b\in\N_+$. Otherwise if $r$ is even, we proceed to the next step.
 
 **Step 3: Factoring via period doubling**
 
@@ -5373,14 +5385,20 @@ $$
 
 which shows that $N$ shares common divisors with $b^{r/2} + 1$ or $b^{r/2} - 1$.
 
-In the third step, we use Euclid's algorithm to compute either $\gcd(b^{r/2} - 1, N)$ or $\gcd(b^{r/2} + 1, N)$. Under the assumption that $r$ is the smallest possible period of $f_{b,N}$, we exclude $\gcd(b^{r/2} - 1, N) = N$ as a possible solution. This would imply $b^{r/2} \mod N = 1$, meaning that $r/2 < r$ is a period of $f_{b,N}$. If $\gcd(b^{r/2} + 1, N) = N$, then $(b^{r/2} + 1) \mod N = 0$, giving the trivial factor $N$. 
+In the third step, we use Euclid's algorithm to compute either $\gcd(b^{r/2} - 1, N)$ or $\gcd(b^{r/2} + 1, N)$. The computational effort here also satisfies
+
+$$
+  S_\text{Shor3} (N) \in O(\log_2^3 (N)^3),\; N\to\infty
+$$
+
+By minimality of $r$, we exclude $\gcd(b^{r/2} - 1, N) = N$ as a possible solution. This would imply $b^{r/2} \mod N = 1$, meaning that $r/2$ is a period of $f_{b,N}$, contradicting the assumption that $r$ is the smallest period. If $\gcd(b^{r/2} + 1, N) = N$, then $(b^{r/2} + 1) \mod N = 0$, giving the trivial factor $N$. 
 
 We succeed if $\gcd(b^{r/2} \pm 1, N) < N$, in which case $b$ is a nontrivial factor of $N$ and the procedure terminates with the factors $b$ and $N/b$.
 
 Shor's algorithm can be summarized as follows:
 
 - **Input:** An odd natural number $N\in\N_+$ that has at least two distinct prime factors
-- **Step 1:** Choose $b\in\N_+$ with $b < N$ and determine $\gcd(b, N)$. If
+- **Step 1:** Choose $b\in\N_+$ with $b < N$ and determine $\gcd(b, N)$ using Euclid's algorithm with complexity. If
     - $\gcd(b,N) > 1$, then $\gcd(b, N)$ is a non-trivial factor of $N$ and we are done. Go to output and show $\gcd(b,N)$ and $N/\gcd(b,N)$
     - $\gcd(b, N) = 1$ then got to step 2
 - **Step 2:** Determine the period $r$ of the function $f_{b,N}: \N_0 \to \N_0$ given by $f_{b,N} (n) = b^n \mod N$. If
@@ -5712,7 +5730,7 @@ $$
 \begin{align*}
   W(z) =& \begin{cases} 
     \frac{1}{2^{2L}} \sum_{k=0}^{r-1} m^2, \quad& \frac{z}{m}\in\N_+ \\
-    \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{z}{m}m \right)}{1 - \exp\left(i2\pi\frac{z}{m} \rigth)} \right|^2,\quad& \text{else}
+    \frac{1}{2^{2L}} \sum_{k=0}^{r-1} \left|\frac{1 - \exp\left(i2\pi \frac{z}{m}m \right)}{1 - \exp\left(i2\pi\frac{z}{m} \right)} \right|^2,\quad& \text{else}
   \end{cases} \\
   =& \begin{cases}
     \frac{1}{2^{2L}} \left(\frac{2^L}{r}\right)^2,\quad& \frac{z}{m}\in\N_+ \\
@@ -6414,7 +6432,10 @@ $$
 Now let $r = 2^s t$ and $r_j = 2^{s_j} t_j$ with $s, s_j \in\N_0$ and $t$ and $t_j$ odd. Because of $\eqref{equation-85}$, $r$ is odd (which is the same as $s = 0$) if and only if all $r_j$ are odd, which is the same as $s_j = 0$ for every $j\in\set{1\dots,J}$. Consequently, we have
 
 $$
+\begin{equation*}
   r \text{ odd} \iff s_j = 0,\; j\in\set{1,\dots,J}
+\tag{\label{equation-94}}
+\end{equation*}
 $$
 
 Furthermore, because of $\eqref{equation-85}$ we have for all $j\in\set{1,\dots,J}$
@@ -6435,7 +6456,10 @@ $$
 Since $N = \prod_{j=1}^J p_j^{v_j}$, it also follows that for every $j$ there is $l_j = lN/p_j^{v_j} \in\N_+$ such that
 
 $$
+\begin{equation*}
   b^{r/2} + 1 = l_j p_j^{v_j}
+\tag{\label{equation-92}}
+\end{equation*}
 $$
 
 We know already that we must have $s_j \leq s$ and now show that $\eqref{equation-86}$ also implies $s_j = s$. To see this, suppose there is some $j$ with $s_j < s$, the it follows from
@@ -6462,7 +6486,7 @@ $$
   \frac{r}{2} = z_j r_j
 $$
 
-Together with $\eqref{equation-}$, this implies
+Together with $\eqref{equation-82}$, this implies
 
 $$
 \begin{align*}
@@ -6472,10 +6496,13 @@ $$
 \end{align*}
 $$
 
-However, this contradicts $\eqref{equation-}$. Consequently, we have
+However, this contradicts $\eqref{equation-92}$. Consequently, we have
 
 $$
+\begin{equation*}
   (b^{r/2} + 1) \mod N = 0 \iff s_j = s,\; \forall j\in\set{1,\dots,J}
+\tag{\label{equation-93}}
+\end{equation*}
 $$
 
 Note that with our choice of notations we have for every $j\in\set{1,\dots,J}$
@@ -6484,7 +6511,7 @@ $$
   \operatorname{ord}_{p_j^{v_j}} \left(b \mod p_j^{v_j} \right) = r_j = 2^{s_j} t_j
 $$
 
-where the $t_j$ are odd. Thus, a random selection of $b$ entails a random selection of the $s_j$, and for the set of events under consideration the statements $\eqref{equation-}$ and $\eqref{equation-}$ imply
+where the $t_j$ are odd. Thus, a random selection of $b$ entails a random selection of the $s_j$, and for the set of events under consideration the statements $\eqref{equation-94}$ and $\eqref{equation-93}$ imply
 
 $$
 \begin{align*}
@@ -6562,12 +6589,10 @@ $$
   $S_{U_{+\mod N}} (L) \in O(L),\; L\to\infty
 $$
 
-The quantum adder modulo $N$ requires a fixed number of quantum adders $\hat{U}_+$ and subtractors $\hat{U}_-$ that is independent of $a, b$ and $N$. Consequently, the number of computational steps for the quantum adder modulo $N$ grows for $L\to\infty$ as $.
-
-To implement a modular multiplier $\hat{U}_{\times x%N}$ for $a,b,c,N < 2^L$, we perform $O(L)$ additions, leading to
+To implement a modular multiplier $\hat{U}_{\times x\mod N}$ for $a,b,c,N < 2^L$, we perform $O(L)$ additions, leading to
 
 $$
-  S_{U_{\times c% N}} (L) \in O(L^2),\; L\to\infty
+  S_{U_{\times c\mod N}} (L) \in O(L^2),\; L\to\infty
 $$
 
 For $x < 2^L$, the unitary $\hat{A}_{f_{b,N}}$ evaluates $f_{b,N} (x)$ by executing $O(L)$ quantum multipliers $\hat{U}_{\times\beta_j \mod N}$, with constants $\beta_j = b^{2^j} \mod N$ for $j\in\set{0,\dots,L_1}$. These constants can be precomputed classically using the recurrence
@@ -6640,7 +6665,7 @@ $$
   \Pr(E_2) > \frac{1}{10\log_2 (\log_2 (N))}
 $$
 
-As seen in table $ref{}$, the probability that $b$ has been chosen such that the even $E_1 \cap E_2$ occurs and this factors of $N$ can be determined satisfies
+As seen in table $ref{table-1}$, the probability that $b$ has been chosen such that the even $E_1 \cap E_2$ occurs and this factors of $N$ can be determined satisfies
 
 $$
   P(E_1 \cap E_2) > \frac{1}{20 \log_2 (\log_2 (N))}
@@ -6660,11 +6685,11 @@ $$
 </details>
 </MathBox>
 
-<TableFigure caption="Relevant events in the Shor factorization alogrithm and their respective probabilities">
+<TableFigure caption="Relevant events in the Shor factorization alogrithm and their respective probabilities" tag="table-1">
 | Step | Event | Description | Probability |
 | --- | --- | --- | --- |
 | 1 | $E_1$ | $b$ has been chosen such that $r$ is even and $(b^{r/2} + 1) \mod N \neq 0$ | $\Pr(E_1) \geq 1/2$ |
-| 2 | $E_2$ | Measurment of $\mathcal{H}^A$ yields a state $\ket{z}$ for some $z\in\set{0,\dots,2^L - 1}$, such that $\exits l_z \in\set{0,\dots,r-1}$ with $\left|\frac{z}{2^L} - \frac{l_z}{r} \right| < \frac{1}{2r^2}$ and $\gcd(l_z, r) = 1$ | $\Pr(E_2) > \frac{1}{10\log_2 (\log_2 (N))}$ for $r \geq 19$ |
+| 2 | $E_2$ | Measurment of $\mathcal{H}^A$ yields a state $\ket{z}$ for some $z\in\set{0,\dots,2^L - 1}$, such that $\exists l_z \in\set{0,\dots,r-1}$ with $\left\lvert\frac{z}{2^L} - \frac{l_z}{r} \right\rvert < \frac{1}{2r^2}$ and $\gcd(l_z, r) = 1$ | $\Pr(E_2) > \frac{1}{10\log_2 (\log_2 (N))}$ for $r \geq 19$ |
 | 2 | Follows from $E_2$ | A partial continued fraction $p_j/q_j$ of $z/2^L$ has a denominator $q_j = r$ which is a period of $f_{b,N}$ | $\Pr(E_1) \geq 1/2$ |
 | 3 | $E_1 \cap E_2$ | A $b < N$ has been chosen such that an $r = q_j$ has been found that is an even period of $f_{b,N}$ and for which $(b^{r/2} + 1) \mod N \neq 0$ | $\Pr(E_1) \geq 1/2$ |
 </TableFigure>

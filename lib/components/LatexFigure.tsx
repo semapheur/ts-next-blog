@@ -11,6 +11,7 @@ type Props = {
   alt?: string
   caption: string
   children: string
+  tag?: string
 }
 
 const latex = (className: string, color: string) => {
@@ -34,6 +35,7 @@ export default function LatexFigure({
   alt,
   caption,
   children,
+  tag,
 }: Props) {
   const [isHovered, setHover] = useState<boolean>(false)
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -44,6 +46,7 @@ export default function LatexFigure({
 
   return (
     <figure
+      id={tag}
       className="relative flex flex-col"
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

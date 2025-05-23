@@ -4,15 +4,16 @@ type Props = {
   alt?: string
   caption: string
   children: string
+  tag?: string
 }
 
-export default function Figure({ width = 70, src, alt, caption }: Props) {
+export default function Figure({ width = 70, src, alt, caption, tag }: Props) {
   if (!alt) {
     alt = src.match(/(?<=\/)\w+(?=.(svg|png|gif))/)![0]
   }
 
   return (
-    <figure className="relative flex flex-col">
+    <figure id={tag} className="relative flex flex-col">
       <img
         className="mx-auto mb-0 bg-white"
         alt={alt}
