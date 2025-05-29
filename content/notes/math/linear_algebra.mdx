@@ -323,7 +323,7 @@ Let $R$ be a commutative ring. If $\boldsymbol{A}, \boldsymbol{B} \in R^{n\times
 <details>
 <summary>Proof</summary>
 
-**(1):** Using Proposition $\ref{proposition-3}$.4 we have
+**(1):** Using Proposition $\ref{proposition-3}.4$ we have
 
 $$
 \begin{align*}
@@ -351,7 +351,7 @@ We verify the group axioms:
 - **Associativity:** Since matrix multiplication is associative for all matrices over $R$, it is particular associative on $\operatorname{GL}_n (R)$. 
 - **Identity element:** The identity matrix $\boldsymbol{I}_n$ satisfies $\operatorname{I}_n \boldsymbol{A} = \boldsymbol{AI}_n = \boldsymbol{A}$ for all $\boldsymbol{A}\in\mathrm{GL}_n (R)$, so $\operatorname{I}_n \in\operatorname{GL}_n (R)$ since it is clearly invertible.
 - **Inverses:** By definition, each $\boldsymbol{A}\in\operatorname{GL}_n (R)$ is invertible. That is, there exists $\boldsymbol{A}^{-1} \in \operatorname{GL}_n (R)$ such that $(\boldsymbol{A}^{-1})^{-1} = \boldsymbol{A} \in\operatorname{GL}_n (R)$.
-- **Closure:** By Proposition $\ref{proposition-4}$.2, the product of two invertible matrices is again invertible. Thus, $\operatorname{GL}_n (R)$ is closed under matrix multiplication.
+- **Closure:** By Proposition $\ref{proposition-4}.2$, the product of two invertible matrices is again invertible. Thus, $\operatorname{GL}_n (R)$ is closed under matrix multiplication.
 </details>
 </MathBox>
 
@@ -362,6 +362,99 @@ Let $R$ be a commutative ring, and let $\boldsymbol{A} = [a_{ij}] \in R^{n\times
 3. $\boldsymbol{A}$ is *diagonal* if $a_{ij} = 0$ for all $i \neq j$.
 
 A diagonal matrix is written $\boldsymbol{A} = \operatorname{diag}(a_{11},\dots, a_{nn})$.
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $R$ be a commutative ring. Then:
+- the set of invertible upper triangular $n\times n$ matrices over $R$, denoted $\operatorname{UT}_n (R)$, forms a subgroup of $\operatorname{GL}_n (R)$.
+- the set of invertible lower triangular $n\times n$ matrices over $R$, denoted $\operatorname{LT}_n (R)$, forms a subgroup of $\operatorname{GL}_n (R)$.
+
+<details>
+<summary>Proof</summary>
+
+We prove the claim for $\operatorname{UT}_n (R)$; the argument for $\operatorname{LT}_n (R)$ is analogous. To show $\operatorname{UT}_n (R) \subseteq \operatorname{GL}_n (R)$, we verify the subgroup properties:
+
+**Identity**
+
+Since the identity matrix $\operatorname{I}_n \in \operatorname{UT}_n (R)$ is trivially upper triangular and invertible, so $\operatorname{UT}_n (R)$ is nonempty.
+
+**Closure under multiplication**
+
+Let $\boldsymbol{A}, \boldsymbol{B} \in \operatorname{UT}_n (R)$, and define $\boldsymbol{C} = \boldsymbol{AB} = [c_{ij}]$. By Proposition $\ref{proposition-4}.2$, the product of invertible matrices is invertible, so $\boldsymbol{C} \in\operatorname{GL}_n (R)$. We verify that $\boldsymbol{C}$ is upper triangularF. For $i > j$
+
+$$
+  c_{ij} = \sum_{k=1}^n a_{ij} \overbrace{b_{kj}}^{=0,\; k > j} = \sum_{k=1}^j a_{ik} b_{kj}
+\end{align*}
+$$
+
+Since $a_{ik} = 0$ whenever $i > k$, and $k \leq j < k$, all terms in the sum vanish. Therefore $c_{ij} = 0$ for $i > j$ and $\boldsymbol{C} \in\operatorname{UT}_n (R)$.
+
+**Closure under inverses**
+
+Let $\boldsymbol{A} = [a_{ij}] \in \operatorname{UT}_n (R)$, and suppose $\boldsymbol{A}^{-1} = [c_{ij}]$. We show that $\boldsymbol{A}^{-1}$ is upper triangular by explicitly constructing its entries using backward substitution. For $n = 1$, the assertion holds trivially, so we assume $n \geq 2$. The matrix equation $\boldsymbol{AA}^{-1} = \boldsymbol{I}_n$ can be written as a linear system of $n$ equations
+
+$$
+\begin{equation*}
+  \begin{bmatrix}
+    a_{11} & \cdots & \cdots & a_{1n} \\
+    0 & \ddots & & \vdots \\
+    \vdots & \ddots & \ddots & \vdots \\
+    0 & \cdots & 0 & a_{nn}
+  \end{bmatrix} 
+  \begin{bmatrix} c_{1j} \\ \vdots \\ \vdots \\ c_{nj} \end{bmatrix}
+  = \begin{bmatrix} \delta_{1j} \\ \vdots \\ \vdots \\ \delta_{nj} \end{bmatrix}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where $\delta_{ij}$ is the Kronecker delta.
+
+We solve this system inductively bottom-up for $i = n, n-1,\dots, 1$. For each $j=1,\dots,n$, the $i$th equation has the form
+
+$$
+  \sum_{k=1}^n c_{ik} c_{kj} = \delta_{ij}
+$$
+
+This give the recursive formula
+
+$$
+\begin{equation*}
+  c_{ij} = a_{ii}^{-1} \left(\delta_{ij} - \sum_{l = i + 1}^n a_{il} c_{lj} \right),\; j=1,\dots,n
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+For the base case $i = n$, the last row of $\eqref{equation-4}$ is given by
+
+$$
+  a_{nn} c_{nj} = \delta_{nj},\; j=1\dots,n
+$$
+
+which shows that $a_{nn}$ is invertible with $c_{nj} = a_{nn}^{-1} \delta_{nj}$. In particular, $c_{nj} = 0$ for $j< n$.
+
+Now assume that $\eqref{equation-5}$ holds for $i = n,\dots,k+1$, where $1\leq k\leq n-1$. Then, in particular, $c_{ij} = 0$ for $k + 1 \leq i \leq n$ and $i > j$. For $i = k$, the $k$th row in $\eqref{equation-4}$ given by
+
+$$
+\begin{equation*}
+  \sum_{i=k}^{n} a_{ki} c_{ij} = \delta_{kj},\; j=1,\dots,n
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+For $j = k (< n)$ we obtain
+
+$$
+  \sum_{i=k}^{n} a_{ki} c_{ik} = 1
+$$
+
+By the induction hypothesis, we have $c_{k+1,k} =\cdots=c_{n,k} = 0$. This implies $a_{kk} c_{kk} = 1 = c_{kk} a_{kk}$, where we have used the commutativity of the multiplication in $R$. Hence $a_{kk}$ is invertible with $a_{kk}^{-1} = c_{kk}$. From $\eqref{equation-6}$, we get
+
+$$
+  c_{kj} = a_{kk}^{-1} \left(\delta_{kj} - \sum_{i=k+1}^n a_{ki} c_{ij} \right),\; j=1,\dots,n
+$$
+
+and hence $\eqref{equaton-5}$ holds for $i = k$. If $k > j$, then $\delta_{kj} = 0$ and $c_{k+1,j} = \cdots = c_{nj} = 0$, which gives $c_{kj} = 0$
+</details>
 </MathBox>
 
 An $m\times n$ matrix $\boldsymbol{A}$ with entries in a field $\mathbb{F}$ is a rectangular array of elements $\boldsymbol{A}_{i,j} = a_{i,j} \in\mathbb{F}$ for $i=1,\dots,m$ and $j=1,\dots,n$ represented as
