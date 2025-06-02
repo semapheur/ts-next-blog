@@ -2561,7 +2561,7 @@ $$
   \mathcal{P}_n = \set{\pm 1, \pm i} \times \set{\hat{I}_2, \hat{X}, \hat{Y}, \hat{Z}}^{\otimes n}
 $$
 
-The Clifford group $\mathcal{C}_n$ consists of all unitary operators that normalize the Pauli group, in the sense taht conjugation by any Clifford element maps Pauli operators to other Pauli operators. That is, for every $\hat{U}\in\mathcal{C}_n$ and every Pauli operator $\hat{\sigma}\in\mathcal{P}_n$, we have
+The Clifford group $\mathcal{C}_n$ consists of all unitary operators that normalize the Pauli group, in the sense that conjugation by any Clifford element maps Pauli operators to other Pauli operators. That is, for every $\hat{U}\in\mathcal{C}_n$ and every Pauli operator $\hat{\sigma}\in\mathcal{P}_n$, we have
 
 $$
   \hat{U}\hat{\sigma}\hat{U}^\dagger \in \mathcal{P}_n
@@ -2921,7 +2921,7 @@ With $S_{jk}^{(n)}$ the qubits in the factor spaces ${}^\P \mathcal{H}_j$ and ${
 
 <MathBox title='Properties of the global swap operator' boxType='proposition'>
 Suppose $n\in\N_+$ and $j,k\in\N_0$ with $k < j < n - 1$ as well as $\bigotimes_{l=n-1}^0 \ket{\psi_l}\in {}^\P \mathcal{H}^{\otimes n}$. Then:
-1.
+1. 
 $$
   S_{jk}^{(n)} \bigotimes_{l=n-1}^0 \ket{\psi_l} = \ket{\psi_{n-1} \dots \psi_{j+1} \psi_k \psi_{j-1} \dots \psi_{k+1} \psi_j \psi_{k-1} \dots \psi_0}
 $$
@@ -2935,7 +2935,7 @@ $$
 3. $[S_{jk}^{(n)}, S_{lm}^{(n)}] = 0$ for $j,k \notin\set{l, m}$
 4. 
 $$
-  S^{(n)} \bigotimes_{l=n-1}^0 \ket{psi_l} = \bigotimes_{l=0}^{n-1} \ket{\psi_l} = \ket{\psi_0 \psi_1 \dots \psi_{n-2} \psi_{n-1}}
+  S^{(n)} \bigotimes_{l=n-1}^0 \ket{\psi_l} = \bigotimes_{l=0}^{n-1} \ket{\psi_l} = \ket{\psi_0 \psi_1 \dots \psi_{n-2} \psi_{n-1}}
 $$
 
 <details>
@@ -4583,6 +4583,11 @@ $$
 \end{equation*}
 $$
 
+where 
+- $\hat{S}^(n)$ is the swap operator that reverses qubit order
+- $\hat{H}_j$ is the Hadamard gate applied to qubit $j$
+- $\hat{P}_{jk}$ is the controlled phase gate between qubits $j$ and $k$
+
 <details>
 <summary>Proof</summary>
 
@@ -4640,16 +4645,28 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='' boxType='theorem'>
+<MathBox title='' boxType='corollary'>
 The inverse quantum Fourier transform can be constructed from the swap operator, Hadamard transforms and conditional phase shifts as follows
 
 $$
-\begin{equation*}
-  \hat{F}^\dagger = (S^{(n)})^\dagger \prod_{j=0}^{n-1} \left(\left[\prod_{k=0}^{j-1} \hat{P}_{jk}^\dagger \right] \hat{H}_j \right) 
-\tag{\label{equation-49}}
-\end{equation*}
+  \hat{F}^\dagger = \prod_{j=n-1}^0 \left(\hat{H} \left[\prod_{k=j-1}^0 \hat{P}_{jk}^{-1} \right] \right) \hat{S}^(n)
 $$
 
+<details>
+<summary>Proof</summary>
+
+Taking the Hermitian adjoint of $\eqref{equation-49}$, and using the identity $(\hat{A}\hat{B})^\dagger = \hat{B}^\dagger \hat{A}^\dagger$ we get:
+
+$$
+\begin{align*}
+  \hat{F}^\dagger =& \left( \hat{S}^{(n)} \prod_{j=0}^{n-1} \left(\left[\prod_{k=0}^{j-1} \hat{P}_{jk} \right] \hat{H}_j \right)\right)^\dagger \\
+  =& \left(\prod_{j=0}^{n-1} \left[\prod_{k=0}^{j-1} \hat{P}_{jk} \right] \hat{H}_j \right)^\dagger (\hat{S}^{(n)})^\dagger \\
+  =& \prod_{j=n-1}^0 \left(\hat{H} \left[\prod_{k=j-1}^0 \hat{P}_{jk}^{-1} \right] \right) \hat{S}^{(n)}.
+\end{align*}
+$$
+
+In the last step we used the Hermiticity of $\hat{H}$ and $\hat{S}$, as well as the unitarity of $\hat{R}_{jk}$.
+</details>
 </MathBox>
 
 <MathBox title='' boxType='corollary' tag='corollary-2'>
@@ -5107,7 +5124,7 @@ $$
 \begin{align*}
   \ket{\tilde{\Psi_3}} =& \hat{F}^\dagger \ket{\tilde{\Psi_2}} \\
   =& \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n - 1} e^{i2\pi\phi k} \left(\frac{1}{\sqrt{2}} \sum_{j=0}^{2^n - 1} e^{-i2\pi kj/2^n} \ket{j} \right) \\
-  =& \frac{1}{2^n} \sum_{j,k=0}^{2^n - 1} \exp\left(i\frac{2\pi k}{2^n} (2^n \phi - j) \right) \ket{j} \\
+  =& \frac{1}{2^n} \sum_{j,k=0}^{2^n - 1} e^{i 2\pi k (2^n \phi - j)/2^n} \ket{j} \\
 \end{align*}
 $$
 
@@ -5115,7 +5132,7 @@ Decomposing the state in the computational basis as $\ket{\tilde{\Psi_3}} = \sum
 
 $$
 \begin{equation*}
-  c_j := \frac{1}{2^n} \sum_{k=0}^{2^n - 1} \exp\left(i\frac{2\pi k}{2^n} (2^n \phi - j) \right) \ket{j}
+  c_j := \frac{1}{2^n} \sum_{k=0}^{2^n - 1} e^{i2\pi k (2^n \phi - j)/2^n} \ket{j}
 \tag{\label{equation-95}}
 \end{equation*}
 $$
@@ -5124,15 +5141,15 @@ We can split $\phi$ into its binary components by writing $2^n \phi = b + r$, wh
 
 $$
 \begin{align*}
-  c_j =& \frac{1}{2^n} \sum_{k=0}^{2^n - 1} \exp\left(i\frac{2\pi k}{2^n} (b + r - j) \right) \\
-  =& \frac{1}{2^n} \sum_{k=0}^{2^n - 1} \exp\left(-i\frac{2\pi k}{2^n} (j - b) \right) e^{i2\pi r k/2^n}
+  c_j =& \frac{1}{2^n} \sum_{k=0}^{2^n - 1} e^{i2\pi k (b + r - j)/2^n} \\
+  =& \frac{1}{2^n} \sum_{k=0}^{2^n - 1} e^{-i2\pi k (j - b)/2^n} e^{i2\pi r k/2^n}
 \end{align*}
 $$
 
 In particular, if $r = 0$, that is, when $\phi = b/2^n$ then by the orthogonality relation the probability amplitude becomes
 
 $$
-  c_j = \delta_{j b}
+  c_j = \frac{1}{2^n} \sum_{k=0}^{2^n - 1} e^{-i2\pi k (j - b)/2^n} = \delta_{j b}
 $$
 
 Since $\phi$ in this case is given by an $n$-bit binary fraction
@@ -5150,7 +5167,7 @@ The final step involves measuring the first register $\ket{\tilde{\Psi_3}}$ in t
 $$
 \begin{equation*}
 \begin{split}
-  \Pr(y) :=& |c_y|^2 = \left|\frac{1}{2^n} \sum_{k=0}^{2^n - 1} \exp\left(-i\frac{2\pi k}{2^n} (y - (b + r)) \right) \right|^2 \\
+  \Pr(y) :=& |c_y|^2 = \left|\frac{1}{2^n} \sum_{k=0}^{2^n - 1} e^{-i2\pi k (y - (b + r)/2^n} \right|^2 \\
   =& \frac{1}{2^{2n}} \left| \frac{1 - e^{i2\pi (y - (b + r))}}{1 - e^{i2\pi (y - (b + r))/2^n}} \right|^2 \\
   =& \frac{1}{2^{2n}} \left| \frac{1 - e^{i2\pi (y - b)} e^{i2\pi r}}{1 - e^{i2\pi (y - b)/2^n} e^{i2\pi r/2^n}} \right|^2
 \end{split}
@@ -5158,7 +5175,7 @@ $$
 \end{equation*}
 $$
 
-For reasonably large $m$, the probability $\Pr(y)$ sharply peaks around $2^n \phi$. It follows that $\Pr(y=b) = 1$ if $r = 0$, that is, when $\phi = b/2^n$. If $r \neq 0$, the probability $\Pr(y=b)$ is a geometric sum reducing to
+For reasonably large $n$, the probability $\Pr(y)$ sharply peaks around $2^n \phi = b + r$. It follows that $\Pr(y=b) = 1$ if $r = 0$, that is, when $\phi = b/2^n$. If $r \neq 0$, the probability $\Pr(y=b)$ reduces to
 
 $$
   \Pr(y=b) = \frac{1}{2^{2n}} \left|\frac{1 - e^{i2\pi r}}{1 - e^{i2\pi r/2^n}} \right|^2
@@ -6758,7 +6775,7 @@ $$
 
 # Variational quantum eigensolver (VQE)
 
-The variational quantum eigensolver (VQE) is a hybrid classical-quantum alogorithm designed to estimate the ground state energy of a Hamiltonian. 
+The variational quantum eigensolver (VQE) is a hybrid classical-quantum algorithm designed to estimate the ground state energy of a Hamiltonian. 
 
 The energy levels of a quantum system $\mathcal{H}$ with Hamiltonian $\hat{H}$ are given by the time-independent Schrödinger equation
 
@@ -6979,7 +6996,7 @@ $$
 $$
 </details>
 
-Thus, we obtain
+Thus, we obtain the parameter shift rule
 
 $$
 \begin{align*}
