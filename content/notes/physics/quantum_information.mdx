@@ -4228,6 +4228,161 @@ for $j\in\set{0,\dots,n-1}$ in the current state of the quantum register. This p
 
 The read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ yields $n$ observed values $(s_{n-1},\dots,s_0) \in\set{\pm 1}^n$ after measuring $\hat{\Sigma}_z^{n-1},\dots,\hat{\Sigma}_z^0$. We identify these observed values with corresponding classical bits $x_j \in\set{0,1}$, and use these classical bit values $(x_{n-1},\dots,x_0)$ for the binary representation $x = \sum_{j=0}^{n-1} x_j 2^j$ of a non-negative integer $x < 2^n$. The measurement of the observables $\hat{\Sigma}_z^j$ projects the state in factor space ${}^\P \mathcal{H}_j$ onto the eigenstate $\ket{0}$ or $\ket{1}$ corresponding to the observed value $s_j$. Altogether the read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ therefore reveals a non-negative integer $x < 2^n$ and leaves the register in the computational basis state $\ket{x}$.
 
+## Quantum adder
+
+To construct a quantum circuit for addition of two number $a,b\in\N_0$, we start by implementing the sum bit $s_j$ by a gate $\hat{U}_s$. For this we define the following operators on ${}^\P \mathcal{H}^{\otimes 3}$:
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{A} :=& \hat{I}_2^{\otimes 3} + (\hat{X} - \hat{I}_2) \otimes \ket{1}\bra{1} \otimes \hat{I}_2 \\
+  \hat{B} :=& \hat{I}_2^{\otimes 3} + (\hat{X} - \hat{I}_2) \otimes \hat{I}_2 \otimes \ket{1}\bra{1} \\
+  \hat{U}_s :=& \hat{B}\hat{A}
+\end{split}
+\tag{\label{equation-97}}
+\end{equation*}
+$$
+
+Since $\ket{1}\bra{1}^\dagger = \ket{1}\bra{1} = (\ket{1}\bra{1})^2$, $\hat{X}^\dagger = \hat{X}$, $\hat{X}^2 = \hat{I}_2$ and thus $2(\hat{X} - \hat{I}) + (\hat{X} - \hat{I})^2 = 0$, it follows that $\hat{A}$ and $\hat{B}$ are self-adjoint and unitary. As can be seen from $\eqref{equation-97}$, we also have $\hat{A}\hat{B} = \hat{B}\hat{A}$. Then it follows that $\hat{U}_s$ is also unitary since
+
+$$
+  \hat{U}_s^\dagger = (\hat{B}\hat{A})^\dagger = \hat{A}^\dagger \hat{B}^\dagger = \hat{A}\hat{B} = \hat{B}\hat{A} = \hat{U}_s
+$$
+
+as well as
+
+$$
+  (\hat{U}_s)^2 = \hat{A}\hat{B}\hat{A}\hat{B} = \hat{B}\hat{A}\hat{B}\hat{A} = \hat{B}^2 = \hat{I}
+$$
+
+On vectors of the computational basis $\ket{x}^3 = \ket{x_2}\otimes\ket{x_1}\otimes\ket{x_0} \in {}^\P \mathcal{H}^{\otimes 3}$ the operators $\hat{A}$, $\hat{B}$ and $\hat{U}_s$ act as follows
+
+$$
+\begin{align*}
+  \hat{A}\left(\ket{x}^3) =& \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{B}\left(\ket{x}^3) =& \ket{x_0 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{U}_s \left(\ket{x}^3) =& \hat{B}\left(\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}\right) \\
+  =& \ket{x_0 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}
+\end{align*}
+$$
+
+The sum of two numbers $a,b\in\N_0$ with $a,b < 2^n$ and the binary representations
+
+$$
+  a = \sum_{j=0}^{n-1} a_j 2^j,\quad b = \sum_{j=0}^{n-1} b_j 2^j 
+$$
+
+is given by
+
+$$
+\begin{equation*}
+  a + b = \sum_{j=0}^{n-1} s_j 2^j + c_n^+ 2^n
+\tag{\label{equation-98}}
+\end{equation*}
+$$
+
+where $a_j, b_j \in\set{0,1}$ and $c_0^+ := 0$ as well as
+
+$$
+\begin{align*}
+  c_j^+ :=& a_{j-1} b_{j-1} \overset{2}{\oplus} a_{j-1} c_{j-1}^+ \overset{2}{\oplus} b_{j-1} c_{j-1}^+,\; j\in\set{1,\dots,n} \tag{\label{equation-101}} \\
+  s_j :=& a_j \overset{2}{\oplus} b_j \overset{2}{\oplus} c_j^+,\; j\in\set{0,\dots,n-1} \tag{\label{equation-99}}
+\end{align*}
+$$
+
+From $\eqref{equation-98}$ and $\eqref{equation-99}$, we obtain
+
+$$
+  \hat{U}_s \left(\ket{b_j} \otimes \ket{a_j} \otimes \ket{c_j^+} \right) = \ket{s_j} \otimes \ket{a_j} \otimes \ket{c_j^+}
+$$
+
+By repeated application of $\hat{U}_s$ we can then generate the qubits $\ket{s_j}$ of the sum bits defined in $\eqref{equation-99}$ if we have the qubits $\ket{c_j^+}$ of the carry terms $c_j^+$ available. In order to calculate these, we build a gate $\hat{U}_c$ with the help of the following four operators on ${}^\P \mathcal{H}^{\otimes 4}$:
+
+$$
+\begin{align*}
+  \hat{C} :=& \hat{I}_2^{\otimes 4} + (\hat{X} - \hat{I}_2) \otimes \ket{1}\bra{1} \otimes \ket{1}\bra{1} \otimes \hat{I}_2 \\
+  \hat{D} :=& \hat{I}_2^{\otimes 4} + \hat{I}_2 \otimes (\hat{X} - \hat{I}_2) \otimes \ket{1}\bra{1} \otimes \hat{I}_2 \\
+  \hat{E} :=& \hat{I}_2^{\otimes 4} + (\hat{X} - \hat{I}_2) \otimes \ket{1}\bra{1} \otimes \hat{I}_2 \otimes \ket{1}\bra{1} \\
+  \hat{U}_c := \hat{E}\hat{D}\hat{C}
+\end{align*}
+$$
+
+The action of these operators on a vector $\ket{x}^4 = \ket{x_3} \otimes \ket{x_2} \otimes \ket{x_1} \otimes \ket{x_0}$ of the computational basis of ${}^\P \mathcal{H}^{\otimes 4}$ is
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{C}(\ket{x}^4) =& \ket{x_1 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{D}(\ket{x}^4) =& \ket{x_3} \otimes \ket{x_1 \overset{2}{\oplus} x_3} \otimes\ket{x_1} \otimes\ket{x_0} \\
+  \hat{E}(\ket{x}^4) =& \ket{x_0 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{U}_c (\ket{x}^4) =& \hat{E}\hat{D} \left(\ket{x_1 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
+  =& \hat{E}\left(\ket{x_1 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
+  =& \ket{x_0 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}
+\end{split}
+\tag{\label{equation-100}}
+\end{equation*}
+$$
+
+From $\eqref{equation-100}$ and $\eqref{equation-101}$ we find that
+
+$$
+\begin{align*}
+  & \hat{U}_c \left(\ket{0} \otimes\ket{b_{j-1}} \otimes\ket{a_{j-1}} \otimes\ket{c_{j-1}^+} \right) \\
+  =& \hat{c_j^+} \otimes \ket{b_{j-1} \overset{2}{\oplus} a_{j-1}} \otimes \ket{a_{j-1}} \otimes\ket{c_{j-1}^+}
+\end{align*}
+$$
+
+Thus, we can generate the qubit $\ket{c_j^+}$ of the carry term $c_j^+$ by suitably repeated application of $\hat{U}_c$.
+
+For the same reasons as for $\hat{A}$ and $\hat{B}$ it also follows that $\hat{C}$, $\hat{D}$ and $\hat{E}$ are all self-adjoint and unitary. However, even though $\hat{U}_c$ as a product of unitary operators is also unitary, it is no longer self-adjoint since
+
+$$
+  \hat{U}_c^\dagger = (\hat{E}\hat{D}\hat{C})^\dagger = \hat{C}^\dagger \hat{D}^\dagger \hat{E}^\dagger = \hat{C}\hat{D}\hat{E} \neq \hat{E}\hat{D}\hat{C}
+$$
+
+The action of $\hat{U}_c^\dagger$ on a vector of the computational basis of ${}^\P \mathcal{H}^{\otimes 4}$ is
+
+$$
+\begin{align*}
+  \hat{U}_c^\dagger (\ket{x}_4) =& \hat{C}\hat{D}\left(\ket{x_0 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
+  =& \hat{C}\left(\ket{x_0 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
+  =& \ket{x_1 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_0 x_2 \overset{2}{\oplus} x_3} \otimes \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  =& \ket{(x_0 \overset{2}{\oplus} x_1) x_2 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_3} \otimes \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1} \otimes\ket{x_0}
+\end{align*}
+$$
+
+<MathBox title='' boxType='definition'>
+Let $n\in\N$ and
+
+$$
+\begin{align*}
+  \mathcal{H}^B := {}^\P \mathcal{H}^{\otimes n + 1} \\
+  \mathcal{H}^A := {}^\P \mathcal{H}^{\otimes n} \\
+  \mathcal{H}^W := {}^\P \mathcal{H}^{\otimes n}
+\end{align*}
+$$
+
+For vectors of the computational basis $\ket{b}\otimes\ket{a}\otimes\ket{w} \in \mathcal{H}^B \otimes\mathcal{H}^A \otimes \mathcal{H}^W$ we define $\hat{U}_0$ and $\ket{\Psi[b,a,w]} \in\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ by
+
+$$
+\begin{align*}
+  \hat{U}_0 (\ket{b}\otimes\ket{a}\otimes\ket{w}) :=& \ket{b_n} \otimes \bigotimes_{l=n-1}^0 (\ket{b_l} \otimes \ket{a_l} \otimes \ket{w_l}) \\
+  =:& \ket{\Psi[b,a,w]}
+\end{align*}
+$$
+
+and on all of $\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ by means of linear continuation. Furthermore, we define on $\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ the operators
+
+$$
+\begin{align*}
+  \hat{U}_1 :=& \prod_{l=1}^{n-1} \left(\hat{I}_2^{3l} \otimes \hat{U}_c \hat{I}_2^{\otimes 3(n - 1 - l)} \right) \\
+  \hat{U}_2 :=& \left[(\hat{I}_2 \otimes\hat{U}_s)(\hat{I}_2 \otimes \Lambda_{\ket{1}^1} (\hat{X}) \otimes \hat{I}_2)\hat{U} \right] \otimes \hat{I}_2^{\otimes 3(n - 1)} \\
+  \hat{U}_3 :=& \prod_{l=n-1}^1 \left(\hat{I}_2^{\otimes 3l} \otimes (\hat{I}_2 \otimes \hat{U}_s) \hat{U}_c^\dagger \otimes \hat{I}_2^{\otimes 3(n - 1 - l)} \right) \\
+  \hat{U}_+ :=& \hat{U}_0^* \hat{U}_3 \hat{U}_2 \hat{U}_1 \hat{U}_0
+\end{align*}
+$$
+</MathBox>
+
 ## Quantum circuit for modular exponentiation
 
 
