@@ -4296,6 +4296,26 @@ $$
   \hat{U}_s \left(\ket{b_j} \otimes \ket{a_j} \otimes \ket{c_j^+} \right) = \ket{s_j} \otimes \ket{a_j} \otimes \ket{c_j^+}
 $$
 
+<LatexFigure width={75} src='/fig/binary_sum_circuit.svg' alt=''
+  caption='Quantum circuit binary sum $\hat{U}_s$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+
+\begin{quantikz}[wire types={q,n,q,n,q}]
+  \lstick{\ket{x_2}} & \gate{X} \gategroup[5, steps=3, style={inner xsep=0.3cm, inner ysep=0.4cm, yshift=-0.3cm}]{$\hat{U}_s$} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$A$} & \ \ket{x_1 \overset{2}{\oplus} x_2}\ & \gate{X} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$B$} & \rstick{\ket{x_0 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_2}} \\[-0.2cm]
+  \lstick{\otimes} &&&& \rstick{\otimes} \\
+  \lstick{\ket{x_1}} & \ctrl{-2} & \ \ket{x_1}\ & & \rstick{\ket{x_1}} \\
+  \lstick{\otimes} &&&& \rstick{\otimes} \\
+  \lstick{\ket{x_0}} &&& \ctrl{-4} & \rstick{\ket{x_0}}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
 By repeated application of $\hat{U}_s$ we can then generate the qubits $\ket{s_j}$ of the sum bits defined in $\eqref{equation-99}$ if we have the qubits $\ket{c_j^+}$ of the carry terms $c_j^+$ available. In order to calculate these, we build a gate $\hat{U}_c$ with the help of the following four operators on ${}^\P \mathcal{H}^{\otimes 4}$:
 
 $$
@@ -4343,15 +4363,39 @@ $$
 The action of $\hat{U}_c^\dagger$ on a vector of the computational basis of ${}^\P \mathcal{H}^{\otimes 4}$ is
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \hat{U}_c^\dagger (\ket{x}_4) =& \hat{C}\hat{D}\left(\ket{x_0 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
   =& \hat{C}\left(\ket{x_0 x_2 \overset{2}{\oplus} x_3} \otimes\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \right) \\
   =& \ket{x_1 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_0 x_2 \overset{2}{\oplus} x_3} \otimes \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
   =& \ket{(x_0 \overset{2}{\oplus} x_1) x_2 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_3} \otimes \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1} \otimes\ket{x_0}
-\end{align*}
+\end{split}
+\tag{\label{equation-104}}
+\end{equation*}
 $$
 
-<MathBox title='' boxType='definition'>
+<details>
+<summary>Proof</summary>
+
+To prove that $\hat{U}_c$ is unitary, it suffices to show that $\hat{U}_c^\dagger \hat{U}_c$ maps any vector of the computational basis in ${}^\P \mathcal{H}^{\otimes 4}$ onto itself. Using $\eqref{equation-100}$ and $\eqref{equation-104}$, we find 
+
+$$
+\begin{equation*}
+\begin{split}
+  &\hat{U}_c^* \hat{U}_c (\ket{x_3} \otimes\ket{x_2} \otimes\ket{x_1} \otimes\ket{x_0}) \\
+  =& \hat{U}_c^* (\underbrace{\ket{x_0 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_3}}_{=x'_3} \otimes \underbrace{\ket{x_1 \overset{2}{\oplus} x_2}}_{=x'_2} \otimes\ket{x_1} \otimes\ket{x_0}) \\
+  =& \ket{(x_0 \overset{2}{\oplus} x_1) x'_2 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x'_3} \otimes \ket{x_1 \overset{2}{\oplus} x'_2} \otimes\ket{x_1} \otimes\ket{x_0} \\
+  =& \ket{(x_0 \overset{2}{\oplus} x_1) \underbrace{x_1 \overset{2}{\oplus} x_2}_{x'_2} \overset{2}{\oplus} x_1 \overset{2}{\oplus} \underbrace{x_0 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_3}_{x'_3}} \\
+  &\otimes \ket{\underbrace{x_1 \overset{2}{\oplus} x_1}_{=0} \overset{2}{\oplus} x_2} \otimes\ket{x_1} \otimes\ket{x_0} \\
+  =& \ket{x_0 x_1 \overset{2}{\oplus} x_0 x_2 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_0 x_1 \overset{2}{\oplus} x_0 x_2 \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_3} \\
+  &\otimes\ket{x_3} \otimes\ket{x_2} \otimes\ket{x_1}
+\end{split}
+\tag{\label{equation-105}}
+\end{equation*}
+$$
+</details>
+
+<MathBox title='' boxType='definition' tag='definition-11'>
 Let $n\in\N$ and
 
 $$
@@ -4365,10 +4409,13 @@ $$
 For vectors of the computational basis $\ket{b}\otimes\ket{a}\otimes\ket{w} \in \mathcal{H}^B \otimes\mathcal{H}^A \otimes \mathcal{H}^W$ we define $\hat{U}_0$ and $\ket{\Psi[b,a,w]} \in\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ by
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \hat{U}_0 (\ket{b}\otimes\ket{a}\otimes\ket{w}) :=& \ket{b_n} \otimes \bigotimes_{l=n-1}^0 (\ket{b_l} \otimes \ket{a_l} \otimes \ket{w_l}) \\
   =:& \ket{\Psi[b,a,w]}
-\end{align*}
+\end{split}
+\tag{\label{equation-102}}
+\end{equation*}
 $$
 
 and on all of $\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ by means of linear continuation. Furthermore, we define on $\mathcal{H}^B \otimes\mathcal{H}^A \otimes\mathcal{H}^W$ the operators
@@ -4383,8 +4430,98 @@ $$
 $$
 </MathBox>
 
-## Quantum circuit for modular exponentiation
+<MathBox title='' boxType='proposition'>
+The operators $\hat{U}_0,\dots,\hat{U}_3$ and $\hat{U}_+$ defined in Definition $\ref{definition-11}$ are unitary.
 
+<details>
+<summary>Proof</summary>
+
+The operator $\hat{U}_0$ is unitary because it maps an orthonormal basis to an orthonormal basis, as seen from $\eqref{equation-102}$.
+
+By $\eqref{equation-105}$, $\hat{U}_c$ is unitary and since for each $l\in\set{1,\dots,n-1}$
+
+$$
+\begin{align*}
+  (\hat{I}_2^{\otimes 3l} \otimes\hat{U}_c^\dagger \otimes\hat{I}_2^{\otimes 3(n-1-l)}) (\hat{I}_2^{\otimes 3l} \otimes\hat{U}_c \otimes\hat{I}_2^{\otimes 3(n-1-l)}) =& \hat{I}_2^{\otimes 3l} \otimes \hat{U}_c^\dagger \hat{U}_c \otimes\hat{I}_n^{\otimes 3(n - 1 - l)} \\
+  =& \hat{I}_2^{\otimes n}
+\end{align*}
+$$
+
+then $\hat{U}_1$ as a product of unitary operators it itself unitary. The proof that $\hat{U}_3$ is unitary is similar.
+
+For $\hat{U}_2$ we have
+
+$$
+  \hat{U}_2^\dagger = [\hat{U}_c^\dagger (\hat{I}_2 \otimes \underbrace{\Lambda_{\ket{1}^1}^\dagger (\hat{X})}_{=\Lambda_{\ket{1}^1 (\hat{X})}} \otimes\hat{I}_2)(\hat{I}_2 \otimes \underbrace{\hat{U}_s^\dagger}_{=\hat{U}_s})] \otimes\hat{I}_2^{\otimes 3(n - 1)}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \hat{U}_2^\dagger \hat{U}_2 =& [\hat{U}_c^\dagger (\hat{I}_2 \otimes \Lambda_{\ket{1}^1} (\hat{X}) \otimes\hat{I}_2) \underbrace{(\hat{I}_2 \otimes \hat{U}_s)^2}_{=\hat{I}_2^{\otimes 4}} (\hat{I}_2 \otimes\Lambda_{\ket{1}^1} (\hat{X}) \otimes\hat{I}_2) \hat{U}_c] \otimes\hat{I}_2^{\otimes 3(n-1)} \\
+  =& \hat{U}_c^\dagger \underbrace{(\hat{I}_2 \otimes\Lambda_{\ket{1}^1} (\hat{X}) \otimes\hat{I}_2)^2}_{=\hat{I}_2^{\otimes 4}} \hat{U}_c \otimes\hat{I}_2^{\otimes 3(n - 1)} \\
+  =& \hat{I}_2^{\otimes 3n+1}
+\end{align*}
+$$
+
+Finally, the unitarity of $\hat{U}_+$ follows since it is a product of unitary operators. 
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+There exists a circuit $\hat{U}_+$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which can be implemented with the help of the auxilliary register $\mathcal{H}^W$ by $\hat{U}'_+$, that is, there exists a unitary opertor $\hat{U}_+ \in\mathcal{U}(\mathcal{H}^{I/O} \otimes\mathcal{H}^W)$ such that for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
+
+$$
+  \hat{U}'_+ (\ket{\Psi}\otimes\ket{0}^n) = (\hat{U}_+ \ket{\Psi})\otimes\ket{0}^n
+$$
+
+Furthermore, for $a,b\in\N_0$ with $a,b < 2^n$, we have
+
+$$
+  \hat{U}_3 \hat{U}_2 \hat{U}_1 \ket{\Psi[b,a,0]} = \ket{\Psi[b + a, a, 0]}
+$$
+
+and thus
+
+$$
+  \hat{U}_+ (\ket{b}\otimes\ket{a}) = \ket{b + a}\otimes\ket{a}
+$$
+
+<details>
+<summary>Proof</summary>
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+There exists a circuit $\hat{U}_-$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which is implemented with the help of the auxilliary register $\mathcal{H}^W$ by $\hat{U}'_+^\dagger = \hat{U}'_+^{-1}$, that is, for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
+
+$$
+  \hat{U}'_+^\dagger (\ket{\Psi} \otimes\ket{0}^n) =& (\hat{U}_- \ket{\Psi}) \otimes\ket{0}^n
+$$
+
+where also $\hat{U}_- = \hat{U}_+^\dagger = \hat{U}_+^{-1}$ holds. Furthermore, for $a,b\in\N_0$ with $a,b < 2^n$ we have that
+
+$$
+  \hat{U}_1^\dagger \hat{U}_2^\dagger \hat{U}_3^\dagger \ket{\Psi[b,a,0]} = \ket{\Psi[c_n^- 2^{n+1} + b - a, a, 0]}
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \hat{U}_- (\ket{b}\otimes\ket{a}) =& \ket{c_n^- 2^{n+1} + b - a} \otimes\ket{a} \\
+  =& \begin{cases}
+    \ket{b - a} \otimes\ket{a},\quad& b\geq a \\
+    \ket{2^{n+1} + b - a} \otimes\ket{a},\quad& b < a
+  \end{cases}
+\end{align*}
+$$
+</MathBox>
+
+
+## Quantum circuit for modular exponentiation
 
 <MathBox title='' boxType='corollary' tag='corollary-3'>
 Let $b, n, m, N \in \N_+$ with $N < 2^m$ and define the function $f_{b,N} :\N_0 \to \N_0$ by $f_{b,N} (x) = b^x \bmod N$. 
