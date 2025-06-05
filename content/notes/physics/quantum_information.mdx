@@ -4255,6 +4255,26 @@ $$
   (\hat{U}_s)^2 = \hat{A}\hat{B}\hat{A}\hat{B} = \hat{B}\hat{A}\hat{B}\hat{A} = \hat{B}^2 = \hat{I}
 $$
 
+<LatexFigure width={75} src='/fig/binary_sum_circuit.svg' alt=''
+  caption='Quantum circuit for the binary sum gate $\hat{U}_s$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+
+\begin{quantikz}[wire types={q,n,q,n,q}]
+  \lstick{\ket{x_2}} & \gate{X} \gategroup[5, steps=3, style={inner xsep=0.3cm, inner ysep=0.4cm, yshift=-0.3cm}]{$\hat{U}_s$} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$\hat{A}$} & \ \ket{x_1 \overset{2}{\oplus} x_2}\ & \gate{X} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$\hat{B}$} & \rstick{\ket{x_0 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_2}} \\[-0.2cm]
+  \lstick{\otimes} &&&& \rstick{\otimes} \\
+  \lstick{\ket{x_1}} & \ctrl{-2} & \ \ket{x_1}\ & & \rstick{\ket{x_1}} \\
+  \lstick{\otimes} &&&& \rstick{\otimes} \\
+  \lstick{\ket{x_0}} &&& \ctrl{-4} & \rstick{\ket{x_0}}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
 On vectors of the computational basis $\ket{x}^3 = \ket{x_2}\otimes\ket{x_1}\otimes\ket{x_0} \in {}^\P \mathcal{H}^{\otimes 3}$ the operators $\hat{A}$, $\hat{B}$ and $\hat{U}_s$ act as follows
 
 $$
@@ -4296,26 +4316,6 @@ $$
   \hat{U}_s \left(\ket{b_j} \otimes \ket{a_j} \otimes \ket{c_j^+} \right) = \ket{s_j} \otimes \ket{a_j} \otimes \ket{c_j^+}
 $$
 
-<LatexFigure width={75} src='/fig/binary_sum_circuit.svg' alt=''
-  caption='Quantum circuit binary sum $\hat{U}_s$'
->
-```latex
-\documentclass[tikz, border=5pt]{standalone}
-\usepackage{quantikz}
-
-\begin{document}
-
-\begin{quantikz}[wire types={q,n,q,n,q}]
-  \lstick{\ket{x_2}} & \gate{X} \gategroup[5, steps=3, style={inner xsep=0.3cm, inner ysep=0.4cm, yshift=-0.3cm}]{$\hat{U}_s$} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$A$} & \ \ket{x_1 \overset{2}{\oplus} x_2}\ & \gate{X} \gategroup[5, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$B$} & \rstick{\ket{x_0 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_2}} \\[-0.2cm]
-  \lstick{\otimes} &&&& \rstick{\otimes} \\
-  \lstick{\ket{x_1}} & \ctrl{-2} & \ \ket{x_1}\ & & \rstick{\ket{x_1}} \\
-  \lstick{\otimes} &&&& \rstick{\otimes} \\
-  \lstick{\ket{x_0}} &&& \ctrl{-4} & \rstick{\ket{x_0}}
-\end{quantikz}
-\end{document}
-```
-</LatexFigure>
-
 By repeated application of $\hat{U}_s$ we can then generate the qubits $\ket{s_j}$ of the sum bits defined in $\eqref{equation-99}$ if we have the qubits $\ket{c_j^+}$ of the carry terms $c_j^+$ available. In order to calculate these, we build a gate $\hat{U}_c$ with the help of the following four operators on ${}^\P \mathcal{H}^{\otimes 4}$:
 
 $$
@@ -4353,6 +4353,28 @@ $$
 $$
 
 Thus, we can generate the qubit $\ket{c_j^+}$ of the carry term $c_j^+$ by suitably repeated application of $\hat{U}_c$.
+
+<LatexFigure width={75} src='/fig/addition_carry_circuit.svg' alt=''
+  caption='Quantum circuit for the addition carry gate $\hat{U}_c$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+
+\begin{quantikz}[wire types={q,n,q,n,q,n,q}]
+  \lstick{\ket{x_3}} & \gate{X} \gategroup[7, steps=5, style={inner xsep=0.3cm, inner ysep=0.4cm, yshift=-0.3cm}]{$\hat{U}_c$} \gategroup[7, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$\hat{C}$} & \ \ket{x_1 x_2 \overset{2}{\oplus} x_3}\ & \gategroup[7, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$\hat{D}$} && \gate{X} \gategroup[7, steps=1, style={draw=none,fill=gray!20, inner ysep=0cm, yshift=-0.1cm},background, label style={label position=below, anchor=north, yshift=-0.2cm}]{$\hat{E}$} & \rstick{\ket{x_0 (x_1 \overset{2}{\oplus} x_2) \overset{2}{\oplus} x_1 x_2 \overset{2}{\oplus} x_3}} \\[-0.2cm]
+  \lstick{\otimes} &&&&&& \rstick{\otimes} \\[-0.2cm]
+  \lstick{\ket{x_2}} & \ctrl{-2} & \ \ket{x_2}\ & \gate{X} & \ \ket{x_1 \overset{2}{\oplus} x_2}\ & \ctrl{-2} & \rstick{\ket{x_1 \overset{2}{\oplus} x_2}} \\[-0.2cm]
+  \lstick{\otimes} &&&&&& \rstick{\otimes} \\
+  \lstick{\ket{x_1}} & \ctrl{-2} & \ \ket{x_1}\ & \ctrl{-2} & \ \ket{x_1}\ && \rstick{\ket{x_1}} \\
+  \lstick{\otimes} &&&&&& \rstick{\otimes} \\
+  \lstick{\ket{x_0}} &&&&& \ctrl{-4} & \rstick{\ket{x_0}}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
 
 For the same reasons as for $\hat{A}$ and $\hat{B}$ it also follows that $\hat{C}$, $\hat{D}$ and $\hat{E}$ are all self-adjoint and unitary. However, even though $\hat{U}_c$ as a product of unitary operators is also unitary, it is no longer self-adjoint since
 
