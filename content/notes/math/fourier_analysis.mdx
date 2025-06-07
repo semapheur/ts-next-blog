@@ -865,6 +865,67 @@ $$
 
 ## Convergence
 
+<MathBox title="Dirichlet kernel" boxType='definition'>
+The Dirichlet kernel is a continuous function $\mathcal{D}_n : \R\to\R$, with $n\in\N$, given by
+
+$$
+\begin{equation*}
+\begin{split}
+	\mathcal{D}_n (x) =& \sum_{k=-n}^n e^{ikx} = 1 \ 2\sum_{k=1}^n \cos(kx) \\
+	=& \frac{\sin\left(\left(n + \frac{1}{2}\right) x \right)}{\sin\left(\frac{1}{2}x\right)}
+\end{split}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+In terms of the Dirichlet kernel, a Fourier series can be rewritten as
+
+$$
+\begin{align*}
+	\mathcal{F}_n (f)(x) =& \sum_{k=-n}^n c_k e^{ikx} = \sum_{k=-n}^n \left(\frac{1}{2\pi}\sum_{-\pi}^\pi e^{-iky} f(y)\;\d y \right) e^{ikx} \\
+	=& \frac{1}{2\pi} \int_{-\pi}^\pi f(y) \sum_{k=-n}^n e^{ik(x - y)} \;\d y \\
+	=& \frac{1}{2\pi} \int_{-\pi}^\pi f(y) \mathcal{D}_n (\underbrace{x - y}_{:=z}) \;\d y \\
+	=& \frac{1}{2\pi} \int_{-\pi}^\pi \mathcal{D}_n (z) f(x - z)  \;\d z \\
+	=& \braket{\mathcal{D}_n, f(x - \cdot)} = \frac{1}{2\pi} (\mathcal{D}_n * f)(x) \\
+\end{align*}
+$$
+</MathBox>
+
+<MathBox title="Properties of the Dirichlet kernel" boxType='proposition'>
+The Dirichlet kernel satisfies the following properties
+1. $\mathcal{D}_n$ has exactly $2n$ zeroes inside the interval $[-\pi, \pi]$-
+2. $\int_{-\pi}^\pi \mathcal{D}_n (x) \;\d x = 2\pi \implies \braket{D_n,1} = 1$
+3. $\lim_{n\to\infty} \int_{-\pi}^\pi |\mathcal{D}_n (x)| \;\d x = \infty$
+
+<details>
+<summary>Proof</summary>
+
+**(3):**
+
+For all $x > 0$ we have
+
+$$
+\begin{align*}
+	|\mathcal{D}_n (x)| =& \frac{\left|\sin\left(\left(n + \frac{1}{2}\right) x \right)\right|}{\left|\sin\left(\frac{1}{2}x\right)\right|} \\
+	\geq& \frac{\left|\sin\left(\left(n + \frac{1}{2}\right) x \right)\right|}{x}
+\end{align*}
+$$
+
+such that
+
+$$
+\begin{align*}
+	\int_{-\pi}^\pi |\mathcal{D}_n (x)| \;\d x =& 2\int_0^\pi |\mathcal{D}_n (x)| \;\d x \geq 2 \int_0^\pi \frac{\left|\sin\left(\left(n + \frac{1}{2}\right) x \right)\right|}{x} \;\d x \\
+	=& 2\int_0^{(n + 1/2)n} \frac{|\sin(y)|}{y} \;\d y \geq 2\int_0^{n\pi} \frac{|\sin(y)|}{y} \;\d y \\
+	=& 2\sum_{k=1}^n \int_{(k-1)\pi}^{k\pi} \frac{|\sin(y)|}{y} \;\d y \\
+	=& 2\sum_{k=1}^n \int_{(k-1)\pi}^{k\pi} \frac{|\sin(y)|}{k\pi} \;\d y \\
+	=& 2\sum_{k=1}^n \frac{1}{k\pi} \underbrace{\int_{(k - 1)\pi}^{k\pi} |\sin(y)| \d y}_{=1} \\
+	=& \frac{2}{\pi} \sum_{k=1}^n \frac{1}{k} \xrightarrow{n\to\infty} \infty
+\end{align*}
+$$
+</details>
+</MathBox>
+
 <MathBox title="Uniform converge of Fourier series" boxType='theorem'>
 Let $f:\R\to\mathbb{C}$ be a $2\pi$-periodic continuous function that is piecewise $C^1$. That is, there exists a finite partition $a_0 = -\pi < a_1 < \cdots < a_m < a_{m+1} = \pi$ such that $f|_{[a_j, a_{j+1}]} \in C^1$ for all $j\in\set{0,1,\dots,m}$. Then the Fourier series of $f$, denoted $\mathcal{F}_n (f)$, converges uniformly to $f$ on $[-\pi,\pi]$, i.e.  $\mathcal{F}_n (f) \xrightarrow{n\to\infty} f$ uniformly.
 
@@ -958,8 +1019,75 @@ $$
 Then the partial sums $\mathcal{F}_n (f)(\hat{x})$ of the Fourier series of $f$ converge pointwise at $\hat{x}$ to the arithmetic mean of the left and right limits:
 
 $$
-	\mathcal{F}_n (f) (\hat{x}) \xrightarrow{n\to\infty} \frac{1}{2}\left(f(\hat{x}^+) f(\hat{x}^-)\right)
+	\mathcal{F}_n (f) (\hat{x}) \xrightarrow{n\to\infty} \frac{1}{2}\left(f(\hat{x}^+) f(\hat{x}^-)\right) =: M
 $$
+
+<details>
+<summary>Proof</summary>
+
+Using the Dirichlet kernel $\mathcal{D}_n$ given in $\eqref{equation-4}$ we write $\mathcal{F}_n (f) (\hat{x}) = \braket{\mathcal{D}_n, f(\hat{x} - \cdot)}$ and $\braket{\mathcal{D}_n, M} = M$. By symmetry of $\mathcal{D}_n$, we obtain
+
+$$
+\begin{align*}
+	\braket{\mathcal{D}_n, f(\hat{x} - \cdot)} =& \frac{1}{2\pi} \int_{-\pi}^\pi \mathcal{D}_n (x) f(\hat{x} - x) \;\d x \\
+	=& \frac{1}{2\pi} \left(\int_{-\pi}^0 \mathcal{D}_n (x) f(\hat{x} - x) \;\d x + \int_0^\pi \mathcal{D}_n (x) f(\hat{x} - x) \;\d x \right)
+	=& \frac{1}{2\pi} \left(\int_0^\pi \mathcal{D}_n (y) f(\hat{x} + y) \;\d y + \int_0^\pi \mathcal{D}_n (x) f(\hat{x} - y) \;\d y \right) \\
+	=& \frac{1}{2\pi} \int_0^\pi \mathcal{D}_n (y) (f(\hat{x} + y) + f(\hat{x} - y)) \;\d y
+\end{align*}
+$$
+
+The poinwise limit is given by
+
+$$
+\begin{align*}
+	\mathcal{F}_n (f)(\hat{x}) - M =& \braket{\mathcal{D}_n, f(\hat{x} - \cdot)} - \braket{\mathcal{D}_n, M} \\
+	=& \frac{1}{2\pi} \int_0^\pi \mathcal{D}_n (y) (f(\hat{x} + y) + f(\hat{x} - y)) \;\d y - \frac{1}{2\pi} \int_0^\pi \mathcal{D}_n (y) \underbrace{2M}_{f(\hat{x}_+) + f(\hat{x}_-)} \;\d y \\
+	=& \frac{1}{2\pi} \int_0^\pi \mathcal{D}_n (y) (f(\hat{x} + y) - f(\hat{x}_-) + f(\hat{x} - y) - f(\hat{x}_-)) \;\d y
+	=& \frac{1}{2\pi} \int_0^\pi \sin\left(\left(n + \frac{1}{2}\right)x \right) \underbrace{\frac{f(\hat{x} + y) - f(\hat{x}_-) + f(\hat{x} - y) - f(\hat{x}_-)}{\sin\left(\frac{1}{2}y \right)}}_{g(y)} \;\d y
+\end{align*}
+$$
+
+To show that $g \in \mathcal{L}_{2\pi}^2$, we write
+
+$$
+	g(y) = \begin{cases}
+		\frac{f(\hat{x} + y) - f(\hat{x}_-)}{\sin\left(\frac{1}{2}y \right)} + \frac{f(\hat{x} - y) - f(\hat{x}_-)}{\sin\left(\frac{1}{2}y \right)},\quad& y\in(0,\pi) \\
+		0,\quad& y\in [-\pi, 0]
+	\end{cases}
+$$
+
+Since $\sin\left(y/2 \right) \geq y/4$ for $y\in(0,\pi)$, we get
+
+$$
+	\left|\frac{f(\hat{x} \pm y) - f(\hat{x}_\pm)}{\sin\left(\frac{1}{2}y \right)} \right| \leq 4\left| \frac{f(\hat{x} \pm y) - f(\hat{x}_\pm)}{y} \right| \xrightarrow{y\to 0_\pm} 4 |C_\pm|
+$$
+
+which follows because
+
+$$
+\begin{align*}
+	\lim_{\substack{h\to 0 \\ h > 0}} \frac{f(\hat{x} + h) - f(\hat{x})}{h} :=& C_+
+	\lim_{\substack{h\to 0 \\ h < 0}} \frac{f(\hat{x} + h) - f(\hat{x})}{h} :=& C_-
+\end{align*}
+$$
+
+Hence $g \in L_{2\pi}^2$.
+
+Using Euler's formula we rewrite 
+
+$$
+\begin{align*}
+	frac{1}{2\pi} \int_0^\pi \sin\left(\left(n + \frac{1}{2}\right)x \right) =& \frac{1}{2i} (e^{i(n + 1/2)y} - e^{-i(n + 1/2)y} e^{-iy/2}) \\
+	=& \frac{1}{2i} (e^{iny} e^{iy/2} - e^{-iny} e^{-iy/2})
+\end{align*}
+$$
+
+Since $g\in\mathcal{L}_{2\pi}^2$, we get by Bessel's inequality that
+
+$$
+	\frac{1}{2\pi} \int_0^\pi \sin\left(\left(n + \frac{1}{2}\right)x \right) g(y) \;\d y = \braket{e_{-n}, g_1} + \braket{e_{-n}, g_2} \xrightarrow{n\to\infty} 0
+$$
+</details>
 </MathBox>
 
 <MathBox title="" boxType='example'>
