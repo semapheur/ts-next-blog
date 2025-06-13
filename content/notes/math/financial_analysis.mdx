@@ -527,7 +527,205 @@ The volatility of the zero coupon bond is $\sigma(t) C(t, T)$.
 
 ## The Cox-Ingersoll-Ross (CIR) model
 
-Unlike the Vasicek and Hull-White models, which permit negative short term rates $r_t$, the Cox-Ingersoll-Ross model ensures that $r_t$ remains non-negative for all $t$.
+Unlike the Vasicek and Hull-White models, which permit negative short term rates $r_t$, the Cox-Ingersoll-Ross (CIR) model ensures that $r_t$ remains non-negative for all $t$. To describe CIR process, recall the Ornstein-Uhlenbeck equation
+
+$$
+  \d X_t = -aX_t \d t + \sigma\d W_t
+$$
+
+with solution
+
+$$
+  X(t, x) = e^{-at}\left(x + \int_0^t \sigma e^{as} \;\d W_s \right)
+$$
+
+where $W$ is a standard Brownian motion on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$. Suppose we have $n$ independent Brownian motions $W_1 ,\dots, W_n$ on $(\Omega, \mathcal{F}, \mathbb{P})$ and $n$ Ornstein-Uhlenbeck processes $X_1, \dots, X_n$ given by equations
+
+$$
+  \d X_i (t) = -\frac{1}{2} aX_i (t) \;\d t + \frac{1}{2} \sigma \;\d W_i (t)
+$$
+
+so that
+
+$$
+  X_i (t) = e^{-\alpha t/2} \left(X_i (0) + \frac{1}{2} \sigma\int_0^t e^{\beta s/2} \d W_i (s) \right)
+$$
+
+Consider the process $r_t = \sum_{i=1}^n X_i^2 (t)$. From Itô's differential rule
+
+$$
+  \d r_t =& \sum_{i=1}^n 2X_i (t) \left(-\frac{1}{2} \alpha X_i (t) \;\d t + \frac{1}{2} \sigma \;\d W_i (t) \right) + \sigma_{i=1}^n \frac{1}{4} \sigma^2 \;\d t \\
+  =& -\alpha r_t \;\d t + \sigma\left(\sigma_{i=1}^n X_i (t) \;\d W_i (t) \right) + \frac{n\sigma^2}{4} \;\d t \\
+  =& \left(\frac{n\sigma^2}{4} - \alpha r_t \right) \;\d t + \sigma\sqrt{r_t} \sum_{i=1}^n \frac{X_i (t)}{\sqrt{r_t}} \;\d W_i (t)
+$$
+
+Consider the process
+
+$$
+  W_t = \sum_{i=1}^n \int_0^t \frac{X_i (u)}{\sqrt{r_u}} \;\d W_i (u)
+$$
+
+Then $W$ is a continuous martingale and
+
+$$
+\begin{align*}
+  W_t^2 = 2\int_0^t W_u \;\d W_u + \sum_{i=1}^n \int_0^t \frac{X_i^2}{r_u} \;\d u \\
+  =& 2\int_0^t W_u \;\d W
+\end{align*}
+$$
+
+so $W_t^2 - t$ is a martingale. From Lévy's characterization, therefore, $W$ is a standard Brownian motion and we can write
+
+$$
+  \d r_t = \left(\frac{n\sigma^2}{4} - \alpha r_t \right) \d t + \sigma\sqrt{r_t} \;\d W_t
+$$
+
+If $n = 1$, then $\mathbb{P}(r_t > 0) = 1$ but
+
+$$
+  \mathbb{P}(\text{there are infinitely many times } t > 0 \text{ for which } r_t = 0) = 1
+$$
+
+However, if $n \geq 2$, then
+
+$$
+  \mathbb{P}(\text{there are at least one time } t > 0 \text{ for which } r_t = 0) = 0
+$$
+
+<MathBox title='Cox-Ingersoll-Ross process' boxType='definition'>
+A Cox-Ingersoll-Ross process is described by an equation of the form
+
+$$
+\begin{equation*}
+  \d r_t = (a - br_t) \d t + \sigm\sqrt{r_t} \d W_t
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+where $a, b, \sigma > 0$ are constant.
+<MathBox>
+
+With $n = 4a/\sigma^2$, we can interpret $r_t$ as $\sigma_{i=2}^n X_i^2 (t)$ for Ornstein-Uhlenbeck process $X_i$ as above. However, $\eqref{equation-37}$ makes sense whether or not $n$ is an integer.
+
+If $a < \sigma^2 /2$, so $n < 2$, then
+
+$$
+  \mathbb{P}(\text{there are infinitely many times } t > 0 \text{ for which } r_t = 0) = 1
+$$
+
+Consequently, this range for $a$ is not too useful. If $a \geq $\sigma^2 /2$, so $n\geq 2$, then
+
+$$
+  \mathbb{P}(\text{there is at least one time } t > 0 \text{ for which } r_t = 0) = 0
+$$
+
+<MathBox title='' boxType='theorem'>
+For any $\lambda > 0$ and $\mu > 0$ we have
+
+$$
+  \mathbb{E}\left[\exp\left(-\lambda r_{0,t} (x) - mu\int_0^t r_{0,u} \;\d u) \right] = e^{-a\phi_{\lambda,\mu} (t)} e^{-x\psi_{\lambda, \mu} (t)}
+$$
+
+where
+
+$$
+\begin{align*}
+  \phi_{\lambda, u} (t) = -\frac{2}{\sigma^2} \ln\left(\frac{2\gamma e^{t(b + \gamma)/2}}{\sigma^2 \lambda (e^{\gamma t} - 1) + \gamma - b + e^{\gamma t} (\gamma + b)}\right) \\
+  =& \psi_{\lambda, u} (t) = \frac{\lambda(\gamma + b) + e^{-\gamma t} (\gamma - b) + 2\mu(e^{\gamma t} - 1)}{\sigma^2 \lambda (e^{\gamma t} - 1) + \gamma - b + e^{\gamma t} (\gamma + b)}
+\end{align*}
+$$
+
+and $\gamma = \sqrt{b^2 + 2\sigma^2 \mu}$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $0 \leq t \leq T$. From the uniqueness of solutions of $\eqref{equation-37}$, we have the following flow property
+
+$$
+  r_{0, T} (x) = r_{t, T} (r_{0, t} (x))
+$$
+
+Consider the expectation
+
+$$
+  \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (r_{0, T} (x)) - \mu \int_t^T r_{0,u} (x) \;\d\mu \right)\middle| \mathcal{F}_t \right]
+$$
+
+From the Markov property, this is the same as conditioning on $r_{0,t} (x)$, so write
+
+$$
+  V(t, r_{0,t} (x)) = \mathbb{E}\left[\exp\left(-\lambda r_{0, T} (x) - \mu \int_t^T r_{0,u} (x) \;\d u \right) \right]
+$$
+
+Now
+
+$$
+  \exp(-\mu\int_0^t r_{0,u} (x)\;\d u) V(t, r_{0,t} (x)) = \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (r_{0, T} (x)) - \mu \int_t^T r_{0,u} (x) \;\d\mu \right)\middle| \mathcal{F}_t \right]
+$$
+
+and so is a martingale. However, applying the Itô differentiation rule, we obtain
+
+$$
+\begin{align*}
+  & \exp(-\mu\int_0^t r_{0,u} (x)\;\d u) V(t, r_{0,t} (x)) \\
+  =& V(0,x) + \int_0^t \left(\frac{\partial V}{\partial u}(u, r_{0,u}) (x) - \mu r_{0,u} (x) V(u, r_{0,u} (x)) \right. \\
+  &+ \frac{\partial V}{\partial\xi} (u, r_{0,u} (x))(a - br_{0,u} (x)) \\
+  &+ \left. \frac{1}{2}\frac{\partial^2 V}{\partial\xi^2} (u, r_{0,u} (x)) \sigma^2 r_{0,u} (x) \right) \exp\left(-\mu\int_0^u r_{0,s} (x) \;\d s \right) \;\d u \\
+  &+ \int_0^t \exp\left(-\mu\int_0^u r_{0,s} (x) \;\d s \right) \frac{\partial V}{\partial\xi} (u, r_{0,u} (x)) \sigma\sqrt{r_{0,u} (x)} \;\d W_u
+\end{align*}
+$$
+
+As the left-hand side is a martingale and the right-hand side is an Itô prcess, the du integral must be the zero process. Thus,
+ 
+$$
+  \frac{\partial V}{\partial t}(t, y) - \mu y V(t, y) + \frac{\partial V}{\partial y} (t, y) (a - by) + \frac{1}{2}\frac{\partial^2 V}{\partial y^2} (t, y)\sigma^2 y = 0
+$$
+
+with
+
+$$
+  V(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (y) - \mu\int_t^T r_{t, u} (y) \;\d u \right)\right]
+$$
+
+Since the the coefficients of $\eqref{equation-37}$ are independent of $t$, its solution is stationary and we can write
+
+$$
+  V(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{0, T - t} (y) - \mu\int_0^{T - t} r_{0, u} (y) \;\d u \right)\right]
+$$
+
+Define
+
+$$
+  F(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{0, t} (y) - \mu\int_0^t r_{0, u} (y) \;\d u \right)\right]
+$$
+
+so that $V(t,y) = F(T - t, y)$ and $F$ satisfies
+
+$$
+\begin{equation*}
+  \frac{\partial F}{\partial t} = \frac{\partial F}{\partial y} (a - by) - \mu y F + \frac{1}{2} \sigma^2  y\frac{\partial^2 F}{\partial y^2}
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+with $F(0,y) = e^{-\lambda y}$.
+
+We look for a solution of $\eqref{equation-38}$ of the form
+
+$$
+  F(t, y) = e^{-a\phi(t) - x\psi(t)}
+$$
+
+This is the case if $\phi(0) = 0$ and $\psi(0) = \lambda$ with
+
+$$
+  \phi' (t) = \psi(t),\quad -\psi' (t) = \frac{\sigma^2}{2} \psi^2 (t) + b\psi(t) - \mu
+$$
+
+Solving these equations gives the expression for $\phi$ and $\psi$.
+</details>
+<MathBox>
 
 # Pairs trading
 
