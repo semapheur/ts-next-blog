@@ -4230,6 +4230,35 @@ The read-out of the register ${}^\P \mathcal{H}^{\otimes n}$ yields $n$ observed
 
 ## Quantum adder
 
+<LatexFigure width={75} src='/fig/quantum_adder_circuit.svg' alt=''
+  caption='Quantum circuit for the adder $\hat{U}_+$ to compute $a+b$ for $a,b\in\N_0$ with $a,b < 2^n$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={n,n,n,n,n,n,n,n,n,n,n,n,n,n,n}]
+  & \gate[15]{U_0} \gategroup[15, steps=18, style={inner ysep=0.6cm, yshift=0.2cm}, label style={label position=below, anchor=north, yshift=-0.2cm}]{$U'_+$} & \gategroup[15, steps=1, style={draw=none,fill=gray!20},background]{$\ket{\Psi[a,b,0]}$}\ \ket{b_n}\  \setwiretype{q} &[0.4cm] \gategroup[15, steps=4, style={draw=none,fill=gray!20},background]{$U_1$} &&&&[0.4cm] \gate[4]{U_c} \gategroup[15, steps=3, style={draw=none,fill=gray!20},background]{$U_2$} &&&[0.4cm] \gategroup[15, steps=7, style={draw=none,fill=gray!20},background]{$U_3$} &&&&&&&[0.4cm] \gategroup[15, steps=1, style={draw=none,fill=gray!20},background]{$\ket{\Psi[a + b, a, 0]}$} \ \ket{b_n \overset{2}{\oplus} c_n^+} & \gate[15]{U_0^\dagger} & \setwiretype{n} \\[-0.4cm]
+  && \ \ket{b_{n-1}}\ \setwiretype{q} &&&&&& \gate{X} & \gate[4]{U_s} &&&&&&&& \ \ket{s_{n-1}}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{a_{n-1}}\ \setwiretype{q} &&&&&& \ctrl{-1} &&&&&&&&& \ \ket{a_{n-1}}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{0}\ \setwiretype{q} &&&& \gate[4]{U_c} &&&& \gate[3]{U_c^\dagger} &&&&&&& \ \ket{0}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{b_{n-2}}\ \setwiretype{q} &&&&&&&&& \gate[3]{U_s} &&&&&& \ \ket{s_{n-2}}\ && \setwiretype{n} \\[-0.2cm]
+  \ket{b}^{n+1}\ & \wireoverride{b} & \ \ket{a_{n-2}}\ \setwiretype{q} &&&&&&&&&&&&&&& \ \ket{a_{n-2}}\ && \setwiretype{b} \ \ket{b + a}^{n+1} \ \\[-0.2cm]
+  \ \otimes\ &&&&&& \setwiretype{q} &&&&&&& \setwiretype{n} &&&&&& \ \otimes\ \\[-0.2cm]
+  \ \ket{a}^n\ & \wireoverride{b} & \vdots &&& \ddots &&&&&&& \ddots &&&&& \vdots && \setwiretype{b} \ \ket{a}^n\ \\[-0.2cm]
+  \ \otimes\ & \wireoverride{n} & \ \ket{0}\ \setwiretype{q} && \gate[4]{U_c} && \setwiretype{n} &&&&&&& \gate[4]{U_c^\dagger} \setwiretype{q} &&&& \ \ket{0}\ && \setwiretype{n} \ \otimes\ \\[-0.2cm]
+  \ \ket{0}^n\ & \wireoverride{b} & \ \ket{b_1}\ \setwiretype{q} &&&&&&&&&&&& \gate[3]{U_s} &&& \ \ket{s_1}\ && \setwiretype{b} \ \ket{0}^n \\[-0.2cm]
+  && \ \ket{a_1}\ \setwiretype{q} &&&&&&&&&&&&&&& \ \ket{a_1}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{0}\ \setwiretype{q} & \gate[4]{U_c} &&&&&&&&&&&& \gate[4]{U_c^\dagger} && \ \ket{0}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{b_0}\ \setwiretype{q} &&&&&&&&&&&&&& \gate[3]{U_s} & \ \ket{s_0}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{a_0}\ \setwiretype{q} &&&&&&&&&&&&&&& \ \ket{a_0}\ && \setwiretype{n} \\[-0.2cm]
+  && \ \ket{0}\ \setwiretype{q} &&&&&&&&&&&&&&& \ \ket{0}\ && \setwiretype{n}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
 To construct a quantum circuit for addition of two number $a,b\in\N_0$, we start by implementing the sum bit $s_j$ by a gate $\hat{U}_s$. For this we define the following operators on ${}^\P \mathcal{H}^{\otimes 3}$:
 
 $$
@@ -4279,9 +4308,9 @@ On vectors of the computational basis $\ket{x}^3 = \ket{x_2}\otimes\ket{x_1}\oti
 
 $$
 \begin{align*}
-  \hat{A}\left(\ket{x}^3) =& \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
-  \hat{B}\left(\ket{x}^3) =& \ket{x_0 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
-  \hat{U}_s \left(\ket{x}^3) =& \hat{B}\left(\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}\right) \\
+  \hat{A}\left(\ket{x}^3 \right) =& \ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{B}\left(\ket{x}^3 \right) =& \ket{x_0 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0} \\
+  \hat{U}_s \left(\ket{x}^3\right) =& \hat{B}\left(\ket{x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}\right) \\
   =& \ket{x_0 \overset{2}{\oplus} x_1 \overset{2}{\oplus} x_2} \otimes\ket{x_1}\otimes\ket{x_0}
 \end{align*}
 $$
@@ -4517,10 +4546,10 @@ $$
 </MathBox>
 
 <MathBox title='' boxType='corollary'>
-There exists a circuit $\hat{U}_-$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which is implemented with the help of the auxilliary register $\mathcal{H}^W$ by $\hat{U}'_+^\dagger = \hat{U}'_+^{-1}$, that is, for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
+There exists a circuit $\hat{U}_-$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which is implemented with the help of the auxilliary register $\mathcal{H}^W$ by ${\hat{U}'_+}^\dagger = {\hat{U}'_+}^{-1}$, that is, for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
 
 $$
-  \hat{U}'_+^\dagger (\ket{\Psi} \otimes\ket{0}^n) =& (\hat{U}_- \ket{\Psi}) \otimes\ket{0}^n
+  {\hat{U}'_+}^\dagger (\ket{\Psi} \otimes\ket{0}^n) =& (\hat{U}_- \ket{\Psi}) \otimes\ket{0}^n
 $$
 
 where also $\hat{U}_- = \hat{U}_+^\dagger = \hat{U}_+^{-1}$ holds. Furthermore, for $a,b\in\N_0$ with $a,b < 2^n$ we have that
@@ -4541,7 +4570,6 @@ $$
 \end{align*}
 $$
 </MathBox>
-
 
 ## Quantum circuit for modular exponentiation
 
