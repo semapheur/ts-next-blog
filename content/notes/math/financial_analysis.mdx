@@ -727,6 +727,135 @@ Solving these equations gives the expression for $\phi$ and $\psi$.
 </details>
 <MathBox>
 
+Taking $\mu = 0$, we obtain the Laplace transform of $r_t (x)$
+
+$$
+  \mathbb{E} \left(e^{\lambda r_t (x)}\right) = (2\lambda K + 1)^{-2a/\sigma^2} \exp\left(\frac{-\lambda K z}{2\lambda K + 1}\right)
+$$
+
+where
+
+$$
+  K = \frac{\sigma^2}{4b} (1 - e^{-bt}),\quad z = \frac{4bx}{\sigma^2 (e^{bt} - 1)}
+$$
+
+Consequently, the Laplace transform of $r_t (x) / K$ is given given by $g_{4g/\sigma^2, z}$, where
+
+$$
+  g_{\delta, z} = \frac{1}{(2\lambda + 1)^{\delta/2}} \exp\left(-\frac{\lambda}{2\lambda + 1}\right)
+$$
+
+However, consider the chi-square density $f_{\delta, z}$, having $\delta$ degress of freedom and decentral parameter $z$, given by
+
+$$
+  f_{\delta, z} (x) = \frac{e^{-z/2}}{2z^{\delta/4 - 1/2}} e^{-x/2} x^{\delta/4 - 1/2} I_{\delta/2 - 1} (\sqrt{xz}),\; x > 0
+$$
+
+Here $I_\nu$ is the modified Bessel function of order $\nu$, given by
+
+$$
+  I_\nu (x) = \left(\frac{x}{2}\right)^\nu \sum_{n=0}^\infty \frac{\left(\frac{x}{2} \right)^{2n}}{n! \Gamma(\nu + n + 1)}
+$$
+
+Then it can be shown that $g_{\delta, z}$ is the Laplace transform of the law of a random variable having density $f_{\delta, z} (x)$. Consequently, $r_t (x)/K$ is a random variable having a chi-square density with $\delta$ degrees of freedom.
+
+Under a risk-neutral measure $\mathbb{P}$, the price of a zero coupon bond at time $t = 0$ is
+
+$$
+\begin{align*}
+  B(0,T) =& \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right)\right] \\
+  =& e^{-a\phi_{0,1} (0,T) - r_0 (x) \psi_{0,1} (0,T)}
+\end{align*}
+$$
+
+where
+
+$$
+\begin{align*}
+  \phi_{0,1} (T) =& -\frac{2}{\sigma^2} \ln\left(\frac{2\gamma e^{T(\gamma + b)/2}}{\gamma - b + e^{\gamma T}(\gamma + b)} \right) \\
+  \psi_{0,1} (T) =& \frac{2(e^{\gamma T} - 1)}{\gamma - b + e^{\gamma T} (\gamma + b)}
+\end{align*}
+$$
+
+with $\gamma = \sqrt{b^2 + 2\sigma^2}$. The price of a zero coupon bond at time $t$ is similarly, because of stationarity
+
+$$
+  B(t, T) = e^{-a \phi_{0,1} (T - t) - r_t (x) \psi_{0,1} (T - t)}
+$$
+
+Suppose $0 \leq T \leq T^*$. Consider a European call option with expiration time $T$ and strike price $K$ on the zero coupon bond $B(t, T)^*$. At time $0$, this a price
+
+$$
+\begin{align*}
+  V_0 =& \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) (B(T,T^*) - K)^+ \right] \\
+  =& \mathbb{E}\left(\mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) (B(T,T)^* - K)^+ \middle| \mathcal{F}_t \right]\right) \\
+  =& \mathbb{E}\left[\exp\left(-\inf_0^T r_u (x) \;\d x \right) \left(e^{-a\phi_{0,1} (T^* - T) - r_T (x) \psi_{0,1} (T^* - T)} - K \right)^+ \right]
+\end{align*}
+$$
+
+Write
+
+$$
+  r^* = \frac{-a\phi_{0,1} (T^* - T) + \ln(K)}{\psi_{0,1} (T^* - T)}
+$$
+
+Then
+
+$$
+\begin{align*}
+  V_0 =& \mathbb{E}\left[ \exp\left(-\int_0^T r_u (x) \;\d u \right) B(T,T^*) \mathbf{1}_{r_T (x) < r^*} \right] \\
+  &- K\mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) \mathbf{1}_{r_T (x) < r^*}\right]
+\end{align*}
+$$
+
+Now
+
+$$
+\begin{align*}
+  \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) B(T, T^*) \right] =& B(0,T^*) \\
+  \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) \right] =& B(0, T)
+\end{align*}
+$$
+
+Define two new probability measures $\mathbb{P}_1$ and $\mathbb{P}_2$ by setting
+
+$$
+\begin{align*}
+  \left.\frac{\d\mathbb{P}_1}{\d P}\right|_{\mathcal{F}_T} =& \frac{\exp\left(-\int_0^T r_u (x) \;\d u \right) B(T, T^*)}{B(0,T^*)}
+  \left.\frac{\d\mathbb{P}_2}{\d P}\right|_{\mathcal{F}_T} =& \frac{\exp\left(-\int_0^T r_u (x) \;\d u \right)}{B(0,T)}
+\end{align*}
+$$
+
+Then
+
+$$
+  V_0 = B(0,T^*) \mathbb{P}_1 (r_T (x) < r^*) - K B(0,T) \mathbb{P}_2 (r_T (x) < r^*)
+$$
+
+Write
+
+$$
+\begin{align*}
+  K_1 =& \frac{\delta^2}{2} \frac{e^{\gamma_T} - 1}{\gamma (e^{\gamma_T} + 1) + (\sigma^2 \psi_{0,1} (T^* - T) + b)(e^{\gamma_T} - 1)} \\
+  K_2 =& \frac{\sigma^2}{2} \frac{e^{\gamma_T} - 1}{\gamma (e^{\gamma_T} + 1) + b(e^{\gamma_T} - 1)}
+\end{align*}
+$$
+
+Then it can be shown that the law of $r_T (x)/K_1$ under $\mathbb{P}_1$ (respectively, the law of $r_T (x)/K_2$ under $\mathbb{P}_2$) is a decentral chi-square with $4a/\sigma^2$ degrees of freedom and decentral parameter $\xi_1$ (respectively, $\xi_2$), where
+
+$$
+\begin{align*}
+  \xi_1 =& \frac{8r_0 (x) \gamma^2 e^{\gamma_T}}{\sigma^2 (e^{\gamma_T} - 1)(\gamma (e^{\gamma_T} + 1)) + (\sigma^2 \psi_{0,1} (T^* - T) + b)(e^{\gamma_T} - 1)} \\
+  \xi_2 =& \frac{8r_0 (x) \gamma^2 e^{\gamma_T}}{\sigma^2 (e^{\gamma_T} - 1)(\gamma(e^{\gamma_T} + 1) + b(e^{\gamma_T} - 1))}
+\end{align*}
+$$
+
+Consequently, if $F_{\delta, z}$ is the probability distribution function for a chi-square random variable with $\delta$ degrees of freedom and decentral parameter $z$, then
+
+$$
+  V_0 = B(0,T^*) F_{4a/\sigma^2, \xi_1} \left(\frac{r^*}{K_1}\right) - KB(0,T) F_{4a/\sigma^2, \xi_2} \left(\frac{r^*}{K_2}\right)
+$$
+
 # Pairs trading
 
 ## Optimal mean reversion stopping
