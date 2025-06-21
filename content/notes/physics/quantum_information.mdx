@@ -4866,6 +4866,25 @@ Hence, $\eqref{equation-118}$ follows from $\eqref{equation-116}$ and $\eqref{eq
 
 ## Modular quantum adder
 
+<LatexFigure width={75} src='/fig/quantum_modular_adder_circuit.svg' alt='' tag='figure-6'
+  caption='Circuit for the quantum adder $\hat{U}_{+\% N}$ modulo $N$ applied to $a, b < N$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={b,n,b,n,n,n}]
+  \ket{b}^{n+1}\ \wireoverride{n} &[0.3cm] \gate[3]{U_+} \gategroup[6, steps=16, style={inner sep=0.5cm, yshift=0.2cm}, label style={label position=below, anchor=north, yshift=-0.2cm}]{$U_{+\% N}$} \gategroup[3, steps=1, style={draw=none, fill=gray!20}, background]{$A_1$} & \ \ket{b + a}\ & \gategroup[4, steps=1, style={draw=none, fill=gray!20}, background]{$A_2$} && \gate[3]{U_-} \gategroup[3, steps=1, style={draw=none, fill=gray!20}, background]{$A_3$} & \ \ket{2^{n+1} c_n^{3-} + b + a - N}\ &  \ctrl{5} \gategroup[6, steps=1, style={draw=none, fill=gray!20}, background]{$A_4$} && \gate[3]{U_+} \gategroup[6, steps=1, style={draw=none, fill=gray!20}, background]{$A_5$} & \ \ket{b + a + (c_n^{3-} - 1) N}\ & \gategroup[4, steps=1, style={draw=none, fill=gray!20}, background]{$A_6$} && \gate[3]{U_-} \gategroup[3, steps=1, style={draw=none, fill=gray!20}, background]{$A_7$} & \ \ket{2^{n+1} c_n^{7-} + b + (c_n^{3-} - 1)N}\ & \octrl{5} \gategroup[6, steps=1, style={draw=none, fill=gray!20}, background]{$A_8$} &[0.2cm] \gate[3]{U_+} \gategroup[3, steps=1, style={draw=none, fill=gray!20}, background]{$A_9$} &[0.3cm] \rstick{$\ket{b + a + (c_n^{3-} - 1)N} = \ket{(b + a) \bmod N}^{n+1}$} \\
+  \otimes &&&&&&&&&&&&&&&&& \rstick{\otimes} \\
+  \ket{a}^n \ \wireoverride{n} && \ \ket{a}\ & \swap{1} & \ \ket{N}\ && \ \ket{N}\ &&&& \ \ket{N}\ & \swap{1} & \ \ket{a}\ && \ \ket{a}\ &&& \rstick{$\ket{a}^n$} \\
+  && \lstick[3]{$\mathcal{H}^W \ni$} \ket{N}^n \ & \targX{} \setwiretype{b} & \ \ket{a}\ &&&&&& \ \ket{a}\ & \targX{} & \ \ket{N}\ &&&& \rstick{$\ket{N}^n$} & \wireoverride{n} \\
+  && \otimes &&&&&&&&&&&&&& \rstick{\otimes} \\
+  && \ket{0}^1 \ & \setwiretype{q} &&&& \gate{X} & \ \ket{c_n^{3-}}\ & \ctrl{-3} &&&&&& \gate{X} & \rstick{$\ket{0}^1$} & \wireoverride{n}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
 <MathBox title='' boxType='definitions'>
 For $N\in\N_+$ with $N < 2^n$ we define $\mathcal{H}^{< N}$ as the linear subspace of ${}^\P \mathcal{H}^{\otimes n}$ spanned by the basis vectors $\ket{0}^n, \dots, \ket{N - 1}^n$
 
