@@ -4529,7 +4529,7 @@ Finally, the unitarity of $\hat{U}_+$ follows since it is a product of unitary o
 </details>
 </MathBox>
 
-<MathBox title='' boxType='theorem'>
+<MathBox title='' boxType='theorem' tag='theorem-3'>
 There exists a circuit $\hat{U}_+$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which can be implemented with the help of the auxilliary register $\mathcal{H}^W$ by $\hat{U}'_+$, that is, there exists a unitary opertor $\hat{U}_+ \in\mathcal{U}(\mathcal{H}^{I/O} \otimes\mathcal{H}^W)$ such that for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
 
 $$
@@ -4686,7 +4686,7 @@ This proves $\eqref{equation-108}$. For $a, b < 2^n$ we have $c_{n+1}^+ = 0$, an
 </details>
 </MathBox>
 
-<MathBox title='' boxType='corollary'>
+<MathBox title='' boxType='corollary' tag='corollary-5'>
 There exists a circuit $\hat{U}_-$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^B \otimes\mathcal{H}^A$, which is implemented with the help of the auxilliary register $\mathcal{H}^W$ by ${\hat{U}'_+}^\dagger = {\hat{U}'_+}^{-1}$, that is, for arbitrary $\ket{\Psi}\in\mathcal{H}^{I/O}$ we have
 
 $$
@@ -4866,7 +4866,20 @@ Hence, $\eqref{equation-118}$ follows from $\eqref{equation-116}$ and $\eqref{eq
 
 ## Modular quantum adder
 
-<LatexFigure width={75} src='/fig/quantum_modular_adder_circuit.svg' alt='' tag='figure-6'
+<MathBox title='' boxType='definitions'>
+For $N\in\N_+$ with $N < 2^n$ we define $\mathcal{H}^{< N}$ as the linear subspace of ${}^\P \mathcal{H}^{\otimes n}$ spanned by the basis vectors $\ket{0}^n, \dots, \ket{N - 1}^n$
+
+$$
+\begin{align*}
+  \mathcal{H}^{< N} =& \operatorname{span}\set{\ket{0}^n, \dots, \ket{N-1}^n} \\
+  =& \Set{\ket{\Phi} \in {}^\P \mathcal{H}^{\otimes n} | \ket{\Phi} = \sum_{a=0}^{N-1} \Phi_a \ket{a}^n }
+\end{align*}
+$$
+</MathBox>
+
+For $n,N \in\N_+$, the quantum adder modulo $N$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes \mathcal{H}^{< N}$ is defined as the operator $\hat{U}_{+\% N}$ representing the circuit in Figure $\ref{figure-7}$, which is implemented with the help of the auxiliary state $\ket{\omega_i} = \ket{N}^n \otimes\ket{0}^1 = \ket{\omega_f}$ in an auxiliary register $\mathcal{H}^W = {}^\P \mathcal{H}^{\otimes n+1}$.
+
+<LatexFigure width={75} src='/fig/quantum_modular_adder_circuit.svg' alt='' tag='figure-7'
   caption='Circuit for the quantum adder $\hat{U}_{+\% N}$ modulo $N$ applied to $a, b < N$'
 >
 ```latex
@@ -4885,16 +4898,6 @@ Hence, $\eqref{equation-118}$ follows from $\eqref{equation-116}$ and $\eqref{eq
 \end{document}
 ```
 </LatexFigure>
-<MathBox title='' boxType='definitions'>
-For $N\in\N_+$ with $N < 2^n$ we define $\mathcal{H}^{< N}$ as the linear subspace of ${}^\P \mathcal{H}^{\otimes n}$ spanned by the basis vectors $\ket{0}^n, \dots, \ket{N - 1}^n$
-
-$$
-\begin{align*}
-  \mathcal{H}^{< N} =& \operatorname{span}\set{\ket{0}^n, \dots, \ket{N-1}^n} \\
-  =& \Set{\ket{\Phi} \in {}^\P \mathcal{H}^{\otimes n} | \ket{\Phi} = \sum_{a=0}^{N-1} \Phi_a \ket{a}^n }
-\end{align*}
-$$
-</MathBox>
 
 <MathBox title='' boxType='theorem'>
 Let $n, N\in\N_+$ be natural numbers satisfying $N < 2^n$. The modular quantum adder $\hat{U}_{+\% N}$ satisfies
@@ -4918,12 +4921,235 @@ $$
 <details>
 <summary>Proof</summary>
 
+Since $N < 2^n$ is assumes, $\mathcal{H}^{< N}$ is a subspace of ${}^\P \mathcal{H}^{\otimes n}$ and ${}^\P \mathcal{H}^{\otimes n + 1}$ and can be embedded in these. In Figure $\ref{figure-7}$ we thus consider the arguments $\ket{b}\otimes\ket{a} \in\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes\mathcal{H}^{< N}$ as vectors in ${}^\P \mathcal{H}^{\otimes n+1} \otimes {}^\P \mathcal{H}^{\otimes n}$ on which, according to Definition $\ref{definition-11}$, Theorem $\ref{theorem-3}$ and Corollary $\ref{corollary-5}$ the adder $\hat{U}_+$ and the subtractor $\hat{U}_- = \hat{U}_+^{-1}$ are defined. The auxiliary register $\mathcal{H}^W = {}^\P \mathcal{H}^{\otimes n+1}$ is pre-set with $\ket{N}^n \otimes\ket{0}^1$. As shown in Figure $\ref{figure-7}$, we have to prove that
+
+$$
+  \hat{U}_{+\% N} = \Prod_{l=9}^1 \hat{A}_l
+$$
+
+To begin with, $\hat{U}_+$ in $\hat{A}_1$ is applied to $\ket{b}\otimes\ket{a}$, which, according to Theorem $\ref{theorem-3}$, yields $\ket{b + a}\otimes\ket{a}$.
+
+Application of the swap operator $\hat{S}$ in the second step swaps $\ket{N}$ in the auxiliary register with $\ket{a}$ such that afterwards $\ket{a}$ has been deposited in the the auxiliary register.
+
+In $\hat{A}_3$, then $\hat{U}_-$ is applied to $\ket{b + a}\otimes\ket{N}$, which, in accordance with Corollary $\ref{corollary-5}$, yields $\ket{c_n^{3-} 2^{n+1} + b + a - N}\otimes\ket{N}$. Here we have indexed the carry bit $c_n^{3-}$ with the superscript $3-$ in order to distinguish it from the carry bit a later subtractions. From Corollary $\ref{corollary-5}$, we also know that
+
+$$
+  c_n^{3-} = \begin{cases} 0 \iff b + a \geq N \\ 1 \iff b + a < N \end{cases}
+$$
+
+The value of $c_n^{3-}$ will then serve in the subsequent traformations $\hat{A}_4,\dots,\hat{A}_9$ within $\hat{U}_{+\% N}$ as a distinguishing indicator for the cases $b + a \geq N$ or $b + a < N$.
+
+In $\hat{A}_4$ the state $\ket{c_n^{3-}}$ of the carry qubit is wirtten by means of a controlled NOT $\Lambda^{\ket{1}^1} (\hat{X})$ in the target qubit, which was initially in the state $\ket{0}^1$ in the auxiliary register.
+
+In $\hat{A}_5$, the target in the state $\ket{c_n^{3-}}$ controls the application of the addition $\hat{U}_+$ on $\ket{c_n^{3-} 2^{n+1} + b + a - N}\otimes\ket{N}$. In the case $c_n^{3-} = 0$ no addition is performed. This addition is the inverse of previous subtraction in step three. Thus, the state prior to that subtraction is recovered. The result of $\hat{A}_5$ is in this case $\ket{b + a}\otimes\ket{N}$. Altogether the result of $\hat{A}_5$ can thus be written as $\ket{b + a + (c_n^{3-} - 1)N}\otimes\ket{N}$.
+
+In $\hat{A}_6$ the swap of the second step is inverted by a further application of the operator $\hat{S}$. After that $\ket{a}$ is again in the second factor space of $\mathcal{H}^\text{I/O} = \mathcal{H}^{< H} \otimes\mathcal{< N} \subset {}^\P \mathcal{H}^{\otimes n + 1} \otimes {}^\P \mathcal{H}^{\otimes n}$, and $\ket{N}$ becomes the state in the auxiliary register.
+
+However, the target qubit in the auxiliary register is still entangled with the state in ${}^\P \mathcal{H}^{\otimes n+1} \otimes {}^\P \mathcal{H}^{\otimes n}$. In order to disentangle these states, we subtract $a$ with $\hat{U}_-$ in a seventh step from $b + a + (c_n^{3-} - 1)N$. If $c_n^{3-} = 0$, the result of this subtraction is $b - N < 0$, and thus the state of the carry qubit becomes $\ket{c_n^{7-}} = \ket{1}$. If, on the other hand, $\ket{c_n^{3-}} = \ket{1}$, then the subtraction results in $b \geq 0$, and the state of the carry qubit becomes $\ket{c_n^{7-}} = \ket{0}$.
+
+The value of the carry bit $c_n^{7-}$ then controls in $\hat{A}_8$ the re-setting of the target qubit in the auxiliary register to $\ket{0}$. Finally, in $\hat{A}_9$ the subtraction of $\hat{A}_7$ is inverted. Since $a, b < N$, the final result in the first factor space $\mathcal{H}^{< N}$ of $\mathcal{H}^\text{I/O}$ is thus
+
+$$
+\begin{equation*}
+  \ket{b + a + (c_n^{3-} - 1)N} =& \begin{cases}
+    \ket{b + a - N},\quad& b + a \geq N \\
+    \ket{b + a},\quad& b + a  < N
+  \end{cases} \\
+  =& \ket{(b + a) \bmod N}
+\\end{split}
+\tag{\label{equation-121}}
+\end{equation*}
+$$
+
+For $\hat{U}_{+\% N}^\dagger$ we have
+
+$$
+  \hat{U}_{+\% N}^\dagger = \prod_{l=1}^9 \hat{A}_l^\dagger
+$$
+
+Here it should be noted that in $\hat{A}_1^\dagger$, $\hat{A}_5^\dagger$ and $\hat{A}_9^\dagger$ then $\hat{U}_+^\dagger = \hat{U}_-$ holds an in $\hat{A_3}$ and $\hat{A}_7$ conversely $\hat{U}_-^\dagger = \hat{U}_+$ holds. With exactly the same arguments as in the derivation of $\eqref{equation-121}$, we obtain that for $a, b < N$
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{U}_{+\% N}^\dagger (\ket{b}\otimes\ket{a}) =& \begin{cases}
+    \ket{b - a}\otimes\ket{a},\quad b\geq a \\
+    \ket{b - a + N}\otimes\ket{a},\quad b < a
+  \end{cases} \\
+  =& \ket{(b - a)\bmod N}\otimes\ket{a}
+\end{split}
+\tag{\label{equation-122}}
+\end{equation*}
+$$
+
+With $\eqref{equation-121}$ and $\eqref{equation-122}$ it follows that for $a,b < N$
+
+$$
+\begin{align*}
+  \hat{U}_{+\% N}^\dagger \hat{U}_{+\% N} (\ket{b}\otimes\ket{a}) =& \ket{U}_{+/% N}^\dagger (\ket{(b + a) \bmod N}) \\
+  =& \ket{[(b + a) \bmod N - \underbrace{a}_{=a \bmod N}] \bmod N}\otimes\ket{a} \\
+  =& \ket{b \mod N} \otimes\ket{a} \\
+  =& \ket{b}\otimes\ket{a}
+\end{align*}
+$$
+
+Hence, $\hat{U}_{+\% N}$ is unitary.
 </details>
 </MathBox>
 
+## Modular quantum multiplier
 
+For $c\in\N_0$ and $n,N \in\N_+$, the quantum multiplier modulo $N$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes {}^\P \mathcal{H}^{\otimes n}$ is defined as the operator $\hat{U}_{\times c\% N}$ representing the circuit in Figure $\ref{figure-8}$, which is implemented with the help of the auxiliary states $\ket{\omega_i}$ and $\ket{\omega_f}$ in an auxiliary register $(\mathcal{H}^{< N})^{\otimes n + 1}$.
 
-## Quantum circuit for modular exponentiation
+The initial state of the auxiliary register is set to
+
+$$
+  \ket{\omega_i} = \ket{0} \otimes \bigotimes_{j=n-1}^0 \ket{c 2^j \bmod N}
+$$
+
+To prepare the initial state, we calculate $c2^{n-1} \bmod N, \dots, c2^0 \bmod N$ with the help of a classical computer. The final state in the auxiliary register is given by 
+
+$$
+  \ket{\omega_f} = \ket{0} \otimes \left(\bigotimes_{j=n-2}^0 \ket{c 2^j \bmod N} \right) \otimes \ket{c 2^{n-1} \bmod N}
+$$
+
+and differ from the initial state $\ket{\omega_i}$, but is always the same, independent of $\ket{b}\otimes\ket{a}$. This means that states in the auxiliary register remain separable from those in the input/output register.
+
+<LatexFigure width={75} src='/fig/quantum_modular_multiplier_circuit.svg' alt='' tag='figure-8'
+  caption='Circuit for the quantum multiplier $\hat{U}_{\times c \% N}$ modulo $N$ applied for $a,N < 2^n$ and $b < N$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={b,b,b,n,n,n,b,n,b,q,n,n,n,q,n,q}]
+  \lstick{\ket{b}} & \gategroup[16, steps=16, label style={label position=below, anchor=north, yshift=-0.2cm}]{$U_{\times c\% N}$} &&& \gate[2]{U_{+\% N}} & \ \ket{(b + c2^0 a_0) \bmod N}\ &&& \gate[2]{U_{+\% N}} & \ \ket{(b + c(2^0 a_0 + 2^1 a_1)) \bmod N}\ & \midstick[16, brackets=none]{$\ddots$} && \ \ket{(b + c \sum_{i=0}^{n-2} a_j 2^j) \bmod N}\ & \gate[2]{U_{+\% N}} &&&& \rstick{\ket{(b + ca) \bmod N}} \\
+  \lstick[8, brackets=none]{$\otimes$} & \ \ket{0}\ \gategroup[8, steps=1, style={draw=none, fill=gray!20, inner sep=0cm}, background]{$\omega_i$} \wireoverride{n} & \swap{7} & \ \ket{c2^0 \bmod N} && \ \ket{c2^0 \bmod N}\ & \swap{5} & \ \ket{c2^1 \mod N} && \ \ket{c2^1 \bmod N} && \swap{1} & \ \ket{c2^{n-1} \bmod N}\ && \ \ket{c2^{n-1} \bmod N}\ & \swap{7} & \ \ket{0}\ \gategroup[8, steps=1, style={draw=none, fill=gray!20, inner sep=0cm}, background]{$\omega_f$} & \rstick[8, brackets=none]{$\otimes$} \wireoverride{n} \\
+  & \ \ket{c2^{n-1} \bmod N}\ \wireoverride{n} &&&&&&&&&& \targX{} &&&&& \ \ket{c2^{n-2} \bmod N}\ & \wireoverride{n} \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.6cm]
+  & \vdots &&&&&&&&&&&&&&& \vdots & \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.4cm]
+  & \ \ket{c2^1 \bmod N}\ \wireoverride{n} &&&&& \targX{} & \ \ket{c2^0 \bmod N}\ &&&&&&&&& \ \ket{c2^0 \bmod N}\ & \wireoverride{n} \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.4cm]
+  & \ \ket{c2^0 \bmod N}\ \wireoverride{n} & \targX{} & \ \ket{0}\ &&&&&&&&&&&& \targX{} & \ \ket{c2^{n-1} \bmod N}\ & \wireoverride{n} \\
+  \lstick[7]{$\ket{a}$} & \ \ket{a_{n-1}}\ &&&&&&&&&&&& \ctrl{-8} &&& \ \ket{a_{n-1}}\ & \rstick[7]{$\ket{a}$} \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.6cm]
+  & \vdots &&&&&&&&&&&&&&& \vdots & \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.4cm]
+  & \ \ket{a_1}\ &&&&&&& \ctrl{-12} &&&&&&&& \ \ket{a_1}\ & \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&& \otimes & \\[-0.4cm]
+  & \ \ket{a_0}\ &&& \ctrl{-14} &&&&&&&&&&&& \ \ket{a_0}\ &
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
+
+<MathBox title='' boxType='theorem' tag='theorem-4'>
+For any operator $\hat{U}_{\times c\% N}$ as implemented by the circuit in Figure $\ref{figure-8}$, we have
+
+$$
+\begin{equation*}
+  \hat{U}_{\times c\% N} (\ket{b} \otimes \ket{a}) = \ket{(b + ca) \bmod N} \otimes\ket{a}
+\tag{\label{equation-123}}
+\end{equation*}
+$$
+
+as well as
+
+$$
+\begin{equation*}
+  \hat{U}_{\times c\% N} (\ket{b}\otimes\ket{a}) = \ket{(b - ca) \bmod N} \otimes\ket{a}
+\tag{\label{equation-124}}
+\end{equation*}
+$$
+
+and $\hat{U}_{\times c\% N} : \mathcal{H}^\text{I/O} \to \mathcal{H}^\text{I/O}$ is unitary.
+
+<details>
+<summary>Proof</summary>
+
+Figure $\ref{figure-8}$ shows that the operator $\hat{U}_{\times \% N}$ consists of repeated modular additions $\hat{U}_{+\% N}$ controlled by $\ket{a_k}$ for $k\in\set{0,\dots,n-1}$, where, before each of these controlled additions, the state $\ket{c2^k \bmod N}$ is swapped from the prepared auxiliary register to the entry register for the second summand. In the first step we have, since $b < N$, after the addition controlled by $\ket{a_0}$ in $\mathcal{H}^\text{I/O}$ the state
+
+$$
+\begin{align*}
+  & (\hat{U}_{+\% N})^{a_0} (\ket{b}\otimes\ket{c2^0 \bmod N}) \\
+  =& (\hat{U}_{+\% N})^{a_0} (\ket{b \bmod N} \otimes \ket{c 2^0 \bmod N}) \\
+  =& \ket{(b \bmod N + a_0 c2^0 \bmod N) \bmod N} \otimes \ket{c2^0 \bmod N} \\
+  =& \ket{(b + a_0 c2^0) \bmod N} \otimes\ket{c2^0 \bmod N}
+\end{align*}
+$$
+
+After that, $\ket{c2^1 \bmod N}$ is swapped into the input for the second summand, and the addition controlled by $\ket{a_1}$ is executed. In the $k$th step we have, analogously
+
+$$
+\begin{align*}
+  & (\hat{U}_{+\% N})^{a_k} \left(\Ket{\left(b + c \sum_{j=0}^{k-1} a_j 2^j \right)} \otimes \ket{c2^k \bmod N} \right) \\
+  =& \Ket{\left[\left(b + c \sum_{j=0}^{k-1} a_j 2^j \right) \bmod N + a_k c2^k \bmod N \right] \bmod N} \otimes\ket{c2^k \bmod N} \\
+  =& \Ket{\left(b + c\sum_{j=0}^k a_j 2^j \right) \bmod N} \otimes\ket{c2^k \bmod N}
+\end{align*}
+$$
+
+After the last addition, the first channel of the adder controlled by $\ket{a_{n-1}}$ therefore outputs the state
+
+$$
+  \Ket{\left(b + c\sum_{j=0}^{n - 1} a_j 2^j \right) \bmod N} = \ket{(b + ca) \bmod N}
+$$
+
+In the second channel, the state $\ket{c2^{n-1} \bmod N}$ is delivered, which is swapped with $\ket{0}$. This last swap is strictly necessary because even without it the auxiliary register is separable from the input/output register. This completes the proof of $\eqref{equation-123}$.
+
+For the proof of $\eqref{equation-124}$, we note that $\hat{U}_{\times c\% N}^\dagger$ corresponds to a reverse run through the circuit shown in Figure $\ref{figure-8}$ from right to left. This amounts to a circuit in which the steps of $\hat{U}_{\times c\% N}$ are traversed in reverse order and where the initial state in the auxiliary register is now $\ket{\omega_f}$, and the final state is $\ket{\omega_f}$ as well as where $\hat{U}_{+\% N}$ has to be replaced by $\hat{U}_{+\% N}^\dagger = \hat{U}_{-\% N}$. Similarly to the previous argument, the first step is then a subtraction of $c2^{n-1} \bmod N$ controlled by $\ket{a_{n-1}}$. These controlled subtractions are continued until the last subtraction of $c2^0 \bmod N$ controlled by $\ket{a_0}$. Altogether, the input $\ket{b}\otimes\ket{a}$ is transferred by $\ket{U}_{\times c\% N}^\dagger$ into $\ket{(b - ca) \bmod N}\otimes\ket{a}$ as claimed.
+
+We therefore have
+
+$$
+\begin{align*}
+  \hat{U}_{\times c\% N}^\dagger \hat{U}_{\times c\% N} (\ket{b}\otimes\ket{a}) =& \hat{U}_{\times c\% N}^\dagger (\ket{(b + ca) \bmod N} \otimes\ket{a}) \\
+  =& \ket{[(b + ca) \bmod N - ca] \bmod N} \otimes\ket{a} \\
+  =& \ket{[(b + ca) \bmod N - ca \bmod N] \bmod N} \otimes\ket{a} \\
+  =& \ket{b \bmod N}\otimes\ket{a} \\
+  =& \ket{b}\otimes\ket{a}
+\end{align*}
+$$
+
+proving unitarity of $\hat{U}_{\times c\% N}$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes {}^\P \mathcal{H}^{\otimes n}.
+</details>
+</MathBox>
+
+## Quantum modular exponentiation
+
+<LatexFigure width={75} src='/fig/quantum_modular_exponentiation_circuit.svg' alt='' tag='figure-9'
+  caption='Quantum circuit $\hat{A}_{f_b, N}$ to implement the function $f_{b, N} (x) = b^x \bmod N}. Here we use the succint notation $\beta_j = b^{2^j} \bmod N$'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+\begin{quantikz}[wire types={q,n,q,n,n,n,q,n,q,b,b,n,n,n,b,n,b,n,b}]
+  \lstick[9]{$\ket{x}$} & \ \ket{x_{n-1}}\ \gategroup[19, steps=22, style={inner ysep=0.4cm, yshift=-0.2cm}]{$A_{f_b, N}$} &&&&&&&&&& \ctrl{9} & \octrl{9} &&&&&&&&&& \ \ket{x_{n-1}}\ & \rstick[9]{$\ket{x}$} \\[-0.2cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
+  & \ \ket{x_{n-2}}\ &&&&&&& \ctrl{8} & \octrl{8} &&&&& \octrl{8} & \ctrl{8} &&&&&&& \ \ket{x_{n-2}}\ & \\[-0.2cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.6cm]
+  & \vdots &&&&&&&&&&&&&&&&&&&&& \vdots & \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
+  & \ \ket{x_1}\ &&&& \ctrl{8} & \octrl{8} &&&&&&&&&&& \octrl{8} & \ctrl{8} &&&& \ \ket{x_1}\ & \\[-0.2cm]
+  \lstick[label style={xshift=-0.2cm}]{\otimes} & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \rstick[label style={xshift=0.2cm}]{\otimes} \\[-0.2cm]
+  & \ \ket{x_0}\ & \ctrl{8} & \octrl{8} &&&&&&&&&&&&&&&&& \octrl{8} & \ctrl{8} & \ \ket{x_0}\ & \\
+  \lstick{\ket{0}} &&&&&&&&&&& \gate[2]{U_{\times\beta_{n-1 \% N}}} & \gate[2]{+\% N} & \ \ket{b^{\sum_{j=0}^{n-1} x_j 2^j} \bmod N}\ &&&&&&&&&& \rstick{\ket{b^x \bmod N}} \\[-0.2cm]
+  & \ \ket{0}\ \gategroup[9, steps=1, style={draw=none, fill=gray!20, inner sep=-0.2cm}, label style={label position=below, anchor=north, yshift=-0.2cm}, background]{$\ket{\omega_i}$} \wireoverride{n} &&&&&&& \gate[2]{U_{\times\beta_{n-2} \% N}} & \gate[2]{U_{+\% N}} & \ \ket{b^{\sum_{j=0}^{n-1} x_j 2^j} \bmod N}\ &&& \ \ket{b^{\sum_{j=0}^{n-2} x_j 2^j} \bmod N}\ & \gate[2]{U_{-\% N}} & \gate[2]{U_{\times\beta_{n-2} \% N}^\dagger} & \ \ket{0}\ &&&&&& \ \ket{0}\ \gategroup[9, steps=1, style={draw=none, fill=gray!20, inner sep=-0.2cm}, label style={label position=below, anchor=north, yshift=-0.2cm}, background]{$\ket{\omega_f}$} & \wireoverride{n} \\[-0.4cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.8cm]
+  & \vdots &&&&&& \ddots &&&&&&&&& \ddots &&&&&& \vdots & \\[-0.3cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
+  & \ \ket{0}\ \wireoverride{n} &&&& \gate[3]{U_{\times\beta_1 \% N}} & \gate[3]{U_{+\% N}} & \ \ket{b^{\sum_{j=0}^1 x_j 2^j} \bmod N}\ && \setwiretype{n} &&&&&&& \ \ket{b^{\sum_{j=0}^1 x_j 2^j} \bmod N}\ \setwiretype{b} & \gate[3]{\hat{U}_{-\% N}} & \gate[3]{U_{\times\beta_1 \% N}^\dagger} & \ \ket{0}\ &&& \ \ket{0}\ & \wireoverride{n} \\[-0.2cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
+  & \ \ket{0}\ \wireoverride{n} & \gate[3]{U_{\times\beta_0 \% N}} & \gate[3]{U_{+\% N}} & \ \ket{b^{x_0 2^0} \bmod N}\ &&& \ \ket{b^{x_0 2^0} \bmod N}\ && \setwiretype{n} && \cdots &&&&& \ \ket{b^{x_0 2^0} \bmod N}\ \setwiretype{b} &&& \ \ket{b^{x_0 2^0} \bmod N}\ & \gate[3]{U_{-\% N}} & \gate[3]{U_{\times\beta_0 \% N}^\dagger} & \ \ket{0}\ & \wireoverride{n} \\[-0.2cm]
+  & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
+  & \ \ket{1}\ \wireoverride{n} &&& \ \ket{1}\ &&&&& \setwiretype{n} &&&&&&& \setwiretype{b} &&& \ \ket{1}\ &&& \ \ket{1}\ & \wireoverride{n}
+\end{quantikz}
+\end{document}
+```
+</LatexFigure>
 
 <MathBox title='' boxType='corollary' tag='corollary-3'>
 Let $b, n, m, N \in \N_+$ with $N < 2^m$ and define the function $f_{b,N} :\N_0 \to \N_0$ by $f_{b,N} (x) = b^x \bmod N$. 
