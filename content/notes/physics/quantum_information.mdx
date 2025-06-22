@@ -4086,7 +4086,7 @@ Hence, $\hat{U}_\boxplus^2 = \hat{I}$ and being both linear and invertible on an
 ```
 </LatexFigure>
 
-<MathBox title='' boxType='proposition'>
+<MathBox title='' boxType='proposition' tag='proposition-9'>
 Let $f:\N_0 \to \N_0$ and $n,m\in\N_+$. Define the Hilbert spaces $\mathcal{H}^A := {}^\P \mathcal{H}^{\otimes n}$ and $\mathcal{H}^B := {}^\P \mathcal{H}^{\otimes m}$. Suppose $\hat{A}_f$ and $\hat{B}_f$ are quantum circuits on $\mathcal{H}^A \otimes \mathcal{H}^B$ and $\ket{\omega_i},\ket{\omega_f}\in\mathcal{H}^B$ are distinguished states, such that for any computational basis vector $\ket{x}\in\mathcal{H}^A$ there is a state $\ket{\psi(x)}\in\mathcal{H}^A$ satisfying
 
 $$
@@ -5112,7 +5112,7 @@ $$
 \end{align*}
 $$
 
-proving unitarity of $\hat{U}_{\times c\% N}$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes {}^\P \mathcal{H}^{\otimes n}.
+proving unitarity of $\hat{U}_{\times c\% N}$ on $\mathcal{H}^\text{I/O} = \mathcal{H}^{< N} \otimes {}^\P \mathcal{H}^{\otimes n}$.
 </details>
 </MathBox>
 
@@ -5124,12 +5124,12 @@ $$
   f_{b, N} (x) = b^x \bmod N
 $$
 
-In the quantum setting, modular exponentiation is implemented as a unitary operator $\hat{A}_{f_b, N}$ acting on the hilbert space $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n} \otimes \mathcal{H}^{< N}$, where the first register encodes the exponent $x$, and the second register holds the result. The operator $\hat{A}_{f_b, N}$, depicted in Figure $\ref{figure-9}$, is constructed using an auxiliary register $\mathcal{H}^W = (\mathcal{H}^{< N})^{\otimes n}$ initialized in the auxiliary state $\ket{\omega_i} = \left(\bigotimes_{l=0}^{n-2} \ket{0} \right) \otimes\ket{1} = \ket{\omega_f}$.
+In the quantum setting, modular exponentiation is implemented as a unitary operator $\hat{A}_{f_{b, N}}$ acting on the hilbert space $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n} \otimes \mathcal{H}^{< N}$, where the first register encodes the exponent $x$, and the second register holds the result. The operator $\hat{A}_{f_{b, N}}$, depicted in Figure $\ref{figure-9}$, is constructed using an auxiliary register $\mathcal{H}^W = (\mathcal{H}^{< N})^{\otimes n}$ initialized in the auxiliary state $\ket{\omega_i} = \left(\bigotimes_{l=0}^{n-2} \ket{0} \right) \otimes\ket{1} = \ket{\omega_f}$.
 
-The implementation of $\hat{A}_{f_b, N}$ follows the binary method of exponentiation, adapted to quantum circuits for a fixed base $b$. Specifically, the numbers $\beta_0 := b^{2^0} \bmod N, \dots, \beta_{n-1} := b^{2^{n-1}} \bmod N$ are pre-computed classically. These values are then used to implement controlled modular multipliers $\hat{U}_{\times\beta_j \% N}$, which conditionally multiply the result register by $\beta_j$ modulo $N$, depending on the bits of the input register.
+The implementation of $\hat{A}_{f_{b, N}}$ follows the binary method of exponentiation, adapted to quantum circuits for a fixed base $b$. Specifically, the numbers $\beta_0 := b^{2^0} \bmod N, \dots, \beta_{n-1} := b^{2^{n-1}} \bmod N$ are pre-computed classically. These values are then used to implement controlled modular multipliers $\hat{U}_{\times\beta_j \% N}$, which conditionally multiply the result register by $\beta_j$ modulo $N$, depending on the bits of the input register.
 
 <LatexFigure width={75} src='/fig/quantum_modular_exponentiation_circuit.svg' alt='' tag='figure-9'
-  caption='Quantum circuit $\hat{A}_{f_b, N}$ to implement the function $f_{b, N} (x) = b^x \bmod N}. Here we use the succint notation $\beta_j = b^{2^j} \bmod N$'
+  caption='Quantum circuit $\hat{A}_{f_{b, N}}$ to implement the function $f_{b, N} (x) = b^x \bmod N}$. Here we use the succint notation $\beta_j = b^{2^j} \bmod N$'
 >
 ```latex
 \documentclass[tikz, border=5pt]{standalone}
@@ -5137,7 +5137,7 @@ The implementation of $\hat{A}_{f_b, N}$ follows the binary method of exponentia
 
 \begin{document}
 \begin{quantikz}[wire types={q,n,q,n,n,n,q,n,q,b,b,n,n,n,b,n,b,n,b}]
-  \lstick[9]{$\ket{x}$} & \ \ket{x_{n-1}}\ \gategroup[19, steps=22, style={inner ysep=0.4cm, yshift=-0.2cm}]{$A_{f_b, N}$} &&&&&&&&&& \ctrl{9} & \octrl{9} &&&&&&&&&& \ \ket{x_{n-1}}\ & \rstick[9]{$\ket{x}$} \\[-0.2cm]
+  \lstick[9]{$\ket{x}$} & \ \ket{x_{n-1}}\ \gategroup[19, steps=22, style={inner ysep=0.4cm, yshift=-0.2cm}]{$A_{f_{b, N}}$} &&&&&&&&&& \ctrl{9} & \octrl{9} &&&&&&&&&& \ \ket{x_{n-1}}\ & \rstick[9]{$\ket{x}$} \\[-0.2cm]
   & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.2cm]
   & \ \ket{x_{n-2}}\ &&&&&&& \ctrl{8} & \octrl{8} &&&&& \octrl{8} & \ctrl{8} &&&&&&& \ \ket{x_{n-2}}\ & \\[-0.2cm]
   & \otimes &&&&&&&&&&&&&&&&&&&&& \otimes & \\[-0.6cm]
@@ -5161,6 +5161,141 @@ The implementation of $\hat{A}_{f_b, N}$ follows the binary method of exponentia
 ```
 </LatexFigure>
 
+<MathBox title='' boxType='theorem' tag='theorem-5'>
+Let $b,n,N,m \in\N_+$ with $N < 2^m$ and $f_{b, N} (x) := b^x \bmod N$. Then for any $x\in\N_0$ with $x < 2^n$
+
+$$
+\begin{equation*}
+  \hat{A}_{f_{b, N}} \left(\ket{x}^n \otimes\ket{0}^m \right) = \ket{x}^n \otimes\ket{f_{b,N} (x)}^m
+\tag{\label{equation-126}}
+\end{equation*}
+$$
+
+as well as
+
+$$
+\begin{equation*}
+  \hat{A}_{f_{b,N}}^\dagger \left(\ket{x}^n \otimes\ket{f_{b,N} (x)}^m \right) = \ket{x}^n \otimes\ket{0}^m
+\tag{\label{equation-127}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+In Figure $\ref{figure-9}$ we use the abbreviating notation $\beta_j = b^{2^j} \bmod N$. The first part of $\hat{A}_{f_{b,N}}$ successively applies $\hat{U}_{\times\beta_j \% N}$ followed by $\hat{U}_{+\% N}$. Each of theses multiplications is controlled by $\ket{x_j}$. For these we have, in general, for $s\in\set{0,1}$, $c\in\N_0$ and $\ket{a}\in\mathcal{H}^{< N}$ that
+
+$$
+\begin{equation*}
+\begin{split}
+  (\hat{U}_{+\% N})^{1 - s} (\hat{U}_{\times c\% N})^s (\ket{0}\otimes\ket{a}) =& \begin{cases}
+    (\hat{U}_{+\% N}) (\ket{0}\otimes\ket{a}),\quad& s = 0 \\
+    \ket{ca \bmod N}\otimes\ket{a},\quad& s = 1
+  \end{cases} \\
+  =& \begin{cases}
+    \ket{a \bmod N}\otimes\ket{a},\quad& s = 0 \\
+    \ket{ca \bmod N}\otimes\ket{a},\quad& s = 1
+  \end{cases} \\
+  =& \ket{c^s a \bmod N}\otimes\ket{a}
+\tag{\label{equation-125}}
+\end{split}
+\end{equation*}
+$$
+
+Beginning with first two factor of the auxiliary register, we obtain
+
+$$
+\begin{align*}
+  (\hat{U}_{+\% N})^{1 - x_0} (\hat{U}_{\times\beta_0 \% N})^{x_0} (\ket{0} \otimes\ket{1}) =& \ket{\beta_0^{x_0} \bmod N}\otimes\ket{1} \\
+  =& \ket{(b^{2^0} \bmod N)^{x_0} \bmod N}\otimes\ket{1} \\
+  =& \ket{b^{x_0 2^0} \bmod N}\otimes\ket{1}
+\end{align*}
+$$
+
+In the $k$th step this becomes
+
+$$
+\begin{align*}
+  &(\hat{U}_{+\% N})^{1 - x_k} (\hat{U}_{\times\beta_k \% N})^{x_k} \left(\ket{0} \otimes \Ket{b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N} \right) \\
+  =& \Ket{\left[\beta_k^{x_k} \left(b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N \right) \bmod N \right]} \otimes\Ket{b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N} \\
+  =& \Ket{b^{\sum_{j=0}^k x_j 2^j} \bmod N} \otimes\Ket{b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N}
+\end{align*}
+$$
+
+After the application of $(\hat{U}_{+\% N})^{1 - x_{n-1}} (\hat{U}_{\times\beta_{n-1} \% N})^{x_n - 1}$ in the second input/output channel we get as desired
+
+$$
+  \Ket{b^{\sum_{j=0}^{n-1} x_j 2^j} \bmod N} = \ket{b^x \bmod N}
+$$
+
+This remains unchanged by subsequent applications of
+
+$$
+  (\hat{U}_{\times\beta_k \% N}^\dagger)^{x_k} (\hat{U}_{+\% n}^\dagger)^{1 - x_k} = (\hat{U}_{\times\beta_k \% N}^\dagger)^{x_k} (\hat{U}_{-\% N})^{1-x_k}
+$$
+
+for $k\in\set{n-2,\dots,0}$. These conditional operators disentangle the auxiliary register from the input/output register as can be seen as follows. First, we have, in analogy to $\eqref{equation-125}$, for $s\in\set{0,1}$, $c\in\N_0$ and $\ket{u}, \ket{v} \in\mathcal{H}^{< N}$ that
+
+$$
+\begin{align*}
+  (\hat{U}_{\times c\% N}^\dagger)^s (\hat{U}_{-\% N})^{1-s} (\ket{u}\otimes\ket{v}) = \begin{cases}
+    \ket{(u - v) \bmod N}\otimes\ket{v},\quad& s = 0 \\
+    \hat{U}_{\times c\% N} (\ket{u}\otimes\ket{v}),\quad& s = 1
+  \end{cases} \\
+  =& \begin{cases}
+    \ket{(u - v) \bmod N}\otimes\ket{v},\quad& s = 0 \\
+    \ket{(c - cv) \bmod N}\otimes\ket{v},\quad& s = 1
+  \end{cases} \\
+  =& \ket{(u - c^s v) \bmod N}\otimes\ket{v}
+\end{align*}
+$$
+
+In the second part of $\hat{A}_{f_{b,N}}$ we obtain therefore with the $k$th step
+
+$$
+\begin{align*}
+  & (\hat{U}_{\times\beta_k \% N})^{x_k} (\hat{U}_{-\% N})^{1-x_k} \left(\Ket{b^{\sum_{j=0}^k x_j 2^j} \bmod N} \otimes\Ket{b^{\sim_{j=0}^{k-1} x_j 2^j} \bmod N} \right) \\
+  =& \Ket{\left[b^{\sum_{j=0}^k x_j 2^k} \bmod N - \left(b^{2^k} \bmod N \right)^{x_k} \left(b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N \right) \right]} \\
+  &\otimes \Ket{b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N} \\
+  =& \ket{0}\otimes\Ket{b^{\sum_{j=0}^{k-1} x_j 2^j} \bmod N}
+\end{align*}
+$$
+
+In particular, for $k = 0$, we have
+
+$$
+\begin{align*}
+  &(\hat{U}_{\times\beta_0 %N}^\dagger)^{x_0} (\hat{U}_{-\% N})^{1-x_0} \left(\ket{b^{x_0 2^0} \bmod N}\otimes\ket{1} \right) \\
+  =& \Ket{\left[b^{x_0 2^0} \bmod N - \left(b^{2^0} \bmod N \right)^{x_0} \bmod N \right]} \otimes\ket{1} \\
+  =& \ket{0}\otimes\ket{1}
+\end{align*}
+$$
+
+proving $\eqref{equation-126}$.
+
+In order to show $\eqref{equation-127}$, consider that $\hat{A}_{f_{b, N}}^\dagger$ emerges from the circuit of $\hat{A}_{f_{b,N}}$ by the replacements
+
+$$
+\begin{align*}
+  \hat{U}_{+\% N} \hat{U}_{\times\beta_k \% N} \to& \hat{U}_{\times\beta_k \% N}^\dagger \hat{U}_{-\% N},\; k\in\set{0,\dots,n-1} \\
+  =& \hat{U}_{\times\beta_k \% N}^\dagger \hat{U}_{-\% N} \to& \hat{U}_{+\% N} \hat{U}_{\times\beta_k \% N},\; k\in\set{n-2,\dots,0}
+\end{align*}
+$$
+
+Due to the symmetry of the circuit, this means that the circuit of $\hat{A}_{f_{b,N}}^\dagger$ only differs from the one for $\hat{A}_{f_{b,N}}$ in that in place of $(\hat{U}_{+\% N})^{1-x_{n-1}} (\hat{U}_{\times\beta_{n-1} \% N})^{x_n - 1}$ then $(\hat{U}_{\times\beta_{n-1} \% N})^{x_n - 1} (\hat{U}_{-\% N})^{1 - x_{n-1}}$ appears. This implies that
+
+$$
+\begin{align*}
+  & (\hat{U}_{\times\beta_{n-1} \% N}^\dagger)^{x_n - 1} (\hat{U}_{-\% N})^{1 - x_{n-1}} \left(\ket{b^x \bmod N} \otimes\Ket{b^{\sum_{j=0}^{n-2} x_j 2^j} \bmod N} \right) \\
+  =& (\hat{U}_{\times\beta_{n-1} \% N}^\dagger)^{x_{n-1}} (\hat{U}_{-\% N})^{1 - x_{n-1}} \left(\Ket{b^{\sum_{j=0}^{n-1} x_j 2^j} \bmod N} \otimes\Ket{b^{\sum_{j=0}^{n-2} x_j 2^j} \bmod N}\right) \\
+  =& \ket{0}\otimes\Ket{b^{\sum_{j=0}^{n-2} x_j 2^j} \bmod N}
+\end{align*}
+$$
+
+proving $\eqref{equation-127}$.
+</details>
+</MathBox>
+
 <MathBox title='' boxType='corollary' tag='corollary-3'>
 Let $b, n, m, N \in \N_+$ with $N < 2^m$ and define the function $f_{b,N} :\N_0 \to \N_0$ by $f_{b,N} (x) = b^x \bmod N$. 
 Consider the following quantum registers:
@@ -5182,6 +5317,7 @@ $$
 <details>
 <summary>Proof</summary>
 
+The claim follows from Theorem $\ref{proposition-9}$ by setting $\hat{A}_f = \hat{A}_{f_{b, N}}$ and $\hat{B}_f = \hat{A}_{f_{b,N}}^\dagger$ from Theorem $\ref{theorem-5}$.
 </details>
 </MathBox>
 
