@@ -5118,6 +5118,16 @@ proving unitarity of $\hat{U}_{\times c\% N}$ on $\mathcal{H}^\text{I/O} = \math
 
 ## Quantum modular exponentiation
 
+For $b,n,N\in\N_+$, the modular exponentiation function is defined as
+
+$$
+  f_{b, N} (x) = b^x \bmod N
+$$
+
+In the quantum setting, modular exponentiation is implemented as a unitary operator $\hat{A}_{f_b, N}$ acting on the hilbert space $\mathcal{H}^\text{I/O} = {}^\P \mathcal{H}^{\otimes n} \otimes \mathcal{H}^{< N}$, where the first register encodes the exponent $x$, and the second register holds the result. The operator $\hat{A}_{f_b, N}$, depicted in Figure $\ref{figure-9}$, is constructed using an auxiliary register $\mathcal{H}^W = (\mathcal{H}^{< N})^{\otimes n}$ initialized in the auxiliary state $\ket{\omega_i} = \left(\bigotimes_{l=0}^{n-2} \ket{0} \right) \otimes\ket{1} = \ket{\omega_f}$.
+
+The implementation of $\hat{A}_{f_b, N}$ follows the binary method of exponentiation, adapted to quantum circuits for a fixed base $b$. Specifically, the numbers $\beta_0 := b^{2^0} \bmod N, \dots, \beta_{n-1} := b^{2^{n-1}} \bmod N$ are pre-computed classically. These values are then used to implement controlled modular multipliers $\hat{U}_{\times\beta_j \% N}$, which conditionally multiply the result register by $\beta_j$ modulo $N$, depending on the bits of the input register.
+
 <LatexFigure width={75} src='/fig/quantum_modular_exponentiation_circuit.svg' alt='' tag='figure-9'
   caption='Quantum circuit $\hat{A}_{f_b, N}$ to implement the function $f_{b, N} (x) = b^x \bmod N}. Here we use the succint notation $\beta_j = b^{2^j} \bmod N$'
 >
