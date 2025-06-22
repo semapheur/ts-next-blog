@@ -58,7 +58,7 @@ export default function LatexFigure({
         src={src}
         width={`${width}%`}
       />
-      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
+      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(figure)_':_'] before:[counter-increment:figure]">
         {caption}
       </figcaption>
       {isHovered && (

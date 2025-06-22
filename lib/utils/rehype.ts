@@ -12,12 +12,14 @@ export function rehypeMathref(): Transformer<Root, Root> {
     criteria: 1,
     definition: 1,
     example: 1,
+    figure: 1,
     lemma: 1,
     observation: 1,
     property: 1,
     proposition: 1,
     proof: 1,
     remark: 1,
+    table: 1,
     theorem: 1,
   }
 
@@ -43,21 +45,28 @@ export function rehypeMathref(): Transformer<Root, Root> {
       }
     }
 
+    const mathElements = new Set(["MathBox", "LatexFigure", "TableFigure"])
+
     visit(root, "mdxJsxFlowElement", (node) => {
-      if (node.name !== "MathBox") return
+      if (!node.name || !mathElements.has(node.name)) return
 
-      let id = ""
-      let boxType = ""
-      for (const attribute of node.attributes) {
-        if (!("name" in attribute)) continue
+      const attributeMap = Object.fromEntries(
+        (node.attributes || [])
+          .filter((attr) => "name" in attr && "value" in attr)
+          // @ts-ignore
+          .map((attr) => [attr.name, attr.value]),
+      )
 
-        if (attribute.name === "boxType") {
-          boxType = attribute.value as string
-        }
-        if (attribute.name === "tag") {
-          id = attribute.value as string
-        }
-      }
+      const boxType =
+        attributeMap.boxType ??
+        (node.name === "LatexFigure"
+          ? "figure"
+          : node.name === "TableFigure"
+            ? "table"
+            : "")
+
+      const id = attributeMap.tag ?? ""
+
       if (!id || !(boxType in boxCount)) {
         if (boxType in boxCount) boxCount[boxType]++
         return
