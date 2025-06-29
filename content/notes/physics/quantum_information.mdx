@@ -5759,6 +5759,90 @@ $$
 </details>
 </MathBox>
 
+## Quantum Fourier transforms on groups
+
+<MathBox title='Quantum Fourier transform on a group' boxType='definition'>
+Let $G$ be a finite abelian group and $\hat{G}$ its dual group. Moreover, let $\mathcal{H}$ be a Hilbert space with $\dim(\mathcal{H}) = |G|$ that has an orthonormal basis $\set{\ket{g_j}}_{j=1}^{|G|}$ such that we can identify each element $g_j$ of $G$ with a basis vector, and that the same holds for another orthonormal basis $\set{\ket{\chi_k}}_{k=1}^{|G|}$ of $\mathcal{H}$ and the elements $\ket{\chi_k}$ of $\hat{G}$, that is
+
+$$
+\begin{align*}
+  \mathcal{H} =& \operatorname{span}\set{\ket{g_j}}_{g_j \in G} \\
+  =& \operatorname{span}\set{\ket{\chi_k}}_{\chi_k \in\hat{G}} \\
+\end{align*}
+$$
+
+with
+
+$$
+  \braket{g_j |g_k} = \delta_{jk} = \braket{\chi_j | \chi_k}
+$$
+
+Then the quantum Fourier transform on the group $G$ is the operator $\hat{F}_G : \mathcal{H} \to\mathcal{H}$ defined by
+
+$$
+\begin{equation*}
+  \hat{F}_G := \frac{1}{\sqrt{|G|}} \sum_{\substack{g\in G \\ \chi\in\hat{G}}} \chi(g) \ket{\chi} \bra{g}
+\tag{label{equation-129}}
+\end{equation*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $G$ be a finite group. The quantum Fourier transform over $G$, denoted $\hat{F}_G$, is a unitary operator.
+
+<details>
+<summary>Proof</summary>
+
+Taking the Hermitian adjoint of $\hat{F}_G$ gives
+
+$$
+\begin{align*}
+  \hat{F}_G^\dagger =& \left(\frac{1}{\sqrt{|G|}} \sum_{\substack{g\in G \\ \chi\in\hat{G}}} \chi(g)(\ket{\chi}\bra{g}) \right)^\dagger \\
+  =& \frac{1}{\sqrt{|G|}} \sum_{\substack{g\in G \\ \chi\in\hat{G}}} \chi(g)^* (\ket{\chi} \bra{g})^* \\
+  =& \frac{1}{\sqrt{|G|}} \sum_{\substack{g\in G \\ \chi\in\hat{G}}} \chi(g)^* \ket{g} \bra{\chi} \\
+  =& \frac{1}{\sqrt{|G|}} \sum_{\substack{g\in G \\ \chi\in\hat{G}}} \chi^{-1} (g) \ket{g} \bra{\chi}
+\end{align*}
+$$
+
+such that
+
+$$
+\begin{align*}
+  \hat{F}_G \hat{F}_G^\dagger =& \frac{1}{|G|} \sum_{\substack{g_1, g_2 \in G \\ \chi_1, \chi_2 \in\hat{G}}} \chi_1 (g_1) \chi_2^{-1} (g_2) \ket{\chi_1} \underbrace{\braket{g_1 |g_2}}_{\delta_{g_1 g_2}} \ket{\chi_2} \\
+  =& \frac{1}{|G|} \sum_{\chi_1, \chi_2 \in\hat{G}} \left(\sum_{g\in G} \chi_1 (g) \chi_2^{-1} (g) \right) \ket{\chi_1} \bra{\chi_2} \\
+  =& \sum_{x\in\hat{G}} \ket{\chi} \bra{\chi} = \operatorname{id}_{\mathcal{H}}
+\end{align*}
+$$
+
+</details>
+</MathBox>
+
+<MathBox title='' boxType='example'>
+Consider the group $G = \Z_{2^n}$ in which case
+
+$$
+\begin{align*}
+  G =& \Z_{2^n} = \Z / 2^n \Z = \set{[x]_{2^n \Z}}_{x=0}^{2^n - 1} \\
+  \hat{G} =& \Set{\array{\chi_y : G \to U(1) \\ [x]_{2^n \Z} \mapsto e^{i2\pi xy/2^n}}}_{y=0}^{2^n - 1}
+\end{align*}
+$$
+
+and $|G| = 2^n = |\hat{G}|$. Moreover, we can take $\mathcal{H} = {}^\P \mathcal{H}^{\otimes n}$, where ${}^\P \mathcal{H} \simeq \mathbb{C}^2$ is the qubit Hilbert space. If we assume that the idenfication of $\eqref{equation-}$ can be written in the form
+
+$$
+\begin{align*}
+  \ket{[x]_{2^n \Z}} =& \ket{x},\; \forall [x]_{2^n \Z} \in \Z_{2^n} \\
+  \ket{\chi_y} =& \ket{y},\; \forall \chi_y \in \widehat{\Z_{2^n}}
+\end{align*}
+$$
+
+then the quantum Fourier transform of $\Z_{2^n}$ becomes
+
+$$
+  \hat{F}_{\Z_{2^n}} = \frac{1}{\sqrt{2^n}} \sum_{x,y=0}^{2^n - 1} \exp\left(i2\pi \frac{xy}{2^n} \right) \ket{x}\bra{y}
+$$
+</MathBox>
+
 # Deutsch-Jozsa algorithm
 
 <MathBox title="Deutsch's problem" boxType='definition' tag='definition-10'>
@@ -6413,6 +6497,291 @@ This gives a relation between the number of qubits $n$, the desired presicion $t
 \end{document}
 ```
 </LatexFigure>
+
+# The Abelian hidden subgroup problem
+
+<MathBox title='' boxType='definition'>
+Let $H$ be a subgroup of the group $G$ and let $S$ be a finite set. A function $f: G\to S$ hides the subgroup $H$ if for any $g_1, g_2 \in G$
+
+$$
+  f(g_1) = f(g_2) \iff g_1^{-1} g_2 \in H
+$$
+</MathBox>
+
+<MathBox title='Hidden subgroup problem (HSP)' boxType='definition'>
+Let $f$ hide the subgroup $H$ of the group $G$. The problem to indentify $H$ with the help of $f$ is called the *hidden subgroup problem* (HSP). In case $G$ is a finite Abelian group it is called the *Abelian hidden subgroup problem* (AHSP).
+</MathBox>
+
+To solve abelian hidden subgroup problems using quantum algorithms, we consider a finite group $G$ with cardinality $|G|$. We define
+
+$$
+  n := \lceil \log_2 (|G|) \rceil
+$$
+
+and identify each element $g_l$ of $G$ with a vector $\ket{g_l}$ of the computational basis in a suitable Hilbert space ${}^\P \mathcal{H}^{\otimes n}$. In other words, we choose a subset of the computational basis states the elements of which are labeled by group elements
+
+$$
+  \set{\ket{g_1},\dots,\ket{g_{|G|}}} \subset \set{\ket{x}}_{x=0}^{2^n - 1} \subset {}^\P \mathcal{H}^{\otimes n}
+$$
+
+such that
+
+$$
+  \braket{g_l | g_k} = \delta_{lk}
+$$
+
+With the $\ket{g_l}$ chosen this way we define
+
+$$
+  \mathcal{H}^A := \operatorname{span}\set{\ket{g_1},\dots,\ket{g_{|G|}}} \subset {}^\P \mathcal{H}^{\otimes n}
+$$
+
+such that $\set{\ket{g_l}}_{l=1}^{|G|}$ form an orthonormal basis in $\mathcal{H}^A$.
+
+Furthermore, we define $m := |S|$ for the discrete and finite set $S$ used for hiding the subgroup $H < G$ by a function $f: G\to S$. We also assume that the set $S$ can be ordered and the we can identify each element $s_j \in S = {s_0,\dots,s_{|S| - 1}}$ with its index. We denote this identification by ${}^\sim$, giving a bijection ${}^\sim: S\to \set{0,\dots,|S|-1}$ by $s_j \mapsto j$ that identifies each element $s_j \in S$ with a computational basis vector
+
+$$
+  \ket{\tilde{s}_j} = \ket{j} \in {}^\P \mathcal{H}^{\otimes m} =: \mathcal{H}^B
+$$
+
+Hence, for any $g\in G$ we have $0 \leq \widetilde{f(g)} < 2^m$ and $\ket{\widetilde{f(g)}} \in \set{\ket{y}}_{y=0}^{2^m - 1}$.
+
+The first step in the quantum algorithm to solve the abelian hidden subgroup problem efficiently is then to prepare the initial state
+
+$$
+\begin{equation*}
+  \ket{\Psi_0} := \frac{1}{\sqrt{|G|}} \sum_{g\in G} \ket{g}^A \otimes \ket{0}^B \in \mathcal{H}^A \otimes \mathcal{H}^B
+\tag{\label{equation-128}}
+\end{equation*}
+$$
+
+The precise computational effort required to prepare $\ket{\Psi_0}$ depends on the group $G$ in question, but for the efficiency of a quantum algorithm to solve a given AHSP it suffices to assume a bound on the growths of the number of computational steps as follows.
+
+<MathBox title='AHSP assumption 1' boxType='assumption'>
+The number of steps $S_1$ required to prepare $\ket{Psi_0}$ as given in $\eqref{equation-128}$ satisfies
+
+$$
+\begin{equation*}
+  S_1 (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G| \to\infty
+\end{equation*}
+$$
+</MathBox>
+
+In the second step of the quantum algorithm to solve a given AHSP, we want to exploit massive quantum parallelism in order to evaluate $f$ on all of the group $G$ in one step. Hence, we make the following assumption.
+
+<MathBox title='AHSP assumption 2' boxType='assumption'>
+For $f: G\to S$ there exists an implementation of a unitary operator $\hat{U}_f$ defined by its action on the orthonormal basis
+
+$$
+  \set{\ket{g}\otimes\ket{y}| g\in G}_{y=0}^{2^m} \subset \mathcal{H}^A \otimes \mathcal{H}^B
+$$
+
+as
+
+$$
+\begin{align*}
+  \hat{U}_f : \mathcal{H}^A \otimes\mathcal{H}^B \to& \mathcal{H}^A \otimes\mathcal{H}^B \\
+  \ket{g}\otimes\ket{y} \mapsto& \ket{g} \otimes \ket{y \boxplus \widetilde{f(g)}}
+\end{align*}
+$$
+
+and the number of computational steps $S_2$ for the application of $\hat{U}_f$ satisfies
+
+$$
+  S_2 (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+</MathBox>
+
+The second step of the quantum AHSP algorithm is then the application of $\hat{U}_f$ to $\ket{\Psi_0}$ to produce
+
+$$
+\begin{align*}
+  \ket{\Psi_0} :=& \hat{U}_f \ket{\Psi_0} = \frac{1}{\sqrt{|G|}} \sum_{g\in G} \hat{U}_f (\ket{g}\otimes\ket{0}) \\
+  =& \frac{1}{\sqrt{|G|}} \sum_{g\in G} \ket{g}\otimes\ket{\widetilde{f(g)}} \in \mathcal{H}^A \otimes\mathcal{H}^B
+\end{align*}
+$$
+
+After the first two steps in the algorithm the composite system is in the pure state $\rho = \ket{\Psi_1}\bra{\Psi_1}$. We now ignore the sub-system $\mathcal{H}^B$ and only observe the sub-system $\mathcal{H}^A$. We then have to describe sub-system $\mathcal{H}^A$ by the mixed state
+
+$$
+  \rho^A = \operatorname{tr}^B (\rho) = \operatorname{tr}^B (\ket{\Psi_1}\bra{\Psi_1})
+$$
+
+where we have
+
+$$
+\begin{align*}
+  \ket{\Psi_1}\bra{\Psi_1} =& \frac{1}{|G|} \sum_{g,k \in G} \left(\ket{g} \otimes\ket{\widetilde{f(g)}}\right) \left(\bra{k} \otimes\bra{\widetilde{f(k)}} \right) \\
+  =& \frac{1}{|G|} \sum_{g, k \in G} \ket{g} \bra{k} \otimes \ket{\widetilde{f(g)}} \bra{\widetilde{f(k)}}
+\end{align*}
+$$
+
+The matrix elements of $\rho = \ket{\Psi_1} \bra{\Psi_1}$ in the orthonormal basis of $\mathcal{H}^A \otimes \mathcal{H}^B$ given in $\eqref{equation-}$ this are
+
+$$
+\begin{align*}
+  \rho_{gy,kz} =& \braket{g \otimes y | \Psi_1} \braket{\Psi_1 | k \otimes z} \\
+  =& \frac{1}{|G|} \braket{y|\widetilde{f(g)}} \braket{\widetilde{f(k)}|z}
+\end{align*}
+$$
+
+The matrix of $\rho^A$ in the orthonormal basis $\set{g}_{g\in G}$ of $\mathcal{H}^A$ is then given by
+
+$$
+\begin{align*}
+  \rho_{gk}^A =& \sum_y \rho_{gy, ky} = \frac{1}{|G|} \sum_{y=0}^{2^m - 1} \braket{y|\widetilde{f(g)}} \braket{\widetilde{f(k)}|y} \\
+  =& \frac{1}{|G|} \Braket{\widetilde{f(k)} | \sum_{y=0}^{2^m - 1} y} \braket{y | \widehat{f(g)}} = \frac{1}{|G|} \braket{\widetilde{f(k)}| \widehat{f(g)}}
+\end{align*}
+$$
+
+Since $\ket{\widetilde{f(g)}}$ and $\widehat{f(k)}$ are vectors of the computational basis in $\mathcal{H}^B$, they satisfy
+
+$$
+  \braket{\widetilde{f(k)} | \widetilde{f(g)}} = \begin{cases} 1,\quad& f(k) = f(g) \\ 0,\quad& f(k) \neq f(g)
+$$
+
+By Lemma $\ref{lemma-}$ since $f$ hides $H$, we have that $f(k) = f(g)$ if and only if $k$ and $g$ belong to the same left coset, that is, there is a $\check{g} \in G$ such that $k, g \in \check{g} H$. Since $G$ is assumed abelian, left and right cosets coincide and we use the notation $[\check{g}]_H$ to denote the coset which contains $\check{g} \in G$. Hence
+
+$$
+  \braket{\widetilde{f(k)} | \widetilde{f(g)}} =& \begin{cases} 1,\quad& \exists \check{g} \in G: g,k \in [\check{g}]_H \\ 0,\quad& \text{else}
+$$
+
+and since such cosets are elements of the quotient group $G/H$, the matrix element $\rho_{gk}^A$ in $\eqref{equation-}$ then becomes
+
+
+$$
+  \rho_{gk}^A = \frac{1}{|G|} \sum_{\substack{[\check{g}]_H \in G/H \\ : g,k \in [\check{g}]_H}} 1
+$$
+
+where the sum is over all cosets that contain $g$ and $k$. The sub-system $\mathcal{H}^A$ is then described by the mixed state
+
+$$
+\begin{align*}
+  \rho^A =& \sum_{g,k \in G} \ket{g} \rho_{gk}^A \bra{k} = \sum_{g,k \in G} \frac{1}{|G|} \sum_{\substack{[\check{g}]_H \in G/H \\ : g,k \in [\check{g}]_H}} \ket{g}\bra{k} \\
+  =& \frac{|H|}{|G|} \sum_{[\check{g}]_H \in G/H} \left(\frac{1}{\sqrt{|H|}} \sum_{g \in [\check{g}]_H} \ket{g} \right) \left(\frac{1}{\sqrt{|H|}} \sum_{k \in [\check{g}]_H} \bra{k} \right) 
+\end{align*}
+$$
+
+We can express $\rho^A$ more succintly by defining for any $g \in G$ what we might call the coset state
+
+$$
+  \ket{\Psi_{[g]_H}^A} := \frac{1}{\sqrt{|H|}} \sum_{k\in [g]_H} \ket{k}
+$$
+
+such that
+
+$$
+  \rho^A = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \ket{\Psi_{[g]_H}}^A \bra{\Psi_{[g]_H}}^A
+$$
+
+The next step in the algorithm is the application of the Fourier transform
+
+$$
+\begin{equation*}
+  \hat{F}_G = \frac{1}{\sqrt{|G|}} \sum_{g\in G} \sum_{\chi\in \hat{G}} \chi(g) \ket{\chi} \bra{g}
+\tag{\label{equation-130}}
+\end{equation*}
+$$
+
+where we make use of
+
+$$
+  \dim(\mathcal{H}^A) = |G| = |\hat{G}|
+$$
+
+and assume that we can identify each element of the dual group $\hat{G} = \set{\ket{\chi_j}}_{j=1}^{|G|}$ with a vector of the computational basis, such that
+
+$$
+  \set{\ket{\chi_j}}_{j=1}^{|\hat{G}|} = \set{\ket{g_k}}_{k=1}^{|G|} \subset \ket{\ket{x}}_{x=0}^{2^n - 1} \subset {}^\P \mathcal{H}^{\otimes n}
+$$
+
+and we have $F_G : \mathcal{H}^A \to \mathcal{H}^A$.
+
+Applying the Fourier transform $\eqref{equation-130}$ to the sub-system $\mathcal{H}^A$ transform the state of this sub-system as
+
+$$
+  \rho^A \mapsto \hat{F}_G \rho^A \hat{F}_G^\dagger
+$$
+
+<MathBox title='AHSP assumption 3' boxType='assumption'>
+The number $S_3$ of computational steps required to perm the state transformation $\rho^A \mapsto \hat{F}_G \rho^A \hat{F}_G^\dagger$ of sub-system $\mathcal{H}^A$ effected by the Fourier transform $\eqref{equation-130}$ satisfies
+
+$$
+  S_3 (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+</MathBox>
+
+The state of sub-system $\mathcal{H}^A$ after applying the Fourier transform is thus
+
+$$
+  \hat{F}_G \rho^A \hat{F}_G^\dagger = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \hat{F}_G \ket{\Psi_{[G]_H}^A} \bra{\Psi_{[g]_H}^A} \hat{F}_G^\dagger
+$$
+
+where
+
+$$
+\begin{align*}
+  \hat{F}_G \ket{\Psi_{[g]_H}^A} =& \frac{1}{\sqrt{|G|}} \sum_{\check{g}\in G} \sum_{\chi\in\hat{G}} \chi(\check{g}) \ket{\chi} \braket{\check{g} | \Psi_{[g]_H}} \\
+  =& \frac{1}{\sqrt{|G|\cdot|H|}} \sum_{\check{g} \in G} \sum_{\chi\in\hat{G}} \sum_{k\in [g]_H} \chi(\check{g}) \ket{\chi} \braket{\check{g}|k} \\
+  =& \frac{1}{\sqrt{|G|\cdot|H|}}sum_{\check{g}\in G} \sum_{\chi\in\hat{G}} \sum_{k\in [g]_H} \chi(\check{g}) \ket{\chi} \delta_{\check{g}, k} \\
+  =& \frac{1}{\sqrt{|G|\cdot|H|}} \sum_{\chi\in\hat{G}} \sum_{k\in [g]_H} \chi(k) \ket{\chi} \\
+  =& \frac{1}{\sqrt{|G|\cdot|H|}} \sum_{\chi\in\hat{G}} \sum_{h\in H} \chi(gh) \ket{\chi} \\
+  =& \frac{1}{\sqrt{|G|\cdot|H|}} \sum_{\chi\in\hat{G}} \sum_{h\in H} \chi(g) \chi(h) \ket{\chi} \\
+  =& \sqrt{\frac{|H|}{|G|}} \sum_{\chi\in H^\perp} \chi(g) \ket{\chi}
+\end{align*}
+$$
+
+such that the state of the sub-system $\mathcal{H}^A$ is eventually given by
+
+$$
+\begin{equation*}
+  \hat{F}_G \rho^A \hat{F}_G^\dagger = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \left(\sum_{\chi\in H^\perp} \chi(g) \ket{\chi} \right) \left(\sum_{\xi\in H^\perp} \xi(g)^\dagger \bra{\xi} \right)
+\tag{\label{equation-131}}
+\end{equation*}
+$$
+
+Now, let $\zeta\in H^\perp$ and let $\ket{\zeta}$ be the corresponding basis state in $\mathcal{H}^A$. Then $\hat{P}_\zeta = \ket{\zeta}\bra{\zeta}$ is the orthogonal projector onto that state. The probability to detect the state $\ket{\zeta}$ when observing system $\mathcal{H}^A$ prepared in the state $\hat{F}_G \rho^A \hat{F}_G^\dagger$ is
+
+$$
+  \operatorname{tr}(\ket{\zeta} \bra{\zeta} \hat{F}_G \rho^A \hat{F}_G^\dagger) = \sum_a \braket{e_a | \zeta} \braket{\zeta| \hat{F}_G \rho^A \hat{F}_G^\dagger e_a}
+$$
+
+where we have used an orthonormal basis $\set{e_a}$ in $\mathcal{H}^A$. Using $\eqref{equation-131}$, we thus obtain the probability
+
+$$
+\begin{align*}
+  &\sum_a \frac{|H|}{|G|} \sum_{[g]_H \in G/H} (\sum_{\chi\in H^\perp} \chi(g) \braket{e_a |\zeta} \underbrace{\zeta|\chi}_{=\delta_{\zeta\chi}}) \left(\sum_{\xi\in H^\perp} \xi(g)^* \braket{\xi|e_a} \right) \\
+  =& \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \sum_{\xi\in H^\perp} \left(\sum_a \braket{e_a |\zeta} \braket{\xi|e_a} \right) \zeta(g) \xi(g)^* \\
+  =& \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \sum_{\xi\in H^\perp} \underbrace{\braket{\xi|\zeta}}_{=\delta_{\xi\zeta}} \zeta(g) \xi(g)^* \\
+  =& \sum_{[g]_H \in G/H} \zeta(g) \zeta(g)^* = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} 1 = 1
+\end{align*}
+$$
+
+Consequently, when observing the sub-system $\mathcal{H}^A$ after the third step of our algorithm we will always find a state $\ket{\zeta}$ that corresponds to a character $\zeta\in H^\perp$.
+
+Re-running the three steps of the algorithm $L$ times, we can apply Corollary $\ref{corollary}$ to our observations of $\zeta_1,\dots,\zeta_L \in H^\perp$ to assert that
+
+$$
+  \Pr\set{\braket{\zeta_1,\dots,zeta_L} = H^\perp} \geq 1 - \frac{|H^\perp|}{2^L} = 1 - \frac{|G|}{2^L |H|}
+$$
+
+Hence, after
+
+$$
+  L \geq \log_2 \left(\frac{|G|}{\varepsilon |H|}\right)
+$$
+
+repetitions and observations, the probability that we have observed a generating set of $H^\perp$ is no less than $1 - \varepsilon$, that is
+
+$$
+  \Pr\set{\braket{\zeta_1,\dots,zeta_L} = H^\perp} \geq 1 - \epsilon
+$$
+
+Finally, it follows from Theorem $\ref{theorem-}$ that we can find the desired $H$ from the observed generating set by
+
+$$
+  H = \bigcap_{l=1}^L \operatorname{ker}(\zeta_l)
+$$
 
 # Shor factorization algorithm
 
