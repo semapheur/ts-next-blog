@@ -6500,12 +6500,42 @@ This gives a relation between the number of qubits $n$, the desired presicion $t
 
 # The Abelian hidden subgroup problem
 
-<MathBox title='' boxType='definition'>
+<MathBox title='Subgroup hiding function' boxType='definition' tag='definition-12'>
 Let $H$ be a subgroup of the group $G$ and let $S$ be a finite set. A function $f: G\to S$ hides the subgroup $H$ if for any $g_1, g_2 \in G$
 
 $$
   f(g_1) = f(g_2) \iff g_1^{-1} g_2 \in H
 $$
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-7'>
+Let $H\leq G$ be a subgroup of a finite group $G$, and let $f: G\to S$ be a function into a finite set $S$. Then $f$ hides $H$ if and only if
+
+$$
+  \forall g_1,g_2 \in G\; f(g_1) = f(g_2) \iff g_1 H = g_2 H
+$$
+
+In other words, $f$ is constant on the coset of $H$, and distinct cosets correspond to distinct function values.
+
+<details>
+<summary>Proof</summary>
+
+By Definition $\ref{definition-12}$, $f$ hides $H$ if and only if
+
+$$
+  \forall g_1, g_2 \in G\; f(g_1) = f(g_2) \iff g_1^{-1} g_2 \in H
+$$
+
+so that
+
+$$
+\begin{align*}
+  g_1^{-1} g_2 \in H \iff& \exists h \in H: g_1^{-1} g_2 = h \\
+  \iff& \exists h \in H: g_2 = g_1 h \\
+  \iff& \exists g_2 H = g_1 H
+\end{align*}
+$$
+</details>
 </MathBox>
 
 <MathBox title='Hidden subgroup problem (HSP)' boxType='definition'>
@@ -6579,10 +6609,13 @@ $$
 as
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \hat{U}_f : \mathcal{H}^A \otimes\mathcal{H}^B \to& \mathcal{H}^A \otimes\mathcal{H}^B \\
   \ket{g}\otimes\ket{y} \mapsto& \ket{g} \otimes \ket{y \boxplus \widetilde{f(g)}}
-\end{align*}
+\end{split}
+\tag{\label{equation-132}}
+\end{equation*}
 $$
 
 and the number of computational steps $S_2$ for the application of $\hat{U}_f$ satisfies
@@ -6640,7 +6673,7 @@ $$
   \braket{\widetilde{f(k)} | \widetilde{f(g)}} = \begin{cases} 1,\quad& f(k) = f(g) \\ 0,\quad& f(k) \neq f(g)
 $$
 
-By Lemma $\ref{lemma-}$ since $f$ hides $H$, we have that $f(k) = f(g)$ if and only if $k$ and $g$ belong to the same left coset, that is, there is a $\check{g} \in G$ such that $k, g \in \check{g} H$. Since $G$ is assumed abelian, left and right cosets coincide and we use the notation $[\check{g}]_H$ to denote the coset which contains $\check{g} \in G$. Hence
+By Lemma $\ref{lemma-7}$ since $f$ hides $H$, we have that $f(k) = f(g)$ if and only if $k$ and $g$ belong to the same left coset, that is, there is a $\check{g} \in G$ such that $k, g \in \check{g} H$. Since $G$ is assumed abelian, left and right cosets coincide and we use the notation $[\check{g}]_H$ to denote the coset which contains $\check{g} \in G$. Hence
 
 $$
   \braket{\widetilde{f(k)} | \widetilde{f(g)}} =& \begin{cases} 1,\quad& \exists \check{g} \in G: g,k \in [\check{g}]_H \\ 0,\quad& \text{else}
@@ -6673,6 +6706,55 @@ such that
 $$
   \rho^A = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \ket{\Psi_{[g]_H}}^A \bra{\Psi_{[g]_H}}^A
 $$
+
+Here $\ket{\Psi_{[g]_H}^A}$ satisfies
+
+$$
+  \braket{\Psi_{[g_1]_H}^A | \Psi_{[g_2]_H}^A} = \begin{cases}
+    1,\quad& [g_1]_H = [g_2]_H \\
+    0,\quad& [g_1]_H \neq [g_2]_H
+  \end{cases}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For any $g_1, g_2 \in G$ we have
+
+$$
+\begin{equation*}
+\begin{split}
+  \braket{\Psi_{[g_1]_H}^A | \Psi_{[g_2]_H}^A} =& \frac{1}{|H|} \sum_{k_1 \in [g_1]_H} \sum_{k_2 \in [g_2]_H} \braket{k_1 | k_2} \\
+  =& \frac{1}{|H|} \sum_{k_1 \in [g_1]_H} \sum_{k_2 \in [g_2]_H} \delta_{k_1, k_2}
+\end{split}
+\tag{\label{equation-134}}
+\end{equation*}
+$$
+
+We know that two cosets $[g_1]_H$ and $[g_2]_H$ are either identical of disjoint, such that
+
+$$
+\begin{equation*}
+\begin{split}
+  \sum_{k_1 \in [g_1]_H} \sum_{k_2 \in [g_2]_H} \delta_{k_1, k_2} =& \begin{cases}
+    \sum_{k_1, k_2 \in [g_1]_H} \delta_{k_1, k_2},\quad& [g_1]_H = [g_2]_H \\
+    0,\quad& [g_1]_H \neq [g_2]_H \\
+  \end{cases} \\
+  =& \begin{cases}
+    \sum_{k \in [g_1]_H} 1,\quad& [g_1]_H = [g_2]_H \\
+    0,\quad& [g_1]_H \neq [g_2]_H \\
+  \end{cases} \\
+  =& \begin{cases}
+    |H|,\quad& [g_1]_H = [g_2]_H \\
+    0,\quad& [g_1]_H \neq [g_2]_H \\
+  \end{cases}
+\end{split}
+\tag{\label{equation-135}}
+\end{equation*}
+$$
+
+Inserting $\eqref{equation-135}$ into $\eqref{equation-134}$ yields the claim.
+</details>
 
 The next step in the algorithm is the application of the Fourier transform
 
@@ -6782,6 +6864,119 @@ Finally, it follows from Theorem $\ref{theorem-}$ that we can find the desired $
 $$
   H = \bigcap_{l=1}^L \operatorname{ker}(\zeta_l)
 $$
+
+<MathBox title='AHSP algorithm' boxType='algorithm'>
+**Input:** A finite Abelian group $G$ and a function $f: G\to S$ that hides a subgroup $H \leq G$.
+
+**Step 1:** In $\mathcal{H}^A \otimes\mathcal{H}^B$, where
+
+$$
+  \mathcal{H}^A = \operatorname{span}\set{\ket{g_j}}_{j=1}^{|G|} \subset {}^\P \mathcal{H}^{\otimes n}
+$$
+
+with $n = \lceil \log_2 (|G|) \rceil$ and $\mathcal{H}^B = {}^\P \mathcal{H}^{\otimes m}$, and with $m = \lceil \log_2 (|S|) \rceil$, prepare the initial state
+
+$$
+  \ket{\Psi_0} = \frac{1}{\sqrt{|G|}} \sum_{g\in G} \ket{x}\otimes\ket{0} \in \mathcal{H}^A \otimes\mathcal{H}^B
+$$
+
+The computational effort required for this step is assumed to satisfy
+
+$$
+  S_\text{AHSP Step 1} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+
+**Step 2:** Apply $\hat{U}_f$ of $\eqref{equation-132}$ to $\ket{\Psi_0}$, yielding
+
+$$
+  \ket{\Psi_1} = \hat{U}_f \ket{\Psi_0} = \frac{1}{\sqrt{|G|}} \sum_{g\in G} \ket{g}\otimes\ket{\widetilde{f(g)}} \in \mathcal{H}^A \otimes \mathcal{H}^B
+$$
+
+The computational effort required for this step is assumed to satisfy
+
+$$
+  S_\text{AHSP Step 2} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+
+**Step 3:** Consider only sub-system $\mathcal{H}^A$, which when disregarding sub-system $\mathcal{H}^B$ will be in the mixed state
+
+$$
+  \rho^A = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \ket{\Psi_{[g]_H}}^A \bra{\Psi_{[g]_H}}^A
+$$
+
+where
+
+$$
+  \ket{\Psi_{[g]_H}}^A := \frac{1}{\sqrt{|H|}} \sum_{h\in H} \ket{gh}
+$$
+
+On this sub-system perform the quantum Fourier transform $\hat{F}_G$ to transform sub-system $\mathcal{H}^A$ into the state
+
+$$
+  \hat{F}_G \rho^A \hat{F}_G^\dagger = \frac{|H|}{|G|} \sum_{[g]_H \in G/H} \left(\sum_{\chi\in H^\perp} \chi(g) \ket{\chi} \right) \left(\sum_{\xi\in H^\perp} \xi(g)^\dagger \bra{\xi} \right)
+$$
+
+The computational effort required for this step is assumed to satisfy
+
+$$
+  S_\text{AHSP Step 3} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+
+**Step 4:** Observed the sub-system $\mathcal{H}^A$ to detect a $\zeta\in H^\perp$ with certainty. The computational effort required for this step is assumed to satisfy
+
+$$
+  S_\text{AHSP Step 4} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+
+**Step 5:** Repeat Steps 1-4 for
+
+$$
+  L \geq \log_2 \left(\frac{|G|}{\epsilon |H|})
+$$
+
+times to obtain characters $\zeta_1,\dots,\zeta_L \in H^\perp$ and from this
+
+$$
+  H = \bigcap_{l=1}^L \operatorname{ker}(\zeta_l)
+$$
+
+The computational effort required for this step is assumed to satisfy
+
+$$
+  S_\text{AHSP Step 5} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+
+**Output:**
+
+$$
+  H = \bigcap_{l=1}^L \operatorname{ker}(\zeta_l)
+$$
+
+with success probability at least $1 - \epsilon$.
+
+The total computational effort for the AHSP algorithm grows as function of $|G|$ as
+
+$$
+  S_\text{AHSP} (|G|) = \sum_{j=1}^5 S_{\text{AHSP Step } j} (|G|) \in \operatorname{poly}(\log_2 (|G|)),\; |G|\to\infty
+$$
+</MathBox>
+
+## Discrete logarithm problem (DLP)
+
+<MathBox title='Discrete logarithm problem (DLP)' boxType='definition'>
+Let $G$ be a group and $g, h\in G$ such that there exists $d\in\N_0$ such that
+
+$$
+\begin{equation*}
+  h = g^d
+\tag{\label{equation-133}}
+\end{equation*}
+$$
+
+Then $d$ is called the *discrete logarithm* of $h$ to base $g$, and this is expressed by the notation $d = \operatorname{dlog}_g (h)$.
+
+The task to find $d$ when only $g$ and $h$ satisfying $\eqref{equation-133}$ are known, is called the *discrete logarithm problem* (DLP).
+</MathBox>
 
 # Shor factorization algorithm
 
