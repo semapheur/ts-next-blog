@@ -6978,6 +6978,92 @@ Then $d$ is called the *discrete logarithm* of $h$ to base $g$, and this is expr
 The task to find $d$ when only $g$ and $h$ satisfying $\eqref{equation-133}$ are known, is called the *discrete logarithm problem* (DLP).
 </MathBox>
 
+Discrete logarithm are used in cryptography. For a given group element $g\in G$ and a number $d \in\N_0$, computing $h = g^d$ is straightforward as it involves the product of $g$ with itself $d$ times. However, given only $g$ and $h$, determining the exponent $d$ is generally computationally hard. This asymmetry allows the secure publication of $g$ and $h$ without revealing $\operatorname{dlog}_g (h)$. This principle is used in the Diffie-Hellman public key cryptographic protocol.
+
+<TableFigure caption="Diffie-Hellman cryptographic protocol" tag='table-2'>
+| Alice | Bob | Public knows |
+| --- | --- | --- |
+| mutually agree a $g\in G$ | mutually agree a $g\in G$ | $g$ |
+| selects $a\in\N_+$, calculates $A = g^a$ and sends $A$ to Bob | selects $b\in\N+$, calculates $B = g^b$ and sends $B$ to Alice | $A,B$ |
+| calculates the shared but secret key $K = B^a = g^{ab}$ | calculates the shared by secret key $K = A^b = g^{ab}$ | |
+</TableFigure>
+
+At the end of the protocol in Table $\ref{table-2}$, Alice and Bob share a secret key $K$. If, however, calculcating the discrete logarithm were feasible for Eve, her knowledge of $A$, $B$ and $g$ would allow her to compute $a = \operatorname{dlog}_g (A)$ and this the key $K = B^a$ as well.
+
+The discrete logarithm problem can be formulated as an Abelian hidden subgroup problem for a suitably chosen group, set and function. Thus, a working quantum computer on which the AHSP algorithm is implemented would potentially render the Diffie-Hellman cryptographic protocols insecure.
+
+The DLP that we solve with the help of the AHSP algorithm is as follows:
+
+**Given:**
+1. a group $G_\text{DLP}$ and an element $g\in G_\text{DLP}$ with order $N = \operatorname{ord}(g)$, that is $N\i\N_+$ is the smallest number satisfying
+
+$$
+\begin{equation*}
+  g^N = e_{G_\text{DLP}}
+\tag{\label{equation-136}}
+\end{equation*}
+$$
+
+2. An $h\in G_\text{DLP}$ such that for sime unknown $d\in\N_+$
+
+$$
+  h = g^d
+$$
+
+**Find:** $d = \operatorname{dlog}_g (h)$.
+
+To find $d$, we set up a suitable AHSP and then execute the algorithm to solve it. The group $G$ of the AHSP is not the same as the group $G_\text{DLP}$ in which we want to find the discrete logarithm. Rather, it is given as the direct product group of the quotient group $\Z_N$, that is, we set
+
+$$
+  G := \Z_N \times \Z_N
+$$
+
+where $N$ is as given in $eqref{equation-136}$. It follows that $|\Z_N | = N$ so that $|G| = N^2$. Any alement $g\in G$ is this of the form $g = ([x]_{N\Z}, [y]_{N\Z})$, where $[x]_{N\Z}$ and $[y]_{N\Z}$ are cosets in $\Z_N = \Z / N\Z$. We know that for these cosets $[x]_{N\Z} = [x \bmod N]_{N\Z}$. We use this to represent the elements of $G$ as vectors in the Hilbert space $\mathcal{H}^A$ given in $\eqref{equation-}$ in the form
+
+$$
+  \ket{g} = \ket{([x]_{N\Z}, [y]_{N\Z})} = \ket{x \bmod N} \otimes \ket{y \bmod N}
+$$
+
+and thus
+
+$$
+  \mathcal{H}^A = \operatorname{span}\set{\ket{u} \otimes\ket{v}}_{u,v=0}^{N-1}
+$$
+
+As the set $S$ in the AHSP, we choose
+
+$$
+  S := \braket{g} \leq G_\text{DLP}
+$$
+
+which in itself is a cyclic group of order $N$.
+
+The function $f:G\to S$ of the AHSP is given by
+
+$$
+  ([x]_{N\Z}, [y]_{N\Z}) \mapsto h^x g^y
+$$
+
+where $[x]_{N\Z}$, $[y]_{N\Z}$ denote the cosets in the quotient group $\Z_N = \Z / N\Z$ and $h, g\in G_\text{DLP}$ are as given in $\eqref{equation-}$. Since $h = g^d$, we find
+
+$$
+  f([x]_{N\Z}, [y]_{N\Z}) = (g^d)^x g^y = g^{dx + y} \in\braket{g}
+$$
+
+To determine the subgroup hidden by $f$, note that we have for any $([x]_{N\Z}, [y]_{N\Z}) \in G$ and $([u]_{N\Z}, [v]_{N\Z})\in G$
+
+$$
+\begin{align*}
+  & f\left(([x]_{N\Z}, [y]_{N\Z}) +_G ([u]_{N\Z}, [v]_{N\Z}) \right) = f([x]_{N\Z}, [y]_{N\Z}) \\
+  \iff& f([x + u]_{N\Z}, [y + v]_{N\Z}) = f([x]_{N\Z}, [y]_{N\Z}) \\
+  \iff& g^{d(x + u) + y + v} = g^{dx + y} \\
+  \iff& g^{du + v} = e_G \\
+  \iff& (du + v) \bmod N = 0 \\
+  \iff& [du + v]_{N\Z} = [0]_{N\Z} \\
+  \iff& [v]_{N\Z} = [-du]_{N\Z}
+\end{align*}
+$$
+
 # Shor factorization algorithm
 
 <MathBox title='Period of arithmetic functions' boxType='definition'>
