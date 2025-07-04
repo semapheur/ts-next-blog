@@ -7327,6 +7327,239 @@ This shows that the AHSP algorithm can be used to solve the DLP.
 
 ## Digital signature algorithm (DSA)
 
+*Digital signature algorithms* (DSA) are cryptographic protocols by which a signer can authenticate a publicly known document and provide the public with a means to verify the authentication.
+
+<TableFigure caption="Digital signature algorithm protocol" tag='table-3'>
+| Signer | Public knows |
+| --- | --- |
+| | algorithm parameters $A$</br>verification statement $v$ |
+| chooses a private key $k$</br>creates a public verification key by</br>computing a V = V(k,A) | verification key $V$ |
+| signs document by</br>taking document $d$,</br>computing a signature $s(d,A)$</br>computing a signature $s(d,A) $</br>and publishing it | signature $s$</br>and can verify by</br>checking the verification statement</br>$v(s,d,V,A) = \text{TRUE}$ |
+</TableFigure>
+
+The security of this protocol relies on the the difficulty with which the secret private key $k$ can be obtained from the knowledge of public verification key $V = V(k, A)$ and the publicly known algorithm parameters.
+
+If $k$ could be found by a fraudster, he could publish altered or new documents with a valid signature by the signer and the public would be made to believe that these documents were authenticated by the signer.
+
+A widely used version of such a DSA is based on the difficulty to find discrete logarithms for elements of elliptic curves. This is known as the *Elliptic Curve Digital Signature Algorithm* (ECDSA), and a version of it is used for creating the digital signature of transactions conducted with cryptocurrencies.
+
+With the help of a suitably chosen elliptic curve, the ECDSA provides a document authentication protocol for a document in the public domain. Prior to input into the ECDSA these documents are standardized by a so-called *hash function*. Such hash functions deterministically map input of arbitrary length to output of fixed bitstring lenght. For cryptographic purposes it is desirable that small changes in input produce significant chanes in output and that it is extremely improbable that two distinct inputs produce identical output.
+
+<MathBox title='Bitcoin signature' boxType='example'>
+An example of a hash function developed by the National Security Agency (NSA) is the *Secure Hashing Algorithm* SHA256 that converts any ASCII into a $64$ digit hexadecimal string. Such a $64$ digit hexadecimal string can be interpreted as a $256$-bit natural number $d$.
+</MathBox>
+
+The hash functions used for pre-processing the documents are part of the algorithm specification of the ECDSA in the public domain, and we may this assume that the document to be signed is given as a positive integer not exceeding a known upper bound, such as $N = 2^{256}$ in the case of SHA256.
+
+ECDSAs are usually based on elliptic curves $E(\mathbb{F}_p)$ for which $p$ is a large prime. For a prime $p$ the elliptic curve $E(\mathbb{F}_p)$ over the finite field $\mathbb{F}_p = \Z/p\Z$ together with the addition $+_E$ forms a finite Abelian group such that we can define addition of two pointss $P,Q \in E(\mathbb{F}_p)$. In particular, we can add $P$ to itself $k\in\N_+$ times to obtain
+
+$$
+  kP = \underbrace{P +_E \cdots +_E P}_{k \text{ times}}
+$$
+
+In addition to the hash function, the protocol for ECDSA then requires the specification of five publicly known parameters $A = (p, A, B, P, q)$ consisting of the following items.
+
+**ECDSA Parameters $(p, A, B, P, q)$ in the Public Domain**
+
+1. A prime $p$ specifying the finite field $\mathbb{F}_p$
+2. Two elements $A, B \in\mathbb{F}_p$ specifying the Weierstrass equation
+$$
+  y^2 = x^3 + Ax + B
+$$
+of the elliptic curve $E(\mathbb{F}_p)$. This is an equation in the finite field $\mathbb{F}_p$. The underlying set of $\mathbb{F}_p$ consists of cosets in $\Z / p\Z \cong \Z_p$. We know that any such coset (or equivalently element in $\Z_p$) can be uniquely identified with a number in $\set{0,\dots,p-1}$. Hence, we consider $A$ and $B$ and the components $x$ and $y$ of elements $P = (x,y) \in E(\mathbb{F}_p) \setminus\set{0_E}$ as elements of the set $\set{0,\dots,p-1}$
+
+3. An element
+$$
+  P = (x_P, y_P) \in E(\mathbb{F}_p) \setminus\set{0_E} \subset \mathbb{F}_p \times \mathbb{F}_p
+$$
+which is often called the base point of the ECDSA.
+
+4. The element $P$ is chosen such that is has prime order, i.e.
+$$
+  q = \operatorname{ord}(P) := \min\set{n\in\N_+ | nP = 0_E \in E(\mathbb{F}_p)}
+$$
+is a publicly known prime.
+
+Given a document $d$ in the appropriate format, the process steps of ECDSA can then be divided into the three sections Public Key Generation, Signature Generation and Verification as follows.
+
+**ECDSA Public Key Generation**
+
+1. Select a private key
+$$
+  k\in\set{1,\dots,q-1} \subset\N_+
+$$
+
+2. Compute the verification key
+$$
+  V = kP \in E(\mathbb{F}_p) \setminus\set{0_E}
+$$
+Note that $V \neq 0_E$ since $k < q$, and $q$ is the smallest number such that $qP = 0_E$.
+
+3. Publish the verification key $V \in E(\mathbb{F}_p) \setminus\set{0_E}$
+
+**ECDSA Signature Generation**
+
+1. Select a natural number
+$$
+  a \in\set{0,\dots,q-1}
+$$
+
+2. Compute
+$$
+  aP = (x_{aP}, y_{aP}) \in E(\mathbb{F}_p) \setminus\set{0_E}
+$$
+
+3. Compute
+$$
+\begin{equation*}
+  s_1 = x_{aP} \bmod q \in\set{0,\dots,q-1}
+\tag{\label{equation-155}}
+\end{equation*}
+$$
+
+4. If $s_1 = 0$, go back to Step $1$ of the signature generation and select a new $a\in\set{1,\dots,q-1}$. If $s_1 \neq 0$, calculate the multiplicative inverse $a$ modulo $q$
+$$
+  \hat{a} = a^{-1} \bmod q \in\set{1,\dots,q-1}
+$$
+that is, the number $\hat{a}$ such that $a\hat{a} \bmod q = 1$. Note that since $a\in\set{0,\dots,q-1}$ and $q$ is a prime, we always have $\gcd(a,q) = 1$ and the multiplicative inverse exists.
+
+With $\hat{a}$ compute
+$$
+  s_2 = ((d + ks_1)\hat{a}) \bmod q\in\set{0,\dots,q-1}
+$$
+
+5. If $s_2 = 0$, go back to Step $1$ of the signature generation and select a new $a\in\set{0,\dots,q-1}$. Else, set the signature as
+$$
+  (s_1, s_2) \in \set{1,\dots,q-1}\times\set{1,\dots,q-1}
+$$
+
+6. Publish the signature $(s_1, s_2)$
+
+<MathBox title='Bitcoin signature' boxType='example'>
+Let $(p, A, B, P, q)$ be parameters of an ECDSA with elliptic curve $E(\mathbb{F}_p)$, let $d\in\N_0$ be the document to be signed, and let $k, V, a, \hat{a}, s_1, s_2$ be as given in the ECDSA public key and signature generation. With
+
+$$
+\begin{align*}
+  \hat{s}_2 =& s_2^{-1}\bmod q \\
+  u_1 =& d\hat{s}_2 \bmod q \\
+  u_2 =& s_1 \hat{s}_2 \bmod q
+\end{align*}
+$$
+
+it then follows that
+
+$$
+\begin{align*}
+  u_1 P + u_2 V = aP
+\end{align*}
+$$
+
+and thus for $(x, y) = u_1 P + u_2 V$ that
+
+$$
+\begin{equation*}
+  x\bmod q = s_1
+\tag{\label{equation-153}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Recall that for any $b\in\Z$ there is a $z\in\Z$ such that $b = b \bmod q + zq$ and thus
+
+$$
+  bP = (b\bmod q) P + zqP = (b \bmod q) P
+$$
+
+Next, we have
+
+$$
+\begin{align*}
+  u_1 P + u_2 V =& u_1 P + u_2 kP \\
+  =& (u_1 + u_2 k)P \\
+  =& ((u_1 + u_2 k) \bmod q) P \tag{\label{equation-154}}
+\end{align*}
+$$
+
+The coefficients of $P$ in the last equation of $\eqref{equation-154}$ can be evaluated as follows
+
+$$
+\begin{align*}
+  (u_1 + u_2 k) \bmod q =& (d \hat{s}_2 \bmod q + (s_1 \hat{s}_2 \bmod q)k) \bmod q \\
+  =& ((d + s_1 k) \hat{s}_2) \bmod q \\
+  =& ((d + s_1 k)((d + s_1 k) \hat{a})^{-1} \bmod q) \bmod q \\
+  =& \hat{a}^{-1} \bmod q = a \bmod q \\
+  =& a
+\end{align*}
+$$
+
+which, inserted into $\eqref{equation-154}$, shows that $u_1 P + u_2 V = aP$. This in turn implies that
+
+$$
+\begin{align*}
+  (x_{aP}, y_{aP}) = aP = u_1 P + u_2 V = (x, y)
+\end{align*}
+$$
+
+such that the claim $\eqref{equation-153}$ follows immediately from $\eqref{equation-155}$.
+</details>
+</MathBox>
+
+Note that the left side of $\eqref{equation-153}$ can be calculated from the publicly available information $p, A, B, P, q, V, d, s_1, s_2$ and the right side $s_1$ is also publicly known. Hence, the veracity of $\eqref{equation-153}$ can be verified with the help of publicly available information and it constitutes the verification statement.
+
+**ECDSA verification**
+
+1. Compute
+$$
+\begin{align*}
+  \hat{s}_2 =& s_2^{-1} \bmod q \\
+  u_1 =& d \hat{s}_2 \bmod q \\
+  u_2 =& s_1 \hat{s}_2 \bmod q
+\end{align*}
+$$
+and with these calculate
+$$
+  (x, y) = u_1 P + u_2 V
+$$
+
+2. Check if
+$$
+  x \bmod q \overset{?}{=} s_1
+$$
+is true. If it is, then $(s_1, s_2)$ constitutes a valid signature of the document $d$. Otherwise, it does not.
+
+<MathBox title='Bitcoin signature' boxType='example'>
+Bitcoins use the *secp256k1* ECDSA protocol with the Weierstrass equation defined by $A = 0$ and $B = 7$, that is
+
+$$
+  y^2 = x^3 + 7
+$$
+
+the prime
+
+$$
+  p = 2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1
+$$
+
+and the public point $P = (x_P, y_P)$ given by
+
+$$
+\begin{align*}
+  x_P =& 55066263022277343669578718895168534326250603453777594175500187360389116729240
+  y_P =& 32670510020758816978083085130507043184471273380659243275938904335757337482424
+\end{align*}
+$$
+
+The best known classical method to calculate $k = \operatorname{dlog}_p (V)$ for $E(\mathbb{F}_p)$ requires $O(\sqrt{p})$ computational steps and thus for the bitcoin ECDSA of the order of $O(10^{77})$ computational steps. In contrast, a quantum computer could potentially calculate $k = \operatorname{dlog}_p (V)$ for $E(\mathbb{F}_p)$ requiring only
+
+$$
+  O(\operatorname{poly}(\log_2 (p))) = O(\operatorname{poly}(256))
+$$
+
+computational steps and thus render the bitcoin signature insecure.
+</MathBox>
+
 
 
 # Shor factorization algorithm
