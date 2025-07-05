@@ -7,11 +7,37 @@ showToc: true
 # Group 
 
 <MathBox title='Group' boxType='definition'>
-A group is a non-empty set $G$ and a binary operation $*: G \times G \to G$, written as the pair $(G, *)$, with the properties
-- $a, b\in G \implies a * b \in G$ **(closure)**
-- $(a * b) * c = a * (b * c) \in G, \; \forall a,b,c\in\mathbb{G}$ **(associativity)**
-- $\exists e\in G : a * e = e * a = a, \; \forall a\in G$ **(existence of an identity/neutral element)**
-- $\forall a\in G,\; \exists g^{-1}\in G : g * g^{-1} = e$ **(existence of inverse elements)**
+A group $(G, *)$ is a non-empty set $G$ equipped with a binary operation $*: G \times G \to G$ by 
+
+$$
+  (g,h) \mapsto g*h =: gh
+$$
+
+satisfying the axioms:
+- **Closure:** $a, b\in G \implies a * b \in G$
+- **Associativity:**
+$$
+\begin{equation*}
+  (a * b) * c = a * (b * c) \in G, \; \forall a,b,c\in\mathbb{G}
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+- **Existence of an identity/neutral element:** There exists $e\in G$ such that for every $g\in G$
+$$
+\begin{equation*}
+  g * e = e * g = g, \; \forall g\in G
+\tag{\label{equation-7}}
+\end{equation*}
+$$ 
+
+- **Existence of inverses:** For each $g\in G$ there exists $g^{-1}\in G$ called the inverse of $g$, which has the property
+$$
+\begin{equation*}
+  g * g^{-1} = e
+\tag{\label{equation-8}}
+\end{equation*}
+$$
 
 A group $(G, *)$ is *Abelian* or *commutative* if $*$ also satisfies 
 - $a * b = b * a$ for all $a,b \in G$ **(commutativity)** 
@@ -19,6 +45,8 @@ A group $(G, *)$ is *Abelian* or *commutative* if $*$ also satisfies
 Note that the closure property follows implicitly from the fact that $*$ is a binary operation on $G$, and is thus sometimes not listed as a group axiom. The group operation is usually referred to as *(group) multiplication*, in which case the operation of two group elements is called a *product*. The group operation $*$ is also usually denoted by $\circ$ or $\cdot$. To simplify notation, it is common to omit the group operation symbol.
 
 If the group operation is addition, the group is called *additive* and the inverse of $a$ is the negative $-a$. Similarly, if the group operation is multiplication, the group is called *multiplicative* and the inverse of $a$ is denoted $a^{-1}$.
+
+A group $(G, *)$ is *discrete* if its underlying set $G$ is countable. Otherwise if $G$ is uncountable the group is *continuous*. Furthermore, if $G$ is equipped with a smooth manifold structure such that the group operations are smooth maps, then the group is a *Lie group*.
 
 <details>
 <summary>Details</summary>
@@ -36,62 +64,243 @@ Conversely, if $G$ is finite, cancellation laws imply the existence of inverse e
 </details>
 </MathBox>
 
-<MathBox title='The identity element is its own inverse' boxType='proposition' tag='proposition-1'>
-If $(G, *)$ is a group with identity element $e$ and $a\in G$, then $a*a = a$ implies $a = e$.
+<MathBox title='Uniqueness of group identity and inverses' boxType='proposition' tag='proposition-1'>
+The unit element $e\in G$ of a group $(G,*)$ is unique, and for any $g\in G$ its inverse $g^{-1}$ is also unique.
 
 <details>
 <summary>Proof</summary>
 
-Let $b\in G$ be such that $b*a = e$. Then $b*(a*a) = b*a$ and thus
+**Uniqueness of group identity**
+
+Suppose there is an identity element $\tilde{e} \in G$ such that for every $g \in G$ we have
 
 $$
-  a = e*a = (b*a)*a = b*(a*a) = b*a = e
+\begin{align*}
+  g\tilde{e} =& g \tag{\label{equation-1}} \\
+  gg^{-1} =& \tilde{e} \tag{\label{equation-2}}
+\end{align*}
+$$
+
+This implies
+
+$$
+\begin{align*}
+  g^{-1} \tilde{e} \underbrace{=}_{\eqref{equation-1}} g^{-1} \implies& gg^{-1} \tilde{e} \underbrace{=}_{\eqref{equation-8}} gg^{-1} = e \\
+  \implies& e \underbrace{=}_{\eqref{equation-2}} \tilde{e}\tilde{e} \underbrace{=}_{\eqref{equation-1}} \tilde{e}
+\end{align*}
+$$
+
+showing that $e$ is unique.
+
+**Uniqueness of group inverses**
+
+Suppose $h_1$ and $h_2$ are two inverses of $g\in G$, i.e.
+
+$$
+\begin{align*}
+  gh_1 = e = gh_2
+\tag{\label{equation-3}}
+\end{align*}
+$$
+
+Then it follows for $i\in\set{1,2}$ that
+
+$$
+\begin{equation*}
+  g \underbrace{=}_{\eqref{equation-7}} ge \underbrace{=}_{\eqref{equation-8}} gh_i h_i^{-1} \underbrace{=}_{\eqref{equation-3}} = eh_i^{-1}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+and thus
+
+$$
+  h_i g \underbrace{=}_{\eqref{equation-4}} = h_i eh^{-1} \underbrace{=}_{\eqref{equation-7}} h_i h_i^{-1} \underbrace{=}_{\eqref{equation-8}} e
+$$
+
+Consequently, we also have
+
+$$
+\begin{equation*}
+  h_1 g = e = h_2 g
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+which finally implies
+
+$$
+\begin{align*}
+  h_1 \underbrace{=}_{\eqref{equation-7}}& h_1 e \underbrace{=}_{\eqref{equation-8}} h_1 gg^{1} \\
+  \underbrace{=}_{\eqref{equation-5}}& h_2 gg^{-1} \underbrace{=}_{\eqref{equation-8}} h_2 e \\
+  \underbrace{=}_{\eqref{equation-7}}& h_2
+\end{align*}
+$$
+
+</details>
+</MathBox>
+
+<MathBox title='Properties of group inverses' boxType='proposition'>
+Let $(G,*)$ be a group with unit element $e$. Then
+1. 
+$$
+\begin{equation*}
+  e^{-1} = e
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+and for all $a,b \in G$
+2.
+$$
+\begin{equation*}
+  (a*b)^{-1} = b^{-1} * a^{-1}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+3. 
+$$
+\begin{equation*}
+  (a^{-1})^{-1} = g
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+4. 
+$$
+\begin{equation*}
+  b = a \iff b^{-1} = a^{-1}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** From $\eqref{equation-7}$ we have for $g = e$ that $ee = e$ and from $\eqref{equation-8}$ we see that then $e = e^{-1}$.
+
+**(2):** By associativity we obtain
+
+$$
+\begin{align*}
+  ab (b^{-1} a^{-1}) =& abb^{-1} a^{-1} \underbrace{=}_{\eqref{equation-8}} aea^{-1} \\
+  \underbrace{=}_{\eqref{equation-7}}& aa^{-1} \underbrace{=}_{\eqref{equation-8}} e
+\end{align*}
+$$
+
+**(3):** Note that $\eqref{equation-8}$ implies $e = g^{-1} (g^{-1})^{-1}$. Multiplying both sides with $g$ and using that, because of $\eqref{equation-7}$, we have on the left side $ge = g$, we obtain
+
+$$
+\begin{align*}
+  g =& gg^{-1} (g^{-1})^{-1} \underbrace{=}_{\eqref{equation-8}} e(g^{-1})^{-1} \underbrace{=}_{\eqref{equation-9}} e^{-1} (g^{-1})^{-1} \\
+  \underbrace{=}_{\eqref{equation-10}}& (g^{-1} e)^{-1} \underbrace{=}_{\eqref{equation-7}} (g^{-1})^{-1}
+\end{align*}
+$$
+
+**(4):** We have
+
+$$
+\begin{align*}
+  h = g \implies& hg^{-1} = gg^{-1} \underbrace{=}_{\eqref{equation-8}} e \\
+  \underbrace{\implies}_{\eqref{equation-8}}& h^{-1} = g^{-1} \tag{\label{equation-13}} \\
+  \underbrace{\implies}_{\eqref{equation-13}}& (h^{-1})^{-1} = (g^{-1})^{-1} \underbrace{\implies}_{\eqref{equation-11}} h = g
+\end{align*}
 $$
 </details>
 </MathBox>
 
-<MathBox title='Uniqueness of identity and inverses' boxType='definition'>
-Let $(G, *)$ be a group with identity element $e$. Then for $a,b\in G$
-1. If $b*a = e$, then $a*b = e$
-2. For all $a\in G$ there is a unique $e$ such that $a*e = a$
-3. For all $a\in G$ there is a unique $b\in G$ such that $b*a = e$
+<MathBox title='Left inverses' boxType='proposition'>
+Let $(G, *)$ be a group with identity element $e\in G$. Then for all $g\in G$
+1. 
+$$
+\begin{equation*}
+  g^{-1} * g = g
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+2. $e * g = g$
+
+and for any $h, k \in G$
+
+3. $g * h = g * k \iff h = k \iff h * g = k * g$
 
 <details>
 <summary>Proof</summary>
 
-**(1):** Suppose $b*a = e$, then
+**(1):** Note that
 
 $$
-  (a*b)*(a*b) = a*(b*a)*b = a*e*b = a*b
+\begin{equation*}
+  (g^{-1} g)^{-1} \underbrace{=}_{\eqref{equation-10}} g^{-1} (g^{-1})^{-1} \underbrace{=}_{\eqref{equation-11}} g^{-1} g
+\tag{\label{equation-14}}
+\end{equation*}
 $$
 
-By Proposition $\ref{proposition-1}$, it follows that $a*e = e$.
-
-**(2):** Suppose $a\in G$ and øet $b\in G$ be such that $b*a = e$. By **(1)**, we have
+which implies
 
 $$
-  a*e = a*(b*a) = (a*b) * a = e*a = a
+\begin{align*}
+  e \underbrace{=}_{\eqref{equation-8}}& g^{-1} g(g^{-1} g)^{-1} \underbrace{=}_{\eqref{equation-14}} g^{-1} gg^{-1} g \\
+  \underbrace{=}_{\eqref{equation-8}}& g^{-1} eg \underbrace{=}_{\eqref{equation-7}} g^{-1} g
+\end{align*}
 $$
 
-To show uniqueness, suppose $a*e = a$ and $a*f = a$ for all $a*G$. Then
+**(2):** Note that
 
 $$
-  (e*f)*(e*f) = e*(f*e)*f = e*f*e = e*f
+\begin{align*}
+  eg \underbrace{=}_{\eqref{equation-12}}& \left((eg)^{-1}\right)^{-1} \underbrace{=}_{\eqref{equation-10}} (g^{-1} e^{-1})^{-1} \\
+  \underbrace{=}_{\eqref{equation-9}}& (g^{-1} e)^{-1} \underbrace{=}_{\eqref{equation-7}} (g^{-1})^{-1} \\
+  \underbrace{=}_{\eqref{equation-12}}& g
+\end{align*}
 $$
 
-Proposition $\ref{proposition-1}$ implies that $e*f = e$. Thus
+**(3):** Let $gh = gk$ for some $g,h,k \in G$. Multiplying both sides from the left by $g^{-1}$ and using $\eqref{equation-15}$ implies $h = k$. Multiplying this in turn by $g$ from the left yields $gh = gk$. Hence, $gh = gk$ if and only if $h = k$. The proof of the equivalence of $hg = kg$ with $h = k$ is similar.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Let $N\in\N_+$. Then the set $G = \set{0,\dots,N-1}$ with the group operation given by addition modulo $N$, i.e.
 
 $$
-  f*f = (f*e)*(f*e) = f*(e*f)*e = f*e*e = f*e = f
+\begin{equation*}
+  a +_{\Z_N} b := (a + b): \bmod N
+\tag{\label{equation-16}}
+\end{equation*}
 $$
 
-Again from Proposition $\ref{proposition-1}$ it follows that $f = e$.
+is a finite Abelian group $(G, +_{\Z_N})$ denoted by $\Z_N$.
 
-**(3):** Suppose $b_1 * a = e$ and $b_2 * a = e$. Then by **(1)** and **(2)**
+Moreover, for a prime $p$ the set $G \setminu\set{0} = \set{1,\dots,p-1}$ with group multiplication is given by
 
 $$
-  b_1 = b_1 * e = b_1 * (a*b_2) = (b_1 * a) * b_2 = e*b_2 = b_2
+  a \cdot_{\Z_p} b := (ab) \bmod p
 $$
+
+also constitutes a finite Abelian group $(G\setminus\set{0}, *\cdot_{\Z_p})$, which is denoted $\Z_p^\times$.
+
+<details>
+<summary>Proof</summary>
+
+First, consider the additive group $\Z_N$. Since $(a + b) \bmod N \in\set{0,\dots,N-1}$ the group operation given in $\eqref{equation-16}$ is a map $G\times G\to G$ that is associative. The neutral element is $e_+ = 0$ and the inverse of $a\in G\setminus\set{0}$ is given by $a^{-1} = N - a \in G$ since
+
+$$
+  a +_{\Z_N} a^{-1} \underbrace{=}_{\eqref{equation-16}} (a + N - a) \bmod N = 0 = e_+
+$$
+
+Clearly, $G$ is finite and $a +_{\Z_N} b = b +_{\Z_N}$ a.
+
+Now consider $\Z_p^\times$, where $p$ is a prime, and let $a, b\in\set{1,\dots,p-1}$ such that $a \bmod p \neq 0 \neq b \bmod p$. It follows that $(ab) \bmod p \eq 0$. Consequently. $(ab) \bmod p \in\set{2,\dots,N-1}$, and the group operation in $\eref{equation-17}$ is a map $G\set\minus\set{0} \times G\setminus\set{0} \to G\setminus\set{0}$ that is associative. The neutral element of this group is $e = 1$ since for any $a\in\set{1,\dots,p-1}$ we have $a \cdot_{\Z_p} e = a\bmod p = a$. Moreover, since for any such $a$ we have $\gcd(a,p) = 1$, we know using the extended Euclid algorithm that we can always fin $x, y\in\Z$ such that $ax + py = 1$. It folows that $x\bmod p = a^{-1} \bmod p \in G\setminus\set{0}$ such that
+
+$$
+  a \cdot_{\Z_p} (x \bmod p) \underbrace{=}_{\eqref{equation-16}} = (a(x\bmod p)) \bmod p = 1
+$$
+
+Hence, every $a \in G\setminus\set{0}$ has an inverse under $\cdot_{\Z_p} in $G\setminus\set{0}$.
+
+Obviously, $a\cdot\Z_p b = (ab) \bmod p = b\cdot_{\Z_p} a$, which completes the proof.
 </details>
 </MathBox>
 
@@ -183,7 +392,7 @@ In general, $\Z_n$ is isomorphic to the group forming the $n$-th roots of unity,
 ## Subgroups
 
 <MathBox title='Subgroup' boxType='definition'>
-Let $(G, *)$ be a group. A nonempty subset $H \subseteq G$ is a *subgroup* of $G$ if $H$ is a group under the binary operation $*:G\times G$. This is commonly denoted $H \leq G$. If $H \subset G$, then $H$ is a *proper subgroup* of $G$, written $H < G$. 
+Let $(G, *)$ be a group. A nonempty subset $H \subseteq G$ is a *subgroup* of $G$, denoted $H \leq G$, if $H$ forms a group under the binary operation $*$ inherited from $G$. If $H \subsetneq G$, then $H$ is a *proper subgroup* of $G$, written $H < G$. A proper subgroup $H < G$ is *maximal* if there is no subgroup $K$ such that $H K < G$ such that $H < K$. Likewise, a nontrivial subgroup $H \leq G$ is *minimal* if there is no subgroup $K$ such that $\set{e} < K < H$, where $e$ is the identity element of $G$.
 </MathBox>
 
 <MathBox title='Subgroup criterion' boxType='proposition' tag='proposition-2'>
@@ -198,13 +407,23 @@ By **(1)**, the binary operation on $G$ defines a restriction $*|_H :H\times H \
 </details>
 </MathBox>
 
-<MathBox title='Intersection of subgroups' boxType='proposition'>
-An intersection of subgroups of $G$ is a subgroup of $G$.
+<MathBox title='Subgroups are preserved under intersection' boxType='proposition'>
+Let $I\subseteq\N_0$ be an index set and let $\set{H_i}_{i\in I}$ be a set of subgroups of a group $G$. Then the intersection
+
+$$
+  H_\cap := \bigcap_{i\in I} H_i
+$$
+
+is also a subgroup of $G$.
 
 <details>
 <summary>Proof</summary>
 
-An intersection of subgroups of $G$ is nonempty and contains $e$, and the subgroup criterion obviously holds (Proposition $\ref{proposition-2}$).
+Since each $H_i$ is a subgroup of $G$, each contains the identity element $e_G$. Thus, $e_G \in H_i$ for all $i\in I$, and hence $e_G \in H_\cap$.
+
+Let $g_1, g_2 \in H_\cap$. Then $g_1, g_2 \in H_i$ for every $i\in I$. Since each $H_i$ is a subgroup, it follows that $g_1 g_2 \in H_i$ for every $i\in I$, and therefore $g_1 g_2 \in H_\cap$.
+
+Likewise, if $g\in H_\cap$, then $g\in H_i$ and thus $g^{-1} \in H_i$ for each $i\in I$, which implies that $g^{-1} \in H_\cap$ and completes the proof that $H_\cap$ is a subgroup.
 </details>
 </MathBox>
 
@@ -238,8 +457,34 @@ The intersection $S$ of all subgroups of $G$ containing $H$ is again a subgroup 
 </details>
 </MathBox>
 
-<MathBox title='Generated subgroup' boxType='definition'>
-If $G$ is a group with subset $H \subseteq G$, the smallest subgroup of $G$ containing $H$ is denoted $\langle H\rangle$ and is called the *subgroup generated* by $H$. We also say that $H$ *generates* $\langle H\rangle$.
+<MathBox title='Generated group' boxType='definition'>
+Let $K$ be a non-empty subset of a group $G$ and
+
+$$
+  S_K := \set{H \leq H | K \subseteq H}
+$$
+
+the set of all subgroups that contain $K$. Then
+
+$$
+  \braket{K} := \bigcap_{H \in S_K} H
+$$
+
+is defined as the group *generated* by $K$.
+
+A group $G$ is finitely generated if there are $g_1,\dots,g_n \in G$ such that
+
+$$
+  G = \braket{g_1,\dots,g_n} := \braket{\set{g_1,\dots,g_n}}
+$$
+
+A group $G$ which can be generated from one element $g\in G$ such that
+
+$$
+  G = \braket{g}
+$$
+
+is called *cyclic* and in this case is called the *generator* of $G$.
 </MathBox>
 
 ### Cyclic groups
