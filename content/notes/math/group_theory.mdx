@@ -162,7 +162,7 @@ $$
 3. 
 $$
 \begin{equation*}
-  (a^{-1})^{-1} = g
+  (a^{-1})^{-1} = a
 \tag{\label{equation-11}}
 \end{equation*}
 $$
@@ -273,7 +273,7 @@ $$
 
 is a finite Abelian group $(G, +_{\Z_N})$ denoted by $\Z_N$.
 
-Moreover, for a prime $p$ the set $G \setminu\set{0} = \set{1,\dots,p-1}$ with group multiplication is given by
+Moreover, for a prime $p$ the set $G \setminus\set{0} = \set{1,\dots,p-1}$ with group multiplication is given by
 
 $$
   a \cdot_{\Z_p} b := (ab) \bmod p
@@ -396,14 +396,50 @@ Let $(G, *)$ be a group. A nonempty subset $H \subseteq G$ is a *subgroup* of $G
 </MathBox>
 
 <MathBox title='Subgroup criterion' boxType='proposition' tag='proposition-2'>
-Let $(G, *)$ be a group. A subset $H \subseteq G$ is a subgroup of $G$ if and only if
-1. $a,b\in H \implies a*b \in H$ **(closure)**
-2. $a\in H \implies a^{-1} \in H$
+Let $(G, *)$ be a group with identity element $e\in G$. A nonempty subset $H \subseteq G$ is a subgroup of $G$ if and only if for all $a, b \in H$
+
+$$
+\begin{equation*}
+  a * b^{-1} \in H
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+meaning that $H$ is closed under the operation $a * b^{-1}$. This is equivalent to the following two conditions:
+1. **Closure under the group operation:**
+$$
+\begin{equation*}
+  a, b \in H \implies a * b \in H
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+2. **Closure under inverses:**
+$$
+\begin{equation*}
+  a\in H \implies a^{-1} \in H
+\tag{\label{equation-22}}
+\end{equation*}
+$$
 
 <details>
 <summary>Proof</summary>
 
-By **(1)**, the binary operation on $G$ defines a restriction $*|_H :H\times H \to H$ on $H$, which is inherently associative. By assumption, $H$ contains at least one element $a$, its inverse $a^{-1}$, and the product $aa^{-1}$. By **(2)**, the inverse of elements in $H$ lie in $H$. 
+**($\implies$):** Assume $H \leq G$. As a subgroup, $H$ satisfies the group axioms. In particular:
+- $a\in H \implies a^{-1} \in H$
+- $a, b \in H \implies a * b \in H$
+
+Thus, for all $a, b \in H$, since $b^{-1} \in H$, it follows that $a * b^{-1} \in H$.
+
+**($\impliedby$):** Assume $a * b^{-1} \in H$ for all $a, b\in H$. We show that $H$ satisfies the group axioms.
+
+- **Associativity:** The operation $*$ is associative on $G$, and since $H \subseteq G$, it defines a restriction $*|_H : H\times H \to H$ on $H$, which is inherently associative.
+
+- **Existence of identity element:** Since $H \neq\emptyset$ is nonempty, it must have an element $a\in H$. Consequently, $a * a^{-1} = e \in H$ by assumption.
+
+- **Existence of inverses:** Since $e \in H$, then for any $h\in H$ we have by assumption $eh^{-1} = h^{-1} \in H$.
+
+- **Closure:** Given $a, b \in H$, then $b^{-1} \in H$. It follows by assumption that $a * b = a * (b^{-1})^{-1} \in H$.
 </details>
 </MathBox>
 
@@ -424,22 +460,6 @@ Since each $H_i$ is a subgroup of $G$, each contains the identity element $e_G$.
 Let $g_1, g_2 \in H_\cap$. Then $g_1, g_2 \in H_i$ for every $i\in I$. Since each $H_i$ is a subgroup, it follows that $g_1 g_2 \in H_i$ for every $i\in I$, and therefore $g_1 g_2 \in H_\cap$.
 
 Likewise, if $g\in H_\cap$, then $g\in H_i$ and thus $g^{-1} \in H_i$ for each $i\in I$, which implies that $g^{-1} \in H_\cap$ and completes the proof that $H_\cap$ is a subgroup.
-</details>
-</MathBox>
-
-<MathBox title='The center is a subgroup' boxType='proposition'>
-The centre of a group $G$ is the subset
-
-$$
-  Z(G) = \Set{g\in G | gx = xg,\;\forall x\in G}
-$$
-
-It is a subgroup of $G$.
-
-<details>
-<summary>Proof</summary>
-
-Since $ge = eg = g$, it follows that $e \in Z(G)$ and $Z(G)\neq\emptyset$. For any $x,y \in Z(G)$, giving $gx = xg$ and $gy = yg$. Applying the group operation yields $(xy)g = x(yg) = x(gy) = (xg)y = (gx)y = g(xy)$, showing that $xy\in Z(G)$. For $x\in Z(G)$, we have $x^{-1} g = x^{-1} (ge) = x^{-1} (gx)x^{-1} = x^{-1} (xg) x^{-1} = (x^{-1}x)gx^{-1} = (eg)x^{-1} = gx^{-1}$, showing that $x^{-1} \in Z(G)$. Hence, $Z(G)$ is a subgroup.
 </details>
 </MathBox>
 
@@ -477,14 +497,6 @@ A group $G$ is finitely generated if there are $g_1,\dots,g_n \in G$ such that
 $$
   G = \braket{g_1,\dots,g_n} := \braket{\set{g_1,\dots,g_n}}
 $$
-
-A group $G$ which can be generated from one element $g\in G$ such that
-
-$$
-  G = \braket{g}
-$$
-
-is called *cyclic* and in this case is called the *generator* of $G$.
 </MathBox>
 
 ### Cyclic groups
@@ -564,6 +576,24 @@ Hence $g^r = (a^d)^{-q} h \in H$. However, $0 \leq r < d$, and since $d$ is the 
 </MathBox>
 
 <MathBox title='' boxType='proposition'>
+Every minimal subgroup $H < G$ of a group $G$ is cyclic, that is, it is of the form $H = \braket{g}$ for some $g\in G$.
+
+<details>
+<summary>Proof</summary>
+
+Recall that a subgroup $H < G$ is minimal if there is no subgroup $K \leq G$ such that $\braket{e_G} < K < H$.
+
+Let $H$ be minimal and $g \in H\setminus\braket{e_G}$. If $H = \braket{g}$, we are done. Otherwise, take a $k \in H\setminus\braket{g}$. However, then we have
+
+$$
+  \braket{e_G} < \braket{g} < \braket{g, k} \leq H
+$$
+
+which contradicts our assumption that $H$ is minimal.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
 Let $G = \langle g \rangle$ be a cyclic group of order $n$. For each $k$ dividing $n$, $G$ has a unique subgroup of order $k$, i.e. $\langle g^{n/k} \rangle$.
 
 <details>
@@ -578,6 +608,32 @@ $$
 Thus, $1 = g^n = g^{dq + r} = (g^d)^q g^r$ and so $g^r = (g^d)^{-q} \in H$. Consequently, $r = 0$ and so $n = dq$. Also $k = |H| = |\langle g^d\rangle| = q = \frac{n}{d}$. Thus, $d = \frac{n}{k} = t$, i.e. $H = \langle g^d\rangle = \rangle g^t \rangle$. 
 </details>
 </MathBox>
+
+## Independent group
+
+<MathBox title='Independent group' boxType='definition'>
+A subset $\set{g_1,\dots,g_k} \subseteq G$ of a group $G$ is *independent* if for any $g_j \in\set{g_1,\dots,g_k}$
+
+$$
+  g_j \notin \braket{\set{g_1,\dots,g_k}\setminus\set{g_j}}
+$$
+</MathBox>
+
+Let $P$ denote a permutation of the index set $I = \set{1,\dots,k}$, that is, the map $P: I \to I$ given by $j \mapsto j$ is a bijection.
+
+Independence of a subse $\set{g_1,\dots,g_k} \subseteq G$ of a group means that for every $a_1,\dots,a_k \in\set{0,1}$ and permutation $P$ we must have
+
+$$
+  \prod_{j=1}^k g_{P(j)}^{a_j} = e_G \implies a_j = 0,\; \forall j\in\set{1,\dots,k}
+$$
+
+This is because otherwise we would have for some $j$ and $P$
+
+$$
+  g_{P(j)} = g_{P(j-1)}^{-a_{j-1}} \cdots g_{P(1)}^{-a_1} g_{P(k)}^{-a_k}  g_{P(j+1)}^{-a_{j+1}} \in \braket{\set{g_1,\dots,g_k}\setminus\set{g_{P(j)}}}
+$$
+
+and since $P(j) \in\set{1,\dots,k}$ the set $\set{g_1,\dots,g_k}$ would not be independent.
 
 ## Cosets
 
@@ -700,8 +756,225 @@ In this sense, $\Z$ is covered by cosets of congruence classes.
 
 ### Normal subgroups
 
-<MathBox title='Normal subgroup' boxType='definition'>
-Let $G$ be a group. A subgroup $N$ of $G$ is *normal* if $g^{-1}Ng = N$ for all $g\in G$. This is written $N \unlhd G$.
+<MathBox title='Centralizer' boxType='definition'>
+Let $G$ be a group. The *centralizer* $C_G (g)$ of $g\in G$ is the set of elements of $G$ which commute with $g$, i.e.
+
+$$
+  C_G (g) := \set{h \in G | hg = gh}
+$$
+
+The centralized of a subset $S \subseteq G$ is defined as
+
+$$
+\begin{equation*}
+  C_G (S) := \set{h \in G | hg = gh\; \forall g\in S}
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+The centralizer of any subset $S \subset G$ of a group $G$ is a subgroup of $G$, i.e.
+
+$$
+  C_G (S) \leq G
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $e_G g = ge_G$ for all $g \in G$, it follows that $e_G \in C_G (S)$.
+
+Let $h_1, h_2 \in C_G (S)$. Then we have for every $g\in S$
+
+$$
+  (h_1 h_2) g = h_1 (h_2 g) \underbrace{=}_{\eqref{equation-18}} h_1 g h_2 \underbrace{=}_{\eqref{equation-18}} g h_1 h_2
+$$
+
+and thus $h_1 h_2 \in C_G (S)$.
+
+Finally, for any $h\in C_G (S)$ and $g\in S$
+
+$$
+\begin{align*}
+  hg \underbrace{=}_{\eqref{equation-18}} gh \implies& gh^{-1} = h^{-1} \\
+  \underbrace{\implies}_{\eqref{equation-18}}& h^{-1} \in C_G (S)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Centre of a group' boxType='definition'>
+The centre of a group $G$ is defined as
+
+$$
+\begin{equation*}
+  Z(G) = \Set{g\in G | gx = xg,\;\forall x\in G}
+\tag{\label{equation-125}}
+\end{equation*}
+$$
+
+which is the of group elements which commute with every element in $G$.
+</MathBox>
+
+<MathBox title='The center is a normal subgroup' boxType='proposition'>
+The centre of a group $G$ is a normal subgroup, i.e.
+
+$$
+  Z(G) \unlhd G
+$$
+
+It is a subgroup of $G$.
+
+<details>
+<summary>Proof</summary>
+
+The neutral element $e$ of $G$ clearly satisfies $eg = ge$ and so $e\in Z(G)$.
+
+For any $h_1, h_2 \in Z(G)$ we have
+
+$$
+  h_1 h_2 g \underbrace{=}_{\eqref{equation-25}} h_1 g h_2 \underbrace{=}_{\eqref{equation-25}}
+$$
+
+and thus $h_1 h_2 \in Z(G)$, verifying $\eqref{equation-21}$.
+
+Moreover, for any $h \in Z(G)$ and $g \in G$ we have $hg = gh$ which implies $gh^{-1} = h^{-1} g$ and the $h^{-1} \in Z(G)$, verifying $\eqref{equation-22}$
+
+Finally, we find for any $g\in G$ that
+
+$$
+\begin{align*}
+  Z(G)^G \underbrace{=}_{\eqref{equation-23}}& \set{ghg^{-1} | h\in Z(G)} \\
+  \underbrace{=}_{\eqref{equation-25}}& \set{hgg^{-1} | h\in Z(G)} = Z(G)
+\end{align*}
+$$
+
+Since $ge = eg = g$, it follows that $e \in Z(G)$ and $Z(G)\neq\emptyset$. For any $x,y \in Z(G)$, giving $gx = xg$ and $gy = yg$. Applying the group operation yields $(xy)g = x(yg) = x(gy) = (xg)y = (gx)y = g(xy)$, showing that $xy\in Z(G)$. For $x\in Z(G)$, we have $x^{-1} g = x^{-1} (ge) = x^{-1} (gx)x^{-1} = x^{-1} (xg) x^{-1} = (x^{-1}x)gx^{-1} = (eg)x^{-1} = gx^{-1}$, showing that $x^{-1} \in Z(G)$. Hence, $Z(G)$ is a subgroup.
+</details>
+</MathBox>
+
+<MathBox title='Conjugate of group element' boxType='definition'>
+Set $S\subseteq G$ be a subset of the group $G$. The *conjugate* $S^g$ of $S$ by $g\in G$ is defined as the set
+
+$$
+\begin{equation*}
+  S^g := gSg^{-1} = \set{ghg^{-1} | h\in S}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+Let $H \leq G$ be a subset of the group $G$. Then for any $g\in G$ the conjugate of $H$ by $g$
+
+$$
+\begin{equation*}
+  H^g = \set{ghg^{-1} | h \in H}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+is a subgroup of $G$.
+
+<details>
+<summary>Proof</summary>
+
+Let $g \in G$ be any element of $G$. Since $e\in H$, it follows from $\eqref{equation-19}$ that $e\in H^g$.
+
+Now let $h' \in H^g$, that is, there exists $h\in H$ such that $h' = ghg^{-1}$. However, we also have from $\eqref{equation-19}$ that $gh^{-1} g^{-1} \in H^g$. Thus,
+
+$$
+  h' (gh^{-1} g^{-1}) = ghg^{-1} gh^{-1} g^{-1} = e
+$$
+
+and thus $(h')^{-1} = gh^{-1} g^{-1} \in H^g$, which shows that $\eqref{equation-22}$ is satisfied for $H^g$.
+
+Finally, let $h'_2, h'_2 \in H^g$, which, due to $\eqref{equation-19}$, means that there exist $h_1, h_2 \in H$ such that $h'_j = gh_j g^{-1}$ for $j\in\set{1,2}$. Since $h_1 h_2 \in H$, it follows that
+
+$$
+  h'_1 h'_2 = (gh_1 g^{-1})(gh_2 g^{-1}) = gh_1 h_2 g^{-1} \in H^g
+$$
+
+which shows that $\eqref{equation-21}$ is also satisfied for $H^g$.
+</details>
+</MathBox>
+
+<MathBox title='Conjugate and normal subgroup' boxType='definition'>
+Let $H\leq G$ be a subgroup of the group $G$. For any $g\in G$ the set
+
+$$
+  H^g := \set{ghg^{-1} | h\in H}
+$$
+
+is called a *conjugate subgroup* to $H$. If for every $g\in G$
+
+$$
+  H^g = H
+$$
+
+then $H$ is called a *normal* or *invariant subgroup* of $G$. This is written $H \unlhd G$.
+</MathBox>
+
+<MathBox title='Normalizer' boxType='definition'>
+Let $S\subseteq G$ be a subset of the group $G$. The *normalizer* $N_G (S)$ of $S$ in $G$ is defined as
+
+$$
+\begin{equation*}
+  N_G (S) := \set{g \in G | S^g = g}
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+<details>
+<summary>Details</summary>
+
+Note that by definition
+
+$$
+\begin{align*}
+  g \in N_G (s) \iff& \forall h\in S \; \exists \tilde{h} \in S: ghg^{-1} = \tilde{h} \\
+  \iff& \forall h \in S \; \exists \tilde{h} \in S: gh = \tilde{h}g
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='proposition'>
+For any subset $S\subseteq G$ of the group $G$, its normalizer is a subgroup of $G$, i.e.
+
+$$
+  N_G (S) \leq G
+$$
+
+<details>
+<summary>Proof</summary>
+
+The neutral element $e \in G$ clearly satisfies $S^e = eSe^{-1} = S$, so that $e\in N_G (S)$.
+
+For any $h_1, h_2 \in N_G (S)$ we have
+
+$$
+\begin{align*}
+  S^{h_1 h_2} \underbrace{=}_{\eqref{equation-23}}& h_2 h_2 S(h_1 h_2)^{-1} = h_1 h_2 S h_2^{-1} h_1^{-1} \\
+  \underbrace{=}_{\eqref{equation-23}}& h_1 S^{h_2} h_1^{-1} \underbrace{=}_{\eqref{equation-24}} h_1 S h_1^{-1} \underbrace{=}_{\eqref{equation-23}} S^{h_1} \\
+  \underbrace{=}_{\eqref{equation-24}}& S
+\end{align*}
+$$
+
+such that $h_1 h_2 \in N_G (S)$, verifying $\eqref{equation-21}$.
+
+Finally, for any $h \in N_G (S)$ we have
+
+$$
+\begin{align*}
+  & hSh^{-1} \underbrace{=}_{\eqref{equation-23}} S^h \underbrace{=}_{\eqref{equation-24}} S \\
+  \implies& S = h^{-1} S(h^{-1})^{-1} \underbrace{=}_{\eqref{equation-23}} S^{h^{-1}}
+\end{align*}
+$$
+
+such that $h^{-1} \in N_G (S)$, verifying $\eqref{equation-22}$.
+</details>
 </MathBox>
 
 <MathBox title='First normal subgroup criterion' boxType='proposition'>
