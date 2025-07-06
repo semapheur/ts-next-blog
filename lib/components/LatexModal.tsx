@@ -11,13 +11,13 @@ import {
 import { CrossIcon } from "lib/utils/icons"
 import useEventListener from "lib/hooks/useEventListener"
 
-type Props = {
+interface Props extends HTMLProps<HTMLDialogElement> {
   isOpen: boolean
   children: ReactNode
   onClose?: () => void
   title?: string
   className?: string
-} & HTMLProps<HTMLDialogElement>
+}
 
 const modalStyle =
   "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden max-w-[min(90vw,100ch)] max-h-[min(90vh,100ch)] bg-primary/50 rounded-lg shadow-md dark:shadow-black/50 backdrop-blur-sm backdrop:bg-stone-500/50"

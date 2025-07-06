@@ -11,10 +11,10 @@ declare global {
   }
 }
 
-type Props = {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   dim: number
   animationSpeed: number
-} & HTMLAttributes<HTMLDivElement>
+}
 
 export default function Hypercube({ dim, animationSpeed, ...props }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)

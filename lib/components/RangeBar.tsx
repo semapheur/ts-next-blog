@@ -6,13 +6,13 @@ type Marker = {
   color: string
 }
 
-type Props = {
+interface Props extends HTMLProps<HTMLDivElement> {
   min: number
   max: number
   markers: Marker[]
   width: number
   height: number
-} & HTMLProps<HTMLDivElement>
+}
 
 type MarkerProps = {
   value: number

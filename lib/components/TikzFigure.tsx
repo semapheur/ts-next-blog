@@ -1,40 +1,46 @@
-"use client"
+import Script from "next/script"
 
-import Head from "next/head"
+type FallbackImage = {
+  src: string
+  alt?: string
+  width?: number
+}
 
 type Props = {
   caption: string
   children: string
   packages?: string
+  fallbackImage?: FallbackImage
 }
 
 export default function TikzFigure({
   caption,
   packages = "",
+  fallbackImage,
   children,
 }: Props) {
   return (
-    <>
-      <Head>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://tikzjax.com/v1/fonts.css"
+    <figure className="relative flex flex-col">
+      <div className="tikzjax-scaled-container mx-auto">
+        <script
+          type="text/tikz"
+          data-tex-packages={packages}
+          dangerouslySetInnerHTML={{ __html: children }}
         />
-        <script src="https://tikzjax.com/v1/tikzjax.js" />
-      </Head>
-      <figure className="relative flex flex-col">
-        <div className="tikzjax-scaled-container mx-auto">
-          <script
-            type="text/tikz"
-            data-tex-packages={packages}
-            dangerouslySetInnerHTML={{ __html: children }}
-          />
-        </div>
-        <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
-          {caption}
-        </figcaption>
-      </figure>
-    </>
+        {fallbackImage && (
+          <noscript>
+            <img
+              className="mx-auto mb-0 bg-white"
+              alt={fallbackImage?.alt}
+              src={fallbackImage.src}
+              width={`${fallbackImage.width}%`}
+            />
+          </noscript>
+        )}
+      </div>
+      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
+        {caption}
+      </figcaption>
+    </figure>
   )
 }

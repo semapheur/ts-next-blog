@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google"
+import Script from "next/script"
 import "./app.css"
 import "katex/dist/katex.min.css"
 import Header from "./Header"
@@ -17,12 +17,6 @@ export const viewport = {
   maximumScale: 1,
   userScalable: 0,
 }
-
-// Font
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-})
 
 export default function RootLayout({
   children,
@@ -51,8 +45,18 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <Script
+          id="script-set-initial-theme"
+          dangerouslySetInnerHTML={{ __html: setInitialTheme }}
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://tikzjax.com/v1/fonts.css"
+        />
+      </head>
       <body className="flex flex-col bg-primary">
-        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         <Header />
         {children}
       </body>

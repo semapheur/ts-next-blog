@@ -16,11 +16,11 @@ export type Axis = {
   domain?: [number, number]
 }
 
-type Props = {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   data: Array<[number, number]>
   xAxis: Axis
   yAxis: Axis
-} & HTMLAttributes<HTMLDivElement>
+}
 
 function createScale(scale: "linear" | "log") {
   if (scale === "linear") {

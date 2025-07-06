@@ -16,10 +16,10 @@ import { screenToDrawPosition } from "lib/utils/svg"
 
 export const transform = signal(new DOMMatrix([1, 0, 0, 1, 0, 0]))
 
-type Props = {
+interface Props extends HTMLProps<HTMLDivElement> {
   viewRange: Signal<ViewRange>
   children: ReactNode
-} & HTMLProps<HTMLDivElement>
+}
 
 export default function TransformDiv({ viewRange, children, ...props }: Props) {
   const divRef = useRef<HTMLDivElement>(null)

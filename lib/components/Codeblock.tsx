@@ -3,9 +3,9 @@
 import { type HTMLProps, type ReactNode, useRef, useState } from "react"
 import { ClipboardCheckIcon, ClipboardIcon } from "lib/utils/icons"
 
-type Props = {
+interface Props extends HTMLProps<HTMLPreElement> {
   children: ReactNode
-} & HTMLProps<HTMLPreElement>
+}
 
 export default function Codeblock({ children, ...props }: Props) {
   const preRef = useRef<HTMLPreElement>(null)

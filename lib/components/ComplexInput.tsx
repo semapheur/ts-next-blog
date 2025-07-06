@@ -1,9 +1,9 @@
 import type { HTMLProps, KeyboardEvent } from "react"
 import type { Signal } from "@preact/signals-react"
 
-type Props = {
+interface Props extends HTMLProps<HTMLFormElement> {
   expression: Signal<string>
-} & HTMLProps<HTMLFormElement>
+}
 
 export default function ComplexInput({ expression, ...props }: Props) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

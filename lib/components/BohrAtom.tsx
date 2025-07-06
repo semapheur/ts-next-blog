@@ -3,11 +3,11 @@
 import useResizeObserver from "lib/hooks/useResizeObserver"
 import { type HTMLProps, useEffect, useRef } from "react"
 
-type Props = {
+interface Props extends HTMLProps<HTMLDivElement> {
   number: number
   symbol: string
   shells: number[]
-} & HTMLProps<HTMLDivElement>
+}
 
 export default function BohrAtom({ number, symbol, shells, ...props }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
