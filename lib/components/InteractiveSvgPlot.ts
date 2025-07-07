@@ -32,6 +32,7 @@ export class InteractiveSVGPlot {
   private svgDefs: SVGDefsElement
   private frameGroup: SVGGElement
   private plotGroup: SVGGElement
+  private margin?: Vector
   private viewRange: ViewRange = {
     x: new Vector(-10, 10),
     y: new Vector(-10, 10),
@@ -89,7 +90,8 @@ export class InteractiveSVGPlot {
     // Create group elements
     this.frameGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
     if (margin) {
-      this.setFrameTransform(margin, width, height)
+      this.margin = margin
+      this.setFrameTransform(width, height)
     }
     this.svgElement.appendChild(this.frameGroup)
 
@@ -140,14 +142,13 @@ export class InteractiveSVGPlot {
     this.transformView()
   }
 
-  private setFrameTransform(margin?: Vector, width?: number, height?: number) {
+  private setFrameTransform(width?: number, height?: number) {
     let transform = this.frameGroup.getCTM()!
 
     if (!width) width = this.svgElement.getBoundingClientRect().width
     if (!height) height = this.svgElement.getBoundingClientRect().height
-    if (!margin) {
-      margin = new Vector((1 - transform.a) / 2, (1 - transform.d) / 2)
-    }
+    const margin =
+      this.margin || new Vector((1 - transform.a) / 2, (1 - transform.d) / 2)
 
     transform = new DOMMatrix([
       1 - 2 * margin.x,
@@ -630,7 +631,6 @@ export class InteractiveSVGPlot {
     this.svgDefs.appendChild(pattern)
 
     // Axis rectangle
-    const axis = document.getElementById("axis-group")!
     addChildElement(this.axisGroup, "rect", {
       class: "axis-rect",
       width: "100%",

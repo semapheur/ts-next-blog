@@ -1,6 +1,3 @@
-import Image, { type ImageProps } from "next/image"
-import type { MDXComponents } from "mdx/types"
-
 import ChessFigure from "lib/components/ChessFigure"
 import Codeblock from "lib/components/Codeblock"
 import Figure from "lib/components/Figure"
@@ -10,6 +7,8 @@ import MathBox from "lib/components/MathBox"
 import MathTooltip from "lib/components/MathTooltip"
 import TableFigure from "lib/components/TableFigure"
 import TikzFigure from "lib/components/TikzFigure"
+import type { MDXComponents } from "mdx/types"
+import Image, { type ImageProps } from "next/image"
 
 export const mdxComponents: MDXComponents = {
   img: (props) => <Image {...(props as ImageProps)} loading="lazy" />,

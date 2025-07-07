@@ -1,5 +1,7 @@
 "use client"
 
+import useEventListener from "lib/hooks/useEventListener"
+import { CrossIcon } from "lib/utils/icons"
 import {
   type HTMLProps,
   type KeyboardEvent,
@@ -8,8 +10,6 @@ import {
   useRef,
   useState,
 } from "react"
-import { CrossIcon } from "lib/utils/icons"
-import useEventListener from "lib/hooks/useEventListener"
 
 interface Props extends HTMLProps<HTMLDialogElement> {
   isOpen: boolean

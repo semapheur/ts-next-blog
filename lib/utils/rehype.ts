@@ -1,6 +1,6 @@
-import type { Root, Element } from "hast"
+import type { Element, Root } from "hast"
+import { select, selectAll } from "hast-util-select"
 import type { Transformer } from "unified"
-import { selectAll, select } from "hast-util-select"
 import { visit } from "unist-util-visit"
 
 export function rehypeMathref(): Transformer<Root, Root> {

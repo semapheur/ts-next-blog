@@ -1,5 +1,5 @@
+import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 import { serialize } from "next-mdx-remote/serialize"
-
 //import { mystParser } from 'myst-parser'
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeCitation from "rehype-citation"
@@ -11,11 +11,10 @@ import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import type { MDXPost } from "./types"
-import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
-import { rehypeMathref, rehypeFancyLists } from "./rehype"
+import { rehypeFancyLists, rehypeMathref } from "./rehype"
 
 export const remarkPlugins = [remarkGfm, remarkMath]
 export function rehypePlugins(noCite: string[] = []) {
