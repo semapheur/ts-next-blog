@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const million = require('million/compiler')
+const { default: next } = require('next')
 
 const isProd = process.env.NODE_ENV === 'production'
 
