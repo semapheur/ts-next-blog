@@ -219,7 +219,7 @@ Let $(G, *)$ be a group with identity element $e\in G$. Then for all $g\in G$
 1. 
 $$
 \begin{equation*}
-  g^{-1} * g = g
+  g^{-1} * g = e
 \tag{\label{equation-15}}
 \end{equation*}
 $$
@@ -1182,7 +1182,7 @@ In other other words, every integer $g\in\Z$ belongs to exactly one coset
 
 $$
 \begin{equation*}
-  [g]_{n\Z} = \set{g + ni}_{i\in \Z} = [z \bmod n]_{n\Z} \in \Z/n\Z
+  [g]_{n\Z} = \set{g + ni}_{i\in \Z} = [g \bmod n]_{n\Z} \in \Z/n\Z
 \tag{\label{equation-37}}
 \end{equation*}
 $$
@@ -1311,7 +1311,7 @@ $$
   \underbrace{=}^{\eqref{equation-31}}& [g_1 \bmod n + g_2 \bmod n]_{n\Z} \\
   \underbrace{=}^{\eqref{equation-37}}& [(g_1 \bmod n + +g_2 \bmod n) \bmod n]_{n\Z} \\
   =& [(g_1 + g_2) \bmod n]_{n\Z} \\
-  \underbrace{=}^{\eqref{equation-16}}& [(g_1 +_{\Z_n} g_2)]_{n\Z}
+  \underbrace{=}^{\eqref{equation-16}}& [(g_1 +_{\Z_n} g_2)]_{n\Z} \tag{\label{equation-42}}
 \end{align*}
 $$
 </MathBox>
@@ -1333,55 +1333,176 @@ From Theorem $\ref{\theorem-}$ we know that there are exactly $|G|/|H|$ distinct
 # Group homomorphisms
 
 <MathBox title='Group homomorphism' boxType='definition'>
-Two groups $(G, *)$ and $(H,\circ)$ are *isomorphic* if there is a bijection $\alpha:H\to G$ such that
+A *homomorphism* between two groups $(G_1, *_{G_1})$ and $(G_2, *_{G_2})$ is a map $\phi: G_1 \to G_2$ that preserves the group multiplication, that is, which satisfies for all $g, h \in G_1$
 
 $$
-  \alpha(a * b) = \alpha(a) \circ\alpha(b),\; \forall a,b\in G
+\begin{equation*}
+  \phi(g) *_{G_2} \phi(h) = \phi(g \cdot_{G_1} h)
+\tag{\label{equation-41}}
+\end{equation*}
 $$
 
-The mapping $\alpha$ is called an *isomorphism* and we say that $G$ is isomorphic to $H$, denoted $G \cong H$. If $\alpha$ is not bijective, it is called a *homomorphism*. 
+The set of all isomorphisms from a group $G_1$ to a group $G_2$ is denoted $\operatorname{Hom}(G_1, G_2)$.
+</MathBox>
+
+<MathBox title='Group isomorphism' boxType='definition'>
+Let $(G_1, *_{G_1})$ and $(G_2, *_{G_2})$ be two groups. A map $\phi: G_1 \to G_2$ is an *isomorphism* if it is a homomorphism and a bijection. The groups $G_1$ and $G_2$ are isomorphic if there exists an isomorphism between them, denoted $G_1 \cong G_2$.
+</MathBox>
+
+<MathBox title='Group isomorphism' boxType='definition'>
+Let $n\in\N_+$. The quotient group $\Z/n\Z$ is isomorphic to the group $\Z$ with isomorphism $\iota: \Z/n\Z \to \Z_n$ given by
+
+$$
+\begin{equation*}
+  [g]_{n\Z} \mapsto g\bmod n
+\tag{\label{equation-43}}
+\end{equation*}
+$$
+
+To begin with, we show that $\iota$ is well defined, in other words, that the image $\iota([g]_{n\Z})$ does not depend on the $g\in\Z$ chosen to represent the coset $[g]_{n\Z}$. To see this, let $g_1, g_2 \in\Z$ be such that $[g_1]_{n\Z} = [g_2]_{n\Z}$. Then it follows from $\eqref{equation-37}$ that $[g_1 \bmod n]_{n\Z} = [g_2 \bmod n]_{n\Z}. Since $g_i \bmod n \in\set{0,\dots,n-1}$ for $i\in\set{1,2}$, this implies $g_1 \bmod n = g_2 \bmod n$, hence $\iota([g_1]_{n\Z}) = \iota([g_2]_{n\Z})$.
+
+Now, suppose $g_1, g_2 \in \Z$ are such that $[g_1]_{n\Z} \neq [g_2]_{n\Z}$. Then it follows from $\eqref{equation-37}$ that $g_1 \bmod n \neq g_2 \bmod n$, since otherwise their cosets would be equal. Consequently, $\iota([g_1]_{n\Z}) \neq \iota([g_2]_{n\Z})$, which means that $\iota$ is injective. It is also surjective, since by $\eqref{equation-37}$, every $m\in\set{0,\dots,n-1}$ uniquely defines a coset $[m]_{n\Z}$, which also satisfies $\iota([m]_{n\Z}) = m$. Thus, $\iota$ is bijective.
+
+It remains to show that $\iota$ is also a homomorphism. For this we apply $\iota$ to both sides $\eqref{equation-42}$ to obtain
+
+$$
+\begin{align*}
+  \iota([g_1]_{n\Z} +_{\Z/n\Z} [g_2]_{n\Z}) \underbrace{=}^{\eqref{equation-42}}& \iota\left([(g_1 + g_2) \bmod n]_{n\Z}\right) \\
+  \underbrace{=}^{\eqref{equation-43}}& (g_1 + g_2) \bmod n \\
+  \underbrace{=}^{\eqref{equation-}}& g_1 \bmod n +_{\Z_n} g_2 \bmod n \\
+  \underbrace{=}^{\eqref{equation-43}}& \iota([g_1]_{n\Z}) +_{\Z_n} \iota([g_2]_{n\Z})
+\end{align*}
+$$
+
+which shows that $\iota$ satisfies $\eqref{equation-41}$. Hence $\Z/n\Z \cong \Z_n$.
 </MathBox>
 
 ## Kernels and quotients
 
 <MathBox title='Kernel of homomorphisms' boxType='definition'>
-The *kernel* of a group homomorphism $\alpha:G\to G'$ is
+The *kernel* of a group homomorphism $\phi:G_1 \to G_2$ is the set
 
 $$
-  \ker(\alpha) = \Set{g\in G | \alpha(g) = e}
+\begin{equation*}
+  \ker(\phi) = \set{g\in G_1 | \phi(g) = e_2}
+\tag{\label{equation-45}}
+\end{equation*}
 $$
 
-Where $e$ is the identity element of $G'$. It follows immediately from this definition that $\alpha$ is injective if and only if $\ker(\alpha) = \Set{e}$.
+which is the pre-image in $G_1$ of the neutral element $e_2 \in G_2$. It follows immediately from this definition that $\phi$ is injective if and only if $\ker(\phi) = \set{e_2}$.
 
 <details>
 <summary>Proof</summary>
 
-If $\ker{\alpha} = \Set{e}$, then
+If $\ker{\phi} = \set{e_2}$, then
 
 $$
 \begin{align*}
-  &\alpha(g) = \alpha(g') \implies \alpha(g^{-1} g') = e
-  \implies& g^{-1} g' = e \implies g = g'
+  &\phi(g) = \phi(g') \implies \phi(g^{-1} g') = e_2
+  \implies& g^{-1} g' = e_2 \implies g = g'
 \end{align*}
 $$
 
-showing that $\alpha$ is injective. The converse is obvious.
+showing that $\phi$ is injective. The converse is obvious.
 </details>
 </MathBox>
 
 <MathBox title='' boxType='proposition' tag='proposition-14'>
-The kernel of a homomorphism is a normal subgroup.
+Let $\phi\operatorname{Hom}(G_1, G_2)$ be a homomorphism between the two groups $G_1$ and $G_2$. Then $\ker(\phi)$ is a normal subgroup of $G_1$, i.e.
+
+$$
+  \ker(\phi) \unlhd G_1
+$$
 
 <details>
 <summary>Proof</summary>
 
-The kernel of a homomorphism is obviously a subgroup. If $a \in\ker(\alpha)$, so that $\alpha(a) = e$, and $g\in G$, then
+We first show that $\ker(\phi)$ is a subgroup of $G_1$. For $i\in\set{1,2}$ let $e_i$ denote the identity element in $G_i$. For any $g\in G_1$ we have
 
 $$
-  \alpha(gag^{-1}) = \alpha(g)\alpha(a)\alpha(g)^{-1} = \alpha(g)\alpha(g)^{-1} = e
+\begin{align*}
+  \phi(e_1) \underbrace{=}^{\eqref{equation-8},\eqref{equation-7}}& \phi(e_1) \phi(g) (\phi(g))^{-1} \\
+  \underbrace{=}^{\eqref{equation-41}}& \phi(e_1 g) (\phi(g))^{-1} \\
+  \underbrace{=}^{\eqref{equation-15}}& \phi(g) (\phi(g))^{-1} \\
+  \underbrace{=}^{\eqref{equation-8}}& e_2 \tag{\label{equation-44}}
+\end{align*}
 $$
 
-Hence $gag^{-1} \in\ker(\alpha)$.
+which shows that $e_1 \in\ker(\phi)$.
+
+Next, for any $h\in\ker(\phi)$ it follows that
+
+$$
+\begin{align*}
+  \phi(h^{-1}) \underbrace{=}^{\eqref{equation-15}}& e_2 \phi(h^{-1}) \underbrace{=}^{\eqref{equation-45}} \phi(h) \phi(h^{-1}) \\
+  \underbrace{=}^{\eqref{equation-41}}& \phi(hh^{-1}) \underbrace{=}^{\eqref{equation-8}} \\
+  \underbrace{=}^{\eqref{equation-44}}& e_2
+\end{align*}
+$$
+
+which shows that $h^{-1} \in\ker{\phi}$, verifying $\eqref{equation-}$.
+
+Finally, for any $h_1, h_2 \ker{\phi}$
+
+$$
+  \phi(h_1 h_2) \underbrace{=}^{\eqref{equation-41}} \phi(h_1) \phi(h_2) \underbrace{=}^{\eqref{equation-45}} e_2 e_2 = e_2
+$$
+
+which shows that $h_1 h_2 \ker{\phi}$, verifying $\eqref{equation-}$.
+
+It remains to show that $\ker(\phi)$ is normal. For this let $g\in G_1$ be arbitrary and let $h' \in\ker{\phi}^g$, that is, there is $h\in\ker(\phi)$ such that $h' = ghg^{-1}$. Then we have
+
+$$
+\begin{align*}
+  \phi(h') =& \phi(ghg^{-1}) \underbrace{=}^{\eqref{equation-41}} \phi(g) \phi(h) \phi(g^{-1}) \\
+  \underbrace{=}^{\eqref{equation-45}}& \phi(g) e_2 \phi(g^{-1}) = \phi(g)\phi(g^{-1}) \\
+  \underbrace{=}^{\eqref{equation-41}}& \phi(gg^{-1}) = \phi(e_1) \\
+  =& e_2
+\end{align*}
+$$
+
+which shows that for any $g\in G_1$ we have that $h' \in\ker(\phi)^g$ implies $h' \in\ker(\phi)$. Hence, we have shown that
+
+$$
+\begin{equation*}
+  \ker(\phi)^g \subseteq \ker(\phi),\; \forall g\in G_1
+\tag{\label{equation-46}}
+\end{equation*}
+$$
+
+To finally show the reverse inclusion, let $h\in\ker(\phi)$ and $g\in G_1$ be arbitrary. Then
+
+$$
+\begin{equation*}
+  k = g^{-1} hg
+\tag{\label{equation-47}}
+\end{equation*}
+$$
+
+satisfies
+
+$$
+\begin{align*}
+  \phi(k) =& \phi(g^{-1} hg) \underbrace{=}^{\eqref{equation-41}} \phi(g^{-1}) \phi(h) \phi(g) \\
+  \underbrace{=}^{\eqref{equation-45}}& \phi(g^{-1}) e_2 \phi(g) = \phi(g^{-1}) \phi(g) \\
+  \underbrace{=}^{\eqref{equation-41}}& \phi(g^{-1} g) = \phi(e_1) \\
+  =& e_2
+\end{align*}
+$$
+
+such that $k\in\ker{\phi}$. For the arbitrary $h\in\ker(\phi)$ it then follows that
+
+$$
+  h \underbrace{=}^{\eqref{equation-47}} gkg^{-1} \in\ker(\phi)^g
+$$
+
+Consequently, we have
+
+$$
+  \ker(\phi) \subseteq \ker(\phi)^g,\; \forall g\in G_1
+$$
+
+which together with $\eqref{equation-46}$ proves that $\ker(\phi) = \ker(\phi)^g$ for all $g\in G_1$, that is, $\ker(\phi)$ is a normal subgroup of $G_1$.
 </details>
 </MathBox>
 
