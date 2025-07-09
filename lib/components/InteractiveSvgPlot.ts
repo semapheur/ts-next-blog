@@ -30,9 +30,7 @@ export class InteractiveSVGPlot {
   private readonly xmlns = "http://www.w3.org/2000/svg"
   private svgElement: SVGSVGElement
   private svgDefs: SVGDefsElement
-  private frameGroup: SVGGElement
   private plotGroup: SVGGElement
-  private margin?: Vector
   private viewRange: ViewRange = {
     x: new Vector(-10, 10),
     y: new Vector(-10, 10),
@@ -50,7 +48,6 @@ export class InteractiveSVGPlot {
 
   constructor(
     container: HTMLDivElement,
-    margin?: Vector,
     width?: number,
     height?: number,
     viewBox?: string,
@@ -88,32 +85,22 @@ export class InteractiveSVGPlot {
     this.svgElement.appendChild(this.svgDefs)
 
     // Create group elements
-    this.frameGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
-    if (margin) {
-      this.margin = margin
-      this.setFrameTransform(width, height)
-    }
-    this.svgElement.appendChild(this.frameGroup)
 
     this.plotGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
     this.setViewTransform(width, height)
-    this.frameGroup.appendChild(this.plotGroup)
+    this.svgElement.appendChild(this.plotGroup)
 
     this.crosshairGroup = document.createElementNS(
       this.xmlns,
       "g",
     ) as SVGGElement
-    this.frameGroup.appendChild(this.crosshairGroup)
+    this.svgElement.appendChild(this.crosshairGroup)
 
     this.gridGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
-    this.frameGroup.appendChild(this.gridGroup)
+    this.svgElement.appendChild(this.gridGroup)
 
     this.axisGroup = document.createElementNS(this.xmlns, "g") as SVGGElement
-    this.frameGroup.appendChild(this.axisGroup)
-
-    addChildElement(this.frameGroup, "g", { id: "crosshair-group" })
-    addChildElement(this.frameGroup, "g", { id: "grid-group" })
-    addChildElement(this.frameGroup, "g", { id: "axis-group" })
+    this.svgElement.appendChild(this.axisGroup)
 
     this.onPointerMoveBound = this.onPointerMove.bind(this)
     this.onPointerLeaveBound = this.onPointerLeave.bind(this)
@@ -142,27 +129,7 @@ export class InteractiveSVGPlot {
     this.transformView()
   }
 
-  private setFrameTransform(width?: number, height?: number) {
-    let transform = this.frameGroup.getCTM()!
-
-    if (!width) width = this.svgElement.getBoundingClientRect().width
-    if (!height) height = this.svgElement.getBoundingClientRect().height
-    const margin =
-      this.margin || new Vector((1 - transform.a) / 2, (1 - transform.d) / 2)
-
-    transform = new DOMMatrix([
-      1 - 2 * margin.x,
-      0,
-      0,
-      1 - 2 * margin.y,
-      (1 - 2 * margin.x) * width * margin.x,
-      (1 - 2 * margin.y) * height * margin.y,
-    ])
-    setSvgTransform(this.frameGroup, transform)
-  }
-
   private setViewTransform(width?: number, height?: number) {
-    const frameTransform = this.frameGroup.getCTM()!
 
     if (!width) width = this.svgElement.getBoundingClientRect().width
     if (!height) height = this.svgElement.getBoundingClientRect().height
@@ -172,12 +139,12 @@ export class InteractiveSVGPlot {
       this.viewRange.y.diff() as number,
     )
     const transform = new DOMMatrix([
-      (width * frameTransform.a) / viewLength.x,
+      (width) / viewLength.x,
       0,
       0,
-      (height * frameTransform.d) / viewLength.y,
-      width * frameTransform.a * (-this.viewRange.x[0] / viewLength.x),
-      height * frameTransform.d * (-this.viewRange.y[0] / viewLength.y),
+      (height) / viewLength.y,
+      width * (-this.viewRange.x[0] / viewLength.x),
+      height * (-this.viewRange.y[0] / viewLength.y),
     ])
     setSvgTransform(this.plotGroup, transform)
   }
@@ -221,8 +188,8 @@ export class InteractiveSVGPlot {
       id: "crosshair-line-y",
     })
 
-    this.frameGroup.addEventListener("pointermove", this.onPointerMoveBound)
-    this.frameGroup.addEventListener("pointerleave", this.onPointerLeaveBound)
+    this.svgElement.addEventListener("pointermove", this.onPointerMoveBound)
+    this.svgElement.addEventListener("pointerleave", this.onPointerLeaveBound)
   }
 
   private onPointerMove(event: PointerEvent) {
@@ -232,7 +199,7 @@ export class InteractiveSVGPlot {
     if (!text || !xLine || !yLine) return
 
     const transform = this.plotGroup.getCTM()!
-    const svgPos = mousePosition(this.frameGroup, event)
+    const svgPos = mousePosition(this.svgElement, event)
     if (!svgPos || !transform) return
 
     const drawPos = screenToDrawPosition(svgPos, transform)!
@@ -265,8 +232,8 @@ export class InteractiveSVGPlot {
       const el = document.getElementById(`crosshair-${i}`)
       el?.remove()
     }
-    this.frameGroup.removeEventListener("pointermove", this.onPointerMoveBound)
-    this.frameGroup.removeEventListener(
+    this.svgElement.removeEventListener("pointermove", this.onPointerMoveBound)
+    this.svgElement.removeEventListener(
       "pointerleave",
       this.onPointerLeaveBound,
     )
@@ -282,7 +249,7 @@ export class InteractiveSVGPlot {
       event.preventDefault()
 
       // Click position
-      const pos = mousePosition(this.frameGroup, event)
+      const pos = mousePosition(this.svgElement, event)
       if (!pos) return
       startPos = pos
       isPanning = true
@@ -291,7 +258,7 @@ export class InteractiveSVGPlot {
         if (!isPanning) return
 
         const transform = this.plotGroup.getCTM()!
-        const panPos = mousePosition(this.frameGroup, e)
+        const panPos = mousePosition(this.svgElement, e)
         if (!panPos) return
 
         const dist = {
@@ -312,18 +279,18 @@ export class InteractiveSVGPlot {
         this.redrawPlots()
 
         // Clean up event listeners
-        this.frameGroup.removeEventListener("pointermove", onPointerMoveBound)
-        this.frameGroup.removeEventListener("pointerup", onPointerUpBound)
+        this.svgElement.removeEventListener("pointermove", onPointerMoveBound)
+        this.svgElement.removeEventListener("pointerup", onPointerUpBound)
       }
 
       // Add temporary event listeners
-      this.frameGroup.addEventListener("pointermove", onPointerMoveBound)
-      this.frameGroup.addEventListener("pointerup", onPointerUpBound)
+      this.svgElement.addEventListener("pointermove", onPointerMoveBound)
+      this.svgElement.addEventListener("pointerup", onPointerUpBound)
     }
 
     this.eventListeners.storeEventListener(
       "pointerdown",
-      this.frameGroup,
+      this.svgElement,
       onClickBound,
     )
   }
@@ -334,7 +301,7 @@ export class InteractiveSVGPlot {
         this.viewRange.x.diff() as number,
         this.viewRange.y.diff() as number,
       )
-      const svgPos = mousePosition(this.frameGroup, event)
+      const svgPos = mousePosition(this.svgElement, event)
       if (!svgPos) return
       const transform = this.plotGroup.getCTM()!
 
@@ -360,7 +327,7 @@ export class InteractiveSVGPlot {
 
     this.eventListeners.storeEventListener(
       "wheel",
-      this.frameGroup,
+      this.svgElement,
       onWheelBound,
     )
   }
@@ -378,7 +345,7 @@ export class InteractiveSVGPlot {
       dragged = true
 
       // Click coordinates
-      clickPos = mousePosition(this.frameGroup, event)
+      clickPos = mousePosition(this.svgElement, event)
       if (!clickPos) {
         dragged = false
         return
@@ -390,12 +357,12 @@ export class InteractiveSVGPlot {
         fill: "rgb(var(--color-secondary))",
         opacity: "0.1",
       }
-      addChildElement(this.frameGroup, "path", path)
+      addChildElement(this.svgElement, "path", path)
 
       const onDragBound = (e: PointerEvent) => {
         if (!dragged || !clickPos) return
 
-        dragPos = mousePosition(this.frameGroup, e)
+        dragPos = mousePosition(this.svgElement, e)
         if (!dragPos) return
 
         const rect = document.getElementById("zoom-rect")
@@ -442,18 +409,18 @@ export class InteractiveSVGPlot {
         }
 
         // Cleanup event handlers
-        this.frameGroup.removeEventListener("pointermove", onDragBound)
-        this.frameGroup.removeEventListener("pointerup", endDragBound)
+        this.svgElement.removeEventListener("pointermove", onDragBound)
+        this.svgElement.removeEventListener("pointerup", endDragBound)
       }
 
       // Add temporary event listeners
-      this.frameGroup.addEventListener("pointermove", onDragBound)
-      this.frameGroup.addEventListener("pointerup", endDragBound)
+      this.svgElement.addEventListener("pointermove", onDragBound)
+      this.svgElement.addEventListener("pointerup", endDragBound)
     }
 
     this.eventListeners.storeEventListener(
       "pointerdown",
-      this.frameGroup,
+      this.svgElement,
       onClickBound,
     )
   }
@@ -494,7 +461,6 @@ export class InteractiveSVGPlot {
   }
 
   private transformView(pan = false) {
-    this.setFrameTransform()
     this.setViewTransform()
 
     this.transformGrid()
