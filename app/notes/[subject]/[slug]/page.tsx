@@ -1,16 +1,17 @@
-import type { Metadata } from "next"
-import dynamic from "next/dynamic"
-import { compileMDX } from "next-mdx-remote/rsc"
 import fs from "node:fs"
 import path from "node:path"
 import matter from "gray-matter"
-
-import { remarkPlugins, rehypePlugins } from "lib/utils/mdxParse"
+import Loader from "lib/components/Loader"
+import MathPopover from "lib/components/MathPopover"
+import { PopoverContextProvider } from "lib/components/PopoverContext"
 import { markdownHeadings } from "lib/utils/mdParse"
 import { mdxComponents } from "lib/utils/mdxComponents"
-import Loader from "lib/components/Loader"
+import { rehypePlugins, remarkPlugins } from "lib/utils/mdxParse"
 import type { NoteHeading } from "lib/utils/types"
 import type { MDXProps } from "mdx/types"
+import type { Metadata } from "next"
+import dynamic from "next/dynamic"
+import { compileMDX } from "next-mdx-remote/rsc"
 
 const Toc = dynamic(() => import("./Toc"), {
   loading: () => (
@@ -100,20 +101,21 @@ export default async function NotePage({ params }: Props) {
 
   return (
     <main className="relative h-full w-full overflow-y-clip bg-primary shadow-inner-l lg:grid lg:grid-cols-[3fr_1fr] dark:shadow-black/50">
-      <>
-        <div
-          key="div.note"
-          className="@container flex h-full justify-center overflow-y-scroll"
-        >
-          <article className="prose prose-stone prose-sm md:prose-base dark:prose-invert @md:max-w-read @xl:max-w-3xl max-w-full px-2 py-8">
-            <h1 className="text-center font-extrabold text-5xl">
-              {frontmatter.data.title}
-            </h1>
+      <div
+        key="div.note"
+        className="@container flex h-full justify-center overflow-y-scroll"
+      >
+        <article className="prose prose-stone prose-sm md:prose-base dark:prose-invert @md:max-w-read @xl:max-w-3xl max-w-full px-2 py-8">
+          <h1 className="text-center font-extrabold text-5xl">
+            {frontmatter.data.title}
+          </h1>
+          <PopoverContextProvider>
             {content}
-          </article>
-        </div>
-        {frontmatter.data.showToc && <Toc key="toc.note" headings={headings} />}
-      </>
+            <MathPopover />
+          </PopoverContextProvider>
+        </article>
+      </div>
+      {frontmatter.data.showToc && <Toc key="toc.note" headings={headings} />}
     </main>
   )
 }

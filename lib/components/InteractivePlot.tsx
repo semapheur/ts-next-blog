@@ -1,5 +1,9 @@
 "use client"
 
+import { InteractiveSVGPlot } from "lib/components/InteractiveSvgPlot"
+import useResizeObserver from "lib/hooks/useResizeObserver"
+import { CrossIcon } from "lib/utils/icons"
+import { parse as mathParse } from "mathjs"
 import {
   type ChangeEvent,
   createContext,
@@ -11,12 +15,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { parse as mathParse, or } from "mathjs"
-
-import useResizeObserver from "lib/hooks/useResizeObserver"
-import { InteractiveSVGPlot } from "lib/components/InteractiveSvgPlot"
 import Split from "./Split"
-import { CrossIcon } from "lib/utils/icons"
 import Tex from "./Tex"
 
 type PlotState = {
