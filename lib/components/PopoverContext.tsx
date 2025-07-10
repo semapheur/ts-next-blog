@@ -4,12 +4,12 @@ import { createContext, type ReactNode, useState } from "react"
 
 type PopoverState = {
   contentId: string | null
-  position: { x: number; y: number }
+  triggerAnchor: HTMLAnchorElement | null
   open: boolean
 }
 
 export const PopoverContext = createContext<{
-  showPopover: (contentId: string, position: { x: number; y: number }) => void
+  showPopover: (contentId: string, targetAnchor: HTMLAnchorElement) => void
   hidePopover: () => void
   state: PopoverState
 } | null>(null)
@@ -17,15 +17,15 @@ export const PopoverContext = createContext<{
 export function PopoverContextProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<PopoverState>({
     contentId: null,
-    position: { x: 0, y: 0 },
+    triggerAnchor: null,
     open: false,
   })
 
   const showPopover = (
     contentId: string | null,
-    position: { x: number; y: number },
+    triggerAnchor: HTMLAnchorElement | null,
   ) => {
-    setState({ contentId, position, open: true })
+    setState({ contentId, triggerAnchor, open: true })
   }
 
   const hidePopover = () => {

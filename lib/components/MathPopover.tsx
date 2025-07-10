@@ -1,40 +1,74 @@
 "use client"
 
 import { PopoverContext } from "lib/components/PopoverContext"
-import { use, useEffect, useRef } from "react"
+import { use, useEffect, useRef, useState } from "react"
+
+type Position = {
+  left: number | string
+  top: number | string
+}
 
 export default function MathPopover() {
   const popoverContext = use(PopoverContext)
-  const content = useRef<string | null>(null)
+  const [clonedHtml, setClonedHtml] = useState<string | null>(null) // Store HTML string
+  const [position, setPosition] = useState<Position | null>(null)
+  const divRef = useRef<HTMLDivElement | null>(null)
+
+  const contentId = popoverContext?.state.contentId
+  const triggerAnchor = popoverContext?.state.triggerAnchor
+  const visible = popoverContext?.state.open
 
   useEffect(() => {
-    const contentId = popoverContext?.state.contentId
-    if (!contentId) return
-
-    const contentTarget = document.getElementById(contentId)
-    if (!contentTarget) return
-
-    let contentElement: HTMLElement | null = null
-    if (contentId.startsWith("equation")) {
-      contentElement = contentTarget.closest("span.katex-display")
-    } else {
-      contentElement = contentTarget.closest("aside")
+    if (!contentId || !triggerAnchor) {
+      setClonedHtml(null)
+      setPosition(null)
+      return
     }
 
-    if (!contentElement) return
+    if (!contentId) {
+      setClonedHtml(null)
+      return
+    }
 
-    content.current = contentElement.outerHTML
-  }, [popoverContext?.state.contentId])
+    const contentTarget = document.getElementById(contentId)
+    if (!contentTarget) {
+      setClonedHtml(null)
+      return
+    }
+
+    const source = contentId.startsWith("equation")
+      ? contentTarget.closest("span.katex-display")
+      : contentTarget.closest("aside")
+    if (!source) {
+      setClonedHtml(null)
+      return
+    }
+
+    const anchorRect = triggerAnchor?.getBoundingClientRect()
+    if (!anchorRect) {
+      setClonedHtml(null)
+      return
+    }
+
+    const positionStyle = {
+      left: "2rem",
+      top: anchorRect.top < window.innerHeight / 2 ? anchorRect.bottom : "2rem",
+    }
+
+    setPosition(positionStyle)
+
+    setClonedHtml(source.outerHTML)
+  }, [contentId, triggerAnchor])
 
   return (
     <div
-      className="absolute z-50 min-w-max rounded border bg-white p-4 shadow-lg"
+      ref={divRef} // Assign ref to the div
+      className="absolute z-[999] min-w-max rounded border border-secondary bg-primary p-2 text-text shadow-lg"
       style={{
-        top: popoverContext?.state.position.y,
-        left: popoverContext?.state.position.x,
-        display: popoverContext?.state.open ? "block" : "none",
+        ...position,
+        display: visible && position && clonedHtml ? "block" : "none", // Only show if visible and has content
       }}
-      dangerouslySetInnerHTML={{ __html: content.current || "" }}
+      dangerouslySetInnerHTML={{ __html: clonedHtml || "" }}
     />
   )
 }

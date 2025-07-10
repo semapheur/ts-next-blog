@@ -18,9 +18,10 @@ export default function PopoverLink({ href, children }: Props) {
         const contentId = e.currentTarget.getAttribute("href")?.replace("#", "")
         if (!contentId) return
 
-        const rect = e.currentTarget.getBoundingClientRect()
-        const position = { x: rect.right, y: rect.top }
-        popoverContext.showPopover(contentId, position)
+        popoverContext.showPopover(
+          contentId,
+          e.currentTarget as HTMLAnchorElement,
+        )
       }}
       onMouseLeave={popoverContext?.hidePopover}
     >
