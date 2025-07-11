@@ -62,11 +62,11 @@ export default function MathPopover() {
 
   return (
     <div
-      ref={divRef} // Assign ref to the div
+      ref={divRef}
       className="absolute z-[999] min-w-max rounded border border-secondary bg-primary p-2 text-text shadow-lg"
       style={{
         ...position,
-        display: visible && position && clonedHtml ? "block" : "none", // Only show if visible and has content
+        display: visible && position && clonedHtml ? "block" : "none",
       }}
       dangerouslySetInnerHTML={{ __html: clonedHtml || "" }}
     />
