@@ -36,9 +36,17 @@ export default function MathPopover() {
       return
     }
 
-    const source = contentId.startsWith("equation")
-      ? contentTarget.closest("span.katex-display")
-      : contentTarget.closest("aside")
+    let source: HTMLElement | null = null
+    if (contentId.startsWith("equation")) {
+      source = contentTarget.closest("span.katex-display")
+    } else if (
+      contentId.startsWith("figure") ||
+      contentId.startsWith("table")
+    ) {
+      source = contentTarget.closest("figure")
+    } else {
+      source = contentTarget.closest("aside")
+    }
     if (!source) {
       setClonedHtml(null)
       return
@@ -63,7 +71,7 @@ export default function MathPopover() {
   return (
     <div
       ref={divRef}
-      className="absolute z-[999] min-w-max rounded border border-secondary bg-primary p-2 text-text shadow-lg"
+      className="absolute z-[999] min-w-min max-w-[90%] overflow-scroll rounded border border-secondary bg-primary p-2 text-text shadow-lg"
       style={{
         ...position,
         display: visible && position && clonedHtml ? "block" : "none",
