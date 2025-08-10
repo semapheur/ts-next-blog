@@ -3,9 +3,11 @@ title: 'Neural Networks'
 subject: 'Machine Learning'
 showToc: true
 references:
+  - book_calin_2020
   - book_mohri_etal_2012
   - book_murphy_2022
   - book_shalev-schwartz_ben-david_2014
+  - book_ye_2022
 ---
 
 A neural network can be represented by a directed graph whose nodes correspond to neurons and edges correspond to links between them. Each neuron receives as input a weighted sum of the outputs of the neurons connected to its incoming edges.
@@ -180,22 +182,29 @@ $$
 </MathBox>
 
 <MathBox title='Fully-connected feedforward neural network' boxType='definition'>
-Let $\boldsymbol{\theta}\in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. A fully connected feedforward neural network (FFNN) is characterized by: 
-- $L \in\N_+$, the number of layers, where 
-    - $\ell = 0$ is the input layer
-    - $\ell = L$ is the output layer
-    - $\ell = 1,\dots,L-1$ are the hidden layers 
-- $n_0, n_L, n_\ell \in \N_+$, representing the number of neurons in the input, output, and $\ell$-th hidden layer
-- activations function $\sigma_\ell : \R^{n_\ell} \to \R^{n_\ell}$ for $\ell=1,\dots,L$
+Let $\boldsymbol{\theta}\in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. A fully connected feedforward neural network (FFNN) with $L \in N_+$ layers is characterized by its architecture $a = (\mathbf{n}, \boldsymbol{sigma})$ for $\mathbf{n} \in\N_+^{L+1}$, where
+- $\mathbf{n} = (n_\ell)_{\ell=0}^L$ denotes the number of neurons in each layer $\ell$
+- $\boldsymbol{\sigma} = (\sigma_\ell : \R\to\R)_{\ell=0}^L$ denotes the activation function applied componentwise to each layer $\ell$
+
+Layer indexing follows the convention:
+- $\ell = 0$: input layer
+- $\ell = L$: output layer
+- $\ell \in [L - 1]$: hidden layers 
+
+In terms on neurons, the parameter dimension is given by
+
+$$
+  p = \sum_{\ell=1}^L n_\ell (n_{\ell - 1} + 1)
+$$
 
 The width and depth of the FNNN architecture are given by $\lVert N \rVert_\infty$ and $L$, respectively, where $N = \sum_{\ell=0}^L n_\ell$ is the total number of neurons. The architecture is called deep if $L > 2$ and shallow if $L = 2$.
 
-The realization function of the FFNN is given by
+The realization function of the FFNN, denoted $\Phi_a : \R^{n_0} \times \R^p \to\R^{n_L}$ is given by
 
 $$
 \begin{align*}
-  \Phi_{\sigma_1,\dots,\sigma_L}^{\boldsymbol{\theta}, n_0}(\mathbf{x}) =& \sigma_L \circ A_{n_L, n_{L-1}}^{\boldsymbol{\theta}, s_{L-1}} \circ \sigma_{L-1} \circ A_{n_{L-1}, n_{L-2}}^{\boldsymbol{\theta}, s_{L-2}} \circ\cdots \\
-  & \circ \sigma_1 \circ A_{n_1, n_0}^{\boldsymbol{\theta, 0}}(\mathbf{x})
+  \Phi_a (\mathbf{x}, \boldsymbol{\theta}) =& \sigma_L \circ A_{n_L, n_{L-1}}^{s_{L-1}} \circ \sigma_{L-1} \circ A_{n_{L-1}, n_{L-2}}^{s_{L-2}} \circ\cdots \\
+  & \circ \sigma_1 \circ A_{n_1, n_0}^0 (\mathbf{x}, \boldsymbol{\theta})
 \end{align*}
 $$
 
@@ -205,16 +214,16 @@ $$
   s_\ell = \sum_{k=1}^\ell n_k (n_{k-1} + 1),\; \ell = 1,\dots,L - 1
 $$
 
-For each hidden layer $\ell = 1,\dots, L - 1$, we define the pre-activation $\Phi_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}$ and activation $\bar{\Phi}_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}$ as
+For each hidden layer $\ell = 1,\dots, L - 1$, we define the pre-activation $\Phi^{(\ell)}: \R^{n_{\ell - 1}} \times \R^p \to \R ^{\boldsymbol{\theta}, n_{\ell - 1}}$ and activation $\bar{\Phi}^{(\ell)} : \R^{n_{\ell - 1}} \times \R^p \to \R ^{\boldsymbol{\theta}, n_{\ell - 1}}$ as
 
 $$
-  \bar{\Phi}_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}} = \sigma_\ell \left(\Phi_{\sigma_l}^{\boldsymbol{\theta}, n_{\ell - 1}}\right)
+  \bar{\Phi}^{(ell)} = \sigma_\ell \left(\Phi^{(\ell)}\right)
 $$
 
-Each affine functions $A_{n_\ell, n_{\ell-1}}^{\boldsymbol{\theta}, s_{n_{\ell-1}}}$ for $\ell = 1,\dots,L$, is given by
+Each affine functions $A_{n_\ell, n_{\ell-1}}^{s_{n_{\ell-1}}}$ for $\ell = 1,\dots,L$, is given by
 
 $$
-  A_{n_\ell, n_{\ell-1}}^{\boldsymbol{\theta}, s_{\ell-1}} (\mathbf{x}) = \mathbf{W}^{(\ell)} \mathbf{x} + \mathbf{b}^{(\ell)}
+  A_{n_\ell, n_{\ell-1}}^{s_{\ell-1}} (\mathbf{x}, \boldsymbol{\theta}) = \mathbf{W}^{(\ell)} \mathbf{x} + \mathbf{b}^{(\ell)}
 $$
 
 where the weights $\mathbf{W}^{(\ell)} \in \R^{n_\ell \times n_{\ell-1}}$ and biases $\mathbf{b}^{(\ell)} \in \R^{n_\ell}$ from layer $\ell - 1$ to $\ell$ are given by
@@ -232,12 +241,6 @@ In terms of $\mathbf{W}^{(\ell)}$ and  $\mathbf{b}^{(\ell)}$, the parameters $\b
 
 $$
   \boldsymbol{\theta} = \left((\mathbf{W}^{(\ell)}, \mathbf{b}^{(\ell)})\right)_{\ell=1}^L \in \prod_{\ell=1}^L (\R^{n_\ell \times n_{\ell-1}} \times \R^{n_\ell}) \cong \R^p
-$$
-
-where the parameter dimension satisfies
-
-$$
-  p \geq \sum_{\ell=1}^L n_\ell (n_{\ell - 1} + 1)
 $$
 </MathBox>
 
@@ -399,6 +402,26 @@ $$
 ```
 </LatexFigure>
 
+<MathBox title='Hypothesis sets of neural networks' boxType='definition'>
+Let $a = (\mathbf{n}, \boldsymbol{\sigma})$ be a neural network architecture with input dimension $n_0 = d$, output dimension $n_L = 1$, and measurable activation functions $\boldsymbol{\sigma}$. For regression taks the corresponding hypothesis set is given by
+
+$$
+  F_a = \set{\Phi_a (\cdot, \boldsymbol{\theta}) | \boldsymbol{\theta} \in\R^p}
+$$
+
+and for classification tasks by
+
+$$
+  F_a = \set{\operatorname{sgn}(\Phi_a (\cdot, \boldsymbol{\theta})) | \boldsymbol{\theta}\in\R^p}
+$$
+
+where
+
+$$
+  \operatorname{sgn}(x) := \begin{cases} 1,\quad& x\geq 0 \\ -1,\quad& x < 0
+$$
+</MathBox>
+
 A feedforward neural network (FFNN) is described by a directed asyclic graph, $G = (V,E)$, and a weight function over the edges, $w = E\to\R$. Nodes of the graph correspond to neurons. Each single neuron is modeled as a real function $\sigma:\R\to\R$ called the activation function of the neuron. Each edge in the graph link the output of some neuron to the input of another neuron. The input of a neuron is obtained by taking a weighted sum of the outputs of all the neurons connected to it, where the weighting is according to $w$.
 
 To network is further organized into layers. The set of nodes can be decomposed into a union a disjoint subsets $V = \sqcup_{t=0}^T V_t$ such that every edge in $E$ connects some node in $V_{t-1}$ to some node in $V_t$ for some $t \in [T]$. The bottom layer, $V_0$, is called the input layer and contains $n + 1$ neurons, where $n$ is the dimensionality of the input space. For every $i\in [n]$, the output of neuron $i$ is simply $x_i$. The last neuron in $V_0$ is the intercept node, which always outputs $1$. Layers $V_1,\dots, V_{T-1}$ are often called *hidden layers*. The top layer, $V_T$ is called the output layers.
@@ -415,6 +438,120 @@ $$
 That is, the input to $v_{t+1,j}$ is a weighted sum of the outpus of the neurons in $V_t$ that are connected to $v_{t+1,j}$, where weighting is according to $w$, and the output of $v_{t+1}$ is simply the application of the activation function $\sigma$ on its input.
 
 We refer to $T$ as the number of layers in the network (excluding $V_0$), or alternatively the *debth* of the network. The size of the network is denoted $|V|$ and the width of the netweek is $\max_{t\in T} |V|_t$.
+
+## Approximation
+
+<MathBox title='Universal approximation theorem' boxType='theorem' tag='theorem-1'>
+Let $d\in \N$, let $K \subseteq \R^d$ be compact, and let $\sigma \in L_\text{loc}^\infty (\R)$ be a locally bounded activation function such that the closure of the points of discontinuity of $\sigma$ has Lebesgue measure zero (so in particular $\sigma$ is measurable). Further, let
+
+$$
+  \tilde{F} := \bigcup_{n\in\N} F_{(d,n,1),\sigma}
+$$
+
+be the corresponding set of two-layer neural network realizations with input dimension $d$, $n$ hidden neurons and one-dimensional output. Then $C(K) \subset \operatorname{cl}(\tilde{F})$, i.e. $\tilde{F}$ is dense in $C(K)$, if only if there does not exist a polynomial $p:\R\to\R$ with $p = \sigma$ almost everywhere. Here the closure is taken with respect to the topology induced by the $L^\infty (K)$-norm.
+</MathBox>
+
+Theorem $\ref{theorem-1}$ can be proven by the Hahn-Banach theorem, which implies that $\tilde{F}$ being dense in some real normed vector space $S$ is equivalent to the following condition: For all non-trivial functionals $F\in S' \setminus\set{0}$ from the topological dual space of $S$ there exists parameters $\mathbf{w}\in\R^d$ and $b\in\R$ such that
+
+$$
+  F(\sigma(\braket{\mathbf{w}, \cdot} + b)) \neq 0
+$$
+
+In case of $S = C(K)$ we have by the Riesz-Markov-Kakutani representation theorem that $S'$ is the space of signed Borel measures on $K$. Therefore, Theorem $\ref{theorem-1}$ holds, if $\sigma$ is such that, for a signed Borel meausre $\mu$
+
+$$
+\begin{equation*}
+  \int_K \sigm(\braket{\mathbf{w}, \mathbf{x}} + b) \d\mu(x) = 0
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+for all $\mathbf{w}\in\R^d$ and $b\in\R$ implies that $\mu = 0$. An activation function $\sigma$ satisfying this condition is called *discriminatory*. It is not hard to see that any sigmoidal $\sigma$ is discriminatory. Indeed, assume that $\sigma$ satisfies $\eqref{equation-2}$. Since for every $\mathbf{x}\in\R^d$ it holds that $\sigma(a\mathbf{x} + b) \to \mathbf{1}_{(0,\infty)} (\mathbf{x}) + \sigma(b) \mathbf{1}_{\set{0}}(\mathbf{x})$ for $a\to\infty$, we conclude by superposition and passing to the limit that for all $c_1, c_2 \in\R$ and $\mathbf{w}\in\R^d$, $b\in\R$
+
+$$
+  \int_K \mathbf{1}_{[c_1, c_2]} (\braket{\mathbf{w}, \mathbf{x}} + b) \d\mu(\mathbf{x}) = 0
+$$
+
+Representing the exponential function $\mathbf{x} \mapsto e^{-2\pi i\mathbf{x}}$ as the limit of sums of elementary functions yields that
+
+$$
+  \int_K \exp(-2\pi i (\braket{\mathbf{w}, \mathbf{x}} + )) \d\mu(x) = 0,\; \forall \mathbf{w}\in\R^d, b\in\R
+$$
+
+Hence, the Fourier transform of $\mu$ vanishes which implies that $\mu = 0$.
+
+<MathBox title='Interpolation' boxType='proposition'>
+Let $d, m \in \N$, let $x^{(i)} \in\R^d$ for $i\in [m]$, with $x^{(i)} \neq x^{(j)}$ for $i \neq j$, let $\sigma\in C(\R)$, and assume that $\sigma$ is not a polynomial. Then, there exists parameters $\theta^{(1)} \in \R^{m\times d} \times \R^m$ with the following property: For every $k\in\N$ and every sequence of label $y^{(i)} \in\R^k$ for $i\in [m]$, there exist parameters $\theta^{(2)} = (W^{(2)}, 0) \in \R^{k\times m} \times \R^k$ for the second layer of the neural network architecture $a = ((d, m, k), \sigma)$ such that
+
+$$
+  \Phi_a (x^{(i)}, (\theta^{(1)}, \theta^{(2)})) = y^{(i)} ,\; i\in[m]
+$$
+
+<details>
+<summary>Proof sketch</summary>
+
+Note that Theorem $\ref{theorem-1}$ also holds for functions $g \in C(K, R^m)$ with multi-dimensional outpu by approximating each one-dimensional component $\mathbf{x} \mapsto (g(\mathbf{x}))_i$ and stacking the resulting networks. Second, we can add an additional row containing only zeroes to the weight matrix $\mathbf{W}^{(1)}$ of the approximating neural network as well as an additional entry to the bias vector $\mathbf{b}^{(1)}$. The effect of this is that we obtain an additional neuron with constant output. Since $\sigma \neq 0$ we can choose $\mathbf{b}^{(1)}$ such that the output of this neuron is not zero. Thus, we can include the bias vector $\mathbf{b}^{(2)}$ of the second layer into the weight matrix $\mathbf{W}^{(2)}$. Now choose $g\in C(\R^m, \R^m)$ to be a function satisfying $g(x^{(i)}) = e^{(i)}$, for $i\in[m]$, where $e^{(i)} \in\R^m$ denotes the $i$th standard basis vector. By the discussion before there exists a neural network architecture $\tilde{a} = ((d, n, m), \sigma)$ and parameters $\tilde{\boldsymbol{\theta}} = ((\tilde{\mathbf{W}}^{(1)}, \tilde{\mathbf{b}}^{(1)}), (\tilde{\mathbf{W}}^{(2)}, \mathbf{0}))$ such that
+
+$$
+\begin{equation*}
+  \Norm{\Phi_{\tilde{a}} (\cdot, \tilde{\boldsymbol{\theta}}) - g}_{L^\infty (K)} < \frac{1}{m}
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+where $K$ is a compact set with $\mathbf{x}^{(i)} \in K$ for $i\in[m]$. Let us abbreviate the output of the activations in the first layer evaluated at the input features by
+
+$$
+  \tilde{\mathbf{A}} := \left[\sigma\left(\tilde{W}^{(1)} (\mathbf{x}^{(1)}) + \tilde{\mathbf{b}}^{(1)} \right),\dots,\sigma\left(\tilde{\mathbf{W}}^{(1)} (\mathbf{x}^{(m)}) + \tilde{\mathbf{b}}^{(1)}\right)\right] \in\R^{n\times m}
+$$
+
+The equivalence of the max and operator norm and $\eqref{equation-3}$ establish that
+
+$$
+\begin{align*}
+  \Norm{\tilde{\mathbf{W}}^{(2)} \tilde{\mathbf{A}} - \mathbf{I}_m}_\text{op} \leq& m \max_{i,j \in [m]} \left|(\tilde{\mathbf{W}}^{(2)} \tilde{\mathbf{A}} - \mathbf{I}_m)_{i,j} \right| \\
+  =& m \max_{j\in [m]} \Norm{\Phi_{\tilde{a}} (\mathbf{x}^{(j)}, \tilde{\boldsymbol{\theta}}) - g(\mathbf{x}^{(j)})}_\infty < 1
+\end{align*}
+$$
+
+where $\mathbf{I}_m$ denotes the $m\times m$ identity matrix. Thus, the matrix $\tilde{\mathbf{W}}^{(2)} \tilde{\mathbf{A}} \in\R^{m\times m}$ needs to have full rank and we can extract $m$ linearly independent rows from $\tilde{\mathbf{A}}$ resulting in an invertible matrix $\mathbf{A}\in\R^{m\times m}$. Now, we define the desired parameters $\boldsymbol{\theta}^{(1)}$ for the first layer by extracting the corresponding rows from $\tilde{\mathbf{W}}^{(1)}$ and $\tilde{\mathbf{b}}^{(1)}$ and the parameters $\boldsymbol{\theta}^{(2)}$ of the second layer by
+
+$$
+  \mathbf{W}^{(2)} := \begin{bmatrix} \mathbf{y}^{(1)} & \dots & \mathbf{y}^{(m)} \mathbf{A}^{-1} \in\R^{k\times m}
+$$
+
+This proves that with any discriminatory activation function we can interpolate arbitrary training data $(\mathbf{x}^{(i)}, \mathbf{y}^{(i)}) \in\R^d \times\R^k$ for $i\in [m]$, using a two layer neural networkd with $m$ hidden neurons, i.e. $O(m(d + k))$ parameters.
+</details>
+</MathBox>
+
+<MathBox title='Approximation of smooth functions' boxType='theorem' tag="theorem-2">
+Let $d, k \in \N$, $p\in [1,\infty]$, and let $\sigma \in C^\infty (\R)$ be a smooth activation function, which is not polynomial. Then there exists a constant $c \in (0,\infty)$ with the following property: For every $n\in\N$ there exist first-layer parameters $\theta^{(1)} \in\R^{n\times d} \times \R^n$ for the two-layer neural network architecture $a = ((d, n, 1), \sigma)$ such that for every $g\in W^{k,p} ((0,1)^d)$ we have
+
+$$
+  \inf_{\theta^{(2)} \in\R^{1\times n} \times\R} \Norm{\Phi_a (\cdot, (\theta^{(1)}, \theta^{(2)})) - g}_{L^p ((0,1)^d)} \leq cn^{-d/k} \norm{g}_{W^{k,p} ((0,1)^d)}
+$$
+
+where $\Phi_a$ is the realization function of the neural network.
+
+<details>
+<summary>Proof sketch</summary>
+
+The proof proceeds by polynomial reduction. The idea is
+1. If the activation function $\sigma$ has a derivative of some order $p$ that is nonzero at a point $\lambda\in\R$, then we can approximate the monomial $x\mapsto x^p$ on any compact interval by a fixed-size neural network whose parameters grow in magnitude as the approximation accuracy increases.
+2. Specifically, for $p$-times differentiable $\sigma$ with $\sigma^{(p)} (\lambda) \neq 0$, we can recover $x^p$ from rescaled $p$th order forward differences of $\sigma$
+
+$$
+  \lim_{h\to 0} \sup_{x\in K} \left| \sum_{i=0}^p \frac{(-1)^i \binom{p}{i}}{h^p \sigma^{(p)} (\lambda)} \sigma((p/2 - i) hx + \lambda) - x^p \right| = 0
+$$
+
+where $K\subset\R$ is compact.
+
+3. Since $\sigma$ is smooth and not a polynomial, it has a nonzero derivative of every order $p$ at som point $\lambda_p$. This allows reproduction of all univariate monomials $x \mapsto x^p$. Tensor-product constructions then extend this to multivariate polynomials.
+4. Classical result from nonlinear approximation theory state that $n$-term approximation from a space containing all multivariate polynomials of degree $\leq m$ achieve the optimal rate $n^{-k/d}$ in $W^{k,p}$-norm. By reproducing polynomials, the neural network inherits this rate.
+</details>
+</MathBox>
+
+Theorem $\ref{theorem-2}$ shows that two-layer neural networks with smooth, non-polynomial activations achieve the same optimal approximation rates $O(n^{-k/d})$ for $W^{k,p}$-smooth functions on $(0,1)^d$ as classical methods such as spline bases or piecewise polynomial approximation. In general, many approximation schemes can be emulated by neural networks without loss of convergence rate.
 
 ## Learning neural networks
 
@@ -698,18 +835,19 @@ In this section we derive the backpropagation algorithm for training a feedforwa
 Suppose we have a training set $\set{(\mathbf{x}_n, \mathbf{y}_n) | \mathbf{x}\in\mathbb{F}^{n_0}, \mathbb{F}^{n_{L+1}}}_{n=1}^N$ of $N\in\N$ samples. We are interested in minimizing the mean squared error given by
 
 $$
-\label{equation-ffnn-cost-mse}
-  C(\mathbf{W}, \mathbf{b}) = \frac{1}{2N} \sum_{n=1}^N \lVert \hat{\mathbf{y}}_n - \mathbf{y} \rVert^2,
+\begin{equation*}
+  C(\mathbf{W}, \mathbf{b}) = \frac{1}{2N} \sum_{n=1}^N \lVert \hat{\mathbf{y}}_n - \mathbf{y} \rVert^2
+\tag{\label{equation-1}}
+\end{equation*}
 $$
 
 where $\hat{\mathbf{y}} = \mathbf{a}^{(L+1)} = \sigma(\mathbf{z}^{(L+1)})$ is the output of FFNN for the $n$th input. The cost of training example $n$, given by
 
 $$
-\label{equation-ffnn-cost-mse-example}
   C_n (\mathbf{W}, \mathbf{b}) = \frac{1}{2} \lVert \mathbf{a}^{(L+1)} - \mathbf{y}_n \rVert^2 = \frac{1}{2} \sum_{j=1}^{n_{L+1}} (a_j^{(L+1)} - y_n)^2
 $$
 
-To derive the backpropagation equations, we need to calculate the partial derivatives of $C_n$ with respect to the bias and the weights. From [](#equation-neuron-activation), we obtain the partial derivatives
+To derive the backpropagation equations, we need to calculate the partial derivatives of $C_n$ with respect to the bias and the weights. From $\eqref{equation-}$, we obtain the partial derivatives
 
 $$
   \frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}} = a_k^{(\ell - 1)},\quad
@@ -729,7 +867,7 @@ $$
   \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)})
 $$
 
-where $\odot$ denotes the Hadamard (elementwise) product. For the output layer $\ell = L + 1$ we find from [](#equation-ffnn-cost-mse), that $\nabla_{\mathbf{a}^{(L+1)}} C_n = \mathbf{a}^{(L)} - \mathbf{y}_n$ leading to the output error
+where $\odot$ denotes the Hadamard (elementwise) product. For the output layer $\ell = L + 1$ we find from $\eqref{equation-1}$, that $\nabla_{\mathbf{a}^{(L+1)}} C_n = \mathbf{a}^{(L)} - \mathbf{y}_n$ leading to the output error
 
 $$
   \boldsymbol{\delta}^{(L)} = (\mathbf{a}^{(L)} - \mathbf{y}_n) \odot \sigma'_{L+1} (\mathbf{z}^{(L)})
@@ -738,7 +876,6 @@ $$
 For any hidden layer $\ell < L + 1$, the partial derivative of $C_n$ with respect to an activation $a_k^{(\ell)}$ is found by summing up the errors $\delta_j^{(\ell + 1)}$ of the next layer $\ell + 1$, i.e.,
 
 $$
-\label{equation-neuron-error-hidden}
   \frac{\partial C_n}{\partial a_k^{(\ell)}} = \sum_{j=1}^{n_{\ell+1}} \underbrace{\frac{\partial z_j^{(\ell + 1)}}{\partial a_k^{(\ell)}}}_{=w_{kj}^{(\ell+1)}} \underbrace{\frac{\partial a_j^{(\ell + 1)}}{\partial z_j^{(\ell+1)}} \frac{\partial C_n}{\partial a_j^{(\ell+1)}}}_{=\delta_j^{(\ell+1)}} = \sum_{j=1}^{n_{\ell+1}} w_{kj}^{(\ell + 1)} \delta_{j}^{(\ell+1)}.
 $$
 

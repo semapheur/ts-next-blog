@@ -191,5 +191,7 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(findLatexIssues("./content/notes/math/group_theory.mdx"))
+console.log(
+  findLatexIssues("./content/notes/machine_learning/neural_networks.mdx"),
+)
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
