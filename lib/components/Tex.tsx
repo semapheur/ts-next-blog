@@ -7,14 +7,13 @@ import React, {
 
 import KaTeX, { type ParseError } from "katex"
 
-type TexProps = HTMLProps<HTMLDivElement> &
-  Partial<{
-    errorColor: string
-    math?: string
-    children?: string
-    block?: boolean
-    renderError?: (e: ParseError | TypeError) => ReactElement
-  }>
+interface TexProps extends HTMLProps<HTMLDivElement> {
+  errorColor: string
+  math?: string
+  children?: string
+  block?: boolean
+  renderError?: (e: ParseError | TypeError) => ReactElement
+}
 
 export default function Tex({
   errorColor,

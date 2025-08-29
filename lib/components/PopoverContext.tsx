@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, useState } from "react"
 
-type PopoverState = {
+interface PopoverState {
   contentId: string | null
   triggerAnchor: HTMLAnchorElement | null
   open: boolean

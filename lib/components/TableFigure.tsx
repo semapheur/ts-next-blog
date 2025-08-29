@@ -1,4 +1,4 @@
-type Props = {
+interface Props {
   caption: string
   children: string
   tag?: string

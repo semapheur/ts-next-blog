@@ -218,7 +218,7 @@ function tokenize(text: string): string[] {
     .filter((token) => stopwords.indexOf(token) === -1 && token.length > 1)
 }
 
-type NoteIndex = {
+interface NoteIndex {
   slug: string
   title: string
   filter: JSON

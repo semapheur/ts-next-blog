@@ -6,7 +6,7 @@ import { useState } from "react"
 
 const Modal = dynamic(() => import("lib/components/LatexModal"), { ssr: false }) //import Modal from 'lib/components/Modal'
 
-type Props = {
+interface Props {
   width?: number
   src: string
   alt?: string

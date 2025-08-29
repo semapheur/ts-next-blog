@@ -82,12 +82,12 @@ export enum Color {
   Black = 1,
 }
 
-export type Piece = {
+export interface Piece {
   type: Pieces
   color: Color
 }
 
-type BoardPosition = {
+interface BoardPosition {
   pieces: bigint[][]
   occupancies: [bigint, bigint]
   squares: Piece[]

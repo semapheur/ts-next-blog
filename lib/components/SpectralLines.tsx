@@ -1,13 +1,13 @@
 import type { SVGProps } from "react"
 
-import { wavelengthToColor, rgbToHex } from "lib/utils/color"
+import { wavelengthToColor } from "lib/utils/color"
 
 // visible spectrum: 380-750nm
 
-type Props = {
+interface Props extends SVGProps<SVGSVGElement> {
   wavelengths: number[]
   name: string
-} & SVGProps<SVGSVGElement>
+} 
 
 export default function SpectralLines({ wavelengths, name, ...props }: Props) {
   return (

@@ -1,4 +1,4 @@
-type Props = {
+interface Props {
   content: string
   children: string //{children: ReactNode};
 }

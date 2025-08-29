@@ -1,7 +1,7 @@
 import { setAttributes, addChildElement } from "lib/utils/svg"
 import Chess from "lib/utils/chess"
 
-type Checker = {
+interface Checker {
   dark: string
   light: string
 }

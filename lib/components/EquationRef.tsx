@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react"
 
-type Props = {
+interface Props {
   children?: ReactNode
   reference: string
 }

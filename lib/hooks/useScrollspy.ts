@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { compareArrays } from "lib/utils/num"
 
-type Options = {
+interface Options {
   root?: HTMLElement
   rootMargin?: string
   threshold?: number

@@ -7,7 +7,7 @@ const defaultOctaves = 1
 const defaultOffset = 0
 const defaultPersistence = 0.5
 
-type Options = {
+interface Options {
   amplitude: number
   frequency: number
   octaves: number

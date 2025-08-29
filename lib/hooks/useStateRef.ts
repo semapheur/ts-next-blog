@@ -1,8 +1,8 @@
-import { type MutableRefObject, useRef, useState } from "react"
+import { type RefObject, useRef, useState } from "react"
 
 export default function useStateRef<T>(
   initialValue?: T,
-): [T | undefined, MutableRefObject<T | undefined>, (value: T) => void] {
+): [T | undefined, RefObject<T | undefined>, (value: T) => void] {
   const [state, _setState] = useState<T | undefined>(initialValue)
   const reference = useRef<T | undefined>(state)
 

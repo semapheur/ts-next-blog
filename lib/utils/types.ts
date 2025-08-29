@@ -1,37 +1,37 @@
 import type { MDXRemoteSerializeResult } from "next-mdx-remote"
 import type Vector from "lib/utils/vector"
 
-export type Vec2 = {
+export interface Vec2 {
   x: number
   y: number
 }
 
-export type Line = {
+export interface Line {
   start: DOMPoint
   end: DOMPoint
 }
 
-export type ViewRange = {
+export interface ViewRange {
   x: Vector
   y: Vector
 }
 
-export type MDXPost<T> = {
+export interface MDXPost<T> {
   serialized: MDXRemoteSerializeResult
   frontmatter: T
 }
 
-export type NoteMatter = {
+export interface NoteMatter {
   slug: string
   title: string
   showToc?: boolean
 }
 
-export type NoteDetails = {
+export interface NoteDetails {
   [subject: string]: NoteMatter[]
 }
 
-export type NoteHeading = {
+export interface NoteHeading {
   text: string
   slug: string
   level: number

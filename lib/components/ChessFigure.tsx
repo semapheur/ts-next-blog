@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react"
 import { SVGChess } from "./SvgChess"
 
-type Props = {
+interface Props {
   fen: string
   caption: string
 }

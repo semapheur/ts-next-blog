@@ -1,11 +1,10 @@
 "use client"
 
+import dynamic from "next/dynamic"
+import Link from "next/link"
+import type { SearchResult } from "pages/api/searchnotes"
 import { type ChangeEvent, useEffect, useState } from "react"
 
-import type { SearchResult } from "pages/api/searchnotes"
-import Link from "next/link"
-
-import dynamic from "next/dynamic"
 const Modal = dynamic(() => import("lib/components/LatexModal"), { ssr: false }) //import Modal from 'lib/components/Modal'
 
 import notes from "content/cache/notes.json"

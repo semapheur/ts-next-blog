@@ -11,7 +11,7 @@ function appendWrapper(id: string): HTMLDivElement | null {
   return wrapper
 }
 
-type Props = {
+interface Props {
   portalId: string
   children: ReactNode
 }

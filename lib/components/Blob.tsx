@@ -21,7 +21,7 @@ function circlePoints(
   })
 }
 
-type Interval = {
+interface Interval {
   start: number
   end: number
 }
@@ -58,7 +58,7 @@ function noiseVec(offset: Vector, ix: Interval, iy: Interval): Vector {
   return new Vector(mapRange(nx, i0, ix), mapRange(ny, i0, iy))
 }
 
-type Props = {
+interface Props {
   className: string
 }
 

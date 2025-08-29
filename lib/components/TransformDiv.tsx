@@ -7,7 +7,6 @@ import {
   type HTMLProps,
   type ReactNode,
   type WheelEvent,
-  useState,
 } from "react"
 import { signal, type Signal } from "@preact/signals-react"
 import type { ViewRange } from "lib/utils/types"

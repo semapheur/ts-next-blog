@@ -3,7 +3,7 @@
 import { PopoverContext } from "lib/components/PopoverContext"
 import { use, useEffect, useRef, useState } from "react"
 
-type Position = {
+interface Position {
   left: number | string
   top: number | string
 }

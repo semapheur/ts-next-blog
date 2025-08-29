@@ -1,6 +1,6 @@
 import type { HTMLProps } from "react"
 
-type Marker = {
+interface Marker {
   value: number
   positon: "over" | "under"
   color: string
@@ -14,7 +14,7 @@ interface Props extends HTMLProps<HTMLDivElement> {
   height: number
 }
 
-type MarkerProps = {
+interface MarkerProps {
   value: number
   left: number
   color: string

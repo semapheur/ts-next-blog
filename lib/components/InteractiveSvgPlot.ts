@@ -14,14 +14,14 @@ import {
 } from "lib/utils/svg"
 import EventListenerStore from "lib/utils/event"
 
-type SvgPlots = {
+interface SvgPlots {
   [key: string]: {
     yBounds: number[]
     color: string
   }
 }
 
-export type ViewRange = {
+export interface ViewRange {
   x: Vector
   y: Vector
 }

@@ -15,7 +15,7 @@ import { findAllIndices, sum } from "lib/utils/num"
 
 type SizeFormat = string | string[] | number[]
 
-type SplitProps = {
+interface SplitProps {
   split: "row" | "column"
   className: string
   defaultSizes?: SizeFormat
@@ -23,20 +23,20 @@ type SplitProps = {
   children: ReactNode[]
 }
 
-type DragState = {
+interface DragState {
   index: number
   startSizes: [number, number]
   dragInterval: [number, number]
   dragOrigin: number
 }
 
-type DividerProps = {
+interface DividerProps {
   index: number
   style: CSSProperties
   onDragStart: (index: number, e: React.MouseEvent) => void
 }
 
-type PaneProps = {
+interface PaneProps {
   style: CSSProperties
   children: ReactNode
 }

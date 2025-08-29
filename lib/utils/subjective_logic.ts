@@ -1,10 +1,4 @@
 export default class BinomialOpinion {
-  private Opinion = {
-    b: 1 / 3,
-    d: 1 / 3,
-    u: 1 / 3,
-    a: 0.5,
-  }
 
   constructor(
     belief: number,

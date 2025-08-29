@@ -3,7 +3,7 @@
 import type { ChangeEventHandler } from "react"
 import { CrossIcon, SearchIcon } from "lib/utils/icons"
 
-type Props = {
+interface Props {
   query: string
   onChange: ChangeEventHandler<HTMLInputElement>
 }

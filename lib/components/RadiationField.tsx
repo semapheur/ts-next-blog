@@ -8,7 +8,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 // $$ \mathbb{E}_\text{rad} (\mathbb{r}, t) = \frac{-q}{4\pi\epsilon_0 c^2} \frac{1}{\lVert\mathbb{r}\rVert} \mathbb{a}_\perp (t - \frac{\lVert\mathbb{r}\rVert}{c}) $$
 
-type ChargeData = {
+interface ChargeData {
   charge: number
   initialPosition: THREE.Vector3
   orbit: (time: number) => THREE.Vector3

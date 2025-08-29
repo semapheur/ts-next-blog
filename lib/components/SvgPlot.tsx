@@ -4,14 +4,14 @@ import { type HTMLAttributes, useEffect, useRef } from "react"
 import * as d3 from "d3"
 import useResizeObserver from "lib/hooks/useResizeObserver"
 
-type Margin = {
+interface Margin {
   top: number
   right: number
   bottom: number
   left: number
 }
 
-export type Axis = {
+export interface Axis {
   scale: "linear" | "log"
   domain?: [number, number]
 }

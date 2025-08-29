@@ -214,8 +214,13 @@ export class InstancedArrow extends THREE.Object3D {
     const materialParams = {
       transparent: true,
       vertexShader: `
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        
+        attribute vec3 position;
         attribute vec3 instanceColor;
         attribute float opacity;
+        attribute mat4 instanceMatrix;
         varying vec3 vColor;
         varying float vOpacity;
         
@@ -450,15 +455,6 @@ export class InstancedArrow extends THREE.Object3D {
 
     this.shaftColorAttribute.needsUpdate = true
     this.headColorAttribute.needsUpdate = true
-  }
-
-  // Set fade parameters
-  setFadeParameters(
-    minLength: number,
-    fadeStartLengthMultiplier: number,
-  ): void {
-    // This method allows customizing the fade effect parameters
-    // It doesn't immediately update existing arrows, but will affect future calls to setArrow
   }
 
   // Get and set the full count

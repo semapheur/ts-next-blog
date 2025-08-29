@@ -18,7 +18,7 @@ import {
 import Split from "./Split"
 import Tex from "./Tex"
 
-type PlotState = {
+interface PlotState {
   plots: Map<number, Partial<PlotFields>>
   setPlots: Dispatch<SetStateAction<Map<number, Partial<PlotFields>>>>
 }
@@ -43,7 +43,7 @@ const formValues: PlotFields = {
   color: "",
 }
 
-type PlotFields = {
+interface PlotFields {
   fn: string
   tex: {
     value: string
@@ -52,7 +52,7 @@ type PlotFields = {
   color: string
 }
 
-type PlotInputProps = {
+interface PlotInputProps {
   index: number
   values: PlotFields
   handleAddPlot: (i: number, e: FormEvent<HTMLFormElement>) => void

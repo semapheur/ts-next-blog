@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react"
 
-type Props = {
+interface Props {
   width: string
   bar: string
   gap: string

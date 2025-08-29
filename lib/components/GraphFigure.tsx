@@ -4,7 +4,7 @@ import type { Axis } from "lib/components/SvgPlot"
 import Vector from "lib/utils/vector"
 import dynamic from "next/dynamic"
 
-type Props = {
+interface Props {
   expression: string
   points: number
   xAxis: Axis

@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useRef, useState } from "react"
 
-export type Size = {
+export interface Size {
   height: number
   width: number
 }

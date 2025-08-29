@@ -9,7 +9,7 @@ import data from "content/data/elements.json"
 
 type Element = (typeof data)[0]
 
-type ElementProps = {
+interface ElementProps {
   element: Element | undefined
 }
 

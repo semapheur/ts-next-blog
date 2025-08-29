@@ -11,13 +11,13 @@ import { unified } from "unified"
 
 const Modal = dynamic(() => import("lib/components/LatexModal"), { ssr: false }) //import Modal from 'lib/components/Modal'
 
-type FallbackImage = {
+interface FallbackImage {
   src: string
   alt?: string
   width?: number
 }
 
-type Props = {
+interface Props {
   caption: string
   children: string
   packages?: string

@@ -1,11 +1,11 @@
 import React from "react"
 import MathRenderer from "./MathText"
 
-type Props = {
+interface Props {
   text: string
 }
 
-type TextPart = {
+interface TextPart {
   type: "text" | "math"
   content: string
 }

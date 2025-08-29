@@ -1,12 +1,12 @@
 import Link from "next/link"
 
-type AppContent = {
+interface AppContent {
   title: string
   description: string
   slug: string
 }
 
-type Props = {
+interface Props {
   content: AppContent
 }
 

@@ -4,11 +4,11 @@ import useEventListener from "lib/hooks/useEventListener"
 import useForwardRef from "lib/hooks/useForwardRef"
 import { forwardRef, type ReactNode, useRef } from "react"
 
-type CardsProps = {
+interface CardsProps {
   children: ReactNode[]
 }
 
-type CardProps = {
+interface CardProps {
   children: ReactNode
 }
 

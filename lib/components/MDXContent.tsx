@@ -4,7 +4,7 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote"
 
 import { mdxComponents } from "lib/utils/mdxComponents"
 
-type Props = {
+interface Props {
   source: MDXRemoteSerializeResult
 }
 
