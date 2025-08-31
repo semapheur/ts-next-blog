@@ -191,5 +191,5 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(findLatexIssues("./content/notes/math/geometric_algebra.mdx"))
+console.log(findLatexIssues("./content/notes/math/linear_algebra.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")

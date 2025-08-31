@@ -39,6 +39,7 @@ export function rehypePlugins(noCite: string[] = []) {
         macros: {
           "\\d": "\\mathrm{d}",
           "\\D": "\\mathrm{D}",
+          "\\mat": "\\mathbf{#1}",
           "\\atanh": "\\operatorname{atanh}",
           "\\norm": "\\lVert{#1}\\rVert",
           "\\Norm": "\\left\\lVert{#1}\\right\\rVert",
