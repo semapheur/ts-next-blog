@@ -1,0 +1,235 @@
+---
+title: 'Quantum Chemistry'
+subject: 'Physics'
+showToc: true
+---
+
+# Atomic units
+
+Atomic units (a.u.) form a system of natural measurement units that simplify physical equations by normalizing the following fundamental constants to $1$
+- the reduced Planck constant $\hbar$
+- elementary charge $e$
+- electron rest mass $m_e$
+- permittivity: $4\pi\epsilon_0$
+
+To see how the atomic unit of length arise naturally let us consider the stationary Schrödinger equation for the hydrogen atom. In SI units we have
+
+$$
+\begin{equation*}
+  \left(-\frac{\hbar^2}{2m_e} \nabla^2 - \frac{e^2}{4\pi\epsilon_0 r} \right) \psi (\mathbf{r}) = E \psi (\mathbf{r})
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+To make this equation dimensionless, we introduce a scaled coordinate $\mathbf{r} \to \lambda\mathbf{r}'$, where $\lambda$ is a characteristic length to be determined. Under this transformation we have
+
+$$
+  \nabla^2 = \lambda^{-2} \nabla'^2,\; r = \lambda r'
+$$
+
+Substituting this into $\eqref{equation-1}$ yields
+
+$$
+  \left(-\frac{\hbar^2}{2m_e \lambda^2} \nabla'^2 - \frac{e^2}{4\pi\epsilon_0 \lambda r} \right) \psi' (\mathbf{r}') = E \psi'  (\mathbf{r}')
+$$
+
+where $\psi' (\mathbf{r}') := \psi(\lambda\mathbf{r}')$. The constants in front of the kinetic and potential energy operators can be factored, provided we choose $\lambda$ such that
+
+$$
+  \frac{\hbar^2}{m_e \lambda^2} = \frac{e^2}{4\pi\epsilon_0 \lambda} = E_a
+$$
+
+where $E_a$ is the atomic unit of energy called the Hartree. Solving for $lambda$ we find
+
+$$
+  \lambda = \frac{4\pi\epsilon_0 \hbar^2}{m_e e^2} = a_0
+$$
+
+showing that $\lambda$ equals the Bohr radius $a_0$, the atomic unit of length. With this choice of $\lambda$, equation $\eqref{equation-1}$ becomes
+
+$$
+  E_a \left(-\frac{1}{2}\nabla'^2 - \frac{1}{r}\right) \psi' = E\psi'
+$$
+
+Finally, defining the dimensionless energy $E' = E/E_a$, we obtain
+
+$$
+  \left(-\frac{1}{2}\nabla'^2 - \frac{1}{r}\right) \psi' = E' \psi'
+$$
+
+which is the Schrödinger equation in atomic units.
+
+# The Born-Oppenheimer approximation
+
+A molecule composed of $N_n$ nuclei and $N_e$ electrons can be described as a coupled electron-nucleus system. For each nucleus $k=1,\dots, N$, with charge $Z_k e$ and mass $m_k$, we denote its position and momentum operators by $\hat{\mathbf{r}}_k^n$ and $\hat{\mathbf{p}}_k^n$, respectively, relative to the origin of the frame of reference. Similarly, for each electron $j = 1,\dots, N_e$, with mass $m_e$ and charge $-e$, we write $\hat{\mathbf{r}}_j^e$ and $\hat{\mathbf{p}}_k^e$ for its position and momentum operators. In the position representation, the momentum operator is given by
+
+$$
+  \hat{\mathbf{p}} = -i\hbar\nabla_\mathbf{r}
+$$
+
+The total energy of the system is given by the non-relativistic Hamiltonian 
+
+$$
+\begin{align*}
+  \hat{H} =& \hat{T}_n + \hat{V}_{n-n} + \hat{H}_e \\ \tag{\label{equation-2}}
+  \hat{H} =& \hat{T}_e + \hat{V}_{n-e} + \hat{V}_{e-e} \tag{\label{equation-3}}
+\end{align*}
+$$
+
+where $\hat{H}_e$ is the electronic Hamiltonian. The kinetic energy of the nuclei $\hat{T}_n$ is given by
+
+$$
+\begin{equation*}
+  \hat{T} = \sum_{k = 1}^{N_n} \frac{\left(\hat{\mathbf{p}}_k^n \right)}{2 m_k} = -\sum_{k = 1}^{N_n} \frac{\hbar}{2 m_k} \nabla_{\mathbf{r}_k^n} 
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+The potential $\hat{V}_{n-n}$ represents the repulsion among the nuclei
+
+$$
+\begin{equation*}
+  \hat{V}_{n-n} = \sum_{k < l = 1}^{N_n} \frac{(Z_k e)(Z_l e)}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} = e^2 \sum_{k < l = 1}^{N_n} \frac{Z_k Z_l}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} 
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+which depends only on nuclear positions and acts as a multiplicative potential operator.
+
+
+The kinetic energy of the electrons $\hat{T}_e$ is given by
+
+$$
+\begin{equation*}
+  \hat{T}_e = \frac{1}{2m_e} \sum_{j=1}^{N_e} \left(\hat{\mathbf{p}}_j^e \right)^2 = \frac{1}{2m_e} \sum_{j=1}^{N_e} (-i\hbar\nabla_{\mathbf{r}_j^e})^2
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+The potential $\hat{V}_{n-e}$ describes the interaction between electrons and nuclei
+
+$$
+\begin{equation*}
+  \hat{V}_{n-e} = \sum_{j=1}^{N_e} \sum_{k=1}^{N_n}  \frac{Z_k e (-e)}{|\mathbf{r}_j^e - \mathbf{r}_k^n|}
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+while the potential $\hat{V}_e$ represents the repulsion among electrons
+
+$$
+\begin{equation*}
+  \hat{V}_{e-e} = \sum_{i < j = 1}^{N_e} \frac{(-e)(-e)}{|\mathbf{r}_i^e - \mathbf{r}_j^e|} = e^2 \sum_{i < j = 1}^{N_e} \frac{1}{|\mathbf{r}_i^e - \mathbf{r}_j^e|}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+In atomic units, the Hamiltonian for a system of $m$ nuclei and $n$ electrons is
+
+$$
+\begin{align*}
+  \hat{H} =& - \sum_{i=1}^n \frac{1}{2} \nabla_i^2 - \sum_{A=1}^m \frac{1}{2M_A} \nabla_A^2 - \sum_{i=1}^n \sum_{i=1}^n \sum_{A=1}^m \frac{Z_A}{r_{iA}} \\
+  &+ \sum_{i=1}^n \sum_{j > 1}^n \frac{1}{r_{ij}} + \sum_{A=1}^m \sum_{B > A}^{m} \frac{Z_A Z_B}{R_{AB}}
+\end{align*}
+$$
+
+where
+- $M_A$ is the mass of nuclei $A$ in electron-mass units 
+- $Z_A$ is the atomic number of nucles $A$
+- $r_{iA} = |\mathbf{r}_i - \mathbf{R}_A|$ is the distance between the $i$th electron and $A$th nucleus
+- $r_{ij} = |\mathbf{r}_i - \mathbf{r}_j|$ is the distance between the $i$th and $j$ electron
+- $R_{AB} = |\mathbf{R}_A - \mathbf{R}_B|$ is the distance between the $A$th and $B$th nucleus
+
+The Born-Oppenheimer approximation separates the nuclear motion from the electronic one, which relies on the different time scales of the two types of motion. Consequently, we try to solve the molecular problem by first considering a "frozen" configuration of the nuclei, which introduces a certain potential on each electron. Changing the nuclear configuration, we assume that the electrons will rearrange themselves almost instantaneously. Then, we shall look for solutions of the Schrödinger equation
+
+$$
+\begin{equation*}
+  \hat{H} \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n}) = E \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n})
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+where the electronic states are defined in a parametric way relatiev to a a given distribution of the nuclei. The solution of the general problem is given by the product
+
+$$
+\begin{equation*}
+  \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n}) = \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+where $\psi(\set{\mathbf{r}_k^n})$ is the nuclear wave function. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ depends parametrically on the parameter set $\set{\mathbf{r}_k^n}$, and may be taken as a solution of the Schrödinger equation
+
+$$
+\begin{equation*}
+  \hat{H}_e \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) = E \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+for a given nuclear configuration. The left hand side of $\eqref{equation-9}$ can be written
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{H}_e \Psi(\set{\mathbf{r}_k^n}; \set{\mathbf{r}_j^e}) =& \left[\hat{T}_n + \hat{V}_{n-n} + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  =& \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 + \hat{V}(\set{\mathbf{r}_k^n}) + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  =& -\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 \left[\psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right] + \hat{V}_n (\set{\mathbf{r}_k^n})\psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + \underbrace{\hat{H}_e \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})}_{E_e \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})} \\
+  =& \left[\hat{V}_n (\set{\mathbf{r}_k^n}) + E_e] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \nabla_{\mathbf{r}_k^n}^2 \psi(\set{\mathbf{r}_k^n}) + \psi(\set{\mathbf{r}_k^n}) \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + 2\nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right]
+  =& \psi(\set{\mathbf{r}_k^n}) \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e \right] \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\psi(\set{\mathbf{r}_k^n}) \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + 2\nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right]
+\end{split}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+The two terms in the last square brackets may be neglected by the following argument. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ can be thought of as a function of the difference $\mathbf{r}_j^e -\mathbf{r}_k^n$. Consequently, denoting $\nabla'_{\mathbf{r}_j^e}^2$ the Laplacian relative to the electronic coordinates, we have
+
+$$
+  \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \nabla'_{\mathbf{r}_j^e}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+$$
+
+from which it follows that the term
+
+$$
+  \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+$$
+
+is of the order $m_e / m_k$ times the kinetic energy of one electron. Moreover, $m_e / m_k \leq 1/1840$. For the same reasons, $\nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) = -\nabla'_{\mathbf{r}_j^e} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$
+
+and we also have
+
+$$
+  \hbar \nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \approx \hat{\mathbf{p}}_k^n,\quad \hbar \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_k^j}) \approx \hat{\mathbf{p}}_j^e
+$$
+
+from which it follows that
+
+$$
+\begin{equation*}
+  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \frac{1}{m_k} \hat{p}_k^n \hat{p}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+because the dynamics of the electrons is much faster than that of the nuclei and therefore $p_k^n \ll p_j^e$. The last term of $\eqref{equation-12}$ is of the order of the kinetic energy of one electron, and this finally  justifies neglecting those two terms.
+
+With these approximations, we may rewrite $\eqref{equation-9}$ as a Schrödinger equation for the nuclear wave function
+
+$$
+\begin{equation*}
+  \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e (\set{\mathbf{r}_k^n}) \right] \psi(\set{\mathbf{r}_k^n}) = E \psi (\set{\mathbf{r}_k^n})
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+where $E$ is the total energy, and the electron energy eigenvalue $E_e (\set{\mathbf{r}_k^n})$, may be considered as a correction to the nuclear potential energy $\hat{V}_n (\set{\mathbf{r}_k^n})$, giving rise to the total potential energy
+
+$$
+  \hat{V}(\set{\mathbf{r}_k^n}) = \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e (\set{\mathbf{r}_k^n})
+$$
+
+In other word, the electrons with their motion generate a diffuse charge distribution that alters the nuclear Coulomb repulsion term $\hat{V}_n$.
+
+With the Born-Oppenheimer approximation we first solve the electronic Schrödinger equation $\eqref{equation-13}$ for any possible configuration of the nuclei, finding the eigenvalues $E_e$ as a function of the nuclear positions $\set{\mathbf{r}_k^n}$. Then, we use these results in order to solve the Schrödinger equation $\eqref{equation-14}$.
