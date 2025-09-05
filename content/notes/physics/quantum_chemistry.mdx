@@ -71,8 +71,8 @@ The total energy of the system is given by the non-relativistic Hamiltonian
 
 $$
 \begin{align*}
-  \hat{H} =& \hat{T}_n + \hat{V}_{n-n} + \hat{H}_e \\ \tag{\label{equation-2}}
-  \hat{H} =& \hat{T}_e + \hat{V}_{n-e} + \hat{V}_{e-e} \tag{\label{equation-3}}
+  \hat{H} =& \hat{T}_n + \hat{V}_n + \hat{H}_e \tag{\label{equation-2}} \\
+  \hat{H} =& \hat{T}_e + \hat{V}_{ne} + \hat{V}_e \tag{\label{equation-3}}
 \end{align*}
 $$
 
@@ -80,16 +80,16 @@ where $\hat{H}_e$ is the electronic Hamiltonian. The kinetic energy of the nucle
 
 $$
 \begin{equation*}
-  \hat{T} = \sum_{k = 1}^{N_n} \frac{\left(\hat{\mathbf{p}}_k^n \right)}{2 m_k} = -\sum_{k = 1}^{N_n} \frac{\hbar}{2 m_k} \nabla_{\mathbf{r}_k^n} 
+  \hat{T}_n = \sum_{k = 1}^{N_n} \frac{\left(\hat{\mathbf{p}}_k^n \right)^2}{2 m_k} = -\sum_{k = 1}^{N_n} \frac{\hbar}{2 m_k} \nabla_k^2
 \tag{\label{equation-4}}
 \end{equation*}
 $$
 
-The potential $\hat{V}_{n-n}$ represents the repulsion among the nuclei
+where $\nabla_k := \nabla_{\mathbf{r}_k^n}$. The potential $\hat{V}_n$ represents the repulsion among the nuclei
 
 $$
 \begin{equation*}
-  \hat{V}_{n-n} = \sum_{k < l = 1}^{N_n} \frac{(Z_k e)(Z_l e)}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} = e^2 \sum_{k < l = 1}^{N_n} \frac{Z_k Z_l}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} 
+  \hat{V}_n = \sum_{k < l = 1}^{N_n} \frac{Z_k Z_l e^2}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} 
 \tag{\label{equation-5}}
 \end{equation*}
 $$
@@ -101,16 +101,16 @@ The kinetic energy of the electrons $\hat{T}_e$ is given by
 
 $$
 \begin{equation*}
-  \hat{T}_e = \frac{1}{2m_e} \sum_{j=1}^{N_e} \left(\hat{\mathbf{p}}_j^e \right)^2 = \frac{1}{2m_e} \sum_{j=1}^{N_e} (-i\hbar\nabla_{\mathbf{r}_j^e})^2
+  \hat{T}_e = \sum_{j=1}^{N_e} \frac{\left(\hat{\mathbf{p}}_j^e \right)^2}{2m_e} = - \sum_{j=1}^{N_e} \frac{\hbar}{2m_e} \nabla_{\mathbf{r}_j^e}^2
 \tag{\label{equation-6}}
 \end{equation*}
 $$
 
-The potential $\hat{V}_{n-e}$ describes the interaction between electrons and nuclei
+where $\nabla_j := \nabla_{\mathbf{r}_j^e}$. The potential $\hat{V}_{ne}$ describes the interaction between electrons and nuclei
 
 $$
 \begin{equation*}
-  \hat{V}_{n-e} = \sum_{j=1}^{N_e} \sum_{k=1}^{N_n}  \frac{Z_k e (-e)}{|\mathbf{r}_j^e - \mathbf{r}_k^n|}
+  \hat{V}_{ne} = -\sum_{j=1}^{N_e} \sum_{k=1}^{N_n}  \frac{Z_k e^2}{|\mathbf{r}_j^e - \mathbf{r}_k^n|}
 \tag{\label{equation-7}}
 \end{equation*}
 $$
@@ -119,7 +119,7 @@ while the potential $\hat{V}_e$ represents the repulsion among electrons
 
 $$
 \begin{equation*}
-  \hat{V}_{e-e} = \sum_{i < j = 1}^{N_e} \frac{(-e)(-e)}{|\mathbf{r}_i^e - \mathbf{r}_j^e|} = e^2 \sum_{i < j = 1}^{N_e} \frac{1}{|\mathbf{r}_i^e - \mathbf{r}_j^e|}
+  \hat{V}_e = \sum_{i < j = 1}^{N_e} \frac{e^2}{|\mathbf{r}_i^e - \mathbf{r}_j^e|}
 \tag{\label{equation-8}}
 \end{equation*}
 $$
@@ -128,7 +128,7 @@ In atomic units, the Hamiltonian for a system of $m$ nuclei and $n$ electrons is
 
 $$
 \begin{align*}
-  \hat{H} =& - \sum_{i=1}^n \frac{1}{2} \nabla_i^2 - \sum_{A=1}^m \frac{1}{2M_A} \nabla_A^2 - \sum_{i=1}^n \sum_{i=1}^n \sum_{A=1}^m \frac{Z_A}{r_{iA}} \\
+  \hat{H} =& - \sum_{i=1}^n \frac{1}{2} \nabla_i^2 - \sum_{A=1}^m \frac{1}{2M_A} \nabla_A^2 - \sum_{i=1}^n \sum_{A=1}^m \frac{Z_A}{r_{iA}} \\
   &+ \sum_{i=1}^n \sum_{j > 1}^n \frac{1}{r_{ij}} + \sum_{A=1}^m \sum_{B > A}^{m} \frac{Z_A Z_B}{R_{AB}}
 \end{align*}
 $$
@@ -149,7 +149,7 @@ $$
 \end{equation*}
 $$
 
-where the electronic states are defined in a parametric way relatiev to a a given distribution of the nuclei. The solution of the general problem is given by the product
+where the electronic states are defined in a parametric way relative to a a given distribution of the nuclei. The solution of the general problem is given by the product
 
 $$
 \begin{equation*}
@@ -172,22 +172,22 @@ for a given nuclear configuration. The left hand side of $\eqref{equation-9}$ ca
 $$
 \begin{equation*}
 \begin{split}
-  \hat{H}_e \Psi(\set{\mathbf{r}_k^n}; \set{\mathbf{r}_j^e}) =& \left[\hat{T}_n + \hat{V}_{n-n} + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
-  =& \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 + \hat{V}(\set{\mathbf{r}_k^n}) + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
-  =& -\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 \left[\psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right] + \hat{V}_n (\set{\mathbf{r}_k^n})\psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + \underbrace{\hat{H}_e \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})}_{E_e \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})} \\
-  =& \left[\hat{V}_n (\set{\mathbf{r}_k^n}) + E_e] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
-  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \nabla_{\mathbf{r}_k^n}^2 \psi(\set{\mathbf{r}_k^n}) + \psi(\set{\mathbf{r}_k^n}) \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + 2\nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right]
-  =& \psi(\set{\mathbf{r}_k^n}) \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e \right] \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
-  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\psi(\set{\mathbf{r}_k^n}) \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) + 2\nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \right]
+  \hat{H}_e \Psi(\set{\mathbf{r}_k^n}; \set{\mathbf{r}_j^e}) =& \left[\hat{T}_n + \hat{V}_n (\set{\mathbf{r}_k^n}) + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  =& \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n + \hat{H}_e \right] \psi \phi_{\mathbf{r}_k^n} \\
+  =& -\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 \left(\psi \phi_{\mathbf{r}_k^n} \right) + \hat{V}_n \psi \phi_{\mathbf{r}_k^n} + \underbrace{\hat{H}_e \psi \phi_{\mathbf{r}_k^n}}_{E_e \psi \phi_{\mathbf{r}_k^n} } \\
+  =& \left(\hat{V}_n + E_e \right) \psi \phi_{\mathbf{r}_k^n} \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\phi_{\mathbf{r}_k^n} \nabla_k^2 \psi + \psi \nabla_k^2 \phi_{\mathbf{r}_k^n} + 2\nabla_k \psi \nabla_k \phi_{\mathbf{r}_k^n} \right] \\
+  =& \psi \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n + E_e \right] \phi_{\mathbf{r}_k^n}  \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\psi \nabla_k^2 \phi_{\mathbf{r}_k^n} + 2\nabla_k \psi \nabla_k \phi_{\mathbf{r}_k^n} \right]
 \end{split}
 \tag{\label{equation-11}}
 \end{equation*}
 $$
 
-The two terms in the last square brackets may be neglected by the following argument. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ can be thought of as a function of the difference $\mathbf{r}_j^e -\mathbf{r}_k^n$. Consequently, denoting $\nabla'_{\mathbf{r}_j^e}^2$ the Laplacian relative to the electronic coordinates, we have
+The two terms in the last square brackets may be neglected by the following argument. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ can be thought of as a function of the difference $\mathbf{r}_j^e -\mathbf{r}_k^n$. Consequently, denoting $\nabla_{\mathbf{r}_j^e}^{\prime 2}$ the Laplacian relative to the electronic coordinates, we have
 
 $$
-  \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \nabla'_{\mathbf{r}_j^e}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+  \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \nabla_{\mathbf{r}_j^e}^{\prime 2} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
 $$
 
 from which it follows that the term
@@ -208,7 +208,7 @@ from which it follows that
 
 $$
 \begin{equation*}
-  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \frac{1}{m_k} \hat{p}_k^n \hat{p}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
+  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} \approx \frac{1}{m_k} \hat{p}_k^n \hat{p}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
 \tag{\label{equation-12}}
 \end{equation*}
 $$
@@ -227,9 +227,148 @@ $$
 where $E$ is the total energy, and the electron energy eigenvalue $E_e (\set{\mathbf{r}_k^n})$, may be considered as a correction to the nuclear potential energy $\hat{V}_n (\set{\mathbf{r}_k^n})$, giving rise to the total potential energy
 
 $$
+\begin{equation*}
   \hat{V}(\set{\mathbf{r}_k^n}) = \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e (\set{\mathbf{r}_k^n})
+\tag{\label{equation-16}}
+\end{equation*}
 $$
 
 In other word, the electrons with their motion generate a diffuse charge distribution that alters the nuclear Coulomb repulsion term $\hat{V}_n$.
 
 With the Born-Oppenheimer approximation we first solve the electronic Schrödinger equation $\eqref{equation-13}$ for any possible configuration of the nuclei, finding the eigenvalues $E_e$ as a function of the nuclear positions $\set{\mathbf{r}_k^n}$. Then, we use these results in order to solve the Schrödinger equation $\eqref{equation-14}$.
+
+## Diatomic molecule
+
+A diatomic molecule has three types of collective motion:
+1. Translation of the center of mass of the molecule, which practically coincides with the center of mass of the nuclei. This motion gives rise to a continuous spectrum characteristic of the motion of a free particle. This motion can be neglected if we work in a reference system in which the center of mass is at rest.
+2. Rotation of the molecule about an axis passing through the center of mass. The pure rotational motion is obtained if the two nuclei stay at a fixed distance.
+3. Vibration along the axis connecting the two nuclei. If the two nuclei must stay at a fixed distance, the potential energy must have a minimum at $r = r_{ab}$. Under the harmonic approximation, the internuclear distance may oscillate around the equilibrium point $r_{ab}$ giving rise to vibrational energy levels and spectra.
+
+For a diatomic molecule made up of atoms $a$ and $b$, the Schrödinger equation $\eqref{equation-14}$ becomes
+
+$$
+\begin{equation*}
+  \left[-\frac{\hbar^2}{2m_a} \nabla_a^2 - \frac{\hbar^2}{2m_b} \nabla_b^2 + \hat{V}_n (\mathbf{r}_a^n, \mathbf{r}_b^n) + E_e (\mathbf{r}_a^n, \mathbf{r}_b^n) \right] \psi(\mathbf{r}_a^n, \mathbf{r}_b^n) = E \psi (\mathbf{r}_a^n, \mathbf{r}_b^n)
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+Assuming that the nuclei are almost at rest relative to each other, and taking into account $\eqref{equation-16}$, the potential energy will have the form of a central potential
+
+$$
+  \hat{V}(\mathbf{r}_a^n, \mathbf{r}_b^n) = \hat{V}(\mathbf{r}_b^n - \mathbf{r}_a^n) = \hat{V}(r_{ab})
+$$
+
+Defining the position of the center of mass as
+
+$$
+  \mathbf{r}_c = \frac{m_a \mathbf{r}_a^n + m_b \mathbf{r}_b^n}{m_a + m_b}
+$$
+
+we apply the change of variables $\set{\mathbf{r}_a^n, \mathbf{r}_b^n} \to \set{\mathbf{r}_c, \mathbf{r}_{ab}}$ in order to derive the Hamiltonian
+
+$$
+  \hat{H} = -\frac{\hbar^2}{2(m_a + m_b)} \nabla_c^2 - \frac{\hbar^2}{2m} \nabla_0^2 + \hat{V}(r_{ab})
+$$
+
+where $m$ is the reduced mass and $\nabla_0 := \nabla_{\mathbf{r}_{ab}}$. With the transformed Hamiltonian, we have separated the center-of-mass motion from the relative motion of the nuclei. This suggest the ansatz
+
+$$
+  \psi(\mathbf{r}_a^n, \mathbf{r}_b^n) = \zeta(\mathbf{r}_c) \eta(\mathbf{r}_{ab})
+$$
+
+giving rise to the two Schrödinger equations
+
+$$
+\begin{equation*}
+  -\frac{\hbar^2}{2(m_a + m_b)} \nabla_c^2 \zeta((\mathbf{r}_c)) = E_c \zeta(\mathbf{r}_c)
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+  \left[-\frac{\hbar^2}{2m} \nabla_0^2 + \hat{V}(\mathbf{r}_{ab})\right] \eta(\mathbf{r}_{ab}) = E_0 \eta(\mathbf{r}_{ab})
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+where $E_c$ is the energy eigenvalue of the center-of-mass degree of freedom and $E_0$ is the energy eigenvalue pertaining to the relative motion. Equation $\eqref{equation-17}$ represents a free-particle Schrödinger equation whose solution is a spherical wave of the form
+
+$$
+  \zeta(\mathbf{r}_c) \propto e^{i \mathbf{k} \cdot \mathbf{r}_c}
+$$
+
+describing the translational motion. The corresponding eigenvalues will be given by
+
+$$
+  E_c = \frac{\hbar^2 \mathbf{k}^2}{2(m_a + m_b)}
+$$
+
+The solution of $\eqref{equation-19}$ gives the rotational part of the motion. Since $\hat{V}(r_{ab})$ is a central potential, it is convenient to translate this equation into spherical coordinates, where the angular part of the wave function $\eta(\mathbf{r}_{ab})$ will have have a solution of the form
+
+$$
+  \eta(\mathbf{r}_{ab}) = R(r_{ab}) Y(\phi, \theta)
+$$
+
+where $R(r_{ab})$ is the radial wave function, and the spherical harmonics $Y_j (\phi, \theta)$ have eigenvalues
+
+$$
+  E_j = \frac{\hbar^2}{2I} j(j + 1)
+$$
+
+where $I = m\bar{r}_{ab}^2$ is the moment of inertia of the two nuclei, with $\bar{r}_{ab}$ being the equilibrium distance between them. The eigenvalues of $\hat{j}^2$ and $\hat{j}_z$ are give by $j(j + 1)$ and $m_j$, respectively.
+
+For the solution of the radial wave function $R(r_{ab})$, we first recall that 
+
+$$
+  |r_{ab} - \bar{r}_{ab}| \ll \bar{r}_{ab}
+$$
+
+that is, the two nuclei will oscillate around the equilibrium position. This allows a Taylor series expansion of the total potential energy $\hat{V}(r_{ab})$ about $\bar{r}_{ab}$
+
+$$
+  \hat{V}(r_{ab}) = \sum_{k=0}^\infty \frac{1}{k!} \left. \frac{\partial^k \hat{V}(r_{ab})}{r_{ab}^k} \right|_{r_{ab} = \bar{r}_{ab}} (r_{ab} - \bar{r}_{ab})^k
+$$
+
+where the first-order term is missing because $\bar{r}_{ab}$ is an equilibrium point, i.e.
+
+$$
+  \left. \frac{\partial \hat{V}(r_{ab})}{r_{ab}} \right|_{r_{ab} = \bar{r}_{ab}} = 0
+$$
+
+Up to second order, the solutions will be of the harmonic-oscillator type
+
+$$
+  \hat{V}(r_{ab}) \approx -D + \frac{\kappa}{2}(r_{ab} - \bar{r}_{ab})^2
+$$
+
+where $D = -\hat{V}(\bar{r}_{ab})$ is the dissociation energy, the energy needed to move the two nuclei to an infinite distance from each other. If we neglect the centrifugal term, making use of the rigid-rotator approximation, we can write the radial Schrödinger equation as
+
+$$
+  \left[-\frac{\hbar^2}{2m} \frac{\partial^2}{\partial r_{ab}^2} + \frac{\kappa}{2} (r_{ab} - \bar{r}_{ab})^2 - D \right] \Phi(r_{ab}) = E^\text{vib} \Phi(r_{ab})
+$$
+
+which, apart from the constant $D$, is the harmonic-oscillator equation, whose solutions will be given by the Hermite polynomials with energy levels
+
+$$
+  E_n^\text{vib} = -D + \left(n + \frac{1}{2}) \hbar\omega_0
+$$
+
+where $\omega_0 = \sqrt{\kappa/m}$. Thus, the total energy, relative to the nuclear part, is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  E =& E_c + E_0 = E_c + E_j + E_n^\text{vib} \\
+  =& \frac{\hbar^2 \mathbf{k}^2}{2(m_a + m_b)} + \frac{\hbar^2}{2I} j(j + 1) - D + \left(n + \frac{1}{2} \right) \hbar\omega_0
+\end{split}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+Changing the electronic state will change the form of the potential $\hat{V}(r_{ab})$ and thus the harmonic constant $\kappa$. Consequently, there will be several electronic states, the lowest of which is the ground state. Each electronic state will possess many vibrational levels. In turn, every vibrational level will display rotational bands.
+
+Adding the effects of the anharmonicity of the potential $\hat{V}(r_{ab})$ and the centrifugal-barrier term will only introduce two small additional perturbations in $\eqref{equation-19}$

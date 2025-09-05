@@ -191,5 +191,5 @@ function relabelLatexEquations(mdxFile: string) {
   })
 }
 
-console.log(findLatexIssues("./content/notes/physics/units.mdx"))
+console.log(findLatexIssues("./content/notes/physics/quantum_chemistry.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
