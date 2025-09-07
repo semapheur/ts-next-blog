@@ -898,6 +898,23 @@ $$
 </details>
 </MathBox>
 
+<MathBox title="Stone's theorem" boxType='theorem'>
+Let $(U_t)_{t\in\R}$ be a strongly continuous one-parameter group on a Hilbert space $\mathcal{H}$, satisfying
+1. $\hat{U}(t)$ is unitary for all $t\in\R$
+2. $\hat{U}(t + s) = \hat{U}(t) \hat{U}(s)$ for all $s,t \in \R$
+3. $\lim_{t\to 0} \norm{\hat{U}(t) \psi - \psi} = 0$ for all $\psi\in\mathcal{H}$
+
+Then there exists a unique Hermitian operator $\hat{O}$ on $\mathcal{H}$ such tahat
+
+$$
+  \hat{U} = e^{it\hat{O}},\; \forall t\in\R
+$$
+
+Conversely, if $\hat{O}$ is Hermitian, then $e^{it\hat{O}}$ defines a strongly continuous one-parameter unitary group.
+</MathBox>
+
+The Stone theorem ensures the existence of a Hermitian infinitesimal generator for an Abelian group of unitary transformations.
+
 ### Eigenvalues
 
 <MathBox title='Eigenvalue, eigenvector, eigenspace and spectrum' boxType='definition'>
@@ -2957,9 +2974,9 @@ $$
 The time evolution of a state vector $\ket{\psi}$ is given by the Schrödinger equation
 
 $$
-\begin{equation}
+\begin{equation*}
   i\hbar \frac{\partial}{\partial t}\ket{\psi} = \hat{H} \ket{\psi} \tag{\label{equation-98}}
-\end{equation}
+\end{equation*}
 $$
 
 If $\ket{\psi}$ can be expanded in a continuous eigenbasis $\ket{q}$ as
@@ -3045,6 +3062,20 @@ For this to hold for any $\ket{\psi}$, we require $a^* = -a$, meaning that $a$ i
 
 $$
   i\hbar \frac{\partial}{\partial t}\ket{\psi} = \hat{H} \ket{\psi}
+$$
+
+### Time symmetry
+
+The Schrödinger equation is invariant under time reversal transformations $t \mapsto -t$, provided we also exchange kets with bras, i.e. $\ket{\psi} \to \bra{\psi}$. Taking the Hermitian conjugate of the Schrödinger equation $\eqref{equation-98}$ yields
+
+$$
+  -i\hbar\frac{\partial}{\partial t} \bra{\psi} = \bra{\psi}\hat{H}
+$$
+
+or equivalently
+
+$$
+  i\hbar\frac{\partial}{\partial(-t)} \bra{\psi} = \bra{\psi}\hat{H}
 $$
 
 ### Preservation of probability
@@ -3252,6 +3283,8 @@ $$
   \hat{U}(t_b,t_a)\ket{\psi(t_a)} = \ket{\psi(t_b)}
 $$
 
+with the initial condition $\hat{U}(t_a, t_a) = \hat{I}$.
+
 If the Hamiltonian is time-independent, the time evolution operator is obtainable from the Schrödinger equation
 
 $$
@@ -3416,7 +3449,7 @@ If two time translation are performed successively, the corresponding operators 
 
 $$
 \begin{equation}
-  \hat{U}(t_b, t_a) = \hat{U}(t_b, t')\hat{U}(t', t_a),\; t'\in(t_a, t_b) \tag{\label{equation-4}}
+  \hat{U}(t_c, t_a) = \hat{U}(t_c, t_b)\hat{U}(t_b, t_a),\; t_b \in(t_a, t_c) \tag{\label{equation-4}}
 \end{equation}
 $$
 
@@ -3431,7 +3464,7 @@ $$
 \end{align*}
 $$
 
-#### Unitarity
+#### Unitarity (time reversal)
 
 The inverse of the time evolution operator $\hat{U}(t_b, t_a)$ is obtained by interchanging the order of $t_a$ and $t_b$, which gives its anticasual form, i.e.
 
@@ -3439,7 +3472,23 @@ $$
   \hat{U}(t_b, t_a) = \hat{U}(t_a, t_b)^{-1}
 $$
 
-This implies that $\hat{U}$ is unitary. The unitarity was already established for time independent Hamiltonians in $\eqref{equation-6}$. In the general case, a direc solution of the Schrödinger equation shows that the operator $\hat{U}(t_b, t_a)$ for $t_b < t_a$ has a representation just like $\eqref{equation-5}$, except for a reversed time order of its argument, written as
+<details>
+<summary>Proof</summary>
+
+The time-reversal invertibility of $\hat{U}(t_b, t_a)$ follows by setting $t_b = t_a$ in $\eqref{equation-4}$ resulting in
+
+$$
+  \hat{I} = \hat{U}(t_a, t_a) = \hat{U}(t_a, t_b) \hat{U}(t_b, t_a)
+$$
+
+so that
+
+$$
+  \hat{U}(t_b, t_a)^{-1} = \hat{U}(t_a, t_b)
+$$
+</details>
+
+This implies that $\hat{U}$ is unitary. The unitarity was already established for time independent Hamiltonians in $\eqref{equation-6}$. In the general case, a direct solution of the Schrödinger equation shows that the operator $\hat{U}(t_b, t_a)$ for $t_b < t_a$ has a representation just like $\eqref{equation-5}$, except for a reversed time order of its argument, written as
 
 $$
   \hat{U}(t_b, t_a) = \hat{\bar{T}} \exp\left(\frac{i}{\hbar} \int_{t_a}^{t_b} \hat{H}(t) \;\d t \right)
@@ -3461,6 +3510,24 @@ $$
   =& \hat{U}(t_a, t_b) = \hat{U}^{-1} (t_b, t_a)
 \end{align*}
 $$
+
+#### Tranisition amplitudes
+
+The transition amplitude between an initial state $\ket{\phi}$ at time $t_a$ and a final state $\ket{\psi}$ at time $t_b$ is given by $\braket{\psi|\hat{U}(t_b, t_a)|\phi}$. Taking the complex congujate of the expectation value we obtain
+
+$$
+  \left(\braket{\psi|hat{U}(t_b, t_a)|\phi}\right)^* = \braket{\phi|\hat{U}(t_a, t_b)|\psi}
+$$
+
+which represents the probability amplitude for evolving $\ket{\psi}$ backward from $t_b$ to $t_a$. In this context, kets may viewed as input states and bras as output states of a unitary evolution. 
+
+In particular, the amplitude $\braket{\psi|\hat{U}(t_b, t_a)|\psi}$ is the autocorrelation amplitude, giving the overlap of the evolved state with the initial state. Its squared modulus
+
+$$
+  C(t_b, t_a) = |\braket{\psi|\hat{U}(t_b, t_a)|\psi}|^2
+$$
+
+is the autocorrelation function, which measures the probability that the state $\ket{\psi}$ remains unchanged under time evolution.
 
 #### Time evolution for $\hat{U}(t_b, t_a)$
 
@@ -7169,10 +7236,35 @@ where $\delta_{ij}$ is the Kronecker delta. These are known as the *canonical co
 
 $$
 \begin{align*}
-  &\set{\hat{x},\hat{y},\hat{z}}, &\set{\hat{x}, \hat{p}_y, \hat{p}_z} & \set{\hat{x}, \hat{p}_y, \hat{z}}, & \set{\hat{x}, \hat{y}, \hat{p}_z} \\
-  \&set{\hat{p}_x, \hat{p}_y, \hat{p}_z}, & \set{\hat{p}_x, \hat{y}, \hat{z}}, & \set{\hat{p}_x, \hat{y}, \hat{p}_z}, & \set{\hat{p}_x, \hat{p}_y, \hat{z}}
+  &\set{\hat{x},\hat{y},\hat{z}}, &\set{\hat{x}, \hat{p}_y, \hat{p}_z}, & \set{\hat{x}, \hat{p}_y, \hat{z}}, & \set{\hat{x}, \hat{y}, \hat{p}_z} \\
+  &\set{\hat{p}_x, \hat{p}_y, \hat{p}_z}, & \set{\hat{p}_x, \hat{y}, \hat{z}}, & \set{\hat{p}_x, \hat{y}, \hat{p}_z}, & \set{\hat{p}_x, \hat{p}_y, \hat{z}}
 \end{align*}
 $$
+
+<MathBox title="Unitary operators are analogous to canonical transformations" boxType="remark">
+In classical mechanics, canonical transformations are phase-space transformations $(q, p) \mapsto (q', p')$ that preserve the Poisson bracket structure:
+
+$$
+  \{q', p'\} = \{q, p\} = 1
+$$
+
+In quantum mechanics, unitary operators play the same role of canonical transformation in classical mechanics, since they leave the canonical commutation relations invariant. Let 
+
+$$
+  \hat{q}' = \hat{U}\hat{q}\hat{U}^\dagger,\quad \hat{p}' = \hat{U}\hat{p}\hat{U}^\dagger
+$$
+
+be unitary transformations of the canonical observables $\hat{q}$ and $\hat{p}$, satisfying the canonical commutation relation $[\hat{q}, \hat{p}] = i\hbar\hat{I}$. Then
+
+$$
+\begin{align*}
+  [\hat{q}', \hat{p}'] =& \hat{U}\hat{q}\hat{U}^\dagger \hat{U}\hat{p}\hat{U}^\dagger - \hat{U}\hat{p}\hat{U}^\dagger \hat{U}\hat{q}\hat{U}^\dagger \\
+  =& \hat{U}\hat{q}\hat{p}\hat{U}^\dagger - \hat{U}\hat{p}\hat{q}\hat{U}^\dagger\\
+  =& \hat{U}[\hat{q},\hat{p}]\hat{U}^\dagger
+  =& i\hbar\hat{I}
+\end{align*}
+$$
+</MathBox>
 
 ### Position-momentum uncertainty relation
 
@@ -7466,29 +7558,32 @@ Thus, by regularizing the singularity at $k_x = 0$, we recover the energy-time u
 In classical mechanics, the angular momentum of a particle with momentum $\mathbf{p}$ is given by $\mathbf{L} = \mathbf{r}\times\mathbf{p}$ with respect to the origin. The corresponding quantum operator is obtained by substituting $\mathbf{p} \to -i\hbar\nabla$, giving
 
 $$
-  \unitvec{L} = \unitvec{x} \times \unitvec{p} = -i\hbar(\mathbf{x} \times\nabla)
+  \unitvec{L} = \unitvec{r} \times \unitvec{p} = -i\hbar(\mathbf{r} \times\nabla)
 $$
 
-Since both $\unitvec{x}$ and $\unitvec{p}$ are Hermitian it follows that
-
-$$
-  \mathbf{L}^\dagger = (\unitvec{x} \times \unitvec{p})^\dagger = -\unitvec{p}^\dagger \times \unitvec{x}^\dagger = -\unitvec{p} \times \unitvec{x} = \unitvec{x} \times \unitvec{p} = \mathbf{L}^\dagger
-$$
-
-showing that $\mathbf{L}$ is Hermitian. In Cartesian coordinates $\mathbf{x} = (x,y,z)$, the components of $\unitvec{L}$ are given by
+Since both $\unitvec{r}$ and $\unitvec{p}$ are Hermitian it follows that
 
 $$
 \begin{align*}
-  \hat{L}_x =& \hat{x}_y \hat{p}_z - \hat{p}_y \hat{x}_z = -i\hbar\left(y \frac{\partial}{\partial z} - z \frac{\partial}{\partial y}\right) \\
-  \hat{L}_y =& \hat{x}_z \hat{p}_x - \hat{p}_z \hat{x}_x = -i\hbar\left(z \frac{\partial}{\partial x} - x \frac{\partial}{\partial z}\right) \\
-  \hat{L}_z =& \hat{x}_x \hat{p}_y - \hat{p}_x \hat{x}_y = -i\hbar\left(x \frac{\partial}{\partial y} - y \frac{\partial}{\partial x}\right) 
+  \mathbf{L}^\dagger =& (\unitvec{r} \times \unitvec{p})^\dagger = -\unitvec{p}^\dagger \times \unitvec{r}^\dagger \\
+  =& -\unitvec{p} \times \unitvec{r} = \unitvec{r} \times \unitvec{p} = \mathbf{L}^\dagger
+\end{align*}
+$$
+
+showing that $\mathbf{L}$ is Hermitian. In Cartesian coordinates $\mathbf{r} = (x,y,z)$, the components of $\unitvec{L}$ are given by
+
+$$
+\begin{align*}
+  \hat{L}_x =& \hat{y}\hat{p}_z - \hat{p}_y \hat{z} = -i\hbar\left(y \frac{\partial}{\partial z} - z \frac{\partial}{\partial y}\right) \\
+  \hat{L}_y =& \hat{z}\hat{p}_x - \hat{p}_z \hat{x} = -i\hbar\left(z \frac{\partial}{\partial x} - x \frac{\partial}{\partial z}\right) \\
+  \hat{L}_z =& \hat{x}\hat{p}_y - \hat{p}_x \hat{y} = -i\hbar\left(x \frac{\partial}{\partial y} - y \frac{\partial}{\partial x}\right) 
 \end{align*}
 $$
 
 Using the Levi-Civita symbol, $\varepsilon_{ijk}$, this can be compactly written as
 
 $$
-  \hat{L}_i = (\unitvec{x} \times\unitvec{p})_i = \varepsilon_{ijk} \hat{x}_j \hat{p}_k = -i\hbar \varepsilon_{ijk} x_j \frac{\partial}{\partial x_k}
+  \hat{L}_i = (\unitvec{r} \times\unitvec{p})_i = \varepsilon_{ijk} \hat{r}_j \hat{p}_k = -i\hbar \varepsilon_{ijk} r_j \frac{\partial}{\partial r_k}
 $$
 
 The angular momentum operator obeys the commutation relations
@@ -7496,7 +7591,7 @@ The angular momentum operator obeys the commutation relations
 $$
 \begin{align*}
   [\hat{L}_i, \hat{L}_j] =& i\hbar\varepsilon_{ijk} L_k \\
-  [\hat{L}_i, \hat{x}_j] =& i\hbar\varepsilon_{ijk}\hat{x}_k \\
+  [\hat{L}_i, \hat{r}_j] =& i\hbar\varepsilon_{ijk}\hat{r}_k \\
   [\hat{L}_i, \hat{p}_j] =& i\hbar\varepsilon_{ijk}\hat{p}_k
 \end{align*}
 $$
@@ -7504,33 +7599,33 @@ $$
 <details>
 <summary>Details</summary>
 
-Noting that $[\hat{x}_i, \hat{p}_j] = i\hbar\delta_{ij}$ and $\varepsilon_{ijk}\varepsilon_{klm} = \delta_{il} \delta_{jm} - \delta_{im} \delta_{jl}$, we obtain
+Noting that $[\hat{r}_i, \hat{p}_j] = i\hbar\delta_{ij}$ and $\varepsilon_{ijk}\varepsilon_{klm} = \delta_{il} \delta_{jm} - \delta_{im} \delta_{jl}$, we obtain
 
 $$
 \begin{align*}
-  [\hat{L}_i, \hat{L}_j] =& [\varepsilon_{ikl} \hat{x}_k \hat{p}_l, \varepsilon_{jrs} \hat{x}_r \hat{p}_s] = \varepsilon_{ikl} \varepsilon_{jrs}[\hat{x}_k \hat{p}_l, \hat{x}_r \hat{p}_s] \\
-  =& \varepsilon_{ikl} \varepsilon_{jrs} (\hat{x}_k [\hat{p}_l, \hat{x}_r \hat{p}_s] + [\hat{x}_k, \hat{x}_r \hat{p}_s] p_l) \\
-  =& \varepsilon_{ikl} \varepsilon_{jrs} (\hat{x}_k \underbrace{[\hat{p}_l, \hat{x}_r]}_{-i\hbar\delta_{lr}} \hat{p}_s + \hat{x}_r \underbrace{[\hat{x}_k, \hat{p}_s]}_{i\hbar\delta_{ks}}\hat{p}_l) \\
-  =& \varepsilon_{ikl} \varepsilon_{jrs} (-i\hbar\delta_{lr} \hat{x}_k \hat{p}_s + i\hbar\delta_{ks} \hat{x}_r \hat{p}_l) \\
-  =& -i\hbar \varepsilon_{ikl} \varepsilon_{jls} \hat{x}_k \hat{p}_s + i\hbar \varepsilon_{ikl} \varepsilon_{jrk} \hat{x}_r \hat{p}_k \\
-  =& -i\hbar \varepsilon_{ikl} \varepsilon_{ljs} \hat{x}_k \hat{p}_s - i\hbar \varepsilon_{jrk} \varepsilon_{kil} \hat{x}_r \hat{p}_k \\
-  =& i\hbar(\delta_{ij}\delta_{ks} - \delta_{is}\delta_{jk})\hat{x}_k \hat{p}_s - i\hbar(\delta_{ji}\delta_{rl} - \delta_{jl}\delta_{ri}) \hat{x}_r \hat{p}_l \\
-  =& i\hbar (\delta_ij \hat{x}_k \hat{p}_k - \hat{x}_j \hat{p}_i) - i\hbar(\delta_{ij} \hat{x}_l \hat{p}_l - \hat{x}_i \hat{p}_j) \\
-  =& i\hbar (\hat{x}_i \hat{p}_j - \hat{x}_j \hat{p}_j) = i\hbar \varepsilon_{ijk} (\hat{x} \times \unitvec{p})_k  \\
-  =& i\hbar \varepsilon_{ijk} \hat{x}_j \hat{p}_k = i\hbar \varepsilon_{ijk} L_k
+  [\hat{L}_i, \hat{L}_j] =& [\varepsilon_{ikl} \hat{r}_k \hat{p}_l, \varepsilon_{jmn} \hat{r}_m \hat{p}_n] = \varepsilon_{ikl} \varepsilon_{jmn}[\hat{r}_k \hat{p}_l, \hat{r}_m \hat{p}_n] \\
+  =& \varepsilon_{ikl} \varepsilon_{jmn} (\hat{r}_k [\hat{p}_l, \hat{r}_m \hat{p}_n] + [\hat{r}_k, \hat{r}_m \hat{p}_n] p_l) \\
+  =& \varepsilon_{ikl} \varepsilon_{jmn} (\hat{r}_k \underbrace{[\hat{p}_l, \hat{r}_m]}_{-i\hbar\delta_{lm}} \hat{p}_n + \hat{r}_m \underbrace{[\hat{r}_k, \hat{p}_n]}_{i\hbar\delta_{kn}}\hat{p}_l) \\
+  =& \varepsilon_{ikl} \varepsilon_{jmn} (-i\hbar\delta_{lm} \hat{r}_k \hat{p}_n + i\hbar\delta_{kn} \hat{r}_m \hat{p}_l) \\
+  =& -i\hbar \varepsilon_{ikl} \varepsilon_{jlm} \hat{r}_k \hat{p}_m + i\hbar \varepsilon_{ikl} \varepsilon_{jmk} \hat{r}_m \hat{p}_k \\
+  =& -i\hbar \varepsilon_{ikl} \varepsilon_{ljm} \hat{r}_k \hat{p}_n - i\hbar \varepsilon_{jmk} \varepsilon_{kil} \hat{r}_m \hat{p}_k \\
+  =& i\hbar(\delta_{ij}\delta_{kn} - \delta_{in}\delta_{jk})\hat{r}_k \hat{p}_n - i\hbar(\delta_{ji}\delta_{ml} - \delta_{jl}\delta_{mi}) \hat{r}_m \hat{p}_l \\
+  =& i\hbar (\delta_ij \hat{r}_k \hat{p}_k - \hat{r}_j \hat{p}_i) - i\hbar(\delta_{ij} \hat{x}_l \hat{p}_l - \hat{r}_i \hat{p}_j) \\
+  =& i\hbar (\hat{r}_i \hat{p}_j - \hat{r}_j \hat{p}_j) = i\hbar \varepsilon_{ijk} (\unitvec{r} \times \unitvec{p})_k  \\
+  =& i\hbar \varepsilon_{ijk} \hat{r}_j \hat{p}_k = i\hbar \varepsilon_{ijk} L_k
 \end{align*}
 $$
 
 Similarly,
 
 $$
-  [\hat{L}_i, \hat{x}_j] = [\varepsilon_{ikl} \hat{x}_k \hat{p}_l, \hat{x}_j] = \varepsilon_{ikl} \hat{x}_k \underbrace{[\hat{p}_l, \hat{x}_j]}_{-i\hbar\delta_{lj}} = -\varepsilon_{ikj} \hat{x}_k = \varepsilon_{ijk} \hat{x}_k
+  [\hat{L}_i, \hat{r}_j] = [\varepsilon_{ikl} \hat{r}_k \hat{p}_l, \hat{r}_j] = \varepsilon_{ikl} \hat{r}_k \underbrace{[\hat{p}_l, \hat{r}_j]}_{-i\hbar\delta_{lj}} = -\varepsilon_{ikj} \hat{r}_k = \varepsilon_{ijk} \hat{r}_k
 $$
 
 and 
 
 $$
-  [\hat{L}_i, \hat{p}_j] = [\varepsilon_{ikl} \hat{x}_k \hat{p}_l, \hat{p}_j] = -\varepsilon_{ikl} [\hat{p}_l \hat{x}_k, \hat{p}_j] = \varepsilon_{ilk} \hat{p}_k \underbrace{[\hat{x}_l, \hat{p}_j]}_{i\hbar\delta_{lj}} = \varepsilon_{ijk} \hat{p}_k
+  [\hat{L}_i, \hat{p}_j] = [\varepsilon_{ikl} \hat{r}_k \hat{p}_l, \hat{p}_j] = -\varepsilon_{ikl} [\hat{p}_l \hat{r}_k, \hat{p}_j] = \varepsilon_{ilk} \hat{p}_k \underbrace{[\hat{r}_l, \hat{p}_j]}_{i\hbar\delta_{lj}} = \varepsilon_{ijk} \hat{p}_k
 $$
 </details>
 
@@ -7570,7 +7665,11 @@ $$
 The momentum squared is $\hat{L}^2 = \unitvec{L}\cdot\unitvec{L}$ and therefore
 
 $$
-  [\hat{L}^2, \hat{L}_j] = [\hat{L}_i \hat{L}_i, \hat{L}_j] = \hat{L}_i [\hat{L}_i, \hat{L}_j] + [\hat{L}_i, \hat{L}_j]\hat{L}_i = i\hbar\varepsilon_{ijk}\hat{L}_i \hat{L}_k + i\hbar\varepsilon_{ijk}\hat{L}_k \hat{L}_i
+\begin{align*}
+  [\hat{L}^2, \hat{L}_j] =& [\hat{L}_i \hat{L}_i, \hat{L}_j] \\
+  =& \hat{L}_i [\hat{L}_i, \hat{L}_j] + [\hat{L}_i, \hat{L}_j]\hat{L}_i \\
+  =& i\hbar\varepsilon_{ijk}\hat{L}_i \hat{L}_k + i\hbar\varepsilon_{ijk}\hat{L}_k \hat{L}_i
+\end{align*}
 $$
 
 Since
@@ -7588,7 +7687,69 @@ $$
 
 This means that $\hat{L}^2$ is compatible with any one of the components of $\unitvec{L}$. 
 
-### Derivation of eigenvalues using ladder operators
+### Generator of rotations
+
+Consider the action a unitary rotation operator on a generic state vector $\ket{\psi}$. A finite rotation by an angle $theta$ about an axis defined by a unit vector $\mathbf{n}$ is given by
+
+$$
+\begin{equation*}
+  \hat{U}_\mathbf{n} (\theta) = e^{i\theta\mathbf{n}\cdot\unitvec{L}/\hbar} = e^{i\theta\mathbf{n}\unitvec{l}}
+\tag{\label{equation-161}}
+\end{equation*}
+$$
+
+where
+
+$$
+  \unitvec{l} = \frac{\unitvec{L}}{\hbar} = \unitvec{r}\times\unitvec{k}
+$$
+
+and $\unitvec{k} = \unitvec{p}/\hbar = -i\nabla$ is the propagation vector. For an infinitesimal angle $\delta\theta \to 0$, a first-order Taylor series expansion of $\eqref{equation-161}$ yields
+
+$$
+  \hat{U}_\mathbf{n} (\delta\theta) \simeq 1 + i\delta\theta \mathbf{n}\cdot\unitvec{l} = 1 + i\delta\theta\hat{R}
+$$
+
+where $\hat{R} = \mathbf{n}\cdot\unitvec{l}$ is the generator of rotations about $\mathbf{n}$. The unitary transformation induced by $\hat{U}_\mathbf{n} (\delta\theta)$ acts on a generic operator $\hat{O}$ as
+
+$$
+\begin{align*}
+  \hat{O} \mapsto \hat{O}' =& \hat{U}_\mathbf{n} (\delta\theta) \hat{O} \hat{U}_\mathbf{n}^\dagger (\delta\theta) \\
+  =& (1 + i\delta\theta\hat{R})\hat{O}(1 - i\delta\theta\hat{R}) \\
+  =& \hat{O} + \delta\hat{O}
+\end{align*}
+$$
+
+Expanding to the first order in $\delta\theta$ gives
+
+$$
+  \hat{O}' \simeq \hat{O} + i\delta\theta[\hat{R}, \hat{O}] = \hat{O} + \delta\hat{O}
+$$
+
+so that
+
+$$
+\begin{equation*}
+  \delta\hat{O} \simeq i\delta\theta[\hat{R}, \hat{O}]
+\tag{\label{equation-162}}
+\end{equation*}
+$$
+
+An operator $\hat{O}$ is called a scalar under rotations if it remains invariant under all such transformations, i.e.
+
+$$
+  \hat{U}_\mathbf{n} (\theta) \hat{O} \hat{U}_\mathbf{n}^\dagger (\theta) = \hat{O}, \forall \theta, \mathbf{n}
+$$
+
+From $\eqref{equation-162}$ this is equivalent to the commutation relation
+
+$$
+  [\hat{R}, \hat{O}] = 0
+$$
+
+Since the generator $\hat{R}$ is the projection of $\unitvec{L}$ along the direction $\mathbf{n}$, it follows that each component of $\unitvec{L}$ commutes with $\hat{L}^2$, $\hat{R}^2$ and $\unitvec{p}^2$, all of which are scalars for the rotations.
+
+### Eigenvalues
 
 The simultaneous eigenvalues of $\hat{L}^2$ and $\hat{L}_z$ can be determined algebraically using ladder operators
 
@@ -8031,19 +8192,14 @@ $$
   \int (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta) \;\d\Omega = \int_0^{2\pi} \d\phi \int_0^\pi (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta, \phi) \sin(\theta) \;\d\theta = \delta_{\ell\ell'} \delta_{nn'}
 $$
 
-
-| $\ell$ | $n$ | $Y_\ell^n (\theta, \phi)$ |
-| --- | --- | --- |
-| $0$ | $0$ | $Y_0^0 = \frac{1}{\sqrt{4\pi}}$ |
-| $1$ | $0$ | $Y_1^0 = \left(\frac{3}{8\pi}\right)^{1/2} \cos\theta$ |
-| $1$ | $\pm 1$ | $Y_1^{\pm 1} = \mp \left(\frac{3}{8\pi}\right)^{1/2} \cos(\theta) e^{\pm i\phi}$ |
-| $2$ | $0$ | $Y_2^0 = \mp \left(\frac{5}{16\pi}\right)^{1/2} [3\cos^2 (\theta) - 1]$ |
-| $2$ | $\pm 1$ | $Y_2^{\pm 1} = \mp \left(\frac{15}{8\pi}\right)^{1/2} \sin(\theta) \cos(\theta) e^{\pm i\phi}$ |
-| $2$ | $\pm 2$ | $Y_2^{\pm 2} = \mp \left(\frac{15}{32\pi}\right)^{1/2} \sin^2(\theta) e^{\pm i2\phi}$ |
-| $3$ | $0$ | $Y_3^0 = \mp \left(\frac{7}{16\pi}\right)^{1/2} [5\cos^3(\theta) - 3\cos(\theta)]$ |
-| $3$ | $\pm 1$ | $Y_3^{\pm 1} = \mp \left(\frac{21}{64\pi}\right)^{1/2} \sin(\theta)[5\cos^2(\theta) - 1] e^{\pm i\phi}$ |
-| $3$ | $\pm 2$ | $Y_3^{\pm 2} = \mp \left(\frac{105}{32\pi}\right)^{1/2} \sin^2(\theta) \cos(\theta) e^{\pm i2\phi}$ |
-| $3$ | $\pm 3$ | $Y_3^{\pm 3} = \mp \left(\frac{35}{64\pi}\right)^{1/2} \sin^3(\theta) e^{\pm i3\phi}$ |
+| $\ell$ | waves |
+| --- | --- |
+| $0$ | s(harp) |
+| $1$ | p(rinicipal) |
+| $2$ | d(iffusive) |
+| $3$ | f |
+| $4$ | g |
+| $5$ | h |
 
 #### Derivation using ladder operators
 
@@ -8159,6 +8315,19 @@ $$
   &\times e^{in\phi} \sin^{-n} (\theta) \frac{\d^{\ell - n}}{\d(\cos\theta)^{\ell - n}} \sin^{2\ell} (\theta)
 \end{align*}
 $$
+
+| $\ell$ | $n$ | $Y_\ell^n (\theta, \phi)$ |
+| --- | --- | --- |
+| $0$ | $0$ | $Y_0^0 = \frac{1}{\sqrt{4\pi}}$ |
+| $1$ | $0$ | $Y_1^0 = \left(\frac{3}{8\pi}\right)^{1/2} \cos\theta$ |
+| $1$ | $\pm 1$ | $Y_1^{\pm 1} = \mp \left(\frac{3}{8\pi}\right)^{1/2} \cos(\theta) e^{\pm i\phi}$ |
+| $2$ | $0$ | $Y_2^0 = \mp \left(\frac{5}{16\pi}\right)^{1/2} [3\cos^2 (\theta) - 1]$ |
+| $2$ | $\pm 1$ | $Y_2^{\pm 1} = \mp \left(\frac{15}{8\pi}\right)^{1/2} \sin(\theta) \cos(\theta) e^{\pm i\phi}$ |
+| $2$ | $\pm 2$ | $Y_2^{\pm 2} = \mp \left(\frac{15}{32\pi}\right)^{1/2} \sin^2(\theta) e^{\pm i2\phi}$ |
+| $3$ | $0$ | $Y_3^0 = \mp \left(\frac{7}{16\pi}\right)^{1/2} [5\cos^3(\theta) - 3\cos(\theta)]$ |
+| $3$ | $\pm 1$ | $Y_3^{\pm 1} = \mp \left(\frac{21}{64\pi}\right)^{1/2} \sin(\theta)[5\cos^2(\theta) - 1] e^{\pm i\phi}$ |
+| $3$ | $\pm 2$ | $Y_3^{\pm 2} = \mp \left(\frac{105}{32\pi}\right)^{1/2} \sin^2(\theta) \cos(\theta) e^{\pm i2\phi}$ |
+| $3$ | $\pm 3$ | $Y_3^{\pm 3} = \mp \left(\frac{35}{64\pi}\right)^{1/2} \sin^3(\theta) e^{\pm i3\phi}$ |
 
 ## Spin
 

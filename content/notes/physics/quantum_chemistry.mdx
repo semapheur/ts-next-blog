@@ -124,22 +124,6 @@ $$
 \end{equation*}
 $$
 
-In atomic units, the Hamiltonian for a system of $m$ nuclei and $n$ electrons is
-
-$$
-\begin{align*}
-  \hat{H} =& - \sum_{i=1}^n \frac{1}{2} \nabla_i^2 - \sum_{A=1}^m \frac{1}{2M_A} \nabla_A^2 - \sum_{i=1}^n \sum_{A=1}^m \frac{Z_A}{r_{iA}} \\
-  &+ \sum_{i=1}^n \sum_{j > 1}^n \frac{1}{r_{ij}} + \sum_{A=1}^m \sum_{B > A}^{m} \frac{Z_A Z_B}{R_{AB}}
-\end{align*}
-$$
-
-where
-- $M_A$ is the mass of nuclei $A$ in electron-mass units 
-- $Z_A$ is the atomic number of nucles $A$
-- $r_{iA} = |\mathbf{r}_i - \mathbf{R}_A|$ is the distance between the $i$th electron and $A$th nucleus
-- $r_{ij} = |\mathbf{r}_i - \mathbf{r}_j|$ is the distance between the $i$th and $j$ electron
-- $R_{AB} = |\mathbf{R}_A - \mathbf{R}_B|$ is the distance between the $A$th and $B$th nucleus
-
 The Born-Oppenheimer approximation separates the nuclear motion from the electronic one, which relies on the different time scales of the two types of motion. Consequently, we try to solve the molecular problem by first considering a "frozen" configuration of the nuclei, which introduces a certain potential on each electron. Changing the nuclear configuration, we assume that the electrons will rearrange themselves almost instantaneously. Then, we shall look for solutions of the Schrödinger equation
 
 $$
@@ -184,36 +168,44 @@ $$
 \end{equation*}
 $$
 
-The two terms in the last square brackets may be neglected by the following argument. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ can be thought of as a function of the difference $\mathbf{r}_j^e -\mathbf{r}_k^n$. Consequently, denoting $\nabla_{\mathbf{r}_j^e}^{\prime 2}$ the Laplacian relative to the electronic coordinates, we have
+The terms involving derivatives of $\phi_{\mathbf{r}_k^n}$ with respect to nuclear coordinates represent nonadiabatic couplings. They couple electronic and nuclear motion and prevent the simple product form $\eqref{equation-10}$.
+
+The term $\nabla_k^2 \phi_{\mathbf{r}_k^n}$ can be estimated by recognizing that $\phi_{\mathbf{r}_k^n}$ depends on relative coordinates $\mathbf{r}_j^e -\mathbf{r}_k^n$. Hence, differentiation with respect to $\mathbf{r}_k^n$ is equivalently up to a sign to differentiate with respect to $\mathbf{r}_j^e$. Consequently, denoting $\nabla_{\mathbf{r}_j^e}^{\prime 2}$ the Laplacian relative to the electronic coordinates, we have
 
 $$
-  \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \approx \nabla_{\mathbf{r}_j^e}^{\prime 2} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+  \nabla_k^2 \phi_{\mathbf{r}_k^n} \sim \nabla_j^{\prime 2} \phi_{\mathbf{r}_k^n}
 $$
 
-from which it follows that the term
+The corresponding kinetic energy distribution therefore scales as
 
 $$
-  \frac{\hbar^2}{2m_k} \nabla_{\mathbf{r}_k^n}^2 \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+  \frac{\hbar^2}{2m_k} \nabla_k^2 \phi_{\mathbf{r}_k^n} \sim \frac{m_e}{m_k} \frac{\hbar}{2m_e} \nabla_j^2 \phi_{\mathbf{r}_k^n}
 $$
 
-is of the order $m_e / m_k$ times the kinetic energy of one electron. Moreover, $m_e / m_k \leq 1/1840$. For the same reasons, $\nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) = -\nabla'_{\mathbf{r}_j^e} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$
+which is suppressed by the small ratio $m_e / m_k \approx 1/1840$.
+
+For the same reasons, 
+
+$$
+  \nabla_k \phi_{\mathbf{r}_k^n} = -\nabla'_j \phi_{\mathbf{r}_k^n}
+$$
 
 and we also have
 
 $$
-  \hbar \nabla_{\mathbf{r}_k^n} \psi(\set{\mathbf{r}_k^j}) \approx \hat{\mathbf{p}}_k^n,\quad \hbar \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_k^j}) \approx \hat{\mathbf{p}}_j^e
+  \hbar \nabla_k \psi \sim \hat{\mathbf{p}}_k^n,\quad \hbar \nabla_k \phi_{\mathbf{r}_k^n} \sim \hat{\mathbf{p}}_j^e
 $$
 
-from which it follows that
+Consequently, the mixed derivative term scales as
 
 $$
 \begin{equation*}
-  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} \approx \frac{1}{m_k} \hat{p}_k^n \hat{p}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
+  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} \sim \frac{1}{m_k} \hat{\mathbf{p}}_k^n \hat{\mathbf{p}}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
 \tag{\label{equation-12}}
 \end{equation*}
 $$
 
-because the dynamics of the electrons is much faster than that of the nuclei and therefore $p_k^n \ll p_j^e$. The last term of $\eqref{equation-12}$ is of the order of the kinetic energy of one electron, and this finally  justifies neglecting those two terms.
+because the dynamics of the electrons is much faster than that of the nuclei and therefore $p_k^n \ll p_j^e$. The last term of $\eqref{equation-12}$ is of the order of the kinetic energy of one electron, and this finally justifies neglecting those two terms.
 
 With these approximations, we may rewrite $\eqref{equation-9}$ as a Schrödinger equation for the nuclear wave function
 
@@ -372,3 +364,75 @@ $$
 Changing the electronic state will change the form of the potential $\hat{V}(r_{ab})$ and thus the harmonic constant $\kappa$. Consequently, there will be several electronic states, the lowest of which is the ground state. Each electronic state will possess many vibrational levels. In turn, every vibrational level will display rotational bands.
 
 Adding the effects of the anharmonicity of the potential $\hat{V}(r_{ab})$ and the centrifugal-barrier term will only introduce two small additional perturbations in $\eqref{equation-19}$
+
+## Spin degrees of freedom
+
+The electronic Hamiltonian $\eqref{equation-3}$ can be extended by specifying the spin orientation of the electrons, in addition to their spatial coordinates. To this end, we introduce two orthonormal spin functions $\alpha(\omega)$ and $\beta(\omega)$, corresponding to spin up and down, respectively. Here $\omega$ is an abstract spin variable. The spin functions satisfy the orthonormality conditions
+
+$$
+\begin{align*}
+  \braket{\alpha|\alpha} =& \braket{\beta|\beta} = 1 \\
+  \braket{\alpha|\beta} =& \braket{\beta|\alpha} = 0
+\end{align*}
+$$
+
+Thus, the state space for a single electron is the tensor product of spatial and spin spaces, and an electron is specified by both its spatial coordinate $\mathbf{r}$ and its spin coordinate $\omega$. Collectively, we denote this set of variable by $\mathbf{x} = (\mathbf{r}, \omega)$. In this formalism, the electronic wavefunction in $\eqref{equation-10}$ depends on the combined variables of electrons $\phi_{\mathbf{r}_k^n} (\set{x}_j)$.
+
+Because the electronic Hamiltonian $\eqref{equation-3}$ contains no explicit spin-dependent terms, introducing spin coordinates alone does not change its form. However, to obtain a physically meaningful theory, we must impose an additional antisymmetric requirement of the electronic wavefunction
+
+$$
+  \phi_{\mathbf{r}_k^{n}} (\mathbf{x}_1, \dots, \mathbf{x}_i, \dots, \mathbf{x}_j, \dots, \mathbf{x}_{N_e}) = -\phi_{\mathbf{r}_k^n} (\mathbf{x}_1, \dots, \mathbf{x}_j, \dots, \mathbf{x}_i, \dots, \mathbf{x}_{N_e})
+$$
+
+for any pair of electrons $i$ and $j$. This condition states that the electronic wave function $\phi_{\mathbf{r}_k^{n}}$ is antisymmetric under exchange of all coordinates of any two electrons. This antisymmetry requirement os the formal statement of the Pauli exclusion principle: if two electrons occupy the same one-electron state, the wavefunction must vanish. More generally, antisymmetry ensures that electrons cannot simultaneously be in the same quantum state.
+
+# Orbitala
+
+An orbital is a one-particle wave function, describing the quantum state of a single electron. A spatial orbital is a complex-value function $\psi_i: \R^3 \to \mathbb{C}$, of the position vector $\mathbf{r}\in\R^3$. Its squared modulus determines the probability density for the electron's spatial distribution; the probability of finding the electron in an infinitesimal volume element $\d\mathbf{r}$ around $\mathbf{r}$ is $|\psi_i (\mathbf{r})|^2 \;\d\mathbf{r}$.
+
+We typically assume that the spatial molecular orbitals form an orthonormal set in $L^2 (\R^3)$, i.e.
+
+$$
+  \int_{\R^3} \psi_i^* (\mathbf{r}) \psi_j (\mathbf{r}) \;\d\mathbf{r} = \delta_{ij}
+$$
+
+If the set of spatial orbitals $\set{\psi_i}$ were complete in $L^2 (\R^3)$, then any square-integrable function $f(\mathbf{r}) \in L^2 (\R^3)$ could expanded as a convergent series
+
+$$
+\begin{align*}
+  f(\mathbf{r}) = \sum_{i=1}^\infty a_i \psi_i (\mathbf{r}) \\
+  a_i = int_{\R^3} f(\mathbf{r}) \psi^* (\mathbf{r}) \;\d\mathbf{r}
+\end{align*}
+$$
+
+In practice, however, we never work with a truly complete set, but instead with a finite subset $\set{\psi_i}_{i=1}^K$ of $K$ such orbitals. This finite set spans only a $K$-dimensional subspace of $L^2 (\R^3)$ and all approximation are at therefore exact only within that subspace.
+
+To fully describe an electron, we must also specify its spin. The spin degree of freedom is represented by a two dimensional Hilbert space with orthonormal functions $\alpha(\omega)$ and $\beta(\omega)$, corresponding to spin-up and spin-down states, respectively. 
+
+A general spin orbital is a function $\chi: \R^3 \times\Omega \to\mathbb{C}$ of $\mathbf{x} = (\mathbf{r}, \omega)$, which describes both the spatial distribution and the spin orientation of a electron. From a spatial orbital, $\psi(\mathbf{r})$, we can form two different spin orbitals, one corresponding to spin up and the other to spin down, by multiplying the spatial orbital by the $\alpha$ and $\beta$ spin function respectively, i.e.
+
+$$
+  \chi(\mathbf{x}) = \begin{cases}
+    \psi(\mathbf{r})\alpha(\omega) \\
+    \psi(\mathbf{r})\beta(\omega)
+  \end{cases}
+$$
+
+Given a set of $K$ spatial orbitals $\set{\psi_i}_{i=1}^K$, we can thus form a set of $2K$ spin orbitals $\set{\chi_i}_{i=1}^{2K}$ as
+
+$$
+  \begin{rcases}
+    \chi_{2i - 1} (\mathbf{x}) =& \psi_i^\alpha (\mathbf{r}) \alpha(\omega) \\
+    \chi_{2i} =& \psi_i^\beta (\mathbf{r}) \beta(\omega)
+  \end{rcases} i = 1,\dots,k
+$$
+
+The spin orbitals inherit orthonormality from the spatial and spin part. Explicitly, with respect to the product measure $\d\mathbf{x} = \d\mathbf{r} \d\omega$
+
+$$
+  \int \chi_i^* (\mathbf{x}) \chi_j (\mathbf{x}) \;\d\mathbf{x} = \braket{\chi_i | \chi_j} = \delta_{ij}
+$$
+
+## Hertree products
+
+## Slater determinants
