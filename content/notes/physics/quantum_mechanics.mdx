@@ -7751,24 +7751,54 @@ Since the generator $\hat{R}$ is the projection of $\unitvec{L}$ along the direc
 
 ### Eigenvalues
 
-The simultaneous eigenvalues of $\hat{L}^2$ and $\hat{L}_z$ can be determined algebraically using ladder operators
+To find the eigenvalues of $\unitvec{L}$, we have to choose a complete set of angular momentum observables. Since different components of the angular momentum do not commute with each other, we have to choose a pair of commuting observables we wish to jointly diagonalize, say $\hat{L}^2$ and $\hat{L}_z$. First we note that we must have $\hat{L}^2 - \hat{L}_z^2 = \hat{L}_x^2 +\hat{L}_y^2 \geq 0$. For our Hilbert space basis, we choose a set of states $\ket{\ell, m_\ell}$ that have definite values of $\hat{L}^2$ and $\hat{L}_z$. In this context, $\ket{\ell, m_\ell}$ is an eigenstate of both $\hat{L}^2$ and $\hat{L}_z$, where $m_\ell$ is the eigenvalue of $\hat{L}_z$. We then have
 
 $$
-\begin{align*}
-  \hat{L}_+ =& \hat{L}_x + i \hat{L}_y \\
-  \hat{L}_i =& \hat{L}_x - i \hat{L}_y = \hat{L}_+^\dagger
-\end{align*}
+  \braket{\ell, m_\ell | \hat{L}^2 - \hat{L}_z^2 | l, m_\ell} = \braket{\ell, m_\ell | \hat{L}_x^2 + \hat{L}_y^2 | l, m_\ell} \geq 0
 $$
 
-Since both $\hat{L}_x$ and $\hat{L}_y$ commute with $\hat{L}^2$, it follows that
+This means that the eigenvalues of $\hat{L}_z^2$ cannot exceed the eigenvalues of $\hat{L}^2$, i.e. once the eigenvalue of $\hat{L}^2$ is fixed, $\hat{L}_z^2$ is bounded. Let us denote by $\ell$ the maximal eigenvalue of $\hat{L}_z$, that is
+
+$$
+  - \ell \leq m_\ell \leq \ell
+$$
+
+where $\ell$ is the azimuthal quantum number, while $m_\ell$ is the magnetic quantum number, so that we can write
+
+$$
+  \hat{L}_z \ket{\ell, m_\ell} = m_\ell \ket{\ell, m_\ell}
+$$
+
+In order to investigate the algebra of angular momemntum, it is convenient to introduce raising and lowering operators
+
+$$
+  \hat{L}_\pm =& \hat{L}_x \pm i \hat{L}_y
+$$
+
+which satisfy
+
+$$
+  \hat{L}_- = \hat{L}_+^\dagger
+$$
+
+and the commutation relations
+1. $[\hat{L}^2, \hat{L}_\pm] = 0$
+2. $[\hat{L}_+, \hat{L}_-]= 2\hat{L}_z$
+2. $[\hat{L}_z, \hat{L}_\pm] = \pm\hbar\hat{L}_\pm$
+3. $[\hat{L}_z, \hat{L}_\pm^2] = \pm 2\hbar\hat{L}_\pm^2$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Since both $\hat{L}_x$ and $\hat{L}_y$ commute with $\hat{L}^2$, it follows that
 
 $$
 \begin{equation}
-  [\hat{L}^2, \hat{L}_\pm] = [\hat{L}^2, \hat{L}_x] + i[\hat{L}^2, \hat{L}_y] = 0 \tag{\label{equation-22}}
+  [\hat{L}^2, \hat{L}_\pm] = \underbrace{[\hat{L}^2, \hat{L}_x]}_{=0} + i\underbrace{[\hat{L}^2, \hat{L}_y]}_{=0} = 0 \tag{\label{equation-22}}
 \end{equation}
 $$
 
-The commutation of $\hat{L}_\pm$ with $\hat{L}_z$ is
+**(3):** The commutation of $\hat{L}_\pm$ with $\hat{L}_z$ is
 
 $$
 \begin{equation}
@@ -7781,13 +7811,14 @@ $$
 \end{equation}
 $$
 
-and
+**(4):** The commutation of $\hat{L}_\pm^2$ with $\hat{L}_z$ is
 
 $$
   [\hat{L}_z, \hat{L}_\pm^2] = \hat{L}_\pm [\hat{L}_z, \hat{L}_\pm] + [\hat{L}_z, \hat{L}_\pm]\hat{L}_\pm = \pm 2\hbar\hat{L}_\pm^2
 $$
+</details>
 
-Inductively, it follows that
+From **(4)** it follows inductively that
 
 $$
 \begin{equation}
@@ -7841,7 +7872,7 @@ showing that $\hat{L}_\pm \ket{\psi}$ is an eigenfunction of $\hat{L}^2$ sharing
 
 $$
 \begin{align*}
-  \hat{L}_z (\hat{L}_\pm \ket{\psi}) =& (\hat{L}_z \hat{L}_\pm - \hat{L}_\pm \hat{L}_z)\ket{\psi} + \hat{L}_\pm \hat{L}_z \ket{\psi} \\
+  \hat{L}_z (\hat{L}_\pm \ket{\psi}) =& \underbrace{(\hat{L}_z \hat{L}_\pm - \hat{L}_\pm \hat{L}_z)}_{=[\hat{L}_z, \hat{L}_+]} \ket{\psi} + \hat{L}_\pm \hat{L}_z \ket{\psi} \\
   =& \pm\hbar\hat{L}_\pm \ket{\psi} + \hat{L}_\pm (\mu\ket{\psi}) \\
   =& (\mu \pm \hbar)(\hat{L}_\pm \ket{\psi})
 \end{align*}
@@ -7858,10 +7889,10 @@ $$
 
 This shows that $\hat{L}_\pm^k \ket{\psi}$ is a simultaneous eigenfunction of both $\hat{L}^2$ and $\hat{L}_z$ with corresponding eigenvalues $\lambda$ and $\mu\pm k\hbar$. Thus, starting from a state $\ket{\psi}$ with a $\hat{L}^2$ eigenvalue $\lambda$ and a $\hat{L}_z$ eigenvalue $\mu$, we can repeatedly apply $\hat{L}_+$ to construct an ascending sequence of eigenstates with $\hat{L}_z$ eigenvalues $\mu, \mu + \hbar, \mu + 2\hbar, \dots$. Similarly, we can apply $\hat{L}_-$ to construct a descending sequence $\mu, \mu - \hbar, \mu - 2\hbar$. Since the $\hat{L}^2$ eigenvalue is preserved, it follows from $\eqref{equation-25}$ that both sequences must terminate.
 
-If we let the upper and lower $\hat{L}_z$ eigenvalue be $\hbar n_\text{u}$ and $\hbar n_\text{l}$, respectively, we have
+If we let the upper and lower $\hat{L}_z$ eigenvalue be $\hbar m_\text{u}$ and $\hbar m_\text{l}$, respectively, we have
 
 $$
-  \hat{L}_z \ket{\psi_\text{u}} = \hbar n_\text{u} \ket{\psi_\text{u}},\quad \hat{L}_z \ket{\psi_\text{l}} = -\hbar n_\text{l} \ket{\psi_\text{l}}
+  \hat{L}_z \ket{\psi_\text{u}} = \hbar m_\text{u} \ket{\psi_\text{u}},\quad \hat{L}_z \ket{\psi_\text{l}} = -\hbar m_\text{l} \ket{\psi_\text{l}}
 $$
 
 with
@@ -7872,11 +7903,11 @@ $$
 \end{equation}
 $$
 
-From $\eqref{equation-25}$, we must have $n_\text{u}^2 \leq \lambda$ and $n_\text{l}^2 \leq \lambda$. By construction, there must be a natural number $N\in\N$ of steps from $-n_\text{l}$ ot $n_\text{u}$, i.e.
+From $\eqref{equation-25}$, we must have $m_\text{u}^2 \leq \lambda$ and $m_\text{l}^2 \leq \lambda$. By construction, there must be a natural number $M\in\N$ of steps from $-m_\text{l}$ ot $m_\text{u}$, i.e.
 
 $$
 \begin{equation}
-  n_\text{l} + n_\text{u} = N \in\N \tag{\label{equation-28}}
+  m_\text{l} + m_\text{u} = M \in\N \tag{\label{equation-28}}
 \end{equation}
 $$
 
@@ -7889,7 +7920,7 @@ $$
 Then by $\eqref{equation-27}$, this becomes
 
 $$
-  \lambda \ket{\psi_\text{u}} = \hbar^2 n_\text{u} (n_\text{u} + 1) \ket{\psi_\text{u}} \implies \lambda = \hbar^2 n_\text{u} (n_\text{u} + 1)
+  \lambda \ket{\psi_\text{u}} = \hbar^2 m_\text{u} (m_\text{u} + 1) \ket{\psi_\text{u}} \implies \lambda = \hbar^2 m_\text{u} (m_\text{u} + 1)
 $$
 
 Similarly, applying $\eqref{equation-26}$ for $\hat{L}_+ \hat{L}_-$, we obtain
@@ -7901,21 +7932,21 @@ $$
 or
 
 $$
-  \lambda \ket{\psi_\text{l}} = \hbar^2 n_\text{l} (n_\text{l} + 1) \ket{\psi_\text{l}} \implies \lambda = \hbar^2 n_\text{l} (n_\text{l} + 1)
+  \lambda \ket{\psi_\text{l}} = \hbar^2 m_\text{l} (m_\text{l} + 1) \ket{\psi_\text{l}} \implies \lambda = \hbar^2 m_\text{l} (m_\text{l} + 1)
 $$
 
 Equating both equations for $\lambda$ and using $\eqref{equation-28}$, we conclude that
 
 $$
-  n_\text{u} = n_\text{l} = \frac{N}{2} := \ell \in \N/2
+  m_\text{u} = m_\text{l} = \frac{M}{2} := \ell \in \N/2
 $$
 
-where $\ell$ is either integral or half-integral, depending on whether $N$ is even or odd. In either case, we finally arrive at $\lambda = \hbar^2 \ell(\ell + 1)$ where the eigenvalues of $\hat{L}_z$ range from $-\hbar\ell$ to $\hbar\ell$ in integral steps of $\hbar$. Relabeling the simultaneous eigenstates as $\ket{\ell, n}$, the eigenvalue equations can be witten
+where $\ell$ is either integral or half-integral, depending on whether $N$ is even or odd. In either case, we finally arrive at $\lambda = \hbar^2 \ell(\ell + 1)$ where the eigenvalues of $\hat{L}_z$ range from $-\hbar\ell$ to $\hbar\ell$ in integral steps of $\hbar$. Relabeling the simultaneous eigenstates as $\ket{\ell, m_\ell}$, the eigenvalue equations can be witten
 
 $$
 \begin{align*}
-  \hat{L}^2 \ket{\ell, n} =& \hbar^2 \ell(\ell + 1) \ket{\ell, n} \\
-  \hat{L}_z \ket{\ell, n} =& \hbar n \ket{\ell, n}
+  \hat{L}^2 \ket{\ell, m_\ell} =& \hbar^2 \ell(\ell + 1) \ket{\ell, m_\ell} \\
+  \hat{L}_z \ket{\ell, m_\ell} =& \hbar m_\ell \ket{\ell, m_\ell}
 \end{align*}
 $$
 
@@ -7923,9 +7954,9 @@ Using $\eqref{equation-26}$, we have
 
 $$
 \begin{align*}
-  \Braket{\ell, n | \hat{L}_\mp \hat{L}_\pm | \ell, n } =& \Braket{\ell, n| \hat{L}^2 - \hat{L}_z^2 \mp \hbar\hat{L}_z | \ell, n} \\
-  =& \hbar^2 [\ell(\ell + 1) - n^2 \mp n] \Braket{\ell, n | \ell, n} \\
-  =& \hbar^2 [\ell(\ell + 1) - n(n \pm 1)] \Braket{\ell, n | \ell, n}
+  \Braket{\ell, m_\ell | \hat{L}_\mp \hat{L}_\pm | \ell, m_\ell } =& \Braket{\ell, m_\ell | \hat{L}^2 - \hat{L}_z^2 \mp \hbar\hat{L}_z | \ell, m_\ell} \\
+  =& \hbar^2 [\ell(\ell + 1) - m_\ell^2 \mp m_\ell] \Braket{\ell, m_\ell | \ell, m_\ell} \\
+  =& \hbar^2 [\ell(\ell + 1) - m_\ell (m_\ell \pm 1)] \Braket{\ell, m_\ell | \ell, m_\ell}
 \end{align*}
 $$
 
@@ -7976,21 +8007,21 @@ $$
   \ket{\ell,\ell-3} = \hbar^{-3} \sqrt{1}{\sqrt{2\ell (2\ell - 1)(2\ell -2)3!}} \hat{L}_-^3 \ket{\ell, \ell}
 $$
 
-Noting that $n = \ell - 3$ so that $3! = (\ell - n)!$ and $2\ell - 3 = 2\ell - (\ell - n) = \ell + n$, we have shown that
+Noting that $m_\ell = \ell - 3$ so that $3! = (\ell - m_\ell)!$ and $2\ell - 3 = 2\ell - (\ell - m_\ell) = \ell + m_\ell$, we have shown that
 
 $$
-  \ket{\ell,n} = \hbar^{n-\ell} \sqrt{\frac{(\ell + n)!}{(2\ell)!(\ell - n)!}} \hat{L}_-^{\ell - n} \ket{\ell,\ell}
+  \ket{\ell,m_\ell} = \hbar^{m_\ell - \ell} \sqrt{\frac{(\ell + m_\ell)!}{(2\ell)!(\ell - m_\ell)!}} \hat{L}_-^{\ell - m_\ell} \ket{\ell,\ell}
 $$
 
 Starting with $\ket{\ell,-\ell}$ and repeatedly applying $\hat{L}_+$ we can show analogously that
 
 $$
-  \ket{\ell,n} = \hbar^{-n -\ell} \sqrt{\frac{(\ell - n)!}{(2\ell)!(\ell + n)!}} \hat{L}_+^{\ell + n} \ket{\ell,-\ell}
+  \ket{\ell,m_\ell} = \hbar^{-m_\ell -\ell} \sqrt{\frac{(\ell - m_\ell)!}{(2\ell)!(\ell + m_\ell)!}} \hat{L}_+^{\ell + m_\ell} \ket{\ell,-\ell}
 $$
 
 ### Eigenfunctions
 
-To construct the angular momentum wavefunctions $\ket{\ell, n} = Y_\ell^n$, we start by writing $\unitvec{L}$ in spherical coordinates
+To construct the angular momentum wavefunctions $\ket{\ell, n} = Y_\ell^n$, we start by writing $\unitvec{L}$ in spherical coordinates due to the rotational invariance
 
 $$
 \begin{aligned}
@@ -8072,12 +8103,12 @@ $$
   \hat{L}^2 = -\hbar^2 \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right]
 $$
 
-The eigenfunctions $Y_\ell^n (\theta, \phi)$ can be determined from the eigenvalue equations
+The eigenfunctions $Y_\ell^{m_\ell} (\theta, \phi)$ can be determined from the eigenvalue equations
 
 $$
 \begin{align*}
-  \hat{L}^2 Y_\ell^n =& \hbar^2 \ell (\ell + 1) Y_\ell^n \\
-  \hat{L}_z Y_\ell^n =& \hbar n Y_\ell^n
+  \hat{L}^2 Y_\ell^{m_\ell} =& \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell} \\
+  \hat{L}_z Y_\ell^{m_\ell} =& \hbar m_\ell Y_\ell^{m_\ell}
 \end{align*}
 $$
 
@@ -8085,31 +8116,31 @@ In spherical coordinates, the $\hat{L}_z$ equation takes the form
 
 $$
 \begin{align*}
-  -i\hbar \frac{\partial Y_\ell^n}{\partial\phi} =& \hbar n Y_\ell^n \\
-  -i \frac{\partial Y_\ell^n}{\partial\phi} =& Y_\ell^n
+  -i\hbar \frac{\partial Y_\ell^{m_\ell}}{\partial\phi} =& \hbar n Y_\ell^{m_\ell} \\
+  -i \frac{\partial Y_\ell^{m_\ell}}{\partial\phi} =& Y_\ell^{m_\ell}
 \end{align*}
 $$
 
 Assuming $Y_\ell^n (\theta, \phi) = \Theta_\ell^n(\theta) \Phi_n(\phi)$ and dividing by $\Theta$, gives the ordinary differential equation
 
 $$
-  -i \frac{\partial \Phi_n}{\partial\phi} = \Phi^n
+  -i \frac{\partial \Phi_{m_\ell}}{\partial\phi} = \Phi^{m_\ell}
 $$
 
 with solution
 
 $$
-  \Phi_n (\phi) = \frac{1}{\sqrt{2\pi}} e^{in\phi}
+  \Phi_{m_\ell} (\phi) = \frac{1}{\sqrt{2\pi}} e^{i m_\ell \phi}
 $$
 
-Physically, when $\phi$ advances by $2\pi$, the eigenfunction $Y_\ell^n$ must return to the same point in space. Thus, we require $\Phi_n (2\pi) = \Phi_n (0)$, from which we find $e^{i2\pi n} = 1$. This is satisfied for $n\in\Z$.
+Physically, when $\phi$ advances by $2\pi$, the eigenfunction $Y_\ell^{m_\ell}$ must return to the same point in space. Thus, we require $\Phi_{m_\ell} (2\pi) = \Phi_{m_\ell} (0)$, from which we find $e^{i2\pi m_\ell} = 1$. This is satisfied for $m_\ell \in\Z$.
 
 In spherical coordinates, the $\hat{L}^2$ equation takes the form
 
 $$
 \begin{align*}
-  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^n =& \hbar^2 \ell(\ell + 1) Y_\ell^n \\
-  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^n =& 0
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^{m_\ell} =& \hbar^2 \ell(\ell + 1) Y_\ell^{m_\ell} \\
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\partial^2}{\partial\phi^2} \right] Y_\ell^{m_\ell} =& 0
 \end{align*}
 $$
 
@@ -8117,12 +8148,12 @@ which can be solved by separation of variables. Assuming $Y_\ell^n (\theta, \phi
 
 $$
 \begin{align*}
-  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\sqrt{2\pi}}{e^{in\phi}}\frac{1}{\sqrt{2\pi}}\smash[t]{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-n^2 e^{in\phi}}} \right] \Theta_\ell^n =& 0 \vphantom{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-n^2 e^{in\phi}}} \\
-  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)- \frac{n^2}{\sin^2 \theta} \right] \Theta_\ell^n =& 0
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)+ \frac{1}{\sin^2 \theta}\frac{\sqrt{2\pi}}{e^{i m_\ell \phi}}\frac{1}{\sqrt{2\pi}}\smash[t]{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-m_\ell^2 e^{i m_\ell \phi}}} \right] \Theta_\ell^{m_\ell} =& 0 \vphantom{\overbrace{\frac{\d^2 e^{in\phi}}{\d\phi^2}}^{=-n^2 e^{in\phi}}} \\
+  \left[\frac{1}{\sin\theta}\frac{\partial}{\partial\theta} \left(\sin\theta \frac{\partial}{\partial\theta} \right) + \ell(\ell + 1)- \frac{m_\ell^2}{\sin^2 \theta} \right] \Theta_\ell^{m_\ell} =& 0
 \end{align*}
 $$
 
-Substituting $w = \cos\theta$ and $F_\ell^m (w) = \Theta_\ell^n (\theta)$ with 
+Substituting $w = \cos\theta$ and $F_\ell^{m_\ell} (w) = \Theta_\ell^{m_\ell} (\theta)$ with 
 
 $$
   \frac{\d}{\d\theta} = \frac{\d}{\d w}\frac{\d w}{\d \theta} = -\sin(\theta) \frac{\d}{\d w}
@@ -8141,13 +8172,13 @@ $$
 we arrive at
 
 $$
-  \left[(1 - w^2) \frac{\d^2}{\d w^2} - 2w \frac{\d}{\d w} + \ell(\ell + 1) - \frac{n^2}{1 - w^2} \right] F_\ell^n (w) = 0
+  \left[(1 - w^2) \frac{\d^2}{\d w^2} - 2w \frac{\d}{\d w} + \ell(\ell + 1) - \frac{m_\ell^2}{1 - w^2} \right] F_\ell^{m_\ell} (w) = 0
 $$
 
 which is known as Legendre's associated differential equation. The solutions to this equation are given by the associated Legendre functions $P_\ell^m (w)$ defined by
 
 $$
-  P_\ell^n (w) = (1 - w^2)^{|n|/2} \left(\frac{\d}{\d w}\right)^{|n|} P_\ell (w)
+  P_\ell^{m_\ell} (w) = (1 - w^2)^{|m_\ell|/2} \left(\frac{\d}{\d w}\right)^{|m_\ell|} P_\ell (w)
 $$
 
 where $P_\ell (w)$ is the $\ell$-th Legendre polynomial given by the Rodrigues formula
@@ -8156,40 +8187,40 @@ $$
   P_\ell (w) = \frac{1}{2^\ell \ell!} \left(\frac{\d}{\d w} \right)^\ell (w^2 - 1)^\ell
 $$
 
-Using the Rodrigues formula and integrating by parts, we can show that the associated Legendre's functions $P_\ell^n$ are orthogonal to each other
+Using the Rodrigues formula and integrating by parts, we can show that the associated Legendre's functions $P_\ell^{m_\ell}$ are orthogonal to each other
 
 $$
-  \int_{-1}^1 P_\ell^{|n|} (w) P_{\ell'}^{|n|}(w) \;\d w = \frac{2}{2\ell + 1} \frac{(\ell + |n|)!}{(\ell - |n|)!} \delta_{\ell\ell'}
+  \int_{-1}^1 P_\ell^{|m_\ell|} (w) P_{\ell'}^{|m_\ell|}(w) \;\d w = \frac{2}{2\ell + 1} \frac{(\ell + |m_\ell|)!}{(\ell - |m_\ell|)!} \delta_{\ell\ell'}
 $$
 
-The corresponding physical solutions $\Theta_\ell^n (\theta)$ are given by
+The corresponding physical solutions $\Theta_\ell^{m_\ell} (\theta)$ are given by
 
 $$
-  \theta_\ell^n (\theta) = \begin{cases}
-    (-1)^n \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - n)!}{(\ell + n)!}} P_\ell^n (\cos\theta),\quad& n\geq 0 \\
-    (-1)^n \Theta_\ell^{|n|} (\theta), \quad& n < 0
+  \theta_\ell^{m_\ell} (\theta) = \begin{cases}
+    (-1)^{m_\ell} \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - m_\ell)!}{(\ell + m_\ell)!}} P_\ell^{m_\ell} (\cos\theta),\quad& m_\ell \geq 0 \\
+    (-1)^{m_\ell} \Theta_\ell^{|m_\ell|} (\theta), \quad& m_\ell < 0
   \end{cases}
 $$
 
 which are orthonormal
 
 $$
-  \int_0^\pi (\Theta_{\ell'}^n)^*(\theta) \Theta_\ell^n (\theta) \sin(\theta)\;\d\theta = \delta_{\ell\ell'}
+  \int_0^\pi (\Theta_{\ell'}^{m_\ell})^*(\theta) \Theta_\ell^{m_\ell} (\theta) \sin(\theta)\;\d\theta = \delta_{\ell\ell'}
 $$
 
 Combining the solutions for $\Theta_\ell^n$ and $\Phi_n$, we arrive at the eigenfunctions
 
 $$
-  Y_\ell^n (\theta, \phi) = \begin{cases}
-    (-1)^n \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - n)!}{(\ell + n)!}} P_\ell^n (\cos\theta) e^{in\phi},\quad& n\geq 0 \\
-    (-1)^n (Y_\ell^{-n})^* (\theta), \quad& n < 0
+  Y_\ell^{m_\ell} (\theta, \phi) = \begin{cases}
+    (-1)^{m_\ell} \sqrt{\frac{(2\ell + 1)}{2} \frac{(\ell - m_\ell)!}{(\ell + m_\ell)!}} P_\ell^m_\ell (\cos\theta) e^{i m_\ell \phi},\quad& m_\ell \geq 0 \\
+    (-1)^n (Y_\ell^{-m_\ell})^* (\theta), \quad& m_\ell < 0
   \end{cases}
 $$
 
 which are known as spherical harmonics. These are normaliezd to unity on a unit sphere and are orthogonal:
 
 $$
-  \int (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta) \;\d\Omega = \int_0^{2\pi} \d\phi \int_0^\pi (Y_{\ell'}^{n'})^* (\theta,\phi) Y_\ell^n (\theta, \phi) \sin(\theta) \;\d\theta = \delta_{\ell\ell'} \delta_{nn'}
+  \int (Y_{\ell'}^{m_\ell'})^* (\theta,\phi) Y_\ell^{m_\ell} (\theta) \;\d\Omega = \int_0^{2\pi} \d\phi \int_0^\pi (Y_{\ell'}^{m'_\ell})^* (\theta,\phi) Y_\ell^{m_\ell} (\theta, \phi) \sin(\theta) \;\d\theta = \delta_{\ell\ell'} \delta_{m_\ell m'_\ell}
 $$
 
 | $\ell$ | waves |
@@ -8311,12 +8342,12 @@ To construct the rest of the states $Y_\ell^n$, we repeatedly apply $\eqref{equa
 
 $$
 \begin{align*}
-  Y_\ell^n (\theta, \phi) =& (-1)^\ell \left[\frac{(2\ell + 1)!}{4\pi}\right]^{1/2} \frac{1}{2^\ell \ell!} \left[\frac{(\ell + n)!}{(2\ell)!(\ell - n)!} \right]^{1/2} \\
-  &\times e^{in\phi} \sin^{-n} (\theta) \frac{\d^{\ell - n}}{\d(\cos\theta)^{\ell - n}} \sin^{2\ell} (\theta)
+  Y_\ell^{m_\ell} (\theta, \phi) =& (-1)^\ell \left[\frac{(2\ell + 1)!}{4\pi}\right]^{1/2} \frac{1}{2^\ell \ell!} \left[\frac{(\ell + m_\ell)!}{(2\ell)!(\ell - n)!} \right]^{1/2} \\
+  &\times e^{i m_\ell \phi} \sin^{-n} (\theta) \frac{\d^{\ell - m_\ell}}{\d(\cos\theta)^{\ell - m_\ell}} \sin^{2\ell} (\theta)
 \end{align*}
 $$
 
-| $\ell$ | $n$ | $Y_\ell^n (\theta, \phi)$ |
+| $\ell$ | $m_\ell$ | $Y_\ell^{m_\ell} (\theta, \phi)$ |
 | --- | --- | --- |
 | $0$ | $0$ | $Y_0^0 = \frac{1}{\sqrt{4\pi}}$ |
 | $1$ | $0$ | $Y_1^0 = \left(\frac{3}{8\pi}\right)^{1/2} \cos\theta$ |
