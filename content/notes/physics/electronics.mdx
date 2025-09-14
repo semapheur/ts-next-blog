@@ -20,7 +20,7 @@ $$
   \nabla\times\mathbf{H} =& \frac{\partial\mathbf{D}}{\partial t} + \mathbf{J}_\text{t} \tag{\label{equation-13}} \\
   \nabla\cdot\mathbf{D} =& \rho_\text{t} \tag{\label{equation-14}} \\
   \nabla\cdot\mathbf{B} =& 0 \tag{\label{equation-15}} \\
-  \nabla\cdot\mathbf{J}_\text{t} = -\frac{\partial\rho_\text{t}}{\partial t} \tag{\label{equation-16}}
+  \nabla\cdot\mathbf{J}_\text{t} =& -\frac{\partial\rho_\text{t}}{\partial t} \tag{\label{equation-16}}
 \end{align*}
 $$
 
@@ -52,7 +52,7 @@ $$
 
 If multiple frequency is present, the full time-domain solution can be recovered by inverse Fourier transform of phasor solutions.
 
-The total current density $\tilde\mathbf{J}$ decomposes into a conduction current and an impressed current
+The total current density $\tilde{\mathbf{J}}$ decomposes into a conduction current and an impressed current
 
 $$
 \begin{equation*}
@@ -164,7 +164,7 @@ The dissipated power and stored energies are
 
 $$
 \begin{align*}
-  \braket{P_\text{d}} =& \frac{1}{2} \iiint_nu \sigma |\tilde{E}|^2 \;\d\nu \\
+  \braket{P_\text{d}} =& \frac{1}{2} \iiint_\nu \sigma |\tilde{E}|^2 \;\d\nu \\
   \braket{W_m} =& \frac{1}{2} \iiint_\nu \frac{1}{2} \mu |\tilde{H}|^2 \;\d\nu \\
   \braket{W_e} =& \frac{1}{2} \iiint_\nu \frac{1}{2} \varepsilon' |\tilde{E}|^2 \;\d\nu
 \end{align*}
@@ -227,13 +227,7 @@ $$
 \end{align*}
 $$
 
-Using the vector identity
-
-$$
-  \nabla\times\nabla\times\mathbf{A} = \nabla(\nabla\cdot\mathbf{A}) - \nabla^2 \mathbf{A}
-$$
-
-and inserting $\eqref{equation-33}$ we obtain
+Using the vector identity $\eqref{equation-63}$ and inserting $\eqref{equation-33}$ we obtain
 
 $$
   \nabla(\nabla\cdot\mathbf{A}) - \nabla^2 \mathbf{A} = j\omega\mu\varepsilon' \Phi + \nabla\cdot\mathbf{A} + \mu\tilde{\mathbf{J}}
@@ -266,7 +260,10 @@ $$
 which is known as the vector wave equation. Solving for $\mathbf{A}$ we can determine the electric field from
 
 $$
+\begin{equation*}
   \tilde{\mathbf{E}} = -j\omega\mathbf{A} - j\frac{\nabla(\nabla\cdot\mathbf{A})}{\omega\mu\varepsilon'}
+\tag{\label{equation-64}}
+\end{equation*}
 $$
 
 A more cumbersome approach would be to solve the scalar wave equation
@@ -324,7 +321,7 @@ $$
 \end{equation*}
 $$
 
-With respect to an observation point $P$ at an arbitrary position $\mathbf{r}_P$, the position of the point source is $\mathbf{R} = \mathbf{r}_P - \mathbf{r}$, so that $\eqref{equation-38}$ is given in terms of $R = \norm{\mathbf{r}_P - \mathbf{r}}$, i.e.
+With respect to an observation point $P$ at an arbitrary position $\mathbf{r}'$, the position of the point source is $\mathbf{R} = \mathbf{r}' - \mathbf{r}$, so that $\eqref{equation-38}$ is given in terms of $R = |\mathbf{r}' - \mathbf{r}|$, i.e.
 
 $$
 \begin{equation*}
@@ -336,12 +333,337 @@ $$
 If we consider the source to be a collection of point sources weighted by the distribution $\tilde{\mathbf{J}}$, the response $\mathbf{A}$ is a sum of the point source responses of $\eqref{equation-39}$. This is expressed by the integal over the source volume $\nu'$
 
 $$
+\begin{equation*}
   \mathbf{A} = \iiint_{\nu'} \mu \tilde{\mathbf{J}} \frac{e^{-j\beta R}}{4\pi R} \;\d\nu'
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+Having determined $\mathbf{A}$, we can compute $\tilde{\mathbf{H}}$ from $\eqref{equation-32}$. The electric field is then given by
+
+$$
+\begin{equation*}
+  \tilde{\mathbf{E}} = \frac{1}{j\omega\varepsilon'} (\nabla\times\tilde{\mathbf{H}} - \tilde{\mathbf{J}})
+\tag{\label{equation-42}}
+\end{equation*}
 $$
 
 ### The ideal dipole
 
+An ideal (Hertzian) dipole of length $l$ is a radiating element that is electrically small compared to the wavelength, i.e. $l \ll \lambda$. It is ideal in the sense that the current is uniform in both magnitude and phase along its length, with no end effects. Any practical antenna can be decomposed into infinitesimal current elements, which can be modeled as dipoles. The fields from the antenna are given as a suporposition of fields from the the ideal dipoles. For instance, a short center-fed wire antenna has a sinusoidal current tapering to zero at the ends, but has the same radiation pattern as an ideal dipole.
+
+Consider a current element of length $\Delta z$ along the $z$-axis, centered at the origin, carrying a uniform current $I$. The current density is
+
+$$
+  \tilde{\mathbf{J}}(\mathbf{r}') = I \delta(x') \delta(y') \unitvec(z), \; z' \in\left(-\frac{\Delta z}{2}, \frac{\Delta z}{2}\right)
+$$
+
+Substituting this into $\eqref{equation-40}$ simplifies the volume integral for the vector potential to the one-dimensional integral
+
+$$
+\begin{align*}
+  \mathbf{A} =& \unitvec{z} \mu I \int_{-\infty}^\infty \delta(x') \;\d x' int_{-\infty}^\infty \delta(y') \;\d y' \int_{-\Delta z/2}^{\Delta z/2} \frac{e^{-j\beta R}}{4\pi R} \;\d z' \\
+  =& \unitvec{z} \mu I \int_{-\Delta z/2}^{\Delta z/2} \frac{e^{-j\Beta R}}{4\pi R} \;\d z' \tag{\label{equation-41}}
+\end{align*}
+$$
+
+For small $\Delta z \ll \lambda$, we approximate $R = |\mathbf{r}' - \mathbf{r}| \approx |\mathbf{r}| = r$. With this approximation, the integral $\eqref{equation-41}$ evaluates to
+
+$$
+  \mathbf{A} = \frac{\mu I e^{-j\beta r}}{4\pi r} \Delta z \unitvec{z} = A_z \unitvec{z}
+$$
+
+This is exact of a point current element and an adequate approximation for a small but finite current element.
+
+The magnetic field of the ideal dipole is given by
+
+$$
+  \tilde{\mathbf{H}} = \frac{1}{\mu} \nabla\times\mathbf{A} = \frac{1}{\mu} \nabla\times (A_z \unitvec{z})
+$$
+
+Applying the vector identity $\eqref{equation-59}$, we get
+
+$$
+\begin{align*}
+  \tilde{\mathbf{H}} =& \frac{1}{\mu} (\nabla A_z) \times\unitvec{z} + \frac{1}{\mu} A_z \underbrace{(\nabla\times\unitvec{z})}_{=\mathbf{0}} \\
+  =& \frac{1}{\mu} (\nabla A_z) \times\unitvec{z} = \nabla\left(\frac{I\Delta z e^{-j\beta r}}{4\pi r}\right) \times\unitvec{z}
+\end{align*}
+$$
+
+Taking the gradient of $A_z$, which only depends on $r$, in spherical coordinates using $\eqref{equation-60}$, we get
+
+$$
+\begin{align*}
+  \tilde{\mathbf{H}} =& \frac{I\Delta z}{4\pi} \frac{\partial}{\partial r}\left(\frac{e^{-j\beta r}}{r} \right) \unitvec{r}\times\unitvec{z} \\
+  =& \frac{I\Delta z}{4\pi} \left(\frac{-j\beta e^{-j\beta r}}{r} - \frac{e^{j\beta r}}{r^2} \right) \unitvec{r}\times\unitvec{z} \tag{\label{equation-53}}
+\end{align*}
+$$
+
+From the unit vector representation $\eqref{equation-62}$, we have
+
+$$
+\begin{align*}
+  \unitvec{r}\times\unitsym{z} =& \unitvec{r} \times (\unitvec{r} \cos(\theta) - \unitsym{\theta} \sin(\theta)) \\
+  =& -\unitsym{\phi} \sin(\theta)
+\end{align*}
+$$
+
+Applying this identity to $\eqref{equation-53}$, we get
+
+$$
+\begin{equation*}
+  \tilde{\mathbf{H}} = \frac{I\Delta z}{4\pi} \left(\frac{j\beta}{r} + \frac{1}{r^2}\right) e^{-j\beta r} \sin(\phi) \unitsym{\phi}
+\tag{\label{equation-43}}
+\end{equation*}
+$$
+
+From $\eqref{equation-42}$, we find the electric field with $\tilde{\mathbf{J}} = \mathbf{0}$ as
+
+$$
+\begin{equation*}
+\begin{split}
+  \tilde{\mathbf{E}} =& \frac{I\Delta z}{4\pi} \left(\frac{j\omega\mu}{r} + \sqrt{\frac{\mu}{\varepsilon'}} \frac{1}{r^2} + \frac{1}{j\omega\varepsilon' r^3} \right) e^{-j\beta r} \sin(\theta) \unitsym{\theta} \\
+  &+ \frac{I\Delta z}{2\pi} \left(\sqrt{\frac{\mu}{\varepsilon'}} \frac{1}{r^2} + \frac{1}{j\omega\varepsilon'} \frac{1}{r^3} \right) e^{-j\beta r} \cos(\theta) \unitvec{r}
+\end{split}
+\tag{\label{equation-44}}
+\end{equation*}
+$$
+
+Factoring out $\beta = \omega\sqrt{\mu\varepsilon'}$ and $\eta = \sqrt{\mu/\varepsilon'}$, the fields $\eqref{equation-43}$ and $\eqref{equation-44}$ can be refactored as
+
+$$
+\begin{align*}
+  \tilde{\mathbf{H}} =& \frac{I\Delta z}{4\pi} j\beta \left(1 + \frac{1}{j\beta r}\right) \frac{e^{-j\beta r}}{r} \sin(\phi) \unitsym{\phi} \tag{\label{equation-45}} \\
+  \begin{split}
+    \tilde{\mathbf{E}} =& \frac{I\Delta z}{4\pi} j\omega\mu \left(1 + \frac{1}{j\beta r} - \frac{1}{(\beta r)^2} \right) \frac{e^{-j\beta r}}{r} \sin(\theta) \unitsym{\theta} \\
+    &+ \frac{I\Delta z}{2\pi} \eta \left(\frac{1}{r} - j\frac{1}{\beta r^2} \right) \frac{e^{-j\beta r}}{r} \cos(\theta) \unitvec{r}
+  \end{split}
+  \tag{\label{equation-46}}
+\end{align*}
+$$
+
+In the far-field region $r \gg \lambda$ of the dipole, corresponding to $\beta r \gg 1$, all terms with inverse powers of $\beta r$ are negligible in $\eqref{equation-45}$ and $\eqref{equation-46}$, and the fields converge asymptotically to
+
+$$
+\begin{align*}
+  \tilde{\mathbf{H}} =& \frac{I\Delta z}{4\pi} j\beta \frac{e^{-j\beta r}}{r} \sin(\theta) \unitvec{\phi} \tag{\label{equation-47}}
+  \tilde{\mathbf{E}} =& \frac{I\Delta z}{4\pi} j\omega\mu \frac{e^{-j\beta r}}{r} \sin(\theta) \unitvec{\theta} \tag{\label{equation-48}}
+\end{align*}
+$$
+
+These are called radiation fields of the ideal dipole. The ratio of the electric and magnetic far-field components is
+
+$$
+  \frac{E_\theta}{H_\phi} = \frac{\omega\mu}{\beta} = \frac{\omega\mu}{\omega\sqrt{\mu\varepsilon'}} = \sqrt{\frac{\mu}{\varepsilon'}} = \eta
+$$
+
+where $\eta$ is the intrinsic impedance of the medium. The complex power density of the radiation fields $\eqref{equation-47}$ and $\eqref{equation-48}$ is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathbf{S} =& \frac{1}{2} \tilde{\mathbf{E}} \times\tilde{\mathbf{H}}^* \\
+  =& \frac{1}{2} \left(\frac{I\Delta z}{4\pi}\right)^2 \omega\mu\beta \frac{\sin^2 (\theta)}{r^2} \left[j e^{-j\beta r} \unitsym{\theta} \times (-j e^{j\beta r}) \unitsym{\phi}\right] \\
+  =& \frac{1}{2} \left(\frac{I\Delta z}{4\pi}\right)^2 \omega\mu\beta \frac{\sin^2 (\theta)}{r^2} \unitvec{r}
+\end{split}
+\tag{\label{equation-49}}
+\end{equation*}
+$$
+
+The radiated power flux through a sphere of radius $r$ surrounding the ideal dipole is
+
+$$
+\begin{equation*}
+\begin{split}
+  P_f =& \iint \mathbf{S} \cdot \d\mathbf{s} \\
+  =& \frac{1}{2}\left(\frac{I\Delta z}{4\pi}\right)^2 \omega\mu\beta \int_0^{2\pi} \d\phi \int_0^\pi \sin^3 (\theta) \;\d\theta \\
+  =& \frac{1}{2}\left(\frac{I\Delta z}{4\pi}\right)^2 \omega\mu\beta 2\pi \frac{4}{3} \\
+  =& \frac{\omega\mu\beta}{12\pi} (I\Delta z)^2
+\end{split}
+\tag{\label{equation-50}}
+\end{equation*}
+$$
+
+In the near-field region $r \ll\lambda$ of the dipole, corresponding to $\beta r \ll 1$, the terms with the largest inverse powers of $\beta r$ dominate in $\eqref{equation-45}$ and $\eqref{equation-46}$, giving
+
+$$
+\begin{align*}
+  \tilde{\mathbf{H}}^\text{nf} =& \frac{I\Delta z}{4\pi} \frac{e^{-j\beta r}}{r^2} \sin(\theta) \unitsym{\phi} \tag{\label{equation-51}} \\
+  \tilde{\mathbf{E}}^\text{nf} =& -j\eta \frac{I\Delta z}{2\pi\beta} \frac{e^{-j\beta r}}{r^3} \left(\frac{1}{2} \sin(\theta) \unitsym{\theta} + \cos(\theta) \unitvec{r}\right) \tag{\label{equation-52}}
+\end{align*}
+$$
+
+The magnetic near-field in $\eqref{equation-51}$ decays as $r^{-2}$, which is analogous to an induction field generated from a steady or slowly oscillating current. The electric near-field decays as $r^{-3}$, which is analogous to the field of an electrostatic dipole field formed by charges $q$ and $-q$ spaced $\Delta z$ apart. In the near-field, the electric field components $E_\theta^\text{nf}$ and $E_r^\text{nf}$ are in-phase, but are in phase-quadrature ($\pm \pi/4$ out of phase) with the magnetic field component $H_\phi^\text{nf}$. This phase relationship becomes explicit by evaluating the near-field Poynting vector
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathbf{S}^\text{nf} =& \frac{1}{2} [E_\theta^\text{nf} H_\phi^{\text{nf}*} \unitvec{r} - E_r^\text{nf} H_\phi^{\text{nf}*} \unitsym{\theta}] \\
+  =& -\frac{j\eta}{2\beta} \left(\frac{I\Delta z}{4\pi} \right)^2 \frac{1}{r^5} (\sin^2 (\theta) \unitvec{r} - \sin(2\theta) \unitsym{\theta})
+\end{split}
+\tag{\label{equation-52}}
+\end{equation*}
+$$
+
+Because $\mathbf{S}^\text{nf}$ is purely imaginary, the near-field region exhibits no net time-averaged radial power flow. The radiation fields, in contrast, are in-phase giving a real-valued Poynting vector that is radially directed. The imaginary power density corresponds to standing waves, rather than traveling waves associated with radiation, and indicate stored energy as in a reactive device. 
+
+The quadrature phase relationship between between $\tilde{\mathbf{E}}^\text{nf}$ and $\tilde{\mathbf{H}}^\text{nf}$ and indicates that energy is periodically interchanged between the electric and magnetic near-fields. At instants when dipole charge distribution is maximal the electric field dominate; a quarter-period, when the current is maximal at the dipole center, the magnetic field magnetic field dominates. This oscillatory exchange reflects stored energy.
+
+The imaginary power density in the near field is manifested by a reactive component of the antenna input impedance. The real part of the input impedance represents radiation if ohmic losses on the antenna structure can be neglected, while the imaginary part corresponds to stored energy.
+
+The radiated power density $\eqref{equation-49}$ and the reactive power density $\eqref{equation-52}$ are both maximum for $\theta = \pi/4$. The characteristic distance at which the magnitudes of the radiated and reactive powers are equal is 
+
+$$
+  r = \frac{\lambda}{2\pi}
+$$
+
+The region inside this radius, reactive power dominates, is known as the radiansphere. At large distances $r \gg \lambda/2\pi$, called the far-field region, radiated power dominates. In the far-field region, the angular field distribution (radiation pattern) is independent of distance from the dipole.
+
 ### Radiation patterns
+
+A radiation pattern is a graphical representation of the far-field radiation characteristics of an antenna. A general property for all antennas is that their radiated fields decay with distance as spherical waves. The angular variation of these fields, however, depends on the antenna's geometry, size and construction.
+
+Radiation patterns are determined either by calculation or direct measurement of the fields radiated by the antenna. A pattern taken in a plane containing the electric field vector is called an *E-plane pattern*, while a pattern taken in the plane orthogonal to the E-plane, which contains the magnetic field, is called an *H-plane pattern*. For linearly polarized antennas, these two are collectively referred to as principal plane patterns. Patterns that are uniform in one plane, e.g. independent of the azimuthal angle, are called *omnidirectional patterns*.
+
+#### Radiation from line currents
+
+Consider a filament of current along the $z$-axis and located near the origin, known as a line source. The current distribution is given by
+
+$$
+  \tilde{\mathbf{J}} (\mathbf{r}') = I(z') \delta(x') \delta(y') \unitvec{z}
+$$
+
+Substituting this into $\eqref{equation-40}$ results in a one-dimensional integral for the vector potential
+
+$$
+\begin{equation*}
+  A_z = \mu \int I(z') \frac{e^{-j\beta R}}{4\pi R} \;\d z'
+\tag{\label{equation-54}}
+\end{equation*}
+$$
+
+Due to rotational symmetry of the source about the $z$-axis, the radiation fields are independent of $\phi$. We therefore restrict attention to the $yz$-plan corresponding to $\phi = \pi/4$ for clarity. In spherical coordinates, we have
+
+$$
+\begin{align*}
+  r^2 =& y^2 + z^2 \tag{\label{equation-55}} \\
+  z =& r\cos(\theta) \tag{\label{equation-56}} \\
+  y =& r\sin(\theta) \tag{\label{equation-57}}
+\end{align*}
+$$
+
+Since $\mathbf{r} = y\unitvec{y} + z\unitvec{z}$ and $\mathbf{r}' = z' \unitvec{z}$, we have $\mathbf{R} = \mathbf{r} - \mathbf{r}' = y\unitvec{y} + (z - z')\unitvec{z}$, and then
+
+$$
+\begin{align*}
+  R =& \sqrt{y^2 + (z - z')^2} \\
+  =& \sqrt{y^2 + z^2 - 2zz' + (z')^2}
+\end{align*}
+$$
+
+Substituting $\eqref{equation-55}$ and $\eqref{equation-56}$, by switching to spherical coordinates, we get
+
+$$
+  R = \sqrt{r^2 + [-2r \cos(\theta) z' + (z')^2]}
+$$
+
+Applying binomial expansion, we obtain
+
+$$
+\begin{align*}
+  R =& \sum_{k=0}^\infty \binom{1/2}{k} (r^2)^{1/2 - k} [-2r \cos(\theta) z' + (z')^2]^k \\
+  =& r - z' \cos(\theta) + \frac{(z')^2 \sin^2 (\theta)}{2r} + \frac{(z')^3 \sin^2 (\theta) \cos(\theta)}{2r^2} + \dots \tag{\label{equation-58}}
+\end{align*}
+$$
+
+In the far-field region, $r \gg |z'|$, we make the following approximation in $\eqref{equation-54}$
+- **Amplitude factor:** Since variations of $R$ relative to $r$ are small small we approximate $R^{-1} \approx r^{-1}$.
+- **Phase factor:** Since $e^{-j\beta R}$ is oscillatory, small path length variations $\Delta R \sim z' \cos(\theta)$ can produce significant phase shifts of order $\beta z' \cos(theta)$. Thus, the first-order variation in $R$ must be retained, i.e $R \approx r - z' \cos(\theta)$. 
+
+With these far field approximations, $\eqref{equation-54}$ reduces to
+
+$$
+\begin{align*}
+  A_z =& \mu \in I(z') \frac{e^{-j\beta(r - z' \cos\theta)}}{4\pi r} \;\d z' \\
+  =& \mu \frac{e^{-j\beta r}}{4\pi r} \underbrace{\int I(z') e^{j\beta z' \cos \theta} \;\d z'}_{: F(\theta)}
+\end{align*}
+$$
+
+The integral $F(\theta)$ describes a Fourier transform of the current distribution $I(z')$, and is called the radiation integral or diffraction integral. From $\eqref{equation-32}$ the magnetic field is given by
+
+$$
+\begin{align*}
+  \mathbf{H} =& \frac{1}{\mu} \nabla\times\mathbf{A} = \frac{1}{\mu} \nabla\times (A_z \unitvec{z}) \\
+  =& \frac{1}{\mu} \nabla\times (-A_z \sin(theta) \unitsym(\theta) + A_z \cos(\theta) \unitvec{r})
+\end{align*}
+$$
+
+where $\eqref{equation-62}$ was used. Taking the curl of $A_z$, depending on $r$ and $\theta$, in spherical coordinates using $\eqref{equation-61}$, leads to
+
+$$
+\begin{equation*}
+  \mathbf{H} = \unitsym{\phi} \frac{1}{\mu r} \left[\frac{\partial}{\partial r} (-rA_z \sin(\theta)) - \frac{\partial}{\partial\theta} (A_z \cos(\theta)) \right]
+\tag{\label{equation-68}}
+\end{equation*}
+$$
+
+The radial derivative evaluates to
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial r} (-rA_z \sin(\theta)) =& \mu \frac{-\sin(\theta)}{4\pi} F(\theta) \frac{\partial}{\partial r} e^{-j\beta r} \\
+  =& j\beta r \sin(\theta) \mu \frac{e^{-j\beta r}}{4\pi r} F(\theta) \\
+  =& j\beta r \sin(\theta) A_z
+\end{align*}
+$$
+
+and the angular derivative can be refactored as
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial\theta} (A_z \cos(\theta)) =& \cos(\theta) \frac{\partial A_z}{\partial\theta} - A_z \sin(\theta) \\
+  =& \mu\frac{e^{-j\beta r}}{4\pi r} \cos(\theta) \frac{\d F(\theta)}{\d \theta} - A_z \sin(\theta)
+\end{align*}
+$$
+
+Inserting the partial derivatives into $\eqref{equation-68}$ leads to
+
+$$
+  \mathbf{H} = \unitsym{\phi} \frac{1}{\mu} \left[j\beta \sin(\theta) A_z + \frac{\sin(\theta)}{r} A_z - \frac{\cos(\theta)}{\mu} \frac{\mu \cos(\theta) e^{-j\beta r}}{4\pi r^2} \frac{\d F(\theta)}{\d\theta} \right]
+$$
+
+In the far-field region, i.e. $\beta r \gg 1$, the $r^{-1}$ and $r^{-2}$ terms become negligible, so that in leading-order the magnetic field is
+
+$$
+\begin{equation*}
+  \mathbf{H} = \frac{j\beta}{\mu} \sin(\theta) A_z \unitsym{\phi}
+\tag{\label{equation-65}}
+\end{equation*}
+$$
+
+The electric field is obtained from $\eqref{equation-64}$. Using $\eqref{equation-54}$ in $\eqref{equation-55}$ and retaining only the $r^{-1}$ term under the assumption $\beta r \gg 1$, yields
+
+$$
+\begin{equation*}
+  \mathbf{E}= -j\omega A_\theta \unitsym(\theta) = j\omega \sin(theta) A_z \unitsym{\theta}
+\tag{\label{equation-66}}
+\end{equation*}
+$$
+
+Note that this result is the portion of the first term of $\eqref{equation-64}$ that is transverse to $\unitvec{r}$ because $-j\omega \mathbf{A} = -j\omega(-A_z \sin(\theta) \unitsym{\theta} + A_z \cos(\theta) \unitvec{r})$. This property holds in general and is not restricted to line sources.
+
+The ratio of the radiation field components in $\eqref{equation-65}$ and $\eqref{equation-66}$ is
+
+$$
+\begin{equation*}
+  E_\theta = \frac{\omega\mu}{\beta} H_\phi = \frac{\omega\mu}{\omega\sqrt{\mu\varepsilon'}} H_\phi = \eta H_\phi
+\tag{\label{equation-67}}
+\end{equation*}
+$$
+
+where $\eta = \sqrt{\mu/\varepsilon'}$ is the intrinsic impedance of the medium. Thus, the radiation fields are orthogonal to each other and to the direction of propagation $\unitvec{r}$ and their magnitudes are related by $\eqref{equation-67}$. These are the familiar properties of plane waves. They also hold for the general form of a *transverse electromagnetic (TEM) wave* that has both the electric and magnetic fields transverse to the direction of propagation. In general, radiation from a finite antenna is a special case of a TEM wave, called a "spherical wave", that propagates radially outward from the antenna and the radiation fields have no radial components. Spherical wave behaviour is also characterized by the $e^{-j\beta r}{4\pi r}$ factor in the field expressions. The $e^{-j\beta r}$ phase factor indicates a traveling wave propagating radially outward from the origin and the $r^{-1}$ decay leads to constant power flow just as with the ideal dipole. Generally, the radiation fields of all antennas of finite extent display this dependence with distance from the antenna.
+
+Although the radiated wavefront is spherical, at sufficiently large distances the local curvature is negligible, so the fields appear locally as plane waves. This is the sense in which far-field radiation may be regarded as plane-wave-like.
 
 ### Directivity and gain
 
@@ -401,7 +723,7 @@ Since $\mathbf{h}$ contains information on the size of the antenna and the angul
 
 $$
 \begin{equation*}
-  \mathbf{h} := \Delta z \sin(theta) \unitsym{\theta}$
+  \mathbf{h} := \Delta z \sin(theta) \unitsym{\theta}
 \tag{\label{equation-6}}
 \end{equation*}
 $$
@@ -491,15 +813,17 @@ $$
 In practice, effective length is used is association with linear antennas such as dipoles and effective aperture is used with aperture antennas such as parabolic reflectors.
 
 <MathBox title="Maximum effective aperture of an ideal dipole" boxType="example">
-TMaximum effective aperture for the ideal dipole is found using $\eqref{equation-4}$ and $\eqref{equation-5}$ with $\eqref{equation-6}
+The maximum effective aperture for the ideal dipole is found using $\eqref{equation-4}$ and $\eqref{equation-5}$ with $\eqref{equation-6}$
 
 $$
 \begin{equation*}
+\begin{split}
   A_\text{em} =& \frac{P_\text{rm}}{S} = \frac{\frac{1}{8} \frac{|V_A|^2}{R_r}}{\frac{1}{2}\frac{|E_i|^2}{\eta}} \\
   =& \frac{1}{4} \frac{\eta}{R_r} {|E_i|^2 (\Delta z)^2}{|E_i|^2} \\
   =& \frac{1}{4} \frac{\eta}{R_r} (\Delta z)^2 \\
   =& \frac{1}{4} \frac{\eta (\Delta z)^2}{\eta \frac{2}{3} \pi \left(\frac{\Delta z}{\lambda}\right)^2} \\
   =& \frac{3}{8\pi} \lambda^2
+\end{split}
 \tag{\label{equation-7}}
 \end{equation*}
 $$
@@ -675,3 +999,57 @@ $$
 $$
 
 As can be seen, the receive power of a radar sensor decreases with the fourth power of the range $R$ between the target and the sensor. Doubling the range leads to a reduction in receive power by a factor of $16$. This is due to the two spherical wave, which propagate between the transmitter and the target with $1/R^2$ each and a product in $\eqref{equation-2}$ ultimately lead to $1/R^4$. The resulting strong attenuation of the signal in the channel between the radar sensor and the target means that a radar sensor must be able to process very weak signals. If very different ranges occur in an application, the radar channel is highly dynamic. The dynamics of the radar channel is the ratio of the maximum received power from targets at close range to the minimum received power for targets at maximum range.
+
+# Vector calculus
+
+## Unit vector representations
+
+$$
+\begin{equation*}
+  \unitvec{z} = \unitvec{r} \cos(\theta) - \unitsym{\theta} \sin(\theta)
+\tag{\label{equation-62}}
+\end{equation*}
+$$
+
+## Vector identities
+
+$$
+\begin{equation*}
+  \nabla \times (f \mathbf{G}) = (\nabla f) \times \mathbf{G} + f (\nabla \times \mathbf{G})
+\tag{\label{equation-59}}
+\end{equation*}
+$$
+
+$$
+\begin{equation*}
+  \nabla\times\nabla\times\mathbf{G} = \nabla(\nabla\cdot\mathbf{G}) - \nabla^2 \mathbf{G}
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+## Vector differential operators
+
+### Spherical coordinates
+
+**Gradient**
+
+$$
+\begin{equation*}
+  \nabla f = \frac{\partial f}{\partial r}\unitvec{r} + \frac{1}{r} \frac{\partial f}{\partial\theta} \unitsym{\theta} + \frac{1}{r\sin(\theta)} \frac{\partial f}{\partial\phi} \unitsym{\phi}
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+**Curl**
+
+$$
+\begin{equation*}
+\begin{split}
+  \nabla\times\mathbf{G} =& \unitvec{r} \frac{1}{r\sin(\theta)} \left[\frac{\partial}{\partial\theta} (G_\phi \sin\theta) - \frac{\partial G_\theta}{\partial\phi} \right] \\
+  &+ \unitsym{\theta} \frac{1}{r} \left[\frac{1}{\sin(\theta)} \frac{\partial G_r}{\partial\phi} - \frac{\partial}{\partial r} (rG_\phi) \right] \\
+  &+ \unitsym{\phi} \frac{1}{r} \left[\frac{\partial}{\partial r} (rG_\theta) - \frac{\partial G_r}{\partial\theta} \right]
+\end{split}
+\tag{\label{equation-61}}
+\end{equation*}
+$$
+
