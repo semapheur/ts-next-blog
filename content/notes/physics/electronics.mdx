@@ -1328,17 +1328,99 @@ In addition to reduction in radiation efficiency, antenna ohmic losses have anot
 
 ### Antenna polarization
 
+A finite-sized source radiates a spherical wavefront. However, over a small observation region the wavefront becomes nearly planar. Such an approximation leads to the notion of a plane wave, whose electric and magnetic fields lie in a plane transverse to the propagation direction. 
 
-If the distance between the antenna and the target in the radar channel is sufficiently large, then both objects lie in each other's far field. The far field is the region in which the radiated or received field can be approximated by a locally plane wave. For an antenna with aperture of maximum geometric extent $A$, the far field distance of its radiated field is given by
+The polarization of a plane wave is the trajectory traced by the instantaneous electric field at a fixed spatial point as a function of time. For a completely polarized wave, this trajectory is an ellipse. In contrast, unpolarized or partially polarized waves (e.g., due to random noise processes) do not yield deterministic elliptical trajectories. The temporal and spatial variations of the magnetic field are analogous to those of the electric field, except that the magnetic field is orthogonal both to the electric field and to the propagation direction, ensuring transversality.
+
+The polarization ellipse admits several important limiting cases:
+- **Linear polarization:** The electric field vector oscillates along a fixed line, corresponding to a degenerate ellipse with infinite axial ratio. Examples include the radiation from an ideal linear dipole or a uniform line current.
+- **Circular polarization:** The electric field vector has constant magnitude and rotates uniformly in a circle. At radian frequency $\omega$, this rotation may occur in one of two senses:
+    - **Left-hand circular polarization (LHCP):** Looking in the direction of wave propagation, the field vector rotates clockwise.
+    - **Right-hand circular polarization (RHCP):** Looking in the direction of wave propagation, the field vector rotates counterclockwise.
+- **Elliptical polarization:** The most general case, where the electric field vector traces out an ellipse with finite axial ratio
+
+A helix antenna, for example, produces circular polarization, with the handedness determined by the sense of the winding.
+
+Consider a monochromatic plane wave propagating in the $z$-direction, with instantaneous electric field
 
 $$
-\begin{equation*}
-  R_{\text{FF}} = \frac{2A}{\lambda}
-\tag{\label{equation-1}}
-\end{equation*}
+  \mathbf{E}(\mathbf{r}, t) = E_x (t) \unitvec{x} + E_y (t) \unitvec{y}
 $$
 
-where $\lambda$ denotes the free-space wavelength.
+Let the field components be harmonic with angular frequency $\omega$
+
+$$
+\begin{align*}
+  E_x (t) =& E_1 \cos(\omega t) \\
+  E_y (t) =& E_2 \cos(\omega t + \delta) \unitvec{y}
+\end{align*}
+$$
+
+where $E_1, E_2 \geq 0$ are the field amplitudes along the $x$- and $y$-axes, and $\delta\in (-\pi, \pi]$ is the relative phase. If the components are in-phase ($\delta = 0$), the net vector is linearly polarized. The orientation of the linear polarization depends on the relative values of $E_1$ and $E_2$
+- $E_1 = 0$ gives vertical polarization
+- $E_2 = 0$ gives horizontal polarization
+- $E_1 = E_2$ gives linear polarization at $45\deg$ with respect to the axes
+
+The axial ratio (AR) of the polarization ellipse is defined as the ratio of the magnitudes of the major to the minor axes:
+
+$$
+  |\mathrm{AR}| := \frac{E_\text{major}}{E_\text{minor}},\; 1 \leq |\mathrm{AR}| \leq \infty
+$$
+
+In particular,
+- $\mathrm{AR} = \infty$ corresponds to linear polarization.
+- $|\mathrm{AR}| = 1$ corresponds to circular polarization.
+- Finite $|\mathrm{AR}|$ corresponds to elliptical polarization.
+
+The ellipticity angle $\epsilon$ is defined by
+
+$$
+  \epsilon = \cot^{-1} (-\mathrm{AR}) \in \left[-\frac{\pi}{4}, \frac{\pi}{4} \right]
+$$
+
+so that $\epsilon = 0$ yields linear polarization, while $\epsilon = \pm \pi/4$ yields circular polarization. The sign of $\mathrm{AR}$ encodes the handedness: 
+- $\mathrm{AR} > 0$: right-hand polarization
+- $\mathrm{AR} < 0$: left-hand polarization
+
+Axial ratio is often expressed in decibels as $\mathrm{AR}_\text{dB} = 20 \log_{10}(|\mathrm{AR}|)$. 
+
+The tilt angle $\tau$ specifies the orientation of the ellipse relative to the $x$-axis, defined as the angle between the $x$-axis and the major axis of the ellipsis.
+
+The phasor representation of the electric field is
+
+$$
+  \mathbf{E}(\mathbf{r}) = E_1 \unitvec{x} + E_2 e^{j\delta}
+$$
+
+which can be normalized as
+
+$$
+  \mathbf{E} = |E| \left(\cos(\gamma) \unitvec{x} + \sin(\gamma) e^{j\delta} \unitvec{y} \right)
+$$
+
+where
+
+$$
+\begin{align*}
+  |E| =& \sqrt{E_1^2 + E_2^2} \\
+  \gamma =& \tan^{-1} \left(\frac{E_2}{E_1} \right) \in \left[0, \frac{\pi}{2} \right]
+\end{align*}
+$$
+
+The unit vector
+
+$$
+  \unitvec{e} = \cos(\gamma) \unitvec{x} + \sin(\gamma) e^{j\delta} \unitvec{y}
+$$
+
+encodes the polarization state.  Thus, $\gamma$ and $\delta$ uniquely characterizes the polarization. The two parametrizations $(\epsilon, \tau)$ and $(\gamma, \delta)$ are equivalent. The transformation between these angles are
+
+$$
+\begin{align*}
+  \gamma =& \frac{1}{2} \cos^{-1} \left[\cos(2\epsilon) \cos(2\tau)\right] \\
+  \delta =& \tan^{-1} \left(\frac{\tan(2\epsilon)}{\sin(2\tau)}\right)
+\end{align*}
+$$
 
 ## Receiving properties of antennas
 
@@ -1578,9 +1660,18 @@ $$
   D = \frac{3}{2} = \frac{4\pi}{\lambda^2} \frac{3}{8\pi} \lambda^2
 $$
 
-
-
 # Radar
+
+If the distance between the antenna and the target in the radar channel is sufficiently large, then both objects lie in each other's far field. The far field is the region in which the radiated or received field can be approximated by a locally plane wave. For an antenna with aperture of maximum geometric extent $A$, the far field distance of its radiated field is given by
+
+$$
+\begin{equation*}
+  R_{\text{FF}} = \frac{2A}{\lambda}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where $\lambda$ denotes the free-space wavelength.
 
 ## Radar equation
 
