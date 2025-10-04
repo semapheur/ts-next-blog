@@ -2180,7 +2180,7 @@ representing a pure state of the quantum system. All vectors in $S_\psi$ differ 
 
 For convenience, the global phase factor $e^{i\alpha}$ is typically ignored when dealing with pure states. In practice, we often identify a pure state with a normalized vector $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$, rather than considering the entire equivalence class of vectors that differ only by a global phase. This is because the global phase does not affect physical observables or measure quantities, which are invariant under such transformations. Thus, we can simplify the description of pure states by associating them directly with normalized vectors in $\mathcal{H}$, leaving the equivalence class formalism implicit.
 
-The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
+The dimensionality of $\mathcal{H}$ is determined by the degrees of freedom of the system. Systems with continuous degrees of freedom (like position and momentum) have infinite-dimensional Hilbert spaces, while systems of discrete degrees of freedom have finite-dimensional Hilbert spaces. For instance, the Hilbert space for the position and momentum of a particle in $n$ dimensions is the space of square-integrable complex-valued function function $\mathcal{L}^2 (\R^n, \mathbb{C})$, while for a spin-$s$ particle it is the finite-dimensional complex vector space $\mathbb{C}^{2s + 1}$.
 
 An observable refers to a physcial quantity that can be measured in a quantum system. All quantum observables are represented by Hermitian operators on $\mathcal{H}$. The possible values of an observable are given by the spectrum of the operator, which can be discrete (finite or infinite-dimensional), continuous or a combination of both. In general, systems with bound states (e.g., a particle confined in a potential well) have discrete spectra, corresponding to quantized energy levels. In contrast, for scattering states (e.g., a free particle or a particle with energy above a potential barrier), the spectrum is continuous, corresponding to a range of energies.
 
@@ -2572,9 +2572,9 @@ $$
 $$
 
 Properties of expectation values
-1. **Reality:** $\braket{Q}_\psi$ is real since $\hat{Q}$ is Hermitian
-2. *Invariance unde global phase:* For any global phase factor $e^{i\phi}$, where $\phi\in\R$, we have $\braket{Q}_{e^{i\phi} \psi} = \braket{Q}_\psi$
-3. **Equality of observable:** Two observables $\hat{Q}$ and $\hat{Q}'$ are equal if and only if $\braket{\psi|\hat{Q}|\psi} = \braket{\psi|\hat{Q}'|\psi}$ for all $\ket{\psi}\in\mathcal{H}$
+1. $\braket{Q}_\psi \in\R$ is real since $\hat{Q}$ is Hermitian
+2. **Invariance unde global phase:** For any global phase factor $e^{i\phi}$, where $\phi\in\R$, we have $\braket{Q}_{e^{i\phi} \psi} = \braket{Q}_\psi$
+3. **Equality of observables:** Two observables $\hat{Q}$ and $\hat{Q}'$ are equal if and only if $\braket{\psi|\hat{Q}|\psi} = \braket{\psi|\hat{Q}'|\psi}$ for all $\ket{\psi}\in\mathcal{H}$
 
 <details>
 <summary>Proof</summary>
@@ -3525,12 +3525,12 @@ $$
 \end{align*}
 $$
 
-#### Tranisition amplitudes
+#### Transition amplitudes
 
 The transition amplitude between an initial state $\ket{\phi}$ at time $t_a$ and a final state $\ket{\psi}$ at time $t_b$ is given by $\braket{\psi|\hat{U}(t_b, t_a)|\phi}$. Taking the complex congujate of the expectation value we obtain
 
 $$
-  \left(\braket{\psi|hat{U}(t_b, t_a)|\phi}\right)^* = \braket{\phi|\hat{U}(t_a, t_b)|\psi}
+  \left(\braket{\psi|\hat{U}(t_b, t_a)|\phi}\right)^* = \braket{\phi|\hat{U}(t_a, t_b)|\psi}
 $$
 
 which represents the probability amplitude for evolving $\ket{\psi}$ backward from $t_b$ to $t_a$. In this context, kets may viewed as input states and bras as output states of a unitary evolution. 
@@ -7424,6 +7424,115 @@ $$
   \Delta x \Delta p_x \geq \frac{\hbar}{2}
 $$
 
+### Quantum virial theorem
+
+Consider a system of $N$ particles with momentum $\unitvec{p}_a$ and position $\unitvec{r}_a$. If the system is bound by a conservative force with Hamiltonian
+
+$$
+  \hat{H} = \hat{T} + \hat{V} = \sum_{a=1}^N \frac{\unitvec{p}^2}{2m_a} + \hat{V}(\mathbf{r}_1, \dots,\mathbf{r}_N)
+$$
+
+the quantum virial theorem states that 
+
+$$
+  \hat{T} = \frac{1}{2} \Braket{\sum_a \unitvec{r}_a \cdot \nabla_a V(\mathbf{r}_a)}
+$$
+
+If $V$ is a power-law potential satisfying
+
+$$
+  V(\lambda \mathbf{r}_1,\dots,\lambda\mathbf{r}_N) = \lambda^s V(\mathbf{r}_1,\dots,\mathbf{r}_N)
+$$
+
+then Euler's theorem on homogenous functions implies
+
+$$
+  \sum_a \mathbf{r}_a \cdot \nabla_a V = sV
+$$
+
+and the virial theorem reduces to
+
+$$
+  \braket{T} = \frac{s}{2} \braket{V}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Consider the conserved observable
+
+$$
+  \hat{Q} := \sum_a \unitvec{r}_a \cdot \unitvec{p}_a
+$$
+
+with no explicit time dependence such that
+
+$$
+  \frac{\partial}{\partial t} \hat{Q} = 0 
+$$
+
+By Ehrenfest's theorem $\eqref{equation-81}$, we obtain
+
+$$
+\begin{equation*}
+  \frac{d}{\d t} \braket{\hat{Q}} = \frac{i}{\hbar} \braket{[\hat{H}, \hat{Q}]}
+\tag{\label{equation-173}}
+\end{equation*}
+$$
+
+We evaluate $[\hat{H}, \hat{Q}]$ term by term, using the canonical commutation relations $\eqref{equation-95}$
+
+1. **Kinetic term:** For a single particle
+$$
+\begin{align*}
+  [\hat{\mathbf{p}}^2, \hat{\mathbf{r}}\cdot\hat{\mathbf{p}}] =& \sum_j [\hat{p}_k \hat{p}_k, \hat{r}_j \hat{p}_j] \\
+  =& \sum_j (\underbrace{[\hat{p}_k \hat{p}_k, \hat{r}_j]}_{=-2i\hbar} \hat{p}_j + \hat{r}_j \underbrace{[\hat{p}_k \hat{p}_k, \hat{p}_j]}_{=0}) \\
+  =& -2i\hbar\unitvec{p}^2
+\end{align*}
+$$
+
+2. **Potential term:**
+$$
+\begin{align*}
+  [V, \hat{\mathbf{r}}\cdot\mathbf{p}] =& \sum_j \hat{r}_j [V, \hat{p}_j] = \sum_j \hat{r}_j (i\hbar\delta_j V) \\
+  =& i\hbar\unitvec{r} \cdot \nabla V
+\end{align*}
+$$
+
+Combining both contributions gives
+
+$$
+  [\hat{H}, \hat{Q}] = -2i\hbar\hat{T} + i\hbar\sum_a \unitvec{r}_a \cdot \nabla_a V
+$$
+
+Substituting into $\eqref{equation-173}$, we get
+
+$$
+  \frac{\d}{\d t} \braket{\hat{Q}} = 2\braket{\hat{T}} - \Braket{\sum_a \unitvec{r}_a \cdot\nabla_a V}
+$$
+
+Taking the average over a time interval $\tau$, we obtain
+
+$$
+  \frac{1}{\tau} \int_0^{\tau} \frac{\d}{\d t} \braket{\hat{Q}} \;\d t = \frac{1}{\tau} \int_0^\tau \left(2\braket{T} - \Braket{\sum_a \unitvec{r}_a \cdot\nabla_a V} \right) \d t
+$$
+
+Because the expectation values on the right are independent of time
+
+$$
+  \frac{1}{\tau} \braket{Q}|_0^\tau = 2\braket{T} - \Braket{\sum_a \unitvec{r}_a \cdot\nabla_a V}
+$$
+
+For a bound system, the expectation value of $\hat{Q}$ remains finite, and either
+- for periodic motion, we may choose $\tau$ as the period, or
+- for non-periodic motion, $\braket{\hat{Q}}_\tau - \braket{\hat{Q}}_0$ is bounded while $\tau\to\infty$
+so that the left-hand side vanishes in the long-time average. Hence,
+
+$$
+  \braket{\hat{T}} = \frac{1}{2} \Braket{\sum_a \unitvec{r}_a \cdot\nabla_a V}
+$$
+</details>
+
 ## Energy
 
 ### Energy-time uncertainty relation
@@ -7705,20 +7814,20 @@ $$
   \unitvec{L}\times\unitvec{L} = i\hbar\unitvec{L}
 $$
 
-The square of the total angular momentum operator $\hat{L}^2 = \unitvec{L}\cdot\unitvec{L} = \sum_{i=1}^3 \hat{L}_i^2$ is a Hermitian operator that commutes with any one of the components of $\unitvec{L}$
+The square of the total angular momentum operator $\unitvec{L}^2 = \unitvec{L}\cdot\unitvec{L} = \sum_{i=1}^3 \hat{L}_i^2$ is a Hermitian operator that commutes with any one of the components of $\unitvec{L}$
 
 $$
-  [\hat{L}^2, \hat{L}_i] = 0
+  [\unitvec{L}^2, \hat{L}_i] = 0
 $$
 
 <details>
 <summary>Proof</summary>
 
-The momentum squared is $\hat{L}^2 = \unitvec{L}\cdot\unitvec{L}$ and therefore
+The momentum squared is $\unitvec{L}^2 = \unitvec{L}\cdot\unitvec{L}$ and therefore
 
 $$
 \begin{align*}
-  [\hat{L}^2, \hat{L}_j] =& [\hat{L}_i \hat{L}_i, \hat{L}_j] \\
+  [\unitvec{L}^2, \hat{L}_j] =& [\hat{L}_i \hat{L}_i, \hat{L}_j] \\
   =& \hat{L}_i [\hat{L}_i, \hat{L}_j] + [\hat{L}_i, \hat{L}_j]\hat{L}_i \\
   =& i\hbar\varepsilon_{ijk}\hat{L}_i \hat{L}_k + i\hbar\varepsilon_{ijk}\hat{L}_k \hat{L}_i
 \end{align*}
@@ -7733,11 +7842,11 @@ $$
 It follows that
 
 $$
-  [\hat{L}^2, \hat{L}_j] = 0
+  [\unitvec{L}^2, \hat{L}_j] = 0
 $$
 </details>
 
-This means that $\hat{L}^2$ is compatible with any one of the components of $\unitvec{L}$. 
+This means that $\unitvec{L}^2$ is compatible with any one of the components of $\unitvec{L}$. 
 
 ### Generator of rotations
 
@@ -7799,7 +7908,7 @@ $$
   [\hat{R}, \hat{O}] = 0
 $$
 
-Since the generator $\hat{R}$ is the projection of $\unitvec{L}$ along the direction $\mathbf{n}$, it follows that each component of $\unitvec{L}$ commutes with $\hat{L}^2$, $\hat{R}^2$ and $\unitvec{p}^2$, all of which are scalars for the rotations.
+Since the generator $\hat{R}$ is the projection of $\unitvec{L}$ along the direction $\mathbf{n}$, it follows that each component of $\unitvec{L}$ commutes with $\unitvec{L}^2$, $\hat{R}^2$ and $\unitvec{p}^2$, all of which are scalars for the rotations.
 
 In spherically symmetric systems, the Hamiltonian is invariant under rotations
 
@@ -7811,13 +7920,13 @@ Equivalently, $[\hat{H}, \unitvec{L}] = 0$, meaning that $\mathbf{L}$ is conserv
 
 ### Eigenvalues
 
-To find the eigenvalues of $\unitvec{L}$, we have to choose a complete set of angular momentum observables. Since different components of the angular momentum do not commute with each other, we have to choose a pair of commuting observables we wish to jointly diagonalize, say $\hat{L}^2$ and $\hat{L}_z$. First we note that we must have $\hat{L}^2 - \hat{L}_z^2 = \hat{L}_x^2 +\hat{L}_y^2 \geq 0$. For our Hilbert space basis, we choose a set of states $\ket{\ell, m_\ell}$ that have definite values of $\hat{L}^2$ and $\hat{L}_z$. In this context, $\ket{\ell, m_\ell}$ is an eigenstate of both $\hat{L}^2$ and $\hat{L}_z$, where $m_\ell$ is the eigenvalue of $\hat{L}_z$. We then have
+To find the eigenvalues of $\unitvec{L}$, we have to choose a complete set of angular momentum observables. Since different components of the angular momentum do not commute with each other, we have to choose a pair of commuting observables we wish to jointly diagonalize, say $\unitvec{L}^2$ and $\hat{L}_z$. First we note that we must have $\unitvec{L}^2 - \hat{L}_z^2 = \hat{L}_x^2 +\hat{L}_y^2 \geq 0$. For our Hilbert space basis, we choose a set of states $\ket{\ell, m_\ell}$ that have definite values of $\unitvec{L}^2$ and $\hat{L}_z$. In this context, $\ket{\ell, m_\ell}$ is an eigenstate of both $\unitvec{L}^2$ and $\hat{L}_z$, where $m_\ell$ is the eigenvalue of $\hat{L}_z$. We then have
 
 $$
-  \braket{\ell, m_\ell | \hat{L}^2 - \hat{L}_z^2 | l, m_\ell} = \braket{\ell, m_\ell | \hat{L}_x^2 + \hat{L}_y^2 | l, m_\ell} \geq 0
+  \braket{\ell, m_\ell | \unitvec{L}^2 - \hat{L}_z^2 | l, m_\ell} = \braket{\ell, m_\ell | \hat{L}_x^2 + \hat{L}_y^2 | l, m_\ell} \geq 0
 $$
 
-This means that the eigenvalues of $\hat{L}_z^2$ cannot exceed the eigenvalues of $\hat{L}^2$, i.e. once the eigenvalue of $\hat{L}^2$ is fixed, $\hat{L}_z^2$ is bounded. Let us denote by $\ell$ the maximal eigenvalue of $\hat{L}_z$, that is
+This means that the eigenvalues of $\hat{L}_z^2$ cannot exceed the eigenvalues of $\unitvec{L}^2$, i.e. once the eigenvalue of $\unitvec{L}^2$ is fixed, $\hat{L}_z^2$ is bounded. Let us denote by $\ell$ the maximal eigenvalue of $\hat{L}_z$, that is
 
 $$
   - \ell \leq m_\ell \leq \ell
@@ -7842,7 +7951,7 @@ $$
 $$
 
 and the commutation relations
-1. $[\hat{L}^2, \hat{L}_\pm] = 0$
+1. $[\unitvec{L}^2, \hat{L}_\pm] = 0$
 2. $[\hat{L}_+, \hat{L}_-]= 2\hat{L}_z$
 2. $[\hat{L}_z, \hat{L}_\pm] = \pm\hbar\hat{L}_\pm$
 3. $[\hat{L}_z, \hat{L}_\pm^2] = \pm 2\hbar\hat{L}_\pm^2$
@@ -7850,11 +7959,11 @@ and the commutation relations
 <details>
 <summary>Proof</summary>
 
-**(1):** Since both $\hat{L}_x$ and $\hat{L}_y$ commute with $\hat{L}^2$, it follows that
+**(1):** Since both $\hat{L}_x$ and $\hat{L}_y$ commute with $\unitvec{L}^2$, it follows that
 
 $$
 \begin{equation*}
-  [\hat{L}^2, \hat{L}_\pm] = \underbrace{[\hat{L}^2, \hat{L}_x]}_{=0} + i\underbrace{[\hat{L}^2, \hat{L}_y]}_{=0} = 0
+  [\unitvec{L}^2, \hat{L}_\pm] = \underbrace{[\unitvec{L}^2, \hat{L}_x]}_{=0} + i\underbrace{[\unitvec{L}^2, \hat{L}_y]}_{=0} = 0
 \tag{\label{equation-22}}
 \end{equation*}
 $$
@@ -7894,7 +8003,7 @@ $$
 \begin{align*}
   \hat{L}_\pm \hat{L}_\mp =& (\hat{L}_x \pm i\hat{L}_y)(\hat{L}_x \mp i\hat{L}_y) \\
   =& \hat{L}_x^2 + \hat{L}_y^2 \mp i(\hat{L}_x \hat{L}_y - \hat{L}_y \hat{L}_z) \\
-  =& \hat{L}^2 - \hat{L}_z \mp i[\hat{L}_x, \hat{L}_y] = \hat{L}^2 - \hat{L}_z \mp i\hbar\hat{L}_z
+  =& \unitvec{L}^2 - \hat{L}_z \mp i[\hat{L}_x, \hat{L}_y] = \unitvec{L}^2 - \hat{L}_z \mp i\hbar\hat{L}_z
 \end{align*}
 $$
 
@@ -7902,15 +8011,15 @@ or
 
 $$
 \begin{equation*}
-  \hat{L}^2 = \hat{L}_\pm \hat{L}_\mp + \hat{L}_z^2 \mp \hbar\hat{L}_z
+  \unitvec{L}^2 = \hat{L}_\pm \hat{L}_\mp + \hat{L}_z^2 \mp \hbar\hat{L}_z
 \tag{\label{equation-26}}
 \end{equation*}
 $$
 
-Since each $\hat{L}_i$ and $\hat{L}^2$ are compatible, we can simultaneously diagonalize them. If $\ket{\psi}$ is a simulatenous eigenstate of $\hat{L}^2$ and $\hat{L}_z$, we get the eigenvalue equations
+Since each $\hat{L}_i$ and $\unitvec{L}^2$ are compatible, we can simultaneously diagonalize them. If $\ket{\psi}$ is a simulatenous eigenstate of $\unitvec{L}^2$ and $\hat{L}_z$, we get the eigenvalue equations
 
 $$
-  \hat{L}^2 \ket{\psi} = \lambda\ket{\psi},\quad \hat{L}_z \ket{\psi} = \mu\ket{\psi}
+  \unitvec{L}^2 \ket{\psi} = \lambda\ket{\psi},\quad \hat{L}_z \ket{\psi} = \mu\ket{\psi}
 $$
 
 requiring
@@ -7928,10 +8037,10 @@ $$
 Letting $\hat{L}_\pm$ act on $\ket{\psi}$ and applying $\eqref{equation-22}$ we find 
 
 $$
-  \hat{L}^2 (\hat{L}_\pm \ket{\psi}) = \hat{L}_\pm (\hat{L}^2 \ket{\psi}) = \hat{L}_\pm (\lambda\ket{\psi}) = \lambda (\hat{L}_\pm \ket{\psi})
+  \unitvec{L}^2 (\hat{L}_\pm \ket{\psi}) = \hat{L}_\pm (\unitvec{L}^2 \ket{\psi}) = \hat{L}_\pm (\lambda\ket{\psi}) = \lambda (\hat{L}_\pm \ket{\psi})
 $$
 
-showing that $\hat{L}_\pm \ket{\psi}$ is an eigenfunction of $\hat{L}^2$ sharing the same eigenvalue $\lambda$. Similarly, applying $\eqref{equation-23}$ we obtain
+showing that $\hat{L}_\pm \ket{\psi}$ is an eigenfunction of $\unitvec{L}^2$ sharing the same eigenvalue $\lambda$. Similarly, applying $\eqref{equation-23}$ we obtain
 
 $$
 \begin{align*}
@@ -7950,7 +8059,7 @@ $$
 \end{align*}
 $$
 
-This shows that $\hat{L}_\pm^k \ket{\psi}$ is a simultaneous eigenfunction of both $\hat{L}^2$ and $\hat{L}_z$ with corresponding eigenvalues $\lambda$ and $\mu\pm k\hbar$. Thus, starting from a state $\ket{\psi}$ with a $\hat{L}^2$ eigenvalue $\lambda$ and a $\hat{L}_z$ eigenvalue $\mu$, we can repeatedly apply $\hat{L}_+$ to construct an ascending sequence of eigenstates with $\hat{L}_z$ eigenvalues $\mu, \mu + \hbar, \mu + 2\hbar, \dots$. Similarly, we can apply $\hat{L}_-$ to construct a descending sequence $\mu, \mu - \hbar, \mu - 2\hbar$. Since the $\hat{L}^2$ eigenvalue is preserved, it follows from $\eqref{equation-25}$ that both sequences must terminate.
+This shows that $\hat{L}_\pm^k \ket{\psi}$ is a simultaneous eigenfunction of both $\unitvec{L}^2$ and $\hat{L}_z$ with corresponding eigenvalues $\lambda$ and $\mu\pm k\hbar$. Thus, starting from a state $\ket{\psi}$ with a $\unitvec{L}^2$ eigenvalue $\lambda$ and a $\hat{L}_z$ eigenvalue $\mu$, we can repeatedly apply $\hat{L}_+$ to construct an ascending sequence of eigenstates with $\hat{L}_z$ eigenvalues $\mu, \mu + \hbar, \mu + 2\hbar, \dots$. Similarly, we can apply $\hat{L}_-$ to construct a descending sequence $\mu, \mu - \hbar, \mu - 2\hbar$. Since the $\unitvec{L}^2$ eigenvalue is preserved, it follows from $\eqref{equation-25}$ that both sequences must terminate.
 
 If we let the upper and lower $\hat{L}_z$ eigenvalue be $\hbar m_\text{u}$ and $\hbar m_\text{l}$, respectively, we have
 
@@ -7979,7 +8088,7 @@ $$
 Applying $\eqref{equation-26}$ for $\hat{L}_- \hat{L}_+$, we obtain
 
 $$
-  \hat{L}^2 \ket{\psi_\text{u}} = \hat{L}_- \hat{L}_+ \ket{\psi_\text{u}} + (\hat{L}_z^2 + \hbar\hat{L}_z)\ket{\psi_\text{u}}
+  \unitvec{L}^2 \ket{\psi_\text{u}} = \hat{L}_- \hat{L}_+ \ket{\psi_\text{u}} + (\hat{L}_z^2 + \hbar\hat{L}_z)\ket{\psi_\text{u}}
 $$
 
 Then by $\eqref{equation-27}$, this becomes
@@ -7991,7 +8100,7 @@ $$
 Similarly, applying $\eqref{equation-26}$ for $\hat{L}_+ \hat{L}_-$, we obtain
 
 $$
-  \hat{L}^2 \ket{\psi_\text{l}} = \hat{L}_+ \hat{L}_- \ket{\psi_\text{l}} + (\hat{L}_z^2 - \hbar\hat{L}_z) \ket{\psi_\text{l}}
+  \unitvec{L}^2 \ket{\psi_\text{l}} = \hat{L}_+ \hat{L}_- \ket{\psi_\text{l}} + (\hat{L}_z^2 - \hbar\hat{L}_z) \ket{\psi_\text{l}}
 $$
 
 or
@@ -8010,7 +8119,7 @@ where $\ell$ is either integral or half-integral, depending on whether $N$ is ev
 
 $$
 \begin{align*}
-  \hat{L}^2 \ket{\ell, m_\ell} =& \hbar^2 \ell(\ell + 1) \ket{\ell, m_\ell} \\
+  \unitvec{L}^2 \ket{\ell, m_\ell} =& \hbar^2 \ell(\ell + 1) \ket{\ell, m_\ell} \\
   \hat{L}_z \ket{\ell, m_\ell} =& \hbar m_\ell \ket{\ell, m_\ell}
 \end{align*}
 $$
@@ -8019,7 +8128,7 @@ Using $\eqref{equation-26}$, we have
 
 $$
 \begin{align*}
-  \Braket{\ell, m_\ell | \hat{L}_\mp \hat{L}_\pm | \ell, m_\ell } =& \Braket{\ell, m_\ell | \hat{L}^2 - \hat{L}_z^2 \mp \hbar\hat{L}_z | \ell, m_\ell} \\
+  \Braket{\ell, m_\ell | \hat{L}_\mp \hat{L}_\pm | \ell, m_\ell } =& \Braket{\ell, m_\ell | \unitvec{L}^2 - \hat{L}_z^2 \mp \hbar\hat{L}_z | \ell, m_\ell} \\
   =& \hbar^2 [\ell(\ell + 1) - m_\ell^2 \mp m_\ell] \Braket{\ell, m_\ell | \ell, m_\ell} \\
   =& \hbar^2 [\ell(\ell + 1) - m_\ell (m_\ell \pm 1)] \Braket{\ell, m_\ell | \ell, m_\ell}
 \end{align*}
@@ -8167,7 +8276,7 @@ such that from $\eqref{equation-26}$ we find
 
 $$
 \begin{equation*}
-  \hat{L}^2 = -\hbar^2 \left[\frac{1}{\sin(\theta)}\frac{\partial}{\partial\theta} \left(\sin(\theta) \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 (\theta)}\frac{\partial^2}{\partial\phi^2} \right]
+  \unitvec{L}^2 = -\hbar^2 \left[\frac{1}{\sin(\theta)}\frac{\partial}{\partial\theta} \left(\sin(\theta) \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 (\theta)}\frac{\partial^2}{\partial\phi^2} \right]
 \tag{label{equation-82}}
 \end{equation*}
 $$
@@ -8176,7 +8285,7 @@ The eigenfunctions $Y_\ell^{m_\ell} (\theta, \phi)$ can be determined from the e
 
 $$
 \begin{align*}
-  \hat{L}^2 Y_\ell^{m_\ell} =& \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell} \\
+  \unitvec{L}^2 Y_\ell^{m_\ell} =& \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell} \\
   \hat{L}_z Y_\ell^{m_\ell} =& \hbar m_\ell Y_\ell^{m_\ell}
 \end{align*}
 $$
@@ -8210,7 +8319,7 @@ $$
 
 which implies $e^{i2\pi m_\ell} = 1$. This is satisfied for integer $m_\ell \in\Z$.
 
-In spherical coordinates, the $\hat{L}^2$ equation takes the form
+In spherical coordinates, the $\unitvec{L}^2$ equation takes the form
 
 $$
 \begin{align*}
@@ -10971,33 +11080,33 @@ $$
   \Lambda^2 = \frac{1}{\sin(\theta)} \frac{\partial}{\partial\theta} \left(\sin(\theta) \frac{\partial}{\partial\theta} \right) + \frac{1}{\sin^2 (\theta)} \frac{\partial^2}{\partial\phi^2}
 $$
 
-Using $\eqref{equation-82}$, we can express $\Lambda^2$ in terms of $\hat{L}^2$ as
+Using $\eqref{equation-82}$, we can express $\Lambda^2$ in terms of $\unitvec{L}^2$ as
 
 $$
-  \Lambda^2 = -\frac{\hat{L}^2}{\hbar^2}
+  \Lambda^2 = -\frac{\unitvec{L}^2}{\hbar^2}
 $$
 
 Since $r$ is constant, the Hamiltonian reduces to
 
 $$
 \begin{align*}
-  \hat{H} =& -\frac{\hbar^2}{2m} \nabla^2 = -\frac{\hbar^2}{2m} \left(-\frac{\hat{L}^2}{\hbar^2 r^2}\right) \\
-  =& \frac{\hat{L}^2}{2mr^2}
+  \hat{H} =& -\frac{\hbar^2}{2m} \nabla^2 = -\frac{\hbar^2}{2m} \left(-\frac{\unitvec{L}^2}{\hbar^2 r^2}\right) \\
+  =& \frac{\unitvec{L}^2}{2mr^2}
 \end{align*}
 $$
 
-Since $[\hat{H}, \hat{L}^2] = [\hat{H}, \hat{L}_i] = 0$ for one of $i \in (x,y,z)$, it follows that the simultaneous eigenfunctions of $\hat{L}^2$ and $\hat{L}_z$, given by the spherical harmonics $Y_\ell^{m_\ell} (\theta, \phi)$ are also eigenfunctions of $\hat{H}$.
+Since $[\hat{H}, \unitvec{L}^2] = [\hat{H}, \hat{L}_i] = 0$ for one of $i \in (x,y,z)$, it follows that the simultaneous eigenfunctions of $\unitvec{L}^2$ and $\hat{L}_z$, given by the spherical harmonics $Y_\ell^{m_\ell} (\theta, \phi)$ are also eigenfunctions of $\hat{H}$.
 
 The spherical harmonics satisfy the eigenvalue equation
 
 $$
-  \hat{L}^2 Y_\ell^{m_\ell} = \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell}
+  \unitvec{L}^2 Y_\ell^{m_\ell} = \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell}
 $$
 
 and from the time-independent Schrördinger equation $\hat{H}Y_\ell^{m_\ell} = E Y_\ell^{m_\ell}$ we obtain
 
 $$
-  E Y_\ell^{m_\ell} = \frac{1}{2mr^2} \hat{L}^2 Y_\ell^{m_\ell} = \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell} 
+  E Y_\ell^{m_\ell} = \frac{1}{2mr^2} \unitvec{L}^2 Y_\ell^{m_\ell} = \hbar^2 \ell (\ell + 1) Y_\ell^{m_\ell} 
 $$
 
 Solving for $E$ gives the energy levels
@@ -11051,7 +11160,7 @@ $$
 The rotational degrees of freedom can be quantized by the angular momentum operator $\unitvec{L}$. The Hamiltonian for the rotational motion is
 
 $$
-  \hat{H} = \frac{\hat{L}^2}{2I}
+  \hat{H} = \frac{\unitvec{L}^2}{2I}
 $$
 
 which is equivalent to a particle on sphere. The eigenfunctions are given by the spherical harmonics $Y_\ell^{m_\ell} (\theta, \phi)$, and the eigenvalues are
@@ -11104,7 +11213,7 @@ Using spherical coordinates, the Laplacian is
 
 $$
 \begin{align*}
-  \nabla^2 = \frac{1}{r^2} \frac{\partial}{\partial r} \left(r^2 \frac{\partial}{\partial r} \right) - \frac{\hat{L}^2}{\hbar^2 r^2}
+  \nabla^2 = \frac{1}{r^2} \frac{\partial}{\partial r} \left(r^2 \frac{\partial}{\partial r} \right) - \frac{\unitvec{L}^2}{\hbar^2 r^2}
 \end{align*}
 $$
 
@@ -11118,8 +11227,8 @@ the Hamiltonian can be written
 
 $$
 \begin{align*}
-  \hat{H} =& -\frac{\hbar^2}{2m} \left[\frac{1}{r^2} \left(r^2 \frac{\partial}{\partial r} \right) - \frac{\hat{L}^2}{\hbar^2 r^2}\right] + V(r) \\
-  =& \frac{1}{2m}\left(\hat{p}_r^2 + \frac{\hbar^2 \hat{L}^2}{r^2} \right) + V(r)
+  \hat{H} =& -\frac{\hbar^2}{2m} \left[\frac{1}{r^2} \left(r^2 \frac{\partial}{\partial r} \right) - \frac{\unitvec{L}^2}{\hbar^2 r^2}\right] + V(r) \\
+  =& \frac{1}{2m}\left(\hat{p}_r^2 + \frac{\hbar^2 \unitvec{L}^2}{r^2} \right) + V(r)
 \end{align*}
 $$
 
@@ -11127,18 +11236,18 @@ which corresponds to the classical Hamiltonian in spherical coordinates. The tim
 
 $$
 \begin{equation*}
-  \left\{-\frac{\hbar^2}{2m}\left[\frac{1}{r^2} \frac{\partial}{\partial r}\left(r^2 \frac{\partial}{\partial r} \right) - \frac{\hat{L}^2}{\hbar^2 r^2} \right] + V(r) \right\} \psi(r,\theta,\phi) = E\psi(r,\theta,\phi) 
+  \left\{-\frac{\hbar^2}{2m}\left[\frac{1}{r^2} \frac{\partial}{\partial r}\left(r^2 \frac{\partial}{\partial r} \right) - \frac{\unitvec{L}^2}{\hbar^2 r^2} \right] + V(r) \right\} \psi(r,\theta,\phi) = E\psi(r,\theta,\phi) 
 \tag{\label{equation-42}}
 \end{equation*}
 $$
 
-Since $\hat{L}_i$ and $\hat{L}^2$ are independent on $r$ and $[\hat{L}_i, \unitvec{x}^2] = 0 = [\hat{L}_i, \unitvec{p}^2]$, it follows that $[\hat{H}, \hat{L}_i] = 0$ and $[\hat{H}, \hat{L}^2] = 0$. In other words, the simultanous eigenfunctions of $\hat{L}^2$ and $\hat{L}_z$, given by the spherical harmonics $Y_\ell^{m_\ell} (\theta, \phi)$ are also eigenfunctions of $\hat{H}$. Thus, the wavefunctions of $\hat{H}$, solving $\eqref{equation-42}$, take the form
+Since $\hat{L}_i$ and $\unitvec{L}^2$ are independent on $r$ and $[\hat{L}_i, \unitvec{x}^2] = 0 = [\hat{L}_i, \unitvec{p}^2]$, it follows that $[\hat{H}, \hat{L}_i] = 0$ and $[\hat{H}, \unitvec{L}^2] = 0$. In other words, the simultanous eigenfunctions of $\unitvec{L}^2$ and $\hat{L}_z$, given by the spherical harmonics $Y_\ell^{m_\ell} (\theta, \phi)$ are also eigenfunctions of $\hat{H}$. Thus, the wavefunctions of $\hat{H}$, solving $\eqref{equation-42}$, take the form
 
 $$
   \psi(r,\theta,\phi) = R(r) Y_\ell^{m_\ell} (\theta, \phi)
 $$
 
-Using the fact that $\hat{L}^2 Y_\ell^{m_\ell} = \hbar^2\ell(\ell + 1) Y_\ell^{m_\ell}$, we can refactor $\eqref{equation-42}$ as
+Using the fact that $\unitvec{L}^2 Y_\ell^{m_\ell} = \hbar^2\ell(\ell + 1) Y_\ell^{m_\ell}$, we can refactor $\eqref{equation-42}$ as
 
 $$
 \begin{equation*}
@@ -11384,7 +11493,7 @@ $$
 Equation $\eqref{equation-87}$ is the eigenvalue equation for a free particle. In spherical coordinates, the interaction equation $\eqref{equation-88}$ allows a separable solution $\phi(\mathbf{r}) = R(r) Y_\ell^{m_\ell} (\theta, \phi)$, where $Y_\ell^{m_\ell}$ are the spherical harmonics. The radial equation takes the form 
 
 $$
-  \left[-\frac{\hbar^2}{2mr^2} \frac{\partial}{\partial r} \left(r^2 \frac{\partial}{\partial r} \right) + \frac{\hbar^2 \hat{L}^2}{2mr^2} + V(r) - E_r \right] R(r) = 0
+  \left[-\frac{\hbar^2}{2mr^2} \frac{\partial}{\partial r} \left(r^2 \frac{\partial}{\partial r} \right) + \frac{\hbar^2 \unitvec{L}^2}{2mr^2} + V(r) - E_r \right] R(r) = 0
 $$
 
 ## Hydrogenic atoms
@@ -11412,7 +11521,7 @@ $$
   \left[-\frac{\hbar^2}{2m} \nabla_\mathbf{r} - \frac{Ze^2}{r} \right] \psi(\mathbf{r}) = E \psi(\mathbf{r})
 $$
 
-Since $V$ is a central potential, the spherical symmetry ensures that the wavefunctions $\psi$ are simultaneous eigenfunctions of $\hat{L}^2$ and $\hat{L}_z$. Using spherical coordinates, $\psi$ takes the separable form
+Since $V$ is a central potential, the spherical symmetry ensures that the wavefunctions $\psi$ are simultaneous eigenfunctions of $\unitvec{L}^2$ and $\hat{L}_z$. Using spherical coordinates, $\psi$ takes the separable form
 
 $$
   \psi(r, \theta, \phi) = R(r) Y_\ell^{m_\ell} (\theta, \phi)
@@ -11746,7 +11855,7 @@ $$
 
 ## The Klein-Gordon equation
 
-The Klein-Gordon equation is derived by quantizing the relativistic energy-momentum relation for a particle with with energy $E$, momentum $\mathbf{p}$ and rest mass $m$
+The Klein-Gordon equation is derived by quantizing the relativistic energy-momentum relation for a particle with energy $E$, momentum $\mathbf{p}$ and rest mass $m$
 
 $$
   E^2 = \mathbf{p}^2 c^2 + m^2 c^4
