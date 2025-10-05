@@ -214,13 +214,8 @@ export class InstancedArrow extends THREE.Object3D {
     const materialParams = {
       transparent: true,
       vertexShader: `
-        uniform mat4 modelViewMatrix;
-        uniform mat4 projectionMatrix;
-        
-        attribute vec3 position;
         attribute vec3 instanceColor;
         attribute float opacity;
-        attribute mat4 instanceMatrix;
         varying vec3 vColor;
         varying float vOpacity;
         

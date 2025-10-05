@@ -344,7 +344,8 @@ $$
 </MathBox>
 
 <MathBox title='Left action of a group on set' boxType='definition'>
-Let $G$ be a group with identity element $e\in G$ and let $M$ be a set. A *left action* of $G$ on $M$ is defined as a map $\Lambda: G\times M \to M$ by $(g,m) \mapsto g.m$ that satisfies for all $h, g\ in G$ and $m\in M$
+Let $G$ be a group with identity element $e\in G$ and let $M$ be a set. A *left action* of $G$ on $M$ is defined as a map $\Lambda: G\times M \to M$ by $(g,m) \mapsto g.m$ that satisfies for all $h, g \in G$ and $m\in M$
+
 1. 
 $$
 \begin{equation*}
@@ -2928,6 +2929,135 @@ $$
 </details>
 </MathBox>
 
+# Group representations
+
+<MathBox title='Representation' boxType='definition'>
+Let $V$ be a vector space over a field $\mathbb{F}$. A representation of a group $G$ on $V$ is a homomorphism $\pi: G \to \mathrm{GL}(V)$, where $\mathrm{GL}(V)$ is the group of all invertible linear transformations of $V$, called the general linear group. A group representation is commonly denoted by the pair $(\pi, V)$.
+</MathBox>
+
+When $V$ is a finite dimensional vector space over a field $\mathbb{F}$ with $\dim(V) = n$, and a basis of $V$ has been chosen, each linear transformation of $V$ can by uniquely represented by an $n\times n$ invertible matrix with entries in $\mathbb{F}$. Consequently, there is a canonical isomorphism of groups
+
+$$
+  \mathrm{GL}(V) \cong \mathrm{GL}_m (\mathbb{F})
+$$
+
+<MathBox title='Unitary representation' boxType='definition'>
+Let $V$ be a vector space over a field $\mathbb{F}$ equipped with Hermitian inner product $\braket{\cdot, \cdot}: V \times V \to \mathbb{F}$. A representation $\pi: G \to \mathrm{GL}(V)$ of a group $G$ on $V$ is *unitary* if preserves the inner product, i.e.
+
+$$
+  \braket{\pi(g) v_1, \pi(g) v_2} = \braket{v_1, v_2}
+$$
+
+for all $g\in G$ and $v_1, v_2 \in V$.
+</MathBox>
+
+For a unitary representation, the matrices $\pi(g)$ take values in the unitary group $U(n) \subset \mathrm{GL}_n (\mathbb{C})$.
+
+<MathBox title='Irreducible representation' boxType='definition'>
+Let $V$ be a vector space over a field $\mathbb{F}$. A representation $\pi: G \to \mathrm{GL}(V)$ of a group $G$ on $V$ is *irreducible* if it has no nontrivial proper subrepresentations. This means there are no proper subspaces $W \subset V$ such that $\pi|_W$ is a representation of $G$. A representation that does have such a representation is *reducible*.
+</MathBox>
+
+<MathBox title='Direct sum representation' boxType='definition'>
+Let $(\pi_1, V)$ and $(\pi_2, V)$ be representations of a group $G$ with respective dimensions $n_1 = \dim(V_1)$ and $n_2 = \dim(V_2)$. The direct sum representation $\pi_1 \oplus \pi_2 : G \to \mathrm{GL}(V_1 \oplus V_2)$ is defined on the direct sum of vector spaces $V_1 \oplus V_2$ by
+
+$$
+\begin{gather*}
+  (\pi_1 \oplus \pi_2)(g)(v_1, v_2) = (\pi_1 (g)v_1, \pi_2 (g)v_2), \\
+  \forall g\in G,\; v_1 \in V_1,\; v_2 \in V_2
+\end{gather*}
+$$
+
+If $V_1$ and $V_2$ are finite dimensional, then $\pi_1 \oplus \pi_2$ can be represented by block-diagonal matrices
+
+$$
+  (\pi_1 \oplus \pi_2)(g) = \begin{bmatrix} \pi_1 (g) & \mathbf{0} \\ \mathbf{0} & \pi_2 (g) \end{bmatrix}
+$$
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Any unitary representation $(\pi, V)$, can be decomposed as direct sum of irreducible representations
+
+$$
+  \pi \bigoplus_{i=1}^m \pi_i
+$$
+
+where each $\pi_i$ are irreducible.
+
+<details>
+<summary>Proof</summary>
+
+If $(\pi, V)$ is not irreducible, there exists a nontrivial invariant subspace $W \subset V$ such that $(\pi|_W, W)$ is a representation. Since $\pi$ is unitary, Hermitian inner product on $V$ is preserved, implying that the ortogonal complement $W^\perp \subset V$ is also invariant under $\pi$. Thus, $(\pi, V)$ decomposes as
+
+$$
+  (\pi, V) = (\pi|_W, W) \oplus (\pi|_{W^\perp}, W^\perp)
+$$
+
+Then $(\pi|_{W^\perp}, W^\perp)$ is a subrepresentation since, by unitarity, the representation matrices preserve the Hermitian inner product. If either $\pi|_W$ or $\pi|_{W^\perp}$ is reducible, the same argument can be applied recursively to its invariant subspaces. Since $V$ is finite-dimensional, this process terminates after finitely many steps, resulting in a decomposition
+
+$$
+  \pi \bigoplus_{i=1}^m \pi_i
+$$
+
+where each $\pi_i$ is irreducible.
+</details>
+</MathBox>
+
+<MathBox title="Schur's lemma" boxType='theorem' tag='theorem-1'>
+If $(\pi, V)$ is a complex irreducible representation of a group $G$, then any linear map $M: V\to V$ that commutes with all representation operators, i.e.
+
+$$
+  M\pi(g) = \pi(g) M,\; \forall g\in G
+$$
+
+must be a scalar multiple of the identity
+
+$$
+  M = \lambda\mathbf{1},\; \lambda\in\mathbb{C}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Assume $M$ commutes with all the $\pi(g)$. Since $V$ is a complex vector space, the characteristic polynomial of $M$ has at least one eigenvalue $\lambda\in\mathbb{C}$:
+
+$$
+  \det(M - \lambda\mathbf{1}) = 0
+$$
+
+Let
+
+$$
+  V_\lambda = \set{v \in V | Mv = \lambda v} = \ker(M - \lambda\mathbf{1})
+$$
+
+denote the corresponding eigenspace. By construction $V_\lambda \neq \set{0}$. Because $M$ commutes with $\pi(g)$ commute, for any $v\in V_\lambda$ and $g\in G$ we have
+
+$$
+  M(\pi(g)v) = \pi(g)Mv = \pi(g)(\lambda v) = \lambda \pi(g) v
+$$
+
+so $\pi(g)v \in V_\lambda$. Thus $V_\lambda$ is a $G$-invariant subspace of $V$. Since $(\pi, V)$ is irreducible, the only $G$-inveriant subspaces are $\set{0}$ and $\set{V}$ itself. Because $V_\lambda = \neq \set{0}$, we must have $V_\lambda = V$. Hence $M = \lambda\mathbf{1}$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='corollary'>
+If $G$ is an Abelian group, then all of its complex irreducible representations are one-dimensional.
+
+<details>
+<summary>Proof</summary>
+
+et $(\pi, V)$ be an irreducible representation of an Abelian group $G$ over $\mathbb{C}$. Since $G$ is commutative, then for any $g, h \in G$ we have
+
+$$
+\begin{align*}
+  \pi(g) \pi(h) =& \pi(gh) = \pi(hg) \\
+  =& \pi(h) \pi(g)
+$$
+
+so all operators $\pi(h)$ commute with each other. Thus, by Schur's lemma (Theorem $\ref{theorem-1}$), each matrice $\pi(h)$ is of the form $\pi(h) = \lambda_h \mathbf{1}$ for some $\lambda_h \in\mathbb{C}$. Since $\pi(h)$ acts a scalar on $V$, it follows that $V$ must by one-dimensional for irredicibility, i.e. $\pi(h) = \lambda_h$.
+</details>
+</MathBox>
+
 # Matrix groups
 
 <MathBox title='General linear group' boxType='definition'>
@@ -2976,7 +3106,7 @@ $$
 The unitary group of degree $n$, denoted $\mathrm{U}(n)$, is the set of all complex unitary $n\times n$ matrices, i.e.
 
 $$
-  \mathrm{U}(n) = \Set{\mathbf{A}\in \mathrm{GL}_n (\mathbb{C}) : \mathbf{AA}^\dagger = \mathbf{I}_n}
+  \mathrm{U}(n) = \Set{\mathbf{A}\in \mathrm{GL}_n (\mathbb{C}) : \mathbf{AA}^\dagger = \mathbf{A}^\dagger \mathbf{A} = \mathbf{I}_n}
 $$
 
 <details>
@@ -2998,10 +3128,10 @@ showing that $\det(\mathbf{U}) = e^{i\theta}$.
 </MathBox>
 
 <MathBox title='Orthogonal group' boxType='definition'>
-The orthogonal group of degree $n$ over a field $\mathbb{F}$, denoted $\mathrm{SL}_n (\mathbb{F})$, is the set of all invertible $n\times n$ matrices with unit determinant:
+The orthogonal group of degree $n$, denoted $\mathrm{O}_n$, is the set of all orthogonal $n\times n$ matrices:
 
 $$
-  \mathrm{SL}_n (\R) = \Set{\mathbf{A}\in \mathrm{GL}_n (\R) : \det(\mathbf{A}) = 1}
+  \mathrm{O}_n = \Set{\mathbf{A}\in \mathrm{GL}_n (\R) : \mathbf{AA}^\top = \mathbf{A}^\top \mathbf{A} = \mathbf{I}_n}
 $$
 </MathBox>
 

@@ -1,7 +1,7 @@
 "use client"
 
 import useIsMounted from "lib/hooks/useIsMounted"
-import { instancedQuiverGrid, type InstancedArrow } from "lib/utils/3d"
+import { type InstancedArrow, instancedQuiverGrid } from "lib/utils/3d"
 import { useEffect, useRef } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
