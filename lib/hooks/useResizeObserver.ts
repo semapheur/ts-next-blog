@@ -11,14 +11,14 @@ export default function useResizeObserver<T extends Element>(
   const [size, setSize] = useState<Size | null>(null)
   const observerRef = useRef<ResizeObserver | null>(null)
 
-  const observerCallback = (entries: ResizeObserverEntry[]) => {
-    const entry = entries[0]
-
-    const { blockSize: height, inlineSize: width } = entry.contentBoxSize[0]
-    setSize({ height: height, width: width })
-  }
-
   useEffect(() => {
+    const observerCallback = (entries: ResizeObserverEntry[]) => {
+      const entry = entries[0]
+
+      const { blockSize: height, inlineSize: width } = entry.contentBoxSize[0]
+      setSize({ height: height, width: width })
+    }
+
     if (observerRef.current) {
       observerRef.current.disconnect()
     }

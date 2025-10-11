@@ -83,7 +83,7 @@ ${children}
     }
 
     processTikzCode()
-  }, [children, packages])
+  }, [children, packageText])
 
   return (
     <figure

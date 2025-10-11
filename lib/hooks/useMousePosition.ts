@@ -7,19 +7,19 @@ export default function useMousePosition<
 >(elementRef: RefObject<T>): DOMPoint {
   const [position, setPosition] = useState<DOMPoint>(new DOMPoint(0, 0))
 
-  const updatePosition = (e: MouseEvent) => {
-    const { left, top } = elementRef.current!.getBoundingClientRect()
-    setPosition(new DOMPoint(e.clientX - left, e.clientY - top))
-  }
-
   useEffect(() => {
     const element = elementRef.current
     if (!element) return
 
+    const updatePosition = (e: MouseEvent) => {
+      const { left, top } = element.getBoundingClientRect()
+      setPosition(new DOMPoint(e.clientX - left, e.clientY - top))
+    }
+
     window.addEventListener("mousemove", updatePosition)
 
     return () => {
-      element.removeEventListener("mousemove", updatePosition)
+      window.removeEventListener("mousemove", updatePosition)
     }
   }, [elementRef])
 

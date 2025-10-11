@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { compareArrays } from "lib/utils/num"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 interface Options {
   root?: HTMLElement

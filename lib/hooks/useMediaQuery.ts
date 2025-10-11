@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 
-export default function useMediaQuery(query: string): boolean {
-  const getMatches = (query: string): boolean => {
-    // Prevent SSR issues
-    if (typeof window !== "undefined") {
-      return window.matchMedia(query).matches
-    }
-    return false
+const getMatches = (query: string): boolean => {
+  // Prevent SSR issues
+  if (typeof window !== "undefined") {
+    return window.matchMedia(query).matches
   }
+  return false
+}
 
+export default function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState<boolean>(getMatches(query))
 
   useEffect(() => {

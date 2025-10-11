@@ -1,8 +1,8 @@
 "use client"
 
-import { type HTMLAttributes, useEffect, useRef } from "react"
 import * as d3 from "d3"
 import useResizeObserver from "lib/hooks/useResizeObserver"
+import { type HTMLAttributes, useEffect, useRef } from "react"
 
 interface Margin {
   top: number
@@ -134,7 +134,7 @@ export default function SVGPlot({ data, xAxis, yAxis, ...props }: Props) {
       svg.selectAll("g").remove()
       svg.remove()
     }
-  }, [size, data])
+  }, [size, data, xAxis, yAxis])
 
   return (
     <div ref={wrapRef} className={props.className}>

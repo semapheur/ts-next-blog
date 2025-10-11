@@ -12,5 +12,5 @@ export default function useUpdateEffect(
     if (!isFirst) {
       return effect()
     }
-  }, [isFirst, ...(deps ?? [])])
+  }, [isFirst, effect, ...(deps ?? [])])
 }
