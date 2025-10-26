@@ -19,9 +19,9 @@ references:
 Let $V$ be an inner product space over a field $\mathbb{F}$ with dual space $V^*$. In Dirac notation:
 - A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
 - A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \to\mathbb{F}$ and is a covector to $\ket{f}$
-- A *bra-ket* $\braket{f|v} = \bra{f}(\ket{v})$ denotes an inner product $\braket{\cdot|\cdot}: V\times V \to\mathbb{F}$
-- A *ket-bra* $\ket{v}\bra{f}$ denotes an outer product
-- A *ket-ket* $\ket{v}\ket{w} = \ket{v}\otimes\ket{w}$ denotes a tensor product $\otimes: V \times V \to V \otimes V$
+- A *bra-ket* $\braket{f|v} := \bra{f}(\ket{v})$ represents an inner product $\braket{\cdot|\cdot}: V\times V \to\mathbb{F}$
+- A *ket-bra* $\ket{v}\bra{f}$ defines an outer product $\ket{\cdot}\bra{\cdot} : V\times V \to V$ given by $\ket{v}{f}(\ket{w}) := \ket{v}\braket{f|w}$, which projects the component of $\ket{w}$ along the covector $\bra{f}$ onto the vector $\ket{v}$
+- A *ket-ket* $\ket{v}\ket{w} := \ket{v}\otimes\ket{w}$ denotes a tensor product $\otimes: V \times V \to V \otimes V$
 
 Bra-ket properties
 - Conjugate symmetry: $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
@@ -463,8 +463,6 @@ A linear operator is a mapping between two vector spaces that is preserved under
   - $\hat{A} \ket{a\phi} = a\hat{A} \ket{\phi}$
   - $ \left( \bra{\psi} a \right) \hat{A} = a \bra{\psi} \hat{A}$
 
-The outer product $\ket{\psi}\bra{\phi}$ is a linear operator.
-
 Operator properties
 1. **Associativity:** $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
 2. **Power property:** $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
@@ -642,7 +640,7 @@ $$
 \end{align*}
 $$
 
-This means that $\hat{R}_U \in \mathrm{SO}(3)$ represents a rotation in $\R^3$. We have thus establish a group homomorphism
+This means that $\hat{R}_U \in \mathrm{SO}(3)$ represents a rotation in $\R^3$. We have thus established a group homomorphism
 
 $$
 \begin{align*}
@@ -1122,13 +1120,45 @@ $$
 $$
 </details>
 
-### Projection operator
+### Outer product
 
-<MathBox title='Projection' boxType='definition'>
-Let $\mathcal{H}$ be a Hilbert space. A projection operator (or simply projector) is a linear operator $\hat{P}\in\mathcal{L}(\mathcal{H})$ that is idempotent, i.e. $\hat{P}^2 = \hat{P}$. If, in addition $\hat{P}$ is Hermitian, i.e. $\hat{P}^\dagger = \hat{P}$, then $\hat{P}$ is called an *orthogonal projection*.
+<MathBox title='Outer product' boxType='definition'>
+Let $\mathcal{H}$ be a Hilbert space. The outer product of two vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$ is the operator $\ket{\psi}\bra{\phi} : \mathcal{H} \to\mathcal{H}$ given by
+
+$$
+  \ket{\chi} \mapsto \ket{\psi} \braket{\psi|\chi}
+$$
+
+which projects the component of $\ket{\chi}$ along $\ket{\phi}$ onto $\ket{\psi}$.
 </MathBox>
 
-The complement of a projection $\hat{P}\in\mathcal{L}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ is the operator $\hat{Q} = \hat{I} - \hat{P}$, which is also a projection since it satisfies idempotency:
+The operator $\ket{\psi}\bra{\phi}: \mathcal{H} \to\mathcal{H}$ is linear in its action on kets, which follows from the linearity of the inner product in its second argument. For any scalars $a, b \in\mathbb{F}$ and vectors $\ket{\chi_1}, \ket{\chi_2} \in\mathcal{H}$
+
+$$
+\begin{align*}
+  \ket{\psi}\ket{\phi}(a\ket{\chi_1} + b\ket{\chi_2}) =& \ket{\psi}(a\braket{\phi|\chi_1} + a\braket{\phi|\chi_2}) \\
+  =& a\ket{\psi}\bra{\phi}(\ket{\chi_1}) + b\ket{\psi}\bra{\phi}(\ket{\chi_2})
+\end{align*}
+$$
+
+The map $\ket{\cdot}\bra{\cdot}: \mathcal{H}\times\mathcal{H} \to\mathcal{L}(\mathbf{H})$ is sesquilinear satisfying
+- **Linearity in the first argument:** For $a, b \in\mathbb{F}$ and $\ket{\psi_1}, \ket{\psi_2}, \ket{\phi}\in\mathcal{H}$
+$$
+  (a\ket{\psi_1} + b\ket{\psi_2})\bra{\phi} = a\ket{\psi_1}\bra{\phi} + b\ket{\psi_2}\bra{\phi}
+$$
+
+- **Conjugate-linearity in the second argument:** For $\ket{\psi}, \ket{\phi_1}, \ket{\phi_2} \in\mathcal{H}$
+$$
+  \ket{\psi}(a\bra{\phi_1} + b\bra{\phi_1}) = a^* \ket{\psi}\bra{\phi_1} + b^* \ket{\phi}\bra{\phi_2}
+$$
+
+### Projection operator
+
+<MathBox title='Projection operator' boxType='definition'>
+Let $\mathcal{H}$ be a Hilbert space. A projection operator (or simply projector) is a linear operator $\hat{P}\in\mathcal{L}(\mathcal{H})$ that is idempotent, i.e. $\hat{P}^2 = \hat{P}$. If, in addition $\hat{P}$ is Hermitian, i.e. $\hat{P}^\dagger = \hat{P}$, then $\hat{P}$ is called an *orthogonal projector*.
+</MathBox>
+
+The complement of a projector $\hat{P}\in\mathcal{L}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ is the operator $\hat{Q} = \hat{I} - \hat{P}$, which is also a projector since it satisfies idempotency:
 
 $$
 \begin{align*}
@@ -1144,7 +1174,7 @@ $$
   \hat{Q}^\dagger = (\hat{I} - \hat{P})^\dagger = \hat{I} - \underbrace{\hat{P}^\dagger}_{=\hat{P}} = \hat{Q}
 $$
 
-meaning that $\hat{Q}$ is an orthogonal projection. In this case $\hat{P}$ and $\hat{Q}$ are mutually orthogonal projectors, satisfying
+meaning that $\hat{Q}$ is an orthogonal projector. In this case $\hat{P}$ and $\hat{Q}$ are mutually orthogonal projectors, satisfying
 
 $$
   \hat{P}\hat{Q} = \hat{Q}\hat{P} = 0
@@ -2490,7 +2520,7 @@ Applying $\hat{U}$ to $\psi_eta$ and $\psi'_\eta$ and taking the scalar product 
 $$
 \begin{align*}
   \braket{\hat{U}\psi_\eta, \hat{U} \psi'_\eta} =& \int \d\xi \left(\int \phi_\eta^* (\xi) \psi_\eta^* (\eta) \;\d\eta \right) \left(\int \phi_{\eta'} (\xi) \psi'_\eta (\eta') \;\d\eta' \right) \\
-  =& \int \eta' \psi_\eta^* (\eta) \psi'_\eta (\eta') \;\d \int \phi_\eta^* (\eta) \phi_{\eta'} (\eta) \;\d\xi \tag{\label{equation-94}}
+  =& \int \eta' \psi_\eta^* (\eta) \psi'_\eta (\eta') \;\d\eta \int \phi_\eta^* (\eta) \phi_{\eta'} (\eta) \;\d\xi \tag{\label{equation-94}}
 \end{align*}
 $$
 
@@ -2525,15 +2555,23 @@ $$
 then the probability of measuring the eigenvalue $q_j$ is given by
 
 $$
-  \Pr_\psi (q_j) = \norm{\hat{P}_j \ket{\psi}}^2 = \Norm{\sum_{\alpha=1}^{d_j} \ket{q_{j,\alpha}}\braket{q_{j,\alpha}|\psi}} = \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 = \sum_{\alpha=1}^{d_j} |c_{j,\alpha}|^2
+\begin{align*}
+  \Pr_\psi (q_j) =& \norm{\hat{P}_j \ket{\psi}}^2 \\
+  =& \Norm{\sum_{\alpha=1}^{d_j} \ket{q_{j,\alpha}}\braket{q_{j,\alpha}|\psi}} \\
+  =& \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 = \sum_{\alpha=1}^{d_j} |c_{j,\alpha}|^2
+\end{align*}
 $$
 
 This statistical interpretation of quantum observables is known as *Born's rule*, which states that the probability of obtaining an eigenvalue $q_j$ in a measurement of $Q$ is given by the square modulus of the projection of $\ket{\psi}$ onto the corresponding eigenspace.
 
-To see that the map $\Pr_psi : \sigma(\hat{Q}) \to [0,1]$ defines a probability measure on $\sigma(\hat{Q})$, we note that $\Pr_\psi (q_j) \geq 0$ because square moduli are non-negative. Furthermore, since $\set{\ket{q_{j,\alpha}}}$ forms an orthonormal basis for $\mathcal{H}$ and $\ket{\psi}$ is normalized, it follows that
+To see that the map $\Pr_\psi : \sigma(\hat{Q}) \to [0,1]$ defines a probability measure on $\sigma(\hat{Q})$, we note that $\Pr_\psi (q_j) \geq 0$ because square moduli are non-negative. Furthermore, since $\set{\ket{q_{j,\alpha}}}$ forms an orthonormal basis for $\mathcal{H}$ and $\ket{\psi}$ is normalized, it follows that
 
 $$
-  \sum_j \Pr_\psi (q_j) = \sum_j \norm{\hat{P}_{q_j} \ket{\psi}}^2 = \sum_j \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 = \norm{\psi} = 1
+\begin{align*}
+  \sum_j \Pr_\psi (q_j) =& \sum_j \norm{\hat{P}_{q_j} \ket{\psi}}^2 \\
+  =& \sum_j \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 \\
+  =& \norm{\psi} = 1
+\end{aligb*}
 $$
 
 Thus, the normalization condition of quantum states ensures that the total probability sums to $1$, validating that $\Pr_\psi$ is a probability measure over the spectrum $\sigma(\hat{Q})$.
