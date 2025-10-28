@@ -76,8 +76,10 @@ function findLatexIssues(mdxFile: string) {
 
     // Check for LaTeX commands outside math mode
     if (!inMath && !inDisplayMath) {
-      let match: RegExpExecArray | null
-      while ((match = latexCommandRegex.exec(line)) !== null) {
+      // Reset the regex state for each new line
+      latexCommandRegex.lastIndex = 0
+      let match: RegExpExecArray | null = latexCommandRegex.exec(line)
+      while (match !== null) {
         // Verify this isn't inside an inline math block
         let dollarCount = 0
         for (let i = 0; i < match.index; i++) {
@@ -102,6 +104,7 @@ function findLatexIssues(mdxFile: string) {
             column: match.index + 1,
           })
         }
+        match = latexCommandRegex.exec(line)
       }
     }
 
