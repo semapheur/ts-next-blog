@@ -133,7 +133,7 @@ $$
 
 holds only if all $a_k = 0$.
 
-A Hilbert space $\mathcal{H}$ is finite-dimensional $\mathcal{H}$ contains at most $n = \dim(\mathcal{H}) < \infty$ linearly independent vectors. Otherwise $\mathcal{H}$ is called infinite-dimensional, i.e. $\dim(\mathcal{H}) = \infty$.
+A Hilbert space $\mathcal{H}$ is finite-dimensional if $\mathcal{H}$ contains at most $n = \dim(\mathcal{H}) < \infty$ linearly independent vectors. Otherwise $\mathcal{H}$ is called infinite-dimensional, i.e. $\dim(\mathcal{H}) = \infty$.
 
 A set of vectors $\set{\ket{\varphi_j}}_{j\in I} \subseteq\mathcal{H}$ *spans* $\mathcal{H}$ if for every vector $\varphi\in\mathcal{H}$, there are $a_j \in\mathbb{F}$ with $j\in I$ such that
 
@@ -147,7 +147,7 @@ $$
   \mathcal{H} = \operatorname{span}\set{\ket{\varphi_j}}_{j\in I}
 $$
 
-A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ whose vectors satisfy
+A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this set are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ whose vectors satisfy
 
 $$
   \braket{e_j|e_k} = \delta_{jk} := \begin{cases}
@@ -338,7 +338,7 @@ Actions on qubit basis vectors $\ket{0} = \left[\begin{smallmatrix} 1 \\ 0 \end{
 - $\boldsymbol{\sigma}_z \ket{1} = \left[\begin{smallmatrix} 1 & 0 \\ 0 & -1 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 \\ -1 \end{smallmatrix}\right] = -\ket{1}$
 
 <MathBox title='Pauli matrices form a basis for $\mathbb{C}^{2\times 2}$' boxType='proposition'>
-The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for complex $2\times 2$ matrices, $\mathcal{M}_2 (\mathbb{C})$.
+The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for $\mathcal{M}_2 (\mathbb{C})$, the set of complex $2\times 2$ matrices.
 
 <details>
 <summary>Proof</summary>
@@ -534,11 +534,45 @@ $$
 $$
 </details>
 
+### Outer product
+
+<MathBox title='Outer product' boxType='definition'>
+Let $\mathcal{H}$ be a Hilbert space. The outer product of two vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$ is the operator $\ket{\psi}\bra{\phi} : \mathcal{H} \to\mathcal{H}$ given by
+
+$$
+  \ket{\chi} \mapsto \ket{\psi} \braket{\psi|\chi}
+$$
+
+which projects the component of $\ket{\chi}$ along $\ket{\phi}$ onto $\ket{\psi}$.
+</MathBox>
+
+The operator $\ket{\psi}\bra{\phi}: \mathcal{H} \to\mathcal{H}$ is linear in its action on kets, which follows from the linearity of the inner product in its second argument. For any scalars $a, b \in\mathbb{F}$ and vectors $\ket{\chi_1}, \ket{\chi_2} \in\mathcal{H}$
+
+$$
+\begin{align*}
+  \ket{\psi}\ket{\phi}(a\ket{\chi_1} + b\ket{\chi_2}) =& \ket{\psi}(a\braket{\phi|\chi_1} + a\braket{\phi|\chi_2}) \\
+  =& a\ket{\psi}\bra{\phi}(\ket{\chi_1}) + b\ket{\psi}\bra{\phi}(\ket{\chi_2})
+\end{align*}
+$$
+
+The map $\ket{\cdot}\bra{\cdot}: \mathcal{H}\times\mathcal{H} \to\mathcal{L}(\mathbf{H})$ is sesquilinear satisfying
+- **Linearity in the first argument:** For $a, b \in\mathbb{F}$ and $\ket{\psi_1}, \ket{\psi_2}, \ket{\phi}\in\mathcal{H}$
+$$
+  (a\ket{\psi_1} + b\ket{\psi_2})\bra{\phi} = a\ket{\psi_1}\bra{\phi} + b\ket{\psi_2}\bra{\phi}
+$$
+
+- **Conjugate-linearity in the second argument:** For $\ket{\psi}, \ket{\phi_1}, \ket{\phi_2} \in\mathcal{H}$
+$$
+  \ket{\psi}(a\bra{\phi_1} + b\bra{\phi_1}) = a^* \ket{\psi}\bra{\phi_1} + b^* \ket{\phi}\bra{\phi_2}
+$$
+
+### Matrix representation
+
 <MathBox title='Matrix representation of linear operators' boxType='definition'>
 If $\mathcal{H}$ is a finite-dimensional Hilbert space with orthonormal basis $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$, the matrix elements of a linear operator $\hat{A}$ on $\mathcal{H}$ is given by
 
 $$
-  A_{jk} := \braket{e_j | \hat{A}|e_k}
+  A_{jk} := \braket{e_j |\hat{A}|e_k}
 $$
 
 The matrix representation of $\mathbf{A}$ in the basis $\set{\ket{e_j}}$ is the matrix
@@ -548,7 +582,7 @@ $$
 $$ 
 </MathBox>
 
-If $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$ is a basis on a Hilbert space $\mathcal{H}$, a vector $\ket{\psi}\in\mathcal{H}$ can be expanded as 
+If $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$ is an ortonormal basis on a Hilbert space $\mathcal{H}$, a vector $\ket{\psi}\in\mathcal{H}$ can be expanded as 
 
 $$
   \ket{\psi} = \sum_j \ket{e_j} \braket{e_j|\psi}
@@ -559,15 +593,59 @@ Applying an operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ on $\ket{\psi}$ gives
 $$
 \begin{align*}
   \hat{A}\ket{\psi} =& \ket{\hat{A}\psi} = \sum_j \ket{e_j} \braket{e_j|\hat{A}\psi} \\
-  =& \sum_j \ket{e_j} \Braket{e_j|\hat{A}\sum_k|e_k \braket{e_k|\psi}} \\
-  =& \sum_{j,k} \ket{e_j}\braket{e_j|\hat{A}|e_k} \braket{e_k|\psi}
+  =& \sum_j \ket{e_j} \Braket{e_j|\hat{A}\left(\sum_k| \ket{e_k} \braket{e_k|\psi}\right)} \\
+  =& \sum_{j,k} \braket{e_j|\hat{A}|e_k} \ket{e_j}\braket{e_k|\psi}
 \end{align*}
 $$
 
 Thus, we can express $\hat{A}$ in the form
 
 $$
+\begin{equation*}
   \hat{A} = \sum_{j,k} \ket{e_j} \braket{e_j|\hat{A}|e_k}\bra{e_k} = \sum_{j,k} \ket{e_j} A_{jk} \bra{e_k} 
+\tag{\label{equation-147}}
+\end{equation*}
+$$
+
+where the scalars $A_{jk} := \braket{e_j|\hat{A}|e_k} \in\mathbb{F}$ define the matrix elements of $\hat{A}$ with respect to the basis $\set{\ket{e}_j}$. The matrix representation of $\hat{A}$ in the basis $\set{\ket{e_j}}$ is the matrix
+
+$$
+  \mathbf{A} = {A}_{jk}_{j,k=1}^{\dim(\mathcal{H})}
+$$ 
+
+From $\eqref{equation-147}$, the product of two linear operators $\hat{A}, \hat{B} \in\mathcal{L}(\mathcal{H})$ is given by
+
+$$
+\begin{align*}
+  \hat{A}\hat{B} =& \left(\sum_{j, j'} \braket{j|\hat{A}|j'} \ket{j}\bra{j'} \right) \left(\sum_{k, k'} \braket{k|\hat{B}|kk'} \ket{k}\bra{k'} \right) \\
+  =& \sum_{j,j',k,k'} \braket{j|\hat{A}|j'} \braket{k|\hat{B}|k'} \underbrace{\braket{j'|k}}_{\delta_{j',k}} \ket{j}\bra{k'} \\
+  =& \sum_{j,k'} \left(\sum_{j''} \braket{j|\hat{A}|j'} \braket{j'|\hat{B}|k'} \right) \ket{j}\bra{k'}
+\end{align*}
+$$
+
+Thus, the matrix elements of the product operator $\hat{A}\hat{B}$ are
+
+$$
+  \braket{j|\hat{A} \hat{B}|j'} = \sum_{j''} \braket{j|\hat{A}|j''}\braket{j''|\hat{B}|j'}
+$$
+
+which is precisely the rule for ordinary matrix multiplication.
+
+
+
+The Hermitian adjoint of $\mathbf{M}$ is
+
+$$
+\begin{align*}
+  \mathbf{M}^\dagger =& \sum_{j,j'} \braket{j|\hat{M}|j'}^* (\ket{j}\bra{j'})^\dagger \\
+  =& \sum_{j,j'} \braket{j|\hat{M}|j'}^* \ket{j'}\bra{j}
+\end{align*}
+$$
+
+from which we conclude that
+
+$$
+  \braket{j|\hat{M}^\dagger|j'} = \braket{j'|\hat{M}|j}^\dagger
 $$
 
 ### Rotation operators
@@ -652,16 +730,13 @@ $$
 ### Trace
 
 <MathBox title='Trace' boxType='definition' tag='definition-1'>
-Let $\set{\ket{e_j}}_{j=1}^{n\in\N}$ be an orthonormal basis in a finite-dimensional Hilbert space $\mathcal{H}$. The trace is defined as the map $\operatorname{tr}: \mathcal{L}(\mathcal{H}) \to\mathbb{F}$ given by
+Let $\set{\ket{e_j}}_{j=1}^{n\in\N}$ be an orthonormal basis in a finite-dimensional Hilbert space $\mathcal{H}$ with $\dim(\mathcal{H}) = n$. The trace is defined as the map $\operatorname{tr}: \mathcal{L}(\mathcal{H}) \to\mathbb{F}$ given by
 
 $$
-  \operatorname{tr}(\hat{A}) := \sum_{j=1}^n \braket{e_j |\hat{A}|e_j}
-$$
-
-In matrix representation relative to the basis $\set{\ket{e_j}}$, if $\mathbf{A}_{ij} := \braket{e_i |\hat{A}|e_j}$, then
-
-$$
-  \operatorname{tr}(\hat{A}) = \sum_{j=1}^n \mathbf{A}_{jj}
+\begin{equation*}
+  \operatorname{tr}(\hat{A}) := \sum_{j=1}^n \braket{e_j |\hat{A}|e_j} = \sum_{j=1}^n A_{jj}
+\tag{\label{equation-148}}
+\end{equation*}
 $$
 </MathBox>
 
@@ -669,28 +744,55 @@ Properties of the trace
 1. Linearity: $\operatorname{tr}(\hat{A} + \hat{B}) = \operatorname{tr}(\hat{A}) + \operatorname{tr}(\hat{B})$
 2. Commutatitivity: $\operatorname{tr}(\hat{A}\hat{B}) = \operatorname{tr}(\hat{B}\hat{A})$
 3. $\operatorname{tr}(\hat{A}\hat{B}) = 0, \;\forall \hat{A}\in\mathcal{L}(\mathcal{H}) \iff \hat{B} = 0$
-4. $\operatorname{tr}(\alpha \ket{b}{a}) = \alpha\braket{a|b}$
+4. $\operatorname{tr}(a \ket{\phi}{\psi}) = a \braket{\psi|\phi}$ for scalar $a\in\mathbb{F}$
+5. $\operatorname{tr}(\hat{A} \ket{phi}{\psi}) = \braket{\psi|\hat{A}|\phi}$
 
 <details>
 <summary>Proof</summary>
 
-**(4):** Let $\set{\ket{e_i}}_{i\in I}$ be an orthonormal basis of $\mathcal{H}$. By the definition of the trace (Definition $\ref{definition}), we obtain
+Let $\set{\ket{e_i}}_{i=1}^{\dim(\mathcal{H})}$ be an orthonormal basis of $\mathcal{H}$. 
+
+**(4):** By the definition of the trace $\eqref{equation-148}$, we obtain
 
 $$
 \begin{align*}
-  \operatorname{tr}(\alpha \ket{b}\bra{a}) =& \alpha \sum_j \braket{e_j | (\ket{b}\bra{a})|e_j} \\
-  =& \alpha \sum_j \braket{e_j |b} \braket{a|e_j} \\
-  =& \alpga \sum_j \braket{a|e_j}\braket{e_j |b} \\
-  =& \alpha \Braket{a | \left(\sum_j \bra{e_j} \ket{e_j}\right)| b \ket} = a\braket{a|b}
+  \operatorname{tr}(a \ket{\phi}\bra{\psi}) =& a \sum_j \braket{e_j | (\ket{\phi}\bra{\psi})|e_j} \\
+  =& a \sum_j \braket{e_j |\phi} \braket{\psi|e_j} \\
+  =& a \sum_j \braket{\psi|e_j}\braket{e_j |\phi} \\
+  =& a \Braket{\psi | \left(\sum_j \bra{e_j} \ket{e_j}\right)| \phi \ket} = a\braket{\psi|\phi}
 \end{align*}
 $$
 
-where we have used used the completeness relation
+where we have used the completeness relation
 
 $$
   \sum_j \bra{e_j} \ket{e_j} = \hat{I}
 $$
+
+**(5):** By the definition of the trace $\eqref{equation-148}$, we obtain
+
+$$
+\begin{align*}
+  \operatorname{tr}(\hat{A}\ket{\phi}\bra{\psi}) =& \sum_j \braket{e_j|(\hat{A}\ket{\phi}\bra{\psi})|e_j} \\
+  =& \sum_j = \braket{e_j|\hat{A}|\phi}\braket{\psi|e_j} \\
+  =& \sum_j = \braket{\psi|e_j}\braket{e_j |\hat{A}|\phi} \\
+  =& \Braket{\psi | \left(\sum_j \bra{e_j} \ket{e_j}\right) \hat{A}| \phi \ket} = \braket{\psi|\hat{A}|\phi}
+\end{align*}
+$$
+
 </details>
+
+In particular for the identity operator $\hat{I}$ with respect to an orthonormal basis $\set{\ket{e_j}}$ we have
+
+$$
+  \operatorname{tr}(\hat{I} \ket{e_k}\bra{e_j}) = \braket{e_j|\hat{I}|e_k} = \delta_{jk}
+$$
+
+From $\eqref{equation-147}$, we retrieve the completeness relation
+
+$$
+  \mathbf{I} = \sum_{j} \ket{e_j}\bra{e_j}
+$$
 
 ### Hermitian adjoint
 
@@ -1147,38 +1249,6 @@ $$
 \end{align*}
 $$
 </details>
-
-### Outer product
-
-<MathBox title='Outer product' boxType='definition'>
-Let $\mathcal{H}$ be a Hilbert space. The outer product of two vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$ is the operator $\ket{\psi}\bra{\phi} : \mathcal{H} \to\mathcal{H}$ given by
-
-$$
-  \ket{\chi} \mapsto \ket{\psi} \braket{\psi|\chi}
-$$
-
-which projects the component of $\ket{\chi}$ along $\ket{\phi}$ onto $\ket{\psi}$.
-</MathBox>
-
-The operator $\ket{\psi}\bra{\phi}: \mathcal{H} \to\mathcal{H}$ is linear in its action on kets, which follows from the linearity of the inner product in its second argument. For any scalars $a, b \in\mathbb{F}$ and vectors $\ket{\chi_1}, \ket{\chi_2} \in\mathcal{H}$
-
-$$
-\begin{align*}
-  \ket{\psi}\ket{\phi}(a\ket{\chi_1} + b\ket{\chi_2}) =& \ket{\psi}(a\braket{\phi|\chi_1} + a\braket{\phi|\chi_2}) \\
-  =& a\ket{\psi}\bra{\phi}(\ket{\chi_1}) + b\ket{\psi}\bra{\phi}(\ket{\chi_2})
-\end{align*}
-$$
-
-The map $\ket{\cdot}\bra{\cdot}: \mathcal{H}\times\mathcal{H} \to\mathcal{L}(\mathbf{H})$ is sesquilinear satisfying
-- **Linearity in the first argument:** For $a, b \in\mathbb{F}$ and $\ket{\psi_1}, \ket{\psi_2}, \ket{\phi}\in\mathcal{H}$
-$$
-  (a\ket{\psi_1} + b\ket{\psi_2})\bra{\phi} = a\ket{\psi_1}\bra{\phi} + b\ket{\psi_2}\bra{\phi}
-$$
-
-- **Conjugate-linearity in the second argument:** For $\ket{\psi}, \ket{\phi_1}, \ket{\phi_2} \in\mathcal{H}$
-$$
-  \ket{\psi}(a\bra{\phi_1} + b\bra{\phi_1}) = a^* \ket{\psi}\bra{\phi_1} + b^* \ket{\phi}\bra{\phi_2}
-$$
 
 ### Projection operator
 
