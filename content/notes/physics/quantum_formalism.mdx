@@ -42,7 +42,7 @@ $$
 ## Hilbert space
 
 <MathBox title='Hilbert space' boxType='definition'>
-A *Hilbert space* $\mathcal{H}$ is a complete vector space over a field $\mathbb{F}$ equipped with an inner product $\braket{\cdot|\cdot}:\mathcal{H}\times\mathbb{H}\to\mathbb{F}$. The vector space structure of $\mathcal{H}$ ensures that for all $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ and all scalars $a, b\in\mathbb{F}$, we have
+A *Hilbert space* $\mathcal{H}$ is a complete vector space over a field $\mathbb{F}$ equipped with an inner product $\braket{\cdot|\cdot}:\mathcal{H}\times\mathcal{H}\to\mathbb{F}$. The vector space structure of $\mathcal{H}$ ensures that for all $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ and all scalars $a, b\in\mathbb{F}$, we have
 
 $$
   a\ket{\psi} + b\ket{\varphi} \in\mathcal{H}
@@ -122,6 +122,88 @@ so $\ket{\psi}\sim\ket{\varphi}$.
 
 The equivalence class of $\ket{\psi}\in\mathcal{H}$ under $\sim$ is precisely the ray associated with $\ket{\psi}$, i.e. $[\psi]_\sim = S_\psi$. The projective Hilbert space is the quotient space $\mathcal{PH} = \mathcal{H}/\sim$, which represents the space of quantum states modulo global phase factors.
 
+<MathBox title='Properties of Hilbert spaces' boxType='proposition'>
+Let $\mathcal{H}$ be a separable Hilbert space. Then for any $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
+1. **Cauchy-Schwarz inequality:**
+
+$$
+\begin{equation*}
+  |\braket{\psi|\phi}| \leq \norm{\psi} \cdot \norm{\phi}
+\tag{\label{equation-152}}
+\end{equation*}
+$$
+
+2. **Triangular inequality:**
+
+$$
+  \norm{\ket{\psi} + \ket{\phi}} \leq \norm{\ket{\psi}} + \norm{\ket{\phi}}
+$$
+
+3. **Bessel's inequality:** For any orthonormal basis $\set{\ket{e_j}}$ and $\ket{\psi}\in\mathcal{H}$, define
+
+$$
+  \ket{\psi^{(n)}} = \sum_{j=1}^n \ket{e_j} \braket{e_j | \psi}
+$$
+
+Then $\norm{\ket{\psi^{(n)}}} \leq \norm{\ket{\psi}}.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** For non-zero and unorthogonal vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$, define
+
+$$
+  a = \alpha \frac{|\braket{\phi|\psi}|}{\braket{\phi|\psi}},\; \alpha \in\R
+$$
+
+Then
+
+$$
+\begin{align*}
+  0 \leq& \norm{\ket{\psi} + a\ket{\phi}}^2 \\
+  =& \norm{\ket{\psi}}^2 + 2\alpha |\braket{\phi|\psi}| + \alpha^2 \braket{\phi}
+\end{align*}
+$$
+
+minimizing over $\alpha$ gives $\eqref{equation-152}$.
+
+**(2):** We have
+
+$$
+  \norm{\ket{\psi} + \ket{\phi}}^2 = \norm{\ket{\psi}}^2 + 2\Re(\braket{\psi|\phi}) + \norm{\ket{\phi}}^2
+$$
+
+Applying **(1)** yields
+
+$$
+  \Re(\braket{\psi|\phi}) \leq |\braket{\psi|\phi}| \leq \norm{\ket{\psi}} \cdot \norm{\phi}^2
+$$
+
+implying that
+
+$$
+  \norm{\braket{\psi + \phi}}^2 \leq (\norm{\ket{\psi}} + \norm{\ket{\phi}})^2
+$$
+
+To shows **(3)**, we note that
+
+$$
+  \Braket{\ket{\psi} - \best{\psi} \braket{\psi - \psi^{(N)}}} = 0
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  \norm{\ket{\psi}}^2 =& \norm{\ket{\psi} - \ket{\psi^{(n)}} + \ket{\psi^{(n)}}}^2 \\
+  =& \norm{\ket{\psi} - \ket{\psi^{(n)}}}^2 + \norm{\ket{\psi^{(n)}}} \\
+  \geq& \norm{\ket{\psi^{(n)}}}
+\end{align*}
+$$
+
+</details>
+</MathBox>
+
 ## Basis
 
 <MathBox title='Linear independence, span and basis' boxType='definition'>
@@ -147,7 +229,7 @@ $$
   \mathcal{H} = \operatorname{span}\set{\ket{\varphi_j}}_{j\in I}
 $$
 
-A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this set are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ whose vectors satisfy
+A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this set are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ is orthonormal if
 
 $$
   \braket{e_j|e_k} = \delta_{jk} := \begin{cases}
@@ -156,7 +238,17 @@ $$
   \end{cases}
 $$
 
-is called an *orthonormal basis*. The Hilbert space $\mathcal{H}$ is separable if it has a countable basis.
+The Hilbert space $\mathcal{H}$ is separable if it admits a countable orthonormal basis. In this case, for any $\ket{\psi}\in\mathcal{H}$ there exists a sequence of coefficients $c_j = \braket{e_j | \psi}$ such that the partial sums of the Fourier series
+
+$$
+  \ket{\psi_N} := \sum_{j=1}^N c_j \ket{e_j}
+$$
+
+converge to $\ket{\psi}$ in the norm of $\mathcal{H}$, i.e.
+
+$$
+  \lim_{N\to\infty} \Norm{\ket{\psi} - \ket{\psi_N}} = 0
+$$
 </MathBox>
 
 Let $\mathcal{H}$ be a Hilbert space with orthonormal basis $\set{\ket{e_j}}$. For $\ket{\psi}, \ket{\varphi} \in\mathcal{H}$ with $\psi_j = \braket{e_j|\psi}$ and $\varphi_j = \braket{e_j|\varphi}$, then
@@ -197,7 +289,6 @@ $$
 $$
   \norm{\psi}^2 = \braket{\psi|\psi} = \sum_j \braket{e_j|\psi}^* \braket{e_j|\psi} = \sum_j |\braket{e_j|\psi}|^2
 $$
-</details>
 
 **(4):** For $\varphi\in\mathcal{H}_{\psi^\perp}$, we have
 
@@ -214,6 +305,7 @@ $$
   =& \norm{\varphi}^2 + \norm{\psi}^2
 \end{align*}
 $$
+</details>
 
 ### Pauli matrices
 
@@ -1533,6 +1625,213 @@ $$
 $$
 
 ## Spectral theory
+
+A self-adjoint operator $\hat{A}$ on a Hilbert space $\mathcal{H}$ can be heuristically expanded as
+
+$$
+\begin{align*}
+  \hat{A} = \int_{-\infty}^\infty \lambda \delta(\lambda - \hat{A}) \;\d\lambda
+\tag{\label{equation-153}}
+\end{align*}
+$$
+
+where $\delta(\lambda - \hat{A})$ represents the spectral density of $\hat{A}$. 
+
+<details>
+<summary>Proof</summary>
+
+To make this argument rigorous we have to replace $\delta(\lambda - \hat{A})$, which is not a genuine operator-valued function, with a projection-valued measure $E: \mathcal{B}(\R) \to \mathcal{B}(\mathcal{H})$, where $\mathcal{B}(\R)$ is the Borel $\sigma$-algebra on $\R$ and $\mathcal{B}(\mathcal{H})$ is the set of bounded operators on $\mathcal{H}$. In terms of $E$, the heuristic $\delta(\lambda - \hat{A})$ is interpreted as the measure derivative
+
+$$
+  E(\d\lambda) := \delta(\lambda - \hat{A}) \;\d\lambda
+$$
+</details>
+
+To get the spectral decomposition of $\hat{A}$, define the operator
+
+$$
+\begin{align*}
+  \hat{P}_A (\lambda) =& \Theta(\lambda - \hat{A}) \\
+  =& \int_{-\infty}^\lambda \delta(\lambda' - \hat{A}) \;\d\lambda'
+\end{align*}
+$$
+
+where $\Theta$ is the step function
+
+$$
+  \Theta(\lambda) = \begin{cases}
+    1,\quad& \lambda > 0 \\
+    0,\quad& \lambda \leq 0
+  \end{cases}
+$$
+
+Then formally $\d\hat{P}_A (\lambda) = \delta(\lambda - \hat{A}) \;\d\lambda$, such that $\eqref{equation-153}$ can be rewritten
+
+$$
+\begin{equation*}
+  \hat{A} = \int_{-\infty}^\infty \lambda \;\d\hat{P}_A (\lambda)
+\tag{\label{equation-156}}
+\end{equation*}
+$$
+
+which is the spectral decomposition of $\hat{A}$. The collection $\set{\hat{P}_A (\lambda)}_{\lambda\in\R}$ are projection operators with properties
+1. **Boundedness:** Since a step-function is bounded by $1$, it follows that $\norm{\hat{P}_A (\lambda)} \leq \norm{\ket{\psi}}$ for all $\ket{\psi}\in\mathcal{H}$. In particular $\hat{P}_A (\lambda)$ is self-adjoint.
+2. **Limits at infinity:**
+$$
+\begin{align*}
+  \hat{P}_A (-\infty) =& \lim_{\lambda\to -\infty} \hat{P}_A (\lambda) = \mathbf{0}
+  \hat{P}_A (\infty) =& \lim_{\lambda\to \infty} \hat{P}_A (\lambda) = \hat{I} \tag{\label{equation-159}}
+$$
+
+4. **Monotonicity:** If $\lambda_1 < \lambda_2$, then $\hat{P}_A (\lambda_1) \leq \hat{P}_A (\lambda_2)$, i.e.
+$$
+  \braket{\psi|\hat{P}_A (\lambda_1)|\psi} \leq \braket{\psi|\hat{P}_A (\lambda_2)|\psi}
+$$
+
+5. **Projection property:**
+$$
+  \hat{P}_A (\lambda_1) \hat{P}_A (\lambda_2) = \hat{P}_A (\min\set{\lambda_1, \lambda_2})
+$$
+
+The limit $\eqref{equation-159}$ implies the resolution of the identity operator
+
+$$
+\begin{equation*}
+  \hat{I} = \int_{-\infty}^\infty \d\hat{P}_A (\lambda)
+\tag{\label{equation-154}}
+\end{equation*}
+$$
+
+which rigorously encodes completenes of the spectral projectors. From $\eqref{equation-154}$, the norm of any $\ket{\psi}\in\mathcal{H}$ can be written as
+$$
+\begin{align*}
+  \norm{\ket{\psi}}^2 =& \braket{\psi|\psi} = \int_{-\infty}^\infty \d\braket{\psi|\hat{P}_A (\lambda)|\psi} \\
+  =& \int_{-\infty}^\infty \d\norm{\hat{P}_A (\lambda) \psi}^2 \tag{\label{equation-157}}
+\end{align*}
+$$
+
+To study the spectrum of $\hat{A}$, consider the projection corresponding to a small interval around $\lambda_0$
+
+$$
+\begin{align*}
+  \hat{E}_{\lambda_0, \epsilon} :=& [\hat{P}_A (\lambda_0 + \epsilon) - \hat{P}_A (\lambda_0 - \epsilon)] \\
+  =& \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} \d\hat{P}_A (\lambda) \tag{\label{equation-155}}
+\end{align*}
+$$
+
+If $\lambda_0$ is an isolated point of the spectrum $\sigma(\hat{A})$, there exists $\epsilon > 0$ such that $\hat{A}$ has no spectrum in $(\lambda_0 - \epsilon, \lambda_0 + \epsilon)$ except $\lambda_0$ itself. Then $\hat{E}_{\lambda_0, \epsilon}$ projects onto the nonempty subspace
+
+$$
+  \mathcal{H}_{\lambda_0} = \hat{E}_{\lambda_0, \epsilon} \mathcal{H}
+$$
+
+In the limit $\epsilon\to 0$, then $\mathcal{H}_{\lambda_0}$ contains at least one vector, say, $\ket{\psi}$, and
+
+$$
+  [\hat{P}_A (\lambda_0 + 0) - \hat{P}_A (\lambda_0 - 0)] \ket{\psi} = \ket{\psi}
+$$
+
+Accordingly, from $\eqref{equation-156}$, $\eqref{equation-154}$ and $\eqref{equation-157}$
+
+$$
+\begin{align*}
+  \norm{(\hat{A} - \lambda_0)\psi}^2 =& \int_{-\infty}^\infty (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi}^2 \\
+  =& \int_{\lambda_0 - 0}^{\lambda_0 + 0} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi}^2 = 0
+\end{align*}
+$$
+
+where we have also used $\eqref{equation-155}$ and $\eqref{equation-157}$. Thus, $(\hat{A} - \lambda_0)\ket{\psi}$ is the zero vector, i.e.
+
+$$
+  \hat{A}\ket{\psi} = \lambda_0 \ket{\psi}
+$$
+
+which is the familiar discrete eigenvalue equation. Thus, a discrete eigenvalue corresponds precisely to a discontinuity of the spectral projectors $\hat{P}_A (\lambda)$ at $\lambda_0$.
+
+If $\lambda_0$ is not an isolated eigenvalue of $\hat{A}$, for which every neighbourhood of $\lambda_0$ intersects the spectrum $\sigma(\hat{A})$ in more than one point, then 
+
+$$
+  \lim_{\epsilon\to 0} \hat{E}_{\lambda_0, \epsilon} = \mathbf{0}
+$$
+
+For such a point the eigenspace $\hat{E}_{\lambda_0, 0} \mathcal{H}$ is empty, meaning that there are no proper eigenvectors corresponding to the continuous spectrum of $\hat{A}$. However, we can construct approximate eigenvectors that are localized in small spectral intervals around $\lambda_0$. For $\epsilon > 0$, choose a normalized vector $\ket{\psi(\epsilon)} \in \operatorname{ran}(\hat{E}_{\lambda_0, \epsilon})$ with $\norm{\ket{\psi(\epsilon)}} = 1$, such that
+
+$$
+  \hat{E}_{\lambda_0, \epsilon} \ket{\psi(\epsilon)} = \ket{\psi(\epsilon)}
+$$
+
+Thus
+
+$$
+  \norm{(\hat{A} - \lambda_0) \ket{\psi(\epsilon)}}^2 = \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \ket{\psi(\epsilon)}}^2
+$$
+
+where the right-hand side is bounded above by
+
+$$
+  \epsilon^2 \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} \d\norm{\hat{P}_A (\lambda) \ket{\psi(\epsilon)}}^2 = \epsilon^2 \int_{-\infty}^\infty \d\norm{\hat{P}_A (\lambda) \ket{\psi(\epsilon)}}^2 = \epsilon^2
+$$
+
+which follows from the normalizability of $\ket{\psi(\epsilon)}$ for $\epsilon > 0$. This means that we can find a vector $\ket{\psi(\epsilon)} \in\mathcal{H}$ such that
+
+$$
+\begin{equation*}
+  \norm{(\hat{A} - \lambda_0) \ket{\psi(\epsilon)}} \leq \epsilon > 0
+\tag{\label{equation-158}}
+\end{equation*}
+$$
+
+This means that $\set{\ket{\psi(\epsilon)}}$ forms a sequence of approximate eigenvectors satisfying
+
+$$
+  \lim_{\epsilon\to 0} \norm{(\hat{A} - \lambda_0) \ket{\psi(\epsilon)}} = 0
+$$
+
+but with no actual eigenvector limit in $\mathcal{H}$.
+
+From this analysis the spectrum of a self-adjoint operator $\hat{A}$ can be defined as
+
+$$
+  \sigma(\hat{A}) = \set{\lambda_0 \in \R : \hat{E}_{\lambda_0, \epsilon} \neq \mathbf{0},\; \forall \epsilon > 0}
+$$
+
+Equivalently
+
+$$
+  \inf_{\ket{\psi}\in\mathcal{D}(\hat{A}),\;\norm{\ket{\psi}}=1} \norm{(\hat{A} - \lambda_0 \hat{I}) \ket{\psi}} = 0
+$$
+
+that is, for every neighbourhood of $\lambda_0$ we can find a normalized vector whose image under $(\hat{A} - \lambda)$ has arbitrarily small norm.
+
+For $\lambda \in\R \setminus \sigma(\hat{A})$, the operator $(\hat{A} - \lambda_0 \hat{I})$ is invertible and its inverse
+
+$$
+  \hat{R}(\lambda; \hat{A}) := (\hat{A} - \lambda\hat{I})^{-1}
+$$
+
+called the resolvent, is bounded on all of $\mathcal{H}$. For $\epsilon > 0$, an approximate eigenvector can be written
+
+$$
+  \ket{\phi(\epsilon)} = (\hat{A} - \lambda_0 \hat{I}) \ket{\psi(\epsilon)}
+$$
+
+Using the normalizability for $\ket{\psi(\epsilon)}$, we have from $\eqref{equation-158}$
+
+$$
+  \norm{\ket{\phi(\epsilon)}} \leq \epsilon = \epsilon \norm{\hat{R}(\lambda; \hat{A}) \ket{\phi(\epsilon)}}
+$$
+
+which leads to
+
+$$
+  \frac{\norm{\hat{R}(\lambda; \hat{A}) \ket{\phi(\epsilon)}}}{\norm{\ket{\phi(\epsilon)}}} \geq \frac{1}{\epsilon}
+$$
+
+This implies that $\hat{R}(\lambda; \hat{A})$ is unbounded a spectral points $\lambda_0 \in\sigma(\hat{A})$, i.e.
+
+$$
+  \norm{\hat{R}(\lambda; \hat{A})} \xrightarrow{\lambda\to\lambda_0} \infty
+$$
 
 ### Completeness relation
 
