@@ -1,6 +1,19 @@
 import * as fs from "node:fs"
 
-function findLatexIssues(mdxFile: string) {
+interface LatexCommand {
+  command: string
+  line: number
+  column: number
+}
+
+interface LatexIssue {
+  message: string
+  line?: number
+  column?: number
+  commands?: LatexCommand[]
+}
+
+function findLatexIssues(mdxFile: string): LatexIssue {
   const mdxContent = fs.readFileSync(mdxFile, "utf8")
   const lines = mdxContent.split("\n")
 

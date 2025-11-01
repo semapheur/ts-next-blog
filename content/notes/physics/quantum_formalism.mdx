@@ -794,6 +794,27 @@ $$
   \mathbf{I} = \sum_{j} \ket{e_j}\bra{e_j}
 $$
 
+If $\set{\ket{j}}$ is orthonormal basis of a Hilber space $\mathcal{H}$, then by the completeness relation, a vector $\ket{\psi} \in\mathcal{H}$ can be expanded as
+
+$$
+  \ket{\psi} = \sum_j \ket{j}\braket{j|\psi}
+$$
+
+The coordinate representation of $\ket{\psi}$ in this basis defines a wavefunction $\psi(j) := \braket{j|\psi}$. Taking the Hermitian adjoint yields
+
+$$
+  \ket{\psi}^\dagger = \sum_j \psi^* (j) \bra{j} =: \bra{\psi} \in\mathcal{H}^*
+$$
+
+For any $\ket{\psi}, \ket{\phi} \in\mathcal{H}$, the trace of the outer product $\ket{\psi}\bra{\phi}$ defines an inner product
+
+$$
+\begin{align*}
+  \operatorname{tr}(\ket{\psi}\bra{\psi}) =& \sum_j \braket{j|\psi} \braket{\phi|j} \\
+  =& \sum_{j, j'} \phi^* (j) \psi(j) = \braket{\phi|\psi}
+\end{align*}
+$$
+
 ### Hermitian adjoint
 
 <MathBox title='Hermitian adjoint' boxType='definition'>
@@ -1986,34 +2007,30 @@ $$
 ### Partial trace
 
 <MathBox title='Partial trace' boxType='definition'>
-Let $\mathcal{H}^A$ and $\mathcal{H}^B$ be two finite-dimensional Hilbert spaces. The *partial trace* $\operatorname{tr}_B$ over $\mathcal{H}_B$ is defined as the map
+Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces. The *partial trace* $\operatorname{tr}_B$ over $\mathcal{H}_B$ is defined as the linear map
 
 $$
-\begin{align*}
-  \operatorname{tr}_B : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_A) \\
-  \hat{M} \mapsto& \operatorname{tr}_B (\hat{M})
-\end{align*}
+  \operatorname{tr}_B : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_A)
 $$
 
-where $\operatorname{tr}_B (\hat{M}) \in\mathcal{H}_A$ is the unique operator that satisfies
+which for each $\hat{M} \in \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ is uniquely characterized by
 
 $$
 \begin{equation*}
-  \operatorname{tr}\left(\hat{M}_A \operatorname{tr}_B (\hat{M}) \right) = \operatorname{tr}\left((\hat{M}_A \otimes \hat{I}_B)\hat{M}\right),\; \forall
+  \operatorname{tr}\left(\hat{M}_A \operatorname{tr}_B (\hat{M}) \right) = \operatorname{tr}\left((\hat{M}_A \otimes \hat{I}_B)\hat{M}\right),\; \forall \hat{M}_A \in \mathcal{L}(\mathcal{H}_A)
 \tag{\label{equation-145}}
 \end{equation*}
 $$
 
-Similarly, the partial trace $\operatorname{tr}_A$ over $\mathcal{H}_B$ is defined as
+In other words, $\operatorname{tr}_B (\hat{M}) \in \mathcal{L}(\mathcal{H}_A)$ is the unique operator that reproduces the trace pairings between operators on $\mathcal{H}_A$ and the tensor product space $\mathcal{H}_A \otimes \mathcal{H}_B$.
+
+Similarly, the partial trace $\operatorname{tr}_A$ over $\mathcal{H}_A$ is the linear map
 
 $$
-\begin{align*}
   \operatorname{tr}_A : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_B) \\
-  \hat{M} \mapsto& \operatorname{tr}_A (\hat{M}) 
-\end{align*}
 $$
 
-where $\operatorname{tr}_A (\hat{M}) \in\mathcal{H}_B$ is the unique operator that satisfies
+uniquely characterized for each $\hat{M} \in \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ by
 
 $$
 \begin{equation*}
@@ -2280,7 +2297,7 @@ where $\hat{H}$ is the Hamiltonian of the quantum system.
       \hat{\rho}(t) = \hat{U}(t, t_0) \hat{\rho}(t_0) \hat{U}^\dagger(t, t_0)
     $$
 
-6. **Description of composite systems:** The Hilbert space of a composite system that consists of the subsystems $\mathcal{H}_A$ and $\mathcal{H}_B$ is the tensor product $\mathcal{H}_A \otimes \mathcal{H}_B$.
+6. **Description of composite systems:** The Hilbert space of a composite system that consists of the subsystems $\mathcal{H}_{A_i}$ for $i\in I\subseteq\N$ is the tensor product $\bigotimes_{i\in I} \mathcal{H}_{A_i}$.
 
 ### Time evolution pictures
 
@@ -2669,7 +2686,7 @@ $$
   \sum_j \Pr_\psi (q_j) =& \sum_j \norm{\hat{P}_{q_j} \ket{\psi}}^2 \\
   =& \sum_j \sum_{\alpha=1}^{d_j} |\braket{q_{j,\alpha}|\psi}|^2 \\
   =& \norm{\psi} = 1
-\end{aligb*}
+\end{align*}
 $$
 
 Thus, the normalization condition of quantum states ensures that the total probability sums to $1$, validating that $\Pr_\psi$ is a probability measure over the spectrum $\sigma(\hat{Q})$.
@@ -4400,7 +4417,7 @@ $$
 \end{align*}
 $$
 
-Hence, $0 \leq \hat{\rho^2} \leq \rho$.
+Hence, $0 \leq \hat{\rho}^2 \leq \rho$.
 
 **(3):** From **(2)** it follows that
 
@@ -4686,7 +4703,7 @@ Thus, $\frac{\hat{P}_\lambda \hat{\rho}_\psi \hat{P}_\lambda}{\operatorname{tr}(
 
 **Time evolution**
 
-Let $\hat{\rho} (t_0) = \rho_{\psi(t_0)} = \ket{\psi(t_0)}\bra{\psi(t_0)}$ be the initial state and $\hat{\rho}(t)$ be the state at time $t$. Then
+Let $\hat{\rho} (t_0) = \rho_{\psi(t_0)} = \ket{\psi(t_0)}\bra{\psi(t_0)}$ be the initial state and $\hat{\rho}(t)$ be the state at time $t$. If the system evolves unitarily under a propagator $\hat{U} (t, t_0)$, the time evolution of $\hat{\rho}$ is
 
 $$
 \begin{align*}
@@ -4896,13 +4913,13 @@ $$
 then for any observable $Q$, the expectation value is
 
 $$
-  \braket{Q}_\psi = \braket{Q}_\rho 0 \sum_{j,k\in I:j\neq k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k}
+  \braket{Q}_\psi = \braket{Q}_\rho + \sum_{j,k\in I:j\neq k} \sqrt{p_j p_k} \braket{\psi_j|\hat{Q}|\psi_k}
 $$
 
 <details>
 <summary>Proof</summary>
 
-The expectation value of $Q$ in terms of $\hat{rho}$ is
+The expectation value of $Q$ in terms of $\hat{\rho}$ is
 
 $$
 \begin{align*}
@@ -4966,7 +4983,7 @@ where $\hat{U}_{H_0, t}$ is the evolution operator in the interaction picture co
 
 ## Composite systems
 
-The quantum state space of composite system formed of $n\in\N_+$ sub-system $\mathcal{H}_{A_j}$ for $j\in\set{1,\dots,n}$ is given by the Hilbert tensor product
+The quantum state space of composite system formed of $n\in\N_+$ sub-systems $\mathcal{H}_{A_j}$ for $j\in\set{1,\dots,n}$ is given by the Hilbert tensor product
 
 $$
   \bigotimes_{j=1}^n \mathcal{H}_{A_j}
@@ -4986,7 +5003,7 @@ For a bipartite quantum system $\mathcal{H}_A \otimes \mathcal{H}_B$, it is comm
 
 ### Pure states of bipartite systems
 
-Consider a bipartite system $\mathcal{H}_A \otimes \mathcal{H}_B$ with a density operator $\hat{\rho}\in\mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B)$ describing its state. Measurement of an observable on subsystem $A$, represented by the operator $\hat{M}_A$, corresponds to measuring the composite system with the operator $\hat{M}_A \otimes \hat{I}_B$. Similarly, measurements on subsystem $B$ are represented by operators of the form $\hat{1}^A \otimes \hat{M}_B$. 
+Consider a bipartite system $\mathcal{H}_A \otimes \mathcal{H}_B$ with a density operator $\hat{\rho}\in\mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B)$ describing its state. Measurement of an observable on subsystem $A$, represented by the operator $\hat{M}_A$, corresponds to measuring the composite system with the operator $\hat{M}_A \otimes \hat{I}_B$. Similarly, measurements on subsystem $B$ are represented by operators of the form $\hat{I}_A \otimes \hat{M}_B$. 
 
 For a pure state of the composite system
 
@@ -4994,14 +5011,14 @@ $$
   \ket{\Psi} = \sum_{a,b} \Psi_{ab} \ket{e_a} \otimes \ket{f_b} \in\mathcal{H}_A \otimes \mathcal{H}_B
 $$
 
-where $\set{\ket{e_a}}$ and $\set{\ket{f_b}}$ are orthonormal bases of $\mathcal{H}_A$ and $\mathcal{H}_B$, respectively, the expectation value of the observable $M^A$ on subsystem $A$ is given by
+where $\set{\ket{e_a}}$ and $\set{\ket{f_b}}$ are orthonormal bases of $\mathcal{H}_A$ and $\mathcal{H}_B$, respectively, the expectation value of the observable $M_A$ on subsystem $A$ is given by
 
 $$
 \begin{align*}
-  \braket{\mathbf{M}_A \otimes \hat{I}_B}_\Psi =& \braket{\Psi|\hat{M}_A \otimes \hat{I}|\Psi} \\
+  \braket{\hat{M}_A \otimes \hat{I}_B}_\Psi =& \braket{\Psi|\hat{M}_A \otimes \hat{I}|\Psi} \\
   =& \sum_{a_1, b_1} \sum_{a_2, b_2} \Psi_{a_2 b_2}^* \Psi_{a_1 b_1} \braket{e_{a_2} \otimes f_{b_2}|\hat{M}_A|e_{a_1} \otimes f_{b_1}} \\
-  =& \sum_{a_1, b_1} \sum_{a_2, b_2} \Psi_{a_2 b_2}^* \Psi_{a_1 b_1} \braket{e_{a_2}|\hat{M}_A|e_{a_1}} \underbrace{\braket{f_{b_1}|f_{b_2}}}_{=\delta_{b_1 b_2}} \\
-  =& \sum_{a_2, a_1, b} \Psi_{a_2 b}^* \Psi_{a_1 b} \bra{e_{a_2}|\hat{M}_A|e_{a_1}}
+  =& \sum_{a_1, b_1} \sum_{a_2, b_2} \Psi_{a_2 b_2}^* \Psi_{a_1 b_1} \braket{e_{a_2}|\hat{M}_A|e_{a_1}} \underbrace{\braket{f_{b_1}|f_{b_2}}}_{=\delta_{b_1, b_2}} \\
+  =& \sum_{a_2, a_1, b} \Psi_{a_2 b}^* \Psi_{a_1 b} \braket{e_{a_2}|\hat{M}_A|e_{a_1}}
 \end{align*}
 $$
 
@@ -5017,7 +5034,7 @@ $$
 \begin{align*}
   \braket{\hat{M}_A}_{\rho_A (\Psi)} =& \operatorname{tr}(\hat{\rho}_A (\Psi) \hat{M}_A) \\
   =& \sum_a \braket{e_a|\hat{\rho_A} (\Psi) \hat{M}_A e_a} \\
-  =& \sum_{a, a_1, a_2, b} \Psi_{a_2 b}^* \Psi_{a_1 b} \braket{e_a|e_{a_1}} \braket{e_{a_2}|\hat{M}_A|e_a} \\
+  =& \sum_{a, a_1, a_2, b} \Psi_{a_2 b}^* \Psi_{a_1 b} \underbrace{\braket{e_a|e_{a_1}}}_{\delta_{a,a_1}} \braket{e_{a_2}|\hat{M}_A|e_a} \\
   =& \sum_{a_1, a_2, b} \Psi_{a_2 b}^* \Psi_{a_1 b} \braket{e_{a_2}|\hat{M}_A|e_{a_1}} \\
   =& \braket{\hat{M}_A \otimes \hat{I}}_\Psi
 \end{align*}
