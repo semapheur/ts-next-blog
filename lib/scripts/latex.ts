@@ -1,4 +1,5 @@
 import * as fs from "node:fs"
+import path from "node:path"
 
 interface LatexCommand {
   command: string
@@ -168,6 +169,29 @@ function findLatexIssues(mdxFile: string): LatexIssue {
   return { message: "No issues found" }
 }
 
+interface NoteLatexIssues {
+  [slug: string]: LatexIssue
+}
+
+async function checkNotesForIssues() {
+  const result = {} as NoteLatexIssues
+
+  console.log("Checking notes for LaTeX issues...")
+  const notesDir = path.join(process.cwd(), "content", "notes")
+  for (const subject of fs.readdirSync(notesDir)) {
+    const subjectDir = path.join(notesDir, subject)
+
+    for (const fileName of fs.readdirSync(subjectDir)) {
+      const latexIssues = findLatexIssues(path.join(subjectDir, fileName))
+      if (latexIssues.message !== "No issues found") {
+        const slug = `${subject}/${fileName.replace(".mdx", "")}`
+        result[slug] = latexIssues
+      }
+    }
+  }
+  return result
+}
+
 function relabelLatexEquations(mdxFile: string) {
   let mdxContent = fs.readFileSync(mdxFile, "utf8")
 
@@ -206,6 +230,14 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e)
   })
 }
-
-console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
+//console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
+;(async () => {
+  const issues = await checkNotesForIssues()
+  if (Object.keys(issues).length === 0) {
+    console.log("No LaTeX issues found in any notes.")
+  } else {
+    console.log("LaTeX issues found in the following notes:")
+    console.log(JSON.stringify(issues, null, 2))
+  }
+})()

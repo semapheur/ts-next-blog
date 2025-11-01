@@ -1,6 +1,6 @@
-import { XorFilter } from "bloom-filters"
 import * as fs from "node:fs"
 import path from "node:path"
+import { XorFilter } from "bloom-filters"
 import matter from "gray-matter"
 
 const stopwords = [
