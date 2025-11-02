@@ -230,14 +230,14 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e)
   })
 }
-//console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
+console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
-;(async () => {
-  const issues = await checkNotesForIssues()
-  if (Object.keys(issues).length === 0) {
-    console.log("No LaTeX issues found in any notes.")
-  } else {
-    console.log("LaTeX issues found in the following notes:")
-    console.log(JSON.stringify(issues, null, 2))
-  }
-})()
+//;(async () => {
+//  const issues = await checkNotesForIssues()
+//  if (Object.keys(issues).length === 0) {
+//    console.log("No LaTeX issues found in any notes.")
+//  } else {
+//    console.log("LaTeX issues found in the following notes:")
+//    console.log(JSON.stringify(issues, null, 2))
+//  }
+//})()
