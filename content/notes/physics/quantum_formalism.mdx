@@ -1171,50 +1171,58 @@ $$
 </MathBox>
 
 <MathBox title="Wigner's theorem" boxType="theorem">
-Let $\mathcal{H}$ be a Hilbert space and let $\hat{T}:\mathcal{PH} \to\mathcal{PH}$ be a bijective ray map. Then there exists a surjective isometry $\hat{U}: \mathcal{H}\to\mathcal{H}$ with exactly one of the following two properties
-- $\hat{U}$ is unitary, i.e. linear and satisfying $\braket{\hat{U}\psi|\hat{U}\phi} = \braket{\psi|\phi}$ for all $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
-- $\hat{U}$ anti-unitary, i.e. anti-linear and satisfying $\braket{\hat{U}\psi|\hat{U}\phi} = \braket{\psi|\phi}^*$ for all $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
-
-Here $\hat{U}$ implements $\hat{T}$ on rays in the sense that for every nonzero vector $\ket{\phi}\in\mathcal{H}$
-
+Let $\mathcal{H}$ be a Hilbert space and let $\hat{T}:\mathcal{PH} \to\mathcal{PH}$ be a bijective ray map. Then there exists a surjective isometry $\hat{U}: \mathcal{H}\to\mathcal{H}$ satisfying one of the following two mutually exclusive conditions
+- **Unitary case:** $\hat{U}$ is linear satisfying for all $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
 $$
-  \hat{T}([\psi]) = [\hat{U}\psi]
+  \braket{\hat{U}\psi|\hat{U}\phi} = \braket{\psi|\phi}
 $$
-
-Moreover $\hat{U}$ is unique up to a global phase: if $\hat{U}'$ is another such operator then $\hat{U}' = e^{i\theta} \hat{U}$ for some real $\theta\in\R$
-
-Under a symmetry transformation, there exists a unitary, or else, an anti-unitary, operator $\hat{U}$ such that for $\ket{\psi'} = \hat{U}\ket{\psi}$ and $\ket{\phi'} = \hat{U}\ket{\phi}$ we have
-
+- **Anti-unitary case:** $\hat{U}$ is conjugate-linear satisfying for all $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
 $$
-  (\alpha\ket{\psi} + \beta\let{\phi})' = \hat{U} (\alpha\ket{\psi} + \beta\ket{\phi})
+  \braket{\hat{U}\psi|\hat{U}\phi} = \braket{\psi|\phi}^* 
 $$
 
-as applied to rays.
+In both cases
+
+$$
+  \hat{T}([\psi]) = [\hat{U}\psi],\; \forall [\psi] \in\mathcal{PH}
+$$
+
+Moreover $\hat{U}$ is unique up to a global phase: if $\hat{U}'$ also implements $\hat{T}$ then $\hat{U}' = e^{i\theta} \hat{U}$ for some $\theta\in\R$.
 
 <details>
 <summary>Proof</summary>
 
-Let $\set{\ket{e_j}}_{j=1}^{n\in\N_+}$ be an orthonormal basis in $\mathcal{H}$. Any vector $\ket{\psi}\in\mathcal{H}$ can be written as
+**Symmetry transformation of orthonormal bases**
+
+Let $\set{\ket{e_j}}_{j=1}^{n}$ be an orthonormal basis in $\mathcal{H}$ with $\dim(\mathcal{H}) = n$. For each basis ray $[\ket{e_j}]$, choose a normalized representative $\ket{e'_j} \in\hat{T}([\ket{e_j}])$. Then, by definition of $\hat{T}$
 
 $$
-  \ket{\psi} = \sum_j \alpha_j \ket{e_j}
+  |\braket{e'_j |e'_k}| = |\braket{e_j |e_k}| = \delta_{jk}
 $$
 
-By definition, under a symmetry transformation
+meaning that each pair $\ket{e'_j}, \ket{e'_k}$ is either orthogonal or equal to a phase factor. Without loss of generality, we can fix the phases of $\ket{e'_j}$ such that
 
 $$
-  |\braket{e'_j |e'_k}| = |\braket{e_j |e_k}| = \delta_{jk} \implies \braket{e'_j | e'_k} = \delta_{jk}
+  \braket{e'_j |e'_k} = \delta_{jk}
 $$
 
-Also,
+so that $\set{\ket{e'_j}}$ forms an orthonormal basis of $\mathcal{H}$.
+
+**Symmetry transformation of arbitrary vectors**
+
+In terms of the orthonormal basis $\set{\ket{e_j}}$, every vector $\ket{\psi}\in\mathcal{H}$ admits a unique expansion
 
 $$
-\begin{align*}
+  \ket{\psi} = \sum_j \alpha_j \ket{e_j},\; \alpha_j = \braket{e_j |\psi}
+$$
+
+Let $\ket{\psi'}$ be a normalized representative of the ray $\hat{T}([\ket{\psi}])$. By definition of $\hat{T}$, we have
+
+$$
   |\braket{e'_j | \psi'}| = |\braket{e_j |\psi}| = |\alpha_j|
-\end{align*}
 $$
 
-Thus, let $a_j = \braket{e'_j | \psi'}$ such that 
+Define $a_j = \braket{e'_j | \psi'}$ so that
 
 $$
 \begin{equation*}
@@ -1229,7 +1237,7 @@ $$
   \ket{\phi} = \ket{\psi'} - \sum_j a_j \ket{e'_j}
 $$
 
-Then
+Taking the square norm yields
 
 $$
 \begin{align*}
@@ -1238,7 +1246,7 @@ $$
 \end{align*}
 $$
 
-That is, $\ket{\phi}$ is the zero vector, and we may write
+that is, $\ket{\phi}$ is the zero vector, and we may write
 
 $$
 \begin{equation*}
@@ -1246,8 +1254,6 @@ $$
 \tag{\label{equation-192}}
 \end{equation*}
 $$
-
-Thus, $\set{\ket{e'_j}}$ provide an orthonormal basis for expanding the transformed state $\ket{\psi'}$.
 
 Consider three vectors ($j \neq k$, $j \neq 1$, $k \neq 1$)
 
