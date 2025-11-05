@@ -149,7 +149,9 @@ $$
   \end{cases}
 $$
 
-# Feedforward neural network (FFNN)
+# Artifical neural network (ANN)
+
+## Feedforward neural network (FFNN)
 
 <MathBox title='Parametric affine function' boxType='definition'>
 Let $\boldsymbol{\theta} \in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. For $m, n\in\N_+$ and $s\in\N_0$ satisfying $p \geq s + mn + m$, we define an affine function $A_{m,n}^{\boldsymbol{\theta}, s} :\R^n \to \R^m$ associated with parameters $\boldsymbol{\theta}$, starting from index $s$, as
@@ -439,7 +441,7 @@ That is, the input to $v_{t+1,j}$ is a weighted sum of the outpus of the neurons
 
 We refer to $T$ as the number of layers in the network (excluding $V_0$), or alternatively the *debth* of the network. The size of the network is denoted $|V|$ and the width of the netweek is $\max_{t\in T} |V|_t$.
 
-## Approximation
+### Approximation
 
 <MathBox title='Universal approximation theorem' boxType='theorem' tag='theorem-1'>
 Let $d\in \N$, let $K \subseteq \R^d$ be compact, and let $\sigma \in L_\text{loc}^\infty (\R)$ be a locally bounded activation function such that the closure of the points of discontinuity of $\sigma$ has Lebesgue measure zero (so in particular $\sigma$ is measurable). Further, let
@@ -553,7 +555,7 @@ where $K\subset\R$ is compact.
 
 Theorem $\ref{theorem-2}$ shows that two-layer neural networks with smooth, non-polynomial activations achieve the same optimal approximation rates $O(n^{-k/d})$ for $W^{k,p}$-smooth functions on $(0,1)^d$ as classical methods such as spline bases or piecewise polynomial approximation. In general, many approximation schemes can be emulated by neural networks without loss of convergence rate.
 
-## Learning neural networks
+### Learning neural networks
 
 A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
 
@@ -613,7 +615,7 @@ Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mat
 </details>
 </MathBox>
 
-## Sample complexity
+### Sample complexity
 
 <MathBox title='' boxType='lemma' tag='lemma-1'>
 Let $a > 0$. Then
@@ -705,13 +707,13 @@ The claim follows from Lemma $\ref{lemma-2}$.
 
 Let $\sigma$ be a sigmoid activation function. The VC dimension of $\mathcal{H}_{V,E,\sigma}$ is lower bounded by $\Omega(|E|^2)$. That is, the VC dimension is the number of tunable parameters squared. It is also possible to upper bound the VC dimension by $O(|V|^2 |E|^2)$.
 
-## Runtime complexity
+### Runtime complexity
 
 <MathBox title='' boxType='theorem'>
 Let $k\geq 3$. For every $n\in\N$, let $(V,E)$ be a layered graph with $n$ input nodes, $k+1$ nodes at the (single) hidden layer, where one of them is the constant neuron, and a single output node. Then, it is NP hard to implement the ERM rule with respect to $\mathcal{H}_{V,E,\operatorname{sign}}$.
 </MathBox>
 
-## Stochastic gradient descent and backpropagation
+### Stochastic gradient descent and backpropagation
 
 Stochastic gradient descent can be used search for optimal weights for a hypothesis $\mathcal{H}_{V,E,\sigma}$. Since $E$ is a finite set, we can think of the weight function as a vector $\mathbf{w}\in\R^{|E|}$. Suppose the network has $n$ input neurons and $k$ output neurons, and denote by $h_\mathbf{w} \R^n \to\R^k$ he function calculated by the network if the weight function is defined by $\mathbf{w}$. Let us denote by $\Delta (h_\mathbf{w} (\mathbf{x}), \mathbf{y})$ the loss of predicting $h_\mathbf{w} (\mathbf{x})$ when the target is $\mathbf{y}\in Y$. For concreteness, we will take $\Delta$ to be the squared loss, $\Delta (h_\mathbf{w}(\mathbf{x}),\mathbf{y}) = \frac{1}{2}\norm{ h_\mathbf{w} (\mathbf{x}) - \mathbf{y}}^2$; however, similar derivation can be botained for every differentiable function. Finally, give a distribution $\mathcal{D}$ over the example domain, $\R^n \times\R^n$, let $L_\mathcal{D}(\mathbf{w})$ be the risk of the network, i.e.
 
@@ -828,7 +830,7 @@ $$
 3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
 </MathBox>
 
-### Derivation of the backpropagation algorithm
+#### Derivation of the backpropagation algorithm
 
 In this section we derive the backpropagation algorithm for training a feedforward neural netork (FFNN) using a quadratic cost function. The notation and methodology follow the framework established in [@book_nielsen_2015] and [@notes_smets_2024].
 
@@ -885,7 +887,7 @@ $$
   \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
 $$
 
-#### Gradient Computation
+##### Gradient Computation
 
 It remains to calculate the partial derivatives of the cost $C_n$ with respect to the bias and the weights. For any layer $\ell$, the partial derivative of $C_n$ with respect to a weight $w_{kj}^{(\ell)}$ is given by the chain rule
 
@@ -922,3 +924,23 @@ $$
 $$
 
 where $\eta$ is the learning rate.
+
+## Convolutional neural network (CNN)
+
+A convolutional neural network corresponds to multiple convolutional blocks, which are special types of layers. For a group $G$, which typically is either $[d] \simeq \Z/(d\Z)$ or $[d]^2 \simeq (\Z/(d\Z))^2$ for $d\in\N$, depending on whether we are performing one-dimensional or two-dimensional convolutions, the convolution of two vectors $\mathbf{a}, \mathbf{b} \in \R^G$ is defined as
+
+$$
+  (\mathbf{a} * \mathbf{b})_i = \sum_{j\in G} a_j b_{j^{-1} i},\; i\in G
+$$
+
+A convolutional block can be defined as follows: Let $\tilde{G}$ be a subgroup of $G$, let $p: G \to \tilde{G}$ be a pooling operator, and let $C\in\N$ denote the number of channels. Then, for a series of kernels $\kappa_i \in\R^G$ for $i\in [C]$, the output of a convolutional block is given by
+
+$$
+  \R^G \ni \mathbf{x} \mapsto \mathbf{x}' := (p(\mathbf{x} * \kappa_i))_{i=1}^C \in (\R^{\tilde{G}})^G
+$$
+
+A typical example of a pooling operator is for $G = (\Z/(2d\Z))^2$ and $\tilde{G} = (\Z/(d\Z))^2$ the $2\times 2$ subsampling operator $p: \R^G \to \R^{\tilde{G}}$ given by
+
+$$
+  \mathbf{x} \mapsto (x_{2i-1, 2j-1})_{i,j=1}^d
+$$
