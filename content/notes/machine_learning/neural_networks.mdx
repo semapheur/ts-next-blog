@@ -927,6 +927,66 @@ where $\eta$ is the learning rate.
 
 ## Convolutional neural network (CNN)
 
+<MathBox title='Convolution on a finite group' boxType='definition'>
+Let $G$ be a finite group and denote by $\R^G := \set{f: G\to\R}$ the vector space of real-valued functions on $G$. For $f,g \in\R^G$ the convolution $f * g \in\R^G$ is defined by
+
+$$
+  (f * g)(i) = \sum_{j\in G} f(j) g(j^{-1} i),\; i \in G
+$$
+</MathBox>
+
+<MathBox title='Discrete convolution for tensors' boxType='definition'>
+Fix $T \in\N_+$. For each $t\in\set{1,\dots, T}$ let $a_t, w_t, \mathfrak{d}_t \in\N$ and assume
+
+$$
+  \mathfrak{d}_t = a_t - w_t + 1,\; a_t \geq w_t
+$$
+
+For the index sets
+
+$$
+\begin{align*}
+  I_t :=& \set{1,\dots,a_t} \\
+  K_t :=& \set{1,\dots,w_t} \\
+  D_t :=& \set{1,\dots,\mathfrak{d}_t}
+\end{align*}
+$$
+
+let
+
+$$
+  A = (A_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in I_1 \times\cdots\times I_T} \in \R^{a_1 \times\cdots\times a_T}
+$$
+
+and
+
+$$
+\begin{align*}
+  W = (w_{w_1,\dots,w_T})_{(w_1,\dots,w_T) \in K_1 \times\cdots\times K_T} \in \R^{w_1 \times\cdots\times w_T}
+\end{align*}
+$$
+
+be real $T$-tensors. For every multi-index $(i_1,dots,i_T) \in D_1 \times\cdots\times D_T$ the convolution $A * W \in\R^{\mathfrak{d}_1 \times\cdots\times \mathfrak{d}_T}$ is given by
+
+$$
+  (A * W)_{i_1,\dots,i_T} = \sum_{r_1 = 1}^{w_1} \cdots \sum_{r_T = 1}^{w_T} A_{i_1 - 1 + r_1, \dots, i_T - 1 + r_T} W_{r_1,\dots,r_T}
+$$
+
+Introducing $\mathbf{i} = (i_1,\dots,i_T)$ and $\mathbf{r} = (r_1, \dots, r_T)$ this can be compactly expressed as
+
+$$
+  (A * W)_\mathbf{i} = \sum_{\mathbf{r} \in K_1 \times\cdots\times K_T} A_{\mathbf{i} - 1 + \mathbf{r}} W_\mathbf{r}
+$$
+
+In short notation
+
+$$
+  (A * W)_\mathbf{i} = \braket{A[\mathbf{i}: \mathbf{i} + \mathbf{w} - 1], W}
+$$
+
+where $A[\mathbf{i}:\mathbf{i} + \mathbf{w} - 1]$ denotes the subtensor of $A$ with $t$ index ranging from $i_t$ to $i_t + w_t - 1$, and $\braket{\cdot,\cdot} :\R\times\R\to\R$ is the entrywise inner product.
+</MathBox>
+
 A convolutional neural network corresponds to multiple convolutional blocks, which are special types of layers. For a group $G$, which typically is either $[d] \simeq \Z/(d\Z)$ or $[d]^2 \simeq (\Z/(d\Z))^2$ for $d\in\N$, depending on whether we are performing one-dimensional or two-dimensional convolutions, the convolution of two vectors $\mathbf{a}, \mathbf{b} \in \R^G$ is defined as
 
 $$
@@ -943,4 +1003,18 @@ A typical example of a pooling operator is for $G = (\Z/(2d\Z))^2$ and $\tilde{G
 
 $$
   \mathbf{x} \mapsto (x_{2i-1, 2j-1})_{i,j=1}^d
+$$
+
+**Discrete convolutions**
+
+Let $T\in\N_+, a_1, \dots, a_T, w_1, \dots, w_T, \mathfrak{d}_1, \dots, \mathfrak{d}_T \in\N$ and let $A = (A_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,a_t})} \in \R^{a_1 \times \cdots \times a_T}$, $W = (W_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,w_t})} \in \R^{w_1 \times \cdots \times w_T}$ satisfy for all $t\in \set{1,\dots, T}$ that
+
+$$
+  \mathfrak{d}_t = a_t - w_t + 1
+$$
+
+Then we denote by $A * W = ((A * W)_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,\mathfrak{d}_t})} \in \R^{\mathfrak{d}_1 \times\cdots\times\mathfrak{d}_T}$ the tensor which satisfies for all $i_1 \in\set{1,\dots,\mathfrak{d}_1}, \dots, i_T \in\set{1,\dots,\mathfrak{d}_T}$ that
+
+$$
+  (A * W)_{i_1,\dots, i_T} = \sum_{r_1 = 1}^{w_1} \cdots \sum_{r_T = 1}^{w_T} A_{i_1 - 1 + r_1, \cdots, i_T - 1 + r_T} W_{r_1,\dots, r_T}
 $$
