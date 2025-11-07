@@ -230,7 +230,9 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e)
   })
 }
-console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
+console.log(
+  findLatexIssues("./content/notes/machine_learning/neural_networks.mdx"),
+)
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
 //  const issues = await checkNotesForIssues()

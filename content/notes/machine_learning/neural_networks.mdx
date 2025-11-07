@@ -987,34 +987,83 @@ $$
 where $A[\mathbf{i}:\mathbf{i} + \mathbf{w} - 1]$ denotes the subtensor of $A$ with $t$ index ranging from $i_t$ to $i_t + w_t - 1$, and $\braket{\cdot,\cdot} :\R\times\R\to\R$ is the entrywise inner product.
 </MathBox>
 
-A convolutional neural network corresponds to multiple convolutional blocks, which are special types of layers. For a group $G$, which typically is either $[d] \simeq \Z/(d\Z)$ or $[d]^2 \simeq (\Z/(d\Z))^2$ for $d\in\N$, depending on whether we are performing one-dimensional or two-dimensional convolutions, the convolution of two vectors $\mathbf{a}, \mathbf{b} \in \R^G$ is defined as
+<MathBox title="Convolutional block" boxType="definition">
+Let $\tilde{G} \leq G$ be a subgroup of $G$ and let $p: G \to \tilde{G}$ be a pooling operator, that is, a linear or nonlinear map reducing the domain from $G$ to $\tilde{G}$. Let $C\in\N$ denote the number of output channels, and let $\kappa_i \in\R^G$ for $i\in [C]$ be the convolutional kernels associated with the block. The convolutional block is the map $B: \R^G \to (\R^{\tilde{G}})^C$ by
 
 $$
-  (\mathbf{a} * \mathbf{b})_i = \sum_{j\in G} a_j b_{j^{-1} i},\; i\in G
+  B(\mathbf{x}) := (p(\mathbf{x} * \kappa_i))_{i=1}^C
 $$
 
-A convolutional block can be defined as follows: Let $\tilde{G}$ be a subgroup of $G$, let $p: G \to \tilde{G}$ be a pooling operator, and let $C\in\N$ denote the number of channels. Then, for a series of kernels $\kappa_i \in\R^G$ for $i\in [C]$, the output of a convolutional block is given by
+Each component $p(\mathbf{x} * \kappa_i)$ corresponds to a filtered and pooled version of the input $\mathbf{x}$.
+</MathBox>
 
-$$
-  \R^G \ni \mathbf{x} \mapsto \mathbf{x}' := (p(\mathbf{x} * \kappa_i))_{i=1}^C \in (\R^{\tilde{G}})^G
-$$
-
-A typical example of a pooling operator is for $G = (\Z/(2d\Z))^2$ and $\tilde{G} = (\Z/(d\Z))^2$ the $2\times 2$ subsampling operator $p: \R^G \to \R^{\tilde{G}}$ given by
+A convolutional neural network corresponds to multiple convolutional blocks, which are special types of layers. A typical example of a pooling operator is for $G = (\Z/(2d\Z))^2$ and $\tilde{G} = (\Z/(d\Z))^2$ the $2\times 2$ subsampling operator $p: \R^G \to \R^{\tilde{G}}$ given by
 
 $$
   \mathbf{x} \mapsto (x_{2i-1, 2j-1})_{i,j=1}^d
 $$
 
-**Discrete convolutions**
-
-Let $T\in\N_+, a_1, \dots, a_T, w_1, \dots, w_T, \mathfrak{d}_1, \dots, \mathfrak{d}_T \in\N$ and let $A = (A_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,a_t})} \in \R^{a_1 \times \cdots \times a_T}$, $W = (W_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,w_t})} \in \R^{w_1 \times \cdots \times w_T}$ satisfy for all $t\in \set{1,\dots, T}$ that
+The space of all possible feedforward convolutional network architectures is defined by
 
 $$
-  \mathfrak{d}_t = a_t - w_t + 1
+  C = \bigcup_{T, L \in\N_+} \bigcup_{l_1,\dots,l_L \in\N_+} \bigcup_{(c_{k,t})_{(k,t) \in [L]\times [T]} \subseteq\N} \left(\bigtimes_{k=1}^L ((\R^{c_{k,1} \times\cdots\times c_{k,T}})^{l_k \times l_{k-1}} \times \R^{l_k}) \right)
 $$
 
-Then we denote by $A * W = ((A * W)_{i_1,\dots,i_T})_{(i_1,\dots,i_T) \in (\bigtimes_{t=1}^T \set{1,\dots,\mathfrak{d}_t})} \in \R^{\mathfrak{d}_1 \times\cdots\times\mathfrak{d}_T}$ the tensor which satisfies for all $i_1 \in\set{1,\dots,\mathfrak{d}_1}, \dots, i_T \in\set{1,\dots,\mathfrak{d}_T}$ that
+where
+- $T$ is the tensor dimension
+- $L$ is the number of layers
+- $l_k$ is the number of channels at layer $k$
+- $c_{k,t}$ is the kernel size along dimension $t$ in layer $k$
+
+Each layer $k$ is characterized by convolutional weights $W_{k,n,m} \in \R^{c_{k,1} \times\cdots\times c_{k,T}}$ and biases $B_{k,n} \in\R$. A function $\Phi$ is a feedforward convolutional neural network if and only if $\Phi\in C$.
+
+### Realization of feedforward convolutional networks
+
+<MathBox title='Identity tensor' boxType='defintion'>
+For $T\in\N_+$ and dimensions $d_1,\dots,d_T \in\N_+$, define the constant tensor 
 
 $$
-  (A * W)_{i_1,\dots, i_T} = \sum_{r_1 = 1}^{w_1} \cdots \sum_{r_T = 1}^{w_T} A_{i_1 - 1 + r_1, \cdots, i_T - 1 + r_T} W_{r_1,\dots, r_T}
+  \mathbf{I}^{d_1,\dots,d_T} = (\mathbf{I}_{i_1,\dots,i_T}^{d_1,\dots,d_T})_{(i_1,\dots,i_T)\in [d_1] \times\cdots\times [d_T]} \in \R^{d_1 \times\cdots\times d_T}
 $$
+
+by
+
+$$
+  \mathbf{I}_{i_1,\dots,i_T}^{d_1,\dots,d_T} = 1,\; \forall i_t \in [d_t]
+$$
+</MathBox>
+
+Let
+- $T, L \in\N_+$
+- $l_0,\dots,l_L \in\N_+$
+- $(c_{k,t})_{(k,t)\in [L] \times [T]} \subseteq\N_+$
+- $\Phi = (((W_{k,n,m})_{(n,m) \in [l_k ]\times [l_{k-1}]}, (B_{k,n})_{n\in [l_k]}))_{k\in [L]} \in \bigtimes_{k=1}^L ((\R^{c_{k,1} \times\cdots\times c_{k,T}})^{l_k \times l_{k-1}} \times \R^{l_k}) \subseteq C$
+
+and let $a: \R\to\R$ denote an activation function. Define the realization map
+
+$$
+  \mathcal{R}_a^C (\Phi): \left(\bigcup_{\substack{d_1,\dots,d_T \in\N \\ \forall t\in [T]: d_t - \sum_{k=1}^L (c_{k,1} - 1) \geq 1}} (\R^{d_1 \times\cdots\times d_T})^{l_0} \right) \to \left(\bigcup_{d_1,\dots,d_T \in\N_+} (\R^{d_1 \times\cdots\times d_T})^{l_L} \right)
+$$
+
+recursively as follows. Let $x_0 = (x_{0,1}, \dots, x_{0, l_0})$ denote the input feature maps, and for each $k \in [L]$ and $t \in [T]$ define
+
+$$
+  \mathfrak{d}_{k,t} = \mathfrak{d}_{k-1, t} - c_{k,t} + 1
+$$
+
+so that the spatial dimensions shrink consistently under valid convolution. Then for each $k \in [L]$ and $n\in [l_k]$
+
+$$
+  x_{k,n} = \mathfrak{M}_{\psi_k, \mathfrak{d}_{k,1},\dots,\mathfrak{d}_{k,T}} (B_{k,n} \mathbf{I}^{\mathfrak{d}_{k,1}, \cdots,\mathfrak{d}_{k,T}} + \sum_{m=1}^{l_{k-1}} x_{k-1, m} * W_{k,n,m})
+$$
+
+where
+
+$$
+  \psi_k := \begin{cases}
+    a,\quad& k < L \\
+    \operatorname{id}_\R,\quad& k = L
+  \end{cases}
+$$
+
+and $\mathfrak{M}_{\psi_k, \mathfrak{d}_{k,1},\dots,\mathfrak{d}_{k,T}}$ denoted the componentwise application of $\psi_k$ to a tensor of the given dimension. Defining $(\mathcal{R}_a^C (\Phi))(x_0) = x_L$, the function $\mathcal{R}_a^C (\phi)$ is the realization function of the feedforward convolutional neural network $\Phi$ with activation function $a$.
