@@ -17,7 +17,6 @@ interface LatexIssue {
 function findLatexIssues(mdxFile: string): LatexIssue {
   const mdxContent = fs.readFileSync(mdxFile, "utf8")
   const lines = mdxContent.split("\n")
-
   let inMath = false
   let inDisplayMath = false
   let inCodeBlock = false
@@ -25,9 +24,12 @@ function findLatexIssues(mdxFile: string): LatexIssue {
   let lastOpenCol = -1
   const latexOutsideMath: { command: string; line: number; column: number }[] =
     []
+  const allIssues: LatexIssue[] = []
 
-  // Regular expression for common LaTeX commands
-  const latexCommandRegex = /\\[a-zA-Z]+(?:\{[^}]*\})*|\\\[|\\\]|\\\(|\\\)/g
+  // More comprehensive regex that matches backslash followed by letter(s)
+  // This will catch \R, \mathbf, \operatorname, etc.
+  // Using positive lookahead to match each command separately
+  const latexCommandRegex = /\\[a-zA-Z]+(?![a-zA-Z])/g
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
     const line = lines[lineNum]
@@ -52,7 +54,74 @@ function findLatexIssues(mdxFile: string): LatexIssue {
 
     if (inDisplayMath) continue
 
-    // Track inline math mode and find LaTeX commands
+    // Build a map of which positions are inside math mode for this line
+    const mathRanges: Array<{ start: number; end: number }> = []
+    let tempPos = 0
+    let tempInMath = false
+    let mathStart = -1
+
+    while (tempPos < line.length) {
+      // Handle escaped dollar signs
+      if (
+        line[tempPos] === "\\" &&
+        tempPos + 1 < line.length &&
+        line[tempPos + 1] === "$"
+      ) {
+        tempPos += 2
+        continue
+      }
+
+      // Handle math mode transitions
+      if (line[tempPos] === "$") {
+        // Check if it's not escaped
+        let backslashCount = 0
+        let checkPos = tempPos - 1
+        while (checkPos >= 0 && line[checkPos] === "\\") {
+          backslashCount++
+          checkPos--
+        }
+
+        if (backslashCount % 2 === 0) {
+          if (tempInMath) {
+            // Closing math mode
+            mathRanges.push({ start: mathStart, end: tempPos })
+            tempInMath = false
+          } else {
+            // Opening math mode
+            tempInMath = true
+            mathStart = tempPos
+          }
+        }
+      }
+      tempPos++
+    }
+
+    // Now check for LaTeX commands outside the math ranges
+    latexCommandRegex.lastIndex = 0
+    let match: RegExpExecArray | null
+    while ((match = latexCommandRegex.exec(line)) !== null) {
+      const matchPos = match.index
+
+      // Check if this position is inside any math range
+      let isInMath = false
+      for (const range of mathRanges) {
+        if (matchPos > range.start && matchPos < range.end) {
+          isInMath = true
+          break
+        }
+      }
+
+      // Also check if we're in math mode from a previous line
+      if (!isInMath && !inMath) {
+        latexOutsideMath.push({
+          command: match[0],
+          line: lineNum + 1,
+          column: match.index + 1,
+        })
+      }
+    }
+
+    // Update global math mode state for multi-line tracking
     let pos = 0
     while (pos < line.length) {
       // Handle escaped dollar signs
@@ -88,82 +157,57 @@ function findLatexIssues(mdxFile: string): LatexIssue {
       pos++
     }
 
-    // Check for LaTeX commands outside math mode
-    if (!inMath && !inDisplayMath) {
-      // Reset the regex state for each new line
-      latexCommandRegex.lastIndex = 0
-      let match: RegExpExecArray | null = latexCommandRegex.exec(line)
-      while (match !== null) {
-        // Verify this isn't inside an inline math block
-        let dollarCount = 0
-        for (let i = 0; i < match.index; i++) {
-          if (line[i] === "$") {
-            // Check if it's not escaped
-            let backslashCount = 0
-            let checkPos = i - 1
-            while (checkPos >= 0 && line[checkPos] === "\\") {
-              backslashCount++
-              checkPos--
-            }
-            if (backslashCount % 2 === 0) {
-              dollarCount++
-            }
-          }
-        }
-        if (dollarCount % 2 === 0) {
-          // Even number of $ means we're outside math mode
-          latexOutsideMath.push({
-            command: match[0],
-            line: lineNum + 1,
-            column: match.index + 1,
-          })
-        }
-        match = latexCommandRegex.exec(line)
-      }
-    }
-
     // Check for unclosed math mode at end of line
     if (inMath && lineNum !== lastOpenLine) {
-      return {
+      allIssues.push({
         message: "Unclosed inline math expression",
         line: lastOpenLine + 1,
         column: lastOpenCol + 1,
-      }
+      })
+      // Reset to allow checking rest of document independently
+      inMath = false
+      lastOpenLine = -1
+      lastOpenCol = -1
     }
   }
 
   // Check for unclosed math mode at end of file
   if (inMath) {
-    return {
+    allIssues.push({
       message: "Unclosed inline math expression",
       line: lastOpenLine + 1,
       column: lastOpenCol + 1,
-    }
+    })
   }
 
   if (inDisplayMath) {
-    return {
+    allIssues.push({
       message: "Unclosed display math expression",
       line: lines.length,
       column: 1,
-    }
+    })
   }
 
   // Check for unclosed code block at end of file
   if (inCodeBlock) {
-    return {
+    allIssues.push({
       message: "Unclosed code block",
       line: lines.length,
       column: 1,
-    }
+    })
   }
 
-  // Return results
+  // Add LaTeX outside math issues
   if (latexOutsideMath.length > 0) {
-    return {
+    allIssues.push({
       message: "Found LaTeX commands outside of math mode",
       commands: latexOutsideMath,
-    }
+    })
+  }
+
+  // Return the first issue found, or no issues
+  if (allIssues.length > 0) {
+    return allIssues[0]
   }
 
   return { message: "No issues found" }
