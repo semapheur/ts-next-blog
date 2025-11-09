@@ -4654,7 +4654,7 @@ showing that $\hat{U}$ is linear in the unitary case, and conjugate-linear in th
 
 ### Galilean space-time coordinate transformations
 
-Let $F$ be an inertial Cartesion frame with spacetime coordinates $(\mathbf{x}, t)$ and consider another Cartesian frame $\tilde{F}$ obtained from $F$ by 
+Let $F$ be an inertial Cartesian frame with spacetime coordinates $(\mathbf{x}, t)$ and consider another Cartesian frame $\tilde{F}$ obtained from $F$ by 
 - a proper (counterclockwise) rotation $\mathbf{R} = (R^i{}_j) \in \operatorname{SO}(3)$
 - a spatial translation $\mathbf{a} = (a^i) \in\R^3$
 - a uniform relative velocity $\mathbf{v} = (v^i) \in\R^3$
@@ -4672,7 +4672,7 @@ where Einstein summation over repeated indices is implied. The inverse transform
 
 $$
 \begin{align*}
-  x^i =& R^i{}_j{}^\top (\tilde{x}^j + a^j + v^j (\tilde{t} + \tau) \\
+  x^i =& R^i{}_j{}^\top (\tilde{x}^j + a^j + v^j (\tilde{t} + \tau)) \\
   =& R^j{}_i (\tilde{x}^j + a^j + v^j (\tilde{t} + \tau))
 \end{align*}
 $$
@@ -4818,6 +4818,59 @@ $$
 $$
 
 #### Operator identity for finite rotations
+
+<LatexFigure width={50} src='/fig/rotation_configuration.svg' alt=''
+  caption='Rotation of a vector $\mathbf{x}$ clockwise by an angle $\varphi$ about a unit vector $\unitvec{n}$. This is equivalent to rotating the coordinate system counter-clockwise about $\unitvec{n}$, while keeping $\mathbf{x}$ fixed.'
+>
+```latex
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{3d, arrows.meta}
+
+\newcommand{\sphericalcoord}[3]{({#1*sin(#2)*sin(#3)}, {#1*cos(#2)}, {#1*sin(#2)*cos(#3)})}
+
+\def\r{5}
+\def\phi{45}
+\def\theta{30}
+\def\alpha{60}
+
+\pgfmathsetmacro{\px}{\r * sin(\theta) * sin(\phi)}
+\pgfmathsetmacro{\py}{\r * cos(\theta)}
+\pgfmathsetmacro{\pz}{\r * sin(\theta) * cos(\phi)}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\scriptsize}]
+
+  \draw[-Stealth] (0, {\r * cos(\theta)},0) -- (0, \r + 1, 0) node[above]{$\hat{\mathbf{n}}$};
+  \draw[-Stealth, green] (0,0,0) -- (0, {\r * cos(\theta)}, 0) node[midway, above, sloped]{$(\mathbf{x} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}}$};
+
+  \node at (0, -0.5) {$\mathbf{h} = [\mathbf{x} - (\mathbf{x}\cdot\hat{\mathbf{n}})\hat{\mathbf{n}}] \cos(\varphi) + \mathbf{x} \times\hat{\mathbf{n}} \sin(\varphi)$};
+
+  \begin{scope}[
+      plane origin={(0,\py,0)},
+      plane x={(\px,\py,\pz)},
+      plane y={(-\pz,\py,\px)},
+      canvas is plane
+    ]
+    \draw[-Stealth, red] (0,0) -- (0,1) node[left]{$\mathbf{x}\times\hat{\mathbf{n}}$};
+    \draw[red] (0.1,0) -- (0.1, 0.1) -- (0, 0.1);
+  \end{scope}
+
+  \begin{scope}[canvas is zx plane at y=\r * cos(\theta)]
+    \draw[dashed] (0,0) circle [radius=\r * sin(\theta)];
+    \draw[-Stealth] (0,0) -- (\phi:{\r * sin(\theta)}) node[above right, xshift=-5pt, rotate=20]{$\mathbf{x} - (\mathbf{x}\cdot\hat{\mathbf{n}})\hat{\mathbf{n}}$};
+    \draw[-Stealth] (0,0) -- ({\phi - \alpha}:{\r * sin(\theta)}) node[above, yshift=2pt]{$\mathbf{h}$};
+    \draw[-Stealth] (\phi:{0.5 * \r * sin(\theta)}) arc (\phi:{\phi - \alpha}:{0.5 * \r * sin(\theta)}) node[midway, below]{$\varphi$};
+  \end{scope}
+
+  \draw[-Stealth, thick, blue] (0,0,0) -- \sphericalcoord{\r}{\theta}{\phi} node[below right]{$\mathbf{x}$};
+  \draw[-Stealth, thick, blue] (0,0,0) -- \sphericalcoord{\r}{\theta}{\phi - \alpha} node[below left]{$\mathbf{x}'$};
+
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
 
 We now derive an operator identity connecting the coordinate-scape generator of rotations with the matrix representation of the rotation group $\operatorname{SO}(3)$. Define the rotated vector
 
