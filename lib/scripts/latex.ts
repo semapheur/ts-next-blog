@@ -27,8 +27,6 @@ function findLatexIssues(mdxFile: string): LatexIssue {
   const allIssues: LatexIssue[] = []
 
   // More comprehensive regex that matches backslash followed by letter(s)
-  // This will catch \R, \mathbf, \operatorname, etc.
-  // Using positive lookahead to match each command separately
   const latexCommandRegex = /\\[a-zA-Z]+(?![a-zA-Z])/g
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
