@@ -1,9 +1,8 @@
-import type { ReactNode } from "react"
-
-import Sidebar from "./Sidebar"
 import matter from "gray-matter"
 import { iterNotes } from "lib/utils/fetching"
 import type { NoteDetails, NoteMatter } from "lib/utils/types"
+import type { ReactNode } from "react"
+import Sidebar from "./Sidebar"
 
 function getNoteDetails(
   fileName: string,

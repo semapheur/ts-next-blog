@@ -1,3 +1,24 @@
+# Todos
+
+- Note routes with catch-all segments
+
+## Structure
+
+Quantum physics
+- Quantum mechanics
+  - Formulations
+    - Hilbert space formulation
+    - C* algebra formulation
+    - Path integral formulation
+    - Phase space formulation
+  - Quantum dynamics
+- Relativistic quantum mechanics
+- Quantum field theory
+  - Formulations
+- Quantum statistical mechanics
+
+# Tips
+
 ## Run Typescript with Node
 
 - Add `"type": "module"` to `package.json`

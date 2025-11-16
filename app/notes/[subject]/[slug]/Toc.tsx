@@ -1,11 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-//import { MDXRemote } from "next-mdx-remote"
-import useScrollspy from "lib/hooks/useScrollspy"
-import type { NoteHeading } from "lib/utils/types"
-import { BookIcon } from "lib/utils/icons"
 import MathText from "lib/components/MathText"
+import useScrollspy from "lib/hooks/useScrollspy"
+import { BookIcon } from "lib/utils/icons"
+import type { NoteHeading } from "lib/utils/types"
+import { useEffect, useMemo, useState } from "react"
 
 type TocItem = {
   heading: NoteHeading
@@ -112,30 +111,28 @@ export default function Toc({ headings }: Props) {
     <>
       <Toggle />
       <aside className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 hidden h-min max-h-[80%] min-h-0 flex-col rounded-md bg-primary/50 p-2 shadow-md backdrop-blur-xs peer-checked:flex lg:static lg:m-2 lg:flex lg:max-h-[calc(100%-16px)] lg:min-w-min lg:translate-x-0 lg:translate-y-0 dark:shadow-black/50">
-        <>
-          <div
-            key="div.toc"
-            className="flex justify-start gap-x-1 border-b border-b-secondary"
-          >
-            <button key="button.toc" type="button" className="cursor-default">
-              <BookIcon className="h-6 w-6 stroke-text" />
-            </button>
-            <h2 key="h2.toc" className="font-bold text-text">
-              Contents
-            </h2>
-          </div>
-          <nav key="nav.toc" className="overflow-y-scroll">
-            <ul className="h-auto list-none">
-              {headings?.map((h: NoteHeading, index: number) => (
-                <TocItem
-                  key={`tocitem.${index}`}
-                  heading={h}
-                  activeIds={activeIds}
-                />
-              ))}
-            </ul>
-          </nav>
-        </>
+        <div
+          key="div.toc"
+          className="flex justify-start gap-x-1 border-b border-b-secondary"
+        >
+          <button key="button.toc" type="button" className="cursor-default">
+            <BookIcon className="h-6 w-6 stroke-text" />
+          </button>
+          <h2 key="h2.toc" className="font-bold text-text">
+            Contents
+          </h2>
+        </div>
+        <nav key="nav.toc" className="overflow-y-scroll">
+          <ul className="h-auto list-none">
+            {headings?.map((h: NoteHeading, index: number) => (
+              <TocItem
+                key={`tocitem.${index}`}
+                heading={h}
+                activeIds={activeIds}
+              />
+            ))}
+          </ul>
+        </nav>
       </aside>
     </>
   )
