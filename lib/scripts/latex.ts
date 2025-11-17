@@ -14,6 +14,84 @@ interface LatexIssue {
   commands?: LatexCommand[]
 }
 
+interface Test {
+  line: number
+  message: string
+}
+
+function findUnclosedLatex(mdxFile: string) {
+  const mdxContent = fs.readFileSync(mdxFile, "utf8")
+  const lines = mdxContent.split("\n")
+  let inDisplayMath = false
+  let inCodeBlock = false
+  const unclosedMath: Test[] = []
+
+  const latexFunctionRegex = /\{(?=[^}]*\S)[^}]*\}/g
+  const inlineMathDelim = /(?<!\\)\$(?!\$)/g
+  const displayMathDelim = /(?<!\\)\$\$(?!\$)/g
+
+  for (let lineNum = 0; lineNum < lines.length; lineNum++) {
+    const line = lines[lineNum]
+
+    // Check for code block start/end
+    if (line.trim().startsWith("```")) {
+      inCodeBlock = !inCodeBlock
+      continue
+    }
+    // Skip if inside code block
+    if (inCodeBlock) continue
+
+    // Check for display math delimiters
+    const displayMathMatches = [...line.matchAll(displayMathDelim)]
+    inDisplayMath = displayMathMatches.length % 2 !== 0
+    if (displayMathMatches.length > 1) {
+      unclosedMath.push({
+        line: lineNum + 1,
+        message: "Multiple $$ delimiters found on the same line",
+      })
+      continue
+    }
+
+    const inlineMathMatches = [...line.matchAll(inlineMathDelim)]
+    if (inDisplayMath && inlineMathMatches.length > 0) {
+      unclosedMath.push({
+        line: lineNum + 1,
+        message: "Inline $ found inside display math expression",
+      })
+      continue
+    }
+
+    if (inDisplayMath) continue
+
+    if (inlineMathMatches.length % 2 !== 0) {
+      unclosedMath.push({
+        line: lineNum + 1,
+        message: "Unclosed inline math expression",
+      })
+      continue
+    }
+
+    if (inlineMathMatches.length === 0) {
+      const latexFunctionMatches = [...line.matchAll(latexFunctionRegex)]
+      for (const match of latexFunctionMatches) {
+        unclosedMath.push({
+          line: lineNum + 1,
+          message: `LaTeX command "${match[0]}" found outside of math mode`,
+        })
+      }
+    }
+  }
+
+  if (inDisplayMath) {
+    unclosedMath.push({
+      line: lines.length,
+      message: "Unclosed $$ display math block at end of file",
+    })
+  }
+
+  return unclosedMath
+}
+
 function findLatexIssues(mdxFile: string): LatexIssue {
   const mdxContent = fs.readFileSync(mdxFile, "utf8")
   const lines = mdxContent.split("\n")
@@ -272,7 +350,7 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e)
   })
 }
-console.log(findLatexIssues("./content/notes/physics/quantum_formalism.mdx"))
+console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
 //  const issues = await checkNotesForIssues()
