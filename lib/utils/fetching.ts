@@ -1,54 +1,59 @@
-import fs from "node:fs"
-import path from "node:path"
+import fs from "node:fs";
+import path from "node:path";
 
 type NoteHandler<T> = (
   fileName: string,
-  subject: string,
+  relativePath: string,
   note: Buffer,
   result: T,
-) => T
+) => T;
 
 export async function iterNotes<T>(handler: NoteHandler<T>) {
-  const result = {} as T
+  const result = {} as T;
+  const notesDir = path.join(process.cwd(), "content", "notes");
 
-  const notesDir = path.join(process.cwd(), "content", "notes")
-  for (const subject of fs.readdirSync(notesDir)) {
-    const subjectDir = path.join(notesDir, subject)
+  function walkDir(currentDir: string) {
+    const items = fs.readdirSync(currentDir, { withFileTypes: true });
 
-    for (const fileName of fs.readdirSync(subjectDir)) {
-      const regex = /[^.]+$/
-      if (fileName.match(regex)) {
-        const note = fs.readFileSync(path.join(subjectDir, fileName))
-        handler(fileName, subject, note, result)
+    for (const item of items) {
+      const fullPath = path.join(currentDir, item.name);
+      if (item.isDirectory()) {
+        walkDir(fullPath);
+      } else if (item.isFile() && item.name.endsWith(".mdx")) {
+        const relativePath = path.relative(notesDir, currentDir);
+        const note = fs.readFileSync(fullPath);
+        handler(item.name, relativePath, note, result);
       }
     }
   }
-  return result
+
+  walkDir(notesDir);
+  return result;
 }
 
 export function wrapPromise<T>(promise: Promise<T>) {
-  let status = "pending"
-  let response: T
+  let status = "pending";
+  let response: T;
 
   const suspender = promise.then(
     (res) => {
-      status = "success"
-      response = res
+      status = "success";
+      response = res;
     },
     (err) => {
-      status = "error"
-      response = err
+      status = "error";
+      response = err;
     },
-  )
+  );
   const read = () => {
     switch (status) {
       case "pending":
-        throw suspender
+        throw suspender;
       case "error":
-        throw response
+        throw response;
       default:
-        return response
+        return response;
     }
-  }
-  return { read }
+  };
+  return { read };
 }

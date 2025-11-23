@@ -1,6 +1,6 @@
 ---
-title: 'Quantum Mechanics'
-subject: 'Physics'
+title: 'Hilbert space formulation'
+subject: 'Physics/quantum mechanics'
 showToc: true
 references:
   - book_auletta_etal_2009
@@ -8,3173 +8,7 @@ references:
   - book_scherer_2019
 ---
 
-# Mathematical foundations
-
-## Dirac notation (bra-ket)
-
-Let $V$ be an inner product space over a field $\mathbb{F}$ with dual space $V^*$. In Dirac notation:
-- A *ket* $\ket{v}\in V$ denotes a vector representing the state of a quantum system
-- A *bra* $\bra{f}\in V^*$ denotes a linear form $f : V \to\mathbb{F}$ and is a covector to $\ket{f}$
-- A *bra-ket* $\braket{f|v} := \bra{f}(\ket{v})$ represents an inner product $\braket{\cdot|\cdot}: V\times V \to\mathbb{F}$
-- A *ket-bra* $\ket{v}\bra{f}$ defines an outer product $\ket{\cdot}\bra{\cdot} : V\times V \to V$ given by $\ket{v}{f}(\ket{w}) := \ket{v}\braket{f|w}$, which projects the component of $\ket{w}$ along the covector $\bra{f}$ onto the vector $\ket{v}$
-- A *ket-ket* $\ket{v}\ket{w} := \ket{v}\otimes\ket{w}$ denotes a tensor product $\otimes: V \times V \to V \otimes V$
-
-Bra-ket properties
-- Conjugate symmetry: $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
-- Linearity in the second argument: $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi|\phi_1} + a_2\braket{\psi|\phi_2}$
-- Anti-linearity in the first argument: $\braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}$
-- Positive definiteness: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi|\psi} = 0 \iff \ket{\psi} = 0$
-- Triangle inequality: $\sqrt{\braket{\psi + \phi | \psi + \phi}} \leq \sqrt{\braket{\psi|\psi}} + \sqrt{\braket{\phi|\phi}}$
-- Schwarz inequality: $\left|\braket{\psi|\phi}\right|^2 \leq \braket{\psi|\psi} \braket{\phi|\phi}$
-- Orthogonality: $\braket{\psi|\phi} = 0$ if and only if $\psi$ and $\phi$ are orthogonal
-- Hermitian adjoint/conjugate: 
-$$
-\begin{align*}
-  \ket{\psi}^\dagger &= \bra{\psi} \\
-  \bra{\phi}^\dagger &= \ket{\phi}
-\end{align*}
-$$
-
-## Hilbert space
-
-<MathBox title='Hilbert space' boxType='definition'>
-A *Hilbert space* $\mathcal{H}$ is a complete vector space over a field $\mathbb{F}$ equipped with an inner product $\braket{\cdot|\cdot}:\mathcal{H}\times\mathcal{H}\to\mathbb{F}$. The vector space structure of $\mathcal{H}$ ensures that for all $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ and all scalars $a, b\in\mathbb{F}$, we have
-
-$$
-  a\ket{\psi} + b\ket{\varphi} \in\mathcal{H}
-$$
-
-For all $\ket{\psi}, \ket{\psi_1},\ket{\psi_2} \in\mathcal{H}$ and $a_1, a_2 \in\mathbb{F}$, the inner product satisfies
-- **Positive definitess**: $\braket{\psi | \psi} \geq 0$ and $\braket{\psi|\psi} = 0 \iff \ket{\psi} = 0$
-- **Linearity in the second argument:** $\braket{\psi | a_1\phi_1 + a_2 \phi_2} = a_1\braket{\psi|\phi_1} + a_2\braket{\psi|\phi_2}$ .
-- **Conjugate symmetry:** $\braket{\psi|\phi} = \braket{\phi|\psi}^*$
-
-By conjugate symmetry, the inner product is anti-linear in the first argument:
-
-$$
-  \braket{a_1\psi_1 + a_2\psi_2 | \phi} = a_1^*\braket{\psi_1|\phi} + a_2^*\braket{\psi_2|\phi}
-$$
-
-This inner product induces a norm $\norm{\cdot}:\mathcal{H}\to\R$ defined by $\norm{\psi} \mapsto \sqrt{\braket{\psi|\psi}}$. Completeness of $\mathcal{H}$ in the norm $\norm{\cdot}$ means that every Cauchy sequence $(\ket{\psi_n})_{n\in\N} \subset\mathcal{H}$, satisfying
-
-$$
-  \forall \epsilon > 0, \exists N\in\N: m,n \geq N \implies \norm{\ket{\psi_m} - \ket{\psi_n}} < \epsilon
-$$
-
-converges to an element $\ket{\psi}\in\mathcal{H}$.
-
-A subset $\mathcal{H}' \subset\mathcal{H}$ which is a vector space and inherits the inner product and the norm from $\mathcal{H}$ is called a subspace of $\mathcal{H}$.
-</MathBox>
-
-Let $\d^3 \mathbf{x}$ denote the Lebesgue measure in $\R^3$. Then the set of square integrable functions
-
-$$
-  \mathcal{L}^2 (\R^3) := \Set{\psi\in\R^3 \to \mathbb{C} : \int_{\R^3} \norm{\psi(\mathbf{x})}^2 \;\d^3 \mathbf{x} < \infty}
-$$
-
-with the inner product
-
-$$
-  \braket{\psi|\varphi} := \int_{\R^3} \psi^*(\mathbf{x}) \varphi(\mathbf{x}) \;\d^3 \mathbf{x}
-$$
-
-is an infinite-dimensional Hilbert space.
-
-<MathBox title='Normed and orthogonal vectors' boxType='definition'>
-A vector $\ket{\psi}\in\mathcal{H}$ is *normed* if $\norm{\psi} = 1$. A normed vector is also called a *unit vector*. Two vectors $\ket{\psi},\ket{\varphi}\in\mathcal{H}$ are orthogonal if $\braket{\psi|\varphi} = 0$. The subspace in $\mathcal{H}$ of vector orthogonal to $\ket{\psi}$ is denoted
-
-$$
-  \mathcal{H}_{\psi^\perp} := \set{\varphi\in\mathcal{H} | \braket{\psi|\varphi} = 0}
-$$
-</MathBox>
-
-<MathBox title='Ray' boxType='definition'>
-Let $\mathcal{H}$ be a complex Hilbert space. For any normalized vector $\ket{\psi}\in\mathcal{H}$ with $\norm{\psi} = 1$, the *ray* associated with $\ket{\psi}$ is the set
-
-$$
-  S_\psi := \set{e^{i\alpha} \ket{\psi} | \alpha\in\R}
-$$
-
-That is, a ray $S_\psi$ consists of all vectors that differ from $\ket{\psi}$ by a global phase factor.
-</MathBox>
-
-Define the equivalence relation $\sim$ on the complex Hilbert space $\mathcal{H}$ such that for $\ket{\psi}, \ket{\varphi}\in\mathcal{H}$,
-
-$$
-  \ket{\psi}\sim\ket{\varphi} \iff \ket{\varphi} = e^{i\alpha} \ket{\psi},\; \alpha\in\R
-$$
-
-This relation satisfies
-- **Reflexivity**: $\ket{\psi} = e^{i0}\ket{\psi}$, so $\ket{\psi}\sim\ket{\psi}$
-- **Symmetry**: If $\ket{\psi}\sim\ket{\varphi}$, then $\ket{\varphi} = e^{i\alpha} \ket{\psi}$, and its inverse $\ket{\psi} = e^{-i\alpha} \ket{\varphi}$ also holds, implying $\ket{\varphi}\sim\ket{\psi}$
-
-- **Transitivity:** If $\ket{\psi}\sim\ket{\varphi}$ and $\ket{\varphi}\sim\ket{\xi}$, then there exists $\alpha,\beta\in\R$ such that $\ket{\varphi} = e^{i\alpha}$ and $\ket{\xi} = e^{i\beta} \ket{\varphi}$. Thus,
-
-$$
-  \ket{\xi} = e^{i\beta} (e^{i\alpha}\ket{\psi}) = e^{i(\alpha + \beta)} \ket{\psi}
-$$
-
-so $\ket{\psi}\sim\ket{\varphi}$. 
-
-The equivalence class of $\ket{\psi}\in\mathcal{H}$ under $\sim$ is precisely the ray associated with $\ket{\psi}$, i.e. $[\psi]_\sim = S_\psi$. The projective Hilbert space is the quotient space $\mathcal{PH} = \mathcal{H}/\sim$, which represents the space of quantum states modulo global phase factors.
-
-<MathBox title='Properties of Hilbert spaces' boxType='proposition'>
-Let $\mathcal{H}$ be a separable Hilbert space. Then for any $\ket{\psi}, \ket{\phi}\in\mathcal{H}$
-1. **Cauchy-Schwarz inequality:**
-
-$$
-\begin{equation*}
-  |\braket{\psi|\phi}| \leq \norm{\psi} \cdot \norm{\phi}
-\tag{\label{equation-152}}
-\end{equation*}
-$$
-
-2. **Triangular inequality:**
-
-$$
-  \norm{\ket{\psi} + \ket{\phi}} \leq \norm{\ket{\psi}} + \norm{\ket{\phi}}
-$$
-
-3. **Bessel's inequality:** For any orthonormal basis $\set{\ket{e_j}}$ and $\ket{\psi}\in\mathcal{H}$, define
-
-$$
-  \ket{\psi^{(n)}} = \sum_{j=1}^n \ket{e_j} \braket{e_j | \psi}
-$$
-
-Then $\norm{\ket{\psi^{(n)}}} \leq \norm{\ket{\psi}}$.
-
-<details>
-<summary>Proof</summary>
-
-**(1):** For non-zero and unorthogonal vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$, define
-
-$$
-  a = \alpha \frac{|\braket{\phi|\psi}|}{\braket{\phi|\psi}},\; \alpha \in\R
-$$
-
-Then
-
-$$
-\begin{align*}
-  0 \leq& \norm{\ket{\psi} + a\ket{\phi}}^2 \\
-  =& \norm{\ket{\psi}}^2 + 2\alpha |\braket{\phi|\psi}| + \alpha^2 \braket{\phi}
-\end{align*}
-$$
-
-minimizing over $\alpha$ gives $\eqref{equation-152}$.
-
-**(2):** We have
-
-$$
-  \norm{\ket{\psi} + \ket{\phi}}^2 = \norm{\ket{\psi}}^2 + 2\Re(\braket{\psi|\phi}) + \norm{\ket{\phi}}^2
-$$
-
-Applying **(1)** yields
-
-$$
-  \Re(\braket{\psi|\phi}) \leq |\braket{\psi|\phi}| \leq \norm{\ket{\psi}} \cdot \norm{\phi}^2
-$$
-
-implying that
-
-$$
-  \norm{\braket{\psi + \phi}}^2 \leq (\norm{\ket{\psi}} + \norm{\ket{\phi}})^2
-$$
-
-To shows **(3)**, we note that
-
-$$
-  \Braket{\ket{\psi} - \best{\psi} \braket{\psi - \psi^{(N)}}} = 0
-$$
-
-Thus,
-
-$$
-\begin{align*}
-  \norm{\ket{\psi}}^2 =& \norm{\ket{\psi} - \ket{\psi^{(n)}} + \ket{\psi^{(n)}}}^2 \\
-  =& \norm{\ket{\psi} - \ket{\psi^{(n)}}}^2 + \norm{\ket{\psi^{(n)}}} \\
-  \geq& \norm{\ket{\psi^{(n)}}}
-\end{align*}
-$$
-
-</details>
-</MathBox>
-
-## Rigged Hilbert space
-
-Let $\mathcal{H}$ be a Hilbert space over $\mathbb{F}$. Any vector $\ket{\psi}\in\mathcal{H}$ naturally defines an anti-linear functional $\bra{v}:\mathcal{H}\to\mathbb{F}$ via
-
-$$
-  \ket{\varphi} \mapsto \braket{\psi|\varphi}
-$$
-
-so that for all $\ket{\varphi_j}\in \mathcal{H}$ and $a_1 \in\mathbb{F}$ with $j = 1,2$
-
-$$
-  \braket{\psi|a_1 \varphi_1 + a_2 + \varphi_2} = a_1^* \braket{\psi|\varphi_1} + a_2^* \braket{v|\varphi_2}
-$$
-
-This construction embeds $\mathcal{H}$ into its dual space of continuous anti-linear functionals, denoted $\mathcal{H}^*$. 
-
-, through the inner product as follows. For $\ket{g}\in\mathcal{H}$, and with an inner product $\braket{g|f}$, we can consider $\ket{f}$ as a functional in $\ket{g}$, with the property
-
-$$
-  \braket{\alpha_1 \psi_1 + \alpha_2 \psi_2 | f} = \alpha_1^* \braket{\psi_1 | f} + \alpha_2^* \braket{\psi_2 | f}
-$$
-
-If $\Phi\subset\mathcal{H}$ is a dense subset, the triplet $\Phi \subset\mathcal{H}\subset\Phi^*$ defines a rigged Hilbert space, also known as a Gelfand triplet.
-
-## Basis
-
-<MathBox title='Linear independence, span and basis' boxType='definition'>
-Let $I\subseteq\N$ be an index set. A set of vectors $\set{\ket{\varphi_j}}_{j\in I} \subseteq\mathcal{H}$ is *linearly independent* if for every finite subset $\set{\ket{\varphi}_j}_{j=1}^n$ and $a_k \in\mathbb{F}$ with $k=1,\dots,n$
-
-$$
-  \sum_{j=1}^n a_i \varphi_i = 0
-$$
-
-holds only if all $a_k = 0$.
-
-A Hilbert space $\mathcal{H}$ is finite-dimensional if $\mathcal{H}$ contains at most $n = \dim(\mathcal{H}) < \infty$ linearly independent vectors. Otherwise $\mathcal{H}$ is called infinite-dimensional, i.e. $\dim(\mathcal{H}) = \infty$.
-
-A set of vectors $\set{\ket{\varphi_j}}_{j\in I} \subseteq\mathcal{H}$ *spans* $\mathcal{H}$ if for every vector $\varphi\in\mathcal{H}$, there are $a_j \in\mathbb{F}$ with $j\in I$ such that
-
-$$
-  \varphi = \sum_{j\in I} a_j \varphi_j
-$$
-
-In this case we write
-
-$$
-  \mathcal{H} = \operatorname{span}\set{\ket{\varphi_j}}_{j\in I}
-$$
-
-A linearly independent set of vectors $\set{\ket{\varphi_j}}_{j\in I}$ spanning $\mathcal{H}$ is called a *basis* of $\mathcal{H}$ and the vectors $\varphi_j$ of this set are called basis vectors. A basis $\set{\ket{e}_j}_{j\in I}\subset\mathcal{H}$ is orthonormal if
-
-$$
-  \braket{e_j|e_k} = \delta_{jk} := \begin{cases}
-    0,\quad& j\neq k \\
-    1,\quad& j = k
-  \end{cases}
-$$
-
-The Hilbert space $\mathcal{H}$ is separable if it admits a countable orthonormal basis. In this case, for any $\ket{\psi}\in\mathcal{H}$ there exists a sequence of coefficients $c_j = \braket{e_j | \psi}$ such that the partial sums of the Fourier series
-
-$$
-  \ket{\psi_N} := \sum_{j=1}^N c_j \ket{e_j}
-$$
-
-converge to $\ket{\psi}$ in the norm of $\mathcal{H}$, i.e.
-
-$$
-  \lim_{N\to\infty} \Norm{\ket{\psi} - \ket{\psi_N}} = 0
-$$
-</MathBox>
-
-Let $\mathcal{H}$ be a Hilbert space with orthonormal basis $\set{\ket{e_j}}$. For $\ket{\psi}, \ket{\varphi} \in\mathcal{H}$ with $\psi_j = \braket{e_j|\psi}$ and $\varphi_j = \braket{e_j|\varphi}$, then
-
-1. $\ket{\psi} = \sum_j \ket{e_j}\braket{e_j|\psi} = \sum_j \psi_j e_j$
-2. $\braket{\varphi|\psi} = \sum_j \braket{e_j|\varphi}^* \braket{e_j|\psi} = \sum_j \braket{\varphi|e_j}\braket{e_j|\psi} = \sum_j \varphi_j^* \psi_j$
-3. $\norm{\psi}^2 = \sum_j |\braket{e_j|\psi}|^2 = \sum_j |\psi_j|^2$
-4. If $\varphi\in\mathcal{H}_{\psi^\perp}$, then $\norm{\varphi + \psi}^2 = \norm{\varphi}^2 + \norm{\psi}^2$
-
-<details>
-<summary>Proof</summary>
-
-**(1):** If $\ket{\psi} = \sum_j a_j \ket{e_j}$, then
-
-$$
-\begin{align*}
-  \braket{e_k|\psi} =& \Braket{e_k | \sum_j a_j e_j} \\
-  =& \sum_j a_j \underbrace{\braket{e_k|e_j}}_{\delta_{kj}} \\
-  =& a_k
-\end{align*}
-$$
-
-and thus $\ket{\psi} = \sum_j \ket{e_j}\braket{e_j|\psi}$.
-
-**(2):** From **(1)**, we have
-
-$$
-\begin{align*}
-  \braket{\varphi} =& \Braket{\sum_j \varphi_j e_j | \sum_k \psi_k e_k} \\
-  =& \sum_j \sum_k \varphi_j^* \psi_k \underbrace{\braket{e_j|e_k}}_{\delta_{jk}} \\
-  =& \sum_j \varphi_j^* \psi_j = \sum_j \braket{e_j|\varphi}* \braket{e_j|\psi} \\
-  =& \sum_j \braket{\varphi|e_j} \braket{e_j|\psi}
-\end{align*}
-$$
-
-**(3):** Calculating $\norm{\psi}^2$
-
-$$
-  \norm{\psi}^2 = \braket{\psi|\psi} = \sum_j \braket{e_j|\psi}^* \braket{e_j|\psi} = \sum_j |\braket{e_j|\psi}|^2
-$$
-
-**(4):** For $\varphi\in\mathcal{H}_{\psi^\perp}$, we have
-
-$$
-  \braket{\psi|\varphi} = 0 = \braket{\psi|\varphi}^* = \braket{\varphi|\psi}
-$$
-
-such that
-
-$$
-\begin{align*}
-  \norm{\varphi + \psi}^2 =& \braket{\varphi + \psi|\varphi + \psi} \\
-  =& \braket{\varphi|\varphi} + \underbrace{\braket{\varphi|\psi}}_{=0} + \underbrace{\braket{\psi|\varphi}}_{=0} + \braket{\psi|\psi} \\
-  =& \norm{\varphi}^2 + \norm{\psi}^2
-\end{align*}
-$$
-</details>
-
-### Pauli matrices
-
-The Pauli matrices is a set of three complex $2\times 2$ matrices $\sigma_j \in\mathcal{M}_2 (\mathbb{C})$ defined as
-
-$$
-\begin{align*}
-  \sigma_1 = \sigma_x = X :=& \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \\
-  \sigma_2 = \sigma_y = Y :=& \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix} \\
-  \sigma_3 = \sigma_z = Y :=& \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}
-\end{align*}
-$$
-
-The Pauli matrices can be written in the general form 
-
-$$
-  \sigma_j = \begin{bmatrix} 
-    \delta_{j3} & \delta_{j1} - i\delta_{j2} \\
-    \delta_{j1} + i\delta_{j2} & -\delta_{j3}
-  \end{bmatrix}
-$$
-
-where $\delta_{jk}$ is the Kronecker delta. The Hermitian adjoint of $\sigma_j$ is
-
-$$
-  \sigma_j^\dagger = \begin{bmatrix} 
-    \delta_{j3} & \delta_{j1} + i\delta_{j2} \\
-    \delta_{j1} - i\delta_{j2} & -\delta_{j3}
-  \end{bmatrix}^\top = \sigma^j
-$$
-
-showing that the Pauli matrices are Hermitian.
-
-The Paul matrices satisfy
-1. $\sigma_j \sigma_k = \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l$ 
-2. $[\sigma_j, \sigma_k] = \sigma_j \sigma_k - \sigma_k \sigma_j = 2i\varepsilon_{jkl} \sigma_l$
-3. $[\sigma_j, \sigma_k]_+ = \sigma_j \sigma_k + \sigma_k \sigma_j = 2 \delta_{jk} I_2$
-
-<details>
-<summary>Proof</summary>
-
-**(1):**
-
-$$
-\begin{align*}
-  \sigma_j \sigma_k =& \begin{bmatrix} 
-    \delta_{j3} & \delta_{j1} - i\delta_{j2} \\
-    \delta_{j1} + i\delta_{j2} & -\delta_{j3}
-  \end{bmatrix} \cdot \begin{bmatrix} 
-    \delta_{k3} & \delta_{k1} - i\delta_{k2} \\
-    \delta_{k1} + i\delta_{k2} & -\delta_{k3}
-  \end{bmatrix} \\
-  =& \begin{bmatrix} 
-    \delta_{j1}\delta_{k1} + \delta_{j2}\delta_{k2} + \delta_{j3}\delta_{k3} + i(\delta_{j1}\delta_{k2} - \delta_{j2}\delta_{k1}) & \delta_{j3}\delta_{k1} - \delta_{j1}\delta_{k3} + i(\delta_{j2}\delta_{k3} - \delta_{j3}\delta_{k2}) \\
-    \delta_{j1}\delta_{k3} - \delta_{j3}\delta_{k1} + i(\delta_{j2}\delta_{k3} - \delta_{j3}\delta_{k2}) & \delta_{j1}\delta_{k1} + \delta_{j2}\delta_{k2} + \delta_{j3}\delta_{k3} - i(\delta_{j1}\delta_{k2} + \delta_{j2}\delta_{k1})
-  \end{bmatrix} \\
-  =& \begin{bmatrix}
-      \delta_{jk} + i\varepsilon_{jkl}\delta_{l3} & \varepsilon_{jkl}\delta_{l1} - i\varepsilon_{jkl}\delta_{l2} \\
-      \varepsilon_{jkl}\delta_{l1} + i\varepsilon_{jkl}\delta_{l2} & \delta_{jk} - i\varepsilon_{jkl}\delta_{l3}
-    \end{bmatrix} \\
-  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l
-\end{align*}
-$$
-
-**(2):** Using **(1)**, we have
-
-$$
-\begin{align*}
-  [\sigma_j, \sigma_k] =& \sigma_j \sigma_k - \sigma_k \sigma_j \\
-  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l - (\underbrace{\delta_{kj}}_{=\delta_{kj}} I_2 + i\underbrace{\varepsilon_{kjl}}_{=-\varepsilon_{jkl}} \sigma_l) \\
-   = 2i\varepsilon_{jkl} \sigma_l
-\end{align*}
-$$
-
-**(3):** Using **(1)**, we have
-
-$$
-\begin{align*}
-  [\sigma_j, \sigma_k]_+ =& \sigma_j \sigma_k + \sigma_k \sigma_j \\
-  =& \delta_{jk} I_2 + i\varepsilon_{jkl} \sigma_l + \underbrace{\delta_{kj}}_{=\delta_{kj}} I_2 + i\underbrace{\varepsilon_{kjl}}_{=-\varepsilon_{jkl}} \sigma_l \\
-   = 2 \delta_{jk} I_2
-\end{align*}
-$$
-</details>
-
-From the first property, we see that 
-
-$$
-  \sigma_j \sigma_j = \sigma_j^\dagger \sigma_j = \sigma_j \sigma_j^\dagger = \delta_{jj} I_2 = I_2
-$$
-
-meaning that the Pauli matrices are unitary. Additionally, for $\mathbf{a},\mathbf{b}\in\R^3$, the Pauli matrices satisfy the identity
-
-$$
-\begin{equation*}
-  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) = (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma} 
-\tag{\label{equation-109}}
-\end{equation*}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Recall that the cross-product of $\mathbf{a},\mathbf{b}\in\R^3$ can be written $\mathbf{a} \times \mathbf{b} = \sum_{j,k} a_j b_k \varepsilon_{jkl}$. Expanding the left-hand side of $\eqref{equation-109}$ gives
-
-$$
-\begin{align*}
-  (\mathbf{a}\cdot\boldsymbol{\sigma})(\mathbf{b}\cdot\boldsymbol{\sigma}) =& \sum_{j,k} a_j b_k \sigma_j \sigma_k \\
-  =& \sigma_{j,k} a_j b_k (\delta_{jk}\hat{I}_2 + i\varepsilon_{jkl}\sigma_l) \\
-  =& \left(\sum_{j,k} a_j b_k \delta_{jk} \right)\hat{I}_2 + i \sum_{j,k} a_j b_k \varepsilon_{jkl} \sigma_l \\
-  =& (\mathbf{a}\cdot\mathbf{b})I_2 + i(\mathbf{a} \times \mathbf{b})\cdot\boldsymbol{\sigma}
-\end{align*}
-$$
-</details>
-
-Actions on qubit basis vectors $\ket{0} = \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right]$ and $\ket{1} = \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right]$:
-- $\boldsymbol{\sigma}_x \ket{0} = \left[\begin{smallmatrix} 0 & 1 \\ 1 & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right] = \ket{1}$
-- $\boldsymbol{\sigma}_x \ket{1} = \left[\begin{smallmatrix} 0 & 1 \\ 1 & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right] = \ket{0}$
-- $\boldsymbol{\sigma}_y \ket{0} = \left[\begin{smallmatrix} 0 & -i \\ i & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 \\ i \end{smallmatrix}\right] = i\ket{1}$
-- $\boldsymbol{\sigma}_y \ket{1} = \left[\begin{smallmatrix} 0 & -i \\ i & 0 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} -i \\ 0 \end{smallmatrix}\right] = -i\ket{0}$
-- $\boldsymbol{\sigma}_z \ket{0} = \left[\begin{smallmatrix} 1 & 0 \\ 0 & -1 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 1 \\ 0 \end{smallmatrix}\right] = \ket{0}$
-- $\boldsymbol{\sigma}_z \ket{1} = \left[\begin{smallmatrix} 1 & 0 \\ 0 & -1 \end{smallmatrix}\right] \cdot \left[\begin{smallmatrix} 0 \\ 1 \end{smallmatrix}\right] = \left[\begin{smallmatrix} 0 \\ -1 \end{smallmatrix}\right] = -\ket{1}$
-
-<MathBox title='Pauli matrices form a basis for $\mathbb{C}^{2\times 2}$' boxType='proposition'>
-The set $\set{I_2, \sigma_x, \sigma_y, \sigma_z}$ is a basis for $\mathcal{M}_2 (\mathbb{C})$, the set of complex $2\times 2$ matrices.
-
-<details>
-<summary>Proof</summary>
-
-To show that $\set{\mathbf{I}_2, \boldsymbol{\sigma}_x, \boldsymbol{\sigma}_y, \boldsymbol{\sigma}_z}$ is a basis for $\mathcal{M}_2 (\mathbb{C})$, we need to verify:
-1. The set is linearly independent
-2. The set spans $\mathcal{M}_2 (\mathbb{C})$, i.e. $\operatorname{span}\set{\mathbf{I}_2, \boldsymbol{\sigma}_x, \boldsymbol{\sigma}_y, \boldsymbol{\sigma}_z} = \mathcal{M}_2 (\mathbb{C})$
-
-To prove linear independence, we must show that for $c_0, c_1, c_2, c_3 \in\mathbb{C}$
-
-$$
-  c_0 I_2 + c_1 \sigma_x + c_2 \sigma_y + c_3 \sigma_z = \mathbf{0}_2
-$$
-
-implies $c_0 = c_1 = c_2 = c_3 = 0$. This gives the matrix equation
-
-$$
-\begin{bmatrix}
-  c_0 + c_3 & c_1 - ic_2 \\
-  c_1 + ic_2 & c_0 - c_3
-\end{bmatrix} = \mathbf{0}_2
-$$
-
-and the matrix elements must satisfy
-
-$$
-\begin{align*}
-  c_0 + c_3 =& 0 \\
-  c_1 - ic_2 =& 0 \\
-  c_1 + ic_2 =& 0 \\
-  c_0 - c_3 =& 0
-\end{align*}
-$$
-
-The first and fourth equations imply $c_0 = -c_3$ and $c_0 = c_3$, so $c_0 = c_3 = 0$. The second and third equations imply $c_1 = ic_2$ and $c_1 = -ic_2$, so $c_1 = c_2 = 0$.
-
-An arbitrary complex $2\times 2$ matrix $A = \mathcal{M}_2 (\mathbb{C})$ is of the form
-
-$$
-  \mathbf{A} = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
-$$
-
-We need to show that $\mathbf{A}$ can be written as a linear combination
-
-$$
-  \mathbf{A} = c_0 \mathbf{I}_2 + c_1 \boldsymbol{\sigma}_x + c_2 \boldsymbol{\sigma}_y + c_3 \boldsymbol{\sigma}_z
-$$
-
-where $c_0, c_1, c_2, c_3 \in\mathbb{C}$. This gives the matrix equation
-
-$$
-\begin{bmatrix}
-  c_0 + c_3 & c_1 - ic_2 \\
-  c_1 + ic_2 & c_0 - c_3
-\end{bmatrix} = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}
-$$
-
-and the matrix elements must satisfy
-
-$$
-\begin{align*}
-  c_0 + c_3 =& a_{00} \\
-  c_1 - ic_2 =& a_{01} \\
-  c_1 + ic_2 =& a_{10} \\
-  c_0 - c_3 =& a_{11}
-\end{align*}
-$$
-
-Adding the first and fourth equations gives
-
-$$
-  2c_0 = a_{00} + a_{11} \implies c_2 = \frac{1}{2}(a_{00} + a_{11})
-$$
-
-Adding the second and third equation gives
-
-$$
-  2c_1 = a_{01} + a_{10} \implies c_1 = \frac{1}{2}(a_{01} + a_{10})
-$$
-
-Subtracting the third equation from the second gives
-
-$$
-  -i2 c_2 = a_{01} - a_{10} \implies c_2 = i\frac{1}{2}(a_{01} - a_{10})
-$$
-
-Subtracting the first equation from the first gives
-
-$$
-  -2c_3 = a_{11} - a_{00} \implies c_3 = \frac{1}{2}(a_{00} - a_{11})
-$$
-
-Since $c_j$ exist for all $a_{kl}$, we conclude that any matrix in $\mathcal{M}_2 (\mathbb{C})$ can be written as a linear combination of $\mathbf{I}_2, \boldsymbol{\sigma}_x, \boldsymbol{\sigma}_y, \boldsymbol{\sigma}_z$.
-</details>
-</MathBox>
-
-## Linear operators
-
-<MathBox title='Linear operator' boxType='definition'>
-A linear map $\hat{A}:\mathcal{H}\to\mathcal{H}$ is called an operator on the Hilbert space $\mathcal{H}$. The set of all operators on $\mathcal{H}$ is denoted by $\mathcal{L}(\mathcal{H})$. A linear map $\hat{T}:\mathcal{L}(\mathcal{H}) \to \mathcal{L}(\mathcal{H})$, that is, an operator acting on operators, is called a *super-operator*.
-
-The operator norm of $\hat{A}\in\mathcal{L}(\mathcal{H})$ is given by
-
-$$
-\begin{equation*}
-  \norm{\hat{A}} := \sup\Set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\ket{\psi}} = 1} 
-\tag{\label{equation-107}}
-\end{equation*}
-$$
-
-This norm measures the largest possible stretching effect that $\hat{A}$ can have on unit vectors in $\mathcal{H}$.
-
-An operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ is bounded if $\norm{\hat{A}} < \infty$. The set of bounded operators on $\mathcal{H}$ is denoted $\mathcal{B}(\hat{H})$.
-</MathBox>
-
-A linear operator is a mapping between two vector spaces that is preserved under vector addition and scalar multiplication
-
-- Additivity: 
-  - $\hat{A}\left(\ket{\phi_1} + \ket{\phi_2} \right) = \hat{A} \ket{\phi_1} + \hat{A} \ket{\phi_2}$
-    - $\left( \bra{\psi_1} + \bra{\psi_2} \right)\hat{A} = \bra{\psi_1}\hat{A} + \bra{\psi_2}\hat{A}$
-- Scalar multiplication
-  - $\hat{A} \ket{a\phi} = a\hat{A} \ket{\phi}$
-  - $ \left( \bra{\psi} a \right) \hat{A} = a \bra{\psi} \hat{A}$
-
-Operator properties
-1. **Associativity:** $\hat{A}\hat{B}\hat{C} = \hat{A}\left(\hat{B}\hat{C}\right) = (\hat{A}\hat{B})\hat{C}$
-2. **Power property:** $\left(\hat{A}\right)^n \left( \hat{A} \right)^m = \left(\hat{A}\right)^{n + m}$
-3. **Inner product:** $\braket{\psi|\hat{A}|\phi} = \braket{\psi|\phi'} \in \mathbb{C}$ where $\ket{\phi'} = \hat{A}\ket{\phi}$
-4. **Expectation:** $\langle\hat{A}\rangle_\psi = \frac{\braket{\psi | \hat{A} | \psi}}{\braket{\psi|\psi}}$
-
-Bounded operator properties for $\hat{A},\hat{B}\in\mathcal{B}(\mathcal{H})$ and $a\in\mathbb{F}$
-1. $\norm{\hat{A}\ket{\psi}} \leq \norm{\hat{A}}\cdot\norm{\ket{\psi}}$
-2. $\norm{\hat{A}\hat{B}} \leq \norm{\hat{A}}\cdot\norm{\hat{B}}$
-3. $\norm{\hat{A} + \hat{B}} \leq \norm{\hat{A}} + \norm{\hat{B}}$
-4. $\norm{ a\hat{A}} = |a|\cdot\norm{\hat{A}}$
-
-<details>
-<summary>Proof</summary>
-
-**(1):** Let $\ket{\psi}\in\mathcal{H}$ be nonzero. Then 
-
-$$
-  \norm{\frac{\psi}{\lVert\psi}}\rVert = 1
-$$
-
-and
-
-$$
-\begin{align*}
-  \frac{1}{\norm{\psi}} \norm{ \cdot \lVert\hat{A}\psi} =& \norm{\hat{A}\frac{\psi}{\lVert\psi}}\rVert \\
-  \leq& \sup\set{\norm{\hat{A}\varphi} : \ket{\varphi}\in\mathcal{H},\norm{\varphi} = 1} = \norm{\hat{A}} 
-\end{align*}
-$$
-
-Hence,
-
-$$
-  \norm{\hat{A}\ket{\psi}} \leq \norm{\hat{A}}\cdot\norm{\ket{\psi}}
-$$
-
-**(2):** From the definition $\eqref{equation-107}$ and **(1)**, we have
-
-$$
-\begin{align*}
-  \norm{\hat{A}\hat{B}} =& \sup\set{\norm{\hat{A}\hat{B}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
-  =& \sup\set{\norm{\hat{A}}\cdot\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  \leq& \norm{\hat{A}} \sup\set{\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  =& \norm{\hat{A}}\cdot\norm{\hat{B}}
-\end{align*}
-$$
-
-**(3):** From the definition $\eqref{equation-107}$, we have
-
-$$
-\begin{align*}
-  \norm{\hat{A} + \hat{B}} =& \sup\set{\norm{(\hat{A} + \hat{B})\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  \leq& \sup\set{\norm{\hat{A}\psi} + \norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  \leq& \sup\set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
-  &+ \sup\set{\norm{\hat{B}\psi} : \ket{\psi}\in\mathcal{H},\norm{\psi} = 1} \\
-  =& \norm{\hat{A}} + \norm{\hat{B}}
-\end{align*}
-$$
-
-**(4):** From the definition $\eqref{equation-107}$, we have
-
-$$
-\begin{align*}
-  \norm{a\hat{A}} =& \sup\set{\norm{a\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  =& \sup\set{|a|\cdot\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  =& |a| \sup\set{\norm{\hat{A}\psi} : \ket{\psi}\in\mathcal{H}, \norm{\psi} = 1} \\
-  =& |a|\cdot\norm{\hat{A}}
-\end{align*}
-$$
-</details>
-
-### Outer product
-
-<MathBox title='Outer product' boxType='definition'>
-Let $\mathcal{H}$ be a Hilbert space. The outer product of two vectors $\ket{\psi}, \ket{\phi} \in\mathcal{H}$ is the operator $\ket{\psi}\bra{\phi} : \mathcal{H} \to\mathcal{H}$ given by
-
-$$
-  \ket{\chi} \mapsto \ket{\psi} \braket{\psi|\chi}
-$$
-
-which projects the component of $\ket{\chi}$ along $\ket{\phi}$ onto $\ket{\psi}$.
-</MathBox>
-
-The operator $\ket{\psi}\bra{\phi}: \mathcal{H} \to\mathcal{H}$ is linear in its action on kets, which follows from the linearity of the inner product in its second argument. For any scalars $a, b \in\mathbb{F}$ and vectors $\ket{\chi_1}, \ket{\chi_2} \in\mathcal{H}$
-
-$$
-\begin{align*}
-  \ket{\psi}\ket{\phi}(a\ket{\chi_1} + b\ket{\chi_2}) =& \ket{\psi}(a\braket{\phi|\chi_1} + a\braket{\phi|\chi_2}) \\
-  =& a\ket{\psi}\bra{\phi}(\ket{\chi_1}) + b\ket{\psi}\bra{\phi}(\ket{\chi_2})
-\end{align*}
-$$
-
-The map $\ket{\cdot}\bra{\cdot}: \mathcal{H}\times\mathcal{H} \to\mathcal{L}(\mathbf{H})$ is sesquilinear satisfying
-- **Linearity in the first argument:** For $a, b \in\mathbb{F}$ and $\ket{\psi_1}, \ket{\psi_2}, \ket{\phi}\in\mathcal{H}$
-$$
-  (a\ket{\psi_1} + b\ket{\psi_2})\bra{\phi} = a\ket{\psi_1}\bra{\phi} + b\ket{\psi_2}\bra{\phi}
-$$
-
-- **Conjugate-linearity in the second argument:** For $\ket{\psi}, \ket{\phi_1}, \ket{\phi_2} \in\mathcal{H}$
-$$
-  \ket{\psi}(a\bra{\phi_1} + b\bra{\phi_1}) = a^* \ket{\psi}\bra{\phi_1} + b^* \ket{\phi}\bra{\phi_2}
-$$
-
-### Matrix representation
-
-<MathBox title='Matrix representation of linear operators' boxType='definition'>
-If $\mathcal{H}$ is a finite-dimensional Hilbert space with orthonormal basis $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$, the matrix elements of a linear operator $\hat{A}$ on $\mathcal{H}$ is given by
-
-$$
-  A_{jk} := \braket{e_j |\hat{A}|e_k}
-$$
-
-The matrix representation of $\mathbf{A}$ in the basis $\set{\ket{e_j}}$ is the matrix
-
-$$
-  \mathbf{A} = (\mathbf{A}_{jk})_{j,k=1}^{\dim\mathcal{H}}
-$$ 
-</MathBox>
-
-If $\set{\ket{e_j}}_{j=1}^{\dim\mathcal{H}}$ is an ortonormal basis on a Hilbert space $\mathcal{H}$, a vector $\ket{\psi}\in\mathcal{H}$ can be expanded as 
-
-$$
-  \ket{\psi} = \sum_j \ket{e_j} \braket{e_j|\psi}
-$$
-
-Applying an operator $\hat{A}\in\mathcal{L}(\mathcal{H})$ on $\ket{\psi}$ gives
-
-$$
-\begin{align*}
-  \hat{A}\ket{\psi} =& \ket{\hat{A}\psi} = \sum_j \ket{e_j} \braket{e_j|\hat{A}\psi} \\
-  =& \sum_j \ket{e_j} \Braket{e_j|\hat{A}\left(\sum_k| \ket{e_k} \braket{e_k|\psi}\right)} \\
-  =& \sum_{j,k} \braket{e_j|\hat{A}|e_k} \ket{e_j}\braket{e_k|\psi}
-\end{align*}
-$$
-
-Thus, we can express $\hat{A}$ in the form
-
-$$
-\begin{equation*}
-  \hat{A} = \sum_{j,k} \ket{e_j} \braket{e_j|\hat{A}|e_k}\bra{e_k} = \sum_{j,k} \ket{e_j} A_{jk} \bra{e_k} 
-\tag{\label{equation-147}}
-\end{equation*}
-$$
-
-where the scalars $A_{jk} := \braket{e_j|\hat{A}|e_k} \in\mathbb{F}$ define the matrix elements of $\hat{A}$ with respect to the basis $\set{\ket{e}_j}$. The matrix representation of $\hat{A}$ in the basis $\set{\ket{e_j}}$ is the matrix
-
-$$
-  \mathbf{A} = {A}_{jk}_{j,k=1}^{\dim(\mathcal{H})}
-$$ 
-
-From $\eqref{equation-147}$, the product of two linear operators $\hat{A}, \hat{B} \in\mathcal{L}(\mathcal{H})$ is given by
-
-$$
-\begin{align*}
-  \hat{A}\hat{B} =& \left(\sum_{j, j'} \braket{j|\hat{A}|j'} \ket{j}\bra{j'} \right) \left(\sum_{k, k'} \braket{k|\hat{B}|kk'} \ket{k}\bra{k'} \right) \\
-  =& \sum_{j,j',k,k'} \braket{j|\hat{A}|j'} \braket{k|\hat{B}|k'} \underbrace{\braket{j'|k}}_{\delta_{j',k}} \ket{j}\bra{k'} \\
-  =& \sum_{j,k'} \left(\sum_{j''} \braket{j|\hat{A}|j'} \braket{j'|\hat{B}|k'} \right) \ket{j}\bra{k'}
-\end{align*}
-$$
-
-Thus, the matrix elements of the product operator $\hat{A}\hat{B}$ are
-
-$$
-  \braket{j|\hat{A} \hat{B}|j'} = \sum_{j''} \braket{j|\hat{A}|j''}\braket{j''|\hat{B}|j'}
-$$
-
-which is precisely the rule for ordinary matrix multiplication.
-
-
-
-The Hermitian adjoint of $\mathbf{M}$ is
-
-$$
-\begin{align*}
-  \mathbf{M}^\dagger =& \sum_{j,j'} \braket{j|\hat{M}|j'}^* (\ket{j}\bra{j'})^\dagger \\
-  =& \sum_{j,j'} \braket{j|\hat{M}|j'}^* \ket{j'}\bra{j}
-\end{align*}
-$$
-
-from which we conclude that
-
-$$
-  \braket{j|\hat{M}^\dagger|j'} = \braket{j'|\hat{M}|j}^\dagger
-$$
-
-### Rotation operators
-
-<MathBox title='' boxType='proposition'>
-If $\hat{A}\in\mathcal{L}(\mathcal{H})$ is an involuntary operator, i.e. $\hat{A}^2 = \hat{I}$, then
-
-$$
-  e^{i\theta \hat{A}} = \cos(\theta)\hat{I} + i\sin(\theta)\hat{A}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Taking the Taylor series expansion of $e^{i\theta\hat{A}}$ and using the fact that $\hat{A}^2 = \hat{I}$ gives
-
-$$
-\begin{align*}
-  e^{i\theta\hat{A}} =& \sum_{n=0}^\infty \frac{(i\theta \hat{A})^n}{n!} \\
-  =& \hat{I} + i\theta \hat{A} - \frac{\theta^2 \hat{I}}{2!} - i\frac{\theta^3 \hat{A}}{3!} + \frac{\theta^4 \hat{I}}{4!} \\
-  =& \left(\sum_{n=0}^\infty \frac{(-1)^n \theta^{2n}}{(2n)!} \right)\hat{I} + i \left(\sum_{n=1}^\infty \frac{(-1)^n \theta^{2n - 1}}{(2n - 1)!} \right)\hat{A} \\
-  =& \cos(\theta)\hat{I} + i\sin(\theta)\hat{A}
-\end{align*}
-$$
-</details>
-</MathBox>
-
-In terms of the Pauli matrices, any unitary operator $\hat{U}\in\mathrm{U}(2)$ takes the form
-
-$$
-  \mathbf{U} = u_0 \mathbf{I}_2 + i(u_x \boldsymbol{\sigma}_x + u_y \boldsymbol{\sigma}_y + u_z \boldsymbol{\sigma}_z) = u_0 \mathbf{I}_2 + i \mathbf{u}\cdot\boldsymbol{\sigma} 
-$$
-
-where $u_0^2 + |\mathbf{u}|^2 = 1$. This last restriction allows us to parametrize $u_0$ and $\mathbf{u}\in\R^3$ in terms of a real unit vector $\unitvec{n}\in\mathbb{S}^2 \subset\R^3$ parallel to $\mathbf{u}$ and a real number $\theta\in\R$ such that
-
-$$
-  \mathbf{U} = \cos\left(\frac{\theta}{2}\right)\mathbf{I}_2 - i\sin\left(\frac{\theta}{2}\right) \unitvec{n}\cdot\boldsymbol{\sigma} = e^{-i\theta \unitvec{n}\cdot\boldsymbol{\sigma} / 2}
-$$
-
-The unitary matrix $\mathbf{U}$ represents a counterclockwise rotation through an angle $\theta$ about $\unitvec{n}$. This operator is usually denoted 
-
-$$
-  \hat{R}_{\unitvec{n}}(\theta) = e^{-i\theta \unitvec{n}\cdot\boldsymbol{\sigma}}
-$$
-
-where $\boldsymbol{\sigma}$ are the Pauli matrices. Since the Pauli matrices are involuntary, i.e. $\hat{\sigma}_j = \hat{I}_2$, their exponentiation simplifies, allowing us to explicitly define the fundamental rotation operators about the Cartesian axes:
-
-$$
-\begin{align*}
-  \hat{R}_x (\theta) =& e^{-i\theta\hat{\sigma}_x / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_x = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\ -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
-  \hat{R}_y (\theta) =& e^{-i\theta\hat{\sigma}_y / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_y = \begin{bmatrix} \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\ \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right) \end{bmatrix} \\
-  \hat{R}_z (\theta) =& e^{-i\theta\hat{\sigma}_z / 2} = \cos\left(\frac{\theta}{2}\right)\hat{I}_2 - i\sin\left(\frac{\theta}{2}\right)\hat{\sigma}_z = \begin{bmatrix} e^{-i\frac{\theta}{2}} & 0 \\ 0 & e^{i\frac{\theta}{2}} \end{bmatrix}
-\end{align*}
-$$
-
-Let $V$ be a 3-dimensional vector space of $2\times 2$ Hermitian matrices with zero trace. Every such matrix $\mathbf{S}\in V$ can be written as $\mathbf{S} = \mathbf{s}\cdot\boldsymbol{\sigma}$, where $\mathbf{s}\in\R^3$ is a real vector. A unitary operator $\hat{U}\in\mathrm{U}(2)$ acts on $V$ by $\mathbf{S} \mapsto S' = \mathbf{USU}^\dagger$. In component form, this can be written as
-
-$$
-  \mathbf{s}\cdot\boldsymbol{\sigma} \mapsto \mathbf{s}' \cdot \boldsymbol{\sigma} = \mathbf{U}(\mathbf{s}\cdot\boldsymbol{\sigma}) \mathbf{U}^\dagger
-$$
-
-which defines a linear map $\hat{R}_U :\R^3 \to\R^3$. This is an isometry because it preserves the inner product. To verify this, consider $\mathbf{S} = \mathbf{s}\cdot\boldsymbol{\sigma}$ and $\mathbf{T} = \mathbf{t}\cdot\boldsymbol{\sigma}$ for $\mathbf{s},\mathbf{t}\in\R^3$. Then
-
-$$
-\begin{align*}
-  \mathbf{s}'\cdot \mathbf{t}' =& \frac{1}{2}\operatorname{tr}(\mathbf{S}' \mathbf{T}') \\
-  =& \frac{1}{2}\operatorname{tr}\left[(\mathbf{USU}^\dagger)(\mathbf{UTU}^\dagger) \right] \\
-  =& \frac{1}{2}\operatorname{tr}(\boldsymbol{ST}) \\
-  =& \mathbf{s}\cdot\mathbf{t}
-\end{align*}
-$$
-
-This means that $\hat{R}_U \in \mathrm{SO}(3)$ represents a rotation in $\R^3$. We have thus established a group homomorphism
-
-$$
-\begin{align*}
-  \operatorname{U}(2)\to& \operatorname{SO}(3) \\
-  \hat{U} \mapsto \hat{R}_U
-\end{align*}
-$$
-
-### Trace
-
-<MathBox title='Trace' boxType='definition' tag='definition-1'>
-Let $\set{\ket{e_j}}_{j=1}^{n\in\N}$ be an orthonormal basis in a finite-dimensional Hilbert space $\mathcal{H}$ with $\dim(\mathcal{H}) = n$. The trace is defined as the map $\operatorname{tr}: \mathcal{L}(\mathcal{H}) \to\mathbb{F}$ given by
-
-$$
-\begin{equation*}
-  \operatorname{tr}(\hat{A}) := \sum_{j=1}^n \braket{e_j |\hat{A}|e_j} = \sum_{j=1}^n A_{jj}
-\tag{\label{equation-148}}
-\end{equation*}
-$$
-</MathBox>
-
-Properties of the trace
-1. Linearity: $\operatorname{tr}(\hat{A} + \hat{B}) = \operatorname{tr}(\hat{A}) + \operatorname{tr}(\hat{B})$
-2. Commutatitivity: $\operatorname{tr}(\hat{A}\hat{B}) = \operatorname{tr}(\hat{B}\hat{A})$
-3. $\operatorname{tr}(\hat{A}\hat{B}) = 0, \;\forall \hat{A}\in\mathcal{L}(\mathcal{H}) \iff \hat{B} = 0$
-4. $\operatorname{tr}(a \ket{\phi}{\psi}) = a \braket{\psi|\phi}$ for scalar $a\in\mathbb{F}$
-5. $\operatorname{tr}(\hat{A} \ket{phi}{\psi}) = \braket{\psi|\hat{A}|\phi}$
-
-<details>
-<summary>Proof</summary>
-
-Let $\set{\ket{e_i}}_{i=1}^{\dim(\mathcal{H})}$ be an orthonormal basis of $\mathcal{H}$. 
-
-**(4):** By the definition of the trace $\eqref{equation-148}$, we obtain
-
-$$
-\begin{align*}
-  \operatorname{tr}(a \ket{\phi}\bra{\psi}) =& a \sum_j \braket{e_j | (\ket{\phi}\bra{\psi})|e_j} \\
-  =& a \sum_j \braket{e_j |\phi} \braket{\psi|e_j} \\
-  =& a \sum_j \braket{\psi|e_j}\braket{e_j |\phi} \\
-  =& a \Braket{\psi | \left(\sum_j \bra{e_j} \ket{e_j}\right)| \phi \ket} = a\braket{\psi|\phi}
-\end{align*}
-$$
-
-where we have used the completeness relation
-
-$$
-  \sum_j \bra{e_j} \ket{e_j} = \hat{I}
-$$
-
-**(5):** By the definition of the trace $\eqref{equation-148}$, we obtain
-
-$$
-\begin{align*}
-  \operatorname{tr}(\hat{A}\ket{\phi}\bra{\psi}) =& \sum_j \braket{e_j|(\hat{A}\ket{\phi}\bra{\psi})|e_j} \\
-  =& \sum_j = \braket{e_j|\hat{A}|\phi}\braket{\psi|e_j} \\
-  =& \sum_j = \braket{\psi|e_j}\braket{e_j |\hat{A}|\phi} \\
-  =& \Braket{\psi | \left(\sum_j \bra{e_j} \ket{e_j}\right) \hat{A}| \phi \ket} = \braket{\psi|\hat{A}|\phi}
-\end{align*}
-$$
-
-</details>
-
-In particular for the identity operator $\hat{I}$ with respect to an orthonormal basis $\set{\ket{e_j}}$ we have
-
-$$
-  \operatorname{tr}(\hat{I} \ket{e_k}\bra{e_j}) = \braket{e_j|\hat{I}|e_k} = \delta_{jk}
-$$
-
-From $\eqref{equation-147}$, we retrieve the completeness relation
-
-$$
-  \mathbf{I} = \sum_{j} \ket{e_j}\bra{e_j}
-$$
-
-If $\set{\ket{j}}$ is orthonormal basis of a Hilber space $\mathcal{H}$, then by the completeness relation, a vector $\ket{\psi} \in\mathcal{H}$ can be expanded as
-
-$$
-  \ket{\psi} = \sum_j \ket{j}\braket{j|\psi}
-$$
-
-The coordinate representation of $\ket{\psi}$ in this basis defines a wavefunction $\psi(j) := \braket{j|\psi}$. Taking the Hermitian adjoint yields
-
-$$
-  \ket{\psi}^\dagger = \sum_j \psi^* (j) \bra{j} =: \bra{\psi} \in\mathcal{H}^*
-$$
-
-For any $\ket{\psi}, \ket{\phi} \in\mathcal{H}$, the trace of the outer product $\ket{\psi}\bra{\phi}$ defines an inner product
-
-$$
-\begin{align*}
-  \operatorname{tr}(\ket{\psi}\bra{\psi}) =& \sum_j \braket{j|\psi} \braket{\phi|j} \\
-  =& \sum_{j, j'} \phi^* (j) \psi(j) = \braket{\phi|\psi}
-\end{align*}
-$$
-
-### Hermitian adjoint
-
-<MathBox title='Hermitian adjoint' boxType='definition'>
-The $\hat{A}:\mathcal{H}\to\mathcal{H}$ be a linear operator on a Hilbert space $\mathcal{H}$. The Hermitian adjoint $\hat{A}$ is the unique linear operator $\hat{A}^\dagger :\mathcal{H}\to\mathcal{H}$ that satisfies
-
-$$
-  \braket{\varphi|\hat{A}\psi} = \braket{\hat{A}^\dagger \varphi|\psi},\; \forall \ket{\psi},\ket{\varphi} \in\mathcal{H}
-$$
-
-Equivalently, using Dirac notation, this condition can be rewritten as 
-
-$$
-  \braket{\varphi|\hat{A}|\psi} = \braket{\psi|\hat{A}^\dagger |\varphi}^*
-$$
-
-An operator $\hat{A}$ is Hermitian (or self-adjoint) if it it equal to its own adjoint:
-
-$$
-  \hat{A} = \hat{A}^\dagger
-$$
-
-An operator $\hat{A}$ is anti-Hermitian if it is the negative of its own adjoint:
-
-$$
-  \hat{A} = -\hat{A}^\dagger
-$$
-
-A Hermitian operator $\hat{A}$ is *positive* if for all $\ket{\psi}\in\mathcal{H}$,
-
-$$
-  \braket{\psi|\hat{A}|\psi} \geq 0
-$$
-
-which is written $\hat{A}\geq 0$. The operator $\hat{A}$ is *strictly positive* if for all nonzero $\ket{\psi}\in\mathcal{H}\setminus\set{0}$
-
-$$
-  \braket{\psi|\hat{A}|\psi} > 0
-$$
-
-which is written $\hat{A} > 0$.
-</MathBox>
-
-Hermitian adjoint properties
-1. $\left(\hat{A}^\dagger \right)^\dagger = \hat{A}$
-2. $\left(\hat{A} + \hat{B}\right)^\dagger = \hat{A}^\dagger + \hat{B}^\dagger$
-3. $\left(\hat{A}\hat{B} \right)^\dagger = \hat{B}^\dagger\hat{A}^\dagger$
-4. $\left(\hat{A}\ket{\psi}\right)^\dagger = \ket{\psi}\hat{A}^\dagger$
-5. $\left(\ket{\psi}\bra{\phi}\right)^\dagger = \ket{\phi}\bra{\psi}$
-6. $\ket{a\hat{A}\psi} = a^* \ket{\psi}\hat{A}^\dagger$ for any $a\in\mathbb{F}$
-7. $(\hat{A}\times\hat{B})^\dagger = -\hat{B}^\dagger \times\hat{A}^\dagger$
-8. $\hat{A}^{\dagger}\hat{B}\hat{C} + \hat{C}^{\dagger}\hat{B}\hat{A} = \frac{1}{2}\left[(\hat{A}+\hat{C})^{\dagger}\hat{B}(\boldsymbol{A}+\hat{C}) - (\hat{A}-\hat{C})^{\dagger} \hat{B}(\boldsymbol{A}-\hat{C})\right]$
-
-<details>
-<summary>Proof</summary>
-
-**(7):** In terms of the Levi-Civita symbol, $\varepsilon_{ijk}$, we can write
-
-$$
-  (\hat{A}\times\mathbf{B})_i = \varepsilon_{ijk} A_j B_k
-$$
-
-Thus,
-
-$$
-\begin{align*}
-  (\hat{A} \times \hat{B})^\dagger =& (\varepsilon_{ijk} A_j B_k)^\dagger = \varepsilon_{ijk} (A_j B_k)^\dagger \\
-  =& \varepsilon_{ijk} B_k^\dagger A_j^\dagger = -\varepsilon_{ikj} B_k^\dagger A_j^\dagger \\
-  =& -(\hat{B}^\dagger \times\hat{A}^\dagger)_i
-\end{align*}
-$$
-
-**(8):** We start by expanding the operator products on the right-hand side. For the first term we have
-
-$$
-\begin{align*}
-  (\hat{A} + \hat{C})^\dagger \hat{B} (\hat{A} + \hat{C}) =& (\hat{A}^\dagger + \hat{C}^\dagger) \hat{B} (\hat{A} + \hat{C}) \\
-  =& \hat{A}^\dagger \hat{B}\hat{A} + \hat{A}^\dagger \hat{B}\hat{C} + \hat{C}^\dagger \hat{B} \hat{A} + \hat{C}^\dagger \hat{B} \hat{C} 
-\end{align*}
-$$
-
-Similarly, for the second term
-
-$$
-\begin{align*}
-  (\hat{A} - \hat{C})^\dagger \hat{B} (\hat{A} - \hat{C}) =& (\hat{A}^\dagger - \hat{C}^\dagger) \hat{B} (\hat{A} + \hat{C}) \\
-  =& \hat{A}^\dagger \hat{B}\hat{A} - \hat{A}^\dagger \hat{B}\hat{C} - \hat{C}^\dagger \hat{B} \hat{A} + \hat{C}^\dagger \hat{B} \hat{C} 
-\end{align*}
-$$
-
-Subtracting the terms yields
-
-$$
-\begin{align*}
-  & \hat{A}^\dagger \hat{B}\hat{A} + \hat{A}^\dagger \hat{B}\hat{C} + \hat{C}^\dagger \hat{B} \hat{A} + \hat{C}^\dagger \hat{B} \hat{C} \\
-  -& (\hat{A}^\dagger \hat{B}\hat{A} - \hat{A}^\dagger \hat{B}\hat{C} - \hat{C}^\dagger \hat{B} \hat{A} + \hat{C}^\dagger \hat{B} \hat{C}) \\
-  =& 2(\hat{A}^\dagger \hat{B}\hat{C} + \hat{C}^\dagger \hat{B} \hat{A})
-\end{align*}
-$$
-
-This shows that
-
-$$
-  \hat{A}^{\dagger}\hat{B}\hat{C} + \hat{C}^{\dagger}\hat{B}\hat{A} = \frac{1}{2}\left[(\hat{A}+\hat{C})^{\dagger}\hat{B}(\boldsymbol{A}+\hat{C}) - (\hat{A}-\hat{C})^{\dagger} \hat{B}(\boldsymbol{A}-\hat{C})\right]
-$$
-</details>
-
-### Unitary operator
-
-<MathBox title='Unitary operator' boxType='definition'>
-A linear operator $\hat{U}:\mathcal{H}\to\mathcal{H}$ on a Hilbert space $\mathcal{H}$ is *unitary* if its Hermitian adjoint equals its inverse;
-
-$$
-  \hat{U}^\dagger = \hat{U}^{-1}
-$$
-
-This implies that
-
-$$
-  \hat{U}\hat{U}^\dagger = \hat{U}^\dagger \hat{U} = \hat{I}
-$$
-
-where $\hat{I}$ is the identity operator on $\mathcal{H}$. The set of all unitary operators on $\mathcal{H}$ is denoted $\mathcal{U}(\mathcal{H})$.
-</MathBox>
-
-A unitary operator $\hat{U}\in\mathcal{U}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ has the following properties:
-
-- **Preservation of inner products:** 
-
-$$
-  \braket{\hat{U}\psi|\hat{U}\varphi} = \braket{\psi|\hat{U}^\dagger U|\varphi} = \braket{\psi|\varphi},\; \forall \ket{\psi},\ket{\varphi}\in\mathcal{H}
-$$
-
-- **Preservation of norm:**
-
-$$
-  \norm{ \hat{U}\ket{\psi}} = \sqrt{\braket{\hat{U}\psi|\hat{U}\psi}} = \sqrt{\braket{\psi|\hat{U}^\dagger \hat{U}|\psi}} = \sqrt{\braket{\psi|\psi}} = \norm{\ket{\psi}}
-$$
-
-- **Preservation of trace:** Any normal operator $\hat{Q}$ can be written in terms of a orthonormal eigenbasis $\set{\ket{q_j}}$ as
-
-$$
-  \hat{Q} = \sum_j q_j \ket{q_j} \bra{q_j}
-$$
-
-Under a unitary transformation $\hat{U}$, the transformed operator $\hat{Q}_U$ is given by
-
-$$
-  \hat{Q}\mapsto \hat{Q}_U = \sum_j q_j \hat{U} \ket{q} \bra{q}_k \hat{U}^\dagger = \hat{U} \hat{Q} \hat{U}^\dagger
-$$
-
-Consequently, the trace of $\hat{Q}_U$ remains unchanged:
-
-$$
-\begin{align*}
-  \operatorname{tr}(\hat{Q}_U) = \operatorname{tr}(\hat{U}\hat{Q}\hat{U}^\dagger) = \operatorname{tr}(\hat{U}^\dagger \hat{U} \hat{Q}) = \operatorname{tr}(\hat{Q})
-\end{align*}
-$$
-
-<MathBox title='' boxType='proposition'>
-Let $\set{\ket{e_j}}_{j=1}^{n\in\N}$ be an orthonormal basis of an $n$-dimensional Hilbert space $\mathcal{H}$. For $\hat{A},\hat{U}\in\mathcal{L}(\mathcal{H})$, we have
-
-1. $\set{\ket{\tilde{e}_j} = \hat{U}\ket{e_j}}$ is an orthonormal basis in $\mathcal{H}$ if an only if $\hat{U}\in\mathcal{U}(\mathcal{H})$ is unitary
-2. 
-$$
-  \sum_{j=1}^n \braket{e_j|\hat{A}|e_j} = \sum_j \braket{\tilde{e}_j|\hat{A}|\tilde{e}_j}
-$$
-
-<details>
-<summary>Proof</summary>
-
-**(1):** To show $\implies$, let $\set{\ket{\tilde{e}_j} = \hat{U}\ket{e_j}}$ be an orthonormal basis in $\mathcal{H}$. If follows that $U_{jk} = \braket{e_j |\hat{U}|e_k} = \braket{e_j|\tilde{e}_k}$ and thus
-
-$$
-\begin{align*}
-  (\mathbf{U}\mathbf{U}^\dagger)_{kl} =& \sum_{j=1}^n \mathbf{U}_{kj} \mathbf{U}_{jl}^* = \sum_{j=1}^n \mathbf{U}_{kj} \mathbf{U}_{jk} \\
-  =& \sum_{j=1}^n \braket{e_k|\tilde{e}_j} \braket{e_l|\tilde{e}_j}^* = \sum_{j=1}^n \braket{e_k|\tilde{e}_j}\braket{\tilde{e}_j|e_l} \\
-  =& \Braket{e_k | \sum_{j=1}^n \tilde{e}_j \braket{\tilde{e}_j | e_l}} = \braket{e_k|e_l} \\
-  =& \delta_{kl}
-\end{align*}
-$$
-
-such that $U\in\mathcal{U}(\mathcal{H})$.
-
-To show $\impliedby$, let $U\in\mathcal{U}(\mathcal{H})$ and $\ket{\tilde{e}_j} = \hat{U}\ket{e_j}$. For any $\set{a_j}\subset\mathbb{F}$ it follows that
-
-$$
-\begin{align*}
-  &\sum_{j=1}^n a_j \ket{\tilde{e}_j} = 0 \implies& \sum_{j=1}^n a_j \hat{U}\ket{e_j} = 0 \\
-  \implies& \hat{U} \sum_{j=1}^m a_j \ket{e_j} = 0 \implies& \hat{U}^\dagger \hat{U} \sum_{j=1}^n a_j \ket{e_j} \\
-  \implies& \sum_{j=1}^n a_j\ ket{e_j} = 0 \implies& a_j = 0, \; \forall j
-\end{align*}
-$$
-
-such that the $\set{\tilde{e}_j} \subset\mathcal{H}$ are linearly independent. Moreover, we have for any $\ket{\psi}\in\mathcal{H}$
-
-$$
-\begin{align*}
-  \hat{U}^\dagger \ket{\psi} =& \sum_{j=1}^n \braket{e_j|\hat{U}^\dagger|\psi}\ket{e_j} = \sum_{j=1}^n \braket{\hat{U}e_j | \psi}\ket{e_j} \\
-  =& \sum_{j=1}^n \braket{\tilde{e}_j |\psi} \ket{e_j}
-\end{align*}
-$$
-
-This implies that
-
-$$
-\begin{align*}
-  \ket{\psi} =& \hat{U}\hat{U}^\dagger \ket{\psi} = \sum_{j=1}^n \braket{\tilde{e}_j | \psi}\hat{U}\ket{e_j} \\
-  =& \sum_{j=1}^n \braket{\tilde{e}_j|\psi} \ket{\tilde{e}_j}
-\end{align*}
-$$
-
-showing that any vector in $\mathcal{H}$ can be written as a linear combination of $\set{\ket{\tilde{e}_j}}$. Finally, we have
-
-$$
-\begin{align*}
-  \braket{\tilde{e}_j|\tilde{e}_k} =& \braket{\hat{U}e_j | \hat{U}e_k} = \braket{e_j | \hat{U}^\dagger \hat{U}| e_k} \\
-  =& \braket{e_j|e_k} = \delta_{jk}
-\end{align*}
-$$
-
-**(2):** We have that
-
-$$
-\begin{align*}
-  \sum_j \braket{\tilde{e}_j|\hat{A}|\tilde{e}_j} =& \sum_j \braket{\hat{U}e_j|\hat{A}\hat{U}|e_j} = \sum_j \braket{e_j | \hat{U}^* \hat{A} \hat{U} e_j} \\
-  =& \sum_j (\hat{U}^\dagger \hat{A} \hat{U})_{jj} \\
-  =& \sum_{j,k,l} \mathbf{U}_{jk}^\dagger \mathbf{A}_{jk} \mathbf{U}_{lj} = \sum_{k,l} \mathbf{A}_{kl} \sum_j \mathbf{U}_{lj} \mathbf{U}_{jl}^\dagger \\
-  =& \sum_{k,l} \mathbf{A}_{kl} \sum_j \underbrace{(\mathbf{U}\mathbf{U}^\dagger)_{lk}}_{\delta_{lk}} = \sum_k \mathbf{A}_{kk} \\
-  =& \sum_k \braket{e_k |\hat{A}| e_k}
-\end{align*}
-$$
-</details>
-</MathBox>
-
-<MathBox title="Stone's theorem" boxType='theorem' tag='theorem-3'>
-Let $(U_t)_{t\in\R}$ be a strongly continuous one-parameter group on a Hilbert space $\mathcal{H}$, satisfying
-1. $\hat{U}(t)$ is unitary for all $t\in\R$
-2. $\hat{U}(t + s) = \hat{U}(t) \hat{U}(s)$ for all $s,t \in \R$
-3. $\lim_{t\to 0} \norm{\hat{U}(t) \psi - \psi} = 0$ for all $\psi\in\mathcal{H}$
-
-Then there exists a unique Hermitian operator $\hat{O}$ on $\mathcal{H}$ such tahat
-
-$$
-  \hat{U} = e^{it\hat{O}},\; \forall t\in\R
-$$
-
-Conversely, if $\hat{O}$ is Hermitian, then $e^{it\hat{O}}$ defines a strongly continuous one-parameter unitary group.
-</MathBox>
-
-The Stone theorem ensures the existence of a Hermitian infinitesimal generator for an Abelian group of unitary transformations.
-
-### Eigenvalues
-
-<MathBox title='Eigenvalue, eigenvector, eigenspace and spectrum' boxType='definition'>
-Let $\hat{A}$ be a linear operator on a Hilbert space $\mathcal{H}$. A nonzero vector $\ket{\psi}\in\mathcal{H}$ is an *eigenvector* of $\hat{A}$ with *eigenvalue* $a\in\mathbb{F}$ if it satisfies the eigenvalue equation
-
-$$
-  \hat{A}\ket{\psi} = a\ket{\psi}
-$$
-
-The *eigenspace* associated with an eigenvalue $a$ is the subspace spanned by all eigenvectors corresponding to $a$, given by
-
-$$
-  \operatorname{eig}(\hat{A}, a) = \set{\ket{\psi} \in \mathcal{H}\setminus\set{0} | \hat{A}\ket{\psi} = a\ket{\psi}}
-$$
-
-An eigenvalue $a$ is called non-degenerate if its eigenspace is one-dimensional, meaning it has only one linearly independent eigenvector. Otherwise, $a$ is called degenerate. 
-
-The spectrum of $\hat{A}$, denoted $\sigma(\hat{A})$, is the set of all scalars $a\in\mathbb{F}$ for which the operator $(\hat{A} - a\hat{I})^{-1}$ does not, exist, i.e.
-
-$$
-  \sigma(\hat{A}) := \set{a\in\mathbb{F} | (\hat{A} - a\hat{I})^{-1} \text{ does not exist}}
-$$
-</MathBox>
-
-Let $\hat{A}\in\mathcal{L}(\mathcal{H})$ be an operator in a Hilbert space $\mathcal{H}$, and let $a$ be an eigenvalue with eigenvector $\ket{\psi}$, so that
-
-$$
-  \hat{A}\ket{\psi} = a\ket{\psi}
-$$
-
-Taking the adjoint on both sides, we get
-
-$$
-\begin{align*}
-  (\hat{A}\ket{\psi})^\dagger =& (a\ket{\psi})^\dagger \\
-  \bra{\psi}\hat{A} =& a^* \bra{\psi}
-\end{align*}
-$$
-
-To confirm the result, consider the inner product with $\ket{\varphi}\in\mathcal{H}$:
-
-$$
-  \braket{\psi|\hat{A}^\dagger|\varphi} = \braket{\hat{A}\psi|\varphi} \braket{a\psi|\varphi} = a^* \braket{\psi|\varphi}
-$$
-
-This verifies that
-
-$$
-  \bra{\psi}\hat{A} = a^* \bra{\psi}
-$$
-
-#### Eigenvalues of Hermitian operators
-
-Let $\hat{A}$ be a Hermitian operator on a Hilbert space $\mathcal{H}$, and consider the eigenvalue equation
-
-$$
-  \hat{A} \ket{\psi_i} = a_i \ket{\psi_i}
-$$
-
-Taking the inner product with another eigenvector $\ket{\psi_j}$, we obtain
-
-$$
-\begin{gather*}
-\begin{aligned}
-  \braket{\psi_i | \hat{A} \psi_j} &= \braket{\hat{A} \psi_i | \psi_j} \\
-  \lambda_i^* \braket{\psi_i | \psi_j} &= \lambda_i \braket{\psi_i | \psi_j}
-\end{aligned}\\
-  \implies \left( \lambda_j^* - \lambda_i \right) \braket{\psi_i | \psi_j} = 0
-\end{gather*}
-$$
-
-This leads to two conclusions:
-1. If $i = j$, then $\lambda_i = \lambda_i^*$, meaning that all eigenvalue of a Hermitian operator are real. 
-2. If $i \neq j$, then $\braket{\psi_i | \psi_j} = 0$, meaning that the eigenvectors corresponding to distinct eigenvalues are orthogonal.
-
-In the finite-dimensional case, the smallest and larget eigenvalues of a Hermitian operator $\mathbf{A}$ serve as lower and upper bound of the inner product of $\braket{\psi|\hat{A}\psi}$ for normalized $\ket{\psi}$.
-
-#### Eigenvalues of unitary operators
-
-Let $\hat{U}\in\mathcal{U}(\mathcal{H})$ be a unitary operator on the Hilbert space $\mathcal{H}$ and let $u$ be an eigenvalue with eigenvector $\ket{\psi}\in\mathcal{H}$. Since unitary operators preserve norms, we get
-
-$$
-  \norm{\psi} = \norm{ \hat{U}\psi} = \norm{ u\psi} = |u|\cdot\norm{\psi}
-$$
-
-and thus $|u| = 1$, meaning that the eigenvalues of a unitary operator always lie on the unit circle in the complex plane.
-
-#### Spectral decomposition of operators
-
-A Hermitian operator $\hat{A}$ is diagonalizable, meaning that there is an orthonormal basis consisting of eigenvectors $\set{\ket{e_{j,\alpha}}}$ of $\hat{A}$ such that
-
-$$
-  \hat{A}\ket{e_{j,\alpha}} = a_j \ket{e_{j,\alpha}}
-$$
-
-where $\alpha\in\set{1,\dots,d_j}$ indexes the eigenvectors associated with the possibly $d_j$-fold degerate eigenvalue $a_j$.
-
-The matrix elements in this basis have the form $\mathbf{A}_{j,\alpha;k,\beta} = a_j \delta_{j,k} \delta_{\alpha,\beta}$ such that
-
-$$
-\begin{align*}
-  \mathbf{A} =& \sum_{j,k\alpha,\beta} \ket{e_{j,\alpha}} a_j \delta_{j,k} \delta_{\alpha,\eta} \bra{e_{k,\beta}} \\
-  =& \sum_{j,\alpha} a_j \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}
-\end{align*}
-$$
-
-This is referred to as the spectral decomposition or the diagonal form of the operator.
-
-##### Infinite-dimensional case
-
-If $\hat{A}$ is an operator with a complete set of orthonormal eigenvectors, i.e.
-
-$$
-  \hat{A}\ket{e_n} = a_n \ket{e_n}, \; n\in\N
-$$
-
-then it can be written in terms of its spectral decomposition:
-
-$$
-  \hat{A} = \sum_{n\in\N} a_n \ket{e_n} \bra{e_n}
-$$
-
-<details>
-<summary>Proof</summary>
-
-By completeness of the orthonormal eigenvectors, any vector $\ket{\psi}$ can be expanded as a linear combination
-
-$$
-  \ket{\psi} = \sum_{n\in\N} \psi_n \ket{e_n}
-$$
-
-where $\psi_n$ is given by the inner product
-
-$$
-  \braket{e_i|\psi} = \ket{e_i} \sum_{n\in\N} \psi_n \ket{e_n} = \sum_{n\in\N} \psi_n \braket{e_i|e_n} = \sum_{n\in\N} \psi_n \delta_{in}
-$$
-
-Hence, $\psi_n = \braket{e_n | \psi}$. Applying $\hat{A}$ to $\ket{\psi}$ yields
-
-$$
-\begin{align*}
-  \hat{A}\ket{\psi} =& \hat{\psi} \sum_{n\in\N} \psi_n \ket{e_n} = \sum_{n\in\N} \psi_n (\hat{A}\ket{e_n}) \\
-  =& \sum_{n\in\N} \psi_n (a_n \ket{e_n}) = \sum_{n\in\N} (a_n \ket{e_n}) \psi_n \\
-  =& \sum_{n\in\N} \psi_n \ket{e_n} \braket{e_n | \psi} = \left(\sum_{n\in\N} a_n \ket{e_n} \bra{e_n} \right)\ket{\psi}  
-\end{align*}
-$$
-</details>
-
-The spectral decomposition of the $k$th power of $\hat{A}$ is
-
-$$
-  \hat{A}^k = \sum_{n\in\N} a_n^k \ket{e_n} \bra{e_n}
-$$
-
-<details>
-<summary>Proof</summary>
-
-This can be shown by induction. For the base case $k=2$, we have
-
-$$
-\begin{align*}
-  \hat{A}^2 =& \left(\sum_{m\in\N} a_m \ket{e_m}\bra{e_m} \right) \left(\sum_{n\in\N} a_n \ket{e_n}\bra{e_n} \right) \\
-  =& \sum_{m,n\in\N} a_m a_n \ket{e_m} \underbrace{\braket{e_m|e_n}}_{\delta_{mn}} \bra{e_n} \\
-  =& \sum_{m\in\N} a_m^2 \ket{e_m} \bra{e_m} 
-\end{align*}
-$$
-
-Assuming
-
-$$
-  \hat{A}^{k-1} = \sum_{m\in\N} a_m^{k-1} \ket{e_n} \bra{e_n}
-$$
-
-it follows that the spectral decomposition of $\hat{A}^k$ is
-
-$$
-\begin{align*}
-  \hat{A}^k =& \left(\sum_{m\in\N} a_m^{k-1} \ket{e_m}\bra{e_m} \right) \left(\sum_{n\in\N} a_n \ket{e_n}\bra{e_n} \right) \\
-  =& \sum_{m,n\in\N} a_m^{k-1} a_n \ket{e_m} \underbrace{\braket{e_m|e_n}}_{\delta_{mn}} \bra{e_n} \\
-  =& \sum_{m\in\N} a_m^k \ket{e_m} \bra{e_m} 
-\end{align*}
-$$
-</details>
-
-The spectral decomposition of the exponential of $\hat{A}$ is
-
-$$
-  e^{\hat{A}} = \sum_{n\in\N} e^{a_n} \ket{e_n} \bra{e_n}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Computing $e^{\hat{A}}$ we find
-
-$$
-\begin{align*}
-  e^{\hat{A}} =& \sum_{n\in\N} e^{a_n} \ket{e_n} \bra{e_n} \\
-  =& \sum_{n\in\N} \left(\sum_{k=0}^\infty \frac{q_n^k}{k!} \right) \ket{e_n} \bra{e_n} \\
-  =& \sum_{k=0}^\infty \frac{1}{k!} \left(\sum_{n=1}^\infty a_n^k \ket{e_n} \bra{e_n} \right) \\
-  =& \sum_{k=0}^\infty \frac{1}{k!} \hat{A}^k
-\end{align*}
-$$
-</details>
-
-### Projection operator
-
-<MathBox title='Projection operator' boxType='definition'>
-Let $\mathcal{H}$ be a Hilbert space. A projection operator (or simply projector) is a linear operator $\hat{P}\in\mathcal{L}(\mathcal{H})$ that is idempotent, i.e. $\hat{P}^2 = \hat{P}$. If, in addition $\hat{P}$ is Hermitian, i.e. $\hat{P}^\dagger = \hat{P}$, then $\hat{P}$ is called an *orthogonal projector*.
-</MathBox>
-
-The complement of a projector $\hat{P}\in\mathcal{L}(\mathcal{H})$ on a Hilbert space $\mathcal{H}$ is the operator $\hat{Q} = \hat{I} - \hat{P}$, which is also a projector since it satisfies idempotency:
-
-$$
-\begin{align*}
-  \hat{Q}^2 =& (\hat{I} - \hat{P})^2 \\
-  =& \hat{I} - 2\hat{P} + \underbrace{\hat{P}^2}_{=\hat{P}} \\
-  =& \hat{I} - \hat{P} = \hat{Q}
-\end{align*}
-$$
-
-If $\hat{P}$ is Hermitian, then so is $\hat{Q}$ since
-
-$$
-  \hat{Q}^\dagger = (\hat{I} - \hat{P})^\dagger = \hat{I} - \underbrace{\hat{P}^\dagger}_{=\hat{P}} = \hat{Q}
-$$
-
-meaning that $\hat{Q}$ is an orthogonal projector. In this case $\hat{P}$ and $\hat{Q}$ are mutually orthogonal projectors, satisfying
-
-$$
-  \hat{P}\hat{Q} = \hat{Q}\hat{P} = 0
-$$
-
-Thus, $\hat{P}$ and $\hat{Q}$ define an orthogonal decomposition of $\mathcal{H}$ into two subspaces, i.e. $\mathcal{H} = \operatorname{ran}(\hat{P}) \oplus \operatorname{ran}(\hat{Q})$. This orthogonal decomposition allows us to express any vector $\ket{\psi}\in\mathcal{H}$ uniquely as a sum components in the ranges of $\hat{P}$ and $\hat{Q}$:
-
-$$
-  \ket{\psi} = \hat{P}\ket{\psi} + \hat{Q}\ket{\psi}
-$$
-
-#### Projections onto unit vectors
-
-If $\ket{\psi}\in \mathcal{H}$ is a unit vector in the Hilbert space $\mathcal{H}$, i.e. $\braket{\psi|\psi} = 1$, the projection onto $\ket{\psi}$ is given by
-
-$$
-  \hat{P}_\psi = \ket{\psi}\bra{\psi}
-$$
-
-To see that $\hat{P}_\psi$ is a projection, we compute
-
-$$
-\begin{align*}
-  \hat{P}_\psi^2 =& (\ket{\psi}\bra{\psi})(\ket{\psi}\bra{\psi}) \\
-  =& \ket{\psi}(\underbrace{\braket{\psi|\psi}}_{=1})\bra{\psi} \\
-  =& \ket{\psi}\bra{\psi} = \hat{P}_\psi
-\end{align*}
-$$
-
-showing that $\hat{P}_\psi$ is idempotent as required. Additionally, $\hat{P}$ is Hermitian, since
-
-$$
-  \hat{P}_\psi^\dagger = (\ket{\psi}\bra{\psi})^\dagger = \ket{\psi}\bra{\psi} = \hat{P}_\psi
-$$
-
-The projection of $\ket{\varphi}\in\mathcal{H}$ onto $\ket{\psi}$ becomes
-
-$$
-  \hat{P}_\psi \ket{\varphi} = \ket{\psi}\braket{\psi|\varphi} = \braket{\psi|\varphi}\ket{\psi}
-$$
-
-Since $\braket{\psi|\varphi}\in\mathbb{F}$ is a scalar, this means that $\hat{P}_\psi \ket{\varphi}$ projects $\ket{\varphi}$ onto the one-dimensional subspace spanned by $\ket{\psi}$.
-
-The find the eigenvalues of $\hat{P}_\psi$, we solve
-
-$$
-\begin{align*}
-  \hat{P}_\psi \ket{\lambda} =& \lambda\ket{\lambda} \\
-  \ket{\psi}\underbrace{\braket{\psi|\lambda}}_{=c\in\mathbb{F}} =& \lambda\ket{\lambda} \\
-  c\ket{\psi} =& \lambda\ket{\lambda}
-\end{align*}
-$$
-
-If $\ket{\lambda} = \ket{\psi}$, then $\lambda = \braket{\psi|\lambda} = \braket{\psi|\psi} = 1$. Otherwise, for $\ket{\lambda}\neq\ket{\psi}$ we have $\lambda = \braket{\psi|\lambda} = 0$, implying that $\ket{\lambda}$ and $\ket{\psi}$ are orthogonal. Thus, the eigenvalues of $\hat{P}_\psi$ are $0$ and $1$, with the eigenspace corresponding to $\lambda = 1$ being spanned by $\ket{\psi}$, and the eigenspace corresponding to $\lambda = 0$ being the ortogonal complement of $\ket{\psi}$.
-
-In terms of $\hat{P}_\psi$, any vector $\ket{\varphi}\in\mathcal{H}$ can be uniquely decomposed as 
-
-$$
-\begin{align*}
-  \ket{\varphi} =& \hat{I}\ket{\varphi} + \hat{P}_\psi \ket{\varphi} - \hat{P}_\psi \ket{\varphi} \\
-  =& \hat{P}_\psi \ket{\varphi} + (\hat{I} - \hat{P})\ket{\varphi}
-\end{align*}
-$$
-
-Since 
-
-$$
-  \hat{P}_\psi (\hat{P}_\psi \ket{\varphi}) = \hat{P}_\psi^2 \ket{\varphi} = \hat{P}_\psi \ket{\varphi}
-$$
-
-then $\hat{P}_\psi \ket{\varphi}$ is an eigenvector of $\hat{P}_\psi$ with eigenvalue $1$. Since
-
-$$
-  \hat{P}_\psi [(\hat{I} - \hat{P}_\psi)\ket{\varphi}] = (\hat{P}_\psi - \underbrace{\hat{P}_\psi^2}_{=\hat{P}_psi})\ket{\varphi} = 0 
-$$
-
-then $(\hat{I} - \hat{P}_\psi)\ket{\varphi}$ is an eigenvector of $\hat{P}_\psi$ with eigenvalue $0$.
-
-In particular, if $\set{\ket{e}_n}_{n\in\N}$ is an orthonormal basis, i.e. $\braket{e_i | e_j} = \delta_{ij}$, then
-
-$$
-  \sum_{n\in\N} \ket{e_n} \bra{e_n} = 1
-$$
-
-defines the identity operator. If we let this operator act on any vector $\ket{v}$, we recover the expansion of $\ket{\psi}$ in the $\set{\ket{e}_n}_{n\in\N}$ basis:
-
-$$
-  \sum_{n\in\N} (\braket{e_n|\psi})\ket{e_n} = \ket{\psi}
-$$
-
-If $\mathcal{H}' \subset\mathcal{H}$ is an $n$-dimensional subspace with orthonormal basis $\set{\ket{e}_i}_{i=1}^n$, the projection onto $W$ is given by
-
-$$
-  \hat{P}_{\mathcal{H}'} = \sum_{i=1}^n \ket{e_i}\bra{e_i}
-$$
-
-#### Spectral decomposition of Hermitian operators
-
-If $\hat{A}$ is a Hermitian operator on an finite-dimensional Hilbert space $\mathcal{H}$, its eigenvectors form an orthonormal basis. Let $\ket{e_{j,\alpha}}$ denote an eigenvector of $\hat{A}$ corresponding to the eigenvalue $a_j$, where $\alpha\in\set{1,\dots,d_j}$ indexes the possibly $d_j$-fold degenerate eigenvalue $a_j$ of $\hat{A}$. The orthogonal projection onto the eigenspace $\operatorname{eig}(\hat{A}, a_j)$ with $\dim[\operatorname{eig}(\hat{A}, d_j)] = d_j$ is given by
-
-$$
-  \hat{P}_j = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}
-$$
-
-<details>
-<summary>Proof</summary>
-
-To verify that $\hat{P}_j$ is a projection, we check idempotency
-
-$$
-\begin{align*}
-  \hat{P}_j^2 =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)  \left(\sum_{\beta=1}^{d_j} \ket{e_{j,\beta}} \bra{e_{j,\beta}}\right) \\
-  =& \sum_{\alpha=1}^{\d_j} \sum_{\alpha=1}^{\d_j} \ket{e_{j,\alpha}} \underbrace{\braket{e_{j,\alpha}|e_{j,\beta}}}_{=\delta_{\alpha\beta}} \bra{e_{j,\beta}} \\
-  =& \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \hat{P}_j
-\end{align*}
-$$
-
-Since $\hat{P}_j^2 = \hat{P}_j$, it is a projection. Next, we check that $\hat{P}_j$ is Hermitian taking its adjoint:
-
-$$
-\begin{align*}
-  \hat{P}_j^\dagger =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}}\right)^\dagger \\
-  =& \sum_{\alpha=1}^{d_j} (\ket{e_{j,\alpha}} \bra{e_{j,\alpha}})^\dagger \\
-  =& \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \hat{P}_j
-\end{align*}
-$$
-
-Since $\hat{P}_j^\dagger = \hat{P}_j$, the operator is self-adjoint. Because $\set{\ket{e_{j,\alpha}}|j\in I\subset\N, \alpha\in\set{1,\dots,d_j}}$ is an orthonormal eigenbasis of $\hat{A}$, any eigenvector $\operatorname{eig}(\hat{A}, a_j)$ can be written in the form
-
-$$
-  \ket{\psi} = \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \braket{e_{j,\alpha}|\psi} = \hat{P}_j \ket{\psi}
-$$
-</details>
-
-A Hermitian operator $\hat{A}$ can be expressed in terms of its spectral projections as
-
-$$
-  \hat{A} = \sum_{j,\alpha} a_j \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} = \sum_j a_j \hat{P}_j
-$$
-
-In particular, since any orthonormal basis $\set{\ket{e_j}}$ constitutes an eigenbasis of the identity operator $\hat{I}$ with eigenvalue $1$, we have
-
-$$
-\begin{align*}
-  \hat{I} =& \sum_{j,k} \ket{e_j} \braket{e_j|e_k} \bra{e_k} \\
-  =& \sum_{j,k} \delta_{jk} \ket{e_j} \bra{e_k} \\
-  =& \sum_j \ket{e_j} \bra{e_j} = \sum_j \hat{P}_j
-\end{align*}
-$$
-
-which is known as the completeness relation. Moreover, the projection satisfy the orthogonality relation
-
-$$
-\begin{align*}
-  \hat{P}_j \hat{P}_k =& \left(\sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} \right) \left(\sum_{\beta=1}^{d_j} \ket{e_{j,\beta}} \bra{e_{j,\beta}} \right) \\
-  =& \sum_{\alpha=1}^{d_j} \sum_{\beta=1}^{d_k} \ket{e_{j,\alpha}} \braket{e_{j,\alpha}|e_{k,\beta}} \bra{e_{k,\beta}} \\
-  =& \delta_{jk} \sum_{\alpha=1}^{d_j} \ket{e_{j,\alpha}} \bra{e_{j,\alpha}} \\
-  =& \delta_{jk} \hat{P}_j
-\end{align*}
-$$
-
-#### Continuous projectors
-
-If $V$ is an infinite-dimensional space, the continuous projector satisfy
-
-$$
-  \int \hat{P}(v) \;\d v = \int \ket{v}\bra{v} \;\d v = 1
-$$
-
-and
-
-$$
-  \hat{P}(v) \hat{P}(v') = \delta(v - v') \hat{P}(v)
-$$
-
-where $\delta$ is the Dirac delta function. In particular, if $\set{\ket{e_x}}_{x\in\R}$ is a Dirac orthonormalized continuous basis, i.e. $\braket{e_x | e_{x'}} = \delta(x - x')$, then
-
-$$
-  \int_\R \ket{e_x} \bra{e_x} \;\d x = 1 
-$$
-
-### Commutator
-
-The commutator of two operators $\hat{A}$ and $\hat{B}$ is written
-
-$$
-  [\hat{A}, \hat{B}] := \hat{A}\hat{B} - \hat{B}\hat{A}
-$$
-
-while the anticommutator is written 
-
-$$
-\{\hat{A}, \hat{B}\} := \hat{A}\hat{B} + \hat{B}\hat{A}
-$$
-
-Commutator properties
-- Self-commution: $[\hat{A}, \hat{A}] = 0$
-- Antisymmetry: $[\hat{A}, \hat{B}] = -[\hat{B}, \hat{A}]$
-- Linearity: $[\hat{A}, \hat{B} + \hat{C}] = [\hat{A}, \hat{B}] + [\hat{A}, \hat{C}]$
-- Hermitian conjugable: $[\hat{A}, \hat{B}]^\dagger = [\hat{A}^\dagger, \hat{B}^\dagger]$
-- Distributivity:
-$$
-\begin{align*}
-  [\hat{A}, \hat{B}\hat{C}] &= [\hat{A}, \hat{B} ]\hat{C} + \hat{B}[ \hat{A}, \hat{C}] \\
-  [\hat{A}\hat{B}, \hat{C}] &= \hat{A}[\hat{B}, \hat{C}] + [ \hat{A}, \hat{C}]\hat{B}
-\end{align*}
-$$
-- $[\hat{A}^2,\hat{B}] = \hat{A}[\hat{A},\hat{B}] + [\hat{A},\hat{B}]\hat{A}$
-- Jacobi identity: $\left[\hat{A}, [\hat{B}, \hat{C}]\right] + \left[\hat{B}, [\hat{C}, \hat{A}]\right] + \left[\hat{C}, [\hat{A}, \hat{B}]\right] = 0$
-- Operators commute with scalars
-- If $\hat{A}$ and $\hat{B}$ Hermitian operators then
-  * $[\hat{A}, \hat{B}]$ is anti-Hermitian
-  * $\{\hat{A}, \hat{B}\}$ is Hermitian
-
-The commutator gives an alternative expression for the dot product of two operators $\hat{A}$ and $\hat{B}$
-
-$$
-  \hat{A}\cdot\hat{B} = \hat{A}_i \hat{B}_i = (\hat{A}_i \hat{B}_i - \hat{B}_i \hat{A}_i) + \hat{B}_i \hat{A}_i = [\hat{A}_i, \hat{B}_i] + \hat{B}_i \hat{A}_i = [\hat{A}_i, \hat{B}_i] + \hat{B}\cdot\hat{A} 
-$$
-
-and likewise for their cross product
-
-$$
-  (\hat{A}\times\hat{B})_i = \varepsilon_{ijk} \hat{A}_j \hat{B}_k = \varepsilon_{ijk}[(\hat{A}_j \hat{B}_k - \hat{B}_k \hat{A}_j) + \hat{B}_k \hat{A}_j] = \varepsilon_{ijk}([\hat{A}_j, \hat{B}_k] + \hat{B}_k \hat{A}_j) = -\varepsilon_{ikj} \hat{B}_k \hat{A}_j + \varepsilon_{ijk} [\hat{A}_j, \hat{B}_k] = -(\hat{B} \times \hat{A})_i + \varepsilon_{ijk} [\hat{A}_j, \hat{B}_k]
-$$
-    
-Two operators $\hat{A}$ and $\hat{B}$ are said to commute if $[ \hat{A}, \hat{B}] = 0$. Two commuting operators share the same eigenvectors. Suppose $\hat{A}$ and $\hat{B}$ commute with common eigenvectors
-
-$$
-  \hat{A}\phi_i (\mathbf{x}) = \lambda_i \phi_i (\mathbf{x}),\quad \hat{B}\phi_i (\mathbf{x}) = \mu_i \phi_i (\mathbf{x})
-$$
-
-then any function $\phi$ can be expanded in terms of these eigenstates $\psi = \sum_i a_i \phi_i$ giving
-
-$$
-  [\hat{A}, \hat{B}]\psi = \sum_i a_i [\hat{A}, \hat{B}]\phi_i = \sum_i a_i \left(\lambda_i \mu_i - \mu_i \lambda_i \right)\phi_i = 0 
-$$
-
-## Spectral theory
-
-### Spectral properties of Hermitian operators
-
-A self-adjoint operator $\hat{A}$ on a Hilbert space $\mathcal{H}$ can be heuristically expanded as
-
-$$
-\begin{align*}
-  \hat{A} = \int_{-\infty}^\infty \lambda \delta(\lambda - \hat{A}) \;\d\lambda
-\tag{\label{equation-153}}
-\end{align*}
-$$
-
-where $\delta(\lambda - \hat{A})$ represents the spectral density of $\hat{A}$. 
-
-<details>
-<summary>Proof</summary>
-
-To make this argument rigorous we have to replace $\delta(\lambda - \hat{A})$, which is not a genuine operator-valued function, with a projection-valued measure $E: \mathcal{B}(\R) \to \mathcal{B}(\mathcal{H})$, where $\mathcal{B}(\R)$ is the Borel $\sigma$-algebra on $\R$ and $\mathcal{B}(\mathcal{H})$ is the set of bounded operators on $\mathcal{H}$. In terms of $E$, the heuristic $\delta(\lambda - \hat{A})$ is interpreted as the measure derivative
-
-$$
-  E(\d\lambda) := \delta(\lambda - \hat{A}) \;\d\lambda
-$$
-</details>
-
-To get the spectral decomposition of $\hat{A}$, define the operator
-
-$$
-\begin{align*}
-  \hat{P}_A (\lambda) =& \Theta(\lambda - \hat{A}) \\
-  =& \int_{-\infty}^\lambda \delta(\lambda' - \hat{A}) \;\d\lambda'
-\end{align*}
-$$
-
-where $\Theta$ is the step function
-
-$$
-  \Theta(\lambda) = \begin{cases}
-    1,\quad& \lambda > 0 \\
-    0,\quad& \lambda \leq 0
-  \end{cases}
-$$
-
-Then formally $\d\hat{P}_A (\lambda) = \delta(\lambda - \hat{A}) \;\d\lambda$, such that $\eqref{equation-153}$ can be rewritten
-
-$$
-\begin{equation*}
-  \hat{A} = \int_{-\infty}^\infty \lambda \;\d\hat{P}_A (\lambda)
-\tag{\label{equation-156}}
-\end{equation*}
-$$
-
-which is the spectral decomposition of $\hat{A}$. The collection $\set{\hat{P}_A (\lambda)}_{\lambda\in\R}$ are projection operators with properties
-1. **Boundedness:** Since a step-function is bounded by $1$, it follows that $\norm{\hat{P}_A (\lambda)} \leq \norm{\psi}$ for all $\ket{\psi}\in\mathcal{H}$. In particular $\hat{P}_A (\lambda)$ is self-adjoint.
-
-2. **Limits at infinity:**
-$$
-\begin{align*}
-  \hat{P}_A (-\infty) =& \lim_{\lambda\to -\infty} \hat{P}_A (\lambda) = \mathbf{0} \tag{\label{equation-164}}
-  \hat{P}_A (\infty) =& \lim_{\lambda\to \infty} \hat{P}_A (\lambda) = \hat{I} \tag{\label{equation-159}}
-\end{align*}
-$$
-
-4. **Monotonicity:** If $\lambda_1 < \lambda_2$, then $\hat{P}_A (\lambda_1) \leq \hat{P}_A (\lambda_2)$, i.e.
-$$
-  \braket{\psi|\hat{P}_A (\lambda_1)|\psi} \leq \braket{\psi|\hat{P}_A (\lambda_2)|\psi}
-$$
-
-5. **Projection property:**
-$$
-\begin{equation*}
-  \hat{P}_A (\lambda_1) \hat{P}_A (\lambda_2) = \hat{P}_A (\min\set{\lambda_1, \lambda_2})
-\tag{\label{equation-165}}
-\end{equation*}
-$$
-
-The limit $\eqref{equation-159}$ implies the resolution of the identity operator
-
-$$
-\begin{equation*}
-  \hat{I} = \int_{-\infty}^\infty \d\hat{P}_A (\lambda)
-\tag{\label{equation-154}}
-\end{equation*}
-$$
-
-which rigorously encodes completenes of the spectral projectors. From $\eqref{equation-154}$, the norm of any $\ket{\psi}\in\mathcal{H}$ can be written as
-$$
-\begin{align*}
-  \norm{\psi}^2 =& \braket{\psi|\psi} = \int_{-\infty}^\infty \d\braket{\psi|\hat{P}_A (\lambda)|\psi} \\
-  =& \int_{-\infty}^\infty \d\norm{\hat{P}_A (\lambda) \psi}^2 \tag{\label{equation-157}}
-\end{align*}
-$$
-
-To study the spectrum of $\hat{A}$, consider the projection corresponding to a small interval around $\lambda_0$
-
-$$
-\begin{align*}
-  \hat{E}_{\lambda_0, \epsilon} :=& [\hat{P}_A (\lambda_0 + \epsilon) - \hat{P}_A (\lambda_0 - \epsilon)] \\
-  =& \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} \d\hat{P}_A (\lambda) \tag{\label{equation-155}}
-\end{align*}
-$$
-
-If $\lambda_0$ is an isolated point of the spectrum $\sigma(\hat{A})$, there exists $\epsilon > 0$ such that $\hat{A}$ has no spectrum in $(\lambda_0 - \epsilon, \lambda_0 + \epsilon)$ except $\lambda_0$ itself. Then $\hat{E}_{\lambda_0, \epsilon}$ projects onto the nonempty subspace
-
-$$
-  \mathcal{H}_{\lambda_0} = \hat{E}_{\lambda_0, \epsilon} \mathcal{H}
-$$
-
-In the limit $\epsilon\to 0$, then $\mathcal{H}_{\lambda_0}$ contains at least one vector, say, $\ket{\psi}$, and
-
-$$
-  [\hat{P}_A (\lambda_0 + 0) - \hat{P}_A (\lambda_0 - 0)] \ket{\psi} = \ket{\psi}
-$$
-
-Accordingly, from $\eqref{equation-156}$, $\eqref{equation-154}$ and $\eqref{equation-157}$
-
-$$
-\begin{align*}
-  \norm{(\hat{A} - \lambda_0)\psi}^2 =& \int_{-\infty}^\infty (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi}^2 \\
-  =& \int_{\lambda_0 - 0}^{\lambda_0 + 0} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi}^2 = 0
-\end{align*}
-$$
-
-where we have also used $\eqref{equation-155}$ and $\eqref{equation-157}$. Thus, $(\hat{A} - \lambda_0)\ket{\psi}$ is the zero vector, i.e.
-
-$$
-  \hat{A}\ket{\psi} = \lambda_0 \ket{\psi}
-$$
-
-which is the familiar discrete eigenvalue equation. Thus, a discrete eigenvalue corresponds precisely to a discontinuity of the spectral projectors $\hat{P}_A (\lambda)$ at $\lambda_0$.
-
-If $\lambda_0$ is not an isolated eigenvalue of $\hat{A}$, for which every neighbourhood of $\lambda_0$ intersects the spectrum $\sigma(\hat{A})$ in more than one point, then 
-
-$$
-  \lim_{\epsilon\to 0} \hat{E}_{\lambda_0, \epsilon} = \mathbf{0}
-$$
-
-For such a point the eigenspace $\hat{E}_{\lambda_0, 0} \mathcal{H}$ is empty, meaning that there are no proper eigenvectors corresponding to the continuous spectrum of $\hat{A}$. However, we can construct approximate eigenvectors that are localized in small spectral intervals around $\lambda_0$. For $\epsilon > 0$, choose a normalized vector $\ket{\psi(\epsilon)} \in \operatorname{ran}(\hat{E}_{\lambda_0, \epsilon})$ with $\norm{\psi(\epsilon)} = 1$, such that
-
-$$
-  \hat{E}_{\lambda_0, \epsilon} \ket{\psi(\epsilon)} = \ket{\psi(\epsilon)}
-$$
-
-Thus
-
-$$
-  \norm{(\hat{A} - \lambda_0) \psi(\epsilon)}^2 = \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi(\epsilon)}^2
-$$
-
-where the right-hand side is bounded above by
-
-$$
-  \epsilon^2 \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} \d\norm{\hat{P}_A (\lambda) \psi(\epsilon)}^2 = \epsilon^2 \int_{-\infty}^\infty \d\norm{\hat{P}_A (\lambda)\psi(\epsilon)}^2 = \epsilon^2
-$$
-
-which follows from the normalizability of $\ket{\psi(\epsilon)}$ for $\epsilon > 0$. This means that we can find a vector $\ket{\psi(\epsilon)} \in\mathcal{H}$ such that
-
-$$
-\begin{equation*}
-  \norm{(\hat{A} - \lambda_0) \psi(\epsilon)} \leq \epsilon > 0
-\tag{\label{equation-158}}
-\end{equation*}
-$$
-
-This means that $\set{\ket{\psi(\epsilon)}}$ forms a sequence of approximate eigenvectors satisfying
-
-$$
-  \lim_{\epsilon\to 0} \norm{(\hat{A} - \lambda_0) \psi(\epsilon)} = 0
-$$
-
-but with no actual eigenvector limit in $\mathcal{H}$.
-
-From this analysis the spectrum of a self-adjoint operator $\hat{A}$ can be defined as
-
-$$
-  \sigma(\hat{A}) = \set{\lambda_0 \in \R : \hat{E}_{\lambda_0, \epsilon} \neq \mathbf{0},\; \forall \epsilon > 0}
-$$
-
-Equivalently
-
-$$
-  \inf_{\ket{\psi}\in\mathcal{D}(\hat{A}),\;\norm{\psi}=1} \norm{(\hat{A} - \lambda_0 ) \psi} = 0
-$$
-
-that is, for every neighbourhood of $\lambda_0$ we can find a normalized vector whose image under $(\hat{A} - \lambda)$ has arbitrarily small norm.
-
-For $\lambda \in\R \setminus \sigma(\hat{A})$, the operator $(\hat{A} - \lambda_0 \hat{I})$ is invertible and its inverse
-
-$$
-  \hat{R}(\lambda; \hat{A}) := (\hat{A} - \lambda\hat{I})^{-1}
-$$
-
-called the resolvent, is bounded on all of $\mathcal{H}$. For $\epsilon > 0$, an approximate eigenvector can be written
-
-$$
-  \ket{\phi(\epsilon)} = (\hat{A} - \lambda_0 \hat{I}) \ket{\psi(\epsilon)}
-$$
-
-Using the normalizability for $\ket{\psi(\epsilon)}$, we have from $\eqref{equation-158}$
-
-$$
-  \norm{\ket{\phi(\epsilon)}} \leq \epsilon = \epsilon \norm{\hat{R}(\lambda; \hat{A}) \phi(\epsilon)}
-$$
-
-which leads to
-
-$$
-  \frac{\norm{\hat{R}(\lambda; \hat{A}) \phi(\epsilon)}}{\norm{\phi(\epsilon)}} \geq \frac{1}{\epsilon}
-$$
-
-This implies that $\hat{R}(\lambda; \hat{A})$ is unbounded a spectral points $\lambda_0 \in\sigma(\hat{A})$, i.e.
-
-$$
-  \norm{\hat{R}(\lambda; \hat{A})} \xrightarrow{\lambda\to\lambda_0} \infty
-$$
-
-#### Orthogonality relation
-
-<MathBox title="Asymptotic orthogonality of approximate eigenvectors" boxType="proposition">
-Let $\hat{A}$ be a self-adjoint operator on a Hilbert space $\mathcal{H}$, and let $\lambda_1, \lambda_2 \in \sigma(\hat{A})$ with $\lambda_1 \neq \lambda_2$. For each $j = 1,2$, let $\epsilon_j > 0$ and let $\ket{\psi_j (\epsilon_j)} \in\mathcal{H}$ be normalized vectors, i.e. $\norm{\psi_j (\epsilon_j)} = 1$, satisfying the approximate eigenvalue condition
-
-$$
-  \norm{(\hat{A} - \lambda_j) \psi_j (\epsilon_j)} \leq \epsilon_j \; j=1,2
-$$
-
-In the limit $\epsilon_j \to 0$, the following orthogonality relation holds
-
-$$
-\begin{equation*}
-  \lim_{\substack{\epsilon_1 \to 0 \\ \epsilon_2 \to 0}} \braket{\psi_1 (\epsilon_1) | \psi_2 (\epsilon_2)} = 0
-\tag{\label{equation-160}}
-\end{equation*}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Write
-
-$$
-\begin{align*}
-  (\lambda_1 - \lambda_2) \braket{\psi_1 (\epsilon_1) | \psi_2 (\epsilon_2)} =& \braket{\psi_1 (\epsilon_1)|(\hat{A} - \lambda_2 \hat{I})|\psi_2 (\epsilon_2) } \\
-  &- \braket{\psi_1 (\epsilon_1)|(\hat{A} - \lambda_1 \hat{I})|\psi_2 (\epsilon_2) }
-\end{align*}
-$$
-
-Taking the norm and applying the triangle and Cauchy-Schwarz inequalities we get
-
-$$
-\begin{align*}
-  |(\lambda_1 - \lambda_2)|\cdot |\braket{\psi_1 (\epsilon_1) | \psi_2 (\epsilon_2)}| \leq& \norm{\braket{\psi_1 (\epsilon_1)|(\hat{A} - \lambda_2 \hat{I})|\psi_2 (\epsilon_2)} \\
-  &+ \norm{\braket{\psi_1 (\epsilon_1)|(\hat{A} - \lambda_1 \hat{I})|\psi_2 (\epsilon_2) }} \\
-  \leq& \epsilon_1 + \epsilon_2
-\end{align*}
-$$
-
-such that
-
-$$
-\begin{equation*}
-  |\braket{\psi_1 (\epsilon_1) | \psi_2 (\epsilon_2)} \leq \frac{\epsilon_1 + \epsilon_2}{|\lambda_1 - \lambda_2|}
-\tag{\label{equation-161}}
-\end{equation*}
-$$
-
-Taking the limit $\epsilon_1, \epsilon_2 \to 0$ yields the orthogonality condition $\eqref{equation-160}$.
-</details>
-</MathBox>
-
-From the orthogonality relation $\eqref{equation-160}$, we can derive the following special cases for distinct $\lambda_1, \lambda_2 \in\sigma(\hat{A})$ in the spectrum of a self-adjoint operator $\hat{A}$:
-
-1. **Discrete-discrete case:** If both $\lambda_1, \lambda_2$ are isolated eigenvalues and $\epsilon_1, \epsilon_2 = 0$, then $\ket{\psi_1}, \ket{\psi_2}$ are exact eigenvectors, satisfying the standard orthogonality relation
-$$
-  \braket{\psi_1 | \psi_2} = 0
-$$
-
-2. **Continuous-continuous case:** If both $\lambda_1, \lambda_2$ belong to the continuous spectrum, then we can choose approximate eigenvectors $\psi_j (\epsilon_j)$ for $j = 1,2$ with spectral support in disjoint intervals $(\lambda_j - \epsilon_j, \lambda_j + \epsilon_j)$, whose inner product vanishes in the limit $\epsilon_j \to 0$.
-
-3. **Discrete-continuous case:** If $\lambda_1$ is an eigenvalue and $\lambda_2$ lies in the continuous spectrum, we can take
-
-$$
-\begin{gather*}
-  \hat{A}\ket{\psi_1} = \lambda_1 \ket{\psi_1} \\
-  \norm{(\hat{A} - \lambda_2 \hat{I}) \ket{\psi_2 (\epsilon_2)}} \leq \epsilon_2
-\end{gather*}
-$$
-
-From $\eqref{equation-161}$, we get
-
-$$
-  |\braket{\psi_1 | \psi_2 (\epsilon_2)}| \leq \frac{\epsilon_2}{|\lambda_1 - \lambda_2} \xrightarrow{\epsilon_2 \to 0} 0
-$$
-
-#### Properties of the resolvent
-
-For a complex number $\xi\in\mathbb{C}$, the resolvent $\hat{R}(\xi; \hat{A}) = (\hat{A} - \xi\hat{I})^{-1}$, can be expressed as
-
-$$
-\begin{align*}
-  \hat{R}(\xi; \hat{A}) =& \int_{-\infty}^\infty \frac{\delta(\lambda - \hat{A})}{\lambda - \xi} \;\d\lambda \\
-  =& \int_{-\infty}^\infty \frac{1}{\lambda - \xi} \;\d\hat{P}_A (\lambda)
-\end{align*}
-$$
-
-If this integral exists, we have for any $\ket{\psi}\in\mathcal{H}$
-
-$$
-\begin{equation*}
-  \norm{\hat{R}(\xi; \hat{A}) \psi}^2 = \int_{-\infty}^\infty \frac{1}{|\lambda - \xi|^2} \;\d\norm{\hat{P}_A (\lambda) \psi}^2
-\tag{\label{equation-162}}
-\end{equation*}
-$$
-
-Since $\hat{A}$ is self-adjoint, its spectrum lies on the real axis, i.e. $\sigma(\hat{A})\subseteq\R$. Thus, if $\Im(\xi) \neq 0$, then $|\lambda - \xi|^2 \geq |\Im(\xi)|^2 > 0$. Consequently
-
-$$
-\begin{align*}
-  \norm{\hat{R}(\xi; \hat{A}) \psi}^2 \leq \frac{1}{|\Im(\xi)|^2} \int_{-\infty}^\infty \d\norm{\hat{P}_A (\lambda) \psi}^2 \\
-  =& \frac{\norm{\psi}^2}{|\Im(\xi)|^2}
-\end{align*}
-$$
-
-which implies
-
-$$
-  \norm{\hat{R}(\xi; \hat{A})} \leq \frac{1}{\norm{\Im(\xi)}}
-$$
-
-Thus $\hat{R}(\xi, \hat{A})$ is a bounded operator for all $\xi\in\mathbb{C}\setminus\R$.
-
-For any real $\xi_0 \in\R$, if there exists an interval $(\xi_0 - \epsilon, \xi + \epsilon)$ for some $\epsilon > 0$ with $\hat{P}_A (\xi_0 + \epsilon) = \hat{P}(\xi_0 - \epsilon)$ then no spectral weight of $\hat{A}$ lies in that interval such that 
-
-$$
-  \hat{E}_{\xi, \epsilon} := \hat{P}_A (\xi_0 + \epsilon) - \hat{P}_A (\xi_0 - \epsilon) = \mathbf{0}
-$$
-
-In this case, 
-
-$$
-\begin{align*}
-  \norm{\hat{R}(\xi_0; \hat{A}) \psi}^2 =& \int_{-\infty}^{\xi - \epsilon} \frac{1}{|\lambda - \xi_0|^2} \;\d\norm{\hat{P}_A (\lambda) \psi}^2 \\
-  &+ \int_{\xi + \epsilon}^\infty \frac{1}{|\lambda - \xi|^2} \d\norm{\hat{P}_A (\lambda) f}^2 \\
-  \leq& \frac{\norm{\psi}^2}{\epsilon^2}
-\end{align*}
-$$
-
-showing that $\hat{R}(\xi_0; \hat{A})$ is bounded whenever the spectrum of $\hat{A}$ has a spectral gap around $\xi_0$. Accordingly, the resolvent set of $\hat{A}$ is
-
-$$
-  \rho(\hat{A}) = \set{\xi \in\mathbb{C} : \hat{E}_{\xi, \epsilon} = \mathbf{0},\; \epsilon > 0}
-$$
-
-Thus $\sigma(\hat{A}) = \mathbb{C}\setminus\rho(\hat{A})$.
-
-If $\xi = \lambda_0 \in\sigma(\hat{A})$, the integral $\eqref{equation-162}$ behaves differently depending on the spectral type at $\lambda_0$:
-
-1. **Isolated eigenvalue:** If $\lambda_0$ is a discrete eigenvalue, i.e. $\hat{E}_{\lambda_0, 0} \ket{\psi} \neq \mathbf{0}$, then $\eqref{equation-162}$ diverges as in the limit $\xi\to\lambda_0$ since the integrand has a simple pole on the spectral support. 
-
-2. **Continuous spectrum:** If $\hat{E}_{\lambda_0, \epsilon} \neq \mathbf{0}$ for all $\epsilon > 0$, then in a neighbourhood of $\lambda_0$
-
-$$
-\begin{align*}
-  \norm{\hat{R}(\xi; \hat{A}) \psi}^2 \geq \int_{\lambda_0 - \epsilon}^{\lambda_0 + \epsilon} \frac{1}{|\lambda_0 - \lambda} \;\d\norm{\hat{P}_A (\lambda) \psi}^2 \\
-  \geq& \frac{\norm{\psi}^2}{\epsilon^2}
-\end{align*}
-$$
-
-in which case $\hat{R}(\xi; \hat{A})$ is an unbounded operator.
-
-#### Spectral decomposition
-
-The spectrum $\sigma(\hat{A})$ of a self-adjoint operator $\hat{A}$ in a Hilbert space $\mathcal{H}$ can be decomposed into several disjoint parts with distinct spectral properties. One possible decomposition is
-
-$$
-  \sigma(\hat{A}) = \sigma_\text{d} (\hat{A}) \sqcup \sigma_\text{e} (\hat{A})
-$$
-
-consisting of the discrete spectrum $\sigma_\text{d} (\hat{A})$ and the essential spectrum $\sigma_\text{e} (\hat{A})$.
-
-**1. Point spectrum**
-
-The point spectrum of $\hat{A}$ is
-
-$$
-  \sigma_\text{p} (\hat{A}) := \set{\lambda\in\R : \exists \ket{\psi} \neq\mathbf{0},\; (\hat{A} - \lambda\hat{I})\ket{\psi} = \mathbf{0}}
-$$
-
-Each $\lambda_0 \in\sigma_\text{p} (\hat{A})$ is an eigenvalue of $\hat{A}$, with corresponding eigenspace 
-
-$$
-  \operatorname{ker}(\hat{A} - \lambda_0 \hat{I}) = \operatorname{ran}(\hat{E}_{\lambda_0, 0})
-$$ 
-
-and degeneracy (multiplicity) $d(\lambda_0) := \dim(\ran(\hat{E}_{\lambda_0, 0}))$. The point spectrum may contain both isolated eigenvalues and accumulation points. Generally, it does not coincide with the discrete spectrum.
-
-**2. Discrete spectrum (isolated eigenvalues of finite degeneracy)**
-
-A real number $\lambda_0 \in\R$ belongs to the discrete spectrum $\sigma_\text{d} (\hat{A}) \subseteq \sigma_\text{p} (\hat{A})$ if and only if both conditions hold
-1. $\lambda_0$ is an eigenvalue of $\hat{A}$, i.e. $\lambda_0 \in\sigma_p \sigma_\text{p} (\hat{A})$
-2.  $\lambda_0$ is isolated in the spectrum: there exists $\delta > 0$ such that
-$$
-  \sigma(\hat{A}) \cap (\lambda_0 - \delta, \lambda_0 + \delta)  = \set{\lambda_0}
-$$
-
-3. The corresponding eigenspace is finite-dimensional: $\dim[\operatorname{ker}(\hat{A} - \lambda_0 \hat{I})] < \infty$
-
-Equivalently, $\lambda_0 \in\sigma_\text{d} (\hat{A})$ if only of if there exists $\delta > 0$ such that the local spectral projection $\hat{E}_{\lambda_0, \delta}$ has finite rank, and satisfies
-
-$$
-  \operatorname{ran}(\hat{E}_{\lambda_0, \delta}) = \operatorname{ker}(\hat{A} - \lambda_0 \hat{I})
-$$
-
-Thus, eigenvalues of finite multiplicity that are isolated from the rest of the spectrum form $\sigma_\text{d} (\hat{A})$.
-
-**3. Essential spectrum** 
-
-The essential spectrum $\sigma_\text{e} (\hat{A})$ is defined as the complement of the discrete spectrum
-
-$$
-  \sigma_\text{e} (\hat{A}) := \sigma(\hat{A}) \setminus \sigma_\text{d} (\hat{A})
-$$
-
-A point $\lambda_0 \in\sigma_\text{e} (\hat{A})$ is characterized by the following local spectral properties
-- For every $\epsilon > 0$, either $\hat{E}_{\lambda_0, \epsilon} \neq \mathbf{0}$ and $\dim[\operatorname{ran}(\hat{E}_{\lambda_0, \epsilon})] = \infty$ or $\lambda_0$ is an accumulation point of $\sigma(\hat{A})$. In particular, if $\lambda_0$ is an eigenvalue of infinite degeneracy, then $\lambda_0 \in\sigma_\text{e} (\hat{A})$ because $\dim[\operatorname{ran}(\hat{E}_{\lambda_0, \epsilon})] = \infty$.
-- Equivalently, $\lambda_0 \in\sigma_\text{e} (\hat{A})$ if and only id for every $\epsilon > 0$ the local spectral projection $\hat{E}_{\lambda_0, \epsilon}$ has infinite rank or $\sigma(\hat{A}) \cap (\lambda_0 - \epsilon, \lambda_0 + \epsilon)$ contains other spectral points; therefore no neighbourhood of $\lambda_0$ isolates a finite-dimensional eigenspace.
-
-<MathBox title="" boxType="proposition">
-For a real number $\lambda_0 \in \sigma_\text{e} (\hat{A})$ belonging to the essential spectrum of a self-adjoint operator $\hat{A}$ is it necessary and sufficient that there exists an infinite sequence $\set{\ket{\psi_n}}$ of orthonormal vectors such that
-
-$$
-\begin{equation*}
-  \lim_{n\to\infty} \norm{(\hat{A} - \lambda_0 \hat{I}) \psi_n} = 0
-\tag{\label{equation-163}}
-\end{equation*}
-$$
-
-<details>
-<summary>Proof</summary>
-
-Suppose first that $\lambda_0 \in\sigma_\text{e} (\hat{A})$. Then let $\epsilon_0 > 0$ be any positive number such that
-
-$$
-  \epsilon_0 > \frac{|\lambda_0|}{2}
-$$
-
-Choose a number $\lambda_1 \neq \lambda_0$ and a corresponding $\epsilon_1$ such that
-
-$$
-  \epsilon_1 = |\lambda_1 - \lambda_0| < \epsilon_0
-$$
-
-Continuing in similar fashion we generate a strictly decreasing sequence $\set{\epsilon_n}_{n\in\N_0}$, which correspond to infinite dimensional spaces
-
-$$
-  \hat{E}_{\lambda_0, \epsilon_0}\mathcal{H} \supset \hat{E}_{\lambda_1, \epsilon_1} \mathcal{H} \supset \cdots
-$$
-
-We can therefore select an infinite sequence $\set{\ket{\psi_n}}$ of orthonormal vectors such that
-
-$$
-  \hat{E}_{\lambda_0, \epsilon_0} \ket{\psi_n} = \ket{\psi_n}
-$$
-
-Thus
-
-$$
-\begin{align*}
-  \norm{(\hat{A} - \lambda_0) \psi_n}^2 =& \int_{\lambda_0 - \epsilon_n}^{\lambda_0 + \epsilon_n} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi_n}^2 \\
-  \leq& \epsilon_n^2
-\end{align*}
-$$
-
-Since in the provess of construction we may arrange such that $\epsilon_n^2 \xrightarrow{n\to\infty} 0$, it follows that
-
-$$
-  \lim_{n\to\infty} \norm{(\hat{A} - \lambda_0) \psi_n} = 0
-$$
-
-Conversely, suppose that there exists an infinite sequence $\set{\ket{\psi_n}}$ of orthonormal vectors satisfying $\eqref{equation-163}$. We then have to show that $\lambda_0$ belongs to the essential spectrum of $\hat{A}$. For any $\epsilon > 0$, we have
-
-$$
-\begin{align*}
-  \norm{(\hat{A} - \lambda_0) \psi_n}^2 \geq& \int_{-\infty}^{\lambda_0 - \epsilon} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi_n}^2 \\
-  &+ \int_{lambda_0 + \epsilon}^\infty (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi_n}^2
-\end{align*}
-$$
-
-Furthermore, from $\eqref{equation-164}$ and $\eqref{equation-165}$ we have
-
-$$
-  \int_{-\infty}^{lambda_0 - \epsilon} (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi_n}^2 \geq \epsilon^2 \norm{\hat{P}_A (\lambda_0 - \epsilon) \psi_n}^2
-$$
-
-and using $\eqref{equation-159}$, we get
-
-$$
-  \int_{lambda_0 + \epsilon}^\infty (\lambda - \lambda_0)^2 \;\d\norm{\hat{P}_A (\lambda) \psi_n}^2 \geq \epsilon^2 \norm{[\hat{I} - \hat{P}_A (\lambda_0 - \epsilon)] \psi_n}^2
-$$
-
-Thus
-
-$$
-\begin{align*}
-  \norm{(\hat{A} - \lambda_0) \psi_n}^2 \geq& \epsilon^2 \norm{\hat{P}_A (\lambda_0 - \epsilon) \psi_n}^2 \\
-  &+ \epsilon^2 \norm{[\hat{I} - \hat{P}_A (\lambda_0 - \epsilon)] \psi_n}^2
-\end{align*}
-$$
-
-implying that for any $\epsilon > 0$
-
-$$
-\begin{align*}
-  \lim_{n\to\infty} \epsilon^2 \norm{\hat{P}_A (\lambda_0 - \epsilon) \psi_n}^2 =& 0
-  \lim_{n\to\infty} \epsilon^2 \norm{[\hat{I} - \hat{P}_A (\lambda_0 - \epsilon)] \psi_n}^2 =& 0 \\
-\end{align*}
-$$
-
-or equivalently
-
-$$
-\begin{align*}
-  \lim_{n\to\infty} \braket{\psi_n|\hat{P}_A (\lambda_0 - \epsilon)|\psi_n} =& 0 \\
-  \lim_{n\to\infty} \braket{\psi_n|\hat{P}_A (\lambda_0 + \epsilon)|\psi_n} =& 0 
-\end{align*}
-$$
-
-Combining the limits, we obtain
-
-$$
-\begin{equation*}
-  \lim_{n\to\infty} \braket{\psi_n|[\hat{P}_A (\lambda_0 + \epsilon) - \hat{P}_A (\lambda_0 - \epsilon)]|\psi_n} = 1
-\tag{\label{equation-167}}
-\end{equation*}
-$$
-
-Thus, $\hat{E}_{\lambda_0, \epsilon} \mathcal{H}$ is not empty and it remains to show that the latter is infinite-dimensional. Assume the opposite is true, that is, $\hat{E}_{\lambda_0, \epsilon}\mathcal{H}$ is finite-dimensional. Select an orthonormal set $\set{\ket{\phi_m}}_{m=1}^{k\in\N_+}$. Then for any $\epsilon > 0$ and all $n$
-
-$$
-\begin{equation*}
-  \braket{\psi_n |\hat{E}_{\lambda_0, \epsilon}|\psi_n} = \sum_{m=1}^k |\braket{\phi_m |\psi_n}|^2 \leq 1
-\tag{\label{equation-166}}
-\end{equation*}
-$$
-
-Since $\set{\ket{\psi_n}}$ is an orthonormal set, Bessel's inequality becomes
-
-$$
-  \sum_{l=1}^n |\braket{\phi_m | \psi_l}|^2 \leq 1
-$$
-
-and the convergence of this series for $n\to\infty$ in particular for all $m=1,\dots,k$ implies that
-
-$$
-  \lim_{n\to\infty} |\braket{\phi_m |\psi_n}|^2 = 0
-$$
-
-Due to the finite number of terms in the sum in $\eqref{equation-166}$, we can take the limit $n\to\infty$ inside the summattion to infer that
-
-$$
-  \lim_{n\to\infty} \braket{\psi_n |\hat{E}_{\lambda_0, \epsilon}|\psi_n} = 0
-$$
-
-contradicting $\eqref{equation-167}$. Hence, for any $\epsilon > 0$, the subspace $\hat{E}_{\lambda_0, \epsilon} \mathcal{H}$ must be infinite-dimensional.
-</details>
-</MathBox>
-
-**4. Continuous spectrum** 
-
-The continuous spectrum $\sigma_\text{c} (\hat{A})$ consists of those $\lambda\in\sigma(\hat{A})$ for which
-- $\hat{E}_{\lambda_0, \epsilon} = \mathbf{0}$ (i.e. no true eigenvector at $\lambda$)
-- $\hat{E}_{\lambda_0, \epsilon} \neq \mathbf{0}$ for every $\epsilon > 0$
-
-If $\lambda_0 \in\sigma_\text{c} (\hat{A})$, then
-
-$$
-  \dim(\hat{E}_{\lambda_0, \epsilon} \mathcal{H}) = \infty,\; \forall \epsilon > 0
-$$
-
-reflecting the existence of generalized eigenstates or continuum states, but no normalizable eigenvectors.
-
-<MathBox title="" boxType="proposition">
-Let $\hat{A}$ be a self-adjoint operator on a Hilbert space $\mathcal{H}$. If the spectrum of $\hat{A}$ has a lower bound, i.e. $\inf[\sigma(\hat{A})] > -\infty$, we can for $n\in\N_+$ define
-
-$$
-\begin{equation*}
-  \lambda_n (\hat{A}) := \sup_{\substack{M\subset \mathcal{H} \\ \dim(M) = n-1}} \left(\inf_{\substack{\ket{\psi} \in M^\perp \\ \norm{psi} = 1}} \braket{\psi|\hat{A}|\psi} \right)
-\tag{\label{equation-177}}
-\end{equation*}
-$$
-
-That is, the supremum is taken over all $(n-1)$-dimensional subspaces $M$ of $\mathcal{H}$. Then $\lambda_n (\hat{A})$ has the following properties:
-
-1. **Monotonicity:** $\lambda_n (\hat{A}) \leq \lambda_{n+1} (\hat{A})$
-
-Let $a, b\in\R$ be any two real numbers such that $a < \lambda_n (\hat{A}) < b$, then
-2. 
-$$
-\begin{equation*}
-  \dim([\hat{P}_A (a)] \mathcal{H}) < n
-\tag{\label{equation-169}}
-\end{equation*}
-$$
-
-3. 
-$$
-\begin{equation*}
-  n \leq \dim([\hat{P}_A (b)]\mathcal{H})
-\tag{\label{equation-170}}
-\end{equation*}
-$$
-
-<details>
-<summary>Proof</summary>
-
-**(1):** Fix any $(n-1)$-dimensional subspace $M \subset \mathcal{H}$. For any choice of $\ket{f_n} \in\mathcal{H}$ the subspace $M' = \operatorname{span}(M \cup \set{f_n})$ satisfies $\dim(M') \leq n$ and $M^\perp \supset (M')^\perp$. Thus for unit vectors
-
-$$
-  \inf_{\substack{\psi\in M^\perp \\ \norm{\psi} = 1}} \braket{\psi|\hat{A}|\psi} \leq \inf_{\substack{\phi\in (M')^\perp \\ \norm{\phi} = 1}} \braket{\phi|\hat{A}|\phi}
-$$
-
-Take the supremum over all choices of $\ket{f_n}$ (equivalently, over all $n$-dimensional subspaces $M'$ that contain $M$). This shows that the value associated to $M$ in the definition of $\lambda_n (\hat{A})$ is less than or equal to the supremum over all $n$-dimensional subspaces, i.e.
-
-$$
-\begin{align*}
-  \inf_{\substack{\psi\in M^\perp \\ \norm{\psi} = 1}} \braket{\psi|\hat{A}|\psi} \leq& \sup_{\substack{M' \subset\mathcal{H} \\ \dim(M') = n}} \inf_{\substack{\phi\in (M')^\perp \\ \norm{\phi} = 1}} \braket{\phi|\hat{A}|\phi} \\
-  =& \lambda_{n+1} (\hat{A})
-\end{align*}
-$$
-
-Finally, taking the supremum of the left-hand side over all $(n-1)$-dimensional $M$ gives
-
-$$
-\begin{equation*}
-  \lambda_n (\hat{A}) =& \sup_{\dim(M) = n-1} \inf_{\substack{\psi\in M^\perp \\ \norm{\psi} = 1}} \braket{\psi|\hat{A}|\psi} \\
-  \leq& \lambda_{n+1} (\hat{A})
-\end{equation*}
-$$
-
-Which proves the monotonicity of $\lambda_n (\hat{A})$.
-
-**(2):** Suppose that $\dim([\hat{P}_A (a)]\mathcal{H}) = k \geq n$. That is, there exists $k \geq n$ independent vectors in $[\hat{P}_A (a)]\mathcal{H}$. Given any $k-1$ vectors $\ket{f_1},\dots,\ket{f_{k-1}}$, not necessarily independent then
-
-$$
-\begin{equation*}
-  [\ket{f_1},\dots,\ket{f_{k-1}}]^\perp \cap [\hat{P}_A (a)]\mathcal{H}
-\tag{\label{equation-168}}
-\end{equation*}
-$$
-
-is not empty. Let $\ket{\psi}$ be a normalized vector belonging to $\eqref{equation-168}$. Then
-
-$$
-  \braket{\psi|\hat{A}|\psi} = \int_{-\infty}^a \lambda\;\d\norm{\hat{P}_A (\lambda) \psi}^2 \leq a
-$$
-
-that is, $\lambda_k (\hat{A}) \leq a$. Since by hypothesis $k \geq n$, then **(1)** implies that $\lambda_n (\hat{A}) \leq a$, contradicting the assumption that $a < \lambda_n (A)$.
-
-**(3):** Suppose that $\dim([\hat{P}_A (b)]\mathcal{H}) = k \leq n - 1$ and that $\operatorname{span}\set{\ket{g_1},\dots,\ket{g_k}} = [\hat{P}_A (b)]\mathcal{H}$. For any normalized vector $\ket{\psi} \in [\ket{g_1},\dots,\ket{g_k}]^\perp =: [\hat{I} - \hat{P}_A (b)]\mathcal{H}$, then
-
-$$
-  \braket{\psi|\hat{A}|\psi} = \int_b^\infty \lambda \;\d\norm{\hat{P}_A (\lambda) \psi}^2 \geq b
-$$
-
-i.e. $\lambda_{k+1} (\hat{A}) \geq b$, and hence $\lambda_n (\hat{A}) \geq b$, since by hypothesis $n \geq k + 1$. This contradicts the assumption that $\lambda_n (\hat{A}) < b$.
-</details>
-</MathBox>
-
-<MathBox title="" boxType="proposition">
-Let $\hat{A}$ be a self-adjoint operator on a Hilbert space $\mathcal{H}$, bounded from below. Then exactly one of the following two situations occurs for variational eigenvalues $\eqref{equation-177}$:
-1. **Discrete eigenvalues below the essential spectrum:** There exits $n$ eigenvalues (counting degeneracy) satisfying
-$$
-  \lambda_1 (\hat{A}) \leq \cdots \leq \lambda_n (\hat{A}) < \inf[\sigma_\text{e} (\hat{A})]
-$$
-and in this case, $\lambda_n (\hat{A})$ coincides with the $n$th eigenvalue (in nondecreasing order, counted with degeneracy).
-
-2. **Transition to the essential spectrum:** If fewer than $n$ eigenvalues (counting degeneracy) lie below the essential spectrum then $\lambda_n (\hat{A}) = \inf\set{\lambda \in\sigma_\text{e} (\hat{A})}$, making the sequence stabilize, i.e.$\lambda_n (\hat{A}) = \lambda_{n+1} (\hat{A}) = \cdots$. In this case there are at most $(n - 1)$ eigenvalues below $\lambda_n (\hat{A})$.
-
-<details>
-<summary>Proof</summary>
-
-From $\eqref{equation-169}$ and $\eqref{equation-170}$ we have
-
-$$
-\begin{gather*}
-  \dim([\hat{P}_A (\lambda_n - \epsilon)]\mathcal{H}) < n \tag{\label{equation-173}} \\
-  n \leq \dim([\hat{P}_A (\lambda_n + \epsilon)]\mathcal{H}) \tag{\label{equation-174}}
-\end{gather*}
-$$
-
-We consider two possibilities
-
-$$
-\begin{equation*}
-  \dim([\hat{P}_A (\lambda_n + \epsilon_0)]\mathcal{H}) <& \infty
-\tag{\label{equation-171}}
-\end{equation*}
-$$
-
-for some $\epsilon_0 > 0$, or
-
-$$
-\begin{equation*}
-  \dim([\hat{P}_A (\lambda_n + \epsilon_0)]\mathcal{H}) = \infty
-\tag{\label{equation-172}}
-\end{equation*}
-$$
-
-for all $\epsilon_0 > 0$.
-
-For the first case, it follows from $\eqref{equation-173}$, $\eqref{equation-174}$ and $\eqref{equation-171}$ that for some $\epsilon_0 > 0$
-
-$$
-  1 \leq \dim([\hat{P}_A (\lambda_n + \epsilon_0) - \hat{P}_A (\lambda_n - \epsilon_0)]\mathcal{H}) < \infty
-$$
-
-This means that there are exactly $(n - 1)$ eigenvalues strictly below $\lambda_n (\hat{A})$. This is because if there aree, say $n + k$ eigenvalues less or equal to $\lambda_n$, i.e. $\lambda'_1 \leq \cdots \leq \lambda'_{n+k} \leq \lambda_n$, then $\eqref{equation-173}$ implies that $\dim([\hat{P}_A (\lambda_n + \delta_0)]\mathcal{H}) \leq n + k - 1$. However, $\lambda'_{n+k} \leq \lambda_n$ means that $n + k -1 \leq n - 1$, which is true only if $k = 0$, and $\lambda'_n = \lambda_n$. We also note from $\eqref{equation-173}$ that $\dim([\hat{P}_A (\lambda_1 - \epsilon)]\mathcal{H}) = 0$ for all $\epsilon = 0$ and hence the spectrum set is empty below $\lambda_1$. This proves the first part.
-
-For the second case, $\eqref{equation-173}$ implies that
-
-$$
-  \dim([\hat{P}_A (\lambda_n + \epsilon) - \hat{P}_A (\lambda_n - \epsilon)]\mathcal{H}) = \infty
-$$
-
-for all $\epsilon > 0$. Thus, in this case $\lambda_n (\hat{A}) \in\sigma_\text{e} (\hat{A})$ belong to the essential spectrum of $\hat{A}$. Let $a\in\R$ be any real number such that $a < \lambda_n - \epsilon$. From $\eqref{equation-169}$ we obtain for all $\epsilon > 0$
-
-$$
-\begin{equation*}
-  \dim([\hat{P}_A (a + \epsilon)]\mathcal{H}) \leq n - 1
-\tag{\label{equation-175}}
-\end{equation*}
-$$
-
-Also
-
-$$
-\begin{equation*}
-  \dim([\hat{P}_A (a - \epsilon)]\mathcal{H}) \leq \dim([\hat{P}_A (a + \epsilon)]\mathcal{H})
-\tag{\label{equation-176}}
-\end{equation*}
-$$
-
-i.e.
-
-$$
-  \dim([\hat{P}_A (a + \epsilon) - \hat{P}_A (a - \epsilon)]\mathcal{H}) < \infty
-$$
-
-Consequently, $a$ cannot belong to the essential spectrum. This is in turn means that $\lambda_n (\hat{A})$ is the bottom of the essential spectrum. Now suppose $\lambda_{n+1} > \lambda_n$ and note that
-
-$$
-\begin{align*}
-  \lambda_{n+1} - \frac{\lambda_{n+1} - \lambda_n}{2} =& \lambda_n + \frac{\lambda_{n+1} - \lambda_n}{2} \\
-  =& \frac{\lambda_{n+1} + \lambda_n}{2}
-\end{align*}
-$$
-
-which from $\eqref{equation-169}$ and $\eqref{equation-170}$ imply the contradictory statements that
-
-$$
-  \dim\left(\left[\hat{P}_A \left(\frac{\lambda_{n+1} + \lambda_n}{2} \right) \right] \mathcal{H} \right)
-$$
-  
-is $\leq n + 1$ and $= \infty$ respectively. That is, we must have $\lambda_{n+1} = \lambda_n$.
-
-Also for $a < \lambda_n - \epsilon$, we have from $\eqref{equation-175}$ and $\eqref{equation-176}$ for all $\epsilon > 0$
-
-$$
-  \dim([\hat{P}_A (a - \epsilon)]\mathcal{H}) \leq n - 1
-$$
-
-Thus there may be at most $(n - 1)$ eigenvalues below $\lambda_n$. This proves the second part.
-</details>
-</MathBox>
-
-<MathBox title="Eigenvalue ordering" boxType="proposition">
-Let $\hat{A}$ and $\hat{B}$ be self-adjoint operators on a Hilbert space $\mathcal{H}$. Assume their spectra are bounded from below, such that for all vectors $\ket{\psi}$ in their domains
-
-$$
-\begin{equation*}
-  \braket{\psi|\hat{A}|\psi} \geq \braket{\psi|\hat{B}|\psi}
-\tag{\label{equation-178}}
-\end{equation*}
-$$
-
-Then, for all $n \geq 1$, the corresponding variational eigenvalues defined by $\eqref{equation-}$ satisfy
-
-$$
-  \lambda_n (\hat{A}) \geq \lambda_n (\hat{B})
-$$
-
-<details>
-<summary>Proof</summary>
-
-Fix an arbitrary $(n - 1)$-dimensional subspace $M \subset\mathcal{H}$ and define
-
-$$
-\begin{align*}
-  c'_A (M) :=& \inf_{\substack{\psi\in M^\perp \\ \norm{\psi} = 1}} \braket{\psi|\hat{A}|\psi} \\
-  c'_B (M) :=& \inf_{\substack{\psi\in M^\perp \\ \norm{\psi} = 1}} \braket{\psi|\hat{B}|\psi}
-\end{align*}
-$$
-
-By assumption $\eqref{equation-178}$ it follows that
-
-$$
-  c'_A (M) \geq c'_B (M)
-$$
-
-since the infimum of a larger set of values is greater or equal when each value in one set dominates the corresponding one in the other. Taking the supremum over all $(n-1)$-dimensional subspaces $M$, we get
-
-$$
-\begin{align*}
-  \lambda_n (\hat{A}) =& \sup_{\substack{M\subset\mathcal{H} \\ \dim(M) = n-1}} c'_A (M) \\
-  \geq& \sup_{\substack{M\subset\mathcal{H} \\ \dim(M) = n-1}} c'_B (M) = \lambda_n (\hat{B})
-\end{align*}
-$$
-
-Note that if, relative to a given space $[\ket{f_1},\dots,\ket{f_{n-1}}]^\perp$, then $\underline{c}'_B$ also gives a lower bound to $\braket{\psi|\hat{A}|\psi}$ for all $\ket{\psi}\in [\ket{f_1},\dots,\ket{f_{n-1}}]^\perp$. Since, by definition, no such a lower bound can be greater than the corresponding $\underline{c}'_A$, we conclude that $\underline{c}'_B \leq \underline{c}'_A$ as we consider all vectors $\ket{f_1},\dots,\ket{f_{n-1}}$.
-</details>
-</MathBox>
-
-### Completeness relation
-
-If $\hat{A}$ is a self-adjoint operator on a Hilbert space with spectrum $\sigma(\hat{A})$, there is a projection-valued measure $E(\lambda)$ such that
-
-$$
-  \hat{A} = \int_{\sigma(\hat{A})} \lambda\;\d E(\lambda)
-$$
-
-In particular, if $\hat{A}$ has both discrete and continuous spectra, i.e. $\sigma(\hat{A}) = \sigma_\text{d} (\hat{A}) \cup \sigma_\text{c} (\hat{A})$, where
-- $\sigma_\text{d} (\hat{A}) = \Set{a_i}$ is the set of discrete eigenvalues with corresponding eigenvectors $\set{\ket{a_i}}$
-- $\sigma_\text{c} (\hat{A})$ is the continuum of eigenvalues with corresponding eigenfunctions $\set{\ket{\lambda}}$
-
-then the identity operator $\hat{I}$ can be decomposed as
-
-$$
-  \hat{I} = \sum_i \ket{a_i} \bra{a_i} + \int_{\sigma_{\text{c}}(\hat{A})} \ket{\lambda}\bra{\lambda}\;\d\lambda
-$$
-
-which is known as the completeness relation.
-
-## Tensor products
-
-Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be Hilbert spaces. For $\ket{\varphi}\in\mathcal{H}_A$ and $\ket{\psi}\in\mathcal{H}_B$, we define the map $\ket{\varphi}\otimes\ket{\psi}:\mathcal{H}_A \times \mathcal{H}_B \to \mathbb{C}$ as
-
-$$
-  (\xi, \eta) \mapsto \braket{\xi|\varphi}_{\mathcal{H}_A} \braket{\eta|\psi}_{\mathcal{H}_B}
-$$
-
-called a tensor product. This is map is continuous and anti-linear in both $\xi$ and $\eta$. The set of all such maps is denoted
-
-$$
-  \mathcal{H}_A \otimes \mathcal{H}_B : \set{\Psi : \mathcal{H}_A \times \mathcal{H}_B \to \mathbb{C} | \text{anti-linear and continuous}}
-$$
-
-This set forms a vector space over $\mathbb{C}$ since for $\Psi_1, \Psi_2 \in\mathcal{H}_A \otimes \mathcal{H}_B$ and $a, b \in\mathbb{C}$, the map defined by
-
-$$
-  (a\Psi_1 + b\Psi_2)(\xi, \eta) := a\Psi_1 (\xi,\eta) + b\Psi_2 (\xi,\eta)
-$$
-
-is also in $\mathcal{H}_A \otimes \mathcal{H}_B$. The zero map is the zero vector in this vector space, and for any $\Psi \in \mathcal{H}_A \otimes \mathcal{H}_B$, the map $-\Psi$ is its additive inverse. In other words, the tensor product $\ket{\varphi}\otimes\ket{\psi}$ is a vector in the vector space of the anti-linear and continuous maps $\mathcal{H}_A \otimes \mathcal{H}_B$ from $\mathcal{H}_A \times \mathcal{H}_B$ to $\mathbb{C}$. More compactly, we also write
-
-$$
-  \ket{\varphi\otimes\psi} := \ket{\varphi}\otimes\ket{\psi}
-$$
-
-The tensor product has the following properties:
-1. **Homogeneity:**
-$$
-  (a\ket{\varphi})\otimes\ket{\psi} = \ket{\varphi}\otimes (a\ket{\psi}) = a(\ket{\varphi} \otimes\ket{\psi})
-$$
-2. **Distributivity over scalar multiplication:**
-$$
-  a(\ket{\varphi}\otimes\ket{\psi}) + b(\ket{\varphi} \otimes\ket{\psi}) = (a + b)\ket{\varphi} \otimes \ket{\psi}
-$$
-3. **Distributivity over vector addition in the first argument:**
-$$
-  (\ket{\varphi_1} \otimes \ket{\varphi_2}) \otimes \ket{\psi} = \ket{\varphi_1}\otimes\ket{\psi} + \ket{\psi_2}\otimes\ket{\psi}
-$$
-4. **Distributivity over vector addition in the second argument:**
-$$
-  \ket{\psi}\otimes(\ket{\psi_1} + \ket{\psi_2}) = \ket{\varphi}\otimes\ket{\psi_1} + \ket{\varphi}\otimes\ket{\psi_2}
-$$
-
-<details>
-<summary>Proof</summary>
-
-**(1):**
-
-$$
-\begin{align*}
-  [(a\ket{\varphi})\otimes\ket{\psi}](\xi,\eta) =& \braket{\xi|a\varphi} \braket{\eta|\psi} \\
-  =& a\braket{\xi|\varphi}\braket{\eta|\psi} \\
-  =& a(\ket{\varphi}\otimes\ket{\psi})(\xi,\eta)
-\end{align*}
-$$
-
-Similarly,
-
-$$
-\begin{align*}
-  [\ket{\varphi} \otimes(a\ket{\psi})](\xi,\eta) =& \braket{\xi|\varphi} \braket{\eta|a\psi} \\
-  =& a\braket{\xi|\varphi}\braket{\eta|\psi} \\
-  =& \braket{\xi|a\varphi} \braket{\eta|\psi} \\
-  =& [(a\ket{\varphi})\otimes\ket{\psi}](\xi,\eta)
-\end{align*}
-$$
-
-**(2):**
-
-$$
-\begin{align*}
-  [a(\ket{\varphi}\otimes\ket{\psi}) + b(\ket{\varphi} \otimes\ket{\psi})](\xi,\eta) =& a(\ket{\varphi}\otimes\ket{\psi})(\xi,\eta) + b(\ket{\varphi}\otimes\ket{\psi})(\xi,\eta) \\
-  =& a\braket{\xi|\varphi}\ket{\eta|\psi} + b\braket{\xi|\varphi}\braket{\eta|\psi} \\
-  =& (a + b)\braket{\xi|\varphi}\braket{\eta|\psi} \\
-  =& (a + b)(\ket{\varphi}\otimes(\ket{\psi}))(\xi,\eta)
-\end{align*}
-$$
-
-**(3):**
-
-$$
-\begin{align*}
-  [(\ket{\varphi_1}\otimes\ket{\varphi_2})\otimes\ket{\psi}](\xi, \eta) =& \bra{\xi}(\ket{\varphi_1} + \ket{\varphi_2})\braket{\eta|\psi} \\
-  =& (\braket{\xi|\varphi_1} + \braket{\xi|\varphi_2})\braket{\eta|\psi} \\
-  =& \braket{\xi|\varphi_1}\braket{\eta|\psi} + \braket{\xi|\varphi_2}\braket{\eta|\psi} \\
-  =& (\ket{\varphi_1}\otimes\ket{\psi} + \ket{\varphi_2}\otimes\ket{\psi})(\xi,\eta)
-\end{align*}
-$$
-
-**(4):**
-
-$$
-\begin{align*}
-  [\ket{\varphi}\otimes(\ket{\psi_1} + \ket{\psi_2})](\xi,\eta) =& \braket{\xi|\varphi}\bra{\eta}(\ket{\psi_1} + \ket{\psi_2}) \\
-  =& \braket{\xi|\varphi}(\braket{eta|\psi_1} + \braket{\eta|\psi_2})
-  =& ket{\varphi}\otimes\ket{\psi_1} + \ket{\varphi}\otimes\ket{\psi_2} \\
-  =& (\ket{\varphi}\otimes\ket{\psi_1} + \ket{\varphi}\otimes\ket{\psi_2})(\xi,\eta)
-\end{align*}
-$$
-</details>
-
-For vectors $\ket{\varphi_k}\otimes\ket{\psi_k}\in\mathcal{H}_A \otimes \mathcal{H}_B$ with $k\in\set{1,2}$ and $\ket{\varphi_k}\in\mathcal{H}_A$, $\ket{\psi_k}\in\mathcal{H}_B$, we define the inner product as
-
-$$
-  \braket{\varphi_1 \otimes \psi|\varphi_2 \otimes\psi_2} := \braket{\varphi_1|\varphi_2}_{\mathcal{H}_A} \braket{\psi_1|\psi_2}_{\mathcal{H}_B}
-$$
-
-This defines an inner product for simple tensor product vectors $\ket{\varphi}\otimes\ket{\psi}$ in $\mathcal{H}_A \otimes \mathcal{H}_B$. To extend this to all vectors $\Psi\in\mathcal{H}_A \otimes\mathcal{H}_B$, we consider an orthonormal basis for each Hilbert subspace. Let $\set{\ket{e_a}}\subset\mathcal{H}_A$ be an orthonormal basis in $\mathcal{H}_A$ and $\set{\ket{f_b}}\subset\mathcal{H}_B$ be an orthonormal basis in $\mathcal{H}_B$. The set $\set{\ket{e_a}\otimes\ket{f_b}}\subset \mathcal{H}_A \otimes \mathcal{H}_B$ then forms an orthonormal basis for $\mathcal{H}_A \otimes \mathcal{H}_B$ since
-
-$$
-  \braket{e_{a_1} \otimes f_{b_1}|e_{a_2} \otimes f_{b_2}} = \braket{e_{a_1}|e_{a_2}}\braket{f_{b_1}|f_{b_2}} = \delta_{a_1 a_2} \delta_{b_1 b_2}
-$$
-
-<details>
-<summary>Details</summary>
-
-To verify that $\set{\ket{e_a}\otimes\ket{f_b}}$ is linearly independent, suppose there exists coefficients $\Psi_{ab}\in\mathbb{C}$ such that
-
-$$
-  \sum_{a,b} \Psi_{ab} \ket{e_a \otimes e_b} = 0 \in \mathcal{H}_A \otimes \mathcal{H}_B
-$$
-
-Applying this to an arbitrary pair $(\xi,\eta)\in\mathcal{H}_A \times \mathcal{H}_B$, we obtain
-
-$$
-  \left(\sum_{a,b} \Psi_{ab} \ket{e_a \otimes f_b}\right)(\xi,\eta) = \sum_{a,b} \Psi_{ab} \braket{e_a|\xi} \braket{f_b|\eta} = 0
-$$
-
-and in particular for every $(\xi,\eta) = (e_{a'}, f_{b'})$, we get
-
-$$
-  0 = \sum_{a,b} \Psi_{ab} \underbrace{\braket{e_a|e_{a'}}}_{\delta_{a,a'}} \underbrace{\braket{f_b|f_{b'}}}_{\delta_{b,b'}} = \Psi_{a', b'} 
-$$
-
-Since this holds for all $a'$ and $b'$, it follows that $\Psi_{ab} = 0$ for all $a, b$, proving that $\set{\ket{e_a}\otimes\ket{f_b}}$ is linearly independent.
-</details>
-
-Equivalently, for linear functionals acting on tensor product states, we define
-
-$$
-  \braket{\varphi_1 \otimes \psi_1}(\ket{\varphi_2} \otimes \ket{\psi_2}) = \braket{\varphi_1 \otimes \psi_1 | \varphi_2 \otimes \psi_2} = \braket{\varphi_1|\varphi_2}\braket{\psi_1|\psi_2}
-$$
-
-so that
-
-$$
-  \bra{\varphi\otimes\psi} = \ket{\varphi}\otimes\ket{\psi}
-$$
-
-In terms of orthonormal bases $\set{\ket{e_a}}\subset\mathcal{H}_A$ and $\set{\ket{f_b}}\subset\mathcal{H}_B$, we can expand an arbitrary vector $\Psi\in\mathcal{H}_A \otimes \mathcal{H}_B$ as
-
-$$
-\begin{align*}
-  \Psi(\xi,\eta) =& \Psi\left(\sum_a \ket{e_a}\braket{e_a|\xi}, \sum_b \ket{f_b}\braket{f_b|\eta} \right) \\
-  =& \sum_{a,b} \underbrace{\Psi(\ket{e_a},\ket{f_b})}_{=:\Psi_{ab}\in\mathbb{C}} \braket{\xi|e_a}\braket{\eta|f_b} \\
-  =& \sum_{a,b} \Psi_{ab}(\ket{e_a}\otimes\ket{f_b})(\xi, \eta) \\
-  =& \sum_{a,b} \Psi_{ab} \ket{e_a \otimes f_b}(\xi,\eta)
-\end{align*}
-$$
-
-showing that every vector $\ket{\Psi}\in\mathcal{H}_A \otimes \mathcal{H}_B$ can be written as a linear combination
-
-$$
-  \ket{\Psi} = \sum_{a,b} \Psi_{ab} \ket{e_a \otimes f_b}
-$$
-
-Given another vector $\ket{\Phi} = \sum_{a,b} \Phi_{ab} \ket{e_a \otimes f_b}$, the inner product is defined as
-
-$$
-\begin{equation*}
-\begin{split}
-  \braket{\Psi|\Phi} =& \sum_{a_1,b_1} \sum_{a_2,b_2} \Psi_{a_1 b_1}^* \Phi_{a_2 b_2} \braket{e_{a_1} \otimes f_{b_1}|e_{a_2} \otimes f_{b_2}} \\
-  =& \sum_{a,b} \Psi_{ab}^* \Phi_{ab}
-\end{split}
-\tag{\label{equation-110}}
-\end{equation*}
-$$
-
-<details>
-<summary>Details</summary>
-
-To verify that $\eqref{equation-110}$ is positive-definite, consider an orthonormal basis $\set{\ket{e_a}}$ of $\mathcal{H}_A$ and $\set{\ket{f_b}}$ of $\mathcal{H}_B$. Then for any $\ket{\Psi} = \sum_{a,b} \Psi_{ab} \ket{e_a \otimes e_b}$, we have
-
-$$
-  \braket{\Psi|\Psi} = \sum_{a,b} |\Psi_{ab}|^2 \geq 0
-$$
-
-and thus
-
-$$
-  \braket{\Psi|\Psi} = 0 \iff \Psi_{ab} = 0 \forall a,b \iff \ket{\Psi} = 0
-$$
-
-This shows that $\braket{\Psi|\Phi}$ defines a valid inner product.
-
-To show that the inner product is independent of the choice of orthonormal basis, let $\set{\ket{\tilde{e}_a}} \subset\mathcal{H}_A$ and $\set{\ket{\tilde{f}_b}}\subset\mathcal{H}_B$ be alternative orthonormal bases, related to the original bases by unitary transformations
-
-$$
-\begin{align*}
-  \ket{\tilde{e}_a} =& \hat{U}_A \ket{e_a} = \sum_{a_1} \braket{e_{a_1}|\hat{U}_A e_a} \ket{e_{a_i}} = \sum_{a_1} \mathbf{U}_{a_1 a}^{(A)} \ket{e_{a_1}} \\
-  \ket{\tilde{b}_a} =& \hat{U}_B \ket{f_b} = \sum_{b_1} \braket{f_{b_1}|\hat{U}_B f_b} \ket{f_{b_i}} = \sum_{b_1} \mathbf{U}_{b_1 b}^{(B)} \ket{f_{b_1}}
-\end{align*}
-$$
-
-Expanding $\ket{\Phi}$ in terms of the new basis, we have
-
-$$
-\begin{align*}
-  \ket{\Phi} =& \sum_{a_1, b_1} \Phi_{a_1 b_1} \ket{e_{a_1} \otimes f_{b_1}} = \sum_{a,b} \tilde{\Phi}_{ab} \ket{\tilde{e}_a \otimes \tilde{f}_b} \\
-  =& \sum_{a,b} \tilde{\Phi}_{ab} \sum_{a_1} \mathbf{U}_{a_1 a}^{(A)} \ket{e_{a_1}} \otimes \sum_{b_1} \mathbf{U}_{b_1 b}^{(B)} \ket{f_{b_1}} \\
-  =& \sum_{a_1, b_1} \sum_{a,b} \mathbf{U}_{a_1 a}^{(A)} \mathbf{U}_{b_1 b}^{(B)} \tilde{\Phi}_{ab} \ket{e_{a_1} \otimes f_{b_1}}
-\end{align*}
-$$
-
-from which it follows that
-
-$$
-  \Psi_{a_1, b_1} = \sum_{a,b} \mathbf{U}_{a_1 a}^{(A)} \mathbf{U}_{b_1 b}^{(B)} \tilde{\Phi}_{ab}
-$$
-
-Similarly, we obtain
-
-$$
-  \Psi_{a_1 b_1} = \sum_{a,b} \mathbf{U}_{a_1 a}^{(A)} \mathbf{U}_{b_1 b}^{(B)} \tilde{\Psi}_{ab}
-$$
-
-Substituting the expansions into the inner product yields
-
-$$
-\begin{align*}
-  \sum_{a_1 b_1} \Psi_{a_1 b_1}^* \Phi_{a_1 b_1} =& \sum_{a_1, b_1} \left(\sum_{a,b} \mathbf{U}_{a_1 a}^{(A)} \mathbf{U}_{b_1 b}^{(B)} \tilde{\Phi}_{ab} \right)^* \sum_{a_2, b_2} \mathbf{U}_{a_1 a_2}^{(A)} \mathbf{U}_{b_1 b_2}^{(B)} \tilde{\Phi}_{a_2 b_2} \\
-  =& \sum_{a, b} \sum_{a_2, b_2} \sum_{a_1, b_1} (\mathbf{U}_{a_1 a}^{(A)})^* \mathbf{U}_{a_1 a_2}^{(A)} (\mathbf{U}_{b_1 b}^{(B)})^* \mathbf{U}_{b_1 b_2}^{(B)} \tilde{\Psi}_{ab}^* \tilde{\Phi}_{a_2 b_2} \\
-  =& \sum_{a, b} \sum_{a_2, b_2} \underbrace{\left(\sum_{a_1} (\mathbf{U}_{aa_1}^{(A)})^\dagger \mathbf{U}_{a_1 a_2}^{(A)}\right)}_{=\delta_{aa_2}} \underbrace{\left(\sum_{b_1} (\mathbf{U}_{bb_1}^{(B)})^\dagger \mathbf{U}_{b_1 b_2}^{(B)}\right)}_{=\delta_{bb_2}} \tilde{\Psi}_{ab} \tilde{\Phi}_{a_2 b_2} \\
-  =& \sum_{a,b} \tilde{\Psi}_{ab}^* \tilde{\Phi}_{ab}
-\end{align*}
-$$
-
-showing that $\braket{\Psi|\Phi}$ remains invariant under a change of basis.
-</details>
-
-The dual vector (covector) associated with $\ket{\Psi}$ is given by
-
-$$
-  \bra{\Psi} = \sum_{a,b} \Psi_{ab}^* \ket{e_a \otimes f_b}
-$$
-
-The norm of $\ket{\Psi}$ is follows from the inner product definition:
-
-$$
-  \norm{\Psi}^2 = \braket{\Psi|\Psi} = \sum_{a,b} |\Psi_{ab}|^2
-$$
-
-For any $\ket{\varphi}\in\mathcal{H}_A$ and $\ket{\psi}\in\mathcal{H}_B$, the norm of $\ket{\varphi}\otimes\ket{\psi}$ is
-
-$$
-\begin{align*}
-  \norm{\varphi\otimes\psi} =& \sqrt{\braket{\varphi\otimes\psi|\varphi\otimes\psi}} \\
-  =& \sqrt{\braket{\varphi|\varphi}\braket{\psi|\psi}} = \norm{\varphi}\cdot\norm{\psi}
-\end{align*}
-$$
-
-This shows that $\mathcal{H}_A \otimes \mathcal{H}_B$ is a complex inner product space. For finite-dimensional subspaces, completeness in the induced norm follows, implying that $\mathcal{H}_A \otimes \mathcal{H}_B$ is a Hilbert space, known as the tensor product Hilbert space. Its dimension is given by
-
-$$
-  \dim(\mathcal{H}_A \otimes \mathcal{H}_B) = \dim(\mathcal{H}_A) \dim(\mathcal{H}_B)
-$$
-
-<details>
-<summary>Proof</summary>
-
-If $\set{\ket{e_a}}\subset\mathcal{H}_A$ and $\set{\ket{f_b}}\subset\mathcal{H}_B$ are finite-dimensional orthonormal bases, then $\set{\ket{e_a \otimes f_b}}$ forms an orthonormal basis in the tensor product $\mathcal{H}_A \otimes \mathcal{H}_B$. The dimension of the tensor product is given by the number basis, which is the product of the which is the product of the dimensions of the individual subspaces
-</details>
-
-Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional complex Hilbert spaces with $\dim(\mathcal{H}_A) = n_A$ and $\dim(\mathcal{H}) = n_B$, respectively. Suppose they have orthonormal bases $\set{\ket{e_a}}_{a=1}^{n_A}\subset\mathcal{H}_A$ and $\set{\ket{f_b}}_{b=1}^{n_B}$. The tensor product space $\mathcal{H}_A \otimes \mathcal{H}_B$ has an orthonormal basis $\set{\ket{e_a \otimes f_b}}$ and we establish the isomorphism $\mathcal{H}_A \otimes \mathcal{H}_B \cong \mathbb{C}^{n_A n_B}$ by identifying each basis with a standard basis vectors in $\mathbb{C}^{n_A n_B}$, i.e.
-
-$$
-  \ket{e_a \otimes f_b} = \mathbf{e}_{(a-1)n_B + b} \in\mathbb{C}^{n_A n_B}
-$$
-
-Conceptually, this partitions the $n_A n_B$ coordinates of a vector in $\mathbb{C}^{n_A n_B}$ into $n_A$ row-blocks of $n_B$ entries each. For a general vector $\ket{\Psi}\in\mathcal{H}_A \otimes \mathcal{H}_B$, we have
-
-$$
-  \ket{\Psi} = \sum_{a=1}^{n_A} \sum_{b=1}^{n_B} \Psi_{ab} \ket{e_a \otimes f_b} = \begin{matrix} 1 \\ \vdots \\ (a - 1)n_B + b \\ \vdots \\ n_A n_B \end{matrix} \begin{bmatrix} \Psi_{11} \\ \vdots \\ \Psi_{ab} \\ \vdots \\ \Psi_{n_A n_B} \end{bmatrix}
-$$
-
-For several tensor products, such as $\mathcal{H}_A \otimes \mathcal{H}_B \otimes \mathcal{H}_C$, associativity holds
-
-$$
-  (\mathcal{H}_A \otimes \mathcal{H}_B) \otimes \mathcal{H}_C = \mathcal{H}_A \otimes (\mathcal{H}_B \otimes \mathcal{H}_C) = \mathcal{H}_A \otimes \mathcal{H}_B \otimes \mathcal{H}_C
-$$
-
-and accordingly
-
-$$
-  \braket{\varphi_1 \otimes \psi_1 \otimes \chi_1 | \varphi_2 \otimes \psi_2 \otimes \chi_2} = \braket{\varphi_1|\varphi_2}\braket{\psi_1|\psi_2}\braket{\chi_1|\chi_2}
-$$
-
-Likewise, with orthonormal bases $\set{\ket{e_a}}\subset\mathcal{H}_A$, $\set{\ket{f_b}}\subset\mathcal{H}_B$ and $\set{\ket{g_c}}\subset\mathcal{H}_C$, a vector $\ket{\Psi}\in\mathcal{H}^A \otimes \mathcal{H}_B \otimes \mathcal{H}_C$ can be expanded as
-
-$$
-  \ket{\Psi} = \sum_{a,b,c} \Psi_{abc} \ket{\psi_a \otimes f_b \otimes g_c}, \; \Psi_{abc}\in\mathbb{C}
-$$
-
-### Operators on tensor products
-
-Let $\hat{M}^X : \mathcal{H}_X \to\mathcal{H}_X$ be Hermitian operators for $X \in\set{A,B}$. The tensor product operator $\hat{M}_A \otimes \hat{M}_B$ act factor-wise on a tensor product $\ket{\varphi\otimes\psi} = \ket{\varphi}\otimes\ket{\psi}$:
-
-$$
-  (\hat{M}_A \otimes \hat{M}_B) \ket{\varphi\otimes\psi} = \underbrace{(\hat{M}_A \ket{\varphi})}_{\in\mathcal{H}_A} \otimes \underbrace{\hat{M}_B \ket{\psi}}_{\in\mathcal{H}_B}
-$$
-
-By linearity, for an arbitrary vector $\ket{\Phi}\in\mathcal{H}_A \otimes \mathcal{H}_B$ expanded as
-
-$$
-  \ket{\Phi} = \sum_{a,b} \Phi_{ab} \ket{e_a} \otimes \ket{f_b}
-$$
-
-the tensor product operator acts as
-
-$$
-  (\hat{M}_A \otimes \hat{M}_B)\ket{\Phi} = \sum_{a,b} \Phi_{ab} (\hat{M}_A \ket{e_a}) \otimes (M_B \ket{f_b}) \in \mathcal{H}_A \otimes \mathcal{H}_B
-$$
-
-The Hermitian adjoint of the tensor product operator is given by
-
-$$
-  (\hat{M}_A \otimes \hat{M}_B)^\dagger = \hat{M}_A^\dagger \otimes \hat{M}_B^\dagger
-$$
-
-If $\hat{M}_A$ and $\hat{M}_B$ are Hermitian, i.e. $\hat{M}_X^\dagger = \hat{M}_X$ for $X\in\set{A,B}$, it follows that their tensor product is also Hermitian:
-
-$$
-  (\hat{M}_A \otimes \hat{M}_B)^\dagger = \hat{M}_A \otimes \hat{M}_B
-$$
-
-<details>
-<summary>Proof</summary>
-
-For $i\in\set{1,2}$ let $\ket{\varphi_i} \in\mathcal{H}_A$ and $\ket{\psi_i}\in\mathcal{H}_B$. Then we have
-
-$$
-\begin{align*}
-  \Braket{(\hat{M}_A \otimes \hat{M}_B)^\dagger \varphi_1 \otimes \psi_1 | \varphi_2 \otimes \psi_2} =& \Braket{\varphi_1 \otimes\psi |(\hat{M}_A \otimes \hat{M}_B)|\varphi_2 \otimes \psi_2} \\
-  =& \Braket{\varphi_1 \otimes \psi_1 | \hat{M}_A \varphi_2 \otimes \hat{M}_B \psi_2} \\
-  =& \braket{\varphi_1 | \hat{M}_A| \varphi_2} \braket{\psi_1 |\hat{M}_B|\psi_2} \\
-  =& \braket{\hat{M}_A^\dagger \varphi_1 | \varphi_2} \braket{\hat{M}_B^\dagger \psi_1 | \psi_2} \\
-  =& \Braket{\hat{M}_A^\dagger \varphi_1 \otimes \hat{M}_B^\dagger \psi_1 | \varphi_2 \otimes \psi_2} \\
-  =& \Braket{(\hat{M}_A^\dagger \otimes \hat{M}_B^\dagger)\varphi_1 \otimes \psi_1 | \varphi_2 \otimes \psi_2}
-\end{align*}
-$$
-</details>
-
-Suppose the operators $\hat{M}_X : \mathcal{H}_X \to \mathcal{H}_X$ for $X\in\set{A,B}$ have matrices $\mathbf{M}_{ij}^{(X)}$ in the respective basis $\set{\ket{e_a}}\subset\mathcal{H}_A$ and $\set{\ket{f_n}}\subset\mathcal{H}_B$. To find the matrix for the tensor product $\hat{M}_A \otimes \hat{M}_B$ in the basis $\set{\ket{e_a \otimes f_b}}\subset \mathcal{H}_A \otimes \mathcal{H}_B$, we expand it as
-
-$$
-\begin{align*}
-  \hat{M}_A \otimes \hat{M}_B =& \sum_{a,a'=1}^{n_A} \sum_{b,b'=1}^{n_B} \ket{e_a \otimes f_b} \Braket{e_a \otimes f_b |(\hat{M}_A \otimes \hat{M}_B)|e_{a'} \otimes f_{b'}} \bra{e_{a'} \otimes f_{b'}} \\
-  =& \sum_{a,a'=1}^{n_A} \sum_{b,b'=1}^{n_B} \ket{e_a \otimes f_b} \Braket{e_a \otimes f_b |\hat{M}_A e_{a'} \otimes \hat{M}_B f_{b'}} \bra{e_{a'} \otimes f_{b'}} \\
-  =& \sum_{a,a'=1}^{n_A} \sum_{b,b'=1}^{n_B} \ket{e_a \otimes f_b} \braket{e_a | \hat{M}_A | e_{a'}} \braket{f_b | \hat{M}_B f_{b'}} \bra{e_{a'} \otimes f_{b'}} \\
-  =& \sum_{a,a'=1}^{n_A} \mathbf{M}_{aa'}^{(A)} \mathbf{M}_{bb'}^{(B)} \sum_{b,b'=1}^{n_B} \ket{e_a \otimes f_b}\bra{e_{a'} \otimes f_{b'}} \tag{\label{equation-111}}
-\end{align*}
-$$
-
-so that
-
-$$
-  \mathbf{M}_{aa'}^{(A)} \mathbf{M}_{bb'}^{(B)} \sum_{b,b'=1}^{n_B} \ket{e_a \otimes f_b}\bra{e_{a'} \otimes f_{b'}} = 
-  \overset{\begin{matrix} 1\hphantom{-} & \cdots & \hphantom{\mathbf{M}} k \hphantom{\mathbf{M_{bb'}^{(B)}}} & \cdots & n \end{matrix}}{
-  \begin{matrix} 1 \\ \vdots \\ j \\ \vdots \\ n \end{matrix}\begin{bmatrix}
-    \vphantom{1}\hphantom{1} & \hphantom{\cdots} & | & \hphantom{\cdots} & \hphantom{n} \\
-    \vphantom{\vdots} & & | & &  \\
-    -- & -- & \mathbf{M}_{aa'}^{(A)} \mathbf{M}_{bb'}^{(B)} & & \\
-    \vphantom{\vdots} & & & & \\
-    \vphantom{n} & & & & 
-  \end{bmatrix}
-  }
-$$
-
-where $j = (a - 1)n_B + b$ and $k = (a' - 1)n_B + b'$. Inserting this into the expansion $\eqref{equation-111}$ gives
-
-$$
-\begin{gather*}
-  \mathbf{M}_A \otimes \mathbf{M}_B = \\
-  \overset{\begin{matrix} 1 \hphantom{---} & \cdots & n_B \hphantom{--} & n_B + 1 \hphantom{-} & \cdots & 2n_B \hphantom{--} & \cdots & n_A n_B \hphantom{--} \end{matrix}}{
-  \begin{matrix} 1 \\ \vdots \\ n_B \\ n_B + 1 \\ \vdots \\ 2n_B \\ \vdots \\ n_A n_B \end{matrix}\begin{bmatrix}
-    \mathbf{M}_{11}^{(A)} \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{11}^{(M)} \mathbf{M}_{1 n_B}^{(B)} & \mathbf{M}_{12}^{(A)} \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{12}^{(A)} \mathbf{M}_{1n_B}^{(B)} & \cdots & \mathbf{M}_{1n_A}^{(A)} \mathbf{M}_{1n_B}^{(B)} \\
-    \vdots & & \vdots & \vdots & & \vdots & & \vdots \\
-    \mathbf{M}_{11}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{11}^{(M)} \mathbf{M}_{n_B n_B}^{(B)} & \mathbf{M}_{12}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{12}^{(A)} \mathbf{M}_{n_B n_B}^{(B)} & \cdots & \mathbf{M}_{1n_A}^{(A)} \mathbf{M}_{n_B n_B}^{(B)} \\
-    \mathbf{M}_{21}^{(A)} \mathbf{M}_{1 1}^{(B)} & \cdots & \mathbf{M}_{21}^{(M)} \mathbf{M}_{1 n_B}^{(B)} & \mathbf{M}_{22}^{(A)} \mathbf{M}_{1 1}^{(B)} & \cdots & \mathbf{M}_{22}^{(A)} \mathbf{M}_{1 n_B}^{(B)} & \cdots & \mathbf{M}_{2n_A}^{(A)} \mathbf{M}_{1 n_B}^{(B)} \\
-    \vdots & & \vdots & \vdots & & \vdots & & \vdots \\
-    \mathbf{M}_{21}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{21}^{(M)} \mathbf{M}_{n_B n_B}^{(B)} & \mathbf{M}_{22}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{22}^{(A)} \mathbf{M}_{n_B n_B}^{(B)} & \cdots & \mathbf{M}_{2n_A}^{(A)} \mathbf{M}_{n_B n_B}^{(B)} \\
-    \vdots & & \vdots & \vdots & & \vdots & & \vdots \\
-    \mathbf{M}_{n_A 1}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_A 1}^{(M)} \mathbf{M}_{n_B n_B}^{(B)} & \mathbf{M}_{n_A 2}^{(A)} \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_A 2}^{(A)} \mathbf{M}_{n_B n_B}^{(B)} & \cdots & \mathbf{M}_{n_A n_A}^{(A)} \mathbf{M}_{n_B n_B}^{(B)}
-  \end{bmatrix}
-  }
-\end{gather*}
-$$
-
-This can be factored as the block matrix
-
-$$
-  \mathbf{M}_A \otimes \mathbf{M}_B = \begin{bmatrix} 
-    \mathbf{M}_{11}^{(A)} \begin{bmatrix} 
-      \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{1n_B}^{(B)} \\ 
-      \vdots & & \vdots \\ 
-      \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_B n_B}^{(B)} 
-    \end{bmatrix} & \cdots & \mathbf{M}_{1n_A}^{(A)} \begin{bmatrix} 
-      \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{1n_B}^{(B)} \\ 
-      \vdots & & \vdots \\
-      \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_B n_B}^{(B)} 
-    \end{bmatrix} \\ 
-    \vdots & & \vdots \\
-    \mathbf{M}_{n_A 1}^{(A)} \begin{bmatrix} 
-      \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{1n_B}^{(B)} \\ 
-      \vdots & & \vdots \\ 
-      \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_B n_B}^{(B)} 
-    \end{bmatrix} & \cdots & \mathbf{M}_{n_A n_A}^{(A)} \begin{bmatrix} 
-      \mathbf{M}_{11}^{(B)} & \cdots & \mathbf{M}_{1n_B}^{(B)} \\ 
-      \vdots & & \vdots \\
-      \mathbf{M}_{n_B 1}^{(B)} & \cdots & \mathbf{M}_{n_B n_B}^{(B)} 
-    \end{bmatrix}
-  \end{bmatrix}
-$$
-
-<MathBox title='' boxType='proposition'>
-For vectors $\ket{\varphi_1},\ket{\varphi_2}\in\mathcal{H}_A$ and $\ket{\psi_1}, \ket{\psi_2}\in\mathcal{H}_B$ in Hilbert spaces $\mathcal{H}_A$ and $\mathcal{H}_B$, then
-
-$$
-  \ket{\varphi_1 \otimes \psi_1}\bra{\varphi_2 \otimes \psi_2} = \ket{\varphi_1}\bra{\varphi_2} \otimes \ket{\psi_1}\bra{\psi_2}
-$$
-
-That is, the projection onto a tensor product of vectors is equal to the tensor product of projections onto the factor vectors.
-
-<details>
-<summary>Proof</summary>
-
-For any $\ket{\xi_1},\ket{\xi_2}\in\mathcal{H}_A$ and $\ket{\zeta_1},\ket{\zeta_2}\in\mathcal{H}_B$, we have
-
-$$
-\begin{align*}
-  \Braket{\xi_1 \otimes \zeta_1 |(\ket{\varphi_1 \otimes \psi_1}\bra{\varphi_2 \otimes \psi_2})| \xi_2 \otimes \zeta_2} =& \ \braket{\xi_1 \otimes \zeta_1 | \varphi_1 \otimes \psi_1} \braket{\varphi_2 \otimes \psi_2 | \xi_2 \otimes \zeta_2} \\
-  =& \braket{\xi_1|\varphi_1}\braket{\zeta_1|\psi_1}\braket{\varphi_2|\zeta_2}\braket{\psi_2|\zeta_2} \\
-  =& \braket{\xi_1|\varphi_1}\braket{\varphi_2|\xi_2}\braket{\zeta_1|\psi_1}\braket{\psi_2|\zeta_2} \\
-  =& \Braket{\xi_1 \otimes \zeta_1|(\ket{\varphi_1}\bra{\varphi_2} \otimes \ket{\psi_1}\bra{\psi_2})|\xi_2 \otimes \zeta_2}
-\end{align*}
-$$
-</details>
-</MathBox>
-
-### Partial trace
-
-<MathBox title='Partial trace' boxType='definition'>
-Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces. The *partial trace* $\operatorname{tr}_B$ over $\mathcal{H}_B$ is defined as the linear map
-
-$$
-  \operatorname{tr}_B : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_A)
-$$
-
-which for each $\hat{M} \in \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ is uniquely characterized by
-
-$$
-\begin{equation*}
-  \operatorname{tr}\left(\hat{M}_A \operatorname{tr}_B (\hat{M}) \right) = \operatorname{tr}\left((\hat{M}_A \otimes \hat{I}_B)\hat{M}\right),\; \forall \hat{M}_A \in \mathcal{L}(\mathcal{H}_A)
-\tag{\label{equation-145}}
-\end{equation*}
-$$
-
-In other words, $\operatorname{tr}_B (\hat{M}) \in \mathcal{L}(\mathcal{H}_A)$ is the unique operator that reproduces the trace pairings between operators on $\mathcal{H}_A$ and the tensor product space $\mathcal{H}_A \otimes \mathcal{H}_B$.
-
-Similarly, the partial trace $\operatorname{tr}_A$ over $\mathcal{H}_A$ is the linear map
-
-$$
-  \operatorname{tr}_A : \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B) \to& \mathcal{L}(\mathcal{H}_B) \\
-$$
-
-uniquely characterized for each $\hat{M} \in \mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ by
-
-$$
-\begin{equation*}
-  \operatorname{tr}\left(\hat{M}_B \operatorname{tr}_A (\hat{M}) \right) = \operatorname{tr}\left((\hat{I}_A \otimes \hat{M}_B)\hat{M}\right),\; \forall \hat{M}_B \in\mathcal{L}(\hat{H}_B)
-\tag{\label{equation-146}}
-\end{equation*}
-$$
-</MathBox>
-
-<MathBox title='' boxType='proposition'>
-Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces with respective orthonormal bases $\set{\ket{e_a}}\subset\mathcal{H}_A$ and $\set{\ket{f_b}}\subset\mathcal{H}_B$. Consider an operator $\hat{M}\in\mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$, whose matrix elements in the orthonormal basis $\set{\ket{e_a \otimes f_b}}$ of $\mathcal{H}_A \otimes \mathcal{H}_B$ are given by $\mathbf{M}_{a_1 b_1, a_2 b_2}$.
-
-In the given bases, the partial traces $\operatorname{tr}_A (\hat{M}) \in\mathcal{L}(\mathcal{H}_A)$ and $\operatorname{tr}(\mathcal{H}_B)$ are defined as
-
-$$
-\begin{align*}
-  \operatorname{tr}_B (\hat{M}) =& \sum_{a_1,a_2,b} \mathbf{M}_{a_1, b, a_2, b} \ket{e_{a_1}} \bra{e_{a_2}} \\
-  \operatorname{tr}_A (\hat{M}) =& \sum_{b_1,b_2,a} \mathbf{M}_{ab_1, ab_2} \ket{f_{b_1}} \bra{f_{b_2}}
-\end{align*}
-$$
-
-The partial traces $\operatorname{tr}_B (\hat{M})$ and $\operatorname{tr}_A (\hat{M})$ do not depend on the choice of the orthonormal bases $\set{\ket{e_a}}$ and $\set{\ket{f_b}}$ and are the unique operators satisfying
-
-$$
-\begin{equation*}
-\begin{split}
-  \operatorname{tr}\left(\hat{M}_A \operatorname{tr}_B (\hat{M})\right) =& \operatorname{tr}\left((\hat{M}_A \otimes \hat{I})\hat{M}\right),\; \forall \hat{M}_A \in\mathcal{L}(\mathcal{H}_A) \\
-  \operatorname{tr}\left(\hat{M}_B \operatorname{tr}_A (\hat{M})\right) =& \operatorname{tr}\left((\hat{I}_A \otimes \hat{M}_B)\hat{M}\right),\; \forall \hat{M}_B \in\mathcal{L}(\mathcal{H}_B)
-\end{split}
-\tag{\label{equation-112}}
-\end{equation*}
-$$
-
-<details>
-<summary>Proof</summary>
-
-We show that $\operatorname{tr}_B (\hat{M})$ satisfy the first equation in $\eqref{equation-112}$. Let $\set{\ket{e_a}}$ be an orthonormal basis in $\mathcal{H}_A$ and $\set{\ket{f_b}}$ an orthonormal basis in $\mathcal{H}_B$. Suppose $\hat{M}\in\mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$ is given by
-
-$$
-  \hat{M} = \sum_{a_1, a_2, b_1, b_2} \mathbf{M}_{a_1 b_1, a_2, b_2} \ket{e_{a_1} \otimes f_{b_1}} \bra{e_{a_2} \otimes f_{b_2}}
-$$
-
-Furthermore, let
-
-$$
-  \hat{M}_A = \sum_{a_1, a_2} \mathbf{M}_{a_1 a_2}^{(A)} \ket{e_{a_1}} \bra{e_{a_2}}
-$$
-
-be an arbitrary operator in $\mathcal{L}(\mathcal{H}_A)$. Then
-
-$$
-\begin{align*}
-  & \operatorname{tr}[(\hat{M}_A \otimes \hat{I}_B)\hat{M}] \\
-  =& \sum_{a_3, b_3} \bra{e_{a_3} \otimes f_{b_3}} (\hat{M}_A \otimes \hat{I}_B) \sum_{a_1, a_2, b_1, b_2} \ket{e_{a_1} \otimes f_{b_1}} \mathbf{M}_{a_1 b_1, a_2 b_2} \braket{e_{a_2} \otimes f_{b_2}|e_{a_3} \otimes f_{b_3}} \\
-  =& \sum_{a_1, a_2, b_1, b_2} \braket{e_{a_2} \otimes f_{b_2}|(\hat{M}_A e_{a_1}) \otimes f_{b_1}} \mathbf{M}_{a_1 b_1, a_2, b_2} \\
-  =& \sum_{a_1, a_2, b_1, b_2} \braket{e_{a_2}|\hat{M}_A|e_{a_1}} \underbrace{\braket{f_{b_2}|f_{b_1}}}_{=\delta_{b_1 b_2}} \mathbf{M}_{a_1 b_1, a_2 b_2} \\
-  =& \sum_{a_1, a_2, b} \mathbf{M}_{a_2 a_1}^{(A)} \mathbf{M}_{a_1 b, a_2 b} \\
-  =& \sum_{a_1, a_2} \mathbf{M}_{a_2 a_1}^{(A)} \operatorname{tr}_B (\mathbf{M})_{a_1 a_2} = \sum_{a_2} [\mathbf{M}^A \operatorname{tr}_B (\mathbf{M})]_{a_2 a_2} \\
-  =& \operatorname{tr}[\hat{M}_A \operatorname{tr}_B (\hat{M})]
-\end{align*}
-$$
-
-**Uniqueness**
-
-Next, we show uniqueness. Suppose there exists another operator $\tilde{\operatorname{tr}}_B (\hat{M})$ on $\mathcal{H}_A$ that also satisfies the first equation in $\eqref{equation-112}$. Then, for any $\mathbf{M}_A \in\mathcal{L}(\mathcal{H}_A)$
-
-$$
-\begin{align*}
-  \operatorname{tr}\left(\hat{M}_A (\tilde{\operatorname{tr}}_B (\hat{M}) - \operatorname{tr}_B (\hat{M})) \right) =& \operatorname{tr}\left(\hat{M}_A \tilde{\operatorname{tr}}_B (\hat{M}) \right) - \operatorname{tr}\left(\mathcal{M}_A \operatorname{tr}(\hat{M}) \right) \\
-  =& \operatorname{tr}\left((\hat{M}_A \otimes\hat{I}_B)\hat{M} \right) - \operatorname{tr}\left((\hat{M}_A \otimes\hat{I}_B)\hat{M} \right) \\
-  =& 0
-\end{align*}
-$$
-
-Since this holds for all $\hat{M}_A$, it follows that $\tilde{\operatorname{tr}}_B (\hat{M}) = \operatorname{tr}_B (\hat{M})$.
-
-**Basis independence**
-
-To show that $\operatorname{tr}_B (\hat{M})$ is independent of the choice of basis, let $\set{\ket{\tilde{e}_a}}\subset\mathcal{H}_A$ and $\set{\ket{\tilde{f}_b}}\subset\mathcal{H}_B$ be another set of orthonormal bases, related by unitary transformations
-
-$$
-\begin{align*}
-  \ket{\tilde{e}_a} =& \hat{U}_A \ket{e_a} = \sum_{a'} \mathbf{U}_{a' a}^{(A)} \ket{e_{a'}} \\
-  \ket{\tilde{f}_b} =& \hat{U}_B \ket{f_b} = \sum_{b'} \mathbf{U}_{b' b}^{(B)} \ket{f_{b'}}
-\end{align*}
-$$
-
-Let $\tilde{\mathbf{M}}_{a_1 b_1, a_2 b_2}$ be the matrix of $\hat{M}$ in the orthonormal basis $\set{\ket{\tilde{e}_a \otimes\tilde{f}_b}}$ such that
-
-$$
-\begin{align*}
-  \tilde{\mathbf{M}}_{a_1 b_1, a_2 b_2} =& \braket{\tilde{e}_{a_1} \otimes \tilde{f}_{b_1}|\hat{M}|\tilde{e}_{a_2} \otimes \tilde{f}_{b_2}} \\
-  =& \sum_{a'_1 b'_1 a'_2 b'_2} \Braket{\mathbf{U}_{a'_1 a_1}^{(A)}  \ket{e_{a'_1}} \otimes \mathbf{U}_{b'_1 b_1}^{(B)} \ket{f_{b'_1}} |\hat{M}|\mathbf{U}_{a'_2 a_2}^{(A)} \ket{e_{a'_2}} \otimes \mathbf{U}_{b'_2 b_2}^{(B)} \ket{f_{b'_2}}} \\
-  =& \sum_{a'_1 b'_1 a'_2 b'_2} (\mathbf{U}_{a'_1 a_1}^{(A)})^* (\mathbf{U}_{b'_1 b_1}^{(B)})^* \mathbf{U}_{a'_2 b_2}^{(A)} \mathbf{U}_{b'_2 b_2}^{(B)} \braket{e_{a'_1} \otimes f_{b'_1}|\hat{M}| e_{a'_2} \otimes f_{b'_2}} \\
-  =& \sum_{a'_1 b'_1 a'_2 b'_2} (\mathbf{U}_{a'_1 a_1}^{(A)})^* (\mathbf{U}_{b'_1 b_1}^{(B)})^* \mathbf{U}_{a'_2 b_2}^{(A)} \mathbf{U}_{b'_2 b_2}^{(B)} \mathbf{M}_{a'_1 b'_1, a'_2 b'_2}
-\end{align*}
-$$
-
-Using the fact that $(\mathbf{U}_{a'_1 a_1}^{(A)})^* (\mathbf{U}_{b'_1 b_1}^{(B)})^* = (\mathbf{U}_{a'_1 a_1}^{(A)})^\dagger (\mathbf{U}_{b'_1 b_1}^{(B)})^\dagger$, we obtain
-
-$$
-\begin{align*}
-  & \sum_{a_1 a_2 b} \tilde{\mathbf{M}}_{a_1 b, a_2 b} \ket{\tilde{e}_{a_1}} \bra{\tilde{e}_{a_2}} \\
-  =& \sum_{a_1 a_2 b a'_1 b'_1 a'_2 b'_2} (\mathbf{U}_{a'_1 a_1}^{(A)})^\dagger (\mathbf{U}_{b'_1 b_1}^{(B)})^\dagger \mathbf{U}_{a'_2 a_2}^{(A)} \mathbf{U}_{b'_2 b}^{(B)} \mathbf{M}_{a'_1 b'_1, a'_2 b'_2} \ket{\tilde{e}_{a_1}} \bra{\tilde{e}_{a_2}} \\
-  =& \sum_{a'_1 b'_1 a'_2 b'_2} \left(\sum_b \mathbf{U}_{b'_2 b}^{(B)} (\mathbf{U}_{b b'_1}^{(B)})^\dagger \right) \mathbf{M}_{a'_1 b'_1, a'_2 b'_2} \left(\sum_{a_1} (\mathbf{U}_{a'_1 a_1}^{(A)})^\dagger \ket{\tilde{e}_{a_1}} \right) \left(\sum_{a_2} (\mathbf{U}_A^\dagger)_{a'_2 a_2} \bra{\tilde{e}_{a_2}} \right)
-\end{align*}
-$$
-
-By unitarity of $\hat{U}_A$ and $\hat{U}_B$, we have
-
-$$
-  \sum_b \mathbf{U}_{b'_2 b}^{(B)} (\mathbf{U}_{b b'_1}^{(B)})^\dagger = \delta_{b_2 b_1}
-$$
-
-and
-
-$$
-\begin{align*}
-  \sum_{a_1} (\mathbf{U}_{a_1 a'_1}^{(A)})^\dagger \ket{\tilde{e}_{a_1}} =& \sum_{a_1 a'} (\mathbf{U}_{a_1 a'_1}^{(A)})^\dagger \mathbf{U}_{a' a_1}^{(A)} \ket{e_{a'}} \\
-  =& \sum_{a'} \underbrace{\left(\sum_{a_1} \mathbf{U}_{a' a_1}^{(A)} (\mathbf{U}_{a_1 a'_1}^{(A)})^\dagger \right)}_{=\delta_{a' a'_1}} \ket{e_{a'}} \\
-  =& \ket{e_{a'}}
-\end{align*}
-$$
-
-Likewise,
-
-$$
-\begin{align*}
-  \sum_{a_2} \mathbf{U}_{a'_2 a_2}^{(A)} \bra{\tilde{e}_{a_2}} =& \sum_{a_2 a'} \mathbf{U}_{a'_2 a_2}^{(A)} (\mathbf{U}_{a'_2 a'}^{(A)})^\dagger \bra{e_{a'}} \\
-  =& \sum_{a'} \underbrace{\left( \sum_{a_2} (\mathbf{U}_{a' a_2}^{(A)})^\dagger \mathbf{U}_{a_2 a'_2}^{(A)} \right)}_{=\delta_{a' a'_2}} \bra{e_{a'}} \\
-  =& \bra{e_{a'_2}}
-\end{align*}
-$$
-
-Substituting back gives
-
-$$
-\begin{align*}
-  \sum_{a_1 a_2 b} \tilde{M}_{a_1 b, a_2 b} \ket{\tilde{e}_{a_1}} \bra{\tilde{e}_{a_2}} =& \sum_{a'_1 b'_1 a'_2 b'_2} \mathbf{M}_{a'_1 b'_1 a'_2 b'_2} \delta_{b'_1 b'_2} \ket{e_{a'_1}} \bra{e_{a'_2}} \\
-  =& \sum_{a_1 a_2} \mathbf{M}_{a_1 b, a_2 b} \ket{e_{a_1}} \bra{e_{a_2}}
-\end{align*}
-$$
-</details>
-</MathBox>
-
-<MathBox title='Properties of partial trace' boxType='proposition'>
-Let $\mathcal{H}_A$ and $\mathcal{H}_B$ be finite-dimensional Hilbert spaces. For any operator $\hat{M}\in\mathcal{L}(\hat{H}_A \otimes \mathcal{H}_B)$, the partial traces satisfy
-
-1. $\operatorname{tr}\left(\operatorname{tr}_B (\hat{M})\right) = \operatorname{tr}(\hat{M}) = \operatorname{tr}\left(\operatorname{tr}_A (\hat{M})\right)$
-
-For any operator $\hat{M}_A \otimes \hat{M}_B \in\mathcal{L}(\mathcal{H}_A \otimes \mathcal{H}_B)$, the partial traces satisfy
-
-2. $\operatorname{tr}(\hat{M}^A \otimes \hat{M}^B) = \operatorname{tr}(\hat{M}_A) \operatorname{tr}(\hat{M}_B)$
-3. $\operatorname{tr}_B (\hat{M}^A \otimes \hat{M}^B) = \operatorname{tr}(\hat{M}_B) \hat{M}_A$
-4. $\operatorname{tr}_A (\hat{M}^A \otimes \hat{M}^B) = \operatorname{tr}(\hat{M}_A) \hat{M}_B$
- 
-<details>
-<summary>Proof</summary>
-
-**(1):** From $\eqref{equation-145}$, we have
-
-$$
-\begin{align*}
-  \operatorname{tr}\left(\operatorname{tr}_B (\hat{M}) \right) =& \operatorname{tr}\left(\hat{I}_A \operatorname{tr}_B (\hat{M}) \right) \\
-  =& \operatorname{tr}\left((\hat{I}_A \otimes \hat{I}_B)\hat{M} \right) = \operatorname{tr}(\hat{M})
-\end{align*}
-$$
-
-and similarly from $\eqref{equation-146}$, we obtain
-
-$$
-\begin{align*}
-  \operatorname{tr}\left(\operatorname{tr}_A (\hat{M})\right) =& \operatorname{tr}\left(\operatorname{tr}_A (\hat{M}) \hat{I}_B \right) \\
-  =& \operatorname{tr}\left((\hat{I}_A \otimes \hat{I}_B)\hat{M} \right) = \operatorname{tr}(\hat{M})
-\end{align*}
-$$
-
-**(2):**
-
-$$
-\begin{align*}
-  \operatorname{tr}(\hat{M}_A \otimes \hat{M}_B) =& \sum_{a,b} (\mathbf{M}_A \otimes \mathbf{M}_B)_{ab, ab} \\
-  =& \left(\sum_a \mathbf{M}_{aa}^{(A)} \right) \left(\sum_b \mathbf{M}_{bb}^{(B)} \right) \\
-  =& \operatorname{tr}(\hat{M}_A) \operatorname{tr}(\hat{M}_B)
-\end{align*}
-$$
-
-**(3):** Expanding in terms of an orthonormal basis $\set{\ket{e_a}}\subset\mathcal{M}_A$, we find
-
-$$
-  \operatorname{tr}_B (\hat{M}_A \otimes \hat{M}_B) = \sum_{a_1, a_2} \left(\operatorname{tr}_B (\hat{M}_A \otimes\hat{M}_B)\right)_{a_1 a_2} \ket{e_{a_1}} \bra{e_{a_2}}
-$$
-
-where
-
-$$
-\begin{align*}
-  \left(\operatorname{tr}_B (\hat{M}_A \otimes\hat{M}_B)\right)_{a_1 a_2} =& \sum_b (\hat{M}_A \otimes \hat{M}_B)_{a_1 b, a_2 b} \\
-  =& \mathbf{M}_{a_1 a_2}^{(A)} \sum_b \mathbf{M}_{bb}^{(B)} \\
-  =& \mathbf{M}_{a_1 a_2}^{(A)} \operatorname{tr}(\hat{M}_B)
-\end{align*}
-$$
-
-so that
-$$
-  \operatorname{tr}_B (\hat{M}_A \otimes \hat{M}_B) = \hat{M}_A \operatorname{tr}(\hat{M}_B)
-$$
-</details>
-</MathBox>
-
-# Hilbert space formulation
-
-## Postulates
+# Postulates
 
 1. **Description of quantum states** The state space of a quantum system is described a complex separable Hilbert space $\mathcal{H}$. The possible states of the system can be categorized into *pure states* and *mixed states*:
 
@@ -3230,7 +64,7 @@ where $\hat{H}$ is the Hamiltonian of the quantum system.
 
 6. **Description of composite systems:** The Hilbert space of a composite system that consists of the subsystems $\mathcal{H}_{A_i}$ for $i\in I\subseteq\N$ is the tensor product $\bigotimes_{i\in I} \mathcal{H}_{A_i}$.
 
-### Time evolution pictures
+## Time evolution pictures
 
 | Evolution of | Schrödinger $(S)$ | Heisenberg $(H)$ | Interaction $(I)$ |
 | --- | --- | --- | --- |
@@ -3238,7 +72,7 @@ where $\hat{H}$ is the Hamiltonian of the quantum system.
 | Observable | constant | $\hat{O}_H = e^{i\hat{H}_S t/\hbar} \hat{O}_S e^{-i\hat{H}_S t/\hbar}$ | $\hat{O}_I = e^{i\hat{H}_{0;S} t/\hbar} \hat{O}_S e^{-i\hat{H}_{0;S} t/\hbar}$ |
 | Density matrix | $\rho_S (t) = e^{i\hat{H}_S t/\hbar} \rho_S (0) e^{-i\hat{H}_S t/\hbar}$ | constant | $\rho_I (t) = e^{i\hat{H}_{0;S} t/\hbar} \rho_S (t) e^{-i\hat{H}_{0;S} t/\hbar}$ |
 
-## Quantum states and observables
+# Quantum states and observables
 
 The pure state of a quantum system is represented by a ray $[\ket{\psi}]_\sim \in \mathcal{PH}$, where $\mathcal{PH} = \mathcal{H}/\sim$ is the projective Hilbert space of a complex separable Hilbert space $\mathcal{H}$, and $\sim$ is an equivalence relation on $\mathcal{H}$. For $\ket{\psi},\ket{\varphi}\in\mathcal{H}$, this relation is defined as
 
@@ -3274,7 +108,7 @@ The operator norm of $\hat{Q}$ is defined as the lower bound of $c$.
 
 The Hermiticity of a quantum operator ensures that its spectrum is real. Furthermore, the eigenvectors corresponding to distinct eigenvalues are orthogonal and can be normalized to form an orthonormal basis. In the case of degenerate eigenvalues, the corresponding eigenspace can be spanned by orthonormal eigenvectors. For continuous spectra, generalized eigenstates may be used.
 
-### Discrete observables
+## Discrete observables
 
 A discrete quantum observable is represented by a Hermitian operator $\hat{Q}$ on a Hilbert space $\mathcal{H}$ with a discrete spectrum $\set{q_j}_j$. If $\hat{Q}$ has eigenbasis $\set{\ket{q_{j,\alpha}}}$, where $\alpha \in\set{1,\dots,d_j}$ denotes the degeneracy of $q_j$, i.e. $d_j = \dim[\operatorname{eig}(\hat{Q}, q_j)]$, the spectral representation of $\hat{Q}$ is
 
@@ -3320,7 +154,7 @@ $$
 
 showing that $c_{k,\beta}$ is the projection of $\ket{\psi}$ onto $\ket{q_{k,\beta}}$.
 
-#### Matrix representation of observables
+### Matrix representation of observables
 
 The matrix representation of an observable $\hat{Q}$ with finite-dimensional discrete spectrum can be obtained by expanding $\mathbf{Q}$ in terms of an orthonormal basis $\set{\ket{b_j}}_j$. Using the completeness relation $\sum_j \ket{b_j}\bra{b_j} = \hat{I}$, we write
 
@@ -3361,7 +195,7 @@ $$
 \end{align*}
 $$
 
-### Continuous observables and wavefunctions
+## Continuous observables and wavefunctions
 
 A quantum observable $\hat{Q}$ with a continuous spectrum has spectral representation
 
@@ -3383,7 +217,7 @@ $$
 
 where $\psi(q) = \braket{q|\psi}$ is called the wavefunction. The wavefunction $\psi(q)$ is the projection of $\ket{\psi}$ onto $\ket{q}$. It is describes how $\ket{\psi}$ is distributed over the eigenstates of $\hat{Q}$.
 
-### Change of basis
+## Change of basis
 
 If $\mathcal{H}$ is a finite-dimensional Hilbert space with orthonormal basis $\set{\ket{b_n}}_n$, a state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
 
@@ -3526,7 +360,7 @@ $$
 $$
 </details>
 
-#### Infinite-dimensional case
+### Infinite-dimensional case
 
 If $\mathcal{H}$ is an infinite-dimensional Hilbert space with basis $\set{\ket{\xi}}$, then any state vector $\ket{\psi}\in\mathcal{H}$ can be expanded as
 
@@ -3590,7 +424,7 @@ $$
 
 showing that $\hat{U}$ preserves the inner product. Hence, it follows that $\hat{U}$ is unitary.
 
-## Measurements
+# Measurements
 
 Let $\hat{Q}$ be a Hermitian operator on $\mathcal{H}$ with a discrete spectrum $\set{q_j}_j$, and an orthonormal eigenbasis $\set{\ket{q_{j,\alpha}}}$, where $\alpha\in\set{1,\dots,d_j}$ denotes the degeneracy $q_j$, i.e. $d_j = \dim[\operatorname{eig}(\hat{Q}, q_j)]$. If $Q$ is the corresponding observable on a quantum system in state 
 
@@ -3631,7 +465,7 @@ $$
 \end{align*}
 $$
 
-### Expectation value
+## Expectation value
 
 The expectation value of an observable $Q$ in the normalized state $\ket{\psi}\in\mathcal{H}$ is defined as
 
@@ -3723,7 +557,7 @@ $$
 
 Thus, whenever $\braket{\eta|\hat{A}|\psi} \neq 0$ the real part of $\braket{\eta|\hat{A}|\psi}$ and of $e^{i\phi}\braket{\eta|\hat{A}|\psi}$ differ.
 
-### Determinate states
+## Determinate states
 
 The uncertainty of an observable $Q$ is state $\ket{\psi}\in\mathcal{H}$ is defined as
 
@@ -3761,7 +595,7 @@ $$
 
 A state $\ket{\psi}$ that is an eigenvector of an operator associated with an observable is called an *eigenstate* of that operator.
 
-### Continuous spectrum
+## Continuous spectrum
 
 Let $\hat{Q}$ be a Hermitian operator on the Hilbert space $\mathcal{H}$ with a continuous spectrum, and let $\ket{q}$ denote its eigenstates. The correspodning observable $Q$ in a quantum system described by the state vector $\ket{\psi}$ can be expanded as 
 
@@ -3779,7 +613,7 @@ $$
 \end{align*}
 $$
 
-#### Generalized orthonormality condition
+### Generalized orthonormality condition
 
 Let $\hat{O}$ be a one-dimensional observable with a continuous spectrum, and let $\set{\ket{o}}$ be its eigenbasis. The state vector $\ket{\psi}$ of the system can be expanded as
 
@@ -3824,7 +658,7 @@ $$
   \braket{o|o'} = \left(\int \d q\; \phi_{o'} (q) \phi_o^* (q) \right) = \delta(o - o')
 $$
 
-### Mixed spectrum
+## Mixed spectrum
 
 Let $\hat{Q}$ be a Hermitian operator on the Hilbert space $\mathcal{H}$ with both a discrete and a continuous spectrum. In this case, the eigenvalues corresponding to the discrete spectrum are labeled by $q_n$, while the continuous spectrum is parametrized by $q$. Assuming that the continuous spectrum is in the range $q\in(\tilde{q},\infty)$, the projection operators for the discrete are continuous components are given by:
 
@@ -3857,7 +691,7 @@ $$
   \braket{\psi|\psi} = \sum_n |c(q_n)|^2 + \int_{\tilde{q}}^\infty |\psi(q)|^2 \;\d q = 1
 $$
 
-### Compatible observables
+## Compatible observables
 
 Two observables $P$ and $Q$ are compatible if they are simultaneously measurable with arbitrary precision. This means that there exists a common eigenbasis for their corresponding operators $\hat{P}$ and $\hat{Q}$, allowing them to be jointly diagonalized. This condition holds if and only if $\hat{P}$ and $\hat{Q}$ commute. In summary, the following statements are equivalent:
 1. $P$ and $Q$ are compatible observables
@@ -3934,7 +768,7 @@ A set of observables $\mathcal{S} = \set{A, B, C, \dots}$ is a complete set of c
 2. Specifying the eigenvalues of all the operators in the CSCO identifies a unique common eigenvector
 </MathBox>
 
-### Uncertainty principle
+## Uncertainty principle
 
 Two quantum observables $P$ and $Q$ are incompatible if they cannot be simultaneously measurable with arbitrary precision. This implies that there is no common eigenbasis for the corresponding operators $\hat{P}$ and $\hat{Q}$. In this case, measuring one observable disturbs the system's state in such a way that it affects the measurement of the other observable. Incompatibility occurs if $\hat{P}$ and $\hat{Q}$ do not commute.
 
@@ -4059,7 +893,7 @@ $$
 $$
 </details>
 
-## Symmetries and transformations
+# Symmetries and transformations
 
 <MathBox title="Ray map" boxType="definition">
 Let $\mathcal{H}$ be a Hilbert space. A ray map (or projective symmetry) is a bijection $\hat{T} \mathcal{PH}\to\mathcal{PH}$ that preserves the transition probabilities. That is, for all nonzero, $\ket{\psi} \ket{\phi}\in\mathcal{PH}$
@@ -4675,7 +1509,7 @@ showing that $\hat{U}$ is linear in the unitary case, and conjugate-linear in th
 </details>
 </MathBox>
 
-### Galilean spacetime coordinate transformations
+## Galilean spacetime coordinate transformations
 
 Let $F$ be an inertial Cartesian frame with spacetime coordinates $(\mathbf{x}, t)$ and consider another Cartesian frame $F'$ obtained from $F$ by 
 - a proper (counterclockwise) rotation $\mathbf{R} = (R^i{}_j) \in \operatorname{SO}(3)$
@@ -4719,7 +1553,7 @@ $$
   R^i{}_j (\varphi, \mathbf{n}) = \cos(\varphi) \delta^i{}_k + [\cos(\varphi) - 1] n^i n_k - \sin(\varphi) \varepsilon^i{}_{jk} n^j
 $$
 
-#### Infinitesimal Galilean transformation
+### Infinitesimal Galilean transformation
 
 In particular, we consider an infinitesimal rotation by and angle $\delta\varphi$ about a unit axis $\mathbf{n}\in\R^3$ and introduce the infinitesimal rotation vector
 
@@ -4778,7 +1612,7 @@ $$
 \end{align*}
 $$
 
-#### Exponential representations of rotations
+### Exponential representations of rotations
 
 To find an exponential representation of the rotation matrix $\mathbf{R}$, we introduce a basis of infinitesimal rotation generator $\set{\mathbf{M}^j}_{j=1}^3$ with matrix elements
 
@@ -4850,7 +1684,7 @@ $$
 \end{align*}
 $$
 
-#### Operator identity for finite rotations
+### Operator identity for finite rotations
 
 <LatexFigure width={50} src='/fig/rotation_configuration.svg' alt=''
   caption='Rotation of a vector $\mathbf{x}$ clockwise by an angle $\varphi$ about a unit vector $\unitvec{n}$. This is equivalent to rotating the coordinate system counter-clockwise about $\unitvec{n}$, while keeping $\mathbf{x}$ fixed.'
@@ -4976,7 +1810,7 @@ $$
 \end{equation*}
 $$
 
-#### Successive Galilean transformations
+### Successive Galilean transformations
 
 Applying two successive Galilean transformations $g = (\tau, \mathbf{a}, \mathbf{v}, \mathbf{R})$ and $g' = (\tau', \mathbf{a}', \mathbf{v}', \mathbf{R}')$ results in
 
@@ -5099,7 +1933,7 @@ $$
 \end{align*}
 $$
 
-### Quantum Galilean transformations
+## Quantum Galilean transformations
 
 The set of Galilean transformations includes the identity transformation $e$ as defined in $\eqref{equation-205}$. This identity can be obtained as a limiting case of an arbitrary Galilean transformation $g = (\tau, \mathbf{a}, \mathbf{v}, \mathbf{R})$ when the parameters
 - $\tau\to 0$
@@ -5298,7 +2132,7 @@ $$
 \end{equation*}
 $$
 
-#### Position operator
+### Position operator
 
 To identify the position operator within the unitary representation of the Galilei group, consider the operator
 
@@ -5331,7 +2165,7 @@ $$
 
 These commutation relations are the defining algebraic conditions characterizing $\unitvec{X}$ as the nonrelativistic position operator.
 
-#### Time evolution
+### Time evolution
 
 Consider now a pure time translation of the position operator $\unitvec{X}$, i.e.
 
@@ -5415,7 +2249,7 @@ Equation $\eqref{equation-217}$ and $\eqref{equation-218}$ uniquely identify
 
 Thus the physical content of nonrelativistic quantum mechanics emerges naturally from the unitary representation theory of the Galilei group.
 
-#### Infinitesimal generators
+### Infinitesimal generators
 
 Given a one-parameter unitary group $\set{\hat{U}(\epsilon)}_{\epsilon\in\R}$ that satisfies $\hat{U}(0) = \hat{I}$, Stone's theorem (Theorem $\ref{theorem-3}$) ensures the existence of a self-adjoint generator $\hat{G}$ such that $\hat{U}(\epsilon) = \exp(i\epsilon\hat{G}/\hbar)$. Expanding $\hat{U}$ to first-order yields
 
@@ -5494,7 +2328,7 @@ $$
 
 Thus $\unitvec{J}$, which is identified with the angular momentum operator, generates spatial rotations.
 
-#### Limit of finite transformations from infinitesimal generators
+### Limit of finite transformations from infinitesimal generators
 
 A finite Galilean transformation with parameter $\lambda$ can be obtained by composing $N$ infinitesimal transformations of size $\epsilon = \lambda/N$ represented by the unitary operator $\hat{U}$ given in $\eqref{equation-231}$. In the limit $N\to\infty$, the Lie-Trotter formula guarantees that
 
@@ -5558,7 +2392,7 @@ $$
 \end{equation*}
 $$
 
-#### Explicit representations
+### Explicit representations
 
 **Momentum operator in the $\unitvec{X}$-representation**
 
@@ -5746,7 +2580,7 @@ $$
   \braket{\mathbf{p}'|\mathbf{p}} = (2\pi\hbar)^3 \delta^3 (\mathbf{p}' - \mathbf{p})
 $$
 
-#### Translation symmetry and momentum conservation
+### Translation symmetry and momentum conservation
 
 From $\eqref{equation-236}$, space translations are represented by the unitary operator
 
@@ -5768,7 +2602,7 @@ $$
 
 Thus, the conservation of momentum follows from the invariance of the system under continuous space translations.
 
-#### Rotational symmetry and angular momentum conservation
+### Rotational symmetry and angular momentum conservation
 
 From $\eqref{equation-237}$, rotations of the coordinate system are implemented by the unitary operator
 
@@ -5790,7 +2624,7 @@ $$
 
 Rotational invariance of the Hamiltonian therefore implies the conservation of angular momentum.
 
-#### Heisenberg's equations of motion
+### Heisenberg's equations of motion
 
 Using $\eqref{equation-214}$, we can derive the equations of motions for $\unitvec{X}(t)$ and $\unitvec{P}(t)$ under pure time translations. Settting the infinitesimal parameters $\delta\mathbf{a} = \delta\mathbf{v} = \delta\boldsymbol{\omega} = \mathbf{0}$, the infinitesimal hange of the position operator reduces to
 
@@ -5820,7 +2654,7 @@ $$
 \end{equation*}
 $$
 
-#### Many-particle systems
+### Many-particle systems
 
 Consider a system of $n$ particles with masses $m_1,\dots,m_n$ and associated positions operators $\unitvec{X}_1,\dots,\unitvec{X}_$, and define the center of mass position operator
 
@@ -5878,7 +2712,7 @@ $$
 
 From $\eqref{equation-229}$ we also get the commutation relations $[\hat{X}_\alpha^i, \hat{P}_\beta^i] = i\hbar\delta^{ij} \delta_{\alpha\beta}$ and $[\hat{P}_\alpha^i, \hat{P}_\beta^j] = 0$.
 
-#### Time-evolution
+### Time-evolution
 
 The negative sign for the time-translation operator in the infinitesimal generator $\eqref{equation-211}$ is fixed by consistency of the Galilei algebra and by the physical identification of the kinetic term in the Hamiltonian. Specifically, replacing the term $-\delta\tau_j \hat{H}$ with $+\delta\tau_j \hat{H}$ in $\eqref{equation-211}$, the commutator $[\hat{H}, \hat{N}^j]$ acquires the opposite sign, yielding $-i\hbar\hat{P}^i$ instead of $i\hbar\hat{P}^i$. This in turn would have forced the Hamiltonian $\hat{H}$ in $\eqref{equation-218}$ to be of the form 
 
@@ -5935,7 +2769,7 @@ $$
 
 which is the standard unitary time-evolution of states under a time-independent Hamiltonian.
 
-#### Time as an operator
+### Time as an operator
 
 In quantum physics, time is a parameter and is not promoted to an operator. To see this, suppose that $\hat{t}$ denotes the corresponding time operator. Then for $\delta\mathbf{a} = \delta\mathbf{v} = \delta\boldsymbol{\omega} = 0$, and numerical $\delta\tau \neq 0$, then $\eqref{equation-214}$ implies that
 
@@ -5978,7 +2812,7 @@ $$
 
 That is, $\lambda_0 - E$ is also in the spectrum of $\hat{H}$ for all $E$. We can choose $E$, in particular, an arbitrarily large positive number implying that $\hat{H}$ is unbounded from below, which is a physically unacceptable property of a Hamiltonian and for the stability of the system in question. Hence, time is to be treated as a parameter and not as an operator.
 
-#### Construction of Hamiltonians
+### Construction of Hamiltonians
 
 To construct the Hamiltonian, consider a system of $n$ particles with masses $m_\alpha$, associated position and momentum operators $\unitvec{X}_\alpha$ and $\unitvec{P}_\alpha$, respectively, where $\alpha = 1,\dots,n$. The operators $\unitvec{X}_\alpha$ and $\unitvec{P}_\alpha$ associated with different particles commute.
 
@@ -6054,7 +2888,7 @@ $$
 
 represents the intrinsic energy because it only depends on internal coordinates and momenta and consequently commutes with translations generated by $\unitvec{P}$.
 
-#### Decompositions into clusters of particles
+### Decompositions into clusters of particles
 
 We consider a system of $n$ particles interacting via two-body potentials of the form given by the first term in $\eqref{equation-247}$. Suppose that the set of particles is partitioned into $k$ disjoint clusters, with cluster $\alpha$ containing $n_\alpha$ particles. Thus
 
@@ -6163,7 +2997,7 @@ $$
 
 which describe the motion of cluster centers of mass relative to another.
 
-#### Parity
+### Parity
 
 A parity tranformation (or spatial inversion) is implemented by a unitary operator $\hat{\Pi}$. Geometrically, $\hat{Pi}$ acts on spatial points by reflection through the origin, i.e.
 
@@ -6289,7 +3123,7 @@ $$
 
 If parity is not a symmetry transformation, the Hamiltonian is constructed such that $\hat{H}\hat{P} - \hat{P}\hat{H} \neq 0$.
 
-#### Time reversal
+### Time reversal
 
 The infinitesimal Galilean transformations in $\eqref{equation-213}$ followed by a reversal of the time translation $t - \delta\tau \mapsto -t + \delta\tau$ give
 
@@ -6339,7 +3173,7 @@ $$
   \unitvec{X}\hat{T} - \hat{T}\unitvec{X} = \mathbf{0}
 $$
 
-#### Orbital angular momentum and spin
+### Orbital angular momentum and spin
 
 From the commutation relations in Table $\ref{table-1}$ and $\eqref{equation-230}$ the change in $\unitvec{J}$ under infinitesimal Galilean transformations is given by
 
@@ -6585,7 +3419,7 @@ $$
 
 where $\mathbf{x}' = \hat{R}\mathbf{x}$. Note that the argument of $\psi'$ is $\mathbf{x}$ when the right-hand side of the equation of its transformation law involves $\unitvec{J}$, while it is $\mathbf{x}'$, when it involves only spin $\unitvec{S}$.
 
-#### Spinors
+### Spinors
 
 A spinor field of rank $k$, \psi^{a_1 \dots a_k} (\mathbf{x})$, depending on $k$ indices $a_1,\dots,a_k$ each taking the possible values $\set{1,2}$, has the following transformation law under a coordinate rotation by an angle $\varphi$ about $\unitsym{n}$:
 
@@ -6983,7 +3817,7 @@ $$
 \end{align*}
 $$
 
-##### Rotation of a spinor by $2\pi$ radians
+#### Rotation of a spinor by $2\pi$ radians
 
 With $\varphi = 2\pi$ in $\eqref{equation-268}$ we obtain
 
@@ -7009,7 +3843,7 @@ $$
   \psi'(\mathbf{x}, m_s) = (-1)^{2s} \psi(\mathbf{x}, m_s)
 $$
 
-##### Time reversal and parity transformation
+#### Time reversal and parity transformation
 
 We next consider the time reversal operation for arbitrary spins. Consider first the case for spin $1/2$. In a vector space generated by $2\times 2$ matrices, the most general expression for the time reversal operator $\hat{T}$ for spin $1/2$ is
 
@@ -7143,7 +3977,7 @@ $$
   \hat{T}\hat{H}\hat{T}^{-1} = \hat{H}
 $$
 
-##### Kramers degeneracy
+#### Kramers degeneracy
 
 For time reversal as a symmetry operator for which $\hat{T}^2 = -1$ each eigenvalue of $\hat{H}$ is at least two-fold degenerate. This result easily follows by noting that
 
@@ -7162,7 +3996,7 @@ $$
 
 we note that $\hat{T}\ket{\psi}$ and $\ket{\psi}$ are orthogonal and are independent eigenstates of $\hat{H}$. This type of degeneracy is referred to as Kramers degeneracy. For example, for the simple hydrogen atom, each energy level is at least two-fold degenerate due to the electron spin.
 
-#### Transformation rule of a spin of rank on under a coordinate rotation
+### Transformation rule of a spin of rank on under a coordinate rotation
 
 We are interested in the transformation rule of spiner under a coordinate rotation. To introduce spinors with this in mind, we define for each point labelled by $\mathbf{x}\in\R^3$, a complex $2\times 2$ matrix
 
@@ -7311,7 +4145,7 @@ $$
   \mathbf{A} = \exp\left(i\frac{\varphi}{2}\unitsym{n}\cdot\boldsymbol{\sigma}\right)
 $$
 
-#### Supersymmetry
+### Supersymmetry
 
 The closed path Galilean transformations lead to a basic commutation/anti-commutation relations of the supersymmetry generator and of the Hamiltonian. Together with the time variable $t$, as a c-number, we introduce anti-commuting c-number variables $\theta$ and $\theta^*$ having the following transformations
 
@@ -7463,6 +4297,8 @@ and
 $$
   \hat{H} = \frac{1}{2\hbar} \{\hat{Q}, \hat{Q}^\dagger}
 $$
+
+# Time evolution
 
 ## Schrödinger equation
 
@@ -8620,7 +5456,7 @@ $$
 
 which is known as Ehrenfest's theorem.
 
-## Density operator
+# Density operator
 
 In the most general sense, quantum systems can exist in mixed states, which include pure states as a special case. A quantum system is described by a mixed state when it is in one of a set of possible states $\set{\ket{\psi_j}}$, each occuring with probability $p_j$. Unlike a pure state, which represents a coherent quantum superposition, a mixed state represents a statistical ensemble of quantum states. This contrasts with a pure state $\ket{\psi} = \sum_j \sqrt{p_j} \ket{\psi_j}$, where the quantum system exists in a coherent superposition of the $\ket{\psi_j}$. In this case, the system is described entirely by $\ket{\psi}$, rather than by a statistical mixture of the $\ket{\psi_j}$.
 
@@ -8971,7 +5807,7 @@ where we have used the fact that $\sigma_i \sigma_j = \delta_{ij} I_2 + i\epsilo
 </details>
 </MathBox>
 
-### Density operator for pure states
+## Density operator for pure states
 
 A pure state $\ket{\psi}\in\mathcal{H}$ can be represented by the rank-one projector $\hat{P}_\psi = \ket{\psi}\bra{\psi}$. Since $\operatorname{tr}(\hat{P}_\psi) = 1$ and $\hat{P}_\psi^2 = \hat{P}_\psi$, pure states can be viewed as a special case of mixed states with density operator
 
@@ -9176,7 +6012,7 @@ $$
 which is equivalent to $\hat{\rho}^2 = \hat{\rho}$.
 </details>
 
-### Measurement
+## Measurement
 
 <MathBox title="Gleason's theorem" boxType='theorem'>
 Let $\mathcal{H}$ be a Hilbert space with finite dimension $\dim(\mathcal{H}) \geq 3$. Any map $\Pr$ that assigns probabilities to the orthogonal projections of $\mathcal{H}$ and satisfies
@@ -9278,7 +6114,7 @@ $$
 $$
 </details>
 
-### Time-evolution
+## Time-evolution
 
 For a state $\ket{\psi(t)}$, the density matrix can be written as $\hat{\rho}(t) = \ket{\psi(t)} \bra{\psi(t)}$. For a pure state under unitary evolution, the time derivative of the density matrix is
 
@@ -9317,7 +6153,7 @@ $$
 
 where $\hat{U}_{H_0, t}$ is the evolution operator in the interaction picture corresponding to the free Hamiltonian $\hat{H}_0$.
 
-### Pure random mixtures
+## Pure random mixtures
 
 Let $\mathcal{H}$ be a finite-dimensional Hilbert space with $\dim(\mathcal{H}) = n$ and let $\set{\ket{\Phi_j}}_{j=1}^n \subset\mathcal{H}$ be a collection of normalized states. A pure random mixture (or random coherent superposition) is a normalized vector
 
@@ -9434,7 +6270,7 @@ $$
   \hat{\rho} = \frac{1}{n} \hat{I}
 $$
 
-## Composite systems
+# Composite systems
 
 The quantum state space of composite system formed of $n\in\N_+$ sub-systems $\mathcal{H}_{A_j}$ for $j\in\set{1,\dots,n}$ is given by the Hilbert tensor product
 
@@ -9454,7 +6290,7 @@ where $\set{\ket{\Psi_j}}_{j\in I}$ is an orthonormal basis of $\bigotimes_{j=1}
 For a bipartite quantum system $\mathcal{H}_A \otimes \mathcal{H}_B$, it is common to refer to subsystem $A$ as *Alice* and subsystem $B$ as *Bob* for notational convenience.
 </MathBox>
 
-### Pure states of bipartite systems
+## Pure states of bipartite systems
 
 Consider a bipartite system $\mathcal{H}_A \otimes \mathcal{H}_B$ with a density operator $\hat{\rho}\in\mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B)$ describing its state. Measurement of an observable on subsystem $A$, represented by the operator $\hat{M}_A$, corresponds to measuring the composite system with the operator $\hat{M}_A \otimes \hat{I}_B$. Similarly, measurements on subsystem $B$ are represented by operators of the form $\hat{I}_A \otimes \hat{M}_B$. 
 
@@ -9553,7 +6389,7 @@ $$
 $$
 </details>
 
-### Mixed states of bipartite systems
+## Mixed states of bipartite systems
 Consider a bipartite system $\mathcal{H}_A \otimes \mathcal{H}_B$ and let $\hat{\rho}\in\mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B)$ be a density operator describing the state of the system. The reduced density operator $\hat{\rho}_A (\hat{\rho})$ on $\mathcal{H}_A$, which describes the state if the subsystem $A$ alone is observed, is given by the partial trace
 
 $$
@@ -9639,7 +6475,7 @@ $$
   \boldsymbol{\rho}_B (\hat{\rho})_{b_1 b_2} = \sum_a \boldsymbol{\rho}_{a b_1, a b_2}
 $$
 
-### Schmidt decomposition of pure states
+## Schmidt decomposition of pure states
 
 Schmidt decomposition provides a way to express a pure states $\ket{\Psi}\in\mathcal{H}_A \otimes\mathcal{H}_B$ in terms of the eigenvectors of the reduced density operators. Let
 
@@ -9760,7 +6596,7 @@ $$
 \end{align*}
 $$
 
-## Entanglement
+# Entanglement
 
 A state $\hat{\rho}\in\mathcal{D}(\mathcal{H}_A \otimes \mathcal{H}_B)$ in a composite system $\mathcal{H}_A \otimes \mathcal{H}_B$ is *separable* with respect to the subsystems $\mathcal{H}_A$ and $\mathcal{H}_B$ if there exists states $\hat{\rho}_j^{(A)} \in\mathcal{D}(\mathcal{H}_A)$ and $\hat{\rho}_j^B \in\mathcal{D}(\mathcal{H}_B)$ for $I\subset\N_+$, along with real numbers $p_j > 0$ satisfying $\sum_{j\in I} p_j = 1$, such that
 
@@ -10089,7 +6925,7 @@ $$
 
 where $w_j \geq 0$ and $\sum_j w_j = 1$ with the $w_j$ representing probabilities of the different product states $\hat{\rho}_1^{(j)}$ and $\hat{\rho}_2^{(j)}$ for subsystems $\mathcal{S}_1$ and $\mathcal{S}_2$ respectively. In such a separable state, the subsystems are described by independent statistical mixtures, and no non-classical correlations (like entanglement) exist between them.
 
-### Bell basis
+## Bell basis
 
 The Bell basis forms an orthonormal basis for the four-dimensional Hilbert space ${}^\P \mathcal{H}^{\otimes 2}$ and consists of the Bell states
 
@@ -10375,7 +7211,7 @@ $$
 $$
 </details>
 
-### Entanglement swapping
+## Entanglement swapping
 
 Entanglement swapping is a phenomenon in which quantum systems become entangled without direct interaction between them. This can be illustrated as follows.
 
@@ -10421,7 +7257,7 @@ After measurement, the composite system of subsystems $AD$ and $BC$ will always 
 | $-1$ | $-1$ | $\ket{\Phi^-}_{AD} \otimes \ket{\Phi^-}_{BC}$ | $\ket{\Phi^-}_{AD}$ |
 </TableFigure>
 
-### Einstein-Podolsky-Rosen (EPR) paradox
+## Einstein-Podolsky-Rosen (EPR) paradox
 
 In 1935, Albert Einstein, Boris Podolsky and Nathan Rosen (EPR) published a seminal paper arguing that quantum mechanics is incomplete by refuting the following claim:
 
@@ -10454,7 +7290,7 @@ $$
 
 This contradiction is the EPR paradox. Since both implications cannot be simultaneously true, EPR concluded that *Claim 1* must be false, meaning that quantum mechanics is incomplete. However, repeated experiments have demonstrated that $\eqref{equation-119}$ does not hold, suggesting that the reality of the considered system is 'unreasonable' in the classical sense.
 
-#### Bohm's version of the EPR thought experiment
+### Bohm's version of the EPR thought experiment
 
 The following is Bohm's version of the EPR thought experiment used prove $\eqref{equation-119}$. Consider a pair of qubits in described by the entangled Bell state in ${}^\P \mathcal{H}_A \otimes {}^\P \mathcal{H}_B$
 
@@ -10569,7 +7405,7 @@ EPR argued that noe reasonable definition of reality should permit measurement c
 
 However, experiments have shown that the physical reality behaves in an 'unreasonable' manner according to EPR's crieria. Specifically, local measurements by Alice do appear to influence Bob's system instantaneously, even though no signal is transmitted. This phenomenon, called quantum non-locality, suggests that nature does not adhere to classical locality constraints, challenging the classical notion of independent reality.
 
-### Bell inequality
+## Bell inequality
 
 Bell's inequality is based on the assumption that the results of spin measurements on two qubits can be represented as discrete random variables of a joint distribution. This implies that the observed spin values are predetermined by hidden variables. However, Bell's inequality is violated for certain entangled states. Consequently, the assumption of a joint distribution for spin values of two qubits in certain entangled states is invalid, which invalidates the equivalent assumption of hidden variables.
 
@@ -10886,7 +7722,7 @@ $$
 
 The correlations arising from entangled states are known as EPR-correlations.
 
-### CHSH generalization of the Bell inequality
+## CHSH generalization of the Bell inequality
 
 Just as the original Bell inequality, the generalization derived by Clause, Horne, Simony and Holt (CHSH) also considers a pair of particles on which individual measurements yielding possible values in $\set{\pm 1}$ can be performed. The key distinction is that, unlike in Bell's original derivation, no requirement of the form $\eqref{equation-127}$ needs to be made. Additionally it establishes an upper bound for expectation values of products of observable single-particle measurements.
 
@@ -11003,7 +7839,7 @@ $$
 
 which contradicts the CHSH inequality $\eqref{equation-130}$. 
 
-#### Aspect, Dalibard and Roger experiment
+### Aspect, Dalibard and Roger experiment
 
 An experiment conducted by Aspect, Dalibard and Roger confirmed the violation of the CHSH inequality. Their setup involved a source emitting two entangled photons via a cascade transition, with one photon sent to Alice and the other to Bob. The photons traveled for approximately $40$ ns before reaching their respective measurement devices. During this travel time
 - Alice independently choose to measure either $\hat{\Sigma}_{\unitvec{n}_1}^{(A)}$ or $\hat{\Sigma}_{\unitvec{n}_4}^{(A)}$. The switching time between these observables was at most $10$ ns.
@@ -11137,7 +7973,7 @@ $$
 </details>
 </MathBox>
 
-### Bell telephone
+## Bell telephone
 
 The seemingly 'unreasonable' behavior of quantum mechanics, where Alice's measurement appears to instantaneously affect the state of Bob's particle—has led some to speculate about the possibility of superluminal communication. This hypothetical communication device, often referred to as the Bell telephone, would allow Alice to send information to Bob faster than the speed of light. However, as we will now show, such a device cannot be used to transmit any information at all, not even at subluminal speeds.
 
@@ -11306,7 +8142,7 @@ $$
 
 which means that Bob's subsystem is always in the same mixed state regardless of which observable Alice measures. This means that Bob has no way to infer whether Alice intended to send bit $0$ or $1$, proving that classical information cannot be transmitted in this manner.
 
-### Perfect quantum copier
+## Perfect quantum copier
 
 The fact that a quantum-copier does not exist, or as formulated alternatively, that quantum states cannot be cloned, is due to the linear structure of the Hilbert space $\mathcal{H}$ containing the state vectors. Given
 - an arbitrary state $\ket{\psi}\in\mathcal{H}$ to be copied and
@@ -11350,207 +8186,3 @@ $$
 </MathBox>
 
 It is worth noting that there can be devices that copy particular states. The quantum no-cloning theorem only makes the statement that there is no device which does that for all states.
-
-# Matter wave formulation
-
-A free particle moving in a $3$-dimensional Euclidean space with momentum $\mathbf{p}$ is described by a plane wave $\psi_\mathbf{p}: \R^3 \times\R\to\mathbb{C}$, which in Cartesian coordinates takes the form
-
-$$
-  \psi_\mathbf{p}(\mathbf{x}, t) = N e^{i(\mathbf{k}\cdot\mathbf{x} - \omega t)}
-$$
-
-where
-- $\mathbf{x}\in\R^3$ is the position of the particle
-- $\mathbf{k}$ is the wave vector pointing in the same direction as a $\mathbf{p}$
-- $\omega$ is the wave frequency
-- $N$ is a normalization constant
-
-The square norm of the wavefunction describes the probability density of the particle at $\mathbf{x}$, i.e. $|\psi(\mathbf{x}, t)|^2 \;\d^3 x$ gives the probability of finding the particle in the volume element $\d^3 x$ around $\mathbf{x}$. Thus, the square norm of the wavefunction is normalized to unity
-
-$$
-  \int |\psi(\mathbf{r}, t)|^2 \;\d^3 x = 1
-$$
-
-The de Broglie equations relate the wavelength $\lambda$ of the particle to the modulus of the momentum $|\mathbf{p}| = mv$, and the frequency $f$ of the particle to the energy $E$
-
-$$
-\begin{align*}
-  \lambda =& \frac{2\pi}{|\mathbf{k}|} = \frac{h}{p} = \frac{h}{mv} \\
-  f =& \frac{\omega}{2\pi} = \frac{E}{p}
-\end{align*}
-$$
-
-where $h$ is the Planck constant. Introducing the reduced Planck constant $\hbar = h/2\pi$, the equations can be written as
-
-$$
-\begin{align*}
-  \mathbf{p} =& \hbar\mathbf{k} \\
-  E =& \hbar\omega
-\end{align*}
-$$
-
-In terms of momentum and energy, the plane wave takes the alternative form
-
-$$
-  \psi(\mathbf{x},t) = N e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}
-$$
-
-The energy $E_\mathbf{p}$ depends on the momentum of the particle in the following ways
-- non-relativistic particles: $E_\mathbf{p} = \mathbf{p}^2 / 2m$
-- relativistic particles: $E_\mathbf{p} = c\sqrt{\mathbf{p}^2 + m^2 c^2}$
-- massless particles: $E_\mathbf{p} = c|\mathbf{p}|$
-
-In an infinite volume, the normalization constant makes the wavefunction vanish. This can be avoided by introducing the *current density* of the particle probability
-
-$$
-  \mathbf{j}(\mathbf{x}, t) := -i\frac{\hbar}{2m} \psi^* (\mathbf{x}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{x},t)
-$$
-
-where $\overset{\leftrightarrow}{\nabla}$ is short notation for the difference between forward- and backward-gradients
-
-$$
-\begin{align*}
-  \psi^* (\mathbf{x}, t) \overset{\leftrightarrow}{\nabla} \psi(\mathbf{x},t) :=& \psi^* (\mathbf{x}, t) \overset{\rightarrow}{\nabla} \psi(\mathbf{x},t) - \psi^* (\mathbf{x}, t) \overset{\leftarrow}{\nabla} \psi(\mathbf{x},t) \\
-  =& \psi^* (\mathbf{x}, t) \nabla \psi(\mathbf{x},t) - [\nabla\psi^* (\mathbf{x}, t)]\psi(\mathbf{x}, t)
-\end{align*}
-$$
-
-A particle wave can be expressed as a superposition of plane waves in the form of a Fourier transform
-
-$$
-  \psi(\mathbf{x},t) = \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p})/\hbar}\;\d^3 p
-$$
-
-The momentum wavefunction $f(\mathbf{p})$ is given by the inverse Fourier transform
-
-$$
-  f(\mathbf{p}) = \int e^{i\mathbf{p}\cdot\mathbf{x}/\hbar} \psi(\mathbf{x},0)\;\d^3 r
-$$
-
-By the uncertainty principle of Fourier transformations, the position and momentum wavefunctions cannot both be concentrated. In general the variances of the particles position and momentum distributions are related by
-
-$$
-  \Delta\mathbf{x} \Delta\mathbf{p} \geq \frac{\hbar}{2}
-$$
-
-which is known as Heisenberg's uncertainty principle.
-
-## Schrödinger equation
-
-The energy of a nonrelativistic particle with momentum $\mathbf{p}$ and mass $m$ is equal to its Hamiltonian
-
-$$
-  H(\mathbf{p}) = E_\mathbf{p} = \frac{\mathbf{p}^2}{2m}
-$$
-
-This gives the following identity for the wavefunction $\psi_\mathbf{p}(\mathbf{x},t)$ in Cartesian coordinates
-
-$$
-  \frac{1}{(2\pi\hbar)^3} \int f(\mathbf{p})[H(\mathbf{p} - E_\mathbf{p})]e^{i(\mathbf{p}\cdot\mathbf{x} - E_\mathbf{p}t)/\hbar} \;\d^3 p = 0
-$$
-
-Substituting for the operators
-
-$$
-\begin{align*}
-  \unitvec{p} =& -i\hbar\nabla \\
-  \hat{E} =& i\hbar\frac{\partial}{\partial t}
-\end{align*}
-$$
-
-we get the differential equation
-
-$$
-  \left[H(-i\hbar\nabla) - i\hbar\frac{\partial}{\partial t}\right] \psi(\mathbf{p},t) = 0
-$$
-
-which is the Schrödinger equation for the wavefunction of a free particle. For an arbitrary Hamiltonian $\hat{H} := H(-i\hbar\nabla,\mathbf{x},t)$, the equation takes the general form
-
-$$
-  \left(\hat{H} - i\hbar\frac{\partial}{\partial t}\right)\psi(\mathbf{x},t) = 0
-$$
-
-The rule of quantizing the classical Hamiltonian $H(\mathbf{p},\mathbf{x},t)$ by the substitution $\mathbf{p}\to\unitvec{p} = -i\hbar\nabla$ is called the correspondence principle.
-
-### Deriving the Schrödinger equation from the classical wave equation
-
-The scalar wave displacement $\Psi(\mathbf{x},t)$ of a non-relativistic particle with mass $m$ and speed $v$ is given by the second-order linear partial differential equation 
-
-$$
-\begin{equation*}
-  \frac{\partial^2 }{\partial t^2}\Psi(\mathbf{x},t) = v^2 \nabla^2 u(\mathbf{x}, t)
-\tag{\label{equation-10}}
-\end{equation*}
-$$
-
-The wave equation can be solved by separation of variables. Assuming a solution of the form $\Psi(\mathbf{x},t) = \psi(\mathbf{x})g(t)$, equation $\eqref{equation-1}$ can be written as
-
-$$
-\begin{align*}
-  \frac{\partial^2}{\partial t^2} \psi(\mathbf{x})g(t) =& v^2 \nabla^2 \psi(\mathbf{x})g(t) \\
-  \psi(\mathbf{x}) \frac{\partial^2}{\partial t^2} g(t) =& v^2 g(t) \nabla^2 \psi(\mathbf{x}) \\
-  \frac{1}{v^2 g(t)} \frac{\partial^2}{\partial t^2} g(t) =& \frac{1}{\psi(\mathbf{x})} \nabla^2 \psi(\mathbf{x}) \tag{\label{equation-9}}
-\end{align*}
-$$
-
-The separated equation $\eqref{equation-9}$ holds if and only if both sides are equal to a constant $\alpha\in\R$, i.e.
-
-$$
-\begin{aligned}
-  \frac{1}{v^2 g(t)} \frac{\partial^2}{\partial t^2} g(t) =& \alpha \\
-  \frac{\partial^2}{\partial t^2} g(t) =& \alpha v^2 g(t)
-\end{aligned}
-\quad
-\begin{aligned}
-  \frac{1}{\psi(\mathbf{x})} \nabla^2 \psi(\mathbf{x}) =& \alpha \\
-  \nabla^2 \psi(\mathbf{x}) = \alpha \psi(\mathbf{x})
-\end{aligned}
-$$
-
-The spatial equation is an eigenvalue problem with real solutions for negative eigenvalues $\alpha = -k^2$, where $k = \frac{2\pi}{\lambda}$ is the wavenumber. Using the de Broglie relation $\lambda = \frac{h}{mv}$ and the energy relation $K = \frac{1}{2}mv^2 = E -V(\mathbf{x})$, assuming energy conservation, the spatial equation can be written
-
-$$
-\begin{align*}
-  \nabla^2 \psi(\mathbf{x}) =& -k^2 \psi(\mathbf{x}) \\
-  \nabla^2 \psi(\mathbf{x}) =& -\frac{4\pi^2}{\lambda^2} \tag{$k = \frac{2\pi}{\lambda}$} \\
-  \nabla^2 \psi(\mathbf{x}) =& -\frac{4\pi^2 m^2 v^2}{h^2} \psi(\mathbf{x}) \tag{$\lambda = \frac{h}{mv}$} \\
-  \nabla^2 \psi(\mathbf{x}) =& -\frac{8\pi^2 m K}{h^2}\psi(\mathbf{x}) \tag{$K = \frac{1}{2}mv^2$} \\
-  \nabla^2 \psi(\mathbf{x}) =& -\frac{8\pi^2 m}{h^2} [E - V(\mathbf{x})]\psi(\mathbf{x}) \tag{$K = E - V(\mathbf{x})$} \\
-  \nabla^2 \psi(\mathbf{x}) =& -\frac{2m}{\hbar^2} [E - V(\mathbf{x})] \psi(\mathbf{x}) \tag{$\hbar = \frac{h}{2\pi}$} \\
-\end{align*}
-$$
-
-Reordering the equation and introducing the Hamiltonian operator $\hat{H} = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x})$, we obtain the time-independent Schrödinger equation
-
-$$
-\begin{align*}
-  -\frac{\hbar^2}{2m} \nabla^2 \psi(\mathbf{x}) + V(\mathbf{x})\psi(\mathbf{x}) =& E \psi(\mathbf{x}) \\
-  \left(-\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{x}) \right)\psi(\mathbf{x}) =& E \psi(\mathbf{x}) \\
-  \hat{H}\psi(\mathbf{x}) =& E \psi(\mathbf{x}) \tag{\label{equation-17}}
-\end{align*}
-$$
-
-Noting that $\omega = kv$, the time equation takes the form
-
-$$
-  \frac{\partial^2}{\partial^2 t} g(t) = -\omega^2 g(t)
-$$
-
-with general solution $e^{-i\omega t}$. The solution to $\eqref{equation-10}$ therefore takes the form $\Psi(\mathbf{x}, t) = \psi(\mathbf{x}) e^{-i\omega t}$. Using the Planck-Einstein relation $E = hf = h\frac{\omega}{2\pi}$ and taking the partial time derivative yields
-
-$$
-\begin{align*}
-  \Psi(\mathbf{x}, t) =& \psi(\mathbf{x})e^{-i\omega t} \\
-  \Psi(\mathbf{x}, t) =& \psi(\mathbf{x})e^{-i2\pi Et/h} \tag{$\omega = \frac{2\pi E}{h}$} \\
-  \frac{\partial}{\partial t}\Psi(\mathbf{x}, t) =& -i\frac{2\pi E}{h} \psi(\mathbf{x})e^{-i2\pi Et/h} \\
-  \frac{\partial}{\partial t}\Psi(\mathbf{x}, t) =& -i\frac{2\pi E}{h} \Psi(\mathbf{x}, t) \\
-  i\frac{h}{2\pi} \frac{\partial}{\partial t}\Psi(\mathbf{x}, t) =& E\Psi(\mathbf{x}, t) \\
-  i\hbar \frac{\partial}{\partial t}\Psi(\mathbf{x}, t) =& E\Psi(\mathbf{x}, t) \tag{$\hbar = \frac{h}{2\pi}$}
-\end{align*}
-$$
-
-Inserting the time-independent equation $\eqref{equation-17}$, we get
-
-$$
-  i\hbar \frac{\partial\Psi}{\partial t} = {H}\Psi
-$$

@@ -1,0 +1,462 @@
+---
+title: 'Hamiltonian mechanics'
+subject: 'Physics/classical mechanics'
+showToc: true
+references:
+  - book_benacquista_romano_2018
+  - book_deriglazov_2010
+  - book_dewar_2022
+---
+
+# Poisson bracket
+
+Let $f(\mathbf{q}, \mathbf{p}, t)$ and $(\mathbf{q}, \mathbf{p}, t)$ be any two functions on phase space. Their Poisson bracket is defined by
+
+$$
+	[f, g] = \sum_i \left( \frac{\partial f}{\partial q_i}\frac{\partial g}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial g}{\partial q_i} \right)
+$$
+
+Properties
+
+- Antisymmetry: $[f, g] = -[g, f]$
+- Linearity in both arguments:
+$$
+\begin{gather*}
+	[\alpha f_1 + \beta f_2, g] =& \alpha[f_1, g] + \beta[f_2, g] \\
+	[f, \alpha g_1 + \beta g_2] =& \alpha[f, g_1] + \beta[f, g_2]
+\end{gather*}
+$$
+- Product rule:
+$$
+\begin{align*}
+	[f_1 f_2, g] =& f_1[f_2, g] + [f_1, g]f_2 \\
+	[f, g_1 g_2] =& g_1 [f, g_2] + [f, g_1]g_2
+\end{align*}
+$$
+- Jacobi identity: $\left[f, [g, h]\right] + \left[h, [f, g]\right] + \left[g, [h, f]\right] = 0$
+
+The total time derivative of a function $f(\mathbf{q}, \mathbf{p}, t)$ is
+
+$$
+	\frac{\d f}{\d t} = \frac{\partial f}{\partial t} + [f, H]
+$$
+
+# Legendre transform
+
+For a convex set $X \subset \R^n$ and convex function $f: X \mapsto \R$, the Legendre transform is the function $f^* : X^* \mapsto \R$ defined by
+
+$$
+	f^*(x^*) = \sup_{x\in X}\left(\langle x^*, x \rangle - f(x) \right), \quad x^* \in X^*
+$$
+
+# Hamilton's equations
+
+The Hamiltonian function $H(\mathbf{q}, \mathbf{p}, t)$ is formed from the Lagrangian function $L(\mathbf{q}, \dot{\mathbf{q}}, t)$ with the Legendre transform
+
+$$
+\begin{align*}
+	H(\mathbf{q}, \mathbf{p}, t) &\equiv \sup_{\dot{\mathbf{q}}} \left[ \langle \mathbf{p}, \dot{\mathbf{q}} \rangle - L(\mathbf{q}, \dot{\mathbf{q}}, t) \right] \\
+	=& \sum_i p_i \dot{q}_i (\mathbf{p}, \mathbf{q}, t) - L\left[\mathbf{q}, \dot{\mathbf{q}}(\mathbf{p}, \mathbf{q}, t), t\right]
+\end{align*}
+$$
+
+Where $p_i = \frac{\partial L}{\partial \dot{q}_i}$ is the generalized momentum associated with the generalized coordinate $q_i$.
+
+Hamilton's equations are derived from the total differential of the Hamiltonian
+
+$$
+\begin{align*}
+	\d H =& \sum_i \left(\dot{q}_i \d p_i - \dot{p}_i \d q_i \right) - \frac{\partial L}{\partial t}\d t \\
+	=& \sum_i \left( \frac{\partial H}{\partial q_i}\d q_i + \frac{\partial H}{\partial p_i}\d p_i \right) + \frac{\partial H}{\partial t}\d t
+\end{align*}
+$$
+
+Equating the differential terms yields Hamilton's canonical equations
+
+$$
+\begin{split}
+	\dot{q}_i = \frac{\partial H}{\partial p_i}
+\end{split}\quad
+\begin{split}
+	\dot{p}_i = -\frac{\partial H}{\partial q_i}
+\end{split}
+$$
+
+## Cartesian coordinates
+
+The Lagrangian of a particle moving in a potential $V$ expressed in Cartesian coordinates is
+
+$$
+	L = \frac{1}{2}m\left(\dot{x}^2 + \dot{y}^2 + \dot{z}^2 \right) - V(x, y, z)
+$$
+
+The momenta are $p_i = \frac{\partial L}{\partial \dot{x}_i} = m\dot{x}_i$
+
+The Hamiltonian is
+
+$$
+	H = p_x\dot{x} +  p_y\dot{y} - p_z\dot{z} - L = \frac{1}{2m}\left(p_x^2 + p_y^2 + p_z^2 \right) + V(x, y, z)
+$$
+
+The canonical equations are
+
+$$
+	\dot{\mathbf{r}} = \frac{\mathbf{p}}{m} \, ,\quad \dot{\mathbf{p}} = -\nabla V
+$$
+
+## Spherical coordinates
+
+The Lagrangian of a particle moving in a potential $V$ expressed in spherical coordinates is
+
+$$
+	L = \frac{1}{2}m\left(\dot{r}^2 + r^2\dot{\theta}^2 + r^2\dot{\phi}^2 \sin^2\theta \right) - V(r, \theta, \phi)
+$$
+
+The momenta are
+
+$$
+\begin{align*}
+	p_r =& \frac{\partial L}{\partial \dot{r}} = m\dot{r} \\
+	p_\theta =& \frac{\partial L}{\partial \dot{\theta}} = mr^2\dot{\theta} \\
+	p_\phi =& \frac{\partial L}{\partial \dot{\phi}} = mr^2\dot{\phi}\sin^2\theta
+\end{align*}
+$$
+
+The Hamiltonian is
+
+$$
+	H = \frac{1}{2m}\left( p_r^2 + \frac{p_\theta^2}{r^2} + \frac{p_\phi^2}{r^2\sin^2\theta} \right) + V(r, \theta, \phi)
+$$
+
+The first set of canonical equations are
+
+$$
+\begin{align*}
+	\dot{r} =& \frac{\partial H}{\partial p_r} = \frac{p_r}{m} \\
+	\dot{\theta} =& \frac{\partial H}{\partial p_\theta} = \frac{p_\theta}{mr^2} \\
+	\dot{\phi} =& \frac{p_\phi}{mr^2\sin^2\theta}
+\end{align*}
+$$
+
+The second set of canonical equations are
+
+$$
+\begin{align*}
+	\dot{p}_r =& -\frac{\partial H}{\partial r} = -\frac{\partial V}{\partial r} + \frac{p_\theta^2}{mr^3} + \frac{p_\theta}{mr^3\sin^2\theta} \\
+	\dot{p}_\theta =& -\frac{\partial H}{\partial \theta} = -\frac{\partial V}{\partial \theta} + \frac{p_\phi \cos\theta}{mr^2 \sin^3 \theta} \\
+	\dot{p}_\phi =& -\frac{\partial H}{\partial \phi} = -\frac{\partial V}{\partial \phi}
+\end{align*}
+$$
+
+# Phase space
+
+Hamiltonian mechanics describes motion in phase space spanned by the generalized coordinates and the generalized momenta. With $n$ degrees of freedom, the phase space has $2n$ dimensions. A point $(q_i, p_i)$ represents the complete state of motion of a mechanical system at a given time.
+
+The tangent to a phase-space trajectory gives the phase-space velocity field. If the Hamiltionian is time invariant, it follows that the Hamiltonian is a single-valued function of its arguments. Therefore, the trajectory never intersects itself
+
+# Conservation statements
+
+Whenever the Hamiltonian of a mechanical system does not depend explicitly on a generalized coordinate,
+
+$$
+	\dot{p}_i = -\frac{\partial H}{\partial q_i} = 0
+$$
+
+the corresponding generalized momentum is a constant of the motion.
+
+## Conservation of energy
+
+The total time derivative of the Hamiltonian is
+
+$$
+\begin{align*}
+	\frac{\d H}{\d t} =& \sum_i \left( \frac{\partial H}{\partial q_i}\dot{q}_i + \frac{\partial H}{\partial p_i}\dot{p}_i \right) + \frac{\partial H}{\partial t} \\
+	=& \sum_i \left( -\dot{p}_i \dot{q}_i + \dot{q}_i \dot{p}_i \right) \frac{\partial H}{\partial t} \\
+	=& \frac{\partial H}{\partial t}
+\end{align*}
+$$
+
+Whenever the Hamiltonian of a mechanical system does not depend explicitly on $t$, it is a constant of the motion.
+
+# Liouville's theorem
+
+Liouville's theorem states that the density of states $\rho$ in a ensemble of many identical states with different initial conditions is constant along every trajectory (Hamiltonian evolution) in phase space.
+
+Consider an ensemble of $N$ particles each with different initial conditions in phase space. The density of particles in phase space contained within a region $V$ of phase space is
+
+$$
+	\rho(\mathbf{q}, \mathbf{p}, t) = \frac{\d N}{\d V}
+$$
+
+The flow of ensemble particles moving through $V$ is
+
+$$
+	-\frac{\d}{\d t}\int_V \rho \d V = -\int_V \frac{\partial\rho}{\partial t} \d V
+$$
+
+Because the total number of ensemble particles is conserved, the flow through $V$ must equal the current density $\mathbf{j} = \rho\mathbf{v}$ crossing boundary surface $S$ of $V$.
+
+$$
+	-\int_V \frac{\partial\rho}{\partial t} \d V = \oint_S \left(\rho\mathbf{v}\right)\cdot\d\mathbf{a}
+$$
+
+Applying Gauss' theorem
+
+$$
+\begin{gather*}
+	-\int_V \frac{\partial\rho}{\partial t} \d V = \int_V \nabla \cdot (\rho\mathbf{v})\d V \\
+	\int_V \left[ \frac{\partial\rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) \right]\d V = 0
+\end{gather*}
+$$
+
+Since this equation must be valid for all regions $V$, we conclude that
+
+$$
+\begin{gather*}
+	\frac{\d\rho}{\d t} + \nabla \cdot (\rho \mathbf{v}) = 0 \\
+	\frac{\d\rho}{\d t} + \sum_i \left[ \frac{\partial}{\partial q_i} \left(\rho \dot{q}_i \right) + \frac{\partial}{\partial p_i} \left( \rho \dot{p}_i \right) \right] = 0
+\end{gather*}
+$$
+
+Substituting in Hamilton's equations gives
+
+$$
+\begin{align*}
+	0 =& \frac{\d\rho}{\d t} + \sum_i \left[ \frac{\partial}{\partial q_i} \left( \rho \frac{\partial H}{\partial p_i} \right) - \frac{\partial}{\partial p_i} \left( \rho \frac{\partial H}{\partial q_i} \right) \right] \\
+	=& \frac{\d\rho}{\d t} + \sum_i \left[ \frac{\partial \rho}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial \rho}{\partial p_i} \frac{\partial H}{\partial q_i} + \rho \left(\frac{\partial^2 H}{\partial q_i \partial p_i} - \frac{\partial^2 H}{\partial p_i \partial q_i} \right) \right] \\
+	=& \frac{\d\rho}{\d t} + \sum_i \left[ \frac{\partial \rho}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial \rho}{\partial p_i} \frac{\partial H}{\partial q_i} \right]
+\end{align*}
+$$
+
+Invoking Hamilton's equations a second time yields
+
+$$
+	0 = \frac{\partial \rho}{\partial t} \sum_i \left[\frac{\partial \rho}{\partial q_i}\dot{q}_i + \frac{\partial \rho}{\partial p_i}\dot{p}_i \right] = \frac{\d\rho}{\partial t}
+$$
+
+# Canonical transformation
+
+A canonical transformation is a change of canonical coordinates $(\mathbf{q}, \mathbf{p}, t) \mapsto (\mathbf{Q}, \mathbf{P}, t)$ that preserves the form of Hamilton's equations.
+
+A canonical transformation of the phase-space coordinates
+
+$$
+	Q_i = Q_i \left(q_j, p_j, t\right) \, ,\quad P_i = P_i\left(q_j, p_j, t\right)
+$$
+
+must produce a new Hamiltonian $H'$ such that
+
+$$
+	\dot{Q_i} = \frac{\partial H'}{\partial P_i} \, ,\quad \dot{P_i} = -\frac{\partial H'}{\partial Q_i}
+$$
+
+## Generating functions
+
+A canonical transformation must obey Hamilton's principle
+
+$$
+\begin{gather*}
+	\delta \int_{t_0}^{t^1} \left[\mathbf{p}\cdot \dot{\mathbf{q}} - H(\mathbf{q}, \mathbf{p}, t) \right] \d t = 0 \\
+	\delta \int_{t_0}^{t^1} \left[\mathbf{P}\cdot \dot{\mathbf{Q}} - H'(\mathbf{Q}, \mathbf{P}, t) \right] \d t = 0
+\end{gather*}
+$$
+
+The variational integrals are equal if
+
+$$
+	\lambda \left[\mathbf{p}\cdot \dot{\mathbf{q}} - H(\mathbf{q}, \mathbf{p}, t) \right] = \mathbf{P}\cdot \dot{\mathbf{Q}} - H'(\mathbf{Q}, \mathbf{P}, t) + \frac{\d F}{\d t} \tag{1}
+$$
+
+The scaling factor is $\lambda = 1$ for canonical transformations. Here $F$ is a generating function of one old canonical coordinate, one new canonical coordinate and possibly time. There are four important cases of this.
+
+Let us take $F = F_1 (\mathbf{q}, \mathbf{Q}, t)$. The differential of $F_1$ is
+
+$$
+	\d F_1 = \frac{\partial F_1}{\partial t}\d t \sum_i \frac{\partial F_1}{\partial q_i}\d q_i + \frac{\partial F_1}{\partial Q_i}\d Q_i
+$$
+
+Eq. $1$ can be rearranged as
+
+$$
+	\d F_1 = (H' - H)\d t \sum_i p_i \d q_i - P_i \d Q_i
+$$
+
+Equating the differential terms gives
+
+$$
+	p_i = \frac{\partial F_1}{\partial q_i} \, ,\quad P_a = -\frac{\partial F_1}{Q_i} \, ,\quad H' = H + \frac{\partial F_1}{\partial t}
+$$
+
+## Direct conditions
+
+For time independent transformations, the time derivative of new generalized coordinates are
+
+$$
+\begin{align*}
+	\dot{Q}_i =& \sum_j \frac{\partial Q_i}{\partial q_j}\dot{q_j} +  \frac{\partial Q_i}{\partial p_j}\dot{p_j} \\
+	=& \sum_j \frac{\partial Q_i}{\partial q_j}\frac{\partial H}{\partial p_j} +  \frac{\partial Q_i}{\partial p_j}\frac{\partial H}{\partial q_j} \\
+	=& [Q_i, H]
+\end{align*}
+$$
+
+If the transformation is canonical $\dot{Q}_i = \frac{\partial H}{\partial P_i}$ with $H$ written as a function of the old phase-space coordinates giving
+
+$$
+	\frac{\partial H}{\partial P_i} = \sum_i \frac{\partial H}{\partial q_j}\frac{\partial q_j}{\partial P_i} + \frac{\partial H}{\partial p_j}\frac{\partial p_j}{\partial P_i}
+$$
+
+Hamilton's equations imply
+
+$$
+\begin{align*}
+	0 =& \dot{Q}_i - \frac{\partial H}{\partial P_i} \\
+	=& \sum_j \left( \frac{\partial Q_i}{\partial q_j} - \frac{\partial p_j}{\partial P_i} \right)\frac{\partial H}{\partial p_j} - \left( \frac{\partial Q_i}{\partial p_j} + \frac{\partial q_j}{\partial P_i} \right)\frac{\partial H}{\partial q_j}
+\end{align*}
+$$
+
+The transformation is canonical if and only if
+
+$$
+\begin{align*}
+	\frac{\partial Q_i \left(q_j, p_j \right)}{\partial q_j} =& \frac{\partial p_j \left(Q_i, P_i \right)}{\partial P_i} \\
+	\frac{\partial Q_i \left(q_j, p_j \right)}{\partial p_j} =& -\frac{\partial q_j \left(Q_i, P_i \right)}{\partial P_i}
+\end{align*}
+$$
+
+The time derivative of the new generalized momenta is
+
+$$
+\begin{align*}
+	\dot{P}_i =& \sum_j \frac{\partial P_i}{\partial q_j}\dot{q_j} +  \frac{\partial P_i}{\partial p_j}\dot{p_j} \\
+	=& \sum_j \frac{\partial P_i}{\partial q_j}\frac{\partial H}{\partial p_j} +  \frac{\partial P_i}{\partial p_j}\frac{\partial H}{\partial q_j} \\
+	=& [P_i, H]
+\end{align*}
+$$
+
+If the transformation is canonical $\dot{P}_i = -\frac{\partial H}{\partial Q_i}$ with $H$ written as a function of the old phase-space coordinates giving
+
+$$
+	\frac{\partial H}{\partial Q_i} = \sum_i \frac{\partial H}{\partial q_j}\frac{\partial q_j}{\partial Q_i} + \frac{\partial H}{\partial p_j}\frac{\partial p_j}{\partial Q_i}
+$$
+
+Hamilton's equations imply
+
+$$
+\begin{align*}
+	0 =& \dot{P}_i + \frac{\partial H}{\partial Q_i} \\
+	=& \sum_j \left( \frac{\partial P_i}{\partial q_j} - \frac{\partial p_j}{\partial Q_i} \right)\frac{\partial H}{\partial p_j} - \left( \frac{\partial P_i}{\partial p_j} + \frac{\partial q_j}{\partial Q_i} \right)\frac{\partial H}{\partial q_j}
+\end{align*}
+$$
+
+The transformation is canonical if and only if
+
+$$
+\begin{align*}
+	\frac{\partial P_i \left(q_j, p_j \right)}{\partial q_j} =& -\frac{\partial p_j \left(Q_i, P_i \right)}{\partial Q_i} \\
+	\frac{\partial P_i \left(q_j, p_j \right)}{\partial p_j} =& \frac{\partial q_j \left(Q_i, P_i \right)}{\partial Q_i}
+\end{align*}
+$$
+
+## Canonical invariants
+
+### Phase space volume
+
+The volume in phase space is convsered under canonical transformations. Generally, a change of varibles $(\mathbf{q}, \mathbf{p}) \mapsto (\mathbf{Q}, \mathbf{P})$ transforms the volume element
+
+$$
+	\d\mathbf{q}\;\d\mathbf{p} = \det(J)\d\mathbf{Q}\;\d\mathbf{P}
+$$
+
+Where $J$ is the Jacobian. A canonical transformation implies $\det J = 1$.
+
+The determinant of the Jacobian is given by
+
+$$
+	\det{J} = \frac{\partial (\mathbf{Q}, \mathbf{P})}{\partial (\mathbf{q}, \mathbf{p})}
+$$
+
+The division property of the Jacobian yields
+
+$$
+	\det{J} = \left. \frac{\partial (\mathbf{Q}, \mathbf{P})}{\partial (\mathbf{q}, \mathbf{P})} \middle/ \frac{\partial (\mathbf{q}, \mathbf{p})}{\partial (\mathbf{q}, \mathbf{P})} \right.
+$$
+
+Eliminating the repeated variables gives
+
+$$
+	\det{J} = \left. \frac{\partial (\mathbf{Q})}{\partial (\mathbf{q})} \middle/ \frac{\partial (\mathbf{p})}{\partial (\mathbf{P})} \right.
+$$
+
+Applying the direct conditions yield $\det{J} = 1$.
+
+### Poisson brackets
+
+Canonical transformations leave all Poisson brackets invariant
+
+$$
+	[f, g]_{q, p} = [f, g]_{Q, P}
+$$
+
+If this holds then
+
+$$
+	[Q_i, Q_j]_{Q, P} = 0 \, ,\quad [Q_i, P_j]_{Q, P} = \delta_{ij} \, ,\quad [P_i, P_j]_{Q, P} = 0
+$$
+
+which gives an alternative method to test whether a transformation is canonical.
+
+# Hamilton-Jacobi equation
+
+The Hamilton-Jacobi equation is formed by a canonical transformation $(\mathbf{q}, \mathbf{p}) \mapsto (\mathbf{Q}, \mathbf{P})$ such that all new canonical variables are cyclic
+
+$$
+	\dot{Q}_i = \frac{\partial H'}{\partial P_i} = 0 \, ,\quad \dot{P}_i = -\frac{\partial H'}{\partial Q_i} = 0
+$$
+
+Therefore $H'$ must be constant, or simply zero. Using a generating function $F = F_2(\mathbf{q}, \mathbf{P}, t)$ then we need
+
+$$
+	H' = H(\mathbf{q}, \mathbf{p}, t) + \frac{\partial F_2}{\partial t} = 0
+$$
+
+Because $p_i = \frac{\partial F_2}{\partial q_i}$ this can be rewritten as
+
+$$
+	H\left(\mathbf{q}, \frac{\partial F_2}{\partial \mathbf{q}}, t \right) + \frac{\partial F_2}{\partial t} = 0
+$$
+
+which is the time dependent Hamilton-Jacobi equation. The generating function $F_2$ is the action functional $S$ since
+
+$$
+\begin{align*}
+	\frac{\d F_2}{\d t} =& \sum_i \frac{\partial F_2}{\partial q_i}\dot{q_i} + \frac{\partial F_2}{\partial P_i}\dot{P}_i + \frac{\partial F_2}{\partial t} \\
+	=& \sum_i p_i q_i - H = L
+\end{align*}
+$$
+
+Consequently
+
+$$
+	F_2 \equiv S = \int L \d t
+$$
+
+## Relationship to the Schrödinger equation
+
+The motion of isosurfaces of $S(\mathbf{q}, t)$ can be thought of as a wave moving through $\mathbf{q}$-space.
+
+$$
+	\psi = \psi_0 e^\frac{iS}{\hbar}
+$$
+
+By the Schrödinger equation
+
+$$
+\begin{gather*}
+	i\hbar\frac{\partial}{\partial t} \psi_0 e^\frac{iS}{\hbar} = H\psi = \left[ -\frac{\hbar^2}{2m} \nabla_\mathbf{q}^2 + V(\mathbf{q}, t) \right]\psi_0 e^\frac{iS}{\hbar} \\
+	-\psi_0 e^\frac{iS}{\hbar}\frac{\partial S}{\partial t} = -\psi_0 e^\frac{iS}{\hbar} \frac{\hbar^2}{2m} \left[\frac{i}{\hbar}\nabla^2 S - \frac{1}{\hbar^2} \left(\nabla S \right)^2 \right] + V\psi_0 e^\frac{iS}{\hbar} \\
+	\frac{1}{2m}\left( \nabla S \right)^2 + V + \frac{\partial S}{\partial t} = \frac{i\hbar}{2m}\nabla^2 S \\
+	H + \frac{\partial S}{\partial t} = \frac{i\hbar}{2m}\nabla^2 S
+\end{gather*}
+$$
+
+In the classical limit $\hbar \to 0$, the Schrödinger becomes identical to the Hamilton-Jacobi equation.
