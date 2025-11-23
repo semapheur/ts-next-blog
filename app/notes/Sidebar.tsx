@@ -19,7 +19,6 @@ function titleCase(text: string) {
 
 function DirectoryItem({ node }: { node: TreeNode }) {
   const pathname = usePathname();
-  console.log(pathname);
 
   const subItem = useMemo(() => {
     return (

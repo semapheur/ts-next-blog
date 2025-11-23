@@ -1,7 +1,8 @@
-import * as fs from "node:fs"
-import path from "node:path"
-import { XorFilter } from "bloom-filters"
-import matter from "gray-matter"
+import * as fs from "node:fs";
+import path from "node:path";
+import { XorFilter } from "bloom-filters";
+import matter from "gray-matter";
+import type { NoteIndex } from "lib/utils/types";
 
 const stopwords = [
   "a",
@@ -202,60 +203,59 @@ const stopwords = [
   "title",
   "boxtype",
   "mathbox",
-]
+];
 
 function tokenize(text: string): string[] {
-  const re: RegExp[] = [/---\^+?---/gm, /\$\$?\^+?\$\$?/gm, /<\/?[a-z]+?>/g]
+  const re: RegExp[] = [/---\^+?---/gm, /\$\$?\^+?\$\$?/gm, /<\/?[a-z]+?>/g];
 
   // Cleanup string
-  text = text.toLowerCase()
+  text = text.toLowerCase();
   re.forEach((p) => {
-    text = text.replaceAll(p, "")
-  })
+    text = text.replaceAll(p, "");
+  });
 
   return text
     .split(/\W+/)
-    .filter((token) => stopwords.indexOf(token) === -1 && token.length > 1)
-}
-
-interface NoteIndex {
-  slug: string
-  title: string
-  filter: JSON
+    .filter((token) => stopwords.indexOf(token) === -1 && token.length > 1);
 }
 
 async function indexNotes() {
-  const result = [] as NoteIndex[]
+  const result = [] as NoteIndex[];
+  const notesDir = path.join(process.cwd(), "content", "notes");
 
-  const notesDir = path.join(process.cwd(), "content", "notes")
-  for (const subject of fs.readdirSync(notesDir)) {
-    const subjectDir = path.join(notesDir, subject)
+  function walkDir(currentDir: string) {
+    const items = fs.readdirSync(currentDir, { withFileTypes: true });
 
-    for (const fileName of fs.readdirSync(subjectDir)) {
-      const regex = /[^.]+$/
-      if (fileName.match(regex)) {
-        const note = fs.readFileSync(path.join(subjectDir, fileName))
-        const { data: metaData, content } = matter(note)
-        const tokens = tokenize(content)
-        const xor8 = XorFilter.create([...new Set(tokens)])
+    for (const item of items) {
+      const fullPath = path.join(currentDir, item.name);
+      if (item.isDirectory()) {
+        walkDir(fullPath);
+      } else if (item.isFile() && item.name.endsWith(".mdx")) {
+        const note = fs.readFileSync(fullPath, "utf-8");
+        const relativePath = path.relative(notesDir, fullPath);
+
+        const { data: metaData, content } = matter(note);
+        const tokens = tokenize(content);
+        const xor8 = XorFilter.create([...new Set(tokens)]);
         result.push({
-          slug: `${subject}/${fileName.replace(".mdx", "")}`,
+          slug: `${relativePath}/${item.name.replace(".mdx", "")}`,
           title: metaData.title,
           filter: xor8.saveAsJSON(),
-        })
+        });
       }
     }
   }
-  return result
+
+  return result;
 }
-;(async () => {
-  const notes = await indexNotes()
-  const cache = JSON.stringify(notes)
+(async () => {
+  const notes = await indexNotes();
+  const cache = JSON.stringify(notes);
 
   fs.writeFile("content/cache/notes.json", cache, (e) => {
     if (e) {
-      console.log(e)
+      console.log(e);
     }
-    console.log("Note cache file written")
-  })
-})()
+    console.log("Note cache file written");
+  });
+})();

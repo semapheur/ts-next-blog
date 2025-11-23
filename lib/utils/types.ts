@@ -35,3 +35,9 @@ export interface NoteHeading {
   level: number;
   children?: NoteHeading[];
 }
+
+export interface NoteIndex {
+  slug: string;
+  title: string;
+  filter: JSON;
+}

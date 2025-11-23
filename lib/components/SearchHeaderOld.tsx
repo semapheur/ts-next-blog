@@ -1,57 +1,58 @@
-"use client"
+"use client";
 
-import { type ChangeEvent, useEffect, useState } from "react"
+import { type ChangeEvent, useEffect, useState } from "react";
 //import useSWR, {Fetcher} from 'swr'
 
-import type { SearchResult } from "pages/api/searchnotes"
-import { XorFilter } from "bloom-filters"
-import SearchBoxCompact from "lib/components/SearchBoxCompact"
-import Link from "next/link"
+import type { SearchResult } from "pages/api/searchnotes";
+import { XorFilter } from "bloom-filters";
+import SearchBoxCompact from "lib/components/SearchBoxCompact";
+import Link from "next/link";
 
-import notes from "content/cache/notes.json"
-import tokenize from "lib/utils/tokenize"
+import type { NoteIndex } from "lib/utils/types";
+import notes from "content/cache/notes.json";
+import tokenize from "lib/utils/tokenize";
 
 //const searchFetcher: Fetcher<SearchResult, string> = async (query) => {
 //  return await fetch(`/api/searchnotes?q=${query}`).then(res => res.json())
 //}
 
 export default function SearchBar() {
-  const [query, setQuery] = useState<string>("")
-  const [searchResult, setSearchResult] = useState<SearchResult>([])
+  const [query, setQuery] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<SearchResult>([]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }
+    setQuery(e.target.value);
+  };
   const handleClick = () => {
-    setQuery("")
-  }
+    setQuery("");
+  };
   //const {data: result} = useSWR(query, searchFetcher)
 
   useEffect(() => {
-    const result: SearchResult = []
-    const tokens = tokenize(query)
+    const result: SearchResult = [];
+    const tokens = tokenize(query);
 
-    let score = 0
-    for (const note of notes) {
-      score = tokens.filter((q) => note.title.toLowerCase().includes(q)).length
+    let score = 0;
+    for (const note of notes as NoteIndex[]) {
+      score = tokens.filter((q) => note.title.toLowerCase().includes(q)).length;
 
       const xor8 = XorFilter.fromJSON(
         JSON.parse(JSON.stringify(note.filter)),
-      ) as XorFilter
+      ) as XorFilter;
       tokens.forEach((q) => {
-        if (xor8.has(q)) score++
-      })
+        if (xor8.has(q)) score++;
+      });
 
       if (score > 0) {
         result.push({
           score: score,
           slug: note.slug,
           title: note.title,
-        })
+        });
       }
     }
-    setSearchResult(result)
-  }, [query])
+    setSearchResult(result);
+  }, [query]);
 
   return (
     <div className="group relative">
@@ -72,5 +73,5 @@ export default function SearchBar() {
         </nav>
       )}
     </div>
-  )
+  );
 }
