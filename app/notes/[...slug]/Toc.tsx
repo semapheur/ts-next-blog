@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import MathText from "lib/components/MathText"
-import useScrollspy from "lib/hooks/useScrollspy"
-import { BookIcon } from "lib/utils/icons"
-import type { NoteHeading } from "lib/utils/types"
-import { useEffect, useMemo, useState } from "react"
+import MathText from "lib/components/MathText";
+import useScrollspy from "lib/hooks/useScrollspy";
+import { BookIcon } from "lib/utils/icons";
+import type { NoteHeading } from "lib/utils/types";
+import { useEffect, useMemo, useState } from "react";
 
 type TocItem = {
-  heading: NoteHeading
-  activeIds: string[]
-}
+  heading: NoteHeading;
+  activeIds: string[];
+};
 
 type Props = {
-  headings: NoteHeading[]
-}
+  headings: NoteHeading[];
+};
 
 // million-ignore
 function TocItem({ heading, activeIds }: TocItem) {
@@ -28,8 +28,8 @@ function TocItem({ heading, activeIds }: TocItem) {
           />
         ))}
       </>
-    )
-  }, [heading, activeIds])
+    );
+  }, [heading, activeIds]);
 
   return (
     <li key={`li.${heading.slug}`} className="relative list-none">
@@ -60,13 +60,13 @@ function TocItem({ heading, activeIds }: TocItem) {
       {heading.children && (
         <ul
           key={`ul.${heading.slug}`}
-          className="h-0 list-none overflow-hidden pl-4 peer-checked:h-auto"
+          className="h-0 list-none overflow-hidden ml-2.5 border-l border-secondary peer-checked:h-auto"
         >
           {subItem}
         </ul>
       )}
     </li>
-  )
+  );
 }
 
 function Toggle() {
@@ -86,26 +86,26 @@ function Toggle() {
         <BookIcon className="h-6 w-6 stroke-text hover:stroke-secondary" />
       </label>
     </>
-  )
+  );
 }
 
 export default function Toc({ headings }: Props) {
-  const [headingIds, setHeadingIds] = useState<HTMLHeadingElement[]>([])
+  const [headingIds, setHeadingIds] = useState<HTMLHeadingElement[]>([]);
 
   useEffect(() => {
-    const result: string[] = []
+    const result: string[] = [];
 
     const callback = (h: NoteHeading) => {
-      result.push(`h${h.level}[id="${h.slug}"]`)
-      h.children?.forEach(callback)
-    }
+      result.push(`h${h.level}[id="${h.slug}"]`);
+      h.children?.forEach(callback);
+    };
 
-    headings.forEach(callback)
-    const selector = result.toString()
-    setHeadingIds(Array.from(document.querySelectorAll(selector)))
-  }, [headings])
+    headings.forEach(callback);
+    const selector = result.toString();
+    setHeadingIds(Array.from(document.querySelectorAll(selector)));
+  }, [headings]);
 
-  const activeIds = useScrollspy(headingIds, { threshold: 0.3 })
+  const activeIds = useScrollspy(headingIds, { threshold: 0.3 });
 
   return (
     <>
@@ -135,5 +135,5 @@ export default function Toc({ headings }: Props) {
         </nav>
       </aside>
     </>
-  )
+  );
 }

@@ -34,7 +34,7 @@ function DirectoryItem({ node }: { node: TreeNode }) {
             >
               <Link
                 href={href}
-                className={`inline-block text-wrap pl-6 text-sm transition-colors duration-200 ${
+                className={`inline-block text-wrap pl-4 text-sm transition-colors duration-200 ${
                   isActive
                     ? "text-secondary font-medium"
                     : "text-text hover:text-text/80"
@@ -74,7 +74,7 @@ function DirectoryItem({ node }: { node: TreeNode }) {
       </span>
       <ul
         key={`ul.${node.path}`}
-        className="h-0 list-none overflow-hidden pl-4 peer-checked:h-auto"
+        className="h-0 list-none overflow-hidden ml-2.5 pl-1 border-l border-secondary peer-checked:h-auto"
       >
         {subItem}
       </ul>
