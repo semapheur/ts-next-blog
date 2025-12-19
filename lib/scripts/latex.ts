@@ -14,9 +14,18 @@ interface LatexIssue {
   commands?: LatexCommand[];
 }
 
+interface Range {
+  start: number;
+  end: number;
+}
+
 interface Test {
   line: number;
   message: string;
+}
+
+interface NoteLatexIssues {
+  [slug: string]: LatexIssue;
 }
 
 function findUnclosedLatex(mdxFile: string) {
@@ -98,10 +107,10 @@ function findLatexIssues(mdxFile: string): LatexIssue {
   let inMath = false;
   let inDisplayMath = false;
   let inCodeBlock = false;
+  let inStringRaw = false;
   let lastOpenLine = -1;
   let lastOpenCol = -1;
-  const latexOutsideMath: { command: string; line: number; column: number }[] =
-    [];
+  const latexOutsideMath: LatexCommand[] = [];
   const allIssues: LatexIssue[] = [];
 
   // More comprehensive regex that matches backslash followed by letter(s)
@@ -119,6 +128,43 @@ function findLatexIssues(mdxFile: string): LatexIssue {
     // Skip processing if we're inside a code block
     if (inCodeBlock) continue;
 
+    const stringRawRanges: Range[] = [];
+    let currentPos = 0;
+
+    while (currentPos < line.length) {
+      if (!inStringRaw) {
+        const startIdx = line.indexOf("String.raw`", currentPos);
+        if (startIdx !== -1) {
+          inStringRaw = true;
+
+          const contentStart = startIdx + 11;
+          currentPos = contentStart;
+
+          const endIdx = line.indexOf("`", currentPos);
+          if (endIdx !== -1) {
+            stringRawRanges.push({ start: startIdx, end: endIdx });
+            inStringRaw = false;
+            currentPos = endIdx + 1;
+          } else {
+            stringRawRanges.push({ start: startIdx, end: line.length });
+            break;
+          }
+        } else {
+          break;
+        }
+      } else {
+        const endIdx = line.indexOf("`", currentPos);
+        if (endIdx !== -1) {
+          stringRawRanges.push({ start: 0, end: endIdx });
+          inStringRaw = false;
+          currentPos = endIdx + 1;
+        } else {
+          stringRawRanges.push({ start: 0, end: line.length });
+          break;
+        }
+      }
+    }
+
     // Handle display math blocks
     if (line.includes("$$")) {
       const matches = line.match(/\$\$/g) || [];
@@ -131,7 +177,7 @@ function findLatexIssues(mdxFile: string): LatexIssue {
     if (inDisplayMath) continue;
 
     // Build a map of which positions are inside math mode for this line
-    const mathRanges: Array<{ start: number; end: number }> = [];
+    const mathRanges: Range[] = [];
     let tempPos = 0;
     let tempInMath = false;
     let mathStart = -1;
@@ -287,10 +333,6 @@ function findLatexIssues(mdxFile: string): LatexIssue {
   }
 
   return { message: "No issues found" };
-}
-
-interface NoteLatexIssues {
-  [slug: string]: LatexIssue;
 }
 
 async function checkNotesForIssues() {

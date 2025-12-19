@@ -1,28 +1,30 @@
-"use client"
+"use client";
 
-import { LatexIcon } from "lib/utils/icons"
-import dynamic from "next/dynamic"
-import { useEffect, useState } from "react"
-import rehypePrettyCode from "rehype-pretty-code"
-import rehypeStringify from "rehype-stringify"
-import remarkParse from "remark-parse"
-import remarkRehype from "remark-rehype"
-import { unified } from "unified"
+import { LatexIcon } from "lib/utils/icons";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeStringify from "rehype-stringify";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { unified } from "unified";
 
-const Modal = dynamic(() => import("lib/components/LatexModal"), { ssr: false }) //import Modal from 'lib/components/Modal'
+const Modal = dynamic(() => import("lib/components/LatexModal"), {
+  ssr: false,
+});
 
 interface FallbackImage {
-  src: string
-  alt?: string
-  width?: number
+  src: string;
+  alt?: string;
+  width?: number;
 }
 
 interface Props {
-  caption: string
-  children: string
-  packages?: string
-  tag?: string
-  fallbackImage?: FallbackImage
+  caption: string;
+  children: string;
+  packages?: string;
+  tag?: string;
+  fallbackImage?: FallbackImage;
 }
 
 export default function TikzFigure({
@@ -32,33 +34,33 @@ export default function TikzFigure({
   tag,
   children,
 }: Props) {
-  const [isHovered, setHover] = useState<boolean>(false)
-  const [showModal, setShowModal] = useState<boolean>(false)
-  const [tikzCodeHighlighted, setTikzCodeHighlighted] = useState<string>("")
+  const [isHovered, setHover] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [tikzCodeHighlighted, setTikzCodeHighlighted] = useState<string>("");
 
-  let packageText = ""
+  let packageText = "";
   try {
-    const parsed = JSON.parse(packages)
+    const parsed = JSON.parse(packages);
     if (
       typeof parsed !== "object" ||
       parsed === null ||
       Array.isArray(parsed)
     ) {
-      throw new Error("Invalid packages format")
+      throw new Error("Invalid packages format");
     }
 
     for (const [key, value] of Object.entries(parsed)) {
       if (value === "") {
-        packageText += `\\usepackage{${key}}\n`
-        continue
+        packageText += `\\usepackage{${key}}\n`;
+        continue;
       }
-      packageText += `\\usepackage[${value}]{${key}}\n`
+      packageText += `\\usepackage[${value}]{${key}}\n`;
     }
   } catch (error) {
     if (error instanceof SyntaxError) {
-      packageText = `\\usepackage{${packages.trim()}}\n`
+      packageText = `\\usepackage{${packages.trim()}}\n`;
     } else {
-      throw error
+      throw error;
     }
   }
 
@@ -70,20 +72,20 @@ ${packageText}
 \begin{document}
 ${children}
 \end{document}
-`
+`;
 
       const tikzCodeHighlighted = await unified()
         .use(remarkParse)
         .use(remarkRehype)
         .use(rehypePrettyCode)
         .use(rehypeStringify)
-        .process(`\`\`\`latex ${tikzCode}\`\`\``)
+        .process(`\`\`\`latex ${tikzCode}\`\`\``);
 
-      setTikzCodeHighlighted(String(tikzCodeHighlighted))
-    }
+      setTikzCodeHighlighted(String(tikzCodeHighlighted));
+    };
 
-    processTikzCode()
-  }, [children, packageText])
+    processTikzCode();
+  }, [children, packageText]);
 
   return (
     <figure
@@ -110,7 +112,7 @@ ${children}
           </noscript>
         )}
       </div>
-      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
+      <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(figure)_':_'] before:[counter-increment:figure]">
         {caption}
       </figcaption>
       {isHovered && (
@@ -131,5 +133,5 @@ ${children}
         />
       </Modal>
     </figure>
-  )
+  );
 }
