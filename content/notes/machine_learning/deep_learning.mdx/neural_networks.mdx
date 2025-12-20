@@ -1,6 +1,6 @@
 ---
-title: 'Neural Networks'
-subject: 'Machine Learning'
+title: 'Artificial Neural Networks'
+subject: 'machine learning/deep learning'
 showToc: true
 references:
   - book_calin_2020
@@ -30,128 +30,7 @@ The input and output spaces can take any form, e.g.
 - $\set{\pm 1}:$ boolean
 - $[0,1]$: unit interval (representing probabilities)
 
-## Activation functions
-
-### Heaviside function
-
-$$
-  H(x) = \mathbf{1}_{x\geq 0} (x) := \begin{cases}
-    1, \quad x\geq& 0 \\
-    0, \quad x < 0
-  \end{cases}
-$$
-
-An artificial neuron using the Heaviside activitation function is known as a *perceptron*.
-
-### Rectified linear unit (ReLU)
-
-$$
-  \sigma(\lambda) = \operatorname{ReLU}(\lambda) := \max\set{0,\lambda}
-$$
-
-### Sigmoid
-
-The (logistic) sigmoid function $\sigma:\R\to[0,1]$ is given by 
-
-$$
-  \sigma(\lambda) := \frac{1}{1 + e^{-\lambda}}
-$$
-
-The term "sigmoid" means S-shaped. The sigmoid function can be thought of as a "soft" version of the Heaviside step function.
-
-<GraphFigure 
-  expression="1/(1 + exp(-x))"
-  points={100}
-  xAxis={{scale: "linear", domain: [-2,2]}}
-  yAxis={{scale: "linear", domain: [0,1]}}
-  caption="Sigmoid function"
-/>
-
-<MathBox title='Properties of the sigmoid function' boxType='proposition'>
-1. $\sigma'(\lambda) = \sigma(\lambda)(1 - \sigma(\lambda))$
-2. $1 - \sigma(\lambda) = \sigma(\lambda)$
-3. $\sigma^{-1} (\lambda) = \ln\left(\frac{\lambda}{1 - \lambda} \right) =: \operatorname{logit}(\lambda)$
-4. $\sigma_+ (\lambda) := \ln(1 + e^\lambda) =: \operatorname{softplus}(\lambda)$
-5. $\sigma'_+ (\lambda) = \sigma(\lambda)$
-</MathBox>
-
-### Hyperbolic tangent
-
-$$
-  \tanh(\lambda) := \frac{e^\lambda - e^{-\lambda}}{e^\lambda + e^{-\lambda}}
-$$
-
-<GraphFigure 
-  expression="tanh(x)"
-  points={100}
-  xAxis={{scale: "linear", domain: [-2,2]}}
-  yAxis={{scale: "linear", domain: [-1,1]}}
-  caption="Hyperbolic tangent"
-/>
-
-### Swish
-
-$$
-  \operatorname{swish}_\beta (\lambda) := \lambda \sigma(\beta\lambda) := \frac{\lambda}{1 + e^{-\beta\lambda}},\; \beta > 0
-$$
-In case of $\beta = 1$, this function is also called the *sigmoid-weighted linear unit* (SiLU).
-
-### Softmax
-
-Softmax also known as the normalized exponential function: $\operatorname{softmax}:\R^n \to[0,1]^n$
-
-$$
-  \operatorname{softmax}(\mathbf{x}) := \frac{e^\mathbf{x}}{\sum_{i=1}^n e^{x_i}}
-$$
-Softmax has the useful property that its output is a discrete probability distribution.
-
-### Maxpool
-
-$\operatorname{maxpool}:\R^n \to\R^m$
-
-$$
-  \operatorname{maxpool}\left(\begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix} \right) := \begin{bmatrix}
-    \max_{j\in I_1} x_j \\
-    \vdots \\
-    \max_{j\in I_m} x_j
-  \end{bmatrix}
-$$
-
-where for each $i\in\set{1,\dots,m}$ we have a $I_i \subset\set{1,\dots,n}$ that specifies over which inputs to take the maximum for each output. Maxpooling can easily be generalized by replacing the max operation.
-
-### Normalization
-
-$\operatorname{normalize}:\R^n \to\R^n$:
-
-$$
-  \operatorname{normalize}(\mathbf{x}) := \frac{\mathbf{x} - \mu\mathbf{1}_n}{\sigma}
-$$
-where $\mu = \mathbb{E}(\mathbf{x})$ and $\sigma^2 = \operatorname{var}(\mathbf{x})$.
-
-### Dropout
-
-Dropout is a stochastic function that is often used during the training process but is removed once the training is finished. It works by randomly setting individuals values a signal to zero with probability $p$
-
-$$
-  \operatorname{dropout}_p (\mathbf{x})_i := \begin{cases}
-    0 \quad &\text{with probability $p$} \\
-    x_1 \quad &\text{with probability $p - 1$}
-  \end{cases}
-$$
-
-### Heatbath
-
-Heatbath is a scalar function that outputs $1$ or $-1$ with a probability that depends on the input
-$$
-  \operatorname{heatbath}(\lambda) := \begin{cases}
-    1 \quad &\text{with probability $p$} \\
-    -1 \quad &\text{otherwise}
-  \end{cases}
-$$
-
-# Artifical neural network (ANN)
-
-## Feedforward neural network (FFNN)
+# Feedforward neural network (FFNN)
 
 <MathBox title='Parametric affine function' boxType='definition'>
 Let $\boldsymbol{\theta} \in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. For $m, n\in\N_+$ and $s\in\N_0$ satisfying $p \geq s + mn + m$, we define an affine function $A_{m,n}^{\boldsymbol{\theta}, s} :\R^n \to \R^m$ associated with parameters $\boldsymbol{\theta}$, starting from index $s$, as
@@ -183,8 +62,8 @@ $$
 $$
 </MathBox>
 
-<MathBox title='Fully-connected feedforward neural network' boxType='definition'>
-Let $\boldsymbol{\theta}\in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. A fully connected feedforward neural network (FFNN) with $L \in N_+$ layers is characterized by its architecture $a = (\mathbf{n}, \boldsymbol{sigma})$ for $\mathbf{n} \in\N_+^{L+1}$, where
+<MathBox title='Fully-connected feedforward neural network (vectorized description)' boxType='definition'>
+Let $\boldsymbol{\theta}\in\Theta\subseteq\R^p$ be a parameter vector of dimension $p\in\N_+$. A fully connected feedforward neural network (FFNN) with $L \in N_+$ layers is characterized by its architecture $a = (\mathbf{n}, \boldsymbol{\sigma})$ for $\mathbf{n} \in\N_+^{L+1}$, where
 - $\mathbf{n} = (n_\ell)_{\ell=0}^L$ denotes the number of neurons in each layer $\ell$
 - $\boldsymbol{\sigma} = (\sigma_\ell : \R\to\R)_{\ell=0}^L$ denotes the activation function applied componentwise to each layer $\ell$
 
@@ -199,7 +78,7 @@ $$
   p = \sum_{\ell=1}^L n_\ell (n_{\ell - 1} + 1)
 $$
 
-The width and depth of the FNNN architecture are given by $\lVert N \rVert_\infty$ and $L$, respectively, where $N = \sum_{\ell=0}^L n_\ell$ is the total number of neurons. The architecture is called deep if $L > 2$ and shallow if $L = 2$.
+The width and depth of the FFNN architecture are given by $\lVert N \rVert_\infty$ and $L$, respectively, where $N = \sum_{\ell=0}^L n_\ell$ is the total number of neurons. The architecture is called deep if $L > 2$ and shallow if $L = 2$.
 
 The realization function of the FFNN, denoted $\Phi_a : \R^{n_0} \times \R^p \to\R^{n_L}$ is given by
 
@@ -219,7 +98,7 @@ $$
 For each hidden layer $\ell = 1,\dots, L - 1$, we define the pre-activation $\Phi^{(\ell)}: \R^{n_{\ell - 1}} \times \R^p \to \R ^{\boldsymbol{\theta}, n_{\ell - 1}}$ and activation $\bar{\Phi}^{(\ell)} : \R^{n_{\ell - 1}} \times \R^p \to \R ^{\boldsymbol{\theta}, n_{\ell - 1}}$ as
 
 $$
-  \bar{\Phi}^{(ell)} = \sigma_\ell \left(\Phi^{(\ell)}\right)
+  \bar{\Phi}^{(\ell)} = \sigma_\ell \left(\Phi^{(\ell)}\right)
 $$
 
 Each affine functions $A_{n_\ell, n_{\ell-1}}^{s_{n_{\ell-1}}}$ for $\ell = 1,\dots,L$, is given by
@@ -404,6 +283,148 @@ $$
 ```
 </LatexFigure>
 
+<MathBox title='Fully-connected feedforward neural network (structured description)' boxType='definition'>
+Define the parameter space
+
+$$
+\begin{equation*}
+  \mathcal{N} := \bigcup_{L\in\N_+} \bigcup_{(\ell_0, \dots, \ell_L) \in \N_+^{L+1}} \left(\prod_{k=1}^L (\R^{\ell_k \times \ell_{k-1} \times \R^{\ell_k})\right)
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where
+- $L \in \N_+$ is the number of layers
+- $(\ell_0, \dots, \ell_L) \in \N_+^{L+1}$ is the layer-width vector
+
+A fully-connected feedforward neural network (FFNN) is any element $\boldsymbol{\Phi}\in\mathcal{N}$ in the form of a finite sequence of weight-bias pairs
+
+$$
+  \boldsymbol{\Phi} = \left((\mathbf{W}_1, \mathbf{B}_1), \dots, (\mathbf{W}_L, \mathbf{B}_L) \right)
+$$
+
+where for each layer $n \in\set{1,\dots,L}$
+- $\mathbf{W}_n \in\R^{\ell_n \times\ell_{n+1}}$ is the weight matrix
+- $\mathbf{B}_n \in\R^{\ell_n}$ is the bias matrix
+
+For $n\in\N_0$, define the layer dimension function $d_n (\boldsymbol{\Phi}) \in\N_0$ by
+
+$$
+  d_n (\boldsymbol{\Phi}) = \begin{cases}
+    \ell_n,\quad& 0 \leq n\leq L \\
+    0, \quad& n > L
+  \end{cases}
+$$
+
+The dimension vector of $\boldsymbol{\Phi}\in\mathcal{N}$ is then given by
+
+$$
+  \mathbf{d}(\boldsymbol{\Phi}) := \left(d_n (\boldsymbol{\Phi}) \right)_{n=0}^{\mathcal{L}(\boldsymbol{\Phi})} = (\ell_0, \dots, \ell_L) \in \N_+^{L(\boldsymbol{\Phi}) + 1}
+$$
+
+For notational convenience, we define the weight and bias projection maps for $n = 1,\dots, L$
+- $\mathcal{W}_n (\boldsymbol{\Phi}) := \mathbf{W}_n \in \R^{d_n (\boldsymbol{\Phi}) \times d_{n-1} (\boldsymbol{\Phi})}$
+- $\mathcal{B}_n (\boldsymbol{\Phi}) := \mathbf{B}_n \in \R^{d_n (\boldsymbol{\Phi})}$
+
+The structure of an FFNN $\boldsymbol{\Phi}\in\mathcal{N}$ is characterized by the following quantities:
+- Number of layers: $\mathcal{L}(\boldsymbol{\Phi}) = L \in\N_+$
+- Input dimension: $\mathcal{I}(\boldsymbol{\Phi}) = d_0 (\boldsymbol{\Phi}) = \ell_0 \in\N_+$
+- Output dimension: $\mathcal{O}(\boldsymbol{\Phi}) = d_{\mathcal{L}(\boldsymbol{\Phi})} = \ell_L \in\N_+$
+- Number of hidden layers: $\mathcal{H}(\boldsymbol{\Phi}) = L - 1 \in\N_0$
+- Total number of parameters: $\mathcal{P}(\boldsymbol{\Phi}) = \sum_{k=1}^L \ell_k (\ell_{k+1} + 1) \in\N_+$
+
+Let $a:\R\to\R$ be an activation function. The realization of an FFNN $\boldsymbol{\Phi} \in\mathcal{N}$ with activation $a$ is the function $\mathcal{R}_a^\mathcal{N}: \R^{\mathcal{I}(\boldsymbol{\Phi})} \to \R^{\mathcal{O}(\boldsymbol{\Phi})}$ defined recursively as follows.
+
+Given an input $\mathbf{x}_0 \in\R^{d_0 (\boldsymbol{\Phi})}$, define for $k = 1,\dots,\mathcal{L}(\boldsymbol{\Phi})$
+
+$$
+  \mathbf{x}_k = \begin{cases}
+    \mathbf{M}_{a,d_k (\boldsymbol{\Phi})} (\mathcal{W}_k (\boldsymbol{\Phi}) \mathbf{x}_{k-1} + \mathcal{B}_k (\boldsymbol{\Phi}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}) \\
+    \mathcal{W}_k (\boldsymbol{\Phi}) \mathbf{x}_{k-1} + \mathcal{B}_k (\boldsymbol{\Phi}),\quad& k=\mathcal{L}(\boldsymbol{\Phi})
+  \end{cases}
+$$
+
+where $\mathbf{M}_{a,d}$ is the componentwise extension of $a$ to $\R^d$. Finally set
+
+$$
+  (\mathcal{R}_a^{\mathcal{N}} (\boldsymbol{\Phi}))(\mathbf{x}_0) := \mathbf{x}_{\mathcal{L}(\boldsymbol{\Phi})}
+$$
+</MathBox>
+
+**Connection between the structured and vectorized description**
+
+Let $\mathcal{N}$ denote parameter space of fully-connected feedforward neural networks as defined in $\eqref{equation-4}$, and define the disjoint-union parameter space
+
+$$
+  \R^{(*)} := \bigsqcup_{d\in\N_+} \R^d
+$$
+
+The equivalence of the vectorized and structural descriptions of fully-connected feedforward neural networks can be shown by defining the vectorization map $T:\mathcal{N}\to\R^{(*)}$ given by $T(\boldsymbol{\Phi}) = \boldsymbol{\theta} \in\R^d$, where
+
+$$
+  d:= \mathcal{P}(\boldsymbol{\Phi}) = \sum_{k=1}^{\mathcal{L}(\boldsymbol{\Phi})} \ell_k (\ell_{\ell + 1} + 1)
+$$
+
+is the total number of parameters of the network. Introducing cumulative offsets for each layer $k=1,\dots,L$
+
+$$
+  s_k := \sum_{i=1}^{k-1} \ell_i (\ell_{i+1}),\; k=1,\dots,\mathcal{L}(\boldsymbol{\Phi})
+$$
+
+the elements of the weight matrix are given by
+
+$$
+  \left[\mathcal{W}_k (\boldsymbol{\Phi})\right]_{i,j} = \theta_{s_k + (i-1)\ell_{k-1} + j},\; i=1,\dots,\ell_k,\; j=1,\dots,\ell_{k-1}
+$$
+
+Likewise, the components of the bias vector are
+
+$$
+  \left[\mathcal{B}_k (\boldsymbol{\Phi})\right]_i := \theta_{s_k + \ell_k \ell_{k-1} + i},\; i=1,\dots,\ell_k
+$$
+
+This construction uniquely determines $\boldsymbol{\Phi}$ from $T(\boldsymbol{\Phi})$. 
+
+To see these, define affine maps $A_{m,n}^{\boldsymbol{\theta}, s} : \R^n \to \R^m$ given by
+
+$$
+  A_{m,n}^{\boldsymbol{\theta}, s} (\mathbf{x}) := \mathbf{Wx} + \mathbf{b}
+$$
+
+where
+- $W_{i,j} := \theta_{s + (i - 1)n -j}$
+- $\mathbf{b}_i := \theta_{s + mn + i}$
+
+Then for all $k=1,\dots,L$ and all $\mathbf{x} \in\R^{\ell_{k - 1}}$ we have
+
+$$
+  \mathcal{W}_k (\boldsymbol{\Phi})\mathbf{x} + \mathcal{B}_k (\boldsymbol{\Phi}) = A_{\ell_k, \ell_{k-1}}^{T(\boldsymbol{\Phi}), s_k},\; \forall \mathbf{x}\in\R^{\ell_{k-1}}
+$$
+
+Let $a:\R\to\R$ be an activation function and $\boldsymbol{\Phi}\in\mathcal{N}$ an FFNN. Then the realization of $\boldsymbol{\Phi}$ is given by
+
+$$
+  \mathcal{R}_a^{\mathcal{N}} (\boldsymbol{\Phi}) = \begin{cases}
+    N_{\operatorname{id}_{\R^{\mathcal{O}(\boldsymbol{\Phi})}}}^{T(\boldsymbol{\Phi}), \mathcal{I}(\boldsymbol{\Phi})},\quad& \mathcal{H}(\boldsymbol{\Phi}) = 0 \\
+    N_{\mathbf{M}_{a, d_1 (\boldsymbol{\Phi})},\dots,\mathbf{M}_{a, d_{\mathcal{H}(\boldsymbol{\Phi})}(\boldsymbol{\Phi})}, \operatorname{id}_{\R^{\mathcal{O}(\boldsymbol{\Phi})}}}^{T(\boldsymbol{\Phi}), \mathcal{I}(\boldsymbol{\Phi})},\quad& \mathcal{H}(\boldsymbol{\Phi}) > 0
+  \end{cases}
+$$
+
+Given an input $\mathbf{x}_0 \in\R^{\ell_0}$, define recursively
+
+$$
+  \mathbf{x}_k = \begin{cases}
+    \mathbf{M}_{a,\ell_k} \left(A_{\ell_k, \ell_{k-1}}^{T(\boldsymbol{\Phi}), s_k}\right),\quad& k=1,\dots,L-1 \\
+    A_{\ell_L, \ell_{L-1}}^{T(\boldsymbol{\Phi}), s_L} (\mathbf{x}_{L-1}),\quad& k=L
+  \end{cases}
+$$
+
+Then $(\mathcal{R}_a^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}_0) = \mathbf{x}_L$. Equivalently, for $L > 1$
+
+$$
+  \mathbf{x}_{L-1} = \left(\mathbf{M}_{a,\ell_{L-1}} \circ A_{\ell_{L-1}, \ell_{L-2}}^{T(\boldsymbol{\Phi}), s_{L-1}} \circ\cdots\circ \mathbf{M}_{a,\ell_1} \circ A_{\ell_1, \ell_0}^{T(\boldsymbol{\Phi}), 0} \right)(\mathbf{x}_0)
+$$
+
 <MathBox title='Hypothesis sets of neural networks' boxType='definition'>
 Let $a = (\mathbf{n}, \boldsymbol{\sigma})$ be a neural network architecture with input dimension $n_0 = d$, output dimension $n_L = 1$, and measurable activation functions $\boldsymbol{\sigma}$. For regression taks the corresponding hypothesis set is given by
 
@@ -444,7 +465,7 @@ That is, the input to $v_{t+1,j}$ is a weighted sum of the outpus of the neurons
 
 We refer to $T$ as the number of layers in the network (excluding $V_0$), or alternatively the *debth* of the network. The size of the network is denoted $|V|$ and the width of the netweek is $\max_{t\in T} |V|_t$.
 
-### Approximation
+## Approximation
 
 <MathBox title='Universal approximation theorem' boxType='theorem' tag='theorem-1'>
 Let $d\in \N$, let $K \subseteq \R^d$ be compact, and let $\sigma \in L_\text{loc}^\infty (\R)$ be a locally bounded activation function such that the closure of the points of discontinuity of $\sigma$ has Lebesgue measure zero (so in particular $\sigma$ is measurable). Further, let
@@ -558,7 +579,7 @@ where $K\subset\R$ is compact.
 
 Theorem $\ref{theorem-2}$ shows that two-layer neural networks with smooth, non-polynomial activations achieve the same optimal approximation rates $O(n^{-k/d})$ for $W^{k,p}$-smooth functions on $(0,1)^d$ as classical methods such as spline bases or piecewise polynomial approximation. In general, many approximation schemes can be emulated by neural networks without loss of convergence rate.
 
-### Learning neural networks
+## Learning neural networks
 
 A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
 
@@ -618,7 +639,7 @@ Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mat
 </details>
 </MathBox>
 
-### Sample complexity
+## Sample complexity
 
 <MathBox title='' boxType='lemma' tag='lemma-1'>
 Let $a > 0$. Then
@@ -710,13 +731,13 @@ The claim follows from Lemma $\ref{lemma-2}$.
 
 Let $\sigma$ be a sigmoid activation function. The VC dimension of $\mathcal{H}_{V,E,\sigma}$ is lower bounded by $\Omega(|E|^2)$. That is, the VC dimension is the number of tunable parameters squared. It is also possible to upper bound the VC dimension by $O(|V|^2 |E|^2)$.
 
-### Runtime complexity
+## Runtime complexity
 
 <MathBox title='' boxType='theorem'>
 Let $k\geq 3$. For every $n\in\N$, let $(V,E)$ be a layered graph with $n$ input nodes, $k+1$ nodes at the (single) hidden layer, where one of them is the constant neuron, and a single output node. Then, it is NP hard to implement the ERM rule with respect to $\mathcal{H}_{V,E,\operatorname{sign}}$.
 </MathBox>
 
-### Stochastic gradient descent and backpropagation
+## Stochastic gradient descent and backpropagation
 
 Stochastic gradient descent can be used search for optimal weights for a hypothesis $\mathcal{H}_{V,E,\sigma}$. Since $E$ is a finite set, we can think of the weight function as a vector $\mathbf{w}\in\R^{|E|}$. Suppose the network has $n$ input neurons and $k$ output neurons, and denote by $h_\mathbf{w} \R^n \to\R^k$ he function calculated by the network if the weight function is defined by $\mathbf{w}$. Let us denote by $\Delta (h_\mathbf{w} (\mathbf{x}), \mathbf{y})$ the loss of predicting $h_\mathbf{w} (\mathbf{x})$ when the target is $\mathbf{y}\in Y$. For concreteness, we will take $\Delta$ to be the squared loss, $\Delta (h_\mathbf{w}(\mathbf{x}),\mathbf{y}) = \frac{1}{2}\norm{ h_\mathbf{w} (\mathbf{x}) - \mathbf{y}}^2$; however, similar derivation can be botained for every differentiable function. Finally, give a distribution $\mathcal{D}$ over the example domain, $\R^n \times\R^n$, let $L_\mathcal{D}(\mathbf{w})$ be the risk of the network, i.e.
 
@@ -833,7 +854,7 @@ $$
 3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
 </MathBox>
 
-#### Derivation of the backpropagation algorithm
+### Derivation of the backpropagation algorithm
 
 In this section we derive the backpropagation algorithm for training a feedforward neural netork (FFNN) using a quadratic cost function. The notation and methodology follow the framework established in [@book_nielsen_2015] and [@notes_smets_2024].
 
@@ -890,7 +911,7 @@ $$
   \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
 $$
 
-##### Gradient Computation
+#### Gradient Computation
 
 It remains to calculate the partial derivatives of the cost $C_n$ with respect to the bias and the weights. For any layer $\ell$, the partial derivative of $C_n$ with respect to a weight $w_{kj}^{(\ell)}$ is given by the chain rule
 
@@ -928,7 +949,7 @@ $$
 
 where $\eta$ is the learning rate.
 
-## Convolutional neural network (CNN)
+# Convolutional neural network (CNN)
 
 <MathBox title='Convolution on a finite group' boxType='definition'>
 Let $G$ be a finite group and denote by $\R^G := \set{f: G\to\R}$ the vector space of real-valued functions on $G$. For $f,g \in\R^G$ the convolution $f * g \in\R^G$ is defined by
@@ -1020,7 +1041,7 @@ where
 
 Each layer $k$ is characterized by convolutional weights $W_{k,n,m} \in \R^{c_{k,1} \times\cdots\times c_{k,T}}$ and biases $B_{k,n} \in\R$. A function $\Phi$ is a feedforward convolutional neural network if and only if $\Phi\in C$.
 
-### Realization of feedforward convolutional networks
+## Realization of feedforward convolutional networks
 
 <MathBox title='Identity tensor' boxType='defintion'>
 For $T\in\N_+$ and dimensions $d_1,\dots,d_T \in\N_+$, define the constant tensor 
