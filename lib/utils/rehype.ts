@@ -57,7 +57,7 @@ export function rehypeMathref(): Transformer<Root, Root> {
       if (!node.name || !mathElements.has(node.name)) return;
 
       const attributeMap = Object.fromEntries(
-        (node.attributes || [])
+        (node.attributes ?? [])
           .filter((attr) => "name" in attr && "value" in attr)
           // @ts-ignore
           .map((attr) => [attr.name, attr.value]),
@@ -87,19 +87,22 @@ export function rehypeMathref(): Transformer<Root, Root> {
         boxRefs[i].children = [{ type: "text", value: `${boxCount[boxType]}` }];
       }
 
-      if (boxType === "list") {
-        const ols = selectAll("ol[id]", node);
-        console.log(ols);
-        for (let i = 0; i < ols.length; i++) {
-          const olId = ols[i].properties.id;
-          const olRefs = selectAll(
-            `a[href="#${olId}"] > span.mord.text > span.mord`,
+      if (node.name === "MathBox" || node.name === "MathList") {
+        const olis = selectAll("ol > li", node);
+
+        for (let i = 0; i < olis.length; i++) {
+          const oliId = `${id}-${i + 1}`;
+          olis[i].properties ??= {};
+          olis[i].properties.id ??= oliId;
+
+          const oliRefs = selectAll(
+            `a[href="#${oliId}"] > span.mord.text > span.mord`,
             root,
           );
 
-          for (let j = 0; j < olRefs.length; j++) {
-            olRefs[j].children = [
-              { type: "text", value: `${boxCount["list"]}.${i + 1}` },
+          for (let j = 0; j < oliRefs.length; j++) {
+            oliRefs[j].children = [
+              { type: "text", value: `${boxCount[boxType]}.${i + 1}` },
             ];
           }
         }
@@ -111,8 +114,10 @@ export function rehypeMathref(): Transformer<Root, Root> {
 
 export function rehypeMathList(): Transformer<Root, Root> {
   return (root: Root) => {
+    const listElements = new Set(["MathBox", "MathList"]);
+
     visit(root, "mdxJsxFlowElement", (node) => {
-      if (!node.name || node.name !== "MathList") return;
+      if (!node.name || !listElements.has(node.name)) return;
 
       const attributeMap = Object.fromEntries(
         (node.attributes || [])

@@ -52,7 +52,6 @@ export function rehypePlugins(noCite: string[] = []) {
         },
       },
     ],
-    rehypeMathList,
     rehypeMathref,
     rehypeFancyLists,
     //[rehypeMathjax, {
