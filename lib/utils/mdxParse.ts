@@ -1,22 +1,22 @@
-import type { MDXRemoteSerializeResult } from "next-mdx-remote"
-import { serialize } from "next-mdx-remote/serialize"
+import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 //import { mystParser } from 'myst-parser'
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import rehypeCitation from "rehype-citation"
-import rehypeImgSize from "rehype-img-size"
-import rehypeKatex from "rehype-katex"
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeCitation from "rehype-citation";
+import rehypeImgSize from "rehype-img-size";
+import rehypeKatex from "rehype-katex";
 //import rehypeMathjax from 'rehype-mathjax/chtml'
-import rehypePrettyCode from "rehype-pretty-code"
-import rehypeSlug from "rehype-slug"
-import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
-import type { MDXPost } from "./types"
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import type { MDXPost } from "./types";
 //import toc from 'rehype-toc'
 //import sectionize from 'remark-sectionize'
 
-import { rehypeFancyLists, rehypeMathref } from "./rehype"
+import { rehypeFancyLists, rehypeMathref, rehypeMathList } from "./rehype";
 
-export const remarkPlugins = [remarkGfm, remarkMath]
+export const remarkPlugins = [remarkGfm, remarkMath];
 export function rehypePlugins(noCite: string[] = []) {
   return [
     rehypeSlug,
@@ -52,6 +52,7 @@ export function rehypePlugins(noCite: string[] = []) {
         },
       },
     ],
+    rehypeMathList,
     rehypeMathref,
     rehypeFancyLists,
     //[rehypeMathjax, {
@@ -67,7 +68,7 @@ export function rehypePlugins(noCite: string[] = []) {
     //    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
     //  }
     //}]
-  ]
+  ];
 }
 
 export async function serializeMDX<T>(
@@ -82,12 +83,12 @@ export async function serializeMDX<T>(
       // @ts-ignore
       rehypePlugins: rehypePlugins([]),
     },
-  })
+  });
   if (matter) {
-    const frontmatter = serialized.frontmatter as T
-    return { serialized, frontmatter }
+    const frontmatter = serialized.frontmatter as T;
+    return { serialized, frontmatter };
   }
-  return serialized
+  return serialized;
 }
 
 //export async function compileMDX(content: string) {

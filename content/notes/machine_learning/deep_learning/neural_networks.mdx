@@ -326,7 +326,7 @@ The structure of an FFNN $\boldsymbol{\Phi}\in\mathcal{N}$ is characterized by t
 - Number of layers: $\mathcal{L}(\boldsymbol{\Phi}) = L \in\N_+$
 - Input dimension: $\mathcal{I}(\boldsymbol{\Phi}) = d_0 (\boldsymbol{\Phi}) = \ell_0 \in\N_+$
 - Output dimension: $\mathcal{O}(\boldsymbol{\Phi}) = d_{\mathcal{L}(\boldsymbol{\Phi})} = \ell_L \in\N_+$
-- Number of hidden layers: $\mathcal{H}(\boldsymbol{\Phi}) = L - 1 \in\N_0$
+- Number of hidden layers: $\mathcal{H}(\boldsymbol{\Phi}) = \mathcal{L}(\boldsymbol{\Phi}) - 1 \in\N_0$
 - Total number of parameters: $\mathcal{P}(\boldsymbol{\Phi}) = \sum_{k=1}^L \ell_k (\ell_{k+1} + 1) \in\N_+$
 
 Let $a:\R\to\R$ be an activation function. The realization of an FFNN $\boldsymbol{\Phi} \in\mathcal{N}$ with activation $a$ is the function $\mathcal{F}_a^\mathcal{N}: \R^{\mathcal{I}(\boldsymbol{\Phi})} \to \R^{\mathcal{O}(\boldsymbol{\Phi})}$ defined recursively as follows.
@@ -467,375 +467,249 @@ That is, the input to $v_{t+1,j}$ is a weighted sum of the outpus of the neurons
 
 We refer to $T$ as the number of layers in the network (excluding $V_0$), or alternatively the *debth* of the network. The size of the network is denoted $|V|$ and the width of the netweek is $\max_{t\in T} |V|_t$.
 
-## Learning neural networks
+## Calculus
 
-A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
+### Composition
 
-$$
-  h_{V,E,\sigma,w} : \R^{|V_0|-1} \to \R^{|V_T|}
-$$
-
-Any set of such functions can serve as a hypothesis class for learning. Usually, we define a hypothesis class of neural network predictors by fixing the graph $(V,E)$ as well as the activation function $\sigma$ and letting the hypothesis class be all functions of the form $h_{V,E,\sigma,w}$ for some $w: E\to\R$. The triplet $(V,E,\sigma)$ is often called the *architecture* of the network. We denote the hypothesis class by $\mathcal{H}_{V,E,\sigma} = \Set{h_{V,E,\sigma,w} | w:E\to\R}$.
-
-<MathBox title='Neural networks implement all Boolean functions' boxType='proposition'>
-For every $n\in\N$, there exists a graph $(V,E)$ of depth $2$, such that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{\pm 1}^n$ to $\set{\pm 1}$.
-
-<details>
-<summary>Proof</summary>
-
-We construct a graph with $|V_0| = n + 1$, |V_1| = 2^n + 1 and $|V_2| = 1$. Let $E$ be all possible edges between adjacent layers. Consider a Boolean function $f:\set{\pm 1}^n \to\set{\pm 1}$. We need to show that we can adjust the weights so that the network will implement $f$. Let $\mathbf{u}_1,\dots,\mathbf{u}_k$ be all vectors in $\set{\pm 1}^n$ on $f$ which outputs $1$. Note that for every $i$ and every $\mathbf{x}\in\set{\pm 1}^n$, if $\mathbf{x}\neq\mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle\leq n - 2$ and if $\mathbf{x} = \mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle = n$. It follows that 
+<MathBox title='Compositions of fully-connected feedforward neural network' boxType='definition'>
+Let $\mathcal{N}$ denote the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For $\boldsymbol{\Phi}, \boldsymbol{\Psi} \in\mathcal{N}$, suppose the output dimension of $\boldsymbol{\Psi}$ coincides with the input dimension of $\boldsymbol{\Psi}$, i.e.
 
 $$
-  g_i (\mathbf{x}) = \operatorname{sign}(\langle\mathbf{x},\mathbf{u}_i\rangle - n + 1) = 1 \iff \mathbf{x} = \mathbf{n}
+  \mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Psi})
 $$
 
-Consequently, we can adapt the weights between $V_0$ and $V_1$ so that for every $i\in [k]$, the neuron $v_{1,i}$ implements the function $g_i$. Finally, note that $f$ is the disjunction of the functions $g_i$ allowing us to write
+Then the composition of $\boldsymbol{\Phi}$ and $\boldsymbol{\Psi}$ is defined as the mapping
 
 $$
-  f(\mathbf{x}) = \operatorname{sign}\left(\sum_{i=1}^k g_i (\mathbf{x}) + k -1 \right)
-$$
-</details>
-</MathBox>
-
-<MathBox title='' boxType='theorem'>
-For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all the functions from $\set{0,1}^n$ to $\set{0,1}$. Then, $s(n)$ is exponential in $n$. Similar results holds for $\mathcal{H}_{V, E, \sigma}$ where $\sigma$ is the sigmoid function.
-
-<details>
-<summary>Proof</summary>
-
-Suppose that for some $(V,E)$ we have that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{0,1}^n$ to $\set{0,1}$. It follows that it can shatter the set of $m = 2^n$ vectors in $\set{0,1}^n$ and hence the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is $2^n$. On the other hand, the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is bounded by $O(|E| \ln(|E|))\leqO(|V|^3)$. This implies that $|V|\geq\Omega(2^{n/3})$, which concludes the proof for the case with the sign activation function. The proof for the sigmoid case is analogous.
-</details>
-</MathBox>
-
-It is possible derive a similar theorem for $\mathcal{H}_{V, E, \operatorname{sign}}$ for any activation function $\sigma$, as long as we restict the weights so that it is possible to express every weight using a number of bits which is bounded by a universal constant. We can even consider hypothesis clases where different neurons can employ different activation functions, as long as the number of allowed activation functions is also finite.
-
-<MathBox title='' boxType='corollary'>
-Fix some $\epsilon\in(0,1)$. For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class $\mathcal{H}_{V,E,\sigma}$ with $\sigma$ being the sigmoid function, can approximate, to within precision of $\epsilon$, every $1$-Lipschitz function $f:[-1,1]^n \to[-1,1]$. Then $s(n)$ is exponential in $n$.
-</MathBox>
-
-<MathBox title='' boxType='theorem'>
-Let $T:\N\to\N$ and for every $n\in\N$, let $\mathcal{F}_n$ be the set of functions that can be implemented using a Turing maching with runtime of a most $T(n)$. Then, there exis constants $b, c\in\R_+$ such that for every $n$, there is a graph $(V_n, E_n)$ of size at most $cT(n)^2 + b$ such that $\mathcal{H}_{V_n, E_n, \operatorname{sign}}$ contains $\mathcal{F}_n$.
-</MathBox>
-
-<MathBox title='' boxType='lemma'>
-Suppose that a neuron $v$, that implements the sign activation function, has $k$ incoming edges, connecting it to neurons whose outputs are in $\set{\pm 1}$. Then, by adding one more edge, linking a constant neuron to $v$, and by adjusting the weights on the edges to $v$, the output of $v$ can implement the conjunction or the disjunction of its inputs.
-
-<details>
-<summary>Proof</summary>
-
-Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mathbf{x}) = \wedge_i x_i$, then it can be written as $f(\mathbf{x}) = \operatorname{sign}\left(1 - k + \sum_{i=1}^k x_i \right)$. Similarly, the disjunction function $f(\mathbf{x}) = \vee_i x_i$ can be written as $f(\mathbf{x}) = \operatorname{sign}\left(k - 1 + \sum_{i=1}^k x_i \right)$
-</details>
-</MathBox>
-
-## Sample complexity
-
-<MathBox title='' boxType='lemma' tag='lemma-1'>
-Let $a > 0$. Then
-
-$$
-  x \geq 2a \ln(a) \implies x \geq a\ln(x)
+\begin{gather*}
+  \circ : \set{(\boldsymbol{\Phi}, \boldsymbol{\Psi})\in \mathcal{N}^2 : \mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Psi})} \to\mathcal{N} \\
+  (\boldsymbol{\Phi}, \boldsymbol{\Psi}) \mapsto \boldsymbol{\Phi}\circ\boldsymbol{\Phi}
+\end{gather*}
 $$
 
-It follows that a necessary condition for the inequality $x < a\ln(x)$ to hold is that $x < 2a\ln(a)$.
-
-<details>
-<summary>Proof</summary>
-
-First note that for $a\in(0,\sqrt{e}]$ the inequality $x\geq a\ln(x)$ holds unconditionally and there the claim is trivial. Now, assume that $a > \sqrt{e}$. Consider the function $f(x) = x - a\ln(x)$. The derivative is $f'(x) = 1 - a/x$. Thus, for $x > a$ the derivative is positive and the function increases. In addition
-
-$$
-\begin{align*}
-  f(2a\ln(a)) =& 2a\ln(a) - a\ln(2a\ln(a)) \\
-  =& 2a\ln(a) - a\ln(a) - a\ln(2\ln(a)) \\
-  =& a\ln(a) - a\ln(2\ln(a))
-\end{align*}
-$$
-
-Since $a - 2\ln(a) > 0$ for all $a > 0$, the proof follows.
-</details>
-</MathBox>
-
-<MathBox title='' boxType='lemma' tag='lemma-2'>
-Let $a\geq 1$ and $b > 0$. Then
-
-$$
-  x \geq 4a \ln(2a) + 2b \implies x \geq a\ln(x) + b
-$$
-
-<details>
-<summary>Proof</summary>
-
-It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
-</details>
-</MathBox>
-
-<MathBox title='' boxType='theorem'>
-The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O[|E| \ln(|E|)]$.
-
-<details>
-<summary>Proof</summary>
-
-To simplify notation, let $\mathcal{H}$ denote the hypothesis class. Recall the growth function
-
-$$
-  \Pi_{\mathcal{H}}(m) = \max_{C\subset X:|C|=m} |\mathcal{H}_C|
-$$
-
-where $\mathcal{H}_C$ is the restriction of $\mathcal{H}$ to functions from $C$ to $\Set{0,1}$. We can naturally extend the definition for a set of functions from $X$ to som finite set $Y$, by letting $\mathcal{H}_C$ be the restriction of $\mathcal{H}$ to functions from $C$ to $Y$, and keeping the definition of $\Pi_\mathcal{H}(m)$ intact.
-
-Let $V_0,\dots,V_T$ be the layers of a neural network. Fix some $t\in[T]$. By assigning different weights on the edges between $V_{t-1}$ and $V_t$, we obtain different functions from $\R^{|V_{t-1}|} \to\set{\pm 1}^{|V_t|}$. Let $\mathcal{H}_t$ be the class of all possible mappings $\R^{|V_{t-1}|}\to\set{\pm 1}^{|V_t|}$. Then $\mathcal{H}$ can be written as a composition $\mathcal{H} = \mathcal{H}_T \circ\cdots\circ\mathcal{H}_1$. Since the growth function of a composition of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
-
-$$
-  \Pi_\mathcal{H} (m) \leq \prod_{t=1}^T \Pi_{\mathcal{H}_t} (m)
-$$
-
-In addition, each $\mathcal{H}_t$ can be written as a product of function classes, $\mathcal{H}_t = \mathcal{H}_{t,1} \times\cdots\times \mathcal{H}_{t,|V_t|}$, where each $\mathcal{H}_{t,j}$ is all function from layer $t - 1$ to $\set{\pm 1}$ that the $j$th neuron of layer $t$ can implement. Since the growth function of a product of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
-
-$$
-  \Pi_{\mathcal{H}_t} (m) \leq \prod_{i=1}^{|V_t|} \Pi_{\mathcal{H}_{t,i}} (m)
-$$
-
-Let $d_{t,i}$ be the number of edges that are headed to the $i$th neuron of layer $t$. Since the neuron is a homogenous halfspace hypothesis and the VC dimension of homogenous halfspaces is the dimension of the input, we have by Sauer's lemma that
-
-$$
-  \Pi_{\mathcal{H}_{t,i}} (m) \leq \left( \frac{em}{d_{t,i}} \right)^{d_{t,i}} leq (em)^{d_{t,i}}
-$$
-
-Overall, we obtained that
-
-$$
-  \Pi_{\mathcal{H}} (m) \leq (em)^{\sum_{t,i}} d_{t,i} = (em)^{|E|}
-$$
-
-Now, assume that there are $m$ shattered points. Then, we must have $\Pi_\mathcal{H} (m) = 2^m$, from which we obtain
-
-$$
-  2^m \leq (em)^{|E|} \implies m \leq |E| \ln(em) / \ln(2)
-$$
-
-The claim follows from Lemma $\ref{lemma-2}$.
-</details>
-</MathBox>
-
-Let $\sigma$ be a sigmoid activation function. The VC dimension of $\mathcal{H}_{V,E,\sigma}$ is lower bounded by $\Omega(|E|^2)$. That is, the VC dimension is the number of tunable parameters squared. It is also possible to upper bound the VC dimension by $O(|V|^2 |E|^2)$.
-
-## Runtime complexity
-
-<MathBox title='' boxType='theorem'>
-Let $k\geq 3$. For every $n\in\N$, let $(V,E)$ be a layered graph with $n$ input nodes, $k+1$ nodes at the (single) hidden layer, where one of them is the constant neuron, and a single output node. Then, it is NP hard to implement the ERM rule with respect to $\mathcal{H}_{V,E,\operatorname{sign}}$.
-</MathBox>
-
-## Stochastic gradient descent and backpropagation
-
-Stochastic gradient descent can be used search for optimal weights for a hypothesis $\mathcal{H}_{V,E,\sigma}$. Since $E$ is a finite set, we can think of the weight function as a vector $\mathbf{w}\in\R^{|E|}$. Suppose the network has $n$ input neurons and $k$ output neurons, and denote by $h_\mathbf{w} \R^n \to\R^k$ he function calculated by the network if the weight function is defined by $\mathbf{w}$. Let us denote by $\Delta (h_\mathbf{w} (\mathbf{x}), \mathbf{y})$ the loss of predicting $h_\mathbf{w} (\mathbf{x})$ when the target is $\mathbf{y}\in Y$. For concreteness, we will take $\Delta$ to be the squared loss, $\Delta (h_\mathbf{w}(\mathbf{x}),\mathbf{y}) = \frac{1}{2}\norm{ h_\mathbf{w} (\mathbf{x}) - \mathbf{y}}^2$; however, similar derivation can be botained for every differentiable function. Finally, give a distribution $\mathcal{D}$ over the example domain, $\R^n \times\R^n$, let $L_\mathcal{D}(\mathbf{w})$ be the risk of the network, i.e.
-
-$$
-  L_\mathcal{D} (\mathbf{w}) = \mathbb{E}_{(\mathbf{x},\mathbf{y})\sim\mathcal{D}} [\Delta(h_\mathbf{w}(\mathbf{x}, \mathbf{y}))]
-$$
-
-The gradient of $L_\mathcal{D}$, which does not have an analytical form, is calculated using the backpropagation algorithm.
-
-To describe the backpropagation algorithm, let us decompose $V$ into the layers of the graph, $V = \bigcup_{t=0}^T$. For every $t$, let us write $V_t = \set{v_{t,1},\dots,v_{t, k_t}}$, where $k_t = |V_t|$. In addition, for every $t$ denote $\mathbf{W}_t \in \R^{k_{t+1} \times k_t}$ a matrix which gives a weight to every potential edge between $V_t$ and $V_{t+1}$. If the edge exists in $E$ then set $\mathbf{W}_{t;i,j}$ to be the weight, according to $\mathbf{w}$, of the edge $(v_{t,j}, v_{t+1, i})$. Otherwise, we add a "phantom" edge and set its weight to zero. When calculating the partial derivative with respect to the weight of some edge, we fix all other weights. Thus, these additional "phantom" edges have no effect on the partial derivatives with respect to existing edges. It follows that we can assume, without loss of generality, that all edges exist, i.e. $E = \bigcup_t (V_t \times V_{t+1})$.
-
-Next we discuss how to calculate the partial derivatives with respect to the edges from $V_{t-1}$ to $V_t$, that is, with respect to the elements in $\mathbf{W}_{t-1}$. Since we fix all other weights of the network, it follows that the outputs of all the neurons in $V_{t-1}$ are fixed numbers which do not depend on the weights in $\mathbf{W}_{t-1}$. Denote the corresponding vector by $\mathbf{o}_{t-1}$. Additionally, let us denote by $\ell_t : \R^{k_t} \to\R$ the loss function of the subnetwork defined by layers $V_t,\dots,V_T$ as a function of the outputs of the neurons in $V_t$. The input to the neurons of $V_t$ can be written as $\mathbf{a}_t = \mathbf{W}_{t-1} \mathbf{o}_{t-1}$ and the output of the neurons of $V_t$ is $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{a}_t)$. That is, for every $j$ we have $o_{t,j} = \sigma(a_{t,j})$. We obtain that the loss, as a function of $\mathbf{W}_{t-1}$, can be written as
-
-$$
-  g_t (\mathbf{W}_{t-1}) = \ell_t (\mathbf{o}_t) = \ell_t (\boldsymbol{\sigma}(\mathbf{a}_t)) = \ell_t (\boldsymbol{\sigma(\mathbf{W}_{t-1} \mathbf{o}_{t-1})})
-$$
-
-For convenience, we rewrite this as follows. Let $\mathbf{w}_{t-1} \in\R^{k_{t-1}k_t}$ be the column vector obtained by concatenating the rows of $\mathbf{W}_t$ and then taking the transpose of the resulting long vector. Define by $\mathbf{O}_{t-1}$ the $k_t \times (k_{t-1} k_t)$ matrix
-
-$$
-  \mathbf{O}_{t-1} = \begin{bmatrix}
-    \mathbf{o}_{t-1}^\top & \mathbf{0} & \cdots & \mathbf{0} \\
-    \mathbf{0} & \mathbf{o}_{t-1}^\top & \cdots & \mathbf{0} \\
-    \vdots & \vdots & \ddots & \vdots \\
-    \mathbf{0} & \mathbf{0} & \cdots & \mathbf{o}_{t-1}^\top
-  \end{bmatrix}
-$$
-
-With this notation we get $\mathbf{W}_{t-1} \mathbf{o}_{t-1} = \mathbf{O}_{t-1}\mathbf{w}_{t-1}$, so we can also write
-
-$$
-  g_t (\mathbf{w}_{t-1}) = \ell_t (\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1}))
-$$
-
-Therefore, applying the chain rule, we obtain that
-
-$$
-  J_{\mathbf{w}_{t-1}}(g_t) = J_{\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1})} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{O}_{t-1}\mathbf{w}_{t-1}))\mathbf{O}_{t-1}
-$$
-
-Using our nation we have $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{O}_{t-1}\mathbf{w}_{t-1})$ and $\mathbf{a}_t = \mathbf{O}_{t-1} \mathbf{w}_{t-1}$, which yields
-
-$$
-  J_{\mathbf{w}_{t-1}} (g_t) = J_{\mathbf{o}_t} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_t))\mathbf{O}_{t-1}
-$$
-
-Let us denote $\boldsymbol{\delta}_t = \mathbf{J}_{\mathbf{o}_t} (\ell_t)$. Then, we can further rewrite the preceding as
-
-$$
-  J_{\mathbf{w}_{t-1}}(g_t) = (\delta_{t,1} \sigma'(a_{t,1})\mathbf{o}_{t-1}^\top,\dots, \delta_{t,k_t} \sigma'(a_{t, k_t}))\mathbf{o}_{t-1}^\top
-$$
-
-It remains to calculate the vector $\boldsymbol{\delta}_t = J_{\mathbf{o}_t}(\ell_t)$ for every $t$. This is the gradient of $\ell_t$ at $\mathbf{o}_t$. We calculate this in a recursive manner. First observe that for the last layer, we have that $\ell_T (\mathbf{u}) = \Delta(\mathbf{u},\mathbf{y})$, where $\Delta$ is the loss function. Since we assume $\Delta (\mathbf{u},\mathbf{y}) = \frac{1}{2}\norm{\mathbf{u} - \mathbf{y}}^2$ we obtain that $J_\mathbf{u}(\ell_T) = (\mathbf{u} - \mathbf{y})$. In particular, $\boldsymbol{\delta}_T = J_{\mathbf{o}_T}(\ell_T) = (\mathbf{o}_T - \mathbf{y})$. Next, note that
-
-$$
-  \ell_t (\mathbf{u}) = \ell_{t+1}(\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u}))
-$$
-
-Thus, by the chain rule
-
-$$
-  J_\mathbf{u} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u})} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{u}))\mathbf{W}_t
-$$
-
-In particular
-
-$$
-\begin{align*}
-  \boldsymbol{\delta}_t =& J_{\mathbf{o}_t} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{o}_t)} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{o}_t))\mathbf{W}_t \\
-  =& J_{\mathbf{o}_{t+1}} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{a}_{t+1}))\mathbf{W}_t \\
-  =& \boldsymbol{\delta}_{t+1} \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_{t+1}))\mathbf{W}_t
-\end{align*}
-$$
-
-<MathBox title='Stochastic gradient on feedforward neural networks' boxType='algorithm'>
-**parameters:**
-- number of iterations $\tau$
-- step size scheduler $\eta(t)$
-- regularization parameter $\lambda > 0$
-
-**input:**
-- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
-- layered graph $(V,E)$
-- differentiable activation function $\sigma:\R\to\R$
-
-**initialize:**
-- choose $\mathbf{w}_0 \in\R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
-
-**for** $i=1,\dots,\tau$
-1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
-2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
-4. calculate learning step $\eta_i = \eta(i)$
-3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
-</MathBox>
-
-<MathBox title='Backpropagation' boxType='algorithm'>
-**parameters:**
-- number of iterations $\tau$
-- step size scheduler $\eta(t)$
-- regularization parameter $\lambda > 0$
-
-**input:**
-- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
-- layered graph $(V,E)$
-- differentiable activation function $\sigma:\R\to\R$
-
-**initialize:**
-- choose $\mathbf{w}_0 \in \R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
-
-**for** $i=1,\dots,\tau$
-1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
-2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
-4. calculate learning step $\eta_i = \eta(i)$
-3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
-</MathBox>
-
-### Derivation of the backpropagation algorithm
-
-In this section we derive the backpropagation algorithm for training a feedforward neural netork (FFNN) using a quadratic cost function. The notation and methodology follow the framework established in [@book_nielsen_2015] and [@notes_smets_2024].
-
-Suppose we have a training set $\set{(\mathbf{x}_n, \mathbf{y}_n) | \mathbf{x}\in\mathbb{F}^{n_0}, \mathbb{F}^{n_{L+1}}}_{n=1}^N$ of $N\in\N$ samples. We are interested in minimizing the mean squared error given by
+The composed network $\boldsymbol{\Phi}\circ\boldsymbol{\Phi}$ has depth
 
 $$
 \begin{equation*}
-  C(\mathbf{W}, \mathbf{b}) = \frac{1}{2N} \sum_{n=1}^N \lVert \hat{\mathbf{y}}_n - \mathbf{y} \rVert^2
-\tag{\label{equation-1}}
+  \mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = \mathcal{L}(\boldsymbol{\Phi}) + \mathcal{L}(\boldsymbol{\Psi}) - 1
+\tag{\label{equation-6}}
 \end{equation*}
 $$
 
-where $\hat{\mathbf{y}} = \mathbf{a}^{(L+1)} = \sigma(\mathbf{z}^{(L+1)})$ is the output of FFNN for the $n$th input. The cost of training example $n$, given by
+reflecting the merging of the output layer of $\boldsymbol{\Psi}$ with the input layer of $\boldsymbol{\Phi}$. For each layer $k\in\set{1,\dots,\mathcal{L}(\boldsymbol{\Phi}) + \mathcal{L}(\boldsymbol{\Psi}) - 1}$, the composed weight-bias pair is given by
 
 $$
-  C_n (\mathbf{W}, \mathbf{b}) = \frac{1}{2} \lVert \mathbf{a}^{(L+1)} - \mathbf{y}_n \rVert^2 = \frac{1}{2} \sum_{j=1}^{n_{L+1}} (a_j^{(L+1)} - y_n)^2
+\begin{equation*}
+  (\mathcal{W}_{k, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}, \mathcal{B}_{k, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}) = \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Psi}}, \mathcal{B}_{k, \boldsymbol{\Psi}}),\quad& k < \mathcal{L}(\boldsymbol{\Psi}) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}}, \mathcal{W}_{1, \boldsymbol{\Phi}} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} + \mathcal{B}_{1, \boldsymbol{\Psi}}),\quad& k = \mathcal{L}(\boldsymbol{\Psi}) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Psi}) + 1, \boldsymbol{\Phi}}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Psi}) + 1, \boldsymbol{\Phi}}),\quad& k > \mathcal{L}(\boldsymbol{\Psi}) \\
+  \end{cases}
+\tag{\label{equation-8}}
+\end{equation*}
 $$
+</MathBox>
 
-To derive the backpropagation equations, we need to calculate the partial derivatives of $C_n$ with respect to the bias and the weights. From $\eqref{equation-}$, we obtain the partial derivatives
+<MathBox title='Properties of compositions of fully-connected feedforward neural network' boxType='proposition'>
+Let $\mathcal{N}$ denote the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. If $\boldsymbol{\Phi}, \boldsymbol{\Psi} \in\mathcal{N}$ satisfy the compatibility condition $\mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Psi})$, the composed network $\boldsymbol{\Phi}\circ\boldsymbol{\Psi}$ satisfies the following properties.
 
-$$
-  \frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}} = a_k^{(\ell - 1)},\quad
-  \frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}} = 1,\quad
-  \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} = \sigma'_{\ell}(\mathbf{z}_j^{\ell})
-$$
+---
+1. Dimension vector
 
-We also define the error $\delta_j^{(\ell)}$ for neuron $j$ in layer $\ell$ by 
-
-$$
-  \delta_j^{(\ell)} := \frac{\partial C_n}{\partial z_j^{(\ell)}} = \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{(\ell)}} = \sigma'_\ell (z_j^{(\ell)}) \frac{\partial C_n}{\partial a_j^{(\ell)}} 
-$$
-
-In matrix form, this can be written as
-
-$$
-  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)})
-$$
-
-where $\odot$ denotes the Hadamard (elementwise) product. For the output layer $\ell = L + 1$ we find from $\eqref{equation-1}$, that $\nabla_{\mathbf{a}^{(L+1)}} C_n = \mathbf{a}^{(L)} - \mathbf{y}_n$ leading to the output error
+Each layer $k = 0,\dots, \mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi})$ has dimension
 
 $$
-  \boldsymbol{\delta}^{(L)} = (\mathbf{a}^{(L)} - \mathbf{y}_n) \odot \sigma'_{L+1} (\mathbf{z}^{(L)})
+  \mathbf{d}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = \begin{cases}
+    d_k (\boldsymbol{\Psi}),\quad& k \leq \mathcal{H}(\boldsymbol{\Psi}) \\
+    d_{k - \mathcal{L}(\boldsymbol{\Psi}) + 1} (\boldsymbol{\Phi}),\quad& k > \mathcal{H}(\boldsymbol{\Psi}) 
+  \end{cases}
 $$
 
-For any hidden layer $\ell < L + 1$, the partial derivative of $C_n$ with respect to an activation $a_k^{(\ell)}$ is found by summing up the errors $\delta_j^{(\ell + 1)}$ of the next layer $\ell + 1$, i.e.,
+---
+2. Depth
 
 $$
-  \frac{\partial C_n}{\partial a_k^{(\ell)}} = \sum_{j=1}^{n_{\ell+1}} \underbrace{\frac{\partial z_j^{(\ell + 1)}}{\partial a_k^{(\ell)}}}_{=w_{kj}^{(\ell+1)}} \underbrace{\frac{\partial a_j^{(\ell + 1)}}{\partial z_j^{(\ell+1)}} \frac{\partial C_n}{\partial a_j^{(\ell+1)}}}_{=\delta_j^{(\ell+1)}} = \sum_{j=1}^{n_{\ell+1}} w_{kj}^{(\ell + 1)} \delta_{j}^{(\ell+1)}.
+  |\mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) - 1| = |\mathcal{L}(\boldsymbol{\Phi}) - 1| + |\mathcal{L}(\boldsymbol{\Psi}) - 1|
 $$
 
-In matrix form this can be expressed as $\nabla_{\mathbf{a}^{(\ell)}} C_n = (\mathbf{W}^{(\ell+1)})^\top \boldsymbol{\delta}^{(\ell+1)}$. Thus, for any hidden layer $\ell < L + 1$, the error $\boldsymbol{\delta}^{(\ell)}$ can be expressed as
+---
+3. Hidden layers
+
+Since $\mathcal{H}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = \mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) - 1$ it follows that
 
 $$
-  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
+  \mathcal{H}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = \mathcal{H}(\boldsymbol{\Phi}) + \mathcal{H}(\boldsymbol{\Psi})
 $$
 
-#### Gradient Computation
-
-It remains to calculate the partial derivatives of the cost $C_n$ with respect to the bias and the weights. For any layer $\ell$, the partial derivative of $C_n$ with respect to a weight $w_{kj}^{(\ell)}$ is given by the chain rule
-
-$$
-  \frac{\partial C_n}{\partial w_{kj}^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}}}_{=a_k^{(\ell-1)}} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = a_k^{(\ell-1)} \delta_j^{(\ell)}
-$$
-
-Likewise, the partial derivative of $C_n$ with respect a bias $b_j^{(\ell)}$ is given by
-
-$$
-  \frac{\partial C_n}{\partial b_j^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}}}_{=1} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = \delta_j^{(\ell)}
-$$
-
-The backpropagation algorithm can be summed up as follows:
-- **Find the output error:** Calculate the output error $\boldsymbol{\delta}^{(L+1)}$ using the gradient of the cost with respect to the activations:
-
-$$
-  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)}).
-$$
-
-- **Backpropagate the errors:** For each layer $\ell = L,L-1,\dots,1$ calculate the error $\boldsymbol{\delta}^{(\ell)}$ using
-
-$$
-  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
-$$
-
-- **Update weights and biases:** For each layer $\ell = L,L-1,\dots,1$ adjust the biases $\mathbf{b}^{(\ell)}$ and weights $\mathbf{W}^{(\ell)}$ according to the updates
+---
+4. Number of parameters:
 
 $$
 \begin{align*}
-  \hat{w}_{jk}^{(\ell)} =& w_{jk}^{(\ell)} - \eta \delta_j^{(\ell)} a_k^{(\ell - 1)} \\
-  \hat{b}_j^{(\ell)} =& b_j^{(\ell)} - \eta \delta_j^{(\ell)},
+  \mathcal{P}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) =& \mathcal{P}(\boldsymbol{\Phi}) + \mathcal{P}(\boldsymbol{\Psi}) \\
+  &+ d_1 (\boldsymbol{\Phi})\left[d_{\mathcal{L}(\boldsymbol{\Psi}) - 1}(\boldsymbol{\Psi}) + 1 \right] \\
+  &- d_1 (\boldsymbol{\Phi})\left[d_0 (\boldsymbol{\Phi}) + 1 \right] \\
+  &- d_{\mathcal{L}(\boldsymbol{\Psi})} (\boldsymbol{\Psi}) \left[d_{\mathcal{L}(\boldsymbol{\Psi}) - 1} (\boldsymbol{\Psi}) + 1 \right] \\
+  \leq& \mathcal{P}(\boldsymbol{\Phi}) + \mathcal{P}(\boldsymbol{\Psi}) + d_1 (\boldsymbol{\Phi}) d_{\mathcal{H}(\boldsymbol{\Psi})} (\boldsymbol{\Psi})
 \end{align*}
 $$
 
-where $\eta$ is the learning rate.
+---
+5. Realization and continuity
+
+For all continuous activation functions $a\in C(\R)$, the composed realization $\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Psi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is continuous and
+
+$$
+  \mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = [\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi})] \circ [\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Psi})]
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $L = \mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi})$ be the number of layers in the composed network. For a fixed continuous activation function $a\in C(\R)$ define the set all forward-propagation sequences
+
+$$
+  X_a = \Set{\mathbf{x} = (\mathbf{x}_k)_{k=1}^L \in \prod_{k=1}^L \R^{d_k (\boldsymbol{\Phi}\circ\boldsymbol{\Psi})} | \mathbf{x}_k = \mathbf{M}_{\sigma_k, d_k (\boldsymbol{\Phi}\circ\boldsymbol{\Psi})} (\mathcal{W}_{k, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}} \mathbf{x}_{k-1} + \mathcal{B}_{k, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}})}
+$$
+
+where
+
+$$
+  \sigma_k = \begin{cases}
+    a,\quad k < L \\
+    \operatorname{id}_\R, \quad& k = L
+  \end{cases}
+$$
+
+---
+**(1)**: This follows from 
+
+$$
+\begin{equation*}
+  \mathcal{H}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = \mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) - 1
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+and the fact that for each $k\in\set{1,\dots,L}$ we have
+
+$$
+  \mathcal{W}_{k, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}} = \begin{cases}
+    \R^{d_k (\boldsymbol{\Psi}) \times d_{k-1} (\boldsymbol{\Psi})},\quad& k < \mathcal{L}(\boldsymbol{\Psi}) \\
+    \R^{d_1 (\boldsymbol{\Phi}) \times d_{\mathcal{L}(\boldsymbol{\Psi}) - 1} (\boldsymbol{\Psi})},\quad& k = \mathcal{L}(\Psi) \\
+    \R^{d_{k - \mathcal{L}(\boldsymbol{\Psi}) + 1} (\boldsymbol{\Phi}) \times d_{k - \mathcal{L}(\boldsymbol{\Psi})}(\boldsymbol{\Phi})},\quad& k > \mathcal{L}(\boldsymbol{\Psi})
+  \end{cases}
+$$
+
+---
+**(2)** & **(3)**: This follows from $\eqref{equation-6}$ and $\eqref{equation-7}$.
+
+---
+**(4)**: From **(1)**, we have that
+
+$$
+\begin{align*}
+  \mathcal{P}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) =& \sum_{j=1}^L d_j (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) [d_{j-1} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) + 1] \\
+  =& \left(\sum_{j=1}^{\mathcal{H}(\boldsymbol{\Psi})} d_j (\boldsymbol{\Psi}) [d_{j-1} (\boldsymbol{\Psi}) + 1] \right) + d_1 (\boldsymbol{\Phi})[d_{\mathcal{H}(\boldsymbol{\Psi})} (\boldsymbol{\Psi}) + 1] \\
+  &+ \left(\sum_{j=\mathcal{L}(\boldsymbol{\Psi}) + 1}^L d_{j - \mathcal{L}(\boldsymbol{\Psi}) + 1} (\boldsymbol{\Phi}) [d_{j - \mathcal{L} (\boldsymbol{\Psi})} (\boldsymbol{\Phi}) + 1] \right) \\
+  =& \left(\sum_{j=1}^{\mathcal{L}(\boldsymbol{\Psi}) - 1} d_j (\boldsymbol{\Psi}) [d_{j-1} (\boldsymbol{\Psi}) + 1] \right) + d_1 (\boldsymbol{\Phi})[d_{\mathcal{H}(\boldsymbol{\Psi})} (\boldsymbol{\Psi}) + 1] \\
+  &+ \left(\sum_{j=2}^{\mathcal{L}(\boldsymbol{\Phi})} d_j (\boldsymbol{\Phi}) [d_{j-1} (\boldsymbol{\Phi}) + 1] \right) \\
+  =& \left(\mathcal{P}(\boldsymbol{\Psi}) - d_{\mathcal{L}(\boldsymbol{\Psi})} (\boldsymbol{\Psi})[d_{\mathcal{L}(\boldsymbol{\Psi}) - 1} (\boldsymbol{\Psi}) + 1] \right) + d_1 (\boldsymbol{\Phi}) [d_{\mathcal{H}(\boldsymbol{\Psi})} (\boldsymbol{\Psi} + 1)] \\
+  &+ \left(\mathcal{P}(\boldsymbol{\Phhi}) - d_1 (\boldsymbol{\Psi}) [d_0 (\boldsymbol{\Phi}) + 1]\right)
+\end{align*}
+$$
+
+---
+**(5)**: From **(1)** we obtain the input dimension
+
+$$
+  \mathcal{I}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = d_0 (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = d_0 (\boldsymbol{\Psi}) = \mathcal{I}(\boldsymbol{\Psi})
+$$
+
+and the output dimension
+
+$$
+\begin{align*}
+  \mathcal{O}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) =& d_{\mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi})} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) \\
+  =& d_{\mathcal{L}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) - \mathcal{L}(\boldsymbol{\Psi}) + 1}(\boldsymbol{\Phi}) \\
+  =& d_{\mathcal{L}(\boldsymbol{\Phi})} (\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Phi})
+\end{align*}
+$$
+
+Consequently, for every continuous activation function $a\in C(\R)$
+
+$$
+\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi})}, \R^{\mathcal{O}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi})}) = C(\R^{\mathcal{I}(\boldsymbol{\Psi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})
+$$
+
+*Step 1: Layers inherited from $\boldsymbol{\Phi}$*
+
+From $\eqref{equation-8}$ the composed weight-bias pairs inherited from $\boldsymbol{\Phi}$ satisfy for $k = 1,\dots,\mathcal{L}(\boldsymbol{\Phi}) + 1$
+
+$$
+  (\mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 1, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}, \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 1, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}) = (\mathcal{W}_{k,\boldsymbol{\Phi}}, \mathcal{B}_{k,\boldsymbol{\Phi}})
+$$
+
+Together with **(1)** this implies that for each $k = 2,\dots,\mathcal{L}(\boldsymbol{\Phi})$
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) + 1} =& \mathbf{M}_{a\mathbf{1}_{(0,L)} (\mathcal{L}(\boldsymbol{\Psi}) + k - 1) + \operatorname{id}_\R \mathbf{1}_{\set{L}} (\mathcal{L}(\boldsymbol{\Psi}) + k - 1), d_k (\boldsymbol{\Phi})} (\mathcal{W}_{k, \boldsymbol{\Phi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 2} + \mathcal{B}_{k, \boldsymbol{\Phi}}) \\
+  =& \mathbf{M}_{a\mathbf{1}_{(0,\mathcal{L}(\boldsymbol{\Phi}))} (k) + \operatorname{id}_\R \mathbf{1}_{\set{\mathcal{L}(\boldsymbol{\Phi})}} (k), d_k (\boldsymbol{\Phi})} (\mathcal{W}_{k, \boldsymbol{\Phi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 2} + \mathcal{B}_{k, \boldsymbol{\Phi}})
+\end{split}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+*Step 2: Interface layer*
+
+At the interface index $k = \mathcal{L}(\boldsymbol{\Psi})$, we have again from $\eqref{equation-8}$ and **(1)** that
+
+$$
+\begin{align*}
+  \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi})} =& \mathbf{M}_{a\mathbf{1}_{(0,L)} (\mathcal{L}(\boldsymbol{\Psi})) + \operatorname{id}_\R \mathbf{1}_{\set{L}} (\mathcal{L}(\boldsymbol{\Psi})), d_{\mathcal{L}(\boldsymbol{\Psi})} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi})} (\mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Phi}\circ\boldsymbol{\Psi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) - 1} + \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}) \\
+  =& \mathbf{M}_{a\mathbf{1}_{(0,\mathcal{L}(\boldsymbol{\Phi}))} (1) + \operatorname{id}_\R \mathbf{1}_{\set{\mathcal{L}(\boldsymbol{\Phi})}} (1), d_1 (\boldsymbol{\Phi})} (\mathcal{W}_{1, \boldsymbol{\Phi}} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) - 1} + \mathcal{W}_{1, \boldsymbol{\Phi}}\mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} + \mathcal{B}_{1,\boldsymbol{\Phi}}) \\
+  =& \mathbf{M}_{a\mathbf{1}_{(0,\mathcal{L}(\boldsymbol{\Phi}))} (1) + \operatorname{id}_\R \mathbf{1}_{\set{\mathcal{L}(\boldsymbol{\Phi})}} (1), d_1 (\boldsymbol{\Phi})} (\mathcal{W}_{1, \boldsymbol{\Phi}} (\mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) - 1} + \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}}) + \mathcal{B}_{1,\boldsymbol{\Phi}})
+\end{align*}
+$$
+
+Together with $\eqref{equation-9}$ this shows that
+
+$$
+\begin{equation*}
+  (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi})) (\mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) - 1} + \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}}) = \mathbf{x}_L
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+*Step 3: Layers inherited from $\boldsymbol{\Psi}$*
+
+From $\eqref{equation-8}$ and **(1)**, it follows that for $k = 0,\dots, \mathcal{L}(\boldsymbol{\Psi})$
+
+$$
+  \mathbf{x}_k = \mathbf{M}_{a, d_k (\boldsymbol{\Psi})} (\mathcal{W}_{k, \boldsymbol{\Psi}} \mathbf{x}_{k-1} + \mathcal{B}_{k,\boldsymbol{\Psi}})
+$$
+
+This shows that for all $a\in C(\R)$ and $\mathbf{x}\in X_a$
+
+$$
+  (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Psi}))(\mathbf{x}_0) = \mathbf{W}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}} \mathbf{x}_{\mathcal{L}(\boldsymbol{\Psi}) - 1} + \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}), \boldsymbol{\Psi}}
+$$
+
+Combining this with $\eqref{equation-10}$ proves that for all $a\in C(\R)$ and $\mathbf{x}\in X_a$
+
+$$
+  (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))\left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Psi}))(\mathbf{x}_0) \right) = \mathbf{x}_L = (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}))(\mathbf{x}_0)
+$$
+</details>
+</MathBox>
+
+### Parallelization
+
+### Scalar multiplication
+
+### Sum
 
 # Convolutional neural network (CNN)
 
@@ -1298,3 +1172,373 @@ where $K\subset\R$ is compact.
 </MathBox>
 
 Theorem $\ref{theorem-3}$ shows that two-layer neural networks with smooth, non-polynomial activations achieve the same optimal approximation rates $O(n^{-k/d})$ for $W^{k,p}$-smooth functions on $(0,1)^d$ as classical methods such as spline bases or piecewise polynomial approximation. In general, many approximation schemes can be emulated by neural networks without loss of convergence rate.
+
+## Learning neural networks
+
+A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
+
+$$
+  h_{V,E,\sigma,w} : \R^{|V_0|-1} \to \R^{|V_T|}
+$$
+
+Any set of such functions can serve as a hypothesis class for learning. Usually, we define a hypothesis class of neural network predictors by fixing the graph $(V,E)$ as well as the activation function $\sigma$ and letting the hypothesis class be all functions of the form $h_{V,E,\sigma,w}$ for some $w: E\to\R$. The triplet $(V,E,\sigma)$ is often called the *architecture* of the network. We denote the hypothesis class by $\mathcal{H}_{V,E,\sigma} = \Set{h_{V,E,\sigma,w} | w:E\to\R}$.
+
+<MathBox title='Neural networks implement all Boolean functions' boxType='proposition'>
+For every $n\in\N$, there exists a graph $(V,E)$ of depth $2$, such that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{\pm 1}^n$ to $\set{\pm 1}$.
+
+<details>
+<summary>Proof</summary>
+
+We construct a graph with $|V_0| = n + 1$, |V_1| = 2^n + 1 and $|V_2| = 1$. Let $E$ be all possible edges between adjacent layers. Consider a Boolean function $f:\set{\pm 1}^n \to\set{\pm 1}$. We need to show that we can adjust the weights so that the network will implement $f$. Let $\mathbf{u}_1,\dots,\mathbf{u}_k$ be all vectors in $\set{\pm 1}^n$ on $f$ which outputs $1$. Note that for every $i$ and every $\mathbf{x}\in\set{\pm 1}^n$, if $\mathbf{x}\neq\mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle\leq n - 2$ and if $\mathbf{x} = \mathbf{u}_i$, then $\langle\mathbf{x},\mathbf{u}_i \rangle = n$. It follows that 
+
+$$
+  g_i (\mathbf{x}) = \operatorname{sign}(\langle\mathbf{x},\mathbf{u}_i\rangle - n + 1) = 1 \iff \mathbf{x} = \mathbf{n}
+$$
+
+Consequently, we can adapt the weights between $V_0$ and $V_1$ so that for every $i\in [k]$, the neuron $v_{1,i}$ implements the function $g_i$. Finally, note that $f$ is the disjunction of the functions $g_i$ allowing us to write
+
+$$
+  f(\mathbf{x}) = \operatorname{sign}\left(\sum_{i=1}^k g_i (\mathbf{x}) + k -1 \right)
+$$
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all the functions from $\set{0,1}^n$ to $\set{0,1}$. Then, $s(n)$ is exponential in $n$. Similar results holds for $\mathcal{H}_{V, E, \sigma}$ where $\sigma$ is the sigmoid function.
+
+<details>
+<summary>Proof</summary>
+
+Suppose that for some $(V,E)$ we have that $\mathcal{H}_{V, E, \operatorname{sign}}$ contains all functions from $\set{0,1}^n$ to $\set{0,1}$. It follows that it can shatter the set of $m = 2^n$ vectors in $\set{0,1}^n$ and hence the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is $2^n$. On the other hand, the VC dimension of $\mathcal{H}_{V, E, \operatorname{sign}}$ is bounded by $O(|E| \ln(|E|))\leqO(|V|^3)$. This implies that $|V|\geq\Omega(2^{n/3})$, which concludes the proof for the case with the sign activation function. The proof for the sigmoid case is analogous.
+</details>
+</MathBox>
+
+It is possible derive a similar theorem for $\mathcal{H}_{V, E, \operatorname{sign}}$ for any activation function $\sigma$, as long as we restict the weights so that it is possible to express every weight using a number of bits which is bounded by a universal constant. We can even consider hypothesis clases where different neurons can employ different activation functions, as long as the number of allowed activation functions is also finite.
+
+<MathBox title='' boxType='corollary'>
+Fix some $\epsilon\in(0,1)$. For every $n\in\N$, let $s(n)$ be the minimal integer such that there exists a graph $(V,E)$ with $|V| = s(n)$ such that the hypothesis class $\mathcal{H}_{V,E,\sigma}$ with $\sigma$ being the sigmoid function, can approximate, to within precision of $\epsilon$, every $1$-Lipschitz function $f:[-1,1]^n \to[-1,1]$. Then $s(n)$ is exponential in $n$.
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+Let $T:\N\to\N$ and for every $n\in\N$, let $\mathcal{F}_n$ be the set of functions that can be implemented using a Turing maching with runtime of a most $T(n)$. Then, there exis constants $b, c\in\R_+$ such that for every $n$, there is a graph $(V_n, E_n)$ of size at most $cT(n)^2 + b$ such that $\mathcal{H}_{V_n, E_n, \operatorname{sign}}$ contains $\mathcal{F}_n$.
+</MathBox>
+
+<MathBox title='' boxType='lemma'>
+Suppose that a neuron $v$, that implements the sign activation function, has $k$ incoming edges, connecting it to neurons whose outputs are in $\set{\pm 1}$. Then, by adding one more edge, linking a constant neuron to $v$, and by adjusting the weights on the edges to $v$, the output of $v$ can implement the conjunction or the disjunction of its inputs.
+
+<details>
+<summary>Proof</summary>
+
+Note that if $f:\set{0,1}^k \to\set{\pm 1}$ is the conjunction functions $f(\mathbf{x}) = \wedge_i x_i$, then it can be written as $f(\mathbf{x}) = \operatorname{sign}\left(1 - k + \sum_{i=1}^k x_i \right)$. Similarly, the disjunction function $f(\mathbf{x}) = \vee_i x_i$ can be written as $f(\mathbf{x}) = \operatorname{sign}\left(k - 1 + \sum_{i=1}^k x_i \right)$
+</details>
+</MathBox>
+
+## Sample complexity
+
+<MathBox title='' boxType='lemma' tag='lemma-1'>
+Let $a > 0$. Then
+
+$$
+  x \geq 2a \ln(a) \implies x \geq a\ln(x)
+$$
+
+It follows that a necessary condition for the inequality $x < a\ln(x)$ to hold is that $x < 2a\ln(a)$.
+
+<details>
+<summary>Proof</summary>
+
+First note that for $a\in(0,\sqrt{e}]$ the inequality $x\geq a\ln(x)$ holds unconditionally and there the claim is trivial. Now, assume that $a > \sqrt{e}$. Consider the function $f(x) = x - a\ln(x)$. The derivative is $f'(x) = 1 - a/x$. Thus, for $x > a$ the derivative is positive and the function increases. In addition
+
+$$
+\begin{align*}
+  f(2a\ln(a)) =& 2a\ln(a) - a\ln(2a\ln(a)) \\
+  =& 2a\ln(a) - a\ln(a) - a\ln(2\ln(a)) \\
+  =& a\ln(a) - a\ln(2\ln(a))
+\end{align*}
+$$
+
+Since $a - 2\ln(a) > 0$ for all $a > 0$, the proof follows.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='lemma' tag='lemma-2'>
+Let $a\geq 1$ and $b > 0$. Then
+
+$$
+  x \geq 4a \ln(2a) + 2b \implies x \geq a\ln(x) + b
+$$
+
+<details>
+<summary>Proof</summary>
+
+It suffices to prove that $x\geq 4a \ln(2a) + 2b$ implies that bot $x\geq 2a\ln(x)$ and $x\geq 2b$. Since we assume $a\geq 1$ we clearly have that $x\geq 2b$. In addition, since $b > 0$ we have that $x \geq 4a\ln(2a)$ which using Lemma $\ref{lemma-1}$ implies that $x \geq 2a\ln(x)$.
+</details>
+</MathBox>
+
+<MathBox title='' boxType='theorem'>
+The VC dimension of $\mathcal{H}_{V,E,\operatorname{sign}}$ is $O[|E| \ln(|E|)]$.
+
+<details>
+<summary>Proof</summary>
+
+To simplify notation, let $\mathcal{H}$ denote the hypothesis class. Recall the growth function
+
+$$
+  \Pi_{\mathcal{H}}(m) = \max_{C\subset X:|C|=m} |\mathcal{H}_C|
+$$
+
+where $\mathcal{H}_C$ is the restriction of $\mathcal{H}$ to functions from $C$ to $\Set{0,1}$. We can naturally extend the definition for a set of functions from $X$ to som finite set $Y$, by letting $\mathcal{H}_C$ be the restriction of $\mathcal{H}$ to functions from $C$ to $Y$, and keeping the definition of $\Pi_\mathcal{H}(m)$ intact.
+
+Let $V_0,\dots,V_T$ be the layers of a neural network. Fix some $t\in[T]$. By assigning different weights on the edges between $V_{t-1}$ and $V_t$, we obtain different functions from $\R^{|V_{t-1}|} \to\set{\pm 1}^{|V_t|}$. Let $\mathcal{H}_t$ be the class of all possible mappings $\R^{|V_{t-1}|}\to\set{\pm 1}^{|V_t|}$. Then $\mathcal{H}$ can be written as a composition $\mathcal{H} = \mathcal{H}_T \circ\cdots\circ\mathcal{H}_1$. Since the growth function of a composition of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
+
+$$
+  \Pi_\mathcal{H} (m) \leq \prod_{t=1}^T \Pi_{\mathcal{H}_t} (m)
+$$
+
+In addition, each $\mathcal{H}_t$ can be written as a product of function classes, $\mathcal{H}_t = \mathcal{H}_{t,1} \times\cdots\times \mathcal{H}_{t,|V_t|}$, where each $\mathcal{H}_{t,j}$ is all function from layer $t - 1$ to $\set{\pm 1}$ that the $j$th neuron of layer $t$ can implement. Since the growth function of a product of hypothesis classes is bounded by the product of the growth function of the individual classes, we get
+
+$$
+  \Pi_{\mathcal{H}_t} (m) \leq \prod_{i=1}^{|V_t|} \Pi_{\mathcal{H}_{t,i}} (m)
+$$
+
+Let $d_{t,i}$ be the number of edges that are headed to the $i$th neuron of layer $t$. Since the neuron is a homogenous halfspace hypothesis and the VC dimension of homogenous halfspaces is the dimension of the input, we have by Sauer's lemma that
+
+$$
+  \Pi_{\mathcal{H}_{t,i}} (m) \leq \left( \frac{em}{d_{t,i}} \right)^{d_{t,i}} leq (em)^{d_{t,i}}
+$$
+
+Overall, we obtained that
+
+$$
+  \Pi_{\mathcal{H}} (m) \leq (em)^{\sum_{t,i}} d_{t,i} = (em)^{|E|}
+$$
+
+Now, assume that there are $m$ shattered points. Then, we must have $\Pi_\mathcal{H} (m) = 2^m$, from which we obtain
+
+$$
+  2^m \leq (em)^{|E|} \implies m \leq |E| \ln(em) / \ln(2)
+$$
+
+The claim follows from Lemma $\ref{lemma-2}$.
+</details>
+</MathBox>
+
+Let $\sigma$ be a sigmoid activation function. The VC dimension of $\mathcal{H}_{V,E,\sigma}$ is lower bounded by $\Omega(|E|^2)$. That is, the VC dimension is the number of tunable parameters squared. It is also possible to upper bound the VC dimension by $O(|V|^2 |E|^2)$.
+
+## Runtime complexity
+
+<MathBox title='' boxType='theorem'>
+Let $k\geq 3$. For every $n\in\N$, let $(V,E)$ be a layered graph with $n$ input nodes, $k+1$ nodes at the (single) hidden layer, where one of them is the constant neuron, and a single output node. Then, it is NP hard to implement the ERM rule with respect to $\mathcal{H}_{V,E,\operatorname{sign}}$.
+</MathBox>
+
+## Stochastic gradient descent and backpropagation
+
+Stochastic gradient descent can be used search for optimal weights for a hypothesis $\mathcal{H}_{V,E,\sigma}$. Since $E$ is a finite set, we can think of the weight function as a vector $\mathbf{w}\in\R^{|E|}$. Suppose the network has $n$ input neurons and $k$ output neurons, and denote by $h_\mathbf{w} \R^n \to\R^k$ he function calculated by the network if the weight function is defined by $\mathbf{w}$. Let us denote by $\Delta (h_\mathbf{w} (\mathbf{x}), \mathbf{y})$ the loss of predicting $h_\mathbf{w} (\mathbf{x})$ when the target is $\mathbf{y}\in Y$. For concreteness, we will take $\Delta$ to be the squared loss, $\Delta (h_\mathbf{w}(\mathbf{x}),\mathbf{y}) = \frac{1}{2}\norm{ h_\mathbf{w} (\mathbf{x}) - \mathbf{y}}^2$; however, similar derivation can be botained for every differentiable function. Finally, give a distribution $\mathcal{D}$ over the example domain, $\R^n \times\R^n$, let $L_\mathcal{D}(\mathbf{w})$ be the risk of the network, i.e.
+
+$$
+  L_\mathcal{D} (\mathbf{w}) = \mathbb{E}_{(\mathbf{x},\mathbf{y})\sim\mathcal{D}} [\Delta(h_\mathbf{w}(\mathbf{x}, \mathbf{y}))]
+$$
+
+The gradient of $L_\mathcal{D}$, which does not have an analytical form, is calculated using the backpropagation algorithm.
+
+To describe the backpropagation algorithm, let us decompose $V$ into the layers of the graph, $V = \bigcup_{t=0}^T$. For every $t$, let us write $V_t = \set{v_{t,1},\dots,v_{t, k_t}}$, where $k_t = |V_t|$. In addition, for every $t$ denote $\mathbf{W}_t \in \R^{k_{t+1} \times k_t}$ a matrix which gives a weight to every potential edge between $V_t$ and $V_{t+1}$. If the edge exists in $E$ then set $\mathbf{W}_{t;i,j}$ to be the weight, according to $\mathbf{w}$, of the edge $(v_{t,j}, v_{t+1, i})$. Otherwise, we add a "phantom" edge and set its weight to zero. When calculating the partial derivative with respect to the weight of some edge, we fix all other weights. Thus, these additional "phantom" edges have no effect on the partial derivatives with respect to existing edges. It follows that we can assume, without loss of generality, that all edges exist, i.e. $E = \bigcup_t (V_t \times V_{t+1})$.
+
+Next we discuss how to calculate the partial derivatives with respect to the edges from $V_{t-1}$ to $V_t$, that is, with respect to the elements in $\mathbf{W}_{t-1}$. Since we fix all other weights of the network, it follows that the outputs of all the neurons in $V_{t-1}$ are fixed numbers which do not depend on the weights in $\mathbf{W}_{t-1}$. Denote the corresponding vector by $\mathbf{o}_{t-1}$. Additionally, let us denote by $\ell_t : \R^{k_t} \to\R$ the loss function of the subnetwork defined by layers $V_t,\dots,V_T$ as a function of the outputs of the neurons in $V_t$. The input to the neurons of $V_t$ can be written as $\mathbf{a}_t = \mathbf{W}_{t-1} \mathbf{o}_{t-1}$ and the output of the neurons of $V_t$ is $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{a}_t)$. That is, for every $j$ we have $o_{t,j} = \sigma(a_{t,j})$. We obtain that the loss, as a function of $\mathbf{W}_{t-1}$, can be written as
+
+$$
+  g_t (\mathbf{W}_{t-1}) = \ell_t (\mathbf{o}_t) = \ell_t (\boldsymbol{\sigma}(\mathbf{a}_t)) = \ell_t (\boldsymbol{\sigma(\mathbf{W}_{t-1} \mathbf{o}_{t-1})})
+$$
+
+For convenience, we rewrite this as follows. Let $\mathbf{w}_{t-1} \in\R^{k_{t-1}k_t}$ be the column vector obtained by concatenating the rows of $\mathbf{W}_t$ and then taking the transpose of the resulting long vector. Define by $\mathbf{O}_{t-1}$ the $k_t \times (k_{t-1} k_t)$ matrix
+
+$$
+  \mathbf{O}_{t-1} = \begin{bmatrix}
+    \mathbf{o}_{t-1}^\top & \mathbf{0} & \cdots & \mathbf{0} \\
+    \mathbf{0} & \mathbf{o}_{t-1}^\top & \cdots & \mathbf{0} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \mathbf{0} & \mathbf{0} & \cdots & \mathbf{o}_{t-1}^\top
+  \end{bmatrix}
+$$
+
+With this notation we get $\mathbf{W}_{t-1} \mathbf{o}_{t-1} = \mathbf{O}_{t-1}\mathbf{w}_{t-1}$, so we can also write
+
+$$
+  g_t (\mathbf{w}_{t-1}) = \ell_t (\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1}))
+$$
+
+Therefore, applying the chain rule, we obtain that
+
+$$
+  J_{\mathbf{w}_{t-1}}(g_t) = J_{\boldsymbol{\sigma}(\mathbf{O}_{t-1} \mathbf{w}_{t-1})} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{O}_{t-1}\mathbf{w}_{t-1}))\mathbf{O}_{t-1}
+$$
+
+Using our nation we have $\mathbf{o}_t = \boldsymbol{\sigma}(\mathbf{O}_{t-1}\mathbf{w}_{t-1})$ and $\mathbf{a}_t = \mathbf{O}_{t-1} \mathbf{w}_{t-1}$, which yields
+
+$$
+  J_{\mathbf{w}_{t-1}} (g_t) = J_{\mathbf{o}_t} (\ell_t) \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_t))\mathbf{O}_{t-1}
+$$
+
+Let us denote $\boldsymbol{\delta}_t = \mathbf{J}_{\mathbf{o}_t} (\ell_t)$. Then, we can further rewrite the preceding as
+
+$$
+  J_{\mathbf{w}_{t-1}}(g_t) = (\delta_{t,1} \sigma'(a_{t,1})\mathbf{o}_{t-1}^\top,\dots, \delta_{t,k_t} \sigma'(a_{t, k_t}))\mathbf{o}_{t-1}^\top
+$$
+
+It remains to calculate the vector $\boldsymbol{\delta}_t = J_{\mathbf{o}_t}(\ell_t)$ for every $t$. This is the gradient of $\ell_t$ at $\mathbf{o}_t$. We calculate this in a recursive manner. First observe that for the last layer, we have that $\ell_T (\mathbf{u}) = \Delta(\mathbf{u},\mathbf{y})$, where $\Delta$ is the loss function. Since we assume $\Delta (\mathbf{u},\mathbf{y}) = \frac{1}{2}\norm{\mathbf{u} - \mathbf{y}}^2$ we obtain that $J_\mathbf{u}(\ell_T) = (\mathbf{u} - \mathbf{y})$. In particular, $\boldsymbol{\delta}_T = J_{\mathbf{o}_T}(\ell_T) = (\mathbf{o}_T - \mathbf{y})$. Next, note that
+
+$$
+  \ell_t (\mathbf{u}) = \ell_{t+1}(\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u}))
+$$
+
+Thus, by the chain rule
+
+$$
+  J_\mathbf{u} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{u})} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{u}))\mathbf{W}_t
+$$
+
+In particular
+
+$$
+\begin{align*}
+  \boldsymbol{\delta}_t =& J_{\mathbf{o}_t} (\ell_t) = J_{\boldsymbol{\sigma}(\mathbf{W}_t \mathbf{o}_t)} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{W}_t \mathbf{o}_t))\mathbf{W}_t \\
+  =& J_{\mathbf{o}_{t+1}} (\ell_{t+1}) \operatorname{diag}(\boldsymbol{\sigma}' (\mathbf{a}_{t+1}))\mathbf{W}_t \\
+  =& \boldsymbol{\delta}_{t+1} \operatorname{diag}(\boldsymbol{\sigma}'(\mathbf{a}_{t+1}))\mathbf{W}_t
+\end{align*}
+$$
+
+<MathBox title='Stochastic gradient on feedforward neural networks' boxType='algorithm'>
+**parameters:**
+- number of iterations $\tau$
+- step size scheduler $\eta(t)$
+- regularization parameter $\lambda > 0$
+
+**input:**
+- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
+- layered graph $(V,E)$
+- differentiable activation function $\sigma:\R\to\R$
+
+**initialize:**
+- choose $\mathbf{w}_0 \in\R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
+
+**for** $i=1,\dots,\tau$
+1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
+2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
+4. calculate learning step $\eta_i = \eta(i)$
+3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
+</MathBox>
+
+<MathBox title='Backpropagation' boxType='algorithm'>
+**parameters:**
+- number of iterations $\tau$
+- step size scheduler $\eta(t)$
+- regularization parameter $\lambda > 0$
+
+**input:**
+- training set $(\mathbf{x}, \mathbf{y}) \sim\mathcal{D}$
+- layered graph $(V,E)$
+- differentiable activation function $\sigma:\R\to\R$
+
+**initialize:**
+- choose $\mathbf{w}_0 \in \R^{|E|}$ at random (from a distribution so that $\mathbf{w}_0$ is close enought to $\mathbf{0}$)
+
+**for** $i=1,\dots,\tau$
+1. sample $(\mathbf{x}, \mathbf{y})\sim\mathcal{D}$
+2. calculate gradient $\mathbf{g}_i = \operatorname{backpropagation}(\mathbf{x},\mathbf{y},\mathbf{w},(V,E),\sigma)$
+4. calculate learning step $\eta_i = \eta(i)$
+3. update $\mathbf{w}_{i+1} = \mathbf{w}_i - \eta_i (\mathbf{g}_i + \lambda\mathbf{w}_i$
+</MathBox>
+
+### Derivation of the backpropagation algorithm
+
+In this section we derive the backpropagation algorithm for training a feedforward neural netork (FFNN) using a quadratic cost function. The notation and methodology follow the framework established in [@book_nielsen_2015] and [@notes_smets_2024].
+
+Suppose we have a training set $\set{(\mathbf{x}_n, \mathbf{y}_n) | \mathbf{x}\in\mathbb{F}^{n_0}, \mathbb{F}^{n_{L+1}}}_{n=1}^N$ of $N\in\N$ samples. We are interested in minimizing the mean squared error given by
+
+$$
+\begin{equation*}
+  C(\mathbf{W}, \mathbf{b}) = \frac{1}{2N} \sum_{n=1}^N \lVert \hat{\mathbf{y}}_n - \mathbf{y} \rVert^2
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where $\hat{\mathbf{y}} = \mathbf{a}^{(L+1)} = \sigma(\mathbf{z}^{(L+1)})$ is the output of FFNN for the $n$th input. The cost of training example $n$, given by
+
+$$
+  C_n (\mathbf{W}, \mathbf{b}) = \frac{1}{2} \lVert \mathbf{a}^{(L+1)} - \mathbf{y}_n \rVert^2 = \frac{1}{2} \sum_{j=1}^{n_{L+1}} (a_j^{(L+1)} - y_n)^2
+$$
+
+To derive the backpropagation equations, we need to calculate the partial derivatives of $C_n$ with respect to the bias and the weights. From $\eqref{equation-}$, we obtain the partial derivatives
+
+$$
+  \frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}} = a_k^{(\ell - 1)},\quad
+  \frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}} = 1,\quad
+  \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} = \sigma'_{\ell}(\mathbf{z}_j^{\ell})
+$$
+
+We also define the error $\delta_j^{(\ell)}$ for neuron $j$ in layer $\ell$ by 
+
+$$
+  \delta_j^{(\ell)} := \frac{\partial C_n}{\partial z_j^{(\ell)}} = \frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{(\ell)}} = \sigma'_\ell (z_j^{(\ell)}) \frac{\partial C_n}{\partial a_j^{(\ell)}} 
+$$
+
+In matrix form, this can be written as
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)})
+$$
+
+where $\odot$ denotes the Hadamard (elementwise) product. For the output layer $\ell = L + 1$ we find from $\eqref{equation-1}$, that $\nabla_{\mathbf{a}^{(L+1)}} C_n = \mathbf{a}^{(L)} - \mathbf{y}_n$ leading to the output error
+
+$$
+  \boldsymbol{\delta}^{(L)} = (\mathbf{a}^{(L)} - \mathbf{y}_n) \odot \sigma'_{L+1} (\mathbf{z}^{(L)})
+$$
+
+For any hidden layer $\ell < L + 1$, the partial derivative of $C_n$ with respect to an activation $a_k^{(\ell)}$ is found by summing up the errors $\delta_j^{(\ell + 1)}$ of the next layer $\ell + 1$, i.e.,
+
+$$
+  \frac{\partial C_n}{\partial a_k^{(\ell)}} = \sum_{j=1}^{n_{\ell+1}} \underbrace{\frac{\partial z_j^{(\ell + 1)}}{\partial a_k^{(\ell)}}}_{=w_{kj}^{(\ell+1)}} \underbrace{\frac{\partial a_j^{(\ell + 1)}}{\partial z_j^{(\ell+1)}} \frac{\partial C_n}{\partial a_j^{(\ell+1)}}}_{=\delta_j^{(\ell+1)}} = \sum_{j=1}^{n_{\ell+1}} w_{kj}^{(\ell + 1)} \delta_{j}^{(\ell+1)}.
+$$
+
+In matrix form this can be expressed as $\nabla_{\mathbf{a}^{(\ell)}} C_n = (\mathbf{W}^{(\ell+1)})^\top \boldsymbol{\delta}^{(\ell+1)}$. Thus, for any hidden layer $\ell < L + 1$, the error $\boldsymbol{\delta}^{(\ell)}$ can be expressed as
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+#### Gradient Computation
+
+It remains to calculate the partial derivatives of the cost $C_n$ with respect to the bias and the weights. For any layer $\ell$, the partial derivative of $C_n$ with respect to a weight $w_{kj}^{(\ell)}$ is given by the chain rule
+
+$$
+  \frac{\partial C_n}{\partial w_{kj}^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial w_{kj}^{(\ell)}}}_{=a_k^{(\ell-1)}} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = a_k^{(\ell-1)} \delta_j^{(\ell)}
+$$
+
+Likewise, the partial derivative of $C_n$ with respect a bias $b_j^{(\ell)}$ is given by
+
+$$
+  \frac{\partial C_n}{\partial b_j^{(\ell)}} = \underbrace{\frac{\partial z_j^{(\ell)}}{\partial b_j^{(\ell)}}}_{=1} \underbrace{\frac{\partial a_j^{(\ell)}}{\partial z_j^{(\ell)}} \frac{\partial C_n}{\partial a_j^{\ell}}}_{=\delta_j^{(\ell)}} = \delta_j^{(\ell)}
+$$
+
+The backpropagation algorithm can be summed up as follows:
+- **Find the output error:** Calculate the output error $\boldsymbol{\delta}^{(L+1)}$ using the gradient of the cost with respect to the activations:
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = \nabla_{\mathbf{a}^{(\ell)}} C_n \odot \sigma'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+- **Backpropagate the errors:** For each layer $\ell = L,L-1,\dots,1$ calculate the error $\boldsymbol{\delta}^{(\ell)}$ using
+
+$$
+  \boldsymbol{\delta}^{(\ell)} = (\mathbf{W}^{\ell + 1})^\top \boldsymbol{\delta}^{(\ell + 1)} \odot \boldsymbol{\sigma}'_{\ell} (\mathbf{z}^{(\ell)}).
+$$
+
+- **Update weights and biases:** For each layer $\ell = L,L-1,\dots,1$ adjust the biases $\mathbf{b}^{(\ell)}$ and weights $\mathbf{W}^{(\ell)}$ according to the updates
+
+$$
+\begin{align*}
+  \hat{w}_{jk}^{(\ell)} =& w_{jk}^{(\ell)} - \eta \delta_j^{(\ell)} a_k^{(\ell - 1)} \\
+  \hat{b}_j^{(\ell)} =& b_j^{(\ell)} - \eta \delta_j^{(\ell)},
+\end{align*}
+$$
+
+where $\eta$ is the learning rate.

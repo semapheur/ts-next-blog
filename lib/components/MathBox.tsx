@@ -1,5 +1,5 @@
 interface Props {
-  title: string
+  title: string;
   boxType:
     | "algorithm"
     | "axiom"
@@ -14,14 +14,14 @@ interface Props {
     | "property"
     | "proposition"
     | "remark"
-    | "theorem"
-  children: string
-  tag?: string
+    | "theorem";
+  children: string;
+  tag?: string;
 }
 
 function cap(text: string): string {
-  if (!text) return "Error"
-  return text.charAt(0).toUpperCase() + text.slice(1)
+  if (!text) return "Error";
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 /* Tailwind CSS classes
@@ -45,32 +45,16 @@ before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
 
 export default function MathBox({ title, boxType, children, tag }: Props) {
   return (
-    <aside className="my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
-      <div className={`px-2 py-1 bg-${boxType} break-words rounded-t`}>
+    <section className="my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
+      <header className={`px-2 py-1 bg-${boxType} wrap-break-words rounded-t`}>
         <span
           id={tag}
           className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
         >
           {title && `: ${title}`}
         </span>
-      </div>
+      </header>
       <div className="px-4 pb-px">{children}</div>
-    </aside>
-  )
-}
-
-function MathBoxOld({ title, boxType, children, tag }: Props) {
-  return (
-    <div
-      className={`relative my-8 border-2 bg-main px-3 pt-2 md:my-8 border-${boxType} rounded-lg shadow-md`}
-    >
-      <span
-        id={tag}
-        className={`absolute top-0 inline-block max-w-[calc(100%-1.5rem)] translate-y-[-50%] overflow-x-scroll whitespace-nowrap px-2 bg-${boxType} rounded-md font-bold shadow-xs before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})_':_']`}
-      >
-        {title}
-      </span>
-      {children}
-    </div>
-  )
+    </section>
+  );
 }
