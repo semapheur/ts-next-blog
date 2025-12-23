@@ -510,8 +510,8 @@ $$
 $$
 </MathBox>
 
-<MathBox title='Properties of compositions of fully-connected feedforward neural network' boxType='proposition'>
-Let $\mathcal{N}$ denote the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. If $\boldsymbol{\Phi}, \boldsymbol{\Psi} \in\mathcal{N}$ satisfy the compatibility condition $\mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Psi})$, the composed network $\boldsymbol{\Phi}\circ\boldsymbol{\Psi}$ satisfies the following properties.
+<MathBox title="Properties of compositions of fully-connected feedforward neural network" boxType="proposition" tag="proposition-1">
+Let $\boldsymbol{\Phi}, \boldsymbol{\Psi} \in\mathcal{N}$ be fully connected feedforward neural networks that satisfy the compatibility condition $\mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Psi})$. The composed network $\boldsymbol{\Phi}\circ\boldsymbol{\Psi}$ satisfies the following properties.
 
 ---
 1. Dimension vector
@@ -605,7 +605,7 @@ $$
 **(2)** & **(3)**: This follows from $\eqref{equation-6}$ and $\eqref{equation-7}$.
 
 ---
-**(4)**: From **(1)**, we have that
+**(4)**: From $\ref{proposition-1-1}$, we have that
 
 $$
 \begin{align*}
@@ -620,7 +620,7 @@ $$
 $$
 
 ---
-**(5)**: From **(1)** we obtain the input dimension
+**(5)**: From $\ref{proposition-1-1}$ we obtain the input dimension
 
 $$
   \mathcal{I}(\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = d_0 (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}) = d_0 (\boldsymbol{\Psi}) = \mathcal{I}(\boldsymbol{\Psi})
@@ -650,7 +650,7 @@ $$
   (\mathcal{W}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 1, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}, \mathcal{B}_{\mathcal{L}(\boldsymbol{\Psi}) + k - 1, \boldsymbol{\Phi}\circ\boldsymbol{\Psi}}) = (\mathcal{W}_{k,\boldsymbol{\Phi}}, \mathcal{B}_{k,\boldsymbol{\Phi}})
 $$
 
-Together with **(1)** this implies that for each $k = 2,\dots,\mathcal{L}(\boldsymbol{\Phi})$
+Together with $\ref{proposition-1-1}$ this implies that for each $k = 2,\dots,\mathcal{L}(\boldsymbol{\Phi})$
 
 $$
 \begin{equation*}
@@ -664,7 +664,7 @@ $$
 
 *Step 2: Interface layer*
 
-At the interface index $k = \mathcal{L}(\boldsymbol{\Psi})$, we have again from $\eqref{equation-8}$ and **(1)** that
+At the interface index $k = \mathcal{L}(\boldsymbol{\Psi})$, we have again from $\eqref{equation-8}$ and $\ref{proposition-1-1}$ that
 
 $$
 \begin{align*}
@@ -685,7 +685,7 @@ $$
 
 *Step 3: Layers inherited from $\boldsymbol{\Psi}$*
 
-From $\eqref{equation-8}$ and **(1)**, it follows that for $k = 0,\dots, \mathcal{L}(\boldsymbol{\Psi})$
+From $\eqref{equation-8}$ and $\ref{proposition-1-1}$, it follows that for $k = 0,\dots, \mathcal{L}(\boldsymbol{\Psi})$
 
 $$
   \mathbf{x}_k = \mathbf{M}_{a, d_k (\boldsymbol{\Psi})} (\mathcal{W}_{k, \boldsymbol{\Psi}} \mathbf{x}_{k-1} + \mathcal{B}_{k,\boldsymbol{\Psi}})
@@ -703,6 +703,294 @@ $$
   (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))\left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Psi}))(\mathbf{x}_0) \right) = \mathbf{x}_L = (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\boldsymbol{\Psi}))(\mathbf{x}_0)
 $$
 </details>
+</MathBox>
+
+#### Associativity of compositions
+
+<MathBox title="" boxType="lemma" tag="lemma-3">
+Let $\boldsymbol{\Phi}_1, \boldsymbol{\Phi}_2, \boldsymbol{\Phi}_3 \in\mathcal{N}$ be fully connected feedforward neural networks that satisfy 
+- $\mathcal{I}(\boldsymbol{\Phi}_1) = \mathcal{O}(\boldsymbol{\Phi}_2)$
+- $\mathcal{I}(\boldsymbol{\Phi}_2) = \mathcal{O}(\boldsymbol{\Phi}_3)$
+- $\mathcal{L}(\boldsymbol{\Phi}_3) = 1$
+
+Then
+
+$$
+  (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3 = \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Observe that for all $\boldsymbol{\Psi}_1, \boldsymbol{\Psi}_2 \in\mathcal{N}$ with $\mathcal{I}(\boldsymbol{\Psi}_1) = \mathcal{O}(\boldsymbol{\Psi}_2)$, then $\mathcal{L}(\boldsymbol{\Psi}_1 \circ \boldsymbol{\Psi}_2) = \mathcal{L}(\boldsymbol{\Psi}_1) + \mathcal{L}(\boldsymbol{\Psi}_2) - 1$. The assumption $\mathcal{L}(\boldsymbol{\Phi}_2) = 1$ ensures in this case that
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{L}(\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) =& \mathcal{L}(\boldsymbol{\Phi}_1) \\
+  \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) =& \mathcal{L}(\boldsymbol{\Phi}_3)
+\end{split}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+leading to
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{L}((\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3) = \mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_3) \\
+  =& \mathcal{L}(\boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3))
+\end{split}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+Next note that $\eqref{equation-11}$ and $\eqref{equation-8}$ together with the assumption $\mathcal{L}(\boldsymbol{\Phi}_2) = 1$ imply that for $k = 1,\dots, \mathcal{L}(\boldsymbol{\Phi}_1)$
+
+$$
+\begin{equation*}
+  (\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}) = \begin{cases}
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{1, \boldsymbol{\Phi}_2}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{1, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}),\quad& k = 1 \\
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_1}, \mathcal{B}_{k, \boldsymbol{\Phi}_1})
+  \end{cases}
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+This, $\eqref{equation-8}$ and $\eqref{equation-12}$ show that for $k = 1,\dots, \mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_2) - 1$
+
+$$
+\begin{equation*}
+\begin{split}
+  & (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ\boldsymbol{\Phi}_3}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3, \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_3)
+  \end{cases} \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3, \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_3)
+    \end{cases}
+\end{split}
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+Furthermore, from $\eqref{equation-8}$, $\eqref{equation-11}$ and $\eqref{equation-12}$ we have for $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1$
+
+$$
+\begin{equation*}
+\begin{split}
+  &(\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3)}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)
+  \end{cases} \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 }, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_3)
+  \end{cases}
+\end{split}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+Combining this with $\eqref{equation-13}$ establishes that for $k\in\set{1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1}\setminus\set{\mathcal{L}(\boldsymbol{\Phi}_3)}$
+
+$$
+\begin{equation*}
+  (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}) = (\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3)})
+\tag{\label{equation-15}
+\end{equation*}
+$$
+
+Moreover, note that $\eqref{equation-16}$ and $\eqref{equation-8}$ ensure that
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3} =& \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{2, \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3} \\
+  =& \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3}
+\end{split}
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2} =& \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3} + \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{1, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1} \\
+  =& \mathcal{W}_{1, \boldsymbol{\Phi}_1} (\mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_2}) + \mathcal{B}_{1, \boldsymbol{\Phi}_1} \\
+  =& \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}
+\end{split}
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+Combining this and $\eqref{equation-17}$ with $\eqref{equation-15}$ proves that for $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1$
+
+$$
+  (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}) = (\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3)})
+$$
+
+This and $\eqref{equation-12}$ imply that $(\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3) = \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="proposition-2">
+Let $\boldsymbol{\Phi}_1, \boldsymbol{\Phi}_2, \boldsymbol{\Phi}_3 \in\mathcal{N}$ be fully connected feedforward neural networks that satisfy 
+- $\mathcal{I}(\boldsymbol{\Phi}_1) = \mathcal{O}(\boldsymbol{\Phi}_2)$
+- $\mathcal{I}(\boldsymbol{\Phi}_2) = \mathcal{O}(\boldsymbol{\Phi}_3)$
+- $\mathcal{L}(\boldsymbol{\Phi}_3) > 1$
+
+Then
+
+$$
+  (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3 = \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Note that
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{L}((\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3) =& \mathcal{L}(\boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+  =& \mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 2 \\
+  =& \mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) - 1 \\
+  =& \mathcal{L}(\boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3))
+\end{split}
+\tag{\label{equation-19}
+\end{equation*}
+$$
+
+From $\eqref{equation-8}$ we have for $k=1,\dots,\mathcal{L}((\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ\boldsymbol{\Phi}_3)$
+
+$$
+\begin{equation*}
+\begin{split}
+& (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ\boldsymbol{\Phi}_3}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3, \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_3)
+  \end{cases}
+\end{split}
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+Moreover, $\eqref{equation-8}$ and the assumption $\mathcal{L}(\boldsymbol{\Phi}_2) > 1$ ensure that for $k\in\N\cap (\mathcal{L}(\boldsymbol{\Phi}_3), \mathcal{L}((\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ\boldsymbol{\Phi}_3)]$
+
+$$
+\begin{equation*}
+\begin{split}
+& (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}),\quad& k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1 < \boldsymbol{\Phi}_2 \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2), \boldsymbol{\Phi}_2}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1 = \boldsymbol{\Phi}_2 \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1 - \mathcal{L}(\boldsymbol{\Phi}_2) + 1, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1 - \mathcal{L}(\boldsymbol{\Phi}_2) + 1, \boldsymbol{\Phi}_1}),\quad& k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1 > \boldsymbol{\Phi}_2
+  \end{cases} \\
+  =& \begin{cases}
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_2) + \boldsymbol{\Phi}_3 - 1 \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2), \boldsymbol{\Phi}_2}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2) + \boldsymbol{\Phi}_3 - 1 \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2) + \boldsymbol{\Phi}_3 - 1
+  \end{cases}
+\end{split}
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+Together with $\eqref{equation-20}$ this shows that for $k=1,\dots,\mathcal{L}((\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3)$
+
+$$
+\begin{equation*}
+\begin{split}
+& (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2)\circ\boldsymbol{\Phi}_3}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3, \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}),\quad& \mathcal{L}(\boldsymbol{\Phi}_3) < k < \mathcal{L}(\boldsymbol{\Phi}_2) +  \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2), \boldsymbol{\Phi}_2}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2) + \boldsymbol{\Phi}_3 - 1
+  \end{cases}
+\end{split}
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+In addition, since $\mathcal{L}(\boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3) = \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1$ it follows for $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1 \circ(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3))$
+
+$$
+\begin{equation*}
+\begin{split}
+  & (\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}) \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3), \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)
+  \end{cases} \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1, \boldsymbol{\Phi}_2 \circ\boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2) \mathcal{L}(\boldsymbol{\Phi}_3) - 1, \boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_2) - \mathcal{L}(\boldsymbol{\Phi}_3) + 2, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_2) - \mathcal{L}(\boldsymbol{\Phi}_3) + 2, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1
+  \end{cases} \\
+  =& \begin{cases}
+    (\mathcal{W}_{k, \boldsymbol{\Phi}_3}, \mathcal{B}_{k, \boldsymbol{\Phi}_3}),\quad& k < \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_3), \boldsymbol{\Phi}_3}, \mathcal{W}_{1, \boldsymbol{\Phi}_2} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_3, \boldsymbol{\Phi}_3} + \mathcal{B}_{1, \boldsymbol{\Phi}_2}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_3) \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) + 1, \boldsymbol{\Phi}_2}),\quad& \mathcal{L}(\boldsymbol{\Phi}_3) < k < \mathcal{L}(\boldsymbol{\Phi}_2) +  \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{W}_{\mathcal{L}(\boldsymbol{\Phi}_2), \boldsymbol{\Phi}_2}, \mathcal{W}_{1, \boldsymbol{\Phi}_1} \mathcal{B}_{\mathcal{L}(\boldsymbol{\Phi}_2, \boldsymbol{\Phi}_2} + \mathcal{B}_{1, \boldsymbol{\Phi}_1}),\quad& k = \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 1 \\
+    (\mathcal{W}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}, \mathcal{B}_{k - \mathcal{L}(\boldsymbol{\Phi}_3) - \mathcal{L}(\boldsymbol{\Phi}_2) + 2, \boldsymbol{\Phi}_1}),\quad& k > \mathcal{L}(\boldsymbol{\Phi}_2) + \boldsymbol{\Phi}_3 - 1
+  \end{cases}
+\end{split}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+This, $\eqref{equation-22}$ and $\eqref{equation-19}$ establish for $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1) + \mathcal{L}(\boldsymbol{\Phi}_2) + \mathcal{L}(\boldsymbol{\Phi}_3) - 2$
+
+$$
+  (\mathcal{W}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}, \mathcal{B}_{k, (\boldsymbol{\Phi}_1 \circ \boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3}) = (\mathcal{W}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)}, \mathcal{B}_{k, \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3)})
+$$
+
+and hence $(\boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi}_3 = \boldsymbol{\Phi}_1 \circ (\boldsymbol{\Phi}_2 \circ \boldsymbol{\Phi}_3)$.
+</details>
+</MathBox>
+
+<MathBox title="Power of fully connected feedforward neural networks" boxType="definition">
+Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For each $n\in\N_0$, we define the $n$-fold power function 
+
+$$
+  (\cdot)^{\circ n} : \set{\boldsymbol{\Phi}\in\mathcal{N} | \mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Phi})} \to \mathcal{N}
+$$
+
+recursively by
+
+$$
+  \boldsymbol{\Phi}^{\circ n} = \begin{cases}
+    (\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}) \in\R^{\mathcal{O}(\boldsymbol{\Phi}) \times \mathcal{O}(\boldsymbol{\Phi})} \times\R^{\mathcal{O}(\boldsymbol{\Phi})},\quad& n = 0 \\
+    \boldsymbol{\Phi} \circ (\boldsymbol{\Phi}^{\circ (n-1)}),\quad& n\in\N
+  \end{cases}
+$$
+
+where $\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}$ denotes the identity matrix in dimension $\mathcal{O}(\boldsymbol{\Phi})$ and $\mathbf{O}$ denotes the zero bias vector.
+</MathBox>
+
+<MathBox title="Number of hidden layers of powers of fully connected feedforward neural networks" boxType="definition">
+Let $\boldsymbol{\Phi}\in\mathcal{N}$ be a fully connected feedforward neural network satisfying $\mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Phi})$. For $n\in\N_0$, the number of hidden layers in the $n$-fold power $\boldsymbol{\Phi}^{\circ n}$ is
+
+$$
+  \mathcal{H}(\boldsymbol{\Phi}^{\circ n}) = n\mathcal{H}(\boldsymbol{\Phi})
+$$
 </MathBox>
 
 ### Parallelization
