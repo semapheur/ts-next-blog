@@ -349,7 +349,10 @@ $$
 Finally set
 
 $$
+\begin{equation*}
   (\mathcal{F}_a^{\mathcal{N}} (\boldsymbol{\Phi}))(\mathbf{x}_0) := \mathbf{x}_{\mathcal{L}(\boldsymbol{\Phi})}
+\tag{\label{equation-24}}
+\end{equation*}
 $$
 </MathBox>
 
@@ -994,6 +997,90 @@ $$
 </MathBox>
 
 ### Parallelization
+
+<MathBox title="Parallelization of fully connected feedforward neural networks" boxType="definition">
+Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For $n\in\N_+$, let $\mathcal{N}^{(n)}$ denote the set of layer-compatible network tuples
+
+$$
+  \mathcal{N}^{(n)} = \set{(\boldsymbol{\Phi}_j)_{j=1}^n \in\mathcal{N}^n | \mathcal{L}(\boldsymbol{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_n)}
+$$
+
+The parallelization function $\mathbf{P}_n : \mathcal{N}^{(n)} \to\mathcal{N}$ maps a tuple of layer-compatible networks $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ to a single network $\mathbf{P}_n (\boldsymbol{\Phi}) \in\mathcal{N}$. For $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1)$, the architecture of a parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$ is characterized by 
+- Number of layers: $\mathcal{L}(\mathbf{P}_n (\boldsymbol{\Phi})) = \mathcal{L}(\boldsymbol{\Phi}_1)$
+- Dimension function:
+$$
+  d_k (\mathbf{P}_n (\boldsymbol{\Phi})) = \sum_{j=1}^n d_k (\boldsymbol{\Phi}_j)
+$$
+
+- Dimension vector:
+$$
+  \mathbf{d}(\mathbf{P}_n (\boldsymbol{\Phi})) = \sum_{j=1}^n \mathbf{d}(\boldsymbol{\Phi}_j)
+$$
+
+- Weight matrix 
+$$
+  \mathcal{W}_{k, \mathbf{P}_n (\boldsymbol{\Phi})} = \operatorname{diag}(\mathcal{W}_{k, \boldsymbol{\Phi}_1}, \dots, \mathcal{W}_{k, \boldsymbol{\Phi}_n}) \in \R^{\left(\sum_{j=1}^n d_k (\boldsymbol{\Phi}_j) \right) \times \left(\sum_{j=1}^n d_{k-1} (\boldsymbol{\Phi}_j)\right)}
+$$
+
+- Bias vector: 
+$$
+  \mathcal{B}_{k, \mathbf{P}_n (\boldsymbol{\Phi})} = \left[\mathcal{B}_{k, \boldsymbol{\Phi}_1}, \dots, \mathbf{B}_{k, \boldsymbol{\Phi}_n} \right]^\top \in\R^{\sum_{j=1}^n d_k (\boldsymbol{\Phi}_j)}
+$$
+</MathBox>
+
+<MathBox title="Realizations of parallelization of fully connected feedforward neural networks" boxType="proposition">
+Let $n, L \in\N_+$ and let $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ be a tuple of layer-compatible fully connected neural networks with $L = \mathcal{L}(\mathcal{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_n)$. If $a\in C(\R)$ is a continuous activation function, the realization of the parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$, denoted $\mathbf{F}_a^\mathcal{N}$ satisfies
+
+1.
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathbf{P}_n (\boldsymbol{\Phi})) \in C(\R^{\sum_{j=1}^n \mathcal{I}(\boldsymbol{\Phi}_j)}, \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)})
+$$
+
+2. For all $\mathbf{x}_j \in \R^{\mathcal{I}(\boldsymbol{\Phi}_j)}$ with $j=1,\dots,n$
+$$
+\begin{align*}
+  &(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_n (\boldsymbol{\Phi})) (\mathbf{x}_1,\dots,\mathbf{x}_n) \\
+  =& \left[(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_1))(\mathbf{x}_1),\dots,(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_n))(\mathbf{x}_n) \right] \in \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+By definition of parallelization
+
+$$
+  \mathcal{I}(\mathbf{P}_n (\boldsymbol{\Phi})) = d_0 (\mathbf{P}(\boldsymbol{\Phi})) = \sum_{j=1}^n d_0 (\boldsymbol{\Phi}_n) = \sum_{j=1}^n \mathcal{I}(\boldsymbol{\Phi}_n)
+$$
+
+and
+
+$$
+  \mathcal{O}(\mathbf{P}_n (\boldsymbol{\Phi})) = d_{\mathcal{L}(\mathbf{P}_n (\boldsymbol{\Phi})} (\mathbf{P}(\boldsymbol{\Phi})) = \sum_{j=1}^n d_{\mathcal{L}(\boldsymbol{\Phi}_n)} (\boldsymbol{\Phi}_n) = \sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_n)
+$$
+
+For $k=1,\dots,L$ let
+
+$$
+  \mathfrak{x}_{k-1} = (\mathbf{x}_{k-1}^{(j)})_{j=1}^n \in \R^{\sum_{j=1}^n d_{k-1} (\boldsymbol{\Phi}_j)}
+$$
+
+be a concatenation activation vector for layer $(k-1)$. Here each $\mathbf{x}_{k-1}^{(j)}$ is exactly the $(k - 1)$-th layer activation of $\boldsymbol{\Phi}_j$. Then
+
+$$
+  \mathbf{M}_{\sigma_k, d_k (\mathbf{P}_n (\boldsymbol{\Phi}))} (\mathcal{W}_{k, \mathbf{P}_n (\boldsymbol{\Phi})} \mathfrak{x}_{k-1} + \mathcal{B}_{k, \mathbf{P}_n (\boldsymbol{\Phi})}) = \begin{bmatrix} \mathbf{M}_{\sigma_k, d_k (\boldsymbol{\Phi}_1)} (\mathcal{W}_{k, \boldsymbol{\Phi}_2} \mathbf{x}_{k-1}^{(1)} + \mathcal{B}_{k, \boldsymbol{\Phi}_1}) \\ \vdots \\ \mathbf{M}_{\sigma_k, d_k (\boldsymbol{\Phi}_n)} (\mathcal{W}_{k, \boldsymbol{\Phi}_n} \mathbf{x}_{k-1}^{(n)} + \mathcal{B}_{k, \boldsymbol{\Phi}_n}) \end{bmatrix}
+$$
+
+where $\sigma_k = a\mathbf{1}_{(0,L)}(k) + \operatorname{id}_\R \mathbf{1}_{\set{L}} (k)$. Thus, if $\mathfrak{x}_{k-1} = (\mathbf{x}_{k-1}^{(j)})_{j=1}^n$ then $\mathfrak{x}_k = (\mathbf{x}_k^{(j)})_{j=1}^n$. By induction on $k=1,\dots,L$ starting from $\mathfrak{x}_0 = (\mathbf{x}_0^{(j)})_{j=1}^n$ we obtain from $\eqref{equation-24}$
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{P}_n (\boldsymbol{\Phi}))(\mathfrak{x}_0) = \mathfrak{x}_L = (\mathbf{x}_L^j)_{j=1}^n \\
+  =& \left[(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_j))(\mathbf{x}_0^j) \right]_{j=1}^n
+\end{align*}
+$$
+</details>
+</MathBox>
 
 ### Scalar multiplication
 
