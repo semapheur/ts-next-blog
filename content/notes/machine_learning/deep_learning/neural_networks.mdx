@@ -472,7 +472,7 @@ We refer to $T$ as the number of layers in the network (excluding $V_0$), or alt
 
 ## Calculus
 
-### Composition
+### Composition of neural networks
 
 <MathBox title='Compositions of fully-connected feedforward neural network' boxType='definition'>
 Let $\mathcal{N}$ denote the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For $\boldsymbol{\Phi}, \boldsymbol{\Psi} \in\mathcal{N}$, suppose the output dimension of $\boldsymbol{\Psi}$ coincides with the input dimension of $\boldsymbol{\Psi}$, i.e.
@@ -969,7 +969,7 @@ and hence $(\boldsymbol{\Phi}_1 \circ\boldsymbol{\Phi}_2) \circ \boldsymbol{\Phi
 </details>
 </MathBox>
 
-<MathBox title="Power of fully connected feedforward neural networks" boxType="definition">
+<MathBox title="Power of fully connected feedforward neural networks" boxType="definition" tag="definition-1">
 Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For each $n\in\N_0$, we define the $n$-fold power function 
 
 $$
@@ -988,15 +988,21 @@ $$
 where $\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}$ denotes the identity matrix in dimension $\mathcal{O}(\boldsymbol{\Phi})$ and $\mathbf{O}$ denotes the zero bias vector.
 </MathBox>
 
-<MathBox title="Number of hidden layers of powers of fully connected feedforward neural networks" boxType="definition">
+<MathBox title="Number of hidden layers of powers of fully connected feedforward neural networks" boxType="proposition" tag="proposition-5">
 Let $\boldsymbol{\Phi}\in\mathcal{N}$ be a fully connected feedforward neural network satisfying $\mathcal{I}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Phi})$. For $n\in\N_0$, the number of hidden layers in the $n$-fold power $\boldsymbol{\Phi}^{\circ n}$ is
 
 $$
   \mathcal{H}(\boldsymbol{\Phi}^{\circ n}) = n\mathcal{H}(\boldsymbol{\Phi})
 $$
+
+<details>
+<summary>Proof</summary>
+
+This follows by induction using Proposition $\ref{proposition-1-3}$.
+</details>
 </MathBox>
 
-### Parallelization
+### Parallelization of neural networks
 
 <MathBox title="Parallelization of fully connected feedforward neural networks" boxType="definition">
 Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For $n\in\N_+$, let $\mathcal{N}^{(n)}$ denote the set of layer-compatible network tuples
@@ -1028,7 +1034,7 @@ $$
 $$
 </MathBox>
 
-<MathBox title="Realizations of parallelization of fully connected feedforward neural networks" boxType="proposition">
+<MathBox title="Realizations of parallelization of fully connected feedforward neural networks" boxType="proposition" tag="proposition-4">
 Let $n, L \in\N_+$ and let $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ be a tuple of layer-compatible fully connected neural networks with $L = \mathcal{L}(\mathcal{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_n)$. If $a\in C(\R)$ is a continuous activation function, the realization of the parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$, denoted $\mathbf{F}_a^\mathcal{N}$ satisfies
 
 1.
@@ -1082,9 +1088,473 @@ $$
 </details>
 </MathBox>
 
-### Scalar multiplication
+<MathBox title='Upper bound for number of parameters of parallelized fully connected feedforward neural network' boxType='proposition'>
+Let $n, L \in\N_+$ and let $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ be a tuple of layer-compatible fully connected neural networks with $L = \mathcal{L}(\mathcal{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_n)$. Then upper bound for the number of parameters of the parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$ satisfies
 
-### Sum
+$$
+  \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi})) \leq \frac{1}{2} \left(\sum_{j=1}^n \mathcal{P}(\boldsymbol{\Phi}_j) \right)^2
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $\ell_{j,k} := d_k (\boldsymbol{\Phi}_j)$ for $j=1,\dots,n$ and $k=0,\dots,L$. Then by definition of parallelization we obtain
+
+$$
+\begin{align*}
+  \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi})) =& \sum_{k=1}^L \left(\sum_{i=1}^n \ell_{i,k} \right) \left(\left[\sum_{i=1}^n \ell_{i, k-1} \right] + 1 \right) \\
+  =& \sum_{k=1}^L \left(\sum_{i=1}^n \ell_{i,k} \right) \left(\left[\sum_{j=1}^n \ell_{j, k-1} \right] + 1 \right) \\
+  \leq& \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^L \ell_{i,k} (\ell_{j,k-1} + 1) \\
+  \leq& \sum_{i=1}^n \sum_{j=1}^n \sum_{k,\ell=1}^L \ell_{i,k} (\ell_{j,\ell-1} + 1) \\
+  =& \sum_{i=1}^n \sum_{j=1}^n \left(\sum_{k=1}^L \ell_{i,k} \right) \left(\sum_{\ell=1}^L \ell_{j, \ell-1} + 1 \right) \\
+  \leq& \sum_{i=1}^n \sum_{j=1}^n \left(\sum_{k=1}^L \frac{1}{2} \ell_{i,k} (\ell_{i,k - 1} + 1) \right) \left(\sum_{\ell=1}^L \ell_{j,\ell} [\ell_{j, \ell-1} + 1] \right) \\
+  =& \sum_{i=1}^n \sum_{j=1}^n \frac{1}{2} \mathcal{P}(\boldsymbol{\Phi}_i)\mathcal{P}(\boldsymbol{\Phi}_j) \\
+  =& \frac{1}{2} \left(\sum_{i=1}^n \mathcal{P}(\boldsymbol{\Phi}_i) \right)^2
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Lower and upper bound for number of parameters of parallelized fully connected feedforward neural network' boxType='corollary'>
+Let $n, L \in\N_+$ and let $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ be a tuple of layer-compatible fully connected neural networks with $\mathbf{d}(\mathcal{\Phi}_1) =\cdots= \mathbf{d}(\boldsymbol{\Phi}_n)$.
+
+$$
+\begin{align*}
+  \left[\frac{n^2}{2} \right] \mathcal{P}(\boldsymbol{\Phi}_1) \leq& \left[\frac{n^2 + n}{2} \right] \mathcal{P}(\boldsymbol{\Phi}_1) \\
+  \leq& \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi})) \leq n^2 \mathcal{P}(\boldsymbol{\Phi}_1) \\
+  \leq& \frac{1}{2} \left(\sum_{i=1}^n \right)^2
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $L, \ell_0, \dots, \ell_L \in \N_+$ so that for $j=1,\dots,n$
+
+$$
+  \mathbf{d} (\boldsymbol{\Phi}_j) = (\ell_k)_{k=1}^L \in\N^{L + 1}
+$$
+
+By definition of parallelization, we have
+
+$$
+  \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi}) = \sum_{j=1}^L (n\ell_j) (n\ell_{j-1} + 1)
+$$
+
+Thus, we obtain
+
+$$
+\begin{align*}
+  \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi}) \leq \sum_{j=1}^L (n\ell_j) (n\ell_{j-1} + n) \\
+  =& n^2 \left[\sum_{j=1}^L \ell_j (\ell_{j-1} + 1) \right] = n^2 \mathcal{P}(\boldsymbol{\Phi}_1)
+\end{align*}
+$$
+
+Since $\mathcal{P}(\boldsymbol{\Phi}_1) \geq \ell_1 (\ell_0 + 1) \geq 2$, we have
+
+$$
+\begin{align*}
+  n^2 \mathcal{P}(\boldsymbol{\Phi}_1) \leq& \frac{n^2}{2} [\mathcal{P}(\boldsymbol{\Phi}_1)]^2 = \frac{1}{2} [n\mathcal{P}(\boldsymbol{\Phi}_1)]^2 \\
+  =& \frac{1}{2} \left(\sum_{i=1}^n \mathcal{P}(\boldsymbol{\Phi}_1) \right)^1 = \frac{1}{2} \left(\sum_{i=1}^n \mathcal{P}(\boldsymbol{\Phi}_i) \right)^2
+\end{align*}
+$$
+
+Using that
+
+$$
+\begin{align*}
+  2(ab + 1) =& ab + 1 + (a - 1)(b - 1) + a + b \\
+  \geq& ab + a + b + 1 = (a + 1)(b + 1)
+\end{align*}
+$$
+
+we find
+
+$$
+\begin{align*}
+  \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi})) \geq \frac{1}{2} \left[\sum_{j=1}^L (n\ell_j)(n + 1)(\ell_{j-1} + 1) \right] \\
+  =& \frac{n(n+1)}{2} \left[\sum_{j=1}^L \ell_j (\ell_{j-1} + 1) \right] \\
+  =& \frac{n^2 + n}{2} \mathcal{P}(\boldsymbol{\Phi}_1)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+#### Representation of identity with ReLU activation functions
+
+<MathBox title='One-dimensional ReLU identity network' boxType='proposition' tag='proposition-3'>
+Define the fully connected feedforward neural network $\mathbf{I}_1 \in\mathcal{N}$ with two layers by
+
+$$
+  \mathbf{I}_1 = ((\mathbf{W}_1, \mathbf{B}_1), (\mathbf{W}_2, B_2)) \in \left[(\R^{2\times 1} \times \R^2) \times (\R^{1\times 2} \times \R) \right]
+$$
+
+where
+
+$$
+\begin{align*}
+  \mathbf{W}_1 =& \left[\begin{smallmatrix} 1 \\ -1 \end{smallmatrix}\right] \in \R^{2\times 1} \\
+  \mathbf{B}_1 =& \left[\begin{smallmatrix} 0 \\ 0 \end{smallmatrix}\right] \in \R^2 \\
+  \mathbf{W}_2 =& \left[\begin{smallmatrix} 1 & -1 \end{smallmatrix}\right] \in \R^{2\times 1} \\
+  B_2 =& 0 \in\R
+\end{align*}
+$$
+
+The dimension vector of $\mathbf{I}_1$ is $\mathbf{d}(\mathbf{I}_1) = (1,2,1) \in\N^3$.
+
+If $a:\R\to\R$ is the rectified linear unit (ReLU) defined by $a(x) := \max\set{0,x}$, then the realization of $\mathbf{I}_1$ with ReLU activation, denoted $\mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_1) \in C(\R)$, coincides with the identity function on $\R$, i.e.
+
+$$
+  \mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_1)(x) = x,\; x\in\R
+$$
+
+<details>
+<summary>Proof</summary>
+
+For any $x\in \R$, we have
+
+$$
+  \mathbf{W}_1 x + \mathbf{B}_1 = \begin{bmatrix} x \\ -x \end{bmatrix}
+$$
+
+Applying the ReLU activation componentwise yields
+
+$$
+  \mathbf{M}_{\text{ReLU}, 2} \left[\begin{smallmatrix} x \\ -x \end{smallmatrix}\right] = \begin{bmatrix} \max\set{0, x} \\ \max\set{0,-x} \end{bmatrix}
+$$
+
+The second affine transformation gives
+
+$$
+  \mathbf{W}_2 \begin{bmatrix} \max\set{0, x} \\ \max\set{0,-x} \end{bmatrix} + B_2 = \max\set{0, x} - \max\set{0, -x} = x
+$$
+
+Thus $\mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_1)$ equals the identity map on $\R$.
+</details>
+</MathBox>
+
+<MathBox title='Parallelized ReLU identity network' boxType='corollary'>
+Let $\mathbf{I}_1 \in\mathcal{N}$ be the one-dimensional fully connected feedforward identity neural network defined in Proposition $\ref{proposition-3}$. For $d\in\N_+$ define the $d$-dimensional identity network
+
+$$
+  \mathbf{I}_d := \mathbf{P}_d (\underbrace{\mathbf{I}_1, \dots, \mathbf{I}_1}_{d \text{ times}) \in \mathcal{N}^{(n)}
+$$
+
+where the parallelization operator $\mathbf{P}_d$ is applied to $d$ identical copies of $\mathbf{I}_d$. The dimension vector of $\mathbf{I}_d$ is
+
+$$
+\begin{align*}
+  \mathbf{d}(\mathbf{I}_d) = \sum_{j=1}^d \mathbf{d}(\mathbf{I}_1) = (d,2d,d) \\
+\end{align*}
+$$
+
+If $a:\R\to\R$ is the rectified linear unit (ReLU) defined by $a(x) := \max\set{0,x}$, then the realization of $\mathbf{I}_d$ with ReLU activation, denoted $\mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_d) \in C(\R^d)$, coincides with the identity function on $\R^d$, i.e.
+
+$$
+  \mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_d)(\mathbf{x}) = \mathbf{x},\; \mathbf{x}\in\R^d
+$$
+
+<details>
+<summary>Proof</summary>
+
+By Propositions $\ref{proposition-4-2}$ and $\ref{proposition-3}$, we have for $\mathbf{x}\in\R^d$
+
+$$
+\begin{align*}
+  (\mathbf{F}_\text{ReLU}^\mathcal{N}(\mathbf{I}_d))(\mathbf{x}) =& (\mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{P}_n (\mathbf{I}_1,\dots,\mathbf{I}_1)))(x_1,\dots,x_d) \\
+  =& ((\mathbf{F}_\text{ReLU}^\mathcal{N}(\mathbf{I}_d))(x_1), \dots, (\mathbf{F}_\text{ReLU}^\mathcal{N}(\mathbf{I}_d))(x_d)) \\
+  =& (x_1,\dots,x_d) = \mathbf{x}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+#### Extensions of neural networks
+
+<MathBox title='Extensions of fully connected feedforward neural network' boxType='definition' tag='definition-2'>
+Let $L\in\N_+$. Suppose $\mathbb{I} \in\mathcal{N}$ is a fully connected feedforward neural network with $\mathcal{I}(\mathbb{I}) = \mathcal{O}(\mathbb{I})$. Define the extension operator
+
+$$
+  \mathbf{E}_{L, \mathbb{I}} : \set{\boldsymbol{\Phi}\in\mathcal{N} | \mathcal{L}(\boldsymbol{\Phi}) \leq L \land \mathcal{O}(\boldsymbol{\Phi}) = \mathcal{I}(\mathbb{I})} \to \mathcal{N}
+$$
+
+by
+
+$$
+  \mathbf{E}_{L, \mathbb{I}} = (\mathbb{I}^{\circ (L - \mathcal{L}(\boldsymbol{\Phi})}) \circ \boldsymbol{\Phi}
+$$
+</MathBox>
+
+<MathBox title='Length of extensions of fully connected feedforward neural network' boxType='proposition' tag='proposition-6'>
+Let $d, h \in\N_+$. Suppose $\boldsymbol{\Psi}\in\mathcal{N}$ is a fully-connected feedforward neural network with three layer of dimension $\mathbf{d}(\boldsymbol{\Psi}) = (d, h ,d)$. Then
+1. For $n\in\N_0$, the $n$-fold power $\boldsymbol{\Psi}^{\circ n}$ has hidden depth $\mathcal{H} (\boldsymbol{\Psi}^{\circ n}) = n$, total length $\mathcal{L}(\boldsymbol{\Psi}^{\circ n}) = n + 1$, and dimension vector
+$$
+\begin{equation*}
+  \N_+^{n+2} \ni \d (\boldsymbol{\Psi}^{\circ n}) = \begin{cases}
+    (d,d),\quad& n = 0 \\
+    (d,h,\dots,h,d),\quad& n\in\N_+
+  \end{cases}
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+2. For all $\boldsymbol{\Phi}\in\mathcal{N}$ and $L\in\N_+ \cap [\mathcal{L}(\boldsymbol{\Phi}), \infty)$ with $\mathcal{O}(\boldsymbol{\Phi}) = d$, then 
+$$
+  \mathcal{L}(\mathbf{E}_{L, \boldsymbol{\Psi}} (\boldsymbol{\Phi})) = L
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1)**
+Since $\mathcal{H}(\boldsymbol{\Psi}) = 1$, it follows from Proposition $\ref{proposition-5}$ that
+
+$$
+  \mathcal{H}(\boldsymbol{\Psi}^{\circ n}) = n\mathcal{H}(\boldsymbol{\Psi}) = n
+$$
+
+and from $\mathcal{H}(\boldsymbol{\Psi}^{\circ n}) = \mathcal{L}(\boldsymbol{\Phi}) - 1$ that
+
+$$
+  \mathcal{L}(\boldsymbol{\Psi}^{\circ n}) = n + 1
+$$
+
+Next, we prove $\eqref{equation-25}$ by induction. The base case $n = 0$ holds since by definition
+
+$$
+  \boldsymbol{\Psi}^{\circ 0} = (\mathbf{I}_d, 0) \in\R^{d\times d} \times\R^d
+$$
+
+For the induction step, assume that there exists $n\in\N_0$ which satisfies $\eqref{equation-25}$. Then
+
+$$
+\begin{align*}
+  \mathbf{d}(\boldsymbol{\Psi}^{\circ(n+1)}) =& \mathbf{d}(\boldsymbol{\Psi} \circ (\boldsymbol{\Psi}^{\circ n})) \\
+  =& (d,h,\dots,h,d)\in\N^{n+3}
+\end{align*}
+$$
+
+---
+**(2)**
+
+From Proposition $\ref{proposition-1-3}$, we have
+
+$$
+\begin{align*}
+  \mathcal{H}(\mathbf{E}_{L,\boldsymbol{\Psi}}(\boldsymbol{\Psi})) =& \mathcal{H}((\boldsymbol{\Psi}^{\circ (L - \mathcal{L}(\boldsymbol{\Psi})}) \circ\boldsymbol{\Phi}) \\
+  =& \mathcal{H}(\boldsymbol{\Psi}^{\circ (L - \mathcal{L}(\boldsymbol{\Psi})}) + \mathcal{H}(\boldsymbol{\Phi}) \\
+  =& (L - \mathcal{L}(\boldsymbol{\Phi})) + \underbrace{\mathcal{H}(\boldsymbol{\Phi})}_{\mathcal{L}(\boldsymbol{\Phi}) - 1} = L - 1
+\end{align*}
+$$
+
+Since $\mathcal{H}(\mathbf{E}_{L,\boldsymbol{\Psi}}(\boldsymbol{\Phi})) = \mathcal{L}(\mathbf{E}_{L,\boldsymbol{\Psi}}(\boldsymbol{\Phi})) - 1$, it follows that
+
+$$
+  \mathcal{L}(\mathbf{E}_{L,\boldsymbol{\Psi}}(\boldsymbol{\Phi})) = L
+$$
+</details>
+</MathBox>
+
+<MathBox title='Realizations of extensions of fully connected feedforward neural network' boxType='proposition' tag='proposition-7'>
+Let $a\in C(\R)$ be a continuous activation function and $\mathbf{I}\in\mathcal{N}$ a fully connected feedforward neural network satisfying the identity realization $\mathbf{F}_a^\mathcal{N} (\mathbf{I}) = \operatorname{id}_{\R^{\mathcal{I}(\mathbf{I})}}$. Then
+1. For $n\in\N_0$
+$$
+\begin{equation*}
+  \mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ n}) = \operatorname{id}_{\R^{\mathcal{I}(\mathbf{I})}}
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+2. For all $\boldsymbol{\Phi}\in\mathcal{N}$ and $L \in\N\cap [\mathcal{L}(\boldsymbol{\Phi}), \infty)$ with $\mathcal{O}(\boldsymbol{\Phi}) = \mathcal{I}(\mathbf{I})$
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathbf{E}_{L,\mathbf{I}} (\boldsymbol{\Phi})) = \mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi})
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1)**: This can be proved by induction on $n\in\N_0$. For the base case $n=0$, it follows from Definition $\ref{definition-1}$ that
+
+$$
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ 0})(\mathbf{x}) = \mathbf{x},\; \mathbf{x}\in\R^d
+$$
+
+For the induction step, assume there exists $n\in\N_0$ such that $\eqref{equation-26}$ holds. Then
+
+$$
+\begin{align*}
+  \mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ(n+1)}) =& \mathbf{F}_a^\mathcal{N} (\mathbf{I}\circ \mathbf{I}^{\circ n}) \\
+  =& \mathbf{F}_a^\mathcal{N} (\mathbf{I}) \circ \mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ n}) \in C(\R^d)
+\end{align*}
+$$
+
+and for $\mathbf{x}\in\R^d$
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ (n+1)}))(\mathbf{x}) =& (\mathbf{F}_a^\mathcal{N} (\mathbf{I}) \circ \mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ n}))(\mathbf{x}) \\
+  =& (\mathbf{F}_a^\mathcal{N}(\mathbf{I}))(\mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ n}))(\mathbf{x})) \\
+  =& (\mathbf{F}_a^\mathcal{N}(\mathbf{I})(\mathbf{x}) = \mathbf{x}
+\end{align*}
+$$
+
+**(2)**
+
+Since $\mathcal{I}(\mathbf{I}) = \mathcal{O}(\boldsymbol{\Phi}) = \mathcal{O}(\boldsymbol{\Phi})$ it follows from Definition $\ref{definition-2}$
+
+$$
+\begin{align*}
+  \mathbf{F}_a^\mathcal{N} (\mathbf{E}_{L,\mathbf{I}} (\boldsymbol{\Phi})) = \mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ(L - \mathcal{L}(\boldsymbol{\Phi})} \circ\boldsymbol{\Phi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}\mathbf{I}}) = C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})
+\end{align*}
+$$
+
+and for $x\in\R^{\mathcal{I}(\boldsymbol{\Phi})}$
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{E}_{L,\mathbf{I}} (\boldsymbol{\Phi}))(\mathbf{x}) =& (\mathbf{F}_a^\mathcal{N} (\mathbf{I}^{\circ (L - \mathcal{L}(\boldsymbol{\Phi})}))((\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{x})) \\
+  =& (\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{x})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Architectures of extensions of fully connected feedforward neural network' boxType='corollary'>
+Let $d,h,L,\mathfrak{L}\in\N_+$ and $\ell_0,\dots,\ell_{L-1} \in\N_+$. Suppose $\boldsymbol{\Phi},\boldsymbol{\Psi}\in\mathcal{N}$ are fully connected feedforward neural networks with respective dimension vectors $\mathbf{d}(\boldsymbol{\Phi}) = (\ell_0,\dots,\ell_{L-1},d)\in\N^L$ and $\mathbf{d}(\boldsymbol{\Psi}) = (d,h,d)\in\N^3$. Then the dimension vector of the extended network $\mathbf{E}_{\mathfrak{L}, \boldsymbol{\Psi}} (\boldsymbol{\Phi})$ is given by
+
+$$
+  \N^{\mathfrak{L} + 1} \ni \mathbf{d}(\mathbf{E}_{\mathfrak{L}, \boldsymbol{\Psi}} (\boldsymbol{\Phi})) = \begin{cases}
+    (\ell_0,\dots,\ell_{L-1},d),\quad& \mathfrak{L} = L \\
+    (\ell_0,\dots,\ell_{L_1},\underbrace{h,\dots,h}_{\mathfrak{L} - L \text{ times}},d),\quad& \mathfrak{L} > L
+  \end{cases}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From Proposition $\ref{proposition-6}$, we have $\mathcal{H}(\boldsymbol{\Psi}^{\circ(\mathfrak{L} - L)}) = \mathfrak{L} - L$ and
+
+$$
+  \N^{\mathfrak{L} - L + 2} \ni \mathbf{d}(\boldsymbol{\Psi}^{\circ(\mathfrak{L} - L)}) = \begin{cases}
+    (d, d),\quad& \mathfrak{L} = L \\
+    (d,h,\dots,h,d),\quad& \mathfrak{L} > L
+  \end{cases}
+$$
+
+From Proposition $\ref{proposition-1-3}$, we obtain
+
+$$
+\begin{align*}
+  \mathcal{H}(\boldsymbol{\Psi}^{\circ(\mathfrak{L} - L)}\circ\boldsymbol{\Phi}) =& \mathcal{H}(\boldsymbol{\Phi}^{\circ(\mathfrak{L} - L)} + \mathcal{H}(\boldsymbol{\Phi}) \\
+  =& (\mathfrak{L} - L) + L - 1 = \mathfrak{L} - 1
+\end{align*}
+$$
+
+and
+
+$$
+  \N^{\mathfrak{L} + 1} \ni \mathbf{d}(\boldsymbol{\Psi}^{\circ(\mathfrak{L} - L)} \circ\boldsymbol{\Phi}) = \begin{cases}
+    (\ell_0,\dots,\ell_{L-1}, d),\quad& \mathfrak{L} = L \\
+    (d,\ell_0,\dots,\ell_{L-1},h,\dots,h,d),\quad& \mathfrak{L} > L
+  \end{cases}
+$$
+
+The result follows since $\mathbf{E}_{\mathfrak{L}, \boldsymbol{\Psi}} = \boldsymbol{\Psi}^{\circ(\mathfrak{L} - L)} \circ\boldsymbol{\Phi}$ by Definition $\ref{definition-2}$.
+</details>
+</MathBox>
+
+#### Padded parallelization
+
+<MathBox title='Parallelization of fully connected feedfoward neural networks of unequal depth' boxType='definition'>
+For $n\in\N_+$, let $\boldsymbol{\Psi} = (\boldsymbol{\Psi}_j)_{j=1}^n \in\mathcal{N}^n$ be a tuple of layer-compatible fully-connected feedforward neural networks satisfying, for $j=1,\dots,n$
+- $\mathcal{H}(\boldsymbol{\Psi}_j) = 1$, i.e. each $\boldsymbol{\Psi}_j$ has exactly one hidden layer
+- $\mathcal{I}(\boldsymbol{\Psi}_j) = \mathcal{O}(\boldsymbol{\Psi}_j)$
+
+Define the set
+
+$$
+  \mathcal{D}_{n,\boldsymbol{\Psi}} = \set{\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^n | \mathcal{O}(\boldsymbol{\Phi}_j) = \mathcal{I}(\boldsymbol{\Psi}_j), j=1,\dots,n} 
+$$
+
+and for $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in\mathcal{D}_{n,\boldsymbol{\Psi}}$ set
+
+$$
+  L_\text{max} := \max_{k\in\set{1,dots,n}} \mathcal{L}(\boldsymbol{\Phi}_k)
+$$
+
+The parallelization operator with padding, $\mathbf{P}_{n, \boldsymbol{\Psi}}: \mathcal{D}_{n,\boldsymbol{\Psi}} \to \mathcal{N}$ is defined by
+
+$$
+  \mathbf{P}_{n, \boldsymbol{\Psi}} (\boldsymbol{\Phi}) = \mathbf{P}_n (\mathbf{E}_{L_\text{max}, \boldsymbol{\Psi}_1} (\boldsymbol{\Phi}_1), \dots, \mathbf{E}_{L_\text{max}, \boldsymbol{\Psi}_n} (\boldsymbol{\Phi}_n))
+$$
+
+where
+- $\mathbf{E}_{L_\text{max}, \boldsymbol{\Psi}_f}$ is the extension operator defined by
+$$
+  \mathbf{E}_{L_\text{max}, \boldsymbol{\Psi}_f} (\boldsymbol{\Phi}_j) := \boldsymbol{\Psi}_j^{\circ(L_\text{max} - \mathcal{L}(\boldsymbol{\Phi}_j)} \circ \boldsymbol{\Phi}_j
+$$
+- $\mathbf{P}_n$ denotes the standard parallelization operator for layer-compatible networks of equal length.
+</MathBox>
+
+<MathBox title='Realization of parallelization of fully connected feedfoward neural networks of unequal length' boxType='definition'>
+Let $a\in C(\R)$ be a continuous activation function. For $n\in\N$ suppose 
+
+$$
+  \mathbf{I} =& (\mathbf{I}_j)_{j=1}^n \in\mathcal{N}^n \\
+  \boldsymbol{\Phi} =& (\boldsymbol{\Phi}_j)_{j=1}) \in\mathcal{N}^n
+$$
+
+are tuples of fully connected feedforward neural networks such that, for $j=1,\dots,n$
+- $\mathcal{H}(\mathbf{I}_j) = 1$
+- $\mathcal{I}(\mathbf{I}_j) = \mathcal{O}(\mathbf{I}_j) = \mathcal{O}(\boldsymbol{\Phi}_j)$
+- the realization of $\mathbf{I}_j$ is the identity map, i.e.
+$$
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{I}_j))(\mathbf{x}) = \mathbf{x}$ for $\mathbf{x}\in\R^{\mathcal{O}(\boldsymbol{\Phi}_j)}
+$$
+
+The realization of the parallelized padded network $\mathbf{P}_{n,\mathbf{I}}(\boldsymbol{\Phi})$ satisfies
+1. 
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathbf{P}_{n,\mathbf{I}}(\boldsymbol{\Phi})) \in C\left(\R^{\sum_{j=1}^n \mathcal{I}(\boldsymbol{\Phi}_j)}, \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)} \right)
+$$
+
+2. for $\mathbf{x}_j \in\R^{\mathcal{I}(\Phi_j)}$ with $j=1,\dots,n$
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_{n,\mathbf{I}}(\boldsymbol{\Phi})) \right)(\mathbf{x}_1,\dots,\mathbf{x}_n) = \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_1))(\mathbf{x}_1),\dots, \mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_n))(\mathbf{x}_n) \right) \in \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $L \in\N_+$ satisfy $L = \max_{j\in\set{1,\dots,n}} \mathcal{L}(\boldsymbol{\Phi}_j)$. From Proposition $\ref{proposition-6-2}$ and Proposition $\ref{proposition-7-2}$, it follows that, for $j=1,\dots,n$, 
+- $\mathcal{L}(\mathbf{E}_{L,\mathbf{I}_j}(\boldsymbol{\Phi}_j)) = L$
+- $\mathbf{F}_a^\mathcal{N} (\mathbf{E}_{L,\mathbf{I}_j} (\boldsymbol{\Phi}_j))\in C(\R^{\mathcal{I}(\boldsymbol{\Phi}_j)}, \R^{\mathcal{O}(\boldsymbol{\Phi}_j)})$
+- for $\mathbf{x}\in\R^{\mathcal{I}(\boldsymbol{\Phi}_j)}$
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{E}_{L, \mathbf{I}_j} (\boldsymbol{\Phi}_j))\right)(\mathbf{x}) = (\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}_j))(\mathbf{x})
+$$
+
+By Proposition $\ref{proposition-4}$, we obtain
+
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathbf{P}_n (\mathbf{E}_{L, \mathbf{I}_1} (\boldsymbol{\Phi}_1),\dots, \mathbf{E}_{L, \mathbf{I}_n} (\boldsymbol{\Phi}_n))) \in C\left(\R^{\sum_{j=1}^n \mathcal{I}(\boldsymbol{\Phi}_j)}, \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)} \right)
+$$
+
+and for $\mathbf{x}_j \in \R^{\mathcal{I}(\boldsymbol{\Phi}_j)}$ with $j=1,\dots,n$
+
+$$
+\begin{align*}
+  &\left(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_n (\mathbf{E}_{L, \mathbf{I}_1} (\boldsymbol{\Phi}_1),\dots, \mathbf{E}_{L, \mathbf{I}_n} (\boldsymbol{\Phi}_n)))\right)(\mathbf{x}_1, \dots, \mathbf{x}_n) \\
+  =&  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_{n,\mathbf{I}}(\mathbf{E}_{L, \mathbf{I}_1} (\boldsymbol{\Phi}_1)),\dots,\mathbf{E}_{L, \mathbf{I}_n}(\boldsymbol{\Phi}_n)))\right) (\mathbf{x}_1),\dots, \mathbf{x}_n) \\
+  =& \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_1))(\mathbf{x}_1),\dots, \mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_n))(\mathbf{x}_n) \right)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Scalar multiplication of neural networks
+
+### Sum of neural networks
 
 # Convolutional neural network (CNN)
 
