@@ -322,14 +322,14 @@ For notational convenience, we define the weight and bias projection maps for $n
 - $\mathcal{W}_n (\boldsymbol{\Phi}) := \mathbf{W}_n \in \R^{d_n (\boldsymbol{\Phi}) \times d_{n-1} (\boldsymbol{\Phi})}$
 - $\mathcal{B}_n (\boldsymbol{\Phi}) := \mathbf{B}_n \in \R^{d_n (\boldsymbol{\Phi})}$
 
-The structure of an FFNN $\boldsymbol{\Phi}\in\mathcal{N}$ is characterized by the following quantities:
+The structure of a network $\boldsymbol{\Phi}\in\mathcal{N}$ is characterized by the following quantities:
 - Number of layers: $\mathcal{L}(\boldsymbol{\Phi}) = L \in\N_+$
 - Input dimension: $\mathcal{I}(\boldsymbol{\Phi}) = d_0 (\boldsymbol{\Phi}) = \ell_0 \in\N_+$
 - Output dimension: $\mathcal{O}(\boldsymbol{\Phi}) = d_{\mathcal{L}(\boldsymbol{\Phi})} = \ell_L \in\N_+$
 - Number of hidden layers: $\mathcal{H}(\boldsymbol{\Phi}) = \mathcal{L}(\boldsymbol{\Phi}) - 1 \in\N_0$
 - Total number of parameters: $\mathcal{P}(\boldsymbol{\Phi}) = \sum_{k=1}^L \ell_k (\ell_{k+1} + 1) \in\N_+$
 
-Let $a:\R\to\R$ be an activation function. The realization of an FFNN $\boldsymbol{\Phi} \in\mathcal{N}$ with activation $a$ is the function $\mathcal{F}_a^\mathcal{N}: \R^{\mathcal{I}(\boldsymbol{\Phi})} \to \R^{\mathcal{O}(\boldsymbol{\Phi})}$ defined recursively as follows.
+Let $a:\R\to\R$ be an activation function. The realization of a network $\boldsymbol{\Phi} \in\mathcal{N}$ with activation $a$ is the function $\mathcal{F}_a^\mathcal{N}: \R^{\mathcal{I}(\boldsymbol{\Phi})} \to \R^{\mathcal{O}(\boldsymbol{\Phi})}$ defined recursively as follows.
 
 Given an input $\mathbf{x}_0 \in\R^{d_0 (\boldsymbol{\Phi})}$, define for $k = 1,\dots,\mathcal{L}(\boldsymbol{\Phi})$
 
@@ -1004,7 +1004,7 @@ This follows by induction using Proposition $\ref{proposition-1-3}$.
 
 ### Parallelization of neural networks
 
-<MathBox title="Parallelization of fully connected feedforward neural networks" boxType="definition">
+<MathBox title="Parallelization of fully connected feedforward neural networks" boxType="definition" tag="definition-3">
 Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks as defined in $\eqref{equation-4}$. For $n\in\N_+$, let $\mathcal{N}^{(n)}$ denote the set of layer-compatible network tuples
 
 $$
@@ -1122,7 +1122,7 @@ $$
 \begin{align*}
   \left[\frac{n^2}{2} \right] \mathcal{P}(\boldsymbol{\Phi}_1) \leq& \left[\frac{n^2 + n}{2} \right] \mathcal{P}(\boldsymbol{\Phi}_1) \\
   \leq& \mathcal{P}(\mathbf{P}_n (\boldsymbol{\Phi})) \leq n^2 \mathcal{P}(\boldsymbol{\Phi}_1) \\
-  \leq& \frac{1}{2} \left(\sum_{i=1}^n \right)^2
+  \leq& \frac{1}{2} \left(\sum_{i=1}^n \mathcal{P}(\boldsymbol{\Phi}_i) \right)^2
 \end{align*}
 $$
 
@@ -1237,7 +1237,7 @@ Thus $\mathbf{F}_\text{ReLU}^\mathcal{N} (\mathbf{I}_1)$ equals the identity map
 Let $\mathbf{I}_1 \in\mathcal{N}$ be the one-dimensional fully connected feedforward identity neural network defined in Proposition $\ref{proposition-3}$. For $d\in\N_+$ define the $d$-dimensional identity network
 
 $$
-  \mathbf{I}_d := \mathbf{P}_d (\underbrace{\mathbf{I}_1, \dots, \mathbf{I}_1}_{d \text{ times}) \in \mathcal{N}^{(n)}
+  \mathbf{I}_d := \mathbf{P}_d (\underbrace{\mathbf{I}_1, \dots, \mathbf{I}_1}_{d \text{ times}}) \in \mathcal{N}^{(n)}
 $$
 
 where the parallelization operator $\mathbf{P}_d$ is applied to $d$ identical copies of $\mathbf{I}_d$. The dimension vector of $\mathbf{I}_d$ is
@@ -1496,23 +1496,26 @@ $$
 - $\mathbf{P}_n$ denotes the standard parallelization operator for layer-compatible networks of equal length.
 </MathBox>
 
-<MathBox title='Realization of parallelization of fully connected feedfoward neural networks of unequal length' boxType='definition'>
+<MathBox title='Realization of parallelization of fully connected feedfoward neural networks of unequal length' boxType='proposition'>
 Let $a\in C(\R)$ be a continuous activation function. For $n\in\N$ suppose 
 
 $$
+\begin{align*}
   \mathbf{I} =& (\mathbf{I}_j)_{j=1}^n \in\mathcal{N}^n \\
   \boldsymbol{\Phi} =& (\boldsymbol{\Phi}_j)_{j=1}) \in\mathcal{N}^n
+\end{align*}
 $$
 
 are tuples of fully connected feedforward neural networks such that, for $j=1,\dots,n$
 - $\mathcal{H}(\mathbf{I}_j) = 1$
 - $\mathcal{I}(\mathbf{I}_j) = \mathcal{O}(\mathbf{I}_j) = \mathcal{O}(\boldsymbol{\Phi}_j)$
-- the realization of $\mathbf{I}_j$ is the identity map, i.e.
+- the realization of $\mathbf{I}_j$ is the identity map, i.e. for $\mathbf{x}\in\R^{\mathcal{O}(\boldsymbol{\Phi}_j)}$
 $$
-  (\mathbf{F}_a^\mathcal{N} (\mathbf{I}_j))(\mathbf{x}) = \mathbf{x}$ for $\mathbf{x}\in\R^{\mathcal{O}(\boldsymbol{\Phi}_j)}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{I}_j))(\mathbf{x}) = \mathbf{x}
 $$
 
 The realization of the parallelized padded network $\mathbf{P}_{n,\mathbf{I}}(\boldsymbol{\Phi})$ satisfies
+
 1. 
 $$
   \mathbf{F}_a^\mathcal{N} (\mathbf{P}_{n,\mathbf{I}}(\boldsymbol{\Phi})) \in C\left(\R^{\sum_{j=1}^n \mathcal{I}(\boldsymbol{\Phi}_j)}, \R^{\sum_{j=1}^n \mathcal{O}(\boldsymbol{\Phi}_j)} \right)
@@ -1554,7 +1557,331 @@ $$
 
 ### Scalar multiplication of neural networks
 
+<MathBox title='Fully connected feedforward affine neural network' boxType='proposition' tag='proposition-8'>
+For $m,n\in\N_+$ let $\mathbf{B}\in\R^{m\times n}$ and $\mathbf{b}\in\R^m$. We define the fully connected feedforward affine neural network 
+
+$$
+  \mathbf{A}_{\mathbf{W}, \mathbf{b}} \in (\R^{m\times n} \times \R^m) \subseteq \mathcal{N}
+$$
+
+by $\mathbf{A}_{\mathbf{W}, \mathbf{b}} = (\mathbf{W}, \mathbf{b})$, which consists of a single affine layer with weight matrix $\mathbf{W}$ and bias vector $\mathbf{b}$. An affine network $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ has the following properties:
+
+1. **Dimension vector:** $\mathbf{d}(\mathbf{A}_{\mathbf{W}, \mathbf{b}}) = (n, m)\in\N^2$
+2. **Realization:** for all continuous activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}, \mathbf{b}}) \in C(\R^n, \R^m)$ is given by
+
+$$
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}, \mathbf{b}}))(\mathbf{x}) = \mathbf{Wx} + \mathbf{b}\in\R^m,\; \mathbf{x}\in\R^n
+$$
+
+In particular, the realized function is independent of the choice of activation function $a$.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By definition $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ consists of a single affine layer map $\R^n \to \R^m$, hence its dimension vector is $\mathbf{d}(\mathbf{A}_{\mathbf{W}, \mathbf{b}}) = (n, m)$.
+
+---
+**(2):** By $\eqref{equation-24}$, the realization $\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}, \mathbf{b}})$ is precisely the affine transformation $\mathbf{x} \mapsto \mathbf{Wx} + \mathbf{b}$ for $\mathbf{x}\in\R^n$, which is continuous on $\R^n$.
+</details>
+</MathBox>
+
+<MathBox title='Compositions with fully connected feedforward affine neural network' boxType='proposition' tag='proposition-9'>
+Let $\mathbf{A}_{\mathbf{W}, \mathbf{b}} \in (\R^{m\times n} \times \R^m)$ be an affine network and $\boldsymbol{\Phi} \in\mathcal{N}$ a fully connected feedforward neural network. For all $m\in\N_+$ with $\mathbf{W}\in\R^{m\times \mathcal{O}(\boldsymbol{\Phi})}$ and $\mathbf{b}\in\R^m$, the composition $\mathbf{A}_{\mathbf{W}, \mathbf{b}} \circ \boldsymbol{\Phi}$ has the following properties.
+
+1. **Dimension vector:**
+$$
+  \mathbf{d}(\mathbf{A}_{\mathbf{W}, \mathbf{b}} \circ \boldsymbol{\Phi}) = (d_0 (\boldsymbol{\Phi}), \dots, d_{\mathcal{H}(\boldsymbol{\Phi})}(\boldsymbol{\Phi}), m)
+$$
+
+2. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization function $\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}, \mathbf{b}} \circ\boldsymbol{\Phi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^m)$ is given by
+$$
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}, \mathbf{b}} \circ\boldsymbol{\Phi}))(\mathbf{x}) = \mathbf{W}\left((\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{x}) \right) + \mathbf{b}
+$$
+
+For all $n\in\N_+$, with $\mathbf{W}\in\R^{\mathcal{I}(\boldsymbol{\Phi})\in n}$ and $\mathbf{b}$, the composition $\boldsymbol{\Phi}\circ\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ has the following properties
+
+3. **Dimension vector:**
+$$
+  \mathbf{d}(\boldsymbol{\Phi}\circ\mathbf{A}_{\mathbf{W}, \mathbf{b}}) = (n, d_1 (\boldsymbol{\Phi}),\dots,d_{\mathcal{L}(\boldsymbol{\Phi})}(\boldsymbol{\Phi}))
+$$
+
+4. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization function $\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{A}_{\mathbf{W}, \mathbf{b}}) \in C(\R^n, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by
+$$
+  (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{A}_{\mathbf{W}, \mathbf{b}}))(\mathbf{x}) = (\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{Wx} + \mathbf{b})
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from Propositions $\ref{proposition-1}$ and $\ref{proposition-7}$.
+</details>
+</MathBox>
+
+<MathBox title='Scalar multiplication of fully connected feedforward neural networks' boxType='proposition'>
+Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks. For $\lambda\in\R$ and $\boldsymbol{\Phi}\in\mathcal{N}$, we define the scalar multiplication operator $\circledast:\R \times\mathcal{N}\to\mathcal{N}$ by
+
+$$
+  \lambda\circledast\boldsymbol{\Phi} = \mathbf{A}_{\lambda \mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}} \circ \boldsymbol{\Phi}
+$$
+
+where
+- $\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})} \in\R^{\mathcal{O}(\boldsymbol{\Phi}) \times\mathcal{O}(\boldsymbol{\Phi})}$ denotes the identity matrix
+- $\mathbf{A}_{\lambda\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}} \in \R^{\mathcal{I}(\boldsymbol{\Phi})\times\mathcal{O}(\boldsymbol{\Phi})} \times\R^{\mathcal{O}(\boldsymbol{\Phi})}$ is the affine neural network defined in Proposition $\ref{proposition-8}$.
+
+The scalar product $\lambda\circledast\boldsymbol{\Phi}$ has the following properties.
+1. **Dimension vector:** $\mathbf{d}(\lambda\circledast\boldsymbol{\Phi}) = \mathbf{d}(\boldsymbol{\Phi})$
+2. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\lambda\circledast\boldsymbol{\Phi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\lambda\circledast\boldsymbol{\Phi}) \right)(\mathbf{x}) = \lambda\left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi})) (\mathbf{x}) \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $L\in\N_+$ and $\ell_0,\dots,\ell_L \in\N_+$ satisfy $L = \mathcal{L}(\boldsymbol{\Phi})$ and $(\ell_j)_{j=0}^L = \mathbf{d}(\boldsymbol{\Phi})$.
+
+**(1):** By Proposition $\ref{proposition-8-1}$, we obtain
+
+$$
+  \mathbf{d}(\mathbf{A}_{\lambda\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}}) = (\mathcal{O}(\boldsymbol{\Phi}), \mathcal{O}(\boldsymbol{\Phi}))
+$$
+
+Applying Proposition $\ref{proposition-9-1}$ yields
+
+$$
+\begin{align*}
+  \mathbf{d}(\lambda\circledast\boldsymbol{\Phi}) =& \mathbf{d}(\mathbf{A}_{\lambda\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}} \circ\boldsymbol{\Phi}) \\
+  =& (\ell_0,\dots,\ell_{L-1}, \mathcal{O}(\boldsymbol{\Phi})) = \mathbf{d}(\boldsymbol{\Phi})
+\end{align*}
+$$
+
+**(2):** From Proposition $\ref{proposition-9-2}$ we have
+
+$$
+\begin{align*}
+  \left(\mathbf{F}_a^\mathcal{N} (\lambda\circledast\boldsymbol{\Phi}) \right)(\mathbf{x}) =& \left(\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\lambda\mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})}, \mathbf{0}} \circ\mathbf{\Phi}) \right)(\mathbf{x}) \\
+  =& \lambda \mathbf{I}_{\mathcal{O}(\boldsymbol{\Phi})} \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}) \right) \\
+  =& \lambda \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}) \right)
+\end{align*}
+$$
+</details>
+</MathBox>
+
 ### Sum of neural networks
+
+#### Sum of vectors as networks
+
+<MathBox title='Sums of vectors as fully-connected feedforward neural networks' boxType='proposition' tag='proposition-10'>
+For $m, n\in\N$, define the matrix
+
+$$
+  \mathbf{W}_{m,n} := \begin{bmatrix} \mathbf{I}_m & \cdots & \mathbf{I}_m \end{bmatrix} \in \R^{m\times (mn)}
+$$
+
+as the horizontal concatenation of $n$ copies of the identity matrix $\mathbf{I}_m \in\R^{m\times m}$. We define the summation network $\mathbf{S}_{m, n} \in (\R^{m\times(mn)} \times\R^m)\subseteq\mathcal{N}$ as the fully connected feedforward affine neural network
+
+$$
+  \mathbf{S}_{m, n} = \mathbf{A}_{\mathbf{W}_{m,n}, \mathbf{0}}
+$$
+
+which satisfies the following properties.
+1. **Dimension vector:** $\mathbf{d}(\mathbf{S}_{m,n}) = (mn, m) \in\N^2$
+2. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{m,n}) \in C(\R^{mm}, \R^m)$ is given by, for $\mathbf{x}_1, \dots, \mathbf{x}_n \in \R^m$
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{m,n}) \right)(\mathbf{x}_1, \dots, \mathbf{x}_n) = \sum_{k=1}^n \mathbf{x}_k
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By definition $\mathbf{S}_{m, n}$ consists of a single affine layer map $\R^{mn} \to \R^m$, hence its dimension vector is $\mathbf{d}(\mathbf{S}_{m, n}) = (mn, m)$.
+
+**(2):** From Proposition $\ref{proposition-8}$ we have
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{m,n}))(\mathbf{x}_1,\dots,\mathbf{x}_n) =& (\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}_{m,n}, \mathbf{0}})(\mathbf{x}_1,\dots,\mathbf{x}_n) \\
+  =& \begin{bmatrix} \mathbf{I}_m & \cdots & \mathbf{I}_m \end{bmatrix} \cdot \begin{bmatrix} \mathbf{x}_1 \\ \vdots \\ \mathbf{x}_n \end{bmatrix} \\
+  =& \sum_{k=1}^n \mathbf{I}_m \mathbf{x}_k = \sum_{k=1}^n \mathbf{x}_k
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Compositions with fully-connected feedforward summation neural networks' boxType='proposition'>
+Let $a\in C(\R)$ be a continuous activation function and $\boldsymbol{\Phi}\in\mathcal{N}$ a fully connected feedforward neural network. 
+
+1. For $m,n\in\N_+$ assume $\mathcal{O}(\boldsymbol{\Phi}) = mn$. Then the composition $\mathbf{S}_{m,n} \circ\boldsymbol{\Phi}$ is well-defined, and its realization $\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{m,n} \circ \boldsymbol{\Phi}) \in C(\R^{n\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by, for $\mathbf{x}\in\R^{\mathcal{I}(\boldsymbol{\Phi})}$ and $\mathbf{y}_1,\dots, \mathbf{y}_n \in\R^m$ with $(\mathbf{F}_a^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{x}) = (\mathbf{y}_1,\dots,\mathbf{y}_n)$
+
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{m, n} \circ\boldsymbol{\Phi}) \right)(\mathbf{x}) = \sum_{k=1}^n \mathbf{y}_k
+$$
+
+2. For $n\in\N$, the composition $\boldsymbol{\Phi}\circ\mathbf{S}_{\mathcal{I}(\boldsymbol{\Phi}), n}$ is well-defined and its realization $\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{S}_{\mathcal{I}(\boldsymbol{\Phi}), n})\in C(\R^{n\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by, for $\mathbf{x}_1,\dots,\mathbf{x}_n \in\R^{\mathcal{I}(\boldsymbol{\Phi})}$
+
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{S}_{\mathcal{I}(\boldsymbol{\Phi}), n} \right)(\mathbf{x}_1,\dots,\mathbf{x}_n) = (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))\left(\sum_{k=1}^n \mathbf{x}_k \right)
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from Propositions $\ref{proposition-1-5}$ and $\ref{proposition-10}$. 
+</details>
+</MathBox>
+
+#### Concatenation of vectors as networks
+
+<MathBox title='Concatenation of vectors as fully connected feedforward neural networks' boxType='proposition' tag='proposition-11'>
+For $m, n\in\N$, define the matrix
+
+$$
+  \mathbf{W}_{m,n} := \begin{bmatrix} \mathbf{I}_m & \cdots & \mathbf{I}_m \end{bmatrix} \in \R^{m\times (mn)}
+$$
+
+as the horizontal concatenation of $n$ copies of the identity matrix $\mathbf{I}_m \in\R^{m\times m}$. We define the concatenation network $\mathbf{T}_{m, n} \in (\R^{(mn)\times m} \times\R^(mn)\subseteq\mathcal{N}$ as the fully connected feedforward affine neural network
+
+$$
+  \mathbf{S}_{m, n} = \mathbf{A}_{\mathbf{W}_{m,n}^\top, \mathbf{0}}
+$$
+
+which satisfies the following properties.
+1. **Dimension vector:** $\mathbf{d}(\mathbf{T}_{m,n}) = (m, mn) \in\N^2$
+2. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\mathbf{T}_{m,n}) \in C(\R^m, \R^{mn})$ is given by, for $\mathbf{x}\in\R^m$
+$$
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{T}_{m,n}))(\mathbf{x}) = (\mathbf{x},\dots,\mathbf{x}) \in\R^{mn}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** By definition $\mathbf{T}_{m, n}$ consists of a single affine layer map $\R^m \to \R^{mn}$, hence its dimension vector is $\mathbf{d}(\mathbf{T}_{m, n}) = (m, mn)$.
+
+**(2):** From Proposition $\ref{proposition-8}$ we have
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N} (\mathbf{T}_{m,n}))(\mathbf{x}) =& (\mathbf{F}_a^\mathcal{N} (\mathbf{A}_{\mathbf{W}_{m,n}^\top, \mathbf{0}})(\mathbf{x}) \\
+  =& \begin{bmatrix} \mathbf{I}_m \\ \vdots \\ \mathbf{I}_m \end{bmatrix} \cdot \mathbf{x} \\
+  =& \begin{bmatrix} \mathbf{x} & \cdots & \mathbf{x} \end{bmatrix} \in \R^{mn}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title='Compositions with fully-connected feedforward concatenation neural networks' boxType='proposition' tag='proposition-12'>
+Let $a\in C(\R)$ be a continuous activation function and $\boldsymbol{\Phi}\in\mathcal{N}$ a fully connected feedforward neural network. 
+
+1. For $n\in\N_+$, the composition $\mathbf{T}_{\mathcal{O}(\boldsymbol{\Phi}),n} \circ\boldsymbol{\Phi}$ is well-defined, and its realization $\mathbf{F}_a^\mathcal{N} (\mathbf{T}_{\mathcal{O}(\boldsymbol{\Phi}),n} \circ \boldsymbol{\Phi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{n\mathcal{O}(\boldsymbol{\Phi})})$ is given by, for $\mathbf{x}\in\R^{\mathcal{I}(\boldsymbol{\Phi})}$
+
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\mathbf{T}_{m, n} \circ\boldsymbol{\Phi}) \right)(\mathbf{x}) = \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}),\dots, (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x})\right) 
+$$
+
+2. For $m, n\in\N$, assume $\mathcal{I}(\boldsymbol{\Phi})$. Then the composition $\boldsymbol{\Phi}\circ\mathbf{T}_{m, n}$ is well-defined and its realization $\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{T}_{m, n})\in C(\R^m, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by, for $\mathbf{x} \in\R^m$
+
+$$
+  \left(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}\circ\mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}), n} \right)(\mathbf{x}) = (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))\underbrace{(\mathbf{x},\dots,\mathbf{x})}_{\in\R^{mn}}
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from Propositions $\ref{proposition-1-5}$ and $\ref{proposition-11}$. 
+</details>
+</MathBox>
+
+#### Sum of fully connected feedforward neural networks
+
+<MathBox title='Sum of fully connected feedforward neural networks' boxType='proposition'>
+Let $m, n\in\Z$ with $n\geq m$. Suppose $\boldsymbol{\Phi}_m,\dots,\boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n \in\mathcal{N}$ are fully connected feedforward neural networks satisfying, for all $k\in\set{m, m+1,\dots, n}$
+
+$$
+\begin{align*}
+  \mathcal{L}(\boldsymbol{\Phi}_k) =& \mathcal{L}(\boldsymbol{\Phi}_m) \\
+  \mathcal{I}(\boldsymbol{\Phi}_k) =& \mathcal{I}(\boldsymbol{\Phi}_m) \\
+  \mathcal{O}(\boldsymbol{\Phi}_k) =& \mathcal{O}(\boldsymbol{\Phi}_m)
+\end{align*}
+$$
+
+Denote $N := n - m + 1$. We define the sum network $\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \in \mathcal{N}$ by
+
+$$
+  \bigoplus_{k=m}^n \boldsymbol{\Phi}_k = \left(\mathbf{S}_{\mathcal{O}(\boldsymbol{\Phi}_m), N} \circ \mathbf{P}_{N} (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n) \circ \mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}_i), N}\right) \in\mathcal{N}
+$$
+
+where
+- $\mathbf{T}_{d,N} \in \R^{dN \times d} \times \R^{dN}$ denotes the concatenation network
+- $\mathbf{P}_N$ denotes the parallelization operator
+- $\mathbf{S}_{d, N} \in \R^{d \times (dN)} \times\R^d$ denotes the summation network
+
+The sum network $\bigoplus_{k=m}^n \boldsymbol{\Phi}_k$ satisfies the following properties.
+1. **Depth:** $\mathcal{L}\left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) = \mathcal{L}(\boldsymbol{\Phi}_m)$
+2. **Dimension vector:**
+$$
+  \mathbf{d}\left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) = \left(\mathcal{I}(\boldsymbol{\Phi}_k), \sum_{k=m}^n d_1 (\boldsymbol{\Phi}_k), \dots, \sum_{k=m}^n d_{\mathcal{H}(\boldsymbol{\Phi})} (\boldsymbol{\Phi}_k), \mathcal{O}(\boldsymbol{\Phi}_m) \right)
+$$
+3. **Realization:** For all continuous activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} \left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi}_m)}, \R^{\mathcal{O}(\boldsymbol{\Phi}_m)})$ is given by
+$$
+  \mathbf{F}_a^\mathcal{N} \left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) = \sum_{k=m}^n (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_k))
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(2):**
+From Definition $\ref{definition-3}$, we have
+
+$$
+\begin{align*}
+  &\mathbf{d}(\mathbf{P}_N (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n) \\
+  =& \left(\sum_{k=m}^n d_0 (\boldsymbol{\Phi}_k), \sum_{k=m}^n d_1 (\boldsymbol{\Phi}_k), \dots, \sum_{k=m}^n d_{\mathcal{L}(\boldsymbol{\Phi}) - 1} (\boldsymbol{\Phi}_k), \sum_{k=m}^n d_{\mathcal{L}(\boldsymbol{\Phi}_m)} (\boldsymbol{\Phi}_k) \right) \\
+  =& \left( N\mathcal{I}(\boldsymbol{\Phi}_m), \sum_{k=m}^n d_1 (\boldsymbol{\Phi}_k),\dots,\sum_{k=m}^n d_{\mathcal{L}(\boldsymbol{\Phi}_m) - 1} (\boldsymbol{\Phi}_k), N\mathcal{O}(\boldsymbol{\Phi}_m) \right)
+\end{align*}
+$$
+
+By Proposition $\ref{proposition-10-1}$, we find
+
+$$
+  \mathbf{d}(\mathbf{S}_{\mathcal{O}(\boldsymbol{\Phi}_m), N}) = (N\mathcal{O}(\boldsymbol{\Phi}_m), \mathcal{O}(\boldsymbol{\Phi}_m))
+$$
+
+Likewise, Proposition $\ref{proposition-11-1}$ yields
+
+$$
+  \mathbf{d}(\mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}_m), N} = (\mathcal{I}(\boldsymbol{\Phi}_m), N\mathcal{I}(\boldsymbol{\Phi}_m))
+$$
+
+Applying Proposition $\ref{proposition-1-1}$ leads to
+
+$$
+\begin{align*}
+  \mathbf{d}\left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) =& \mathbf{d}\left(\mathbf{S}_{\mathcal{O}(\boldsymbol{\Phi}_m), N} \circ \mathbf{P}_{N} (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n) \circ \mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}_i), N}\right) \\
+  =& \left(\mathcal{I}(\boldsymbol{\Phi}_k), \sum_{k=m}^n d_1 (\boldsymbol{\Phi}_k), \dots, \sum_{k=m}^n d_{\mathcal{H}(\boldsymbol{\Phi})} (\boldsymbol{\Phi}_k), \mathcal{O}(\boldsymbol{\Phi}_m) \right)
+\end{align*}
+$$
+
+---
+**(3):** Applying Propositions $\ref{proposition-12-2}$ and $\ref{proposition-4-2}$, we obtain
+
+$$
+\begin{align*}
+  &\left(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_N (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n) \circ \mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}_m), N} \right)(\mathbf{x}) \\
+  =& \left(\mathbf{F}_a^\mathcal{N} (\mathbf{P}_N (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n)\right)\underbrace{(\mathbf{x},\dots,\mathbf{x})}_{\in\R^{\mathcal{I}(\boldsymbol{\Phi}_m)}} \\
+  =& \left((\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_m))(\mathbf{x}),\dots,(\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_n))(\mathbf{x}) \right) \in\R^{N\mathcal{O}(\boldsymbol{\Phi}_m)}
+\end{align*}
+$$
+
+Using Proposition $\ref{proposition-10-2}$, we arrive at
+
+$$
+\begin{align*}
+  \left(\mathbf{F}_a^\mathcal{N} \left(\bigoplus_{k=m}^n \boldsymbol{\Phi}_k \right) \right)(\mathbf{x}) =& \left(\mathbf{F}_a^\mathcal{N} (\mathbf{S}_{\mathcal{O}(\boldsymbol{\Phi}_m), N} \circ \mathbf{P}_N (\boldsymbol{\Phi}_m, \boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n) \circ \mathbf{T}_{\mathcal{I}(\boldsymbol{\Phi}_m), N} \right)(\mathbf{x}) \\
+  =& \sum_{k=m}^n (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}_k))(\mathbf{x})
+\end{align*}
+$$
+</details>
+</MathBox>
 
 # Convolutional neural network (CNN)
 
@@ -1651,7 +1978,7 @@ $$
 Define the parameter space
 
 $$
-  \mathcal{C} = \bigcup_{T, L \in\N_+} \bigcup_{\ell_1,\dots,\ell_L \in\N_+} \bigcup_{(c_{k,t})_{(k,t) \in [L]\times [T]} \subseteq\N} \left(\prod_{k=1}^L ((\R^{c_{k,1} \times\cdots\times c_{k,T}})^{\ell_k \time \ell_{k-1}} \times \R^{\ell_k}) \right)
+  \mathcal{C} = \bigcup_{T, L \in\N_+} \bigcup_{\ell_1,\dots,\ell_L \in\N_+} \bigcup_{(c_{k,t})_{(k,t) \in [L]\times [T]} \subseteq\N} \left(\prod_{k=1}^L ((\R^{c_{k,1} \times\cdots\times c_{k,T}})^{\ell_k \times \ell_{k-1}} \times \R^{\ell_k}) \right)
 $$
 
 where
