@@ -1,0 +1,188 @@
+---
+title: 'Neural Differential Equations'
+subject: 'machine learning/deep learning'
+showToc: true
+references:
+  - book_calin_2020
+  - book_mohri_etal_2012
+  - book_murphy_2022
+  - book_shalev-schwartz_ben-david_2014
+  - book_ye_2022
+---
+
+# Physics-informed neural network
+
+## Heat Equations
+
+<MathBox title="Reformulation of the semilinear heat equation as a stochastic optimization problem" boxType="proposition" tag="proposition-1">
+Let
+- $T_\text{max} \in (0,\infty)$
+- $d\in\N_+$
+- $g\in C^2 (\R^d, \R)$ with partial derivatives of at most polynomial growth
+- $f:\R\to\R$ be Lipschitz continuous
+- $\tau \in C([0,T_\text{max}], (0,\infty))$
+- $\xi \in C(\R^d, (0,\infty))$ with $\int_{\R^d} \xi(\mathbf{x})\;\d \mathbf{x} = 1$
+
+Let $u \in C^{1,2} ([0, T_\text{max}] \times \R^d, \R)$, where $C^{1,2}$ denotes functions continuous differentiable once in time and twice in space.
+
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and suppose $T: \Omega\to[0,T]$ and $\boldsymbol{X}:\Omega\to\R^d$ are independent random variables. Assume for all Borel sets $\mathcal{A} \in \mathcal{B}([0,T_\text{max}])$ and $\mathcal{B}\in\mathcal{B}(\R^d)$ that
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathbb{P}(T \in\mathcal{A}) =& \int_\mathcal{A} \tau(t) \;\d t \\
+  \mathbb{P}(\boldsymbol{X} \in\mathcal{B}) =& \int_\mathcal{B} \xi(\mathbf{x}) \;\d t
+\end{split}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+Define the functional $L : C^{1,2} ([0, T] \times \R^d, \R) \to [0,\infty)$ by
+
+$$
+\begin{equation*}
+\begin{split}
+  L(v) =& \mathbb{E}\left(|v(0, \boldsymbol{X}) - g(\boldsymbol{X})|^2 \right. \\
+  &+ \left. |\partial_t (v(T, \boldsymbol{X})) - \nabla_x^2 (v(T, \boldsymbol{X})) - f(v(T,\boldsymbol{X}))|^2 \right)
+\end{split}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+By independence of $T$ and $\boldsymbol{X}$, this can equivalently be expressed as
+
+$$
+\begin{align*}
+  L(v) =& \int_{[0,T_\text{max}]\times\R^d} \left(|v(0,\mathbf{x}) - g(\mathbf{x})|^2 \right. \\
+  &+ \left. | \partial_t (v(t,\mathbf{x})) - \nabla_\mathbf{x}^2 (v(t,\mathbf{x})) - f(v(t,\mathbf{x})) |^2 \right)\tau(t) \xi(\mathbf{x}) \;\d t \d\mathbf{x})
+\end{align*}
+$$
+
+Then the following two statements are equivalent:
+1. $u$ is a global minimizer of $L$, i.e. 
+$$
+  L(u) = \inf_{v\in C^{1,2} ([0,T_\text{max}]\times\R^d, \R)} L(v)
+$$
+
+2. For all $t\in[0,T_\text{max}]$ and $\mathbf{x}\in\R^d$ then $u$ satisfies the semilinear heat equation
+$$
+\begin{equation*}
+  \frac{\partial}{\partial t} u(t, \mathbf{x}) = \nabla_\mathbf{x}^2 (u(t,\mathbf{x})) + f(u(t, \mathbf{x}))
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+with intial condition $u(0, \mathbf{x}) = g(\mathbf{x})$.
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{proposition-1-2}\implies\ref{proposition-1-1}$
+
+If $u$ satisfies the semilinear heat equation $\eqref{equation-2}$ with initial condition $u(0, \mathbf{x}) = g(\mathbf{x})$ then both terms inside the expectation defining $L(u)$ in $\eqref{equation-1}$ vanish, hence $L(v) = 0$. Since $L(v) \geq 0$ for all admissible $v$, this shows that $u$ is a global minimizer of $L$.
+
+---
+- $\ref{proposition-1-1}\implies\ref{proposition-1-2}$
+
+Because $f$ is Lipschitz and $g\in C^2$ with partial derivatives of at most polynomial growth, parabolic theory ensures the existence of at least one solution $\tilde{u} \in C^{1,2} ([0,T_\text{max}]\times\R^d)$ to the semilinear heat equation $\eqref{equation-2}$. For this function $L(\tilde{u}) = 0$ and therefore $\inf_v L(v) = 0$.
+
+Let $u$ be any minimizer of $L$. Then $L(u) = 0$, implying
+
+$$
+  \int_[0,T_\text{max}] \Phi_u (t, \mathbf{x}) \tau(t)\xi(\mathbf{x}) \;\d t \d\mathbf{x} = 0
+$$
+
+where
+
+$$
+  \Phi_u (t, \mathbf{x}) = |u(0,\mathbf{x}) - g(\mathbf{x})|^2 + | \partial_t (u(t,\mathbf{x})) - \nabla_\mathbf{x}^2 (u(t,\mathbf{x})) - f(u(t,\mathbf{x}))|^2
+$$
+
+Since $\Phi_u \geq 0$ and $\tau(t)\xi(\mathbf{x}) > 0$ everywhere, continuity of $\Phi_u$ implies $\Phi_u (t, \mathbf{x}) = 0$ for all $(t, \mathbf{x})\in [0, T_\text{max}] \times\R^d$. Hence, for all $t\in[0,T_\text{max}]$ and $\mathbf{x}\in\R^d$
+
+$$
+\begin{align*}
+  \partial_t u(t, \mathbf{x}) =& \nabla^2 u(t, \mathbf{x}) + f(u(t, \mathbf{x})) \\
+  u(0, \mathbf{x}) = g(\mathbf{x})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+Neural networks can be employed to compute approximate solutions of the semilinear heat equation $\eqref{equation-2}$ by approximating minimizers of loss functional $L: C^{1,2} ([0,T_\text{max}] \times\R^d, \R) \to [0,\infty)$ introduced in $\eqref{equation-1}$. Since this infnite-dimensional minimization problem, it is natural to restrict $L$ to a finite-dimensional hypothesis class given by neural networks.
+
+**Neural network hypothesis class**
+
+Let 
+- $a\in C(\R)$ be a continuously differentiable actication function
+- $h\in\N_+$ be the number of hidden layers
+- $\ell_1,\dots,\ell_h \in\N_+$ be the corresponding layer widths
+
+THe total number of parameters is
+
+$$
+  p = \ell_1 (d + 2) + \left[\sum_{k=2}^h \ell_k (\ell_{k-1} + 1) \right] + \ell_h + 1
+$$
+
+corresponding to affine transformations between successive layers and a scalar output. For each parameter vector $\boldsymbol{\theta}\in\R^p$, we denote by
+
+$$
+  \mathcal{N}^{\boldsymbol{\theta}} := \mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}: [0, T_\text{max}]\times\R^d \to\R
+$$
+
+the realization of the fully connected feedforward neural network with input dimension $d + 1$, activation $a$ in the hidden layers, and identity activation in the output layer. Under the assumption that $a\in C^1 (\R)$, the realization $\mathcal{N}^{\boldsymbol{\theta}}$ belongs to $C^{1,2}$ whenever the network is evaluated with respect to its input variables.
+
+**Finite-dimensional loss functional**
+
+Define the finite-dimensional loss functional $\mathcal{L}:\R^p \to [0,\infty)$ by
+
+$$
+\begin{align*}
+  \mathcal{L}(\boldsymbol{\theta}) =& L(\mathcal{N}_^{\boldsymbol{\theta}}) \\
+  =& \mathbb{E}\left[\left|\mathcal{N}^{\boldsymbol{\theta}} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \right. \\
+  &+ \left. \left| \partial_t \mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}) - f(\mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}))\right|^2 \right]
+\end{align*}
+$$
+
+An approximate minimizer $\boldsymbol{\vartheta}\in\R^p$ of $\mathcal{L}$ yields and approximate minimizer $\mathcal{N}^{\boldsymbol{\vartheta}}$ of $L$, and hence an approximation of the solution $u$ to the semilinear heat equation $\eqref{equation-2}$.
+
+**Stochastic gradient descent (SGD)**
+
+Let $J\in\N_+$ be the mini-batch size, let $(\gamma_n)_{n\in\N_+} \subset (0,\infty)$ be a sequence of step sizes, and let 
+
+$$
+  \set{(T_{n,j}, \boldsymbol{X}_{n,j}): \Omega^2 \to [0,T_\text{max}] \times\R^d}_{(n,j) \in\N_+ \times \set{1,dots,J}}
+$$ 
+
+be random variables, each with the same distribution as $(T, \boldsymbol{X})$. Define the pointwise loss $l: \R^p \times[0,T_\text{max}]\times\R^d \to\R$ by
+
+$$
+\begin{align*}
+  l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
+ &+ \left| \partial_t \mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
+\end{align*}
+$$
+
+Then $\mathcal{L}(\boldsymbol{\theta}) = \mathbb{E}[l(\boldsymbol{\theta}, T, \boldsymbol{X})]$.
+
+Define the SGD iterates $\boldsymbol{\Theta} = (\boldsymbol{\Theta}_n)_{n\in\N_0} : \N_0 \times\Omega\to\R^p$ recursively by $\boldsymbol{\Theta}_0 = \chi$ and
+
+$$
+  \boldsymbol{\Theta}_n = \boldsymbol{\Theta}_{n-1} - \gamma_n \left[\frac{1}{J} \sum_{j=1}^J \nabla_{\boldsymbol{\theta}} l(\boldsymbol{\Theta}_{n-1}, T_{n,j}, \boldsymbol{X}_{n,j})\right]
+$$
+
+Under suitable assumptions on $(\gamma_n)$ and regularity of $l$, this recursion constitutes a stochastic approximation of the gradient flow associated with $\mathcal{L}$.
+
+The aim is to choose $n\in\N_+$ sufficiently large such that, for a realization $\omega\in\Omega$
+
+$$
+  \mathcal{N}^{\boldsymbol{\Theta}_n (\omega)} \approx u
+$$
+
+**Sampling strategies**
+
+The  physics-informed neural networks (PINN) and deep Galerking methods (DGM) frameworks dffer primarily in their sampling strategies for the random variables $(T_{n,j}, \boldsymbol{X}_{n,j})_{(n,j)\in\N \times [J]}$.
+- **PINN:** A finite set of collocation points $\set{(t_i, \mathbf{x}_i)}_{i=1}^N$ is sampled once from the target joint distribution. At each SGD step, mini-batches are drawn (with or without replacement) from this fixed dataset.
+- **DGM:** The random variables $(T_{n,j}, \boldsymbol{X}_{n,j})$ are sampled independently and identically distributed at every iteration $n$, yielding an unbiased Monte Carlo estimator of $\nabla\mathcal{L}$ at each step.
+
+# Deep Kolmogorov methods
