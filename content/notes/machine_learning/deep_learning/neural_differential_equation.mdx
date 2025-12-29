@@ -12,7 +12,7 @@ references:
 
 # Physics-informed neural network
 
-## Heat Equations
+## Heat equation
 
 <MathBox title="Reformulation of the semilinear heat equation as a stochastic optimization problem" boxType="proposition" tag="proposition-1">
 Let
@@ -23,7 +23,7 @@ Let
 - $\tau \in C([0,T_\text{max}], (0,\infty))$
 - $\xi \in C(\R^d, (0,\infty))$ with $\int_{\R^d} \xi(\mathbf{x})\;\d \mathbf{x} = 1$
 
-Let $u \in C^{1,2} ([0, T_\text{max}] \times \R^d, \R)$, where $C^{1,2}$ denotes functions continuous differentiable once in time and twice in space.
+Let $u \in C^{1,2} ([0, T_\text{max}] \times \R^d, \R)$, where $C^{1,2}$ denotes the set of functions that are continuously differentiable once in time and twice in space.
 
 Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, and suppose $T: \Omega\to[0,T]$ and $\boldsymbol{X}:\Omega\to\R^d$ are independent random variables. Assume for all Borel sets $\mathcal{A} \in \mathcal{B}([0,T_\text{max}])$ and $\mathcal{B}\in\mathcal{B}(\R^d)$ that
 
@@ -89,7 +89,7 @@ Because $f$ is Lipschitz and $g\in C^2$ with partial derivatives of at most poly
 Let $u$ be any minimizer of $L$. Then $L(u) = 0$, implying
 
 $$
-  \int_[0,T_\text{max}] \Phi_u (t, \mathbf{x}) \tau(t)\xi(\mathbf{x}) \;\d t \d\mathbf{x} = 0
+  \int_{[0,T_\text{max}] \times\R^d} \Phi_u (t, \mathbf{x}) \tau(t)\xi(\mathbf{x}) \;\d t \d\mathbf{x} = 0
 $$
 
 where
@@ -103,7 +103,7 @@ Since $\Phi_u \geq 0$ and $\tau(t)\xi(\mathbf{x}) > 0$ everywhere, continuity of
 $$
 \begin{align*}
   \partial_t u(t, \mathbf{x}) =& \nabla^2 u(t, \mathbf{x}) + f(u(t, \mathbf{x})) \\
-  u(0, \mathbf{x}) = g(\mathbf{x})
+  u(0, \mathbf{x}) =& g(\mathbf{x})
 \end{align*}
 $$
 </details>
@@ -138,7 +138,7 @@ Define the finite-dimensional loss functional $\mathcal{L}:\R^p \to [0,\infty)$ 
 
 $$
 \begin{align*}
-  \mathcal{L}(\boldsymbol{\theta}) =& L(\mathcal{N}_^{\boldsymbol{\theta}}) \\
+  \mathcal{L}(\boldsymbol{\theta}) =& L(\mathcal{N}^{\boldsymbol{\theta}}) \\
   =& \mathbb{E}\left[\left|\mathcal{N}^{\boldsymbol{\theta}} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \right. \\
   &+ \left. \left| \partial_t \mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}) - f(\mathcal{N}^{\boldsymbol{\theta}} (T, \boldsymbol{X}))\right|^2 \right]
 \end{align*}
@@ -158,8 +158,8 @@ be random variables, each with the same distribution as $(T, \boldsymbol{X})$. D
 
 $$
 \begin{align*}
-  l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
- &+ \left| \partial_t \mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_{\mathbf{M}_{a, \ell_1}, \dots, \mathbf{M}_{a, \ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
+  l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
+  &+ \left| \partial_t \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
 \end{align*}
 $$
 
@@ -186,3 +186,930 @@ The  physics-informed neural networks (PINN) and deep Galerking methods (DGM) fr
 - **DGM:** The random variables $(T_{n,j}, \boldsymbol{X}_{n,j})$ are sampled independently and identically distributed at every iteration $n$, yielding an unbiased Monte Carlo estimator of $\nabla\mathcal{L}$ at each step.
 
 # Deep Kolmogorov methods
+
+## Reformulation of Kolmogorov partial differential equations as minimization problems
+
+Let
+- $T \in (0,\infty)$
+- $d\in\N_+$
+- $\mu:\R^d \to\R^d$ and $\sigma:\R^d \to\R^{d\times d}$ be Lipschitz continuous
+- $\varphi:\R^d \to\R$ be a function
+
+Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth, satisfying the partial differential equation
+
+$$
+\begin{equation*}
+  \partial_t u(t, \mathbf{x}) = \frac{1}{2} \operatorname{tr}[\sigma(\mathbf{x} \sigma(\mathbf{x})^\top H_\mathbf{x} (u(t,\mathbf{x}))] + \braket{\mu(\mathbf{x}), \nabla_\mathbf{x} u(t,\mathbf{x})}_{\R^d}
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+with inital condition $u(0,\mathbf{x}) = \varphi(\mathbf{x})$. Here $H_\mathbf{x} (u(t,\mathbf{x}))$ is the Hessian matrix of $u$ with respect to spatial coordinates.
+
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with a normal filtration $(\mathscr{F}_t)_{t\in[0,T]}$, let $W: [0,T] \times\Omega\to\R^d$ be standard Brownian motion, and for every $\mathbf{x}\in\R^d$ let $X^\mathbf{x} = (X_t^\mathbf{x})_{t\in[0,T]}: [0,T]\times\Omega \to\R^d$ be an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous simple paths which satisfies $\mathbb{P}$-a.s. for every $t\in[0,T]$ that
+
+$$
+  X_t^\mathbf{x} = \mathbf{x} + \int_0^t \mu(X_s^\mathbf{x}) \;\d s + \int_0^t \sigma(X_s^\mathbf{x}) \;\d W
+$$
+
+The Feynman-Kac formula and $\eqref{equation-1}$ yield that for every $\mathbf{x}\in\R^d$
+
+$$
+  u(T, \mathbf{x}) = \mathbb{E}(u(0, X_T^\mathbf{x})) = \mathbb{E}(\varphi(X_T^\mathbf{x}))
+$$
+
+<MathBox title="" boxType="lemma" tag="lemma-1">
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space and let $X:\Omega\to\R$ be an $\mathcal{F}/\mathcal{B}(\R)$-measurable random variable which satisfies $\mathbb{E}(|X|^2) < \infty$. Then
+
+1. For every $y\in\R$
+$$
+  \mathbb{E}(|X-y|^2) = \mathbb{E}(|X - \mathbb{E}(X)|^2) + |\mathbb{E}(X) - y|^2
+$$
+
+2. There exists a unique real number $z\in\R$ such that
+$$
+  \mathbb{E}(|X - z|^2) = \inf_{y\in\R} [\mathbb{E}(|X - y|^2)]
+$$
+
+3. $\mathbb{E}(|X - \mathbb{E}(X)|^2) = \inf_{y\in\R} \mathbb{E}(|X - y|^2)$
+
+<details>
+<summary>Proof</summary>
+
+- $ref{lemma-1-1}$
+
+Since $\mathbb{E}(|X|) < \infty$, we have
+
+$$
+\begin{align*}
+  \mathbb{E}(|X - y|^2) =& \mathbb{E}(|X - \mathbb{E}(X) + \mathbb{E}(X) - y|^2) \\
+  =& \mathbb{E}(|X - \mathbb{E}(X)|^2 + 2(X - \mathbb{E}(X))(\mathbb{E}(X) - y) + |\mathbb{E}(X) - y|^2) \\
+  =& \mathbb{E}(|X - \mathbb{E}(X)|^2) + 2(\mathbb{E}(X) - y)\mathbb{E}(X - \mathbb{E}(X)) + |\mathbb{E}(X) - y|^2 \\
+  =& \mathbb{E}(|X - \mathbb{E}(X)|^2) + y|^2
+\end{align*}
+$$
+
+Properties $\ref{lemma-1-2}$ and $\ref{lemma-1-3}$ are immediate consequences of $\ref{lemma-1-1}$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="proposition-2">
+Let
+- $(\Omega, \mathbb{F}, \mathbb{P})$ be a probability space
+- $a\in\R$
+- $b\in (a,\infty)$
+- $X = (X_\mathbf{x})_{\mathbf{x}\in [a,b]^d} : [a, b]^d \times\Omega \to\R$ be a $(\mathcal{B}([a, b]^d) \otimes \mathcal{F})/\mathcal{B}(\R)$-measurable function
+
+Assume for every $x\in[a,b]^d$ that $\mathbb{E}(|X_x|^2) < \infty$, and assume that the function $[a,b]^d \ni \mathbf{x} \mapsto \mathbb{E}(X_\mathbf{x}) \in\R$ is continuous. Then
+
+1. There exists a unique continuous function $u: [a,b]^d \to\R$ such that
+$$
+\begin{equation*}
+  \int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - u(\mathbf{x})|^2) \;\d\mathbf{x} = \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - v(\mathbf{x})|^2) \;\d\mathbf{x}\right)
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+2. $u(\mathbf{x}) = \mathbb{E}(X_\mathbf{x})$ for every $\mathbf{x} \in [a,b]$
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{proposition-2-1}$
+
+From Lemma $\ref{lemma-1-1}$ and the assumption $\forall\mathbf{x}\in [a,b]^d : \mathbb{E}(|X_\mathbf{x}|^2) < \infty$ ensure that for every function $u: [a, b]^d \to\R$ and every $\mathbf{x} \in [a, b]^d$
+
+$$
+  \mathbb{E}(|X_\mathbf{x} - u(\mathbf{x})|^2) = \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) + |\mathbb{E}(X_\mathbf{x}) - u(\mathbf{x})|^2
+$$
+
+Fubini's theorem therefore proves that for every continuous function $u: [a,b]^d \to\R$
+
+$$
+\begin{equation*}
+\begin{split}
+  \int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - u(\mathbf{x})|^2) \;\d\mathbf{x} =& \int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} \\
+  +& \int_{[a, b]^d} |\mathbb{E}(X_\mathbf{x}) - u(\mathbf{x})|^2 \;\d\mathbf{x}
+\end{split}
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+By continuity of the function $[a, b]^d \ni\mathbf{x}\mapsto \mathbb{E}(X_\mathbf{x})\in\R$, we obtain
+
+$$
+\begin{align*}
+  &\int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} \\
+  \geq& \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - v(\mathbf{x})|^2) \;\d\mathbf{x}\right) \\
+  =& \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} \right. \\
+  +& \left. \int_{[a, b]^d} |\mathbb{E}(X_\mathbf{x}) - v(\mathbf{x})|^2 \;\d\mathbf{x} \right) \\
+  \geq& \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} \right) \\
+  =& \int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x}
+\end{align*}
+$$
+
+leading to
+
+$$
+\begin{equation*}
+  \int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} = \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - v(\mathbf{x})|^2) \;\d\mathbf{x}\right)
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+Again, continuity of the function $[a, b]^d \ni\mathbf{x}\mapsto \mathbb{E}(X_\mathbf{x})\in\R$ implies that there exists a continuous function $u: [a, b]^d \to\R$ such that $\eqref{equation-6}$ holds.
+
+---
+- $\ref{proposition-2-2}$
+
+Applying $\eqref{equation-7}$ and $\eqref{equation-8}$, we get that for every continuous function $u: [a,b]^d \to\R$ satisfying $\eqref{equation-6}$
+
+$$
+\begin{align*}
+  \int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} =& \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - v(\mathbf{x})|^2) \;\d\mathbf{x}\right) \\
+  \underbrace{=}_{\eqref{equation-7}}& \int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - u(\mathbf{x})|^2) \;\d\mathbf{x} \\
+  \underbrace{=}_{\eqref{equation-8}}& \int_{[a, b]^d} \mathbb{E}(|X_\mathbf{x} - \mathbb{E}(X_\mathbf{x})|^2) \;\d\mathbf{x} \\
+  +& \int_{[a, b]^d} |\mathbb{E}(X_\mathbf{x}) - u(\mathbf{x})|^2 \;\d\mathbf{x}
+\end{align*}
+$$
+
+Consequently, we must have
+
+$$
+  \int_{[a, b]^d} |\mathbb{E}(X_\mathbf{x}) - u(\mathbf{x})|^2 \;\d\mathbf{x} = 0
+$$
+
+implying that $u(\mathbf{x}) = \mathbb{E}(X_\mathbf{x})$
+
+</details>
+</MathBox>
+
+<MathBox title="Projections in metric space" boxType="lemma" tag="lemma-2">
+Let $(E, d)$ be a metric space. For $n\in\N_+$ let $e_1,\dots,e_n \in E$ define the projection $P: E\to E$ by
+
+$$
+\begin{equation*}
+  P(x) := e_{k(x)},\quad k(x) := {\min\set{k\in [n] : d(x, e_k) = \min_{l\in[n]} d(x, e_k)}}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+That is, $P(x)$ selects a nearest neighbour of $x$ among ${e_1,\dots,e_n}$, with ties resolved by choosing the smallest index. The projection $P$ has the following properties.
+
+1. **Nearest point property:** For every $x\in E$
+$$
+  d(x, P(x)) = \min_{k\in[n]} d(x, e_k)
+$$
+
+2. **Borel measurability:** For every $A\subseteq E$ then $P^{-1} (A) \in\mathcal{B}(E)$
+
+<details>
+<summary>Proof</summary>
+
+- **Nearest point property** ($\ref{lemma-2-1}$)
+
+By definition of $P$ in $\eqref{equation-9}$, we have for every $x\in E$
+
+$$
+  P(x) = e_{k(x)},\quad& d(x, e_{k(x)}) = \min_{l\in[n]} d(x, e_l)
+$$
+
+which immediately yieldsj
+
+$$
+  d(x, P(x)) = \min_{k\in[n]} d(x, e_k)
+$$
+
+---
+- **Borel measurability** ($\ref{lemma-2-2}$)
+
+Define the distance function $D: E\to\R^n$ by
+
+$$
+  D(x) = (D_1 (x),\dots,D_n (x)) = (d(x, e_1), \dots, d(x, e_n))
+$$
+
+Since the metric $d: E\times E \to[0,\infty)$ is continuous, each $D_k$ is continuous. Hence, $D$ is continuous and therefore $\mathcal{B}(E)/\mathcal{B}(\R^n)$-measurable.
+
+By item $\ref{lemma-2-1}$, for every $k=1,\dots,n$ and $x\in P^{-1} (\set{e_k})$
+
+$$
+  d(x, e_k) = d(x, P(x)) = \min_{l\in [n]} d(x, e_l)
+$$
+
+Specifically, $k$ belongs to the set of indices attaining the minimal distance, hence
+
+$$
+\begin{equation*}
+  k \geq \min\set{l \in[n] : d(x, e_l) = \min_{u\in[n]} d(x,e_u)}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+On the other hand, by definition of $P$ in $\eqref{equation-9}$, the index
+
+$$
+  \min\set{l \in [n]: d(x, e_l) = \min_{u\in[n]} d(x, e_u)}
+$$
+
+is precisely the one selected by the tie-breaking rule. Since $P(x) = e_k$ such an index $l$ must satisfy $e_l = e_k$, belonging to the set
+
+$$
+  \set{l \in [n] : e_l = e_k} \subseteq \set{k,k+1,\dots,n}
+$$
+
+Consequently, for $e_k \notin \bigcup_{l\in\N \cap [0, k)} \set{e_l}$
+
+$$
+  \min\set{l \in[n] : d(x, e_k) = \min_{u\in[n]} d(x, e_u)} \geq k
+$$
+
+Combining this with $\eqref{equation-10}$, we find
+
+$$
+  \min\set{l \in[n] : d(x, e_k) = \min_{u\in[n]} d(x, e_u)} = k
+$$
+
+from which it follow that
+
+$$
+  P^{-1} (\set{e_k}) \subseteq \set{x\in E: \min\set{l\in[n]: d(x, e_l) = \min_{u\in[n]} d(x, e_u)} = k}
+$$
+
+Together with $\eqref{equation-9}$, this shows that
+
+$$
+  P^{-1} (\set{e_k}) = \set{x\in E: \min\set{l\in[n]: d(x, e_l) = \min_{u\in[n]} d(x, e_u)} = k}
+$$
+
+Since $D$ is $\mathcal{B}(E)/\mathcal{B}(\R^n)$-measurable, it follows that
+
+$$
+\begin{align*}
+  P^{-1} (\set{e_k}) =& \set{x\in E: \min\set{l\in[n]: d(x, e_l) = \min_{u\in[n]} d(x, e_u)} = k} \\
+  =& \set{x\in E: \min\set{l\in[n]: D_l (x) = \min_{u\in[n]} D_u (x)} = k} \\
+  =& \Set{x\in E: \left(\begin{aligned} \forall l\in\N \cap [0,k): D_k (x) < D_l (x) \land \\ \forall l\in[n] : D_k (x) \leq D_l (x) \end{aligned} \right)} \\
+  =& \left(\bigcap_{l=1}^{k-1} \underbrace{\set{x\in E : D_k (x) < D_l (x)}}_{\in\mathcal{B}(E)} \right) \cap \left(\bigcap_{l=1}^n \underbrace{\set{x\in E : D_k (x) < D_l (x)}}_{\in\mathcal{B}(E)} \right) \in \mathcal{B}(E)
+\end{align*}
+$$
+
+Thus, we obtain that for every $f\in\set{e_1,\dots,e_n}$
+
+$$
+  P^{-1} (\set{f}) \in \mathcal{B}(E)
+$$
+
+Hence, for every $A\subseteq E$ we get
+
+$$
+\begin{align*}
+  P^{-1} (A) =& P^{-1} (A \cap \set{e_1,\dots,e_n) \\
+  =& \bigcap_{f\in A \cap \set{e_1,\dots,e_n}} \underbrace{P^{-1} (\set{f})}_{\in\mathcal{B}(E)} \in \mathcal{B}(E)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="lemma-3">
+Let 
+- $(E, d)$ be a separable metric space
+- $(\mathcal{E}, \delta)$ be a metric space
+- $(\Omega, \mathcal{F})$ be a measurable space
+- $X: E\times\Omega\to\mathcal{E}$ be a function
+
+Assume
+- for every $e\in E$ that the function $\Omega\ni\omega \mapsto X(e, \omega) \in \mathcal{E}$ is $\mathcal{F}/\mathcal{B}(\mathcal{E})$-measurable
+- for every $\omega\in\Omega$ that the function $E\ni e\mapsto X(e,\omega)\in\mathcal{E}$ is continuous. 
+
+Then $X$ is $(\mathcal{B}(E) \otimes \mathcal{F})/\mathcal{B}(\mathcal{E})$-measurable.
+
+<details>
+<summary>Proof</summary>
+
+Let $(e_m)_{m\in\N_+} \subseteq E$ be a sequence which satisfies $\set{e_m}_{m\in\N_+} = E$. For $n\in\N_+$, define the projections $P_n : E\to E$ by
+
+$$
+  P_n (x) := e_{k(x)},\quad k(x) := \min\set{k\in[n]: d(x, e_k) = \min_{l\in[n]} d(x, e_l)}
+$$
+
+and define $\mathcal{X}_n : E\to\Omega \to\mathcal{E}$ by
+
+$$
+  \mathcal{X}_n (x, \omega) = X(P_n (x), \omega)
+$$
+
+For all $n\in\N_+$ and $B\in\mathcal{B}(\mathcal{E})$, we have
+
+$$
+\begin{align*}
+  \mathcal{X}_n^{-1} (B) =& \set{(x,\omega) \in E\times\Omega: \mathcal{X}_n (x, \omega) \in B} \\
+  =& \bigcup_{y\in \operatorname{im}(P_n)} \left(\mathcal{X}_n^{-1} (B) \cap [P_n^{-1} (\set{y}) \times\Omega] \right) \\
+  =& \bigcup_{y\in \operatorname{im}(P_n)} \set{(x,\omega)\in E\times\Omega : \mathcal{X}_n (x,\omega)\in B \land x\in P_n^{-1} (\set{y})} \\
+  =& \bigcup_{y\in \operatorname{im}(P_n)} \set{(x,\omega)\in E\times\Omega : X(P_n(x),\omega)\in B \land x\in P_n^{-1} (\set{y})}
+\end{align*}
+$$
+
+Using Lemma $\ref{\lemma-2-2}$, we obtain
+
+$$
+\begin{align*}
+  \mathcal{X}_n^{-1} (B) =& \bigcup_{y\in \operatorname{im}(P_n)} \set{(x,\omega)\in E\times\Omega : X(y,\omega)\in B \land x\in P_n^{-1} (\set{y})} \\
+  =& \bigcup_{y\in \operatorname{im}(P_n)} \left(\set{(x,\omega)\in E\times\Omega : X(y,\omega)\in B} \cap [P_n^{-1} (\set{y}) \times\Omega] \right) \\
+  =& \bigcup_{y\in \operatorname{im}(P_n)} ([\underbrace{E\times ((X(y, \cdot))^{-1} (B)}_{\in\mathcal{B}(E) \otimes \mathcal{F}}] \cap ((X(y, \cdot))^{-1} (B)}_{\in\mathcal{B}(E) \otimes \mathcal{F}}]) \in \mathcal{B}(E)\otimes\mathcal{F}
+\end{align*}
+$$
+
+This proves that $\mathcal{X}_n$ is $(\mathcal{B}(E)\otimes\mathcal{F})/\mathcal{B}(E)$-measurable for every $n\in\N_+$. Additionally, Lemma $\ref{lemma-2-1}$ together with the continuity of the function $E \ni x\mapsto X(x,\omega) \in\mathcal{E}$ imply
+
+$$
+  \lim_{n\to\infty} \mathcal{X}_n (x, \omega) = \lim_{n\to\infty} X(P_n (x), \omega) = X(x, \omega)
+$$
+
+Since $\mathcal{X}_n$ is $(\mathcal{B}(E)\otimes\mathcal{F})/\mathcal{B}(E)$-measurable, so is also $X$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="lemma-4">
+Let
+- $(\Omega, \mathcal{F}, \mathbb{F})$ be a probability space
+- $(E, d)$ and $(\mathcal{E}, \delta)$ be separable metric spaces
+- $\Phi: E\to\mathcal{E}$ be a continuous function
+
+For $n\in\N_0$ suppose $X_n :\Omega\to E$ are random variables which satisfy for every $\epsilon > 0$ that
+
+$$
+  \limsup_{n\to\infty} \mathbb{P}(d(X_n, X_0) \geq\epsilon) = 0
+$$
+
+Then for every $\epsilon > 0$
+
+$$
+  \limsup_{n\to\infty} \mathbb{P}(\delta(\Phi(X_n)), \Phi(X_0)) \geq\epsilon) = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="lemma-5">
+Let
+- $d, m\in\N_+$
+- $T\in (0,\infty)$
+- $L, a\in\R$
+- $b\in (a,\infty)$
+- $\Phi: C([0,T], \R^d)\to\R$ be an at most polynomially growing continuous function
+
+Suppose $\mu:\R^d \to\R^d$ and $\sigma:\R^d \to\R^{d\times m}$ are globally Lipschitz continuous functions which satisfy for every $\mathbf{x}, \mathbf{y} \in\R^d$ that
+
+$$
+  \max\set{\norm{\mu(\mathbf{x}) - \mu(\mathbf{y})}_{\R^d}, \norm{\sigma(\mathbf{x}) - \sigma(\mathbf{y})}_{HS(\R^m, \R^d)}} \leq L\norm{\mathbf{x} - \mathbf{y}}_{\R^d}
+$$
+
+Let
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with a normal filtration $(\mathscr{F}_t)_{t\in[0,T]}$
+- $\boldsymbol{\xi}:\Omega\to [a,b]^d$ be continuous uniformly distributed $\mathscr{F}_0 / \mathcal{B}([a, b]^d)$-measurable random variable
+- $W:[0,T]\times\Omega \to\R^m$ be a standard $(\mathscr{F}_t)_{t\in[0,T]}$-Brownian motion
+
+For every $\mathbf{x}\in [a,b]^2$ suppose $X^\mathbf{x} = (X_t^\mathbf{x})_{t\in[0,T]} : [0,T]\times\Omega\to\R^d$ is an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous sample paths which satisfies for every $t\in[0,T]$ it holds $\mathbb{P}$-a.s. that
+
+$$
+\begin{equation*}
+  X_t^\mathbf{x} = \mathbf{x} + \int_0^t \mu(X_s^\mathbf{x}) \;\d s + \int_0^t \sigma(X_s^\mathbf{x}) \;\d W
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+and let $\mathbf{X}: [0,T]\times\Omega\to\R^d$ be an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous samples paths which satisfies that for every $t\in[0,T]$ it holds $\mathbb{P}$-a.s. that
+
+$$
+  \mathbf{X}_t^\mathbf{x} = \boldsymbol{\xi} + \int_0^t \mu(\mathbf{X}_s^\mathbf{x}) \;\d s + \int_0^t \sigma(\mathbf{X}_s^\mathbf{x}) \;\d W
+$$
+
+Then
+
+1. **Borel measurability of path functionals:** For every $\mathbf{x}\in[a,b]^d$ the random variables $\Omega\ni\omega\mapsto\Phi((X_t^\mathbf{x} (\omega))_{t\in[0,T]}) \in\R$ and $\Omega\ni\omega\mapsto \Phi((\mathbf{X}_t (\omega))_{t\in[0,T]})\in\R$ are $\mathcal{F}/\mathcal{B}(\R)$-measurable
+2. For every $p\in[2,\infty)$ and $\mathbf{x},\mathbf{y}\in[a,b]^d$
+$$
+  \left[\mathbb{E}\left(\sup_{t\in[0,T]} \norm{X_t^\mathbf{x} - X_t^\mathbf{y}}_{\R^d} \right) \right]^{1/p} \leq \sqrt{2} \exp\left(L^2 T[p + \sqrt{T}]^2 \right) \norm{\mathbf{x} - \mathbf{y}}_{\R^d}
+$$
+
+3. For every $\mathbf{x}\in[a,b]^d$
+$$
+  \mathbb{E}(|\Phi((X_t^\mathbf{x})_{t\in[0,T]})| + |\Phi((\mathbf{X}_t)_{t\in[0,T]})|) < \infty
+$$
+
+4. The function $[a,b]^d \ni \mathbf{x}\mapsto \mathbb{E}(\Phi((X_t^\mathbf{x})_{t\in[0,T]}))\in\R$ is continuous
+
+5. 
+$$
+  \mathbb{E}(\Phi((\mathbf{X}_t)_{t\in[0,T]})) = \frac{1}{(b - a)^d} \int_{[a,b]^d} \mathbb{E}(\Phi((X_t^\mathbf{x})_{t\in[0,T]})) \;\d\mathbf{x}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $c\in [1,\infty)$ be a real number which satisfies for every $w\in C([0,T], \R^m)$
+
+$$
+\begin{equation*}
+  |\Phi(\omega)| \leq c\left(1 + \sup_{t\in[0,T]} \norm{\omega_t}_{\R^d} \right)^c
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+Define the functions $p_t: C([0,T], \R^m) \to\R^m$ by $p_t (w) = w_t$ for $t\in[0,T]$ and $w = (w_s)_{s\in[0,T]} \in C([0,T],\R^m)$. For $N\in\N_+$, $\mathbf{x}\in\R^d$ and $w\in C([0,T], \R^m)$ define the functions $\Psi_{\mathbf{x}, w}^N :[0,T]\to\R^d$ recursively by $\Psi_{\mathbf{x}, w}^N (0) = \mathbf{x}$ and for $t\in\left[\frac{nT}{N}, \frac{(n+1)T}{N}]$ with $n\in\set{0,\dots,N-1}$
+
+$$
+  \Psi_{\mathbf{x}, w}^N (t) = \Psi_{\mathbf{x}, w}^N \left(\frac{nT}{N} \right) + \left(\frac{nT}{T} - n \right) \left[\mu\left(\Psi_{\mathbf{x}, w}^N \left(\frac{nT}{N}\right)\right) \frac{T}{N} + \sigma\left(\Psi_{\mathbf{x}, w}^N \left(\frac{nT}{N}\right)\right) (w_{(n+1)T/N} - w_{nT/N}) \right]
+$$
+
+---
+- $\ref{lemma-5-1}$
+
+Arguing from the facts that the Borel $\sigma$-algebra $\mathcal{B}(C([0,T],\R^m))$ is generated by the set
+
+$$
+  \bigcup_{t\in[0,T]} \bigcup_{A\in\mathcal{B}(\R^m)} \set{(p_t)^{-1} (A)}
+$$
+
+and that $X^\mathbf{x}$ and $\mathbf{X}$ are $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic processes with continuous sample paths, it follows that the functions
+
+$$
+\begin{align*}
+  \Omega\ni\omega\mapsto& (X_t^\mathbf{x} (\omega))_{t\in[0,T]} \in C([0,T], \R^d) \\
+  \Omega\ni\omega\mapsto& (\mathbf{X}_t (\omega))_{t\in[0,T]} \in C([0,T], \R^d)
+\end{align*}
+$$
+
+are $\mathcal{F}/\mathcal{B}(C([0,T], \R^d))$-measurable. S $\Phi$ is $\mathcal{B}(C([0,T], \R^d))/\mathcal{B}(\R)$-measurable, the compositions 
+$$
+\begin{align*}
+  \Omega\ni\omega\mapsto& \Phi((X_t^\mathbf{x} (\omega))_{t\in[0,T]}) \in\R \\
+  \Omega\ni\omega\mapsto& \Phi((\mathbf{X}_t (\omega))_{t\in[0,T]}) \in\R
+\end{align*}
+$$
+
+are $\mathcal{F}/\mathcal{B}(\R)$ measurable.
+
+---
+- $ref{lemma-5-3}$
+
+Since $\mu$ and $\sigma$ are globally Lipschitz, then for every $p\in(0,\infty)$ it follows that $\mathbb{E}(\norm{\boldsymbol{\xi}}_{\R^d}^p) < \infty$. Consequently,
+
+$$
+\begin{equation*}
+\begin{split}
+  & \sup_{N\in\N_+} \sup_{x\in[a,b]^d} \left(\mathbb{E}\left[\sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N (t)}_{\R^d}^p \right] + \mathbb{E}\left[\sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N (t)}_{\R^d}^p \right]\right) \\
+  =& \sup_{N\in\N_+} \sup_{x\in[a,b]^d} \left(\mathbb{E}\left[\max_{n\in[N]} \Norm{\Psi_{\mathbf{x}, W}^N \left(\frac{nT}{N}\right)}_{\R^d}^p \right] + \mathbb{E}\left[\max_{n\in[N]} \Norm{\Psi_{\boldsymbol{\xi}, W}^N \left(\frac{nT}{N}\right)}_{\R^d}^p \right]\right) < \infty
+\end{split}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+Since $\mu$ and $\sigma$ are locally Lipschitz, then for every $\epsilon \in(0,\infty)$
+
+$$
+\begin{equation*}
+\begin{split}
+  \limsup_{N\to\infty} \mathbb{P}\left(\sup_{t\in[0,T]} \norm{X_t^\mathbf{x} - \Psi_{\mathbf{x}, W}^N (t)}_{\R^d} \geq\epsilon \right) =& 0 \\
+  \limsup_{N\to\infty} \mathbb{P}\left(\sup_{t\in[0,T]} \norm{\mathbf{X}_t - \Psi_{\boldsymbol{\xi}, W}^N (t)}_{\R^d} \geq\epsilon \right) =& 0
+\end{split}
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+such that
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}^p \right) \leq& \liminf_{N\to\infty} \mathbb{E}\left(\sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N (t)}^p \right) \\
+  \leq& \sup_{N\in\N_+} \mathbb{E}\left(\sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N (t)}^p \right)
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\sup_{t\in[0,T]} \norm{\mathbf{X}_t}^p \right) \leq& \liminf_{N\to\infty} \mathbb{E}\left(\sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N (t)}^p \right) \\
+  \leq& \sup_{N\in\N_+} \mathbb{E}\left(\sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N (t)}^p \right)
+\end{align*}
+$$
+
+This and $\eqref{equation-11}$ assure that
+
+$$
+\begin{equation*}
+  \sup_{x\in[a,b]^d} \left(\mathbb{E}\left[\sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}_{\R^d}^p \right] + \mathbb{E}\left[\sup_{t\in[0,T]} \norm{\mathbf{X}_t}_{\R^d}^p \right] \right)
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+Combining $\eqref{equation-12}$ and the fact that $\forall r\in(0,\infty), a,b\in\R: |a+b|^r \leq 2^r (|a|^r + |b|^r)$ therefore shows
+
+$$
+\begin{equation*}
+\begin{split}
+  & \sup_{\mathbf{x}\in[a,b]^d} \left(\mathbb{E}\left[|\Phi(X_t^\mathbf{x})|^p \right] + \mathbb{E}\left[|\Phi(\mathbf{X})|^p \right] \right) \\
+  \leq& \sup_{\mathbf{x}\in[a,b]^d} \left(c^p \mathbb{E}\left[|1 + \sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}_{\R^d}|^{cp} \right] +c^p \mathbb{E}\left[|1 + \sup_{t\in[0,T]} \norm{\mathbf{X}_t}_{\R^d}|^{cp} \right] \right) \\
+  \leq& 2^{cp} c^p \left(\sup_{\mathbf{x}\in[a,b]^d} \mathbb{E}\left[2 + \sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}_{\R^d}^{cp} + \sup_{t\in[0,T]} + \sup_{t\in[0,T]} \norm{\mathbf{X}_t}_{\R^d}^{cp} \right] \right) < \infty
+\end{split}
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+---
+- $\ref{lemma-5-2}$
+
+From $\eqref{equation-13}$, it follows for every $\mathbf{x}, \mathbf{y} \in [a,b]^d$ and $t\in[0,T]$ that
+
+$$
+\begin{align*}
+  X_t^\mathbf{x} - X_t^\mathbf{y} =& \mathbf{x} - \mathbf{y} \\
+  &+ \int_0^t \mu(X_s^\mathbf{x}) - \mu(X_s^\mathbf{y}) \;\d s \\
+  &+ \int_0^t \sigma(X_s^\mathbf{x}) - \sigma(X_s^\mathbf{y}) \;\d W_s
+\end{align*}
+$$
+
+Applying the triangle inequality, we obtain
+
+$$
+\begin{align*}
+  \sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}} \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ \sup_{s\in[0,t]} \int_0^s \norm{\mu(X_r^\mathbf{x}) - \mu(X_r^\mathbf{y})}_{\R^d} \;\d r \\
+  &+ \sup_{s\in[0,t]} \Norm{\int_0^s \sigma(X_r^\mathbf{x}) - \sigma(X_r^\mathbf{y}) \;\d W_r}_{\R^d} \\
+  \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L\left[\sup_{s\in[0,t]} \int_0^s \norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d} \;\d r \right] \\
+  &+ \sup_{s\in[0,t]} \Norm{\int_0^s \sigma(X_r^\mathbf{x}) - \sigma(X_r^\mathbf{y}) \;\d W_r}_{\R^d} \\
+  =& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L \int_0^t \norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d} \;\d r \\
+  &+ \sup_{s\in[0,t]} \Norm{\int_0^s \sigma(X_r^\mathbf{x}) - \sigma(X_r^\mathbf{y}) \;\d W_r}_{\R^d} \\
+\end{align*}
+$$
+
+Thus, we obtain for every $p\in [1,\infty)$
+
+$$
+\begin{align*}
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{1/p} \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L \int_0^t \left(\mathbb{E}[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p]\right)^{1/p} \;\d r \\
+  &+ \left(\mathbb{E}\left[\sup_{s\in[0,t]} \Norm{\int_0^s \sigma(X_r^\mathbf{x}) - \sigma(X_r^\mathbf{y}) \;\d W_r}_{\R^d}^p \right]\right)^{1/p}
+\end{align*}
+$$
+
+The Burkholder-Davis-Gundy type inequality implies that for every $p\in[2,\infty)$
+
+$$
+\begin{align*}
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{1/p} \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L \int_0^t \left(\mathbb{E}[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p]\right)^{1/p} \;\d r \\
+  &+ p\left(\int_0^t \left(\mathbb{E}\left[\norm{\sigma(X_r^\mathbf{x}) - \sigma(X_r^\mathbf{y})}_{HS(\R^d, \R^m)}^p \right]\right)^{2/p} \;\d r \right)^{1/2}
+\end{align*}
+$$
+
+so that by the Lipschitz continuity of $\sigma$
+
+$$
+\begin{align*}
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{1/p} \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L \int_0^t \left(\mathbb{E}[\norm{\mu(X_r^\mathbf{x}) - \mu(X_r^\mathbf{y})}_{\R^d}^p]\right)^{1/p} \;\d r \\
+  &+ Lp\left(\int_0^t \left(\mathbb{E}\left[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p \right]\right)^{2/p} \;\d r \right)^{1/2}
+\end{align*}
+$$
+
+Applying Hölder's inequality yields for every $p\in[2,\infty]$
+
+$$
+\begin{align*}
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{1/p} \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} \\
+  &+ L\sqrt{t} \left[\int_0^t \left(\mathbb{E}[\norm{\mu(X_r^\mathbf{x}) - \mu(X_r^\mathbf{y})}_{\R^d}^p]\right)^{2/p} \;\d r \right]^{1/2} \\
+  &+ Lp\left(\int_0^t \left(\mathbb{E}\left[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p \right]\right)^{2/p} \;\d r \right)^{1/2} \\
+  \leq& \norm{\mathbf{x} - \mathbf{y}}_{\R^d} + L(p + \sqrt{T}) \left(\int_0^t \left(\mathbb{E}\left[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p \right]\right)^{2/p} \;\d r \right)^{1/2}
+\end{align*}
+$$
+
+The fact that $\forall v,w\in\R: |v + w|^2 \leq 2v^2 + 2w^2$ therefore shows that for every $p\in[2,\infty)$
+
+$$
+\begin{align*}
+  &\left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{2/p} \\
+  \leq& 2\norm{\mathbf{x} - \mathbf{y}}_{\R^d} + 2L^2 (p + \sqrt{T})^2 \int_0^t \left(\mathbb{E}\left[\norm{X_r^\mathbf{x} - X_r^\mathbf{y}}_{\R^d}^p \right]\right)^{2/p} \;\d r \\
+  \leq& 2\norm{\mathbf{x} - \mathbf{y}}_{\R^d} + 2L^2 (p + \sqrt{T})^2 \int_0^t \left(\mathbb{E}\left[\sup_{s\in[0,r]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}_{\R^d}^p \right]\right)^{2/p} \;\d r \\
+\end{align*}
+$$
+
+Combining the Gronwall inequality with
+- $\alpha = 0$
+- $\beta = 0$
+- $a = 2\norm{\mathbf{x} - \mathbf{y}}_{\R^d}^2$
+- $b = 3L^2 (p + \sqrt{T})$
+- $e = ([0,T] \ni t\mapsto \mathbb{E}[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{x}}_{\R^d}^p])^{2/p} \in [0,\infty])$
+
+and applying $\eqref{equation-14}$ establishes that for every $p\in[2,\infty)$
+
+$$
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{2/p} \leq 2\norm{\mathbf{x} - \mathbf{y}}_{\R^d}^2 \exp\left(2L^2 t [p + \sqrt{T}]^2 \right)
+$$
+
+so that
+
+$$
+  \left(\mathbb{E}\left[\sup_{s\in[0,t]} \norm{X_s^\mathbf{x} - X_s^\mathbf{y}}\right]\right)^{1/p} \leq 2 \exp\left(L^2 T [p + \sqrt{T}]^2 \right)\norm{\mathbf{x} - \mathbf{y}}_{\R^d}
+$$
+
+---
+- $\ref{lemma-5-4}$
+
+From $\ref{\lemma-5-2}$ and Jensen's inequality, it follows that for every $p\in(0,\infty)$
+
+$$
+  \sup_{\substack{\mathbf{x}, \mathbf{y}\in[a,b]^d \\ \mathbf{x}\neq\mathbf{y}}} \left(\frac{\left(\mathbb{E}[\sup_{t\in[0,T]} \norm{X_t^\mathbf{x} - X_t^\mathbf{y}}_{\R^d}^p] \right)^{1/p}}{\norm{\mathbf{x} - \mathbf{y}}_{\R^d}} \right) < \infty
+$$
+
+Continuity of $\Phi$, together with Lemma $\ref{lemma-4}$, ensures that for every $\epsilon\in(0,\infty)$ and $(\mathbf{x}_n)_{n\in\N_0} \subseteq [a,b]^d$ with $\limsup_{n\to\infty} \norm{\mathbf{x}_0 - \mathbf{x}_n}_{\R^d} = 0$ then
+
+$$
+  \limsup_{n\to\infty} \mathbb{P}\left(|\Phi((X_t^{\mathbf{x}_0})_{t\in[0,T]} - \Phi((X_t^{\mathbf{x}_n})_{t\in[0,T]})| \geq \epsilon \right) = 0
+$$
+
+From $\eqref{equation-15]}$, it follows that
+
+$$
+  \limsup_{n\to\infty} \mathbb{E}\left(|\Phi((X_t^{\mathbf{x}_0})_{t\in[0,T]} - \Phi((X_t^{\mathbf{x}_n})_{t\in[0,T]})|\right) = 0
+$$
+
+---
+- $\ref{lemma-5-5}$
+
+From $\eqref{equation-16}$, it follows that for every $\epsilon\in(0,\infty)$
+
+$$
+  \limsup_{N\to\infty} \left[\mathbb{P}\left(\sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N (t) - X_t^\mathbf{x}}_{\R^d} \geq \epsilon \right) + \mathbb{P}\left(\sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N (t) - \mathbf{X}_t}_{\R^d} \geq \epsilon \right) \right] = 0
+$$
+
+Continuity of $\Phi$ and Lemma $\ref{lemma-4}$ imply
+
+$$
+\begin{equation*}
+  \limsup_{N\to\infty} \left[\mathbb{P}\left(|\Phi(\Psi_{\mathbf{x}, W}^N) - \Phi((X_t^\mathbf{x})_{t\in[0,T]})| + |\Phi(\Psi_{\boldsymbol{\xi}, W}^N) - \Phi((\mathbf{X}_t)_{t\in[0,T]})| \geq \epsilon \right) \right] = 0
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+From $\eqref{equation-12}$, we obtain for every $p\in(0,\infty)$
+
+$$
+\begin{equation*}
+\begin{split}
+  &\mathbb{E}\left[|\Phi(\Psi_{\mathbf{x}, W}^N) - \Phi((X_t^\mathbf{x})_{t\in[0,T]})|^p + |\Phi(\Psi_{\boldsymbol{\xi}, W}^N) - \Phi((\mathbf{X}_t)_{t\in[0,T]})|^p \right] \\
+  \leq& 2^p \mathbb{E}\left[|\Phi(\Psi_{\mathbf{x}, W}^N)|^p + |\Phi((X_t^\mathbf{x})_{t\in[0,T]})|^p \right] \\
+  &+ 2^p \mathbb{E}\left[|\Phi(\Psi_{\boldsymbol{\xi}, W}^N)|^p + |\Phi((\mathbf{X}_t)_{t\in[0,T]})|^p \right] \\
+  \leq& 2^p c^p \mathbb{E}\left[|1 + \sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N (t)}_{\R^d} |^{cp} + |1 + \sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}_{\R^d}|^{cp} \right] \\
+  &+ 2^p c^p \mathbb{E}\left[|1 + \sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N (t)}_{\R^d} |^{cp} + |1 + \sup_{t\in[0,T]} \norm{\mathbf{X}_t}_{\R^d}|^{cp} \right] \\
+  \leq& 4^p c^p \mathbb{E}\left[2 + \sup_{t\in[0,T]} \norm{\Psi_{\mathbf{x}, W}^N}_{\R^d}^{cp} + \sup_{t\in[0,T]} \norm{X_t^\mathbf{x}}_{\R^d}^{cp} \right] \\
+  &+ 4^p c^p \mathbb{E}\left[2 + \sup_{t\in[0,T]} \norm{\Psi_{\boldsymbol{\xi}, W}^N}_{\R^d}^{cp} + \sup_{t\in[0,T]} \norm{\mathbf{X}_t}_{\R^d}^{cp} \right]
+\end{split}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+Combining $\eqref{equation-11}$ and $\eqref{equation-14}$
+
+$$
+\begin{equation*}
+  \sup_{N\in\N_+} \sup_{\mathbf{x}\in[a,b]^d} \left(\mathbb{E}\left[|\Phi(\Psi_{\mathbf{x}, W}^N) - \Phi((X_t^\mathbf{x})_{t\in[0,T]})|^p + |\Phi(\Psi_{\boldsymbol{\xi}, W}^N) - \Phi((\mathbf{X}_t)_{t\in[0,T]})|^p \right] \right)
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+This and $\eqref{equatiion-17}$ imply
+
+$$
+\begin{equation*}
+  \limsup_{N\to\infty} \left(\mathbb{E}\left[|\Phi(\Psi_{\mathbf{x}, W}^N) - \Phi((X_t^\mathbf{x})_{t\in[0,T]})|\right] + \mathbb{E}\left[|\Phi(\Psi_{\boldsymbol{\xi}, W}^N) - \Phi((\mathbf{X}_t)_{t\in[0,T]})|\right] \right) = 0
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+Applying Lebesgue's dominated convergence theorem to $\eqref{equation-18}$ yields
+
+$$
+\begin{equation*}
+  \limsup_{N\to\infty} \left(\int_{[a,b]^d} \mathbb{E}[|\Phi(\Psi_{\mathbf{x}, W}^N) - \Phi((X_t^\mathbf{x})_{t\in[0,T]})|] \;\d\mathbf{x} \right) = 0
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+Additionally, $\eqref{equation-19}$, $\eqref{equation-11}$ and $\eqref{equation-14}$ show that for all $p\in(0,\infty)$
+
+$$
+\begin{equation*}
+  \sup_{N\in\N_+} \sup_{\mathbf{x}\in[a,b]^d} \mathbb{E}[|\Phi(\Psi_{\mathbf{x}, W}^N)|^p] < \infty
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+Since $\boldsymbol{\xi}$ and $W$ are independent, $\eqref{equation-20}$ implies
+
+$$
+\begin{align*}
+  \mathbb{E}[\Phi((\mathbf{X}_t)_{t\in[0,T]})] =& \lim_{N\to\infty} \mathbb{E} [\Phi(\Psi_{\boldsymbol{\xi}, W}^N)] \\
+  =& \lim_{N\to\infty} \left[\int_\Omega \Phi\left(\Psi_{\boldsymbol{xi}(\omega), (W_t (\omega))_{t\in[0,T]}} \right) \mathbb{P}(\d\omega) \right] \\
+  =& \lim_{N\to\infty} \left[\int_{[a,b]^d \times C([0,T], \R^d)} \Phi(\Psi_{\mathbf{x}, W}^N)((\boldsymbol{\xi}, W)(\mathbb{P})(\d\mathbf{x}, \d w) \right] \\
+  =& \lim_{N\to\infty} \left[\int_{[a,b]^d \times C([0,T], \R^d)} \Phi(\Psi_{\mathbf{x}, W}^N)((\boldsymbol{\xi}(\mathbb{P})) \otimes (W(\mathbb{P})))(\d\mathbf{x}, \d w) \right]
+\end{align*}
+$$
+
+Applying Fubini's theorem, $\eqref{equation-21}$, $\eqref{equation-22}$, together with Lebesgue's dominated convergence theorem therefore assures that
+
+$$
+\begin{align*}
+  \mathbb{E}[\Phi((\mathbf{X}_t)_{t\in[0,T]})] =& \lim_{N\to\infty} \left[\int_{[a,b]^d} \left(\int_{C([0,T), \R^d} \Phi(\Psi_{\mathbf{x}, w}^N) (W(\mathbb{P}))(\d w) \right) (\boldsymbol{\xi}(\mathbb{P}))(\d\mathbf{x})\right] \\
+  =& \lim_{N\to\infty} \left[\int_{[a,b]^d} \left(\int_\Omega \Phi(\Psi_{\mathbf{x},w}^n) \mathbb{P}(\d w) \right) (\boldsymbol{\xi}(\mathbb{P}))(\d\mathbf{x}) \right] \\
+  =& \lim_{N\to\infty} \left[\int_{[a,b]^d} \mathbb{E}[\Phi(\Psi_{\mathbf{x}, W}^n)] (\boldsymbol{\xi}(\mathbb{P}))(\d\mathbf{x})\right] \\
+  =& \int_{[a,b]^d} \lim_{N\to\infty} \mathbb{E}[\Phi(\Psi_{\mathbf{x}, W})] (\boldsymbol{\xi}(\mathbb{P}))(\d\mathbf{x}) \\
+  =& \int_{[a,b]^d} \mathbb{E}[\Phi((X_t^\mathbf{x})_{t\in[0,T]})](\boldsymbol{\xi}(\mathbb{P}))(\d\mathbf{x}) \\
+  =& \frac{1}{(b - a)^d} \left(\int_{[a,b]^d} \mathbb{E}[\Phi((X_t^\mathbf{x})_{t\in[0,T]})] \;\d\mathbf{x} \right)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="proposition-3">
+Let
+- $d,m\in\N_+$
+- $T\in(0,\infty)$,
+- $a\in\R$ and $b\in(a,\infty)$
+- $\mu:\R^d \to\R^d$ and $\sigma:\R^d \to\R^{d\times m}$ be globally Lipschitz continuous functions
+- $\varphi:\R^d \to\R$ be a function
+
+Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth, satisfying the partial differential equation
+
+$$
+\begin{equation*}
+  \partial_t u(t, \mathbf{x}) = \frac{1}{2} \operatorname{tr}[\sigma(\mathbf{x} \sigma(\mathbf{x})^\top H_\mathbf{x} (u(t,\mathbf{x}))] + \braket{\mu(\mathbf{x}), \nabla_\mathbf{x} u(t,\mathbf{x})}_{\R^d}
+\tag{\label{equation-29}}
+\end{equation*}
+$$
+
+with inital condition $u(0,\mathbf{x}) = \varphi(\mathbf{x})$. Here $H_\mathbf{x} (u(t,\mathbf{x}))$ is the Hessian matrix of $u$ with respect to spatial coordinates.
+
+Let
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with a normal filtration $(\mathscr{F}_t)_{t\in[0,T]}$
+- $W:[0,T] \times\Omega\to\R^m$ be a standard $(\mathscr{F}_t)_{t\in[0,T]}$-Brownian motion
+- $\boldsymbol{\xi}: \Omega\to[a,b]^d$ be a continuous uniformly distributed $\mathscr{F}_0 /\mathcal{B}([a,b]^d)$-measurable random variable
+- $\mathbf{X} := (\mathbf{X}_t)_{t\in[0,T]} :[0,T]\times\Omega\to\R^d$ be an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous sample paths which satisfies $\mathbb{P}$-a.s. for every $t\in[0,T]$ that
+
+$$
+\begin{equation*}
+  \mathbf{X}_t = \boldsymbol{\xi} + \int_0^t \mu(\boldsymbol{X}_s) \;\d s + \int_0^t \sigma(\mathbf{X}_s) \;\d W_s
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+Then
+1. $\varphi:\R^d \to\R$ is twice continuously differentiable with at most polynomially growing derivatives
+2. there exists a unique continuous function $U: [a,b]^d \to\R$ such that
+$$
+  \mathbb{E}(|\varphi(\mathbf{X}_t) - U(\boldsymbol{\xi})|^2) = \inf_{v\in C([a,b]^d, \R)} \mathbb{E}(|\varphi(\mathbf{X}_t) - v(\boldsymbol{\xi})|^2]
+$$
+
+3. $U(\mathbf{x}) = u(T, \mathbf{x})$ for every $\mathbf{x}\in [a,b]^d$
+
+<details>
+<summary>Proof</summary>
+
+For $\mathbf{x}\in[a,b]^d$, let $X^\mathbf{x} = (X_t^\mathbf{x})_{t\in[0,T]} : [0,T]\times\Omega\to\R^d$ be an $(\matscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous samples paths, satisfying
+
+- for every $t\in[0,T]$ it holds $\mathbb{P}$-a.s. that
+$$
+\begin{equation*}
+  X_t^\mathbf{x} = \mathbf{x} + \int_0^t \mu(X_s^\mathbf{x})\;\d s + \int_0^t \sigma(X_s^\mathbf{x}) \;\d W_s
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+- for every $\omega\in\Omega$ the function $[a,b]^d \ni \mathbf{x} \mapsto X_T^\mathbf{x} (\omega) \in\R^d$ is continuous
+
+---
+- $\ref{proposition-3-1}$
+
+This follows from the assumption that $u$ has at most polynomially growing partial derivatives
+
+---
+- $\ref{proposition-3-2}$
+
+For every $p\in(0,\infty)$ and $\mathbf{x}\in[a,b]^d$ we have
+
+$$
+  \sup_{t\in[0,T]} \mathbb{E}(\norm{X_t^\mathbf{x}}_{\R^d}^p) < \infty
+$$
+
+Together with item $\ref{proposition-3-1}$, this assures that
+
+$$
+\begin{equation*}
+  \mathbb{E}[|\varphi(X_t^\mathbf{x})|^2] < \infty
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+Since the function $[a,b]^d \ni \mathbf{x}\mapsto X_T^\mathbf{x} (\omega) \in\R^d$ is continuous, so is the function
+
+$$
+  [a,b]^d \ni \mathbf{x} \mapsto\mathbb{E}[\varphi(X_T^\mathbf{x})] \in\R
+$$
+
+Because $\Omega\ni\omega \mapsto \varphi(X_T^\mathbf{x} (\omega))\in\R$ is $\mathcal{F}/\mathcal{B}(\R)$-measurable, and $[a,b]^d \ni\mathbf{x} \mapsto \varphi(X_T^\mathbf{x} (\omega))\in\R$ is continuous, it follows from $\ref{lemma-3}$ that the function
+
+$$
+  [a,b]^d \times\Omega \ni (\mathbf{x}, \omega) \mapsto \varphi(X_T^\mathbf{x} (\omega)) \in\R
+$$
+
+is $(\mathcal{B}([a,b]^d) \otimes\mathcal{F})/\mathcal{B}(\R)$-measurable. Combining this, $\eqref{equation-23}$ and Proposition $\ref{proposition-2}$, it follows that
+- there exists a unique continuous function $U: [a,b]^d \to\R$ which satisfies
+$$
+\begin{equation*}
+  \int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - U(\mathbf{x})|^2] \;\d\mathbf{x} = \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}[\varphi(\mathbf{X}_T^\mathbf{x}) - v(x)|^2] \;\d\mathbf{x} \right)
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+- for every $\mathbf{x}\in[a,b]^d$ it holds that
+$$
+\begin{equation*}
+  U(\mathbf{x}) = \mathbb{E}(\varphi(X_T^\mathbf{x}))
+\tag{\label{equation-30}}
+\end{equation*}
+$$
+
+Every continuous function $V: [a,b]^d \to\R$ satisfies
+
+$$
+  \sup_{\mathbf{x}\in[a,b]^d} |V(\mathbf{x})| < \infty
+$$
+
+such that $\ref{proposition-3-1}$ implies that
+
+$$
+  C([0,T], \R^d) \ni (z_t)_{t\in[0,T]} \mapsto |\varphi(z_T) - V(z_0)|^2 \in\R
+$$
+
+is an at most polynomially growing continuous function. Combining Lemma $\ref{lemma-5}$, $\eqref{equation-24}$, item $\ref{proposition-3-1}$ and $\eqref{equation-25}$ ensures that
+
+$$
+\begin{equation*}
+  \mathbb{E}[|\varphi(\mathbf{X}_T) - V(\boldsymbol{\xi})|^2] = \frac{1}{(b - a)^2} \left[\int_[a,b]^d \mathbb{E}[|\varphi(X_T^\mathbf{x}) - V(\mathbf{x})|^2] \;\d\mathbf{x} \right]
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+For every continuous function $V: [a,b]^d \to\R$ with 
+
+$$
+  \mathbb{E}[|\varphi(\boldsymbol{X}_T) - V(\boldsymbol{\xi})|^2] = \inf_{v\in C([a,b]^d, \R)} \mathbb{E}[|\varphi(\mathbf{X}_T) - v(\boldsymbol{\xi})|^2]
+$$
+
+it holds that
+
+$$
+\begin{align*}
+  &\int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - V(\mathbf{x})|^2] \;\d\mathbf{x} \\
+  =& (b - a)^d \left(\frac{1}{(b - a)^d} \int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - V(\mathbf{x})|^2] \;\d\mathbf{x} \right) \\
+  =& (b - a)^d \mathbb{E}[|\varphi(\mathbf{X}_T) - V(\boldsymbol{\xi})|^2] \\
+  =& (b - a)^d \left(\inf_{v\in C([a,b]^d, \R)} \mathbb{E}[|\varphi(\mathbf{X}_t) - v(\boldsymbol{\xi})|^2] \right) \\
+  =& (b - a)^d \inf_{v\in C([a,b]^d, \R)} \left(\frac{1}{(b - a)^d} \int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - v(\mathbf{x})|^2] \;\d\mathbf{x} \right) \\
+  =& \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - v(\mathbf{x})|^2] \;\d\mathbf{x} \right)
+\end{align*}
+$$
+
+Combining this with $\eqref{equation-26}$ implies that 
+
+$$
+\begin{equation*}
+  U = V
+\tag{\label{equation-28}}
+\end{equation*}
+$$
+
+Equations $\eqref{equation-27}$ and $\eqref{equation-26}$ imply that
+
+$$
+\begin{align*}
+  \mathbb{E}[|\varphi(\mathbf{X}_T) - U(\boldsymbol{\xi})|^2] =& \frac{1}{(b - a)^d} \int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - U(\mathbf{x})|^2] \;\d\mathbf{x} \\
+  =& \inf_{v\in C([a,b]^d, \R)} \left(\frac{1}{(b - a)^d} \int_{[a,b]^d} \mathbb{E}[|\varphi(X_T^\mathbf{x}) - v(\mathbf{x})|^2] \;\d\mathbf{x} \right) \\
+  =& \inf_{v\in C([a,b]^d, \R)} \mathbb{E}[|\varphi(\mathbf{X}_T) - v(\boldsymbol{\xi})|^2]
+\end{align*}
+$$
+
+Combining this with $\eqref{equation-28}$ completes the proof.
+
+---
+- $\ref{proposition-3-3}$
+
+This follows by applying the Feynman-Kac formula to $\eqref{equation-29}$ and using $\eqref{equation-30}$
+</details>
+</MathBox>

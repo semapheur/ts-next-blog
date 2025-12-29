@@ -1,6 +1,6 @@
 # Todos
 
-- Note routes with catch-all segments
+- Astro w/bun + elysia/encore
 
 ## Structure
 
