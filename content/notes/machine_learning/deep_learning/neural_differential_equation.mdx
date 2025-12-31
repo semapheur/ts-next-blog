@@ -114,11 +114,11 @@ Neural networks can be employed to compute approximate solutions of the semiline
 **Neural network hypothesis class**
 
 Let 
-- $a\in C(\R)$ be a continuously differentiable actication function
+- $a\in C(\R)$ be a continuously differentiable activation function
 - $h\in\N_+$ be the number of hidden layers
 - $\ell_1,\dots,\ell_h \in\N_+$ be the corresponding layer widths
 
-THe total number of parameters is
+The total number of parameters is
 
 $$
   p = \ell_1 (d + 2) + \left[\sum_{k=2}^h \ell_k (\ell_{k-1} + 1) \right] + \ell_h + 1
@@ -159,7 +159,7 @@ be random variables, each with the same distribution as $(T, \boldsymbol{X})$. D
 $$
 \begin{align*}
   l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
-  &+ \left| \partial_t \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
+  &+ \left| \partial_t \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
 \end{align*}
 $$
 
@@ -195,7 +195,7 @@ Let
 - $\mu:\R^d \to\R^d$ and $\sigma:\R^d \to\R^{d\times d}$ be Lipschitz continuous
 - $\varphi:\R^d \to\R$ be a function
 
-Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth, satisfying the partial differential equation
+Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth, satisfying the backwawrd Kolmogorov equation
 
 $$
 \begin{equation*}
@@ -216,6 +216,21 @@ The Feynman-Kac formula and $\eqref{equation-1}$ yield that for every $\mathbf{x
 
 $$
   u(T, \mathbf{x}) = \mathbb{E}(u(0, X_T^\mathbf{x})) = \mathbb{E}(\varphi(X_T^\mathbf{x}))
+$$
+
+This can be reformulated as a minimization problem uniquely solved by the function $[a,b]^d \ni \mathbf{x}\mapsto u(T, \mathbf{x})\in\R$. Specifically, let $\boldsymbol{\xi}:\Omega\to [a,b]^d$ be a continuously distributed $\mathscr{F}_0 /\mathcal{B}([a,b]^d)$-measurable random variable, and let $\mathbf{X}: [0,T]\times\Omega\to\R^d$ be an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous sample paths which satisfies $\mathbb{P}$-a.s. for every $t\in[0,T]$
+
+$$
+\begin{equation*}
+  \mathbf{X}_t = \boldsymbol{\xi} + \int_0^t \mu(\mathbf{X}_s)\;\d s + \int_0^t \sigma(\mathbf{X}_s) \;\d W_s
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+Proposition $\ref{proposition-3}$ then guarantees that the function $[a,b]^d \ni\mathbf{x}\mapsto u(T, \mathbf{x})\in\R$ is the unique global minimizer of the function
+
+$$
+  C([a,b]^d, \R) \ni v\mapsto \mathbb{E}[|\varphi(\mathbf{X}_T) - v(\boldsymbol{\xi})|^2] \in\R
 $$
 
 <MathBox title="" boxType="lemma" tag="lemma-1">
@@ -262,7 +277,7 @@ Let
 
 Assume for every $x\in[a,b]^d$ that $\mathbb{E}(|X_x|^2) < \infty$, and assume that the function $[a,b]^d \ni \mathbf{x} \mapsto \mathbb{E}(X_\mathbf{x}) \in\R$ is continuous. Then
 
-1. There exists a unique continuous function $u: [a,b]^d \to\R$ such that
+1. There exists a unique continuous function $u \in C([a,b]^d, \R)$ such that
 $$
 \begin{equation*}
   \int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - u(\mathbf{x})|^2) \;\d\mathbf{x} = \inf_{v\in C([a,b]^d, \R)} \left(\int_{[a,b]^d} \mathbb{E}(|X_\mathbf{x} - v(\mathbf{x})|^2) \;\d\mathbf{x}\right)
@@ -946,7 +961,7 @@ Let
 - $\mu:\R^d \to\R^d$ and $\sigma:\R^d \to\R^{d\times m}$ be globally Lipschitz continuous functions
 - $\varphi:\R^d \to\R$ be a function
 
-Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth, satisfying the partial differential equation
+Suppose $u \in C^{1,2}([0,T] \times \R^d, \R)$ has partial derivatives of at most polynomial growth and satisfies the backward Kolmogorov equation
 
 $$
 \begin{equation*}
@@ -971,13 +986,16 @@ $$
 $$
 
 Then
-1. $\varphi:\R^d \to\R$ is twice continuously differentiable with at most polynomially growing derivatives
+1. $\varphi\in C^2 (\R^d)$ is twice continuously differentiable with at most polynomially growing derivatives
 2. there exists a unique continuous function $U: [a,b]^d \to\R$ such that
 $$
   \mathbb{E}(|\varphi(\mathbf{X}_t) - U(\boldsymbol{\xi})|^2) = \inf_{v\in C([a,b]^d, \R)} \mathbb{E}(|\varphi(\mathbf{X}_t) - v(\boldsymbol{\xi})|^2]
 $$
 
-3. $U(\mathbf{x}) = u(T, \mathbf{x})$ for every $\mathbf{x}\in [a,b]^d$
+3. for all $\mathbf{x}\in [a,b]^d$
+$$
+  U(\mathbf{x}) = u(T, \mathbf{x})
+$$
 
 <details>
 <summary>Proof</summary>
@@ -1111,5 +1129,304 @@ Combining this with $\eqref{equation-28}$ completes the proof.
 - $\ref{proposition-3-3}$
 
 This follows by applying the Feynman-Kac formula to $\eqref{equation-29}$ and using $\eqref{equation-30}$
+</details>
+</MathBox>
+
+## Discretization of stochastic differential equations
+
+The solution process $\mathbf{X} = (\mathbf{X}_t)_{t\in[0,T]}$ of the stochastic differential equation $\eqref{equation-31}$ can be temporally discretized using the Euler-Maruyama scheme. Specifically, for $N\in\N_+$ fix a time partition $t_0,\dots,t_N \in [0,\infty)$ with
+
+$$
+  0 = t_0 <\cdots< t_N = T
+$$
+
+From $\eqref{equation-31}$, it follows that for every $n=0,\dots,N-1$ then $\mathbb{P}$-a.s.
+
+$$
+  \mathbf{X}_{t_{n+1}} = \mathbf{X}_{t_n} + \int_{t_n}^{t_{n+1}} \mu(\mathbf{X}_s) \;\d s + \int_{t_n}^{t_{n+1}} \sigma(\mathbf{X}_s) \;\d W_s
+$$
+
+This suggests that for sufficiently small mesh size $\sup_{n\in [N-1]} (t_{n-1} - t_n)$
+
+$$
+  \mathbf{X}_{t_{n+1}} \approx \mathbf{X}_{t_n} + \mu(\mathbf{X}_{t_n})(t_{n+1} - t_n) + \sigma(\mathbf{X}_{t_n})(W_{t_{n+1}} - W_{t_n})
+$$
+
+Define the stochastic process $\mathcal{X}: \set{0,\dots,N}\times\Omega\to\R^d$ recursively by $\mathcal{X}_0 = \boldsymbol{\xi}$ and
+
+$$
+  \mathcal{X}_{n+1} = \mathcal{x}_n + \mu(\mathcal{X}_{t_n}) (t_{n+1} - t_n) + \sigma(\mathcal{X}_n) (W_{t_{n+1}} - W_{t_n})
+$$
+
+Then $\mathcal{X}_n$ approximates $\mathbf{X}$, i.e. $\mathcal{X}_n \approx \mathbf{X}_{t_n}$.
+
+<MathBox title="Strong convergence rate for the Euler-Maruyama scheme" boxType="theorem" tag="theorem-1">
+Let
+- $T\in (0,\infty)$
+- $d\in\N_+$
+- $p\in [2,\infty)$
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with normal filtration $(\mathscr{F}_t)_{t\in[0,T]}$
+- $W: [0,T]\times\Omega\to\R^d$ be a standard $(\mathscr{F}_t)_{t\in[0,T]}$-Brownian motion
+- $\boldsymbol{\xi}:\Omega\to\R^d$ be a random variable satisfying $\mathbb{E}(\norm{\boldsymbol{\xi}}_{\R^d}^p) < \infty$
+- $\mu:\R^d \to\R^d$ and $\sigma: \R^d \to\R^{d\times d}$ be Lipschitz continuous functions
+
+Suppose $\mathbf{X}: [0,T]\times\Omega\to\R^d$ is an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous sample paths which satisfies $\mathbb{P}$-a.s. for every $t\in[0,T]$
+
+$$
+  \mathbf{X}_t = \boldsymbol{\xi} + \int_0^t \mu(\mathbf{X}_s) \;\d s + \int_0^t \sigma(\mathbf{X}_s) \;\d W_s
+$$
+
+For every $N\in\N_+$, fix a time partition t_0^N,\dots, t_N^N \in[0,T]$ with
+
+$$
+  0 = t_0^N <\cdots< t_N^N = T
+$$
+
+and define the stochastic process $\mathcal{X}^N :\set{0,\dots,N}\times\Omega\to\R^d$ recursively by $\mathcal{X}_0^N = \boldsymbol{\xi}$ and
+
+$$
+  \mathcal{X}_{n+1}^N = \mathcal{X}_n^N + \mu(\mathcal{X}_n^N) (t_{n+1}^N - t_n^N) + \sigma(\mathcal{X}_n^N) (W_{t_{n+1}^N} - W_{t_n^N})
+$$
+
+Then there exists a real number $C\in (0,\infty)$ such that for every $N\in\N_+$
+
+$$
+  \sup_{n\in [N]} \left(\mathbb{E}[\norm{\mathbf{X}_{t_n^N} - \mathcal{X}_n^N}_{\R^d}^p]\right)^{1/p} \leq C \left(\max_{n\in [N-1]} |t_{n+1} - t_n| \right)^{1/2}
+$$
+</MathBox>
+
+## Neural network approximation
+
+The solution $\R^d \ni \mathbf{x}\mapsto u(T,\mathbf{x})\in\R$ of the Kolmogorov equation $\eqref{equation-5}$ at time $T$ can be approximated with neural networks as follows. Let $\nu\in\N_+$ and let $\mathbf{U}: \R^\nu \times \R^d \to\R$ be a continuous function. For every suitable parameter $\boldsymbol{\theta}\in\R^\nu$ and every $\mathbf{x}\in [a,b]^d$, then $\mathbf{U}(\boldsymbol{\theta}, \mathbf{x})\in\R$ is an appropriate approximation
+
+$$
+  \mathbf{U}(\boldsymbol{\theta}, \mathbf{x}) \approx u(T, \mathbf{x})
+$$
+
+We suggest to choose the function $\mathbf{U}$ as a neural network. For instance define the loss function $L_d : \R^d \to\R^d$ by
+
+$$
+  L_d (\mathbf{x}) = \left(\frac{e^{x_1}}{e^{x_1} + 1},\dots,\frac{e^{x_d}}{e^{x_d} + 1} \right)
+$$
+
+for every $k,l\in\N$, $v\in\N_0$ and $\boldsymbol{\theta}\in\R^\nu$ with $v + l(k+1) \leq v$ define the function $A_{k,l}^{\boldsymbol{\theta}, v} :\R^k \to\R^l$ by
+
+$$
+  A_{k,l}^{\boldsymbol{\theta}, v} (\mathbf{x}) = \begin{bmatrix} 
+    \theta_{v+1} & \theta_{v+2} & \cdots & \theta_{v+k} \\
+    \theta_{v+k+1} & \theta_{v+k+2} & \cdots & \theta_{v+2k} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \theta_{v + (l-1)k + 1} & \theta_{v + (l-1)k + 2} & \cdots & \theta_{v + lk}
+  \end{bmatrix} \cdot \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_k \end{bmatrix} + \begin{bmatrix} \theta_{v+kl+1} \\ \theta_{v+kl+2} \\ \vdots \\ \theta_{v+kl+l} \end{bmatrix}
+$$
+
+Let $s=3,4,\dots,$ assume $(s-1)d(d-1) + d + 1 \leq\nu$ and define $\mathbf{U}:\R^\nu \times\R^d \to\R$ by
+
+$$
+  \mathbf{U}(\boldsymbol{\theta}, \mathbf{x}) = \left(A_{d,1}^{\boldsymbol{\theta}, (s-1)d(d+1)} \circ\mathcal{L}_d \circ\cdots\circ A_{d,d}^{\boldsymbol{\theta}, d(d+1)} \circ L_d \circ A_{d,d}^{\boldsymbol{\theta}, 0} \right)(\mathbf{x})
+$$
+
+which describes an artificial neural network with $s + 1$ layers and standard logistic functions as activations functions.
+
+## Heat equation
+
+<MathBox title="Variant of Lebesgue's dominated convergence theorem" boxType="lemma" tag="lemma-6">
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. For $n\in\N_0$, let $X_n : \Omega\to\R$ be a random variable, and assume for all $\epsilon\in(0,\infty)$ that
+
+$$
+  \limsup_{n\to\infty} \mathbb{P}(|X_n - X_0| > \epsilon) = 0
+$$
+
+Let $Y:\Omega\to\R$ be a random variable with $\mathbb{E}(|Y|) < \infty$, and assume for all $n\in\N_+$ that $\mathbb{P}(|X_n| \leq Y) = 1$. Then
+
+1. $\limsup_{n\to\infty} \mathbb{E}(|X_n - X_0|) = 0$
+2. $\mathbb{E}(|X_0|) < \infty$
+3. $\limsup_{n\to\infty} |\mathbb{E}(X_n) - \mathbb{E}(X_0)| = 0$
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="proposition-4">
+Let
+- $T\in(0,\infty)$
+- $d, m\in\N_+$
+- $\mathbf{B} \in\R^{d\times m}$
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space
+- $\boldsymbol{Z}:\Omega\to\R^m$ be a standard normal variable
+
+Assume $\varphi\in C^2 (\R^d, \R)$ satifies the boundedness condition
+
+$$
+  \sup_{\mathbf{x}\in\R^d} \left(|\varphi(\mathbf{x})| + \norm{\nabla \varphi(\mathbf{x})} + \norm{ H(\varphi(\mathbf{x}))}\right) < \infty
+$$
+
+where $H$ denotes the Hessian matrix.
+
+Define $u:[0,T]\times\R^d \to\R$ by
+
+$$
+  u(t, \mathbf{x}) = \mathbb{E}[\varphi(\mathbf{x} + \sqrt{t}\mathbf{B}\boldsymbol{Z})]
+$$
+
+Then $u\in C^{1,2} ([0,T]\times\R^d,\R)$ satisfies the heat equation
+
+$$
+\begin{equation*}
+  \partial_t u(t,\mathbf{x}) = \frac{1}{2} \operatorname{tr}(\mathbf{BB}^\top H_\mathbf{x} (u(t,\mathbf{x}))
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+For every $t\in[0,T]$ and $\mathbf{x}\in\R^d$, define $\psi_{t,\mathbf{x}} :\R^m \to\R$ by $\psi_{t,\mathbf{x}} (\mathbf{y}) = \varphi(\mathbf{x} + \sqrt{t}\mathbf{By})$.
+
+Since $\varphi \in C^2 (\R^d, \R)$, the chain rule yields
+
+$$
+\begin{align*}
+  \nabla_\mathbf{y} \psi_{t,\mathbf{x}} =& \sqrt{t} \mathbf{B}^\top \nabla \varphi(\mathbf{x} + \sqrt{t}\mathbf{By}) \tag{\label{equation-36}} \\
+  H_y \psi_{t,\mathbf{x}} =& t \mathbf{B}^\top H\vaphi (\mathbf{x} + \sqrt{t}\mathbf{By}) \tag{\label{equation-37}}
+\end{align*}
+$$
+
+and all derivatives are uniformly bounded in $(t, x, y)$ for $t\in(0,T]$.
+
+By dominated convergence ensured by Lemma $\ref{lemma-6}$, differentiation can be interchanged with expectation, giving
+
+$$
+\begin{equation*}
+  \partial_t u(t,\mathbf{x}) = \mathbb{E}\left[\Braket{\nabla \varphi(\mathbf{x} + \sqrt{t}\mathbf{B}\boldsymbol{Z}), \frac{1}{2\sqrt{t}} \mathbf{B}\boldsymbol{Z}}\right]
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+  H_\mathbf{x} (u(t, \mathbf{x}) = \mathbb{E}[H_\mathbf{x} (\varphi(\mathbf{x} + \sqrt{t}\mathbf{B}\boldsymbol{Z}))]
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+Continuity of $\partial_t u$ and $H_\mathbf{x} u$ on $(0,T]\times\R^d$ again follows from dominated convergence.
+
+For smooth function with bounded derivatives, the Gaussian integration-by-parts identity states
+
+$$
+  \mathbb{E}[\partial_{ii} f(\boldsymbol{Z})] = \mathbb{E}[Z_i \partial_i f(\mathbf{Z})],\; i=1,\dots,m
+$$
+
+Summing over $i$ and recognizing the trace and inner product, we get
+
+$$
+  \mathbb{E}[\operatorname{tr}(H (f(\boldsymbol{Z}))] = \mathbb{E}[\braket{\nabla f(\mathbf{Z}), \mathbf{Z}}]
+$$
+
+Applying this with $f = \psi_{t,\mathbf{x}}$ yields
+
+$$
+\begin{equation*}
+  \mathbb{E}[\operatorname{tr}(H (\psi_{t,\mathbf{x}}(\boldsymbol{Z}))] = \mathbb{E}[\braket{\nabla \psi_{t,\mathbf{x}}(\mathbf{Z}), \mathbf{Z}}]
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+Taking the trace of $\eqref{equation-36}$ and using the cyclic invariance of the trace, we obtain
+
+$$
+\begin{align*}
+  \operatorname{tr}(H_\mathbf{y} (\psi_{t,\mathbf{x})) =& t \operatorname{tr}[\mathbf{B}^\top H(\varphi(\mathbf{x} + \sqrt{t}\mathbf{By}) \mathbf{B}]
+  =& t \operatorname{tr}[\mathbf{BB}^\top H(\varphi(\mathbf{x} + \sqrt{t}\mathbf{By})] \tag{\label{equation-39}}
+\end{align*}
+$$
+
+Using the transpose identity of the inner products, and substituting $\eqref{equation-37}$, we get
+
+$$
+\begin{align*}
+  \braket{\nabla_\mathbf{y} \psi_{t, \mathbf{x}} (\mathbf{y}), \mathbf{y}} =& \sqrt{t} \braket{\mathbf{B}^\top \nabla\varphi(\mathbf{x} + \sqrt{t}\mathbf{By}), \mathbf{y}}
+  =& \sqrt{t} \braket{\nabla\varphi(\mathbf{x} + \sqrt{t}\mathbf{By}), \mathbf{By}} \tag{\label{equation-40}}
+\end{align*}
+$$
+
+Substituting $\eqref{equation-39}$ and $\eqref{equation-40}$ into $\eqref{equation-38}$ and dividing by $2t$, we arrive at
+
+$$
+  \frac{1}{2}\mathbb{E}(\operatorname{tr}[\mathbf{BB}^\top H(\varphi(\mathbf{x} + \sqrt{t}\mathbf{B}\boldsymbol{Z}))]) = \mathbb{E}\left[\braket{\nabla\varphi(\mathbf{x} + \sqrt{t}\mathbf{B}\boldsymbol{Z}), \frac{1}{2\sqrt{t}} \mathbf{B}\boldsymbol{Z}} \right]
+$$
+
+Using $\eqref{equation-32}$ and $\eqref{equation-33}$ results in the heat equation for all $t > 0$
+
+$$
+  \partial_t u(t, \mathbf{x}) = \frac{1}{2} \operatorname{tr}[\mathbf{BB}^\top H_\mathbf{x} (u(t,\mathbf{x}))]
+$$
+
+The fundamental theorem of calculus, implies for all $t,s\in(0,\infty]$ and $\mathbf{x}\in\R^d$
+
+$$
+\begin{align*}
+  u(t, \mathbf{x}) - u(s, \mathbf{x}) =& \int_s^t \partial_t u(r, \mathbf{x}) \;\d r \\
+  =& \int_s^t \frac{1}{2} \operatorname{tr} [\mathbf{BB}^\top H_\mathbf{x}(u(r,\mathbf{x}))] \;\d r
+\end{align*}
+$$
+
+Since $H_\mathbf{x} u$ is continuous, we get
+
+$$
+\begin{align*}
+  \partial_t u(0, \mathbf{x}) =& \lim_{s \downarrow 0} \frac{u(t,\mathbf{x}) - u(s, \mathbf{x})}{t} \\
+  =& \frac{1}{t} \int_0^t \frac{1}{2} \operatorname{tr}[\mathbf{BB}^\top H_\mathbf{x} (u(r,\mathbf{x}))] \;\d r
+\end{align*}
+$$
+
+Hence $u \in C^{1,2} ([0,T]\times\R^d)$ and satisfies the heat equation on the entire domain.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="corollary">
+Let
+- $T\in(0,\infty)$
+- $d, m\in\N_+$
+- $\mathbf{B} \in\R^{d\times m}$
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space
+- $\boldsymbol{W}:\Omega\to\R^m$ be a standard Brownian motion
+
+Assume $\varphi\in C^2 (\R^d, \R)$ satifies the boundedness condition
+
+$$
+  \sup_{\mathbf{x}\in\R^d} \left(|\varphi(\mathbf{x})| + \norm{\nabla \varphi(\mathbf{x})} + \norm{ H(\varphi(\mathbf{x}))}\right) < \infty
+$$
+
+where $H$ denotes the Hessian matrix.
+
+Define $u:[0,T]\times\R^d \to\R$ by
+
+$$
+  u(t, \mathbf{x}) = \mathbb{E}[\varphi(\mathbf{x} + \mathbf{B}\boldsymbol{W}_t)]
+$$
+
+Then $u\in C^{1,2} ([0,T]\times\R^d,\R)$ satisfies the heat equation
+
+$$
+\begin{equation*}
+  \partial_t u(t,\mathbf{x}) = \frac{1}{2} \operatorname{tr}(\mathbf{BB}^\top H_\mathbf{x} (u(t,\mathbf{x}))
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $\boldsymbol{W}$ is a standard Brownian motion, it follows that
+
+$$
+\begin{align*}
+  u(t,\mathbf{x}) =& \mathbb{E}[\varphi(\mathbf{x} + \mathbf{B}\boldsymbol{W}_t)] \\
+  =& \mathbb{E}\left[\varphi\left(\mathbf{x} + \sqrt{t} \mathbf{B} \frac{\boldsymbol{W}_T}{\sqrt{T}} \right) \right]
+\end{align*}
+$$
+
+By definition of Brownian motion, $\boldsymbol{W}_T /\sqrt{T}$ is a standard normal variable. The results then follow from Proposition $\ref{proposition-4}$
 </details>
 </MathBox>
