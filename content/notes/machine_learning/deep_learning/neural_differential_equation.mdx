@@ -151,15 +151,15 @@ An approximate minimizer $\boldsymbol{\vartheta}\in\R^p$ of $\mathcal{L}$ yields
 Let $J\in\N_+$ be the mini-batch size, let $(\gamma_n)_{n\in\N_+} \subset (0,\infty)$ be a sequence of step sizes, and let 
 
 $$
-  \set{(T_{n,j}, \boldsymbol{X}_{n,j}): \Omega^2 \to [0,T_\text{max}] \times\R^d}_{(n,j) \in\N_+ \times \set{1,dots,J}}
+  \set{(T_{n,j}, \boldsymbol{X}_{n,j}): \Omega^2 \to [0,T_\text{max}] \times\R^d}_{(n,j) \in\N_+ \times \set{1,\dots,J}}
 $$ 
 
 be random variables, each with the same distribution as $(T, \boldsymbol{X})$. Define the pointwise loss $l: \R^p \times[0,T_\text{max}]\times\R^d \to\R$ by
 
 $$
 \begin{align*}
-  l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
-  &+ \left| \partial_t \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}_{\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}_\mathbf{M}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
+  l(\boldsymbol{\theta}, t, \mathbf{x}) =& \left|\mathcal{N}^{\boldsymbol{\theta}, d + 1} (0, \boldsymbol{X}) - g(\boldsymbol{X}) \right|^2 \\
+  &+ \left| \partial_t \mathcal{N}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - \nabla^2 \mathcal{N}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}) - f(\mathcal{N}^{\boldsymbol{\theta}, d + 1} (T, \boldsymbol{X}))\right|^2
 \end{align*}
 $$
 
@@ -986,7 +986,7 @@ $$
 $$
 
 Then
-1. $\varphi\in C^2 (\R^d)$ is twice continuously differentiable with at most polynomially growing derivatives
+1. $\varphi\in C^2 (\R^d, \R)$ is twice continuously differentiable with at most polynomially growing derivatives
 2. there exists a unique continuous function $U: [a,b]^d \to\R$ such that
 $$
   \mathbb{E}(|\varphi(\mathbf{X}_t) - U(\boldsymbol{\xi})|^2) = \inf_{v\in C([a,b]^d, \R)} \mathbb{E}(|\varphi(\mathbf{X}_t) - v(\boldsymbol{\xi})|^2]
@@ -1197,36 +1197,102 @@ $$
 
 ## Neural network approximation
 
-The solution $\R^d \ni \mathbf{x}\mapsto u(T,\mathbf{x})\in\R$ of the Kolmogorov equation $\eqref{equation-5}$ at time $T$ can be approximated with neural networks as follows. Let $\nu\in\N_+$ and let $\mathbf{U}: \R^\nu \times \R^d \to\R$ be a continuous function. For every suitable parameter $\boldsymbol{\theta}\in\R^\nu$ and every $\mathbf{x}\in [a,b]^d$, then $\mathbf{U}(\boldsymbol{\theta}, \mathbf{x})\in\R$ is an appropriate approximation
+For a fixed terminal time $T \in (0,\infty)$, let $u: [0,T]\times\R^d \to\R$ be the solution of the Kolmogorov equation $\eqref{equation-5}$ with initial condition $u(0,\mathbf{x}) = \varphi(\mathbf{x})$, where $\phi \in C^2(\R^d, \R)$ as guaranteed by Proposition $\ref{proposition-3}$. The solution $\mathbf{x}\mapsto u(T, \mathbf{x})$ can be approximated with neural networks as follows.
+
+The first step is the reformulate $\eqref{equation-5}$ as a stochastic minimization process. For this let
+- $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with a normal filtration $(\mathscr{F}_t)_{t\in[0,T]}$
+- $W:[0,T] \times\Omega\to\R^m$ be a standard $(\mathscr{F}_t)_{t\in[0,T]}$-Brownian motion
+- $\boldsymbol{\xi}: \Omega\to[a,b]^d$ be a continuous uniformly distributed $\mathscr{F}_0 /\mathcal{B}([a,b]^d)$-measurable random variable
+- $\mathbf{X} := (\mathbf{X}_t)_{t\in[0,T]} :[0,T]\times\Omega\to\R^d$ be an $(\mathscr{F}_t)_{t\in[0,T]}$-adapted stochastic process with continuous sample paths that satisfies $\mathbb{P}$-a.s. for every $t\in[0,T]$
 
 $$
-  \mathbf{U}(\boldsymbol{\theta}, \mathbf{x}) \approx u(T, \mathbf{x})
+\begin{equation*}
+  \mathbf{X}_t = \boldsymbol{\xi} + \int_0^t \mu(\boldsymbol{X}_s) \;\d s + \int_0^t \sigma(\mathbf{X}_s) \;\d W_s
+\tag{\label{equation-24}}
+\end{equation*}
 $$
 
-We suggest to choose the function $\mathbf{U}$ as a neural network. For instance define the loss function $L_d : \R^d \to\R^d$ by
+Define the functional $L: C([a,b]^d, \R) \to [0,\infty)$ by
 
 $$
-  L_d (\mathbf{x}) = \left(\frac{e^{x_1}}{e^{x_1} + 1},\dots,\frac{e^{x_d}}{e^{x_d} + 1} \right)
+  L(v) = \mathbb{E}[|\varphi(\mathbf{X}_t) - v(\boldsymbol{\xi})|^2]
 $$
 
-for every $k,l\in\N$, $v\in\N_0$ and $\boldsymbol{\theta}\in\R^\nu$ with $v + l(k+1) \leq v$ define the function $A_{k,l}^{\boldsymbol{\theta}, v} :\R^k \to\R^l$ by
+Proposition $\ref{proposition-3}$ ensures that the unknown target function $\mathbf{x} \mapsto u(T,\mathbf{x})|_{[a,b]^d}$ is the unique global minimizer of $L$. 
+
+The second step is reduce this infinite-dimensional stochastic optimization problem to a finite-dimensional one by means of neural networks. Specifically, let 
+- $a\in C(\R)$ be a continuously differentiable activation function
+- $h\in\N_+$ be the number of hidden layers
+- $\ell_1,\dots,\ell_h \in\N$ be the corresponding layer widths
+
+The total number of parameters is therefore
 
 $$
-  A_{k,l}^{\boldsymbol{\theta}, v} (\mathbf{x}) = \begin{bmatrix} 
-    \theta_{v+1} & \theta_{v+2} & \cdots & \theta_{v+k} \\
-    \theta_{v+k+1} & \theta_{v+k+2} & \cdots & \theta_{v+2k} \\
-    \vdots & \vdots & \ddots & \vdots \\
-    \theta_{v + (l-1)k + 1} & \theta_{v + (l-1)k + 2} & \cdots & \theta_{v + lk}
-  \end{bmatrix} \cdot \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_k \end{bmatrix} + \begin{bmatrix} \theta_{v+kl+1} \\ \theta_{v+kl+2} \\ \vdots \\ \theta_{v+kl+l} \end{bmatrix}
+  p = \ell_1 (d + 2) + \left[\sum_{k=2}^h \ell_k (\ell_{k-1} + 1)\right] + \ell_h + 1
 $$
 
-Let $s=3,4,\dots,$ assume $(s-1)d(d-1) + d + 1 \leq\nu$ and define $\mathbf{U}:\R^\nu \times\R^d \to\R$ by
+corresponding to affine transformations between successive layers and a scalar output. For each parameter vector $\boldsymbol{\theta}\in\R^p$ we denote by
 
 $$
-  \mathbf{U}(\boldsymbol{\theta}, \mathbf{x}) = \left(A_{d,1}^{\boldsymbol{\theta}, (s-1)d(d+1)} \circ\mathcal{L}_d \circ\cdots\circ A_{d,d}^{\boldsymbol{\theta}, d(d+1)} \circ L_d \circ A_{d,d}^{\boldsymbol{\theta}, 0} \right)(\mathbf{x})
+  \mathcal{N}^{\boldsymbol{\theta}} := \mathcal{N}_{\mathbf{M}_{a,\ell_1}, \dots, \mathbf{M}_{a,\ell_h}, \operatorname{id}_\R}^{\boldsymbol{\theta}, d} : \R^d \to\R
 $$
 
-which describes an artificial neural network with $s + 1$ layers and standard logistic functions as activations functions.
+the realization of the fully connected feedforward neural network with input dimension $d + 1$, activation $a$ in the hidden layers, and identity activation in the output layers.
+
+Define the finite loss functional $\mathcal{L}: \R^p \to[0,\infty)$ by
+
+$$
+\begin{align*}
+  \mathcal{L}(\boldsymbol{\theta}) =& L(\mathcal{N}^{\boldsymbol{\theta}}|_{[a,b]^d}) \\
+  =& \mathbb{E}[|\varphi(\mathbf{X}_t) - \mathcal{N}^{\boldsymbol{\theta}} (\boldsymbol{\xi}|]
+\end{align*}
+$$
+
+Any approximate minimizer $\boldsymbol{\vartheta}\in\R^p$ of $\mathcal{L}$ yields an approximate minimizer $\mathcal{N}^{\boldsymbol{\theta}}$ of $L$, and hence an approximation of the solution $\boldsymbol{x} \mapsto u(T,\mathbf{x})$, i.e.
+
+$$
+  \mathcal{N}^{\boldsymbol{\theta}} (\mathbf{x})|_{[a,b]^d} \approx u(T, \mathbf{x})|_{[a,b]^d}
+$$
+
+In the third step, we employ stochastic gradient descent (SGD) to compute such an approximate minimizer of $\mathcal{L}$. Let $J\in\N_+$ be the mini-batch size, and let $(\gamma_n)_{n\in\N_+} \subset (0,\infty)$ be a sequence of step sizes. For every $n\in\N_+$ and $j=1,\dots,J$, let
+- $\boldsymbol{\xi}^{(n, j)}: \Omega\to [a,b]^d$ be independently and identically uniformly distributed $\mathscr{F}_0 /\mathcal{B}([a,b]^d)$-measurable random variables
+- $W^{(n,j)} :[0,T]\times\Omega\to\R^d$ be independent standard $(\mathscr{F}_t)_{t\in[0,T]}$-Brownian motions
+
+For $N\in\N_+$, fix a time partition
+
+$$
+  0 = t_0 <\cdots< t_N = T
+$$
+
+Define the stochastic process $\mathcal{X}^{(n,j)} = (\mathcal{X}_m^{(n,j)})_{m\in [N-1]} : [N-1] \times\Omega\to\R^d$ recursively by $\mathcal{X}_0^{(n)} = \boldsymbol{\xi}^{(n)}$ and
+
+$$
+  \mathcal{X}_{j+1}^{(n)} = \mathcal{X}_j^{(n)} + \mu(\mathcal{X}_j^{(n)})(t_{n+1} - t_n) + \sigma(\mathcal{X}_j^{(n)}(W_{t_{j+1}}^{(n)} - W_{t_n}^{(n)})
+$$
+
+Define the pointwise loss $l: \R^p \times \R^d \times \R$ by
+
+$$
+  l(\boldsymbol{\theta}, \mathbf{x}, y) = |\mathcal{N}^{\boldsymbol{\theta}} (\mathbf{x}) - y)|^2
+$$
+
+and set the empirical gradient estimator
+
+$$
+  G_n (\boldsymbol{\theta}) = \frac{1}{J} \sum_{j=1}^J \nabla_{\boldsymbol{\theta}} l(\boldsymbol{\theta}, \boldsymbol{\xi}^{(n,j)}, \varphi(\mathcal{X}_T^{(n,j)})
+$$
+
+The SGD iterates $\boldsymbol{\Theta} = (\boldsymbol{\Theta}_n)_{n\in\N_0} : \N_0 \times\Omega\to\R^p$ are defined recursively by $\boldsymbol{\Theta}_0 = \chi \in\R^p$ and
+
+$$
+  \boldsymbol{\Theta}_n = \boldsymbol{\Theta}_{n-1} - \gamma_n G_n (\boldsymbol{\Theta}_{n-1})
+$$
+
+The aim is to choose $n\in\N_+$ sufficiently large such that for a realization $\boldsymbol{\omega}$
+
+$$
+  \mathcal{N}^{\boldsymbol{\Theta}_n (\boldsymbol{\omega})}|_{[a,b]^d} \approx u(T,\cdot)|_{[a,b]}^d
+$$
 
 ## Heat equation
 
