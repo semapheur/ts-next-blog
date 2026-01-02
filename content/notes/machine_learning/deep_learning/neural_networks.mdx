@@ -2345,6 +2345,294 @@ where $K\subset\R$ is compact.
 
 Theorem $\ref{theorem-3}$ shows that two-layer neural networks with smooth, non-polynomial activations achieve the same optimal approximation rates $O(n^{-k/d})$ for $W^{k,p}$-smooth functions on $(0,1)^d$ as classical methods such as spline bases or piecewise polynomial approximation. In general, many approximation schemes can be emulated by neural networks without loss of convergence rate.
 
+## Linear interpolation of real-valued functions
+
+<MathBox title='Modulus of continuity' boxType='definition'>
+Let $A\subseteq\R$ be a set and $f:A\to\R$ a function. The modulus of continuity of $f$ is a function $w_f :[0,\infty] \to [0,\infty]$ defined by
+
+$$
+\begin{equation*}
+\begin{split}
+  w_f (h) =& \sup(\set{|f(x) - f(y)|: |x-y|\leq h,\; x,y\in A} \cup \set{0}) \\
+  =& \sup(\set{r \in\R : (\exists x\in A, y \in A \cap [x - h, x + h]: r = |f(x) - f(y)|)} \cup\set{0})
+\end{split}
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+For a fixed $h\geq 0$, the modulus of continuity $w_f (f)$ represents the largest possible variation of $f$ over all pairs of points in $A$ whose distance is at most $h$.
+</MathBox>
+
+<MathBox title="Properties of modulus of continuity" boxType="proposition" tag="proposition-6">
+Let $A\subseteq\R$ be a set and let $f: A\to\R$ be a function. Then the modulus of continuity of $f$, denoted $w_f$, has the following properties
+
+1. **Monotonicity:** $w_f$ is non-decreasing
+2. **Characterization of uniform continuity:** $f$ if uniformly continuous on $A$ if and only if $lim_{h\downarrow 0} w_f (h) = 0$
+3. **Boundedness criterion:** $f$ is bounded on $A$ if and only if $w_f (\infty) < \infty$
+4. **Pointwise control of increments:** $|f(x) - f(y)| \leq w_f (|x-y|)$ for all $x,y\in A$
+5. If $f$ is Lipschitz continuous, i.e. 
+$$
+\begin{equation*}
+  |f(x) - f(y)| \leq L|x - y|
+\tag{\label{equation-28}}
+\end{equation*}
+$$
+
+then $w_f (h) \leq Lh$
+
+6. **Subadditivity:** For $A = [a,b]\cap\R$ with $a \in [-\infty, \infty]$ and $b \in [a, \infty]$, then $w_f (h + h') \leq w_f (h) + w_f (h')$ for all $h, h' \in [0,\infty]$
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{proposition-6-5}$
+
+Applying $\eqref{equation-28}$ to $\eqref{equation-27}$ we obtain
+
+$$
+\begin{align*}
+  w_f (h) =& \sup(\set{|f(x) - f(y)| \in [0,\infty): |x-y| \leq h,\; x,y \in A} \cap\set{0}) \\
+  \underbrace{\leq}_{\eqref{equation-28}}& \sup(\set{L|x - y| \in [0,\infty): |x-y| \leq h,\; x,y \in A} \cap\set{0}) \\
+  \leq& \sup(\set{Lh, 0}) = Lh
+\end{align*}
+$$
+
+---
+- $\ref{proposition-6-6}$
+
+Assume without loss of generality that $h' \leq h < \infty$. Note that for all $x,y\in [a,b] \cap\R$ with $|x - y| \leq h + h'$ it holds that $[x - h, x + h] \cap [y - h', y + h'] \cap [a,b] \neq \emptyset$. This ensures that for all $x,y\in [a,b]\cap\R$ with $|x - y| \leq h + h'$ there exists $z\in [a,b] \cap\R$ such that $|x - z| \leq h$ and $|y - z| \leq h'$. Items $\ref{proposition-6-1}$ and $\ref{proposition-6-4}$ therefore imply that for all $x, y \in [a,b] \cap\R$ with $|x - y| \leq h + h'$, there exists $z\in [a,b] \cap\R$ such that
+
+$$
+\begin{align*}
+  |f(x) - f(y)| \leq |f(x) - f(z)| + |f(y) - f(z)| \\
+  \leq& w_f (|x - z|) + w_f (|y - z|) \\
+  \leq& w_f (h) + w_f (h')
+\end{align*}
+$$
+
+Applying $\eqref{equation-27}$ finally yields
+
+$$
+  w_f (h + h') \leq w_f (h) + w_f (h')
+$$
+</details>
+</MathBox>
+
+<MathBox title="Linear interpolation operator" boxType="definition">
+For $K\in\N_0$, suppose $(r_j)_{j=0}^K, (f_j)_{j=0}^K \subseteq \R$ are real sequences, where $(r_j)$ is strictly increasing, i.e. $r_0 <\cdots < r_K$. The linear interpolation operator associated with the data $\set{(r_j, f_j)}_{j=0}^K$ is the function $\mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} :\R\to\R$ defined by, for $k=1,\dots,K$
+
+$$
+\begin{equation*}
+  \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} = \begin{cases} 
+    f_0,\quad& x \leq r_0 \\
+    f_{k+1} + \frac{y - r_{k-1}}{r_k - r_{k-1}} (f_k - f_{k-1}),\quad& x\in [r_{k-1}, r_k) \\
+    f_K,\quad& x \geq r_K
+  \end{cases}
+\tag{\label{equation-29}}
+\end{equation*}
+$$
+</MathBox>
+
+
+<MathBox title="Properties of the linear interpolation operator" boxType="proposition" tag="proposition-7">
+For $K\in\N_0$, suppose $(r_j)_{j=0}^K, (f_j)_{j=0}^K \subseteq \R$ are real sequences, where $(r_j)$ is strictly increasing. Then the linear operator $\mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K}$ satisfies the following properties.
+
+1. For all $k=0,\dots,K$
+$$
+  \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} (r_k) = f_k
+$$
+
+2. For all $k=1,\dots,K$ and $x\in [r_{k-1}, r_k]$
+$$
+  \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} (x) = \left(\frac{r_k - x}{r_k - r_{k-1}} \right) f_{k-1} + \frac{x - r_{k-1}}{r_k - r_{k-1}} f_k
+$$
+
+If $f:[r_0, r_K] \to\R$ is a function, then linear interpolation operator $\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}$ satisfies:
+
+3. For all $x,y\in\R$ with $x \neq y$
+$$
+  \left|\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(x) - \mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(y)\right| \leq \max_{k\in[K]} \left(\frac{w_f (r_k - r_{k-1})}{r_k - r_{k-1}} \right) |x - y|
+$$
+
+4. $\sup_{x\in[r_0, r_k]} \left|L_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(x) - f(x) \right| \leq w_f (\max_{k\in[K]} |r_k - r_{k-1})$
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{proposition-7-1}$
+
+From $\eqref{equation-29}$, we get
+
+$$
+\begin{align*}
+  \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} (r_k) =& f_{k-1} + \underbrace{\frac{r_k - r_{k-1}}{r_k - r_{k-1}}}_{=1} (f_k - f_{k-1}) \\
+  =& f_k
+\end{align*}
+$$
+
+---
+- $\ref{proposition-7-2}$
+
+From $\eqref{equation-29}$, we get
+
+$$
+\begin{align*}
+  \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} (r_k) =& f_{k+1} + \frac{y - r_{k-1}}{r_k - r_{k-1}} (f_k - f_{k-1}) \\
+    =& \left(1 - \frac{x - r_{k-1}}{r_k - r_{k-1}} \right)f_{k-1} + \frac{x - r_{k-1}}{r_k - r_{k-1}}f_k \\
+    =& \frac{r_k - x}{r_k - r_{k-1}} f_{k-1} + \frac{x - r_{k-1}}{r_k - r_{k-1}} f_k
+\end{align*}
+$$
+
+---
+- $\ref{proposition-7-3}$
+
+Set
+
+$$
+  L = \max_{k=[K]} \left(\frac{w_f (r_k - r_{k-1})}{r_k - r_{k-1}} \right) \in [0,\infty]
+$$
+
+and define $\ell: \R\to\R$ by
+
+$$
+  \ell(x) = \mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)} (x)
+$$
+
+By definition of the linear interpolation operator in $\eqref{equation-29}$, we get for $x,y\in[r_{k-1}, r_k]$ with $x\neq y$ that
+
+$$
+\begin{equation*}
+\begin{split}
+  |\ell(x) - \ell(y)| =& \left|\frac{x - r_{k-1}}{r_k - r_{k-1}} (f(r_k) - f(r_{k-1})) - \frac{y - r_{k-1}}{r_k - r_{k-1}} (f(r_k) - f(r_{k-1}) \right| \\
+  =& \left| \frac{f(r_k) - f(r_{k-1})}{r_k - r_{k-1}} (x - y) \right| \\
+  \underbrace{\leq}_{\ref{proposition-6-4}}& \frac{w_f (r_k - r_{k-1)}{r_k - r_{k-1}} |x-y| \leq L|x - y|
+\end{split}
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+Applying the triangle inequality and using item $\ref{proposition-7-1}$, yields for all $k,l =1,\dots,K$ and $x\in[r_{k-1}, r_k]$, $y\in[r_{l-1}, r_l]$ with $k < l$
+
+$$
+\begin{equation*}
+\begin{split}
+|\ell(x) - \ell(y)| \tleq & |\ell(x) - \ell(r_k)| + \left(\sum_{j=k+1}^{l-1} w_f (|r_j - r_) \right) \\
+  =& |\ell(x) - \ell(r_k)| + |f(r_k) - f(r_{l-1})| + |\ell(r_{l-1}) - \ell(y)| \\
+  \tleq& |\ell(x) - \ell(r_k)| + \left(\sum_{j=k+1}^{l-1} |f(r_j) - f(r_{j-1})| \right) + |\ell(r_{l-1}) - \ell(y)| 
+\end{split}
+\tag{\label{equation-30}}
+\end{equation*}
+$$
+
+Using Proposition $\ref{proposition-6-4}$, gives
+
+$$
+\begin{align*}
+  & |\ell(x) - \ell(y)| \\
+  \leq& |\ell(x) - \ell(r_k)| - \left(\sum_{j=k+1}^{\ell-1} w_f (|r_k - r_{j-1}) \right) + |\ell(r_{l - 1}) - \ell(y)| \\
+  =& |\ell(x) - \ell(r_k)| + \left(\sum_{j+1}^{l-1} \frac{w_f (r_j - r_{j-1})}{r_j - r_{j-1}} (r_j - r_{j-1}) \right) + |\ell(r_{l-1}) - \ell(y)| \\
+  \leq |\ell(r_k) - \ell(x)| + L(r_{l-1} - r_k) + |\ell(y) - \ell(r_{l-1})
+\end{align*}
+$$
+
+This and $\eqref{equation-30}$ shows that
+
+$$
+\begin{align*}
+  |\ell(x) - \ell(y)| \leq& L\left[(r_k - x) + \left(\sum_{j=k+1}^{l-1} r_j - r_{j-1} \right) + (y - r_{l-1}) \right] \\
+  =& L|x - y|
+\end{align*}
+$$
+
+Together with $\eqref{equation-31}$, this proves for all $x,y \in [r_0, r_K]$ with $x\neq y$
+
+$$
+\begin{equation*}
+  |\ell(x) - \ell(y)| = \leq L|x - y|
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+Since $|\ell(x) - \ell(y)| = 0 \leq L|x-y|$ for all $x,y \in \R\setminus [r_0, r_K]$ with $x \neq y$, it follows that $\eqref{equation-32}$ holds for all $x,y \in\R$.
+
+---
+- $\ref{proposition-7-4}$
+
+From item $\ref{proposition-7-2}$, we get
+
+$$
+\begin{align*}
+  &|\ell(x) - f(x)| \\
+  =& \left|\frac{r_k - x}{r_k - r_{k-1}} f(r_{k-1}) + \frac{x - r_{k-1}}{r_k - r_{k-1}} f(r_k) - f(x) \right| \\
+  =& \left|\frac{r_k - x}{r_k - r_{k-1}} (f(r_{k-1}) - f(x)) + \frac{x - r_{k-1}}{r_k - r_{k-1}} (f(r_k) - f(x)) \right| \\
+  \leq& \frac{r_k - x}{r_k - r_{k-1}} |f(r_{k-1}) - f(x)| + \frac{x - r_{k-1}}{r_k - r_{k-1}} |f(r_k) - f(x)|
+\end{align*}
+$$
+
+Using item $\ref{proposition-6-4}$ and the definition $\eqref{equation-27}$ of the modulus of continuity, leads to
+
+$$
+\begin{align*}
+  |\ell(x) - f(x)| \leq& w_f (|r_k - r_{k-1}|) \left(\frac{r_k - x}{r_k - r_{k-1}} + \frac{x - r_{k-1}}{r_k - r_{k-1}} \right) \\
+  =& w_f (|r_k - r_{k-1}|) \leq w_f (\max_{j\in [K]} |r_j - r_{j-1}|)
+\end{align*}
+$$  
+</details>
+</MathBox>
+
+
+<MathBox title="" boxType="corollary" tag="corollary-1">
+For $K\in\N_0$, let $(r_j)_{j=0}^K, (f_j)_{j=0}^K \subseteq \R$ be a strictly increasing sequence. Suppose that the function $f: [r_0, r_K] \to\R$ is Lipschitz continuous, i.e. for all $x,y \in [r_0, r_K]$
+
+$$
+  |f(x) - f(y)| \leq L|x - y|,\; L > 0
+$$
+
+Then the linear interpolation operator $\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}$ satisfies:
+
+1. **Lipschitz continuity:**
+$$
+  \left|\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)} (x) - \mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(y)\right| \leq L|x - y|
+$$
+
+2. **Boundedness:**
+$$
+  \sup_{x\in[r_0, r_K]} \left| \mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)} (x) - f(x) \right| \leq L \max_{k\in[K]} |r_k - r_{k-1}|
+$$
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{corollary-1-1}$
+The Lipschitz continuity of $f$ implies
+
+$$
+  0 \leq \frac{|f(r_K) - f(r_0)}{r_K - r_0} \leq \frac{L|r_K - r_0|}{r_K - r_0} = L
+$$
+
+Applying Propositions $\ref{proposition-6-5}$ and $\ref{proposition-7-3}$ yields
+
+$$
+\begin{align*}
+  \left|\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(x) - \mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(y)\right| \leq& \max_{k\in[K]} \left(\frac{L|r_k - r_{k-1}|}{|r_k - r_{k-1}|} \right) |x-y| \\
+  =& L|x - y|
+\end{align*}
+$$
+
+---
+- $\ref{corollary-1-2}$
+
+From Propositions $\ref{proposition-6-5}$ and $\ref{proposition-7-4}$ we obtain
+
+$$
+\begin{align*}
+  \sup_{x\in[r_0, r_k]} \left|\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(x) - f(x)\right| \leq& w_f \max_{k\in[K]} |r_k - r_{k-1}| \\
+  \leq& L \max_{k\in[K]} |r_k - r_{k-1}|
+\end{align*}
+$$
+</details>
+</MathBox>
+
 ## Learning neural networks
 
 A feedforward neural network specified by a graph $(V,E)$, activation function $\sigma:\R\to\R$ and weight function $w:E\to\R$ defines a function
