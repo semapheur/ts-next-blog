@@ -1617,7 +1617,7 @@ This follows from Propositions $\ref{proposition-1}$ and $\ref{proposition-7}$.
 </details>
 </MathBox>
 
-<MathBox title='Scalar multiplication of fully connected feedforward neural networks' boxType='proposition'>
+<MathBox title='Scalar multiplication of fully connected feedforward neural networks' boxType='proposition' tag="proposition-15">
 Let $\mathcal{N}$ be the parameter space of fully connected feedforward neural networks. For $\lambda\in\R$ and $\boldsymbol{\Phi}\in\mathcal{N}$, we define the scalar multiplication operator $\circledast:\R \times\mathcal{N}\to\mathcal{N}$ by
 
 $$
@@ -1793,7 +1793,7 @@ This follows from Propositions $\ref{proposition-1-5}$ and $\ref{proposition-11}
 
 #### Sum of fully connected feedforward neural networks
 
-<MathBox title='Sum of fully connected feedforward neural networks' boxType='proposition'>
+<MathBox title='Sum of fully connected feedforward neural networks' boxType='proposition' tag="proposition-16">
 Let $m, n\in\Z$ with $n\geq m$. Suppose $\boldsymbol{\Phi}_m,\dots,\boldsymbol{\Phi}_{m+1},\dots,\boldsymbol{\Phi}_n \in\mathcal{N}$ are fully connected feedforward neural networks satisfying, for all $k\in\set{m, m+1,\dots, n}$
 
 $$
@@ -2580,7 +2580,6 @@ $$
 </details>
 </MathBox>
 
-
 <MathBox title="" boxType="corollary" tag="corollary-1">
 For $K\in\N_0$, let $(r_j)_{j=0}^K, (f_j)_{j=0}^K \subseteq \R$ be a strictly increasing sequence. Suppose that the function $f: [r_0, r_K] \to\R$ is Lipschitz continuous, i.e. for all $x,y \in [r_0, r_K]$
 
@@ -2629,6 +2628,373 @@ $$
   \sup_{x\in[r_0, r_k]} \left|\mathrm{L}_{r_0,\dots,r_K}^{f(r_0),\dots,f(r_K)}(x) - f(x)\right| \leq& w_f \max_{k\in[K]} |r_k - r_{k-1}| \\
   \leq& L \max_{k\in[K]} |r_k - r_{k-1}|
 \end{align*}
+$$
+</details>
+</MathBox>
+
+### Neural activation functions
+
+<MathBox title="Activation functions as fully-connected feedforward neural networks" boxType="proposition" tag="proposition-13">
+Let $\mathcal{N}$ be the parameter space of fully-connected feedforward neural networks. For $n\in\N_+$ define the network
+
+$$
+  \mathfrak{i}_n \in (\R^{n\times n} \times\R^n) \times (\R^{n\times n} \times\R^n) \subseteq\mathcal{N}
+$$
+
+by
+
+$$
+  \mathfrak{i}_n = ((\mathbf{I}_n, \mathbf{0}), (\mathbf{I}_n, \mathbf{0}))
+$$
+
+where $\mathbf{I}_n \in\R^{n\times n}$ is the $n\times n$ identity matrix, and $\mathbf{0}\in\R^n$ the zero vector.
+
+Then $\mathfrak{i}_n$ has the following properties:
+1. **Dimension vector:** $\mathbf{d}(\mathfrak{i}_n) = (n, n, n) \in\N^3$
+2. **Realization:** For all activation functions $a\in C(\R)$, the realization of $\mathfrak{i}_n$ is
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathfrak{i}_n) = \mathbf{M}_{a,n}
+$$
+
+<details>
+<summary>Proof</summary>
+
+- $\ref{proposition-13-1}$
+
+The dimension vector follows immediately since $\mathfrak{i}_n$ by definition consists of two affine layers, each mapping $\R^n$ to $\R^n$.
+
+---
+- $\ref{propsition-13-2}$
+
+From $\eqref{equation-24}$, we obtain
+
+$$
+\begin{align*}
+  (\mathbf{F}_a^\mathcal{N})(\mathfrak{i}_n)(\mathbf{x}) =& \mathbf{I}_n (\mathbf{M}_{a,n} (\mathbf{I}_n \mathbf{x} + \mathbf{0})) + \mathbf{0} \\
+  =& \mathbf{M}_{a,n} (\mathbf{x})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Compositions of fully-connected feedforward activation neural networks" boxType="proposition" tag="proposition-14">
+Let $\boldsymbol{\Phi}\in\mathcal{N}$ be a fully-connected feedforward network, and let $\mathfrak{i}\in\mathcal{N}$ be a fully connected feedforward activation neural network. The composition $\mathfrak{i}_{\mathcal{O}(\boldsymbol{\Phi})} \circ \boldsymbol{\Phi}$ satisfies:
+
+1. **Dimension vector:**
+$$
+  \mathbf{d}(\mathfrak{i}_{\mathcal{O}(\boldsymbol{\Phi})} \circ \boldsymbol{\Phi}) = (d_0 (\boldsymbol{\Phi}_0), \dots, d_{\mathcal{L}(\boldsymbol{\Phi})}(\boldsymbol{\Phi}),d_{\mathcal{L}(\boldsymbol{\Phi})}(\boldsymbol{\Phi})) \in \N^{\mathcal{L}(\boldsymbol{\Phi}) + 2}
+$$
+2. **Realization:** For all activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\mathfrak{i}_{\mathcal{O}(\boldsymbol{\Phi})} \circ \boldsymbol{\Phi}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by
+$$
+  \mathbf{F}_a^\mathcal{N} (\mathfrak{i}_{\mathcal{O}(\boldsymbol{\Phi})} \circ \boldsymbol{\Phi}) = \mathbf{M}_{a, \mathcal{O}(\boldsymbol{\Phi})} \circ (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi}))
+$$
+
+The composition $\boldsymbol{\Phi} \circ \mathfrak{i}_{\mathcal{I}(\boldsymbol{\Phi})}$ satisfies:
+
+1. **Dimension vector:**
+$$
+  \mathbf{d}(\boldsymbol{\Phi} \circ \mathfrak{i}_{\mathcal{I}(\boldsymbol{\Phi})}) = (d_0 (\boldsymbol{\Phi}_0),d_0 (\boldsymbol{\Phi}_0), \dots,d_{\mathcal{L}(\boldsymbol{\Phi})}(\boldsymbol{\Phi})) \in \N^{\mathcal{L}(\boldsymbol{\Phi}) + 2}
+$$
+2. **Realization:** For all activation functions $a\in C(\R)$, the realization $\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi} \circ \mathfrak{i}_{\mathcal{I}(\boldsymbol{\Phi})}) \in C(\R^{\mathcal{I}(\boldsymbol{\Phi})}, \R^{\mathcal{O}(\boldsymbol{\Phi})})$ is given by
+$$
+  \mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi} \circ \mathfrak{i}_{\mathcal{I}(\boldsymbol{\Phi})}) = (\mathbf{F}_a^\mathcal{N} (\boldsymbol{\Phi})) \circ \mathbf{M}_{a, \mathcal{I}(\boldsymbol{\Phi})}
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from Proposition $\ref{proposition-1}$ and $\ref{proposition-13}$
+</details>
+</MathBox>
+
+### Rectified linear unit neural network representation for linear interpolations
+
+<MathBox title="Representation for rectified linear unit feedforward neural network" boxType="lemma" tag="lemma-4">
+For $\alpha, \beta, h\in\R$, define the fully-connected feedforward neural network $\boldsymbol{H}\in\mathcal{N}$ by
+
+$$
+  \boldsymbol{H} = h \circledast (\mathfrak{i} \circ \mathbf{A}_{\alpha, \beta})
+$$
+
+where
+- $\mathfrak{i}_1 \in (\R \times \R) \times (\R \times \R) \subset \mathcal{N}$ denotes the one-dimensional identity activation network
+$$
+  \mathfrak{i}_1 := ((1, 0), (1, 0))
+$$
+- $\mathbf{A}_{\alpha, \beta} \in (\R \times \R) \subset \mathcal{N}$ denotes the one-dimension affine network with weight $\alpha$ and bias $\beta$
+
+The network $\boldsymbol{H}$ satifies the following properties.
+
+1. **Parameters:** $\boldsymbol{H} = ((\alpha, \beta), (h, 0))$
+2. **Dimension vector:** $\mathbf{d}(\boldsymbol{H}) = (1,1,1) \in\N^3$
+3. **Realization under ReLU:** Let $r: \R\to [0,\infty]$ be thee rectified linear unit
+$$
+  r(x) := \max\set{x, 0}
+$$
+
+Then the realization $\mathbf{F}_r^\mathcal{N} (\boldsymbol{H}) \in C(\R)$ is given by
+$$
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{H}))(x) = h \max\set{\alpha x + \beta, 0}
+$$
+
+<details>
+<summary>Proof</summary>
+
+By Proposition $\ref{proposition-8}$, the affine network $\mathbf{A}_{\alpha, \beta}$ is given by the single affine layer $\mathbf{A}_{\alpha, \beta} = (\alpha, \beta)$, satisfies
+- dimension vector $\mathbf{d}(\mathbf{A}_{\alpha, \beta}) = (1,1) \in\N^2$ 
+- realization $\mathbf{F}_r^\mathcal{N} (\mathbf{A}_{\alpha, \beta}) \in C(\R)$ under ReLU given by
+$$
+  (\mathbf{F}_r^\mathcal{N}(\mathbf{A}_{\alpha, \beta}))(x) = \alpha x + \beta
+$$
+
+From Propositions $\ref{proposition-1}$ and $\ref{proposition-14}$, the composed network $\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}$ has two layers with parameters 
+
+$$
+  \mathfrak{i}_i \cric \mathbf{A}_{\alpha,\beta} = ((\alpha, \beta), (1,0))
+$$ 
+
+and has
+- dimension vector $\mathbf{d}(\mathfrak{i}_1 \circ \mathbf{A}_{\alpha,\beta}) = (1,1,1)\in\N^3$
+- realization $\mathbf{F}_r^\mathcal{N} (\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}) \in C(\R)$ under ReLU given by
+$$
+  (\mathbf{F}_r^\mathcal{N} (\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}))(x) = r((\mathbf{F}_r^\mathcal{N} (\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}))(x)) = \max\set{\alpha x + \beta, 0}
+$$
+
+Applying Proposition $\ref{proposition-15}$, the scalar product of the composed network $\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}$ with $h\in\R$ yields the network $\boldsymbol{H} = h \circledast (\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta})$. Since $\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta}$ is a two-layer network, it follows by definition of $\circledast$ that $\boldsymbol{H}$ is the two-layer network with parameters
+
+$$
+  \boldsymbol{H} = ((\alpha, \beta), (h, 0))
+$$
+
+In particular, the network $\boldsymbol{H}$ satisfies
+- dimension vector $\mathbf{d}(\boldsymbol{H}) = (1,1,1) \in\N^3$
+- realization $\mathbf{F}_r^\mathcal{N} (\boldsymbol{H}) \in C(\R)$ under ReLU given by
+
+$$
+  (\mathbf{F}_r^\mathcal{N})(\boldsymbol{H}))(x) = h((\mathbf{F}(\mathfrak{i}_1 \circ \mathbf{A}_{\alpha, \beta})(x)) = h\max\set{\alpha x + \beta, 0}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Rectified linear unit representation for linear interpolations" boxType="proposition" tag="proposition-15">
+For $K\in\N_0$, suppose $(r_j)_{j=0}^K \subset \R$ is a strictly increasing sequence and let $(f_j)_{j=0}^K \subseteq \R$ be an arbitrary real sequence. For $k=1,\dots,K$, define the slopes
+
+$$
+  m_k := \frac{f_k - f_{k-1}}{r_k - r_{k-1}}
+$$
+
+and set
+- $c_0 := m_1$
+- $c_k := m_{k+1} - m_k$ for $k=1,\dots,K-1$
+- $c_K := -m_K$
+
+Define the fully connected feedforward neural network $\boldsymbol{\Lambda} \in\mathcal{N}$ by
+
+$$
+\begin{equation*}
+  \boldsymbol{\Lambda} = \mathbf{A}_{1, f_0} \circ \left(\bigoplus_{k=0}^K c_k \circledast (\mathfrak{i}_1 \circ \mathbf{A}_{1, -r_k}) \right)
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+which satisfies the following properties.
+1. **Dimension vector:** $\mathbf{d}(\boldsymbol{\Lambda}) = (1, K+1, 1) \in\N^3$
+2. **Number of parameters:** $\mathcal{P}(\boldsymbol{\Lambda}) = 3K + 4$
+3. **Realization under ReLU:** Let $r:\R\to [0,\infty]$ be the rectified linear unit
+$$
+  r(x) := \max\set{x, 0}
+$$
+
+Then the realization $\mathbf{F}_\mathcal{N} (\boldsymbol{\Lambda}) \in C(\R)$ is equal to the linear interpolation operator $\mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} \in C(\R)$, i.e.
+
+$$
+  (\mathbf{F}_\mathcal{N} (\boldsymbol{\Lambda}))(x) := \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K} (x)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $k=0,\dots,K$, define the one-dimensional two-layer networks 
+
+$$
+  \boldsymbol{\Phi}_0, \dots, \boldsymbol{\Phi}_K \in (\R^{1\times 1} \times\R^1)\times(\R^{1\times 1}\times\R^1) \subseteq \mathcal{N}
+$$
+
+by $\Phi_k = c_k \circledast (\mathfrak{i}_1 \circ \mathbf{A}_{1, -r_k})$.
+
+---
+- $\ref{proposition-15-1}$
+
+By Lemma $\ref{lemma-4}$, each network $\boldsymbol{\Phi}_k$ has dimension vector $\mathbf{d}(\boldsymbol{\Phi}_k) = (1,1,1)\in\N^3$ and realization $\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}_k) \in C(\R)$ given by
+
+$$
+\begin{equation*}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}_k))(x) = c_k \max\set{x - r_k, 0}
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+Applying Propositions $\ref{proposition-9}$ and $\ref{proposition-16}$ to $\eqref{equation-33}$ shows that
+
+$$
+  \mathbf{d}(\boldsymbol{\Lambda}) = (1, K+1, 1) \in\N^3
+$$
+
+---
+- $\ref{proposition-15-2}$
+
+From item $\ref{proposition-15-1}$ it follows that
+
+$$
+  \mathcal{P}(\boldsymbol{\Lambda}) = 2(K + 1) + (K + 2) = 3K + 4
+$$
+
+---
+- $\ref{proposition-15-3}$
+
+Note that for $k=0,\dots,K$ we can express the scalar coefficients $c_k \in\R$ in $\eqref{equation-33}$ as
+
+$$
+\begin{equation*}
+  c_k = \frac{f_{\min\set{k+1, K}} - f_k}{r_{\min\set{k+1,K}} - r_{\min\set{k,K-1}}} - \frac{f_k - f_{\max\set{k-1,0}}}{r_{\max\set{k,1}} - r_{\max\set{k-1,0}}}
+\tag{\label{equation-35}}
+\end{equation*}
+$$
+
+Applying $\eqref{equation-34}$ to $\eqref{equation-35}$, we get
+
+$$
+\begin{equation*}
+\begin{split}
+  (\mathbf{F}_r^\mathcal{N})(\boldsymbol{\Lambda}))(x) =& f_0 + \sum_{k=0}^K (\mathbf{F}_r^\mathcal{N}) \\
+  =& f_0 + \sum_{k=0}^K c_k \max\set{x - r_k, 0}
+\end{split}
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+Thus, for all $x\in (-\infty, r_0]$ it follows that
+
+$$
+\begin{equation*}
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) = f_0 + 0 = f_0
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+Next, we prove by induction for all $k\in\set{1,\dots,K}$ that
+
+$$
+\begin{equation*}
+  \sum_{n=0}^{k-1} c_n = \frac{f_k - f_{k-1}}{r_k - r_{k-1}}
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+For the base case $k=1$, using $\eqref{equation-35}$ shows as desired
+
+$$
+  \sum_{n=0}^0 c_n = c_0 = \frac{f_1 - f_0}{r_1 - r_0}
+$$
+
+For the induction step, $\eqref{equation-35}$ ensures that for all $k\in \N \cap (1,\infty) \cap (0, K]$ with
+
+$$
+  \sum_{n=0}^{k-2} c-n = \frac{f_{k-1} - f_{k-2}}{r_{k-1} - r_{k-2}}
+$$
+
+we get
+
+$$
+\begin{align*}
+  \sum_{n=0}^{k-1} c_n =& c_{k-1} + \sum_{n=0}^{k-2} \\
+  =& \frac{f_k - f_{k-1}}{r_k - r_{k-1}} - \frac{f_{k-1} - f_{k-2}}{r_{k-1} - r_{k-2}} + \frac{f_{k-1} - f_{k-2}}{r_{k-1} - r_{k-2}} \\
+  =& \frac{f_k - f_{k-1}}{r_k - r_{k-1}}
+\end{align*}
+$$
+
+Furthermore, for all $x \in [r_{k-1}, r_k]$ we have
+
+$$
+\begin{equation*}
+\begin{split}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Lambda}))(x) - (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(r_{k-1}) =& \sum_{n=0}^K c_n (\max\set{x - r_n, 0} - \max\set{r_{k-1} - r_n, 0}) \\
+  =& \sum_{n=0}^{k-1} c_n [(x - r_n) - (r_{k-1} - r_n)] \\
+  =& \sum_{n=0}^{k-1} c_n (x - r_{k-1}) \\
+  =& \frac{f_k - f_{k-1}}{r_k - r_{k-1}} (x - r_{k-1})
+\end{split}
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+Next, we prove by induction for all $k=1,\dots,K$ and $x\in[r_{k-1}, r_k]$ that
+
+$$
+\begin{equation*}
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) = f_{k-1} + \frac{f_k - f_{k-1}}{r_k - r_{k-1}} (x - r_{k-1})
+\tag{\label{equation-39}}
+\end{equation*}
+$$
+
+For the base case $k=1$, it follows from $\eqref{equation-36}$ that, as desired
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Lambda}))(x) =& (\mathbf{F}_r^\mathcal{N}}(\boldsymbol{\Lambda}))(r_0) + (\mathbf{F}_r^\mathcal{N}}(\boldsymbol{\Lambda}))(x) - (\mathbf{F}_r^\mathcal{N}}(\boldsymbol{\Lambda}))(r_0) \\
+  =& f_0 + \frac{f_1 - f_0}{r_1 - r_0}(x - x_0)
+\end{align*}
+$$
+
+For the induction step, $\eqref{equation-36}$ implies that for all $k\in\N (1,\infty) \cap [1,K]$ and $x\in [r_{k-1}, r_k]$ with
+
+$$
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(y) = f_{k-2} + \frac{f_{k-1} - f_{k-2}}{r_{k-1} - r_{k-2}}(y - r_{k-2})
+$$
+
+then, as desired
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) =& (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(r_{k-1}) + (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) - (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(r_{k-1}) \\
+  =& f_{k-2} + \frac{f_{k-1} - f_{k-2}}{r_{k-1} - r_{k-2}}(r_{k-1} - r_{k-2}) \\
+  &+ \frac{f_k - f_{k-1}}{r_k - r_{k-1}}(x - r_{k-1}) \\
+  =& f_{k-1} + \frac{f_k - f_{k-1}}{r_k - r_{k-1}}(x - r_{k-1})
+\end{align*}
+$$
+
+From $\eqref{equation-35}$ and $\eqref{equation-37}$, we obtain
+
+$$
+\begin{align*}
+  \sum_{n=0}^K c_n =& c_K + \sum_{n=0}^{K-1} c_n \\
+  =& -\frac{f_K - f_{K-1}}{r_K - r_{K-1}} + \frac{f_K - f_{K-1}}{r_K - r_{K-1}} = 0
+\end{align*}
+$$
+
+From $\eqref{equation-38}$, we have
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) - (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(r_K) =& \sum_{n=0}^K c_n (\max\set{x - r_n, 0} - \max\set{r_K - r_n, 0}) \\
+  =& \sum_{n=0}^K c_n [(x - r_n) - (r_K - r_n)] \\
+  =& \sum_{n=0}^K c_n (x - r_K) = 0
+\end{align*}
+$$
+
+This and $\eqref{equation-39}$ shows that for all $x\in[r_K, \infty)$
+
+$$
+\begin{equation*}
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(x) =& (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Lambda}))(r_K) \\
+  =& f_{K-1} + \frac{f_K - f_{K-1}}{r_K - r_{K-1}}(r_K - r_{K-1}) = f_K
+\tag{\label{equation-41}}
+\end{equation*}
+$$
+
+Comparing $\eqref{equation-40}$, $\eqref{equation-39}$ and $\eqref{equation-41}$ with the definition of the linear interpolation operator $\mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K}$ given in $\eqref{equation-29}$ establishes that
+
+$$
+  (\mathbf{F}_\mathcal{N} (\boldsymbol{\Lambda})) = \mathrm{L}_{r_0,\dots,r_K}^{f_0,\dots,f_K}
 $$
 </details>
 </MathBox>

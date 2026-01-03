@@ -1,6 +1,8 @@
 # Todos
 
 - Astro w/bun + elysia/encore
+- Math animations with Motion Canvas
+- Checkout Sveltex
 
 ## Structure
 
