@@ -1,8 +1,14 @@
 # Todos
 
+- MathBox with floating header and ToC
+- Math proofs with headings and option for ToC 
+- ToC for theorems with hover preview
+
+Long-term
 - Astro w/bun + elysia/encore
-- Math animations with Motion Canvas
-- Checkout Sveltex
+- Math animations with Motion Canvas/Defined Motion
+- Sveltex?
+- PlotNeuralNet?
 
 ## Structure
 
