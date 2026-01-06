@@ -45,8 +45,10 @@ before:[counter-increment:theorem] before:content-['Theorem_'_counter(theorem)]
 
 export default function MathBox({ title, boxType, children, tag }: Props) {
   return (
-    <section className="my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
-      <header className={`px-2 py-1 bg-${boxType} wrap-break-words rounded-t`}>
+    <section className="relative my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
+      <header
+        className={`sticky top-0 z-10 px-2 py-1 bg-${boxType} wrap-break-words rounded-t-sm`}
+      >
         <span
           id={`${boxType}-${tag}`}
           className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
@@ -54,7 +56,7 @@ export default function MathBox({ title, boxType, children, tag }: Props) {
           {title && `: ${title}`}
         </span>
       </header>
-      <div className="px-4 pb-px">{children}</div>
+      <main className="px-4 pb-px">{children}</main>
     </section>
   );
 }

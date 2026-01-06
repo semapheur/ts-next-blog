@@ -3,6 +3,7 @@
 - MathBox with floating header and ToC
 - Math proofs with headings and option for ToC 
 - ToC for theorems with hover preview
+- Theorems in Lean/coq
 
 Long-term
 - Astro w/bun + elysia/encore

@@ -73,12 +73,14 @@ export function rehypeMathref(): Transformer<Root, Root> {
               ? "list"
               : "");
 
-      const id = attributeMap.tag ?? "";
+      const tag = attributeMap.tag ?? "";
 
-      if (!id || !(boxType in boxCount)) {
+      if (!tag || !(boxType in boxCount)) {
         if (boxType in boxCount) boxCount[boxType]++;
         return;
       }
+
+      const id = `${boxType}-${tag}`;
       const boxRefs = selectAll(
         `a[href="#${id}"] > span.mord.text > span.mord`,
         root,
