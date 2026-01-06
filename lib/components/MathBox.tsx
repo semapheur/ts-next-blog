@@ -48,7 +48,7 @@ export default function MathBox({ title, boxType, children, tag }: Props) {
     <section className="my-5 rounded-sm bg-primary shadow-md dark:shadow-black/50">
       <header className={`px-2 py-1 bg-${boxType} wrap-break-words rounded-t`}>
         <span
-          id={tag}
+          id={`${boxType}-${tag}`}
           className={`before:[counter-increment:${boxType}] before:content-['${cap(boxType)}_'_counter(${boxType})] before:font-bold`}
         >
           {title && `: ${title}`}
