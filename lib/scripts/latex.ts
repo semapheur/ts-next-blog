@@ -395,7 +395,7 @@ function relabelLatexEquations(mdxFile: string) {
 //console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
 console.log(
   findLatexIssues(
-    "./content/notes/physics/quantum_mechanics/hilbert_space_formulation.mdx",
+    "./content/notes/machine_learning/deep_learning/neural_networks.mdx",
   ),
 );
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")

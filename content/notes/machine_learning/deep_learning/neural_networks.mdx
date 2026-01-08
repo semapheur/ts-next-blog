@@ -1000,23 +1000,24 @@ $$
 $$
 
 The parallelization function $\mathbf{P}_n : \mathcal{N}^{(n)} \to\mathcal{N}$ maps a tuple of layer-compatible networks $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ to a single network $\mathbf{P}_n (\boldsymbol{\Phi}) \in\mathcal{N}$. For $k=1,\dots,\mathcal{L}(\boldsymbol{\Phi}_1)$, the architecture of a parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$ is characterized by 
-- Number of layers: $\mathcal{L}(\mathbf{P}_n (\boldsymbol{\Phi})) = \mathcal{L}(\boldsymbol{\Phi}_1)$
-- Dimension function:
+
+1. Number of layers: $\mathcal{L}(\mathbf{P}_n (\boldsymbol{\Phi})) = \mathcal{L}(\boldsymbol{\Phi}_1)$
+2. Dimension function:
 $$
   d_k (\mathbf{P}_n (\boldsymbol{\Phi})) = \sum_{j=1}^n d_k (\boldsymbol{\Phi}_j)
 $$
 
-- Dimension vector:
+3. Dimension vector:
 $$
   \mathbf{d}(\mathbf{P}_n (\boldsymbol{\Phi})) = \sum_{j=1}^n \mathbf{d}(\boldsymbol{\Phi}_j)
 $$
 
-- Weight matrix 
+4. Weight matrix 
 $$
   \mathcal{W}_{k, \mathbf{P}_n (\boldsymbol{\Phi})} = \operatorname{diag}(\mathcal{W}_{k, \boldsymbol{\Phi}_1}, \dots, \mathcal{W}_{k, \boldsymbol{\Phi}_n}) \in \R^{\left(\sum_{j=1}^n d_k (\boldsymbol{\Phi}_j) \right) \times \left(\sum_{j=1}^n d_{k-1} (\boldsymbol{\Phi}_j)\right)}
 $$
 
-- Bias vector: 
+5. Bias vector: 
 $$
   \mathcal{B}_{k, \mathbf{P}_n (\boldsymbol{\Phi})} = \left[\mathcal{B}_{k, \boldsymbol{\Phi}_1}, \dots, \mathbf{B}_{k, \boldsymbol{\Phi}_n} \right]^\top \in\R^{\sum_{j=1}^n d_k (\boldsymbol{\Phi}_j)}
 $$
@@ -1076,7 +1077,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Upper bound for number of parameters of parallelized fully connected feedforward neural network' boxType="proposition">
+<MathBox title='Upper bound for number of parameters of parallelized fully connected feedforward neural network' boxType="proposition" tag="22">
 Let $n, L \in\N_+$ and let $\boldsymbol{\Phi} = (\boldsymbol{\Phi}_j)_{j=1}^n \in \mathcal{N}^{(n)}$ be a tuple of layer-compatible fully connected neural networks with $L = \mathcal{L}(\mathcal{\Phi}_1) =\cdots= \mathcal{L}(\boldsymbol{\Phi}_n)$. Then upper bound for the number of parameters of the parallelized network $\mathbf{P}_n (\boldsymbol{\Phi})$ satisfies
 
 $$
@@ -3599,6 +3600,8 @@ This follows from Proposition $\ref{proposition-19}$.
 
 ### Neural network representations
 
+#### $\ell_1$-norm
+
 <MathBox title="$\ell_1$-norm neural network" boxType="proposition" tag="20">
 Define the fully-connected feedforward neural networks $(\mathbf{L}_d)_{d\in\N_+} \subseteq\mathcal{N}$ recursively by
 
@@ -3738,6 +3741,8 @@ $$
 </details>
 </MathBox>
 
+#### Maxima
+
 <MathBox title="Unique existence of fully-connected feedforward maxima neural networks" boxType="lemma" tag="6">
 There exists unique fully-connected neural networks $(\boldsymbol{\phi}_d)_{d\in\N} \subset\mathcal{N}$ that satisfy the following properties
 
@@ -3746,7 +3751,10 @@ There exists unique fully-connected neural networks $(\boldsymbol{\phi}_d)_{d\in
 3. **Base case $d=1$:** $\boldsymbol{\phi}_1 = \mathbf{A}_{1,0} \in\R^{1\times 1} \times \R$
 4. **Base case $d=2$:** $\boldsymbol{\phi}_2 \in (\R^{3\times 2} \times\R^3) \times (\R^{1\times 3} \times \R)$ is given by
 $$
+\begin{equation*}
   \boldsymbol{\phi}_2 = \left(\left(\left[\begin{smallmatrix} 1 & - 1 \\ 0 & 1 \\ 0 & -1 \end{smallmatrix}\right], [\begin{smallmatrix} 0 \\ 0 \\ 0 \end{smallmatrix}\right]\right), \left([\begin{smallmatrix} 1 & 1 & - 1 \end{smallmatrix}\right], [\begin{smallmatrix} 0 \end{smallmatrix}\right] \right) \right)
+\tag{\label{equation-50}}
+\end{equation*}
 $$
 
 5. **Even recursion:** for all $d=2,\dots$
@@ -3776,6 +3784,541 @@ From Definition $\ref{definition-3}$ and Proposition $\ref{proposition-3}$, the 
 - $\mathcal{O}(\mathbf{P}_d (\boldsymbol{\psi},\dots,\boldsymbol{\psi}, \mathfrak{I}_1)) = d$
 
 By Proposition $\ref{proposition-1}$, network composition is well-defined whenever input-output dimensions match. Hence items $\ref{lemma-6-5}$ and $\ref{lemma-6-6}$ define a valid network $\boldsymbol{\phi}_d$ for every $d\geq 3$. Every integer $d\geq 1$ is obtained by uniquely iterating the maps $d \mapsto \lfloor d/2 \right\rfloor$ and $d \mapsto \lceil d/2 \right\rceil$. By construction, $\mathcal{I}(\boldsymbol{\phi}_d) = d$ and $\mathcal{O}(\boldsymbol{\phi}_d) = 1$ for all $d\in\N_+$, and the base cases $\ref{lemma-6-3}$ and $\ref{lemma-6-4}$ hold by definition.
+</details>
+</MathBox>
+
+<MathBox title="Maxima neural network" boxType="proposition" tag="21">
+Let $(\mathbf{M}_d)_{d\in\N} \subseteq \mathcal{N}$ denote the collection of fully-connected feedforward maxima neural networks constructed in Lemma $\ref{lemma-6}$. For each $d\in\N_+$, the network $\mathbf{M}_d$ satisfies the following properties.
+
+1. **Number of hidden layers:** $\mathcal{H}(\mathbf{M}_d) = \lceil \log_2 (d) \rceil$
+2. **Dimension function:** for all $i\in\N$, then 
+$$
+  d_i (\mathbf{M}_d) \leq 3 \left\lceil \frac{d}{2^i} \right\rceil
+$$
+
+3. **Realization under ReLU:** Let $r:\R\to [0,\infty)$ denote the rectified linear unit. The realization $\mathbf{F}_r^\mathcal{N} (\mathbf{M}_d) \in C(\R^d, \R)$ is given by
+$$
+  (\mathbf{F}_r^\mathcal{N}(\mathbf{M}_d))(\mathbf{x}) = \max\set{x_1,\dots,x_d}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**Item** $\ref{proposition-21-1}$
+
+By construction in $\eqref{equation-50}$ the base network $\mathbf{M}_2$ has two affine layers, i.e. $\mathcal{L}(\boldsymbol{M}_2) = 2$, hence
+
+$$
+  \mathcal{H}(\mathbf{M}_2) = \mathcal{L}(\mathbf{M}_2) - 1 = 1
+$$
+
+By Definition $\ref{definition-3-1}$, parallelization does not increase depth, and therefore for all $\mathfrak{d} \geq 2$
+
+$$
+\begin{align*}
+  \mathcal{H}(\mathbf{P}_\mathfrak{d} (\mathbf{M}_2,\dots,\mathbf{M}_2)) =& \mathcal{H}(\mathbf{P}_\mathfrak{d} (\mathbf{M}_2,\dots,\mathbf{M}_2, \mathfrak{I}_1)) \\
+  =& \mathcal{H}(\mathbf{M}_2) = 1
+\end{align*}
+$$
+
+By Proposition $\ref{proposition-1-3}$, composition adds hidden layers so that for all $\mathfrak{d} \geq 3$
+
+$$
+  \mathcal{H}(\mathbf{M}_\mathfrak{d}) = \mathcal{H}(\mathbf{M}_{\lceil\mathfrak{d}/2 \rceil}) + 1
+$$
+
+This assures that for all $\mathfrak{d} = 4,6,\dots$ with $\mathcal{H}(\mathbf{M}_{\mathfrak{d}/2}) = \lceil \log_2 (\mathfrak{d}/2) \rceil$
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{H}(\mathbf{M}_\mathfrak{d}) =& \lceil \log_2 (\mathfrak{d}/2) \rceil + 1 \\
+  =& \lceil \log_2 (\mathfrak{d}) - 1 \rceil + 1 \\
+  =& \lceil \log_2 (\mathfrak{d}) \rceil
+\end{split}
+\tag{\label{equation-51}}
+\end{equation*}
+$$
+
+Since $\lceil \log_2 (\mathfrak{d} + 1)\rceil = \lceil \log_2 (\mathfrak{d}) \rceil$, it follows that for all $\mathfrak{d}=3,5,\dots$ with $\mathcal{H}(\mathbf{M}_{\mathfrak{d}/2}) = \lceil \log_2 (\mathfrak{d}/2) \rceil$
+
+$$
+\begin{align*}
+  \mathcal{H} (\mathbf{M}_\mathfrak{d}) =& \lceil \log_2 (\mathfrak{d}/2) \rceil + 1 \\
+  =& \lceil \log_2 ((\mathfrak{d} + 1)/2) \rceil + 1 \\
+  =& \lceil \log_2 (\mathfrak{d} + 1) - 1 \rceil + 1 \\
+  =& \lceil \log_2 (\mathfrak{d} + 1) \rceil \\
+  =& \lceil \log_2 (\mathfrak{d}) \rceil
+\end{align*}
+$$
+
+Combining this and $\eqref{equation-51}$ shows that for all $\mathfrak{d} = 3,4,\dots$ with $\mathcal{H}(\mathbf{M}_k) = \lceil \log_2 (k) \rceil$ for all $k=2,\dots,\mathfrak{d} - 1$
+
+$$
+  \mathcal{H}(\mathbf{M}_\mathfrak{d}) = \lceil \log_2 (\mathfrak{d}) \rceil
+$$
+
+The item follows by induction.
+
+---
+**Item** $\ref{proposition-21-2}$
+
+The base network $\mathbf{M}_2$ has dimension vector $\mathbf{d}(\mathbf{M}_2) = (2,3,1)$, hence for $i\in\N_+$
+
+$$
+\begin{equation*}
+  d_i (\mathbf{M}_2) \leq 3 = 3 \lceil \frac{2}{2^i} \rceil
+\tag{\label{equation-56}}
+\end{equation*}
+$$
+
+Proposition $\ref{proposition-1}$ and Definition $\ref{definition-3}$ imply for all $\mathfrak{d}=2,3,\dots$ and $i\in\N_+$
+
+$$
+\begin{equation*}
+  d_i (\mathbf{M}_{2\mathfrak{d}) = \begin{cases}
+    3\mathfrak{d},\quad& i = 1 \\
+    d_{i-1} (\mathbf{M}_\mathfrak{d}),\quad& i \geq 2
+  \end{cases}
+\tag{\label{equation-54}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+  d_i (\mathbf{M}_{2\mathfrak{d} - 1) = \begin{cases}
+    3\mathfrak{d} - 1,\quad& i = 1 \\
+    d_{i-1} (\mathbf{M}_\mathfrak{d}),\quad& i \geq 2
+  \end{cases}
+\tag{\label{equation-52}}
+\end{equation*}
+$$
+
+This assures that for all $\mathfrak{d} = 2,4,\dots$
+
+$$
+\begin{equation*}
+  d_1 (\mathbf{M}_\mathfrak{d}) = d \frac{\mathfrak{d}}{2} = 3\left\lceil\frac{\mathfrak{d}{2}} \right\rceil
+\tag{\label{equation-53}}
+\end{equation*}
+$$
+
+Additionally, $\eqref{equation-52}$ ensures that for all $d=3,5,\dots$
+
+$$
+  d_1 (\mathbf{M}_\mathfrak{d}) = 3\left\lceil\frac{\mathfrak{d}{2}} \right\rceil - 1 \leq 3 \left\lceil\frac{\mathfrak{d}{2}} \right\rceil
+$$
+
+This and $\eqref{equation-53}$ show that for all $\mathfrak{d} = 2,3,\dots$
+
+$$
+  d_1 (\mathbf{M}_\mathfrak{d}) \leq 3 \left\lceil\frac{\mathfrak{d}{2}} \right\rceil
+$$
+
+Note that $\eqref{equation-54}$ shows that for all $\mathfrak{d} = 4,6,\dots$ and $i=2,3,\dots$ with 
+
+$$
+  D_{i-1} (\mathbf{M}_{\mathfrak{d}/2}) \leq 3\left\lceil \frac{\mathfrak{d}}{2} \frac{1}{2^{i - 1}} \right\rceil
+$$
+
+then
+
+$$
+\begin{equation*}
+\begin{split}
+  d_i (\mathbf{M}_\mathfrak{d}) =& d_{i-1} (\mathbf{M}_{\mathfrak{d}/2}) \\
+  \leq& 3\left\lceil \frac{\mathfrak{d}}{2} \frac{1}{2^{i - 1}} \right\rceil = 3 \left\lceil \frac{\mathfrak{d}}{2^i} \right\rceil
+\end{split}
+\tag{\label{equation-55}}
+\end{equation*}
+$$
+
+Since $\lceil (\mathfrak{d} + 1)/2^i \rceil = \lceil \mathfrak{d}/2^i \rceil$ for all $d=3,5,\dots$ and $i\in\N_+$, it follows that
+
+$$
+\begin{align*}
+  d_i (\mathbf{M}_\mathfrak{d}) =& d_{i-1} (\mathbf{M}_{\lceil \mathfrak{d}/3 \rceil}) \\
+  \leq& 3 \left\lceil \left\lceil \frac{\mathfrak{d}}{2} \right\rceil \frac{1}{2^{i-1}} \right\rceil \\
+  =& 3 \left\lceil \frac{\mathfrak{d} + 1}{2^i} = 3\left\lceil \frac{\mathfrak{d}}{2^i} \right\rceil
+\end{align*}
+$$
+
+This and $\eqref{equation-55}$ ensure that for all $\mathfrak{d} = 3,4,\dots$ and $i=2,3,\dots$ with $d_j (\mathbf{M}_k) \leq 3 \lceil k/2^j \rceil$ for all $k=2,\dots,\mathfrak{d} - 1$ and $j=1,\dots,i-1$
+
+$$
+  d_i (\mathbf{M}_\mathfrak{d}) \leq 3 \left\lceil \frac{\mathfrak{d}}{2^i} \right\rceil
+$$
+
+Combining this $\eqref{equation-56}$ and $\eqref{equation-55}$ with induction establishes the item.
+
+---
+**Item** $\ref{proposition-21-3}$
+
+From $\eqref{equation-50}$ we obtain
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N}(\mathbf{M}_2))(\mathbf{x}) =& \max\set{x_1 - x_2, 0} + \max\set{x_2, 0} - \max\set{-x_2, 0} \\
+  =& \max\set{x_1 - x_2, 0} + x_2 = \max\set{x_1,x_2}
+\end{align*}
+$$
+
+Using induction with Propositions $\ref{proposition-1}$, $\ref{proposition-4}$, and Corollary $\ref{corollary-6}$, establishes the item.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="7">
+Let $(\mathbf{M}_d)_{d\in\N} \subseteq \mathcal{N}$ denote the collection of fully-connected feedforward maxima neural networks constructed in Lemma $\ref{lemma-6}$. For each $d\in\N_+$ and each layer index $i = 1,\dots,\mathcal{L}(\mathbf{M}_d)$ the following properties hold.
+
+1. **Zero biases:** $\mathcal{B}_{i, \mathbf{M}_d} = 0 \in \R^{d_i (\mathbf{M}_d)}$
+2. **Discrete weights:** $\mathcal{W}_{i, \mathbf{M}_d} \in \set{-1,0,1}^{d_i (\mathbf{M}_d) \times d_{i-1} (\mathbf{M}_d)}$
+3. **Uniform input bound:** for all $\mathbf{x} \in\R^d$
+$$
+  \norm{\mathcal{W}_{1, \mathbf{M}_d}}_\infty \leq 2\norm{\mathbf{x}}_\infty
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define the matrices
+
+$$
+\begin{align*}
+  \mathbf{A}_1 =& \left[\begin{smallmatrix} 1 & -1 \\ 0 & 1 \\ 0 & -1 \end{smallmatrix}\right] \in \R^{3\times 2} \\
+  \mathbf{A}_2 =& \begin{bmatrix} 1 & 1 & -1 \end{bmatrix} \in\R^{1\times 3} \\
+  \mathbf{C}_1 =& \left[\begin{smallmatrix} 1 \\ -1 \end{smallmatrix}\right] \in\R^{2\times 1} \\ 
+  \mathbf{C}_2 =& \begin{bmatrix} 1 & -1 \end{bmatrix} \in\R^{1\times 2}
+\end{align*}
+$$
+
+**Step 1: First hidden layer**
+
+By Lemmas $\ref{lemma-6-4}$-$\ref{lemma-6-6}$, for all $d \geq 2$, the weight matrices of the first hidden layer satisfy
+
+$$
+\begin{align*}
+  \mathcal{W}_{1, \mathbf{M}_{2\mathfrak{d} - 1}} =& \operatorname{diag}(\mathbf{A}_1,\dots,\mathbf{A}_1, \mathbf{C}_1) \in \R^{(3\mathfrak{d} - 1) \times (2\mathfrak{d} - 1)} \\
+  \mathcal{W}_{1, \mathbf{M}_{2\mathfrak{d}}} =& \operatorname{diag}(\mathbf{A}_1,\dots,\mathbf{A}_1) \in \R^{(3\mathfrak{d}) \times (2\mathfrak{d})}
+\end{align*}
+$$
+
+In both cases, all matrix entries belong to $\set{-1,0,1}$. Moreover, the corresponding bias vectors are identically zero:
+
+$$
+\begin{align*}
+  \mathcal{B}_{1, \mathbf{M}_{2\mathfrak{d} - 1}} =& \mathbf{0} \in\R^{3\mathfrak{d} - 1} \\
+  \mathcal{B}_{1, \mathbf{M}_{2\mathfrak{d}}} =& \mathbf{0} \in\R^{3\mathfrak{d}}
+\end{align*}
+$$
+
+implying $\mathcal{B}_{1, \mathbf{M}_\mathfrak{d}} = \mathbf{0}$ for all $d\in\N_+$. 
+
+The block-diagonal structure implies that each row of $\mathcal{W}_{1, \mathbf{M}_d}$ has at most two nonzero entries, each of absolute value $1$. Consequently, for any $\mathbf{x}\in\R^d$
+
+$$
+  \norm{\mathcal{W}_{1, \mathbf{M}_d} \mathbf{x}}_\infty \leq 2\norm{\mathbf{x}}_\infty
+$$
+
+establishing item $\ref{lemma-7-3}$.
+
+**Step 2: Second hidden layer**
+
+Again by Lemmas $\ref{lemma-6-4}$-$\ref{lemma-6-6}$, for $d \geq 2$ the weight matrices of the second hidden layer satisfy
+
+$$
+\begin{align*}
+  \mathcal{W}_{2, \mathbf{M}_{2\mathfrak{d} - 1}} =& \mathcal{W}_{1, \mathbf{M}_{2\mathfrak{d} - 1}} = \operatorname{diag}(\mathbf{A}_2,\dots,\mathbf{A}_2, \mathbf{C}_2) \in \R^{\mathfrak{d} \times (3\mathfrak{d} - 1)} \\
+  \mathcal{W}_{2, \mathbf{M}_{2\mathfrak{d}}} =& \mathcal{W}_{1, \mathbf{M}_{2\mathfrak{d}}} = \operatorname{diag}(\mathbf{A}_1,\dots,\mathbf{A}_1) \in \R^{\mathfrak{d} \times (3\mathfrak{d})}
+\end{align*}
+$$
+
+where all entries again lie in $\set{-1,0,1}$. The corresponding bias vectors satisfy
+
+$$
+\begin{align*}
+  \mathcal{B}_{2, \mathbf{M}_{2\mathfrak{d} - 1}} =& \mathcal{B}_{1, \mathbf{M}_\mathfrak{d}} = \mathbf{0} \\
+  \mathcal{B}_{2, \mathbf{M}_{2\mathfrak{d}}} =& \mathcal{B}_{1, \mathbf{M}_{2\mathfrak{d}}}
+$$
+
+implying $\mathcal{B}_{2, \mathbf{M}_\mathfrak{d}} = \mathbf{0}$.
+
+**Step 3: Higher layers**
+
+For all $d\geq 2$ and all $i=3,\dots,\mathcal{L}(\mathbf{M}_{2d})$, equation $\eqref{equation-8}$ yields
+
+$$
+\begin{align*}
+  \mathcal{W}_{i, \mathbf{M}_{2\mathfrak{d} - 1}} =& \mathcal{W}_{i, \mathbf{M}_{2\mathfrak{d}}} = \mathcal{W}_{i-1, \mathbf{M}_\mathfrak{d}} \\
+  \mathcal{B}_{i, \mathbf{M}_{2\mathfrak{d} - 1}} =& \mathcal{B}_{i, \mathbf{M}_{2\mathfrak{d}}} = \mathcal{B}_{i-1, \mathbf{M}_\mathfrak{d}}
+\end{align*}
+$$
+
+Thus, discreteness of weights and vanishing biases propagate inductively through all subsequent layers, establishing $\ref{lemma-7-1}$ and $\ref{lemma-7-2}$.
+</details>
+</MathBox>
+
+#### Maximum convolutions
+
+<MathBox title="" boxType="lemma" tag="8">
+Let
+- $d, K \in\N_+$
+- $L\in [0,\infty)$
+- $\mathbf{r}_1,\dots,\mathbf{r}_K \in\R^d$
+- $\mathbf{n} \in \R^K$
+
+Define the fully-connected feedforward neural networks $\boldsymbol{\Phi} \in\mathcal{N}$ by
+
+$$
+  \boldsymbol{\Phi} = \mathbf{M}_K \circ \mathbf{A}_{-L \mathbf{I}_K, \mathbf{n}} \circ \mathbf{P}_K (\mathbf{L}_d \circ \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_1},\dots, \mathbf{L}_d \circ \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_K}) \circ \mathbf{T}_{d,K}
+$$
+
+where
+- $\mathbf{M}_K$ denotes the maxima network on $K$ inputs
+- $\mathbf{P}_K$ denotes the $K$-fold neural parallelization operator
+- $\mathbf{L}_d$ denotes the $\ell_1$-norm network on $\R^d$
+- $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ denotes affine network $\mathbf{x} \mapsto \mathbf{Wx} + \mathbf{b}$
+- $\mathbf{T}_{d,K}$ denotes the concatenation network $\R^d \to (\R^d)^K$
+
+The network $\boldsymbol{\Phi}$ satisfies the following properties.
+
+1. **Input dimension:** $\mathcal{I}(\boldsymbol{\Phi}) = d$
+2. **Output dimension:** $\mathcal{O}(\boldsymbol{\Phi}) = 1$
+3. **Hidden-layer depth:** $\mathcal{H}(\boldsymbol{\Phi}) = \lceil \log_2 (K) \rceil + 1$
+4. **First hidden layer width:** $d_1 (\boldsymbol{\Phi}) = 2dK$
+5. **Higher-layer width:** $d_i (\boldsymbol{\Phi}) \leq 3\lceil K / 2^{i-1} \rceil$ for all $i \geq 2$
+6. **Uniform parameter bound:** $\norm{\mathrm{T}(\boldsymbol{\Phi})}_\infty \leq \max\set{1, L, \max_{k\in[K]} \norm{\mathbf{r}_k}_\infty, 2\norm{\mathbf{n}}_\infty }$
+7. **Realization under ReLU:** Let $r:\R\to[0,\infty)$ denote the rectified linear unit. The realization $\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}): C(\R^d, \R)$ is given by
+$$
+  (\mathbf{F}_r^\mathcal{N}(\boldsymbol{\Phi}))(\mathbf{x}) = \max_{k\in[K]} (\mathbf{n}_k - L\norm{\mathbf{x} - \mathbf{r}_k}_1)
+$$
+
+<details>
+<summary>Proof</summary>
+
+For $k = 1,\dots,K$, define the network $\boldsymbol{\Psi}_k \in\mathcal{N}$ by $\boldsymbol{\Psi}_k = \mathbf{L}_d \circ \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_k}$ and define the network $\boldsymbol{\Iota} \in\mathcal{N}$ by
+
+$$
+  \boldsymbol{\Xi} = \mathbf{A}_{-L\mathbf{I}_K, \mathbf{n}} \circ \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K) \circ \mathbf{T}_{d,K}
+$$
+
+Define the norm $\norm{\cdot}: \bigcup_{m,n\in\N_+} \R^{m\times n} \to [0,\infty)$ for all $M = (M_{i,j})_{i\in[m], j\in[n]}$ by
+
+$$
+  \norm{M} = \max_{i\in[m], j\in[n]} |M_{i,j}|
+$$
+
+**Items $\ref{lemma-8-1}$ and $\ref{lemma-8-2}$**
+
+By Proposition $\ref{proposition-1}$ we have
+
+$$
+  \mathcal{O}(\boldsymbol{\Phi}) = \mathcal{O}(\mathbf{M}_K) = 1
+$$
+
+and
+
+$$
+  \mathcal{I}(\boldsymbol{\Phi}) = \mathcal{I}(\mathbf{T}_{d,K}) = d
+$$
+
+**Item** $\ref{lemma-8-3}$
+
+Since for all $\mathbf{W} \in\R^{m\times n}$ and $\mathbf{b}\in\R^m$
+
+$$
+  \mathcal{H}(\mathbf{A}_{\mathbf{W},\mathbf{b}}) = 0 = \mathcal{H}(\mathbf{T}_{d,K}$)
+$$
+
+and the fact that $\mathcal{H}(\mathbf{L}_d) = 1$, it follows from Proposition $\ref{proposition-1}$ that
+
+$$
+\begin{align*}
+  \mathcal{H}(\boldsymbol{\Xi}) =& \mathcal{H}(\mathbf{A}_{-L\mathbf{I}_K, \mathbf{n}}) + \mathcal{H}(\mathbf{P}(\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)) \\
+  =& \mathcal{H}(\boldsymbol{\Psi}_1) = \mathcal{H}(\mathbf{L}_d) = 1
+\end{align*}
+$$
+
+Propositions $\ref{proposition-1}$ and $\ref{proposition-21}$ therefore ensures that
+
+$$
+\begin{align*}
+  \mathcal{H}(\boldsymbol{\Phi}) =& \mathcal{H}(\mathbf{M}_K \circ \boldsymbol{\Xi}) = \mathcal{H}(\mathbf{M}_K) + \mathcal{H}(\boldsymbol{\Xi}) \\
+  =& \lceil \log_2 (K) \rceil + 1
+\end{align*}
+$$
+
+**Item** $\ref{lemma-8-5}$
+
+Since $\mathcal{H}(\boldsymbol{\Xi}) = 1$, Propositions $\ref{proposition-1}$ and $\ref{proposition-21}$ imply that
+
+$$
+  d_i (\boldsymbol{\Phi}) = d_{i-1} (\mathbf{M}_K) \leq 3 \left\lceil \frac{K}{2^{i-1}} \right\rceil
+$$
+
+**Item** $\ref{lemma-8-4}$
+
+Propositions $\ref{proposition-1}$, $\ref{proposition-22}$ and $\ref{proposition-20}$ imply that
+
+$$
+\begin{align*}
+  d_1 (\boldsymbol{\Phi}) =& d_1 (\boldsymbol{\Xi}) = d_1 (\mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)) \\
+  =& \sum_{i=1}^K d_1 (\boldsymbol{\Psi}_i) = \sum_{i=1}^K d_1 (\mathbf{L}_d) = 2dK
+\end{align*}
+$$
+
+**Item** $\ref{lemma-8-6}$
+
+By Equation $\eqref{equation-8}$ and Lemma $\ref{lemma-7}$ the network $\boldsymbol{\Phi}$ admits the explicit layer-wise representation
+
+$$
+\begin{equation*}
+\begin{split}
+  \boldsymbol{\Phi} =& ((\mathcal{W}_{1, \boldsymbol{\Xi}}), (\mathcal{W}_{1, \mathbf{M}_K} \mathcal{W}_{2,\boldsymbol{\Xi}}, \mathcal{W}_{1,\boldsymbol{M}_K} \mathcal{B}_{2,\boldsymbol{\Xi}), \\
+  & (\mathcal{W}_{2, \mathbf{M}_K}, \mathbf{0}), \dots, (\mathcal{W}_{\mathcal{L}(\mathbf{M}_K), \mathbf{M}_K}, \mathbf{0}))
+\end{split}
+\tag{\label{equation-58}}
+\end{equation*}
+$$
+
+<u>First-layer parameters</u>
+
+Since for $k = 1,\dots,K$
+
+$$
+  \mathcal{W}_{1, \boldsymbol{\Psi}_k} = \mathcal{W}_{1, \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_k}} \mathcal{W}_{1, \mathbf{L}_d} = \mathcal{W}_{1, \mathbf{L}_d}
+$$
+
+the first-layer weight matrix of $\boldsymbol{\Xi}$ is given by
+
+$$
+\begin{align*}
+  \mathcal{W}_{1, \boldsymbol{\Xi}} =& \mathcal{W}_{1, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)} \mathcal{W}_{1, \mathbf{T}_{d,K}} \\
+  =& \left[\begin{smallmatrix} \mathcal{W}_{1,\boldsymbol{\Psi}_1} & \mathbf{0} & \cdots & \mathbf{0} \\ \mathbf{0} & \mathcal{W}_{1,\boldsymbol{\Psi}_2} & \cdots & \mathbf{0} \\ \vdots & \vdots & \ddots & \vdots \\ \mathbf{0} & \mathbf{0} & \cdots & \mathcal{W}_{1, \boldsymbol{\Psi}_K} \end{smallmatrix}\right] \cdots \left[\begin{smallmatrix} \mathbf{I}_d \\ \mathbf{I}_d \\ \vdots \\ \mathbf{I}_d \end{smallmatrix} \right] \\
+  =& \left[\begin{smallmatrix} \mathcal{W}_{1,\boldsymbol{\Psi}_1} \\ \mathcal{W}_{1,\boldsymbol{\Psi}_2} \\ \vdots \\ \mathcal{W}_{1,\boldsymbol{\Psi}_K} \end{smallmatrix}\right] = \left[\begin{smallmatrix} \mathcal{W}_{1, \mathbf{L}_d} \\ \mathcal{W}_{1, \mathbf{L}_d} \\ \vdots \\ \mathcal{W}_{1, \mathbf{L}_d} \end{smallmatrix}\right]
+\end{align*}
+$$
+
+Lemma $\ref{lemma-5}$ therefore yields $\norm{\mathcal{W}_{1,\boldsymbol{\Xi}}} = 1$. 
+
+Moreover, $\eqref{equation-8}$ yields the first-layer bias vector for $\boldsymbol{\Xi}$
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{B}_{1,\boldsymbol{\Xi}} =& \mathcal{W}_{1, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)} \mathcal{B}_{1, \mathbf{T}_{d,K}} + \mathcal{B}_{1, \mathbf{P}_K (\boldsymbol{\Psi}_1, \dots, \boldsymbol{\Psi}_K)} \\
+  =& \mathcal{B}_{1, \mathbf{P}(\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)}
+\end{split}
+\tag{\label{equation-57}}
+\end{equation*}
+$$
+
+For each $k\in [K]$, Lemma $\ref{\lemma-5}$ gives
+
+$$
+\begin{align*}
+  \mathcal{B}_{1,\boldsymbol{\Psi}_k} =& \mathcal{W}_{1, \mathbf{L}_d} \mathcal{B}_{1, \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_k}} + \mathcal{B}_{1, \mathbf{L}_d} \\
+  =& -\mathcal{W}_{1, \mathbf{L}_d} \mathbf{r}_k
+\end{align*}
+$$
+
+This, $\eqref{equation-57}$ and Lemma $\ref{lemma-5}$ show that
+
+$$
+\begin{align*}
+  \norm{\mathcal{B}_{1, \boldsymbol{\Xi}}}_\infty =& \max_{k\in[K]} \norm{\mathcal{B}_{1,\boldsymbol{\Psi}_K}}_\infty = \max_{k\in[K]} \norm{\mathcal{W}_{1, \mathbf{L}_d} \mathbf{r}_k}_\infty \\
+  =& \max_{k\in[K]} \norm{\mathbf{r}_k}_\infty
+\end{align*}
+$$
+
+Combining this, $\eqref{equation-58}$, Lemma $\ref{lemma-7}$ and the fact $\norm{\mathcal{W}_{1,\boldsymbol{\Xi}}} = 1$, shows that
+
+$$
+\begin{equation*}
+\begin{split}
+  \norm{\mathrm{T}(\boldsymbol{\Phi})}_\infty =& \max_{k\in[K]} \set{\norm{\mathcal{W}_{1,\boldsymbol{\Xi}}}, \norm{\mathcal{B}_{1,\boldsymbol{\Xi}}}_\infty, \norm{\mathcal{W}_{1, \mathbf{M}_K} \mathcal{W}_{2,\boldsymbol{\Xi}}}, \norm{\mathcal{W}_{1, \mathbf{M}_K} \mathcal{B}_{2, \boldsymbol{\Xi}}}, 1} \\
+  =& \max\set{1, \max_{k\in[K]} \norm{\mathbf{r}}_\infty, \norm{\mathcal{W}_{1,\mathbf{M}_K}} \mathcal{W}_{2, \boldsymbol{\Xi}}, \norm{\mathcal{W}_{1, \mathbf{M}_K} \mathcal{B}_{2,\boldsymbol{\Xi}}}_\infty }
+\end{split}
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+<u>Second-layer parameters</u>
+
+Lemma $\ref{lemma-5}$ ensures that $\mathcal{B}_{2,\boldsymbol{\Psi}_k} = \mathcal{B}_{2, \mathbf{L}_d} = \mathbf{0}$ for all $k=1,\dots,K$. Consequently, $\mathcal{B}_{2, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)} = \mathbf{0}$, implying
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathcal{B}_{2,\boldsymbol{\Xi}} =& \mathcal{W}_{1, \mathbf{A}_{-L\mathbf{I}_K, \mathbf{n}}} \mathcal{B}_{2, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)} + \mathcal{B}_{1, \mathbf{A}_{-L\mathbf{I}_K}, \mathbf{n}} \\
+  =& \mathcal{B}_{1, \mathbf{A}_{-L\mathbf{I}_K, \mathbf{n}}} = \mathbf{n}
+\end{split}
+\tag{\label{equation-59}}
+\end{equation*}
+$$
+
+Since $\mathcal{W}_{2,\boldsymbol{\Psi}_k} = \mathcal{W}_{2, \mathbf{L}_d}$ for all $k=1,\dots,K$, it follows that
+
+$$
+\begin{align*}
+  \mathcal{W}_{2,\boldsymbol{\Xi}} = \mathcal{W}_{1, \mathbf{A}_{-L\mathbf{I}_K, \mathbf{n}}} \mathcal{W}_{2, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)} \\
+  =& -L\mathcal{W}_{2, \mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K)}
+\end{align*}
+$$
+
+Lemmas $\ref{lemma-5-5}$ and $\ref{lemma-7}$ therefore imply
+
+$$
+\begin{equation*}
+  \norm{\mathcal{W}_{1, \mathbf{M}_K} \mathcal{B}_{2, \boldsymbol{\Xi}}} = L\norm{\mathcal{W}_{1, \mathbf{M}_K}} \leq L
+\tag{\label{equation-61}}
+\end{equation*}
+$$
+
+Equation $\eqref{equation-59}$ and Lemma $\ref{lemma-7}$ ensure
+
+$$
+  \norm{\mathcal{W}_{1,\mathbf{M}_K} \mathcal{B}_{2, \boldsymbol{\Xi}}}_\infty \leq 2\norm{\mathcal{B}_{2,\boldsymbol{\Xi}}}_\infty = 2\norm{\mathbf{n}}_\infty
+$$
+
+Combining this with $\eqref{equation-60}$ and $\eqref{equation-61}$ completes the proof.
+
+**Item** $\ref{lemma-8-7}$
+
+Propositions $\ref{proposition-20}$ and $\ref{proposition-9}$ show that for all $\mathbf{x}\in\R^d$ and $k=1,\dots,K$
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Psi}_k))(\mathbf{x}) =& (\mathbf{F}_r^\mathcal{N} (\mathbf{L}_d) \circ \mathbf{F}_r^\mathcal{N} (\mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_k}))(\mathbf{x}) \\
+  =& \norm{\mathbf{x} - \mathbf{r}}_1
+\end{align*}
+$$
+
+Propositions $\ref{proposition-}$ and $\ref{proposition-1}$ imply that
+
+$$
+  (\mathbf{F}_r^\mathcal{N} (\mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K) \circ \mathbf{T}_{d,K}))(\mathbf{x}) = (\norm{\mathbf{x} - \mathbf{r}_1}_1, \dots, \norm{\mathbf{x} - \mathbf{r}_K}_1)
+$$
+
+Combining this and Proposition $\ref{proposition-9}$ establishes that
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Xi}))(\mathbf{x}) =& (\mathbf{F}_r^\mathcal{N} (\mathbf{A}_{-L\mathbf{I}_{K}, \mathbf{n}} \circ \mathbf{F}_r^\mathcal{N} (\mathbf{P}_K (\boldsymbol{\Psi}_1,\dots,\boldsymbol{\Psi}_K) \circ \mathbf{T}_{d,K}))(\mathbf{x}) \\
+  =& (\mathbf{n}_1 - L\norm{\mathbf{x} - \mathbf{r}_1}, \dots, \mathbf{n}_K - L\norm{\mathbf{x} - \mathbf{r}_K}_1)
+\end{align*}
+$$
+
+Propositions $\ref{proposition-1}$ and $\ref{proposition-21}$ demonstrate that
+
+$$
+\begin{align*}
+  (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}) =& (\mathbf{F}_r^\mathcal{N}(\mathbf{M}_K) \circ \mathbf{F}_r^\mathcal{N} (\boldsymbol{\Xi}))(\mathbf{x}) \\
+  =& (\mathbf{F}_r^\mathcal{N} (\mathbf{M}_K))(\mathbf{n}_1 - L\norm{\mathbf{x} - \mathbf{r}_1},\dots,\mathbf{n}_K - L\norm{\mathbf{x} - \mathbf{r}_K}_1) \\
+  =& \max_{k\in[K]} (\mathbf{n}_k - L\norm{\mathbf{x} - \mathbf{r}_k}_1)
+\end{align*}
+$$
 </details>
 </MathBox>
 
