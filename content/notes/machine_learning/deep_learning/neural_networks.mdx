@@ -3558,7 +3558,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title="" boxType="corollary">
+<MathBox title="" boxType="corollary" tag="7">
 Let 
 - $(E, d)$ be a metric space
 - $M \subseteq D$ be nonempty, $M \neq\emptyset$
@@ -4317,6 +4317,179 @@ $$
   (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x}) =& (\mathbf{F}_r^\mathcal{N}(\mathbf{M}_K) \circ \mathbf{F}_r^\mathcal{N} (\boldsymbol{\Xi}))(\mathbf{x}) \\
   =& (\mathbf{F}_r^\mathcal{N} (\mathbf{M}_K))(\mathbf{n}_1 - L\norm{\mathbf{x} - \mathbf{r}_1},\dots,\mathbf{n}_K - L\norm{\mathbf{x} - \mathbf{r}_K}_1) \\
   =& \max_{k\in[K]} (\mathbf{n}_k - L\norm{\mathbf{x} - \mathbf{r}_k}_1)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+### Approximation results
+
+<MathBox title="" boxType="proposition" tag="23">
+For $E \subseteq \R^d$ let $f:E\to\R$ be Lipschitz continuous with Lipschitz constant $L \in [0,\infty)$, i.e. for all $\mathbf{x}, \mathbf{y} \in E$
+
+$$
+  |f(\mathbf{x}) - f(\mathbf{y})| \leq L\norm{\mathbf{x} - \mathbf{y}}_1
+$$
+
+Let $\boldsymbol{\Phi} \in\mathcal{N}$ a fully-connected feedforward neural network as defined in Lemma $\ref{8}$, with $(\mathbf{r}_k)_{k=1}^K$ and $\mathbf{n} = (f(\mathbf{r}_k))_{k=1}^K \in\R^K$.
+
+
+Let $r:\R\to [0,\infty)$ denote the rectified linear unit. Then the realization of $\boldsymbol{\Phi}$ under $r$, denoted $\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi})$, satisfies
+
+$$
+  \sup_{x\in\R} |(\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi})) (\mathbf{x}) - f(\mathbf{x})| \leq 2L \sup_{x\in\R} (\min_{k\in[K]} \norm{\mathbf{x} - \mathbf{r}_k}_1)
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define $F: \R^d \to\R$ by
+
+$$
+  F(\mathbf{x}) = \max_{k\in[K]} (f(\mathbf{r}_k) - L\norm{\mathbf{x} - \mathbf{r}_k}_1 )
+$$
+
+Applying Corollary $\ref{corollary-7}$ and the Lipschitz continuity of $f$ yields
+
+$$
+  \sup_{\mathbf{x}\in E} |F(\mathbf{x}) - f(\mathbf{x})| \leq 2L \sup_{\mathbf{x} \in E} \norm{\mathbf{x} - \mathbf{r}_k}_1
+$$
+
+By Lemma $\ref{lemma-8}$ then $F(\mathbf{x}) = (\mathbf{F}_r^\mathcal{N} (\boldsymbol{\Phi}))(\mathbf{x})$, thus completing the proof.
+</details>
+</MathBox>
+
+<MathBox title="Covering numbers" boxType="proposition" tag="23">
+Let $(E, \delta)$ be a metric space and let $r\in [0,\infty]$. We define the $r$-covering number of $(E, \delta)$ denoted by $\mathcal{C}^{(E,\delta)} (r) \in \N_0 \cap \set{\infty}$ to be the extended real number given by
+
+$$
+\begin{equation*}
+  \mathcal{C}^{(E,\delta)} (r) = \min\left(\set{n \in\N_0 : \left[\exists A \subseteq E : \left(\substack{(|A| \leq n) \land (\forall x\in E: \exists a \in A : \delta(a, x) \leq r} \right) \right]} \right)
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+with the convention that $\min (\emptyset) = \infty$. Equivalently, $\mathcal{C}^{(E, \delta)} (r)$ is the smallest cardinality of a subset $A\subseteq E$ whose closed $r$-balls cover $E$, i.e.
+
+$$
+\begin{gather*}
+  E \subseteq \bigcup_{a\in A} \overline{B}_\delta (a, r) \\
+  \overline{B}_\delta (a, r) := \set{x \in E : \delta(x, a) \leq r}
+\end{gather}
+$$
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="10">
+Let
+- $d\in\N$
+- $a\in\R$
+- $b\in(a,\infty)$
+- $r\in(0,\infty)$
+
+For every $p\in [1,\infty)$, define $\delta_p : ([a,b]^d) \times ([a,b]^d) \to [0,\infty)$ by $\delta_p (x, y) = \norm{x - y}_p$. Then it holds for all $p \in [1,\infty)$
+
+$$
+\begin{align*}
+  \mathcal{C}^{([a,b]^d, \delta_p)} (r) \leq \left(\left\lceil \frac{d^{1/p} (b - a)}{2r}\right\rceil \right)^d \\
+  \leq \begin{cases}
+    1,\quad& r \geq d(b - a)/2 \\
+    \left(\frac{d(b - a)}{r} \right)^d ,\quad& r < d(b - a)/2
+  \end{cases}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define the sequence $(\mathfrak{r}_p)_{p\in[1,\infty)} \subseteq\N$ by
+
+$$
+\begin{equation*}
+  \mathfrak{r}_p = \left\lceil \frac{d^{1/p} (b - a)}{2r} \right\rceil
+\tag{\label{equation-62}}
+\end{equation*}
+$$
+
+For every $N\in\N$ and $i=1,\dots,N$ let $g_{N,i} \in [a,b]$ be given by
+
+$$
+  g_{N,i} = a + \frac{(i - 1/2)(b - a)}{N}
+$$
+
+and for every $p\in [1,\infty)$ let $A_p \subseteq [a, b]^d$ be given by
+
+$$
+\begin{equation*}
+  A_p = \set{g_{\mathfrak{r}_p, 1}, \dots, g_{\mathfrak{r}_p, \mathfrak{r}_p}}^d
+\tag{\label{equation-64}}
+\end{equation*}
+$$
+
+For all $x\in [a + \frac{(i - 1)(b - a)}{N}, g_{N,i}]$, we have
+
+$$
+\begin{align*}
+  |x - g_{N,i}| =& a + \frac{(i - 1/2)(b - a)}{N} - x \\
+  \leq& a + \frac{(i - 1/2)(b - a)}{N} - \left(a + \frac{(i - 1)(b - a)}{N}\right) \\
+  =& \frac{b - a}{2N}
+\end{align*}
+$$
+
+For all $x \in [g_{N,i}, a + i(b - a)/N]$, we have
+
+$$
+\begin{align*}
+  |x - g_{N,i}| =& x - \left(a + \frac{(i - 1/2)(b - a)}{N} \right) \\
+  \leq& a + \frac{i(b - a)}{N} - \left(a + \frac{(i - 1/2)(b - a)}{N}\right) \\
+  =& \frac{b - a}{2N}
+\end{align*}
+$$
+
+Combined this implies for all
+
+$$
+  x \in \left[a + \frac{(i - 1)(b - a)}{N}, a + \frac{i(b - a)}{N} \right]
+$$
+
+that
+
+$$
+  |x - g_{N,i}| \leq \frac{b - a}{2N}
+$$
+
+This proves that for every $N \in\N$ and $x\in [a,b]$ there exists $y\in\set{g_{N,1} \dots, g_{N,N}}$ such that
+
+$$
+  |x - y| \leq \frac{b - a}{2N}
+$$
+
+This establishes that for every $p\in [1,\infty)$ and $\mathbf{x} \in [a,b]^d$ there exists $\mathbf{y} \in A_p$ such that
+
+$$
+\begin{align*}
+  \delta_p (\mathbf{x}, \mathbf{y}) =& \norm{\mathbf{x} - \mathbf{y}}_p \\
+  =& \left(\sum_{i=1}^d |x_i - y_i|^p \right)^{1/p} \\
+  \leq& \left(\sum_{i=1}^d \frac{(b - a)p}{(2\mathfrak{r}_p)^p} \right)^{1/p} \\
+  =& \frac{d^{1/p} (b - a)}{2\mathfrak{r}_p} \leq \frac{d^{1/p} (b - a)2r}{2d^{1/p} (b - a)} \\
+  =& r
+\end{align*}
+$$
+
+Combining this with $\eqref{equation-63}$, $\eqref{equation-62}$ and $\eqref{equation-64}$ and the fact that for all $x \in [0,\infty)$ then
+
+$$
+  \lceil x \rceil \leq \mathbf{1}_{(0,1]} (x) + 2x\mathbf{1}_{(1,\infty)} (x) = \mathbf{1}_{(0,r]} (rx) + 2x\mathbf{1}_{(r,\infty)} (rx)
+$$
+
+we obtain
+
+$$
+\begin{align*}
+  \mathcal{C}^{([a,b]^d, \delta_p)} (r) \leq& |A_p| = (\mathfrak{r}_p)^d \\
+  =& \left(\left\lceil \frac{d^{1/p} (b - a)}{2r} \right\rceil \right)^d \\
+  \leq& \left(\left\lceil \frac{d(b - a)}{2r} \right\rceil \right)^d \\
+  \leq& \left[ \mathbf{1}_{(0,r]} \left(\frac{d(b - a)}{2} \right) + \frac{2d(b - a)}{2r} \mathbf{1}_{(r,\infty)} \left(\frac{d(b - a)}{2} \right) \right]^d \\
+  =& \mathbf{1}_{(0,r]} \left(\frac{d(b - a)}{2}right) + \left(\frac{d(b - a)}{r}\right)^d \mathbf{1}_{(r, \infty)} \left(\frac{d(b - a)}{2} \right)
 \end{align*}
 $$
 </details>
