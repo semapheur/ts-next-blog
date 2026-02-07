@@ -10,6 +10,7 @@ Long-term
 - Math animations with Motion Canvas/Defined Motion
 - Sveltex?
 - PlotNeuralNet?
+- Mermaid.js?
 
 ## Structure
 
