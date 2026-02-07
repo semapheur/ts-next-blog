@@ -4078,7 +4078,7 @@ where
 - $\mathbf{M}_K$ denotes the maxima network on $K$ inputs
 - $\mathbf{P}_K$ denotes the $K$-fold neural parallelization operator
 - $\mathbf{L}_d$ denotes the $\ell_1$-norm network on $\R^d$
-- $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ denotes affine network $\mathbf{x} \mapsto \mathbf{Wx} + \mathbf{b}$
+- $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ denotes the affine network $\mathbf{x} \mapsto \mathbf{Wx} + \mathbf{b}$
 - $\mathbf{T}_{d,K}$ denotes the concatenation network $\R^d \to (\R^d)^K$
 
 The network $\boldsymbol{\Phi}$ satisfies the following properties.
@@ -4375,7 +4375,7 @@ $$
 \begin{gather*}
   E \subseteq \bigcup_{a\in A} \overline{B}_\delta (a, r) \\
   \overline{B}_\delta (a, r) := \set{x \in E : \delta(x, a) \leq r}
-\end{gather}
+\end{gather*}
 $$
 </MathBox>
 
@@ -4396,7 +4396,6 @@ This follows from Lemma $\ref{12.2.4}$.
 </details>
 </MathBox>
 
-
 <MathBox title="" boxType="lemma" tag="10">
 Let
 - $d\in\N$
@@ -4408,8 +4407,8 @@ For every $p\in [1,\infty)$, define $\delta_p : ([a,b]^d) \times ([a,b]^d) \to [
 
 $$
 \begin{align*}
-  \mathcal{C}^{([a,b]^d, \delta_p)} (r) \leq \left(\left\lceil \frac{d^{1/p} (b - a)}{2r}\right\rceil \right)^d \\
-  \leq \begin{cases}
+  \mathcal{C}^{([a,b]^d, \delta_p)} (r) \leq& \left(\left\lceil \frac{d^{1/p} (b - a)}{2r}\right\rceil \right)^d \\
+  \leq& \begin{cases}
     1,\quad& r \geq d(b - a)/2 \\
     \left(\frac{d(b - a)}{r} \right)^d ,\quad& r < d(b - a)/2
   \end{cases}
@@ -4512,6 +4511,155 @@ $$
 $$
 </details>
 </MathBox>
+
+#### Convergence rates for the approximation error
+
+<MathBox title="" boxType="lemma">
+Let
+- $d\in\N$
+- $a, b \in\R$ with $a < b$
+- $f:[a,b]^d \to\R$ be Lipschitz continuous with Lipschitz constant $L \geq 0$ with respect to the $\ell_1$-norm, i.e. for all $\mathbf{x}, \mathbf{y} in [a,b]^d$
+
+$$
+  |f(\mathbf{x}) - f(\mathbf{y})| \leq L\norm{\mathbf{x} - \mathbf{y}}_1
+$$
+
+Let
+
+$$
+  \mathbf{m} := \left(\frac{a+b}{2},\dots,\frac{a+b}{2}\right) \in [a,b]^d
+$$
+
+be the midpoint of the cube $[a,b]^d \subseteq \R^d$ and define the affine neural network
+
+$$
+  \mathbf{R} := \mathbf{A}_{0, f(\mathbf{m})} \in \R^{1\times d} \times \R
+$$
+
+The network $\mathbf{R}$ has the following properties:
+1. **Input dimension:** $\mathcal{I}(\mathbf{R}) = d$
+2. **Output dimension:** $\mathcal{O}(\mathbf{R}) = 1$
+3. **Hidden layers:** $\mathcal{H}(\mathbf{R}) = 0$
+4. **Parameter dimension:** $\mathcal{P}(\mathbf{R}) = d + 1$
+5. $\norm{T(\mathbf{R})}_\infty \leq \sup_{x\in [a,b]^d} |f(x)|$
+
+<details>
+<summary>Proof</summary>
+
+Let $r:\R\to [0,\infty)$ denote the rectified linear unit. By Proposition $\ref{proposition-8}$, the realization of $\mathbf{R}$ under $r$ is given by, for all $\mathbf{x}, \mathbf{y} [a,b]^d$
+
+$$
+  (\mathbf{F}_r^\mathcal{N} (\mathbf{R}))(\mathbf{x}) = f(\mathbf{m})
+$$
+
+Fix $\mathbf{x} = (x_1,\dots,x_d) \in [a,b]^d$. Since $x_i \in [a, b]$ for each $i=1,\dots,d$, we have
+
+$$
+  \left|x_i - \frac{(a+b)}{2}\right| = \leq \frac{b - a}{2}
+$$
+
+Consequently
+
+$$
+\begin{equation*}
+\begin{split}
+  \norm{\mathbf{x} - \mathbf{m}}_1 =& \sum_{i=1}^d \left|x_i - \frac{a+b}{2} \right| \\
+  \leq& \sum_{i=1}^d \frac{b - a}{2} = \frac{d(b - a)}{2}
+\end{split}
+\tag{\label{equation-65}}
+\end{equation*}
+$$
+
+By Lipschitz continuity of $f$, it follows that
+
+$$
+\begin{align*}
+  |(\mathbf{F}_r^\mathbf{N} (\mathbf{R}))(\mathbf{x}) - f(\mathbf{x})| =& |f(\mathbf{m}) - f(\mathbf{x})| \\
+  \leq& L\Norm{\mathbf{m} - \mathbf{x}}_1 \\
+  \underbrace{\leq}_{\eqref{equation-65}}& L\frac{d(b - a)}{2}
+\end{align*}
+$$
+
+Since $T(\mathbf{R})$ is the constant function $\mathbf{x} \mapsto f(\mathbf{m})$, we have
+
+$$
+  \norm{T(\mathbf{F})}_\infty = \sup_{\mathbf{x}\in[a,b]^d} |f(\mathbf{m})| = |f(\mathbf{m})|
+$$
+
+Because $\mathbf{m}\in[a,b]^d$, it follows immediately that
+
+$$
+  |f(\mathbf{m})| \leq \sup_{\mathbf{x}\in[a,b]^d} |f(\mathbf{x})|
+$$
+
+completing the proof.
+</details>
+</MathBox>
+
+
+<MathBox title="" boxType="proposition">
+Let
+- $d\in\N$
+- $a, b\in \R$ with $a < b$
+- $r \in (0, d/4)$
+- $f: [a,b]^d \to\R$ be Lipschitz continuous with Lipschitz constant $L \geq 0$ with respect to the $\ell_1$-norm, i.e. for all $\mathbf{x}, \mathbf{y} \in [a,b]^d$
+
+$$
+  |f(\mathbf{x}) - f(\mathbf{y})| \leq L\norm{\mathbf{x} - \mathbf{y}}_1
+$$
+
+Let $\delta: [a,b]^d \times [a,b]^d \to\R$ be the metric induced by the $\ell_1$-norm on $[a,b]^d$, given by $\delta(\mathbf{x},\mathbf{y}) = \norm{\mathbf{x}, \mathbf{y}}_1$. Let 
+
+$$
+  K = C^{([a,b]^d, \delta), (b-a)r}
+$$
+
+be the $(b - a)r$-covering number of $[a,b]^d$ with respect to $\delta$. Then there exists points $\mathbf{r}_1,\dots,\mathbf{r}_K \in [a,b]^d$, such that
+
+$$
+  \sup_{\mathbf{x}\in [a,b]^d} \min_{k\in[K]} \delta(\mathbf{x}, \mathbf{r}_k) \leq (b - a)r
+$$
+
+Define $\mathbf{n} := (f(\mathbf{r}_1),\dots,f(\mathbf{r}_k)) \in\R^K$ and
+
+Define the neural network
+
+$$
+  \mathbf{R} = \mathbf{M}_K \circ \mathbf{A}_{L \mathbf{I}_K, \mathbf{n}} \circ \mathbf{P}_K (\boldsymbol{\Lambda}_d \circ \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_1}, \dots, \boldsymbol{\Lambda}_d \circ \mathbf{A}_{\mathbf{I}_d, -\mathbf{r}_k}) \circ \mathbf{T}_{d, K}
+$$
+
+where
+- $\mathbf{M}_K$ denotes the maxima network on $K$ inputs
+- $\mathbf{P}_K$ denotes the $K$-fold neural parallelization operator
+- $\mathbf{L}_d$ denotes the $\ell_1$-norm network on $\R^d$
+- $\mathbf{A}_{\mathbf{W}, \mathbf{b}}$ denotes the affine network $\mathbf{x} \mapsto \mathbf{Wx} + \mathbf{b}$
+- $\mathbf{T}_{d,K}$ denotes the concatenation network $\R^d \to (\R^d)^K$$
+
+The network $\mathbf{R}$ has the following properties:
+1. **Input dimension:** $\mathcal{I}(\mathbf{R}) = d$
+2. **Output dimension:** $\mathcal{O}(\mathbf{R}) = 1$
+3. **Hidden layers:** $\mathcal{H}(\mathbf{R}) \leq \lceil d \log_2 (3d/4r) \rceil + 1$
+4. **Layer width bounds:**
+$$
+  \mathbf{d}_i (\mathbf{R}) \leq \begin{cases}
+    2d \left(\frac{3d}{4r}\right)^d,\quad& i = 1 \\
+    3 \left\lceil \left(\frac{3d}{4r} \right)^d \frac{1}{2^{i-1}} \right\rceil,\quad& i > 1
+  \end{cases}
+$$
+5. **Parameter bound:** $\mathcal{P}(\mathbf{R}) \leq 35 (3d/4r)^{2d} d^2$
+6. **Supremum norm bound:** $\norm{T(\mathbf{R})}_\infty \leq \max\set{1, L, |a|, |b|, 2 \sup_{\mathbf{x}\in[a,b]^d} |f(\mathbf{x})|}
+7. **Approximation error:**
+$$
+  \sup_{\mathbf{x}\in[a,b]^d} |(\mathbf{F}_r^\mathcal{N} (\mathbf{R}))(\mathbf{x}) - f(\mathbf{x})| \leq 2L(b - a)r
+$$
+
+<details>
+  <summary>Proof</summary>
+
+
+</details>
+</MathBox>
+
 
 ## Learning neural networks
 
