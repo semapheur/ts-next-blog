@@ -393,9 +393,7 @@ function relabelLatexEquations(mdxFile: string) {
   });
 }
 //console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
-console.log(
-  findLatexIssues("./content/notes/physics/statistical_mechanics.mdx"),
-);
+console.log(findLatexIssues("./content/notes/math/statistics/statistics.mdx"));
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
 //  const issues = await checkNotesForIssues()
