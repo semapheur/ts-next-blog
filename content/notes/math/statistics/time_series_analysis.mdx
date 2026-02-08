@@ -1,0 +1,612 @@
+---
+title: 'Time Series Analysis'
+subject: 'Mathematics'
+showToc: true
+---
+
+Let $X_t \overset{\Delta}{=} \Set{X_t}_{t\in T}$ be a stochastic process on an index set $T\subseteq\R$ and let $F_X \left(x_{t_i}\right)_{i=1}^{n\in\N} = P\left( X_{t_i}\leq x_{t_i} \right)_{i=1}^{n\in\N}$ denote the cumulative joint distribution function of $X_t$.
+
+# Autocovariance
+
+<MathBox title='Autocovariance and autocorrelation' boxType="definition">
+The autocovariance of a stochastic process $X_t$ with mean $\mu_t = E[X_t]$ is defined as
+
+$$
+  \gamma_{XX}(t_1, t_2) := \mathrm{cov}\left[X_{t_1}, X_{t_2}\right] = E\left[\left(X_{t_1} - \mu_{t_1}\right)\left(X_{t_2} - \mu_{t_2}\right)\right] = E\left[X_{t_1} X_{t_2} \right] - \mu_{t_1}\mu_{t_2}
+$$
+
+The normalized autocorrelation of $X_t$ is defined as
+
+$$
+  \rho_{XX}(t_1, t_2) = \frac{\gamma_{XX}(t_1, t_2)}{\sigma_{t_1}\sigma_{t_2}}
+$$
+</MathBox>
+
+# Stationary process
+
+<MathBox title="Stationarity" boxType="definition">
+**Strict stationarity**: A stochastic process $X_t$ is called strictly/strongly stationary if 
+
+$$
+  \left( X_{t_i} \right)_{i=1}^{n\in\N} \overset{d}{=} (X_{t_i + \tau})_{i=1}^{n\in\N}\quad \tau, (t_i)_{i=1}^{n\in\N} \in T
+$$
+
+i.e. the finite dimensional distributions of $X_t$ are invariant under time shifts. In terms of the cumulative joint distribution function, this can be reformulated as
+
+$$
+  F_X \left(x_{t_i}\right)_{i=1}^{n\in\N} = F_X\left(x_{t_i + \tau}\right)_{i=1}^{n\in\N}
+$$
+
+**Weak stationarity**: The stochastic process $X_t$ is called weakly stationary if for all $t\in T$
+- the means are time invariant, i.e. $E[X_t] = E[X_{t + \tau}]$
+- the second moments are finite, i.e. $E\left[|X_t|^2\right] < \infty$
+- the autocovariance is time invariant, $\gamma_{X} (t, t + \tau) = \gamma_{X}(\tau, 0) \overset{\Delta}{=} \gamma(\tau)$
+</MathBox>
+
+# Autoregressive models (AR)
+
+An autoregressive model of order $p$, denoted $\mathrm{AR}(p)$ is defined as 
+
+$$
+  X_t = c + \sum_{i=1}^p \varphi_i X_{t-i} + \epsilon_t
+$$
+
+where
+- $\phi_i$ re the parameters of the model
+- $c$ is a constant
+- $\epsilon_t$ is white noise
+
+This can be equivalently written in terms of the lag (backshift) operator $L$ ($B$) as
+
+$$
+\begin{gather*}
+  X_t = c + \sum_{i=1}^p \varphi_i L^i X_t + \epsilon_t \\
+  \varphi(L)X_t \equiv \left(1 - \sum_{i=1}^p \varphi_i L^i \right) X_t = \epsilon_t
+\end{gather*}
+$$
+
+## Moving average model (ARMA)
+
+An autoregressive-moving average (ARMA) model describes a stationary stochastic process in terms of two polynomials, one for the autoregression (AR) and the second for the moving average (MA). An ARMA-model with $p$ autoregressive terms and $q$ moving-average terms, denoted $\mathrm{ARMA}(p, q)$ is defined as
+
+$$
+\begin{gather*}
+  X_t = c + \epsilon_t + \sum_{i=1}^p \varphi_i X_{t-i} + \sum_{i=1}^q \theta_i \epsilon_{t-i} \\
+  \left(1 - \sum_{i=1}^p \varphi_i L^i \right) X_t = \left(1 + \sum_{i=1}^p \theta_i L^i \right)\epsilon_t \\
+  \varphi(L) X_t = \theta(L) \epsilon_t
+\end{gather*}
+$$
+
+## Integrated (ARIMA)
+
+Assume the AR-polynomial $\alpha(L) = 1 - \sum_{i=1}^{p'} \alpha_i L^i$ has a unit root $(1 - L)$ of multiplicity $d$. Then it can be rewritten as
+
+$$
+  1 - \sum_{i=1}^{p'} \alpha_i B^i = \left(1 - \sum_{i=1}^{p' - d} \varphi_i B^i \right) (1 - L)^d
+$$
+
+An $\mathrm{ARIMA}(p, d, q)$ process expresses this polynomial factorisation property with $p = p' - d$ given by
+
+$$
+  \left(1 - \sum_{i=1}^{p' - d} \varphi_i B^i \right) (1 - L)^d X_t = \delta + \left(1 + \sum_{i=1}^p \theta_i L^i \right)\epsilon_t
+$$
+
+with drift $\frac{\delta}{1 - \sum_{i=1}^p \varphi_i}$.
+
+## Fractal integrated model (ARFIMA)
+
+The ARFIMA process allows a fractional value for the mulitiplicity $d$. For integer $d \in \N$, the differencing operator $(1 - L)^d$ can be expressed as a binomial expansion
+
+$$
+  (1 - L)^d = \sum_{i=0}^d \binom{d}{i} (-1)^i L^{d - i}
+$$
+
+To allow non-integer $d$, the binomial coefficients can be expressed in terms of the Gamma function
+
+$$
+  \binom{d}{i} = \frac{d!}{i!(d - i)!} = \frac{\Gamma(d + 1)}{\Gamma(i + 1)\Gamma(d - i + 1)} 
+$$
+
+The self-similar properties of ARFIMA depend on the values of $d$
+- $d = 0$ reduces to an $\mathrm{ARMA}(p, q)$ process, i.e. a short-memory process
+- For $d \in \left(0, \frac{1}{2}\right)$, the autocorrelations are all positive. The resulting process is asymptotically second order stationary exhibiting long memory. The corresponding Hurst exponent is $H = \frac{1}{2} + d$.
+- For $d \in \left( -\frac{1}{2}, 0 \right)$ the autocorrelations are all negative, except $\rho(0) = 1$. The resulting process is anti-persistent exhibiting intermediate memory.
+- For $d \geq \frac{1}{2}$, the process is no longer covariance stationary, and have infinite variance. By taking appropriate differences, a non-stationary process with $d > \frac{1}{2}$ can be reduced to a stationary process with $-\frac{1}{2} < d < \frac{1}{2}$
+
+
+# Autoregressive conditional heteroskedasticity models (ARCH)
+
+Autoregressive conditional heteroskedasticity (ARCH) models the variance of a mean process $\mu_t$ of the form
+
+$$
+  r_t = \mu_t + \epsilon_t
+$$
+
+with the return residuals $\epsilon_t = \sigma_t z_t$ where $z_t$ is a white noise process and
+
+$$
+  \sigma_t^2 = \alpha_0 + \sum_{i=1}^q \alpha_i \epsilon_{t-i}^2
+$$
+
+## Generalized autoregressive conditional heteroskedasticity (GARCH)
+
+$$
+  \sigma_t^2 = \omega + \sum_{i=1}^q \alpha_i \epsilon_{t-i}^2 + \sum_{i=1}^p \beta_i \sigma_{t-i}^2
+$$
+
+## FIGARCH
+
+# Detrended fluctuation analysis
+
+Detrended fluctuation analysis (DFA) is a method for determining the self-similarity of a time series by measuring the scaling-behaviours of its second moment-fluctuations, described by a fluctiation function $F:\N\to[0,2)$. The fluctiation function of a discrete process $\mathbf{X} = \Set{X_t }_{t=1}^{N\in\N}$ of length $N$ is computed through following steps
+
+1. Calculate the cumulative (integrated) sum of $X_t$, which defines a new process
+
+$$
+  Y_t = \sum_{i=1}^t \left[X_i - \bar{X} \right]
+$$
+
+2. Partition the cumulative sum process $Y_t$ into $N_n = \lfloor N/n \rfloor$ into non-overlapping time intervals of length $n$. Since the length of the process is not necessarily a multiple of $n$, some data at the end of $Y_t$. To avoid neglecting the excluded data points, the same procedure can be repeated starting from the end of $Y_t$, and the total number of time intervals will amount to $2N_n$.
+
+3. Each partition of $Y_t$ are fitted with a polynomial $\hat{Y}_\nu$ giving the local trend at interval $\nu$. In general, a polynomial fit of order $i$ removes trends of order $i - 1$. In particular, a linear fit, i.e. $i = 1$, removes constant trends in $X_t$, which corresponds to a rescaled range analysis for determining Hurst exponents.
+
+4. For each interval $\nu$, the variance of the polynimal fit is given by
+
+$$
+\begin{align*}
+  F_2 (n, \nu) = \frac{1}{n}\sum_{i=1}^n \left( Y[(\nu - 1)n + i] - \hat{Y}_\nu(t) right)^2,\quad \nu\in\Set{1,\dots,N_n} \\
+  F_2 (n, \nu) = \frac{1}{n}\sum_{i=1}^n \left( Y[N_n - (\nu - N_n)n + i] - \hat{Y}_\nu(t) right)^2,\quad \nu\in\Set{1,\dots,N_n},\quad \nu\in\Set{N_n + 1,\dots, 2N_n}
+\end{align*}
+$$
+
+The fluctiation function is defined as the root mean square error deviation from the trend
+
+$$
+  F_2(n) = \left( \frac{1}{2N_n} \sum_[\nu=1]^{2N_n} [F_2 (n, \nu)]^2 \right)^{1/2}
+$$
+
+The fluctiation function is expected to scale as $F(n) \propto n^h$. The scaling exponent $h$ is given by the slope of a straight line fit to the log-log graph of $n$ against $F(n)$ using least squares. The scaling
+
+- $h \in \left[0, \frac{1}{2}\right)$: anti-correlated (anti-persistency)
+- $h = \frac{1}{2}$: uncorrelated (white noise)
+- $h \in \left(\frac{1}{2}, 1\right)$: correlated (persistency)
+- $h = 1$: $1/f$-noise (pink/fractal noise)
+- $h \in \left(1,\frac{3}{2}\right)$: non-stationary, unbounded
+- $h = \frac{3}{2}$: Brownian noise
+
+## Multifractal generalization
+
+The fluctuation function can be generalized to moments of arbitrary real-valued order $q\in\R$
+
+$$
+  F_q(n) = \left( \frac{1}{2N_n} \sum_[\nu=1]^{2N_n} [F_2 (n, \nu)]^{q/2} \right)^{1/q}
+$$
+
+For $q = 0$, the fluctiation function is divergent and can be replaced by an exponential of a logarithmic sum
+
+$$
+  F_0 (n) = \exp\left( \frac{1}{4N_n} \sum_{\nu = 1}^{2N_n} \ln[F_2 (n, \nu)] \right) \propto n^{h(0)}
+$$
+
+Multifractal systems scale as $F_q (n) \propto n^{h(q)}$. In general, the exponent $h$ may depend on $q$. For stationary time series, $h(2)$ is identical to the Hurst exponent. Thus, the function $h(q)$ is usually called the generalized Hurst exponent.
+
+For monofractal time series with compact suppoert, $h$ is independent of $q$, since the scaling variance $F_2(n,\nu)$ is identical for all intervals $\nu$. For multifractal time series, $h$ depends on $q$
+
+- For $q > 0$, the intervals with large variance $F_2(n,\nu)$ dominate. Thus $h(q)$ describes the scaling behaviour of the intervals with large fluctuations. These are usually characterized by smaller $h(q)$.
+- For $q < 0$, the intervals with small variance $F_2(n,\nu)$ dominate. Thus $h(q)$ describes the scaling behaviour of the segments with small fluctiations. These are usually characterized by larger $\alpha(q)$.
+
+### Relation to standard multifractal analysis
+
+If the process $\mathbf{X}$ is a stationary and Gaussian sequence, the detrending procedure is not required, since no trend is present. In this case, the variance for each interval $\nu$ simplifies to
+
+$$
+  F_2 (n,\nu) = |Y(\nu n) - Y((\nu - 1)s)|^2
+$$
+
+Averaging over all intervals, gives the simplified fluctiation function
+
+$$
+  F_q (n) = \left( \frac{1}{2N_n} \sum_{\nu=1}^{2N_n} \left| Y(\nu n) - Y[(\nu - 1)n]\right|^q \right)^{1/q} \propto n^{h(q)}
+$$
+
+Assuming that the length $N$ of $\mathbf{X}$ is an integer multiple of the scale $n$, i.e. $N_n = \frac{N}{n}$, we obtain
+
+$$
+  \sum_{\nu=1}^{N/n} |Y(\nu n) - Y[(\nu - 1)n]|^q \propto n^{qh(q) - 1}
+$$
+
+Noting that the summand $Y(\nu n) - Y[(\nu - 1)n]$ gives the sum of numbers $X_t$ within each interval $\nu$ of size $n$. This sum is known as the box probability defined as
+
+$$
+  p_n(\nu) = \sum_{t = (\nu - 1)n + 1}^{\nu n} X_t = Y(\nu n) - Y[(\nu - 1)n]
+$$
+
+The mass component $\tau(q)$ in standard fluctuation analysis is usually defined via the partition function 
+
+$$
+  Z_q (n) = \sum_{\nu = 1}^{N/n} |p_n (\nu)|^q \propto n^{\tau(q)}
+$$
+
+Which is identical to the simplified fluctiation function, thus giving the relation
+
+$$
+  \tau(q) = qh(q) - 1
+$$
+
+Multifractal processes can also be characterized by a singularity spectrum $f$ that is related to $\tau$ via a Legendre transform
+
+$$
+  \alpha = \tau'(q) \quad f(\alpha) = q\alpha - \tau(q)
+$$
+
+where $\alpha$ is the Hölder exponent describing the singularity strength, while $f(\alpha)$ denotes the dimension of the subset of the process that is characterized by $\alpha$. Eliminating $\tau(q)$, we get
+
+$$
+  \alpha = h(q) + qh'(q) \quad f(\alpha) = q[\alpha - h(q)] + 1
+$$
+
+# Markov-switching model
+
+A Markov-switching model is constructed by combining two or more dynamic models via a Markov switching mechanism.
+
+An $n$-state Markov switching model can be expressed as
+
+$$
+  y_t = B \mathbf{s}_t \mathbf{x}_t + \boldsymbol{\sigma} \mathbf{s}_t \varepsilon_t,\quad \epsilon_t \sim \mathcal{N}(0, 1)
+$$
+
+where
+- $B = (\boldsymbol{\beta}_i)_{i=1}^n$ is an $n\times k$ matrix and $\boldsymbol{\beta}_i$ is a $k\times 1$ parameter vector
+- $\mathbf{x}_t$ is a $k\times 1$ vector of exogeneous regressors
+- $\boldssymbol{\sigma} = (\sigma_i)_{i=1}^n$ is a $m\times 1$ vector of error standard deviations
+- $\mathbf{s}_t (s_{i,t})_{i=1}^n$ is an $n\times 1$ vector of binary state indicators, such that $s_{i,t} = 1$ and $s_{j,t} = 0$ for $j\neq i$ if the process is in state $i$ at time $t$.
+
+The state vector $\mathbf{s}_t$ is assumed to an ergodic Markov chain with transition probabilities
+
+$$
+  P = \left[p_{ij} = \mathrm{Pr}(s_{j,t} = 1)|s_{i, t-1} = 1)\right]_{n\times n}
+$$
+
+# Markov-switching multifractal (MSM)
+
+Let $P_t$ be the price of a financial asseet, and let $r_t = \ln\left(\frac{P_t}{P_{t-1}} \right)$ denote the return. In the Markov-switching multifractal model, returns are defined as
+
+$$
+  r_t = \mu + \sigma_t \epsilon_t
+$$
+
+where $\epsilon_t$ is white noise, and $\sigma_t$ is the instantaneous volatility generated by the product of $k$ volatility components
+
+$$
+  \sigma_t^2 = \sigma^2 \prod_{i=1}^k m_{t, i} = \sigma^2 M_t
+$$
+
+The hidden volatility states $M_t$ are assumed to follow a first-order Markov chain (equivalently that $M_t$ are independent in each level of cascade)  
+
+$$
+\begin{align*}
+  P\left[ M_t | M_{t-1}, M_{t-2},\dots \right] =& P\left[ M_t | M_{t-1} \right] \\
+  =& P\left[ \prod_{i=1}^k m_{t, i} \middle| \prod_{i=1}^k m_{t-1, i}  \right] \\
+  =& \prod_{i=1}^k P\left[ m_{t,i} | m_{t-1, i} \right]
+\end{align*}
+$$
+
+Each volatility component $m_{t, i}$ is updated at time $t$ with transition probability $\gamma_i$ given by
+
+$$
+  \gamma_i = 1 - \left( 1 - \gamma_k \right)^{b^{i - k}} \quad \gamma_k \in [0, 1] \quad b \in (1, \infty)
+$$
+
+In this context, $i$ refers to the frequency of volatility components. At low frequencies, the sequence $\gamma_i$ is approximately geometric $\gamma_i = \gamma_1 b^{k - 1}$.
+
+The transition probability $\gamma_i$ grows with increasing $i$. Therefore, the persistency of a component $m_{t,i}$ i reduced as $i \to k$. In other words, the expected duration of each volatility component decreases on average as the number of components $k$ increases.
+
+In the discrete case, the volatility components are modelled with a multinomial distribution, while in the contiuous case the lognormal distribution is most commonly used.
+
+## Trinomial MSM
+
+Assuming that $m_{t, i}$ follows a trinomial distribution, it takes one of three values
+
+$$
+  m_{t, k} \in \Set{ m_0, m_1, m_2 }
+$$
+
+which are constrained $m_0 + m_1 + m_2 = 3$ so that the normalization condition $\mathrm{E}[M_t] = 1$ is satisfied. Setting $b = 3$ and $\gamma_i = 1/3$, the transition probability becomes
+
+$$
+  \gamma_i = 1 - \left( 1 - \frac{1}{3} \right)^{3^{i - k}}
+$$
+
+The unconditional moments of the hidden states are given by
+
+$$
+\begin{align*}
+  \mathrm{E}\left[ M_t^q \right] =& \mathrm{E}\left[ \left( \prod_{i=1}^k m_{t, k} \right)^q \right] \\
+  =& \left( \frac{1}{3}m_0^q + \frac{1}{3}m_1^q + \frac{1}{3}m_2^q \right)^k
+\end{align*}
+$$
+
+The first and second moments are simply
+
+$$
+\begin{align*}
+  \mathrm{E}\left[ M_t \right] = \left( \frac{1}{3}m_0 + \frac{1}{3}m_1 + \frac{1}{3}m_2 \right)^k = 1 \\
+  \mathrm{E}\left[ M_t^2 \right] = \left( \frac{1}{3}m_0^2 + \frac{1}{3}m_1^2 + \frac{1}{3}m_2^2 \right)^k
+\end{align*}
+$$
+
+The variance of the hidden states is
+
+$$
+\begin{align*}
+  \mathrm{Var}[M_t] =& \mathrm{E}\left[ M_t^2 \right] - \mathrm{E}\left[ M_t \right]^2 \\
+  =& \left( \frac{1}{3}m_0^2 + \frac{1}{3}m_1^2 + \frac{1}{3}m_2^2 \right)^k - 1
+\end{align*}
+$$
+
+The autocovariance at time interval $\Delta t$ is
+
+$$
+\begin{align*}
+  \mathrm{E}\left[M_{t+\Delta} M_t \right] = \prod_{i=1}^k &\Set\ \frac{2}{3}\left[ 1 - \left(1 - \gamma_k \right)^{\Delta t} \right] \left( \frac{1}{3}m_0 m_1 + \frac{1}{3}m_1 m_2 + \frac{1}{3}m_2 m_0 \right) \right. \\
+  &\left. + \left( \left( 1 - \gamma_k \right)^{\Delta t} + \frac{1}{3}\left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right] \right) \left( \frac{1}{3}m_0^2 + \frac{1}{3}m_1^2 + \frac{1}{3}m_2^2 \right) \right}
+\end{align*}
+$$
+
+The corresponding autocorrelation function is
+
+$$
+  \rho_{\Delta t} = \frac{\mathrm{E}\left[M_{t+\Delta} M_t \right] - \mathrm{E}\left[ M_t \right]^2}{\mathrm{Var}[M_t]}
+$$
+
+### Moments of compound process
+
+The moments of absolute returns as a process $\mathrm{E}\left[ \left| x_t \right|^q \right] = \mathrm{E}\left[ \left| \sigma_t \right|^q \right] \mathrm{E}\left[ \left| \epsilon_t \right|^q \right]$ are given by for $q = 1, \dots, 4$
+
+$$
+\begin{align*}
+  \mathrm{E}\left[ \left| x_t \right| \right] =& \frac{2\sigma}{\sqrt{2\pi}}\left( \frac{1}{3}m_0^{1/2} + \frac{1}{3}m_1^{1/2} + \frac{1}{3}m_2^{1/2} \right)^2 \\
+  \mathrm{E}\left[ \left| x_t \right|^2 \right] =& \sigma^2 \\
+  \mathrm{E}\left[ \left| x_t \right|^3 \right] =& \frac{4\sigma^3}{\sqrt{2\pi}}\left( \frac{1}{3}m_0^{3/2} + \frac{1}{3}m_1^{3/2} + \frac{1}{3}m_2^{3/2} \right)^2 \\
+  \mathrm{E}\left[ \left| x_t \right|^3 \right] =& 3\sigma^4 \left( \frac{1}{3}m_0^2 + \frac{1}{3}m_1^2 + \frac{1}{3}m_2^2 \right)^2
+\end{align*}
+$$
+
+The variance of the compound process is
+
+$$
+\begin{align*}
+  \mathrm{var}\left[ \left| x_t \right| \right] =& \mathrm{E}\left[ \left| x_t \right|^2 \right] - \left( \mathrm{E}\left[ \left| x_t \right| \right] \right)^2 \\
+  =& \sigma^2 \left[ 1 - \frac{2}{\pi}\left( \frac{1}{3}m_0^{1/2} + \frac{1}{3}m_1^{1/2} + \frac{1}{3}m_2^{1/2} \right)^{2k} \right]
+\end{align*}
+$$
+
+## Log-transformed volatility
+
+Considering logarithmic increments
+
+$$
+\begin{align*}
+  \eta_{t, \Delta t} =& \ln M_t - \ln M_{t-\Delta t} \\
+  =& \sum_{i=1}^k \ln m_{t, i} + \sum_{i=1}^k \ln m_{t - \Delta t, i} \\
+  =& \sum_{i=1}^k \epsilon_{t, i} + \sum_{i=1}^k \epsilon_{t - \Delta t, i}
+\end{align*}
+$$
+
+The second unconditional moment of the log-transformed volatility process
+
+$$
+\begin{align*}
+  \mathrm{E}\left[ \eta_{t+\Delta t, \Delta t}^2 \right] =& \frac{4}{3}\left[ \ln^2\left( m_0 \right) + \ln^2\left( m_1 \right) + \ln^2\left( m_0 \right) \right. \\
+  &- \left. \ln\left( m_0 \right)\ln\left( m_1 \right) - \ln\left( m_1 \right)\ln\left( m_2 \right) - \ln\left( m_2 \right)\left( m_0 \right) \right] \sum_{i=1}^k \left[ \frac{1}{3} \left( 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right) \right]
+\end{align*}
+$$
+
+The autocovariance of the log-transformed volatility process
+
+$$
+\begin{align*}
+  \mathrm{E}\left[\eta_{t + \Delta t, \Delta t}, \eta_{t, \Delta t} \right] =& 2 \left[\ln \left(m_0\right) \ln \left(m_1\right) + \ln \left(m_1\right) \ln \left(m_2\right) + \ln \left(m_2\right)\ln \left(m_0\right) \right. \\
+  &- \left. \ln^2 \left(m_0\right) - \ln^2 \left(m_1\right) - \ln^2 \left(m_2\right) \right] \sum_{i=1}^k \left[ \frac{1}{3}\left( 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right) \right]^2
+\end{align*}
+$$
+
+The squared autocovariance of the log-transformed volatility process
+
+$$
+\begin{align*}
+  \mathrm{E}\left[\eta_{t + \Delta t, \Delta t}^2, \eta_{t, \Delta t}^2 \right] =& 2 \sum_{i=1}^k \Set{ \frac{1}{9} \left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right]^2 }\xi \\
+  &+ \frac{16}{9} \sum_{i=1}^k \Set{ \frac{1}{3}\left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right] \sum_{i'=1, i'\neq i}^k \frac{1}{3}\left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right] } \xi \\
+  &+ 8 \sum_{i=1}^k \Set{ \frac{1}{9}\left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right]^2 \sum_{i'=1, i'\neq i}^k \frac{1}{9}\left[ 1 - \left( 1 - \gamma_k \right)^{\Delta t} \right]^2 }\xi
+\end{align*}
+$$
+
+with 
+
+$$
+  \xi = \left[ \ln\left( m_0 \right) \ln\left( m_1 \right) + \ln\left( m_1 \right) \ln\left( m_2 \right) + \ln\left( m_2 \right) \ln\left( m_0 \right) - \ln^2\left( m_0 \right) - \ln^2\left( m_1 \right) - \ln^2\left( m_2 \right) \right]
+$$
+
+## GMM estimation
+
+An MSM model can be estimated using GMM with the following moment conditions
+
+$$
+  \mathrm{E}\left[ \xi_{t+\Delta t, \Delta t}, \xi_{t, \Delta t} \right] \\
+  \mathrm{E}\left[ \xi_{t+\Delta t, \Delta t}^2, \xi_{t, \Delta t}^2 \right]
+$$
+
+where $\xi_{t, \Delta t}$ represents either the log difference of absolute returns or the squared log difference
+
+$$
+  \xi_{t, \Delta t} = \ln\left| x_t \right| - \ln\left| x_{t - \Delta t} \right|
+$$
+
+or
+
+$$
+  \xi_{t, \Delta t} = \ln x_t^2 - \ln x_{t - \Delta t}^2
+$$
+
+For an $n$-nomial MSM, the parameter vector is given by
+
+$$
+    \theta = \begin{bmatrix} m_0, & m_1, & \dots, & m_{n-1}, & \sigma \end{bmatrix}
+$$
+
+Since the moment conditions of the multinomial weights $m_i$ are independent of $\sigma$, the covariance matrix of the parameters should be block-diagonal and estimated values of $\sigma$ should be identical to the sample standard deviation.
+
+### Log difference of absolute returns
+
+Due to the assumption of independence between the Markov switching and white noise processes, we rewrite the log difference of absolute returns as
+
+$$
+\begin{align*}
+  \xi_{t, \Delta t} =& \ln\left| x_t \right| - \ln\left| x_{t - \Delta t} \right| \\
+  =& \ln\left[ \left| \sqrt{\prod_{i=1}^k} m_{t, i} \sigma \epsilon_t \right| \right] - \ln\left[ \left| \sqrt{\prod_{i=1}^k} m_{t-\Delta t, i} \sigma \epsilon_{t-\Delta} \right| \right] \\
+  =& \frac{1}{2}\sum_{i=1}^k \left( \ln m_{t,k} - \ln m_{t-\Delta,k} \right) + \ln\left| \epsilon_t \right| - \ln\left| \epsilon_{t-\Delta t} \right|
+\end{align*}
+$$
+
+The first autovariance condition moment is
+
+$$
+  \mathrm{E}\left[ \xi_{t+\Delta t, \Delta t}, \xi_{t, \Delta t} \right] = \frac{1}{4}\mathrm{E}\left[ \eta_{t+\Delta t, \Delta t} \eta_{t, \Delta t}  \right] + \left( \mathrm{E}\left[ \ln\left| \epsilon_t \right| \right] \right)^2 - \mathrm{E}\left[ \left(\ln\left| \epsilon_t \right|\right)^2 \right] 
+$$
+
+The second autovariance condition moment is
+
+$$
+\begin{align*}
+  \mathrm{E}\left[ \xi_{t+\Delta t, \Delta t}^2, \xi_{t, \Delta t}^2 \right] =& \frac{1}{16}\mathrm{E}\left[ \eta_{t+\Delta t, \Delta t}^2 \eta_{t, \Delta t}^2 \right] - \Set{ \mathrm{E}\left[ \eta_{t, \Delta t}^2 \right] - \mathrm{E}\left[ \eta_{t+\Delta t, \Delta t} \eta_{t, \Delta t} \right] } \cdot \\
+  & \Set{ \left( \mathrm{E}\left[ \ln\left| \epsilon_t \right| \right] \right)^2 - \mathrm{E}\left[ \left(\ln\left| \epsilon_t \right|\right)^2 \right] } + 3\mathrm{E}\left[ \left(\ln\left| \epsilon_t \right|\right)^2 \right]^2 \\
+  & -4\mathrm{E}\left[ \ln\left| \epsilon_t \right| \right] \mathrm{E}\left[ \left(\ln\left| \epsilon_t \right|\right)^3 \right] + \mathrm{E}\left[ \left(\ln\left| \epsilon_t \right|\right)^4 \right] 
+\end{align*}
+$$
+
+### Log difference of squared returns
+
+Writing the squared log returns as 
+
+$$
+\begin{align*}
+  \ln x_t^2 =& \ln \sigma_t^2 + \ln \epsilon_t^2 \\
+  =& \ln \sigma^2 + \sum_{i=1}^k \ln m_{t, i} + \ln \epsilon_t^2
+\end{align*}
+$$
+
+the log difference of squared return can be expressed as
+
+$$
+  \xi_{t,\Delta t} = \sum_{i=1}^k \left( \ln m_{t, i} - \ln m_{t-\Delta t, i} \right) + \ln \epsilon_t^2 - \ln \epsilon_{t-\Delta t}^2
+$$
+
+## Maximum likelihood estimation
+
+The $n$-nomial MSM model can be rewritten in the quasi state space
+
+$$
+\begin{gather*}
+  x_t = \psi_t \epsilon_t \\
+  \psi_t = A \psi_{t-1}
+\end{gather*}
+$$
+
+where $\psi_t = \left( \psi_{t, i} \right)_{i=1}^{n^k}$ is the volatility state vector and $A$ is the transition matrix of size $n^k \times n^k$. The number of coefficients in $A$ increases with $(d^2 - d)$ with $d = n^k$, making it inefficient to estimate $A$ directly. By assuming that all parameters of the model are known, the conditional probability distribution of the volatility state can be expressed as
+
+$$
+  \hat{\psi}_{t|t} \equiv E(\psi_{t}| I_t ) = \begin{bmatrix} P\left( \psi_{t, 1} | I_t \right) \\ P\left( \psi_{t, 2} | I_t \right) \\ \vdots \\ P\left( \psi_{t, d} | I_t \right) \end{bmatrix}
+$$
+
+where $I_t = \Set{ x_i }_{i=0}^t$ is the information set. By Bayes' law, the posterior probability $P\left( \psi_t | x_t, I_{t-1} \right)$ are given by
+
+$$
+  P\left( \psi_t | x_t, I_{t-1} \right) \equiv P\left( \psi_t | I_t \right) = \frac{f\left(x_t \mid  \psi_t, I_{t-1} \right) P\left( \psi_t | I_{t-1} \right)}{f\left( x_t | I_{t-1} \right)}
+$$
+
+with the prior probability
+
+$$
+  P\left( \psi_t | I_t \right) = \sum_{\psi_{t-1}} P\left( \psi_t | \psi_{t-1} \right) P\left( \psi_{t-1} | I_{t-1} \right)
+$$
+
+and the density
+
+$$
+  f\left( x_t | I_{t-1} \right) = \sum_{\psi_t} f\left( x_t, \psi_t | I_{t-1} \right) = \sum_{\psi_t} P\left( \psi_t | I_{t-1} \right) f\left( x_t | \psi_t, I_{t-1} \right)
+$$
+
+Let $f_t$ be the density vector of $x_t$ conditional on $\psi_t$ and $I_{t-1}$
+
+$$
+  f_t = \begin{bmatrix} f\left( x_t | \theta_1, I_{t-1} \right) \\ f\left( x_t | \theta_2, I_{t-1} \right) \\ \vdots \\ f\left( x_t | \theta_d, I_{t-1} \right) \end{bmatrix} = \begin{bmatrix} f\left( x_t | \theta_1, \psi_{t,1}, I_{t-1} \right) \\ f\left( x_t | \theta_2, \psi_{t,2} I_{t-1} \right) \\ \vdots \\ f\left( x_t | \theta_d, \psi_{t, d}, I_{t-1} \right) \end{bmatrix}
+$$
+
+The conditional density $f\left( x_t | I_{t-1} \right)$ is determined by
+
+$$
+  f\left( x_t | I_{t-1} \right) = f_t^T \hat{\psi}_{t|t-1} = \boldsymbol{1}_d^T \left(f_t \odot \hat{\psi}_{t|t-1} \right)
+$$
+
+where $\odot$ denotes element-wise matrix multiplication and $\boldsymbol{1}_d^T$ is a unit vector. The filter inference $\hat{\psi}_{t|t}$ is written matrix notation by
+
+$$
+  \hat{\psi}_{t|t} = \frac{f_t \odot \hat{\psi}_{t|t-1}}{\boldsymbol{1}_d^T f_t \odot \hat{\psi}_{t|t-1}}
+$$
+
+which describes the filtered regime probabilities as the updated estimate of $\hat{\psi}_{t|t}$ of $\hat{\psi}_{t|t-1}$ given new information $x_t$. Because the filtered inference updates as
+
+$$
+  \hat{\psi}_{t+1|t} = A\hat{\psi}_{t|t}
+$$
+
+the iterated filtered inference can be written
+
+$$
+  \hat{\psi}_{t+1|t} = \frac{\left[f_t \odot A \right] \hat{\psi}_{t|t-1}}{\boldsymbol{1}_d^T \left[f_t \odot A \right] \hat{\psi}_{t|t-1}}
+$$
+
+The log-likelihood function can be derived as a by-product of the filter
+
+$$
+  \ln L(\theta|X) = \sum_{t=1}^\tau \ln\hat{\psi}_{t|t-1} \left[ f_t \odot A \right]\boldsymbol{1}_d^T 
+$$
+
+Bayes' rule implies
+
+$$
+\begin{align*}
+  \ln\hat{\psi}_{t|t-1} \left[ f_t \odot A \boldsymbol{1}_d^T \right] =& \sum_{i=1}^d \sum_{j=1}^d P\left(\psi_{t-1}=m_i, \psi_t = m_j | I_{t-1}\right) f\left(x_t\mid  \psi_{t-1} = m_i, \psi_t = m_j \right) \\
+  =& \sum_{i=1}^d \sum_{j=1}^d \hat{\psi}_{t-1|t-1, i} a_{ij} f^{ij}(x_t)
+\end{align*}
+$$
+
+where $f^{ij}(x_t) = f\left(x_t\mid  \psi_{t-1} = m_i, \psi_t = m_j \right)$.
+
+### Probability state vector
+
+The probability notion represented by the estimate $\hat{\psi}_{t|\tau} = E\left[ \psi_t | I_\tau \right]$ depends on the bound of $\tau$.
+
+- For $\tau = t$, a filtering probability $\hat{\psi}_{t|\tau}$ gives an estimate for $\psi_t$ based on the available information up to $t = \tau$.
+- For $\tau > t$, a smoothing probability $\hat{\psi}_{t|\tau}$ gives inference inference about $\psi_t$ and $x_t$ based on all information in the sample. The smoothed joint probability based on full information is given by
+
+$$
+\begin{align*}
+  P\left[\psi_t^{(i)}, \psi_{t+1}^{(i)} | I_\tau \right] =& \frac{P\left[ \psi_{t + 1}^{(i)} | I_\tau \right] P\left[ \psi_t^{(j)} | I_t \right] P\left[ \psi_{t+1}^{(i)} | \psi_t^{(i)} \right]}{P\left[ \psi_{t + 1}^{(i)} | I_t \right]} \\
+  P\left[ \psi_t^{(j)} | I_\tau \right] =& \sum_{i=1}^d P\left[\psi_t^{(i)}, \psi_{t+1}^{(i)} | I_\tau \right]
+\end{align*}
+$$
+
+- For $\tau < t$ a forecasting probability $\hat{\psi}_{t|\tau}$ gives inference probability over future periodes on the basis of estimates of state probabilities.
+
+## Model selection test
+
+### Markov switching criterion (MSC)
+
+The Markov switching criterio (MSC) is a kind of penalized likelihood criteria with the form
+
+$$
+  \mathrm{MSC} = -2 \ln L + \sum_{i=1}^N \frac{T_i \left(T_i + \lambda_i \kappa \right)}{\delta_i T_i - \lambda_i \kappa - 2}
+$$
+
+where $N$ is the number of states, $\kappa$ is the number of multi-fractal parameters, $T_i$ is the number of observations in state $i$, which is calculated as the sum of smoothing probabilities of each state $i$.
