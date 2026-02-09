@@ -853,7 +853,10 @@ $$
 The least squares regression line of $y$ on $x$ is therefore
 
 $$
+\begin{equation*}
   \hat{y}(x) = m(\mathbf{y}) + \frac{s(\mathbf{x}, \mathbf{y})}{s^2 (\mathbf{x})}[x - m(\mathbf{x})]
+\tag{\label{equation-18}}
+\end{equation*}
 $$
 
 The minimum mean square error is
@@ -1253,7 +1256,7 @@ Let $\boldsymbol{U} = (U_n)_{n\in\N_+}$ be a sequence of Baysian estimators of $
 
 Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space and let $X:\Omega\to\R$ be an integrable real random variable, i.e. $\mathbb{E}(|X|) < \infty$, with mean $\mathbb{E}(X) = \mu$ and variance $\operatorname{var}(X) = \sigma^2$. We sample from the distribution of $X$ to produce a sequence $\mathbf{X} = (X_i)_{i\in I\subset\N}$ of independent and identically distributed variables. For each $n\in\N_+$, we take a random sample $\mathbf{X}_n = (X_i)_{i=1}^n$ of size $n$ from the distribution of $X$.
 
-### Mean estimator
+### Mean estimation
 
 The natural estimator of the distribution mean $\mu$ is the sample mean
 
@@ -1279,7 +1282,7 @@ $$
 \end{equation*}
 $$
 
-### Variance estimator
+### Variance estimation
 
 For the variance estimators, we assume additionally that the third and fourth central moments of $X$ are finite, i.e. 
 - $\mu_3 = \mathbb{E}[(X - \mu)^3] < \infty$
@@ -1377,7 +1380,14 @@ $$
 \end{equation*}
 $$
 
-3. $\lim_{n\to\infty} S^2 = \sigma^2$ with probability $1$
+3. **Consistency:** With probability $1$
+$$
+\begin{equation*}
+  \lim_{n\to\infty} S^2 = \sigma^2
+\tag{\label{equation-17}}
+\end{equation*}
+$$ 
+
 4. $\mathbb{E}(S) \leq\sigma$
 5. $\operatorname{cov}(M_n, S_n^2) = \mu_3/n$
 6. $\operatorname{cor}(M_n, S_n^2) = \frac{\mu_4}{\sigma\sqrt{\mu_4 - \sigma^4 (n-3)/(n-1)}}$
@@ -1596,6 +1606,351 @@ $$
 Note that $\lim_{n\to\infty} \operatorname{cor}(W_n^2, S_n^2) = 1$, meaning that both estimators are asymptotically equivalent.
 
 ## Bivariate models
+
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space and let $X, Y:\Omega\to\R$ and be two integrable real random variables. Let
+- $\mu = \mathbb{E}(X)$ and $\nu = \mathbb{E}(Y)$ denote the distribution means
+- $\sigma^2 = \operatorname{var}(X)$ and $\tau^2 = \operatorname{var}(Y)$ denote the distribution variances
+- $\delta = \operatorname{cov}(X,Y)$ denote the distribution covariance
+
+The distribution correlation is therefore
+
+$$
+  \rho = \operatorname{cor}(X,Y) = \frac{\operatorname{cov}(X,Y)}{\operatorname{sd}(X) \operatorname{sd}(Y)} = \frac{\delta}{\sigma\tau}
+$$
+
+Denote higher order terms, assumed to be finite, by
+- $\mu_4 = \mathbb{E}[(X - \mu)^4]$ and $\nu_4 = \mathbb{E}[(Y - \nu)^4]$
+- $delta_2 = \mathbb{E}[(X - \mu)^2 (Y - \nu)^2]$
+
+We sample from the distributions of $X$ and $Y$ to produce a compound sequence $((X_i, Y_i))_{i\in I\subset\N}$ of independent and identically distributed random vectors $(X_i, Y_i)$. For each $n\in\N_+$, we take a random samples of size $n$
+- $\mathbf{X}_n = (X_i)_{i=1}^n \in\R^n$
+- $\mathbf{Y}_n = (Y_i)_{i=1}^n \in\R^n$
+
+### Mean estimation
+
+The sample means are
+
+$$
+\begin{align*}
+  M(\mathbf{X}) =& \frac{1}{n} \sum_{i=1}^n X_i \\
+  M(\mathbf{Y}) =& \frac{1}{n} \sum_{i=1}^n Y_i
+\end{align*}
+$$
+
+with covariance and correlation
+1. $\operatorname{cov}[M(\mathbf{X}, \mathbf{Y})] = \delta/n$
+2. $\operatorname{cov}[M(\mathbf{X}, \mathbf{Y})] = \rho$
+
+<details>
+  <summary>Proof</summary>
+
+1. This follows from bilinearity of covariance
+$$
+  \operatorname{cov}[M(\mathbf{X}, \mathbf{Y})] =& \operatorname{cov}\left(\frac{1}{n} \sum_{i=1}^n X_i, \frac{1}{n} \sum_{j=1}^n Y_j \right) \\
+  =& \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \operatorname{cov} (X_i, Y_j) 
+$$
+
+By independence, the terms in the last sum are $0$ if $i\neq j$. For $i = j$, the terms are $\operatorname{cov}(X, Y) = \delta$. Since there are $n$ such terms, we arrive at
+
+$$
+  \operatorname{\cov}[M(\mathbf{X}), M(\mathbf{Y})] = \delta/n$
+$$
+
+2. Recall that
+$$
+  \operatorname{var}[M(\mathbf{X})] = \frac{\sigma^2}{n},\quad& \operatorname{var}[M(\mathbf{Y})] = \frac{\tau^2}{n}
+$$
+
+Hence
+
+$$
+\begin{align*}
+  \operatorname{cor}[M(\mathbf{X}), M(\mathbf{Y})] =& \frac{\delta/n}{(\delta/\sqrt{n})(\tau/\sqrt{n)} \\
+  =& \frac{\delta}{\sigma\tau} = \rho
+\end{align*}
+$$
+</details>
+
+### Variance estimation
+
+If the distribution means $\mu, \nu$ are known, the special sample variances are
+
+$$
+\begin{align*}
+  W^2 (\mathbf{X}) =& \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2 \\
+  W^2 (\mathbf{Y}) =& \frac{1}{n} \sum_{i=1}^n (Y_i - \nu)^2
+\end{align*}
+$$
+
+with covariance and correlation
+1. $\operatorname{cov}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/n$
+2. $\operatorname{cor}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/\sqrt{(\mu_4 - \sigma^4)(\nu_4 - \tau^4)}$
+
+<details>
+  <summary>Proof</summary>
+
+1. By bilinearity of covariance
+$$
+\begin{align*}
+  \operatorname{cov}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] =& \operatorname{cov}\left(\frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2, \frac{1}{n} \sum_{j=1}^n (Y_j - \nu)^2 \right) \\
+  =& \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \operatorname{cov}[(X_i - \mu)^2, (Y_j - \nu)^2]
+\end{align*}
+$$
+
+By independence, terms in the last sum are $0$ when $i\neq j$. When $i = j$, the terms are
+
+$$
+\begin{align*}
+  \operatorname{cov}[(X - \mu)^2 (Y - \nu)^2] =& \mathbb{E}[(X - \mu)^2 (Y - \nu)^2] - \mathbb{E}[(X - \mu)^2] \mathbb{E}[(Y - \nu)^2] \\
+  =& \delta_2 - \sigma^2 \tau^2
+\end{align*}
+$$
+
+Since there are $n$ such terms, we get
+
+$$
+  \operatorname{cov}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = \frac{\delta_2 - \sigma^2 \tau^2}{n}
+$$
+
+2. This follows from item **(1)** and $\eqref{equation-10}$.
+</details>
+
+If the distribution means $\mu, \nu$ are not known, the sample variances are
+
+$$
+\begin{align*}
+  S^2 (\mathbf{X}) =& \frac{1}{n} \sum_{i=1}^n (X_i - M(\mathbf{X})^2 \\
+  S^2 (\mathbf{Y}) =& \frac{1}{n} \sum_{i=1}^n (Y_i - M(\mathbf{Y})^2
+\end{align*}
+$$
+
+with covariance and correlation
+1. $\operatorname{cov}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/n + 2\delta^2 /[n(n-1)]$
+2. $\operatorname{cor}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = [(n-1)(\delta_2 - \sigma^2 \tau^2) + 2\delta^2]/\sqrt{[(n-1)\mu_4 - (n-3)\mu_4][(n-1)\nu_4 - (n-3)\nu_4]}$
+
+<details>
+<summary>Proof</summary>
+
+1. By bilinearity of covariance
+$$
+  \operatorname{cov}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = \frac{1}{4n^2 (n-1)^2} \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^n \sum_{l=1}^n \operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2]
+$$
+
+We compute the covariances in this sum by considering disjoint cases
+- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 0$ if $i = j$ or if $k = l$, and there are $2n^3 - n^2$ such terms
+- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 0$ by independence if $i,j,k,l$ are distinct, and there are $n(n-1)(n-2)(n-3)$ such terms
+- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 2\delta_2 - 2\sigma^2 \tau^2 + 4\delta^2$ if $i\neq j$ and $\set{k,l} = \set{i,j}$, and there re $2n(n-1)$ such terms
+- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = \delta_2 - \sigma^2 \tau^^2$ if $i\neq j$, $k \neq l$, and $\#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
+
+Substituting and simplifying gives the desired result
+
+2. This follows from item **(1)** and $\eqref{equation-11}$
+</details>
+
+Asymptotically, the correlation between the sample variances is the same as the correlation between the special sample variances given above
+
+$$
+  \lim_{n\to\infty} \operatorname{cor}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = \frac{\delta_2 - \sigma^2 \tau^2}{\sqrt{(\mu_4 - \sigma^4)(\nu_4 - \tau^4)}}
+$$
+
+### Covariance estimation
+
+If the distribution means $\mu$ and $\nu$ are known, a natual estimator of the distribution covariance $\delta = \operatorname{cov}(X, Y)$ is the special sample covariance
+
+$$
+  W(\mathbf{X}, \mathbf{Y}) = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)(Y_i - \nu)
+$$
+
+which satisfies the properties
+1. **Expectation:** $\mathbb{E}[W(\mathbf{X}, \mathbf{Y})] = \delta$
+2. **Variance:** 
+$$
+\begin{equation*}
+  \operatorname{var}[W(\mathbf{X}, \mathbf{Y})] = \frac{1}{n} (\delta_2 - \delta^2)
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+3. **Convergence to distribution variance:** $\lim_{n\to\infty} W(\mathbf{X}, \mathbf{Y}) = \delta$ with probability $1$
+
+<details>
+<summary>Proof</summary>
+
+2. We have
+$$
+\begin{align*}
+  \operatorname{var}[(X - \mu)(Y - \nu)] =& \mathbb{E}[(X - \mu)^2 (Y - \nu)^2] - \mathbb{E}[(X - \mu)(Y - \nu)]^2 \\
+  =& \delta_2 - \delta^2
+\end{align*}
+$$
+</details>
+
+If the sample distributions are unknown, a natural estimator of the distribution covariance is the standard sample covariance
+
+$$
+\begin{equation*}
+  S(\mathbf{X}, \mathbf{Y}) = \frac{1}{n-1} \sum_{i=1}^n [X_i - M(\mathbf{X})][Y_i - M(\mathbf{Y})]
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+which satisfies the properties
+1. **Expectation:** $\mathbb{E}[S(\mathbf{X}, \mathbf{Y})] = \delta$
+2. **Consistency:** 
+$$
+\begin{equation*}
+  \lim_{n\to\infty} S(\mathbf{X}, \mathbf{Y}) = \delta
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+3. **Variance:** 
+$$
+\begin{equation*}
+  \operatorname{var}[S(\mathbf{X}), \mathbf{Y})] = \frac{1}{n} \left(\delta_2 + \frac{1}{n-1} \sigma^2 \tau^2 - \frac{n-2}{n-1} \delta^2 \right)
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+4. $\lim_{n\to\infty} \operatorname{var}[S(\mathbf{X}, \mathbf{Y})] = 0$
+5. $\operatorname{var}[S(\mathbf{X}, \mathbf{Y})] > \operatorname{var}[W(\mathbf{X}, \mathbf{Y})}]$
+
+<details>
+<summary>Proof</summary>
+
+1. Expanding the summand in $\eqref{equation-13}$ we obtain
+
+$$
+  \sum_{i=1}^n [X_i - M(\mathbf{X})][Y_i - M(\mathbf{Y})] = \sum_{i=1}^n X_i Y_i - nM(\mathbf{X}) M(\mathbf{Y})
+$$
+
+Taking the expectation, we get for the first term
+
+$$
+  \mathbb{E}(X_i Y_i) = \operatorname{cov}(X_i, Y_i) + \mathbb{E}(X_i) \mathbb{E}(Y_i) = \delta + \mu\nu
+$$
+
+and for the second term
+
+$$
+\begin{align*}
+  \mathbb{E}[M(\mathbf{X}) M(\mathbf{Y})] =& \operatorname{cov}[M(\mathbf{X}), M(\mathbf{Y})] + \mathbb{E}[M(\mathbf{X})] \mathbb{E}[M(\mathbf{Y})] \\
+  =& \frac{\delta}{n} + \mu\nu
+\end{align*}
+$$
+
+Combining the results, we get
+
+$$
+\begin{align*}
+  \mathbb{E}\left(\sum_{i=1}^n [X_i - M(\mathbf{X})][Y_i - M(\mathbf{Y})] \right) =& n(\delta + \mu\nu) - n\left(\frac{\delta}{n} + \mu\nu \right) \\
+  =& (n-1)\delta
+\end{align*}
+$$
+
+2. The sample covariance can be written in the form
+$$
+  S(\mathbf{X}, \mathbf{Y}) = \frac{n}{n-1} [M(\mathbf{XY}) - M(\mathbf{X}) M(\mathbf{Y})]
+$$
+
+By the strong law of large numbers, then with probability $1$
+- $\lim_{n\to\infty} M(\mathbf{X}) = \mu$
+- $\lim_{n\to\infty} M(\mathbf{Y}) = \nu$
+- $\lim_{n\to\infty} M(\mathbf{XY}) = \mathbb{E}(XY) = \delta + \mu\nu$
+
+It follows that
+
+$$
+  \lim_{n\to\infty} S(\mathbf{X}, \mathbf{Y}) = \delta
+$$
+
+3. By bilinearity of covariance
+$$
+  \operatorname{cov}[S(\mathbf{X}, \mathbf{Y})] = \frac{1}{4n^2 (n-1)^2} \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^n \sum_{l=1}^n \operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)]
+$$
+
+We compute the covariances by considering disjoint cases
+- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 0$ if $i = j$ of if $k = l$, and there are $2n^3 - n^2$ such terms
+- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 0$ if $i, j, k, l$ are distinct, and there are $n(n-1)(n-2)(n-3)$ such terms
+- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 2\delta_2 + 2\sigma^2 \tau^2$ if $i\neq j$ and $\set{k,l} = \set{i,j}$, and there are $2n(n-1)$ such terms
+- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = \delta_2 - \delta^2$ if $i\neq j$, $k\neq l$ and $#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
+
+Substituting and simplifying gives the result.
+
+5. Subtracting $\eqref{equation-15}$ from $\eqref{equation-15}$ we get
+
+$$
+  \operatorname{var}[S(\mathbf{X}, \mathbf{Y})] - \operatorname{var}[W(\mathbf{X}, \mathbf{Y})] = \frac{1}{n(n-1)}(\delta^2 + \delta^2 \tau^2) > 0
+$$
+</details>
+
+### Correlation estimation
+
+The sample correlation is
+
+$$
+  R(\mathbf{X}, \mathbf{Y}) = \frac{S(\mathbf{X}, \mathbf{Y})}{S(\mathbf{X})S(\mathbf{Y})}
+$$
+
+Since $R(\mathbf{X}, \mathbf{Y})$ is a nonlinear function of the sample covariance and sample standard deviations, it will not in general be an unbiased estimator of the distribution correlation $\rho$. However, the sample correlation converges to the distribution correlation for large sample sizes, i.e. with probability $1$
+
+$$
+  \lim_{n\to\infty} R(\mathbf{X}, \mathbf{Y}) = \rho
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows from $\eqref{equation-17}$ and $\eqref{equation-16}$
+  
+$$
+  \lim_{n\to\infty} R(\mathbf{X}, \mathbf{Y}) = \frac{\delta}{\sigma\tau} = \rho
+$$
+</details>
+
+### Linear regression
+
+There are two formulations of linear regression
+1. **Fixed-design regression:** The predictor variable is deterministic, while the response variables are random
+2. **Random-design regression:** both response and predictor variables are random, so that the data form a random sample from a bivariate distribution
+
+Here we adopt the second framework. From $\eqref{equation-18}$, the best linear predictor of $Y$ given $X$, in the sense of minimizing mean square error, is the random variable
+
+$$
+\begin{align*}
+  L(Y|X) = \mathbb{E}(Y) + \frac{\operatorname{cov}(X, Y)}{\operatorname{var(X)}}[X - \mathbf{E}(\mathbf{X})]
+\end{align*}
+$$
+
+The distribution regression line is therefore given by
+
+$$
+  y = L(Y|X = x) = \nu + \frac{\delta}{\sigma^2} (x - \mu)
+$$
+
+Moreover, the minimum value of the mean square error is
+
+$$
+\begin{align*}
+  \mathbb{E}[Y - L(Y|X)] =& \operatorname{var}(Y)[1 - \operatorname{cor}^2 (X, Y)] \\
+  =& r^2 (1 - \rho^2)
+\end{align*}
+$$
+
+If we want to estimate the distribution regression line, a natural approach is to consider a random sample $\set{(X_i, Y_i)}_{i=1}^n$ from the distribution of $(X, Y)$ and compute the sample regression line, given by
+
+$$
+  y = M(\mathbf{Y}) + \frac{S(\mathbf{X}, \mathbf{Y})}{S^2 (\mathbf{X})}[X - M(\mathbf{X})]
+$$
+
+The mean square error is $S^2 (\mathbf{Y}) [1 - R^2 (\mathbf{X}, \mathbf{Y})]$ and the coefficient of determination is $R^2 (\mathbf{X}, \mathbf{Y})$. The coefficients of the sample regression line can be viewed as estimators of the respective coefficients in the distribution regression line.
+
+The coefficients of the sample regression line converge to the distribution regression line with probability $1$:
+1. $\lim_{n\to\infty} \frac{S(\mathbf{X}, \mathbf{Y})}{S^2 (\mathbf{X})} = \frac{\delta}{\sigma^2}$
+2. $\lim_{n\to\infty} M(\mathbf{Y}) - \frac{S(\mathbf{X}, \mathbf{Y})}{S^2 (\mathbf{Y})}M(\mathbf{X}) = \nu - \frac{\delta}{\sigma^2} \mu$
+
+<details>
+<summary>Proof</summary>
+
+This follows from $\eqref{equation-17}$ and $\eqref{equation-16}$.
+</details>
 
 # Hyptheses testing
 
