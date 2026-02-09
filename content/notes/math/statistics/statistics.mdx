@@ -806,7 +806,8 @@ Assuming $s^2 (\mathbf{x}) > 0$, then $Q$ is a strictly convex function of $(a,b
 $$
 \begin{align*}
   b(\mathbf{x}, \mathbf{y}) =& \frac{s(\mathbf{x}, \mathbf{y})}{s^2 (\mathbf{x})} \\
-  a(\mathbf{x}, \mathbf{y}) =& m(\mathbf{y}) - b(\mathbf{x}, \mathbf{y}) m(\mathbf{x}) = m(\mathbf{y}) - \frac{s(\mathbf{x}, \mathbf{y})}{s^2 (\mathbf{x})} m(\mathbf{x})
+  a(\mathbf{x}, \mathbf{y}) =& m(\mathbf{y}) - b(\mathbf{x}, \mathbf{y}) m(\mathbf{x}) \\
+  =& m(\mathbf{y}) - \frac{s(\mathbf{x}, \mathbf{y})}{s^2 (\mathbf{x})} m(\mathbf{x})
 \end{align*}
 $$
 
@@ -960,7 +961,7 @@ $$
 
 $$
 \begin{align*}
-  \operatorname{sse}(\mathbf{x}, \mathbf{y}) = \operatorname{sst}(\mathbf{y}) - r^2 (\mathbf{x}, \mathbf{y}) \operatorname{sst}(\mathbf{y}) \\
+  \operatorname{sse}(\mathbf{x}, \mathbf{y}) =& \operatorname{sst}(\mathbf{y}) - r^2 (\mathbf{x}, \mathbf{y}) \operatorname{sst}(\mathbf{y}) \\
   =& \operatorname{sst}(\mathbf{y}) - \operatorname{ssr}(\mathbf{x}, \mathbf{y})
 \end{align*}
 $$
@@ -1454,7 +1455,7 @@ Taking the variance gives
 
 $$
 \begin{equation*}
-  \var(S_n^2) = \frac{1}{(n - 1)^2} \left(\operatorname{var}(A) + \frac{1}{n^2} \operatorname{var} (B^2) - \frac{2}{n} \operatorname{cov} (A, B^2) \right)
+  \operatorname{var}(S_n^2) = \frac{1}{(n - 1)^2} \left(\operatorname{var}(A) + \frac{1}{n^2} \operatorname{var} (B^2) - \frac{2}{n} \operatorname{cov} (A, B^2) \right)
 \tag{\label{equation-7}}
 \end{equation*}
 $$
@@ -1646,26 +1647,28 @@ with covariance and correlation
 
 1. This follows from bilinearity of covariance
 $$
+\begin{align*}
   \operatorname{cov}[M(\mathbf{X}, \mathbf{Y})] =& \operatorname{cov}\left(\frac{1}{n} \sum_{i=1}^n X_i, \frac{1}{n} \sum_{j=1}^n Y_j \right) \\
   =& \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \operatorname{cov} (X_i, Y_j) 
+\end{align*}
 $$
 
 By independence, the terms in the last sum are $0$ if $i\neq j$. For $i = j$, the terms are $\operatorname{cov}(X, Y) = \delta$. Since there are $n$ such terms, we arrive at
 
 $$
-  \operatorname{\cov}[M(\mathbf{X}), M(\mathbf{Y})] = \delta/n$
+  \operatorname{\cov}[M(\mathbf{X}), M(\mathbf{Y})] = \delta/n
 $$
 
 2. Recall that
 $$
-  \operatorname{var}[M(\mathbf{X})] = \frac{\sigma^2}{n},\quad& \operatorname{var}[M(\mathbf{Y})] = \frac{\tau^2}{n}
+  \operatorname{var}[M(\mathbf{X})] = \frac{\sigma^2}{n},\quad \operatorname{var}[M(\mathbf{Y})] = \frac{\tau^2}{n}
 $$
 
 Hence
 
 $$
 \begin{align*}
-  \operatorname{cor}[M(\mathbf{X}), M(\mathbf{Y})] =& \frac{\delta/n}{(\delta/\sqrt{n})(\tau/\sqrt{n)} \\
+  \operatorname{cor}[M(\mathbf{X}), M(\mathbf{Y})] =& \frac{\delta/n}{(\delta/\sqrt{n})(\tau/\sqrt{n})} \\
   =& \frac{\delta}{\sigma\tau} = \rho
 \end{align*}
 $$
@@ -1683,8 +1686,14 @@ $$
 $$
 
 with covariance and correlation
-1. $\operatorname{cov}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/n$
-2. $\operatorname{cor}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/\sqrt{(\mu_4 - \sigma^4)(\nu_4 - \tau^4)}$
+1. **Covariance:**
+$$
+  \operatorname{cov}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = \frac{\delta_2 - \sigma^2 \tau^2}{n}
+$$
+2. **Correlation:**
+$$
+  \operatorname{cor}[W^2 (\mathbf{X}), W^2 (\mathbf{Y})] = \frac{\delta_2 - \sigma^2 \tau^2}{\sqrt{(\mu_4 - \sigma^4)(\nu_4 - \tau^4)}}
+$$
 
 <details>
   <summary>Proof</summary>
@@ -1725,8 +1734,15 @@ $$
 $$
 
 with covariance and correlation
-1. $\operatorname{cov}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = (\delta_2 - \sigma^2 \tau^2)/n + 2\delta^2 /[n(n-1)]$
-2. $\operatorname{cor}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = [(n-1)(\delta_2 - \sigma^2 \tau^2) + 2\delta^2]/\sqrt{[(n-1)\mu_4 - (n-3)\mu_4][(n-1)\nu_4 - (n-3)\nu_4]}$
+1. **Covariance:** 
+$$
+  \operatorname{cov}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] = \frac{\delta_2 - \sigma^2 \tau^2}{n} + \frac{2\delta^2}{n(n-1)}
+$$
+
+2. **Correlation:**
+$$
+  \operatorname{cor}[S^2 (\mathbf{X}), S^2 (\mathbf{Y})] =& \frac{(n-1)(\delta_2 - \sigma^2 \tau^2) + 2\delta^2}{\sqrt{[(n-1)\mu_4 - (n-3)\mu_4][(n-1)\nu_4 - (n-3)\nu_4]}}
+$$
 
 <details>
 <summary>Proof</summary>
@@ -1740,7 +1756,7 @@ We compute the covariances in this sum by considering disjoint cases
 - $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 0$ if $i = j$ or if $k = l$, and there are $2n^3 - n^2$ such terms
 - $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 0$ by independence if $i,j,k,l$ are distinct, and there are $n(n-1)(n-2)(n-3)$ such terms
 - $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = 2\delta_2 - 2\sigma^2 \tau^2 + 4\delta^2$ if $i\neq j$ and $\set{k,l} = \set{i,j}$, and there re $2n(n-1)$ such terms
-- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = \delta_2 - \sigma^2 \tau^^2$ if $i\neq j$, $k \neq l$, and $\#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
+- $\operatorname{cov}[(X_i - X_j)^2, (Y_k - Y_l)^2] = \delta_2 - \sigma^2 \tau^2$ if $i\neq j$, $k \neq l$, and $\#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
 
 Substituting and simplifying gives the desired result
 
@@ -1810,7 +1826,7 @@ $$
 \end{equation*}
 $$
 4. $\lim_{n\to\infty} \operatorname{var}[S(\mathbf{X}, \mathbf{Y})] = 0$
-5. $\operatorname{var}[S(\mathbf{X}, \mathbf{Y})] > \operatorname{var}[W(\mathbf{X}, \mathbf{Y})}]$
+5. $\operatorname{var}[S(\mathbf{X}, \mathbf{Y})] > \operatorname{var}[W(\mathbf{X}, \mathbf{Y})]$
 
 <details>
 <summary>Proof</summary>
@@ -1870,7 +1886,7 @@ We compute the covariances by considering disjoint cases
 - $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 0$ if $i = j$ of if $k = l$, and there are $2n^3 - n^2$ such terms
 - $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 0$ if $i, j, k, l$ are distinct, and there are $n(n-1)(n-2)(n-3)$ such terms
 - $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = 2\delta_2 + 2\sigma^2 \tau^2$ if $i\neq j$ and $\set{k,l} = \set{i,j}$, and there are $2n(n-1)$ such terms
-- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = \delta_2 - \delta^2$ if $i\neq j$, $k\neq l$ and $#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
+- $\operatorname{cov}[(X_i - X_j)(Y_i - Y_j), (X_k - X_l)(Y_k - Y_l)] = \delta_2 - \delta^2$ if $i\neq j$, $k\neq l$ and $\#(\set{i,j} \cap \set{k,l}) = 1$, and there are $4n(n-1)(n-2)$ such terms
 
 Substituting and simplifying gives the result.
 
