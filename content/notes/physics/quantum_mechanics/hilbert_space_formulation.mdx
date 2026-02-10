@@ -6,6 +6,7 @@ references:
   - book_auletta_etal_2009
   - book_manoukian_2006
   - book_scherer_2019
+  - book_bongaarts_2015
 ---
 
 # Postulates
@@ -50,7 +51,7 @@ references:
     $$
 5. **Time evolution of a system:** In the Schrödinger picture, any time evolution of a pure state $\ket{\psi(t)}\in\mathcal{H}$ that is not caused by a measurement is governed by a unitary evolution operator $\hat{U}(t, t_0)$ satisfying
 $$
-  \ket{\psi(t)} = U(t,t_0)\ket{\psi (t_0)}
+  \ket{\psi(t)} = \hat{U}(t,t_0)\ket{\psi (t_0)}
 $$
 which is equivalent to the Schrödinger equation
 $$
@@ -6314,7 +6315,10 @@ where $\hat{U}_{H_0, t}$ is the evolution operator in the interaction picture co
 Let $\mathcal{H}$ be a finite-dimensional Hilbert space with $\dim(\mathcal{H}) = n$ and let $\set{\ket{\Phi_j}}_{j=1}^n \subset\mathcal{H}$ be a collection of normalized states. A pure random mixture (or random coherent superposition) is a normalized vector
 
 $$
-  \ket{\Phi_\boldsymbol{\alpha}} = \sum_{j=1}^n \alpha_j \ket{\Phi_j}
+\begin{equation*}
+  \ket{\Phi_{\boldsymbol{\alpha}}} = \sum_{j=1}^n \alpha_j \ket{\Phi_j}
+\tag{\label{equation-148}}
+\end{equation*}
 $$
 
 with complex coefficients $\alpha_j = r_j e^{i\delta_j}$ where
@@ -6326,11 +6330,11 @@ $$
 \end{equation*}
 $$
 
-For a fixed realization $\boldsymbol{\alpha} = (a_j)_{j=1}^n$, the expectation value of an observable $\hat{Q}$ in the state $\ket{\Phi_\boldsymbol{\alpha}}$ is
+For a fixed realization $\boldsymbol{\alpha} = (a_j)_{j=1}^n$, the expectation value of an observable $\hat{Q}$ in the state $\ket{\Phi_{\boldsymbol{\alpha}}}$ is
 
 $$
 \begin{align*}
-  \braket{\hat{Q}}|_\boldsymbol{\alpha} =& \braket{\Phi_\boldsymbol{\alpha}|\hat{Q}|\Phi_\boldsymbol{\alpha}} \\
+  \braket{\hat{Q}}|_{\boldsymbol{\alpha} =& \braket{\Phi_{\boldsymbol{\alpha}}|\hat{Q}}|\Phi_{\boldsymbol{\alpha}}} \\
   =& \sum_{j,k=1}^n \alpha_j^* \alpha_k \braket{\Phi_j|\hat{Q}|\Phi_k}
   =& \sum_{j,k=1}^n r_j r_k e^{-i\gamma_{jk}} \braket{\Phi_j |\hat{Q}|\Phi_k}\; \gamma_jk = \delta_j - \delta_k
 \end{align*}
@@ -6428,10 +6432,85 @@ $$
 
 # Composite systems
 
-The quantum state space of composite system formed of $n\in\N_+$ sub-systems $\mathcal{H}_{A_j}$ for $j\in\set{1,\dots,n}$ is given by the Hilbert tensor product
+Let $n\in\N_+$ and let $\set{\mathcal{H}_{A_j}}_{j=1}^n$ be a finite collection of Hilbert spaces describing quantum systems. There are two fundamentally different mathematical constructions used to describe compoiste quantum systems:
+1. Direct sum for alternative or mutually exclusive subsystems
+2. Tensor products for coexisting subsystems
+
+## Direct sum
+
+If the subsystems do not coexist simultaneously, but appear successively or alternatively, the appropriate state space is the Hilbert space direct sum
 
 $$
-  \bigotimes_{j=1}^n \mathcal{H}_{A_j}
+  \mathcal{H} = \bigplus_{i=1}^n \mathcal{H}_{A_j} = \Set{(\psi_j)_{j=1} | \psi_j \in \mathcal{H}_{A_j}, \sum_{j=1}^n \norm{\psi_j}^2 < \infty}
+$$
+
+For each $j=1,\dots,n$, let $\hat{H}_j$ be a Hamiltonian on $\mathcal{H}_{A_j}$. The Hamiltonian of the composite system is the sum operator
+
+$$
+  \hat{H} = \bigoplus_{i=1}^n \hat{H}_i
+$$
+
+defined by
+
+$$
+  \hat{H}(\psi_1,\dots,\psi_n) = (\hat{H}_1 \psi, \dots, \hat{H}_n \psi_n)
+$$
+
+The matrix notation, $\hat{H}$ is the block-diagonal operator $\hat{H} = \operatorname{diag}(\hat{H}_1,\dots,\hat{H}_n)$. The diagonal form implies that there is no dynamical interaction between the subsystems. In this case, we say that the composite system $\mathcal{H}$ has a selection rule.
+
+The time-evolution operator factorizes accordingly
+
+$$
+  e^{-it\hat{H}} = \bigoplus_{j=1}^n e^{it\hat{H}_j}
+$$
+
+Thus, each subspace $\hat{H}_{A_j}$ is invariant under time evolution, i.e. $e^{-it\hat{H}} \mathcal{H}_{A_j} \subseteq \mathcal{H}_{A_j}$, meaning there are no dynamical transitions between different summands. 
+
+### Superselection rules
+
+If all operators that have a physical meaning in the Hilbert space direct sum $\mathcal{H} = \bigoplus_{i=1}^n \mathcal{H}_{A_j}$ have diagonal form, then there is no meaningful physical relation between the subsystems. In this case there is a superselection rule in $\mathcal{H}$.
+
+Formally, let $\mathcal{A} \subseteq \mathcal{B}(\mathcal{H})$ be the algebra of physically admissible observables. Suppose every operator $\hat{A} \in \mathcal{A}$ can be decomposed as a direct sum
+
+$$
+  \hat{A} = \bigoplus_{j=1}^n \hat{A}_j,\; \hat{A}_j \in \mathcal{B}(\mathcal{H}_{A_j})
+$$
+
+Equivalently, each $\mathcal{H}_{A_j}$ is invariant under the action of all observables in $\mathcal{A}$, and no observable has matrix elements between distinct subsystems
+
+$$
+  \braket{\psi_i | \hat{A} \psi_j} = 0,\; i\neq j
+$$
+
+In this case the decomposition defines a superselection rule and the subspaces $\mathcal{H}_{A_j}$  are called superselection subsectors or coherent subspaces. Physically this mean
+- Coherent superpositions between different subsystems cannot be prepared or detected by any observable in $\mathcal{A}$
+- Relative phases between vectors in different subspaces are physically meaningless
+- Pure states belonging to different subsystems cannot interfere.
+
+### Selection under perturbations
+
+Suppose that the total Hamiltonian of a composite system has the form
+
+$$
+  \hat{H} = \hat{H}^{(0)} + \lambda\hat{V}
+$$
+
+where
+
+$$
+  \hat{H}^{(0)} = \bigoplus_{j=1}^n \hat{H}_j
+$$
+
+is block-diagonal and $\hat{V}$ contains off-diagonal couplings. Then
+- if $\hat{V} = 0$, transitions between different subspaces are strictly forbidden
+- if $\hat{V}$ is small, transition occur only at higher order in the parameter $\lambda$. This case defines a selection rule where transitions between subspaces are suppressed or forbidden at a given order of approximation.
+
+## Tensor product
+
+If the subsystems coexist simultaneously, the appropriate state space is the Hilbert space tensor product
+
+$$
+  \mathcal{H} = \bigotimes_{j=1}^n \mathcal{H}_{A_j}
 $$
 
 States of the composite system are generally represented by density operators $\hat{\rho}$ on $\bigotimes_{j=1}^n \mathcal{H}_{A_j}$, which take the form
@@ -6751,6 +6830,98 @@ $$
   =& \sum_{a \neq \bar{a}} q_a \ket{\tilde{e}_a \otimes \tilde{f}_b} + q_{\bar{a}} \sum_{k=1}^{d_{\bar{a}}} \ket{\tilde{\tilde{e}}_a \otimes \tilde{\tilde{f}}_b}
 \end{align*}
 $$
+
+## Systems of identical particles
+
+Consider a system of $n \in\N_+$ identical particles, each descreibed by the Hilbert space $\mathcal{H}^{(1)}$. The composite system is represented by the $n$-fold Hilbert space tensor product
+
+$$
+  \mathcal{H}^{(n)} = \otimes^n \mathcal{H}^{(1)}
+$$
+
+The unit vector in $\otimes^n \mathcal{H}^{(1)}$
+
+$$
+  \psi = \bigotimes_{j=1}^n \phi_i
+$$
+
+represents the same physical state as the permuted vector
+
+$$
+  \hat{U}(\sigma) \psi = \bigotimes_{j=1}^n \phi_{\sigma(j)}
+$$
+
+for a permutation $\sigma$ of the indices $1,\dots,n$. This means that there is an equivalence relation between state vectors. Two tensor product unit vectors $\psi$ and $\psi'$ in $\otimes^n \mathcal{H}^{(1)}$ are equivalent $\psi\sim\psi'$ if and only if there is a permutation $\sigma$ of the $n$ indices, such that $\psi' = \hat{U}(\sigma)\psi$, with $\hat{U}(\sigma)$ the unitary operator in $\mathcal{H}$ which represents $\sigma$.
+
+The group of all permutations of $n$ objects is denoted $S_n$ and is called the symmetric group in $n$ variables. It is a finite group with $n!$ elements. As such it has a finite number of irreducible representations. An arbitrary representation of $S_n$ is completely reducible, meaning that it can be written as a direct sum (possible infinite) of irreducible ones.
+
+The maps $\bigotimes_{j=1}^n \phi_j \mapsto \bigotimes_{j=1}^n \phi_{\sigma(j)}$, for each permutation $\sigma$ \in $S_n$ defines by linear extension in $\mathcal{H}$ a unitary representation $\set{U(\sigma)}$ of $S_n$. The Hilbert space $\otimes^n \mathcal{H}^{(l)}$ can therefore be written as a finite direct sum of Hilbert subspaces
+
+$$
+  \otimes^n \mathcal{H}^{(l)} = \bigoplus_{k=1}^p \mathcal{H}_{j_k}
+$$
+
+Each $\mathcal{H}_{j_k}$ carries a (possibly infinite) number of equivalent irreducible representations. The irreducible representations in different $\mathcal{H}_{j_k}$ are mutually inequivalent.
+
+Let us consider the case $n = 2$, which is sufficient for our purpose. The elements of the symmetry group $S_2 = \set{\sigma_0, \sigma_1}$ represents the identity transformation $\sigma_0 : \set{1,2} \to \set{1,2}$ and the pair exchange $\sigma_1 : \set{1,2} \to \set{2,1}$.
+
+Consider the two-particle Hilbert space tensor product
+
+$$
+  \mathcal{H}^{(2)} = \mathcal{H}^{(1)} \otimes \mathcal{H}^{(1)}
+$$
+
+Let $\phi_j$ be an orthonormal basis of $\mathcal{H}^{(1)}$. Then the tensor products $\phi_j \otimes \phi_k$ for $j,k = 1,2,\dots$, form an orthonormal basis for $\mathcal{H}^{(2)}$. To make the action of $S_2$ more transparent, we form a new basis consisting of the vectors
+
+$$
+\begin{align*}
+  \psi_{jk}^+ =& \frac{1}{2} (\phi_j \otimes \phi_k + \phi_k \otimes \phi_k),\; j \leq k \\
+  \psi_{jk}^- =& \frac{1}{2} (\phi_j \otimes \phi_j - \phi_k \otimes \phi_j),\; j < k
+\end{align*}
+$$
+
+This result means that the subspaces of $\mathcal{H}^{(2)}$ spanned by the vectors $\psi_{jk}^+$ and $\psi_{jk}^-$ all carry a one dimensional representation of $S_2$. The ones on the spaces of the vectors of the first type are equivalent. We call this the symmetric representation $\hat{U}_s (\cdot)$. The vectors $\psi_{jk}^-$ span the spaces of a second one dimensional representation, clearly inequivalent with $\hat{U}_s (\cdot)$. It is called the antisymmetric representation, denoted $\hat{U}_a (\cdot)$. These are the only irreducible representations of $S_2$. The symmetry groups $S_n$ for $n > 2$ have additional irreducible representations.
+
+The vectors $\psi_{jk}^+$ together span a subspace, which is a direct sum of all the symmetric representations in $\mathcal{H}^{(2)}$, denoted $\mathcal{H}_s^{(2)}$. The vectors $\psi_{jk}^-$ span a second subspace, denoted $\mathcal{H}_a^{(2)}$. The full tensor space $\mathcal{H}^{(2)} = \mathcal{H}^{(1)} \otimes \mathcal{H}^{(1)}$ can be written as a direct sum
+
+$$
+  \mathcal{H}^{(2)} = \mathcal{H}_s^{(2)} \oplus \mathcal{H}_a^{(2)}
+$$
+
+Generally, we can show that for a given Hilbert space $\mathcal{H}$, we can define a symmetric tensor product $\mathcal{H} \otimes_s \mathcal{H}$ and an antisymmetric tensor product $\mathcal{H} \otimes_a \mathcal{H}$. Additionally, there exists linear isomorphisms between, on one side, $\mathcal{H} \otimes_s \mathcal{H}$ and $\mathcal{H} \otimes_a \mathcal{H}$, and on the other side subspaces of $\mathcal{H}\otimes\mathcal{H}$, obtained by projection $P_s$ and $P_a$, which are defined by linear extension of
+
+$$
+\begin{align*}
+  P_s (\phi_1 \otimes \phi_2) =& \frac{1}{2} (\phi_1 \otimes \phi_2 + \phi_2 \otimes \phi_1) \\
+  P_a (\phi_1 \otimes \phi_2) =& \frac{1}{2} (\phi_1 \otimes \phi_2 - \phi_2 \otimes \phi_1)
+\end{align*}
+$$
+
+The ranges of these projections are the subspaces $\mathcal{H}_s^{(2)} = \mathcal{H}^{(1)} \otimes_s \mathcal{H}^{(1)}$ and $\mathcal{H}_a^{(2)} = \mathcal{H}^{(1)} \otimes_a \mathcal{H}^{(1)}$.
+
+The states in $\mathcal{H}_s^{(2)}$ are called bosons, and those in $\mathcal{H}_a^{(2)}$ fermions.
+
+Let $\hat{U}(\cdot)$ be the (reducible) representation of $S_2$ in $\mathcal{H}^{(2)} = \mathcal{H}^{(1)} \otimes \mathcal{H}^{(1)}$. With this result we write the relation $AU(\sigma_1) = U(\sigma_1)A$ as a $2\times 2$ operator-valued matrix relation
+
+$$
+  \begin{bmatrix} A_{ss} & A_{sa} \\ A_{as} & A_{aa} \end{bmatrix} \cdot \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} \cdot \begin{bmatrix} A_{ss} & A_{sa} \\ A_{as} & A_{aa} \end{bmatrix}
+$$
+
+with the immediate consequence $A_{sa} = A_{as}= 0$. This mean that a physical operator cannot connect the boson sector with the fermion sector. Thus the $\mathcal{H}_s^{(1)}$ and $\mathcal{H}_a^{(1)}$ define superselection subsectors.
+
+The case of two particles can be generalized to $n$ particles, in which case the Hilbert space tensor product is $\mathcal{H}^{(n)} = \otimes^n \mathcal{H}^{(1)}$. The symmetric group $S_n$ acts on it by a direct sum of irreducible unitary representations $U_1 (\cdot), \dots, U_{jk} (\cdot)$. In this we have $U_1 (\cdot) = U_s (\cdot)$, the symmetric, and $U_{jk} (\cdot) = U_a (\cdot)$, the antisymmetric representation, both present for every $S_n$, together with the additional representations that appear for all $n > 2$ The $n$-particle space can be written as a direct sum
+
+$$
+  \mathcal{H}^{(n)} = \bigoplus_{k=1}^n \mathcal{H}_{j_k}
+$$
+
+with $\mathcal{H}_{j_1},\dots, \mathcal{H}_{jk}$, $\mathcal{H}_{j_1} = \mathcal{H}_s$ and $\mathcal{H}_{jk} = \mathcal{H}_a$, the ranges of projection operators $P_{j_1},\dots, P_{jk}$, $P_{j_1} = P_s$, $P_{jk} = P_a$. This suggests that other types of states may exist besides boson and fermion states.
+
+From this we can infer that the mixed symmetry representations of $S_n$ have no physical meaning in the context of the theory of identical particles. So we assume that there exist only bosons and fermions, as is confirmed empirically. In the direct sum decomposition of the $n$-particle state $\otimes^n \mathcal{H}^{(1)}$, only the subspaces $\mathcal{H}_s$ and $\mathcal{H}_a$ are physically meaningful. We may denote these as $\mathcal{H}_s = \otimes_s^n \mathcal{H}^{(1)}$ and $\mathcal{H}_a = \otimes_a^n \mathcal{H}^{(1)}$.
+
+Note that in terms of wave functions this means that boson particle systems are described by symmetric and fermion systems by antisymmetric wave functions.
+
+
 
 # Entanglement
 
