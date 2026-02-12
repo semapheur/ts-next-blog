@@ -63,7 +63,11 @@ where $\hat{H}$ is the Hamiltonian of the quantum system.
       \hat{\rho}(t) = \hat{U}(t, t_0) \hat{\rho}(t_0) \hat{U}^\dagger(t, t_0)
     $$
 
-6. **Description of composite systems:** The Hilbert space of a composite system that consists of the subsystems $\mathcal{H}_{A_i}$ for $i\in I\subseteq\N$ is the tensor product $\bigotimes_{i\in I} \mathcal{H}_{A_i}$.
+6. **Description of composite systems:** The Hilbert space of a composite system that consists of the subsystems $\mathcal{H}_{A_i}$ for $i\in I\subseteq\N$ is the tensor product $\bigotimes_{i\in I} \mathcal{H}_{A_i}$. A composite system of $n$ identical particles, each with the same Hilbert space $\mathcal{H}$, has as state space either
+- symmetric tensor power $\mathcal{H}_s^{(n)} := \mathcal{H}^{\otimes_s n}$, representing bosons with integer spin
+- antisymmetric tensor power $\mathcal{H}_a^{(n)} := \mathcal{H}^{\otimes_a n}$, representing fermions with half-integer spin
+
+Linear combinations of boson and fermion states are physically meaningless: there is a superselection rule between boson states and fermion states.
 
 ## Time evolution pictures
 
@@ -6858,7 +6862,7 @@ The symmetric group $S_n$ is finite with $|S_n| = n!$ elements. This implies it 
 The maps $\bigotimes_{j=1}^n \ket{\phi_j} \mapsto \bigotimes_{j=1}^n \ket{\phi_{\sigma(j)}}$, for each permutation $\sigma \in S_n$ defines by linear extension in $\mathcal{H}$ a unitary representation $\set{U(\sigma)}_{\sigma\in S_n}$ of $S_n$. The Hilbert space $\otimes^n \mathcal{H}^{(l)}$ therefore decomposes as a finite direct sum of Hilbert subspaces
 
 $$
-  \otimes^n \mathcal{H}^{(l)} = \bigoplus_{k=1}^p_n \mathcal{H}_{j_k}
+  \otimes^n \mathcal{H}^{(l)} = \bigoplus_{k=1}^{p_n} \mathcal{H}_{j_k}
 $$
 
 where each $\mathcal{H}_{j_k}$ carries a (possibly infinite) number of equivalent irreducible representations of $S_n$. The irreducible representations in different $\mathcal{H}_{j_k}$ are mutually inequivalent. Among all irreducible representations of $S_n$, only two are known to have physical significance:
@@ -6869,7 +6873,7 @@ $$
 
 2. The alternating representation: $\hat{U}(\sigma) = \operatorname{sgn}(\sigma) \hat{I}$ corresponding to the antisymmetric subsspace
 $$
-  \mathcal{H}_a^{(n)} = \otimes_a^n \mathcal{H}^{(1)} = \set{\ket{\psi}\in\mathcal{H}^{(n)} | \hat{U}(\sigma)\ket{\psi} = \operatorname{sgn}(\sigma)\ket{\psi} \forall\sigma\in S_n}
+  \mathcal{H}_a^{(n)} := \otimes_a^n \mathcal{H}^{(1)} = \set{\ket{\psi}\in\mathcal{H}^{(n)} | \hat{U}(\sigma)\ket{\psi} = \operatorname{sgn}(\sigma)\ket{\psi} \forall\sigma\in S_n}
 $$
 
 Formally, the symmetric and antisymmetric subspaces are obtained as orthogonal projections, called the symmetrizer and antisymmetrizer, respectively
@@ -6877,7 +6881,7 @@ Formally, the symmetric and antisymmetric subspaces are obtained as orthogonal p
 $$
 \begin{align*}
   \hat{P}_s =& \frac{1}{n!} \sum_{\sigma\in S_n} \hat{U}(\sigma) \\
-  \hat{P}_a =& \frac{1}{n!} \sum_{\sigma\in S_n} \operatorname{sgn}\hat{U}(\sigma)
+  \hat{P}_a =& \frac{1}{n!} \sum_{\sigma\in S_n} \operatorname{sgn}\hat{U}(\sigma) \tag{\label{equation-316}}
 \end{align*}
 $$
 
@@ -6897,7 +6901,46 @@ $$
   \mathcal{H}^{(n)} = \mathcal{H}_s^{(n)} \oplus \mathcal{H}_a^{(n)}
 $$
 
-meaning that $\mathcal{H}_s^{(n)}$ and $\mathcal{H}_a^{(n)}$ form superselection sectors
+meaning that $\mathcal{H}_s^{(n)}$ and $\mathcal{H}_a^{(n)}$ form superselection sectors.
+
+### Pauli's exclusion principle
+
+Consider a system of $n$ identical fermionic particles described by the Hilbert space in the form of the antisymmetric tensor power 
+
+$$
+  \mathcal{H}_a^{(n)} = \otimes_a^n \mathcal{H}^{(1)} = \operatorname{ran}(\hat{P}_a)
+$$
+
+where $\mathcal{H}^{(1)}$ is the one-particle Hilbert space and $\hat{P}_a$ is the antisymmetrization projection $\eqref{equation-316}$ acting on $\otimes_a^n \mathcal{H}^{(1)}$. For one-particle state vectors $\ket{\psi_1},\dots,\ket{\psi_n} \in\mathcal{H}^{(1)}$, define the antisymmetrized tensor
+
+$$
+\begin{align*}
+  \bigwedge_{j=1}^n \ket{\psi_j} :=& \hat{P}_a \left(\bigotimes_{j=1}^n \ket{\psi_j} \right) \\
+  =& \frac{1}{n!} \sum_{\sigma\in S_n} \operatorname{sgn}(\sigma) \bigotimes_{j=1} \ket{\psi_{\sigma(j)}}
+\end{align*}
+$$
+
+Let $\tau = (ij) \in S_n$ denote the transposition exchanging $i$ and $j$. If any two one-particle states coincide, i.e. $\ket{\psi_i} = \ket{\psi_j}$ for some $i\neq j$ then the antisymmetry condition implies
+
+$$
+  \hat{U}(\tau)\left(\bigwedge_{j=1} \ket{\psi_j} \right) = - \left(\bigwedge_{j=1}^n \ket{\psi_j} \right)
+$$
+
+However, since $\ket{\psi_i} = \ket{\psi_j}$, the tensor $\ket{\psi_1 \otimes\cdots\otimes \psi_n}$ is invariant the interchange $i \leftrightarrow j$. Consequently
+
+$$
+  \hat{U}(\tau)\left(\bigwedge_{j=1}^n \ket{\psi_j} \right) = \bigwedge_{j=1}^n \ket{\psi_j}
+$$
+
+implying
+
+$$
+  \bigwedge_{j=1}^n \ket{\psi_n} = 0
+$$
+
+whenever $\ket{\psi_i} = \ket{\psi_j}$ for some $i \neq j$, or, equivalently, if $\set{\ket{\psi_j}}_{j=1}^n$ is linearly dependent.
+
+Physical pure states correspond to nonzero rays in $\mathcal{H}_a^{(n)}$. Since the antisymmetrized tensor vanishes whenever two one-particle states coincide, there exists no nonzero fermionic $n$-particle state in which two particles occupy the same one-particle state. This is known as Pauli's exclusion principle.
 
 ### Two-particle systems
 
@@ -6915,8 +6958,8 @@ Let $\set{\ket{\phi_j}}_{j\in I}$ be an orthonormal basis of $\mathcal{H}^{(1)}$
 
 $$
 \begin{align*}
-  \ket{\psi_{jk}^+} =& \frac{1}{2 + \delta_{jk}} (\ket{\phi_j \otimes \phi_k} + \ket{\phi_k \otimes \phi_j}),\; j \leq k \\
-  \ket{\psi_{jk}^-} =& \frac{1}{2} (\ket{\phi_j \otimes \phi_k} - \ket{\phi_k \otimes \phi_j}),\; j < k
+  \ket{\psi_{jk}^+} =& \frac{1}{\sqrt{2 + \delta_{jk}}} (\ket{\phi_j \otimes \phi_k} + \ket{\phi_k \otimes \phi_j}),\; j \leq k \\
+  \ket{\psi_{jk}^-} =& \frac{1}{\sqrt{2}} (\ket{\phi_j \otimes \phi_k} - \ket{\phi_k \otimes \phi_j}),\; j < k
 \end{align*}
 $$
 
@@ -6939,12 +6982,16 @@ $$
 \begin{align*}
   \mathcal{H}_s^{(2)} =& \operatorname{span}\set{\psi_{jk}^+}_{j\leq k} \\
   \mathcal{H}_a^{(2)} =& \operatorname{span}\set{\psi_{jk}^-}_{j > k}
+\end{align*}
 $$ 
 
 the full tensor space $\mathcal{H}^{(2)} = \mathcal{H}^{(1)} \otimes \mathcal{H}^{(1)}$ can be decomposed as the direct sum
 
 $$
+\begin{equation*}
   \mathcal{H}^{(2)} = \mathcal{H}_s^{(2)} \oplus \mathcal{H}_a^{(2)}
+\tag{\label{equation-315}}
+\end{equation*}
 $$
 
 In terms of the symmetrizer and antisymmetrizer
@@ -6968,30 +7015,29 @@ $$
 The ranges of these projections are the subspaces 
 
 $$
-  \mathcal{H}_s^{(2)} = \operatorname{ran}(\hat{P}_s), \quad/ \mathcal{H}_a = \operatorname{ran}(\hat{P}_a)
+  \mathcal{H}_s^{(2)} = \operatorname{ran}(\hat{P}_s), \quad \mathcal{H}_a = \operatorname{ran}(\hat{P}_a)
 $$
 
 The states in $\mathcal{H}_s^{(2)}$ are called bosons, and those in $\mathcal{H}_a^{(2)}$ fermions.
 
-Let $\hat{U}(\cdot)$ be the (reducible) representation of $S_2$ in $\mathcal{H}^{(2)} = \mathcal{H}^{(1)} \otimes \mathcal{H}^{(1)}$. With this result we write the relation $AU(\sigma_1) = U(\sigma_1)A$ as a $2\times 2$ operator-valued matrix relation
+Let $\hat{A} \in \mathcal{B}(\mathcal{H}^{(2)}$ be a bounded operator on $\mathcal{H}^{(2)}$ satisfying the permutation invariance $\hat{A}\hat{U}(\sigma_1) = \hat{U}(\sigma_1) \hat{A}$. With respect to the decomposition $\eqref{equation-315}$, write
 
 $$
-  \begin{bmatrix} A_{ss} & A_{sa} \\ A_{as} & A_{aa} \end{bmatrix} \cdot \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} \cdot \begin{bmatrix} A_{ss} & A_{sa} \\ A_{as} & A_{aa} \end{bmatrix}
+\begin{align*}
+  \hat{A} =& \begin{bmatrix} \hat{A}_{ss} & \hat{A}_{sa} \\ \hat{A}_{as} & \hat{A}_{aa}\end{bmatrix} \\
+  \hat{U}(\tau) =& \begin{bmatrix} \hat{I} & 0 \\ 0 & -\hat{I} \end{bmatrix}
+\end{align*}
 $$
 
-with the immediate consequence $A_{sa} = A_{as}= 0$. This mean that a physical operator cannot connect the boson sector with the fermion sector. Thus the $\mathcal{H}_s^{(1)}$ and $\mathcal{H}_a^{(1)}$ define superselection subsectors.
+The commutation relation implies $A_{sa} = A_{as}= 0$. This means that a physical operator cannot connect the boson sector with the fermion sector. Thus the $\mathcal{H}_s^{(1)}$ and $\mathcal{H}_a^{(1)}$ define superselection subsectors.
 
-The case of two particles can be generalized to $n$ particles, in which case the Hilbert space tensor product is $\mathcal{H}^{(n)} = \otimes^n \mathcal{H}^{(1)}$. The symmetric group $S_n$ acts on it by a direct sum of irreducible unitary representations $U_1 (\cdot), \dots, U_{jk} (\cdot)$. In this we have $U_1 (\cdot) = U_s (\cdot)$, the symmetric, and $U_{jk} (\cdot) = U_a (\cdot)$, the antisymmetric representation, both present for every $S_n$, together with the additional representations that appear for all $n > 2$ The $n$-particle space can be written as a direct sum
+### Wavefunction formulation
 
-$$
-  \mathcal{H}^{(n)} = \bigoplus_{k=1}^n \mathcal{H}_{j_k}
-$$
+If $\mathcal{H} = L^2 (\R^3)$ then the tensor product Hilbert space is $\mathcal{H}^{(n)} = L^2 (\R^{3n})$. The symmetry conditions become
+- bosons: $\psi(x_{\sigma(1)}, \dots, x_{\sigma(n)}) = \psi(x_1, \dots, x_n)$
+- fermions: $\psi(x_{\sigma(1)}, \dots, x_{\sigma(n)}) = \operatorname{sgn}(\sigma)\psi(x_1, \dots, x_n)$
 
-with $\mathcal{H}_{j_1},\dots, \mathcal{H}_{jk}$, $\mathcal{H}_{j_1} = \mathcal{H}_s$ and $\mathcal{H}_{jk} = \mathcal{H}_a$, the ranges of projection operators $P_{j_1},\dots, P_{jk}$, $P_{j_1} = P_s$, $P_{jk} = P_a$. This suggests that other types of states may exist besides boson and fermion states.
-
-From this we can infer that the mixed symmetry representations of $S_n$ have no physical meaning in the context of the theory of identical particles. So we assume that there exist only bosons and fermions, as is confirmed empirically. In the direct sum decomposition of the $n$-particle state $\otimes^n \mathcal{H}^{(1)}$, only the subspaces $\mathcal{H}_s$ and $\mathcal{H}_a$ are physically meaningful. We may denote these as $\mathcal{H}_s = \otimes_s^n \mathcal{H}^{(1)}$ and $\mathcal{H}_a = \otimes_a^n \mathcal{H}^{(1)}$.
-
-Note that in terms of wave functions this means that boson particle systems are described by symmetric and fermion systems by antisymmetric wave functions.
+Thus bosonic wavefunctions are symmetric, and fermionic wave function are antisymmetric under particle exchange.
 
 # Entanglement
 
