@@ -1488,3 +1488,103 @@ $$
 $$
 
 which becomes exact if non-harmonic terms can be neglected and $mathbf{K}$ is exactly given by $A\mathbf{S}$. Notice that $\eqref{equation-24}$ is equivalent to change $\Delta\to\Delta_A$ and $T\to T\Delta_{2A}/\Delta_A$ in $\eqref{equation-25}$. In practice, given an approximation of the Hessian matrix $\mathbf{S}$, we can empirically select the value of $A$ to minimize the time step error and work with a large value of $\Delta$. Although the error for a generic potential $V(\mathbf{R})$ remains linear in $\Delta$, it is usually quite small as its depends only on the non-harmonic terms of an accurate approximation of the Hessian.
+
+# Variational correlated lattice models
+
+## Finite-dimensional matrix formulation
+
+Consider i many-body fermionic system represented by the Hilbert space $\mathcal{H}$, which in practice is infinite-dimensional. This system can be approximated by restricting it to a finite-dimensional subspace $\mathcal{H}' \subset \mathcal{H}$. Assuming the truncated Hilbert space has dimension $\dim(\mathcal{H}') = N$ and is spanned by an orthonormal basis $\set{\ket{x}}_{x=1}^N$, the Hamiltonian restricted to $\mathcal{H}'$ is represented by an $N\times N$ matrix with elements
+
+$$
+  \mathbf{H}_{x, x'} := \braket{x|\hat{H}|x}
+$$
+
+The approximate spectrum is obtained by diagonlizing this finite matrix. By the variational principle, the lowest eigenvalue of this restriction provides an upper bound to the exact ground-state energy.
+
+### Two-site model the $\mathrm{H}_2$ molecule
+
+In the simplest approximation to the $\text{H}_2$ molecule, we can take only the four states with $\hat{S}_z = 0$ that have been used in the Heitler-London and Hartree-Fock wave functions
+
+$$
+\begin{align*}
+  \ket{1} =& \hat{c}_{1,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0} \\
+  \ket{2} =& \hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0} \\
+  \ket{3} =& \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0} \\
+  \ket{4} =& \hat{c}_{2,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0} \\
+\end{align*}
+$$
+
+within this truncated Hilbert space, the Hamiltonian reads
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{H} =& -t\sum_{\sigma} (\hat{c}_{1,\sigma}^\dagger \hat{c}_{2,\sigma} + \hat{c}_{2,\sigma}^\dagger \hat{c}_{1,\sigma}) \\
+  &+ U \sum_i \hat{n}_{i,\uparrow} \hat{n}_{i, \downarrow} + V\sum_{\sigma,\sigma'} \hat{n}_{1,\sigma} \hat{n}_{2,\sigma'}
+\end{split}
+\tag{\label{equation-50}}
+\end{equation*}
+$$
+
+where $\hat{n}_{i,\sigma} = \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma}$ is the density per spin $\sigma$ on the site $i=1,2$. Here $t$, $U$ and $V$ are parameters that depen on the overlap of orbitals $\phi(\mathbf{r} - \mathbf{R}_i)$ centered around the two atoms
+
+$$
+\begin{align*}
+  -t =& \int \phi^* (\mathbf{r} - \mathbf{R}_1) \left(-\frac{\hbar^2}{2m} \nabla^2 - \sum_{i=1,2} \frac{e^2}{|\mathbf{r} - \mathbf{R}_i|} \right) \phi(\mathbf{r} - \mathbf{R}_2) \;\d\mathbf{r} \\
+  U =& \iint |\phi(\mathbf{r} - \mathbf{R}_i)|^2 \frac{e^2}{|\mathbf{r} - \mathbf{r}'|} | |\phi(\mathbf{r}' - \mathbf{R}_i)|^2 \;\d\mathbf{r}\d\mathbf{r}' \\
+  V =& \iint |\phi(\mathbf{r} - \mathbf{R}_1)|^2 \frac{e^2}{|\mathbf{r} - \mathbf{r}'|} | |\phi(\mathbf{r}' - \mathbf{R}_2)|^2 \;\d\mathbf{r}\d\mathbf{r}'
+\end{align*}
+$$
+
+In principle, the Hamiltionian $\eqref{equation-50}$ also contains the Coulomb interactio between the protons, however, this is a constant term once their positions are fixed in $\mathbf{R}_1$ and $\mathbf{R}_2$.
+
+Thus, within the truncated bases $\set{\ket{1},\ket{2},\ket{3},\ket{4}}$, the solution of the problem corresponds to the diagonalization of the $4\times 4$ matrix
+
+$$
+  \mathbf{H} = \begin{bmatrix} 
+    U & -t & -t & 0 \\
+    -t & V & 0 & -t \\
+    0 & -t & -t & U
+  \end{bmatrix}
+$$
+
+The Hartee-Fock wave function is the exact ground state for $U = V = 0$, given by
+
+$$
+  \ket{\Psi_\text{HF}} = \frac{1}{2} (\hat{c}_{1,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger + \hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger)\ket{0}
+$$
+
+Here, the ionic configurations $\hat{c}_{1,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0}$ and $\hat{c}_{2,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0}$ appear with the same weight of the non-ionic configurations $\hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0}$ and $\hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0}$. Thus, when the two Hydrogen atoms are pulled apart, this variational wave function does not reproduce the atomic limit. By contrast, this state becomes exact whenever the electron-electron repulsion vanishes.
+
+The Heitler-London wave function is the ground state for $t = 0$ and $U > V$, given by
+
+$$
+  \ket{\Psi_\text{HL}} = \frac{1}{\sqrt{2}} (\hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger)\ket{0}
+$$
+
+This wave function becomes very accurate in the limit $\mathbf{R}_1 - \mathbf{R}_2| \to \infty$, and becomes exact in the atomic limit, where the distance between the two atoms is infinite.
+
+In the generic case with finite $t$, $U$ and $V$, the exact ground state is a superposition of these two wavefunctions and gives the best variational wave function in this truncated Hilbert space.
+
+The quality of the approximations improves by enlarging the Hilbert space by including more orbitals in the truncated basis. This comes at the cost of increasing complexity. At present, there are no exact methods that allow the solution of a general many-body Hamiltonian with a computational effort that scales polynomially with the system size. The complexity of the many-body problem is generally exponential.
+
+In the notation above, $\ket{0}$ is the vacuum state and $\hat{c}_{i,\sigma}^\dagger$ is the creation operator for an electron with spin $\sigma\in \set{\uparrow, \downarrow}$ in a given orbital $\phi(\mathbf{r} - \mathbf{R}_i)$ centered around the atom $i = 1, 2$ at position $\mathbf{R}_i$
+
+$$
+  \hat{c}_{i,\sigma}^\dagger = \int \phi(\mathbf{r} - \mathbf{R}_i) \psi_\sigma^\dagger (\mathbf{r}) \;\d\mathbf{r}
+$$
+
+where $\psi_\sigma^\dagger$ is the fermionic field operator. Assuming orthogonal orbitals
+
+$$
+  \int \phi^* (\mathbf{r} - \mathbf{R}_i) \phi(\mathbf{r} - \mathbf{R}_j) \;\d\mathbf{r} = \delta_{i,j}
+$$
+
+the creation and annihilation operators satisfy the anticommutation relations
+
+$$
+\begin{align*}
+  [\hat{c}_{i,\sigma}, \hat{c}_{j,\tau}^\dagger]_+ =& \delta_{i,j} \delta_{\sigma, \tau} \\
+  [\hat{c}_{i,\sigma}^\dagger, \hat{c}_{j,\tau}^\dagger] =& 0
+\end{align*}
+$$

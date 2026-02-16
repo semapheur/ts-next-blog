@@ -392,8 +392,12 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e);
   });
 }
-//console.log(findLatexIssues("./content/notes/physics/quantum_mechanics.mdx"))
-console.log(findLatexIssues("./content/notes/math/statistics/statistics.mdx"));
+console.log(
+  findLatexIssues(
+    "./content/notes/physics/quantum_mechanics/hilbert_space_formulation.mdx",
+  ),
+);
+
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
 //  const issues = await checkNotesForIssues()
