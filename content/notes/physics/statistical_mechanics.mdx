@@ -1646,13 +1646,13 @@ for some constant $c > 0$. Thus, the dimension of the Hilbert space grows expone
 
 Consequently, exact diagonalization of a generic interacting many-body Hamiltonian requires computational resources that scale exponentially in $M$. No general classical algorithm is known that solves arbitrary interacting fermionic Hamiltonians with computational effort polynomial in system size. This exponential growth constitutes the fundamental computational bottleneck of the quantum many-body problem.
 
-## Effective lattice models
+## Hubbard model
 
 The Hubbard model describes interacting halfspin fermions on a lattice, where the Coulomb interaction is approximated by a purely on-site repulsion. On a $d$-dimensional lattice, the Hamiltionian of this model reads
 
 $$
 \begin{equation*}
-  \hat{H} = -t \sum_{\braket{i,j}, \sigma} \hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \text{h.c.} + U \sum_i \hat{n}_{i, \uparrow} \hat{n}_{i, \downarrow}
+  \hat{H} = -t \sum_{\braket{i,j}, \sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma}) + U \sum_i \hat{n}_{i, \uparrow} \hat{n}_{i, \downarrow}
 \tag{\label{equation-52}}
 \end{equation*}
 $$
@@ -1713,9 +1713,9 @@ $$
 
 where $\hat{N}_e = \hat{N}_\uparrow + \hat{N}_\downarrow$ is the total number of electrons.
 
-- **Non-interacting limit ($U = 0$)**
+### Non-interacting limit ($U = 0$)
 
-The first term of $\eqref{equation-52}$ proportional to $t$, describes the electron hopping, which favors delocalized states. When $U = 0$, the Hamiltonian becomes quadratic
+When $U = 0$, the Hamiltonian $\eqref{equation-52}$ becomes quadratic
 
 $$
   \hat{H}_t = -t \sum_{\braket{i,j},\sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma})
@@ -1748,32 +1748,110 @@ $$
   \ket{\Phi_t} = \prod_{k,\sigma} (\hat{c}_{k,\sigma}^\dagger)^{\eta_{k,\sigma}} \ket{0}
 $$
 
-where $\eta_{k,\sigma} = 1$ ($\eta_{k,\sigma} = 0$) indicates that the single-particle state with momentum $k$ and spin $\sigma$ is occupied (empty). This states has energy
+where $\eta_{k,\sigma} \in \set{0,1}$ indicates that the single-particle state with momentum $k$ and spin $\sigma$ is occupied ($\eta_{k,\sigma} = 1$) or empty ($\eta_{k,\sigma} = 0$). This states has energy
 
 $$
   E = \sum_{k,\sigma} \eta_{k,\sigma} \epsilon_k
 $$
 
-For $N_\uparrow = N_\downarrow = N_e /2$ the ground state of $\eqref{equation-}$ is obtained by filling the $N_e /2$ lowest energy levels with both up and down electrons, e.g. $\eta_{k,\sigma} = 1$ for all the momenta such that $\epsilon_k \leq \epsilon_F$ (where $F$ denotes the Fermi energy) and $\eta_{k,\sigma} = 0$ for all the momenta such that $\epsilon_k > \epsilon_F$. On a finite lattice, the ground state is unique if there is a (finite-size) gap between the highest energy occupied levels and the lowest energy unoccupied one. In the thermodynamic limit, the gap goes to zero and, on the hyper-cubic lattice, this state describes a metal.
+For spin-balanced filling $N_\uparrow = N_\downarrow = N_e /2$ the ground state of $\eqref{equation-}$ is obtained by filling the $N_e /2$ lowest energy levels with both up and down electrons such that
 
-- **Atomic limit ($t = 0$)**
+$$
+  \eta_{k,\sigma} = \begin{cases}
+    1,\quad& \epsilon_k \leq \epsilon_F \\
+    0,\quad& \epsilon_k > \epsilon_F
+  \end{cases}
+$$
 
-By contrast, whenever the hopping term vanishes, i.e. $U/t = \infty$, the Hubbard Hamiltonian is already diagonal in real space
+where $F$ denotes the Fermi energy. On a finite lattice, the ground state is unique the highest occupied and lowest unoccupied energy levels are separated by a nonzero gap. In the thermodynamic limit $L\to\infty$, the single-particle level spacing vanishes ant the hypercubic lattice at generic filling describes a metal.
+
+### Atomic limit ($t = 0$)
+
+When the hopping term vanishes, i.e. $t = 0$, the Hamiltonian $\eqref{equation-52}$ reduces to a purely local interaction term
 
 $$
   \hat{H}_U = U \sum_i \hat{n}_{i,\uparrow} \hat{n}_{i,\downarrow}
 $$
 
-In this case, any state constructed from putting electrons on sites of the lattice is an eigenstate of $\hat{H}_u$
+This operator is diagonal in the occupation-number basis
 
 $$
   \ket{\Phi_U} = \prod_{i,\sigma} (\hat{c}_{i,\sigma}^\dagger)^{\xi_{i,\sigma}}\ket{0}
 $$
 
-where $\xi_{i,\sigma} = 1$ ($\xi_{i,\sigma} = 0$) indicates that the site $i$ is (not) occupied by an electron with spin $\sigma$. Its energy is given by
+where $\xi_{i,\sigma} \in \set{0, 1}$ indicates that the site $i$ is occupied ($\xi_{i,\sigma} = 1$) by an electron with spin $\sigma$. Its energy is given by
 
 $$
   E = U \sum_i \xi_{i,\uparrow} \xi_{i,\downarrow} = UN_d
 $$
 
-where $N_d$ is the number of doubly occupied sites. The ground state is highly degenerate, with $E = 0$ for $N_e \leq L$ (corresponding to all states without doubly occupied sites) and $E = U(N_e - L)$ for $L < N_e \leq 2L$ (corresponding to all states with $N_e - L$ doubly occupied sites). In particular, for $N_e = L$ (half filling) the ground state has exactly one electron per site and degeneracy equal to $2^L$, corresponding to all possible configurations with up or down spin on each site. This is an insulator that is stabilized by the strong electron-electron repulsion, which is called Mott insulator.
+where $N_d$ is the number of doubly occupied sites. The ground state is highly degenerate, but the degeneracy depends on the electron configuration:
+- if $N_e \leq L$, the minimal energy is $E = 0$. This corresponds to all states without double occupancy 
+- if $L < N_e \leq 2L$, the minimal energy is $E = U(N_e - L)$. This corresponds to all states with $N_e - L$ doubly occupied sites
+- at half filling for $N_e = L$, the ground state has exactly one electron per site and degeneracy equals to $2^L$, corresponding to all possible configurations independent of spin direction. Although the non-interacting system at half filling would generally be metallic, the atomic-limit system is insulating. This behaviour follows from the finite energy cost $U$ required to create charge excitations (double occupancy). This interaction-driven insulating phase is called a Mott insulator.
+
+### Non-trivial cases
+
+Apart from the non-interacting limint $U = 0$ and the atomic limit $t = 0$, the Hubbard model admits very few exact solutions on large lattices in the thermodynamic limit $L \to\infty$ (where exact diagonalizations cannot be performed). 
+
+#### One spatial dimension
+
+For a one-dimensional lattice with nearest-neighbor hopping, the Hubbard model is exactly solvable via the Bethe Ansatz (Lieb–Wu solution). The solution provides exact results for the energy and other thermodynamic quantities, although correlation functions are difficult to compute. In this case, the ground state is a Mott insulator at half filling $N_e = L$ and for any repulsive interaction $U > 0$, while it is metallic for $N_e \neq L$. 
+
+#### Nagaoka ferromagnetism
+
+The Hubbard model has an exact solution in any dimension $d$ for $U/|t| = \infty$ and $N_e = L - 1$, in which case there is a single hole away from half filling. Under suitable connectivity conditions on the lattice, the ground state is a fully spin-polarized ferromagnet. This is known as Nagaoka's theorem. More generally, it is possible to show that the ground state is fully spin-polarized on an arbitrary lattice whenever $t < 0$, $U/|t| = \infty$ and $N_e = L - 1$. 
+
+Outside these special cases, the exact ground state properties of the Hubbard model with generic filling factor $n = N_e / L$ and interaction factor $U/t$ are not known. 
+
+#### Numerical exactness at half filling
+
+On bipartite lattice (e.g. the square lattice) at half filling, auxiliary-field quantum Monte Carlo methods can be implemented without a fermionic sign problem. This allows numerically exact simulations for arbitrary interaction factor $U/t$, providing nonperturbative access to ground-state and thermodynamic properties.
+
+#### Mott transition
+
+From a general perspective, it is natural to expect that for an arbitrary $d$-dimensional lattice at half filling $(n = 1)$, increasing $U/t$ drives a metal-insulator transition at some critical value $U = U_c > 0$. Such a transition is a genuine Mott transition, driven purely by electron-electron interactions and not by a symmetry-breaking mechanism. In other words, electrons localize just because of the strong correlation. 
+
+For the exactly solvable model in one dimension, this transition occurs at $U_c = 0$. In higher dimensions, however, the metal-insulator transition often coincides with the spontaneous symmetry breaking, most notably the emergence of long-range antiferromagnetic order. The insulating state is then typically both Mott insulating and magnetically ordered.
+
+#### Strong-coupling expansion ($U/t \gg 1$)
+
+The existence of a super-exchange coupling, which favors antiferromagnetic order for large values of $U/t$, can be seen by performing a strong coupling expansion with $U/t \gg 1$. For $U \gg t$ at half filling $n = 1$, we can derive an effective low-energy Hamiltonian that describes the spin degrees of freedom by projecting onto the subspace without doubly occupied sites. 
+
+In the atomic limit $U/t = \infty$ at half, the ground-state manifold $\mathcal{H}'$ consists of all configurations with exactly one electron per site. Its degeneracy is $\dim(\mathcal{H}) = 2^L$ corresponding to arbitrary spin orientations.
+
+For large but finite $U/t$, hopping processes act as a pertubation, lifting the degeneracy of the atomic limit. This creates an antiferromagnetic super-exchange coupling $J = 4t^2 /U$.
+
+By second-order perturbation theory, virtual processes of order $t^2 /U$ allow two neighbouring electrons with opposite spins to virtually create a doubly occupied site and then return to the singly occupied manifold. This lowers the energy by an amount of order $t/2^2$. Neighbouring electron pairs with parallel spins cannot benefit from such virtual hopping due to the Pauli exclusion principle.
+
+The effective Hamiltonian in the singly occupied subspace is therefore to second order in $t/U$ is given by the antiferromagnetic Heisenberg model
+
+$$
+  \hat{H} = J \sum_{\braket{i,j}} \unitvec{S}_i \cdot \unitvec{S}_j
+$$
+
+The local spin-$1/2$ operator $\unitvec{S}_j = (\hat{S}_j^x, \hat{S}_j^y, \hat{S}_j^z)$ is given by
+
+$$
+  \unitvec{S}_j = \frac{1}{2} \sum_{\alpha, \beta} \hat{c}_{j,\alpha}^\dagger \boldsymbol{\sigma}_{\alpha\beta} \hat{c}_{j,\beta}
+$$
+
+where $\boldsymbol{\sigma}$ are the Pauli matrices. Explicitly,
+
+$$
+\begin{align*}
+  S_j^x =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\downarrow} + \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\uparrow}) \\
+  S_j^y =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\downarrow} - \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\uparrow}) \\
+  S_j^z =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\uparrow} - \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\downarrow}) \\
+\end{align*}
+$$
+
+The Heisenberg model is defined in the Hilbert space where each site is singly occupied. Again, the exact solution of the Heisenberg model can be obtained in one spatial dimension, by the Bethe Ansatz. Here, the ground state is not magnetically ordered and the excitation spectrum is gapless (implying power-law spin-spin correlations). The absence of a true magnetic order in the ground-state of one-dimensional systems is due to an extension of the Mermin-Wagner theorem. In more than one spatial dimension, for bipartite lattices (i.e., where the sites can be partitioned in two sub-lattices and the super-exchange term only couples sites on different sub-lattices) there are Monte Carlo methods that provide us with numerically exact results. These stochastic approaches have been crucial to definitively show that the ground state of the Heisenberg model on the two-dimensional square lattice has long-range magnetic (N´eel) order. The Heisenberg model can be generalized to have an arbitrary value of the spin S (also in this case, for bipartite lattices, Monte Carlo approaches allow us to get numerically exact results).
+
+Mobile holes can be injected in the Heisenberg model, leading to the $t$-$J$ model
+
+$$
+  \hat{H} = -t \sum_{\braket{i,j}, \sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma}) + J \sum_{\braket{i,j}} \left(\unitvec{S}_i \cdot \unitvec{S}_j - \frac{1}{4} \hat{n}_i \hat{n}_j \right)
+$$
+
+where all the operators act on the restricted Hilbert space without doubly occupied sites. The $t$-$J$ model captures the strong-coupling limit of the Hubbard model for $n < 1$ and usually considered to give the minimal description of Cuprate superconductors. Moreover, the $t$-$J$ model can also be obtained from the strong-coupling expansion of a three-band Hubbard model, which includes both Copper and Oxygen atoms. There are no exact solutions of the $t$-$J$ model for generic valus of the ratio $J/t$ and electron doping $n$, both in one and two spatial dimensions, except in one dimension for the supersymmetric point $J/t = 2$.
