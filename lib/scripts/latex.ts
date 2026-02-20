@@ -393,9 +393,7 @@ function relabelLatexEquations(mdxFile: string) {
   });
 }
 console.log(
-  findLatexIssues(
-    "./content/notes/physics/quantum_mechanics/hilbert_space_formulation.mdx",
-  ),
+  findLatexIssues("./content/notes/physics/statistical_mechanics.mdx"),
 );
 
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
