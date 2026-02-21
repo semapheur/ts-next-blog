@@ -1848,9 +1848,13 @@ $$
 \end{align*}
 $$
 
-The Heisenberg model is defined in the Hilbert space where each site is singly occupied. Again, the exact solution of the Heisenberg model can be obtained in one spatial dimension, by the Bethe Ansatz. Here, the ground state is not magnetically ordered and the excitation spectrum is gapless (implying power-law spin-spin correlations). The absence of a true magnetic order in the ground-state of one-dimensional systems is due to an extension of the Mermin-Wagner theorem. In more than one spatial dimension, for bipartite lattices (i.e., where the sites can be partitioned in two sub-lattices and the super-exchange term only couples sites on different sub-lattices) there are Monte Carlo methods that provide us with numerically exact results. These stochastic approaches have been crucial to definitively show that the ground state of the Heisenberg model on the two-dimensional square lattice has long-range magnetic (N´eel) order. The Heisenberg model can be generalized to have an arbitrary value of the spin S (also in this case, for bipartite lattices, Monte Carlo approaches allow us to get numerically exact results).
+The Heisenberg model is defined in the Hilbert space where each site is singly occupied. Note that the Heisenberg model also generalizes to arbitrary spin $\unitvec{S}$.
 
-Mobile holes can be injected in the Heisenberg model, leading to the $t$-$J$ model
+An exact solution of the Heisenberg model can be obtained in one spatial dimension, by the Bethe Ansatz. In this solution, the ground state is not magnetically ordered and the excitation spectrum is gapless (implying power-law spin-spin correlations). The absence of a true magnetic order in the ground-state of one-dimensional systems is due to an extension of the Mermin-Wagner theorem.
+
+In more than one spatial dimension, for bipartite lattices (i.e., where the sites can be partitioned in two sub-lattices and the super-exchange term only couples sites on different sub-lattices) there are Monte Carlo methods that provide us with numerically exact results. These stochastic approaches have been crucial to definitively show that the ground state of the Heisenberg model on the two-dimensional square lattice has long-range magnetic (N´eel) order. 
+
+Doping the Mott insulator in the Heisenberg model leads to the $t$-$J$ model
 
 $$
   \hat{H} = -t \sum_{\braket{i,j}, \sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma}) + J \sum_{\braket{i,j}} \left(\unitvec{S}_i \cdot \unitvec{S}_j - \frac{1}{4} \hat{n}_i \hat{n}_j \right)
@@ -1915,7 +1919,10 @@ $$
 The normalization condition reads as
 
 $$
+\begin{equation*}
   \braket{\Psi'|\Psi'} = \sum_i |a_i|^2 = 1
+\tag{\label{equation-57}}
+\end{equation*}
 $$
 
 Using the spectral resolution of $\hat{H}$, we obtain
@@ -2001,3 +2008,130 @@ which shows that the accuracy in correlation functions is more problematic than 
 ### Bardeen-Cooper-Schrieffer wave function
 
 ### Resonating-valence bond wave function
+
+# Variational Monte Carlo
+
+Let $\mathcal{H}$ be a discrete Hilbert space with orthonormal basis $\set{\ket{x}}_{x\in\Omega}$, where $\Omega$ denotes the set of configurations. This basis satisfies the resolution of identity
+
+$$
+\begin{equation*}
+  \sum_{x\in\Omega} \ket{x}\bra{x} = \hat{I}
+\tag{\label{equation-59}}
+\end{equation*}
+$$
+
+where $\hat{I}$ is the identity operator. For any state $\ket{\Psi} \in\mathcal{H}$, we define its coefficients in this basis by the wave function
+
+$$
+  \Psi(x) := \braket{x|\Psi}
+$$
+
+By completeness of this basis, $\ket{\Psi}$ admits the expansion
+
+$$
+  \ket{\Psi} = \sum_x \ket{x} \braket{x|\Psi} = \sum_x \Psi(x) \ket{x}
+$$
+
+The expectation value of a linear operator $\hat{O}$ in the state $\ket{\Psi}$ is defined by
+
+$$
+  \braket{\hat{O}} = \frac{\braket{\Psi|\hat{O}|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+Applying the resolution of identity $\eqref{equation-59}$, the nominator can be refactored as
+
+$$
+\begin{align*}
+  \braket{\Psi|\hat{O}|\Psi} =& \sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\hat{O}|\Psi} \\
+  =& \sum_{x\in\Omega} \Psi^* (x) \braket{x|\hat{O}|\Psi}
+\end{align*} 
+$$
+
+and the denominator as
+
+$$
+\begin{align*}
+  \braket{\Psi|\Psi} =& \sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\Psi} \\
+  =& \sum_{x\in\Omega} \Psi^* (x) \Psi(x) = \sum_{x\in\Omega} |\Psi(x)|^2
+\end{align*}
+$$
+
+Substituting back, the expectation $\braket{\hat{O}}$ becomes
+
+$$
+\begin{equation*}
+  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} \Psi^* (x) \braket{x|\hat{O}|\Psi}}{\sum_{x\in\Omega} |\Psi(x)|^2}
+\tag{\label{equation-58}}
+\end{equation*}
+$$
+
+In many-body systems, the cardinality of $\Omega$ grows exponentially with the number of particles (even after restricting to symmetry sectors such as fixed particle number or fixed total spin component). Thus, direct summation over all configurations is computationally infeasible for large systems.
+
+However, $\braket{\hat{O}}$ can be estimated using Monte Carlo sampling by expanding it in terms of a probability distribution. For this reformulation, we define the local estimator
+
+$$
+  O_\text{L} (x) := \braket{\braket{x|\hat{O}|\Psi}}{\braket{x|\Psi}} = \frac{\braket{x|\hat{O}|\Psi}}{\Psi(x)}
+$$
+
+expressing $\braket{\hat{O}}$ as
+
+$$
+  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} |\Psi(x)|^2 O_\text{L} (x)}{\sum_{x\in\Omega} |\Psi(x)|^2}
+$$
+
+We can define the probability measure $\mathcal{P}$ on $\Omega$ by
+
+$$
+  \mathcal{P}(x) := \frac{|\Psi(x)|^2}{\sum_{x\in\Omega} |\Psi(x)|^2}
+$$
+
+which satisfies $\mathcal{P}(x) \geq 0$ and $\sum_{x\in\Omega} \mathcal{P}(x) = 1$. Rewriting $\braket{\hat{O}}$ in terms of $\mathcal{P}(x)$ yields
+
+$$
+  \braket{\hat{O}} = \sum_{x\in\Omega} \mathcal{P}(x) O_\text{L} (x)
+$$
+
+This is recognized as the expectation value of the random variable $O_\text{L} (x)$ with respect to the probability measure $\mathcal{P}$ over $\Omega$. In particular, for the Hamiltonian $\hat{H}$, the corresponding local estimator
+
+$$
+  E_L (x) := \frac{\braket{x|\hat{H}|\Psi}}{\Psi(x)}
+$$
+
+is called the local energy, and
+
+$$
+  \braket{\hat{H}} = \sum_{x\in\Omega} \mathcal{P}(x) E_\text{L} (x)
+$$
+
+Applying Monte Carlo sampling, we can generate a sequence of configurations $\set{\ket{x_n}}_{n=1}^N$ with stationary distribution $\mathcal{P}(x)$. After equilibration, the estimator
+
+$$
+  \braket{\hat{O}}_N := \frac{1}{N}\sum_{n=1}^N \hat{O}_\text{L} (x_n)
+$$
+
+converges to $\braket{\hat{O}}$ as $N\to\infty$. Thus, the computation of a quantum expectation value is reduced to the stochastic evaluation of a classical expectation value over configuration space.
+
+## Zero-variance property
+
+A fundamental property of the variational Monte Carlo method is the zero-variance property, which relates statistical fluctuation of the local energy to the spectral properties of the Hamiltonian. Suppose that the variational state $\ket{\Psi}\in\mathcal{H}$ coincides with an exact eigenstate of $\hat{H}$, i.e. $\hat{H}\ket{\Psi} = E\ket{\Psi}$. Then, it follows that the local energy $E_L$ is constant
+
+$$
+  E_L (x) = \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} = E\frac{\braket{x|\Psi}}{\braket{x|\Psi}} = E
+$$
+
+Thus, the random variable $E_L (x)$ does not depend on $\ket{x}$, implying that its variance is zero, while its mean value $E$ coincides with the exact eigenvalue (in other words, $E_L$ is not a random variable). Clearly, this is an extreme case that is very rare for generic correlated model. However, in general, the variance of $E_L (x)$ will decrease its value whenever the variational state $\ket{\Psi}$ will approach an eigenstate. This fact is very important to reduce the statistical fluctuations and improve the numerical efficiency. The zero-variance property is a feature that exists only for quantum expectation values, whic it is absent in classical calculations, where observables have thermal fluctuations.
+
+The average of the square of the local energy corresponds to the quantum average of the Hamiltonian squared
+
+$$
+\begin{align*}
+  \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\braket{\Psi|\Psi} =& \frac{\sum_{x\in\Omega} \braket{x|\hat{H}|x}\braket{x|\hat{H}|\Psi}}{\sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\Psi}} \\
+  =& \frac{\sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2}{\sum_{x\in\Omega} |\Psi(x)|^2}
+\end{align*}
+$$
+
+Thus, the variance of the random variable $E_L (x)$ is exactly equal to the quantum variance of the Hamiltonian over the variational state $\ket{\Psi}$
+
+$$
+  \sigma_{E_L}^2 = \frac{\braket{\Psi|(\hat{H} - E)^2|\Psi}}{\braket{\Psi|\Psi}}
+$$
