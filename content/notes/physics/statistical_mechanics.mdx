@@ -2070,13 +2070,16 @@ In many-body systems, the cardinality of $\Omega$ grows exponentially with the n
 However, $\braket{\hat{O}}$ can be estimated using Monte Carlo sampling by expanding it in terms of a probability distribution. For this reformulation, we define the local estimator
 
 $$
-  O_\text{L} (x) := \braket{\braket{x|\hat{O}|\Psi}}{\braket{x|\Psi}} = \frac{\braket{x|\hat{O}|\Psi}}{\Psi(x)}
+\begin{equation*}
+  O_L (x) := \braket{\braket{x|\hat{O}|\Psi}}{\braket{x|\Psi}} = \frac{\braket{x|\hat{O}|\Psi}}{\Psi(x)}
+\tag{\label{equation-61}}
+\end{equation*}
 $$
 
 expressing $\braket{\hat{O}}$ as
 
 $$
-  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} |\Psi(x)|^2 O_\text{L} (x)}{\sum_{x\in\Omega} |\Psi(x)|^2}
+  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} |\Psi(x)|^2 O_L (x)}{\sum_{x\in\Omega} |\Psi(x)|^2}
 $$
 
 We can define the probability measure $\mathcal{P}$ on $\Omega$ by
@@ -2088,10 +2091,10 @@ $$
 which satisfies $\mathcal{P}(x) \geq 0$ and $\sum_{x\in\Omega} \mathcal{P}(x) = 1$. Rewriting $\braket{\hat{O}}$ in terms of $\mathcal{P}(x)$ yields
 
 $$
-  \braket{\hat{O}} = \sum_{x\in\Omega} \mathcal{P}(x) O_\text{L} (x)
+  \braket{\hat{O}} = \sum_{x\in\Omega} \mathcal{P}(x) O_L (x)
 $$
 
-This is recognized as the expectation value of the random variable $O_\text{L} (x)$ with respect to the probability measure $\mathcal{P}$ over $\Omega$. In particular, for the Hamiltonian $\hat{H}$, the corresponding local estimator
+This is recognized as the expectation value of the random variable $O_L (x)$ with respect to the probability measure $\mathcal{P}$ over $\Omega$. In particular, for the Hamiltonian $\hat{H}$, the corresponding local estimator
 
 $$
   E_L (x) := \frac{\braket{x|\hat{H}|\Psi}}{\Psi(x)}
@@ -2100,38 +2103,285 @@ $$
 is called the local energy, and
 
 $$
-  \braket{\hat{H}} = \sum_{x\in\Omega} \mathcal{P}(x) E_\text{L} (x)
+\begin{equation*}
+  \braket{\hat{H}} = \sum_{x\in\Omega} \mathcal{P}(x) E_L (x)
+\tag{\label{equation-60}}
+\end{equation*}
 $$
 
 Applying Monte Carlo sampling, we can generate a sequence of configurations $\set{\ket{x_n}}_{n=1}^N$ with stationary distribution $\mathcal{P}(x)$. After equilibration, the estimator
 
 $$
-  \braket{\hat{O}}_N := \frac{1}{N}\sum_{n=1}^N \hat{O}_\text{L} (x_n)
+  \braket{\hat{O}}_N := \frac{1}{N}\sum_{n=1}^N \hat{O}_L (x_n)
 $$
 
 converges to $\braket{\hat{O}}$ as $N\to\infty$. Thus, the computation of a quantum expectation value is reduced to the stochastic evaluation of a classical expectation value over configuration space.
 
 ## Zero-variance property
 
-A fundamental property of the variational Monte Carlo method is the zero-variance property, which relates statistical fluctuation of the local energy to the spectral properties of the Hamiltonian. Suppose that the variational state $\ket{\Psi}\in\mathcal{H}$ coincides with an exact eigenstate of $\hat{H}$, i.e. $\hat{H}\ket{\Psi} = E\ket{\Psi}$. Then, it follows that the local energy $E_L$ is constant
+A fundamental property of the variational Monte Carlo method is the zero-variance property, which relates statistical fluctuation of the local energy to the spectral properties of the Hamiltonian. Suppose that the variational state $\ket{\Psi}\in\mathcal{H}$ coincides with an exact eigenstate of the Hamiltonian $\hat{H}$, i.e. $\hat{H}\ket{\Psi} = E\ket{\Psi}$. Then, it follows that the local energy $E_L$ is constant
 
 $$
   E_L (x) = \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} = E\frac{\braket{x|\Psi}}{\braket{x|\Psi}} = E
 $$
 
-Thus, the random variable $E_L (x)$ does not depend on $\ket{x}$, implying that its variance is zero, while its mean value $E$ coincides with the exact eigenvalue (in other words, $E_L$ is not a random variable). Clearly, this is an extreme case that is very rare for generic correlated model. However, in general, the variance of $E_L (x)$ will decrease its value whenever the variational state $\ket{\Psi}$ will approach an eigenstate. This fact is very important to reduce the statistical fluctuations and improve the numerical efficiency. The zero-variance property is a feature that exists only for quantum expectation values, whic it is absent in classical calculations, where observables have thermal fluctuations.
+Thus, the random variable $E_L$ is constant almost surely with respect to the probability distribution
 
-The average of the square of the local energy corresponds to the quantum average of the Hamiltonian squared
+$$
+  \mathcal{P}(x) = `\frac{|\Psi(x)|^2}{\braket{\Psi|\Psi}}
+$$
+
+Specifically, the expectation and variance of $E_L$ become
+- $\mathbb{E}_\mathcal{P} (E_L) = E$
+- $\operatorname{var}_\mathcal{P} (E_L) = 0$
+
+Thus, when the variational state coincides with an exact eigenstate, the local energy exhibits no statistical fluctuations. In this sense, the Monte Carlo estimator becomes deterministic.
+
+In general, the variance of $E_L (x)$ decreases as the variational state $\ket{\Psi}$ approaches an eigenstate. To derive the generic variance of $E_L$, we first calculate its second moment with respect to $\mathcal{P}$
 
 $$
 \begin{align*}
-  \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\braket{\Psi|\Psi} =& \frac{\sum_{x\in\Omega} \braket{x|\hat{H}|x}\braket{x|\hat{H}|\Psi}}{\sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\Psi}} \\
-  =& \frac{\sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2}{\sum_{x\in\Omega} |\Psi(x)|^2}
+  \mathbb{E}_\mathcal{P} (|E_L|^2) =& \sum_{x\in\Omega} \mathcal{P}(x) |E_L (x)|^2 \\
+  =& \frac{\sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2}{\braket{\Psi|\Psi}}
 \end{align*}
 $$
 
-Thus, the variance of the random variable $E_L (x)$ is exactly equal to the quantum variance of the Hamiltonian over the variational state $\ket{\Psi}$
+Inserting $\eqref{equation-60}$ and applying the completeness relation $\eqref{equation-59}$, the nominator becomes
 
 $$
-  \sigma_{E_L}^2 = \frac{\braket{\Psi|(\hat{H} - E)^2|\Psi}}{\braket{\Psi|\Psi}}
+\begin{align*}
+  \sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2 =& \sum_{x\in\Omega} |\braket{x|\hat{H}|\Psi}|^2 \\
+  =& \sum_{x\in\Omega} \braket{\Psi|\hat{H}|x} \braket{x|\hat{H}|\Psi} \\
+  =& \braket{\Psi|\hat{H}^2 |\Psi}
+\end{align*}
 $$
+
+Consequently, the second moment of $E_L$ is
+
+$$
+  \mathbb{E}_\mathcal{P} (|E_L|^2) = \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+The variance of $E_L$ is then given by
+
+$$
+\begin{align*}
+  \operatorname{var}_\mathcal{P} (E_L) =& \mathbb{E}_\mathcal{P} (|E_L|^2) - |\mathbb{E}_\mathcal{P} (E_L)|^2 \\
+  =& \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\Psi|\Psi} - \left(\frac{\braket{\Psi|\hat{H}|\Psi}}{\braket{\Psi|\Psi}} \right)^2
+\end{align*}
+$$
+
+When the variational state coincides with an exact eigenstate such that $\mathbb{E}(E_L) = E$, then the variance of $E_L$ becomes
+
+$$
+  \operatorname{var}_\mathcal{P} (E_L) = \frac{\braket{\Psi|(\hat{E} - E)^2|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+which is precisely the quantum variance of $\hat{H}$ in the state $\ket{\Psi}$. Thus, the vanishing of the Monte Carlo variance of the local energy is mathematically equivalent to the eigenvalue equation.
+
+## Monte Carlo estimation
+
+In the Monte Carlo evaluation of the quantum expectation value $\eqref{equation-58}$, we must compute two quantities repeatedly along the Markov chain:
+
+1. **Ratios of probabilities:** In the Metropolis scheme, only ratios of probabilities are required. For two configurations $x, x' \in\Omega$
+
+$$
+  \frac{\mathcal{P}(x')}{\mathcal{P}(x)} = \left| \frac{\Psi(x')}{\Psi(x)} \right|^2 = \left|\frac{\braket{x'|\Psi}}{\braket{x|\Psi}} \right|^2
+$$
+
+Since the normalization constant of $\mathcal{P}$ cancels, only ratios of overlaps of the variational state with basis configurations must be evaluated.
+
+2. **Local estimator:** Evaluating the local estimator $\eqref{equation-61}$ requires computing ratios of overlaps and matrix elements of the observable between states of the basis set. For the Hamiltonian, $\hat{H}$, the local energy is
+
+$$
+\begin{align*}
+  E_L =& \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} \\
+  =& \sum_{x' \in\Omega} \braket{x|\hat{H}|x'} \frac{\braket{x'|\Psi}}{\braket{x|\Psi}}
+\end{align*}
+$$
+
+This expression involves a sum over the entire Hilbert space. However, due to the locality of the Hamiltonian, only few terms actually contribute to the sum, reducing the computational complexity.
+
+### Locality and sparsity
+
+In lattice many-body systems, $\hat{H}$ is typically a sum of local operators
+
+$$
+  \hat{H} = \sum_i \hat{h}_i
+$$
+
+where each $\hat{h}_i$ acts non-trivially only on a finite subset of degrees of freedom. In the configuration basis $\set{\ket{x}}$, this implies that for fixed $x$
+
+$$
+  \braket{x|\hat{H}|x'} \neq 0
+$$
+
+only if $x'$ differs from $x$ locally, according to the action one of the $\hat{h}_i$. Consequently, for each configuration $x$, the number of configurations $x'$ contributing to the sum for $E_L (x)$ scales at most polynomially with the system size (typically linearly in the number of sites or particles), rather than exponentially with $|\Omega|$.
+
+<MathBox title="Fermionic Hubbard model" boxType="example">
+Consider the fermionic Hubbard model $\eqref{equation-52}$ on a lattice with $L$ sites. In the occupation-number basis, a configuration $\ket{x}$ specifies the occupation of each site and spin. The hopping term connects $\ket{x}$ only to configurations $\ket{x'}$ that differ by the displacement of a single fermion between neighbouring sites. Thun number of such processes is bounded by a constant multiple of the number of bonds. The interaction term is diagonal in this basis. Thus, evaluating $E_L (x)$ requires summing only over $O(L)$ configuations, making its computation polynial in the system size.
+</MathBox>
+
+### Evaluation of amplitudes
+
+The primary computational task in variational Monte Carlo is the evaluation of the amplitudes $\Psi(x) = \braket{x|\Psi}$, and of their ratios $\Psi(x')/\Psi(x)$ for configurations $x, x' \in\Omega$ connected by local updates. Since this computation must be performed at each Monte Carlo step, the efficiency of the algorithm strongly contrains the admissible class of variational wave functions.
+
+For fermionic systems, antisymmetry implies that many relevant Ansätze can be expressed in terms of determinants or, more generally, Pfaffians
+- The determinant of an $N\times N$ matrix can be computed in $O(N^3)$ time using standard algorithms
+- Pfaffians can likewise be evaluated in polynomial time
+
+When configurations differ by local moves (e.g. single-particle updates), matrix-update formulas allow the ratio $\Psi(x')/\Psi(x)$ to be computed in $O(N^2)$ time. This polynomial complexity makes such fermionic Ansätze computationally tractable for moderately large systems.
+
+For bosonic systems, symmetrization leads in general to permanents rather than determinants. The permamnent of $N\times N$ matrix is defined as
+
+$$
+  \operatorname{perm}(M) = \sum_{\sigm \in S_N} \prod_{i=1}^N M_{i,\sigma(i)} 
+$$
+
+which differs from the determinant by the absence of permutation signs. Unlike determinants, permanents cannot be computed in polynomial time, but rather require time exponential in $N$. This severely limits the applicability of general bosonic permanent-based Ansätze. However, important physically relevant bosonic states have amplitudes that can be evaluated in polynomial time and are therefore amenable to variational Monte Carlo methods. This includes condensates in which all bosons occupy a single orbital.
+
+## Jastrow variational state
+
+A Jastrow-correlated variational state is defined by
+
+$$
+  \ket{\Psi_\text{J}} = \hat{J}\ket{\Phi_0}
+$$
+
+where $\ket{\Phi_0}$ is a generic uncorrelated (bosonic or fermionic) state and $\hat{J}$ is the Jastrow factor, encoding electron correlations. A widely used class of Jastrow factors consists of density-density correlations in the form
+
+$$
+\begin{equation*}
+  \hat{J} = \exp\left(-\frac{1}{2} \sum_{i,j=1}^L v_{ij} \hat{n}_i \hat{n}_j \right)
+\tag{\label{equation-62}}
+\end{equation*}
+$$
+
+where $v_{ij} \in\R$ are variational parameters, whose total number is $L^2$.
+
+<details>
+<summary>Details</summary>
+
+The pseudo-potential $v_{ij}$ couples densitites at different sites $i$ and $j$ and not density fluctuations.
+
+The Jastrow factor is often written in terms of density fluctuations $\delta\hat{n}_i = \hat{n}_i - \bar{n}$, where $\bar{n}$ is the average density, i.e.
+
+$$
+\begin{equation*}
+  \hat{J} = \exp\left(-\frac{1}{2} \sum_{i,j=1}^L v_{ij} \delta\hat{n}_i \delta\hat{n}_j \right)
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+For systems with fixed total particle number
+
+$$
+  \sum_i \hat{n}_i = N
+$$
+
+The alternative forms of the Jastrow factor in $\eqref{equation-62}$ and $\eqref{equation-63}$ differ only by additive and linear terms in $\hat{n}_i$, which contribute at most a configuration-independent multiplicative factor to $\ket{\Psi_\text{J}}$. Hence, for fixed particle number, the two definitions are equivalent up to normalization.
+</details>
+
+If the system is translationally invariant, then $v_{ij}$ only depends on the distance between $i$ and $j$, i.e. $v_{ij} = v(|\mathbf{r}_i - \mathbf{r}_j|)$. In this case, the number of independent parameters is reduced from $O(L^2)$ to $O(L)$. 
+
+Certain singular limits of the Jastrow factor can be treated exactly with Monte Carlo sampling. For example, imposing $v_{ii} \to\infty$ suppresses configurations with $n_i^2 \neq n_i$ (e.g. double occupancy for spinful fermions), effectively implementing the Gutzwiller projector relevant to the infinite-$U$ limit of the Hubbard model $\eqref{equation-52}$. In practice, this constraint is enforced by constructing a Markov chain whose state space is restricted to configurations without double-occupancy. This way we avoid evaluating the singular factor explicitly.
+
+The Jastrow factor $\eqref{equation-62}$ is diagonal in the occupation-number basis $\set{\ket{x}}_{x\in\Omega}$. Since $\hat{n}_i \ket{x} = n_i (x) \ket{x}$, where $n_i (x) \in\N$ is the occupation number at site $i$ in configuration $x$, it follows that
+
+$$
+\begin{align*}
+  \hat{J}\ket{x}= \exp\left( -\frac{1}{2} \sum_{i,j=1}^L v_{ij} n_i (x) n_j (x) \right)\ket{x} \\
+  =: J(x) \ket{x}
+\end{align*}
+$$
+
+Showing that $J(x)$ is a scalar function on configuration space. For the Jastrow-correlated state $\ket{\Psi_\text{J}} = \hat{J}\ket{\Phi_0}$, we thus obtain
+
+$$
+  \braket{x|\Psi_\text{J}} = \braket{x|\hat{J}|\Phi_0} = J(x) \braket{x|\Phi_0}
+$$
+
+In this diagonal form, $J(x)$ can be evaluated in $O(L^2)$ operations due to the double sum. In order to ensure polynomial complexity, the Jastrow factor must only contain operators that are diagonal in the basis $\ket{x}$. If $\hat{J}$ contained off-diagonal operators (e.g. hopping terms), then $\hat{J}\ket{x}$ would generate a superposition of exponentially many configurations, making the evaluation of $\braket{x|\Psi_\text{J}}$ exponentially costly in $L$. The remaining computational effor lies in evaluating $\braket{x|\Phi_0}$:
+- For fermionic reference states given by Slater determinants, amplitudes can be computed in $O(L^3)$ time per local update using matrix-update formulas
+- For bosonic condensed product states, the amplitude factorizes and can typically be evaluated in $O(1)$ or $O(L)$ time
+
+# Local occupation-number basis
+
+In lattice many-body problems, it is natural to work in a local occupation-number basis constructe as a tensor product of on-site Hilbert spaces. Consider a lattice with $L$ sites. At each site $i=1,\dots,K$, let $\mathcal{H}_i$ denote the local Hilbert space, equipped with an orthonormal basis $\set{\ket{\xi_i}}$. The dimension of $\mathcal{H}_i$ depends on the physical model.
+
+1. **Single-band fermionic Hubbard model:** For spin-$1/2$ fermions on site $i$, the local Hilbert space is four-dimensional, spanned by
+$$
+  \mathcal{H}_i = \operatorname{span}\set{\ket{0}_i, \hat{c}_{i,\uparrow}^\dagger \ket{0}_i, \hat{c}_{i,\downarrow}^\dagger \ket{0}_i, \hat{c}_{i,\uparrow}^\dagger \hat{c}_{i,\downarrow}^\dagger \ket{0}_i}
+$$
+
+2. **Bosonic Hubbard model:** For bosons, the local Hilbert space is infinite-dimension with an arbitrary number of bosons on the same site
+$$
+  \mathcal{H}_i = \operatorname{span}\Set{\frac{1}{\sqrt{n!}} (\hat{b}_i^\dagger)^n \ket{0_i}}_{n\in\N_0}
+$$
+
+3. **Spin-$S$ Heisenberg model:** For a spin-$S$ system, the local Hilbert space $2S + 1$, with basis given by eigenstates of $\hat{S}_i^z$
+$$
+  \hat{S}_i^z \ket{m}_i = m\ket{m}_i,\; m = -S,\dots,S
+$$
+
+The Hilbert space of the full lattice is the tensor product
+
+$$
+  \mathcal{H} = \bigotimes_{i=1}^L \mathcal{H}_i
+$$
+
+Once the local bases are fixed, a generic basis element of $\mathcal{H}$ is a product state
+
+$$
+  \ket{x} = \bigotimes_{i=1}^L \ket{\xi_i}
+$$
+
+In particular, the global vacuum state is
+
+$$
+  \ket{0} = \bigotimes_{i=1}^L \ket{0_i}
+$$
+
+Chososing a local basis is convenient because lattice Hamiltonians are typically sums of local operators, i.e.
+
+$$
+  \hat{H} = \sum_i \hat{h}_i + \sum_{\braket{i,j}} \hat{h}_{ij}
+$$
+
+where each term acts non-trivially only on a finite subset of sites. In particular,
+- interaction terms (e.g. Hubbard $U \hat{n}_{i,\uparrow} \hat{n}_{j,\downarrow}$) are diagonal in the occupation-number basis
+- on-site terms (e.g. Hund's couplings in multiband models) act locally
+- hopping terms couple only neighbouring sites
+
+As a consequence, for any fixed configuration $\ket{x}$, the number of configurations $\ket{x'}$ such that $\braket{x|\hat{H}|x'} \neq 0$ scales at most linearly with $L$. 
+
+For fermionic systems, additional care is required because of the antisymmetric nature of the Fock space. A basic configuration must be specified together with a fixed ordering convention for creation operators. Consider $N_e$ spinless fermions on $L$ sites. A configuration is written as
+
+$$
+  \ket{x} = \left(\prod_{i=1}^{N_e} \hat{c}_{R_i}^\dagger \right) \ket{0}
+$$
+
+where $R_1 <\cdots < R_{N_e}$ is a strictly ordered sequence of occupation sites. This ordering convention ensures a unique representative of each Fock state. It is convenient to encode the configuration by an occupation vector $\boldsymbol{\kappa} \in \set{0,1}^L$, where $\kappa_i = 1$ if site $i$ is occupied and $\kappa_i = 0$ otherwise.
+
+Consider a hopping term $\hat{c}_{R'_l}^\dagger \hat{c}_{R_l}$ acting on $\ket{x}$, where $R_l$ is the one of the occupied sites and $R'_l$ is an empty site. Formally
+
+$$
+  \hat{c}_{R'_l}^\dagger \hat{c}_{R_l} \ket{x} = \hat{c}_{R'_l}^\dagger \hat{c}_{R_l} \hat{c}_{R_1}^\dagger \cdots \hat{c}_{R_{N_e}}^\dagger \ket{0}
+$$
+
+using the anticommutation relations $[\hat{c}_i, \hat{c}_i^\dagger]_+ = \delta_{ij}$, the annihilation operato $\hat{c}_{R_l^}$ must be anticommuted through the ordered string until it reaches its matching creation operators. Thus produces a sign factor $(-1)^p$, where $p$ is the number of fermionic operators it passes. After annihilation and reinsertion of $\hat{c}_{R'_l}^\dagger$, the resulting state can again be written in canonical ordered form
+
+$$
+  \ket{x'} = (-1)^{p'} \hat{c}_{R_1}^\dagger \cdots \hat{c}_{R'_l}^\dagger \cdots \hat{c}_{R_{N_e}}^\dagger \ket{0}
+$$
+
+Thus, relative to the canonical ordering convention, the new configuration differs from the old one by
+1. A change of occupation at sites $R_l$ and $R'_l$
+2. A computable fermionic sign determined by the parity of the permutation required to restore ordering
+
+During the Markov process, proposed configurations are often generated by applying local Hamiltonian terms. For fermionic systems
+- The configuration space consists of ordered occupation string
+- Each update may produce a sign factor
+- These signs must be consistently tracked when evaluating amplitude ratios $\Psi(x')/\Psi(x)$ and local estimators
+
+Provided a consistent ordering convention is adopted and permutation signs are properly accounted for, this sign bookkeeping poses no conceptual difficulty, though it is essential for correctness.
