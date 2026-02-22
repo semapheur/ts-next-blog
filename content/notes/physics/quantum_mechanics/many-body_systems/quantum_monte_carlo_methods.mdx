@@ -1,0 +1,2854 @@
+---
+title: 'Quantum Monte Carlo Methods'
+subject: 'Physics/Quantum mechanics/Many-body systems'
+showToc: true
+references:
+  - book_becca_sorella_2017
+  - book_gubernatis_etal_2016
+---
+
+# Monte Carlo sampling
+
+Monte Carlo methods indicate a broad class of numerical algorithms that are based upon repeated random sampling to obtain the solution of several mathematical and physical problems.
+
+Suppose that we must compute the following $d$-dimensional integral for $F: \R^d \to\R$ 
+
+$$
+	I = \int F(\mathbf{x}) \;\d\mathbf{x}
+$$
+
+Without loss of generality, we can always split $F(\mathbf{x})$ into a probability density $\mathcal{P}(\mathbf{x})$ and a function $f(\mathbf{x}) = F(\mathbf{x})/\mathcal{P}(\mathbf{x})$
+
+$$
+	I = \braket{f(\mathbf{x})} = \int f(\mathbf{x}) \mathcal{P}(\mathbf{x}) \;\d\mathbf{x}
+$$
+
+which is recognized as the expectation value of the random variable $f(\mathbf{x})$ over the distribution function $\mathcal{P}(\mathbf{x})$. The cental limit theorem implies that the deterministic integral $I$ is equal to the stochastic random variable computed as the average value of $f(\mathbf{x})$ over a large number of samples
+
+$$
+	\braket{f(\mathbf{x})} = \int f(\mathbf{x})\mathcal{P}(\mathbf{x}) \;\d\mathbf{x} \approx \frac{1}{N} \sum_i f(\mathbf{x}_i)
+$$
+
+where the values of $\mathbf{x}_i$ are distributed according to the probability density $\mathcal{P}(\mathbf{x})$. For large $N$, the variable
+
+$$
+	\bar{f} = \frac{1}{N} \sum_i f(\mathbf{x}_i)
+$$
+
+is normally distributed with mean equal to $\braket{f(\mathbf{x})}$ and variance $\sigma^2 /N$, where $\sigma^2 = \braket{f^2 (\mathbf{x})} - \braket{f(\mathbf{x})}^2$. Thus, for $N\to\infty$, the random variable $\bar{f}$ tends to the deterministic number $\braket{f(\mathbf{x})}$.
+
+The validity of the stochastic calculation is based upon the fact that, whenever the number of samples $N$ is large enough, then error due to statistical fluctuations converges to zero, implying that the errorbars of simulations can be kept under control. In this sense, we have that
+
+$$
+	\int f(\mathbf{x}) \mathcal{P}(\mathbf{x}) \approx \braket{\braket{f(\mathbf{x}_i)}}
+$$
+
+where $\braket{\braket{\cdot}}$ denotes the statistical average over many independent samples distributed according to $\mathcal{P}(\mathbf{x})$. While the estimation of the integral $I$ is given by $\bar{f}$, the errorbar can be obtained from the estimator of $\sigma^2$
+
+$$
+	s^2 = \frac{1}{N} \sum_i [f(\mathbf{x}_i) - \bar{f}]^2
+$$
+
+The main issues of the stochastic calculation are to generate configurations $\mathbf{x}_i$ that are distributed according to the desired probability density $\mathcal{P}(\mathbf{x})$ and then compute the function $f(\mathbf{x}_i)$ for all these configurations.
+
+Whenever it is possible to generate configurations with the probability density $\mathcal{P}(\mathbf{x})$, we talk about direct sampling. In this case, alle configurations are independent from each other. Unfortunately, this is only possible in a few cases for very simple probability densities that depend upon few variables $\mathbf{x}$. In the general case, we are not able to directly sample the probability density and indirect ways of obtaining such configurations must be devised. This is the case of Markov-chains.
+
+## Reweighting technique and correlated sampling
+
+Reweighting allows us to obtain the average of a function $f(\mathbf{x})$ over the probability $\mathcal{Q}(\mathbf{x})$, once a sampling over $\mathcal{P}(\mathbf{x})$ has been performed. Suppose we have to probabilities $\mathcal{P}(\mathbf{x})$ and $\mathcal{Q}(\mathbf{x})$ that are defined in terms of their corresponding weights $\mathcal{W}_p (\mathbf{x})$ and $\mathcal{W}_q (\mathbf{x})$, respectively
+
+$$
+\begin{align*}
+	\mathcal{P}(\mathbf{x}) =& \frac{\mathcal{W}_p (\mathbf{x})}{\int \mathcal{W}_p (\mathbf{x}) \;\d\mathbf{x}} \\
+	\mathcal{Q}(\mathbf{x}) =& \frac{\mathcal{W}_q (\mathbf{x})}{\int \mathcal{W}_q (\mathbf{x}) \;\d\mathbf{x}}
+\end{align*}
+$$
+
+Then, we have that
+
+$$
+	\frac{\int f(\mathbf{x}) \mathcal{W}_q (\mathbf{x}) \;\d\mathbf{x}}{\int \mathcal{W}_q \;\d\mathbf{x}} = \frac{\int f(\mathbf{x}) \mathcal{R}(\mathbf{x}) \mathcal{W}_p (\mathbf{x})}{\int \mathcal{R}(\mathbf{x}) \mathcal{W}_p (\mathbf{x}) \;\d\mathbf{x}}
+$$
+
+where $\mathcal{R}(\mathbf{x}) = \mathcal{W}_q (\mathbf{x}) / \mathcal{W}_p (\mathbf{x})$ is the ratio between the two weights. Thus, the statistical sampling over the new probability $\mathcal{Q}(\mathbf{x})$ can be expressed in terms of samples over $\mathcal{P}(\mathbf{x})$
+
+$$
+	\braket{\braket{f(\mathbf{x})}}_\mathcal{Q} = \frac{\braket{\braket{f(\mathbf{x})\mathcal{R}(\mathbf{x})}}_\mathcal{P}}{\braket{\braket{\mathcal{R}(\mathbf{x})}}_\mathcal{P}}
+$$
+
+where $\braket{\braket{\cdot}}_\mathcal{P}$ and $\braket{\braket{\cdot}}_\mathcal{Q}$ denote the statistical samplings over $\mathcal{Q}(\mathbf{x})$ and $\mathcal{P}(\mathbf{x})$, respectively.
+
+Then, the same sampling, i.e. set of configurations $\set{\mathbf{x}_i}$, obtained from $\mathcal{P}(\mathbf{x})$ can be used to evaluate averages over $\mathcal{Q}(\mathbf{x})$. This approach gives rise to the concept of correlated sampling, since two quantities are evaluated with the same set of configurations. In order to have an accurate statistics on the reweighted quantity $\braket{\braket{f(\mathbf{x})}}_\mathcal{Q}$, the two weights must be quite similar, otherwise the configurations $\set{\mathbf{x}_i}$ would fall in regions where $\mathcal{Q}(\mathbf{x})$ is small and, therefore, irrelevant for the final result.
+
+<MathBox title="" boxType="example">
+Suppose that we want to compute $\pi$ by a statistic approach, then we can draw a circle with radius $r$ and a square that exactly contains it, i.e. iwht side $L = 2r$. Then, we can randomly shoot bullets inside the square, counting every trial. Each time a bullet falls indise the circle we increase by one the number of "hits". By keeping track of trials and hits, we can perform a direct sampling Monte Carlo calculation. The ratio between hits and trial is approaching, for a large number of trials $N$, the ratio of the areas of the circle and the square.
+
+$$
+	\frac{\pi}{4} = \frac{\int_\text{circle} \;\d x \d y}{\int_\text{square} \;\d x \d y} = \int_\text{square} f(x,y) \mathcal{P}(x,y) \;\d x \d y
+$$
+
+with
+
+$$
+	\mathcal{P}(x, y) = \frac{1}{\int_\text{square} \;\d x \d y}
+$$
+
+and
+
+$$
+	f(x, y) = \begin{cases}
+		1,\quad& \sqrt{x^2 + y^2} \leq r \\
+		0,\quad& \sqrt{x^2 + y^2} > r
+	\end{cases}
+$$
+
+The function $\mathcal{P}(x,y)$ is non-negative and normalized to unity, representing a probability function. Shooting bullets in the square implies to generate a couple of random number (one for $x$ and the other for $y$) that are uniformly distributed between $0$and $L$
+
+$$
+	\frac{\pi}{4} \approx \frac{1}{N} \sum_i f(x_i, y_i)
+$$
+
+Instead of direct sampling, another approach is to use Markov chains. In this case, instead of randomly shooting bullets, we imagine to perform a random walk in the square and lay down a bullet on each position that we visit. Starting from a random place inside the square, we move on at discrete times $n$. For exmplae, the new position at time $n+1$ can be chosen randomly in a small square of side $\delta$, centered around the position at time $n$
+
+$$
+\begin{align*}
+	x_\text{new} =& x_\text{old} + \xi_x \\
+	y_\text{new} =& y_\text{old} + \xi_y
+\end{align*}
+$$
+
+where $\xi_x$ and $\xi_y$ are two new random numbers that are uniformly distributed in $[-\delta/2, \delta/2]$. At the end of a long random walk, the ratio between the number of bullets inside the circle and the total number of the will approach $\pi/4$. In this approach, it is clear that the new position $(x, y)_\text{new}$ is correlated to the old one $(x_\text{old}, y_\text{old})$, since the new coordinates cannot be farther than $\delta/2$ from the old ones. In particular, the correlation increases when $\delta$ becomes smaller and smaller. By contrast, in the direct sampling the position of each bullet was independent from the other ones.
+</MathBox>
+
+## Importance sampling
+
+Whenever the function $f(\mathbf{x})$ that must be evaluated has sharp peaks, a uniform sampling is not efficient, because it would lead to a considerable wate of time, spending efforts to visit regions that give a negligible contribution to the final result. This can be overcome with importance sampling, which is used in several Monte Carlo calculations
+
+In the case of a one-dimensional integral, suppose we have to evaluate
+
+$$
+	I = \int_a^b F(x) \;\d x
+$$
+
+where $F: \R\to\R$ is a function that is peaked in a given point between $a$ and $b$. Whenever we know the (approximated) location of the relevant regions where the function $F$ is sizable, we can defined probability density $\mathcal{P}(x)$ in $[a,b]$, which is also sizable in these regions and small everywhere else. Then, we can rewrite the original integral as
+
+$$
+	I = \int_a^b \frac{F(x)}{\mathcal{P}(x)}\mathcal{P}(x) \;\d x
+$$
+
+If we are able to generate random numbers that are distributed according to $\mathcal{P}(x)$, we can evaluate the integral $I$ as
+
+$$
+	I \approx \frac{1}{N} \sum_i \frac{F(x_i)}{\mathcal{P}(x_i)}
+$$
+
+the corresponding errorbar can be estimated from
+
+$$
+	s^2 = \frac{1}{N} \sum_i \left(\frac{F(x_i)}{\mathcal{P}(x_i)} \right)^2 - \left(\frac{1}{N}\sum_i \frac{F(x_i)}{\mathcal{P}(x_i)} \right)^2
+$$
+
+The crucial point is that if $\mathcal{P}(x)$ is chosen to be close enough to $F(x)$, then the statistical fluctuations are highly reduced. Since $s^2$ is a non-negative, its minimum $s^2 = 0$ is reached when $\mathcal{P}(x) \propto F(x)$. In this trivial case, the Monte Carlo sampling has no fluctuations.
+
+## Sampling a discrete probability distribution
+
+One option to sample a discrete probability distribution $P(k)$, with $k=1,\dots,M$ mutually exclusive events it to use the acceptance-rejection method. With this approach we embed the histogram of the probabability $P(k)$ into a large rectangular board and then we shoot bullets in it (assuming that these are uniformly distributed in the board).
+
+Let $P_\text{max}$ denoted the maximum value of the $P(k)$. Then we generate two uniformly distributed random numbers:
+- $r_1 \in [0,1)$ to obtain the event $k_r = \operatorname{int}(M \times r_1)$
+- $r_2 \in [0, P_\text{max})$
+
+If $r_2 \leq P(k_r)$ the trial is successfull and $k_r$ is taken as the output, otherwise the trial is rejected and another couple of random numbers is generated. It is clear that the probability to obtain a given event $k$ is proportional to $P(k)$, since the events are generated uniformly, but accepted only if $r_2 \leq P(k)$.
+
+This approach is not very efficient, since a given number of trials are rejected and, therefore, do not contribute to generate any output. Nevertheless, the computational cost of a rejected trial is not huge since it just requires the generation of two random numbers.
+
+The rejection probability is proportional to
+
+$$
+	\sum_k (P_\text{max} - P_k) = MP_\tex{max} - 1
+$$
+
+which is the area of teh section of the rectangular board above the histogram. In the trivial case where all events are equiprobable with $P_\text{max} = 1/M$ all trials are accepted. In contrast, when one event has a probability that is much larger than all the other ones, the number rejected trials will be very large and the algorithm becomes very inefficient.
+
+A simpler approach without rejection is also possible. To visualize this appoach, we must organize all probabilities in a single row, forming a sequence of boxes of length $P(k)$. The total length of the row is $\sum_k P(k) = 1$. Then just one uniformly distributed random number $r\in [0,1)$ is generated, which identifies a given box in the row and deterines the event $k_r$. Formally, the value of $k_r$ is the one satisfying
+
+$$
+	\sum_{k=1}^{k_r - 1} P(k) \leq \sum_{k=1}^{k_r} P(k)
+$$
+
+Clearly, also in this case, the probability to select a given $k$ is given by $P(k)$, thus providing the correct result. 
+
+## Sampling a continuous probability density
+
+Consider a one-dimensional probability density $\mathcal{P}(x)$ where $x$ is uniformly distributed in $[0, 1)$. Introducing the random variable $y = f(x)$ with $\d y = \d f(x)$ we get
+
+$$
+	x = \int_{-\infty}^y \mathcal{P}_y (s) \;\d s
+$$
+
+This shows that to find a random variable that is distributed according to the probability density $\mathcal{P}_y (y)$, we must (i) perform the integral of $\mathcal{P}_y (y)$ to otain its cumulative probability $F(y)$
+
+$$
+	F(y) = \int_{-\infty}^y \mathcal{P}_y (s) \;d s
+$$
+
+and then (ii) extract the random variable $x$ that is uniformly distributed in $[0, 1)$ and find the value $y$ such that $F(y) = x$. Thus, we must invert $F(y)$ and find $y = F^{-1} (x)$. For generic distributions, it is not obvious that steps (i) and (ii) can be done efficiently.
+
+<MathBox title="Exponential distribution" boxType="example">
+Suppose we want to generate random numbers according to the exponential distribution
+
+$$
+	\mathcal{P}(y) = \begin{cases}
+		Ae^{-Ay},\quad& y \geq 0 \\
+		0,\quad& y < 0
+	\end{cases}
+$$
+
+where $A$ is a given constant. Then, we have the following equation
+
+$$
+	x = A \int_0^y e^{-As} \;\d s = 1 - e^{-Ay}
+$$
+
+which solved for $y$ yields
+
+$$
+	y = -\frac{1}{A} \ln(1 - x)
+$$
+</MathBox>
+
+<MathBox title="Gaussian distribution" boxType="example">
+Suppose that we want to generate random numbers with a Gaussian distribution
+
+$$
+	\mathcal{P}(y) = \frac{1}{\sqrt{2\pi}} e^{-y^2/2}
+$$
+
+In this case, we would sove the equation
+
+$$
+	x = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^y e^{-s^2/2} \;\d s
+$$
+
+Unfortunately, the integral does not have a simple closed form and, therefore, this approach does not give any useful outcome. Nevertheless, this can be overcome using the Box-Muller trick. First, note that
+
+$$
+	\left(\frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} e^{-x^2/2} \;\d x \right)^2 =& \frac{1}{2\pi} \int_{-\infty}^\infty e^{-x^2/2} \int_{-\infty}^\infty e^{-y^2/2} \;\d y = 1
+$$
+
+By introducing polar coordinates
+
+$$
+\begin{align*}
+	x =& \rho\cos(\theta) \\
+	y =& \rho\cos(\theta)
+\end{align*}
+$$
+
+we have
+
+$$
+	\frac{1}{2\pi} \int_{-\infty}^\infty e^{-x^2/2} \;\d x \int_{-\infty}^\infty e^{-y^2/2} \;\d y = \int_0^{2\pi} \frac{\d\theta}{2\pi} \int_0^\infty \rho e^{-\rho^2 /2} \;\d\rho
+$$
+
+Substituting $\xi = \rho^2 / 2$, we finally have
+
+$$
+	\frac{1}{2\pi} \int_{-\infty}^\infty e^{x^2/2} \;\d x \int_{-\infty}^\infty e^{-y^2/2} = \int_0^{2\pi} \frac{\d\theta}{2\pi} \int_0^\infty e^{-\xi} \;\d\xi
+$$
+
+The meaning of this equation is that two independent variables $x$ and $y$ with a Gaussian distribution are equivalent to other two independent variables $\theta$ and $\xi$, the former one being uniformly distributed in $[0,2\pi)$ and the latter being exponentially distributed with $A = 1$. Thus, two Gaussian variables can be easily obtained from extracting $\theta$ and $\xi$
+
+$$
+\begin{align*}
+	\theta =& 2\pi r_1 \\
+	\xi = -\ln(1 - r_2)
+\end{align*}
+$$
+
+where $r_1$ and $r_2$ are two random variables uniformly distributed in $[0,1)$. Finally, given $\rho = \sqrt{2\xi}$, we get
+
+$$
+\begin{align*}
+	x =& \cos(2\pi r_1) \sqrt{-2 \ln(1 - r_2)} \\
+	y =& \sin(2\pi r_1) \sqrt{-2 \ln(1 - r_2)}
+\end{align*}
+$$
+
+In this way, it is possible to get Gaussian variables out of uniformly distributed numbers.
+</MathBox>
+
+## Markov chains
+
+Consider the case of a single random variable $x$ that assumes a discrete set of values, the generalization to continuous systems being straightforward. For exmple, $\set{x}$ may define the discrete Hilbert space of a many-body system on a finite lattice. In this case, the total number of possible configurations $\set{x}$ introduces significant memory overhead, such that a direct sampling is not possible.
+
+The idea to sample a generic probability distribution is to construct a random process for which a configuration $x_n$ evolves as a function of a discrete iteration time $n$ according to a stochastic dynamics
+
+$$
+	x_{n+1} = F_n (x_1,\dots,x_n, \xi_n)
+$$
+
+where $F_n$ is a function that may depend upon all the previous configurations up to $n$. The stochastic nature of the dynamics is due to the fact that $F_n$ also depends upon a random variable $\xi_n$ that is distributed according to a probability density $\chi(\xi_n)$.
+
+The main point is to define a suitable function $F_n$ such that the configurations $x_n$ will be distributed according to the probability that we want to sample. In this way, we can overcome the fact that we are not able to perform a direct sampling of the probability distribution.
+
+A particularly simple case is given by Markov chains, were the configuration at time $n + 1$ just depends upon the one at time $n$
+
+$$
+\begin{equation*}
+	x_{n+1} = F(x_n, \xi_n)
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+where the function $F$ is taken to be time independent. Although $\xi_n$ and $\xi_{n+1}$ are indepent random variables $x_n \equiv x$ and $x_{n+1} \equiv x'$ are not independent. The joint probability distribution of these variables can be decomposed into the product of the marginal and the conditional probability
+
+$$
+\begin{equation*}
+	\mathcal{P}_n (x', x) = \omega(x'|x) \mathcal{P}_n (x)
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+Here, the conditional probability is such that $\omega(x'|x) geq 0$ for all $x$ and $x'$, and satisfies the normalization
+
+$$
+\begin{equation*}
+	\sum_{x'} = \omega(x'|x) = 1
+\tag{\label{equation-29}}
+\end{equation*}
+$$
+
+It represents the probability that, having the configuration $x$ at the iteration $n$, then $x'$ appears at $n+1$. Its actual form depends upon the function $F(x, \xi)$ and the probability distribution $\chi(\xi)$.
+
+We are now in the position of deriving the master equation associated to the Markov chain. The marginal probability of the variable $x'$ is given by
+
+$$
+	\mathcal{P}_{n+1} (x') = \sum_x \mathcal{P}_n (x', x)
+$$
+
+so that by using $\eqref{equation-26}$, we get
+
+$$
+\begin{equation*}
+	\mathcal{P}_{n+1} (x') = \sum_x \omega(x'|x) \mathcal{P}_n (x)
+\tag{\label{equation-30}}
+\end{equation*}
+$$
+
+This equation allows us to calculate the evolution of the marginal probability $\mathcal{P}_n (x)$ as a function of $n$, since the conditional probability $\omega(x'|x)$ is determined by the stochastic dynamics in $\eqref{equation-27}$ and does not depend on $n$. More precisely, although the actual value of the random variable $x$ is not known deterministically, the probability distribution of $x$ is instead known at each iteration $n$, once an initial condition $\mathcal{P}_0 (x)$ is given. The solution for $\mathcal{P}_n (x)$ is obtained iteratively by solving the master equation, starting from the given initial condition up to the desired value of $n$.
+
+## Detailed balance and approach to equilibrium
+
+The natural and important question about the Markov process is to understand under which conditions the sequence of distributions $\mathcal{P}_n (x)$ converges to some limiting (i.e. equilibrium) distribution $\mathcal{P}_\text{eq} (x)$ or not. In the following we will assume that $\mathcal{P}_\text{eq} > 0$ for all the configurations $x$. The conditions for which $\mathcal{P}_\text{eq} = 0$ do not contribute to the final result and can be effectively discarded. The questions we want to address are
+1. Does stationary distribution $\mathcal{P}_\text{eq}$ exist?
+2. Is the convergence to $\mathcal{P}_\text{eq} (x)$ guaranteed when starting from a given arbitrary $\mathcal{P}_0 (x)$?
+
+The first question requires that
+
+$$
+	\mathcal{P}_\text{eq} (x') = \sum_x \omega(x'|x) \mathcal{P}_\text{eq} (x)
+$$
+
+In order to satisfy the stationary requirement, it is sufficient (but not necessary) to satisfy the detailed balance condition
+
+$$
+\begin{equation*}
+	\omega(x'|x) \mathcal{P}_\text{eq} = \omega(x|x') \mathcal{P}_\text{eq} (x')
+\tag{\label{equation-28}}
+\end{equation*}
+$$
+
+This relationship indicates that the number of processes undergoing a transition $x\to x'$ has to be exactly compensated, to maintain a stable stationary condition, by the same amount of reverse processes $x' \to x$. We can show that the detailed balance condition allows a stationary solution of the master equation $\eqref{equation-30}$. If for some $n\in\N$ we have that $\mathcal{P}_n (x) = \mathcal{P}_\text{eq}$, then
+
+$$
+\begin{align*}
+	\mathcal{P}_{n+1} (x') =& \sum_x \omega(x'|x) \mathcal{P}_\text{eq} (x) \\
+	=& \mathcal{P}_\text{eq} (x') \sum_x \omega(x|x') \\
+	=& \mathcal{P}_\text{eq} (x')
+\end{align*}
+$$
+
+where we used the detailed balance condition $\eqref{equation-28}$ and the normalization condition $\eqref{equation-29}$. Thus, we have shown that the master equation $\eqref{equation-30}$ admits stationary solutions, which do not depend on the discrete time $n$.
+
+We would like to understand which conditions the equilibrium solution is unique and when a generic initial condition $\mathcal{P}_0 (x)$ converges to it. First of all, we would like to define the concept of periodicity in the Markov chains. A state $x$ has a period $k$ if any return to it occurs in multiples of $k$ steps. If $k=1$ the state is said to be aperiodic. In this case return to $x$ occurs at irregular time steps. A Markov chain is aperiodic if all states are aperiodic. The second concept is reducibility. A state $x$ is accessible from another $x'$ if there is a non-zero probability to visit $x$ starting the Markov chain from $x'$. Notice that it is required to have a finite transition probability that directly couples the two states but only that they are connected by a sequence of elementary steps. A Markov chain is irreducible if any state is accessible from any other one (in other words, whenever it is possible to reach any state starting from any other state). Finally, a state is said to be positive reccurent if the return time is finite (in other words, if it is possible to come back to it in a finite number of steps). A Markov chain is ergodic if it is aperiodic and all states are positive recurrent.
+
+Let us now address the second question. First of all, the transition probability $\omega(x'|x)$ can be seen as a non-symmetric matrix. However, in presence of the detailed balance condition $\eqref{equation-}$, the $\omega(x'|x)$ can be rewritten in terms of a symmetric matrix $\mathbf{H}$, through a similarity transformation
+
+$$
+\begin{equation*}
+	H_{x,x'} = H_{x', x} = \omega(x'|x) \frac{\Upsilon_0 (x)}{\Upsilon_0 (x')}
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+where $H_{x,x'} \geq 0$ and $\Upsilon_0 (x) = \sqrt{\mathcal{P}_\text{eq}}$ defines a vector, whose components are strictly positive for all configurations $x$.
+
+The first observation is that $\Upsilon_0 (x)$ is an eigenstate of $\mathbf{H}$ with eigenvalue $\lambda_0 = 1$. From $\eqref{equation-31}$ we have
+
+$$
+\begin{equation*}
+\begin{split}
+	\sum_{x'} H_{x,x'} \Upsilon_0 (x') =& \Upsilon_0 (x) \sum_{x'} \omega(x'|x) \\
+	=& \Usilon_0 (x)
+\end{split}
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+where we use the normalization of the conditional probability.
+
+Now, we will prove that there are no other eigenvalues of $\mathbf{H}$ that, in absolute value, are larger than $\lambda_0$, namely $|\lambda_\alpha| \leq 1$. In order to prove this statement, we consider the square $\mathbf{H}$ that obviously has positive eigenvalues $\lambda_\alpha^2$. This is necessary in order to exclude the existence of an eigenvalue equal to $-1$. Then, we take the eigenvector $\Psi(x)$ with the largest eigenvalue $\lambda_\Psi^2$
+
+$$
+	\sum_{x'} (H^2)_{x,x'} \Psi(x') = \lambda_\Psi^2 \Psi(x)
+$$
+
+which implies, assuming that $\Psi(x)$ is normalized
+
+$$
+	\sum_{x,x'} \Psi(x) (H^2)_{x, x'} \Psi(x') = \lambda_\Psi^2
+$$
+
+By taking the absolute values of both sides, we obtain
+
+$$
+\begin{align*}
+	\lambda_\Psi^2 =& \left|\sum_{x,x'} \Psi(x) (H^2)_{x,x'} \Psi(x') \right| \\
+	\leq& \sum_{x,x'} |\Psi(x)|(H^2)_{x,x'} |\Psi(x')|
+\end{align*}
+$$
+
+For the min-max property of a Hermitian matrix, it follows that also $|\Psi(x)|$ is an eigenstate of $\mathbf{H}^2$ is symmetric and, therefore, eigenvectors corresponding to different eigenvalues must be orthogonal. Since from $\eqref{equation-32}$ we have that $\Upsilon_0 (x) = \sqrt{\mathbf{P}_\text{eq}}$ is an eigenvector of $\mathbf{H}^2$, with eigenvalue $\lambda_0^2 = 1$, then $|\Psi(x)|$ cannot be orthogonal to it. Consequently
+
+$$
+	\lambda_\Psi^2 = \lambda_0^2 = 1
+$$
+
+Nevertheless, it is possible that the eigenvalue $\lambda_0^2 = 1$ is not unique, since for degenerate eigenvalues the eigenvectors are not forced to be orthogonal. However, the possibility to have a degenerate eigenvalue is ruled out by imposing the requirement that $\mathbf{H}^2$ is irreducible. Suppose that another eigenstate $\Upsilon'_0 (x)$ of $\mathbf{H}^2$ has eigenvalue $\lambda_0^2 = 1$. For any constant $\alpha$ then $\Upsilon_0 (x) + \alpha\Upsilon'_0 (x)$ is also an eigenstate with the same eigenvalue. Moreover, from the previous discussion, also $\Phi(x) = |\Upsilon_0 (x) + \alpha\Upsilon'_0 (x)|$ is an eigenstate, and the constant $\alpha$ can be chose to have $\Phi(\bar{x}) = 0$ for a particular configuration $x \equiv \tilde{x}$. Then, since $\Phi(x)$ is an eigenstate of $\mathbf{H}^2$, we have
+
+$$
+	\sum_x (H^2)_{\tilde{x}, x} \Phi(x) = \lambda_0^2 \Phi(\tilde{x}) = 0
+$$
+
+which directly implies that $\Phi(x) = 0$ for all configurations connected to $\tilde{x}$ by $(H^2)_{\tilde{x}, x}$, since $\Phi(x)$ is non-negative and $(H^2)_{\tilde{x}, x}$ is strictly positive. By applying iteratively the previous condition to the new configurations connected with $\tilde{x}$, we can show that all configurations that are generated have $\Phi(x) = 0$. Irreducibility implies that all configurations will be reached by this procedure and $\Phi(x) = 0$ is verified in the whole space of configurations. Thus, $\Upsilon'_0 (x)$ is just proportional to $\Upsilon_0 (x)$ and is not a different eigenvector. This fact implies that the maximum eigenvalue $\lambda_0^2 = 1$ is non-degenerate and, in particular, $\lambda_0 = -1$ does not exist and $\lambda_0 = 1$ is unique.
+
+This result is related to the Perron-Frobenius theorem, which applies to non-negative and ergodic matrices that, however, are not necessarily symmetric. In this case, it is possible to show that the maximum eigenvalue $\lambda_0$ is real, positive, and unique (i.e. all other eigenvalues $\lambda_i$, which can be complex, are such taht $|\lambda_i| < \lambda_0$). Moreover, all the components of the left eigenvector corresponding to $\lambda_0$ are positive.
+
+Going back to the symmetric case, the previous results imply that any initial $\mathcal{P}_0 (x)$ will converge toward the stationary distribution $\mathcal{P}_\text{eq} (x) = \Upsilon_0^2 (x)$. By using $\eqref{equation-31}$, the master equation $\eqref{equation-30}$ is written as
+
+$$
+\begin{equation*}
+	\mathcal{P}_n (x) = \sum_{x'} H_{x,x'} \frac{\Upsilon_0 (x)}{\Upsilon_0 (x')} \mathcal{P}_{n-1} (x')
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+then, by iterating this procedure, i.e. by expressing the marginal probability at every step in terms of the previous one, we obtain a relation between $\mathcal{P}_n (x)$ and the inital probability at step $n = 0$
+
+$$
+	\mathcal{P}_n (x) = \sum_{x'} (H^n)_{x,x'} \frac{\Upsilon_0 (x)}{\Upsilon_0 (x')} \mathcal{P}_0 (x')
+$$
+
+here the $n$th power of the matrix $\mathbf{H}$ can be expanded in terms of its eigenvectors
+
+$$
+	(H^n)_{x, x'} = \sum_\alpha \lambda_\alpha^n \Upsilon_\alpha (x') \Upsilon_\alpha (x)
+$$
+
+By replacing this expansion in $\eqref{equation-33}$ we obtain
+
+$$
+\begin{equation*}
+\begin{split}
+	\mathcal{P}_n (x) =& \Upsilon_0 (x) \sum_\alpha \lambda_\alpha^n \Upsilon_\alpha (x) \left(\sum_{x'} \frac{\Upsilon_\alpha (x')}{\Upsilon_0 (x')} \mathcal{P}_0 (x') \right)
+\end{split}
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+For large $n$ all terms with $\alpha > 0$ decay exponentially, as $|\lambda_\alpha| < 1$ for $\alpha > 0$, and, therefore, only the first one survives in the above summation. Given the fact that the initial probability distribution $\mathcal{P}_0$ is normalized, we finally get that the probaiblity distribution converges to the desired on
+
+$$
+	\lim_{n\to\infty} \mathcal{P}_n (x) = \Upsilon_0^2 (x) = \mathcal{P}_\text{eq} (x)
+$$
+
+In practical implementations, we can assume that, after a thermalization time $n_\text{therm}$, the probability distribuion $\mathcal{P}_n (x)$ is essentially converged to the equilibrium distribution $\mathcal{P}_\text{eq}$, so that the configurations $x_n$ (with $n > n_\text{therm}$) can be used to evaluate the quantity of our interest. In most cases, however, subsequent configurations are not independent from each other and a finite number of steps is needed to reduce the degree of correlation among them. The correlation time is the time that is necessary to have independent configurations. Correlation and thermalization times coincide, being directly related to the spectrum of the transition probability $\eqref{equation-31}$. From $\eqref{equation-34}$, which gives the approach to equilibriym of the probability distribution, it is evident that the largest eigenvalue determines the number of Markov steps that are necessary to loose memory of a given state and obtain an independent one.
+
+## Metropolis algorithm
+
+The Metropolis algorithm can be used to construct a conditional probability $\omega(x'|x)$ that satisfies the detailed balance condition $\eqref{equation-28}$, such that, for large values of $n$, the configurations $x_n$ are distributed according to a given probability dsitribution $\mathcal{P}_\text{eq}$. The algorithm has been extended to more general cases in what is known as the Metropolis-Hastings algorithm.
+
+As a first step, we split the transition probability $\omega(x'|x)$ into two pieces
+
+$$
+	\omega(x'|x) = T(x'|x) A(x'|x)
+$$
+
+where $T(x'|x)$ defines a trial probability that proposes the new configuration $x'$ from the present one $x$ and $A(x'|x)$ is the acceptanse probability. In the original Metropolis algorithm $T(x'|x)$ is assumed symmetric. However, in the generalized version of the algorithm $T(x'|x)$ can be chosen with large freedom, as long as ergodicity is ensured. In order to define a Markov process that satisfies the detailed balance condition, the proposed configuration $x'$ is accepted with a probability
+
+$$
+	A(x'|x) = \min\Set{1, \frac{\mathcal{P}_\text{eq} (x') T(x|x')}{\mathcal{P}_\text{eq} T(x'|x)}}
+$$
+
+Without loss of generality, we can always choose $T(x|x) = 0$, that is we never propose to remain with the same configuration. Nevertheless, $\omega(x|x)$ can be finite, since the proposed move can be rejected. The actual value of $\omega(x|x)$ is fixed by the normalization condition $\sum_{x'} \omega(x'|x) = 1$.
+
+In most cases, it is useful to consider symmetric trial probabilities $T(x'|x) = T(x|x')$. In this case, the acceptance probability simplifies into
+
+$$
+  A(x'|x) = \min\Set{1, \frac{\mathcal{P}_\text{eq} (x')}{\mathcal{P}_\text{eq} (x)}}
+$$
+
+To show that detailed balance is satisfied in terms of the acceptance probability $\eqref{equation-35}$, consider the case in which $x$ and $x' \neq x$ are such that $\mathcal{P}_\text{eq} (x') T(x|x')/[\mathcal{P}_\text{eq} (x) T(x'|x)] > 1$. In this case, we have
+that
+
+$$
+\begin{align*}
+  A(x'|x) =& 1 \\
+  A(x|x') =& \frac{\mathcal{P}_\text{eq} (x) T(x'|x)}{\mathcal{P}_\text{eq} (x') T(x|x')}
+\end{align*}
+$$
+
+then, we can directly verify that the detailed balance is satisfied
+
+$$
+  T(x'|x) A(x'|x) \mathcal{P}_\text{eq} (x) = T(x|x') A(x|x') \mathcal{P}_\text{eq} (x')
+$$
+
+A similar proof can be obtained in the opposite case where $x$ and $x'$ are such that $\mathcal{P}_\text{eq} (x') T(x|x')/[\mathcal{P}_\text{eq} (x) T(x'|x)] < 1$.
+
+Summarizing, if $x_n$ is the configuration at time $n$, the Markov chain iteration is defined in two steps
+1. Propose a move by generating a configuration $x'$ according to the transition probability $T(x'|x_n)$
+2. Accept or reject the trial move. The move is accepted and the new configuration $x_{n+1}$ is take to equal to $x'$, if a random number $\eta$, uniformly distributed in $[0,1)$, is such that $\eta < A(x'|x_n)$. Otherwise, the move is rejected and we keep $x_{n+1} = x_n$
+
+The important simplifications introduced by the Metropolis algorithm are
+- It is enough to know the equilibrium probability distribution $\mathcal{P}_\text{eq} (x)$ up to a normalization constant: only the ratio $\mathcal{P}_\text{eq} (x') / \mathcal{P}_\text{eq} (x)$ is needed in calculating the acceptance rate $\eqref{equation-35}$. This allows us to avoid to evaluate a computationally prohibitive normalization.
+- The transtition probability $T(x'|x)$ can be chosen to be very simple. For example, in a one-dimensional probablem on the continuum, a new coordinate of a particle $x'$ can be taken with the rule $x' = x + \xi$, where $\xi$ is a random number uniformly distributed in $[-a, a]$, yieldin $T(x'|x) = 1/(2a)$ for $x - a < x' < x + a$. Notice that in this case $T(x'|x) = T(x|x')$
+- Whenever the new configuration $x'$ is very close to the old one $x$ all the moves have a high probability to be accepted, since $\mathcal{P}_\text{eq} (x')/\mathcal{P}_\text{eq} (x) \approx 1$, and the rejection mechanism is ineffective. However, in this case the configurations that are generated alon the Markov chain are highly correlated among themselves. By contrast, proposing a new configuration that is very far from the old one can be dangerous, since $\mathcal{P}_\text{eq}(x') / \mathcal{P}_\text{eq} (x)$ could be very small. Nevertheless, once accpeted, the new configuration will be very weakly correlated to the previous one. A good rule of thumb to decrease the correlation time is to tune the trial probaility $T(x'|x)$, in order to have an average acceptance rate of about $0.5$, which corresponds to accepting, on average, only half of the total proposed moves. Although there is no reason that this represents the optimal choice, it usually provides a very good option.
+
+## Estimating errorbars
+
+Here we consider non-linear functions of averages of one or more variables, $f(\mu_x, \mu_y,\dots)$.
+
+### Error propagation
+
+For simplicity, consider a function that only depends on two expectation values, i.e. $f(\mu_x, \mu_y)$. In order to find the bias and the errorbar of $f(\bar{x}, \bar{y})$, we can expand this quantity around $f(\mu_x, \mu_y)$
+
+$$
+\begin{equation*}
+\begin{split}
+  f(\bar{x}, \bar{y}) \approx& f(\mu_x, \mu_y) (\partial{\mu_x} f) \Delta_x + (\partial_{\mu_y} f) \Delta_y \\
+  &+ \frac{1}{2} (\partial_{\mu_x, \mu_y}^2 f) \Delta_x^2 + (\partial_{\mu_x, \mu_y}^2 f) \Delta_x \Delta_y + \frac{1}{2}(\partial_{\mu_x, \mu_y}^2 f) \Delta_y^2
+\end{split}
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+where $\Delta_x = (\bar{x} - \mu_x)$ and $\Delta_y = (\bar{y} - \mu_y)$. The leading contributions to the bias comes from the second-order terms, since the first-order terms in $\Delta_x$ and $\Delta_y$ average to zero when the procedure is repeated many times, i.e. $\braket{\Delta_x} = \braket{\Delta_y} = y$. Instead, the second-order terms have, in general, finite expectation values
+
+$$
+\begin{align*}
+  \braket{\Delta_x^2} =& \braket{\bar{x}^2} - \braket{\bar{x}}^2 = \sigma_{\bar{x}}^2 = \frac{\sigma_x^2}{N} \\
+  \braket{\Delta_y^2} =& \braket{\bar{y}^2} - \braket{\bar{y}}^2 = \sigma_{\bar{y}}^2 = \frac{\sigma_y^2}{N}
+  \braket{\Delta_x \Delta_y} =& \braket{\overline{xy}} - \braket{\bar{x}}\braket{\bar{y}} = \sigma_{\overline{xy}}^2 = \frac{\sigma_{xy}^2}{N}
+\end{align*}
+$$
+
+Consequently
+
+$$
+  \braket{f(\bar{x}, \bar{y})} - f(\mu_x, \mu_y) \approx \frac{1}{2N} \left[ (\partial_{\mu_x, \mu_x}^2 f) \sigma_x^2 + 2(\partial_{\mu_x, \mu_y}^2 f)\sigma_{xy}^2 + (\partial_{\mu_y, \mu_y}^2 f) \sigma_y^2 \right]
+$$
+
+which demonstrates that the difference between the exact value $f(\mu_x, \mu_y)$ and its estimation given by $f(\bar{x}, \bar{y})$ is $O(1/N)$. Notice that, whenever the function is linear in the expectation values, the second derivatives vanish and, therefore, there is no bias. Usually, we do not care about this bias, since it is much smaller than the statistical error, which is proportional to $1/\sqrt{N}$. The leading contribution to the errorbar associated to $f(\bar{x}, \bar{y})$ can be computed by considering the expansion $\eqref{equation-36}$. Then, the variance is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  \sigma_f^2 = \braket{f^2 (\bar{x}, \bar{y)} - \braket{f(\bar{x}, \bar{y)}^2 \\
+  =& (\partial_{\mu_x} f)^2 \braket{\Delta_x^2} + 2(\partial_{\mu_x} f) (\partial_{\mu_y} f) \braket{\Delta_x \Delta_y} + (\partial_{\mu_y} f)^2 \braket{\Delta_y^2} \\
+  =& \frac{1}{N} \left[(\partial_{\mu_x} f)^2 \sigma_x^2 + 2(\partial_{\mu_x} f)(\partial_{\mu_y} f) \sigma_{xy}^2 + (\partial_{\mu_y} f)^2 \sigma_y^2 \right]
+\end{split}
+\tag{\label{equation-41}}
+\end{equation*}
+$$
+
+where all second-order terms in $\eqref{equation-36}$ cancel when considering the difference between $\braket{f^2 (\bar{x}, \bar{y})}$ and $\braket{f(\bar{x}, \bar{y})}^2$. As usual, $\sigma_f^2$ can be computed by substituting $\sigma_x^2$, $\sigma_{xy}^2$ and $\sigma_y^2$ with their estimations. The main drawback of this approach is that it requires the exact calcutation of all partial derivatives, besides kepping track of all the variances and covariances.
+
+### Bootstrap method
+
+In the bootstrap method, we generate $N_\text{boot}$ data sets containing exactly $N$ points just by selecting randomly the points from the original data set, which is denoted by $\set{x_i}_{i=1}^N$. With this procedure, the probability that a data point is selected is $1/N$ and, therefore, on average it will appear once in each data set. Hoever, in the new sample, each point of the original data set can appear more than once (or not a all).
+
+Let us denote by $n_{i,\alpha}$ the number of times that $x_i$ appears in the bootstrap $\alpha$ with $\alpha = 1,\dots, N_\text{boot}$. Since each bootstrap data set contains $N$ data points, we have the following constraint
+
+$$
+\begin{equation*}
+  \sum_{i=1}^N n_{i,\alpha} = N
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+Whenever the number of data sets $N_\text{boot}$ is large enough, it reproduces the correct averages. In particular, we denote
+
+$$
+\begin{align*}
+  [n_i]_\text{boot} =& \frac{1}{N_\text{boot}} \sum_{\alpha=1}^{N_\text{boot}} n_{i,\alpha} \\
+  [n_i]_\text{boot}^2 =& \frac{1}{N_\text{boot}} \sum_{\alpha=1}^{N_\text{boot}} n_{i,\alpha}^2
+\end{align*}
+$$
+
+Since the probability that $x_i$ occurs $n_{i,\alpha}$ times in the bootstrap is given by the binomial probability
+
+$$
+  P(n_i, \alpha) = \frac{N!}{n_{i, \alpha}! (N - n_{i,\alpha})!} p^{n_{i,\alpha}} (1 - p)^{N_n_{i,\alpha}}
+$$
+
+where $p = 1/N$. The mean and variance are given by
+
+$$
+\begin{align*}
+  [n_i]_\text{boot} =& Np = 1 \tag{\label{equation-39}} \\
+  [n_i^2]_\text{boot} - [n_i]_\text{boot}^2 =& Np(1 - p) = 1 - \frac{1}{N} \tag{\label{equation-38}}
+\end{align*}
+$$
+
+The constraint $\eqref{equation-37}$ implies that the values of $n_{i,\alpha}$ and $n_{j,\alpha}$ for $i\neq j$ in the same bootstrap data set are not independent, but have a small correlation (that goes to zero as $N\to\infty$). Squaring $\eqref{equation-37}$ and averaging over $N_\text{boot}$, we obtain
+
+$$
+  \frac{1}{N^2} \sum_{i,j} [n_i n_j]_\text{boot} = 1
+$$
+
+which can be rewritten by using the fact that $[n_i]_\text{boot} = 1$ as
+
+$$
+  \frac{1}{N^2} \sum_{i,j} ([n_i n_j]_\text{boot} - [n_i]_\text{boot} [n_j]_\text{boot}) = 0
+$$
+
+By splitting the terms with $i = j$ from the others (that give all equal contributions) and using $\eqref{equation-38}$, we obtain
+
+$$
+  \frac{1}{N}\left(1 - \frac{1}{N} \right) + \left(\frac{N - 1}{N} \right)([n_i n_j]_\text{boot} - [n_i]_\text{boot} [n_j]_\text{boot}) = 0
+$$
+
+which finally leads to
+
+$$
+\begin{equation*}
+  [n_i n_j]_\text{boot} - [n_i]_\text{boot} [n_j]_\text{boot} = -\frac{1}{N}
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+We are now in the position to compute the averages of different quantities. In particular, let us start with the simple case of $\mu = \braket{x}$. The average for a given bootstrap data set is given by
+
+$$
+  x_\alpha^B = \frac{1}{N}\sum_{i=1}^N n_{i,\alpha} x_i
+$$
+
+The final bootstrap estimate of $\mu$ is then given by
+
+$$
+\begin{equation*}
+\begin{split}
+  \bar{x}^B =& \frac{1}{N_\text{boot}} \sum_{\alpha=1}^{N_\text{boot}} x_\alpha^B \\
+  =& \frac{1}{N} \sum_{i=1}^N [n_i]_\text{boot} x_i \\
+  =& \frac{1}{N} \sum_{i=1}^N x_i = \bar{x}
+\end{split}
+\tag{\label{equation-42}}
+\end{equation*}
+$$
+
+where we have used $\eqref{equation-39}$. Thus, the average over the bootstrap data sets gives exactly the average of the original data set $\set{x_i}$. Then, to compute the variance, we notice that
+
+$$
+\begin{align*}
+  \overline{(x^B)^2} = \frac{1}{N_\text{boot}} \sum_{\alpha=1}^{N_\text{boot}} (x_\alpha^B)^2 \\
+  =& \frac{1}{N^2} \sum_{i,j} [n_i n_j]_\text{boot} x_i x_j
+\end{align*}
+$$
+
+Using $\eqref{equation-38}$ and $\eqref{equation-40}$, we get
+
+$$
+\begin{equation*}
+\begin{split}
+  s_{x^B}^2 =& \overline{(x^B)^2} - (\bar{x}^B)^2 \\
+  =& \frac{1}{N^2} \left(1 - \frac{1}{N}\right) \sum_{i=1}^N x_i^2 - \frac{1}{N^3} \sum_{i\neq j} x_i x_j \\
+  =& \frac{s^2}{N}
+\end{split}
+\tag{\label{equation-43}}
+\end{equation*}
+$$
+
+where $s^2$ is the empirical variance. 
+
+$$
+\begin{align*}
+  s^2 =& \frac{1}{N} \sum_i (x_i - \bar{x})^2 \\
+  =& \frac{1}{N} \sum_i x_i - \left(\frac{1}{N} \sum_i x_i \right)^2
+\end{align*}
+$$
+
+Thus, the expectation values are
+
+$$
+\begin{align*}
+  \braket{\bar{x}^B} =& \braket{\bar{x}} = \mu \\
+  \braket{s_{x^B}^2} =& \left(\frac{N - 1}{N^2} \right)\sigma^2 = \left(\frac{N - 1}{N} \right) \sigma_{\bar{x}}^2
+\end{align*}
+$$
+
+where we have used that
+
+$$
+\begin{equation*}
+  \sigma_{\bar{x}}^2 = \braket{\bar{x}^2} - \braket{\bar{x}}^2 = \frac{\sigma^2}{N}
+\tag{\label{equation-46}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+\begin{split}
+  \braket{s^2} =& \left(1 - \frac{1}{N} \right)(\braket{x^2} - \braket{x}^2) \\
+  =& \left(\frac{N - 1}{N} \right)\sigma^2
+\end{split}
+\tag{\label{equation-47}}
+\end{equation*}
+$$
+
+In summary, the bootstrap estimate of the variance $\sigma_{\bar{x}}^2$ is given by $N/(N-1) s_{x^B}^2$. This procedure does not require the calculation of the partial derivatives of $\eqref{equation-41}$. Thus, bootstraping is much easier to implement than error propagation.
+
+Similarly, we can easily compute teh bootstrap estimate of $f(\mu_x, \mu_y)$
+
+$$
+  f_\alpha^B = f(x_\alpha^B, y_\alpha^B)
+$$
+
+The final estimate is given by averaging the bootstrap data set
+
+$$
+  \bar{f}^B = \frac{1}{N_\text{boot}} \sum_{\alpha=1}^{N_\text{boot}} f_\alpha^B
+$$
+
+while the errorbar is obtained from
+
+$$
+  s_{f^B}^2 = \overline{(f^B)^2} - (\bar{f}^B)^2
+$$
+
+It can be show that expanding $f_\alpha^B$ around $f(\mu_x, \mu_y)$, similarly to $\eqref{equation-36}$
+
+$$
+\begin{align*}
+  f_\alpha^B =& f(x_\alpha^B, y_\alpha^B) \\
+  \approx& f(\mu_x, \mu_y) + (\partial_{\mu_x} f) \Delta_{\alpha, x}^B + (\partial_{\mu_y} f) \Delta_{\alpha, y}^B
+\end{align*}
+$$
+
+where $\Delta_{\alpha, i}^B = (x_\alpha^B - \mu_x)$ and $\Delta_{\alpha, y}^B = (y_\alpha^B - \mu_y)$, and then following the steps of $\eqref{equation-42}$ and $\eqref{equation-43}$, we obtain that the bootstrap estimate of $\sigma_{\bar{f}}^2$ is given by $N/(N - 1) s_{f^B}^2$.
+
+The drawback of the bootstrap method is that about $37 \%$ are no selected in a single bootstrap. The probability that a data point is not taken in a given bootstrap $\alpha$ is $(1 - 1/N)^N$, which for large $N$ approaches $e^{-1} \approx 0.37$. Therefore, much of the information of the original data set is not used.
+
+### Jackknife method
+
+In the jackknife method, we define the $i$th estimate to be the average over all the data in the original data set except the point $i$. In the simple case $\mu = \braket{x}$, we have
+
+$$
+\begin{align*}
+  x_i^J =& \frac{1}{N-1} \sum_{j=1, j\neq i}^N x_j \\
+  =& \frac{N}{N-1} \bar{x} - \frac{1}{N-1} x_i
+\end{align*}
+$$
+
+The final jackknife estimate of $\mu$ is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  \bar{x}^J =& \frac{1}{N} \sum_{i=1}^N x_i^J \\
+  =& \frac{N}{N-1}\bar{x} - \frac{1}{N-1} \bar{x} = \bar{x}
+\end{split}
+\tag{\label{equation-44}}
+\end{equation*}
+$$
+
+In order to compute the errorbar associated to it, we notice that
+
+$$
+\begin{align*}
+  \overline{(x^J)^2} =& \frac{1}{N} \sum_{i=1}^N (x_i^J)^2 \\
+  =& \bar{x}^2 + \frac{1}{(N-1)^2} (\overline{x^2} - \bar{x}^2)
+\end{align*}
+$$
+
+The jackknife estimate of the variance is obtained from
+
+$$
+\begin{equation*}
+\begin{split}
+  s_{x^J}^2 =& \overline{(x^J)^2} - (\bar{x}^J)^2 \\
+  =& \frac{1}{(N-1)^2} (\overline{x^2} - \bar{x}^2) \\
+  =& \frac{s^2}{(N-1)^2}
+\end{split}
+\tag{\label{equation-45}}
+\end{equation*}
+$$
+
+The expectation value of $\eqref{equation-44}$ is obviously the mean $\mu$, while the expectation value of $\eqref{equation-45}$ is the variance of the mean divided by $(N - 1)$
+
+$$
+\begin{align*}
+  \braket{\overline{x^J}} =& \braket{x} = \mu \\
+  \braket{s_{x^J}^2} =& \frac{\sigma^2}{N(N-1)} = \frac{\sigma_{\bar{x}}^2}{N_1}
+\end{align*}
+$$
+
+where we have used $\eqref{equation-46}$ and $\eqref{equation-47}$. In summary, the jackknife estimate of the variance $\sigma_{\bar{x}}^2$ is given by $(N - 1)s_{x^J}^2$. Notice that in the jackknife approach there is a $(N-1)$ factor that multiplies $s_{x^J}^2$, this is due to the fact that the new samples are very correlated, since they would all be equal except that each one neglects just one point.
+
+To estimate any function of expectation values, we have to define
+
+$$
+  f_i^J = f(x_i^J, y_i^J)
+$$
+
+The final estimate is given by averaging the jackknife data sets
+
+$$
+  \bar{f^J} = \frac{1}{N} \sum_{i=1}^N f_i^J
+$$
+
+while the errorbar is obtained from
+
+$$
+  s_{f^J}^2 = \overline{(f^J)^2} - (\bar{f}^J)^2
+$$
+
+Expanding $f_i^J$ around $f(\mu_x, \mu_y)$ yields
+
+$$
+\begin{align*}
+  f_i^J =& f(x_i^J, y_i^J) \\
+  \approx& f(\mu_x, \mu_y) + (\partial_{\mu_x} f) \Delta_{i,x}^J + (\partial_{\mu_y} f) \Delta_{i,y}^J
+\end{align*}
+$$
+
+where $\Delta_{i,x}^J = (x_i^J - \mu_x)$ and $\Delta_{i,y}^J = (y_i^J - \mu_y)$, and then following the procedure of $\eqref{equation-44}$ and $\eqref{equation-45}$, we obtain that the jackknife estimate of the variance $\sigma_{\bar{f}}^2$ is $(N - 1)s_{f^J}^2$.
+
+### Correlated samplings
+
+Consider the case where the original data set consists of correlated points, i.e. the set of $\set{x_i}_{i=1}^N$ are not independent. This situation appears whenever teh data set is not generated by a direct sampling, but instead by a Markov process. In this case, the subsequent points will possess some degree of correlation, since, in general, it is very hard to accept a new configuration which is completely decorrelated from the previous one. Nevertheless, also for a correlated data set, the average gives an unbiased estimation of the exact mean
+
+$$
+  \braket{\bar{x}} = \frac{1}{N} \sum_{i=1}^N \braket{x_i} = \braket{x}
+$$
+
+since the average is a linear function of the data set $\set{x_i}$. By contrast, the quantity $s^2$ is no longer an unbiased estimator of the exact variance
+
+$$
+\begin{align*}
+  \braket{s^2} =& \frac{1}{N} \sum_i \braket{x_i^2} - \frac{1}{N^2} \sum_{i,j} \braket{x_i, x_j} \\
+  \neq& \left(\frac{N-1}{N}\right) \sigma_x^2
+\end{align*}
+$$
+
+which is due to the fact that $\braket{x_i x_j} \neq \braket{x_i} \braket{x_j}$. In general, the estimation of teh variance using $s^2$ leads to underestimating the errorbars.
+
+To overcome this problem, we can perform the so-called binning technique, or block analysis. We divide the data set $\set{x_i}$ derived from a long Markov chain into several $(N_\text{bin})$ segments, each of length $L_\text{bin} = N/N_\text{bin}$. On each bin $j=1,\dots, N_\text{bin}$, we define the partial average
+
+$$
+\begin{equation*}
+  x^j = \frac{1}{L_\text{bin}} \sum_{i=(j-1)L_\text{bin} + 1}^{jL_\text{bin}} x_i
+\tag{\label{equation-48}}
+\end{equation*}
+$$
+
+Clearly, the average over the bins is equal to the original average
+
+$$
+\begin{equation*}
+  \overline{x^j} = \frac{1}{N_\text{bin}} \sum_{j=1}^{N_\text{bin}} x^j = \bar{x}
+\tag{\label{equation-49}}
+\end{equation*}
+$$
+
+However, the probability distribution of the binned variables $x^j$ is different from the one of the $x_i$. Given the definition $\eqref{equation-48}$, the variance of the $x^j$ is generally smaller than the one of the $x_i$. This fact can be easily understood in the case where the original variables are already independent and $N_\text{bin}$ is large. In this case, the central limit theorem holds and implies that the variance of the binned variables is $1/L_\text{bin}$ smaller than the one of the original variables. In the general case, by increasing the bin length $L_\text{bin}$, the new variables $x^j$ will be more and more uncorrelated among each other, eventually becoming independent random variables. After the equilibration part of the Markov process, that we assume already performed at step $i = 1$, the average correlation function
+
+$$
+  C(n - m) = \braket{x_n x_m} - \braket{x_n} \braket{x_m}
+$$
+
+depends only on the discrete time difference $n - m$ (since stationarity implies time-homogeneity) and approaches zero exponentially as $C(n - m) \propto e^{-|n - m|/\tau}$, where $\tau$ is the correlation time in the Markov chain. Thus, if we take $L_\text{bin}$ to be sufficiently larger than $\tau$, then the different bin averages $x^j$ can be reasonable considered to be independent random variables and the variance can be estimated as
+
+$$
+  s_\text{bin}^2 = \frac{1}{N_\text{bin}} \sum_{j=1}^{N_\text{bin}} (x^j - \bar{x})^2
+$$
+
+Then, the variance of the average values $\eqref{equation-49}$ is given by
+
+$$
+  s_{\bar{x}}^2 = \frac{s_\text{bin}^2}{N_\text{bin}}
+$$
+
+The errorbar on the average value is given by the square root of $s_{\bar{x}}^2$. Notice that, in the case where the original variables are already uncorrelated, the reduced (i.e. $1/L_\text{bin}$) variance of the binned variables is compensated with the smaller number (i.e. $N_\text{bin}$) of them, leading to teh same variance of the mean values before and after the binning procedure.
+
+# Langevin molecular dynamics
+
+The canonical ensemble, also called the $NVT$ ensemble, is a statistical mechanical state where the following parameters are constant
+- number of particles $N$
+- volume $V$
+- temperature $T$
+
+Such a system of $N_p$ particles in $d$ spatial dimensions in a volume $\Omega$ can be described by first-order Langevin dynamics given by stochastic differential equations of the form
+
+$$
+\begin{equation*}
+	\frac{\d\mathbf{R}(t)}{\d t} = \mathfb{f}[\mathbf{R}(r)] + \boldsymbol{\eta}(t)
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where $\mathbf{R}(t)$ is a $D$-dimensional vector with $D = N_p d$
+
+In terms of a potential $V(\mathbf{R})$, the force components are given by
+
+$$
+	f_\alpha (\mathbf{R}) = -\frac{\partial V(\mathbf{R})}{\partial R_\alpha}
+$$
+
+Finally, $\boldsymbol{\eta}(t)$ is a random vector that represents a random noise with vanishing mean value an no correlations between components $\alpha\neq\beta$ and times $t\neq t'$. In other words, it is a white noise with moments
+
+$$
+\begin{align}
+	\braket{\eta_\alpha (t)} =& 0 \\
+    \braket{\eta_\alpha (t) \eta_\beta (t')} = 2T\delta_{\alpha, \beta} \delta(t - t') \tag{\label{equation-3}}
+\end{align}
+$$
+
+
+In contrast, the dynamics generated by Newton's equations of motion simulate a set of classical particles in a finite volume $\Omega$ at fixed energy $E$, the so-called $NVE$ ensemble.
+
+From one side, the first-order Langevin equations can be seen as an ad hoc approach to generate configuations that are equilibrated according to the Boltzmann distribution. On the other side, they can be obtained fomr a coarse-grained description of the Brownian motion. In this case, a small grain with mass $m$ in a fluid experiences, besides an external force $\mathbf{f}(\mathbf{R})$, a friction force with coefficients $\gamma$ and a random force, which is due to random density fluctuations in the fluid. This approach leads to the second-order Langevin dynamics
+
+$$
+\begin{align}
+	m\frac{\d\mathbf{V}(t)}{\d t} =& \mathbf{f}[\mathbf{R}(t)] - \gamma\mathbf{V}(t) + \boldsymbol{\eta}(t) \\
+    \frac{\d\mathbf{R}(t)}{\d t} =& \mathbf{V}(t)
+\end{align}
+$$
+
+Then, the first-order Langevin equations are obtained in the limit $m\to 0$ (in this limit, $\gamma$ just sets the time scale). This limit is called the over-damped regime of the second-order Langevin dynamics.
+
+Starting from an inital condition $\mathbf{R}_0 := \mathbf{R}(t)$, the possible solutions of stochastic differential equations acquire several stochastic trajectories depending on the particular realization of the noise. The solution distribution is characterized by the probability $\mathcal{P}(\mathbf{R}, t)$ to find a given configuration $\mathbf{R}$ at time $t$ with the initial condition
+
+$$
+	\mathcal{P}(\mathbf{R}, t_0) = \delta(\mathbf{R} - \mathbf{R}_0)
+$$
+
+In the following, we will show that, after an equilibration time, $\mathcal{P}(\mathbf{R},t)$ converges to an equilibrium distribution that is independent from the initial condition $\mathbf{R}_0$. In particular the equilibrium probability is given by the Boltzmann distribution
+
+$$
+\begin{equation*}
+	\mathcal{P}_\text{eq} (\mathbf{R}) = \frac{1}{\mathcal{Z}} \exp\left[-\frac{V(\mathbf{R})}{T}\right]
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+where $\mathcal{Z}$ is the partition function, needed for the normalization condition of the probability
+
+$$
+	\mathcal{Z} = \int \exp\left[\frac{V(\mathbf{R})}{T}\right] \;\d\mathbf{R}
+$$
+
+Then, the solution of the differential equations can be used to sample a large number $N$ of configurations $\mathbf{R}_n$ at discrete times $t_n$ to represent the canonical distribution $\mathcal{P}_\text{eq} (\mathbf{R})$, which allows us to compute any correlation function $\mathcal{O}(\mathbf{R})$
+
+$$
+	\int \mathcal{O}(\mathbf{R}) \mathcal{P}_\text{eq} (\mathbf{R}) \;\d\mathbf{R} \approx \frac{1}{N} \sum_n \mathcal{O}(\mathbf{R}_n)
+$$
+
+For a given system, there is no general rule telling whether it is more convenient to work with molecular dynamics or Monte Carlo approaches. However, in some cases, molecular dynamics represents the best choice. For example, in several ab initio methods, the classical potential $V(\mathbf{R})$ is not given by a simple for, but it is the result of complicated algorithms. Here, a similar amount of computer time is taken to compute all components of the forces or to employ a single calculation of the energy necessary for a Metropolis acceptance step. In such a situation molecular dynamics is typically more convenient than Monte Carlo, because with the same computational overhead all the positions of the atoms are changed at once. Moreover, it is not necessary to employ local moves limited to a single or a few atoms to remain with a good acceptance rate. By contrast, the advantage of the Monte Carlo method is that there is no other bias than the statistical one, whereas in molecular dynamics it is always necessary to introduce a time discretization, which implies a systematic, but controllable, error.
+
+## Time discretization
+
+In order to define an approximate algorithm for the simulation of classical particles at finite temperature, we integrate both sides of $\eqref{equation-1}$ over a finite interval $(t_n, t_{n+1})$, wehere $t_n = t_0 + \Delta n$ are discretized times. In this way, we obtain to lowest-order approximation in $\Delta$
+
+$$
+\begin{equation*}
+\begin{split}
+	\mathbf{R}_{n+1} - \mathbf{R}_n =& \int_{t_n}^{t_{n+1}} \mathbf{f}[\mathbf{R}(t)] + \boldsymbol{\eta}(t) \;\d t \\
+	=& \Delta\mathbf{f}_n + \int_{t_n}^{t_{n+1}} \boldsymbol{\eta}(t) \;\d t
+\end{split}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+where $\mathbf{R}_n = \mathbf{R}(t_n)$ and $\mathbf{f}_n = \mathbf{f}[\mathbf{R}(t_n)]$. Here, we have approximated the integral of the force in this interval with the lowest-order approximation of $\Delta\mathbf{f}_n$, because the force is approximately constant within the small time interval.
+
+The time integral in $\eqref{equation-2}$ can be estimated by noticing that a sum of many random variables is a Gaussian random number. In particular, by introducing a Gaussian random vector $\mathbf{z}_n$, we obtain
+
+$$
+	\int_{t_n}^{t_{n+1}} \boldsymbol{\eta}(t) \;\d t = \sqrt{2T\Delta} \mathbf{z}_n
+$$ 
+
+where the coefficient $\sqrt{2T\Delta}$ gives the correct variance of the integral
+
+$$
+\begin{align*}
+	\braket{z_{\alpha, n}, z_{\beta, n}} =& \frac{1}{2T\Delta} \int_{t_n}^{t_{n+1}} \;\d t \int_{t_n}^{t_{n+1}} \braket{\eta_\alpha (t) \eta_\beta (t')} \\
+	=& \frac{\delta_{\alpha, \beta}}{\Delta} \int_{t_n}^{t_{n+1}} \;\d t = \delta_{\alpha, \beta}
+\end{align*}
+$$
+
+where we have used $\eqref{equation-3}$. Moreover, $\braket{z_{\alpha, n}, z_{\beta, m}} = 0$ for $n \neq m$ since the integrand is always zero in such cases. By collecting all these results, we can write down the final expression for the discretized-time Langevin equation
+
+$$
+\begin{equation*}
+	\mathbf{R}_{n+1} = \mathbf{R}_n + \Delta\mathbf{f}_n  + \sqrt{2T\Delta}\mathbf{z}_n
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+This iteration represents a Markov process, which can be implemented by a simple iterative algorithm, since it is only required to have an algorithm that evaluates the force for any given positions $\mathbf{R}_n$ of the $N$ classical particles. In the limit $\Delta\to 0$, the noise (which is proportional to $\sqrt{\Delta}$) dominates over the deterministic force (which is linear in $\Delta$). The presence of the noisy term $\boldsymbol{\eta}(t)$ makes the solution of the Langevin equation non-continuous and non-differentiable, since
+
+$$
+\begin{equation*}
+	\frac{\mathbf{R}_{n+1} - \mathbf{R}_n}{\Delta} = O\left(\frac{1}{\sqrt{\Delta}}\right)
+\tag{\label{equation-4}}
+\end{equation*}
+$$ 
+
+which justifies the approximation in the integral of the deterministic force in $\eqref{equation-2}$
+
+$$
+	\int_{t_n}^{t_{n+1}} \mathbf{f}[\mathbf{R}(t)] \;\d t = \Delta\mathbf{f}_n + O(\Delta^{3/2})
+$$
+
+As a consequence of $\eqref{equation-4}$, the actual trajectory for $\Delta\to 0$ is not defined. Nevertheless, we will show that the time discretization $\eqref{equation-5}$ allows us to determine the evolution of the probability distribution $\mathcal{P}(\mathbf{R}, t)$ with no uncertainty in the limit $\Delta\to 0$. In the limit of zero temperature $T = 0$, the noisy term disappears from the equations of motion and, therefore, the algorithm becomes deterministic. In particular, it turns into the steepest decent method, yielding a local minimum of the potential $V(\mathbf{R})$ in a deterministic way for $n\to\infty$ and $\Delta$ small enough.
+
+## Derivation of the Fokker-Planck equation
+
+Since the discretized Langevin dynamics defines a Markov process, the probability $\mathcal{P}_n (\mathbf{R})$ is fully determined in terms of the conditional probability $K(\mathbf{R}|\mathbf{R})$ associated to the Markov step
+
+$$
+	\mathcal{P}_{n+1} (\mathbf{R}') = \int K(\mathbf{R}'|\mathbf{R}) \mathcal{P}_n (\mathbf{R}) \;\d\mathbf{R}
+$$
+
+The conditional probability can be determined by noticing that, in $\eqref{equation-5}$, only $\mathbf{z}_n$ is stochastic, while the force is fully deterministic. Thus, given $\mathbf{R}$, the new variable $\mathbf{R}'$ is given by the deterministic part $\mathbf{R} + \Delta\mathbf{f}(\mathbf{R})$ plus a random noise that is normally distributed with zero mean and variable equal to $2T\Delta$. Then
+
+$$
+	K(\mathbf{R}'|\mathbf{R}) = \prod_\alpha \frac{1}{\sqrt{2\pi}} \int e^{-z_\alpha^2 / 2} \delta(R'_\alpha - R_\alpha - \Delta f_\alpha - \sqrt{2T\Delta} z_\alpha) \;\d z_\alpha
+$$
+
+which is clearly normalized with $\int K(\mathbf{R}'|\mathbf{R}) \;\d\mathbf{R}' = 1$. By replacing this form of the conditional probability in the $\eqref{equation-5}$, we obtain
+
+$$
+\begin{equation*}
+	\mathcal{P}_{n+1} (\mathbf{R}') = \prod_\alpha \int \frac{\d z_\alpha}{\sqrt{2\pi}} e^{-z_\alpha^2 / 2} \int \delta(R'_\alpha - R_\alpha - \Delta f_\alpha - \sqrt{2T\Delta}) \mathcal{P}_n (\mathbf{R}) \;\d R_\alpha
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+Carrying out the integral over each $R_\alpha$, we are led to find the zeroes of the argument of the $\delta$-function, for fixed $\mathbf{R}'$ and $\mathbf{z}$
+
+$$
+	\mathbf{R}' - \mathbf{R} - \Delta\mathbf{f}(\mathbf{R}) - \sqrt{2T\Delta} \mathbf{z} = \mathbf{0}
+$$
+
+which represents a set of $D$ non-linear equations in $D$ unknowns. The solution can be found by performing a systematic expansion for small $\Delta$
+
+$$
+	\mathbf{R} = \mathbf{R}' - \sqrt{2T\Delta}\mathbf{z} - \Delta\mathbf{f}(\mathbf{R}') + O(\Delta^{3/2})
+$$
+
+In this way, we can carry out the integration over each $R_\alpha$ in $\eqref{equation-6}$ and obtain
+
+$$
+	\mathcal{P}_{n+1} (\mathbf{R}) = \prod_\alpha \int \frac{\d z_\alpha}{\sqrt{2\pi}} \frac{e^{-z_\alpha^2 / 2}}{|1 + \Delta f'_\alpha (\mathbf{R}')|} \mathcal{P}_n (\mathbf{R}' - \Delta\mathbf{f}(\mathbf{R}') - \sqrt{2T\Delta}\mathbf{z})
+$$
+
+where $f'_\alpha (\mathbf{R}') = \partial f_\alpha / \partial R'_\alpha$, computed in $\mathbf{R}'$. This relation is valid up to order $O(\Delta^{3/2})$. By further expanding it to leading order in $\Delta$, we get
+
+$$
+\begin{equation*}
+	\mathcal{P}_{n+1} (\mathbf{R}') =& \prod_\alpha \int \frac{\d z_\alpha}{\sqrt{2\pi}} e^{-z_\alpha^2 / 2} \left(1 - \Delta \sum_\beta \frac{\partial f_\beta (\mathbf{R}')}{\partial R'_\beta} \right) \\
+	&\times \mathcal{P}_n (\mathbf{R}' - \Delta\mathbf{f}(\mathbf{R}') - \sqrt{2T\Delta})
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+finally, we can expand the probability distribution
+
+$$
+\begin{align*}
+	&\mathcal{P}_n (\mathbf{R}' - \Delta\mathbf{f}(\mathbf{R}') - \sqrt{2T\Delta}\mathbf{z}) \\
+	\approx& \mathcal{P}_n (\mathbf{R}') - \sum_\beta \left(\Delta f_\beta (\mathbf{R}') + \sqrt{2T\Delta} z_\beta \right) \frac{\partial \mathcal{P}_n (\mathbf{R}')}{\partial R'_\beta} \\
+	&+ T\Delta \sum_{\alpha, \beta} z_\alpha z_\beta \frac{\partial^2 \mathcal{P}_n (\mathbf{R}')}{\partial R'_\alpha \partial R'_\beta}
+\end{align*}
+$$
+
+In principle, the validity of the Taylor expansion is not justified for large values of $z_\alpha$, however this is not a problem because all the integrals in $\set{z_\alpha}$ are dominated in the region where $|z_\alpha| < 1$. By substituting the above expansion in $\eqref{equation-7}$ and carrying the Gaussian integrations over $set{z_\alpha}$, we get
+
+$$
+	\mathcal{P}_{n+1} (\mathbf{R}) = \mathcal{P}(\mathbf{R}) + \Delta \sum_\alpha \left(T \frac{\partial^2 \mathcal{P}_n (\mathbf{R})}{\partial R_\alpha^2} - \frac{\partial f_\alpha (\mathbf{R})}{\partial R_\alpha}\mathcal{P}_n (\mathbf{R}) - f_\alpha (\mathbf{R}) \frac{\partial\mathcal{P}_n (\mathbf{R})}{\partial R_\alpha} \right)
+$$
+
+The limit $\Delta\to 0$ can be obtained as follows. For small values of $\Delta$
+
+$$
+	\mathcal{P}_{n+1} (\mathbf{R}) - \mathcal{P}(\mathbf{R}) \approx \Delta\frac{\partial\mathcal{P}(\mathbf{R}, t)}{\delta t}
+$$
+
+which brings us to the Fokker-Planck equation for the probability density $\mathcal{P}(\mathbf{R}, t)$
+
+$$
+\begin{equation*}
+	\frac{\partial\mathcal{P}(\mathbf{R}, t)}{\partial t} = T \sum_\alpha \frac{\partial^2 \mathcal{P}(\mathbf{R}, t)}{\partial R_\alpha^2} - \sum_\alpha \frac{\partial}{\parital R_\alpha} [\mathcal{P}(\mathbf{R}, t) f_\alpha (\mathbf{R})]
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+ 
+It can be shown that the Boltzmann distribution $\eqref{equation-8}$ is a stationary solution to the Fokker-Planck equation. We can rewrite $\eqref{equation-9}$ as
+
+$$
+	\frac{\partial\mathcal{P}(\mathbf{R}, t)}{\partial t} = \sum_\alpha \frac{\partial}{\partial R_\alpha} \left(T \frac{\partial \mathcal{P}(\mathbf{R}, t)}{\partial R_\alpha} - \mathcal{P} (\mathbf{R}, t) f_\alpha (\mathbf{R}) \right)
+$$
+
+whose right-hand side is vanishing for the Boltzmann distribution. Another important property of the Fokker-Planck equation is that the right-hand side is a total divergence. This is just the consequence that the normalization of the probability $\int \mathcal{P}(\mathbf{R}, t) = N(t) = 1$, which represents a constant of motion of the equation. By integrating both sides of the equatition over a given volume and applying the Gauss theorem for the right-hand side, we obtain
+
+$$
+	\frac{\partial N(t)}{\partial t} = \int \mathbf{A}(\mathbf{R}, t) \cdot \mathbf{n}(\mathbf{R}) \;\d\mathbf{S}
+$$
+
+where
+
+$$
+	A_\alpha (\mathbf{R}, t) = T\frac{\partial\mathcal{P}(\mathbf{R}, t)}{\partial R_\alpha} - \mathcal{P}(\mathbf{R}, t) f_\alpha (\mathbf{R})
+$$
+
+and $\mathbf{n}(\mathbf{R})$ is the unit vector perpendicular to the surface $\mathbf{S}$. Then, $\mathbf{A}(\mathbf{R}, t)$ vanishes at infinity, implying that $N(t)$ is independent from $t$.
+
+## Relation to the Schrödinger equation
+
+There is a deep relationship between the Fokker-Planck equation and the Schrödingr equation in imaginary time. This is obtained by writing the solution of $\eqref{equation-9}$ in the following form
+
+$$
+\begin{equation*}
+	\mathcal{P}(\mathbf{R}, t) = \Upsilon_0 (\mathbf{R}) \Phi (\mathbf{R}, t)
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+where $\Upsilon_0 (\mathbf{R}) = \sqrt{\mathcal{P}_\text{eq} (\mathbf{R})}$ represents a normalized quantum state
+
+$$
+	\int \Upsilon_0^2 (\mathbf{R}) = 1
+$$
+
+Substituting the above definition of $\mathcal{P} (\mathbf{R}, t)$ into the Fokker-Planck equation $\eqref{equation-9}$, we obtain that $\Phi(\mathbf{R}, t)$ satisfies the Schrödinger equation in imaginary time
+
+$$
+	-\frac{\partial(\mathbf{R}, t)}{\partial t} = \hat{H}_\text{eff} \Phi(\mathbf{R}, t)
+$$
+
+where $\hat{H}$ is an effective Hamiltonian given by
+
+$$
+\begin{equation*}
+	\hat{H}_\text{eff} = -T \nabla_\mathbf{R}^2 + V_\text{eff} (\mathbf{R})
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+Here, the inverse temperature plays the role of the mass of the particles. Moreover, $V_\text{eff} (\mathbf{R})$ is an effective potential that depends upon the classical potential $V(\mathbf{R})$
+
+$$
+\begin{equation*}
+	V_\text{eff} (\mathbf{R}) = \frac{1}{2} \sum_\alpha \left(\frac{1}{2T} \left[\frac{\partial V(\mathbf{R})}{\partial R_\alpha} \right]^2 - \frac{\partial^2 V(\mathbf{R})}{\partial R_\alpha^2} \right)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+In the limit $T\to 0$, the minima of the original potential $V(\mathbf{R})$ are also minima of $V_\text{eff} (\mathbf{R})$. The first term of the previous equation vanishes at the minima of the original potential $V(\mathbf{R})$. The effective potential can be rewritten as
+
+$$
+\begin{equation*}
+	V_\text{eff} (\mathbf{R}) = \frac{T}{\Upsilon_0 (\mathbf{R})} \nabla^2_{\mathbf{R}} \Upsilon_0 (\mathbf{R})
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+By direct inspection of $\eqref{equation-10}$, it follows that $\Upsilon_0 (\mathbf{R})$ is an eigenstate of $\hat{H}_\text{eff}$ with energy $E_0 = 0$. Since it has no nodes (e.g., $\mathcal{P}_\text{eq} (\mathbf{R})$ is positive for all the configurations $\mathbf{R}$), it has also the actual ground state of the effective Hamiltonian. Then, the solution of the Schödinger equation, and the corresponding Fokker-Planck equation, can be formally given in closed form by expanding the initial condition in terms of the eigenstates $\Upsilon_n (\mathbf{R})$ of $\hat{H}_\text{eff}$.
+
+$$
+	\mathcal{P}(\mathbf{R}, t) = \Upsilon_0 (\mathbf{R}) \sum_n a_n \Upsilon_n (\mathbf{R})
+$$
+
+where
+
+$$
+	a_n = \int \frac{\Upsilon_n (\mathbf{R})}{\Upsilon_0 (\mathbf{R})} \mathcal{P} (\mathbf{R}, t_0)
+$$
+
+which implies $a_0 = 1$ from the normalization condition on $\mathcal{P}(\mathbf{R}, t_0)$. We thus obtain the full evolution of the probability $\mathcal{P} (\mathbf{R}, t)$ as
+
+$$
+	\mathcal{P}(\mathbf{R}, t) = \Upsilon_0 (\mathbf{R}) \sum_n a_n e^{-E_n t} \Upsilon_n (\mathbf{R})
+$$
+
+Thus, for large times $t$, then $\mathcal{P}(\mathbf{R}, t)$ converges exponentially to the stationary equilibrium distribution $\Upsilon_0^2 (\mathbf{R}) = \mathcal{P}_\text{eq} (\mathbf{R})$. The characteristic time $\tau$ for equilibration is given by the inverse gap to the first excitation, i.e. $\tau = 1/E_1$.
+
+The evolution generated by the Fokker-Planck equation can be shown to satisfy the detailed balance condition. The formal solution of the Schrödinger equation is given by
+
+$$
+	\Phi (\mathbf{R}', t) = \int \braket{\mathbf{R} | e^{\hat{H}_\text{eff} t} | \mathbf{R}} \Phi (\mathbf{R}, 0) \;\d\mathbf{R}
+$$
+
+Thus, by using $\eqref{equation-}$, the evolution of the probability density can be written as
+
+$$
+\begin{align*}
+	\mathcal{P}(\mathbf{R}', t) =& \int K_t (\mathbf{R}' | \mathbf{R}) \mathcal{P}(\mathbf{R}, 0) \;\d\mathbf{R} \\
+	=& \int \braket{\mathbf{R}' | e^{\hat{H}_\text{eff} t} | \mathbf{R}} \sqrt{\frac{\mathcal{P}_\text{eq} (\mathbf{R}')}{\mathcal{P}_\text{eq} (\mathbf{R})}} \mathcal{P} (\mathbf{R}, 0)
+\end{align*}
+$$
+
+which implies that the conditional probability is given by
+
+$$
+	K_t (\mathbf{R}' | \mathbf{R}) = \braket{\mathbf{R}' |e^{\hat{H}_\text{eff} t}| \mathbf{R}} \sqrt{\frac{\mathcal{P}_\text{eq} (\mathbf{R}')}{\mathcal{P}_\text{eq} (\mathbf{R})}}
+$$
+
+Since $hat{H}_\text{eff}$ is symmetric, i.e. $\braket{\mathbf{R}' |e^{\hat{H}_\text{eff} t}| \mathbf{R}} = \braket{\mathbf{R}|e^{\hat{H}_\text{eff} t} | \mathbf{R}'}$, we have that
+
+$$
+	\frac{K_t (\mathbf{R}' | \mathbf{R})}{K_t (\mathbf{R} |\mathbf{R}')} = \frac{\mathcal{P}_\text{eq} (\mathbf{R}')}{\mathcal{P}_\text{eq} (\mathbf{R})}
+$$
+
+which shows that the detailed balance condition is satisfied. Time discretization introduces an error that spoils the detailed balanced condition. In this sense, for any finite values of the discrete time step $\Delta$, the equilibrium distribution is not given by Boltzmann one $\eqref{equation-8}$, but reduces to it when $\Delta\to 0$.
+
+## Exact solution for the harmonic case
+
+Consider a generic quadratic potential of the type
+
+$$
+\begin{equation*}
+	V(\mathbf{R}) = \frac{1}{2} \sum_{\alpha, \beta} K_{\alpha, \beta} (R_\alpha - R_{\text{eq}, \alpha}) (R_\beta - R_{\text{eq}, \beta})
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+where $\mathbf{R}_\text{eq}$ are the equilibrium positions. The force-constant matrix $\mathbf{K}$ is symmetric and, therefore, can be diagonalized by a unitary matrix $\mathbf{U}$
+
+$$
+	\bar{\mathbf{K}} = \mathbf{UKU}^\dagger
+$$
+
+and its eigenvalues will be denoted by $\bar{K}_\alpha$, with $\bar{K}_1 \leq\cdots\leq \bar{K}_D$, i.e., the diagonal elements of the diagonal matrix $\bar{\mathbf{K}}$. The effective potential considered in $\eqref{equation-13}$ can be explicitly given in this case and the effective Hamiltonian $\hat{H}_\text{eff}$ remains harmonic with
+
+$$
+\begin{equation*}
+	V_\text{eff} (\mathbf{R}) = \frac{1}{2} \sum_{\alpha, \beta} K_{\alpha, \beta}^\text{eff} (R_\alpha - R_{\text{eq}, \alpha}) (R_\beta - R_{\text{eq}, \beta}) - \frac{1}{2} \sum_\alpha K_{\alpha, \alpha}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+where the effective harmonic coupling is
+
+$$
+	K_{\alpha, \beta}^\text{eff} = \frac{1}{2T} \sum_\gamma K_{\alpha, \gamma} K_{\gamma, \beta} = \frac{1}{2T} [K^2]_{\alpha, \beta}
+$$
+
+Since the effective Hamiltonian is quadratic, we obtain a harmonic problem with the above force-constant matrix and the mass $m = 1/2T$ for all degrees of freedom. Thus, according to standard calculations, the eigenvalues of the dynamical matrix $\mathbf{K}$ provide the eigenmodes of the harmonic problem (up to an energy shift)
+
+$$
+	E(\set{n_\alpha}) = \sum_\alpha \bar{K}_\alpha \left(n_\alpha + \frac{1}{2} \right) - \frac{1}{2} \sum_\alpha \bar{K}_\alpha = \sum_\alpha \bar{K}_\alpha n_\alpha
+$$
+
+where $n_\alpha$ are non-negative integers (the ground state corresponding to $n_\alpha = 0$ for all values of $\alpha$). Here, we have used that the constan term in $\eqref{equation-14}$ is the trace of the matrix $\mathbf{K}$, which is the sum of its eigenvalues. The correlation time in this case can be explicitly given by
+
+$$
+\begin{equation*}
+	\tau = \frac{1}{\bar{K}_1}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+where $\bar{K}_1$ is the minimum eigenvalue of the harmonic potential. Remarkably the correlation time $\tau$ does not depend on the temperature $T$.
+
+The discretized version of the Langevin equation $\eqref{equation-5}$ can be solved explicitly in the harmonic case. Multiplying both sides of $\eqref{equation-5}$ by $\mathbf{U}$ and introducing normal-mode coordinates $\mathbf{Q} = \mathbf{U}(\mathbf{R} - \mathbf{R}_\text{eq})$, the discretized Langevin dynamics becomes
+
+$$
+\begin{equation*}
+	Q_{\alpha, n+1} = (1 - \Delta \bar{K}_\alpha) Q_{\alpha, n} + \sqrt{2T\Delta} y_{\alpha, n}
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+where $\mathbf{y}_n = \mathbf{Uz}_n$ are normal distributed random variables satisfying
+
+$$
+	\braket{y_{\alpha, n} y_{\beta, n}} = \delta_{\alpha, \beta}
+$$
+
+Since normal modes do not couple, we can deal with each mode separately. The master equation corresponding to $\eqref{equation-15}$ depends on the conditional probability $K(Q'_\alpha | Q_\alpha)$ that, in this case, can be explicitly derived
+
+$$
+\begin{equation*}
+	K(Q'_\alpha |Q_\alpha) = \frac{1}{\sqrt{4\pi T\Delta}} \exp\left(-\frac{1}{4T\Delta} [Q'_\alpha - (1 - \Delta\bar{K}_\alpha) Q_\alpha]^2 \right)
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Then, we have that the probability distribution
+
+$$
+\begin{equation*}
+	\mathcal{P}_{\text{eq}, \alpha} (Q_\alpha) = \frac{1}{\mathcal{Z}} \exp\left(-\frac{K'_\alpha Q_\alpha^2}{2T} \right)
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+with
+
+$$
+\begin{equation*}
+	K'_\alpha = \left(1 - \frac{\Delta \bar{K}_\alpha}{2} \right) \bar{K}_\alpha
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+satisfies the detailed balance condition
+
+$$
+	\frac{K(Q'_\alpha | Q_\alpha)}{K(Q_\alpha | Q'_\alpha)} = \frac{\mathcal{P}_{\text{eq}, \alpha} (Q'_\alpha)}{\mathcal{P}_{\text{eq}, \alpha} (Q_\alpha)}
+$$
+
+Using $\eqref{equation-16}$, we find
+
+$$
+	\frac{K(Q'_\alpha | Q_\alpha)}{K(Q_\alpha | Q'_\alpha)} = \exp\left(\frac{1}{4T\Delta} \left[(\Delta \bar{K}_\alpha)^2 - 2\Delta \bar{K}_\alpha \right] [(Q'_\alpha)^2 - Q_\alpha^2 ]\right)	
+$$
+
+which is consistent with the distribution $\eqref{equation-17}$ with $K'_\alpha$ given by $\eqref{equation-18}$. Thus, collecting all modes together, the equilibrium distribution is given by
+
+$$
+	\mathcal{P}_\text{eq} (Q_\alpha) = \frac{1}{\mathcal{Z}} \exp\left(-\frac{1}{2T} \sum_\alpha \left[1 - \frac{\Delta\bar{K}_\alpha}{2} \right] \bar{K}_\alpha Q_\alpha^2 \right)
+$$
+
+An important remark about this result is that $\mathcal{P}_\text{eq} (Q_\alpha)$ is only defined when
+
+$$
+	1 - \frac{\Delta\bar{K}_\alpha}{2} \geq 0
+$$
+
+for all $\alpha$, otherwise the Langevin iteration will produce unbounded values of the coordinates $Q_\alpha$. Thus, we arrive to the condition that the time step $\Delta$ must satisfy $\Delta < 2/\bar{K}_D$, where $\bar{K}_D$ is the maximum eigenvalue of the force-constant matrix $\mathbf{K}$. This represents a very general result for the Langevin molecular dynamics, which is stable only for a small enough time step. In summary, it is important to make the following remarks
+- The error in the discretization of the Langevin equation scales corretly to zero for $\Delta\to 0$ since the exact distribution is obtain in this limit as $K'_\alpha \to\bar{K}_\alpha$ for $\Delta\to 0$ since the exact distribution is obtained in this limit as $K'_\alpha \to\bar{K}_\alpha$ for $\Delta\to 0$. Notice that the relative error in the determination of the equilibrium distribution, i.e. the error in the spring constant $\bar{K}_\alpha$, does not depend on the temperature $T$. Thus, the time step $\Delta$ can be kept independent from the temperature for given target accuracy.
+- At finite values of $\Delta$, the error in the discretization determines a (slightly) different equilibrium distribution that, however, remains of the same Gaussian form. Only for a single mode (i.e. for $D = 1$), this can be interpreted as a renormalization of the effective temperature $T \to T/(1 - (\bar{K}_1 \Delta)/2)$
+- The number of iterations $n_\text{corr}$ that are needed to generate an independent configuration $\mathbf{R'}$ from a given one $\mathbf{R}$ is given by
+
+$$
+	n_\text{corr} = \frac{\tau}{\Delta} \geq \frac{\bar{K}_D}{\bar{K}_1} := \bar{K}_\text{cond}
+$$
+
+where the correlation time $\tau$ is determined by $\eqref{equation-19}$ and $\bar{K}_\text{cond}$ is the condition number of the matrix $\mathbf{K}$, i.e. the ratio between its largest and smallest (non-zero) eigenvalues. Notice that, for the harmonic potential $n_\text{corr}$ does not depend on the temperature.
+
+## Accelerated Langevin dynamics
+
+When the condition number $\bar{K}_\text{cond}$ is large, the matrix is ill conditioned, implying that the number of iterations to generate a new independent configuration is extremely large. Thus, the method is inefficient and some trick is necessary to speed up the algorithm. One idea is to introduce in the Langevin equation $\eqref{equation-1}$ an acceleration matrix $\mathbf{S}$ such that
+
+$$
+\begin{equation*}
+	\frac{\d\mathbf{R}(t)}{\d t} = \mathbf{S}^{-1} \mathbf{f}[\mathbf{R}(t)] + \boldsymbol{\eta}(t)
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where the noise satisfies the conditions
+
+$$
+\begin{align*}
+	\braket{\eta_\alpha (t)} =& 0 \\
+	\braket{\eta_\alpha (t) \eta_\beta (t')} =& 2TS_{\alpha, \beta}^{-1} \delta(t - t')
+\end{align*}
+$$
+
+The modified algorithm gives a substantial improvement with respect to the original one of $\eqref{equation-1}$ when $\mathbf{S}$ is chosen as close as possible to the Hessian matrix
+
+$$
+	H_{\alpha, \beta} (\mathbf{R}) = \frac{1}{2} \frac{\partial^2 V(\mathbf{R})}{\partial R_\alpha \partial R_\beta}
+$$
+
+In the following, we consider the case in which the matrix $\mathbf{S}$ does not depend upon the coordinates $\set{\mathbf{R}}$, although a generalization in this sense is possible. The advantage of considering the scheme of $\eqref{equation-20}$ can be understood by exploting the limit of small temperatures. For $T\to 0$, the standard Langevin equation $\eqref{equation-1}$ reduces to the steepest descent method that, starting from a given intial point $\mathbf{R}$, gives a practical way to find the closest minimum of the potential $V(\mathbf{R})$. The number of steps that are necessary to convergence is related to the condition numner. Instead, by using the Newton-Raphson method, we can reach the target with one step in the harmonic case, no matter how large is the condition number. Thus, by considering $\mathbf{S}$ that closely approximates the Hessian matrix, the dynamics generated by $\eqref{equation-20}$ represents the generalization at finite temperatures of the Newton-Raphson approach, which minimizes the thermalization/correlation time.
+
+Following the same steps as for the standard Langevin equation, we can arrive at the discretized version of the modified Langevin equation
+
+$$
+\begin{equation*}
+	\mathbf{R}_{n+1} = \mathbf{R}_n + \Delta\mathbf{S}^{-1} \mathbf{f}_n + \sqrt{2T\Delta} \mathbf{z}_n
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+with $\braket{z_{\alpha, n}, z_{\beta, n}} = S_{\alpha, \beta}^{-1}$. The previous relations imply that the following modified Fokker-Planck equation holds in the limit $\Delta\to 0$
+
+$$
+	\frac{\partial\mathcal{P}(\mathbf{R}, t)} = \sum_\alpha \frac{\partial}{\partial R_\alpha} \left(\sum_\beta S_{\alpha, \beta}^{-1} \left[T \frac{\partial\mathcal{P} (\mathbf{R}, t)}{\partial R_\beta} - \mathcal{P}(\mathbf{R}, t) f_\beta (\mathbf{R}) \right] \right)
+$$
+
+which has the same equilibrium distribution, i.e. the Boltzmann one given in $\eqref{equation-8}$.
+
+The efficiency of this acceleration scheme can be appreciated by considering the harmonic case, which is a good approximation for low enough temperatures, where the thermal fluctuations are limited to configurations close to the minimum of the potential. In this case
+
+$$
+	\mathbf{f}[\mathbf{R}(t)] = -\mathbf{K}[\mathbf{R}(t) - \mathbf{R}_\text{eq}]
+$$
+
+Hence, by choosing $\mathbf{S} = \mathbf{K}$, we get
+
+$$
+	\mathbf{S}^{-1} \mathbf{f}_n = -(\mathbf{R}_n - \mathbf{R}_\text{eq})
+$$
+
+then, by taking $\Delta = 1$ drastically simplifies into
+
+$$
+\begin{equation*}
+	\mathbf{R}_{n+1} = \mathbf{R}_\text{eq} + \sqrt{2T}\mathbf{z}_n
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+which represents a very efficient method for generating new configurations with very short correlation time, i.e. $n_\text{corr} = 1$. The above equation sets a new independent configuration according to
+
+$$
+	\mathcal{P}_\text{eq} (\mathbf{R}) = \frac{1}{\mathcal{Z}} \exp\left(-\frac{1}{4T} \sum_{\alpha, \beta} K_{\alpha, \beta} (R_\alpha - R_{\text{eq}, \alpha})(R_\beta - R_{\text{eq}, \beta}) \right)
+$$
+
+notice that this equilibrium distribution corresponds to the correct (Gaussian) results for the harmonic potential of $\eqref{equation-22}$ apart from the presence of an extra factor $2$ implying the temperature, which is due to the $\sqrt{2T}$ term in $\eqref{equation-21}$. This fact is a drawback of the approximation introduced by the time discretization. Nevertheless, for general cases, when the potential is not harmonic, this method is able to reduce substantially the correlation time and represents a very efficient and simple method that could be taken in mind before starting a molecular dynamics simulation with the first-order Langevin dynamics.
+
+An improvement in the discretization of the accelerated Langevin equation of $\eqref{equation-20}$ can be performed by assuming that the chosen acceleration matrix $\mathbf{S}$ gives a good approximation of the Hessian at equilibrium $\mathbf{K} \approx A\mathbf{S}$, apart from an overall constant $A$ that can be empirically tuned to achieve the smallest possible error in the time discretization. Thus, we can consider that, even when the potential is not harmonic
+
+$$
+	\mathbf{S}^{-1} \mathbf{f} [\mathbf{R}(t)] = -A\mathbf{R}(t) + \mathbf{C}[\mathbf{R}(t)]
+$$
+
+where $\mathbf{C}[\mathbf{R}(t)]$ is weakly dependent on $\mathbf{R}$, once we neglect non-harmonic contributions at equilibrium. Then a good approximation is given by taking $\mathbf{C}[\mathbf{R}(t)] = A\mathbf{R}_\text{eq}$. Thus, we are led to consider
+
+$$
+	\frac{\d\mathbf{R}(t)}{\d t} = -A[\mathbf{R}(t) - \mathbf{R}_\text{eq}] + \boldsymbol{\eta}(t)
+$$
+
+Since this differential equation is linear, it can be integrated exactly by considering the new variable $\mathbf{R}' (t)$ such that $\mathbf{R}(t) = \mathbf{X}(t) \mathbf{R}'(t)$, where $\mathbf{X}(t)$ is a suitable time-dependent matrix
+
+$$
+\begin{align*}
+	\frac{\d\mathbf{X}(t)}{\d t} =& -A\mathbf{X}(t) \\
+	\mathbf{X}(t) \frac{\d\mathbf{R}' (t)}{\d t} =& A\mathbf{R}_\text{eq} + \boldsymbol{\eta}(t)
+\end{align*}
+$$
+
+Then, the result in the interval $(t_n, t_{n+1})$ is given by
+
+$$
+\begin{equation*}
+	\mathbf{R}_{n+1} = \mathbf{R}_n - A\Delta_A (\mathbf{R}_n - \mathbf{R}_\text{eq}) + \sqrt{2\Delta_{2A}T} \mathbf{z}_n
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+where
+
+$$
+\begin{align*}
+	\Delta_A =& \frac{1 - e^{-A\Delta}} \\
+	\braket{z_{\alpha, n}, z_{\beta, n}} =& S_{\alpha, \beta}^{-1}
+\end{align*}
+$$
+
+This scheme represents a more accurate integration of the accelerated dynamics, which for large values of $\Delta$ gives the exact dynamics of the harmonic potential of $\eqref{equation-22}$. For $\Delta\to\infty$ we have
+
+$$
+	\mathbf{R}_{n+1} = \mathbf{R}_\text{eq} + \sqrt{\frac{T}{A}} \mathbf{z}_n
+$$
+
+which leads to the correct Boltzmann distribution at temperature $T$, since $\braket{z_{\alpha, n}, z_{\beta, n}} = AK_{\alpha, \beta}^{-1}$
+
+$$
+	\mathcal{P}_\text{eq} (\mathbf{R}) = \frac{1}{\mathcal{Z}} \left(-\frac{1}{2T} \sum_{\alpha, \beta} K_{\alpha, \beta} (R_\alpha - R_{\text{eq}, \alpha})(R_\beta - R_{\text{eq}, \beta}) \right)
+$$
+
+In the general non-harmonic case, we can replace the second term in the right-hands side of $\eqref{equation-23}$ by $\Delta_A \mathbf{S}^{-1} \mathbf{f}$ and obtain the iterative integration scheme
+
+$$
+\begin{equation*}
+	\mathbf{R}_{n+1} = \mathbf{R}_n + \Delta_A \mathbf{S}^{-1} \mathbf{f}_n + \sqrt{2\Delta_{2A} T} \mathbf{z}_n
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+which becomes exact if non-harmonic terms can be neglected and $mathbf{K}$ is exactly given by $A\mathbf{S}$. Notice that $\eqref{equation-24}$ is equivalent to change $\Delta\to\Delta_A$ and $T\to T\Delta_{2A}/\Delta_A$ in $\eqref{equation-25}$. In practice, given an approximation of the Hessian matrix $\mathbf{S}$, we can empirically select the value of $A$ to minimize the time step error and work with a large value of $\Delta$. Although the error for a generic potential $V(\mathbf{R})$ remains linear in $\Delta$, it is usually quite small as its depends only on the non-harmonic terms of an accurate approximation of the Hessian.
+
+# Variational correlated lattice models
+
+## Finite-dimensional matrix formulation
+
+Consider i many-body fermionic system represented by the Hilbert space $\mathcal{H}$, which in practice is infinite-dimensional. This system can be approximated by restricting it to a finite-dimensional subspace $\mathcal{H}' \subset \mathcal{H}$. Assuming the truncated Hilbert space has dimension $\dim(\mathcal{H}') = N$ and is spanned by an orthonormal basis $\set{\ket{x}}_{x=1}^N$, the Hamiltonian restricted to $\mathcal{H}'$ is represented by an $N\times N$ matrix with elements
+
+$$
+  \mathbf{H}_{x, x'} := \braket{x|\hat{H}|x}
+$$
+
+The approximate spectrum is obtained by diagonlizing this finite matrix. By the variational principle, the lowest eigenvalue of this restriction provides an upper bound to the exact ground-state energy.
+
+### Two-site model for the $\mathrm{H}_2$ molecule
+
+In the simplest approximation to the $\text{H}_2$ molecule, we consider a minimal basis consisting of two spatial orbitals $\phi(\mathbf{r} - \mathbf{R}_i)$ for $i=1,2$, centered at the nuclear positions $\mathbf{R}_1$ and $\mathbf{R}_2$. Each orbital carries spin $\sigma \in\set{\uparrow, \downarrow}$.
+
+We restrict the two-electron sector with total spin projection $\hat{S}_z = 0$. A convenient orthonormal basis is
+
+$$
+\begin{align*}
+  \ket{1} =& \hat{c}_{1,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0} \\
+  \ket{2} =& \hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0} \\
+  \ket{3} =& \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger \ket{0} \\
+  \ket{4} =& \hat{c}_{2,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger \ket{0} \\
+\end{align*}
+$$
+
+Here $\ket{0}$ is the vacuum state and $\hat{c}_{i,\sigma}^\dagger$ is the creation operator for an electron defined by
+
+$$
+  \hat{c}_{i,\sigma}^\dagger = \int \phi(\mathbf{r} - \mathbf{R}_i) \psi_\sigma^\dagger (\mathbf{r}) \;\d\mathbf{r}
+$$
+
+where $\psi_\sigma^\dagger$ is the fermionic field operator. Assuming orthogonal orbitals
+
+$$
+  \int \phi^* (\mathbf{r} - \mathbf{R}_i) \phi(\mathbf{r} - \mathbf{R}_j) \;\d\mathbf{r} = \delta_{i,j}
+$$
+
+the creation and annihilation operators satisfy the anticommutation relations
+
+$$
+\begin{equation*}
+\begin{split}
+  [\hat{c}_{i,\sigma}, \hat{c}_{j,\tau}^\dagger]_+ =& \delta_{i,j} \delta_{\sigma, \tau} \\
+  [\hat{c}_{i,\sigma}^\dagger, \hat{c}_{j,\tau}^\dagger] =& 0
+\end{split}
+\tag{\label{equation-51}}
+\end{equation*}
+$$
+
+This defines a four-dimensional truncated Hilbert space
+
+$$
+  \mathcal{H}' = \operatorname{span}\set{\ket{1}, \ket{2}, \ket{3}, \ket{4}}
+$$
+
+Within this minimal basis, the electronic Hamiltonian takes the form of an extended two-site Hubbard model
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{H} =& -t\sum_{\sigma} (\hat{c}_{1,\sigma}^\dagger \hat{c}_{2,\sigma} + \hat{c}_{2,\sigma}^\dagger \hat{c}_{1,\sigma}) \\
+  &+ U \sum_i \hat{n}_{i,\uparrow} \hat{n}_{i, \downarrow} + V\sum_{\sigma,\sigma'} \hat{n}_{1,\sigma} \hat{n}_{2,\sigma'}
+\end{split}
+\tag{\label{equation-50}}
+\end{equation*}
+$$
+
+where $\hat{n}_{i,\sigma} = \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma}$ is the density per spin $\sigma$ on the site $i=1,2$. The parameters $t$, $U$ and $V$ determined by the underlying single-particle orbitals
+
+- **Hopping:**
+$$
+  -t = \int \phi^* (\mathbf{r} - \mathbf{R}_1) \left(-\frac{\hbar^2}{2m} \nabla^2 - \sum_{i=1,2} \frac{e^2}{|\mathbf{r} - \mathbf{R}_i|} \right) \phi(\mathbf{r} - \mathbf{R}_2) \;\d\mathbf{r}
+$$
+
+- **On-site interaction:**
+$$
+  U = \iint |\phi(\mathbf{r} - \mathbf{R}_i)|^2 \frac{e^2}{|\mathbf{r} - \mathbf{r}'|} | |\phi(\mathbf{r}' - \mathbf{R}_i)|^2 \;\d\mathbf{r}\d\mathbf{r}'
+
+$$
+
+- **Inter-site Coulomb interaction:**
+$$
+  V = \iint |\phi(\mathbf{r} - \mathbf{R}_1)|^2 \frac{e^2}{|\mathbf{r} - \mathbf{r}'|} | |\phi(\mathbf{r}' - \mathbf{R}_2)|^2 \;\d\mathbf{r}\d\mathbf{r}'
+$$
+
+In principle, the Hamiltionian $\eqref{equation-50}$ also contains the Coulomb interaction between the protons
+
+$$
+  \frac{e^2}{|\mathbf{R}_1 - \mathbf{R}_2}
+$$
+
+However, assuming fixed nuclear positions, this is a constant term, which only shifts the total energy.
+
+In the ordered basis $\set{\ket{1},\ket{2},\ket{3},\ket{4}}$, the Hamiltonian matrix reads
+
+$$
+  \mathbf{H} = \begin{bmatrix} 
+    U & -t & -t & 0 \\
+    -t & V & 0 & -t \\
+    0 & -t & -t & U
+  \end{bmatrix}
+$$
+
+The diagonal entries correspond to interaction energies
+- $\ket{1}, \ket{4}$: double occupation $\implies U$
+- $\ket{2}, \ket{3}$: one electron per site $\implies V$
+
+The off-diagonal entries arise from single-particle hopping.
+
+The approximate ground state is the lowest eigenvector of this matrix. Generally, for finite $t,U, V$ the exact ground state within $\mathcal{H}'$ is a linear combination
+
+$$
+  \ket{\Psi_0} = \sum_{x=1}^4 c_x \ket{x}
+$$
+
+where the coefficients $c_x$ are determined by diagonalizing $\mathbf{H}$. The competition between kinetic delocalization $(t)$ and Coulomb repulsion $(U, V)$ determines the relative weight of ionic and covalent configurations. There are two limiting cases for $\mathbf{H}$:
+
+1. **Non-interacting limit ($U = V = 0$)**
+
+In the limit $U = V = 0$, the Hamiltonian reduces to a purely kinetic term, resulting in the ground state
+
+$$
+  \ket{\Psi_\text{HF}} = \frac{1}{2} (\hat{c}_{1,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger + \hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger)\ket{0}
+$$
+
+This state corresponds to occupying the bonding molecular orbital with two opposite spins and coincides with the Hartree–Fock solution. It is exact only in the absence of electron–electron repulsion. However, as $|\mathbf{R}_1 - \mathbf{R}_2| \to\infty$, this state does not approach the atomic limit because ionic configurations remain equally weighted.
+
+2. **Atomic limit ($t = 0$, $U > V$)**
+
+In the limit $t = 0$, the Hamiltonian becomes diagonal. When $U > V$, the lowest energy sector consists of configurations with one electron on each site. The ground state in the $S_z = 0$ sector is
+
+$$
+  \ket{\Psi_\text{HL}} = \frac{1}{\sqrt{2}} (\hat{c}_{1,\uparrow}^\dagger \hat{c}_{2,\downarrow}^\dagger + \hat{c}_{2,\uparrow}^\dagger \hat{c}_{1,\downarrow}^\dagger)\ket{0}
+$$
+
+This is the Heitler-London state (spin singlet), which becomes exact in the atomic limit $\mathbf{R}_1 - \mathbf{R}_2| \to \infty$.
+
+The approximation can be systematically improved by enlarging the one-particle basis, i.e. by including additional atomic orbitals). Let $M$ denote the number of spatial orbitals. Since each orbital carries two spin states, the total number of spin-orbitals is $2M$. The fermionic Fock space constructed from these modes has dimension $\dim(\mathcal{F}_n) = 2^{2M}$, because each spin-orbital can be either occupied or empty.
+
+If the particle number is fixed to $N_e$, the relevant Hilbert space is the $N_e$-particle sector $\mathcal{H}^{(N_e)} \subset \mathcal{F}$, with dimension
+
+$$
+  \dim(\mathcal{H}^{(N_e)}) = \binom{2M}{N_e}
+$$
+
+since a basis is given by all possible occupations of $N_e$ distinct spin-orbitals among $2M$. For fixed filling fraction $N_e /(2M)$, Stirling's approximation shows that
+
+$$
+  \binom{2M}{N_e} \sim \exp(cM)
+$$
+
+for some constant $c > 0$. Thus, the dimension of the Hilbert space grows exponentially with the number of orbitals.
+
+Consequently, exact diagonalization of a generic interacting many-body Hamiltonian requires computational resources that scale exponentially in $M$. No general classical algorithm is known that solves arbitrary interacting fermionic Hamiltonians with computational effort polynomial in system size. This exponential growth constitutes the fundamental computational bottleneck of the quantum many-body problem.
+
+## Hubbard model
+
+The Hubbard model describes interacting halfspin fermions on a lattice, where the Coulomb interaction is approximated by a purely on-site repulsion. On a $d$-dimensional lattice, the Hamiltionian of this model reads
+
+$$
+\begin{equation*}
+  \hat{H} = -t \sum_{\braket{i,j}, \sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma}) + U \sum_i \hat{n}_{i, \uparrow} \hat{n}_{i, \downarrow}
+\tag{\label{equation-52}}
+\end{equation*}
+$$
+
+where $\braket{i, j}$ denotes unordered pairs of nearest-neighbour sites. The parameter $t$ controls hopping between neighbouring sites and $U$ is the on-site interaction strength. The Hubbard model generalizes the two-site Hamiltonian of the $\mathrm{H}_2$ molecule in $\eqref{equation-50}$ to a lattice of Hydrogen atoms (with $V = 0$).
+
+The Hubbard model is also defined for negative interaction in the case of an effective attractive electron-electron interaction (e.g. n non-retarded electron-phonon coupling, leading to superconductivity). Thus, the Hubbard model with $U < 0$ can be seen as the simplest mode to capture the stabilization of a superconducting phase.
+
+Consider a hypercubic Bravais lattice in $d$ spatial dimensions with primitives vectors $\mathbf{a}_\mu$ with $\mu = 1,\dots,d$. The lattice sites are given by
+
+$$
+  \mathbf{R}_j = \sum_{\mu=1}^d n_\mu \mathbf{a}_\mu,\; n_\mu \in\set{0,\dots,L_\mu - 1}
+$$
+
+with periodic boundary conditions. The total number of sites $L$ is
+
+$$
+  L = \prod_{\mu=1}^d L_\mu
+$$
+
+The operators $\hat{c}_{j,\sigma}^\dagger$ create electrons with spin $\sigma\in\set{\uparrow, \downarrow}$ in Wannier orbitals localized at site $j$
+
+$$
+  \hat{c}_{j,\sigma}^\dagger = \int \Xi_j (\mathbf{r}) \hat{\psi}_\sigma^\dagger (\mathbf{r}) \;\d\mathbf{r}
+$$
+
+The Wannier orbitals $\Xi_j (\mathbf{r})$ are defined by
+
+$$
+  \Xi_j (\mathbf{r}) = \frac{1}{\sqrt{L}} \sum_{\mathbf{k}} e^{-i \mathbf{k}\cdot\mathbf{R}_j} \Psi_k (\mathbf{r})
+$$
+
+where $\Psi_k (\mathbf{r})$ are Bloch states constructed with the orbitals $\phi(\mathbf{r} - \mathbf{R}_i)$ centered around each site. Since the Wannier orbitals are orthonormal,
+
+$$
+  \int \Xi_i^* (\mathbf{r}) \Xi_j (\mathbf{r}) \;\d\mathbf{r} = \delta_{ij}
+$$
+
+the creation and annihilation operators $\hat{c}_{i,\sigma}^\dagger$ and $\hat{c}_{i,\sigma}$ satisfy the anticommutation relations $\eqref{equation-51}$.
+
+At each lattice site $i$, the local fermionic Hilbert space $\mathcal{H}^{(1)}$ is generated by the two spin modes $\sigma\in\set{\uparrow, \downarrow}$. Since each spin mode can be either unoccupied or occupied, $\mathcal{H}^{(1)}$ is four dimensional, $\dim(\mathcal{H}^{(1)}) = 4$, and is spanned by the basis $\set{\ket{0}, \ket{\uparrow}, \ket{\downarrow}, \ket{\uparrow\downarrow}}$ corresponding respectively to 
+- an empty site
+- single-occupied site with spin up
+- single-occupied spin down
+- double-occupied site
+
+Thus, for a lattice with $L$ sites, the total Fock space is the tensor product
+
+$$
+  \mathcal{F}_a (\mathcal{H}^{(1)}) = \bigoplus_{i=1}^L \mathcal{H}^{(1)}
+$$
+
+with dimension $\dim(\mathcal{F}_a (\mathcal{H}^{(1)}) = 4^L$.
+
+Since the Hamiltonian $\eqref{equation-52}$ commutes with the total number of particles with up or down spin, $[\hat{H}, \hat{N}_\sigma] = 0$, it conserves the particle numbers
+
+$$
+  \hat{N}_\sigma = \sum_i \hat{n}_{i,\sigma}
+$$
+
+where $\hat{N}_e = \hat{N}_\uparrow + \hat{N}_\downarrow$ is the total number of electrons.
+
+### Non-interacting limit ($U = 0$)
+
+When $U = 0$, the Hamiltonian $\eqref{equation-52}$ becomes quadratic
+
+$$
+  \hat{H}_t = -t \sum_{\braket{i,j},\sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma})
+$$
+
+and can be diagonalized by the Fourier transformation
+
+$$
+  \hat{c}_{k,\sigma}^\dagger = \frac{1}{\sqrt{L}} \sum_j e^{-i\mathbf{k}\cdot\mathbf{R}_j} \hat{c}_{j,\sigma}^\dagger
+$$
+
+After performing this transformation, the non-interacting Hamiltonian becomes
+
+$$
+\begin{equation*}
+  \hat{H}_t = \sum_{k,\sigma} \epsilon_k \hat{c}_{k,\sigma}^\dagger \hat{c}_{k,\sigma}
+\tag{\label{equation-53}}
+\end{equation*}
+$$
+
+where, for the case with nearest-neigbour hopping
+
+$$
+  \epsilon_k = -2t \sum_{\mu=1}^d \cos(\mathbf{k}\cdot\mathbf{a}_\mu)
+$$
+
+Any state constructed from filling $k$-vectors with up and/or down electrons is an eigenstate of $\hat{H}_t$
+
+$$
+  \ket{\Phi_t} = \prod_{k,\sigma} (\hat{c}_{k,\sigma}^\dagger)^{\eta_{k,\sigma}} \ket{0}
+$$
+
+where $\eta_{k,\sigma} \in \set{0,1}$ indicates that the single-particle state with momentum $k$ and spin $\sigma$ is occupied ($\eta_{k,\sigma} = 1$) or empty ($\eta_{k,\sigma} = 0$). This states has energy
+
+$$
+  E = \sum_{k,\sigma} \eta_{k,\sigma} \epsilon_k
+$$
+
+For spin-balanced filling $N_\uparrow = N_\downarrow = N_e /2$ the ground state of $\eqref{equation-}$ is obtained by filling the $N_e /2$ lowest energy levels with both up and down electrons such that
+
+$$
+  \eta_{k,\sigma} = \begin{cases}
+    1,\quad& \epsilon_k \leq \epsilon_F \\
+    0,\quad& \epsilon_k > \epsilon_F
+  \end{cases}
+$$
+
+where $F$ denotes the Fermi energy. On a finite lattice, the ground state is unique the highest occupied and lowest unoccupied energy levels are separated by a nonzero gap. In the thermodynamic limit $L\to\infty$, the single-particle level spacing vanishes ant the hypercubic lattice at generic filling describes a metal.
+
+### Atomic limit ($t = 0$)
+
+When the hopping term vanishes, i.e. $t = 0$, the Hamiltonian $\eqref{equation-52}$ reduces to a purely local interaction term
+
+$$
+  \hat{H}_U = U \sum_i \hat{n}_{i,\uparrow} \hat{n}_{i,\downarrow}
+$$
+
+This operator is diagonal in the occupation-number basis
+
+$$
+  \ket{\Phi_U} = \prod_{i,\sigma} (\hat{c}_{i,\sigma}^\dagger)^{\xi_{i,\sigma}}\ket{0}
+$$
+
+where $\xi_{i,\sigma} \in \set{0, 1}$ indicates that the site $i$ is occupied ($\xi_{i,\sigma} = 1$) by an electron with spin $\sigma$. Its energy is given by
+
+$$
+  E = U \sum_i \xi_{i,\uparrow} \xi_{i,\downarrow} = UN_d
+$$
+
+where $N_d$ is the number of doubly occupied sites. The ground state is highly degenerate, but the degeneracy depends on the electron configuration:
+- if $N_e \leq L$, the minimal energy is $E = 0$. This corresponds to all states without double occupancy 
+- if $L < N_e \leq 2L$, the minimal energy is $E = U(N_e - L)$. This corresponds to all states with $N_e - L$ doubly occupied sites
+- at half filling for $N_e = L$, the ground state has exactly one electron per site and degeneracy equals to $2^L$, corresponding to all possible configurations independent of spin direction. Although the non-interacting system at half filling would generally be metallic, the atomic-limit system is insulating. This behaviour follows from the finite energy cost $U$ required to create charge excitations (double occupancy). This interaction-driven insulating phase is called a Mott insulator.
+
+### Non-trivial cases
+
+Apart from the non-interacting limint $U = 0$ and the atomic limit $t = 0$, the Hubbard model admits very few exact solutions on large lattices in the thermodynamic limit $L \to\infty$ (where exact diagonalizations cannot be performed). 
+
+#### One spatial dimension
+
+For a one-dimensional lattice with nearest-neighbor hopping, the Hubbard model is exactly solvable via the Bethe Ansatz (Lieb–Wu solution). The solution provides exact results for the energy and other thermodynamic quantities, although correlation functions are difficult to compute. In this case, the ground state is a Mott insulator at half filling $N_e = L$ and for any repulsive interaction $U > 0$, while it is metallic for $N_e \neq L$. 
+
+#### Nagaoka ferromagnetism
+
+The Hubbard model has an exact solution in any dimension $d$ for $U/|t| = \infty$ and $N_e = L - 1$, in which case there is a single hole away from half filling. Under suitable connectivity conditions on the lattice, the ground state is a fully spin-polarized ferromagnet. This is known as Nagaoka's theorem. More generally, it is possible to show that the ground state is fully spin-polarized on an arbitrary lattice whenever $t < 0$, $U/|t| = \infty$ and $N_e = L - 1$. 
+
+Outside these special cases, the exact ground state properties of the Hubbard model with generic filling factor $n = N_e / L$ and interaction factor $U/t$ are not known. 
+
+#### Numerical exactness at half filling
+
+On bipartite lattice (e.g. the square lattice) at half filling, auxiliary-field quantum Monte Carlo methods can be implemented without a fermionic sign problem. This allows numerically exact simulations for arbitrary interaction factor $U/t$, providing nonperturbative access to ground-state and thermodynamic properties.
+
+#### Mott transition
+
+From a general perspective, it is natural to expect that for an arbitrary $d$-dimensional lattice at half filling $(n = 1)$, increasing $U/t$ drives a metal-insulator transition at some critical value $U = U_c > 0$. Such a transition is a genuine Mott transition, driven purely by electron-electron interactions and not by a symmetry-breaking mechanism. In other words, electrons localize just because of the strong correlation. 
+
+For the exactly solvable model in one dimension, this transition occurs at $U_c = 0$. In higher dimensions, however, the metal-insulator transition often coincides with the spontaneous symmetry breaking, most notably the emergence of long-range antiferromagnetic order. The insulating state is then typically both Mott insulating and magnetically ordered.
+
+#### Strong-coupling expansion ($U/t \gg 1$)
+
+The existence of a super-exchange coupling, which favors antiferromagnetic order for large values of $U/t$, can be seen by performing a strong coupling expansion with $U/t \gg 1$. For $U \gg t$ at half filling $n = 1$, we can derive an effective low-energy Hamiltonian that describes the spin degrees of freedom by projecting onto the subspace without doubly occupied sites. 
+
+In the atomic limit $U/t = \infty$ at half, the ground-state manifold $\mathcal{H}'$ consists of all configurations with exactly one electron per site. Its degeneracy is $\dim(\mathcal{H}) = 2^L$ corresponding to arbitrary spin orientations.
+
+For large but finite $U/t$, hopping processes act as a pertubation, lifting the degeneracy of the atomic limit. This creates an antiferromagnetic super-exchange coupling $J = 4t^2 /U$.
+
+By second-order perturbation theory, virtual processes of order $t^2 /U$ allow two neighbouring electrons with opposite spins to virtually create a doubly occupied site and then return to the singly occupied manifold. This lowers the energy by an amount of order $t/2^2$. Neighbouring electron pairs with parallel spins cannot benefit from such virtual hopping due to the Pauli exclusion principle.
+
+The effective Hamiltonian in the singly occupied subspace is therefore to second order in $t/U$ given by the antiferromagnetic Heisenberg model
+
+$$
+  \hat{H} = J \sum_{\braket{i,j}} \unitvec{S}_i \cdot \unitvec{S}_j
+$$
+
+The local spin-$1/2$ operator $\unitvec{S}_j = (\hat{S}_j^x, \hat{S}_j^y, \hat{S}_j^z)$ is given by
+
+$$
+  \unitvec{S}_j = \frac{1}{2} \sum_{\alpha, \beta} \hat{c}_{j,\alpha}^\dagger \boldsymbol{\sigma}_{\alpha\beta} \hat{c}_{j,\beta}
+$$
+
+where $\boldsymbol{\sigma}$ are the Pauli matrices. Explicitly,
+
+$$
+\begin{align*}
+  S_j^x =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\downarrow} + \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\uparrow}) \\
+  S_j^y =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\downarrow} - \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\uparrow}) \\
+  S_j^z =& \frac{1}{2} (\hat{c}_{j,\uparrow}^\dagger \hat{c}_{j,\uparrow} - \hat{c}_{j,\downarrow}^\dagger \hat{c}_{j,\downarrow}) \\
+\end{align*}
+$$
+
+The Heisenberg model is defined in the Hilbert space where each site is singly occupied. Note that the Heisenberg model also generalizes to arbitrary spin $\unitvec{S}$.
+
+An exact solution of the Heisenberg model can be obtained in one spatial dimension, by the Bethe Ansatz. In this solution, the ground state is not magnetically ordered and the excitation spectrum is gapless (implying power-law spin-spin correlations). The absence of a true magnetic order in the ground-state of one-dimensional systems is due to an extension of the Mermin-Wagner theorem.
+
+In more than one spatial dimension, for bipartite lattices (i.e., where the sites can be partitioned in two sub-lattices and the super-exchange term only couples sites on different sub-lattices) there are Monte Carlo methods that provide us with numerically exact results. These stochastic approaches have been crucial to definitively show that the ground state of the Heisenberg model on the two-dimensional square lattice has long-range magnetic (N´eel) order. 
+
+Doping the Mott insulator in the Heisenberg model leads to the $t$-$J$ model
+
+$$
+  \hat{H} = -t \sum_{\braket{i,j}, \sigma} (\hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} + \hat{c}_{j,\sigma}^\dagger \hat{c}_{i,\sigma}) + J \sum_{\braket{i,j}} \left(\unitvec{S}_i \cdot \unitvec{S}_j - \frac{1}{4} \hat{n}_i \hat{n}_j \right)
+$$
+
+where all the operators act on the restricted Hilbert space without doubly occupied sites. The $t$-$J$ model captures the strong-coupling limit of the Hubbard model for $n < 1$ and usually considered to give the minimal description of Cuprate superconductors. Moreover, the $t$-$J$ model can also be obtained from the strong-coupling expansion of a three-band Hubbard model, which includes both Copper and Oxygen atoms. There are no exact solutions of the $t$-$J$ model for generic valus of the ratio $J/t$ and electron doping $n$, both in one and two spatial dimensions, except in one dimension for the supersymmetric point $J/t = 2$.
+
+### Bosonic model
+
+The Hubbard model is also defined for bosons, in which case the Hamiltonian reads
+
+$$
+\begin{equation*}
+  \hat{H} = -t \sum_{\braket{i,j}} (\hat{b}_i^\dagger \hat{b}_j + \hat{b}_j^\dagger \hat{b}_i) + \frac{U}{2} \sum_i \hat{n}_i (\hat{n}_i - 1)
+\tag{\label{equation-54}}
+\end{equation*}
+$$
+where $\hat{b}_i^\dagger$ and $\hat{b}_i$ are the bosonic creation and annihilation operators respectively, and $\hat{n}_i = \hat{b}_i^\dagger \hat{b}_i$ is the density of bosons on site $i$. The creation and annihilation operators satisfy the commutation relations
+
+$$
+\begin{align*}
+  [\hat{b}_i, \hat{b}_j^\dagger] =& \delta_{ij} \\
+  [\hat{b}_i^\dagger, \hat{b}_j^\dagger] =& 0
+\end{align*}
+$$
+
+The Hamiltonian $\eqref{equation-54}$ commutes with the total number of bosons $\hat{N}_b$, so that any sector with different number of particles can be considered separately. The Hilbert space of the bosonic Hubbard model is much larger than the fermionic one, since any number of bosons is allowed on each site. The bosonic Hubbard model is only defined for repulsive interactions, since bosons are thermodynamically unstable in presence of attractive interactions.
+
+In the non-interacting limit $U = 0$, the ground state is obtained by condensing all bosons in the lowest-energy single-particle state
+
+$$
+  \ket{\phi_0} = \frac{1}{\sqrt{N_b}!} (\hat{b}_{k=0}^\dagger)^{N_b} \ket{0}
+$$
+
+In the atomic limit $t = 0$, the ground state is given by replacing bosons on sites and minimizing the number multiply occupied sites. For $N_b \leq L$ the ground state has only empty or singly occupied sites. While for $N_b = L$, the ground state, with one boson per site, is unique, which is in contrast to the fermionic case.
+
+For this lattice model, there are no exact solutions (in the sense of the Bethe Ansatz) for generic values of the bosonic density $n = N_b / L$ and interaction $U$. However, it is possible to obtain numerically exact result by using Monte Carlo techniques.
+
+## Variational principle
+
+Let $\hat{H}$ be self-adjoint Hamiltonian acting on a Hilbert space $\mathcal{H}$, with discrete spectrum $\set{E_i}_{i\geq 0}$ and corresponding orthonormal eigenstates $\set{\ket{\Upsilon_i}}_{i\geq 0}$ satisfying
+
+$$
+  \hat{H}\ket{\Upsilon_i} = E_i \ket{\Upsilon_i},\quad \braket{\Upsilon_i|\Upsilon_j} = \delta_{ij}
+$$
+
+Given any nonzero trial state $\ket{\Psi'} \in\mathcal{H}$, its variational energy is defined as
+
+$$
+  E' = \frac{\braket{|\Psi'|\hat{H}|\Psi'}}{\braket{\Psi'|\Psi'}}
+$$
+
+Without loss of generality, we assume $\ket{\Psi'}$ is normalized, with $\braket{\Psi'|\Psi'} = 1$. Since $\ket{\Upsilon_i}$ form a complete orthonormal basis, we can expand
+
+$$
+\begin{equation*}
+  \ket{\Psi'} = \sum_i a_i \ket{\Upsilon_i},\; a_i = \braket{\Upsilon_i | \Psi'}
+\tag{\label{equation-55}}
+\end{equation*}
+$$
+
+The normalization condition reads as
+
+$$
+\begin{equation*}
+  \braket{\Psi'|\Psi'} = \sum_i |a_i|^2 = 1
+\tag{\label{equation-57}}
+\end{equation*}
+$$
+
+Using the spectral resolution of $\hat{H}$, we obtain
+
+$$
+  E' = \sum_{i=1}^\infty |a_i|^2 E_i
+$$
+
+Subtracting the ground-state energy $E_0$, we find
+
+$$
+\begin{equation*}
+  \epsilon := E' - E_0 = \sum_{i\neq 0} |a_i|^2 (E_i - E_0) \geq 0
+\tag{\label{equation-56}}
+\end{equation*}
+$$
+
+which holds since $E_i \geq E_0$ for all $i$. Hence $E' \geq E_0$, which implies that any trial state $\ket{\Psi'}$ provides an upper bound to the the exact ground-state energy. Variational methods consist in minimizing $E'$ within a restricted manifold of trial states.
+
+### Relation between energy error and wave-function overlap
+
+Assume that the ground state is nondegenerate and define the spectral gap
+
+$$
+  \Delta := E_1 - E_0 > 0
+$$
+
+From $\eqref{equation-56}$ and the fact that $E_i \geq E_0 + \Delta$ for all $i\geq 1$, it follows that
+
+$$
+  \epsilon\geq \Delta \sum_{i\neq 0} |a_i|^2
+$$
+
+then, by using the normalization condition $\eqref{equation-57}$, we finally have that
+
+$$
+  \eta = 1 - |a_0|^2 \leq \frac{\epsilon}{\Delta}
+$$
+
+Thus, the weight of excited-state components in $\ket{\Psi'}$ is controlled by the ratio $\epsion/\Delta$. In particular, a sufficient condition for a good approximation in norm $\eta \ll 1$ is that the variational energy satisfies $\epsilon\ll\Delta$. Thus, the quality of the wave function in Hilbert-space norm is directly controlled by the gap.
+
+### Accuracy of correlation functions
+
+Energy expectation values are quadratic in the amplitude $a_i$ and therefore depend on $|a_i|^2$. The accuracy of the correlation functions is usually worse than the one on the ground-state energy. Consider a generic operator $\hat{O}$ and express the variational trial state as
+
+$$
+  \ket{\Psi'} = a_0 \ket{\Upsilon_0} + \sqrt{n} \ket{\Upsilon'}
+$$
+
+where
+- $\braket{\Upsilon_0 |\Upsilon'} = 0$
+- $\braket{\Upsilon' |\Upsilon'} = 1$
+- $\eta = 1 - |a_0|^2$
+
+Then, the difference between the expectation value calculated with the variational state and the exact one is given by
+
+$$
+  |\braket{\Psi'|\hat{O}|\Psi'} - \hat{O}_0| = |2a_0 \sqrt{\eta} \braket{\Upsilon_0|\hat{O}|\Upsilon'} + \eta\braket{\Upsilon'|\hat{O}|\Upsilon'} - \eta\hat{O}_0|
+$$
+
+where we have denoted $\hat{O}_0 = \braket{\Upsilon_0 |\hat{O}|\Upsilon_0}$ and assumed, for simplicity, real wave functions. Whenever the variational state is close to the exact ground state, $\eta\ll\sqrt{\eta}$, and we can neglect all terms that are propertional to $\eta$
+
+$$
+  |\braket{\Psi'|\hat{O}|\Psi'} - \hat{O}_0| \approx \sqrt{\eta} |\braket{\Upsilon_0 |\hat{O}|\Upsilon'}|
+$$
+
+which shows that the accuracy in correlation functions is more problematic than the one on the ground-state energy, with a term proportional to $\sqrt{\eta}$.
+
+## Variational wave functions
+
+### Hartree-Fock wave function
+
+### Gutzweiler wave function
+
+### Density-density Jastrow wave function
+
+### Backflow wave function
+
+### Haldane-Shastry wave function
+
+### Laughlin wave function
+
+### Bardeen-Cooper-Schrieffer wave function
+
+### Resonating-valence bond wave function
+
+# Variational Monte Carlo
+
+Let $\mathcal{H}$ be a discrete Hilbert space with orthonormal basis $\set{\ket{x}}_{x\in\Omega}$, where $\Omega$ denotes the set of configurations. This basis satisfies the resolution of identity
+
+$$
+\begin{equation*}
+  \sum_{x\in\Omega} \ket{x}\bra{x} = \hat{I}
+\tag{\label{equation-59}}
+\end{equation*}
+$$
+
+where $\hat{I}$ is the identity operator. For any state $\ket{\Psi} \in\mathcal{H}$, we define its coefficients in this basis by the wave function
+
+$$
+  \Psi(x) := \braket{x|\Psi}
+$$
+
+By completeness of this basis, $\ket{\Psi}$ admits the expansion
+
+$$
+  \ket{\Psi} = \sum_x \ket{x} \braket{x|\Psi} = \sum_x \Psi(x) \ket{x}
+$$
+
+The expectation value of a linear operator $\hat{O}$ in the state $\ket{\Psi}$ is defined by
+
+$$
+  \braket{\hat{O}} = \frac{\braket{\Psi|\hat{O}|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+Applying the resolution of identity $\eqref{equation-59}$, the nominator can be refactored as
+
+$$
+\begin{align*}
+  \braket{\Psi|\hat{O}|\Psi} =& \sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\hat{O}|\Psi} \\
+  =& \sum_{x\in\Omega} \Psi^* (x) \braket{x|\hat{O}|\Psi}
+\end{align*} 
+$$
+
+and the denominator as
+
+$$
+\begin{align*}
+  \braket{\Psi|\Psi} =& \sum_{x\in\Omega} \braket{\Psi|x}\braket{x|\Psi} \\
+  =& \sum_{x\in\Omega} \Psi^* (x) \Psi(x) = \sum_{x\in\Omega} |\Psi(x)|^2
+\end{align*}
+$$
+
+Substituting back, the expectation $\braket{\hat{O}}$ becomes
+
+$$
+\begin{equation*}
+  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} \Psi^* (x) \braket{x|\hat{O}|\Psi}}{\sum_{x\in\Omega} |\Psi(x)|^2}
+\tag{\label{equation-58}}
+\end{equation*}
+$$
+
+In many-body systems, the cardinality of $\Omega$ grows exponentially with the number of particles (even after restricting to symmetry sectors such as fixed particle number or fixed total spin component). Thus, direct summation over all configurations is computationally infeasible for large systems.
+
+However, $\braket{\hat{O}}$ can be estimated using Monte Carlo sampling by expanding it in terms of a probability distribution. For this reformulation, we define the local estimator
+
+$$
+\begin{equation*}
+  O_L (x) := \braket{\braket{x|\hat{O}|\Psi}}{\braket{x|\Psi}} = \frac{\braket{x|\hat{O}|\Psi}}{\Psi(x)}
+\tag{\label{equation-61}}
+\end{equation*}
+$$
+
+expressing $\braket{\hat{O}}$ as
+
+$$
+  \braket{\hat{O}} = \frac{\sum_{x\in\Omega} |\Psi(x)|^2 O_L (x)}{\sum_{x\in\Omega} |\Psi(x)|^2}
+$$
+
+We can define the probability measure $\mathcal{P}$ on $\Omega$ by
+
+$$
+  \mathcal{P}(x) := \frac{|\Psi(x)|^2}{\sum_{x\in\Omega} |\Psi(x)|^2}
+$$
+
+which satisfies $\mathcal{P}(x) \geq 0$ and $\sum_{x\in\Omega} \mathcal{P}(x) = 1$. Rewriting $\braket{\hat{O}}$ in terms of $\mathcal{P}(x)$ yields
+
+$$
+  \braket{\hat{O}} = \sum_{x\in\Omega} \mathcal{P}(x) O_L (x)
+$$
+
+This is recognized as the expectation value of the random variable $O_L (x)$ with respect to the probability measure $\mathcal{P}$ over $\Omega$. In particular, for the Hamiltonian $\hat{H}$, the corresponding local estimator
+
+$$
+  E_L (x) := \frac{\braket{x|\hat{H}|\Psi}}{\Psi(x)}
+$$
+
+is called the local energy, and
+
+$$
+\begin{equation*}
+  \braket{\hat{H}} = \sum_{x\in\Omega} \mathcal{P}(x) E_L (x)
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+Applying Monte Carlo sampling, we can generate a sequence of configurations $\set{\ket{x_n}}_{n=1}^N$ with stationary distribution $\mathcal{P}(x)$. After equilibration, the estimator
+
+$$
+  \braket{\hat{O}}_N := \frac{1}{N}\sum_{n=1}^N \hat{O}_L (x_n)
+$$
+
+converges to $\braket{\hat{O}}$ as $N\to\infty$. Thus, the computation of a quantum expectation value is reduced to the stochastic evaluation of a classical expectation value over configuration space.
+
+## Zero-variance property
+
+A fundamental property of the variational Monte Carlo method is the zero-variance property, which relates statistical fluctuation of the local energy to the spectral properties of the Hamiltonian. Suppose that the variational state $\ket{\Psi}\in\mathcal{H}$ coincides with an exact eigenstate of the Hamiltonian $\hat{H}$, i.e. $\hat{H}\ket{\Psi} = E\ket{\Psi}$. Then, it follows that the local energy $E_L$ is constant
+
+$$
+  E_L (x) = \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} = E\frac{\braket{x|\Psi}}{\braket{x|\Psi}} = E
+$$
+
+Thus, the random variable $E_L$ is constant almost surely with respect to the probability distribution
+
+$$
+  \mathcal{P}(x) = `\frac{|\Psi(x)|^2}{\braket{\Psi|\Psi}}
+$$
+
+Specifically, the expectation and variance of $E_L$ become
+- $\mathbb{E}_\mathcal{P} (E_L) = E$
+- $\operatorname{var}_\mathcal{P} (E_L) = 0$
+
+Thus, when the variational state coincides with an exact eigenstate, the local energy exhibits no statistical fluctuations. In this sense, the Monte Carlo estimator becomes deterministic.
+
+In general, the variance of $E_L (x)$ decreases as the variational state $\ket{\Psi}$ approaches an eigenstate. To derive the generic variance of $E_L$, we first calculate its second moment with respect to $\mathcal{P}$
+
+$$
+\begin{align*}
+  \mathbb{E}_\mathcal{P} (|E_L|^2) =& \sum_{x\in\Omega} \mathcal{P}(x) |E_L (x)|^2 \\
+  =& \frac{\sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2}{\braket{\Psi|\Psi}}
+\end{align*}
+$$
+
+Inserting $\eqref{equation-60}$ and applying the completeness relation $\eqref{equation-59}$, the nominator becomes
+
+$$
+\begin{align*}
+  \sum_{x\in\Omega} |\Psi(x)|^2 |E_L (x)|^2 =& \sum_{x\in\Omega} |\braket{x|\hat{H}|\Psi}|^2 \\
+  =& \sum_{x\in\Omega} \braket{\Psi|\hat{H}|x} \braket{x|\hat{H}|\Psi} \\
+  =& \braket{\Psi|\hat{H}^2 |\Psi}
+\end{align*}
+$$
+
+Consequently, the second moment of $E_L$ is
+
+$$
+  \mathbb{E}_\mathcal{P} (|E_L|^2) = \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+The variance of $E_L$ is then given by
+
+$$
+\begin{align*}
+  \operatorname{var}_\mathcal{P} (E_L) =& \mathbb{E}_\mathcal{P} (|E_L|^2) - |\mathbb{E}_\mathcal{P} (E_L)|^2 \\
+  =& \frac{\braket{\Psi|\hat{H}^2|\Psi}}{\Psi|\Psi} - \left(\frac{\braket{\Psi|\hat{H}|\Psi}}{\braket{\Psi|\Psi}} \right)^2
+\end{align*}
+$$
+
+When the variational state coincides with an exact eigenstate such that $\mathbb{E}(E_L) = E$, then the variance of $E_L$ becomes
+
+$$
+  \operatorname{var}_\mathcal{P} (E_L) = \frac{\braket{\Psi|(\hat{E} - E)^2|\Psi}}{\braket{\Psi|\Psi}}
+$$
+
+which is precisely the quantum variance of $\hat{H}$ in the state $\ket{\Psi}$. Thus, the vanishing of the Monte Carlo variance of the local energy is mathematically equivalent to the eigenvalue equation.
+
+## Local occupation-number basis
+
+In lattice many-body problems, it is natural to work in a local occupation-number basis constructe as a tensor product of on-site Hilbert spaces. Consider a lattice with $L$ sites. At each site $i=1,\dots,K$, let $\mathcal{H}_i$ denote the local Hilbert space, equipped with an orthonormal basis $\set{\ket{\xi_i}}$. The dimension of $\mathcal{H}_i$ depends on the physical model.
+
+1. **Single-band fermionic Hubbard model:** For spin-$1/2$ fermions on site $i$, the local Hilbert space is four-dimensional, spanned by
+$$
+  \mathcal{H}_i = \operatorname{span}\set{\ket{0}_i, \hat{c}_{i,\uparrow}^\dagger \ket{0}_i, \hat{c}_{i,\downarrow}^\dagger \ket{0}_i, \hat{c}_{i,\uparrow}^\dagger \hat{c}_{i,\downarrow}^\dagger \ket{0}_i}
+$$
+
+2. **Bosonic Hubbard model:** For bosons, the local Hilbert space is infinite-dimension with an arbitrary number of bosons on the same site
+$$
+  \mathcal{H}_i = \operatorname{span}\Set{\frac{1}{\sqrt{n!}} (\hat{b}_i^\dagger)^n \ket{0_i}}_{n\in\N_0}
+$$
+
+3. **Spin-$S$ Heisenberg model:** For a spin-$S$ system, the local Hilbert space $2S + 1$, with basis given by eigenstates of $\hat{S}_i^z$
+$$
+  \hat{S}_i^z \ket{m}_i = m\ket{m}_i,\; m = -S,\dots,S
+$$
+
+The Hilbert space of the full lattice is the tensor product
+
+$$
+  \mathcal{H} = \bigotimes_{i=1}^L \mathcal{H}_i
+$$
+
+Once the local bases are fixed, a generic basis element of $\mathcal{H}$ is a product state
+
+$$
+  \ket{x} = \bigotimes_{i=1}^L \ket{\xi_i}
+$$
+
+In particular, the global vacuum state is
+
+$$
+  \ket{0} = \bigotimes_{i=1}^L \ket{0_i}
+$$
+
+Chososing a local basis is convenient because lattice Hamiltonians are typically sums of local operators, i.e.
+
+$$
+  \hat{H} = \sum_i \hat{h}_i + \sum_{\braket{i,j}} \hat{h}_{ij}
+$$
+
+where each term acts non-trivially only on a finite subset of sites. In particular,
+- interaction terms (e.g. Hubbard $U \hat{n}_{i,\uparrow} \hat{n}_{j,\downarrow}$) are diagonal in the occupation-number basis
+- on-site terms (e.g. Hund's couplings in multiband models) act locally
+- hopping terms couple only neighbouring sites
+
+As a consequence, for any fixed configuration $\ket{x}$, the number of configurations $\ket{x'}$ such that $\braket{x|\hat{H}|x'} \neq 0$ scales at most linearly with $L$. 
+
+For fermionic systems, additional care is required because of the antisymmetric nature of the Fock space. A basic configuration must be specified together with a fixed ordering convention for creation operators. Consider $N_e$ spinless fermions on $L$ sites. A configuration is written as
+
+$$
+  \ket{x} = \left(\prod_{i=1}^{N_e} \hat{c}_{R_i}^\dagger \right) \ket{0}
+$$
+
+where $R_1 <\cdots < R_{N_e}$ is a strictly ordered sequence of occupation sites. This ordering convention ensures a unique representative of each Fock state. It is convenient to encode the configuration by an occupation vector $\boldsymbol{\kappa} \in \set{0,1}^L$, where $\kappa_i = 1$ if site $i$ is occupied and $\kappa_i = 0$ otherwise.
+
+Consider a hopping term $\hat{c}_{R'_l}^\dagger \hat{c}_{R_l}$ acting on $\ket{x}$, where $R_l$ is the one of the occupied sites and $R'_l$ is an empty site. Formally
+
+$$
+  \hat{c}_{R'_l}^\dagger \hat{c}_{R_l} \ket{x} = \hat{c}_{R'_l}^\dagger \hat{c}_{R_l} \hat{c}_{R_1}^\dagger \cdots \hat{c}_{R_{N_e}}^\dagger \ket{0}
+$$
+
+using the anticommutation relations $[\hat{c}_i, \hat{c}_i^\dagger]_+ = \delta_{ij}$, the annihilation operato $\hat{c}_{R_l^}$ must be anticommuted through the ordered string until it reaches its matching creation operators. Thus produces a sign factor $(-1)^p$, where $p$ is the number of fermionic operators it passes. After annihilation and reinsertion of $\hat{c}_{R'_l}^\dagger$, the resulting state can again be written in canonical ordered form
+
+$$
+  \ket{x'} = (-1)^{p'} \hat{c}_{R_1}^\dagger \cdots \hat{c}_{R'_l}^\dagger \cdots \hat{c}_{R_{N_e}}^\dagger \ket{0}
+$$
+
+Thus, relative to the canonical ordering convention, the new configuration differs from the old one by
+1. A change of occupation at sites $R_l$ and $R'_l$
+2. A computable fermionic sign determined by the parity of the permutation required to restore ordering
+
+During the Markov process, proposed configurations are often generated by applying local Hamiltonian terms. For fermionic systems
+- The configuration space consists of ordered occupation string
+- Each update may produce a sign factor
+- These signs must be consistently tracked when evaluating amplitude ratios $\Psi(x')/\Psi(x)$ and local estimators
+
+Provided a consistent ordering convention is adopted and permutation signs are properly accounted for, this sign bookkeeping poses no conceptual difficulty, though it is essential for correctness.
+
+## Monte Carlo estimation
+
+In the Monte Carlo evaluation of the quantum expectation value $\eqref{equation-58}$, we must compute two quantities repeatedly along the Markov chain:
+
+1. **Ratios of probabilities:** In the Metropolis scheme, only ratios of probabilities are required. For two configurations $x, x' \in\Omega$
+
+$$
+\begin{equation*}
+  \frac{\mathcal{P}(x')}{\mathcal{P}(x)} = \left| \frac{\Psi(x')}{\Psi(x)} \right|^2 = \left|\frac{\braket{x'|\Psi}}{\braket{x|\Psi}} \right|^2
+\tag{\label{equation-68}}
+\end{equation*}
+$$
+
+Since the normalization constant of $\mathcal{P}$ cancels, only ratios of overlaps of the variational state with basis configurations must be evaluated.
+
+2. **Local estimator:** Evaluating the local estimator $\eqref{equation-61}$ requires computing ratios of overlaps and matrix elements of the observable between states of the basis set. For the Hamiltonian, $\hat{H}$, the local energy is
+
+$$
+\begin{align*}
+  E_L =& \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} \\
+  =& \sum_{x' \in\Omega} \braket{x|\hat{H}|x'} \frac{\braket{x'|\Psi}}{\braket{x|\Psi}}
+\end{align*}
+$$
+
+This expression involves a sum over the entire Hilbert space. However, due to the locality of the Hamiltonian, only few terms actually contribute to the sum, reducing the computational complexity.
+
+### Locality and sparsity
+
+In lattice many-body systems, $\hat{H}$ is typically a sum of local operators
+
+$$
+  \hat{H} = \sum_i \hat{h}_i
+$$
+
+where each $\hat{h}_i$ acts non-trivially only on a finite subset of degrees of freedom. In the configuration basis $\set{\ket{x}}$, this implies that for fixed $x$
+
+$$
+  \braket{x|\hat{H}|x'} \neq 0
+$$
+
+only if $x'$ differs from $x$ locally, according to the action one of the $\hat{h}_i$. Consequently, for each configuration $x$, the number of configurations $x'$ contributing to the sum for $E_L (x)$ scales at most polynomially with the system size (typically linearly in the number of sites or particles), rather than exponentially with $|\Omega|$.
+
+<MathBox title="Fermionic Hubbard model" boxType="example">
+Consider the fermionic Hubbard model $\eqref{equation-52}$ on a lattice with $L$ sites. In the occupation-number basis, a configuration $\ket{x}$ specifies the occupation of each site and spin. The hopping term connects $\ket{x}$ only to configurations $\ket{x'}$ that differ by the displacement of a single fermion between neighbouring sites. Thun number of such processes is bounded by a constant multiple of the number of bonds. The interaction term is diagonal in this basis. Thus, evaluating $E_L (x)$ requires summing only over $O(L)$ configuations, making its computation polynial in the system size.
+</MathBox>
+
+### Evaluation of amplitudes
+
+The primary computational task in variational Monte Carlo is the evaluation of the amplitudes $\Psi(x) = \braket{x|\Psi}$, and of their ratios $\Psi(x')/\Psi(x)$ for configurations $x, x' \in\Omega$ connected by local updates. Since this computation must be performed at each Monte Carlo step, the efficiency of the algorithm strongly contrains the admissible class of variational wave functions.
+
+For fermionic systems, antisymmetry implies that many relevant Ansätze can be expressed in terms of determinants or, more generally, Pfaffians
+- The determinant of an $N\times N$ matrix can be computed in $O(N^3)$ time using standard algorithms
+- Pfaffians can likewise be evaluated in polynomial time
+
+When configurations differ by local moves (e.g. single-particle updates), matrix-update formulas allow the ratio $\Psi(x')/\Psi(x)$ to be computed in $O(N^2)$ time. This polynomial complexity makes such fermionic Ansätze computationally tractable for moderately large systems.
+
+For bosonic systems, symmetrization leads in general to permanents rather than determinants. The permamnent of $N\times N$ matrix is defined as
+
+$$
+  \operatorname{perm}(M) = \sum_{\sigm \in S_N} \prod_{i=1}^N M_{i,\sigma(i)} 
+$$
+
+which differs from the determinant by the absence of permutation signs. Unlike determinants, permanents cannot be computed in polynomial time, but rather require time exponential in $N$. This severely limits the applicability of general bosonic permanent-based Ansätze. However, important physically relevant bosonic states have amplitudes that can be evaluated in polynomial time and are therefore amenable to variational Monte Carlo methods. This includes condensates in which all bosons occupy a single orbital.
+
+## Jastrow variational state
+
+A Jastrow-correlated variational state is defined by
+
+$$
+  \ket{\Psi_\text{J}} = \hat{J}\ket{\Phi_0}
+$$
+
+where $\ket{\Phi_0}$ is a generic uncorrelated (bosonic or fermionic) state and $\hat{J}$ is the Jastrow factor, encoding electron correlations. A widely used class of Jastrow factors consists of density-density correlations in the form
+
+$$
+\begin{equation*}
+  \hat{J} = \exp\left(-\frac{1}{2} \sum_{i,j=1}^L v_{ij} \hat{n}_i \hat{n}_j \right)
+\tag{\label{equation-62}}
+\end{equation*}
+$$
+
+where $v_{ij} \in\R$ are variational parameters, whose total number is $L^2$.
+
+<details>
+<summary>Details</summary>
+
+The pseudo-potential $v_{ij}$ couples densitites at different sites $i$ and $j$ and not density fluctuations.
+
+The Jastrow factor is often written in terms of density fluctuations $\delta\hat{n}_i = \hat{n}_i - \bar{n}$, where $\bar{n}$ is the average density, i.e.
+
+$$
+\begin{equation*}
+  \hat{J} = \exp\left(-\frac{1}{2} \sum_{i,j=1}^L v_{ij} \delta\hat{n}_i \delta\hat{n}_j \right)
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+For systems with fixed total particle number
+
+$$
+  \sum_i \hat{n}_i = N
+$$
+
+The alternative forms of the Jastrow factor in $\eqref{equation-62}$ and $\eqref{equation-63}$ differ only by additive and linear terms in $\hat{n}_i$, which contribute at most a configuration-independent multiplicative factor to $\ket{\Psi_\text{J}}$. Hence, for fixed particle number, the two definitions are equivalent up to normalization.
+</details>
+
+If the system is translationally invariant, then $v_{ij}$ only depends on the distance between $i$ and $j$, i.e. $v_{ij} = v(|\mathbf{r}_i - \mathbf{r}_j|)$. In this case, the number of independent parameters is reduced from $O(L^2)$ to $O(L)$. 
+
+Certain singular limits of the Jastrow factor can be treated exactly with Monte Carlo sampling. For example, imposing $v_{ii} \to\infty$ suppresses configurations with $n_i^2 \neq n_i$ (e.g. double occupancy for spinful fermions), effectively implementing the Gutzwiller projector relevant to the infinite-$U$ limit of the Hubbard model $\eqref{equation-52}$. In practice, this constraint is enforced by constructing a Markov chain whose state space is restricted to configurations without double-occupancy. This way we avoid evaluating the singular factor explicitly.
+
+The Jastrow factor $\eqref{equation-62}$ is diagonal in the occupation-number basis $\set{\ket{x}}_{x\in\Omega}$. Since $\hat{n}_i \ket{x} = n_i (x) \ket{x}$, where $n_i (x) \in\N$ is the occupation number at site $i$ in configuration $x$, it follows that
+
+$$
+\begin{align*}
+  \hat{J}\ket{x}= \exp\left( -\frac{1}{2} \sum_{i,j=1}^L v_{ij} n_i (x) n_j (x) \right)\ket{x} \\
+  =: J(x) \ket{x}
+\end{align*}
+$$
+
+Showing that $J(x)$ is a scalar function on configuration space. For the Jastrow-correlated state $\ket{\Psi_\text{J}} = \hat{J}\ket{\Phi_0}$, we thus obtain
+
+$$
+  \braket{x|\Psi_\text{J}} = \braket{x|\hat{J}|\Phi_0} = J(x) \braket{x|\Phi_0}
+$$
+
+In this diagonal form, $J(x)$ can be evaluated in $O(L^2)$ operations due to the double sum. In order to ensure polynomial complexity, the Jastrow factor must only contain operators that are diagonal in the basis $\ket{x}$. If $\hat{J}$ contained off-diagonal operators (e.g. hopping terms), then $\hat{J}\ket{x}$ would generate a superposition of exponentially many configurations, making the evaluation of $\braket{x|\Psi_\text{J}}$ exponentially costly in $L$. The remaining computational effor lies in evaluating $\braket{x|\Phi_0}$:
+- For fermionic reference states given by Slater determinants, amplitudes can be computed in $O(L^3)$ time per local update using matrix-update formulas
+- For bosonic condensed product states, the amplitude factorizes and can typically be evaluated in $O(1)$ or $O(L)$ time
+
+### Bosonic systems
+
+#### Non-interacting condensate state
+
+Consider a bosonic lattice system with $L$ sites and creation and annihilation operators $\set{\hat{b}_i^\dagger, \hat{b}_i}_{i=1}^L$. Let $V_\alpha = (V_{i,\alpha})_{i=1}^L \in \mathbb{C}^L$ be a normalized single-particle wave function satisfying
+
+$$
+\begin{equation*}
+  \sum_{i=1}^L |V_{i,\alpha}|^2 = 1
+\tag{\label{equation-64}}
+\end{equation*}
+$$
+
+where 
+- $\set{V_{i,\alpha}}$ are generic amplitudes for having the boson on site $i$
+- $\alpha$ is an index that specifies the orbital
+
+We define the associated creation operator
+
+$$
+  \phi_\alpha^\dagger := \sum_{i=1}^L V_{i,\alpha} \hat{b}_i^\dagger
+$$
+
+The corresponding single-particle state is
+
+$$
+  \ket{\phi_\alpha} := \hat{\phi}_\alpha^\dagger \ket{0} = \left(\sum_i V_{i,\alpha} \hat{b}_i^\dagger \right) \ket{0}
+$$
+
+The normalization condition $\eqref{equation-64}$ ensures that
+
+$$
+  \braket{\phi_\alpha |\phi_\alpah} = \braket{0|\hat{\phi}_\alpha \hat{\phi}_\alpha^\dagger | 0} = 1
+$$
+
+In particular, the zero-momentum orbital on a translationally invariant lattice is obtained by choosing
+
+$$
+  V_{i,\alpha} = \frac{1}/{\sqrt{L}}
+$$
+
+which yields the uniform superposition over all sites.
+
+The many-body state with $N_b \in\N_+$ bosons occupying the same orbital $\alpha$ is defined by
+
+$$
+\begin{equation*}
+\begin{split}
+  \ket{\Phi_0} :=& \frac{1}{\sqrt{N_b !}} (\hat{\phi}_\alpha^\dagger)^{N_b} \ket{0} \\
+  =& \frac{1}{\sqrt{N_b!}} \left(\sum_i V_{i,\alpha} \hat{b}_i^\dagger \right)^{N_b} \ket{0}
+\end{split}
+\tag{\label{equation-65}}
+\end{equation*}
+$$
+
+Define the normalized occupation-number basis states by
+
+$$
+\begin{equation*}
+  \ket{n_1,\dots,n_L} := \frac{1}{\sqrt{n_1! \cdots n_L!}} \left(\prod_{i=1}^L (\hat{b}_i^\dagger)^{n_i} \right) \ket{0}
+\tag{\label{equation-66}}
+\end{equation*}
+$$
+
+where $n_i \in\N_0$ denotes the number of bosons at site $i$ such that
+
+$$
+  \sum_{i=1}^L n_i = N_b
+$$
+
+Applying the multinomial theorem
+
+$$
+  \left(\sum_{i=1}^L V_{i,\alpha} \hat{b}_i^\dagger \right)^{N_b} = \sum_{\substack{m_1,\dots,m_L \geq 0 \\ \sum_i m_i = N_b}} \frac{N_b!}{m_1! \cdots m_L!} \prod_{i=1}^L (V_{i,\alpha} \hat{b}_i^\dagger)^{m_i}
+$$
+
+we can refactor $\eqref{equation-65}$ as
+
+$$
+  \ket{\Phi_0} = \frac{1}{\sqrt{N_b}} \sum_{\substack{m_1,\dots,m_L \geq 0 \\ \sum_i m_i = N_b}} \frac{N_b!}{m_1! \cdots m_L!} \left(\prod_{i=1}^L V_{i,\alpha}^{m_i} (\hat{b}_i^\dagger)^{m_i} \right) \ket{0}
+$$
+
+Rewriting this in terms of the normalized basis states $\eqref{equation-66}$ yields
+
+$$
+  \ket{\Phi_0} = \sum_{\substack{m_1,\dots,m_L \geq 0 \\ \sum_i m_i = N_b}} \sqrt{\frac{N_b}{n_1! \cdots n_L!}} \left(\prod_{i=1}^L V_{i=1}^{n_i} \right) \ket{n_1,\dots,n_L}
+$$
+
+For a fixed configuration $\ket{x} := \ket{n_1,\dots,n_L}$, the overlap $\braket{x|\Phi_0}$ is therefore given by
+
+$$
+\begin{equation*}
+  \braket{n_1,\dots,n_L|\Phi_0} = \sqrt{\frac{N_b!}{n_1! \cdots n_L!}} \prod_{i=1}^L V_{i,\alpha}^{n_i}
+\tag{\label{equation-67}}
+\end{equation*}
+$$
+
+This shows that the probability amplitude has the structure of a multinomial distribution in the coefficients $V_{i,\alpha}$, reflecting the complete condensation of all $N_b$ bosons into single one-body orbital.
+
+#### Computation of amplitude ratio
+
+With the overlap expression $\eqref{equaton-67}$, we can efficiently evaluate ratios of amplitudes corresponding to configurations that differ locally. 
+
+If we consider two configurations $x, x' \in\Omega$ that only differ by a boson hopping between sites $l \to k$. In the occupation-number basis, $\ket{x}$ and $\ket{x'}$ take the form 
+
+$$
+\begin{equation*}
+\begin{split}
+  \ket{x} :=& \ket{n_1,\dots,n_k,\dots,n_l,\dots,n_L} \\
+  \ket{x'} :=& \ket{n_1,\dots,n_k + 1,\dots,n_l - 1,\dots,n_L}
+\end{split}
+\tag{\label{equation-69}}
+\end{equation*}
+$$
+
+then using $\eqref{equation-68}$, we obtain the amplitude ratio
+
+$$
+\begin{align*}
+  \frac{\braket{x'|\Phi_0}}{\braket{x|\Phi_0}} =& \frac{\sqrt{\frac{N_b!}{(n_k + 1)! (n_l - 1)! \prod_{i\neq k,l} n_i!}} V_{k,\alpha}^{n_k + 1} V_{l,\alpha}^{n_l - 1}}{\sqrt{\frac{N_b!}{n_k! n_l! \prod_{i\neq k,l} n_i!}} V_{k,\alpha}^{n_k} V_{l,\alpha}^{n_l}} \\
+  =& \sqrt{\frac{n_l}{n_k + 1}} \frac{V_{k,\alpha}}{V_{l,\alpha}}
+\end{align*}
+$$
+
+If multiple bosons are moved simultaneously, analogous formulas follow from the same multinomial structure, involving only the occupations of the sites affected by the update.
+
+For a single-boson hopping update, the ratio of amplitudes depends only on the local occupations at sites $k$ and $l$, and on the corresponding orbital coefficients. Since this ratio is indpendent of both the total number of sites $L$ and the total number of particles $N_b$, its evaluation requires $O(1)$ operations. Consequently, fully condensed bosonic systems are well suited for Monte Carlo sampling schemes, since the
+
+The calculation of $\braket{x|\Phi_0}$ becomes dramatically complicated if the bosons are not condensed. Consider the general non-interacting state in which the $N_b$ bosons occupy (possibly distinct) single-particle orbitals
+
+$$
+  \ket{\Phi_0} = \prod_{\alpha=1}^{N_b} \left(\sum_i V_{i,\alpha} \hat{b}_i^\dagger \right) \ket{0}
+$$
+
+In this case, the overlap of a configuration $\ket{x} := \ket{n_1,\dots,n_L}$ includes the permanent of an $N_b \times N_b$ matrix in form
+
+$$
+  \braket{n_1,\dots,n_L|\Phi_0} =  \frac{1}{\sqrt{n_1! \cdots n_L!}} \operatorname{per}(V_{R_j, \alpha})_{j,\alpha=1}^^{N_b}
+$$
+
+where the $R_j$ take the values of the occupied sites. The values of $R_j$ may appear more than once, according to the occupation of each site, such that site $k$ appears exactly $n_k$ times. 
+
+The calculation of the permanent of an $N_b \times N_b$ matrix requires exponential time in $N_b$ in the worst case. Consequently, evaluating such overlaps (or their ratios) becomes computationally prohibitive for large particle numbers.
+
+#### Computation of the Jastrow factor
+
+For a configuration $x := (n_i)_{i=1}^L \in\Omega$ with $n_i \in\N_0$, let the value of the Jastrow factor $\eqref{equation-62}$ be given by
+
+$$
+  \hat{J}(x) = \exp\left(-\sum_{i,j=1}^L v_{ij} n_i n_j \right)
+$$
+
+where the pseudo-potential $v_{ij} \in\R$ is assumed to satisfy
+- **symmetry:** $v_{ij} = v_{jk}$
+- **translational invariance:** $v_{ii} = v_{jj}$ for all $i,j$
+
+A direct evaluation of $\hat{J}(x)$ involves summing over all pairs $(i,j)$, therefore requiring $O(L^2)$ operations. Consequently, computing the ratio $\hat{J}(x')/\hat{J}(x)$ by recomputing both exponents from scratch also costs $O(L^2)$. However, if two configurations $x, x' \in\Omega$ differ only locally, e.g. by few boson hoppings, a more computationally efficient update is possible.
+
+Consider the case in which two configurations $x, x' \in\Omega$ differ only by a single boson hopping between sites $l\to k$. In the occupation-number basis, $\ket{x}$ and $\ket{x'}$ take the same form as in $\eqref{equation-69}$. Thus, the updated occupation numbers can be written $n'_i = n_i + \delta_{ik} + \delta_{ij}$. Defining
+
+$$
+  E(x) := \sum_{i,j} v_{ij} n_i n_j
+$$
+
+the ratio of Jastrow factors can be expressed as
+
+$$
+\begin{equation*}
+  \frac{\hat{J}(x')}{\hat{J}(x)} = \exp\left(-[E(x') - E(x)]\right)
+\tag{\label{equation-70}}
+\end{equation*}
+$$
+
+By symmetry and translation invariance of $v_{ij}$ with $v_0 = v_{ii}$, we get
+
+$$
+  E(x') - E(x) = 2\sum_i (v_{ik} - v_{il}) n_i + 2(v_0 - v_{kl})
+$$
+
+<details>
+<summary>Details</summary>
+
+Evaluating $E(x')$ yields
+
+$$
+\begin{align*}
+  E(x') =& \sum_{i,j} v_{ij} n'_i n'_j \\
+  =& \sum_{i,j} v_{ij} (n_i + \delta_{ik} - \delta_{jk})(n_j + \delta_{jk} - \delta_{jl})
+\end{align*}
+$$
+
+Expanding the parentheses
+
+$$
+\begin{align*}
+  &(n_i + \delta_{ik} - \delta_{jk})(n_j + \delta_{jk} - \delta_{jl}) \\
+  =& n_i n_j + n_i (\delta_{jk} - \delta_{jl}) + n_j (\delta_{ik} - \delta_{il}) + (\delta_{ik} - \delta_{il})(\delta_{jk} - \delta_{jl})
+\end{align*}
+$$
+
+Using the property $\sum_j f(j) \delta_{jk} = f(k)$, then $E(x')$ expands to
+
+$$
+\begin{align*}
+  E(x') =& \sum_{i,j} v_{ij} n_i n_j + \sum_i v_{ik} n_i - v_{il} n_i + \sum_j v_{kj} n_j - v_{lj} n_j \\
+  &+ v_{kk} - v_{kl} - v_{lk} + v_{ll}
+\end{align*}
+$$
+
+If $v_{ij} = v_{jk}$, then the two linear terms are equal. Additionally, if $v_{ii} = v_0$ is site-independent due to translational invariance, then $E(x')$ simplifies to
+
+$$
+\begin{align*}
+  E(x') =& \sum_{i,j} v_{ij} n_i n_j + 2\sum_i (v_{ik} - v_{il})n_i + \underbrace{v_{kk} + v_{ll}}_{=2v_0} - 2v_{kl} \\
+  =& \sum_{i,j} v_{ij} n_i n_j + 2\sum_i (v_{ik} - v_{il})n_i + 2(v_0 - v_{kl})
+\end{align*}  
+$$
+</details>
+
+The ratio of Jastrow factors $\eqref{equation-70}$ therefore becomes
+
+$$
+\begin{equation*}
+  \frac{\hat{J}(x')}{\hat{J}(x)} = \exp\left(-2\sum_i (v_{ik} - v_{il})n_i \right) \exp(-2(v_0 - v_{kl}))
+\tag{\label{equation-72}}
+\end{equation*}
+$$
+
+The second exponential factor depends only on the pseudo-potential and can therefore by precomputed in the Markov chain.
+
+Introducing the auxiliary quantity
+
+$$
+  \mathbf{t}_\text{J} (j) := \sum_{i=1}^L v_{ij} n_i
+$$
+
+the ratio $\eqref{equation-72}$ can be expressed as
+
+$$
+  \frac{\hat{J}(x')}{\hat{J}(x)} = \exp\left(-2[\mathbf{t}_\text{J} (k) - \mathbf{t}_\text{J} (l)]\right) \exp(-2(v_0 - v_{kl}))
+$$
+
+Thus, once the vector $\mathbf{t}_\text{J}$ has been computed, the ratio evaluation requires only $O(1)$ operations. At the beginning of the Markov chain, $\mathbf{t}_\text{J} (j)$ is computed from scratch with $O(L^2)$ complexity. After each accepted move along the chain, $\mathbf{t}_\text{J} (j)$ is updated in $O(L)$ times. For a single-boson hopping update with $n'_i = n_i + \delta_{ik} - \delta_{il}$, the update $\mathbf{t}'_\text{J} (j)$ is given by
+
+$$
+\begin{align*}
+  \mathbf{t}'_\text{J} (j) =& \sum_i v_{ij} n'_i = \sum_i v_{ij} (n_i + \delta_{ik} - \delta_{ij}) \\
+  =& \sum_i v_{ij} n_i + v_{kj} - v_{lj} = \mathbf{t}_\text{J} + v_{kj} - v_{lj}
+\end{align*}
+$$
+
+Computing $\mathbf{t}'_\text{J}$ for $j=1,\dots,L$ therefore requires $O(L)$ operations.
+
+In practice, it is numerically advisable to recompute $\mathbf{t}_\text{J}$ periodically from scratch to prevent the accumulation of floating-point round-off errors.
+
+### Fermionic systems with determinants
+
+Consider a fermionic lattice system with $L$ sites and creation and annihilation operators $\set{\hat{c}_i^\dagger, \hat{c}_i}_{i=1}^L$. We combine the site index $i=1,\dots,L$ and electron spin index $\sigma\in\set{\uparrow, \downarrow}$ into a single composite index $I=1,\dots,2L$, by defining the operators
+
+$$
+  \hat{c}_{i,\uparrow} =: \hat{d}_i,\quad \hat{c}_{i,\downarrow} =: \hat{d}_{i+L}
+$$
+
+which satisfy the canonical anticommutation relations
+
+$$
+\begin{align*}
+  [\hat{d}_I, \hat{d}_J]_+ =& [\hat{d}_I^\dagger, \hat{d}_J^\dagger]_+ = 0 \\
+  [\hat{d}_I, \hat{d}_J^\dagger]_+ = \delta_{IJ}
+\end{align*}
+$$
+
+Consider a non-interacting Hamiltonian taking the quadratic form
+
+$$
+  \hat{H}_0 = \sum_{I,J=1}^{2L} t_{IJ} \hat{d}_I^\dagger \hat{d}_J
+$$
+
+or in matrix form
+
+$$
+\begin{equation*}
+  \hat{H}_0 = \unitvec{d}^\dagger \mathbf{T} \unitvec{d}
+\tag{\label{equation-77}}
+\end{equation*}
+$$
+
+where 
+- $\mathbf{T} = (t_{IJ}) \in \mathbb{C}^{2L\times 2L}$ is Hermitian
+- $\unitvec{d}^\dagger = [\hat{d}_i^\dagger]_{i=1}^{2L}$
+
+The Hamiltonian includes arbitrary hopping processes, possibly mixing spin sectors (i.e. matrix elements with $I \leq L$ and $J > L$ and vice versa).
+
+Since $\hat{H}_0$ commutes with the total number of electrons 
+
+$$
+  \hat{N}_e = \sum_I \hat{d}_I^\dagger \hat{d}_I
+$$
+
+particle number is conserved, and the many-body eigenstates can be constructed from single-particle orbitals. Because $\mathbf{T}$ is Hermitian, there exists a unitary matrix $\mathbf{U}\in \operatorname{U}(2L)$ such that
+
+$$
+  \mathbf{U}^\dagger \mathbf{TU} = \mathbf{E} = \operatorname{diag}(\varepsilon_1,\dots,\varepsilon_{2L})
+$$
+
+where $\varepsilon_\alpha$ are the single-particle eigenvalues. This allows us to define the new fermionic operators
+
+$$
+\begin{align*}
+  \hat{\phi}_\alpha^\dagger = \sum_{I=1}^{2L} U_{I,\alpha} \hat{d}_I^\dagger \tag{\label{equation-78}}
+  \hat{\phi}_\alpha = \sum_{I=1}^{2L} U_{I,\alpha}^* \hat{d}_I \tag{\label{equation-79}}
+\end{align*}
+$$
+
+Unitarity of $\mathbf{U}$ guarantees that the operators $\hat{\phi}_\alpha$ the canonical anticommutation relations.
+
+In this basis, $\hat{H}_0$ takes the diagonal form
+
+$$
+\begin{align*}
+  \hat{H}_0 =& \mathbf{d}^\dagger \mathbf{UU}^\dagger \mathbf{TUU}^\dagger \mathbf{d} \\
+  =& \boldsymbol{\Phi}^\dagger \mathbf{E} \boldsymbol{\Phi} = \sum_\alpha \varepsilon_\alpha \phi_\alpha^\dagger \phi_\alpha
+\end{align*}
+$$
+
+Assuming the eigenvalues of $\hat{H}_0$ are ordered with $\varepsilon_1 \leq\cdots\leq \varepsilon_{2L}$, the $N_e$-particle ground state $\ket{\Phi_0}$ can be constructed by occupying the $N_e$ lowest energy orbitals, giving the Slater determinant
+
+$$
+\begin{equation*}
+  \ket{\Phi_0} = \left(\prod_{\alpha=1}^{N_e} \hat{\phi}_\alpha^\dagger\right) \ket{0}
+\tag{\label{equation-73}}
+\end{equation*}
+$$
+
+A generic occupation-number configuration $\ket{x}$ with $N_e$ electrons is
+
+$$
+  \ket{x} = \left(\prod_{i=1}^{N_e} \hat{d}_{R_i}^\dagger\right) \ket{0}
+$$
+
+where
+- $R_j \in\set{1,\dots,2L}$ are all distinct
+- the ordering $R_1 < \cdots < R_{N_e}$ is conventionally fixed to define a canonical sign
+
+The overlap $\braket{x|\Phi_0}$ is the given by
+
+$$
+  \braket{x|\Phi_0} = \Braket{0| \hat{d}_{R_{N_e}} \cdots \hat{d}_{R_1} \left(\sum_p (-1)^p \prod_{\alpha=1}^{N_e} U_{p\set{R_j}, \alpha} \right) \hat{d}_{R_1}^\dagger \cdots \hat{d}_{R_{N_e}}^\dagger |0}
+$$
+
+where the sum is over all the possible permutations of the $\set{R_j}$ in $\ket{x}$. Due to fermionic anticommutation relations, only terms that exactly match the ordered set $\set{R_j}$ survive. The reordering of operators produces the signature of a permutation. The form of $\braket{x|\Phi_0}$ is recognized as the determinant
+
+$$
+\begin{equation*}
+  \braket{x|\Phi_0} = \det(U_{R_J, \alpha})_{j,\alpha=1}^{N_e}
+\tag{\label{equation-74}}
+\end{equation*}
+$$
+
+Thus, the overlap is the determinant of the $N_e \times N_e$ submatrix of $\mathbf{U}$ obtained by restricting the rows indexed by the occupied single-particle states $\set{R_j}$ and the columns corresponding to the filled orbitals $\alpha=1,\dots,N_e$.
+
+To ensure numerically stable and reproducible Monte Carlo calculations, the overlap $\eqref{equation-74}$ must be uniquely defined up to an overall phase. Since this determinant depends only on the $N_e$-dimensional occupied subspace of the one-particle Hilbert space $\mathcal{H}^{(1)} \cong \mathbb{C}^{2L}$, the key issue is whether that subspace is uniquely determined by the spectrum of $\mathbf{T}$.
+
+For closed shell configurations, there is a spectral gap between the highest occupied and lowest unoccupied orbitals, i.e. $\varepsilon_{N_e} < \varepsilon_{N_e + 1}$. In this case, the spectral projection
+
+$$
+  \hat{P}_\text{occ} = \chi_{(-\infty, \varepsilon_{N_e)} (\mathbf{T})
+$$
+ 
+onto the span of the $N_e$ lowest eigenvectors has rank $N_e$ and is uniquely defined. Hence occupied subspace $\mathcal{V}_\text{occ} = \operatorname{ran}(\hat{P}_\text{occ}) \subset \mathcal{H}^{(1)}$ is uniquely determined. Any two orthonormal bases of $\mathcal{V}_\text{occ}$ differ by a unitary transformation $V \in \operatorname{U}(N_e)$ with $|\det(V)| = 1$. In this case the many-body state transforms as $\ket{\Phi_0} \to \det(V) \ket{\Phi_0}$, such that the Slater determinant $\eqref{equation-73}$ is unique up to a global phase. Since Monte Carlo sampling depends only on amplitudes or squared amplitudes, this phase is physically irrelevant and does not affect numerical stability.
+
+For open shell configurations, there is a no spectral gap between the highest occupied and lowest unoccupied orbitals, i.e. $\varepsilon_{N_e} = \varepsilon_{N_e + 1}$. Let $\varepsilon_F := \varepsilon_{N_e}$ be the Fermi energy, and denote by
+
+$$
+  \mathcal{E}_F = \operatorname{ker}(\mathbf{T} - \varepsilon_F \mathbf{I})
+$$
+
+the degenerate eigenspace at the Fermi energy, with dimension $\dim(\mathcal{E}_F) > 1$. In this case the spectral projection onto energies $\leq \varepsilon_F$ has rank strictly larger than $N_e$, and there is no $N_e$-dimensional occupied subspace. We must therefore choose an $N_e$-dimensional subspace insider a larger space. Consequently, the Slater determinant $\eqref{equation-73}$ is not uniquely determined by the spectrum of $\mathbf{T}$.
+
+If a degenerate multiplet lies entirely below or entirely above the Fermi level (i.e. either all its eigenvectors are occupied or all are empty), then the occupied subspace $\mathcal{V}_\text{occ}$ is still uniquely determined as a whole. Any change of basis inside a fully occupied degenerate block corresponds to a unitary rotation within $\mathcal{V}_\text{occ}$, therefore modifies $\ket{\Phi_0}$ only by a global phase. Although the single-particle eigenvectors are not unique, $\ket{\Phi_0}$ is well defined up to phase so that no Monte Carlo instability aries.
+
+If a degenerate eigenspace $\mathcal{E}_F$ is only partially filled, i.e.
+
+$$
+  0 < \dim(\mathcal{V}_\text{occ} \cap \mathcal{E}_F) < \dim(\mathcal{E}_F)
+$$
+
+then the choice of occupied subspace inside $\mathcal{E}_F$ is not uniquely determined.
+
+Numerical diagonalization of $\mathbf{T}$ produces an arbitrary orthonormal basis of $\mathcal{E}_F$, typically depending sensitively on floating-point details. Since different orthonormal bases of $\mathcal{E}_F$ are related by nontrivial unitary transformations that mix occupied and unoccupied directions within $\mathcal{E}_F$, the resulting $N_e$-dimensional occupied subspace changes. Consequently:
+- The Slater determinant $\ket{\Phi_0}$ changes nontrivially
+- The matrix $\mathbf{U}_\text{occ}$ changes in a way that is not a right multiplication by an $N_e \times N_e$ unitary
+- The determinant in $\eqref{equation-74}$ depends on the the particular linear combinations selected by the diagonalization routine
+
+In this case, the Monte Carlo weights are basis-dependent, and the calculation is not reproducible unless an additional prescription is imposed to fix the occupied subspace.
+
+#### Bardeen-Cooper-Schrieffer model
+
+The same kind of formalism can be used also if the non-interacting Hamiltonian contains and electron pairing that couples up and down spin. Let us consider a BCS Hamiltonian by
+
+$$
+\begin{align*}
+  \hat{H}_0 =& \sum_{i,j,\sigma} t_{ij} \hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} - \mu_0 \sum_{i,\sigma} \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma} \\
+  &+ \sum_{i,j} \Delta_{ij} (\hat{c}_{i,\uparrow}^\dagger \hat{c}_{j,\downarrow} + \hat{c}_{j,\downarrow} \hat{c}_{i,\downarrow})
+\end{align*}
+$$
+
+where we have included a chemical potential $\mu_0$, which fixes, on average, the number of electrons. In this case, the total number of particles is not conserved and the concept of single-particle orbitals is not defined. The ground state of the BCS Hamiltonian is naturally written in terms of a pairing function. Nevertheless, we can perform a particle-hole transformation on the spin-down electrons
+
+$$
+\begin{align*}
+  \hat{c}_{i,\uparrow} \to \hat{f}_{i,\uparrow} =: \hat{d}_i \tag{\label{equation-75}} \\
+  \hat{c}_{i,\downarrow}\to \hat{f}_{i,\downarrow}^\dagger =: \hat{d}_{i+L}^\dagger \tag{\label{equation-76}}
+\end{align*}
+$$
+
+Then, apart from constant terms, the transformed BCS Hamiltonian has the form of $\eqref{equation-77}$, where the matrix $\mathbf{T}$ is given by ($i,j \leq L$)
+
+$$
+\begin{align*}
+  T_{ii} =& -\mu_0 \\
+  T_{i+L, i+L} =& \mu_0 \\
+  T_{ij} =& t_{ij} \\
+  T_{i+L,j+L} =& -t_{ij} \\
+  T_{i,j+L} =& T_{j+L, i}^* = \Delta_{ij}
+\end{align*}
+$$
+
+Since, after the particle-hole transformation, the number of particles (but not the $z$ component of the spin) is conserved, the eigenstates of the BCS Hamiltonian can be expressed into orbitals, similar to the ones of $\eqref{equation-78}$, but without having a definite spin component along $z$.
+
+Notice that the particle-hole transformations $\eqref{equation-75}$ and $\eqref{equation-76}$ change a spin down into the vacuum and vice versa, so that
+
+$$
+\begin{align*}
+  \ket{0_i} \to& \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
+  \hat{c}_{i,\uparrow}^\dagger \ket{0_i} \to& \hat{f}_{i,\uparrow}^\dagger \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
+  \hat{c}_{i,\downarrow}^\dagger \ket{0_i} \to& \ket{\tilde{0}_i} \\
+  \hat{c}_{i,j}^\dagger \hat{c}_{i,\downarrow}^\dagger \ket{0_i}
+\end{align*}
+$$
+
+where $\ket{\tilde{0}_i}$ is the vacuum of the $f$ electrons, i.e. $\hat{f}_{i,\uparrow} \ket{\tilde{0}} = \hat{f}_{i,\downarrow} \ket{\tilde{0}} = 0$. By using the anticommutation relations of the fermion operators, we have that the occupations $\hat{u}_{i,\sigma}$ of new fermionic operators are related to the original ones by
+
+$$
+\begin{align*}
+  \hat{u}_{i,\uparrow} =& \hat{f}_{i,\uparrow}^\dagger \hat{f}_{i,\uparrow} = \hat{c}_{i,\uparrow}^\dagger \hat{c}_{i,\dagger} = \hat{n}_{i,\uparrow} \\
+  \hat{u}_{i,\downarrow} =& \hat{f}_{i,\downarrow}^\dagger \hat{f}_{i,\downarrow}= 1 - \hat{c}_{i,\downarrow}^\dagger \hat{c}_{i,\downarrow} = 1 - \hat{n}_{i, \downarrow}
+\end{align*}
+$$
+
+which implies that the relations among denisities and magnetizations on site $i$ are given by
+
+$$
+\begin{align*}
+  u_i =& u_{i,\uparrow} + u_{i,\downarrow} = n_{i,\uparrow} - n_{i,\downarrow} + 1 = m_z + 1 \\
+  w_i^z =& u_{i,\uparrow} - u_{i,\downarrow} = n_{i,\uparrow} + n_{i,\downarrow} - 1 = n_i - 1
+\end{align*}
+$$
+
+where we have introduced $u_i$ and $w_i^z$, as the density and magnetization for the transformed operators, respectively. The letters $u$ and $w$ are chosen because they look like an upside down $n$ and $m$, respectively. Thus, apart from constant terms, upon the particle-hole transformation of $\eqref{equation-75}$ and $\eqref{equation-76}$, the density changes into the $z$ component of the spin and vice versa. As a corollary, we obtain that, whenever the total magnetization of the original particles is vanishing, the total number of new particles is equal to the number of sites $L$.
+
+### Fermionic systems with Pfaffians
