@@ -2710,8 +2710,8 @@ In this basis, $\hat{H}_0$ takes the diagonal form
 
 $$
 \begin{align*}
-  \hat{H}_0 =& \mathbf{d}^\dagger \mathbf{UU}^\dagger \mathbf{TUU}^\dagger \mathbf{d} \\
-  =& \boldsymbol{\Phi}^\dagger \mathbf{E} \boldsymbol{\Phi} = \sum_\alpha \varepsilon_\alpha \phi_\alpha^\dagger \phi_\alpha
+  \hat{H}_0 =& \unitvec{d}^\dagger \mathbf{UU}^\dagger \mathbf{TUU}^\dagger \unitvec{d} \\
+  =& \unitsym{\Phi}^\dagger \mathbf{E} \unitsym{\Phi} = \sum_\alpha \varepsilon_\alpha \hat{\phi}_\alpha^\dagger \hat{\phi}_\alpha
 \end{align*}
 $$
 
@@ -2781,74 +2781,331 @@ then the choice of occupied subspace inside $\mathcal{E}_F$ is not uniquely dete
 
 Numerical diagonalization of $\mathbf{T}$ produces an arbitrary orthonormal basis of $\mathcal{E}_F$, typically depending sensitively on floating-point details. Since different orthonormal bases of $\mathcal{E}_F$ are related by nontrivial unitary transformations that mix occupied and unoccupied directions within $\mathcal{E}_F$, the resulting $N_e$-dimensional occupied subspace changes. Consequently:
 - The Slater determinant $\ket{\Phi_0}$ changes nontrivially
-- The matrix $\mathbf{U}_\text{occ}$ changes in a way that is not a right multiplication by an $N_e \times N_e$ unitary
+- The matrix $\tilde{\mathbf{U}}$ changes in a way that is not a right multiplication by an $N_e \times N_e$ unitary
 - The determinant in $\eqref{equation-74}$ depends on the the particular linear combinations selected by the diagonalization routine
 
 In this case, the Monte Carlo weights are basis-dependent, and the calculation is not reproducible unless an additional prescription is imposed to fix the occupied subspace.
 
 #### Bardeen-Cooper-Schrieffer model
 
-The same kind of formalism can be used also if the non-interacting Hamiltonian contains and electron pairing that couples up and down spin. Let us consider a BCS Hamiltonian by
+The previous single-particle formalism extends to quadratic Hamiltonians that include pairing terms. In this case, particle number is not conserved, and the natural diagonalization procedure involves a Bogoliubov transformation. This can be reduced to a number-conserving problem via a particle-hole transformation. 
+
+Consider fermionic operators $\set{\hat{c}_{i,\sigma}, \hat{c}_{i,\sigma}^\dagger}_substack{i=1,\dots,L \\ \sigma\in\set{\uparrow, \downarrow}}$ satisfying the canoncial anticommutation relations. The Hamiltonian of the Bardeen-Cooper-Schrieffer model on $L$ sites is
 
 $$
 \begin{align*}
   \hat{H}_0 =& \sum_{i,j,\sigma} t_{ij} \hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\sigma} - \mu_0 \sum_{i,\sigma} \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma} \\
-  &+ \sum_{i,j} \Delta_{ij} (\hat{c}_{i,\uparrow}^\dagger \hat{c}_{j,\downarrow} + \hat{c}_{j,\downarrow} \hat{c}_{i,\downarrow})
+  &+ \sum_{i,j} \Delta_{ij} (\hat{c}_{i,\uparrow}^\dagger \hat{c}_{j,\downarrow} + \delta_{ij}^* \hat{c}_{j,\downarrow} \hat{c}_{i,\uparrow})
 \end{align*}
 $$
 
-where we have included a chemical potential $\mu_0$, which fixes, on average, the number of electrons. In this case, the total number of particles is not conserved and the concept of single-particle orbitals is not defined. The ground state of the BCS Hamiltonian is naturally written in terms of a pairing function. Nevertheless, we can perform a particle-hole transformation on the spin-down electrons
+where
+- $\mu_0 \in\R$ is the chemical potential, which fixes, on average, the number of electrons
+- $\Delta_{ij} \in\mathbb{C}$ is the pairing matrix
+
+This Hamiltonian is quadratic, but it does not conserve total particle number since $[\hat{H}_0, \hat{H}_e] \neq 0$. Consequently, the ground state cannot be written as a Slater determinant of fixed-particle orbitals. Instead it is a quasi-free state characterized by a pairing function.
+
+To reduce the problem to a number-conserving quadratic form, we can perform a particle-hole transformation on the spin-down sector by defining the fermionic operators
 
 $$
 \begin{align*}
-  \hat{c}_{i,\uparrow} \to \hat{f}_{i,\uparrow} =: \hat{d}_i \tag{\label{equation-75}} \\
-  \hat{c}_{i,\downarrow}\to \hat{f}_{i,\downarrow}^\dagger =: \hat{d}_{i+L}^\dagger \tag{\label{equation-76}}
+  \hat{f}_{i,\uparrow} := \hat{c}_{i,\uparrow} =: \hat{d}_i \tag{\label{equation-75}} \\
+  \hat{f}_{i,\downarrow}^\dagger := \hat{c}_{i,\downarrow} =: \hat{d}_{i+L}^\dagger \tag{\label{equation-76}}
 \end{align*}
 $$
 
-Then, apart from constant terms, the transformed BCS Hamiltonian has the form of $\eqref{equation-77}$, where the matrix $\mathbf{T}$ is given by ($i,j \leq L$)
+This transformation preserves the canonical anticommutation relations and correponds to exchanging creation and annihilation operators in the spin-down sector. Apart from constant terms, the transformed Hamiltonian becomes quadratic and number-conserving in the $\hat{d}_I$ operators
+
+$$
+  \hat{H}_0 = \sum_{I,J=1}^{2L} T_{IJ} \hat{d}_I^\dagger \hat{d}_J = \unitvec{d}^\dagger \mathbf{T} \unitvec{d}
+$$
+
+The $2L \times 2L$ Hemitian matrix $\mathbf{T}$ has a block form, for $i,j \leq L$
 
 $$
 \begin{align*}
-  T_{ii} =& -\mu_0 \\
+  T_{ij} =& t_{ij} -\mu_0 \delta_{ij} \\
   T_{i+L, i+L} =& \mu_0 \\
-  T_{ij} =& t_{ij} \\
   T_{i+L,j+L} =& -t_{ij} \\
   T_{i,j+L} =& T_{j+L, i}^* = \Delta_{ij}
 \end{align*}
 $$
 
-Since, after the particle-hole transformation, the number of particles (but not the $z$ component of the spin) is conserved, the eigenstates of the BCS Hamiltonian can be expressed into orbitals, similar to the ones of $\eqref{equation-78}$, but without having a definite spin component along $z$.
+The transformed Hamiltonian conserves the number of particles, but not the $z$ component of the spin. Thus, the conserved quantity is not the orignal electron number, but a linear combination of charge and spin. In the $d$-fermion representation, the Hamiltonian can be diagonalized by a unitary transformation, yielding a Slater determinant just like in the non-pairing case.
 
-Notice that the particle-hole transformations $\eqref{equation-75}$ and $\eqref{equation-76}$ change a spin down into the vacuum and vice versa, so that
-
-$$
-\begin{align*}
-  \ket{0_i} \to& \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
-  \hat{c}_{i,\uparrow}^\dagger \ket{0_i} \to& \hat{f}_{i,\uparrow}^\dagger \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
-  \hat{c}_{i,\downarrow}^\dagger \ket{0_i} \to& \ket{\tilde{0}_i} \\
-  \hat{c}_{i,j}^\dagger \hat{c}_{i,\downarrow}^\dagger \ket{0_i}
-\end{align*}
-$$
-
-where $\ket{\tilde{0}_i}$ is the vacuum of the $f$ electrons, i.e. $\hat{f}_{i,\uparrow} \ket{\tilde{0}} = \hat{f}_{i,\downarrow} \ket{\tilde{0}} = 0$. By using the anticommutation relations of the fermion operators, we have that the occupations $\hat{u}_{i,\sigma}$ of new fermionic operators are related to the original ones by
+Because $\hat{f}_{i,\downarrow} = \hat{c}_{i,\downarrow}^\dagger$, particle-hole transformation exchanges empty and occupied spin-down states. Consequently
 
 $$
 \begin{align*}
-  \hat{u}_{i,\uparrow} =& \hat{f}_{i,\uparrow}^\dagger \hat{f}_{i,\uparrow} = \hat{c}_{i,\uparrow}^\dagger \hat{c}_{i,\dagger} = \hat{n}_{i,\uparrow} \\
-  \hat{u}_{i,\downarrow} =& \hat{f}_{i,\downarrow}^\dagger \hat{f}_{i,\downarrow}= 1 - \hat{c}_{i,\downarrow}^\dagger \hat{c}_{i,\downarrow} = 1 - \hat{n}_{i, \downarrow}
+  \ket{0_i} \mapsto& \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
+  \hat{c}_{i,\uparrow}^\dagger \ket{0_i} \mapsto& \hat{f}_{i,\uparrow}^\dagger \hat{f}_{i,\downarrow}^\dagger \ket{\tilde{0}_i} \\
+  \hat{c}_{i,\downarrow}^\dagger \ket{0_i} \mapsto& \ket{\tilde{0}_i} \\
+  \hat{c}_{i,j}^\dagger \hat{c}_{i,\downarrow}^\dagger \ket{0_i} \mapsto& \hat{f}_{i,\uparrow}^\dagger \ket{\tilde{0}_i}
 \end{align*}
 $$
 
-which implies that the relations among denisities and magnetizations on site $i$ are given by
+where $\ket{\tilde{0}_i}$ is the vacuum of the $f$-electrons, i.e. $\hat{f}_{i,\uparrow} \ket{\tilde{0}} = \hat{f}_{i,\downarrow} \ket{\tilde{0}} = 0$. 
+
+**Transformation of densities and magnetization:**
+
+In the $c$-fermion representation, the number operators are given by $\hat{n}_{i,\sigma} = \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma}$. The transformed occupations are given by $\hat{u}_{i,\sigma} = \hat{f}_{i,\sigma}^\dagger \hat{f}_{i,\sigma}$. Using the canonical anticommutation relations yields
 
 $$
 \begin{align*}
-  u_i =& u_{i,\uparrow} + u_{i,\downarrow} = n_{i,\uparrow} - n_{i,\downarrow} + 1 = m_z + 1 \\
-  w_i^z =& u_{i,\uparrow} - u_{i,\downarrow} = n_{i,\uparrow} + n_{i,\downarrow} - 1 = n_i - 1
+  \hat{u}_{i,\uparrow} =& \hat{n}_{i,\uparrow} \\
+  \hat{u}_{i,\downarrow} =& 1 - \hat{n}_{i,\downarrow}
 \end{align*}
 $$
 
-where we have introduced $u_i$ and $w_i^z$, as the density and magnetization for the transformed operators, respectively. The letters $u$ and $w$ are chosen because they look like an upside down $n$ and $m$, respectively. Thus, apart from constant terms, upon the particle-hole transformation of $\eqref{equation-75}$ and $\eqref{equation-76}$, the density changes into the $z$ component of the spin and vice versa. As a corollary, we obtain that, whenever the total magnetization of the original particles is vanishing, the total number of new particles is equal to the number of sites $L$.
+In the $f$-fermion representation, the density is given by
+
+$$
+  \hat{u}_i = \hat{u}_{i,\uparrow} + \hat{u}_{i,\downarrow} = \hat{n}_{i,\uparrow} - \hat{n}_{i,\downarrow} + 1
+$$
+
+The $z$-component of the magnetization in the $c$-fermion representation is defined by $\hat{m}_i^z = \hat{n}_{i,\uparrow} - \hat{n}_{i,\downarrow}$. Hence, $\hat{u}_i = \hat{m}_i^z + 1$, showing that the original magnetization $\hat{m}_i^z$ maps to the transformed density $\hat{u}_i$ up to an additive constant.
+
+The transformed magnetization in the $f$-fermion representation becomes
+
+$$
+  \hat{w}_i^z = \hat{u}_{i,\uparrow} - \hat{u}_{i,\downarrow} = \hat{n}_{i,\uparrow} + \hat{n}_{i,\downarrow} - 1 = \hat{n}_i - 1
+$$
+
+showing that the original density $\hat{n}_i$ maps to the transformed magnetization $\hat{w}_i^z$ up to an additive constant. In summary, the particle-hole transformation exchanges charge and spin (along $z$) up to constants.
+
+The total density in the $f$-fermion representation is given by
+
+$$
+\begin{align*}
+  \hat{U} =& \sum_{i=1}^L \hat{u}_i = \sum_i (\hat{m}_i^z + 1) \\
+  =& \hat{M}_z + L
+\end{align*}
+$$
+
+where the $\hat{M}_z$ is the total magnetization in the $c$-fermion representation given by
+
+$$
+  \math{M}_z = \sum_i \hat{n}_{i,\uparrow} - \hat{n}_{i,\downarrow}
+$$
+
+Thus, if the original state has zero total magnetization, i.e. $\braket{\hat{M}_z} = 0$, the transformed systems has total density $\braket{\hat{U}} = L$. That is, the transformed problem corresponds to a half-filled system of $2L$ orbitals.
+
+#### Computation of determinants
+
+Consider the electronic configuration in which $\ket{x'}$ is obtained from $\ket{x}$ just by hopping the $l$th electron from $R_l$ to $R'_l$, i.e. $\ket{x'} = \hat{d}_{R'_l} \hat{d}_{R_l} \ket{x}$. Then new matrix $\tilde{\mathbf{U}}'$ will be equal to $\tilde{\mathbf{U}}$, except that the elements of the $l$th row will be changed from $U_{R_l,\alpha}$ to $U_{R'_l, \alpha}$. Then, the ratio between two configurations that differ only by a single fermion hopping is
+
+$$
+  \frac{\braket{x'|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_{R'_l}|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U})}
+$$
+
+By denoting with $K$ the new site of the $l$th electron, i.e. $K := R'_l$, the updated matrix elements are given by a compact form
+
+$$
+\begin{equation*}
+\begin{split}
+  \tilde{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \delta_{j,l} (U_{K,\alpha} - \tilde{U}_{l,\alpha}) \\
+  =& \tilde{U}_{j,\alpha} + \delta_{j,l} \nu_\alpha^{K,l}
+\end{split}
+\tag{\label{equation-86}}
+\end{equation*}
+$$
+
+where we have defined $\nu_\alpha^{K,l} := U_{K,\alpha} - \tilde{U}_{l,\alpha}$. Here the indices $K$ and $l$ are fixed since they specify the site where the electron is hopping and the electron index, respectively. This equation can be rewritten in the following way
+
+$$
+\begin{align*}
+  \tilde{U}'_{j,\alpha} =& \sum_\beta \tilde{U}_{j,\beta} (\delta_{\beta,\alpha} + \tilde{U}_{\beta,l}^{-1} \nu_\alpha^{K,l}) \\
+  =& \sum_\beta \tilde{U}_{j,\beta} Q_{\beta,\alpha}
+\end{align*}
+$$
+
+where $Q_{\beta,\alpha} + \tilde{U}_{\beta,l}^{-1} \nu_\alpha^{K,l}$. Thus, $\tilde{\mathbf{U}}' = \tilde{\mathbf{U}}\mathbf{Q}$, which implies that the calculation of the ratio of the determinants of $\tilde{\mathbf{U}}'$ and $\tilde{\mathbf{U}}$ is equivalent to the calculation of the determinant of $\mathbf{Q}$
+
+$$
+  \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U})} = \det(\mathbf{Q})
+$$
+
+The great simplification comes from the fact that the determinant of $\mathbf{Q}$ can be easily computed. The matrix $\mathbf{Q}$ has a particular simple form wirtten as
+
+$$
+\begin{equation*}
+  Q_{\beta,\alpha} = \delta_{\beta,\alpha} + B_\beta A_\alpha
+\tag{\label{equation-80}}
+\end{equation*}
+$$
+
+where $B_\beta = \tilde{U}_{\beta,l}^{-1}$ and $A_\alpha = \nu_\alpha^{K,l}$. Although the matrix is not Hermitian, the eigenvalues of $\mathbf{Q}$ can be obtained from the secular equation
+
+$$
+  \sum_\alpha Q_{\beta,\alpha} \nu_\alpha = \lambda\nu_\beta
+$$
+
+Using $\eqref{equation-71}$, we obtain
+
+$$
+  \nu_\beta + B_\beta \sum_\alpha A_\alpha \nu_\alpha = \lambda\nu_\beta
+$$
+
+which implies that all vectors $\nu_\alpha$ that are orthogonal to $A_\alpha$ are eigenvectors with eigenvalue $\lambda = 1$ (there are $N_e - 1$ of such vectors). In addition, $\nu_\alpha = B_\alpha$ is also an eigenvector with
+
+$$
+  \lambda = 1 + \sum_\alpha A_\alpha B_\alpha = \sum_\alpha U_{K,\alpha} \tilde{U}_{\alpha,l}^{-1}
+$$
+
+Consequently
+
+$$
+\begin{equation*}
+  \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U}})} = \det(\mathbf{Q}) = \sum_\alpha U_{K,\alpha} \tilde{U}_{\alpha,l}^{-1}
+\tag{\label{equation-81}}
+\end{equation*}
+$$
+
+
+Having stored (at the beginning of the simulation) the matrix $\tilde{U}^{-1}$ for the configuration $\ket{x}$, this calculation requires $O(N_e)$ operations, instead of the $O(N_e^3)$ need to evaluate a determinant. Then once the new configuration $\ket{x'}$ is accepted along the Markov process, the matrix $\tilde{\mathbf{U}}^{-1}$ must be updated. This can be done in $O(N_e^2)$ operations. In fact, we have that ${\tilde{\mathbf{U}}'}^{-1} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$, the inverse of $\mathbf{Q}$ being given by
+
+$$
+  Q_{\alpha,\beta}^{-1} = \delta_{\alpha,\beta} - \frac{1}{\det(\mathbf{Q})} B_\alpha A_\beta
+$$
+
+Then, the updated matrix elements of $(\tilde{\mathbf{U}}')^{-1}$ are given by
+
+$$
+\begin{equation*}
+  {\tilde{U}'_{\alpha,j}^{-1}} = \tilde{U}_{\alpha,j}^{-1} - \frac{\tilde{U}_{\alpha,\beta}^{-1}}{\det(\mathbf{Q})} \left(\sum_\beta U_{K,\beta} \tilde{U}_{\beta,j}^{-1} - \delta_{l,j} \right)
+\tag{\label{equation-82}}
+\end{equation*}
+$$
+
+This is a closed equation for updating the matrix $\tilde{\mathbf{U}}^{-1}$.
+
+The previous results for the calculation of the ratio of determinants and the updating can be further simplified. At the beginning of the calculation, we can compute and store a $2L \times N_e$ matrix $\mathbf{W}$, with elements
+
+$$
+\begin{equation*}
+  W_{l,j} = \sum_\alpha U_{l,\alpha} \tilde{U}_{\alpha,j}^{-1}
+\tag{\label{equation-84}}
+\end{equation*}
+$$
+
+then the ratio of determinants $\eqref{equation-81}$ requires $O(1)$ operations, since it consists in taking the element  corresponding to the new site (row) and the electron performing the hopping process (column)
+
+$$
+\begin{equation*}
+  \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U}})} = W_{K,l}
+\tag{\label{equation-83}}
+\end{equation*}
+$$
+
+The evaluation of $\mathbf{W}$ requires the knowledge of the full matrix $\mathbf{U}$, which has been computed and stored once for all at the beginning of the simulation (it does not depend on the electronic configuration), and $\tilde{\mathbf{U}}^{-1}$, which instead depends on the configuration $\ket{x}$. Then a simple updatin scheme for $\mathbf{W}$ is possible. Multiplying both sides of $\eqref{equation-82}$ by $U_{l,\alpha}$ and summing over $\alpha$, we obtain
+
+$$
+\begin{equation*}
+  W'_{I,j} = W_{I,j} - \frac{W_{I,l}}{W_{K,l}} (W_{K,j} - \delta_{l,j})
+\tag{\label{equation-85}}
+\end{equation*}
+$$
+
+where, we have used that $\det(\mathbf{Q}) = W_{K,l}$ according to $\eqref{equation-83}$ and $\eqref{equation-84}$. Since each matrix element must be updated with $O(1)$ operations, the total cost is $O(2LN_e)$.
+
+By using a wave function that is constructed from filling single-particle states (also including cases with BCS pairing when a particle-hole transformation is done), the algorithm can be written in terms of the matrix elements of $\mathbf{W}$, which is the equal-time Green's function
+
+$$
+  \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_K |\Phi_0}}{\braket{x|\Phi_0}} = W_{K,l}
+$$
+
+Note that $\eqref{equation-85}$ has a direct interpretation by using the Wick theorem (with different bra and ket states) for the updated (equal-time) Green's function
+
+$$
+\begin{align*}
+  W'_{l,j} =& \frac{\braket{x'|\hat{d}_{R_j}^\dagger \hat{d}_l|\Phi_0}}{\braket{x'|\Phi_0}} \\
+  =& \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_K \hat{d}_{R_j}^\dagger \hat{d}_l|\Phi_0}}{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_K |\Phi_0}}
+\end{align*}
+$$
+
+in this cse, we must consider the contractions without including the anomalous (superconducting) ones, which vanish since both $\ket{x}$ and $\ket{\Phi_0}$ have a fixed number of particles.
+
+The previous formalism can be generalized to multi-electron hopping, i.e.
+
+$$
+  \ket{x'} = \hat{d}_{R'_{l_1}}^\dagger \hat{d}_{R_{l_1}} \cdots \hat{d}_{R'_{l_m}}^\dagger \hat{d}_{R_{l_m}} \ket{x}
+$$
+
+thus leading to a modification of $m$ rows of the $\tilde{\mathbf{U}}$ matrix. Then $\eqref{equation-86}$ generalizes into
+
+$$
+\begin{align*}
+  \tilde{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} (U_{k_r, \alpha} - \tilde{U}_{l_r, \alpha}) \\
+  =& \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} \nu_\alpha^{K_r, l_r}
+\end{align*}
+$$
+
+as before, the indices $K_r$ and $l_r$ for $r=1,\dots,m$ are fixed, because they specify the sites where the electrons are hopping and the electron indices, respectively. By performing the same algebra as before, we get
+
+$$
+\begin{align*}
+  \tilde{U}'_{j,\alpha} =& \sum_\beta \tilde{U}_{j,\beta} \left(\delta_{\beta,\alpha} + \sum_{r=1}^m \tilde{U}_{\beta,\l_r}^{-1} \nu_\alpha^{K_r, l_r} \right) \\
+  =& \sum_\beta \tilde{U}_{j,\beta} Q_{\beta,\alpha}
+\end{align*}
+$$
+
+where now the matrix $\mathbf{Q}$ has the form
+
+$$
+  Q_{\beta,\alpha} = \delta_{\beta,\alpha} + \sum_{r=1}^m B_\beta^r A_\alpha^r
+$$
+
+where $B_\beta^r = \tilde{U}_{\beta,l_r}^{-1}$ and $A_\alpha^r = \nu_\alpha^{K_r, l_r}$. As before the determinant of $\mathbf{Q}$ can be easily computed by solving the corresponding eigenvalue problem
+
+$$
+\begin{align*}
+  \sum_\alpha Q_{\beta,\alpha} \nu_\alpha = \nu_\beta + \sum_{r=1}^m B_\beta^r \sum_\alpha A_\alpha^r \nu_\alpha \\
+  =& \lambda\nu_\beta
+\end{align*}
+$$
+
+which implies that all vectors that are orthogonal to the subspace defined by the $A_\alpha^r$ are eigenvectors with $\lambda = 1$. Moreover, $\nu_\alpha = \sum_{r=1}¨m x_r B_\alpha^r$ is an eigenvector
+
+$$
+  \sum_{s=1}^m \left(\delta_{r,s} + \sum_\alpha A_\alpha^r B_\alpha^s \right) x_s = \lambda x_r
+$$
+
+Thus, the $m$ nontrivial eigenvalues of $\mathbf{Q}$ are given by the ones of the $m\times m$ matrix
+
+$$
+  C_{r,s} = \delta_{r,s} + \sum_\alpha A_\alpha^r B_\alpha^s = W_{K_r, l_s}
+$$
+
+The final expression of the ratio of the two determinants is given by
+
+$$
+  \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U}})} = \det(W_{K_r, l_s})
+$$
+
+Also in this case, once the move is accepted, we have to update the matrix ${\tilde{\mathbf{U}}'}^{1-} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$. As before, the inverse of $\mathbf{Q}$ is given by
+
+$$
+  Q_{\alpha,\beta}^{-1} = \delta_{\alpha,\beta} - \sum_{r,s=1}^m B_\alpha^r C_{r,s}^{-1} A_\beta^s
+$$
+
+Thus, we obtain
+
+$$
+  {\tilde{U}_{\alpha,j}}^{-1} = \tilde{U}_{\alpha,j}^{-1} - \sum_{r,s=1}^m \tilde{U}_{\alpha,l_r}^{-1} C_{r,s}^{-1} \left(\sum_\beta U_{K_s, \beta} \tilde{U}_{\beta,j}^{-1} - \delta_{l_s, j} \right)
+$$
+
+The updated $\mathbf{W}'$ is obtained by multiplying both sides by $U_{i,\alpha}$ and summing over $\alpha$, leading the
+
+$$
+  W'_{I,j} = W_{I,j} + \sum_{r=1}^m W_{I,l_r} b_j^{(r)}
+$$
+
+where
+
+$$
+  b_j^{(r)} = -\sum_{s=1}^m C_{r,s}^{-1} (W_{K_s,j} - \delta_{l_s,j})
+$$
+
+Similarly to the update of the Jastrow factor, it is highly recommended to occasionally recompute the matrix $\mathbf{W}$ from scratch. Since this calculation requires $O(2LN_e^2)$ operations, it does not affect the complexity of the algorithm if it is done every $O(N_e)$ electron moves.
 
 ### Fermionic systems with Pfaffians
