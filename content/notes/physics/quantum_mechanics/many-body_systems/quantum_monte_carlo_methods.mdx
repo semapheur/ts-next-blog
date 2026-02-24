@@ -2727,7 +2727,10 @@ $$
 A generic occupation-number configuration $\ket{x}$ with $N_e$ electrons is
 
 $$
+\begin{equation*}
   \ket{x} = \left(\prod_{i=1}^{N_e} \hat{d}_{R_i}^\dagger\right) \ket{0}
+\tag{\label{equation-90}}
+\end{equation*}
 $$
 
 where
@@ -3109,3 +3112,238 @@ $$
 Similarly to the update of the Jastrow factor, it is highly recommended to occasionally recompute the matrix $\mathbf{W}$ from scratch. Since this calculation requires $O(2LN_e^2)$ operations, it does not affect the complexity of the algorithm if it is done every $O(N_e)$ electron moves.
 
 ### Fermionic systems with Pfaffians
+
+#### Properties of the Pfaffian
+
+Let $\mathbf{A} = [a_{ij}]_{i,j=1}^{2n} \in \mathbb{F}^{2n\times 2n}$ be a skew-symmetric matrix, i.e. $A^\top = -\mathbf{A}$. The Pfaffian of $\mathbf{A}$ is defined as the anti-symmetrized product
+
+$$
+  \operatorname{Pf}(\mathbf{A}) = \frac{1}{2^n n!} \sum_{\signa\in S_{2n}} \operatorname{sgn}(\sigma) \prod_{k=1}^n a_{\sigma(2k - 1), \sigma(2k)}
+$$
+
+Equivalently, it can be written as a sum over all pair partitions of $\set{1,\dots,2n}$
+
+$$
+  \operatorname{Pf}(\mathbf{A}) = \sum_\alpha \operatorname{sgn}(\alpha) \prod_{k=1}^n a_{i_k, j_k}
+$$
+
+where the sum runs over all the $(2n - 1)!!$ pair partitions defined by $\alpha = \set{(i_k, j_k)}_{k=1}^n$ with $i_k < j_k$ and $i_1 < \cdots < i_n$. Here $\operatorname{sgn}(\alpha)$ denotes the parity of the permutation corresponding to the partition $\alpha$. 
+
+The Pfaffian is related to the determinant via $\det(\mathbf{A}) = \operatorname{Pf}(\mathbf{A})^2$. Thus, for skew-symmetric matrices of even dimension, the determinan is a perfect square. The Pfaffian determines the determines uniquely up to a global sign.
+
+The Pfaffian satisfies the following relations:
+1. If $\mathbf{A} \in\mathbb{F}^{2n\times 2n}$ and $\mathbf{A}' \in\mathbb{F}^{2m\times 2m}$ are skew-symmetric, then
+$$
+\begin{equation*}
+  \operatorname{Pf}\begin{bmatrix} \mathbf{A} & \mathbf{0} \\ \mathbf{0} & \mathbf{A}' \end{bmatrix} = \operatorname{Pf}(\mathbf{A}) \times \operatorname{Pf}(\mathbf{A})
+\tag{\label{equation-87}}
+\end{equation*}
+$$
+
+2. For any invertible matrix $\mathbf{B} \in\mathbb{F}^{2n\times 2n}$
+
+$$
+\begin{equation*}
+  \operatorname{Pf}(\mathbf{BAB}^\top) = \det(\mathbf{B}) \operatorname{Pf}(\mathbf{A})
+\tag{\label{equation-88}}
+\end{equation*}
+$$
+
+3. Let $\mathbf{A} \in \mathbb{F}^{2n\times 2n}$ and $\mathbf{C}^{2m\times 2m}$ be invertible skew-symmetric matrices and $\mathbf{B} \in\R^{2n\times 2m}$ be arbitrary. Then
+
+$$
+\begin{align*}
+  \begin{bmatrix} \mathbf{A} & \mathbf{B} \\ -\mathbf{B}^\top & \mathbf{C}^{-1} \end{bmatrix} =&  \begin{bmatrix} \mathbf{I} & \mathbf{BC} \\ \mathbf{0} & \mathbf{I} \end{bmatrix} \begin{bmatrix} \mathbf{A} + \mathbf{BCB}^\top & \mathbf{0} \\ \mathbf{0} & \mathbf{C}^{-1} \end{bmatrix} \begin{bmatrix} \mathbf{I} & \mathbf{0} \\ (\mathbf{BC})^\top & \mathbf{I} \end{bmatrix} \\
+  =& \begin{bmatrix} \mathbf{I} & \mathbf{0} \\ (\mathbf{A}^{-1} \mathbf{B})^\top & \mathbf{I} \end{matrix} \begin{bmatrix} \mathbf{A} & \mathbf{0} \\ \mathbf{0} & \mathbf{C}^{-1} + \mathbf{B}^\top \mathbf{A}^{-1} \mathbf{B} \end{bmatrix} \begin{bmatrix} \mathbf{I} & \mathbf{A}^{-1} \mathbf{B} \\ \mathbf{0} & \mathbf{I} \end{bmatrix}
+\end{align*}
+$$
+
+Using $\eqref{equation-87}$ and $\eqref{equation-88}$, we arrive at
+
+$$
+\begin{equation*}
+  \frac{\operatorname{Pf}(\mathbf{A} + \mathbf{BCB}^\top)}{\operatorname{Pf}(\mathbf{A})} = \frac{\operatorname{Pf}(\mathbf{C}^{-1} + \mathbf{B}^\top \mathbf{A}^{-1} \mathbf{B})}{\operatorname{Pf}(\mathbf{C}^{-1})}
+\tag{\label{equation-89}}
+\end{equation*}
+$$
+
+#### Non-interacting state
+
+If the non-interacting Hamiltonian contains pairing equal spins, or simultaneously includes spin-flip hopping and pairing terms, the pairing cannot, in general, be eliminated by a particle-hole transofmration. The most general quadratic Hamiltionian for a fermionic system is given by a generalized Bardeen-Cooper-Schrieffer model
+
+$$
+\begin{align*}
+  \hat{H}_0 =& \sum_{i,j,\sigma,\tau} t_{i,j}^{\sigma,\tau} c_{i,\sigma}^\dagger \hat{c}_{j,\tau} - \mu_0 \sum_{i,\sigma} \hat{c}_{i,\sigma}^\dagger \hat{c}_{i,\sigma} \\
+  +& \sum_{i,j,\sigma,\tau} (\Delta_{i,j}^{\sigma,\tau} \hat{c}_{i,\sigma}^\dagger \hat{c}_{j,\tau}^\dagger + (\Delta_{i,j}^{\sigma,\tau})^* \hat{c}_{j,\tau} + \hat{c}_{i,\sigma})
+\end{align*}
+$$
+
+where $t_{i,j}^{\sigma,\tau} = (t_{i,j}^{\tau,\sigma})^*$ and $\Delta_{i,j}^{\tau,\sigma} = -\Delta_{i,j}^{\sigma,\tau}$ are hopping and pairing terms, respectively.
+
+The Hamiltonian $\hat{H}_0$ can be diagonalized by a generalized Bogoliubov transformation
+
+$$
+  \Phi_\alpha = \sum_l (u_{l,\alpha} \hat{d}_l + v_{l,\alpha} \hat{d}_l^\dagger)
+$$
+
+To preserve fermionic anticommutation relations, the $2L\times 2L$ matrices $\mathbf{u}$ and $\mathbf{v}$ are determined by imposing
+
+$$
+\begin{align*}
+  \mathbf{u}^\dagger \mathbf{u} + \mathbf{v}^\dagger \mathbf{v} =& \mathbf{I} \\
+  \mathbf{u}^\top \mathbf{v} + \mathbf{v}^\top \mathbf{u} =& \mathbf{0}
+\end{align*}
+$$
+
+The quasiparticle operators $\Phi_\alpha$ satisfies the commutation relations
+
+$$
+  [\hat{H}_0, \Phi_\alpha] = -\varepsilon_\alpha \Phi_\alpha
+$$
+
+Due to particle-hole symmetry, the eigenvalues of $\hat{H}_0$ appear in pairs $(\varepsilon_\alpha, -\varepsilon_\alpha)$. That is, if $\Phi_\alpha$ has eigenvalue $\varepsilon_\alpha$, then $\Phi_\alpha^\dagger$ has eigenvalue $-\varepsilon_\alpha$. We can therefore restrict to the $2L$ eigenvectors with non-negative eigenvalues $\varepsilon_\alpha \geq 0$.
+
+In most cases, the ground state of the non-interacting Hamiltonian $\hat{H}_0$ can be written as a generalized BCS state
+
+$$
+  \ket{\Phi_0} = \exp\left(\frac{1}{2} \sum_{I,J} F_{I,J} \hat{d}_I^\dagger \hat{d}_J^\dagger \right) \ket{0}
+$$
+
+where $F_{I,J}$ is the anti-symmetric pairing function, defined by imposing that $\ket{\Phi_0}$ is annihilated by all the operators $\Phi_\alpha$ with $\varepsilon_\alpha \geq 0$, which leads to
+
+$$
+  \mathbf{Fu} = \mathbf{v} \iff \mathbf{F} = \mathbf{vu}^{-1}
+$$
+
+The invertibility of $\mathbf{u}$ guarantees that $\mathbf{F}$ is well defined. If $\mathbf{u}$ is singular, then there exists single-particle orbitals (unpaired modes). In that case, the ground state is a product of a BCS paired state and additional occupied orbitals, and the wave function can no longer be written purely as an exponential of pairs. This increases the algebraic and computational complexity in Monte Carlo implementations.
+
+Zero-energy modes, $\varepsilon_\alpha = 0$, must be excluded to ensure a unique many-body ground state (up to global phase). Otherwise, degeneracy leads to ambiguity in the definition of $\ket{\Phi_0}$ as in the case for Slater determinants.
+
+The overlap between $\ket{\Phi_0}$ and generic configurations $\ket{x}$ in $\eqref{equation-90}$ is given by
+
+$$
+  \braket{x|\Phi_0} = \frac{1}{(N_e/2)!} \Braket{0|\hat{d}_{R_{R_e}} \cdots \hat{d}_{R_1} \left(\frac{1}{2} \sum_{I,J} F_{I,J} \hat{d}_I^\dagger \hat{d}_J^\dagger \right)^{N_e/2} |0}
+$$
+
+Expanding the product of sums yields a sum over the $(N_e - 1)!!$ pair partitions of the fermions in $\ket{x}$ of $(N_e/2)!$ identical contributions. Each pairing contributes a product of matrix elements $F_{R_i, R_j}$, and fermionic reordering produces the corresponding permutation sign. Thus, the overlap equals the Pfaffian of the $N_e \times N_e$ antisymmetric submatric $\mathbf{F}_x$ obtained by restricting $\mathbf{F}$ to the occupied orbitals
+
+$$
+  \braket{x|\Phi_0} = \operatorname{Pf}\set{F_{R_i, R_j}}
+$$
+
+For a general quadratic Hamiltonian with pairing, Monte Carlo sampling of the BCS ground state therefore naturally leads to Pfaffian wave functions, generalizing the Slater determinant structure that arises in the particle-number-conserving case.
+
+#### Computation of Pfaffians
+
+Consider the electronic configuration in which $\ket{x'}$ is obtained from $\ket{x}$ just by hopping the $l$th electron from $R_l$ to $R'_l$, i.e. $\ket{x'} = \hat{d}_{R'_l} \hat{d}_{R_l} \ket{x}$. The new matrix $\mathbf{F}'$ needed to compute the overlap with $\ket{x'}$, differs from the old one $\mathbf{F}$ only in the $l$th row and column. As for the case with determinants, the actual order or rows (and columns) is determined by the one of creation operators in the configuration $\ket{x}$. Then, a generalization of the vector $\boldsymbol{\kappa}$ for the spinful case can be used to select the correct order of columns and rows. Then, the overlap $\braket{x'|\Phi_0}$ is given by the Pfaffian of
+
+$$
+  \tilde{F}'_{ij} = \tilde{F}_{ij} + \delta_{il} (F_{R'_l, R_j} - \tilde{F}_{ij}) - \delta_{jl} (F_{R'_l, R_i} - \tilde{F}_{li})
+$$
+
+which can be cast in the form $\tilde{\mathbf{F}}' = \tilde{\mathbf{F}} + \mathbf{BCB}^\top$ where $\mathbf{B}$ is a $N_e \times 2$ matrix
+
+$$
+\begin{equation*}
+  \mathbf{B} = \begin{bmatrix} F_{R_l, R'_l} - \tilde{F}_{il} & \delta_{il} \\
+    \vdots & \vdots \\
+    F_{R_{N_e}, R'_l} - \tilde{F}_{N_e, l} & \delta_{N_e, l}
+  \end{bmatrix}
+\tag{\label{equation-90}}
+\end{equation*}
+$$
+
+and $\mathbf{C}$ is a $2\times 2$ matrix
+
+$$
+  \mathbf{C} = \begin{bmatrix}
+    0 & 1 \\ -1 & 0
+  \end{bmatrix}
+$$
+
+Using $\eqref{equation-89}$, the ratio of the overlaps is given by
+
+$$
+\begin{align*}
+  \frac{\braket{x'|\Phi_0}}{\braket{x|\Phi_0}} =& \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_{R'_l}|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\operatorname{Pf}(\tilde{\mathbf{F}}')}{\operatorname{Pf}(\tilde{\mathbf{F}})} \\
+  =& \frac{\operatorname{Pf}(\mathbf{C}^{-1} + \mathbf{B}^\top \tilde{\mathbf{F}}^{-1} \mathbf{B})}{\operatorname{Pf}(\mathbf{C})}
+\end{align*}
+$$
+
+Since $\operatorname{\Pf}(\mathbf{C}) = -1$, the explicit form is found using $\eqref{equation-90}$ as
+
+$$
+  \frac{\operatorname{Pf}(\tilde{\mathbf{F}}')}{\operatorname{Pf}(\tilde{\mathbf{F}})} = \sum_j F_{R'_l, R_j} \tilde{F}_{j,l}^{-1} =: G_{R'_l, l}
+$$
+
+Having computed $\tilde{\mathbf{F}}^{-1}$ at the beginning of the simulation, this calculation requires $O(N_e)$ operators. Once the new configuration $\ket{x'}$ is accepted along the Markov chain, the matrix $\tilde{\mathbf{F}}^{-1}$ must be updated. From $\eqref{equation-}$ we have
+
+$$
+  F'_{ij} = \sum_m \tilde{F}_{im} (\delta_{mj} + \tilde{F}_{ml}^{-1} \nu_j^{R'_l, R_l} - w_m^{R'_l, R_l} \delta_{jl})
+$$
+
+where
+
+$$
+\begin{align*}
+  v_j^{R'_l, R_l} =& F_{R'_l, R_j} - \tilde{F}_{lj} \\
+  w_m^{R'_l, R_l} =& \sum_j \tilde{F}_{mj}^{-1} (F_{R'_l, R_j} - \tilde{F}_{lj}) = \delta_{ml} - G_{R'_l, m}
+\end{align*}
+$$
+
+Then, the inverse $\tilde{\mathbf{F}}^{-1}$ can be determined from
+
+$$
+\begin{equation*}
+  {\tilde{F}'_{ij}}^{-1} = \tilde{F}_{ij}^{-1} + \frac{1}{G_{R'_l, l}} (\tilde{F}_{il}^{-1} w_j^{R'_l, R_l} + w_i^{R'_l, R_l} \tilde{F}_{lj}^{-1})
+\tag{\label{equation-91}}
+\end{equation*}
+$$
+
+The main difference with the case for determinants is that the updating cannot be written by using the matrix $\mathbf{G}$ along, but $\tilde{\mathbf{F}}^{-1}$ must be also kept. In fact, by multiplying both sides of $\eqref{equation-}$ by $F_{R, R_i}$ and summing over $i$, we obtain
+
+$$
+\begin{align*}
+  G'_{R,j} - (F_{R,R'_l} - F_{R, R_l}) {\tilde{F}'_{lj}}^{-1} =& G_{R,j} \\
+  &+ \frac{1}{G_{R'_l, l}} \left(G_{R,l} w_j^{R'_l, R_l} + \sum_i F_{R,R_i} w_i^{R'_l, R_l} \tilde{F}_{lj}^{-1} \right)
+\end{align*}
+$$
+
+where we have used that
+
+$$
+\begin{align*}
+  G'_{R,j} =& \sum_i F_{R,R'_i} \tilde{F}_{ij}^{-1} \\
+  =& \sum_i [F_{R,R_i} + \delta_{il} (F_{R,R'_l} - F_{R,R_l})] {\tilde{F}'_{ij}}^{-1}
+\end{align*}
+$$
+
+Then, by using $\eqref{equation-91}$ to express ${\tilde{F}'_{lj}}^{-1}$ in terms of $\tilde{F}_{lj}^{-1}$, we finally get
+
+$$
+\begin{equation*}
+  G'_{R,j} = G_{R,j} + \frac{1}{G_{R'_l, l}} \left[G_{R,l} w_j^{R'_l, R_l} + \left(F_{R,R'_l} + \sum_k G_{R,k} F_{R'_l, R_k} \right) \tilde{F}_{lj}^{-1} \right]
+\tag{\label{equation-92}}
+\end{equation*}
+$$
+
+Therefore, a computationally efficient update can be performed by considering the matrices $\mathbf{G}$ and $\tilde{\mathbf{F}}^{-1}$ using $\eqref{equation-91}$ and $\eqref{equation-92}$ every time the proposed new configuration is accepted.
+
+Within the Pfaffian wave function, in addition to the standard (equal time) Green's function
+
+$$
+  \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_R|\Phi_0}}{\braket{x|\Phi_0}} = G_{R,l}
+$$
+
+also the anomalous (superconducting) ones are present
+
+$$
+\begin{align*}
+  \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_{R_k}^\dagger|\Phi_0}}{\braket{x|\Phi_0}} =& \tilde{F}_{kl}^{-1} \\
+  \frac{\braket{x|\hat{d}_R \hat{d}_{R'}|\Phi_0}}{\braket{x|\Phi_0}} =& F_{R,R'} + \sum_k G_{R,k} F_{R', R_k}
+\end{align*}
+$$
+
+As before the interpretation of $\eqref{equation-90}$ and $\eqref{equation-91}$ is given by the Wick theorem (when bra and ket states are different) for the updated Green's functions $G'_{R,j}$ and ${\tilde{F}'_{ij}}^{-1}$. In this case, the anomalous contractions are also present, since $\ket{\Phi_0}$ has not a fixed number of particles.
+
+The generalization to the case where more than one electron hop is straightforward by using $\eqref{equation-89}$ but it is very cumbersome. However, we can bypass the $m$-electron update by applying successively single-electron updates.
