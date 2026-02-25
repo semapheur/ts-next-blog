@@ -2279,13 +2279,28 @@ Since the normalization constant of $\mathcal{P}$ cancels, only ratios of overla
 2. **Local estimator:** Evaluating the local estimator $\eqref{equation-61}$ requires computing ratios of overlaps and matrix elements of the observable between states of the basis set. For the Hamiltonian, $\hat{H}$, the local energy is
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   E_L =& \frac{\braket{x|\hat{H}|\Psi}}{\braket{x|\Psi}} \\
   =& \sum_{x' \in\Omega} \braket{x|\hat{H}|x'} \frac{\braket{x'|\Psi}}{\braket{x|\Psi}}
-\end{align*}
+\end{split}
+\tab{\label{equation-99}}
+\end{equation*}
 $$
 
 This expression involves a sum over the entire Hilbert space. However, due to the locality of the Hamiltonian, only few terms actually contribute to the sum, reducing the computational complexity.
+
+The local energy or other local observables are written in terms of wave functions times the matrix elements of the operator $\braket{x|\hat{O}|x'}$ according to $\eqref{equation-99}$. Let us consider a generic $n$-body operator
+
+$$
+  \hat{O} = \sum_{I_1,\dots,I_n} \sum_{J_1,\dots,J_n} \hat{O}_{I_1,\dots,I_n;J_1\dots,J_n} \hat{d}_{I_1}^\dagger \hat{d}_{J_1} \cdots \hat{d}_{I_n}^\dagger \hat{d}_{J_n}
+$$
+
+where $\hat{d}_I^\dagger$ ($\hat{d}_I$) creates (destroy) an electron on the site $I=1,\dots,2L$ (a similar definition holds for a bosonic system). Then the local estimator of $\eqref{equation-61}$ is given by:
+
+$$
+  O_L (x) = \sum_{I_1,\dots,I_n} \sum_{J_1,\dots,J_n} \hat{O}_{I_1,\dots,I_n;J_1,\dots,J_n} \frac{\braket{x|\hat{d}_{I_1}^\dagger \hat{d}_{J_1} \cdots \hat{d}_{I_n}^\dagger \hat{d}_{J_n}|\Psi}{\braket{x|\Psi}}
+$$
 
 ### Locality and sparsity
 
@@ -3094,7 +3109,10 @@ $$
 Thus, we obtain
 
 $$
+\begin{equation*}
   {\tilde{U}_{\alpha,j}}^{-1} = \tilde{U}_{\alpha,j}^{-1} - \sum_{r,s=1}^m \tilde{U}_{\alpha,l_r}^{-1} C_{r,s}^{-1} \left(\sum_\beta U_{K_s, \beta} \tilde{U}_{\beta,j}^{-1} - \delta_{l_s, j} \right)
+\tag{\label{equation-98}}
+\end{equation*}
 $$
 
 The updated $\mathbf{W}'$ is obtained by multiplying both sides by $U_{i,\alpha}$ and summing over $\alpha$, leading the
@@ -3110,6 +3128,70 @@ $$
 $$
 
 Similarly to the update of the Jastrow factor, it is highly recommended to occasionally recompute the matrix $\mathbf{W}$ from scratch. Since this calculation requires $O(2LN_e^2)$ operations, it does not affect the complexity of the algorithm if it is done every $O(N_e)$ electron moves.
+
+#### Delayed updates
+
+Let us consider the simple update in which only one electron is displaced. The basic operation in the updating is the so-called rank-$1$ update of a $2L \times N_e$ matrix (see $\eqref{equation-85}$) that can be written as
+
+$$
+  W'_{I,j} = W_{I,j} + a_I b_j
+$$
+
+where $\mathbf{a}$ and $\mathbf{b}$ are two vectors of length $2L$ and $N_e$, respectively
+
+$$
+\begin{align*}
+  a_I = W_{I,l} \tag{\label{equation-94}} \\
+  b_j = -\frac{W_{K,j} - \delta_{I,j}}{W_{K,l}} \tag{\label{equation-95}}
+\end{align*}
+$$
+
+This updating operation can be computationally inefficient, whenever, for large size, the matrix $\mathbf{W}$ cannot be continued in the cache of the processor. A way to overcome this drawback is to delay the update of the matrix $\mathbf{W}$, without loosing its information. This can be done by storing a set of left and right vectors $\mathbf{a}^{(p)}$ and $\mathbf{b}^{(p)}$ with $p=1,\dots,m$, as weel as the initial matrix, denoted $\mathbf{W}^{(0)}$, from which we begin to delay the updates. Then, the matrix $\mathbf{W}$, after $m$ updates is given by
+
+$$
+\begin{equation*}
+  W_{I,j} = W_{I,j}^{(0)} + \sum_{p=1}^m a_I^{(p)} b_j^{(p)}
+\tag{\label{equation-93}}
+\end{equation*}
+$$
+
+Every time we accept a new configuration, a new pair of vectors $\mathbf{a}^{(m+1)}$ and $\mathbf{b}^{(m+1)}$ can be computed in a few operations in terms of $\mathbf{W}^{(0)}$ and the previous vectors with $p=1,\dots,m$ by substituting $\eqref{equation-93}$ in $\eqref{equation-94}$ and $\eqref{equation-95}$. Once the matrix is written in the form of $\eqref{equation-93}$, the number of operations required to evaluate the factors in the sum is $O[m(2L + N_e)]$, which is negligible compared to the full update for $m \ll L$.
+
+In this way, we can find an optimal $m_\text{max}$, for which we can evaluate the full matrix $\mathbf{W}$ by a standard matrix multiplication
+
+$$
+\begin{equation*}
+  \mathbf{W} = \mathbf{W}^{(0)} + \mathbf{AB}^\top
+\tag{\label{equation-96}}
+\end{equation*}
+$$
+
+where $\mathbf{A}$ and $\mathbf{B}$ are $2L \times m_\text{max}$ and $N_e \times m_\text{max}$ matrices. which are made of the $p=1,\dots,m_\text{max}$ vectors $\mathbf{a}^{(p)}$ and $\mathbf{b}^{(p)}$, respectively. After that, we can continue with a new delayed update with a new $\mathbf{W}^{(0)} = \mathbf{W}$, by initializing to zero the integer $m$. The advantage of this updating procedure is that after a cycle of $m_\text{max}$ steps the bulk of the computation is given by the matrix product in $\eqref{equation-96}$, which is much more efficient (and is not limited by cache memory) than the $m_\text{max}$ rank-$1$ updated of $\mathbf{W}$ given in $\eqref{equation-85}$. For large number of electrons, the delayed update procedure, with the optimal value of $m_\text{max}$, allows us to improve the speed of the variational Monte Carlo code by about an order of magnitude.
+
+#### Backflow correlations
+
+In the lattice case, a continuous change of coordinates implementing the standard backflow correlation $\eqref{equation-}$ is not possible. Thus, this Ansatz requires to find an expression of the orbital in a generic off-lattice backflow coordinate in terms of the allowed lattice positions, consistently to a Taylor expansion of the orbitals. In practice, we consider a quadratic Hamiltonian to construct the non-interacting orbitals $\set{U_{I,\alpha}}$ (see $\eqref{equation-})$. In the simplest approach, in which the backflow correlations act on holon-doublon (nearest-neighbour) pairs, the overlap between the generic configuration $\ket{x}$ and the backflow wave function $\ket{\Phi_0^b}$ is constructed from the correlated orbital with backflow correction
+
+$$
+\begin{equation*}
+  U_{I,\alpha}^b = \eta_0 U_{I,\alpha} + \eta_1 \sum_{\braket{j}_i} \hat{D}_i \hat{H}_j U_{J,\alpha}
+\tag{\label{equation-97}}
+\end{equation*}
+$$
+
+where 
+- $I = i$ ($I = i + L$) for electrons with spin up (down), and equivalently for $J$ and $j$
+- $\braket{j}_i$ indicates the sites $j$ that are the nearest neighbour of $i$
+- $\hat{D}_i$ ($\hat{H}_i}$) is the operator that gives $1$ if the site $i$ doubly occupied (empty) and $0$ otherwise
+- $\eta_0$ and $\eta_1$ are variational parameters
+
+Then the wave function for the given configuration $\ket{x}$ is obtained by taking the determinant of the matrix $\tilde{\mathbf{U}}^b$ in which the rows correspon to the sites occupied by the electrons.
+
+The fast update for a ratio between two determinant with configurations $\ket{x}$ and $\ket{x'}$, which differ by one or few electron hoppings, can be computed as before.
+
+The only difference is that, even if there is only one electron hopping, the new matrix ${\tilde{\mathbf{U}}^b}'$ will differ not only for a single row, but for few of them. By moving one electron, an empty of doubly occupied site can be created, leading to a modification of the correlated orbitals of $\eqref{equation-97}$. Thus, in general, we must use the general update in which several rows are changed. However, in this case, it is convenient to work directly with the inverse matrix $\tilde{\mathbf{U}}'$, by updating it according to $\eqref{equation-98}$.
+
+In practive, we can consider more general forms for the correlated orbitals, by consider further terms, but sill remaining in the same spirit of considering a linear combination of non-interacting orbitals depending on the many-body configuration $\ket{x}$ (in the previous case, the linear combination is taken for configurations having holons and doublons at nearest-neighbour sites).
 
 ### Fermionic systems with Pfaffians
 
