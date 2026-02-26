@@ -2910,64 +2910,45 @@ Thus, if the original state has zero total magnetization, i.e. $\braket{\hat{M}_
 
 #### Computation of determinants
 
-Consider the electronic configuration in which $\ket{x'}$ is obtained from $\ket{x}$ just by hopping the $l$th electron from $R_l$ to $R'_l$, i.e. $\ket{x'} = \hat{d}_{R'_l} \hat{d}_{R_l} \ket{x}$. Then new matrix $\tilde{\mathbf{U}}'$ will be equal to $\tilde{\mathbf{U}}$, except that the elements of the $l$th row will be changed from $U_{R_l,\alpha}$ to $U_{R'_l, \alpha}$. Then, the ratio between two configurations that differ only by a single fermion hopping is
+Consider the electronic configuration in which $\ket{x'}$ is obtained from $\ket{x}$ just by hopping the $l$th electron from $R_l$ to $K := R'_l$, i.e. $\ket{x'} = \hat{d}_K \hat{d}_{R_l} \ket{x}$. Then new matrix $\tilde{\mathbf{U}}'$ coincides with $\tilde{\mathbf{U}}$, except for the $l$th row 
 
 $$
-  \frac{\braket{x'|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_{R'_l}|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U})}
+\begin{equation*}
+  \tilde{U}'_{j,\alpha} = \tilde{U}_{j,\alpha} + \delta_{j,l} (U_{K,\alpha} - \tilde{U}_{l,\alpha})
+\tag{\label{equation-86}}
+\end{equation*}
 $$
 
-By denoting with $K$ the new site of the $l$th electron, i.e. $K := R'_l$, the updated matrix elements are given by a compact form
+
+Then, the ratio between the overlaps of the two configurations with respect to a Slater determinant $\ket{\Phi_0}$ is
+
+$$
+  \frac{\braket{x'|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\braket{x|\hat{d}_{R_l}^\dagger \hat{d}_K|\Phi_0}}{\braket{x|\Phi_0}} = \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U})}
+$$
+
+The ratio can be simplified by refactoring $\tilde{\mathbf{U}}'$. This can be done by defining $A_\alpha := U_{K,\alpha} - \tilde{U}_{l,\alpha}$ and $B_\beta = \tilde{U}_{\beta,l}^{-1}$ such that the elements of $\tilde{\mathbf{U}}'$ given in $\eqref{equation-86}$ can be rewritten as
 
 $$
 \begin{equation*}
 \begin{split}
-  \tilde{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \delta_{j,l} (U_{K,\alpha} - \tilde{U}_{l,\alpha}) \\
-  =& \tilde{U}_{j,\alpha} + \delta_{j,l} \nu_\alpha^{K,l}
+  \tilde{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \delta_{j,l} A_\alpha \\
+  =& \sum_\beta \tilde{U}_{j,\beta} (\delta_{\beta,\alpha} + \tilde{U}_{\beta,l}^{-1} A_\alpha) \\
+  =& \sum_\beta \tilde{U}_{j,\beta} Q_{\beta, \alpha}
 \end{split}
 \tag{\label{equation-86}}
 \end{equation*}
 $$
 
-where we have defined $\nu_\alpha^{K,l} := U_{K,\alpha} - \tilde{U}_{l,\alpha}$. Here the indices $K$ and $l$ are fixed since they specify the site where the electron is hopping and the electron index, respectively. This equation can be rewritten in the following way
-
-$$
-\begin{align*}
-  \tilde{U}'_{j,\alpha} =& \sum_\beta \tilde{U}_{j,\beta} (\delta_{\beta,\alpha} + \tilde{U}_{\beta,l}^{-1} \nu_\alpha^{K,l}) \\
-  =& \sum_\beta \tilde{U}_{j,\beta} Q_{\beta,\alpha}
-\end{align*}
-$$
-
-where $Q_{\beta,\alpha} + \tilde{U}_{\beta,l}^{-1} \nu_\alpha^{K,l}$. Thus, $\tilde{\mathbf{U}}' = \tilde{\mathbf{U}}\mathbf{Q}$, which implies that the calculation of the ratio of the determinants of $\tilde{\mathbf{U}}'$ and $\tilde{\mathbf{U}}$ is equivalent to the calculation of the determinant of $\mathbf{Q}$
+where $Q_{\beta,\alpha} = \delta_{\beta,\alpha} + B_\beta A_\alpha$. Thus, $\tilde{\mathbf{U}}' = \tilde{\mathbf{U}}\mathbf{Q}$, which implies that the calculation of the ratio of the determinants of $\tilde{\mathbf{U}}'$ and $\tilde{\mathbf{U}}$ is equivalent to the calculation of the determinant of $\mathbf{Q}$
 
 $$
   \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U})} = \det(\mathbf{Q})
 $$
 
-The great simplification comes from the fact that the determinant of $\mathbf{Q}$ can be easily computed. The matrix $\mathbf{Q}$ has a particular simple form wirtten as
+Since $\mathbf{Q} = \mathbf{I} + \mathbf{BA}^\top$ is a rank-one perturbation of the identity, its determinant is given by
 
 $$
-\begin{equation*}
-  Q_{\beta,\alpha} = \delta_{\beta,\alpha} + B_\beta A_\alpha
-\tag{\label{equation-80}}
-\end{equation*}
-$$
-
-where $B_\beta = \tilde{U}_{\beta,l}^{-1}$ and $A_\alpha = \nu_\alpha^{K,l}$. Although the matrix is not Hermitian, the eigenvalues of $\mathbf{Q}$ can be obtained from the secular equation
-
-$$
-  \sum_\alpha Q_{\beta,\alpha} \nu_\alpha = \lambda\nu_\beta
-$$
-
-Using $\eqref{equation-71}$, we obtain
-
-$$
-  \nu_\beta + B_\beta \sum_\alpha A_\alpha \nu_\alpha = \lambda\nu_\beta
-$$
-
-which implies that all vectors $\nu_\alpha$ that are orthogonal to $A_\alpha$ are eigenvectors with eigenvalue $\lambda = 1$ (there are $N_e - 1$ of such vectors). In addition, $\nu_\alpha = B_\alpha$ is also an eigenvector with
-
-$$
-  \lambda = 1 + \sum_\alpha A_\alpha B_\alpha = \sum_\alpha U_{K,\alpha} \tilde{U}_{\alpha,l}^{-1}
+  \det(\mathbf{Q}) = 1 \mathbf{A}^\top \mathbf{B} = 1 + \sum_\alpha U_{K, \alpha} \tilde{U}_{\alpha,l}^\{-1}
 $$
 
 Consequently
@@ -2979,11 +2960,12 @@ $$
 \end{equation*}
 $$
 
+If $\tilde{U}^{-1}$ is stored for the configuration $\ket{x}$, this calculation requires $O(N_e)$ operations, instead of the $O(N_e^3)$ cost needed to evaluate a determinant. Then once the new configuration $\ket{x'}$ is accepted along the Markov process, the matrix $\tilde{\mathbf{U}}^{-1}$ must be updated. 
 
-Having stored (at the beginning of the simulation) the matrix $\tilde{U}^{-1}$ for the configuration $\ket{x}$, this calculation requires $O(N_e)$ operations, instead of the $O(N_e^3)$ need to evaluate a determinant. Then once the new configuration $\ket{x'}$ is accepted along the Markov process, the matrix $\tilde{\mathbf{U}}^{-1}$ must be updated. This can be done in $O(N_e^2)$ operations. In fact, we have that ${\tilde{\mathbf{U}}'}^{-1} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$, the inverse of $\mathbf{Q}$ being given by
+Since ${\tilde{\mathbf{U}}'}^{-1} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$, the inverse of $\mathbf{Q}$ i given by
 
 $$
-  Q_{\alpha,\beta}^{-1} = \delta_{\alpha,\beta} - \frac{1}{\det(\mathbf{Q})} B_\alpha A_\beta
+  \mathbf{Q}^{-1} = \mathbf{I} - \frac{1}{\det(\mathbf{Q})} \mathbf{BA}^\top
 $$
 
 Then, the updated matrix elements of $(\tilde{\mathbf{U}}')^{-1}$ are given by
@@ -2995,9 +2977,9 @@ $$
 \end{equation*}
 $$
 
-This is a closed equation for updating the matrix $\tilde{\mathbf{U}}^{-1}$.
+This update requires $O(N_e^2)$ operations.
 
-The previous results for the calculation of the ratio of determinants and the updating can be further simplified. At the beginning of the calculation, we can compute and store a $2L \times N_e$ matrix $\mathbf{W}$, with elements
+The calculation of the ratio of determinants and the updating can be further simplified by defining a $2L \times N_e$ matrix $\mathbf{W}$, with elements
 
 $$
 \begin{equation*}
@@ -3006,7 +2988,7 @@ $$
 \end{equation*}
 $$
 
-then the ratio of determinants $\eqref{equation-81}$ requires $O(1)$ operations, since it consists in taking the element  corresponding to the new site (row) and the electron performing the hopping process (column)
+then the ratio of determinants $\eqref{equation-81}$ requires $O(1)$ operations, since it consists in taking the element corresponding to the new site (row) and the electron performing the hopping process (column)
 
 $$
 \begin{equation*}
@@ -3043,52 +3025,43 @@ $$
 
 in this cse, we must consider the contractions without including the anomalous (superconducting) ones, which vanish since both $\ket{x}$ and $\ket{\Phi_0}$ have a fixed number of particles.
 
-The previous formalism can be generalized to multi-electron hopping, i.e.
+##### Multi-electron updates
+
+The previous formalism can be generalized to multi-electron hopping. Consider a move in which $m$ electrons are simultaneously displayed
 
 $$
-  \ket{x'} = \hat{d}_{R'_{l_1}}^\dagger \hat{d}_{R_{l_1}} \cdots \hat{d}_{R'_{l_m}}^\dagger \hat{d}_{R_{l_m}} \ket{x}
+  \ket{x'} = \hat{d}_{K_1}^\dagger \hat{d}_{R_{l_1}} \cdots \hat{d}_{K_m}^\dagger \hat{d}_{R_{l_m}} \ket{x}
 $$
 
-thus leading to a modification of $m$ rows of the $\tilde{\mathbf{U}}$ matrix. Then $\eqref{equation-86}$ generalizes into
+Where the indices $l_1,\dots,l_m$ are distinct and $K_r := R'_{l_r}$. The new matrix $\tilde{\mathbf{U}}'$ differs from $\tilde{\mathbf{U}}$ by the replacement of the rows $l_1,\dots,l_m$
+
+$$
+  \tilde{U}'_{j,\alpha} = \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} (U_{k_r, \alpha} - \tilde{U}_{l_r, \alpha})
+$$
+
+This can be simplified by defining $A_\alpha^{(r)} := U_{K_r,\alpha} - \tilde{U}_{l_r,\alpha}$ and $B_\beta^{(r)} := \tilde{U}^{-1}_{\beta,l_r}$ such that
 
 $$
 \begin{align*}
-  \tilde{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} (U_{k_r, \alpha} - \tilde{U}_{l_r, \alpha}) \\
-  =& \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} \nu_\alpha^{K_r, l_r}
-\end{align*}
-$$
-
-as before, the indices $K_r$ and $l_r$ for $r=1,\dots,m$ are fixed, because they specify the sites where the electrons are hopping and the electron indices, respectively. By performing the same algebra as before, we get
-
-$$
-\begin{align*}
-  \tilde{U}'_{j,\alpha} =& \sum_\beta \tilde{U}_{j,\beta} \left(\delta_{\beta,\alpha} + \sum_{r=1}^m \tilde{U}_{\beta,\l_r}^{-1} \nu_\alpha^{K_r, l_r} \right) \\
+  \tide{U}'_{j,\alpha} =& \tilde{U}_{j,\alpha} + \sum_{r=1}^m \delta_{j,l_r} A_\alpha^{K_r, l_r} \\
+  =& \sum_\beta \tilde{j,\beta} \left(\delta_{\alpha,\beta} + \sum_{r=1}^m \tilde{U}_{\beta,l_r}^{-1} A_\alpha \right) \\
   =& \sum_\beta \tilde{U}_{j,\beta} Q_{\beta,\alpha}
 \end{align*}
 $$
 
-where now the matrix $\mathbf{Q}$ has the form
+where
 
 $$
   Q_{\beta,\alpha} = \delta_{\beta,\alpha} + \sum_{r=1}^m B_\beta^r A_\alpha^r
 $$
 
-where $B_\beta^r = \tilde{U}_{\beta,l_r}^{-1}$ and $A_\alpha^r = \nu_\alpha^{K_r, l_r}$. As before the determinant of $\mathbf{Q}$ can be easily computed by solving the corresponding eigenvalue problem
+The block matrix $\mathbf{Q} = \mathbf{I} + \sum_{r=1}^m \mathbf{B}_r \mathbf{A}_r^\top$ is a rank-$m$ update of the identity, whose determinant is given by
 
 $$
-\begin{align*}
-  \sum_\alpha Q_{\beta,\alpha} \nu_\alpha = \nu_\beta + \sum_{r=1}^m B_\beta^r \sum_\alpha A_\alpha^r \nu_\alpha \\
-  =& \lambda\nu_\beta
-\end{align*}
+  \det(\mathbf{Q}) = \det(\mathbf{I} + \sum_{r=1}^m \mathbf{A}_r^\top \mathbf{B}_r)
 $$
 
-which implies that all vectors that are orthogonal to the subspace defined by the $A_\alpha^r$ are eigenvectors with $\lambda = 1$. Moreover, $\nu_\alpha = \sum_{r=1}¨m x_r B_\alpha^r$ is an eigenvector
-
-$$
-  \sum_{s=1}^m \left(\delta_{r,s} + \sum_\alpha A_\alpha^r B_\alpha^s \right) x_s = \lambda x_r
-$$
-
-Thus, the $m$ nontrivial eigenvalues of $\mathbf{Q}$ are given by the ones of the $m\times m$ matrix
+Introducing the $m\times m$ matrix $\mathbf{C} = \mathbf{I} + \sum_{r=1}^m \mathbf{A}_r^\top \mathbf{B}_r$ with elements
 
 $$
   C_{r,s} = \delta_{r,s} + \sum_\alpha A_\alpha^r B_\alpha^s = W_{K_r, l_s}
@@ -3100,7 +3073,7 @@ $$
   \frac{\det(\tilde{\mathbf{U}}')}{\det(\tilde{\mathbf{U}})} = \det(W_{K_r, l_s})
 $$
 
-Also in this case, once the move is accepted, we have to update the matrix ${\tilde{\mathbf{U}}'}^{1-} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$. As before, the inverse of $\mathbf{Q}$ is given by
+Once the move is accepted, we have to update the matrix ${\tilde{\mathbf{U}}'}^{1-} = \mathbf{Q}^{-1} \tilde{\mathbf{U}}^{-1}$. As before, the inverse of $\mathbf{Q}$ is given by
 
 $$
   Q_{\alpha,\beta}^{-1} = \delta_{\alpha,\beta} - \sum_{r,s=1}^m B_\alpha^r C_{r,s}^{-1} A_\beta^s
