@@ -73,7 +73,10 @@ $$
 where $\mathcal{R}(\mathbf{x}) = \mathcal{W}_q (\mathbf{x}) / \mathcal{W}_p (\mathbf{x})$ is the ratio between the two weights. Thus, the statistical sampling over the new probability $\mathcal{Q}(\mathbf{x})$ can be expressed in terms of samples over $\mathcal{P}(\mathbf{x})$
 
 $$
+\begin{equation*}
 	\braket{\braket{f(\mathbf{x})}}_\mathcal{Q} = \frac{\braket{\braket{f(\mathbf{x})\mathcal{R}(\mathbf{x})}}_\mathcal{P}}{\braket{\braket{\mathcal{R}(\mathbf{x})}}_\mathcal{P}}
+\tag{\label{equation-100}}
+\end{equation*}
 $$
 
 where $\braket{\braket{\cdot}}_\mathcal{P}$ and $\braket{\braket{\cdot}}_\mathcal{Q}$ denote the statistical samplings over $\mathcal{Q}(\mathbf{x})$ and $\mathcal{P}(\mathbf{x})$, respectively.
@@ -122,7 +125,7 @@ where $\xi_x$ and $\xi_y$ are two new random numbers that are uniformly distribu
 
 ## Importance sampling
 
-Whenever the function $f(\mathbf{x})$ that must be evaluated has sharp peaks, a uniform sampling is not efficient, because it would lead to a considerable wate of time, spending efforts to visit regions that give a negligible contribution to the final result. This can be overcome with importance sampling, which is used in several Monte Carlo calculations
+Whenever the function $f(\mathbf{x})$ that must be evaluated has sharp peaks, a uniform sampling is not efficient, because it would lead to a considerable waste of time, spending efforts to visit regions that give a negligible contribution to the final result. This can be overcome with importance sampling, which is used in several Monte Carlo calculations
 
 In the case of a one-dimensional integral, suppose we have to evaluate
 
@@ -3402,3 +3405,270 @@ $$
 As before the interpretation of $\eqref{equation-90}$ and $\eqref{equation-91}$ is given by the Wick theorem (when bra and ket states are different) for the updated Green's functions $G'_{R,j}$ and ${\tilde{F}'_{ij}}^{-1}$. In this case, the anomalous contractions are also present, since $\ket{\Phi_0}$ has not a fixed number of particles.
 
 The generalization to the case where more than one electron hop is straightforward by using $\eqref{equation-89}$ but it is very cumbersome. However, we can bypass the $m$-electron update by applying successively single-electron updates.
+
+# Optimization of variational quantum states
+
+Let $\mathcal{H}$ be a Hilbert space and let $\ket{\Psi_{\boldsymbol{\alpha}}} \in\mathcal{H}$ be a variational quantum state depending on $p$ real parameters $\boldsymbol{\alpha} \in\R^p$. If $\set{\ket{\mathbf{x}}}$ is an orthonormal basis of $\mathcal{H}$, the corresponding wavefunction representation is
+
+$$
+  \Psi_\boldsymbol{\alpha} (\mathbf{x}) = \braket{\mathbf{x}|\Psi_\boldsymbol{\alpha}}
+$$
+
+Define the probability distribution associated with the variational state
+
+$$
+  p_{\boldsymbol{\alpha}} (\mathbf{x}) = \frac{|\Psi_{\boldsymbol{\alpha}}(\mathbf{x})|^2}{\braket{\Psi_{\boldsymbol{\alpha}}|\Psi_{\boldsymbol{\alpha}}}}
+$$
+
+Suppose that a set of configurations $\set{\mathbf{x}_i}_{i=1}^N$ have been sampled independently from $p_{\boldsymbol{\alpha}}$. The variational energy is defined as
+
+$$
+\begin{equation*}
+  E_{\boldsymbol{\alpha}} = \frac{\braket{\Psi_\boldsymbol{\alpha}|\hat{H}|\Psi_\boldsymbol{\alpha}}}{\braket{\Psi_\boldsymbol{\alpha}|\Psi_\boldsymbol{\alpha}}} = \mathbb{E}_{p_\alpha} [E_{L,\boldsymbol{\alpha}} (\mathbf{x})]
+\tag{\label{equation-101}}
+\end{equation*}
+$$
+
+where the local energy is given by
+
+$$
+  E_{L,\boldsymbol{\alpha}} (\mathbf{x}_i) = \braket{\mathbf{x}_i |\hat{H}|\Psi_{\boldsymbol{\alpha}}}{\mathbf{x}_i|\Psi_{\boldsymbol{\alpha}}} = \frac{(\hat{H}\Psi_{\boldsymbol{\alpha})(\mathbf{x})}{\Psi_{\boldsymbol{\alpha}}(\mathbf{x})}
+$$
+
+Given the sampled configurations $\set{\mathbf{x}_i}$, the Monte Carlo estimator of the energy is
+
+$$
+  E_{\boldsymbol{\alpha}} \approx \frac{1}{N} \sum_{i=1}^N E_{L,\boldsymbol{\alpha}} (\mathbf{x}_i)
+$$
+
+Similarly,the variance of the local energy is
+
+$$
+\begin{align*}
+  \sigma_{\Psi_{\boldsymbol{\alpha}}}^2 = \frac{\braket{\Psi_{\boldsymbol{\alpha}}|(\hat{H} - E_{\boldsymbol{\alpha}}})^2|\Psi_{\boldsymbol{\alpha}}}}{\braket{\Psi_{\boldsymbol{\alpha}}|\Psi_{\boldsymbol{\alpha}}}} = \mathcal{E}_{p_{\boldsymbol{\alpha}}} [(E_{L,\boldsymbol{\alpha}} (\mathbf{x}) - E_{\boldsymbol{\alpha}})^2]
+\tag{\label{equation-102}}
+\end{align*}
+$$
+
+with estimator
+
+$$
+  \sigma_{\boldsymbol{\alpha}}^2 \approx \frac{1}{N} \sum_{i=1}^N [E_{L,\boldsymbol{\alpha}} (\mathbf{x}_i) - E_\boldsymbol{\alpha}]^2 
+$$
+
+## Reweighting technique
+
+With a sampled configurations from $p_{\boldsymbol{\alpha}}$, the reweighting technique can be used to estimate expectation values corresponding to a nearby parameter vector $\boldsymbol{\alpha}' = \boldsymbol{\alpha} \delta\boldsymbol{\alpha}$. Using importance sampling, expectation values with respect to the distribution
+
+$$
+  p_{\boldsymbol{\alpha}'} (\mathbf{x}) = \frac{|\Psi_{\boldsymbol{\alpha}'}(\mathbf{x})|^2}{\braket{\Psi_{\boldsymbol{\alpha}'}|\Psi_{\boldsymbol{\alpha}'}}}
+$$
+
+can be expressed as
+
+$$
+  \mathbb{E}_{p_{\boldsymbol{\alpha}'}} [f(\mathbf{x})] = \frac{\mathbb{E}_{p_{\boldsymbol{\alpha}}} [f(\mathbf{x}) \mathcal{R}_{\boldsymbol{\alpha}'}]}{\mathbb{E}_{p_{\boldsymbol{\alpha}}} [\mathcal{R}_{\boldsymbol{\alpha}'} (\mathbf{x})]}
+$$
+
+where the reweighting factor is
+
+$$
+  \mathcal{R}_{\boldsymbol{\alpha} + \delta\boldsymbol{\alpha}} (\mathbf{x}) = \left|\frac{\Psi_{\boldsymbol{\alpha} + \delta\alpha_k} (\mathbf{x})}{\Psi_{\boldsymbol{\alpha}}(\mathbf{x})} \right|^2
+$$
+
+In terms of the configurations $\set{\mathbf{x}_i}$), the energy corresponding to the parameters $\boldsymbol{\alpha}'$ can therefore be estimated as
+
+$$
+  E_{\boldsymbol{\alpha}'} = \frac{\sum_{i=1}^N E_{L,\boldsymbol{\alpha}} (\mathbf{x}_i) \mathcal{R}_{\boldsymbol{\alpha}'}(\mathbf{x}_i)}{\sum_{i=1}^N \mathcal{R}_{\boldsymbol{\alpha}'} (\mathbf{x}_i)}
+$$
+
+Similarly, the variance estimator becomes
+
+$$
+  \sigma_{\Psi_{\boldsymbol{\alpha}'}}^2 =& \frac{\sum_{i=1}^N [E_{L,\boldsymbol{\alpha}} (\mathbf{x}_i) - E_{\boldsymbol{\alpha}'}]^2 \mathcal{R}_{\boldsymbol{\alpha}'} (\mathbf{x}_i)}{\sum_{i=1}^N \mathcal{R}_{\boldsymbol{\alpha}'}(\mathbf{x}_i)}
+$$
+
+Thus, a single Monte Carlo simulation performed at parameters $\boldsymbol{\alpha}$ can be used to estimate the energy and variance of nearby states $\Psi_{\boldsymbol{\alpha}'}$.
+
+The optimal variational parameters can be obtained by minimizing either the energy $E_{\boldsymbol{\alpha}}$ and the variance $\sigma_{\boldsymbol{\alpha}}^2$ with respect to $\boldsymbol{\alpha}$. Within the reweighting approach, variance minimization is often more numerically stable since $\sigma_{\boldsymbol{\alpha}}^2 \geq 0$ so the objective function is always bounded from below. In contrast, the energy estimator can become unstable. In particular, if a $p_\boldsymbol{\alpha}$-sampled configuration $\mathbf{x}_i$ close to the nodal surface of $\Psi_{\boldsymbol{\alpha}'} (\mathbf{x})$, i.e. $\Psi_{\boldsymbol{\alpha}'} \to 0$, then $E_{L, \boldsymbol{\alpha}'} (\mathbf{x}_i) \to \pm\infty$. This produce large fluctuations in the energy estimator.
+
+The reweighting technique becomes increasingly unstable when as the number of particles grows. Suppose only one parameter $\alpha_k$ is changed by $\delta\alpha_k$. For a many-body wavefunction of $N_p$ particles, the logarith of the wavefunction typically scales extensively, i.e. $\ln[|\Psi_{\boldsymbol{\alpha}}|] \sim O(N_p)$. Consequently, the reweighting factor behaves approximately as
+
+$$
+  \mathcal{R}_{\boldsymbol{\alpha} + \delta\alpha_k}} (\mathbf{x}) \approx \exp(\pm c \delta\alpha_k N_p)
+$$
+
+for some system-dependent constant $c$. Thus, even a small change in the parameters can produce exponentially large or small weights. As $N_p$ increases, the variance of the reweighting factors grows exponentially, leading to severe statistical noise in the estimators of energy and variance. This severely limits the practical applicability of the reweighting technique in large many-body systems.
+
+## Energy derivatives
+
+The derivative of the variational energy $E_\boldsymbol{\alpha}$ in $\eqref{equation-101}$ with respect to a variational parameter $\alpha_k$ is given by
+
+$$
+  \frac{\partial E_{\boldsymbol{\alpha}}}{\delta\alpha_k} = \frac{\partial}{\partial\alpha_k} \frac{\braket{\Psi_{\boldsymbol{\alpha}}|\hat{H}|\Psi_{\boldsymbol{\alpha}}}}{\braket{\Psi_{\boldsymbol{\alpha}}|\Psi_{\boldsymbol{\alpha}}}}
+$$
+
+To derive a closed analytical expression for this derivative, we consider a small variation $\alpha_k \to \alpha_k + \delta\alpha_k$. Then, the first-order Taylor expansion of $\Psi_{\boldsymbol{\alpha}} (\mathbf{x})$ about $\boldsymbol{\alpha}$ becomes
+
+$$
+\begin{equation*}
+  \Psi_{\boldsymbol{\alpha} + \delta\alpha_k} (\mathbf{x}) = \Psi_{\boldsymbol{\alpha}} + \delta\alpha_k \frac{\partial\Psi_{\boldsymbol{\alpha}}(\mathbf{x})}{\partial\alpha_k} + O(\delta\alpha_k^2)
+\tag{\label{equation-103}}
+\end{equation*}
+$$
+
+For simplicity, we assume $\Psi_{\boldsymbol{\alpha}} \neq 0$ for all sampled configurations. In continuous fermionic systems, the nodal set $\set{\mathbf{x} : \Psi_{\boldsymbol{\alpha}} (\mathbf{x}) = 0}$ has zero measure and therefore does not contribute to Monte-Carlo integrals. On a lattie, islolated zeroes, $\Psi_{\boldsymbol{\alpha}} (\mathbf{x}) = 0$, can be removed an arbitrarily small pertubation to the variational Ansatz and taking the limit of vanishing perturbation.
+
+Define the logarithmic derivative operator $\hat{Q}_k$ by its diagonal matrix elements
+
+$$
+\begin{equation*}
+  \braket{\mathbf{x}|\hat{Q}_k|\mathbf{x}'} = \delta_{\mathbf{x},\mathbf{x}'} \hat{O}(\mathbf{x}) \tag{\label{equation-104}} 
+\end{equation*}
+$$
+
+where the diaonal element is
+
+$$
+\begin{equation*}
+  Q_k (\mathbf{x}) = \frac{\partial \ln {\Psi_{\boldsymbol{\alpha}}(\mathbf{x})}}{\partial\alpha_k} = \frac{1}{\Psi_{\boldsymbol{\alpha}}(\mathbf{x})} \frac{\partial\Psi_{\boldsymbol{\alpha}} (\mathbf{x})}{\partial\alpha_k}
+\tag{\label{equation-105}}
+\end{equation*}
+$$
+
+The operator $\hat{Q}_k$ is diagonal in the configuration basis $\set{\ket{\mathbf{a}}}$ but not necessarily Hermitian, since the logarithmic derivative of a complex wavefunction can be complex. In general, $\hat{Q}_k$ may depend on the variational parameters $\boldsymbol{\alpha}$, but this dependence will be omitted for notational simplicity.
+
+In terms of $\hat{Q}_k$, the perturbed state $\ket{\Psi_{\boldsymbol{\alpha} + \delta\alpha_k}}$ can be compactly written as
+
+$$
+\begin{equation*}
+  \ket{\Psi_{\boldsymbol{\alpha} + \delta\alpha_k}} = (1 + \delta\alpha_k \hat{Q}_k) \ket{\Psi_{\boldsymbol{\alpha}}}
+\tag{\label{equation-106}}
+\end{equation*}
+$$
+
+with squared norm
+
+$$
+\begin{equation*}
+\begin{split}
+  \norm{\Psi_{\boldsymbol{\alpha}}}^2 =& \braket{\Psi_{\boldsymbol{\alpha}}|(1 + \delta\alpha_k \hat{Q}_k)^* (1 + \delta\alpha_k \hat{Q}_k)|\Psi_{\boldsymbol{\alpha}}} \\
+  =& \norm{\Psi_{\boldsymbol{\alpha}}}^2 [1 + 2\Re(\delta\alpha_k \bar{Q}_k) + \hat{O}(\delta\alpha_k^2)]
+\end{split}
+\tag{\label{equation-107}}
+\end{equation*}
+$$
+
+The identity $\eqref{equation-106}$ follows immediately by taking the overlap of both sides with $\ket{\mathbf{x}}$, yielding
+
+$$
+  \braket{\mathbf{x}|\Psi_{\boldsymbol{\alpha} + \delta\alpha_k}} = \Psi_{\boldsymbol{\alpha}} (\mathbf{x}) + \delta\alpha_k O_k (\mathbf{x}) \Psi_\boldsymbol{\alpha} (\mathbf{x}) + O(\delta\alpha_k^2)
+$$
+
+Scaling the variational state $\ket{\Psi_{\boldsymbol{\alpha}}}$ by an arbitrary non-zero complex constant $c\in\mathcal{C}$, i.e. $\ket{\Psi'_{\boldsymbol{\alpha}}} = c\ket{\Psi'_{\boldsymbol{\alpha}}}$, leaves any expectation values of the form
+
+$$
+  \braket{A}_{\Psi_{\boldsymbol{\alpha}}} = \frac{\braket{\Psi'_{\boldsymbol{\alpha}}|\hat{A}|\Psi'_{\boldsymbol{\alpha}}}}{\braket{\Psi'_\boldsymbol{\alpha}|\Psi'_{\boldsymbol{\alpha}}}} = \frac{|c|^2}{|c|^2} \frac{\braket{\Psi'_{\boldsymbol{\alpha}}|\hat{A}|\Psi_{\boldsymbol{\alpha}}}}{\braket{\Psi'_\boldsymbol{\alpha}|\Psi_{\boldsymbol{\alpha}}}} 
+$$
+
+Thus, we are free to work with normalized states
+
+$$
+  \ket{\nu_{0,\boldsymbol{\alpha}}} := \frac{\ket{\Psi_{\boldsymbol{\alpha}}}}{\norm{\Psi_{\boldsymbol{\alpha}}}}
+$$
+
+Then, we introduce a set of states for each $k=1,\dots,p$
+
+$$
+  \ket{\nu_{k,\boldsymbol{\alpha}}} := (\hat{Q}_k - \bar{Q}_k) \ket{v_{0, \boldsymbol{\alpha}}}
+$$
+
+where
+
+$$
+  \bar{Q}_k = \braket{\nu_{0,\boldsymbol{\alpha}}|\hat{Q}_k|\nu_{0,\boldsymbol{\alpha}}} = \frac{\braket{\Psi_{\boldsymbol{\alpha}}|\hat{Q}_k|\Psi_{\boldsymbol{\alpha}}}}{\braket{\Psi_{\boldsymbol{\alpha}}|\Psi_{\boldsymbol{\alpha}}}}
+$$
+
+The states $\ket{\nu_{k,\boldsymbol{\alpha}}}$ are orthogonal to $\ket{\nu_{0,\boldsymbol{\alpha}}}$ since 
+
+$$
+\begin{align*}
+  \braket{\nu_{0,\boldsymbol{\alpha}}|\nu_{k,\alpha}} =& \braket{\nu_{0,\boldsymbol{\alpha}}|(\hat{Q}_k - \bar{Q}_k)|\nu_{k,\boldsymbol{\alpha}}} \\
+  =& \braket{\nu_{0,\boldsymbol{\alpha}}|\hat{Q}_k|\nu_{0,\boldsymbol{\alpha}}} - \bar{Q}_k \underbrace{\braket{\nu_{0,\boldsymbol{\alpha}}\nu_{0,\boldsymbol{\alpha}}}}_{=1} \\
+  =& \bar{Q}_k - \bar{Q}_k = 0
+\end{align*}
+$$
+
+In general, however, the states $\braket{\nu_{0,\boldsymbol{\alpha}}|\nu_{k,\alpha}}$ are neither normalized nor mutually orthogonal. Thus, the set $\set{\ket{\nu,\boldsymbol{\alpha}}} \cup \set{\ket{\nu_{k,\boldsymbol{\alpha}}}}_{k=1}^p$ forms a semi-orthogonal basis.
+
+Under a small variation of the parameter $\alpha_k$, the perturbed normalized state is given by
+
+$$
+  \ket{\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}} = \frac{\ket{\Psi_{\boldsymbol{\alpha} + \delta\alpha_k}}}{\norm{\Psi_{\boldsymbol{\alpha} + \delta\alpha_k}}}
+$$
+
+Using $\eqref{equation-106}$ and $\eqref{equation-107}$, the state can be expanded as
+
+$$
+  \ket{\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}} = \ket{\nu_{0,\boldsymbol{\alpha}}} + [\delta\alpha_k \hat{Q}_k - \Re(\delta\alpha_k \bar{Q}_k)]\ket{\nu_{0,\boldsymbol{\alpha}}} + O(\delta\alpha_k^2)
+$$
+
+Separating the real and imaginary parts of $\delta\alpha_k \bar{Q}_k$, we obtain
+
+$$
+  \ket{\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}} = [1 + i\Im(\delta\alpha_k \bar{Q}_k)] \ket{\nu_{0,\boldsymbol{\alpha}}} + \delta\alpha_k \ket{\nu_{k,\boldsymbol{\alpha}}} + O(\delta\alpha_k^2)
+\end{align*}
+$$
+
+which can by finally recast as
+
+$$
+  \ket{\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}} = e^{i\delta\phi} (\ket{\nu_{0,\boldsymbol{\alpha}}} + \delta\alpha_k \ket{\nu_{k,\boldsymbol{\alpha}}}) + O(\delta\alpha_k^2)
+$$
+
+where $\delta\phi = \Im(\delta\alpha_k \bar{Q}_k)$.
+
+Under this expansion, the derivative of the variational energy $E_{\boldsymbol{\alpha}}$ with respect to $\alpha_k$ becomes
+
+$$
+\begin{align*}
+  \frac{\partial E_{\boldsymbol{\alpha}}}{\partial\alpha_k} =& \lim_{\delta\alpha_k \to 0} \frac{\braket{\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}|\hat{H}|\nu_{0,\boldsymbol{\alpha} + \delta\alpha_k}} - \braket{\nu_{0,\boldsymbol{\alpha}}|\hat{H}|\nu_{0,\boldsymbol{\alpha}}}}{\delta\alpha_k} \\
+  =& \braket{\nu_{k,\boldsymbol{\alpha}}|\hat{H}|\nu_{0,\boldsymbol{\alpha}}} + \braket{\nu_{0,\boldsymbol{\alpha}}|\hat{H}|\nu_{k,\boldsymbol{\alpha}}} \\
+  =& 2\Re\left(\frac{\braket{\Psi_{\boldsymbol{\alpha}}|\hat{H}(\hat{Q}_k - \bar{Q}_k)|\Psi_{\boldsymbol{\alpha}}}}{\Psi_{\boldsymbol{\alpha}|\Psi_{\boldsymbol{\alpha}}}} \right)
+\end{align*}
+$$
+
+Notice also that, as expected, the phase factor $\delta\phi$ does not enter in the above expression.
+
+Using the completeness relation
+
+$$
+  \sum_\mathbf{x} \ket{\mathbf{x}} \bra{\mathbf{x}} = \hat{I}
+$$
+
+the derivative can be refactored as
+
+$$
+\begin{align*}
+  \frac{\partial E_{\boldsymbol{\alpha}}}{\alpha_k} =& 2\Re \left(\frac{\sum_\mathbf{x} \braket{\Psi_{\boldsymbol{\alpha}}|\hat{H}|\mathbf{x}}\braket{\mathbf{x}|(\hat{Q}_k - \bar{Q}_k)|\Psi_{\boldsymbol{\alpha}}}}{\sum_\mathbf{x} \braket{\Psi_{\boldsymbol{\alpha}}|\mathbf{x}}\braket{\mathbf{x}|\Psi_{\boldsymbol{\alpha}}}} \right) \\
+  =& 2\Re \left(\frac{\sum_\mathbf{x} E_L^* (O_k (\mathbf{x}) - \bar{Q}_k) \ket|\Psi_{\boldsymbol{\alpha}} (\mathbf{x})|^2}{\sum_\mathbf{x} |\Psi_{\boldsymbol{\alpha}}(\mathbf{x})|^2} \right)
+\end{align*}
+$$
+
+Define the quantum force 
+
+$$
+  f_k = -\frac{\partial E_{\boldsymbol{\alpha}}}{\partial\alpha_k}
+$$ 
+
+Sampling configurations $\mathbf{x}$ from $p_{\boldsymbol{\alpha}}$ yields the estimator
+
+$$
+  f_k \approx -2\Re\left(\frac{1}{N} \sum_{i=1}^N E_L^* (\mathbf{x}_i) (Q_k (\mathbf{x}_i) - \bar{Q}_k) \right)
+$$
+
+where
+
+$$
+  \bar{O}_k \approx \frac{1}{N} \sum_{i=1}^N Q_k (\mathbf{x}_i)
+$$
