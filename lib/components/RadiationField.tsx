@@ -3,15 +3,17 @@
 import useIsMounted from "lib/hooks/useIsMounted";
 import { type InstancedArrow, instancedQuiverGrid } from "lib/utils/3d";
 import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import * as THREE from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+import { cleanupScene } from "lib/utils/three_utils";
 
 // $$ \mathbb{E}_\text{rad} (\mathbb{r}, t) = \frac{-q}{4\pi\epsilon_0 c^2} \frac{1}{\lVert\mathbb{r}\rVert} \mathbb{a}_\perp (t - \frac{\lVert\mathbb{r}\rVert}{c}) $$
 
-interface ChargeData {
-  charge: number;
+interface ChargeInfo {
+  chargeStrength: number;
   initialPosition: THREE.Vector3;
-  orbit: (time: number) => THREE.Vector3;
+  orbit: (out: THREE.Vector3, time: number) => THREE.Vector3;
 }
 
 export default function RadiationField() {
@@ -23,244 +25,282 @@ export default function RadiationField() {
   useEffect(() => {
     if (!isMounted) return;
 
-    const wrapper = wrapperRef.current;
-    const canvas = canvasRef.current;
-    if (!(canvas && wrapper)) return;
+    let isEffectActive = true;
+    let renderer: THREE.WebGPURenderer;
+    let scene: THREE.Scene;
+    let observer: ResizeObserver;
+    let animationFrameId: number;
 
-    const { width, height } = wrapper.getBoundingClientRect();
+    const startWebGPU = async () => {
+      const wrapper = wrapperRef.current;
+      const canvas = canvasRef.current;
+      if (!canvas || !wrapper) return;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-    });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(width, height);
+      const { width, height } = wrapper.getBoundingClientRect();
 
-    // Scene
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 10);
-    camera.lookAt(0, 0, 0);
+      renderer = new THREE.WebGPURenderer({
+        canvas,
+        antialias: true,
+      });
 
-    // Orbit controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.rotateSpeed = 0.5;
+      try {
+        await renderer.init();
+        if (!isEffectActive) return;
+      } catch (e) {
+        console.error("WebGPU not supported", e);
+        return;
+      }
 
-    // Light
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-    scene.add(ambientLight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height);
 
-    // Quiver
-    const gridSize = 10;
-    const gridStep = 0.4;
-    const quiverLength = 2;
-    const vectorField = (x: number, y: number) => {
-      return new THREE.Vector3(0, 0, 1);
-    };
-    const quivers = instancedQuiverGrid(
-      scene,
-      gridSize,
-      gridStep,
-      vectorField,
-      quiverLength,
-      0xaddfff,
-    );
-    const grid = new THREE.GridHelper(20, 10, 0x888888, 0x888888);
-    grid.rotation.x = Math.PI / 2;
-    scene.add(grid);
+      // Scene
+      scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 10);
+      camera.lookAt(0, 0, 0);
 
-    // Charges
-    const createCharge = (
-      charge: number,
-      position: THREE.Vector3,
-      orbit: (time: number) => THREE.Vector3,
-    ) => {
-      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-      const color = charge > 0 ? 0xe74c3c : 0x2e86c1;
-      const material = new THREE.MeshBasicMaterial({ color });
-      const sphere = new THREE.Mesh(geometry, material);
-      sphere.position.copy(position);
-      scene.add(sphere);
+      // Orbit controls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.rotateSpeed = 0.5;
 
-      sphere.userData.oscillation = {
-        charge,
-        initialPosition: position.clone(),
-        orbit,
+      // Light
+      //const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+      //scene.add(ambientLight);
+
+      // Quiver
+      const gridSize = 10;
+      const gridStep = 0.4;
+      const quiverLength = 2;
+      const vectorField = (x: number, y: number) => {
+        return new THREE.Vector3(0, 0, 1);
       };
-      return sphere;
-    };
+      const quivers = instancedQuiverGrid(
+        scene,
+        gridSize,
+        gridStep,
+        vectorField,
+        quiverLength,
+        0xaddfff,
+      );
+      const grid = new THREE.GridHelper(20, 10, 0x888888, 0x888888);
+      grid.rotation.x = Math.PI / 2;
+      scene.add(grid);
 
-    const chargeStrength = 2;
-    const frequency = 2 * Math.PI * 0.5;
-    const amplitude = 1;
-    const charge = createCharge(
-      chargeStrength,
-      new THREE.Vector3(0, 0, 0),
-      (time) => {
-        const z = amplitude * Math.cos(frequency * time);
-        return new THREE.Vector3(0, 0, z);
-      },
-    );
+      // Charges
+      const createChargedParticle = (
+        chargeStrength: number,
+        position: THREE.Vector3,
+        orbit: (out: THREE.Vector3, time: number) => THREE.Vector3,
+      ) => {
+        const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const color = chargeStrength > 0 ? 0xe74c3c : 0x2e86c1;
+        const material = new THREE.MeshBasicMaterial({ color });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.copy(position);
 
-    const charges = [charge];
+        sphere.userData.chargeInfo = {
+          chargeStrength,
+          initialPosition: position,
+          orbit,
+        } as ChargeInfo;
 
-    const analyticAcceleration = (time: number) => {
-      const z = -2 * frequency ** 2 * Math.cos(frequency * time);
-      return new THREE.Vector3(0, 0, z);
-    };
+        scene.add(sphere);
+        return sphere;
+      };
 
-    const calculateAcceleration = (
-      orbitFunction: (t: number) => THREE.Vector3,
-      time: number,
-      delta = 1e-5,
-    ) => {
-      // Numerical differentiation to find acceleration
-      const posPlus = orbitFunction(time + delta);
-      const pos = orbitFunction(time);
-      const posMinus = orbitFunction(time - delta);
+      const chargeStrength = 2;
+      const frequency = 2 * Math.PI * 0.5;
+      const amplitude = 1;
 
-      // Second derivative approximation
-      const acceleration = posPlus
-        .add(posMinus)
-        .sub(pos.multiplyScalar(2))
-        .divideScalar(delta * delta);
-      return acceleration;
-    };
+      const chargedParticle = createChargedParticle(
+        chargeStrength,
+        new THREE.Vector3(0, 0, 0),
+        (out, time) => {
+          const z = amplitude * Math.cos(frequency * time);
+          return out.set(0, 0, z);
+        },
+      );
 
-    const transverseAcceleration_ = (
-      acceleration: THREE.Vector3,
-      rUnit: THREE.Vector3,
-    ) => {
-      const aDotR = acceleration.dot(rUnit);
-      return acceleration.clone().sub(rUnit.clone().multiplyScalar(aDotR));
-    };
+      const chargedParticles = [chargedParticle];
 
-    const transverseAcceleration = (
-      acceleration: THREE.Vector3,
-      direction: THREE.Vector3,
-    ) => {
-      // Get component of acceleration parallel to direction
-      const parallelComponent = direction
-        .clone()
-        .multiplyScalar(acceleration.dot(direction));
+      const analyticAcceleration = (out: THREE.Vector3, time: number) => {
+        const z = -2 * frequency ** 2 * Math.cos(frequency * time);
+        return out.set(0, 0, z);
+      };
 
-      // Subtract parallel component to get perpendicular component
-      return acceleration.clone().sub(parallelComponent);
-    };
+      const calculateAcceleration = (
+        orbitFunction: (t: number) => THREE.Vector3,
+        time: number,
+        delta = 1e-5,
+      ) => {
+        // Numerical differentiation to find acceleration
+        const posPlus = orbitFunction(time + delta);
+        const pos = orbitFunction(time);
+        const posMinus = orbitFunction(time - delta);
 
-    const electricFieldAtPoint = (
-      point: THREE.Vector3,
-      chargeData: ChargeData,
-      time: number,
-    ) => {
+        // Second derivative approximation
+        const acceleration = posPlus
+          .add(posMinus)
+          .sub(pos.multiplyScalar(2))
+          .divideScalar(delta * delta);
+        return acceleration;
+      };
+
+      const transverseAcceleration = (
+        out: THREE.Vector3,
+        acceleration: THREE.Vector3,
+        positionUnit: THREE.Vector3,
+      ) => {
+        const aDotR = acceleration.dot(positionUnit);
+        // a_perp = a - (a·r̂) r̂
+        return out.copy(acceleration).addScaledVector(positionUnit, -aDotR);
+      };
+
+      const fieldPosition = new THREE.Vector3();
+      const chargePosition = new THREE.Vector3();
+      const relativePosition = new THREE.Vector3();
+      const relativeDirection = new THREE.Vector3();
+      const accelerationRetarded = new THREE.Vector3();
+      const accelerationPerpendicular = new THREE.Vector3();
+      const electricField = new THREE.Vector3();
+      const totalElectricField = new THREE.Vector3();
+
       const c = 2;
       const epsilon0 = 0.25;
-      const k = -chargeData.charge / (4 * Math.PI * epsilon0 * c * c);
+      const inv4PiEps0C2 = 1 / (4 * Math.PI * epsilon0 * c * c);
 
-      const chargePosition = chargeData.orbit(time);
-      const r = point.clone().sub(chargePosition);
-      const rLength = r.length();
+      const electricFieldAtPoint = (
+        out: THREE.Vector3,
+        point: THREE.Vector3,
+        chargeInfo: ChargeInfo,
+        time: number,
+      ) => {
+        chargeInfo.orbit(chargePosition, time);
+        relativePosition.copy(point).sub(chargePosition);
+        const rLength = relativePosition.length();
 
-      if (rLength < 1e-5) return new THREE.Vector3(0, 0, 0);
+        if (rLength < 1e-5) return relativePosition.set(0, 0, 0);
 
-      const timeRetarded = time - rLength / c;
-      //const aRetarded = calculateAcceleration(chargeData.orbit, timeRetarded)
-      const aRetarded = analyticAcceleration(timeRetarded);
-      const rUnit = r.clone().normalize();
-      const aPerpendicular = transverseAcceleration(aRetarded, rUnit);
+        const timeRetarded = time - rLength / c;
+        //const aRetarded = calculateAcceleration(chargeData.orbit, timeRetarded)
+        analyticAcceleration(accelerationRetarded, timeRetarded);
+        relativeDirection.copy(relativePosition).divideScalar(rLength);
+        transverseAcceleration(
+          accelerationPerpendicular,
+          accelerationRetarded,
+          relativeDirection,
+        );
 
-      const electricField = aPerpendicular
-        .multiplyScalar(k)
-        .divideScalar(rLength);
-      return electricField;
-    };
+        const k = -chargeInfo.chargeStrength * inv4PiEps0C2;
+        return out
+          .copy(accelerationPerpendicular)
+          .multiplyScalar(k)
+          .divideScalar(rLength);
+      };
 
-    const updateElectricField = (
-      quiver: InstancedArrow,
-      charges: THREE.Object3D[],
-      gridSize: number,
-      gridStep: number,
-      time: number,
-    ) => {
-      let index = 0;
+      const updateElectricField = (
+        quiver: InstancedArrow,
+        charges: THREE.Object3D[],
+        gridSize: number,
+        gridStep: number,
+        time: number,
+      ) => {
+        let index = 0;
 
-      // Loop through the same grid points used when creating the quiver
-      for (let x = -gridSize; x <= gridSize; x += gridStep) {
-        for (let y = -gridSize; y <= gridSize; y += gridStep) {
-          const position = new THREE.Vector3(x, y, 0);
+        // Loop through the same grid points used when creating the quiver
+        for (let x = -gridSize; x <= gridSize; x += gridStep) {
+          for (let y = -gridSize; y <= gridSize; y += gridStep) {
+            fieldPosition.set(x, y, 0);
 
-          // Calculate total electric field at this position
-          const totalElectricField = new THREE.Vector3(0, 0, 0);
+            // Calculate total electric field at this position
+            totalElectricField.set(0, 0, 0);
 
-          charges.forEach((charge) => {
-            const data = charge.userData.oscillation as ChargeData;
-            const electricField = electricFieldAtPoint(position, data, time);
-            totalElectricField.add(electricField);
-          });
+            charges.forEach((charge) => {
+              const chargeInfo = charge.userData.chargeInfo as ChargeInfo;
+              electricFieldAtPoint(
+                electricField,
+                fieldPosition,
+                chargeInfo,
+                time,
+              );
+              totalElectricField.add(electricField);
+            });
 
-          // Update the arrow at this index in the instanced quiver
-          quiver.setArrowFromVector(index, position, totalElectricField);
+            // Update the arrow at this index in the instanced quiver
+            quiver.setArrowFromVector(index, fieldPosition, totalElectricField);
 
-          index++;
-        }
-      }
-      quiver.finalizeUpdate();
-    };
-
-    const updateCharges = (time: number) => {
-      charges.forEach((charge) => {
-        const data = charge.userData.oscillation as ChargeData;
-        charge.position.copy(data.initialPosition);
-        charge.position.add(data.orbit(time).clone().sub(data.initialPosition));
-      });
-    };
-
-    const onResize = () => {
-      const { width, height } = wrapper.getBoundingClientRect();
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    };
-
-    window.addEventListener("resize", onResize);
-
-    const clock = new THREE.Clock();
-
-    let lastUpdateTime = 0;
-    const updateFrequency = 60; // updates per second
-    const updateInterval = 1 / updateFrequency;
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-
-      const time = clock.getElapsedTime();
-      if (time - lastUpdateTime >= updateInterval) {
-        updateCharges(time);
-        updateElectricField(quivers, charges, gridSize, gridStep, time);
-        lastUpdateTime = time;
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-
-      renderer.dispose();
-
-      scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry.dispose();
-          if (object.material instanceof THREE.Material) {
-            object.material.dispose();
+            index++;
           }
         }
-      });
+        quiver.finalizeUpdate();
+      };
+
+      const updateCharges = (time: number) => {
+        chargedParticles.forEach((charge) => {
+          const chargeInfo = charge.userData.chargeInfo as ChargeInfo;
+          chargeInfo.orbit(chargePosition, time);
+          charge.position.copy(chargePosition);
+        });
+      };
+
+      // Resize
+      const handleResize = (entries: ResizeObserverEntry[]) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize(width, height, false);
+          renderer.setPixelRatio(window.devicePixelRatio);
+        }
+      };
+
+      observer = new ResizeObserver(handleResize);
+      observer.observe(wrapper);
+
+      // Animation
+      const timer = new THREE.Timer();
+
+      let lastUpdateTime = 0;
+      const updateFrequency = 60; // updates per second
+      const updateInterval = 1 / updateFrequency;
+
+      const animate = () => {
+        animationFrameId = requestAnimationFrame(animate);
+
+        timer.update();
+        const time = timer.getElapsed();
+        if (time - lastUpdateTime >= updateInterval) {
+          updateCharges(time);
+          updateElectricField(
+            quivers,
+            chargedParticles,
+            gridSize,
+            gridStep,
+            time,
+          );
+          lastUpdateTime = time;
+        }
+
+        controls.update();
+        renderer.render(scene, camera);
+      };
+
+      animate();
+    };
+
+    startWebGPU();
+
+    return () => {
+      isEffectActive = false;
+      cancelAnimationFrame(animationFrameId);
+      if (observer) observer.disconnect();
+      if (renderer) renderer.dispose();
+      if (scene) cleanupScene(scene);
     };
   }, [isMounted]);
 

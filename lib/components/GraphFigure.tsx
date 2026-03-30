@@ -1,19 +1,19 @@
-import { parse as mathParse } from "mathjs"
+import { parse as mathParse } from "mathjs";
 
-import type { Axis } from "lib/components/SvgPlot"
-import Vector from "lib/utils/vector"
-import dynamic from "next/dynamic"
+import type { Axis } from "lib/components/SvgPlot";
+import Vector from "lib/utils/vector";
+import dynamic from "next/dynamic";
 
 interface Props {
-  expression: string
-  points: number
-  xAxis: Axis
-  yAxis: Axis
-  caption: string
-  tag?: string
+  expression: string;
+  points: number;
+  xAxis: Axis;
+  yAxis: Axis;
+  caption: string;
+  tag?: string;
 }
 
-const SVGPlot = dynamic(() => import("lib/components/SvgPlot"))
+const SVGPlot = dynamic(() => import("lib/components/SvgPlot"));
 
 export default function GraphFigure({
   expression,
@@ -23,18 +23,16 @@ export default function GraphFigure({
   caption,
   tag,
 }: Props) {
-  const lambda = mathParse(expression).compile()
+  if (!xAxis?.domain || !yAxis?.domain) return;
 
-  const x = Vector.linspace(
-    xAxis.domain![0],
-    xAxis.domain![1],
-    points,
-  ).toArray()
+  const lambda = mathParse(expression).compile();
 
-  const data = Array<[number, number]>(x.length)
+  const x = Vector.linspace(xAxis.domain[0], xAxis.domain[1], points).toArray();
+
+  const data = Array<[number, number]>(x.length);
 
   for (let i = 0; i < x.length; i++) {
-    data[i] = [x[i], lambda.evaluate({ x: x[i] })]
+    data[i] = [x[i], lambda.evaluate({ x: x[i] })];
   }
 
   return (
@@ -44,5 +42,5 @@ export default function GraphFigure({
         {caption}
       </figcaption>
     </figure>
-  )
+  );
 }
