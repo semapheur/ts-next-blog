@@ -6,7 +6,7 @@ export default function NotesSlugLayout({ children }: { children: ReactNode }) {
     <>
       <Script
         src="https://tikzjax.com/v1/tikzjax.js"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
       />
       {children}
     </>

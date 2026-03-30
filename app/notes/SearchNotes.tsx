@@ -1,40 +1,25 @@
-"use client"
+"use client";
 
-import { type ChangeEvent, type MouseEvent, useEffect, useState } from "react"
-import dynamic from "next/dynamic"
-import Link from "next/link"
-//import useSWR, {Fetcher} from 'swr'
+import { type ChangeEvent, useEffect, useState } from "react";
+import Link from "next/link";
 
-import SearchBox from "lib/components/SearchBox"
-import type { SearchResult } from "pages/api/searchnotes"
-import { searchNotes } from "lib/utils/search"
-import notes from "content/cache/notes.json"
-
-const Preview = dynamic(() => import("./PreviewNotes"), { ssr: false })
-
-//const searchFetcher: Fetcher<SearchResult, string> = async (query) => {
-//  return await fetch(`/api/searchnotes?q=${query}`).then(res => res.json())
-//}
+import SearchBox from "lib/components/SearchBox";
+import { searchNotes } from "lib/utils/search";
+import { type SearchResult } from "lib/utils/types";
+import notes from "content/cache/notes.json";
 
 export default function SearchNotes() {
-  const [query, setQuery] = useState<string>("")
-  const [searchResult, setSearchResult] = useState<SearchResult>([])
-  const [preview, setPreview] = useState<string>("")
+  const [query, setQuery] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }
-
-  const handleMouseOver = (e: MouseEvent<HTMLAnchorElement>) => {
-    const slug = e.currentTarget.getAttribute("data-tag")
-    if (slug) setPreview(slug)
-  }
-  //const {data: result, error} = useSWR(query, searchFetcher)
+    setQuery(e.target.value);
+  };
 
   useEffect(() => {
-    const result = searchNotes(query, notes)
-    setSearchResult(result)
-  }, [query])
+    const result = searchNotes(query, notes);
+    setSearchResult(result);
+  }, [query]);
 
   return (
     <>
@@ -58,7 +43,6 @@ export default function SearchNotes() {
                 className="block py-1 text-text hover:text-secondary"
                 href={`/notes/${note.slug}`}
                 data-tag={note.slug}
-                onMouseOver={handleMouseOver}
                 key={note.slug}
               >
                 {note.title}
@@ -66,9 +50,7 @@ export default function SearchNotes() {
             ))}
         </div>
       </div>
-      <div className="hidden h-full justify-center overflow-y-scroll lg:flex">
-        <Preview slug={preview} key="preview" />
-      </div>
+      <div className="hidden h-full justify-center overflow-y-scroll lg:flex" />
     </>
-  )
+  );
 }

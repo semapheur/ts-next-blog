@@ -1,17 +1,17 @@
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import { MDXRemote, MDXRemoteOptions } from "next-mdx-remote-client/rsc";
 import Loader from "lib/components/Loader";
 import MathPopover from "lib/components/MathPopover";
+import Bibliography from "lib/components/Bibliography";
 import { PopoverContextProvider } from "lib/components/PopoverContext";
 import { markdownHeadings } from "lib/utils/mdParse";
 import { mdxComponents } from "lib/utils/mdxComponents";
 import { rehypePlugins, remarkPlugins } from "lib/utils/mdxParse";
 import type { NoteHeading } from "lib/utils/types";
-import type { MDXProps } from "mdx/types";
-import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-import { compileMDX } from "next-mdx-remote/rsc";
 
 const Toc = dynamic(() => import("./Toc"), {
   loading: () => (
@@ -29,18 +29,14 @@ interface Props {
   params: Promise<Params>;
 }
 
-const MDXOptions = (noCite: string[] = []) => {
-  return {
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        development: process.env.NODE_ENV !== "production",
-        remarkPlugins: remarkPlugins,
-        rehypePlugins: rehypePlugins(noCite),
-      },
-    },
-    components: mdxComponents,
-  };
+const options: MDXRemoteOptions = {
+  parseFrontmatter: true,
+  mdxOptions: {
+    development: process.env.NODE_ENV !== "production",
+    remarkPlugins: remarkPlugins,
+    // @ts-ignore
+    rehypePlugins: rehypePlugins,
+  },
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -101,10 +97,14 @@ export default async function NotePage({ params }: Props) {
   const { slug } = await params;
   const { source, headings } = await getNote(slug);
   const frontmatter = matter(source);
-  const { content } = await compileMDX({
-    source: source,
-    ...(MDXOptions(frontmatter.data.references) as MDXProps),
-  });
+
+  if (frontmatter.data?.references) {
+    headings.push({
+      text: "References",
+      slug: "references",
+      level: 1,
+    });
+  }
 
   return (
     <main className="relative h-full w-full overflow-y-clip bg-primary shadow-inner-l lg:grid lg:grid-cols-[3fr_1fr] dark:shadow-black/50">
@@ -117,9 +117,19 @@ export default async function NotePage({ params }: Props) {
             {frontmatter.data.title}
           </h1>
           <PopoverContextProvider>
-            {content}
+            <MDXRemote
+              source={source}
+              options={options}
+              components={mdxComponents}
+            />
             <MathPopover />
           </PopoverContextProvider>
+          {frontmatter.data.references && (
+            <Bibliography
+              references={frontmatter.data.references}
+              style="harvard1"
+            />
+          )}
         </article>
       </div>
       {frontmatter.data.showToc && <Toc key="toc.note" headings={headings} />}

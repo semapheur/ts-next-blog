@@ -1,4 +1,3 @@
-import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 import type Vector from "lib/utils/vector";
 
 export interface Vec2 {
@@ -14,11 +13,6 @@ export interface Line {
 export interface ViewRange {
   x: Vector;
   y: Vector;
-}
-
-export interface MDXPost<T> {
-  serialized: MDXRemoteSerializeResult;
-  frontmatter: T;
 }
 
 export interface NoteMatter {
@@ -40,4 +34,23 @@ export interface NoteIndex {
   slug: string;
   title: string;
   filter: JSON;
+}
+
+export interface SearchResult {
+  score: number;
+  slug: string;
+  title: string;
+}
+
+export interface NoteXor {
+  slug: string;
+  title: string;
+  filter: {
+    type: string;
+    _filter: string[];
+    _bits: number;
+    _size: number;
+    _blockLength: number;
+    _seed: number;
+  };
 }

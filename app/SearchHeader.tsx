@@ -1,33 +1,35 @@
-"use client"
+"use client";
 
-import dynamic from "next/dynamic"
-import Link from "next/link"
-import type { SearchResult } from "pages/api/searchnotes"
-import { type ChangeEvent, useEffect, useState } from "react"
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import type { SearchResult } from "lib/utils/types";
+import { type ChangeEvent, useEffect, useState } from "react";
 
-const Modal = dynamic(() => import("lib/components/LatexModal"), { ssr: false }) //import Modal from 'lib/components/Modal'
+const Modal = dynamic(() => import("lib/components/LatexModal"), {
+  ssr: false,
+});
 
-import notes from "content/cache/notes.json"
-import { SearchIcon } from "lib/utils/icons"
-import { searchNotes } from "lib/utils/search"
+import notes from "content/cache/notes.json";
+import { SearchIcon } from "lib/utils/icons";
+import { searchNotes } from "lib/utils/search";
 
 export default function SearchBar() {
-  const [query, setQuery] = useState<string>("")
-  const [searchResult, setSearchResult] = useState<SearchResult>([])
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const [query, setQuery] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }
+    setQuery(e.target.value);
+  };
   const handleClick = () => {
-    setQuery("")
-    setShowModal(false)
-  }
+    setQuery("");
+    setShowModal(false);
+  };
 
   useEffect(() => {
-    const result = searchNotes(query, notes)
-    setSearchResult(result)
-  }, [query])
+    const result = searchNotes(query, notes);
+    setSearchResult(result);
+  }, [query]);
 
   return (
     <>
@@ -66,5 +68,5 @@ export default function SearchBar() {
         </div>
       </Modal>
     </>
-  )
+  );
 }
