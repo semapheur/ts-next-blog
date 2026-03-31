@@ -1,0 +1,418 @@
+---
+title: 'Monte Carlo Methods'
+subject: 'Mathematics'
+showToc: true
+references:
+  - book_glasserman_2003
+  - book_robert_2004
+---
+
+# Random variable generation
+
+A pseudo-random number generator (PRNG) can be modeled as a finite deterministic dynamical system specified by a tuple $(S, f, \mu, U, g)$, where
+- $S$ is a finite set of states
+- $f: S\to S$ is the transition function
+- $\mu$ is a probability distribution on $S$, representing the law of the initial state $s_0 \in S$, also called the seed 
+- $U$ is a measurable output space
+- $g: S\to U$ is a measurable output function
+
+Given an inital state (seed) $s_0 \in S$ sampled according to $\mu$, the generator produces sequences $(s_n)_{n\geq 1}$ and $(u_n)_{n\geq 1}$ defined recursively by
+
+$$
+  s_{n+1} = f(s_n),\quad u_n = g(s_n),\; n \geq 1
+$$
+
+Thus, the evolution of the state is deterministic, and all randomness in the output process $(u_n)$ is induced solely by the random initialization $s_0 \sim\mu$. In other words, the resulting process $(u_n)$ is a deterministic function of the initial state, and its probabilistic properties are inherited by $\mu$.
+
+The generator is designed so that $(u_n)$ approximates a sequence of independent random variables $(U_n)$ with a prescribed target distribution. This approximation is understood in an operational sense through statistical test: For each $n \geq 1$, the sequence $(u_1,\dots,u_n)$ should be statistically indistinguishable from $(U_1,\dots,U_n)$ with respect to a prescribed class $\mathcal{T}$ of statistical tests. More precisely, for every statistic $T \in\mathcal{T}$, the distribution of $T(u_1,\dots,u_n)$ is close, in a specified sense, to that of $T(U_1,\dots,U_n)$.
+
+The definition of a pseudo-random number generator is restricted to testable properties of the output sequence $(u_n)_{n\geq 1}$. Its validity is assessed through a statistical testing framework: for each sample size $n\geq 1$, we evaluate the finite sequence $(u_1,\dots,u_n)$ under the null hypothesis
+
+$$
+  \mathrm{H}_0: U_1,\dots,U_n \overset{\text{iid}}{\sim} \mathcal{U}([0,1])
+$$
+
+Since $(u_n)$ is deterministic for fixed seed $s_0$, the hypothesis $\mathrm{H}_0$ cannot hold in a literal probabilistic sense. Rather, the generator is deemed satisfactory if, for a prescribed class of statistical tests and significance levels, the observed sequence $(u_1,\dots,u_n)$ does not lead to rejection of $\mathrm{H}_0$.
+
+Because the state space $S$ is finite, the sequence $(s_n)$ is ultimately periodic, meaning there exists integers $t \geq 0$ (the transient length) and $p \geq 1$ (the period) such that
+
+$$
+  s_{n+p} = s_n\; \forall n \geq t
+$$
+
+The integer $p \in\N_+$ is called teh period length (or cycle length) of the generator for the seed $s_0$. The maximal such $p$, taken over all initial states, is called the period of the generator.
+
+<MathBox title="Random number generator" boxType="algorithm">
+1. **Initialize:** Draw the seed $S_0$ from the distribution $\mu$ on $S$. Set $n = 1$
+2. **Transition:** Set $S_n = f(S_{n-1})$
+3. **Output:** Set $U_n = g(S_n)$
+4. **Repeat:** Set $n = n + 1$ and return to step 2.
+</MathBox>
+
+## Uniform random number generation
+
+<MathBox title="Uniform pseudo-random generator" boxType="definition">
+A uniform pseudo-random number generator is a deterministic algorithm defined by a measurable map $t: S\to S$ on a state space $S$, an initial seed state $s_0 \in S$, and an output function $g: S\to [0,1]$. It generates a sequence $(u_n)_{n\geq 1}$ defined recursively by
+
+$$
+  s_{n+1} = f(s_n),\quad u_n = g(s_n) \in [0,1],\; n \geq 1
+$$
+
+The sequence $(u_n)$ is intended to approximate a sequence of independent uniform random variables $(U_n)_{n\geq 1}$, where $U_n \sim \mathcal{U}([0,1])$. 
+</MathBox>
+
+### Linear recurrence models
+
+#### Linear congruential generators
+
+A linear congruential generator (LCG) is a pseudo-random number generator defined by a finite state space $S = \set{0,\dots,m-1}$, where $m\in\N_+$ is called the modulus. Given parameters $a,c \in\Z$, called respectively the multiplier and the increment, the state sequence $(x_t)_{t\geq 0}$ is defined recursively by
+
+$$
+  x_t = ax_{t-1} + c \bmod m,\; t \in\N_+
+$$
+
+with initial state $x_0 \in S$. Applying the modulo-$m$ operator means that $x_t \in S$ is given by the remainder upon division of $ax_{t-1} + c$ by $m$, i.e.
+
+$$
+  x_t = (ax_{t-1} + c) - m\left\lfloor\frac{ax_{t-1} + c}{m} \right\rfloor
+$$
+
+Without loss of generality, the parameters $a$ and $c$ can be taken in $\set{0,\dots,m-1}$, since only their residue classes modulo $m$ affect the recursion. When $c = 0$, the generator is called a multiplicative congruential generator.
+
+The associated output sequence $(u_t)_{t\geq 1}$ is obtained via the normalization
+
+$$
+  u_t = \frac{x_t}{m} \in [0,1),\; t\geq 1
+$$
+
+The statistical quality of a linear congruential model depends on the choice of parameters $(a,c,m)$. In particular, these parameters determine the period length and the lattice structure of the generated sequence. Poor choices can lead to strong correlations and visible regularities, while suitable choices can yield maximal period and improved equidistribution properties.
+
+<MathBox title="Minimal standard LCG" boxType="example">
+An often-cited linear congruential model is that of Lewis, Goodman, and Miller, who proposed the parameters
+- $a = 7^5 = 16807$
+- $c = 0$
+- $m = 2^{31} - 1 = 2147483647$
+
+where $m$ is the Mersenne prime $M_{31}$. This choice yields a multiplicative congruential generator with maximal period $m-1$ for all non-zero initial states $x_0 \in\set{1,\dots,m-1}$, since $a$ is a primitive root modulo $m$. The recursion is therefore
+
+$$
+  x_t = 16807 x_{t-1} \pmod{2^{31} - 1}
+$$
+
+This LCG passes many of the standard statistical test and has been successfully used in many applications. For this reason it is sometimes viewed as the minimal standard LCG, against which other generators are compored.
+</MathBox>
+
+#### Multiple-recursive generators
+
+A multiple-recursive generator (MRG) of order $k$, is a random number generator with state space $S = \set{0,\dots,m-1}^k$ for some modulus $m\in\N_+$. The state at time $t$ is the vector $(x_{t-1}, \dots, x_{t-k}) \in S$, and the sequence $(x_t)$ is given by the linear recurrence
+
+$$
+\begin{equation*}
+  x_t = \sum_{i=1}^k a_i x_{t-i}  \pmod m,\; t \geq k
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where the multipliers $\set{a_i}_{i=1}^k$ lie in the set $\set{0,\dots,m-1}$. The output sequence $(u_t)$ typically obtained by normalization
+
+$$
+  u_t = \frac{x_t}{m} \in [0,1),\; t\geq k
+$$
+
+The maximal possible period length for this generator is $m^k - 1$, which is attained if $m$ is a prime number and the characteristic polynomial 
+$$
+  p(z)) = z^k - \sum_{i=1}^{k-1} a_i z^{k-i}
+$$
+
+is a primitive root modulo $m$.
+
+#### Matrix congruential generators
+
+A multiple-recursive generator of order $k$ can be equivalently represented as a matrix linear multiplicative congruential generator. In this formulation the state space is 
+
+$$
+  S = \set{0,\dots,m-1}^k \cong (\Z/m\Z)^k
+$$
+
+where $m\in\N_+$ is the modulus. The state sequence $(\mathbf{x}_t)_{t\geq 0}$ with $\mathbf{x}_t \in S$, evolves according to
+
+$$
+  \mathbf{x}_t = \mathbf{A}\mathbf{x}_{t-1} \bmod m,\; t\geq 1
+$$
+
+where $\mathbf{A} \in \mathcal{M}_k (\N_0)$ is a $k\times k$ matrix and the arithmetic is performed componentwise modulo $m$.
+
+In the case of an MRG defined by linear congruence $\eqref{equation-1}$, the matrix $\mathbf{A}$ takes the companion form
+
+$$
+\begin{equation*}
+  \mathbf{A} = \begin{bmatrix}
+    0 & 1 \cdots & 0 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \cdots & 1 \\
+    a_k & a_{k-1} & \cdots & a_1
+  \end{bmatrix}
+\end{equation*}
+$$
+
+The matrix $\mathbf{A}$ is typically required to by invertible over $\Z/m\Z$, i.e. $\mathbf{A} \in\operatorname{GL}_k (\Z/m\Z)$, in order to avoid degeneracy and ensure maximal period properties. 
+
+The output sequence $(\mathbf{u}_t)$ is often defined component by normalization
+
+$$
+  \mathbf{u}_t = \frac{\mathbf{x}_t}{m} \in [0,1)^k
+$$
+
+In this matrix formulation, an MRG can be interpreted as linear dynamical system over the finite ring $\Z/m\Z$ and allows its period and structural properties to be analyzed via linear algebra and finite field techniques.
+
+#### Binary linear generators
+
+Since binary operations are in general more efficient than floating point operations (which in turn are faster than integer operations), it is natural to consider pseudo-random number generators that are based on linear recurrences over the finite field $\mathbb{F}_2$ (modulo $2$). In $\mathbb{F}_2$, addition is given by bitwise $\operatorname{XOR}$ and multiplication is bitwise $\operatorname{AND}$.
+
+A general linear generator over $\mathbb{F}_2$ is defined by the binary state space $S = \set{0,1}^k \cong \mathbb{F}_2^k$ and two matrices $\mathbf{A}\in\set{0,1}^{k\times k}$ and $\mathbf{B}\in\set{0,1}^{w\times k}$. A state vector $\mathbf{x}_t = (x_{t,1},\dots,x_{t,k}) \in\mathbb{F}_2^k$ is updated in the following steps
+
+1. **Initialize:** Draw the seed $\mathbf{x}_0 \sum\mu$, where $\mu$ is a probability distribution on $\mathbb{F}_2^k$. Set $t = 1$.
+2. **Transition:** Set $\mathbf{x}_t = \mathbf{A}\mathbf{x}_{t-1}$
+3. **Output:** Set $\mathbf{y}_t = \mathbf{B}\mathbf{x}_t$ and return the binary expansion
+$$
+  u_t = \sum_{l=1}^w Y_{t,l} 2^{-l} \in [0,1)
+$$
+
+4. **Repeat:** Set $t=t+1$ and return to step 2.
+
+The integer $w$ can be thought of as the word length of the computer, e.g. $32$ or $64$ bit, while the state dimension $k$ is chosen significantly larger than $w$ in order to achieve long periods and good statistical properties.
+
+<MathBox title="Linear feedback shift register generator" boxType="example">
+The Tausworthe generator, als known as a linear feedback shift register (LFSR) generator is a special case of a multiple-recursive generator over the finite field $\mathbb{F}_2$, with binary linear recurrence
+
+$$
+  x_t = \sum_{i=1}^k a_i x_{t-i} \pmod 2,\; t\geq k
+$$
+
+where $a_i \in\set{0,1}$, and all operations are performed in $\mathbb{F}_2$. The output is constructe by grouping of bits from the underlying bit sequence $(x_t)$. For fixed integers $w \leq k$ and $s \geq 1$, define
+
+$$
+  u_t = \sum_{l=1}^w x_{ts + l - 1} 2^{-l},\; t \geq 0
+$$
+
+so that each $u_t \in [0,1)$ if formed from $w$ successive bits of sequence. The parameter $s$ is a decimation step, and a common choice is $s = w$, which yields non-overlapping blocks.
+
+In vector form, the state at time $t$ is given by $\mathbf{x}_t = (x_{ts},\dots, x_{ts + k-1}) \in\mathbb{F}_2^k$, so that the output corresponds to the first $w$ components of $\mathbf{x}_t$, i.e.
+
+$$
+  \mathbf{u}_t = \sum_{l=1}^w (\mathbf{x}_t)_l 2^{-l},\; t\geq 0
+$$
+
+In this representation, the state transition is obtained by the linear transformation $\mathbf{x}_t = \mathbf{A}^s \mathbf{x}_{t-1}$, where $\mathbf{A}$ is the companion matrix $\eqref{equation-2}$ associated with the recurrence, and arithmetic is over $\mathbb{F}_2$. The output map is given by the projection $\mathbf{y}_t = \mathbf{B}\mathbf{x}_t$ for the matrix $\mathbf{B} = \begin{bmatrix} \mathbf{I}_w \mathbf{0}_{w\times (k-w)} \end{bmatrix}$, where $\mathbf{I}$ is the identity matrix and $\mathbf{0}$ is the zero matrix.
+
+For computation efficiency, the recurrence is typically sparse, with only a few nonzero coefficients. A common special case is the two-tap recurrence
+
+$$
+  x_t = x_{t-r} \overset{2}{\oplus} x_{t-k},\; 1 \leq r < k
+$$
+
+where $\overset{2}{\oplus}$ denotes addition modulo $2$ (bitwise $\operatorname{XOR}$). In vector form, this becomes
+
+$$
+  \mathbf{x}_t = \mathbf{x}_{t-r} \overset{2}{\oplus} \mathbf{x}_{t-k}
+$$
+
+where addition is componentwise in $\mathbb{F}_2$.
+
+The term linear feedback shift register reflects the fact that the generator admits an efficient implementation using shift registers: at each step, the state is shifted and a new bit is coputed as a linear ($\operatorname{XOR}$) combination of selectd previous bits.
+</MathBox>
+
+Generalizations of the LFSR generator include generalized feedback shift register generators and their twisted versions, of which the most popular are the Mersenne twisters (MT). A particular instance of the Mersenne twister, MT19937, has become widespread. It has a huge period length of $2^{19937} - 1$, is very fast, has good equidistributional properties, and passes most statistical tests. 
+
+Two drawbacks of the Mersenne twisters are that the initialization procedure is rather complex to avoid correlated sequences. In addition, the algorithms recover slowly the states near zero, i.e. with low Hamming weights. Once the state contains only a few ones, the recurrence may require hundreds of thousands of iterations before returning to a state with a more balanced distribution of bits.
+
+### Combined generators
+
+Combined pseudo-random number generators form a new generator by combining the outputs of several underlying generators, through operations such as shuffling, addition, or output selection. Even if the individual generators are of poor quality, an appropriate combination can yield at generator with significantly superior statistical properties.
+
+<MathBox title="Wichman-Hill generator" boxType="example">
+One of the earliest combined generators is the Wichman-Hill generator, which combines three multiplicative congruential generators:
+
+$$
+\begin{align*}
+  x_t =& 171 x_{t-1} \pmod m_1,\; m_1 = 30269 \\
+  y_t =& 172 y_{t-1} \pmod m_1,\; m_1 = 30307 \\
+  z_t =& 170 z_{t-1} \pmod m_1,\; m_1 = 30323
+\end{align*}
+$$
+
+These three integers are then merged into a single uniform variate by
+
+$$
+  u_t = \frac{x_t}{m_1} + \frac{y_t}{m_2} + \frac{z_t}{m_3} \pmod 1
+$$
+
+The period of the sequence of triples $(x_t, y_t, z_t)$ is given by
+
+$$
+  \frac{1}{4}(m_1 - 1)(m_2 - 1)(m_3 - 1) \approx 6.95\times 10^{12}
+$$
+
+which is much larger than the periods of the individual components. This combined generator is equivalent to a single multiplicative congruential generator with
+- modulus $m = 7817185604309$
+- multiplier $a = 16555425264690$
+</MathBox>
+
+A well‑studied family of combined generators is the class of combined multiple‑recursive generators (CMRGs), in which a small number of MRGs are combined to form a single generator. A key advantage of this construction is that it can be analyzed theoretically using the same framework as for a single MRG: with appropriate initialization, the output stream of a CMRG is exactly the same as that of a single MRG with a much larger period. Consequently, the quality of the generator can be assessed using the well‑understood theory of MRGs.
+
+This structure also enables a systematic and principled search for good multipliers and moduli, leading to generators with excellent statistical properties. An additional practical benefit is that CMRGs naturally support the construction of high‑quality, easily managed multi‑stream generators.
+
+L’Ecuyer has conducted an extensive numerical search and detailed theoretical analysis to find good combined MRGs. One of the combined MRGs that stood out was MRG32k3a, which employs two MRGs of order $3$ with distinct moduli. The two component sequences $(x_t)$ and $(y_t)$ are defined by
+
+$$
+\begin{align*}
+  x_t =& (1403580 x_{t-2} - 810728 x_{t-3}) \bmod m_1,\; m_1 = 2^{32} - 209 \\
+  y_t =& (527612 y_{t-1} - 1370589 y_{t-3}) \bmod m_2,\; m_2 = 2^{32} - 22853
+\end{align*}
+$$
+
+The output sequence $(u_t)$ is obtained by combining the two components via
+
+$$
+  u_t = \begin{cases}
+    \frac{x_t - y_t + m-1}{m_1 + 1},\quad& x_t \leq y_t \\
+    \frac{x_t - y_t}{m_1 + 1},\quad& x_t > y_t
+  \end{cases}
+$$
+
+which ensures that $u_t \in [0,1)$. The resulting generator has period
+
+$$
+  \frac{1}{3}(m_1^3 - 1)(m_2^3 - 1) \approx 3\times 10^{57}
+$$
+
+Empirically, MRG32k3a exhibits excellent statistical behavior and is known to pass stringent modern test suites (e.g., TestU01). It is therefore widely used in simulation, particularly in contexts requiring reproducibility, long periods, and the ability to construct independent random streams.
+
+### Non-linear geneators
+
+The notion that a deterministic system can imitate a random phenomenon motivates the use of chaotic dynamical systems to create random number generators. Such systems are defined by an iteration of the form $X_{n+1} = D(X_n)$, where $D: S\to S$ is a measurable transformation on a state space $S$. The chaotic behaviour is characterized by sensitivity to initial conditions. In particular, small perturbation of the initial state $X_0$ can lead to trajectories $(X_n)$ that diverge exponentially, making long-term prediction effectively impossible despite the deterministic nature of the system.
+
+<MathBox title="Logistic function" boxType="example">
+The logistic map $D_\alpha :[0,1] \to[0,1]$ defined by
+
+$$
+  D_\alpha (x) = \alpha x(1 - x)
+$$
+
+exhibit chaotic dynamics for a range of parameters $\alpha\in [0,4]$, with fully developed chaos occuring for parameters in a subset of $[3.57, 4]$. In the particular case $\alpha = 4$, the map $D_4$ preserves an absolutely continuous invariant probability measure $\mu$ on $[0,1]$, whose density with respect to the Lebesgue measure is given by
+
+$$
+  \frac{\d\mu}{\d x} (x) = \frac{1}{\pi\sqrt{x(1 - x)}},\; x\in (0,1)
+$$
+
+The dynamical system $([0,1], D_4, \mu)$ is ergodic and mixing, and is in factr metrically conjugate to the Bernoulli shift. Consequently, for $\mu$-almost every intial condition $X_0 \in [0,1]$, the sequence $(X_n)$ defined by $X_{n+1} = D_4 (X_n)$ satifies $X_n \sim\mu$ in the sense of time averages. This means that empirical distributions along typical distribution converge to $\mu$. 
+
+Although the sequence $(X_n)$ is deterministic, its statistical behaviour, when viewed through ergodic averages, coincides with that of a stationary stochastic process whose marginal distribution is the arcsine law with density $1/\pi\sqrt{x(1 - x)}$.
+</MathBox>
+
+## Test for random number generators
+
+## Inverse transform
+
+<MathBox title="Generalized inverse function" boxType="definition">
+Let $F:\R\to [0,1]$ be a non-decreasing continuous function (in particular, a cumulative distribution function). The generalized inverse (or quantile function) of $F$, denoted $F^{-1}$, is defined by
+
+$$
+  F^{-1} (u) = \inf\set{x: F(x) \geq u}
+$$
+</MathBox>
+
+In the measure-theoretic formulation of probability, many constructions can be reduced (up to distributional equivalence) to the canonical probability space $([0,1], \mathcal{B}, \lambda)$, where $\mathcal{B}$ are the Borel sets on $[0,1]$ and $\lambda = \mathcal{U}([0,1])$ denotes the Lebesgue uniform probability measure. Specifically, given a random variable $X: (\Omega,\mathcal{F},\mathbb{P}) \to (\mathcal{X}, \mathbb{A})$, there exists a measurable function $\tilde{X}: [0,1] \to \mathcal{X}$ such that $X$ and $\tilde{X}$ have the same law.
+
+In the particular case $\mathcal{X} = \R$, if $F_X$ denotes the cumulative distribution function of $X$, we can take
+
+$$
+  \tilde{X}(u) = F_X^{-1} (u),\; u\in[0,1]
+$$
+
+where $F_X^{-1}$is the generalized inverse defined by
+
+$$
+  F_X^{-1} (u) = \inf\set{x\in\R | F_X (x) \geq u}
+$$
+
+Then, if $U \sim\mathcal{U}([0,1])$, the random variable $\tilde{X}(U)$ has the same distribution as $X$.
+
+<MathBox title="Probability integral transform" boxType="proposition">
+If $U \sim\mathcal{U}([0,1])$, then the random variable $F^{-1} (U)$ has the distribution $F$.
+
+<details>
+<summary>Proof</summary>
+
+For all $u\in[0,1]$ and for all $x\in F^{-1} ([0,1])$, the generalized inverse satisfies
+
+$$
+\begin{align*}
+  F (F^{-1} (u)) \geq& u \\
+  F^{-1} (F(x) \leq& x
+\end{align*}
+$$
+
+Thus
+
+$$
+  \set{(u, x) | F^{-1} (u) \leq x} = \set{(u, x) | F(x) \geq u}
+$$
+
+and
+
+$$
+  P(F^{-1} (U) \leq x) = P(U \leq F(x)) = F(x)
+$$
+</details>
+</MathBox>
+
+<MathBox title="Exponential variable generation" boxType="example">
+If $X\sim \operatorname{Exp}(1)$ such that $F(x) = 1 - e^{-x}$, then solving for $x$ in $u = 1 - e^{-x}$ gives $x = -\ln(1 - u)$. Thus, if $U\sim\mathcal{U}([0,1])$, the random variable $X = -\ln(U)$ has the exponential distribution, because $U$ and $1 - U$ are both uniform.
+</MathBox>
+
+## General transformation methods
+
+<MathBox title="Box-Muller algorithm" boxType="example">
+Let $X_1, X_2 \sim \mathcal{N}(0,1)$ be independent standard normal random variables. Then the random vector $(X_1, X_2)$ has a rotationally invariant distribution on $\R^2$, with joint density
+
+$$
+  f(x_1, x_2) = \frac{1}{2\pi} \exp\left(-\frac{x_1^2 + x_2^2}{2} \right)
+$$
+
+Transforming to polar coordinates $(R, \Theta)$, defined by
+
+$$
+  R^2 = X_1^2 + X_2^2,\quad \Theta = \atan\left(\frac{X_2}{X_1} \right)
+$$
+
+it follows that $R^2 \sim\chi_2^2$ and $\Theta\sim\mathcal{U}([0,1])$, with $R$ and $\Theta$ independent. Since a chi-square distribution with two degrees of freedom coincides with an exponential distribution of rate $1/2$, i.e. $\chi_2^2 \equiv \operatorname{Exp}(1)$, we have $R = \sqrt{-2\ln(U_1)}$, where $U_1 \sim\mathcal{U}([0,1])$.
+
+Consequently, if $U_1, U_2$ are independent $\mathcal{U}([0,1])$ random variables, the transformation
+
+$$
+\begin{align*}
+  X_1 =& \sqrt{-2 \ln(U_1)} \cos(2\pi U_2) \\
+  X_2 =& \sqrt{-2 \ln(U_1)} \sin(2\pi U_2)
+\end{align*}
+$$
+
+produces two indenpendent standard normal random variables $X_1, X_2 \sim \mathcal{N}(0,1)$ with $X_1 \perp X_2$. This construction is known as the Box-Muller transform.
+
+**Box-Muller algorithm**
+
+1. Generate $U_1, U_2 \overset{\text{iid}}{\sim} \mathcal{U}([0,1])$
+2. Define
+$$
+\begin{align*}
+  X_1 =& \sqrt{-2 \ln(U_1)} \cos(2\pi U_2) \\
+  X_2 =& \sqrt{-2 \ln(U_1)} \sin(2\pi U_2)
+\end{align*}
+$$
+
+3. Take $X_1$ and $X_2$ as two independent draws from $\mathcal{N}(0,1)$.
+</MathBox>
+
+## Accept-reject methods
+
+# Monte Carlo integration
