@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/physics/quantum_mechanics/many-body_systems/quantum_monte_carlo_methods.mdx",
+    "./content/notes/math/statistics/random_number_generation.mdx",
   ),
 );
 
