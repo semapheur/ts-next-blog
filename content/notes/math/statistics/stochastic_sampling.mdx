@@ -903,6 +903,233 @@ $$
 
 This representation shows that the radial distribution of $(X_1, X_2)$ is determined by the product $R\sqrt{2E}$. For suitable choices of $R$, this product has a tractable distribution, which can be exploitet to construct efficient sampling algorithms for $X_1$ (and $X_2$).
 
+## Table lookup method
+
+One of the fastest general methods for generating discrete random variables is Marsaglia's table lookup method
+1. Sample $U\sim\mathcal{U}([0,1])$
+2. Set $I = \lceil Un \rceil$
+3. Return $\mathbf{X} = a_I$
+
+here $(a_1,\dots,a_n)$ is a predetermined table of numbers or, more generally, objects such as vectors, trees, or other structures. Duplication among the $\set{a_i}$ is allowed. If the set of distinct objects is $\set{b_1,\dots,b_k}$, then the algorithm generates random variables $\mathbf{X}$ with probabilities
+
+$$
+  \mathbb{P}(\mathbf{X} = b_i) = \frac{\sum_{j=1}^n \mathbf{1}_{a_j = b_i}}{n} = \frac{\#\set{j: a_j = b_i}}{n},\; i=1,\dots,k
+$$
+
+The table lookup method is a resampling technique: given data $\set{a_i}$, each draw selects one of the $a_i$ uniformly and independently. In other words, the method generates samples from the empirical distribution of the data $\set{a_i}$.
+
+## Alias method
+
+The alias method is an alternative to the inverse-transform method for generating discrete random variables, which avoids the need time-consuming cumulative probability lookups. The method is based on the fact that any discrete distribution on $n$ can be represented as an equally weighted mixture of $n$ two-point distributions. Specifically, the algorithm redistributes the original probability mass into $n$ bins of equal weight $1/n$.
+
+Let $\set{p_k}_{k=1}^n$ be a probability distribution on $\set{1,\dots,n}$, i.e. $p_k \geq 0$ and $\sum_{k=1}^n p_k = 1$.
+- If $p_1 =\dots = p_n$, then the original distribution is already uniform, and can trivially be expressed an equal mixture of $1$-point (and hence $2$-point) distributions. 
+- If not all $\set{p_k}$ are equal, there must exist indices $i$ and $j$ such that $p_i < 1/n$ and $p_j \geq 1/n$. To form the alias structure, we fill bin $i$ by assigning it probability $p_i$ and supplementing it with an amount $1/n - p_i$ taken from $p_j$. After this step, the remaining $n-1$ bins can be treated recursively, using the same procedure with the remaining probabilities.
+
+At the end of this procedure, each bin $k=1,\dots,n$ corresponds to a $2$-point distribution at the points $k$ and another point $a_k$ with probabilities $q_k$ and $1 - q_k$, respectively. The $\set{a_k}$ are called the alias values and the $\set{q_k}$ the cut-off values. These can be determined by the following setup algorithm
+
+Let $\set{p_k}_{k=1}^n$ be a distribution on $\set{1,\dots,n}$.
+1. Initialize scaled probabilities $q_k = np_k$ for $k=1,\dots,n$. Let $I = \set{k: q_k < 1}$ and $J = \set{k: q_k \geq 1}$
+2. While $I$ and $J$ are non-empty
+    - Choose some $i\in I$ and $j\in J$
+    - Set $a_i = j$ and $q_j = q_j (1 - q_i)$
+    - If $q_j < 1$, remove $j$ from $J$ and add to $I$
+    - Remove item $i$ from $I$
+    
+This algorithm runs in $O(n)$ time, producing arrays $\set{q_k}$ and $\set{a_k}$ that allow for effient sampling
+
+Once the alias and cut-off values have been constructed, a random variable $X$ with distribution $\set{p_k}$ can be generated in tow steps
+1. Generate $U \sim\mathcal{U}([0,1])$ and set $K = \lceil nU \rceil
+2. Sample $V \sim\mathcal{U}([0,1])$. If $V \leq q_k$, return $X = K$. Otherwise, return $X = a_K$
+
+This procedure generates $X$ with $\mathbb{P}(X = k) = p_k$, and each sample is produced in constant $O(1)$ time.
+
+## Acceptance-rejection methods
+
+The acceptance-rejection method is a versatile for sampling from general distributions. It applies to discrete, continuous, and even multidimensional distributions, although its efficiency rapidly decreases in the number of dimension.
+
+<MathBox title="Acceptance-rejection" boxType="proposition">
+Let $f(\mathbf{x})$ and $g(\mathbf{x})$ be probability density functions on a common space, and suppose there exists a constant $C \geq 1$ such that 
+
+$$
+  f(\boldsymbol{x}) \leq Cg(\boldsymbol{x}),\; \forall \boldsymbol{x}
+$$
+
+Let $\mathbf{X} \sim g$ and $U\sim \mathcal{U}([0,1])$ be independent. Then, the conditional distribution of $\mathbf{X}$ given 
+
+$$
+  U \leq \frac{f(\mathbf{X})}{Cg(\mathbf{X})}
+$$
+
+is $f(\boldsymbol{x})$.
+
+<details>
+<summary>Proof</summary>
+
+The joint probaility density function of $(\mathbf{X}, U)$ restricted to the acceptance region is
+
+$$
+\begin{align*}
+  f_{\mathbf{X}, U} (\boldsymbol{x}, u) =& \frac{g(\boldsymbol{x}) \mathbf{1}_{\Set{u\leq \frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}}}{\int\int_0^1 g(\boldsymbol{x}) \mathbf{1}_{\set{u \leq \frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}}} \\
+  =& \frac{g(\boldsymbol{x}) \mathbf{1}_{\Set{u\leq \frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}}}{\int g(\boldsymbol{x}) \left(\int_0^{\frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}} 1 \;\d u \right)} \\
+  =& C g(\boldsymbol{x}) \mathbf{1}_{\Set{u} \leq \frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}
+\end{align*}
+$$
+
+The marginal PDF of $\mathbf{X}$ is therefore
+
+$$
+\begin{align*}
+  f_\mathbf{X} (\boldsymbol{x}) =& \int_0^1 f_{\mathbf{X}, U} (\boldsymbol{x}, u) \;\d u \\
+  =& C g(\boldsymbol{x}) \frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})} = f(\boldsymbol{x})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+We call $g(\mathbf{x})$ the proposal distribution and assume that it is easy to sample from. The acceptance-rejection method can be formulates as follows
+
+1. Generate $\mathbf{X} \sim g(\boldsymbol{x})$
+2. Generate $U\sim\mathcal{U}([0,1])$, independently of $\mathbf{X}$
+3. If $U \leq f(\mathbf{X})/[Cg(\mathbf{x})]$ accept $\mathbf{X}$; otherwise, reject it and return to step 1
+
+In other words, each candidate $\mathbf{X} \sim g$ is accepcted with probability $f(\mathbf{X})/(Cg(\mathbf{X}))$, and otherwise discarded.
+
+The efficiency of the acceptance-rejection method is defined as the probability of acceptance, i.e.
+
+$$
+\begin{align*}
+  \mathbb{P}\left(C \leq \frac{f(\mathbf{X})}{Cg(\mathbf{X})} \right) =& \int g(\boldsymbol{x}) \int_0^1 \mathbf{1}_{\Set{\frac{f(\boldsymbol{x})}{Cg(\boldsymbol{x})}}} \;\d u \d\boldsymbol{x} \\
+  =& \int \frac{f(\boldsymbol{x})}{C} \;\d \boldsymbol{x} = \frac{1}{C}
+\end{align*}
+$$
+
+Since the trials are independent, the number of trials required to obtain a successful pair $(\mathbf{X}, U)$ has a $\operatorname{Geom}(1/C)$ distribution, so that the expected number of trials is equal to $C$.
+
+## Generation methods for multivariate random variables
+
+Let $\mathbf{X} = (X_1,\dots,X_n)$ be a random vector in $\R^n$ with joint density $f(\boldsymbol{x})$. 
+
+### Independent components
+
+If the components $X_i$ are mutually independent, then the joint density factorizes as
+
+$$
+  f(\boldsymbol{x}) = \prod_{i=1}^n f_i (x_i)
+$$
+
+where $f_i$ is the marginal distribution of $X_i$. In this case, sampling from $f$ reduces to sampling each component independently.
+1. Independently generate $X_i \sim f_i$ for $i=1,\dots,n$
+2. Return $\mathbf{X} = (X_1,\dots,X_n)$
+
+### Dependent components
+
+For dependent components $X_i$, the joint density admits the chain rule factorization
+
+$$
+  f(\boldsymbol{x}) = f_1 (x_1) f_2(x_2|x_1) \cdots f_n (x_n|x_1,\dots,x_{n-1})
+$$
+
+where 
+- $f_1 (x)$ is the marginal density of $X_1$
+- $f_k (x_k|x_1,\dots,x_{k-1})$ is the conditional density of $X_k$ given $X_1=x_1,\dots,X_{k-1} = x_{k-1}$
+
+This factorization yields to the following sequential sampling procedure
+1. Generate $X_1 \sim f_1$. Set $t = 1$
+2. While $t < n$, given $X_1 = x_1,\dots,X_t = X_t$, generate $X_{t+1} \sim f_{t+1} (x_{t+1}|x_1,\dots,x_t)$ and set $t = t + 1$
+3. Return $\mathbf{X} = (X_1,\dots,X_n)$
+
+The applicability of this approach depends on whether the conditional densities $f_k (\cdot|x_1,\dots,x_{k-1})$ are explicitly know and easy to sample from. An especially important class of modesl satisfying this structure is given by Markov models, in which the dependence simplifies according to the Markov property
+
+$$
+  f_k (x_k|x_1,\dots,x_{k-1}) = f_k (x_k|x_{k-1})
+$$
+
+When the conditional distributions are difficult to compute or sample from, an alternative is to use multidimensional acceptance–rejection methods, although their efficiency typically deteriorates rapidly with increasing dimension.
+
+More generally, for high-dimensional distributions, constructing efficient exact sampling algorithms is often infeasible. In such settings, one typically resorts to approximate methods, such as Markov chain Monte Carlo (MCMC) or variational techniques.
+
+## Generating random vectors uniformly distributed in a unit hyperball and hypersphere
+
+Let
+
+$$
+  B_n = \set{\boldsymbol{x} \in\R^n : \norm{\boldsymbol{x}} \leq 1}
+$$
+
+denote the $n$-dimensional unit hyperball, and
+
+$$
+  S^{n-1} = \set{\boldsymbol{x}\in\R^n : \norm{\boldsymbol{x}} = 1}
+$$
+
+the corresponding unit hypersphere.
+
+### Sampling from the unit hyperball via acceptance-rejection
+
+A direct method for sampling uniformly from $B_n$ uses acceptance-rejection from the hypercube $[-1,1]^n$
+1. Generate $U_1,\dots,U_n \overset{iid}{\sim} \mathcal{U}(0,1)$
+2. Set $X_i = 1 - 2U_i$ for $i=1,\dots,n$ and compute
+$$
+  R = \sum_{i=1}^n X_i^2
+$$
+
+3. If $R\leq 1$, accept $\mathbf{X} = (X_1,\dots,X_n)$; otherwise, reject and return to step 1.
+
+The efficiency of this $n$-dimensional acceptance-rejection method equal the ratio of volumes
+
+$$
+\begin{align*}
+  \frac{1}{C} =& \frac{\operatorname{vol}(B_n)}{\operatorname{vol}([-1,1]^n)} = \frac{\frac{\pi^{n/2}}{(n/2)\Gamma(n/2)}}{2^n} \\
+  =& \frac{1}{n 2^{n-1}} \frac{\pi^{n/2}}{\Gamma(n/2)}
+\end{align*}
+$$
+
+This probability decays rapidly to $0$ as $n\to\infty$, making the method inefficient in high dimensions. 
+
+A more efficient approach using Gaussian vectors relies on two key facts
+- If $X_1,\dots,X_n \overset{iid}{\sim} \mathcal{N}(0,1)$, then the normalized vector
+
+$$
+  \mathbf{Y} = \left(\frac{X_1}{\norm{\mathbf{X}}},\dots,\frac{X_n}{\norm{X}} \right)
+$$
+
+is uniformly distributed on the hypersphere $S^{n-1}$.
+
+- If $\boldsymbol{Z}$ is uniformly distributed in $B_n$, then its radius $R = \norm{\mathbf{Z}}$ has cumulative distribution function $F_R (r) = r^n$ for $0\leq r\leq r$, and hence admits the representation $R = U^{1/n}$, where $U\sim\mathcal{U}([0,1])$
+
+Combining these facts yields the following algorithm
+1. Generate a random vector $\mathbf{X} = (X_1,\dots,X_n)$ with i.i.d. $\mathcal{N}(0,1)$ components
+2. Generate $U\sim\mathcal{U}([0,1])$ and set $R = U^{1/n}$
+3. Return $\mathbf{Z} = R\mathbf{X}/\norm{X}$
+
+### Sampling from the unit hypersphere
+
+To generate a random vector that is uniformly distributed on the unit hypersphere $S_n$, the procure simplifies to
+1. Generate a random vector $\mathbf{X} = (X_1,\dots,X_n)$ with i.i.d. $\mathcal{N}(0,1)$ components.
+2. Return $\mathbf{Y} = \mathbf{X}/\norm{\mathbf{X}}$
+
+### Generating random permutations
+
+Suppose we have a collection of $n$ distinct object, labeled $1,\dots,n$ and we wish to generate a uniform random permutation, i.e. a random ordering in which each of the $n!$ possible orderings occurs with equal probability $1/n!$. 
+
+A simple algorithm for generating such uniform permutations is based on ordering independent uniform random variables
+1. Generate $U_1,\dots,U_n \overset{iid}{\sim} \mathcal{U}(0,1)$
+2. Let $(X_1,\dots,X_n)$ be the permutation of $\set{1,\dots,n}$ that sort $U_i$ in increasing order $U_{X_1} \leq\cdots\lea U_{X_n}$
+3. Return the permutation $\mathbf{X} = (X_1,\dots,X_n)$
+
+Although simple, this algorithm is not computationally efficient as it requires sorting and therefore runs in $O(n \ln(n))$ time.
+
+A more efficient algorithm constructs the permutation sequentially, requiring only $n$ uniform random numbers and no sorting
+1. Initialize an array $\boldsymbol{a} = (1,\dots,n)$
+2. For $i=1,\dots,n$
+    - Generate an index $I$ unformly from $\set{1,\dots,n-i +1}$
+    - Set $X_i = a_I$
+    - Set $a_I = a_{n-i+1}$ (i.e. remove the selected element by swapping with the last available entry)
+5. Return $\mathbf{X} = (X_1,\dots,X_n)$
+
+This method runs in $O(n)$ time, since it avoids sorting and performs only a constant amount of work per iteration. Its correctness follows from the fact that at each step, every remaining element is selected with equal probability, ensuring that all $n!$ permutations are equally likely.
+
 ## General transformation methods
 
 <MathBox title="Box-Muller algorithm" boxType="example">
@@ -944,5 +1171,3 @@ $$
 
 3. Take $X_1$ and $X_2$ as two independent draws from $\mathcal{N}(0,1)$.
 </MathBox>
-
-## Accept-reject methods
