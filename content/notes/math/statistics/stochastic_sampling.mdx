@@ -1198,12 +1198,15 @@ $$
 Assuming $h\in\mathsf{L}_1 (\pi)$ is integrable with respect to $\pi$, the expectation $\eqref{equation-5}$ can be written
 
 $$
+\begin{equation*}
   \mathbb{E}_f [h(X)] = \int_\mathcal{X} h(x) f(x) \;\d\mu (x)
+\tag{\label{equation-6}}
+\end{equation*}
 $$
 
 **Empirical Monte Carlo estimator**
 
-Let $(X_i)_{i=1}^m \overset{\text{iid}}{\sim} f$ be a sequence of independent and identically distributed random variables sampled from $f$. We define the empirical Monte Carlo estimator $\bar{h}_m$ as the sample mean
+Let $(X_i)_{i=1}^m \overset{\text{iid}}{\sim} \pi$ be a sequence of independent and identically distributed random variables sampled from $\pi$. We define the empirical Monte Carlo estimator $\bar{h}_m$ as the sample mean
 
 $$
   \bar{h}_m = \frac{1}{m} \sum_{i=1}^m h(X_i)
@@ -1262,6 +1265,81 @@ $$
 $$
 
 ### Importance sampling
+
+Let $(\mathsf{X}, \mathcal{B}, \mu)$ be a measurable space, and let $\pi:\mathcal{B}\to[0,1]$ be a probability measure admitting a density $f:\mathsf{X}\to[0,\infty)$ with respect to the measure $\mu$. Suppose $g:\mathsf{X}\to [0,\infty)$ is another probability density with respect to $\mu$, defining a proposal distribution $\nu$ via the Radon-Nikodym derivative $\nu = g \;\d\mu$. Assume that $\operatorname{supp}(f) \subseteq \operatorname{supp}(g)$, so that $g(x) > 0$ whenever $f(x) > 0$. Then we can refactor the expectation $\eqref{equation-6}$ as
+
+$$
+  \mathbb{E}_\pi = ìnt_\mathsf{X} h(x) \frac{f(x)}{g(x)} g(x) \;\d\mu(x) = \mathbb{E}_\nu [h(X) w(X)]
+$$
+
+known as the importance sampling identity. The importance weight $w:\mathsf{X}\to[0,\infty)$ is defined by
+
+$$
+  w(x) := \frac{f(x)}{g(x)}
+$$
+
+Let $(X_i)_{i=1}^m \overset{\text{iid}}{\sim} \nu$ be a sequence of independent and identically distributed random variables sampled from $\nu$. The importance sampling estimator is defined as
+
+$$
+\begin{equation*}
+  \bar{h}_m := \frac{1}{m} \sum_{i=1}^m h(X_i) w(X_i) = \frac{1}{m} \sum_{i=1}^m h(X_i) \frac{f(X_i)}{g(X_i)}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+If $h(X) w(X) \in \mathsf{L}_1 (\nu)$, then by the strong law of large numbes
+
+$$
+  \hbar{h}_m \overset{\text{a.s.}}{m\to\infty} \mathbb{E}_\pi [h(X)]
+$$
+
+Assuming $h(X) w(X) \in\mathsf{L}_2 (\nu)$, the variance of the estimator is
+
+$$
+  \operatorname{var}(\bar{h}_m) = \frac{1}{m} \operatorname{var}_g [h(X) w(X)]
+$$
+
+where
+
+$$
+\begin{equation*}
+  \operatorname{var}_g [h(X) w(X)] = \int_\mathsf{X} h(x)^2 \frac{f(x)^2}{g(x)} \;\d\mu(x) - (\mathbb{E}_\pi [h(X)])^2
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+<MathBox title="" boxType="proposition">
+Let $(\mathsf{X}, \mathcal{B}, \mu)$ be a measure space and suppose $g:\mathsf{X}\to [0,\infty)$ is a probability density with respect to $\mu$, defining a proposal distribution $\nu$ via $\nu = g \;\d\mu$. The choice of $g$ that minimizes the variance of the importance sampling estimator $\eqref{equation-8}$ is given by
+
+$$
+  g^* (x) = \frac{|h(x)| f(x)}{\int_\mathsf{X} |h(z)| f(z) \;\d\mu(z)}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Writing the variance $\eqref{equation-8}$ as
+
+$$
+  \operatorname{var}_g \left(\frac{h(X) f(X)}{g(X)} \right) = \mathbb{E}_g \left(\frac{h^2 (X) f^2 (X)}{g^2 (X)} \right) - \left[\mathbb{E}_g \left(\frac{h(X) f(X)}{g(X)} \right) \right]^2
+$$
+
+we note that the second term does not depend on $g$. Thus, we only need to minize the first term
+
+$$
+  \mathbb{E}_g \left(\frac{h^2} \right)
+$$
+
+$$
+\begin{align*}
+  \mathbb{E}_g \left(\frac{h^2 (X) f^2 (X)}{g^2 (X)} \right) \geq& \left[\mathbb{E}_g \left(\frac{|h(X)|f(X)}{g(X)} \right) \right]^2 \\
+  =& \left(\int_\mathsf{X} |h(x)| f(x) \;\d x \right)^2
+\end{align*}
+$$
+
+which provides a lower bound that is independent of the choice of $g$. It is straightforward to verify that this lower bound is attained by choosing $g = g^*$.
+</details>
+</MathBox>
 
 ## Markov chain Monte Carlo
 
