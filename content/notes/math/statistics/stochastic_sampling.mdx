@@ -1308,6 +1308,60 @@ $$
 \end{equation*}
 $$
 
+The variance is finite if and only if
+
+$$
+\begin{equation*}
+  \mathbb{E}_g [h^2 (X) w^2 (X)] = \mathbb{E}_f [h^2 (X) w (X)] = \int_\mathsf{X} h^2 (x) \frac{f^2 (x)}{g(x)} \;\d\mu(x) < \infty
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+This condition imposes requirement on the proposal density $g$. If $g$ has lighter tails than $f$, then the $f/g$ may become unbounded. In such cases, the integrand of $\eqref{equation-10}$ can fail to be integrable, leading to infinite variance. Generally, if $f/g$ is large in regions where $h$ is non-negligible, the weights $w(X_i)$ have high variability, giving too much importance to a few samples $X_j$. This means that the estimator may become unstable, with large fluctuations even for large sample spaces.
+
+Conversely, distributions $g$ with thicker tails than $f$ ensure that the ratio $f/g$ does not cause the divergence of $\eqref{equation-10}$.
+
+The following are proposed sufficient conditions for ensuring finite variance
+1. **Uniform boundedness of the likelihood ratio:** $\sup{x\in\mathsf{X} f(x)/g(x) < \infty$ f and $\operatorname{var}_f (h) < \infty$
+2. **Compact support with bounded densities:** $\mathsf{X}$ is compact, $\sup_{x\in\mathsf{X}} f(x) < \infty$ and $\inf_{x\in\mathsf{X}} g(x) > 0$
+
+These conditions are quite restrictive. In particular, the boundedness of $f/g < M$ implies that the acceptance-rejection method is feasible with $g$ as the proposal.
+
+An alternative to the empirical mean estimator $\eqref{equation-8}$ is the self-normalized importance sampling estimator
+
+$$
+\begin{equation*}
+  \tilde{h}_m = \frac{\sum_{i=1}^m h(X_i) w(X_i)}{\sum_{i=1}^m w(x_i)}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+where we have replaced $m$ with the sum of the weights. Since $\lim_{m\to\infty} (1/m) \sum_{j=1}^m w(x_j) = 1$, this estimator also converges to $\mathbb{E}_f [h(X)]$ by the strong law of large numbers.
+
+<details>
+<summary>Proof</summary>
+
+By the strong law of large numbers
+
+$$
+  \frac{1}{m} \sum_{i=1}^m w(X_i) \xrightarrow{\text{a.s}}{n\to\infty} \mathbb{E}_g [w(X)] = 1
+$$
+
+and
+
+$$
+  \frac{1}{m} \sum_{i=1}^m h(X_i) w(X_i) \xrightarrow{\text{a.s.}}{m\to\infty} \mathbb{E}_\pi [h(X)]
+$$
+
+Hence, by Slutsky's theorem
+
+$$
+  \tilde{h}_m \xrightarrow{\text{a.s.}}{m\to\infty} \mathbb{E}_\pi [h(X)]
+$$
+</details>
+
+Although $\tilde{h}_m$ is biased for finite $m$, it is consisten and often exhibits lower variance than the estimator $\eqref{equation-8}$. In particular, when $h$ is nearly constant, $\tilde{h}_m$ is close to this constant value, while $\eqref{equation-8}$ has a higher variation due to fluctuation is the total weight $\sum_{i=1}^m w(X_i)$.
+
 <MathBox title="" boxType="proposition">
 Let $(\mathsf{X}, \mathcal{B}, \mu)$ be a measure space and suppose $g:\mathsf{X}\to [0,\infty)$ is a probability density with respect to $\mu$, defining a proposal distribution $\nu$ via $\nu = g \;\d\mu$. The choice of $g$ that minimizes the variance of the importance sampling estimator $\eqref{equation-8}$ is given by
 
@@ -1327,8 +1381,53 @@ $$
 we note that the second term does not depend on $g$. Thus, we only need to minize the first term
 
 $$
-  \mathbb{E}_g \left(\frac{h^2} \right)
+  \mathbb{E}_g \left(\frac{h^2 (X) f^2 (X)}{g^2 (X)} \right) = \int_\mathsf{X} \frac{h^2 (x) f^2 (x)}{g(x)} \;\d\mu(x)
 $$
+
+Defining $\phi(x) := |h(x)|f(x)$ for $g(x) > 0$, the objective quantity becomes
+
+$$
+  \int_\mathsf{X} \frac{\phi(x)^2}{g(x)} \;\d\mu(x)
+$$
+
+
+We apply the Cauchy-Schwartz inequality in the form
+
+$$
+\begin{align*}
+  \left(\int_\mathsf{X} \phi(x) \;\d\mu (x) \right)^2 =& \left(\int_\mathsf{X} \frac{\ph(x)}{\sqrt{g(x)}} \sqrt{g(x)} \;\d\mu(x) \right)^2 \\
+  \leq& \left(\int_\mathsf{X} \frac{\phi(x)^2}{g(x)} \;\d\mu(x) \right) \underbrace{\left(\int_\mathsf{X} g(x) \;\d\mu(x) \right)}_{=1}
+\end{align*}
+$$
+
+Since $g$ is a probability density, this inequality yields the lower bound
+
+$$
+\begin{align*}
+  \int_\mathsf{X} \frac{\phi(x)^2}{g(x)} \;\d\mu(x) \geq& \left(\int_\mathsf{X} \phi(x) \;\d\mu(x) \right)^2 \\
+  =& \left(\int_\mathsf{X} |h(x)| f(x) \;\d\mu(x) \right)^2
+\end{align*}
+$$
+
+which is independent of $g$. Equality holds is and only if
+
+$$
+  \frac{\phi(x)}{\sqrt{g(x)}} = c\sqrt{g(x)}
+$$
+
+for some constant $c\in\R$, which is equivalent to
+
+$$
+  g(x) \propto \phi(x) = |h(x)| g(x)
+$$
+
+Normalizing yields the optimal density
+
+$$
+  g^* (x) \frac{|h(x)| f(x)}{\int_\mathsf{X} |h(z)| f(z) \;\d\mu(z)}
+$$
+
+
 
 $$
 \begin{align*}
