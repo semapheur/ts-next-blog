@@ -1362,11 +1362,14 @@ $$
 
 Although $\tilde{h}_m$ is biased for finite $m$, it is consisten and often exhibits lower variance than the estimator $\eqref{equation-8}$. In particular, when $h$ is nearly constant, $\tilde{h}_m$ is close to this constant value, while $\eqref{equation-8}$ has a higher variation due to fluctuation is the total weight $\sum_{i=1}^m w(X_i)$.
 
-<MathBox title="" boxType="proposition">
+<MathBox title="" boxType="proposition" tag="proposition-1">
 Let $(\mathsf{X}, \mathcal{B}, \mu)$ be a measure space and suppose $g:\mathsf{X}\to [0,\infty)$ is a probability density with respect to $\mu$, defining a proposal distribution $\nu$ via $\nu = g \;\d\mu$. The choice of $g$ that minimizes the variance of the importance sampling estimator $\eqref{equation-8}$ is given by
 
 $$
+\begin{equation*}
   g^* (x) = \frac{|h(x)| f(x)}{\int_\mathsf{X} |h(z)| f(z) \;\d\mu(z)}
+\tag{\label{equation-12}}
+\end{equation*}
 $$
 
 <details>
@@ -1439,6 +1442,147 @@ $$
 which provides a lower bound that is independent of the choice of $g$. It is straightforward to verify that this lower bound is attained by choosing $g = g^*$.
 </details>
 </MathBox>
+
+The optimality result of Proposition $\ref{proposition-1}$ is rather formal since, when $h(x) > 0$, the optimal proposal $\eqref{equation-12}$ depends on the normalizing constant $\int h(x) f(x) \;\d\mu(x)$, which is precisely the quantity we aim to estimate. 
+
+Motivated by this optimal form, we consider sampling from a distribution $g(x) \propto |h(x)| f(x)$ and using the estimator $\eqref{equation-10}$. In this case, the importance weights satisfy
+
+$$
+  w(x) = \frac{f(x)}{g(x)} \propto \frac{1}{|h(x)|}
+$$
+
+so that the estimator simplifies to
+
+$$
+\begin{equation*}
+  \tilde{h}_m = \frac{\sum_{i=1}^m h(X_i) |h(X_i)|^{-1}}{\sum_{i=1}^m |h(X_i)|^{-1}}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+The enumerator is the difference between the number of samples for which $h(X_i) > 0$ and those for which $h(X_i) < 0$. In particular, when $h \geq 0$, then 
+
+$$
+  \tilde{h}_m = \left(\frac{1}{m} \sum_{i=1}^m \frac{1}{h(X_i)} \right)^{-1}
+$$
+
+which corresponds to a harmonic mean estimator. Generally, the harmonic mean estimator is well known to suffer from high or even infinite variance in many settings.
+
+Unfortunately, the optimality of Proposition $\ref{proposition-1}$ does not transfer to $\eqref{equation-11}$. This estimator is biased for finite $m$, and may exhibit severe instability, especially when $h(X_i)$ is close to zero, causing large weights $|h(X_i)|^{-1}$. The variance reduction argument applies only to the unnormalized numerator, while the denominator introduces additional randomness that is not controlled by the optimality result.
+
+In practice, Proposition $\ref{proposition-1}$ suggests choosing a proposal distributions $g$ for which the quantity 
+
+$$
+  \frac{|h(x)|f(x)}{g(x)}
+$$ 
+
+is almost constant with finite variance. Although the finite constraint is not strictly necessary for the consistency of the estimators $\eqref{equation-8}$ and $\eqref{equation-10}$, importance sampling performs quite poorly when
+
+$$
+  \int_\mathsf{X} \frac{f^2 (x)}{g(x)} \;\d\mu(x) = \infty
+$$
+
+In such cases:
+- The estimator may exhibit large, sporadic jumps due to extreme weights.
+- The running average may show high instability.
+- Convergence is typically very slow in practice.
+- Performance can be significantly worse than standard Monte Carlo methods
+
+#### Relation to acceptance-rejection method
+
+Proposition $\ref{proposition-1}$ formally solves the problem of comparing acceptance-rejection and importance sampling methods: except in the trivial case where $h(x) = h_0$ is constant, the optimal proposal density $g^*$  differs from the target density $f$. This suggests that importance sampling can achieve lower variance. However, a more realistic comparison should also take into account the limited applicability of Proposition $\ref{proposition-1}$. Since the optimal density $g^*$ depends on the function $h$, a new proposal must be constructed for each quantity of interest. This significantly increases computation cost, and also prevents reuse of samples for estimating multiple expectations.
+
+Suppose acceptance-rejection sampling is implemented using a proposal density $g$ such that $f(x) \leq Mg(x)$ for a bound $1 < M < \infty$. The same density $g$ can be used as an importance sampling proposal. Since the likelihood ratio $f/g$ is bounded, the variance is finite for the corresponding importance sampling estimators. 
+
+Let $(Y_j)_{j=1}^t \sim g$ denote the sequence of proposals, and let $(X_i)_{i=1}^n$ be accepted samples, so that
+
+$$
+  \set{Y_j}_{j=1}^t = \set{X_i}_{i=1}^n \cap \set{Z_k}_{k=1}^{t-n}
+$$
+
+where $Z_k$ are the rejected proposals. Note that $t$ is a random variable, representing the number of proposals required to obtain $n$ acceptances.
+
+A natural comparison of acceptance-rejection and importance sampling involves the estimators
+
+$$
+\begin{align*}
+  \delta_1 =& \frac{1}{n} \sum_{i=1}^n h(X_i) \\
+  \delta_2 =& \frac{1}{t} \sum_{j=1}^t h(Y_j) \frac{f(Y_j)}{g(Y_j)}
+\end{align*}
+$$
+
+where
+- $\delta_1$ is a standard Monte Carlo estimator based on accepted samples
+- $\delta_2$ is an importance sampling estimator using all proposals, including rejected one
+
+If the likelihood ratio $f/g$ is only known up to a constant, $\delta_2$ can be replaced by self-nomralized estimator
+
+$$
+  \delta_3 = \sum_{j=1}^t h(Y_j) \left. \frac{f(Y_j)}{g(Y_j)} \right/ \sum_{j=1}^t \frac{Y_j}{g(Y_j)}
+$$
+
+If we write $\delta_2$ in the more explicit form
+
+$$
+  \delta_2 = \frac{n}{t} \left[\frac{1}{n} \sum_{i=1}^n h(X_i) \frac{f(X_i)}{g(X_i)} + \frac{t - n}{n}\frac{1}{t -n} \sum_{i=1}^{t-n} h(Z_i) \frac{f(Z_i)}{g(Z_i)} \right]
+$$
+
+we can argue that, based on sample size, the variance of $\delta_2$ is smaller than that of the estimator
+
+$$
+  \frac{1}{n} \sum_{i=1}^n h(X_i) \frac{f(X_i)}{g(X_i)}
+$$
+
+If we could apply Proposition $\ref{proposition-1}$, we could conclude that this latter estimator dominates $\delta_1$ (for an appropriate choice of $g$) and, hence, that it is better to recycle the $Z_i$ than to discard them. Unfortunately, this reasoning is flawed since $t$ is a random variable, being the stopping rule of the acceptance-rejection algorithm. The distribution of $t$ is therefore a negative binomial distribution $\operatorname{NegBinom}(n,1/M)$, so $(Y_i)$ is not an independent and identically distributed sample of fixed size from $g$.
+
+The comparison bwtween $\delta_1$ and $\delta_2$ can be reduced to comparing $\delta_1 = f(y_t)$ and $\delta_2$ for $t \sim \operatorname{Geom}(1/M)$ and $n=1$. However, even with this simplification, the comparison is quite involved, so a general comparison of the bias and variance of $\delta_2$ with $\operatorname{var}_f [h(X)]$ is difficult.
+
+While the estimator $\delta_2$ is based on an incorrect representation of the distribution of $(Y_i)$, a reasonable alternative based on the correct distribution of the sample is
+
+$$
+  \delta_4 = \frac{n}{t} \delta_1 + \frac{1}{t} \sum_{j=1}^{t-n} h(Z_j) \frac{(M-1) f(Z_j)}{Mg(Z_j) - f(Z_j)}
+$$
+
+where $Z_j$ are the rejected elements of $(Y_i)$. This estimator is also unbiased and the comparison with $\delta_1$ can also be studied in the case $n=1$. That is, through the comparison of the variances of $h(X_1)$ and of $\delta_4$, whic no can be written in the form
+
+$$
+  \delta_4 = \frac{1}{t} h(X_1) + (1 - \rho) \frac{1}{t} \sum_{j=1}^{t-1} h(Z_j) \left(\frac{g(Z_j)}{f(Z_j)} - \rho \right)^{-1}
+$$
+
+Assuming again that $\mathbb{E}_f [h(X)] = 0$, the variance of $\delta_4$ is
+
+$$
+  \operatorname{var}(\delta_4) = \mathbb{E}\left(\frac{t-1}{t^2} \int_\mathsf{X} h^2 (x) \frac{f^2 (x) (M - 1)}{Mg(x) - f(x)} \;\d\mu(x) + \frac{1}{t^2} \mathbb{E}_f [h^2 (X)] \right)
+$$
+
+which is again to case-specific to allow for a general comparison.
+
+The marginal distribution of the $Z_i$ from the acceptance-rejection algorithm is $(Mg - f)/(M-1)$, and the importance sampling estimator $\delta_5$ associated with this instrumental distribution is
+
+$$
+  \delta_5 = \frac{1}{t-1} \sum_{j=1}^{t-n} \frac{(M - 1)f(Z_j)}{Mg(Z_j) - f(Z_j)} h(Z_j)
+$$
+
+which allows us to write $\delta_4$ as
+
+$$
+  \delta_4 = \frac{n}{t} \delta_1 + \frac{t - n}{t} \delta_5
+$$
+
+which is weighted average of the usual Monte Carlo estimator $\delta_1$ and of $\delta_5$.
+
+According to Proposition $\ref{proposition-1}$, the proposal distribution underlying $\delta_5$ can be chosen so that $\operatorname{var}(\delta_5) \operatorname{var}(\delta_1)$. Since this estimator is unbiased, $\delta_4$ will dominate $\delta_1$ for appropriate choice of $g$. This domination rsult is of course as formal as Proposition $\ref{proposition-1}$, but it indicates that, for a fixed $g$, there exists functions $h$ such that $\delta_4$ improves on $\delta_1$.
+
+If $f$ is only known up to the constant of integration (hence, $f$ and $M$ are not properly scaled) $\delta_4$ can be replaced by
+
+$$
+\begin{align*}
+  \delta_6 =& \frac{n}{t} \delta_1 + \frac{t-n}{t} \sum_{j=1}^{t-n} \frac{h(Z_j) f(Z_j)}{Mg(Z_j) - f(Z_j)} \\
+  & \left\ \sum_{j=1}^{t-n} \frac{f(Z_j)}{Mg(Z_j) - f(Z_j)} \right.
+\end{align*}
+$$
+
+Although the above domination of $\delta_1$ by $\delta_4$ does not extend to $\delta_6$, nonetheless, $\delta_6$ correctly estimates constant functions while being asymptotically equivalent to $\delta_4$.
 
 ## Markov chain Monte Carlo
 
