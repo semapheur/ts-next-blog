@@ -614,7 +614,7 @@ The inverse-transform method also applies to discrete distributions. For a discr
 
 ### Affine transformation
 
-Let $\mathbf{X} = (X_1,\dots,X_n)$ be a real random vector, $\boldsymbol{A}\in \R^{m\times n}$ and $m\times n$ matrix, and $\boldsymbol{b}\in\R^m$ a $m$-dimensional vector. The random vector $\mathbf{Z} = \boldsymbol{A}\mathbf{X} + \boldsymbol{b}$ describes an affine transformation of $\mathbf{X}$. If $\mathbf{X}$ has an expectation vector $\boldsymbol{\mu}_\mathbf{X}$, then the expectation vector of $\mathbf{Z}$ is $\boldsymbol{\mu}_\mathbf{X} = \boldsymbol{A}\boldsymbol{\mu}_\mathbf{X} + \boldsymbol{b}$. If $\mathbf{X}$ has a covariance matrix $\boldsymbol{\Sigma}_\mathbf{X}$, then the covariance matrix of $\mathbf{Z}$ is $\boldsymbol{\Sigma}_\mathbf{Z} = \boldsymbol{A} \boldsymbol{\Sigma}_\mathbf{X} \boldsymbol{A}^\top$. Finally, if $\boldsymbol{A}\in\operatorname{GL}_n (\mathbf{R})$ is an invertible $n\times n$ matrix and $\mathbf{X}$ has a probability density function $f_\mathbf{X}$, then the probability density function of $\mathbf{Z}$ is given by
+Let $\mathbf{X} = (X_1,\dots,X_n)$ be a real random vector, $\boldsymbol{A}\in \R^{m\times n}$ and $m\times n$ matrix, and $\boldsymbol{b}\in\R^m$ a $m$-dimensional vector. The random vector $\mathbf{Z} = \boldsymbol{A}\mathbf{X} + \boldsymbol{b}$ describes an affine transformation of $\mathbf{X}$. If $\mathbf{X}$ has an expectation vector $\boldsymbol{\mu}_\mathbf{X}$, then the expectation vector of $\mathbf{Z}$ is $\boldsymbol{\mu}_\mathbf{X} = \boldsymbol{A}\boldsymbol{\mu}_\mathbf{X} + \boldsymbol{b}$. If $\mathbf{X}$ has a covariance matrix $\mathbf{\Sigma}_\mathbf{X}$, then the covariance matrix of $\mathbf{Z}$ is $\mathbf{\Sigma}_\mathbf{Z} = \boldsymbol{A} \mathbf{\Sigma}_\mathbf{X} \boldsymbol{A}^\top$. Finally, if $\boldsymbol{A}\in\operatorname{GL}_n (\mathbf{R})$ is an invertible $n\times n$ matrix and $\mathbf{X}$ has a probability density function $f_\mathbf{X}$, then the probability density function of $\mathbf{Z}$ is given by
 
 $$
   f_\mathbf{Z} = \frac{f_\mathbf{X} (\boldsymbol{A}^{-1} (\boldsymbol{z} - \boldsymbol{b}))}{|\det(\boldsymbol{A})|},\; \boldsymbol{z}\in\R^n
@@ -1171,3 +1171,162 @@ $$
 
 3. Take $X_1$ and $X_2$ as two independent draws from $\mathcal{N}(0,1)$.
 </MathBox>
+
+# Monte Carlo methods
+
+## Monte Carlo integration
+
+Let $(\mathsf{X}, \mathcal{B}, \pi)$ be a probability space. The goal of Monte Carlo integration is to approximate expectations of the form
+
+$$
+\begin{align*}
+  \mathbb{E}_\pi [h(X)] = \int_\mathsf{X} h(x) \pi(\d x)
+\label{equation-5}
+\end{align*}
+$$
+
+where $h:\mathsf{X}\to\R$ is a measurable function.
+
+**Measure-theoretic framework**
+
+Assume that $\pi:\mathcal{B}\to[0,1]$ admits a density $f:\mathsf{X}\to[0,\infty)$ with respect to a reference measure $\mu$ on $(\mathsf{X}, \mathcal{B})$ (e.g. Lebesgue measure) via $\pi(\d x) = f(x) \d\mu (x)$. By definition, $f$ satisfies the normalization condition
+
+$$
+  \int_\mathsf{X} f(x) \;\d\mu(x) = 1
+$$
+
+Assuming $h\in\mathsf{L}_1 (\pi)$ is integrable with respect to $\pi$, the expectation $\eqref{equation-5}$ can be written
+
+$$
+  \mathbb{E}_f [h(X)] = \int_\mathcal{X} h(x) f(x) \;\d\mu (x)
+$$
+
+**Empirical Monte Carlo estimator**
+
+Let $(X_i)_{i=1}^m \overset{\text{iid}}{\sim} f$ be a sequence of independent and identically distributed random variables sampled from $f$. We define the empirical Monte Carlo estimator $\bar{h}_m$ as the sample mean
+
+$$
+  \bar{h}_m = \frac{1}{m} \sum_{i=1}^m h(X_i)
+$$
+
+Since $h\in\mathsf{L}_1 (\pi)$, the strong law of large numbers guarantees that the estimator $\bar{h}_m$ converges almost surely to the true expectation:
+
+$$
+  \bar{h}_m \overset{\text{a.s.}}{m\to\infty} \mathbb{E}_f [h(X)]
+$$
+
+To quantify the precision $\hat{h}_m$, we further assume $h \in\mathsf{L}_2 (\pi)$ is square-integrable with respect to $\pi$. The variance of $h$ under $\pi$ is given by
+
+$$
+  \operatorname{var}_f [h(X)] = \int_\mathsf{X} (h(x) - \mathbb{E}_f [h(X)])^2 f(x) \;\d\mu(x) < \infty
+$$
+
+By independence of the samples $X_i$, the variance of the estimator $\bar{h}_m$ satisfies
+
+$$
+\begin{align*}
+  \operatorname{var}(\bar{h}_m) =& \operatorname{var}\left(\frac{1}{m} \sum_{i=1}^m h(X_i) \right) \\
+  =& \frac{1}{m^2} \sum_{i=1}^m \underbrace{\operatorname{var}[h(X_i)]}_{\operatorname{var}[h(X_i)]} \\
+  =& \frac{1}{m} \operatorname{var}_f [h(X)]
+\end{align*}
+$$
+
+If $\operatorname{var}_f [h(X)]$ is unknown, we can estimate it using the unbiased sample variance
+
+$$
+  s_m^2 = \frac{1}{m-1} \sum_{i=1}^m (h(X_i) - \bar{h}_m)^2
+$$
+
+Consequently, an estimator for the variance of $\bar{h}_m$ is
+
+$$
+  \widehat{\operatorname{var}}(\bar{h}_m) = \frac{s_m^2}{m}
+$$
+
+By the strong law of large numbers, $s_m^2$ is a consistent estimator of $\operatorname{var}_f [h(X)]$, i.e.
+
+$$
+  \frac{s_m^2}{m} \xrightarrow{\pi}{m\to\infty} \frac{1}{m} \operatorname{var}_f [h(X)]
+$$
+
+The central limit theorem provides the asymptotic distribution of the estimation error. As $m\to\infty$, the normalized distribution of the scaled error $\bar{h}_m - \mathbb{E}_f [h(X)]$ converges to a standard normal distribution:
+
+$$
+  \lim_{m\to\infty} \frac{\bar{h}_m - \mathbb{E}_f [h(X)]}{\sqrt{\operatorname{var}_f [h(X)] /m}} \xrightarrow{d}{m\to\infty} \mathcal{N}(0,1)
+$$
+
+Equivalently, using the empirical variance $s_m^2$
+
+$$
+  \frac{\bar{h}_m - \mathbb{E}_f [h(X)]}{\sqrt{s_m^2 /m}} \xrightarrow{d}{m\to\infty} \mathcal{N}(0,1)
+$$
+
+### Importance sampling
+
+## Markov chain Monte Carlo
+
+If direct sampling of $\pi$ is not feasible to estimate $\eqref{equation-5}$, we can construct a Markov chain $(X_i)_{i\geq 0}$ with state space $\mathsf{X}$ and transition kernel $K$ such that $pi$ is its invariant distribution
+
+## Metropolis-Hastings algorithm
+
+Suppose we wish to generate samples from an arbitrary multidimensional density
+
+$$
+  f(\mathbf{x}) = \frac{p(\mathbf{x})}{Z}
+$$
+
+where $p(\mathbf{x})$ is a known positive function and $Z$ is a known or unknown normalizing constant. Let $q(\mathbf{y}|\mathbf{x})$ be a proposed density in the sense of a Markov transition describing how to go from state $\mathbf{x}$ to state $\mathbf{y}$. Similar to the acceptance-rejection method, the Metropolis-Hastings algorithm is based on the follwoing "trial-and-error" strategy.
+
+To sample from a density $f:\R^n \to\R$ known up to a normalizing constant, initialize with some $\mathbf{X}_0$ for which $f(\mathbf{X}_0) > 0$. Then, for each $t=0,\dots,T-1$ execute the following steps
+1. Given the current state $\mathbf{X}_t$, generate $\mathbf{Y} \sim q(\mathbf{y}|\mathbf{X}_t)$
+2. Generate $U\sim\mathcal{U}([0,1])$ and return
+$$
+  \mathbf{X}_{t+1} = \begin{cases}
+    \mathbf{Y},\quad& U\leq \alpha(\mathbf{X}_t, \mathbf{Y}) \\
+    \mathbf{X}_t,\quad& U > \alpha(\mathbf{X}_t, \mathbf{Y})
+  \end{cases}
+$$
+
+where
+
+$$
+  \alpha(\mathbf{x}, \mathbf{y}) = \min\Set{1, \frac{f(\mathbf{y}) q(\mathbf{x}\lvert\mathbf{y})}{f(\mathbf{x})q(\mathbf{y}\lvert\mathbf{x})}}
+$$
+
+is the acceptance probability.
+
+A single Metropolis-Hastings iterarion is equivalent to generating a point from the transition density
+
+$$
+  \kappa(\mathbf{y}|\mathbf{x}) = \alpha(\mathbf{x}, \mathbf{y}) q(\mathbf{y}|\mathbf{x}) + (1 - \alpha^* (\mathbf{x}) \delta_\mathbf{x} (\mathbf{y})
+$$
+
+with $\alpha^* (\mathbf{x}) = \int \alpha(\mathbf{x}, \mathbf{y}) \;\d\mathbf{y}$ and $\delta_\mathbf{x} (\mathbf{y})$ denoting the Dirac delta function. Since
+
+$$
+  f(\mathbf{x}) \alpha(\mathbf{x}, \mathbf{y}) q(\mathbf{y}|\mathbf{x}) = f(\mathbf{y})\alpha(\mathbf{y}, \mathbf{x}) q(\mathbf{x}|\mathbf{y})
+$$
+
+and
+
+$$
+  (1 - \alpha^* (\mathbf{x})) \delta_\mathbf{x} \delta(\mathbf{y}) f(\mathbf{x}) = (1 - \alpha^* (\mathbf{y})) \delta_\mathbf{y} (\mathbf{x}) f(\mathbf{y})
+$$
+
+the transition density satisfies the detailed balance equation
+
+$$
+  f(\mathbf{x})\kappa(\mathbf{y}|\mathbf{x}) = f(\mathbf{y}) \kappa(\mathbf{x}|\mathbf{y})
+$$
+
+from which it follows that $f$ is the stationary density of the chain. In addition, if the transition density $q$ satisfies the conditions
+
+$$
+  \mathbf{P}(\alpha(\mathbf{X}_t, \mathbf{Y}) < 1 |\mathbf{X}_t) > 0
+$$
+
+that is, the event $\set{\mathbf{X}_{t+1} = \mathbf{X}_t}$ has positive probability, and $q(\mathbf{y}|\mathbf{x}) > 0$ for all $\mathbf{x}, \mathbf{y}$, then $f$ is the limiting density of the Markov chain. As a consequence, to estimate an expectation $\mathbb{E}[H(\mathbf{X})]$, with $\mathbf{X}\sim f$, we can use the following ergodic estimator
+
+$$
+  \frac{1}{T+1} \sum_{t=0}^T H(\mathbf{X}_t)
+$$
