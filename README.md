@@ -1,5 +1,6 @@
 # Todos
 
+- Fix z-ordering of narrow TOC
 - MathBox with floating header and ToC
 - Math proofs with headings and option for ToC 
 - ToC for theorems with hover preview
@@ -12,20 +13,13 @@ Long-term
 - PlotNeuralNet?
 - Mermaid.js?
 
-## Structure
+# Notation
 
-Quantum physics
-- Quantum mechanics
-  - Formulations
-    - Hilbert space formulation
-    - C* algebra formulation
-    - Path integral formulation
-    - Phase space formulation
-  - Quantum dynamics
-- Relativistic quantum mechanics
-- Quantum field theory
-  - Formulations
-- Quantum statistical mechanics
+- Set: mathsf
+- Set collection: mathcal
+- Scalar: normal
+- Vector: boldsymbol
+- Operator: mathrm
 
 # Tips
 
