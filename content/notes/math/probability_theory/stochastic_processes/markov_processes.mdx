@@ -13,6 +13,8 @@ A Markov process is a stochastic process with the property that the probability 
 | **Discrete-time** $T=\N$ | discrete-time Markov chain | Markov process on a measurable space |
 | **Continuous-time** $T=[0,\infty)$ | continuous-time Markov chain | Continuous stochastic process with the Markov property |
 
+# Markov property
+
 <MathBox title='Markov process' boxType="definition">
 Let $(\Omega,\mathcal{F}, \mathbb{P})$ be a probability space, and let $(\mathsf{X}, \mathcal{S})$ be a measurable state space. A stochastic process $\mathbf{X} = (X_t)_{t\in T}$ adapted to a filtration $(\mathcal{F}_t)_{t\in T}$ is a *Markov process* if it satisfies the Markov property
 
@@ -91,13 +93,15 @@ $$
 Note that if $\mathbf{X} = \Set{X_t }_{t\in T}$ is a stochastic process adapted to a filtration $\mathscr{F} = \Set{\mathcal{F}_t}_{t\in T}$, then for a stopping time $\tau$ the random variable $X_\tau$ is not necessarily measurable with respect to $\mathcal{F}_\tau$. For this we require that $\mathbf{X}$ is progressively measurable relative to $\mathscr{F}$ in the sense that $\mathbf{X}:\Omega\times T_t\to S$ is measurable with respect to $\mathcal{F}_t \otimes\mathcal{T}_t$ and $\mathcal{S}$. This is always true in the discrete case and more generally if $S$ has an LCCB topology with $\mathcal{S}$ as the Borel $\sigma$-algebra, and $\mathbf{X}$ is right continuous.
 
 <MathBox title='Strong Markov process' boxType="definition">
-The process $\mathbf{X}$ is a strong Markov process if
+Let $\mathbf{X} = (X_t)_{t\in T}$ be a stochastic process on the measurable space $(\mathsf{S},\mathcal{S})$, adapted to a filtration $(\mathcal{F}_t)_{t\in T}$. The process $\mathbf{X}$ is a strong Markov process if
 
 $$
-  \mathbb{E}\left[ f(X_{\tau + t})|\mathcal{F}_\tau \right] = \mathbb{E}[f(X_{\tau + t})|X_\tau]
+  \mathbb{E}\left[ f(X_{\tau + t})|\mathcal{F}_\tau \right] \overset{\text{a.s.}}{=} \mathbb{E}[f(X_{\tau + t})|X_\tau]
 $$
 
-for every $t\in T$, stopping time $\tau$ and $f\in\mathcal{B}$. If a strong Markov process $\mathbf{X}$ is *time homogeneous* (stationary) then
+for every $t\in T$, stopping time $\tau$ and bounded measurable function $f:\mathsf{S}\to\R$. 
+
+If, in addition, $\mathbf{X}$ is *time homogeneous* (stationary) then for all $x\in\mathsf{S}$
 
 $$
   \mathbb{E}\left[f(X_{\tau + t})|X_\tau = x\right] = \mathbb{E}\left[f(X_{\tau+t})|X_0 = x\right]
@@ -175,7 +179,7 @@ $$
 </MathBox>
 
 <MathBox title='Transition kernel of a Markov process' boxType="proposition">
-Suppose $\mathbf{X} = \set{X_t: \Omega\to S}_{t\in T}$ is a time-homogeneous Markov process on a measurable space $(\mathsf{S}, \mathcal{S})$. For each $t\in T$ define
+Suppose $\mathbf{X} = \set{X_t: \Omega\to \mathsf{S}}_{t\in T}$ is a time-homogeneous Markov process on a measurable space $(\mathsf{S}, \mathcal{S})$. For each $t\in T$ define
 
 $$
   P_t(x,A) := \mathbb{P}(X_t \in A \mid X_0 = x),\; x\in\mathsf{S}, A\in\mathcal{S}
@@ -219,8 +223,16 @@ $$
 \end{align*}
 $$
 
+Weak Markov property: For every initial distribution $\mu$ and every $(n+1)$ sample $(X_i)_{i=0}^n$, then
+
+$$
+  \mathbb{E}_\mu [h(X_{n+1}, X_{n+2},\dots,)|x_0,\dots,x_n] = \mathbb{E}_{x_n} [h(X_1,X_2,\dots,)]
+$$
+
+provided that the expectations exist.
+
 <MathBox title='Chapman-Kolmogorov equation' boxType="theorem">
-Suppose $\mathbf{X}=\Set{X_t: \Omega\to S}_{t\in T}$ is a time-homogeneous Markov process with transition kernels $\mathbf{P} = \Set{ P_t }_{t\in T}$. For $s,t\in T$ then $P_s P_t = P_{s+t}$ given by
+Suppose $\mathbf{X} = \set{X_t: \Omega\to \mathsf{S}}_{t\in T}$ is a time-homogeneous Markov process on a measurable space $(\mathsf{S}, \mathcal{S})$, with transition kernels $\mathbf{P} = \set{ P_t }_{t\in T}$. For all $s,t\in T$, the kernels satisfy the Chapman-Kolmogorov equation $P_s P_t = P_{s+t}$, i.e.
 
 $$
   P_{s+t}(x,A) = \int_S P_s(x, \d y) P_t(y, A),\; x\in S, A\in\mathcal{S}
