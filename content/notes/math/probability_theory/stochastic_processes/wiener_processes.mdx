@@ -1380,11 +1380,60 @@ $$
 The first deterministic term $d X_t = \mu X_t \;\d t$ corresponds to the ordinary differential equation for exponential growth or decay, with rate parameter $\mu$. The second term $\sigma X_t \;\d Z_t$ introduces multiplicative stochastic fluctuation, whose magnitude is proportional to the current state $X_t$.
 
 <MathBox title='Asymptotic behaviour of geometric Brownian motion' boxType="proposition">
+Let $\mathbf{X} = (X_t)_{t\in [0,\infty)}$ be a geometric Brownian motion with drift $\mu$ and volatility $\sigma > 0$. Then, almost surely:
+1. **Exponential growth:** If $\mu > \sigma^2 /2$, then $\lim_{t\to\infty} X_t \eqas \infty$
+2. **Exponential decay:** If $\mu < \sigma^2 /2$, then $\lim_{t\to\infty} X_t \eqas 0$
+3. **Critical case:** If $\mu = \sigma^2 /2$, then $X_t$ oscillates without limit as $t\to\infty$
 
+<details>
+<summary>Proof</summary>
+
+Recall that
+
+$$
+  \ln(X_t) = \left(\mu - \frac{1}{2}\sigma^2 \right)t + \sigma Z_t
+$$
+
+where $Z_t$ is a Wiener process. By the law of large numbers, $\lim_{t\to\infty} Z_t /t \eqas 0$. Thus, asymptotically
+
+$$
+  \frac{\ln(X_t)}{t} = \mu - \frac{1}{2}\sigma^2 + \frac{\sigma Z_t}{t} \xrightarrow{\text{a.s.}}{t\to\infty} \mu - \frac{1}{2}\sigma^2
+$$
+
+Exponentiating gives the three limiting cases.
+</details>
 </MathBox>
 
 <MathBox title='Martingale property of geometric Brownian motion' boxType="proposition">
+Let $\mathbf{X} = (X_t)_{t\in [0,\infty)}$ be a geometric Brownian motion with drift $\mu$ and volatility $\sigma > 0$. If $\mu = 0$, then $\mathbf{X}$ is a martingale with respect to the underlying Wiener process $\mathbf{Z}$.
 
+<details>
+<summary>Proof</summary>
+
+Let $\mathcal{F}_t = \sigma\set{Z_s : 0\leq s \leq t}$ for $t\in [0,\infty)$, so that $\mathscr{F} = \set{\mathcal{F}}_{t\in[0,\infty)}$ is the natural filtration associated with $\mathbf{Z}$. Let $s,t \in [0,\infty)$ with $s\leq t$. Writing $Z_t = Z_s + (Z_t - Z_s)$, then
+
+$$
+  X_t = \exp\left(-\frac{\sigma^2}{2}t + \sigma Z_s + \sigma(Z_t - Z_s) \right)
+$$
+
+Since $Z_s$ is measurable with respect to $\mathcal{F}_s$ and $Z_t - Z_s$ is independent of $\mathcal{F}_s$ we have
+
+$$
+  \mathbb{E}(X_t | \mathcal{F}_s) = \exp\left(-\frac{\sigma^2}{2}t + \sigma Z_s \right) \mathbb{E}(e^{\sigma(Z_t - Z_s)})
+$$
+
+Since $Z_t - Z_s \sim \mathcal{N}(0, t-s)$, the moment generating function for the normal distribution yields
+
+$$
+  \mathbb{E}(e^{\sigma(Z_t - Z_s}) = \exp\left(\frac{\sigma^2}{2} (t - s) \right)
+$$
+
+Substituting gives
+
+$$
+  \mathbb{E}(X_t | \mathcal{F}_s) = \exp\left(-\frac{\sigma^2}{2}s + \sigma Z_s \right) = X_s
+$$
+</details>
 </MathBox>
 
 ## Distributions
@@ -1432,6 +1481,14 @@ $$
 $$
 
 where $\Phi^{-1}$ is the standard normal quantile function.
+
+For $n\in\N$, the $n$th moment of $X_t$ is given by
+
+$$
+  \mathbb{E}(X_t^n) = \exp\left[\left(n\mu + \frac{\sigma^2}{2} (n^2 - n) \right)t \right]
+$$
+
+In terms of oder of the moment, the dominant term inside the exponential is $\sigma^2 n^2 /2$. If $n > 1 - 2\mu/s\sigma^2$ then $n\mu + \sigma^2 (n^2 - n)/2 > 0$ so $\lim_{t\to\infty} \mathbb{E}(X_t) \eqas \infty$.
 
 # Fractional Brownian Motion (fBm)
 
