@@ -997,7 +997,7 @@ Hence $\norm{f - h}_2 = 0$, and since both $f$ and $h$ are continuous on a compa
 </details>
 </MathBox>
 
-<MathBox title="Pointwise converge of Fourier series" boxType="theorem" tag="2">
+<MathBox title="Pointwise convergence of Fourier series" boxType="theorem" tag="2">
 Let $f\in L_{2\pi}^2 (\R,\mathbb{C})$, and fix a point $\hat{x} \in[-\pi,\pi]$. Suppose that the left and right limits of $f$ at $\hat{x}$ exists:
 
 $$
@@ -1036,7 +1036,7 @@ $$
 \end{align*}
 $$
 
-The poinwise limit is given by
+The pointwise limit is given by
 
 $$
 \begin{align*}
@@ -1126,6 +1126,94 @@ By Theorem $\ref{theorem-2}$, we have $\mathcal{F}_n (f)(0) \xrightarrow{n\to\in
 $$
 	\frac{\pi}{2} =& \frac{\pi}{4} + \sum_{k=1}^\infty \frac{1}{\pi} \frac{1 - (-1)^k}{k^2} \\
 	\implies \frac{\pi^2}{4} =& \sum_{k=1}^\infty \frac{1 - (-1)^k}{k^2} 
+$$
+</MathBox>
+
+### Gibbs phenomenon
+
+<MathBox title="Overshoot estimate of the step function" boxType="example">
+Consider the $2\pi$-periodic function $f:\R\to\mathbb{C}$ defined by
+
+$$
+  f(x) = \begin{cases}
+    1,\quad& x\in (-\pi, 0) \\
+    0,\quad& x\in [0,\pi]
+  \end{cases}
+$$
+
+The Fourier series of $f$ is given by
+
+$$
+  \mathcal{F}_n (f) (x) = \frac{1}{2} + \sum_{\substack{k=1 \\ k\text{ odd}}}^n \left(-\frac{2}{\pi} \right) \frac{1}{k} \sin(kx)
+$$
+
+To estimate the overshot of $\mathcal{F}_n (f)$ near the jump discontinuity at $x = 0$, we analyze the partial sum
+
+$$
+  S_n (x) := \sum_{\substack{k=1 \\ k\text{ odd}}}^n \frac{\sin(kx)}{k}
+$$
+
+Using
+
+$$
+  \frac{\sin(kx)}{k} = \int_0^x \cos(kt)\;\d t
+$$
+
+we write
+
+$$
+\begin{equation*}
+  S_n (x) = \int_0^x \sum_{\substack{k=1 \\ k\text{ odd}}}^n \cos(kt)\;\d t
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+The cosine sum can be evaluated explicitly:
+
+$$
+\begin{align*}
+  \sum_{\substack{k=1 \\ k\text{ odd}}}^n \cos(kt) =& \frac{1}{2} \sum_{\substack{k= -n \\ k\text{ odd}}}^n e^{ikt} = \frac{1}{2} \sum_{\substack{m=0 \\ m\text{ even}}}^{2n} e^{i(m-n)t} \\
+  =& \frac{1}{2} e^{-int} \sum_{\substack{m=0 \\ m\text{ even}}}^{2n} e^{imt} \\
+  =& \frac{1}{2} e^{-int} \sum_{l=0}^n (\underbrace{e^{i2t}}_{=q})^l \\
+  =& \frac{1}{2} e^{-int} \frac{1 - q^{n+1}}{1 - q} \\
+  =& \frac{1}{2} \frac{\sin[(n+1) t]}{\sin(t)},\; t \notin \pi\Z \tag{\label{equation-6}}
+\end{align*}
+$$
+
+Plugging $\eqref{equation-6}$ into $\eqref{equation-5}$ yields
+
+$$
+  S_n (x) = \frac{1}{2} \int_0^x \frac{\sin[(n+1)t]}{\sin(t)}\;\d t
+$$
+
+For small $t > 0$, we use the inequality $\sin(t) \leq t$, which implies
+
+$$
+  \frac{1}{\sin(t)} \geq \frac{1}{t}
+$$
+
+Thus,
+
+$$
+  S_n (x) \geq \frac{1}{2} \int_0^x \frac{\sin[\overbrace{(n+1)t}^{y}]}{t} \;\d t
+$$
+
+Substituting $y = (n+1)t$ gives
+
+$$
+\begin{equation*}
+  S_n (x) \geq \frac{1}{2} \int_0^{(n+1)x} \frac{\sin(y)}{y} \;\d y = \frac{1}{2} \operatorname{Si}[(n+1)x]
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+To probe the behaviour of $\mathcal{F}_n (f)$ at $x = 0$, we set $x = \pi/(n+1)$. Using the bound $\eqref{equation-7}$, we finally get
+
+$$
+\begin{align*}
+  \mathcal{F}_n (f)\left(\frac{\pi}{n+1} \right) =& \frac{1}{2} - \frac{2}{\pi} S_n \left(\frac{k\pi}{n+1} \right) \\
+  \leq \frac{1}{2} - \frac{1}{\pi} \operatorname{Si}(\pi) \approx -0.089
+\end{align*}
 $$
 </MathBox>
 
