@@ -812,8 +812,36 @@ $$
 
 In particular, suppose $\alpha > 0$ and that $X_0$ has distribution $\mu$. Then $\mu P_t$ is the distribution of $X_t$ for $t\in[0,\infty)$ so that $\alpha \mu U_\alpha$ is the distribution of $X_\tau$, where $\tau$ is independent of $\mathbf{X}$ and is exponentially distributed on $[0,\infty)$ with parameter $\alpha$.
 
+<MathBox title="Resolvent" boxType="definition">
+For $\epsilon \in (0, 1)$, a resolvent associated with the kernel $P$ is a kernel of the form
+
+$$
+  K_\epsilon (x, A) = (1 - \epsilon) \sum_{i=0}^\infty \epsilon^i K^i (x, A)
+$$
+
+Equivalently, viewing $K$ as an operator on bounded measurable functions, $K_\epsilon$ corresponds to the resolvent operator
+
+$$
+  K_\epsilon = (1 - \epsilon) (I - \epsilon K)^{-1}
+$$
+
+defined via the Neumann series.
+
+A Markov chain whose transition kernel is $K_\epsilon$, is a $K_\epsilon$-chain.
+</MathBox>
+
+For a resolvent kernel $K_\epsilon$, we can construct a Markov chain $(X_n^(\epsilon))_{n\geq 0}$ with initial distribution $\mu$ and transition kernel $K$. This chain admits the following probability representation: let $(X_n)_{n\geq 0}$ be a Markov chain with initial distribution $\mu$ and transition kernel $K$, and let $(G_n)_{n\geq 1}$ be a sequence of independent and identically distribution $\N_0$-valued random variables, independent of $(X_n)$, such that
+
+$$
+  \mathbb{P}(G_n = k) = (1 - \epsilon) \epsilon^k,\; k \geq 0
+$$
+
+Define the random times $T_0 = 0$ and $T_{n+1} = T_n + G_{n+1}$. Then the process $X_n^{(\epsilon)} := X_{T_n}$ for $n\geq 0$ is a Markov chain with transition kernel $K_\epsilon$.
+
+In this sense, $(X_n^{(\epsilon)})$ may be viewed as a randomly thinned (or geometrically sampled) subsequence of the original chain $(X_n)$.
+
 <MathBox title='' boxType="proposition">
-The resolvent $\mathbf{U} = \Set{U_\alpha}_{\alpha\in (0,\infty)}$ completely determines the family of transition kernels $\mathbf{P} = \Set{P_t}_{t\in (0,\infty)}$
+The resolvent $\mathbf{U} = \set{U_\alpha}_{\alpha\in (0,\infty)}$ completely determines the family of transition kernels $\mathbf{P} = \set{P_t}_{t\in (0,\infty)}$
 
 <details>
 <summary>Proof</summary>
@@ -1063,6 +1091,28 @@ Since $s\mapsto P_s f$ is continuous, the first term converges to $-f$, and the 
 3. From the 1st identity we have $\alpha U_\alpha - U_\alpha G = I \iff U_\alpha (\alpha I - G) = I$, and from the 2nd identity we have $\alpha U_\alpha - GU_\alpha = I \iff (\alpha I - G)U_\alpha = I$. 
 4. This follows from the 3rd identity.
 </details>
+</MathBox>
+
+# Irreducibility
+
+<MathBox title="Irreducibility" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel on $\mathsf{X}$, and $\phi$ a $\sigma$-finite measure on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. The Markov chain $(X_n)_{n\geq 0}$ with transition kernel $K$ is $\phi$-irreducible if, for every measurable set $A \in \mathcal{B}(\mathsf{X})$ with $\phi(A) > 0$, and for every $x\in\mathsf{X}$, there exists $n\in\N_+$ such that $K^n (x, A) > 0$.
+
+Equivalently, defining the hitting time
+
+$$
+  \tau_A := \inf\set{n \geq 1 | X_n \in A}
+$$
+
+the chain is $\phi$-irreducible if and only if $P_x (\tau_A < \infty) > 0$. The chain is strongly $\phi$-irreducible if $K(x, A) > 0$ for all $A\in\mathcal{B}(\mathsf{X})$ and $x\in\mathsf{X}$.
+
+In the discrete case, if $\mathsf{X}$ is countable and $\phi$ is a taken as the counting measure, the chain is irreducible if and only if all states communicate, i.e.
+
+$$
+  P_x (\tau_y < \infty) > 0,\; \forall x,y\in\mathsf{X}
+$$
+
+where $\tau_y := \inf\set{n\geq 1 | X_n = y}$ is the first time $y$ is visited. Equivalently, for all $x,y\in\mathsf{X}$, there exists $n \geq 1$ such that $K^n (x,y) > 0$.
 </MathBox>
 
 # Examples and applications
