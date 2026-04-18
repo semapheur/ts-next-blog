@@ -1096,24 +1096,208 @@ Since $s\mapsto P_s f$ is continuous, the first term converges to $-f$, and the 
 # Irreducibility
 
 <MathBox title="Irreducibility" boxType="definition">
-Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel on $\mathsf{X}$, and $\phi$ a $\sigma$-finite measure on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. The Markov chain $(X_n)_{n\geq 0}$ with transition kernel $K$ is $\phi$-irreducible if, for every measurable set $A \in \mathcal{B}(\mathsf{X})$ with $\phi(A) > 0$, and for every $x\in\mathsf{X}$, there exists $n\in\N_+$ such that $K^n (x, A) > 0$.
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel on $\mathsf{X}$, and $\phi$ a $\sigma$-finite measure on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. The Markov chain $(X_n)_{n\geq 0}$ with transition kernel $K$ is $\phi$-irreducible if, for every measurable set $A \in \mathcal{B}(\mathsf{X})$ with $\phi(A) > 0$, and for every $x\in\mathsf{X}$, there exists $n\in\N_+$ such that $K^n (x, A) > 0$. The chain is strongly $\phi$-irreducible if $K(x, A) > 0$ for all $A\in\mathcal{B}(\mathsf{X})$ and $x\in\mathsf{X}$.
 
-Equivalently, defining the hitting time
-
-$$
-  \tau_A := \inf\set{n \geq 1 | X_n \in A}
-$$
-
-the chain is $\phi$-irreducible if and only if $P_x (\tau_A < \infty) > 0$. The chain is strongly $\phi$-irreducible if $K(x, A) > 0$ for all $A\in\mathcal{B}(\mathsf{X})$ and $x\in\mathsf{X}$.
-
-In the discrete case, if $\mathsf{X}$ is countable and $\phi$ is a taken as the counting measure, the chain is irreducible if and only if all states communicate, i.e.
-
-$$
-  P_x (\tau_y < \infty) > 0,\; \forall x,y\in\mathsf{X}
-$$
-
-where $\tau_y := \inf\set{n\geq 1 | X_n = y}$ is the first time $y$ is visited. Equivalently, for all $x,y\in\mathsf{X}$, there exists $n \geq 1$ such that $K^n (x,y) > 0$.
+In the discrete case, if $\mathsf{X}$ is countable and $\phi$ is a taken as the counting measure, the chain is irreducible if for all $x,y\in\mathsf{X}$, there exists $n \geq 1$ such that $K^n (x,y) > 0$.
 </MathBox>
+
+<MathBox title="Characteristics of irreducibility" boxType="proposition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel, and $\phi$ a $\sigma$-finite measure. For $A\in\mathcal{B}(\mathsf{X})$ define the hitting time
+
+$$
+  \tau_A := \inf\set{n \geq 1 : X_n \in A}
+$$
+
+and the occupation time
+
+$$
+  \eta_A := \sum_{n=1}^\infty \mathbf{1}_{\set{X_n \in A}}
+$$
+
+Then the Markov chain $(X_n)$ is $\phi$-irreducible if and only if for every $x\in\mathsf{X}$ and every $A\in\mathcal{B}(\mathsf{X})$ with $\phi(A) > 0$, any of the following equivalent properties hold
+1. There exists $n\in \N_+$ such that $K^n (x, A) > 0$
+2. The hitting probability is strictly positive, i.e. $\mathbb{P}_x (\tau_A < \infty) > 0$
+2. The expected occupation time is strictly positive, i.e. $\mathbb{E}_x [\eta_A] > 0$
+3. For some $\epsilon\in (0,1)$ the resolvent kernel satisfies $K_\epsilon (x, A) > 0$
+</MathBox>
+
+<MathBox title="Maximal irreducibility measure" boxType="proposition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel, and suppose that the Markov chain $(X_n)$ is $\phi$-irreducible for some $\sigma$-finite measure $\phi$. Then there exists a probability measure $\psi$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, called a maximal irreducibility measure, satisfying
+1. **Irreducibility:** The Markov chain $(X_n)$ is $\psi$-irreducible
+2. **Maximality:** If $\xi$ is any measure for which $(X_n)$ is $\xi$-irreducible, then $\xi$ is dominated by $\psi$, i.e. $\xi\ll\psi$
+3. **Absorption property:** For every $A\in\mathcal{B}(A)$ with $\psi(A) = 0$, then $\psi(\set{y\in\mathsf{X} : \mathbb{P}_y (\tau_A < \infty) > 0}) = 0$, where $\tau_A := \inf\set{n\geq 1 : X_n \in A}
+4. **Resolvent representation:** The measure $\psi$ is equivalent to the measure $\psi_0$ defined by
+
+$$
+  \psi_0 (A) := \int_\mathsf{X} K_{1/2} (x, A) \phi (\d x),\; A\in\mathcal{B}(\mathsf{X})
+$$
+
+that is, $\psi\ll\psi_0$ and $\psi_0 \ll\psi$.
+</MathBox>
+
+## Atoms and small sets
+
+<MathBox title="Atom" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel. A set $\alpha\in\mathcal{B}(\mathsf{X})$ is an atom if there exists a probability measure $\nu$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ such that 
+
+$$
+  K(x, A) = \nu(A),\; \forall x\in\alpha,\ \forall A\in\mathcal{B}(\mathsf{X})
+$$
+
+Equivalently, the transition probabilities are identical for all starting points $x\in\alpha$.
+
+If in addition the Markov chain $(X_n)$ is $\psi$-irreducible for some $\sigma$-finite measure $\psi$, the atom is accessible if $\psi(\alpha) > 0$.
+</MathBox>
+
+For a discrete Markov chain $(X_n)$, every singleton $\set{x}$ is trivially an atom, so the notion is always applicable. In contrast, the existence of an atom is a very strong requirement, since it implies that the transition kernel is constant on a set of positive measure.
+
+A more flexible generalization is given by the minorization condition. A set $C\in\mathcal{B}(\mathsf{X})$ satisfies a minorization condition if there exists a constant $\epsilon > 0$ and a probability measure $\nu$ such that
+
+$$
+\begin{equation*}
+  K(x, A) \geq \epsilon\nu (A)\; \forall x\in C, \forall A\in\mathcal{B}(\mathsf{X})
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+Equivalently, for all $x\in C$, the transition kernel admits the decomposition
+
+$$
+  K(x,\cdot) = \epsilon\nu(\cdot) + (1 - \epsilon) R(x,\cdot)
+$$
+
+where $R$ is a Markov kernel. Thus, $\nu$ represents a uniform component of the transition mechanism on the set $C$. This condition relaxes the notion of an atom by requiring only a common lower bound, rather than exact equality of transition probabilities.
+
+Set satisfying the minorization condition $\eqref{equation-1}$ are called small sets, and they play a central role in the study of stability and ergodic properties of general state-space Markov chains.
+
+<MathBox title="Small set" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel. A measurable set $C\in\mathcal{B}(\mathsf{X})$ is small if there exists $m\in\N_+$ and a probability measure $\nu_m$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ such that
+
+$$
+  K^m (x, A) \geq \nu_m (A),\; \forall C, \forall A\in\mathcal{B}(\mathsf{X})
+$$
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain with transition kernel $K$ on the measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. Then the following properties hold
+1. **Existence of small subsets:** For every measurable set $A\in\mathcal{B}(\mathsf{X})$ with $\psi(A) > 0$, there exist and integer $m\in\N_+$, a measurable set $C\subset A$ with $\psi(C) > 0$, and a nontrivial finite measure $\nu_m$ such that
+
+$$
+  K^m (x, B) \geq \nu_m (B),\; \forall x\in C, \forall B\in\mathcal{B}(\mathsf{X})
+$$
+
+In particular, $C$ is a small set, implying $\nu_m (C) > 0$.
+
+2. **Countable covering by small sets:** The exists a countable collection of small sets $(C_i)_{i\in\N_+}$ suc that $\mathsf{X}$ is decomposed as
+
+$$
+  \mathsf{X} = \bigcup_{i=1}^\infty C_i
+$$
+
+3. **Explicit construction:** Given a small set $C$, we can construct a countable family of small sets covering the state space via
+
+$$
+  C_{n,m} := \set{y\in\mathsf{X} : K^n (y, C) > 1/m},\; n,m\in\N_+
+$$
+
+Then each $C_{n,m}$ is a small set, and
+
+$$
+  \mathsf{X} = \bigcup_{n=1}^\infty \bigcup_{m=1}^\infty C_{n,m}
+$$
+</MathBox>
+
+Suppose the minorizing condition $\eqref{equation-1}$ holds for the Markov chain $(X_n)$. Then there are two ways of constructing a companion Markov chain $(\tilde{X}_n)$, defined on an extended state space, which preserves many of the probabilistic properties of $(X_n)$ and posesses an accessible atom $\alpha$.
+
+1. **Nummelin splitting:** This method augments the state space to $\mathsf{X}\times\set{0,1}$ and constructs a split chain $(\tide{X}_n)$ by introducing an auxiliary Bernoulli variable that splits transitions from the set $C$. On the event corresponding to the minorizing component, the chain regenerates according to $\mu$, thereby creating an atom of the form $\alpha = C\times\set{1}$. The resulting chain consists of two coupled copies of $(X_n)$, corresponding to the split and residual transitions.
+2. **Athreya-Ney construction:** This approach uses a suitable stopping time (typically based on returns to $C$ together with the minorizing condition) to define renewal times. By sampling the chain at these stopping times, we obtain a new Markov chain with an embedded atom. This construction is closely related to renewal theory, as the regeneration times induce an idependent and identically distribution structure between successive visists to the atom.
+
+<MathBox title="Regeneration time" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X})$ with natural filtration $(\mathcal{F}_n)$, where $\mathcal{F}_n := \sigma(X_0,\dots,X_n)$. A regeneration time (or renewal time) is a stopping time $\tau$ with respect to $(\mathcal{F}_n)$ such that the post-$\tau$ process $(X_{\tau + n})_{n\geq 0}$ is independent of $\mathcal{F}_n$, and has a distribution that does not depend on the past prior to time $\tau$.
+
+Equivalently, $\tau$ is a regeneration time if, conditional on $\tau < \infty$, the process restarts afresh at time $\tau$, in the sense that
+
+$$
+  (X_{\tau+n})_{n\geq 0} \overset{d}{=} (X_n)_{n\geq 0}
+$$
+
+and is independent of $\mathcal{F}_n$.
+</MathBox>
+
+Suppose the minorization condition $\eqref{equation-1}$ holds on a measurable set $C\in\mathcal{B}(\mathsf{X})$, and assume $C$ is recurrent in the sense that $\mathbb{P}_x (\tau_C < \infty) = 1$ for all $x\in\mathsf{X}$, where $\tau_C := \inf\set{n\geq 1 : X_n \in C}$. 
+
+The Athreya-Ney construction modifies the transition kernel when $X_n \in C$ by generating the next state $X_{n+1}$ according to
+
+$$
+  X_{n+1} \sim \begin{cases}
+    \nu,\quad& \text{with probability } \epsilon \\
+    R(X_n, \cdot),\quad& \text{ with probability } 1 - \epsilon
+  \end{cases}
+$$
+
+where the residual kernel $R$ is defined by
+
+$$
+  R(x, A) := \frac{K(X_n, \cdot) - \epsilon\nu(\cdot)}{1-\epsilon},\; x\in C
+$$
+
+This construction preserves the original transition law, since for all $x\in C$ and $A\in\mathcal{B}(\mathsf{X})$
+
+$$
+\begin{align*}
+  \epsilon\nu(A) + (1-\epsilon) R(x, A) =& \epsilon\nu(A) + \frac{K(x_n, A) - \epsilon\nu(A)}{1-\epsilon} \\
+  =& K(x_n, A)
+\end{align*}
+$$
+
+Hence, the marginal distribution of $X_{n+1}$ conditional on $X_n = x$ is unchanged, while the decomposition introduces an additional random mechanism that selects, with probability $\epsilon$, a transition independent of the current state (via $\nu$).
+
+This mechanism induces regeneration events: whenever $X_n \in C$ and the Bernoulli trial selects the $\nu$-component, the future evolution of the chain becomes independent of the past and restarts from $\nu$.
+
+Define, the regeneration times by $\tau_0 := 0$ and for $j > 0$ by
+
+$$
+  \tau_j = \inf\set{n \geq t_{j-1} : X_n \in C \land X_{n+1} \sim\nu}
+$$
+
+To make this structure explicit, we introduce the split chain $\tilde{X}_n = (X_n, \omega_n)$, where $\omega_n \in\set{0,1}$ indicates whether the $\nu$-component was selected at time $n$ (with $\omega_n = 1$ corresponding to regeneration when $X_n \in C$). In this augmented process, the set $\tilde{\alpha} = C \times\set{1}$ is an atom of the chain $(\tilde{X}_n)$. Whenever, $\tilde{X}_n \in\tilde{\alpha}$, the conditional distribution of $\tilde{X}_{n+1}$ is independent of $\tilde{X}_n$ and depends only on $\nu$. The original process $(X_n)$ is recovered as the first coordinate of the split chain, and it retains its original transition kernel $K$.
+
+## Cycles and aperiodicity
+
+In the discrete case, let $\mathbf{P}$ be the transition matrix. The period of a state $\omega\in\mathsf{X}$ is defined as
+
+$$
+  \d(\omega) = \operatorname{gcd} \set{m \geq 1 : K^m (\omega, \omega) > 0}
+$$
+
+The value of the period is constant on all states that communicate with $\omega$. In the case of an irreducible chain on a finite state space $\mathsf{X}$, the transition matrix can be put, after a suitable permutation of the states, into a cyclic block matrix
+
+$$
+  \mathbf{P} = \begin{bmatrix}
+    \mathbf{0} & \mathbf{D}_1 & \mathbf{0} & \cdots & \mathbf{0} \\
+    \mathbf{0} & \mathbf{0} & \mathbf{D}_2 & \cdots & \mathbf{0} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    \mathbf{D}_d & \mathbf{0} & \mathbf{0} & \cdots & \mathbf{0}
+  \end{bmatrix}
+$$
+
+where each $\mathbf{D}_i$ is stochastic matrices describing transition from one cyclic class to the next.
+
+This representation reflects the decomposition of the state space into $d$ cyclic classes, with transitions occuring deterministically between successive classes and returning to the original class only after multiples of $d$ steps. Consequently, an irreducible Markov chain has a well-defined period $d$, and it is aperiodic if $d=1$, in which case no such cyclic decomposition is present.
+
+<MathBox title="" boxType="definition" tag="1">
+A $\psi$-irreducible Markov chain $(X_n)$ has a cycle of length $d$ if there exists a small set $C$, an associated integer $M$, and a probability distribution $\nu_M$ such that $d$ is greatest common divisor of
+
+$$
+  \set{m \geq 1: \exists \delta_m > 0 \text{ such that } C \text{ is small for } \nu_m \geq \delta_m \nu_M}
+$$
+</MathBox>
+
+It can be shown that the cycle $d$ is independent of the small set $C$ and that this number intrinsically characterizes the chain $(X_n)$. The period of $(X_n)$ is then defined as the largest integer $d$ satisfying Definition $\ref{definition-1}$, and $(X_n)$ is aperiodic if $d = 1$. If there exists a small set $A$ and a minorization measure $\nu_1$ such that $\nu_1 (A) > 0$, the chain is said to be strongly aperiodic. Note that the $K_\epsilon$-chain can be use to transform an aperiodic chain into a strongly aperiodic chain.
+
+In the discrte setting, if one state $x\in\mathsf{X}$ satsifies $\mathbf{P}_{xx} > 0$, the chain $(X_n)$ is aperiodic, although this is not a necessary condition.
+
+When the chain is continuous and the transition kernel has a component which is absolutely continuous with respect to the Lebesgue measure, with density $f(\cdot|x_n)$, a sufficient condition for aperiodicity is that $f(\cdot|x_n)$ is positive in a neighbourhood of $x_n$. The chain can then remain in this neighbourhood for an arbitrary number of instants before visiting any set $A$.
 
 # Examples and applications
 
