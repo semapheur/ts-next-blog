@@ -235,7 +235,10 @@ provided that the expectations exist.
 Suppose $\mathbf{X} = \set{X_t: \Omega\to \mathsf{S}}_{t\in T}$ is a time-homogeneous Markov process on a measurable space $(\mathsf{S}, \mathcal{S})$, with transition kernels $\mathbf{P} = \set{ P_t }_{t\in T}$. For all $s,t\in T$, the kernels satisfy the Chapman-Kolmogorov equation $P_s P_t = P_{s+t}$, i.e.
 
 $$
+\begin{equation*}
   P_{s+t}(x,A) = \int_S P_s(x, \d y) P_t(y, A),\; x\in S, A\in\mathcal{S}
+\tag{\label{equation-3}}
+\end{equation*}
 $$
 
 <details>
@@ -816,7 +819,10 @@ In particular, suppose $\alpha > 0$ and that $X_0$ has distribution $\mu$. Then 
 For $\epsilon \in (0, 1)$, a resolvent associated with the kernel $P$ is a kernel of the form
 
 $$
+\begin{equation*}
   K_\epsilon (x, A) = (1 - \epsilon) \sum_{i=0}^\infty \epsilon^i K^i (x, A)
+\tag{\label{equation-4}}
+\end{equation*}
 $$
 
 Equivalently, viewing $K$ as an operator on bounded measurable functions, $K_\epsilon$ corresponds to the resolvent operator
@@ -1111,7 +1117,10 @@ $$
 and the occupation time
 
 $$
+\begin{equation*}
   \eta_A := \sum_{n=1}^\infty \mathbf{1}_{\set{X_n \in A}}
+\tag{\label{equation-2}}
+\end{equation*}
 $$
 
 Then the Markov chain $(X_n)$ is $\phi$-irreducible if and only if for every $x\in\mathsf{X}$ and every $A\in\mathcal{B}(\mathsf{X})$ with $\phi(A) > 0$, any of the following equivalent properties hold
@@ -1125,7 +1134,7 @@ Then the Markov chain $(X_n)$ is $\phi$-irreducible if and only if for every $x\
 Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, $K$ a Markov kernel, and suppose that the Markov chain $(X_n)$ is $\phi$-irreducible for some $\sigma$-finite measure $\phi$. Then there exists a probability measure $\psi$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, called a maximal irreducibility measure, satisfying
 1. **Irreducibility:** The Markov chain $(X_n)$ is $\psi$-irreducible
 2. **Maximality:** If $\xi$ is any measure for which $(X_n)$ is $\xi$-irreducible, then $\xi$ is dominated by $\psi$, i.e. $\xi\ll\psi$
-3. **Absorption property:** For every $A\in\mathcal{B}(A)$ with $\psi(A) = 0$, then $\psi(\set{y\in\mathsf{X} : \mathbb{P}_y (\tau_A < \infty) > 0}) = 0$, where $\tau_A := \inf\set{n\geq 1 : X_n \in A}
+3. **Absorption property:** For every $A\in\mathcal{B}(A)$ with $\psi(A) = 0$, then $\psi(\set{y\in\mathsf{X} : \mathbb{P}_y (\tau_A < \infty) > 0}) = 0$, where $\tau_A := \inf\set{n\geq 1 : X_n \in A}$
 4. **Resolvent representation:** The measure $\psi$ is equivalent to the measure $\psi_0$ defined by
 
 $$
@@ -1285,19 +1294,292 @@ where each $\mathbf{D}_i$ is stochastic matrices describing transition from one 
 
 This representation reflects the decomposition of the state space into $d$ cyclic classes, with transitions occuring deterministically between successive classes and returning to the original class only after multiples of $d$ steps. Consequently, an irreducible Markov chain has a well-defined period $d$, and it is aperiodic if $d=1$, in which case no such cyclic decomposition is present.
 
-<MathBox title="" boxType="definition" tag="1">
-A $\psi$-irreducible Markov chain $(X_n)$ has a cycle of length $d$ if there exists a small set $C$, an associated integer $M$, and a probability distribution $\nu_M$ such that $d$ is greatest common divisor of
+<MathBox title="Markov chain period" boxType="definition" tag="1">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain $(X_n)$ with transition kernel $K$ on the measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. The chain has period $d\in\N_+$ if there exists a small set $C\in\mathcal{B}(\mathsf{X})$, an integer $M$, and a probability distribution $\nu_M$ such that 
 
 $$
-  \set{m \geq 1: \exists \delta_m > 0 \text{ such that } C \text{ is small for } \nu_m \geq \delta_m \nu_M}
+  K^M (x, A) \geq \nu_M (A),\; \forall x\in C, \forall A\in\mathcal{B}(\mathsf{X})
+$$
+
+and
+
+$$
+  d = \set{m \geq 1: \exists \delta_m > 0: K^^m (x, A) \geq \delta_m \nu_M (A), \forall x\in C, \forall A\in\mathcal{B}(\mathsf{X})}
+$$
+
+In other words, $d$ is the greatest common divisor of all integers $m$ for which the $m$-step transition kernel admits a uniform minorization on $C$ by a measure proportional to $\nu_M$.
+
+The chain $(X_n)$ is aperiodic if $d = 1$. The chain is strongly aperiodic if there exists a small set $C\in\mathcal{B}(\mathsf{X})$, a constant $\epsilon > 0$ and a probability measure $\nu$ such that 
+
+$$
+  K(x, A) \geq \epsilon\nu (A),\; \forall x\in C, \forall A\in\mathcal{B}(\mathsf{X})
+$$
+
+and $\nu (C) > 0$. For any $\epsilon\in (0,1)$, the resolvent $K_\epsilon$-chain associated with $K$ is stronly aperiodic, even if the original chain is only aperiodic.
+</MathBox>
+
+In the discrete setting, if there exists a state $x\in\mathsf{X}$ such that $K(x,x) > 0$, the chain $(X_n)$ is aperiodic. This condition is sufficient but not necessary.
+
+When the chain is continuous and the transition kernel has a component which is absolutely continuous with respect to the Lebesgue measure, with density $f(\cdot|x)$, a sufficient condition for aperiodicity is that $f(\cdot|x)$ is positive in a neighbourhood of $x$. The chain can then remain in this neighbourhood for an arbitrary number of instants before visiting any set $A \in\mathcal{B}(\mathsf{X})$.
+
+# Transience and recurrence
+
+<MathBox title="Transience and recurrence of finite states" boxType="definition">
+Let $(X_n)$ be a Markov chain on a finite state space $\mathsf{X}$, and for a state $\omega\in\mathsf{X}$, define the total number of visits to $\omega$ by
+
+$$
+  \eta_\omega := \sum_{n=0}^\infty \mathbf{1}_{\set{X_n = \omega}}
+$$
+
+The state $\omega$ is transient if $\mathbb{E}_\omega (\eta_\omega) < \infty$ and recurrent if $\mathbb{E}_\omega (\eta_\omega) = \infty$. Equivalently, $\omega$ is recurrent if and only if $\mathbb{P}_\omega (\tau_\omega < \infty) = 1$, where $\tau_\omega := \inf\set{n \geq 1 : X_n = \omega}$, and transient otherwise.
+</MathBox>
+
+For an irreducible Markov chain $(X_n)$ on a discrete state space $\mathsf{X}$, the properties of recurrence and transience are class properties, and do not depend on a particular state. In other words, if one state is recurrent (respectively transient), then every state is recurrent (respectively transient). This follows from the Chapman-Kolmogorov equations $\eqref{equation-3}$ together with the communication property. Let
+
+$$
+  \eta_y := \sum_{n=0}^\infty \mathbf{1}_{\set{X_n = y}}
+$$
+
+denote the total number of visits to a state $y\in\mathsf{X}$. Then, for all $x,y\in\mathsf{X}$, the states are transient if $\mathbb{E}_x (\eta_y) < \infty$, and recurrent if $\mathbb{E}_x (\eta_y) = \infty$. Accordingly, an irreducible Markov chain is called transient if all states are transient, and recurrent if all states are recurrent. These two cases are mutually exclusive and exhaustive.
+
+<MathBox title="Branching process" boxType="example">
+Consider a population evolving in discrete generations, where each individual reproduces independently of the others. Let $X\in\N_0$ denote the number of offspring of a single individual, with probability generating function $\phi(s) := \mathbb{E}(s^X)$ for $s\in [0,1]$. Let $S_t$ denote the size of the $t$th generation, with initial condition $S_0 = 1$. Then
+
+$$
+  S_t = \sum_{i=1}^{S_{t-1}} X_{t,i},\; t \geq 1
+$$
+
+where $(X_{t,i})$ are independent and identically distributed copies of $X$. The process $(S_t)_{t\geq 0}$ is a Galton-Watson branching process. The generating function of $S_t$ is given recursively by
+
+$$
+  g_t (s) := \mathbb{E}(s^{S_t}) = \phi^{\circ t} (s),\; t \geq 1
+$$
+
+where $\phi^{\circ t}$ denotes the $t$-fold composition of $\phi$.
+
+Define the extinction probability at time $t$ by
+
+$$
+  \rho_t := \mathbb{P}(S_t = 0) = g_t (0)
+$$
+
+Then $(\rho_t)$ satisfies the recursion $\rho_t = \phi(\rho_{t-1})$ for $t\geq 1$, with $\pho_0 = 0$. The sequence $(\rho_r)$ is nondecreasing and converges to a limit
+
+$$
+  \rho := \lim_{t\to\infty} \rho_t
+$$
+
+which is the smallest solution in $[0,1]$ of the fixed-point equation $\rho = \phi(\rho)$. Let $m := \phi' (1) = \mathbb{E}(X)$ denote the mean offspring number. Then
+- if $m \leq 1$, the only solution is $\rho \overset{\test{as}}{=} 1$, and extinction with probability $1$
+- if $m > 1$, there exists a unique solution $\rho\in (0,1)$, and exctinction occurs with probability $\rho < 1$
+
+Interpreting $(S_t)$ as a Markov chain on $\N_0$, we note the following
+- The state $0$ is absorbing
+- If $m \leq 1$, the chain hits $0$ almost surely, so $0$ is recurrent, while all other states are transient
+- If $m > 1$, the chain has a positive probability $1 - \rho > 0$ of never hitting $0$, so $0$ is transient
+
+Finally, consider a modified chain with regeneration at $0$, i.e. whenever $S_t = 0$, the next generation is restarted according to
+
+$$
+  S_{t+1} | \set{S_t = 0} \sim X
+$$
+
+In this case, $0$ is no longer absorbing. If $m > 1$, the number of returns to $0$ is geometrically distributed with parameter $1 - \rho$, since after each visit to $0$, the process becomes extinct again with probability $\rho$ and escapes with probability $1 - \rho$. Thus, $0$ is transient. If $m \leq 1$, the chain returns to $0$ infinitely almost surely, and is therefore recurrent.
+</MathBox>
+
+<MathBox title="Transience and recurrence of sets" boxType="definition">
+Let $(X_n)$ be a Markov chain on the measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. For measurable set $A\in\mathcal{B}(\mathsf{X})$, define the total number of visits to $A$ by
+
+$$
+  \eta_A := \sum_{n=0}^\infty \mathbf{1}_{\set{X_n \in A}}
+$$
+
+The set $A$ is 
+- recurrent if $\mathbb{E}_x (\eta_A) = \infty$ for every $x\in A$.
+- uniformly transient if there exists a constant $M < \infty$ such that $\mathbb{E}_x (\eta_A) < M$ for every $x\in A$.
+- transient if there exists a covering of $\mathsf{X}$ by uniformly transient sets, that is, a countable collection of uniformly transient sets $(B_i)_{i\in\N_+}$ such that
+
+$$
+  A \subseteq \bigcup_{i\in\N_+} B_i
 $$
 </MathBox>
 
-It can be shown that the cycle $d$ is independent of the small set $C$ and that this number intrinsically characterizes the chain $(X_n)$. The period of $(X_n)$ is then defined as the largest integer $d$ satisfying Definition $\ref{definition-1}$, and $(X_n)$ is aperiodic if $d = 1$. If there exists a small set $A$ and a minorization measure $\nu_1$ such that $\nu_1 (A) > 0$, the chain is said to be strongly aperiodic. Note that the $K_\epsilon$-chain can be use to transform an aperiodic chain into a strongly aperiodic chain.
+<MathBox title="" boxType="proposition" tag="1">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, and suppose that the chain has an accessible atom $\alpha\in\mathcal{B}(\mathsf{X})$. Then the following properties hold:
+1. If $\alpha$ is recurrent, then every measurable set $A\in\mathcal{B}(\mathsf{X})$ with $\psi(A) > 0$ is recurrent
+2. If $\alpha$ is transient, then $\mathsf{X}$ is transient. In other words, there exists a countable covering of $\mathsf{X}$ by uniformly transient sets.
+</MathBox>
 
-In the discrte setting, if one state $x\in\mathsf{X}$ satsifies $\mathbf{P}_{xx} > 0$, the chain $(X_n)$ is aperiodic, although this is not a necessary condition.
+<MathBox title="Transience and recurrence of Markov chains" boxType="definition">
+Let $(X_n)$ be a Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. Thee chain is recurrent if there exists a $\sigma$-finite measure $\psi$ such that
+1. $(X_n)$ is $\psi$-irreducible, and
+2. for every $A\in\mathcal{B}(\mathsf{X})$ with $\psi(A) > 0$, then $\mathbb{E}_x (\eta_A) = \infty$ for every $x\in A$, where $\eta_A := \sum_{n=0}^\infty \mathbf{1}_{X_n \in A}$
 
-When the chain is continuous and the transition kernel has a component which is absolutely continuous with respect to the Lebesgue measure, with density $f(\cdot|x_n)$, a sufficient condition for aperiodicity is that $f(\cdot|x_n)$ is positive in a neighbourhood of $x_n$. The chain can then remain in this neighbourhood for an arbitrary number of instants before visiting any set $A$.
+The chain is transient if there exists a $\sigma$-finite measure $\psi$ such that
+- $(X_n)$ is $\psi$-irreducible, and 
+- the state space $\mathsf{X}$ is transient
+</MathBox>
+
+The classification of Markov chains as transient or recurrent according to Proposition $\ref{proposition-1}$ can be easily extended to strongly aperiodic chains. If a Markov chain $(X_n)$ satisfies a minorization condition (in particular, if it is strongly aperiodic), we can construct the associated split chain $(\tilde{X}_n)$. The original chain $(X_n)$ and its split version $(\tilde{X}_n)$ are either both recurrent or both transient, which follows from the fact that the splitting procedure preserves occupation times up to a bounded multiplicative factor.
+
+For a general $\psi$-irreducible chain, the classification can be reduced to the strongly aperiodic case by considering the resolvent chain $K_\epsilon$ with kernel $\eqref{equation-4}$, which is strongly aperiodic. The occupation measures of the original and resolvent chains is given by relation
+
+$$
+  \sum_{n=0}^\infty K_\epsilon^n = \frac{1-\epsilon}{\epsilon} \sum_{n=0}^\infty K^n
+$$
+
+since, for any measurable set $A\in\mathcal{B}(\mathsf{X})$
+
+$$
+\begin{align*}
+  \mathbb{E}_x (\eta_A) =& \sum_{n=0}^\infty K^n (x, A) \\
+  =& \frac{\epsilon}{1-\epsilon} \sum_{n=0}^\infty K_\epsilon^\infty (x, A)
+\end{align*}
+$$
+
+Thus, finiteness or infiniteness of the expected occupation time is preserved under passage from $K$ to $K_\epsilon$. In particular, $(X_n)$ is recurrent (respectively transient) if and only if the associated $K_\epsilon$-chain is recurrent (respectively transient).
+
+## Criteria for recurrence
+
+<MathBox title="Recurrence criteria" boxType="proposition" tag="2">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. The chain is recurrent if there exists a small set $C\in\mathcal{B}(\mathsf{X})$ with $\psi(C) > 0$ such that $\mathbb{P}_x (\tau_C < \infty) = 1$ for every $x\in C$, where $\tau_C := \inf\set{n\geq 1 : X_n \in C}$.
+
+<details>
+<summary>Proof</summary>
+
+Fix $x\in C$ and define
+
+$$
+  u_n := K^n (x, C) = \mathbb{P}_x (X_n \in C),\; n\geq 0
+$$ 
+
+and 
+
+$$
+  f_n := \mathbb{P}_x (\tau_C = n),\; n \geq 1
+$$
+
+which is the probability of first visit to $C$ at time $n$. Let
+
+$$
+\begin{align*}
+  \tilde{U}(s) =& 1 + \sum_{n=1}^\infty u_n s^n \\
+  Q(s) =& \sum_{n=1}^\infty f_n s^n
+\end{align*}
+$$
+
+By standard renewal decomposition, we have
+
+$$
+\begin{equation*}
+  u_n = f_n + \sum_{k=1}^{n-1} f_{k} u_{n-k}
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+This expresses that a visit to $C$ at time $n$ occurs either at the first return time $n$, or after a first return at time $k < n$ followed by a subsequent visit in $n-k$ steps. Passing to generating functions yields
+
+$$
+  \tilde{U}(s) = 1 + Q(s) \tilde{U}(s)
+$$
+
+and hence
+
+$$
+  \tilde{U}(s) = \frac{1}{1 - Q(s)},\; s\in [0,1)
+$$
+
+Letting $s\uparrow 1$, we obtain
+
+$$
+  \sum_{n=0}^\infty u_n = \tilde{U}(1) = \frac{1}{1 - Q(1)}
+$$
+
+where
+
+$$
+  Q(1) = \sum_{n=1}^\infty f_n = \mathbb{P}_x (\tau_C < \infty)
+$$
+
+By assumption, $\mathbb{P}_x (\tau_C < \infty) = 1$, hence $Q(1) = 1$ and therefore
+
+$$
+  \tilde{U}(1) = \sum_{n=0}^\infty K^n (x, C) = \infty
+$$
+
+implying $\mathbb{E}_x (\eta_C) = \infty$. Thus, the set $C$ is recurrent.
+
+Finally, since $(X_n)$ is $\psi$-irreducible and $\psi(C) > 0$, it follows from Proposition $\ref{proposition-1}$ that every measurable set $A\in\mathcal{B}(\mathsf{X})$ with $\psi(A) > 0$ is recurrent. Hence, the chain $(X_n)$ is recurrent.
+</details>
+</MathBox>
+
+## Harris recurrence
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be a Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. A measurable set $A\in\mathcal{B}(\mathsf{X})$ is Harris recurrent if $\mathbb{P}_x (\eta_A = \infty) = 1$ for all $x\in A$, where
+
+$$
+  \eta_A := \sum_{n=0}^\infty \mathbf{1}_{\set{X_n \in A}}
+$$
+
+The Markov chain $(X_n)$ is Harris recurrent if there exists a $\sigma$-finite measure $\psi$ such that $(X_n)$ is $\psi$-irreducible and for every $A \in\mathcal{B}(\mathsf{X})$ with $\psi(A) > 0$, then $A$ is Harris recurrent.
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be a Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. Suppose that $\mathbb{P}_x (\tau_A < \infty) = 1$ for every measurable set $A\in\mathcal{B}(\mathsf{X})$ and every $x\in A$, where $\tau_A := \inf\set{n \geq 1 : X_n \in A}$. Then $\mathbb{P}_x (\eta_A = \infty) = 1$ for every $A\in\mathcal{B}(\mathsf{X})$ and every $x\in A$. In particular, if the chain $(X_n)$ is $\psi$-irreducible, it follows that $(X_n)$ is Harris recurrent.
+  
+<details>
+<summary>Proof</summary>
+
+Fix $A\in\mathcal{B}(\mathsf{X})$ and $x\in A$. Define recursively the successive return times to $A$ by $\tau_A^{(1)} := \tau_A$ and
+
+$$
+  \tau_A^{(k+1)} := \inf\set{n > \tau_A^{(k)} : X_n \in A},\; k \geq 1
+$$
+
+By assumption, $\mathbb{P}_x (\tau_A^{(1)} < \infty) = 1$. Using the strong Markov property at time $\tau_A^{(k)}$, we obtain
+
+$$
+  \mathbb{P}_x (\tau_A^{(k+1)} < \infty | \mathcal{F}_{\tau_A^{(k)}}) = \mathbb{P}_{X_{\tau_A^{(k)}}} (\tau_A < \infty)
+$$
+
+Since $X_{\tau_A^{(k)}} \in A$ almost surely on $\set{\tau_A^{(k)} < \infty}$, the assumption yields
+
+$$
+  \mathbb{P}_{X_{\tau_A^{(k)}}} (\tau_A < \infty) = 1
+$$
+
+Thus, $\mathbb{P}_x (\tau_A^{(k+1)} < \infty) = 1$, and by induction, we obtain $\mathbb{P}_x (\tau_A^{(k)} < \infty) = 1$ for all $k\geq 1$. Now observe that
+
+$$
+  \set{\eta_A \geq k} = \set{\tau_A^{(k)} < \infty}
+$$
+
+which implies that $\mathbb{P}_x (\eta_A \geq k) = 1$ for all $k\geq 1$. Taking the limit $k\to\infty$ yields
+
+$$
+  \mathbb{P}_x (\eta_A = \infty) = \lim_{k\to\infty} \mathbb{P}_x (\eta_A \geq k) = 1
+$$
+</details>
+</MathBox>
+
+The notion of Harris recurrence is not required when the state space $\mathsf{X}$ is finite or countable. In this case, we have the equivalence 
+
+$$
+  \mathbb{E}_x (\eta_x) = \infty \iff \mathbb{P}_x (\tau_x < \infty) = 1,\; \forall x\in\mathsf{X}
+$$
+
+which follows from the standard renewal decomposition.
+
+In contrast, for general state spaces, recurrence must be formulated in terms of sets rather than individual states. In this context, if a $\psi$-irreducible Markov chain $(X_n)$ is Harris recurrent, then for every measurable set $B \in \mathbb{B}(\mathsf{X})$ with $\psi(B) > 0$
+
+$$
+  \mathbb{P}_x (\eta_B = \infty) = 1,\; \forall x\in\mathsf{X}
+$$
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. Suppose there exists a small set $C\in\mathcal{B}(\mathsf{X})$ with $\psi(C) > 0$ such that $\mathbb{P}_x (\tau_C < \infty) = 1$ for all $x\in\mathsf{X}$, where $\tau_C := \inf\set{n\geq 1 : X_n \in C}$. Then the chain $(X_n)$ is Harris recurrent.
+</MathBox>
 
 # Examples and applications
 
@@ -1333,7 +1615,7 @@ where $g:\R\to\R$ is Lipschitz continuous. Then $\mathbf{X}$ is a Feller Markov 
 <details>
 <summary>Proof</summary>
 
-Lipschitz continuity means that there exists a constant $k\in(0,\infty)$ such that $|g(y) - g(x)|\leq k|x-y|$ for $x,y\in\R$. This is a standard condition on $g$ that guarantees the existence of a solution to the differential equation on $[0,\infty)$. Therefore, the only source of randomness in the process comes from the initial value $X_0$. Let t\mapsto X_t(x) denote the unique solution with $X_0(x) = x$ for $x\in\R$. The Markov and time homogeneous properties follow from the fact that $X_{t+s}(x) = X_t(X_s(x))$ for $x,t\in[0,\infty)$ and $x\in S$. That is, the state at time $t+s$ depends only on the state at time $s$ and the time increment $t$. The Feller properties follow from the continuity of $t\mapsto X_t(x)$ and the continuity of $x\mapsto X_t(x)$. The latter is the continuous dependence on the initial value, guaranteed by the assumption on $g$. Note that the transition operator is given by $P_t f(x) = f[X_t (x)]$ for a measurable function $f:S\to\R$ and $x\in S$.
+Lipschitz continuity means that there exists a constant $k\in(0,\infty)$ such that $|g(y) - g(x)|\leq k|x-y|$ for $x,y\in\R$. This is a standard condition on $g$ that guarantees the existence of a solution to the differential equation on $[0,\infty)$. Therefore, the only source of randomness in the process comes from the initial value $X_0$. Let $t\mapsto X_t(x)$ denote the unique solution with $X_0(x) = x$ for $x\in\R$. The Markov and time homogeneous properties follow from the fact that $X_{t+s}(x) = X_t(X_s(x))$ for $x,t\in[0,\infty)$ and $x\in S$. That is, the state at time $t+s$ depends only on the state at time $s$ and the time increment $t$. The Feller properties follow from the continuity of $t\mapsto X_t(x)$ and the continuity of $x\mapsto X_t(x)$. The latter is the continuous dependence on the initial value, guaranteed by the assumption on $g$. Note that the transition operator is given by $P_t f(x) = f[X_t (x)]$ for a measurable function $f:S\to\R$ and $x\in S$.
 </details>
 </MathBox>
 

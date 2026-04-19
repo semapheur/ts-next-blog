@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/math/statistics/random_number_generation.mdx",
+    "./content/notes/math/probability_theory/stochastic_processes/markov_processes.mdx",
   ),
 );
 
