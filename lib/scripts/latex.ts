@@ -392,11 +392,7 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e);
   });
 }
-console.log(
-  findLatexIssues(
-    "./content/notes/math/probability_theory/stochastic_processes/markov_processes.mdx",
-  ),
-);
+console.log(findLatexIssues("./content/notes/math/topology.mdx"));
 
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
