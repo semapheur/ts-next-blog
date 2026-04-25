@@ -1581,13 +1581,410 @@ $$
 Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. Suppose there exists a small set $C\in\mathcal{B}(\mathsf{X})$ with $\psi(C) > 0$ such that $\mathbb{P}_x (\tau_C < \infty) = 1$ for all $x\in\mathsf{X}$, where $\tau_C := \inf\set{n\geq 1 : X_n \in C}$. Then the chain $(X_n)$ is Harris recurrent.
 </MathBox>
 
+# Invariant measures
+
+<MathBox title="Invariant measure" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}$. A $\sigma$-finite measure $\pi$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ is invariant (or stationary) for $K$ if
+
+$$
+  \pi(B) = \int_\mathsf{X} K(x, B) \pi(\d x),\; \forall B \in\mathcal{B}(\mathsf{X})
+$$
+</MathBox>
+
+
+<MathBox title="Positive Markov chain" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}. Suppose the associated Markov chain is $\psi$-irreducible.
+
+- The chain is positive if there exists an invariant probability measure $\pi$
+- The chain is null recurrent if it is recurrent, but admits no finite invariant measure
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}. Suppose the associated Markov chain is $\psi$-irreducible. If there exists a $\sigma$-finite invariant measure $\pi$ for $K$, then this invariant measure is unique up to a multiplicative constant.
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space, and let $(X_n)$ be a $\psi$-irreducible Markov chain with transition kernel $K$. If the chain is positive, it is recurrent.
+
+<details>
+<summary>Proof</summary>
+
+We prove the claim by contradiction. Suppose $(X_n)$ is transient. Then there exists a countable collection of measurable sets $(A_j)_{j\in\N} \subset \mathcal{B}(\mathsf{X})$ covering $\mathsf{X}$, i.e.
+
+$$
+\begin{equation*}
+  \mathsf{X} = \bigcup_{j=1}^\infty A_j
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+Each $A_j$ is uniformly transient, meaning that there exists a constant $M_j < \infty$ such that
+
+$$
+  \mathbb{E}_x (\eta_{A_j}) \leq M_j,\; \forall x\in A_j
+$$
+
+where $\eta_{A_j}$ is the total number of visits to $A_j$:
+
+$$
+\begin{equation*}
+  \eta_{A_j} := \sum_{n=0}^\infty \mathbf{1}_{\set{X_n \in A}}
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+Let $\pi$ be an invariant probability measure. By invariance, for every $n\geq 0$ and every $A\in\mathcal{B}(\mathsf{X})$, we have
+
+$$
+\begin{align*}
+  \pi(A_j) =& \int_\mathsf{X} K(x, A_j) \pi(\d x) \\
+  =& \int_\mathsf{X} K^n (x, A_j) \pi(\d x)
+\end{align*}
+$$
+
+Fix $j\in\N$. Summing over $n = 0,\dots,k$ yields
+
+$$
+\begin{align*}
+  (k+1)\pi (A_j) =& \sum_{n=0}^k \int_\mathsf{X} K^n (x, A_j) \pi(\d x) \\
+  =& \int_\mathsf{X} \sum_{n=0}^k K^n (x, A_j) \pi(\d x)
+\end{align*}
+$$
+
+From $\eqref{equation-6}$ it follows that
+
+$$
+\begin{align*}
+  \sum_{n=0}^k K^n (x, A_j) =& \mathbb{E}_x \left[\sum_{n=0}^k \mathbf{1}_{\set{X_n \in A_j}} \right] \\
+  \leq& \mathbb{E}_x (\eta_{A_j})
+\end{align*}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  (k+1) \pi(A_j) \leq& \int_\mathsf{X} \mathbb{E}_x (\eta_{A_j}) \pi(\d x) \\
+  =& \int_{A_j} \mathbb{E}_x (\eta_{A_j}) \pi(\d x) \\
+  \leq& M_j \pi(A_j) \leq M_j
+\end{align*}
+$$
+
+Letting $k\to\infty$ shows that $\pi(A_j) = 0$, for every $j\in\N$. From $\eqref{equation-1}$, countable subadditivity gives
+
+$$
+  \pi(X) \leq \sum_{j=1}^\infty \pi(A_j) = 0
+$$
+
+which contradicts the assumption $\pi(\mathsf{X}) = 1$.
+</details>
+</MathBox>
+
+<MathBox title="Kac's Theorem" boxType="theorem">
+Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, and suppose $\alpha\in\mathcal{B}(\mathsf{X})$ is an atom. The chain is positive if and only if $\mathbb{E}_\alpha (\tau_\alpha) < \infty$, where $\tau_\alpha$ is the return time defined by
+
+$$
+  \tau_\alpha := \inf\set{n\geq 1 : X_n \in \alpha}
+$$
+
+In this case, the invariant probability measure $\pi$ satisfies
+
+$$
+  \pi(\alpha) = (\mathbb{E}_\alpha (\tau_\alpha))^{-1}
+$$
+
+<details>
+<summary>Proof</summary>
+
+- **Sufficiency: $\mathbb{E}_\alpha (\tau_\alpha) < \infty\implies \text{positive recurrence}$**
+
+If $\mathbb{E}_\alpha (\tau_\alpha) < \infty$, then in particular $\mathbb{P}_\alpha (\tau_\alpha < \infty) = 1$. Thus $(X_n)$ is recurrent by Proposition $\ref{proposition-2}$. Define a measure $\pi$ on $\mathcal{B}(\mathsf{X})$ by
+
+$$
+\begin{equation*}
+\begin{split}
+  \pi(A) :=& \mathbb{E}_\alpha \left(\sum_{n=0}^{\tau_\alpha - 1} \mathbf{1}_{\set{X_n \in A}} \right) \\
+  =& \sum_{n=1}^\infty \mathbb{P}_\alpha (X_n \in A, \tau_\alpha \geq n)
+\end{split}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+which is the cycle occupation measure associated with returns to $\alpha$
+
+**Invariance of $\pi$**
+
+Using the Markov property, we find
+
+$$
+\begin{align*}
+  \int_\mathsf{X} K(x, A) \pi (\d x) =& \sum_{n=0}^\infty \int_\mathsf{X} K(x, A) \mathbb{P}_\alpha (X_n \in \d x, \tau_\alpha > n) \\
+  =& \sum_{n=0}^\infty \mathbb{P}_\alpha (X_{n+1} \in A, \tau_\alpha > n)
+\end{align*}
+$$
+
+Since 
+
+$$
+  \set{\tau_\alpha > n} = \set{\tau_\alpha > n + 1} \cup \set{\tau_\alpha = n + 1}
+$$
+
+and $X_{n+1} \in\alpha$ on $\set{\tau_\alpha = n + 1}$, we obtain
+
+$$
+\begin{align*}
+  \mathbb{P}_\alpha (X_{n+1} \in A, \tau_\alpha > n) =& \mathbb{P}_\alpha (X_{n+1} \in A, \tau_\alpha > n + 1) \\
+  &+ \mathbf{1}_A (\alpha) \mathbb{P}_\alpha (\tau_\alpha = n + 1)
+\end{align*}
+$$
+
+Summing over $n$ yields
+
+$$
+\begin{align*}
+  \int_\mathsf{X}K(x, A) =& \sum_{n=1}^\infty \mathbb{P}_\alpha (X_n \in A, \tau_\alpha > n) + \mathbf{1}_A (\alpha) \underbrace{\mathbf{P}_\alpha (\tau_\alpha < \infty)}_{=1} \\
+  \overset{\eqref{equation-8}}{=}& \pi(A)
+\end{align*}
+$$
+
+**Finiteness of $\pi$**
+
+By Tonelli's theorem
+
+$$
+\begin{align*}
+  \pi(\mathsf{X}) =& \sum_{n=1}^\infty \mathbb{P}_\alpha (\tau_\alpha \geq n) \\
+  =& \sum_{n=1}^\infty \sum_{m=n}^\infty \mathbb{P}_\alpha (\tau_\alpha = m) \\
+  =& \sum_{m=1}^\infty m \mathbb{P}_\alpha (\tau_\alpha = m) \\
+  =& \mathbb{E}_\alpha (\tau_\alpha) < \infty
+\end{align*}
+$$
+
+Thus $\pi$ is a finite invariant measure. Normalizing it yields an invariant probability measure, implying that the chain $(X_n)$ is positive recurrent.
+
+- **Necessity: $\text{positive recurrence} \implies\mathbb{E}_\alpha (\tau_\alpha) < \infty$**
+
+Suppose the chain $(X_n)$ admits an invariant probability measure $\pi$. By $\psi$-irreducibility, $\pi$ is unique. Let $\tilde{\pi}$ be the cycle occupation measure constructed above. By the same argument, $\tilde{\pi}$ is an invariant measure. By uniqueness up to scaling, we have for some constant $c > 0$
+
+$$
+  \tilde{\pi} = c\pi
+$$
+
+Evaluating at $\mathsf{X}$ with $\pi(\mathsf{X}) = 1$ gives 
+
+$$
+\begin{equation*}
+  c = \tilde{\pi}(\mathsf{X}) = \mathbb{E}_\alpha (\tau_\alpha)
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+Since $\pi$ is finite, it follows that $\mathbb{E}_\alpha (\alpha_\tau) < \infty$.
+
+- **Identification of $\pi(A)$**
+
+From $\tilde{\pi} = c\pi$ and
+
+$$
+  \tilde{\pi}(\alpha) = \mathbb{E}_\alpha \left(\sum_{n=0}^{\tau_\alpha - 1} \mathbf{1}_{\set{X_n \in\alpha}} \right) = 1
+$$
+
+we obtain $1 = c\pi(\alpha) \overset{\eqref{equation-9}}{=} \mathbb{E}_\alpha (\tau_\alpha) \pi(\alpha)$. Hence,
+
+$$
+  \pi(\alpha) = \frac{1}{\mathbb{E}_\alpha (\tau_\alpha))}
+$$
+</details>
+</MathBox>
+
+Kac's theorem shows that positivity is a strictly stronger property  than recurrence. For an atom $\alpha$, recurrence is equivalent to $\mathbb{P}_\alpha (\tau_\alpha < \infty) = 1$, meaning that returns to $\alpha$ occur almost surely. In contrast, positivity requires the stronger integrability condition
+
+$$
+  \mathbb{E}_\alpha (\tau_\alpha) < \infty
+$$
+
+Thus, almost sure finiteness of the return time is necessary but not sufficient for finiteness of its expectation. The latter distinguishes positive recurrence from null recurrence.
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. If the chain is recurrent, there exists a $\sigma$-finite invariant measure $\pi$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, which is unique up to a multiplicative factor.
+</MathBox>
+
+<MathBox title="Stationary distribution of a positive discrete Markov chain" boxType="example">
+Let $(X_n)_{n\geq 0}$ be an irreducible Markov chain on a countable state space $\mathsf{X}$ with transition matrix $\mathbf{P} = (P_{xy})_{x,y\in\mathsf{X}}$. If the chain is positive recurrent, the invariant distribution $\pi$ is given by
+
+$$
+  \pi_x = \frac{1}{\mathbb{E}_x (\tau_x)},\; x\in\mathsf{X}
+$$
+
+where $\tau_x$ is the return time
+
+$$
+  \tau_x := \inf\set{n \geq 1 : X_n = x},\; X_0 = x
+$$
+
+More precisely, $\mathbb{E}_x (\tau_x)$ is the expected length of an excursion away from state $x$, i.e. the expected inter-arrival time between successive visits to $x$.
+
+**Spectral interpretation**
+
+The stationary distribution $\boldsymbol{\pi} = (\pi_x)_{x\in\mathsf{X}}$ is the unique probability vector satisfying
+
+$$
+  \boldsymbol{\pi}^\top \mathbf{P} = \boldsymbol{\pi}^\top
+$$
+
+showing that $\boldsymbol{\pi}$ is a left eigenvector of $\mathbf{P}$ with corresponding eigenvalue $1$.
+</MathBox>
+
+## Representation of invariant probability measures via regeneration
+
+Let $(X_n)_{n\geq 0}$ be a Harris recurrent, irreducible and aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with stationary distribution $\pi$. Assume that the minorization condition $\eqref{equation-1}$ holds on a small set $C\in\mathcal{B}(\mathsf{X})$, and let $\tau_C$ denote the regeneration time associate with the split-chain construction.
+
+Under these assumptions $\mathbb{E}_\nu (\tau_C) < \infty$ for a minorizing measure $\nu$, and the chain admits a regenerative representation of its invariant measure: there exists a nonnegative integer-valued random variable $T^*$ and a family of random variables $(N_t)_{t\geq 1}$ such that
+
+$$
+\begin{equation*}
+  \pi(A) = \sum_{t=1}^\infty \mathbb{P} (N_t \in A) \mathbb{P} (T^* = t),\; A\in\mathcal{B}(\mathsf{X})
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+This representation is obtained by embedding $(X_n)$ into its split-chain extension, which introduces regeneration events at visits to $C$ with probability $\epsilon$.
+
+Let $\tau_C$ be the first regeneration time. Then $T^*$ is given by the tail probabilities of $\tau_C$ as
+
+$$
+\begin{equation*}
+  \mathbb{P}(T^* = t) = \frac{\mathbf{P}_\nu (\tau_C \geq 1)}{\mathbb{E}_\nu (\tau_C)}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+The random variable $N_t$ represents the state of the chain at the end of regenerative cycle of length $t$, and is defined as follows:
+- If $t=1$, then $N_1 \sim\nu$
+- If $t \geq 2$, then $N_t$ is distributed as $X_t$ under $\mathbf{P}_\nu$, conditioned on no regeneration before time $t$, i.e. on $\set{\tau_C \geq t}$
+
+Using the mixture representation $\eqref{equation-12}$, simulating $\pi$ can be done in two steps. First, draw the cycle length sampling $T^* \sim\mathbb{P}(T^* = \cdot)$ according to $\eqref{equation-11}$. Then, conditional on $T^* =t$, generate the terminal state $N_t$, which is constructed from the split-chain dynamics as follows.
+The chain is initialized from the minorizing measure $\nu$ and then iterated over $t-1$ steps using the residual transition kernel
+
+$$
+  \tilde{K}(x,\cdot) = \frac{K(x,\cdot) - \epsilon \mathbf{1}_C (x) \nu(\cdot)}{1 - \epsilon \mathbf{1}_C (x)}
+$$
+
+The resulting state $X_{t-1}$ is then distributed as $N_t$.
+
+If direct simulation from $\tilde{K}$ is computationally difficult, we can instead simulate the split chain until a regeneration occurs, i.e. until $\tau_C \geq t$, and accept the resulting path. This is always valid but may be inefficient depending on the regeneration rate.
+
+When the state space $\mathsf{X}$ is finite and the minorization holds globally, the chain is uniformly ergodic and the residual kernel simplifies to
+
+$$
+  \tilde{K}(x,y) = \frac{K(x,y) - \epsilon\nu(y)}{1 - \epsilon}
+$$
+
+In this case, the regenerative structure reduces to a geometric mixture representation, and the simulation algorithm becomes
+1. Sample $X_0 \sim\nu$ and $\omega\sim\operatorname{Geom}(\epsilon)$
+2. Iterate $X_{t+1} \sim\tilde{K}(X_t, \cdot)$ for $t=0,\dots,\omega - 1$
+3. Output $X_\omega \sim\pi$
+
+## Reversibility
+
+<MathBox title="Reversible Markov chain" boxType="definition">
+Let $(X_n)_{n\in\Z}$ be a stationary Markov chain on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with invariant distribution $\pi$ and transition kernel $K$. Then chain is reversible with respect to $\pi$ if it satisfies the detailed balance equation
+
+$$
+\begin{equation*}
+  \pi (\d x) K(x, \d y) = \pi(\d y) K(y, \d x),\; \forall x,y \in\mathsf{X}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+in the sense of equality of measures on $\mathsf{X}\times\mathsf{X}$. Equivalently, in probabilistic terms, reversibility means that the finite-dimensional distributions are invariant under time reversal
+
+$$
+  (X_0, X_1, \dots, X_n) \overset{d}{=} (X_n, X_{n-1}, \dots, X_0)
+$$
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="3">
+Let $(X_n)$ be a Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $K$. Suppose there exists a measure $\pi$ that satisfies the detailed balance equation $\eqref{equation-10}$. Then:
+1. $\pi$ is an invariant measure or $K$
+2. $(X_n)$ is reversible with respect to $\pi$
+
+<details>
+<summary>Proof</summary>
+
+1. **Invariance of $\pi$**
+
+Let $B\in\mathcal{B}(\mathsf{X})$. By definition of the kernel and using Fubini-Tonelli's theorem, we have
+
+$$
+\begin{align*}
+  \int_\mathsf{X} K(x, B) \pi(\d x) =& \int_\mathsf{X} \int_B K(x,\d y) \pi(\d x) \\
+  =& \int_B \int_\mathsf{X} \pi(\d x) K(x, \dy)
+\end{align*}
+$$
+
+By the detailed balance equation $\eqref{equation-10}$, we can swap $x$ and $y$ in the joint measure
+
+$$
+  \pi(\d x) K(x, \d y) = \pi(\d y) K(y, \d x)
+$$
+
+Thus
+
+$$
+\begin{align*}
+  \int_\mathsf{X} K(x, B) \pi(\d x) =& \int_B \int_\mathsf{X} \pi(\d y) K(y, \d x) \\
+  =& \int_B
+\end{align*}
+$$
+
+showing that
+
+$$
+  \int_\mathsf{X} K(x, B) \pi(\d x) = \pi(B)
+$$
+
+meaning that $\pi$ is invariant.
+
+2. **Reversbility of $(X_n)$**
+
+Define the joint measure on $\mathsf{X}\times\mathsf{X}$ by
+
+$$
+  \mu(\d x,\d y) := \pi(\d x) K(x,\d y)
+$$
+
+The detailed balance equation $\eqref{equation-10}$ states precisely that $\mu$ is symmetric under coordinate exchange
+
+$$
+  \mu(\d x,\d y) = \mu(\d y,\d x)
+$$
+
+This symmetry implies that the two-dimensional distribution of consecutive states satisfy
+
+$$
+  (X_n, X_{n+1}) \overset{d}{=} (X_{n+1}, X_n)
+$$
+
+By extension, all finite-dimensional distributions are invariant under time reversal, i.e.
+
+$$
+  (X_0, X_1,\dots,X_n) \overset{d}{=} (X_n, X_{n-1},\dots,X_0)
+$$
+
+which is exactly the definition of reversibility.
+</details>
+</MathBox>
+
+# Ergodicity and convergence
+
 # Examples and applications
 
 ## Recurrence relations and differential equations
 
 Markov processes can be viewed as stochastic counterparts of deterministic recurrence relations (discrete time) and differential equations (continuous time)
 
-<MathBox title='' boxType="proposition">
+<MathBox title="" boxType="proposition">
 Suppose $\mathbf{X} = \Set{X_n }_{n\in\N}$ is a stochastic process with state space $(S,\mathcal{S})$ satisfying the recurrence relation
 
 $$
