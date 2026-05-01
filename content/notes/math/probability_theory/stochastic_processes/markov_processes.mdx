@@ -1276,7 +1276,7 @@ To make this structure explicit, we introduce the split chain $\tilde{X}_n = (X_
 In the discrete case, let $\mathbf{P}$ be the transition matrix. The period of a state $\omega\in\mathsf{X}$ is defined as
 
 $$
-  \d(\omega) = \operatorname{gcd} \set{m \geq 1 : K^m (\omega, \omega) > 0}
+  \d(\omega) = \gcd\set{m \geq 1 : K^m (\omega, \omega) > 0}
 $$
 
 The value of the period is constant on all states that communicate with $\omega$. In the case of an irreducible chain on a finite state space $\mathsf{X}$, the transition matrix can be put, after a suitable permutation of the states, into a cyclic block matrix
@@ -1593,14 +1593,14 @@ $$
 
 
 <MathBox title="Positive Markov chain" boxType="definition">
-Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}. Suppose the associated Markov chain is $\psi$-irreducible.
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}$. Suppose the associated Markov chain is $\psi$-irreducible.
 
 - The chain is positive if there exists an invariant probability measure $\pi$
 - The chain is null recurrent if it is recurrent, but admits no finite invariant measure
 </MathBox>
 
 <MathBox title="" boxType="proposition">
-Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}. Suppose the associated Markov chain is $\psi$-irreducible. If there exists a $\sigma$-finite invariant measure $\pi$ for $K$, then this invariant measure is unique up to a multiplicative constant.
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space and let $K(x,\cdot)$ be a Markov transition kernel on $\mathsf{X}$. Suppose the associated Markov chain is $\psi$-irreducible. If there exists a $\sigma$-finite invariant measure $\pi$ for $K$, then this invariant measure is unique up to a multiplicative constant.
 </MathBox>
 
 <MathBox title="" boxType="proposition">
@@ -1680,7 +1680,7 @@ which contradicts the assumption $\pi(\mathsf{X}) = 1$.
 </details>
 </MathBox>
 
-<MathBox title="Kac's Theorem" boxType="theorem">
+<MathBox title="Kac's Theorem" boxType="theorem" tag="1">
 Let $(X_n)$ be a $\psi$-irreducible Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, and suppose $\alpha\in\mathcal{B}(\mathsf{X})$ is an atom. The chain is positive if and only if $\mathbb{E}_\alpha (\tau_\alpha) < \infty$, where $\tau_\alpha$ is the return time defined by
 
 $$
@@ -1977,6 +1977,494 @@ which is exactly the definition of reversibility.
 </MathBox>
 
 # Ergodicity and convergence
+
+<MathBox title="Ergodicity" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $K$ and invariant probability measure $\pi$. An atom $\alpha\in\mathcal{B}(\mathsf{X})$ is ergodic if
+
+$$
+  \lim_{n\to\infty} K^n (\alpha, \alpha) = \pi(\alpha)
+$$
+</MathBox>
+
+<MathBox title="Total variation norm" boxType="definition">
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space. The total variation distance between two finite measures $\mu_1, \mu_2$ on $\mathsf{X}$ is defined by
+
+$$
+  \norm{\mu_1 - \mu_2}_\text{TV} =: \sup_{A\in\mathcal{P}(\mathsf{X)} |\mu_1 (A) - \mu_2 (A)|
+$$
+
+Generally, for a finite measure $\mu$ on $\mathsf{X}$, its total variation norm admits the dual representation
+
+$$
+\begin{equation*}
+  \norm{\mu}_\text{TV} = \frac{1}{2} \sup_{\norm{h}_\infty \leq 1} \left|\int_\mathsf{X} h(x) \mu(\d x) \right|
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where the supremum is taken over all bounded measurable functions $h:\mathsf{X}\to\R$ with $\norm{h}_\infty \leq 1$.
+
+If $\mathsf{X}$ is countable, the total variation norm reduces to the sum
+
+$$
+  \nom{\mu_1 - \mu_2}_\text{TV} = \frac{1}{2} \sum_{y\in\mathsf{X}} |\mu_1 (y) - \mu_2 (y)|
+$$
+</MathBox>
+
+Let $(\mu_n)_{n\geq 1}$ and $\mu$ be finite measures on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$. If
+
+$$
+  \lim_{n\to\infty} \norm{\mu_n - \mu}_\text{TV} = 0
+$$
+
+then for every bounded measurable function $h:\mathsf{X}\to\R$
+
+$$
+  \left| \int h \;\d\mu_n - \int h\;\d\mu \right| \leq \norm{h}_\infty \norm{\mu_n - \mu}_\text{TV} \xrightarrow{n\to\infty} 0
+$$
+
+In particular, if $X_n \sim\mu_n$ and $X \sim\mu$, then
+
+$$
+  \lim_{n\to\infty} |\mathbb{E}_\mu [h(X_n)] - \mathbb{E}^\pi [h(X)]\right|
+$$
+
+for every bounded function $h$. Thus, convergence in total variation implies convergence of expectations for all bounded measurable functions.
+
+<MathBox title="" boxType="proposition" tag="4">
+Let $(X_n)$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a countable state space $\mathsf{X}$, with transition kernel $K$ and invariant probability measure $\pi$. If there exists an ergodic atom $\alpha\subseteq\mathsf{X}$, then for every $x\in\mathsf{X}$
+
+$$
+  \lim_{n\to\infty} \norm{K^n (x, \cdot) - \pi}_\text{TV} = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $\tau_\alpha := \inf\set{n\geq 1 : X_n \in\alpha}$ denote the first return (or entrance) time to $\alpha$.
+
+Using the strong Markov property at $\tau_\alpha$, we can decompose $K^n$ for any $x,y \in\mathsf{X}$ and $n\geq 1$ as
+
+$$
+\begin{equation*}
+\begin{split}
+  K^n (x,y) =& \mathbb{P}_x (X_n = y, \tau_\alpha \geq n) \\
+  &+ \sum_{j=1}^n \mathbb{P}_x (\tau_\alpha = j) K^{n-j} (\alpha, y) \\
+\end{split}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+where, by the atom property, $K^m (z, \cdot) = K^m (\alpha,\cdot)$ for all $z\in\alpha$.
+
+From $\eqref{equation-8}$, we can express $\pi$ as
+
+$$
+\begin{equation*}
+  \pi(y) = \pi(\alpha) \sum_{j=1}^\infty \mathbb{P}_\alpha (X_j = y, \tau_\alpha \geq j)
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+The total variation distance of $K^n$ and $\pi$ is given by
+
+$$
+  \norm{K^n (x,\cdot) - \pi}_\text{TV} = \frac{1}{2} \sum_{y\in\mathsf{X}} |K^n (x,y) - \pi(y)|
+$$
+
+Substituting $\eqref{equation-14}$ and $\eqref{equation-15}$, and applying the triangle inequality yield
+
+$$
+\begin{align*}
+  \sum_{y\in\mathsf{X}} \mathbb{P}_x (X_n = y, \tau_\alpha \geq n) \leq& \sum_{y\in\mathsf{X}} \mathbb{P}_x (X_n = y, \tau_\alpha > n) \\
+  &+ \sum_{y\in\mathsf{X}} \left|\sum_{j=1}^n \mathbb{P}_x (\tau_\alpha = j) K^{n-j} (\alpha, y) - \pi(\alpha) \sum_{j=1}^\infty \mathbb{P}_\alpha (X_j = y, \tau_\alpha \geq j)
+\end{align*}
+$$
+
+Next, we show that each term in this decomposition vanishes as $n\to\infty$. For the first term, note that
+
+$$
+  \sum_{y\in\mathsf{X}} \mathbb{P}_x (X_n = y, \tau_\alpha > n) = \mathbb{P}_x (\tau_\alpha > n)
+$$
+
+Since the chain is Harris reccurent, it follows that 
+
+$$
+  \lim_{n\to\infty} \mathbb{P}_x (\tau_\alpha > n)  = 0
+$$
+
+Define the tail of the regeneration series
+
+$$
+  R_n (y) := \pi(\alpha) \sum_{j=n+1}^\infty \mathbb{P}_\alpha (X_j = y, \tau_\alpha \geq j)
+$$
+
+Since the series is finite by positive recurrence, it follows that
+
+$$
+  \lim_{n\to\infty} \sum_y R_n (y) = 0
+$$
+
+It remains to verify the convergence of
+
+$$
+\begin{equation*}
+  \sum_{y\in\mathsf{X}} \left|\mathbb{P}_x (\tau_\alpha = 1) K^{n-j} (\alpha, y) - \pi(\alpha) \sum_{j=1}^n \mathbb{P}_\alpha (X_j = y, \tau_\alpha \geq j) \right|
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Introduce $a_m := K^m (\alpha, \alpha) - \pi(\alpha)$. By ergodicity of the atom, it follows that $\lim_{m\to\infty} a_m = 0$. Using the atom property and summing over $y$, then $\eqref{equation-16}$ reduces to a convolution-type expression
+
+$$
+\begin{equation*}
+  \sum_{j=1}^n \mathbb{P}_x (\tau_\alpha = j) a_{n-j}
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+Since $(\mathbb{P}_x (\tau_\alpha = j))_{j\geq 1}$ is a probability mass function and $a_m$ is bounded, it follows that $\eqref{equation-17}$ converges to $0$ as $n\to\infty$.
+
+We have established that all contributions vanish as $n\to\infty$, therefore
+
+$$
+  \lim_{n\to\infty} \norm{K^n (x,\cdot) - \pi}_\text{TV} = 0
+$$
+</details>
+</MathBox>
+
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a countable state space $\mathsf{X}$, and suppose $\alpha\subseteq\mathsf{X}$ is an atom. Convergence to stationarity can be proved via a coupling argument based on regeneration at $\alpha$.
+
+Let $(X_n)$ and $(X'_n)$ be two Markov chains sharing the same transition kernel $K$, started from initial distributions $\mu$ and $\nu$, respectively. Define the coupling time
+
+$$
+  T := \inf\set{n\geq 0 : X_n \in\alpha \land X'_n \in\alpha}
+$$
+
+By the atom property, once both chains enter $\alpha$ at the same time, they can be perfectly coupled from that time onward (i.e. forced to evolve identically), since the transition kernel is the same from every point in $\alpha$. Hence
+
+$$
+\begin{align*}
+  X_T =& X'_T \in\alpha \\
+  \implies (X_{T+k})_{k\geq 0} \deq (X'_{T+k})_{k\geq 0}
+\end{align*}
+$$
+
+Thus, if $\mathbb{P}(T < \infty) = 1$, the two chains eventually coalesce almost surely. If $\pi$ is an invariant probability measure on $\mathsf{X}$, this implies convergence in total variation
+
+$$
+  \lim_{n\to\infty} \norm{K^n (x, \cdot) - \pi}_\text{TV} = 0
+$$
+
+Define the successive return times to $\alpha$ by $\tau_\alpha (0) := 0$ and
+
+$$
+  \tau_\alpha (k) := \inf\set{n > \tau_\alpha (k - 1) : X_n \in\alpha},\; k\geq 1
+$$
+
+The excursion lengths
+
+$$
+  S_k := \tau_\alpha (k + 1) - \tau_\alpha (k),\; k\geq 0
+$$
+
+form an independent and identically distributed sequence under $\mathbb{P}_\alpha$, with common distribution $p$, by the strong Markov property and the atom property.
+
+Let
+- $p(n) := \mathbb{P}_\alpha (S_1 = n)$ for $n\geq 1$
+- $q(n) := \mathbb{P}_\mu (\tau_\alpha (1) = n)$
+- $r(n) := \mathbb{P}_\nu (\tau_\alpha (1) = n)$
+
+Then, for $k\geq 1$
+
+$$
+  \tau_\alpha (k + 1) = \tau_\alpha (1) + \sum_{j=1}^k
+$$
+
+and therefore the distribution of $\tau_\alpha (k + 1)$ is the convolution $q * p^{*k}$.
+
+We introduce the renewal indicator processes
+
+$$
+\begin{align*}
+  Z_q (n) =& \sum_{k=0}^n \mathbf{1}_{\tau_\alpha (k) = n} \\
+  Z_r (n) =& \sum_{k=0}^n \mathbf{1}_{\tau'_\alpha (k) n}
+\end{align*}
+$$
+
+which correspond to the events that the chains $(X_n)$ and $(X'_n)$ visit $\alpha$ at time $n$. The coupling time is then given by
+
+$$
+  T_{q,r} = \min\set{n \geq 0 : Z_q (n) = Z_r (n) = 1}
+$$
+
+which satisfies Lemma $\ref{lemma-1}$.
+
+<MathBox title="" boxType="lemma" tag="1">
+Let $p = (p(n))_{n\geq 1}$ be a probability distribution on $\N_+$ satisfying
+1. **Finite mean:**
+
+$$
+  m_p := \sum_{n=1}^\infty n p(n) < \infty
+$$
+
+2. **Aperiodicity:** $\gcd\set{n \geq 1 : p(n) > 0} = 1$
+
+Let $q$ be any probability distribution on $\N_0$. Consider two independent renewal processes
+1. $(\tau_n)_{n\geq 0}$ with interarrival law $p$ and initial delay $q$
+2. $(\tau'_n)_{n\geq 0}$ with interarrival law $p$ and initial delay $r$
+
+defined by $\tau_0 \sim q$ and
+
+$$
+  \tau_n = \tau_0 + \sum_{k=1}^n S_k,\; S_k \iid p
+$$
+
+and similarly for $(\tau'_n)$. Define the simultaneous renewal time
+
+$$
+  T_{q,r} := \inft\set{n \geq 0 : n \in \set{\tau_k}_{k\geq 0} \cap \set{\tau'_k}_{k\geq 0}}
+$$
+
+Then $\mathbb{P}(T_{q,r} < \infty) = 1$.
+
+<details>
+<summary>Proof</summary>
+
+Define the forward recurrence process $(V_n^+)_{n\geq 0}$ on $\N_+$ by
+
+$$
+  V_n = \min\set{\tau_k - n : \tau_k \geq n}
+$$
+
+which is a Markov chain with transition kernel
+
+$$
+\begin{align*}
+  P(1, j) =& p(j),\; j \geq 1 \\
+  P(j, j-1) =& 1,\; j > 1 \tag{\label{equation-18}}
+\end{align*}
+$$
+
+**Recurrence of $V_n^+$**
+
+From $\eqref{equation-18}$ it follows that the chain $(V_n^+)$ almost surely hits $1$ in exactly $j - 1$ steps, starting from any state $j > 2$. Consequently
+
+$$
+  \mathbb{P}_j (\tau_1 < \infty) = 1
+$$
+
+where $\tau_1 = \inf\set{n\geq 0 : V_n^+ = 1}$.
+
+At state $j = 1$ the chain $(V_n^+)$ regenerates with distribution $p$. Since $p$ is supported on $\N_+$, the state $j = 1$ is recurrent, and therefore the whole chain is recurrent.
+
+**Invariant measure**
+
+Define the probability measure
+
+$$
+  \pi(j) := \sum_{n\geq j} p(n)
+$$
+
+Then $\pi$ is invariant since
+
+$$
+\begin{align*}
+  \sum_i \pi(i) P(i,j) =& \pi(j+1) + p(j) \\
+  =& \sum_{n\geq j + 1} p(n) + p(j) \\
+  =& \sum_{n\geq j} p(n) = \pi(j)
+\end{align*}
+$$
+
+Moreover, $\pi$ is finite since
+
+$$
+\begin{align*}
+  \sum_{j\geq 1} \pi(j) =& \sum_{j\geq 1} \sum_{n\geq j} p(n) \\
+  =& \sum_{n\geq 1} np(n) = m_p < \infinity
+\end{align*}
+$$
+
+showing that $V_n^+$ is positive recurrent.
+
+**Joint process and coupling structure**
+
+Let $(W_n^+)$ be an independent copy $(V_n^+)$. Define the joint chain $V_n^* := (V_n^+, W_n^+)$ on $\N_+^2$ with transition kernel
+
+$$
+  P^* ((i, j), (i', j')) = P(i,i') P(j,j')
+$$
+
+This process evolves independently coordinate-wse and regenerate when $(i,j) = (1,1)$.
+
+To show irreducibility of $(V_n^*)$, note that if $p$ is aperiodic, there exists $r, s \in\operatorname{supp}(p)$ such that $\gcd(r,s) = 1$. Hence, there exist integers $n,m \geq 1$ such that
+
+$$
+  nr - ms = 1
+$$
+
+Using this, we construct paths from any $(i,j)$ to $(1,1)$ where
+- we decrease coordinates deterministically to renewal points
+- then use jumps of size $r$ and $s$ to align both coordinates modulo $1$
+
+Thus, $\mathbb{P}_{(i,j)} (\tau_{1,1} < \infty) > 0$ and by recurrence of the product chain, this implies eventual hitting with probability $1$ once positive recurrence holds.
+
+Define the joint probability measure $\pi^* (i, j) := \pi(i) \pi(j)$. Since $\pi$ is finite and invariant, so is $\pi^*$. Hence, $V_n^*$ is positive Harris recurrent.
+
+Define the first simultaneous regeneration time
+
+$$
+  \tau_{1,1} := \inf\set{n \geq 0 : V_n^* = (1,1)}
+$$
+
+Observe that each coordinate of $V_n^*$ is a renewal indicator in the sense that
+- $V_n^+ = 1$ exactly at renewal epochs $\set{\tau_k}$
+- $W_n^+ = 1$ exactly at $\set{\tau'_k}$
+
+such that
+
+$$
+  V_n^* = (1,1) \iff n\in\set{\tau_k} \cap \set{\tau'_k}
+$$
+
+Hence, 
+
+$$
+  \tau_{1,1} = \inf\set(\set{\tau_k} \cap\set{\tau'_k}) = T_{q,r}
+$$ 
+
+Counting states after renewal, we obtain $T_{q,r} = \tau_{1,1} + 1$).
+
+
+Since 
+- $V_n^*$ is positive Harris recurrent when $m_p < \infty$
+- $(1,1)$ is a recurrent state
+- the chain is irreducible under aperiodicity
+
+we obtain the standard result: Every set of positive invariant measure is hit almost surely. Since $\pi^* (1,1) = \pi(1)^2 > $, we obtain $\mathbb{P}(\tau_{1,1} < \infty) = 1$. Because $T_{q,r} = \tau_{1,1}$, we have
+
+$$
+  \mathbb{P} (T_{q,r} < \infty) = 1
+$$
+</details>
+</MathBox>
+
+If $p$ is aperiodic with finite mean $m_p$, this implies that $Z_p$ satisfies
+
+$$
+\begin{equation*}
+  \lim_{n\to\infty} |P(Z_p (n) = 1= - m_q^{-1}| = 0
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+The probability of visiting $\alpha$ at time $n$ is thus asymptotically independent of the initial distribution and this result implies that Proposition $\ref{proposition-4}$ holds without imposing constraints in the discrete case.
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)_{\geq 0}$ be a $\psi$-irreducible, positive recurrent and aperiodic Markov chain on a countable space $\mathsf{X}$, with transition kernel $K$ and invariant probability measure $\pi$. Then for every inital state $x\in\mathsf{X}$
+
+$$
+  \lim_{n\to\infty} \norm{K^n (x,\cdot) - \pi}_\text{TV} = 0
+$$
+
+<details>
+<summary>Proof</summary>
+
+Since $(X_n)$ is positive recurrent, every accessible atom $\alpha\subseteq\mathsf{X}$ satisfies
+
+$$
+  \mathbb{E}_\alpha (\tau_\alpha) < \infty
+$$
+
+by Kac's Theorem ($\ref{theorem-1}$).
+
+Let $p$ denote the distribution of the return time $\tau_\alpha$. Then $p$ is aperiodic and has finite mean $m_p = \mathbb{E}_\alpha (\tau_\alpha)$ such that $\eqref{equation-19}$ holds. This implies that every atom is ergodic. The result follows from Proposition $\ref{proposition-4}$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)_{n\geq 0}$ be a positive Harris recurrent and aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. Then, for every initial probability measure $\mu$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$
+
+$$
+  \lim_{n\to\infty} \Norm{\int K^n (x,\cdot) \mu(\d x) - \pi}_\text{TV} = 0
+$$
+
+Equivalently, writing $\mu K^n$ for the $n$-step marginal distribution
+
+$$
+  \lim_{n\to\infty} |\mu K^n - \pi|_\text{TV} = 0
+$$
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $K$ be a Markov kernel on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, and let $\pi$ an invariant probability measure. Then, for any probability measyre $\mu$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, the sequence
+
+$$
+  \norm{\mu K^n - \pi}_\text{TV}
+$$
+
+is decreasing in $n$.
+
+<details>
+<summary>Proof</summary>
+
+Using $\eqref{equation-20}$, we have
+
+$$
+\begin{equation*}
+  2 \norm{\mu K^{n+1} - \pi}_\text{TV} = \sup_{\norm{h}_\infty \leq 1} \left| \int h(y) K^{n+1} (x,\d y) \mu(\d x) - \int h(y) \pi(\d y) \right|
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+By invariance of $\pi$, we have $\pi K = \pi$, and by definition of kernel action
+
+$$
+  K^{n+1} (x,\d y) = \int K^n (x, \d w) K(w, \d y)
+$$
+
+allowing us to refactor $\eqref{equation-21}$ as
+
+$$
+\begin{align*}
+  & 2 \norm{\mu K^{n+1} - \pi}_\text{TV} \\
+  =& \sup_{|h|\leq 1} \left| \int h(y) \int K^n (x, \d w) K(w, \d y) \mu(\d x) \right. \\
+  &- \left. \int h(y) \int K(w, \d y) \pi (\d w) \right|
+\end{align*}
+$$
+
+Regrouping terms, we can write
+
+$$
+\begin{align*}
+  & 2\Norm{\int K^{n+1} (x, \cdot) \mu(\d x) - \pi}_\text{TV} \\
+  =& \sup_{|h| \leq 1} \left| \int \left[ \int h(y) K(w, \d y) \right] K^n (x, \d w) \mu(\d x) \right| \\
+  &- \left. \int \left[\int h(y) K(w,\d y) \right] \pi(\d w) \right| \\
+  \leq& \sup_{|h|\leq 1} \left|\int h(w) K^n (x, \d w) \mu(\d x) - \int h(w) \pi (\d w) \right|
+\end{align*}
+$$
+
+where the inequality follows from the fact that the quantity in square brackets is a function with norm less than $1$. Hence, monotonicity of the total variation norm is established.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive reccurent and aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with invariant probability measure $\pi$. If $h: \mathsf{X}\to\R$ is a measurable function, then:
+1. **Divergence under non-integrability:** If $\mathbb{E}^\pi [|h(X)|] = \infty$, then $\lim_{n\to\infty} \mathbb{E}_x [|h(X_n)|] = \infty$ for every $x\in\mathsf{X}$
+2. **Uniform convergence on small sets under integrability: If $\int |h(x)| \pi(\d x) < \infty$, then
+
+$$
+  \lim_{n\to\infty} \sup_{|m(x) \leq |h(x)|} |\mathbb{E}_y [m(X_n)] - \mathbb{E}^\pi [m(X)]| = 0
+$$
+
+on a small set $C\in\mathcal{B}(\mathsf{X)$ such that
+
+$$
+  \sup_{y\in C} \mathbb{E}_y \left[\sum_{t=0}^{\tau_C - 1} h(X_t) \right] < \infty
+$$
+
+where $\tau_C := \inf\set{n \geq 1 : X_n \in C}$ is the return time.
+</MathBox>
 
 # Examples and applications
 
