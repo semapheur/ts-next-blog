@@ -1978,7 +1978,7 @@ which is exactly the definition of reversibility.
 
 # Ergodicity and convergence
 
-<MathBox title="Ergodicity" boxType="definition">
+<MathBox title="Ergodic atom" boxType="definition">
 Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $K$ and invariant probability measure $\pi$. An atom $\alpha\in\mathcal{B}(\mathsf{X})$ is ergodic if
 
 $$
@@ -1987,13 +1987,25 @@ $$
 </MathBox>
 
 <MathBox title="Total variation norm" boxType="definition">
-Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space. The total variation distance between two finite measures $\mu_1, \mu_2$ on $\mathsf{X}$ is defined by
+Let $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ be a measurable space. The total variation distance between two $\sigma$-finite measures $\mu_1, \mu_2$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ is defined by
 
 $$
   \norm{\mu_1 - \mu_2}_\text{TV} =: \sup_{A\in\mathcal{P}(\mathsf{X)} |\mu_1 (A) - \mu_2 (A)|
 $$
 
-Generally, for a finite measure $\mu$ on $\mathsf{X}$, its total variation norm admits the dual representation
+For a $\sigma$-finite measure $\mu$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, its total variation measure $|\mu|$ is defined via the Hahn-Jordan decomposition, and the total variation norm is
+
+$$
+  \norm{\mu}_\text{TV} := |\mu|(\mathsf{X})
+$$
+
+This norm admits the dual representation
+
+$$
+  \norm{\mu}_\text{TV} = \sup\Set{\left| \int_\mathsf{X} h\;\d\mu \right| : h \in L^\infty (\mathsf{X}), \norm{h}_\infty \leq 1 }
+$$
+
+In terms of this representation, the total variation distance between two $\sigma$-finite measures $\mu_1$ and $\mu_2$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ is given by
 
 $$
 \begin{equation*}
@@ -2002,12 +2014,25 @@ $$
 \end{equation*}
 $$
 
-where the supremum is taken over all bounded measurable functions $h:\mathsf{X}\to\R$ with $\norm{h}_\infty \leq 1$.
 
 If $\mathsf{X}$ is countable, the total variation norm reduces to the sum
 
 $$
   \nom{\mu_1 - \mu_2}_\text{TV} = \frac{1}{2} \sum_{y\in\mathsf{X}} |\mu_1 (y) - \mu_2 (y)|
+$$
+
+where the supremum is taken over all bounded measurable functions $h:\mathsf{X}\to\R$ with $\norm{h}_\infty \leq 1$. 
+
+Let $h:\mathsf{X}\to [0,\infty)$ be a measurable function. We can define the weighted variation seminorm
+
+$$
+  \norm{h}_h := \sup\Set{\left| \int_\mathsf{X} g\;\d\mu \right| : |g(x)| \leq h(x),\forall x\in\mathsf{X}}
+$$
+
+Equivalently
+
+$$
+  \norm{\mu}_h = \int_\mathsf{X} h \;\d|\mu|
 $$
 </MathBox>
 
@@ -2465,6 +2490,147 @@ $$
 
 where $\tau_C := \inf\set{n \geq 1 : X_n \in C}$ is the return time.
 </MathBox>
+
+## Geometric convergence
+
+<MathBox title="Geometric ergodicity" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. Suppose $h:\mathsf{X}\to [1,\infty)$ be a measurable function. The chain $(X_n)$ is geometrically $h$-ergodic if 
+
+1. $h$ is $\pi$-integrable
+
+$$
+  \mathbb{E}^\pi [h] = \int_\mathsf{X} h(x) \pi(\d x) < \infty
+$$
+
+2. there exists $r_h > 1$ such that for every $x\in\mathsf{X}$
+
+$$
+\begin{equation*}
+  \sum_{n=1}^\infty r_h^n \norm{K^n (x, \cdot) - \pi}_h < \infty
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+The case $h = 1$ corresponds to the geometric ergodicity of $(X_n)$.
+</MathBox>
+
+Geometric $h$-ergodicity means that $\norm{K^n (x,\cdot) - \pi}_h$ is decreasing at least at a geometric speed, since $\eqref{equation-22}$ implies
+
+$$
+  \norm{K^n (x, \cdot) - \pi}_h \leq M r_h^{-n}
+$$
+
+with
+
+$$
+  M = \sum_{n=1}^\infty r_h^n \norm{K^n (x,\cdot) - \pi}_h
+$$
+
+If the chain $(X_n)$ has an atom $\alpha\in\mathcal{B}(\mathsf{X})$, then $\eqref{equation-22}$ implies that for a real number $r > 1$
+
+$$
+  \mathbb{E}_x \left[\sum_{n=1}^{\tau_\alpha} h(X_n) r^n \right] < \infty
+$$
+
+and
+
+$$
+  \sum_{n=1}^\infty |\mathbb{P}_\alpha (X_\alpha \in\alpha) - \pi(\alpha)| r^n < \infty
+$$
+
+where $\tau_\alpha := \inf\set{n \geq 1 : X_n \in\alpha}$ is the first return time to $\alpha$.
+
+The series associated with $|\mathbb{P}_\alpha (X_n \in\alpha) - \pi(\alpha)| r^n$ converges outside of the unit circle of the power series associated with $\mathbb{P}_\alpha (\tau_\alpha = n)$ converges for values of $|r|$ strictly larger than $1$.
+
+<MathBox title="Geometrically ergodic atoms" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$.
+An accessible atom $\alpha\in\mathcal{B}(\mathsf{X})$ is geometrically ergodic if there exists $r > 1$ such that
+
+$$
+  \sum_{n=1}^\infty |K^n (\alpha,\alpha) - \pi(\alpha)| r^n < \infty
+$$
+
+and $\alpha$ is Kendall atom if there exists $\kappa > 1$ such that
+
+$$
+  \mathbb{E}_\alpha [\kappa^{\tau_\alpha}] < \infty
+$$
+
+where $\tau_\alpha := \inf\set{n \geq 1 : X_n \in\alpha}$ if the first return time to $\alpha$. If $\alpha$ is a Kendall atom, it is thus geometrically ergodic and ensures geometric ergodicity for $(X_n)$.
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. If there exists a geometrically ergodic atom $\alpha$, then there exists $r > 1$, $\kappa > 1$ and $R < \infty$ such that, for almost every $x\in\mathsf{X}$
+
+$$
+  \sum_{n=1}^\infty r^n \norm{K^n (x, \cdot) - \pi}_\text{TV} < R \mathbb{E}_x [\kappa^{\tau_\alpha}] < \infty
+$$
+
+where $\tau_\alpha := \inf\set{n \geq 1 : X_n \in\alpha}$ if the first return time to $\alpha$.
+</MathBox>
+
+## Uniform ergodicity
+
+<MathBox title="Uniformly ergodic Markov chain" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. Then $(X_n)$ is uniformly ergodic if
+
+$$
+  \lim_{n\to\infty} \sup_{x\in\mathsf{X}} \norm{K^n (x,\cdot) -\pi}_\text{TV}
+$$
+</MathBox>
+
+<MathBox title="" boxType="proposition" tag="5">
+Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. The following conditions are equivalent:
+1. $(X_n)$ is uniformly ergodic
+2. There exists $R < \infty$ and $r > 1$ such that for all $x\in\mathsf{X}$
+$$
+  \norm{K^n (x,\cdot) - \pi}_\text{TV} < Rr^{-n}
+$$
+
+3. $(X_n)$ is aperiodic and $\mathsf{X}$ is a small set
+4. $(X_n)$ is aperiodic and there exists a small set $C$ and a real $\kappa > 1$ such that
+$$
+  \sup_{x\in\mathsf{X}} \mathbb{E}_x [\kappa^{\tau_C}] < \infty
+$$
+
+where $\tau_C := \inf\set{n \geq 1 : X_n \in C}$.
+</MathBox>
+
+<MathBox title="Doeblin condition" boxType="proposition">
+Let $(X_n)_{n\geq 0}$ be a Markov chain on measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $K$. The whole space $\mathsf{X}$ is small if there exists an integer $m\geq 1$, a constant $\epsilon > 0$, and a probability measure $\nu$ on $(\mathsf{X},\mathcal{B}(\mathsf{X}))$ such that
+
+$$
+  K^m (x, A) \geq \epsilon\nu (A),\; \forall x\in\mathsf{X}, A\in\mathcal{B}(\mathsf{X})
+$$
+</MathBox>
+
+Suppose $\mathsf{X}$ be a finite state space and let $\mathbf{P} = (p_{x,y})_{x,y\in\mathsf{X}}$ be a transition matrix. Define
+
+$$
+  \rho_y := \inf_{x\in\mathsf{X}} p_{x,y},\; y\in\mathsf{X}
+$$
+
+If $\sum_{y\in\mathsf{X}} \rho_y > 0$, define a probability measure $\nu$ by
+
+$$
+  \nu(y) := \frac{\rho_y}{\sum_{z\in\mathsf{X}} \rho_z}
+$$
+
+Then for all $x, y\in\mathsf{X}$
+
+$$
+  p_{x,y} \geq \rho_y = \left(\sum_{z\in\mathsf{X}} \rho_z \right) \nu(y)
+$$
+
+showing that the Doeblin condition holds with $m = 1$ and
+
+$$
+  \epsilon := \sum_{z\in\mathsf{X}} \rho_z > 0
+$$
+
+By Proposition $\ref{proposition-5}$ it follows that $(X_n)$ is uniformly ergodic.
+
+# Limit theorems
 
 # Examples and applications
 
