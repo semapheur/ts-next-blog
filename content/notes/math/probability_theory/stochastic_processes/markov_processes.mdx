@@ -1780,6 +1780,65 @@ $$
 $$
 </MathBox>
 
+## Eaton's admissibility condition
+
+Let $(\Theta, \mathcal{B}(\Theta))$ and $(\mathsf{X}, \mathbb{B}(\mathsf{X}))$ be measurable spaces. Let $\pi(\d\theta)$ be a prior measure on $\Theta$, and let $f(x|\theta)$ be a likelihood kernel on $\mathsf{X}$ such that the posterior distribution $\pi(\d\theta|x)$ is well-defined for $\pi$-almost every $\theta$ and $x$. Define the Markov transition kernel $K$ on $\Theta$ by
+
+$$
+  K(\theta, A) := \int_\mathsf{X} \pi(A|x) f(x|\theta) \;\d x,\; A\in\mathcal{B}(\Theta)
+$$
+
+The kernel $K$ defines Markov chain $(\theta^{(n)})_{n\geq 0}$ via the Gibbs type sampling scheme
+1. Given $\theta^{(n)} = \theta$, sample $X\sim f(\cdot|\theta)$
+2. Sample $\theta^{(n+1)} \sim\pi(\cdot|X)$
+
+The prior measure $\pi$ is invariant for $K$, i.e.
+
+$$
+  \pi(A) = \int_\Theta K(\theta, A) \pi(\d\theta),\; \forall A\in\mathcal{B}(\Theta)
+$$
+
+Let $L^2 (\pi)$ denote the Hilbert space of square-integrable functions with respect to $\pi$. For a measurable set $C\in \mathcal{B}(\Theta)$ with $0 < \pi(C) < \infty$, define the class
+
+$$
+  \mathcal{V}(C) = \set{h\in L^2 (\pi) : h(\theta) \geq 0 \land \theta\in C \implies h(\theta) \geq 1}
+$$
+
+Define the Dirichlet form associated with $K$ by
+
+$$
+  \Delta(h) := \frac{1}{2} \iint_{\Theta\times\Theta} [h(\theta) - h(\eta)]^2 K(\theta, \d\eta) \pi(\d\theta),\; h\in L^2 (\pi)
+$$
+
+Assume that for every measurable set $C\in\mathcal{B}(\Theta)$ with $0 < \pi(C) < \infty$
+
+$$
+\begin{equation*}
+  \inf_{h\in \mathcal{V}(C)} \Delta (h) = 0
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+Then, for every bounded measurable function $g:\Theta\to\R$, the Bayes estimator $\mathbb{E}^\pi [g(\theta)|x]$ is admissible under quadratic loss.
+
+If $\pi$ is a proper prior distribution, then the constant function $1 \in L^2(\pi)$ satisfies $K1 = 1$. Consequently, the associated Dirichlet form satisfies
+
+$$
+  \Delta(1) = \frac{1}{2} \iint (1 - 1)^2 K(\theta, \d\eta) \pi(\d\theta) = 0
+$$
+
+In this case, $\eqref{equation-25}$ is trivially satisfied in the degenerate case where $h\equiv 1$ is admissible in $\mathcal{V}(C)$.
+
+since $h\equiv 1$ belongs to $L^2 (\pi)$ and $\Delta(1) = 0$ in this case. The extension then consider approximations of $1$ by functions in $V(C)$.
+
+For every measurable set $C\in\mathcal{B}(\Theta)$ with $0 < \pi(C) < \infty$
+
+$$
+  \inf_{h\in \mathcal{V}(C)} \Delta(h) = \int_C [1 - \mathbb{P}(\tau_C < \infty | \theta^{(0)} = \eta] \pi(\d\eta)
+$$
+
+where $\tau_C := \inf\set{n\geq 1 : \theta^{(n)} \in C}$ is the first hitting time. Thus, the generalized Bayes estimators of bounded function of $\theta$ are admissible if and only if the associated Markov chain $(\theta^{(n)})$ is recurrent.
+
 # Invariant measures
 
 <MathBox title="Invariant measure" boxType="definition">
