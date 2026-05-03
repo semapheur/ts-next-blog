@@ -2606,7 +2606,7 @@ Let $p$ denote the distribution of the return time $\tau_\alpha$. Then $p$ is ap
 </details>
 </MathBox>
 
-<MathBox title="" boxType="proposition">
+<MathBox title="" boxType="proposition" tag="8">
 Let $(X_n)_{n\geq 0}$ be a positive Harris recurrent and aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $K$ and invariant probability measure $\pi$. Then, for every initial probability measure $\mu$ on $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$
 
 $$
@@ -2887,13 +2887,97 @@ By Proposition $\ref{proposition-5}$ it follows that $(X_n)$ is uniformly ergodi
 
 ### Drift condition
 
-There is an equivalent form of uniform ergodicity involving drift. Let $(X_n)_{n\geq 0}$ be an aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $P$. The chain $(X_n)$ is uniformly ergodic if there exist a small set $C\in\mathcal{B}(\mathsf{X})$, and a bounded measurable function $V:\mathsf{X}\to [1,\infty)$ satisfying the geometric drift condition
+There is an equivalent form of uniform ergodicity involving drift. Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible  aperiodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with transition kernel $P$. The chain $(X_n)$ is uniformly ergodic if there exist a small set $C\in\mathcal{B}(\mathsf{X})$, and a bounded measurable function $V:\mathsf{X}\to [1,\infty)$ satisfying the geometric drift condition
 
 $$
   \Delta V(x) \leq -\beta V(x) + b\mathbf{1}_C (x), x\in\mathsf{X}
 $$
 
 for constants $\beta > 0$ and $b < \infty$.
+
+## Covariance in Markov chains
+
+Let $(X_n)$ be a stationary ergodic Markov chain with zero mean, $\mathbb{E}(X_0) = 0$ and finite variance, $\mathbb{E}(X_0^2) < \infty$. Define the sample mean
+
+$$
+  \bar{X}_n := \frac{1}{n+1} \sum_{i=0}^n X_i
+$$
+
+By stationarity, the variance of $\bar{X}_n$ is given by
+
+$$
+  \operatorname{var}(\bar{X}_n) = \frac{1}{(n+1)^2} \sum_{i=0}^n \sum_{j=0}^n \operatorname{cov}(X_i, X_j)
+$$
+
+Rewriting in terms of lags gives
+
+$$
+  \operatorname{var}\left(\bar{X_n} \right) = \frac{1}{n+1} \operatorname{var}(X_0) + \frac{2}{n+1} \sum_{k=1}^n \frac{n-k+1}{n+1} \operatorname{cov}(X_0, X_k)
+$$
+
+If the cumulative covariance is finite
+
+$$
+  \sum_{k=\infty} |\operatorname{cov}(X_0, X_k)| < \infty
+$$
+
+then the long-run variance
+
+$$
+  \sigma^2 := \operatorname{var}(X_0) + 2\sum_{k=1}^\infty \operatorname{cov}(X_0, X_k)
+$$
+
+is well-define and finite, and satisfies $\operatorname{var}(\bar{X}_n) \sim \sigma^2 /n$. Equivalently, $n \operatorname{\var}(\bar{X}_n) \rightarrow{n\to\infty} \sigma^2$.
+
+To find a sufficient condition for vanishing covariance, we rewrite
+
+
+Thus, a sufficient condition for $\operatorname{cov}(X_0, X_k) \to 0$ is $\mathbb{E}[\mathbb{E}(X_k |X_0)^2] \to 0$.
+
+So the covariance term goes to $0$ if $\sum_{k=1}^n \operatorname{cov} (X_0, X_k)/n$ goes to zero, and a sufficient condition for this is that $\operatorname{cov}(X_0, X_k)$ converges to $0$. To see when $\operatorname{cov}(X_0, X_k)$ converges to $0$, write
+
+
+where we used the Cauchy-Schwarz inequality. Since $\mathbb{E}_0^2 = \sigma^2$, then $\operatorname{cov}(X_0, X_k)$ will go to $0$ if $\mathbb{E}[\mathbb{E}(X_k|X_0)]^2$ goes to $0$.
+
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)_{n\geq 0}$ be a stationary, aperiodic, positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with invariant probability measure $\pi$. Assume that $(X_n)$ is ergodic in a mixing sense, and has zero mean, $\mathbb{E}_\pi (X_0)$ and finite variance $\mathbb{E}_\pi (X_0^2) < \infty$. Then $\operatorname{cov}(X_0, X_n) \xrightarrow{n\to\infty} 0$.
+
+<details>
+<summary>Proof</summary>
+
+By stationarity
+
+$$
+  \operatorname{cov}(X_0, X_n) = \mathbb{E}_\pi (X_0 X_n) = \mathbb{E}_\pi [X_0 \mathbb{E}(X_n | X_0)]
+$$
+
+Applying the Cauchy-Schwarz inequality in $L^2 (\pi)$, we find
+
+$$
+\begin{equation*}
+  |\operatorname{cov}(X_0, X_n) \leq& [\mathbb{E}_\pi (X_0^2)]^{1/2} (\mathbb{E}_\pi [\mathbb{E}(X_n|X_0)]^2)^{1/2} \\
+  =& \norm{X_0}_{L^2 (\pi)} \norm{\mathbb{E}(X_n | X_0)}_{L^2 (\pi)}
+\end{equation*}
+$$
+
+Since $\norm{X_0}_{L^2 (\pi)} < \infty$, it suffices to show $\norm{\mathbb{E}(X_n |X_0)}_{L^2 (\pi)} \xrightarrow{n\to\infty} 0$.
+
+Since $(X_n)$ is mixing, it follow that for every $f \in L^2 (\pi)$
+
+$$
+  \lim_{n\to\infty} \norm{\mathbb{E}[f(X_n)|X_0] - \pi(f)}_{L^2 (\pi)} = 0,\; f\in L^2 (\pi)
+$$
+
+Taking $f(x) = x$ and using $\pi(h) = 0$, we obtain
+
+$$
+  \lim_{n\to\infty} \norm{\mathbb{E}(X_n | X_0)}_{L^2 (\pi)} = 0
+$$
+
+Hence, $\operatorname{cov}(X_0, X_n \to\infty) \xrightarrow{n\to\infty} 0$.
+</details>
+</MathBox>
 
 # Limit theorems
 
@@ -3348,7 +3432,7 @@ $$
 
 ### Drift condition
 
-There exist alternative version of the central limit theorem based on drift conditions. Let $(X_n)_{n\geq 0}$ be a positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with invariant distribution $\pi$. Assume there exists
+There exist alternative version of the central limit theorem based on drift conditions. Let $(X_n)_{n\geq 0}$ be a $\psi$-irreducible positive Harris recurrent Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$ with invariant distribution $\pi$. Assume there exists
 - measurable functions $f, V:\mathsf{X}\to [1,\infty)1$
 - a small set $C\in\mathcal{B}(\mathsf{X})$
 - a constant $b < \infty$
@@ -3359,9 +3443,7 @@ $$
   \Delta V (x) \leq -f(x) + b\mathbf{1}_C (x)\; x\in\mathsf{X}
 $$
 
-And assume that $\mathbb{E}^\pi (V^2) < \infty$.
-
-Let $g:\mathsf{X} \to\R$ be a measurable function such that $|g(x)| \leq f(x)$. Define the centered function $\bar{g} := g - \pi(g)$ and the partial sums
+Assume further that $\mathbb{E}^\pi (V^2) < \infty$. Let $g:\mathsf{X} \to\R$ be a measurable function such that $|g(x)| \leq f(x)$. Define the centered function $\bar{g} := g - \pi(g)$ and the partial sums
 
 $$
   S_n (\bar{g}) := \sum_{k=1}^{n-1} \bar{g} (X_k)
@@ -3371,7 +3453,7 @@ Then, the asymptotic variance exists with limit
 
 $$
 \begin{align*}
-  \gamma_g^2 =& \lim_{n\to\infty} n\mathbb{E}_\pi [S_n^2 (\bar{g})] \\
+  \gamma_g^2 =& \lim_{n\to\infty} \frac{1}{n} \mathbb{E}_\pi [S_n^2 (\bar{g})] \\
   =& \mathbb{E}_\pi [\bar{g}^2 (x_0)] + 2\sum_{k=1}^\infty \mathbb{E}_\pi [\bar{g} (x_0) \bar{g} (x_k)]
 \end{align*}
 $$
@@ -3383,6 +3465,77 @@ $$
 $$
 
 If $\gamma_g = 0$, then $\sqrt{n} S_n (\bar{g})$ almost surely goes to $0$ and $S_n (\bar{g}) = o(\sqrt{n})$ in $L^2$ and in probability.
+
+### Mixing condition
+
+<MathBox title="Mixing process" boxType="definition">
+Let $(X_n)_{n\geq 0}$ be a stochastic process on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$. For $k \leq l$, define the $\sigma$-algebra
+
+$$
+\begin{align*}
+  \mathcal{F}_k^l :=& \sigma(X_k, X_{k+1}, \dots, X_l) \\
+  \mathcal{F}_k^\infty :=& \sigma(X_k, X_{k+1},\dots)
+\end{align*}
+$$
+
+The $\alpha$-mixing coefficients are defined by
+
+$$
+  \alpha_n =: \sup_{k\geq 0} \sup_{\stackrel{A \in\mathcal{F}_0^k \\ B\in\mathcal{F}_{k+n}^\infty}} |\mathbb{P}(A \cap B) - \mathbb{P}(A) \mathbb{P}(B)|
+$$
+
+If $(X_n)$ is strictly stationary, this reduces to
+
+$$
+  \alpha_n =: \sup_{\stackrel{A \in\sigma(X_0, X_1,\dots) \\ B\in\sigma(X_n, X_{n+1},\dots)}} |\mathbb{P}(A \cap B) - \mathbb{P}(A) \mathbb{P}(B)|
+$$
+
+
+The process $(X_n)$ is $\alpha$-mixing if $\lim_{n\to\infty} \alpha_n = 0$.
+</MathBox>
+
+<MathBox title="Central limit theorem for mixing sequences" boxType="theorem">
+Let $(X_n)_{n\geq 0}$ be a stationary $\alpha$-mixing Markov chain, satisfying the properties
+- $\mathbb{E}(X_n) = 0$ and $\mathbb{E}(X_n^{2+\delta}) < \infty$ for some $\delta > 0$
+- the mixing coefficients satisfy
+$$
+  \sum_{n=1}^\infty \alpha_n^{\delta/(2+\delta)} < \infty
+$$
+
+Then the asymptotic variance exists with finite limit
+
+$$
+  \sigma^2 := \lim_{n\to\infty} n \operatorname{var}(\bar{X}_n) < \infty
+$$
+
+where $\bar{X}_n = \frac{1}{n} \sum_{k=1}^n X_k$ is the sample mean. If $\sigma^2 > 0$, then $\sqrt{N} \bar{X}_n \xrightarrow{d} \mathcal{N}(0,\sigma^2)$.
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(X_n)$ be a stationary, uniformly ergodic Markov chain on a measurable space $(\mathsf{X}, \mathcal{B}(\mathsf{X}))$, with transition kernel $P$ and invariant probability measure $\pi$. Let $h:\mathsf{X}\to\R$ be a measurable function such that
+
+$$
+  \pi(h) := \int_\mathsf{X} h\;\d\pi \in\R,\; \pi(h^2) < \infty
+$$
+
+Define the centered function $\bar{h} := h - \pi(h)$ and the partial sums
+
+$$
+  S_n := \sum_{k=1}^n \bar{h} (X_k)
+$$
+
+Then the asymptotic variance $\tau_h^2$ exists with finite limit
+
+$$
+  \tau_h^2 = \pi(\bar{h}^2) + 2\sum_{k=1}^\infty \pi(\bar{h} P^k \bar{h})
+$$
+
+If $\tau_h^2 > 0$, then
+
+$$
+  \frac{1}{\sqrt{n}} S_n = \sqrt{n} \left(\frac{1}{n} \sum_{k=1}^n h(X_k) - \pi(h) \right) \rightarrow{d} \mathcal{N}(0, \tau_h^2)
+$$
+</MathBox>
 
 # Examples and applications
 
