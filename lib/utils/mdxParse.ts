@@ -37,7 +37,7 @@ export const rehypePlugins = [
         "\\norm": "\\lVert{#1}\\rVert",
         "\\Norm": "\\left\\lVert{#1}\\right\\rVert",
         "\\tleq": "\\overset{\\tiny{\\mathbf{\\triangle}}}{\\leq}",
-        "\\deq": "\\ovserset{\\text{d}}{=}",
+        "\\deq": "\\overset{\\text{d}}{=}",
         "\\eqas": "\\overset{\\text{a.s.}}{=}",
         "\\eqae": "\\overset{\\text{a.e.}}{=}",
         "\\iid": "\\overset{\\text{iid}}{\\sim}",
