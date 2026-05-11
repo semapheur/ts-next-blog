@@ -126,7 +126,7 @@ which is known as the Vandermonde determinant.
 
 ## First-order linear ODE
 
-A first-order linear ODEs for an unknown function $f: I\to J$ with $I,J\subseteq\R$, takes the explicit form
+A first-order ordinary differential equation for an unknown function $f: I\to J$ with $I,J\subseteq\R$, can be written in explicit form as
 
 $$
 \begin{equation*}
@@ -135,7 +135,15 @@ $$
 \end{equation*}
 $$
 
-where $w:I\times J\to\R$ is a prescribed function. The equation is linearly presicely when $w(x,y)$ is affine in the dependent variable $y$. That is, there exist functions $a,b:I\to\R$ such that
+where $w:I\times J\to\R$ is a prescribed function. Here $x\in I$ denotes the independent variable, while $f(x) \in J$ is the dependent variable. The equation $\eqref{equation-3}$ is autonomous if the right-hand side depends only on the dependent variable. That is, there exists a function $v: J\to\R$ such that $w(x,y) = v(y)$ for all $(x,y) \in I\times J$. In this case, $\eqref{equation-3}$ takes the form
+
+$$
+  f'(x) = v(f(x))
+$$
+
+Equivalently, an autonomous equation is invariant under translations of the independent variable $x$, since it does not appear explicitly in the defining relation. If the function $w$ depends explicitly on the independent variable $x$, then the equation is called non-autonomous.
+
+The equation $\eqref{equation-3}$ is linear presicely when $w(x,y)$ is affine in the dependent variable $y$. That is, there exist functions $a,b:I\to\R$ such that
 
 $$
 \begin{equation*}
@@ -155,6 +163,8 @@ or, equivalently, in standard linear form
 $$
   f'(x) - a(x)f(x) = b(x)
 $$
+
+### Cut
 
 This is solved by finding an integrating factor. We look for $I(x)$ such that
 
@@ -190,7 +200,7 @@ $$
   y(x) = e^{-\int p(x)\d x} \left[ \int e^{-\int p(x)\d x} q(x) \mathrm{x} + c \right] \, , \quad c = \frac{c_1}{A}
 $$
 
-### Constant coefficient
+### Constant coefficient (cut)
 
 The general form of first order ODEs with constant coefficient is
 
@@ -272,21 +282,61 @@ $$
   \alpha(x) = F^{-1} (x - x_0 + F(f_0))
 $$
 
-. We want to find all solutions $\alpha(x_0, x_1) \to\R$ ($\alpha' (x) = v(\alpha(x))$) with $\alpha(0) = f_0$.
-Thus, any solution $\alpha$ satisfies
+### Non-autonomous intial value problem (separation of variables)
+
+A non-autonomous first ordinary differential equations of the form $f'(x) = w(x, f(x))$ is separable if $w: I\times J \to\R$ can be written as $w(x,y) = g(x) h(y)$, wehere $g:I\to\R$ and $h:J\to\R$ are prescribed function on intervals $I,J\subseteq\R$. In this case, the differential equation becomes
 
 $$
-\begin{align*}
-  \frac{\alpha'(y)}{v(\alpha(y)} =& 1 \\
-  \iff \int_0^x \frac{\alpha' (y)}{v(\alpha(y))} \;\d y =& x \\
-  \iff \int_{f_0}^{\alpha(x)} \frac{1}{v(g)} \;\d g =& x, g = \alpha(y), \d g = \alpha' (y) \d y \\
-  \iff F(\alpha(x)) - F(f_0) =& x\; \forall x\in (x_0, x_1)
-\end{align*}
+  f'(x) = g(x) h((f(x))
 $$
 
-where $F$ is an antiderivative of $1/v$. Defining the constant $c:= F(f_0)$, we can
+Consider the initial value problem
 
-write $F(\alpha(x)) = x - c \iff \alpha(x) = F^{-1} (x - c)$ for all $x\in (x_0, x_1)$.
+$$
+  f'(x) = g(x) h(f(x)),\; f(x_0) = f_0
+$$
+
+Assuming $h(f_0) \neq 0$, then by continuity of $h$, there exists an interval $U\subseteq J$ containing $f_0$ such that $h(y) \neq 0$ for all $y\in U$. Thus, for any solution $\alpha: (a,b)\to U$ satisfying
+
+$$
+  \alpha'(x) = g(x) h(\alpha(x)),\; \alpha(x_0) = f_0
+$$
+
+we can divide by $h(\alpha(x))$ to obtain
+
+$$
+  \frac{\alpha' (x)}{h(\alpha(x))} = g(x)
+$$
+
+Integrating both sides from $x_0$ to $x$ yields
+
+$$
+  \int_{x_0}^{x} \frac{\alpha' (y)}{h(\alpha(y)} \;\d s = \int_{x_0}^x g(x)\;\d x
+$$
+
+Applying the substitution $u = \alpha(y)$ with $\d u = \alpha' (y) \;\d y$ gives
+
+$$
+  \int_{x_0}^{\alpha(x)} \frac{1}{h(f(x))}  \;\d f = \int_{x_0}^x g(y) \;\d y
+$$
+
+Let $F$ be an antiderivative of $1/h$ on $U$, and let $G$ an antiderivative of $g$ on $I$. Then
+
+$$
+  F(\alpha(x) - F(f_0)) = G(x) - G(x_0)
+$$
+
+Rearranging gives
+
+$$
+  F(\alpha(x)) = G(x) + c
+$$
+
+where $c = F(f_0) - G(x_0)$ is a constant determined by the initial condition. If $F$ is locally invertible near $f_0$, then the solution can be expressed explicitly as
+
+$$
+  \alpha(x) = F^{-1} (G(x) + c)
+$$
 
 ## Second order linear ODE
 
