@@ -389,6 +389,99 @@ $$
 and evaluating at $t = 0$ yields $\mathbf{x}(0) = \mathbf{x}_0$, showing that $\mathbf{x}$ solves the initial value problem.
 </details>
 
+<MathBox title="Picard-Lindelöf theorem" boxType="theorem">
+Let $U\subseteq \R^n$ be an open subset, let $\mathbf{V}: U\subseteq\R^n \to\R^n$ be locally Lipschitz continuous vector field and let $\mathbf{x}_0 \in U$. Then there exists a constant $\epsilon > 0$ such that the initial value problem
+
+$$
+\begin{equation*}
+  \mathbf{x}'(t) = \mathbf{V}(\mathbf{x}),\; \mathbf{x}(0) = \mathbf{x}_0
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+admits a unique solution $\alpha: (-\epsilon, \epsilon) \to U$.
+  
+<details>
+<summary>Proof</summary>
+
+Since $\mathbf{V}$ is locally Lipschitz continuous and $U$ is open, there exists $r > 0$ and $L > 0$ such that the closed ball $\overline{B_r (\mathbf{x}_0)} \subseteq U$, and
+
+$$
+  \norm{\mathbf{V}(\mathbf{x}) - \mathbf{V}(\mathbf{y})} \leq L \norm{\mathbf{x} - \mathbf{y}},\; \forall \mathbf{x}, \mathbf{y} \in \overline{B_r (\mathbf{x}_0)}
+$$
+
+Define
+  
+$$
+  M := \sup_{\mathbf{x} \in\overline{B_r (\mathbf{x}_0)}} \norm{\mathbf{V}(\mathbf{x})} < \inty
+$$
+
+which is finite because $\mathbf{V}$ is continuous and $\overline{B_r (\mathbf{x}_0)}$ is compact. Choose $\epsilon > 0$ such that $\epsilon L < 1$ and $\epsilon M \leq r$. Consider the metrix space
+
+$$
+  X = \set{\boldsymbol{\alpha} \in C((-\epsilon, \epsilon), \R^n) | \boldsymbol{\alpha}(t) \in \overline{B_r (\mathbf{x}_0)} \forall t \in (-\epsilon, \epsilon)}
+$$
+
+equipped with the supremum metric
+
+$$
+  d(\boldsymbol{\alpha}, \boldsymbol{\beta}) := \sup_{t\in (-\epsilon, \epsilon)} \norm{\boldsymbol{\alpha}(t) - \boldsymbol{\beta}(t)}_{\R^n}
+$$
+
+Then the metric space $(X, d)$ is complete. To show that $\Phi: X\to X$ is contraction, consider
+
+$$
+  (\Phi\boldsymbol{\alpha})(t) = \mathbf{x}_0 + \int_0^t \mathbf{V}(\alpha(s)) \;\d s
+$$
+
+Since $C((-\epsilon, \epsilon), \R^n)$ is complete under the supremum norm and $X$ is closed, $(X, d)$ is a complete metric space.
+
+Define the operator $\Phi: X \to C((-\epsilon, \epsilon), \R^n)$ by
+
+$$
+  (\Phi\boldsymbol{\alpha})(t) := \mathbf{x}_0 + \int_0^t \mathbf{V}(\boldsymbol{\alpha}(s)) \;\d s
+$$
+
+We first show that $\Phi(X) \subseteq X$. For $\boldsymbol{\alpha}\in X$, we have
+
+$$
+\begin{align*}
+  \norm{(\Phi\boldsymbol{\alpha})(t) - \mathbf{x}_0} =& \Norm{\int_0^t \mathbf{V}(\boldsymbol{\alpha}(s))\;\d s} \\
+  \leq& \int_0^{|t|} \norm{\mathbf{V}(\alpha(s))} \;\d s \\
+  \leq \epsilon M \leq r
+\end{align*}
+$$
+
+Hence $(\Phi\boldsymbol{\alpha})(t) \in\overline{B_r (\mathbf{x}_0)}$ for all $t$, so $\Phi\boldsymbol{\alpha}\in X$.
+
+Next, we show that $\Phi$ is a contraction. For $\boldsymbol{\alpha}, \boldsymbol{\beta} \in X$, we have
+
+$$
+\begin{align*}
+  d(\Phi(\boldsymbol{\alpha}), \Phi(\boldsymbol{\beta})) =& \sup_{t\in (-\epsilon, \epsilon)} \norm{(\Phi\boldsymbol{\alpha})(t) - \Phi(\boldsymbol{\beta})(t)}_{\R^n} \\
+  =& \sup_{t\in (-\epsilon, \epsilon)} \Norm{\int_0^t [\mathbf{V}(\boldsymbol{\alpha}(s)) - \mathbf{V}(\boldsymbol{\beta}(s))]}_{\R^n} \;\d s \\
+  \leq& \sup_{t\in (-\epsilon, \epsilon)} \int_0^t \norm{\mathbf{V}(\boldsymbol{\alpha}(s)) - \mathbf{V}(\boldsymbol{\beta}(s))}_{\R^n} \;\d s \\
+  \leq& \sup_{t\in (-\epsilon, \epsilon)} \underbrace{\operatorname{length}([0,t])}_{|t| \leq\epsilon} \sup_{s\in[0,t]} \norm{\mathbf{V}(\boldsymbol{\alpha}(s)) - \mathbf{V}(\boldsymbol{\beta}(s))}_{\R^n} \\
+  \leq& \epsilon \sup_{s\in (-\epsilon, \epsilon)} \underbrace{\norm{\mathbf{V}(\boldsymbol{\alpha}(s)) - \mathbf{V}(\boldsymbol{\beta}(s))}_{\R^n}}_{\leq L \norm{\boldsymbol{\alpha}(s) - \boldsymbol{\beta}(s)}}_{\R^n} \\
+  \leq& \epsilon L d(\boldsymbol{\alpha}, \boldsymbol{\beta})
+\end{align*}
+$$
+
+Since $\epsilon L < 1$, the map $\Phi$ is a contraction on the complete metric space. Thus, by the Banach fixed point theorem, $\Phi$ has a unique fixed point $\boldsymbol{\alpha} \in X$ such that
+
+$$
+  \boldsymbol{\alpha}(t) = \mathbf{x}_0 + \int_0^t \mathbf{V}(\boldsymbol{\alpha}(s)) \;\d s
+$$
+
+Differentiating with respect to $t$, yields
+
+$$
+  \boldsymbol{\alpha}' (t) = \mathbf{V}(\boldsymbol{\alpha}(t)),\; \boldsymbol{\alpha}(0) = \mathbf{x}_0
+$$
+
+Hence $\boldsymbol{\alpha}$ is a unique solution of the initial value problem $\eqref{equation-8}$.
+</details>
+</MathBox>
 
 
 ## Second order linear ODE
