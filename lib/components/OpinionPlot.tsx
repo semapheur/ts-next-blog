@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { observer } from "mobx-react-lite"
+import { useEffect, useRef } from "react";
+import { observer } from "mobx-react-lite";
 
-import SVGTernaryPlot, { Opinion } from "lib/components/SvgTernary"
-import SVGPlot from "lib/components/SvgPlot"
+import SVGTernaryPlot, { Opinion } from "lib/components/SvgTernary";
+import StaticSvgPlot from "lib/components/StaticSvgPlot";
 
 const initialState = {
   point: new DOMPoint(1 / 3, 1 / 3, 1 / 3),
   director: 0.5,
-}
+};
 
-const opinion = new Opinion(initialState.point, initialState.director)
+const opinion = new Opinion(initialState.point, initialState.director);
 
 function OpinionPlot() {
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const ternaryPlot = useRef<SVGTernaryPlot | null>(null)
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const ternaryPlot = useRef<SVGTernaryPlot | null>(null);
 
   useEffect(() => {
-    const wrapper = wrapRef.current
+    const wrapper = wrapRef.current;
     if (!ternaryPlot.current && wrapper) {
-      ternaryPlot.current = new SVGTernaryPlot(wrapper, initialState)
-      ternaryPlot.current.grid()
-      ternaryPlot.current.axis()
-      ternaryPlot.current.director(undefined, opinion)
-      ternaryPlot.current.point(undefined, opinion)
+      ternaryPlot.current = new SVGTernaryPlot(wrapper, initialState);
+      ternaryPlot.current.grid();
+      ternaryPlot.current.axis();
+      ternaryPlot.current.director(undefined, opinion);
+      ternaryPlot.current.point(undefined, opinion);
 
       //return () => {
       //  ternaryRef.current?.cleanup()
       //}
     }
-  })
+  });
 
   return (
     <div className="grid h-full grid-rows-2 lg:grid-cols-2 lg:grid-rows-none">
@@ -62,13 +62,13 @@ function OpinionPlot() {
           </li>
         </ul>
       </div>
-      <SVGPlot
+      <StaticSvgPlot
         data={opinion.distribution}
         xAxis={{ scale: "linear", domain: [0, 1] }}
         yAxis={{ scale: "linear" }}
       />
     </div>
-  )
+  );
 }
 
-export default observer(OpinionPlot)
+export default observer(OpinionPlot);

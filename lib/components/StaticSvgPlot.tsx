@@ -1,77 +1,77 @@
-"use client"
+"use client";
 
-import * as d3 from "d3"
-import useResizeObserver from "lib/hooks/useResizeObserver"
-import { type HTMLAttributes, useEffect, useRef } from "react"
+import * as d3 from "d3";
+import useResizeObserver from "lib/hooks/useResizeObserver";
+import { type HTMLAttributes, useEffect, useRef } from "react";
 
 interface Margin {
-  top: number
-  right: number
-  bottom: number
-  left: number
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }
 
 export interface Axis {
-  scale: "linear" | "log"
-  domain?: [number, number]
+  scale: "linear" | "log";
+  domain?: [number, number];
 }
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  data: Array<[number, number]>
-  xAxis: Axis
-  yAxis: Axis
+  data: Array<[number, number]>;
+  xAxis: Axis;
+  yAxis: Axis;
 }
 
 function createScale(scale: "linear" | "log") {
   if (scale === "linear") {
-    return d3.scaleLinear()
+    return d3.scaleLinear();
   }
 
   if (scale === "log") {
-    return d3.scaleLog()
+    return d3.scaleLog();
   }
 }
 
-export default function SVGPlot({ data, xAxis, yAxis, ...props }: Props) {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const size = useResizeObserver(wrapRef)
+export default function StaticSvgPlot({ data, xAxis, yAxis, ...props }: Props) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const size = useResizeObserver(wrapRef);
 
   useEffect(() => {
-    if (!(svgRef.current && size)) return
+    if (!(svgRef.current && size)) return;
 
     const margin: Margin = {
       top: 0.1 * size.height,
       right: 0.1 * size.width,
       bottom: 0.1 * size.height,
       left: 0.1 * size.width,
-    }
+    };
 
     if (yAxis.domain === undefined) {
-      const yMin = Math.min(...data.map((point) => point[1]))
-      const yMax = Math.max(...data.map((point) => point[1]))
-      yAxis.domain = [yMin, yMax]
+      const yMin = Math.min(...data.map((point) => point[1]));
+      const yMax = Math.max(...data.map((point) => point[1]));
+      yAxis.domain = [yMin, yMax];
     }
 
     if (xAxis.domain === undefined) {
-      const xMin = Math.min(...data.map((point) => point[0]))
-      const xMax = Math.max(...data.map((point) => point[0]))
-      xAxis.domain = [xMin, xMax]
+      const xMin = Math.min(...data.map((point) => point[0]));
+      const xMax = Math.max(...data.map((point) => point[0]));
+      xAxis.domain = [xMin, xMax];
     }
 
-    const plotWidth = size.width - (margin.left + margin.right)
-    const plotHeight = size.height - (margin.top + margin.bottom)
+    const plotWidth = size.width - (margin.left + margin.right);
+    const plotHeight = size.height - (margin.top + margin.bottom);
 
     const svg = d3
       .select(svgRef.current)
       .attr("width", size.width)
       .attr("height", size.height)
       .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`)
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const xScale = createScale(xAxis.scale)!
       .domain(xAxis.domain)
-      .range([0, plotWidth])
+      .range([0, plotWidth]);
 
     svg
       .append("g")
@@ -89,11 +89,11 @@ export default function SVGPlot({ data, xAxis, yAxis, ...props }: Props) {
           .attr("y1", 0)
           .attr("y2", -plotHeight)
           .attr("stroke-opacity", 0.1),
-      )
+      );
 
     const yScale = createScale(yAxis.scale)!
       .domain(yAxis.domain)
-      .range([plotHeight, 0])
+      .range([plotHeight, 0]);
 
     // y-axis
     svg
@@ -112,13 +112,13 @@ export default function SVGPlot({ data, xAxis, yAxis, ...props }: Props) {
           .attr("x1", 0)
           .attr("x2", plotWidth)
           .attr("stroke-opacity", 0.1),
-      )
+      );
 
     const line = d3
       .line()
       .curve(d3.curveBasis)
       .x((d: [number, number]) => xScale(d[0]))
-      .y((d: [number, number]) => yScale(d[1]))
+      .y((d: [number, number]) => yScale(d[1]));
 
     svg
       .append("path")
@@ -128,17 +128,17 @@ export default function SVGPlot({ data, xAxis, yAxis, ...props }: Props) {
       .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("stroke-linejoin", "round")
-      .attr("d", line)
+      .attr("d", line);
 
     return () => {
-      svg.selectAll("g").remove()
-      svg.remove()
-    }
-  }, [size, data, xAxis, yAxis])
+      svg.selectAll("g").remove();
+      svg.remove();
+    };
+  }, [size, data, xAxis, yAxis]);
 
   return (
     <div ref={wrapRef} className={props.className}>
       <svg ref={svgRef} />
     </div>
-  )
+  );
 }

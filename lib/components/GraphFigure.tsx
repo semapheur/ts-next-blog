@@ -1,6 +1,6 @@
 import { parse as mathParse } from "mathjs";
 
-import type { Axis } from "lib/components/SvgPlot";
+import type { Axis } from "lib/components/StaticSvgPlot";
 import Vector from "lib/utils/vector";
 import dynamic from "next/dynamic";
 
@@ -13,7 +13,7 @@ interface Props {
   tag?: string;
 }
 
-const SVGPlot = dynamic(() => import("lib/components/SvgPlot"));
+const SvgPlot = dynamic(() => import("lib/components/StaticSvgPlot"));
 
 export default function GraphFigure({
   expression,
@@ -37,7 +37,7 @@ export default function GraphFigure({
 
   return (
     <figure id={tag} className="relative flex flex-col">
-      <SVGPlot data={data} xAxis={xAxis} yAxis={yAxis} />
+      <SvgPlot data={data} xAxis={xAxis} yAxis={yAxis} />
       <figcaption className="text-center before:font-bold before:content-['Figure_'_counter(fig)_':_'] before:[counter-increment:fig]">
         {caption}
       </figcaption>
