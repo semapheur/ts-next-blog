@@ -1,5 +1,4 @@
 import {
-  parse,
   ConstantNode,
   FunctionNode,
   type MathNode,
@@ -20,7 +19,7 @@ export class DomainColoringPlot {
   #grid: CanvasGrid;
 
   #matrix: DOMMatrix;
-  #expression: string;
+  #expression: MathNode | null = null;
   #minGrid: number = 50;
 
   #program: WebGLProgram | null = null;
@@ -34,7 +33,7 @@ export class DomainColoringPlot {
     plotCanvas: HTMLCanvasElement,
     gridCanvas: HTMLCanvasElement,
     matrix: DOMMatrix,
-    expression: string,
+    expression: MathNode | null,
   ) {
     const gl = plotCanvas.getContext("webgl2");
     const ctx = gridCanvas.getContext("2d");
@@ -56,7 +55,7 @@ export class DomainColoringPlot {
       true,
     );
 
-    this.#initScene();
+    if (this.#expression) this.#initScene();
     this.#startLoop();
   }
 
@@ -64,10 +63,17 @@ export class DomainColoringPlot {
     this.#matrix = matrix;
   }
 
-  updateExpression(expression: string) {
+  updateExpression(expression: MathNode | null) {
     if (this.#expression === expression) return;
     this.#expression = expression;
-    this.#initScene();
+
+    if (this.#expression) {
+      this.#initScene();
+      return;
+    }
+
+    this.#gl.deleteProgram(this.#program);
+    this.#program = null;
   }
 
   dispose() {
@@ -93,7 +99,7 @@ export class DomainColoringPlot {
       this.#gl.VERTEX_SHADER,
       vertexCode,
     );
-    const fragmentCode = this.#makeFragmentCode(this.#expression);
+    const fragmentCode = this.#makeFragmentCode();
     const fragmentShader = makeShader(
       this.#gl,
       this.#gl.FRAGMENT_SHADER,
@@ -219,8 +225,17 @@ export class DomainColoringPlot {
     return [glsl.toString(), functions];
   }
 
-  #makeFragmentCode(expression: string): string {
-    const [fn, required] = this.#toGlsl(parse(expression));
+  #makeFragmentCode(): string {
+    if (!this.#expression) {
+      return `#version 300 es
+        precision highp float;
+        out vec4 fragColor;
+        void main() {
+          fragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        }`;
+    }
+
+    const [fn, required] = this.#toGlsl(this.#expression);
     const functionDeclarations = requiredFunctions(required);
 
     return `#version 300 es
@@ -266,6 +281,21 @@ export class DomainColoringPlot {
     }
 
     float gridlines(vec2 z, float alpha) {
+      float r = exp(z.x);
+      vec2 z_cartesian = vec2(r * cos(z.y), r * sin(z.y));
+      vec2 coord = z_cartesian * PI / u_unit;
+
+      vec2 fw = fwidth(coord);
+      float blendX = smoothstep(2.0, 0.5, fw.x);
+      float blendY = smoothstep(2.0, 0.5, fw.y);
+
+      float gx = mix(1.0, pow(abs(sin(coord.x)), alpha), blendX);
+      float gy = mix(1.0, pow(abs(sin(coord.y)), alpha), blendY);
+
+      return gx * gy;
+    }
+
+    float gridlines_polar(vec2 z, float alpha) {
       float GRID_MAG = 1.0;
       float GRID_PHASE = PI / u_unit;
 
