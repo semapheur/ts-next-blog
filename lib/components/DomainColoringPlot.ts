@@ -281,18 +281,47 @@ export class DomainColoringPlot {
     }
 
     float gridlines(vec2 z, float alpha) {
+      // 1. Overflow guard: If log-magnitude is extreme, grid lines are infinitely denser than a single pixel. Fade out completely to 1.0.
+      if (z.x > 80.0) {
+        return 1.0;
+      }
+
+      // 2. Compute normal Cartesian coordinates
       float r = exp(z.x);
       vec2 z_cartesian = vec2(r * cos(z.y), r * sin(z.y));
-      vec2 coord = z_cartesian * PI / u_unit;
+      vec2 coord = z_cartesian / u_unit; // Grid lines exist at integer values
 
+      // 3. Get distance to the nearest grid line (ranges from 0.0 to 0.5)
+      vec2 fract_coord = fract(coord);
+      vec2 dist_to_line = min(fract_coord, 1.0 - fract_coord);
+
+      // 4. Calculate screen-space pixel footprint width
       vec2 fw = fwidth(coord);
-      float blendX = smoothstep(2.0, 0.5, fw.x);
-      float blendY = smoothstep(2.0, 0.5, fw.y);
 
-      float gx = mix(1.0, pow(abs(sin(coord.x)), alpha), blendX);
-      float gy = mix(1.0, pow(abs(sin(coord.y)), alpha), blendY);
+      // 5. Convert grid distance into true screen-space pixels
+      vec2 pixel_dist = dist_to_line / max(fw, 1e-5);
 
-      return gx * gy;
+      // 6. Define line profile properties (in pixels)
+      float thickness = 0.0; // Width of the solid dark core of the line
+      float blur = 1.0;      // Width of the anti-aliased edge
+
+      // Sharp, reliable screen-space line drawing
+      float gx = smoothstep(thickness, thickness + blur, pixel_dist.x);
+      float gy = smoothstep(thickness, thickness + blur, pixel_dist.y);
+
+      // 7. ANTI-ALIASING GUARD: If grid spacing drops below 2 pixels per line, smoothly fade the grid out to 1.0 to avoid messy Moiré patterns.
+      float fade_x = smoothstep(0.5, 0.2, fw.x);
+      float fade_y = smoothstep(0.5, 0.2, fw.y);
+
+      gx = mix(1.0, gx, fade_x);
+      gy = mix(1.0, gy, fade_y);
+
+      // Combine X and Y axes
+      float grid = gx * gy;
+
+      // 8. CONTRAST CONTROL: alpha maps directly to line darkness.
+      // 0.0 = no grid, 1.0 = pitch black lines. Try 0.4 to 0.7 for clean visual results.
+      return mix(1.0, grid, alpha);
     }
 
     float gridlines_polar(vec2 z, float alpha) {
@@ -333,10 +362,10 @@ export class DomainColoringPlot {
       vec2 z3 = complex_function(xy + B);
       vec2 z4 = complex_function(xy - B);
 
-      vec3 color1 = domain_color(z1, 0.1);
-      vec3 color2 = domain_color(z2, 0.1);
-      vec3 color3 = domain_color(z3, 0.1);
-      vec3 color4 = domain_color(z4, 0.1);
+      vec3 color1 = domain_color(z1, 0.5);
+      vec3 color2 = domain_color(z2, 0.5);
+      vec3 color3 = domain_color(z3, 0.5);
+      vec3 color4 = domain_color(z4, 0.5);
 
       vec3 color = 0.25 * (color1 + color2 + color3 + color4);
       fragColor = vec4(color, 1.0);

@@ -37,7 +37,7 @@ function formatComplex(p: DOMPoint, label: string): string {
       Math.PI,
   );
 
-  return `${label} = ${re} ${sign} ${im}i \\\\ z = ${r} \\cdot \\exp(${thetaCoeff}\\pi i)`;
+  return `${label} = ${re} ${sign} ${im}i \\\\ ${label} = ${r} \\cdot \\exp(${thetaCoeff}\\pi i)`;
 }
 
 function evaluateAt(node: MathNode | null, p: DOMPoint): DOMPoint {

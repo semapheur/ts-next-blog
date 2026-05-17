@@ -390,7 +390,106 @@ and evaluating at $t = 0$ yields $\mathbf{x}(0) = \mathbf{x}_0$, showing that $\
 </details>
 
 <MathBox title="Picard-Lindelöf theorem" boxType="theorem" tag="1">
-Let $U\subseteq \R^n$ be an open subset, let $\mathbf{V}: U\subseteq\R^n \to\R^n$ be locally Lipschitz continuous vector field and let $\mathbf{x}_0 \in U$. Then there exists a constant $\epsilon > 0$ such that the initial value problem
+Let $I\subseteq\R$ be an open interval and let $U\subseteq\R^n$ be an open subset. Assume the vector field $\mathbf{W}: I\times U \to\R^n$ is locally Lipschitz continuous in the following sense: for every compact subset $K\subseteq I\times U$ there exists a constant $L_K > 0$ such that, for all $(t, x), (t, y) \in K$
+
+$$
+  \norm{\mathbf{W}(t, \mathbf{x}) - \mathbf{W}(t, \mathbf{y})} \leq L_K \norm{\mathbf{x} - \mathbf{y}}
+$$
+
+Then, for every $(t_0, \mathbf{x}_0) \in I\times U$, there exists a constant $\epsilon > 0$ such that the initial value problem
+
+$$
+  \operatorname{IVP}_{\mathbf{x}_0}^{t_0} : \mathbf{x}'(t) = \mathbf{W}(t, \mathbf{x}),\; \mathbf{x}(t_0) = \mathbf{x}_0
+$$
+
+admits a unique solution $\boldsymbol{\alpha}: (t_0 - \epsilon, t_0 + \epsilon) \to U$.
+  
+<details>
+<summary>Proof</summary>
+
+Since $I\times U$ is open and $\mathbf{W}$ is locally Lipschitz continuous in the second variable, there exist constants $a, r > 0$ such that
+
+$$
+  [t_0 - a, t_0 + a] \times \overline{B_r (\mathbf{x}_0)} \subseteq I \times U
+$$
+
+where $\overline{B_r (\mathbf{x}_0)}$ denotes the closed ball of radius $r$ about $\mathbf{x}_0 \in U$. Morevover,there is a constant $L > 0$ such that
+
+$$
+  K := \norm{\mathbf{W}(t, \mathbf{x}) - \mathbf{W}(t, \mathbf{y})} \leq L \norm{\mathbf{x} - \mathbf{y}}
+$$
+
+for all $(t, \mathbf{x}), (t, \mathbf{y}) \in K$.
+
+Define
+  
+$$
+  M := \sup_{(t, \mathbf{x}) \in K} \norm{\mathbf{W}(t, \mathbf{x})} < \infty
+$$
+
+which is finite because $\mathbf{W}$ is continuous and $K$ is compact. Choose $\epsilon > 0$ such that $\epsilon\leq a$, $\epsilon L < 1$ and $\epsilon M \leq r$. Define the interval $J := [t_0 - \epsilon, t_0 + \epsilon]$ and consider the metric space
+
+$$
+  X = \set{\boldsymbol{\alpha} \in C(J, \R^n) | \boldsymbol{\alpha}(t) \in \overline{B_r (\mathbf{x}_0)} \forall t \in J}
+$$
+
+equipped with the supremum metric
+
+$$
+  d(\boldsymbol{\alpha}, \boldsymbol{\beta}) := \sup_{t\in J} \norm{\boldsymbol{\alpha}(t) - \boldsymbol{\beta}(t)}_{\R^n}
+$$
+
+Since $C(J, \R^n)$ is complete under the supremum norm and $X$ is closed, $(X, d)$ is a complete metric space.
+
+Define the operator $\Phi: X \to C(J, \R^n)$ by
+
+$$
+  (\Phi\boldsymbol{\alpha})(t) := \mathbf{x}_0 + \int_0^t \mathbf{W}(s, \boldsymbol{\alpha}(s)) \;\d s
+$$
+
+We first show that $\Phi(X) \subseteq X$. For $\boldsymbol{\alpha}\in X$, we have
+
+$$
+\begin{align*}
+  \norm{(\Phi\boldsymbol{\alpha})(t) - \mathbf{x}_0} =& \Norm{\int_0^t \mathbf{W}(s, \boldsymbol{\alpha}(s))\;\d s} \\
+  \leq& \int_0^{|t|} \norm{\mathbf{W}(s, \alpha(s))} \;\d s \\
+  \leq M |t - t_0| \leq \epsilon M \leq r
+\end{align*}
+$$
+
+Hence $(\Phi\boldsymbol{\alpha})(t) \in\overline{B_r (\mathbf{x}_0)}$ for all $t\in J$, so $\Phi\boldsymbol{\alpha}\in X$.
+
+Next, we show that $\Phi$ is a contraction. For $\boldsymbol{\alpha}, \boldsymbol{\beta} \in X$, we have
+
+$$
+\begin{align*}
+  d(\Phi(\boldsymbol{\alpha}), \Phi(\boldsymbol{\beta})) =& \sup_{t\in (-\epsilon, \epsilon)} \norm{(\Phi\boldsymbol{\alpha})(t) - \Phi(\boldsymbol{\beta})(t)}_{\R^n} \\
+  =& \sup_{t\in (-\epsilon, \epsilon)} \Norm{\int_0^t [\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))]}_{\R^n} \;\d s \\
+  \leq& \sup_{t\in (-\epsilon, \epsilon)} \int_0^t \norm{\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))}_{\R^n} \;\d s \\
+  \leq& \sup_{t\in (-\epsilon, \epsilon)} \underbrace{\operatorname{length}([0,t])}_{|t| \leq\epsilon} \sup_{s\in[0,t]} \norm{\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))}_{\R^n} \\
+  \leq& \epsilon \sup_{s\in (-\epsilon, \epsilon)} \underbrace{\norm{\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))}_{\R^n}}_{\leq L \norm{\boldsymbol{\alpha}(s) - \boldsymbol{\beta}(s)}}_{\R^n} \\
+  \leq& \epsilon L d(\boldsymbol{\alpha}, \boldsymbol{\beta})
+\end{align*}
+$$
+
+Since $\epsilon L < 1$, the map $\Phi$ is a contraction on the complete metric space $(X, d)$. Thus, by the Banach fixed point theorem, $\Phi$ has a unique fixed point $\boldsymbol{\alpha} \in X$ such that
+
+$$
+  \boldsymbol{\alpha}(t) = \mathbf{x}_0 + \int_0^t \mathbf{W}(s, \boldsymbol{\alpha}(s)) \;\d s
+$$
+
+Differentiating with respect to $t$, yields
+
+$$
+  \boldsymbol{\alpha}' (t) = \mathbf{W}(t, \boldsymbol{\alpha}(t)),\; \boldsymbol{\alpha}(t_0) = \mathbf{x}_0
+$$
+
+Hence $\boldsymbol{\alpha}$ is a unique solution of the initial value problem $\eqref{equation-8}$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="corollary" tag="1">
+Let $U\subseteq \R^n$ be an open subset, let $\mathbf{V}: U\subseteq \to\R^n$ be a locally Lipschitz continuous vector field and let $\mathbf{x}_0 \in U$. Then there exists a constant $\epsilon > 0$ such that the autonomous initial value problem
 
 $$
 \begin{equation*}
@@ -404,7 +503,7 @@ admits a unique solution $\alpha: (-\epsilon, \epsilon) \to U$.
 <details>
 <summary>Proof</summary>
 
-Since $\mathbf{V}$ is locally Lipschitz continuous and $U$ is open, there exists $r > 0$ and $L > 0$ such that the closed ball $\overline{B_r (\mathbf{x}_0)} \subseteq U$, and
+Since $\mathbf{V}$ is locally Lipschitz continuous and $U$ is open, there exist constants $r > 0$ and $L > 0$ such that the closed ball $\overline{B_r (\mathbf{x}_0)} \subseteq U$, and
 
 $$
   \norm{\mathbf{V}(\mathbf{x}) - \mathbf{V}(\mathbf{y})} \leq L \norm{\mathbf{x} - \mathbf{y}},\; \forall \mathbf{x}, \mathbf{y} \in \overline{B_r (\mathbf{x}_0)}
@@ -413,10 +512,10 @@ $$
 Define
   
 $$
-  M := \sup_{\mathbf{x} \in\overline{B_r (\mathbf{x}_0)}} \norm{\mathbf{V}(\mathbf{x})} < \inty
+  M := \sup_{\mathbf{x} \in\overline{B_r (\mathbf{x}_0)}} \norm{\mathbf{V}(\mathbf{x})} < \infty
 $$
 
-which is finite because $\mathbf{V}$ is continuous and $\overline{B_r (\mathbf{x}_0)}$ is compact. Choose $\epsilon > 0$ such that $\epsilon L < 1$ and $\epsilon M \leq r$. Consider the metrix space
+which is finite because $\mathbf{V}$ is continuous and $\overline{B_r (\mathbf{x}_0)}$ is compact. Choose $\epsilon > 0$ such that $\epsilon L < 1$ and $\epsilon M \leq r$. Consider the metric space
 
 $$
   X = \set{\boldsymbol{\alpha} \in C((-\epsilon, \epsilon), \R^n) | \boldsymbol{\alpha}(t) \in \overline{B_r (\mathbf{x}_0)} \forall t \in (-\epsilon, \epsilon)}
@@ -426,12 +525,6 @@ equipped with the supremum metric
 
 $$
   d(\boldsymbol{\alpha}, \boldsymbol{\beta}) := \sup_{t\in (-\epsilon, \epsilon)} \norm{\boldsymbol{\alpha}(t) - \boldsymbol{\beta}(t)}_{\R^n}
-$$
-
-Then the metric space $(X, d)$ is complete. To show that $\Phi: X\to X$ is contraction, consider
-
-$$
-  (\Phi\boldsymbol{\alpha})(t) = \mathbf{x}_0 + \int_0^t \mathbf{V}(\alpha(s)) \;\d s
 $$
 
 Since $C((-\epsilon, \epsilon), \R^n)$ is complete under the supremum norm and $X$ is closed, $(X, d)$ is a complete metric space.
@@ -448,11 +541,11 @@ $$
 \begin{align*}
   \norm{(\Phi\boldsymbol{\alpha})(t) - \mathbf{x}_0} =& \Norm{\int_0^t \mathbf{V}(\boldsymbol{\alpha}(s))\;\d s} \\
   \leq& \int_0^{|t|} \norm{\mathbf{V}(\alpha(s))} \;\d s \\
-  \leq \epsilon M \leq r
+  \leq M |t - t_0| \leq \epsilon M \leq r
 \end{align*}
 $$
 
-Hence $(\Phi\boldsymbol{\alpha})(t) \in\overline{B_r (\mathbf{x}_0)}$ for all $t$, so $\Phi\boldsymbol{\alpha}\in X$.
+Hence $(\Phi\boldsymbol{\alpha})(t) \in\overline{B_r (\mathbf{x}_0)}$ for all $t\in (-\epsilon, \epsilon)$, so $\Phi\boldsymbol{\alpha}\in X$.
 
 Next, we show that $\Phi$ is a contraction. For $\boldsymbol{\alpha}, \boldsymbol{\beta} \in X$, we have
 
@@ -480,6 +573,93 @@ $$
 $$
 
 Hence $\boldsymbol{\alpha}$ is a unique solution of the initial value problem $\eqref{equation-8}$.
+</details>
+</MathBox>
+
+<MathBox title="Picard-Lindelöf theorem (special version)" boxType="theorem" tag="2">
+Let $\mathbf{W}: \R\times\R^n \to\R^n$ be a continuous vector field. Assume for each $T > 0$ there exist a constant $L_T > 0$ such that for all $t\in [-T, T]$ and $\mathbf{x}, \mathbf{y} \in\R^n$
+
+$$
+\begin{equation*}
+  \norm{\mathbf{W}(t, \mathbf{x}) - \mathbf{W}(t, \mathbf{y})} \leq L_T \norm{\mathbf{x} - \mathbf{y}}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+Then, for every $(t_0, \mathbf{x}_0) \in \R\times\R^n$, the initial value problem
+
+$$
+\begin{equation*}
+  \operatorname{IVP}_{\mathbf{x}_0}^{t_0} : \mathbf{x}'(t) = \mathbf{W}(t, \mathbf{x}),\; \mathbf{x}(t_0) = \mathbf{x}_0
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+admits a unique global solution $\boldsymbol{\alpha}: \R\to\R^n$.
+
+<details>
+<summary>Proof</summary>
+
+By translating the time variable, it suffices to consider the case $t_0 = 0$. Fix $T > 0$, and define the set $X = C([-T, T], \R^n)$ equipped with the weighted supremum norm
+
+$$
+\begin{equation*}
+  \norm{\boldsymbol{\alpha}}_* := \sup_{t\in [-T, T]} e^{-2 L_T |t|} \norm{\boldsymbol{\alpha}(t)}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+and corresponding metric $d(\boldsymbol{\alpha}, \boldsymbol{\beta}) := \norm{\boldsymbol{\alpha} - \boldsymbol{\beta}}_*$. Since the weighted norm is equivalent to the usual supremum norm on $X$, the metric space $(X, d)$ is complete. Define the operator $\Phi: X\to X$ by
+
+$$
+  (\Phi\boldsymbol{\alpha})(t) = \mathbf{x}_0 + \int_0^t \mathbf{W}(s, \boldsymbol{\alpha}(s)) \;\d s
+$$
+
+We show that $\Phi$ is a contraction by evaluating $d(\Phi(\boldsymbol{\alpha}, \Phi(\boldsymbol{\beta})$. Let $\boldsymbol{\alpha}, \boldsymbol{\beta} \in X$. Then for $t\in [-T, T]$, we have
+
+$$
+\begin{align*}
+  \norm{(\Phi\boldsymbol{\alpha})(t) - (\Phi\boldsymbol{\beta})(t)} =& \Norm{\int_0^t [\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))] \;\d s} \\
+  \leq& \left| \int_0^t \norm{\mathbf{W}(s, \boldsymbol{\alpha}(s)) - \mathbf{W}(s, \boldsymbol{\beta}(s))} \;\d s \right| \\
+  \underbrace{\leq}_{\eqref{equation-11} & L_T \left| \int_0^t \norm{\boldsymbol{\alpha}(s) - \boldsymbol{\beta}(s)} \;\d s \right| \\
+  \leq& L_T \left| \int_0^t e^{2L_T |s|} e^{-2L_T |s|} \norm{\boldsymbol{\alpha}(s) - \boldsymbol{\beta}(s)} \right|
+\end{align*}
+$$
+
+Using the definition of the weighted norm $\eqref{equation-10}$, it follows that
+
+$$
+  e^{-2L_T |s|} \norm{\boldsymbol{\alpha}(s) - \boldsymbol{\beta}} \leq d(\boldsymbol{\alpha}, \boldsymbol{\beta})
+$$
+
+such that
+
+$$
+\begin{equation*}
+  e^{-2L_T |t|} \norm{(\Phi\boldsymbol{\alpha})(t) - (\Phi\boldsymbol{\beta})(t)} \leq& L_T d(\boldsymbol{\alpha}, \boldsymbol{\beta}) e^{-2L_T |t|} \left| \int_0^t e^{2L_T s} \;\d s \right| \\
+  =& \frac{1}{2} underbrace{(1 - e^{-2L_T |t|)}_{\leq 1} d(\boldsymbol{\alpha}, \boldsymbol{\beta}) \leq \frac{1}{2} d(\boldsymbol{\alpha}, \boldsymbol{\beta})
+\end{equation*}
+$$
+
+Taking the supremum over $t\in [-T, T]$ yields
+
+$$
+  d(\Phi\boldsymbol{\alpha}, \Phi\boldsymbol{\beta}) \leq \frac{1}{2} d(\boldsymbol{\alpha}, \boldsymbol{\beta})
+$$
+
+showing that $\Phi$ is a contraction on the complete metric space $(X, d)$. Thus, by the Banach fixed point theorem, $\Phi$ has a unique fixed point $\boldsymbol{\alpha}_T \in C([-T, T], \R^n)$ satisfying
+
+$$
+  \boldsymbol{\alpha}_T (t) = \mathbf{x}_0 + \int_0^t \mathbf{W}(s, \boldsymbol{\alpha}_T (s)) \;\d s
+$$
+
+Differentiating with respect to $t$ gives
+
+$$
+  \boldsymbol{\alpha}' (t) = \mathbf{W}(t, \boldsymbol{\alpha}(t)),\; \boldsymbol{\alpha}_T (0) = \mathbf{x}_0
+$$
+
+showing that $\boldsymbol{\alpha}_T$ is the unique solution of the initial value problem $\eqref{equation-12}$. Since $T > 0$ was arbitrary, uniqueness implies that the solutions obtained for different values of $T$ agree on the overlapping intervals. Consequently, these local solutions patch together to define a unique solution $\boldsymbol{\alpha}:\R\to\R^n$ defined for all time. Thus, the inital value problem admits a unique global solution.
 </details>
 </MathBox>
 
