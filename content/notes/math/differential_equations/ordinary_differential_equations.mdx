@@ -29,7 +29,7 @@ An $n$th-order linear ordinary differential equation (ODE) for an unknown functi
 
 $$
 \begin{equation*}
-  \sum_{k=0}^n \alpha_k(x) \frac{\d^k y}{\d x^k} &= f(x)
+  \sum_{k=0}^n \alpha_k(x) \frac{\d^k y}{\d x^k} = f(x)
 \tag{\label{equation-2}}
 \end{equation*}
 $$
@@ -904,7 +904,6 @@ Hence every maximal solution is either injective, constant, or periodic.
 </details>
 </MathBox>
 
-
 ## Second order linear ODE
 
 The homogenous second order linear ODE with constant coefficient is of the form
@@ -1032,10 +1031,10 @@ $$
     \vdots \\ 
     \frac{\d y_n}{\d x} 
   \end{bmatrix} = \begin{bmatrix} 
-    \alpha_{11} & \alpha_{12} & \dots & \alpha_{1n} \\ 
-    \alpha_{21} & \alpha_{22} & \dots & \alpha_{2n} \\ 
+    \alpha_{11}(t) & \alpha_{12}(t) & \dots & \alpha_{1n}(t) \\ 
+    \alpha_{21}(t) & \alpha_{22}(t) & \dots & \alpha_{2n}(t) \\ 
     \vdots & \vdots & \ddots & \vdots \\ 
-    \alpha_{n1} & \alpha_{n2} & \dots & \alpha_{nn} 
+    \alpha_{n1}(t) & \alpha_{n2}(t) & \dots & \alpha_{nn}(t) 
   \end{bmatrix} \cdot \begin{bmatrix} 
     y_1 \\ 
     y_2 \\ 
@@ -1047,9 +1046,11 @@ $$
     \vdots \\ 
     g_n (t) 
   \end{bmatrix} \\
-  \frac{\d\mathbf{y}}{\d x} = A\mathbf{y} + \mathbf{g}(t)
+  \frac{\d\mathbf{y}}{\d x} = \mathbf{A}(t) \mathbf{y} + \mathbf{g}(t)
 \end{gather*}
 $$
+
+The system is autonomous if $\mathbf{A} and $\mathbf{g}$ are constant.
 
 By defining the linear operator $\mathcal{L}[\mathbf{y}] = \left[\frac{\d}{\d t} - A \right]\mathbf{y}$, we can write the system of linear first order ODEs as
 
@@ -1064,16 +1065,16 @@ The general solution is obtained in a similar manner as for a single linear ODE,
 The corresponding homogenous system of ODEs takes the form
 
 $$
-  \mathcal{L}\left[ \mathbf{y}_H \right] = \mathbf{0} \implies \frac{\d\mathbf{y}_H}{\d t} = A \mathbf{y}_H
+  \mathcal{L}\left[ \mathbf{y}_H \right] = \mathbf{0} \implies \frac{\d\mathbf{y}_H}{\d t} = \mathbf{A} \mathbf{y}_H
 $$
 
 In the case where $A$ is diagonalizable with $n$ distinct roots, there exists a matrix $V$ such that
 
 $$
-  V^{-1}AV = \Lambda = \lambda_i \delta_{ij}
+  \mathbf{V}^{-1}\mathbf{AV} = \Lambda = \lambda_i \delta_{ij}
 $$
 
-where the $i$th column of $V$ is the eigenvector of $A$ corresponding to the eigenvalue $\lambda_i$
+where the $i$th column of $V$ is the eigenvector of $\mathbf{A}$ corresponding to the eigenvalue $\lambda_i$
 
 $$
   A\mathbf{v}_i = \lambda_i \mathbf{v}_i
@@ -1129,6 +1130,86 @@ $$
 $$
 
 Transforming back gives the homogenous solution $\mathbf{y}_H = W\mathbf{z}$.
+
+<MathBox title="" boxType="proposition">
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+
+$$
+\begin{equation*}
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+The set of solutions of this system forms a vector space over $\R$. Equivalently, if $\boldsymbol{\alpha}, \boldsymbol{\beta}: \to\R^n$ are solutions and $\lambda, \mu \in\R$ are scalars, then the linear combination $\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)$ is also a solution. Thus, the solution set is closed in under vector addition and scalar multiplication.
+
+<details>
+<summary>Proof</summary>
+
+Since differentiation is linear, we have
+
+$$
+  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) = \lambda\boldsymbol{\alpha}'(t) + \mu\boldsymbol{\beta}'(t)
+$$
+
+Because $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ satisfy the differential equation $\eqref{equation-13}$, we obtain
+
+$$
+\begin{align*}
+  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) =& \lambda\mathbf{A}(t) \boldsymbol{\alpha}(t) + \mu\mathbf{A}(t) \boldsymbol{\beta}(t) \\
+  =& \mathbf{A}(t) [\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)]
+\end{align*}
+$$
+
+Hence $\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}$ is also a solution of $\eqref{equation-13}$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+  
+$$
+\begin{equation*}
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+Define the solution set
+
+$$
+  S_0 := \set{\boldsymbol{\alpha}\in C^1 (I,\R^n) : \boldsymbol{\alpha}' (t) = \mathbf{A}(t) \boldsymbol{\alpha}(t),\; \forall t\in I}
+$$
+
+Then $S_0$ is $n$-dimensional vector space over $\R$.
+
+<details>
+<summary>Proof</summary>
+
+Since the differential equation is linear and homogeneous, the set $S_0$ is closed under addition and scalar multiplication. Thus $S_0$ is a vector subspace of $C^1 (I, \R^n)$. Fix $t_0 \in I$ and define a map $\ell : S_0 \to \R^n$ by $\boldsymbol{\alpha} \mapsto \boldsymbol{\alpha}(t_0)$. The map $\ell$ is linear because evaluation at a point is linear. That is, for $\mathbf{\alpha}, \mathbf{\beta} \in C^1 (I, \R^n)$ and scalars $\lambda, \mu \in\R$
+
+$$
+\begin{align*}
+  \ell(\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}) =& (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})(t_0) \\
+  =& \lambda\boldsymbol{\alpha}(t_0) + \mu\boldsymbol{\beta}(t_0)
+\end{align*}
+$$
+
+We now show that $\ell$ is bijective (surjective and injective).
+
+**Surjectivity:** Let $\mathbf{x}_0 \in\R^n$ Consider the initial value problem
+
+$$
+  \operatorname{IVP}_{\mathbf{x}_0}^{t_0} : \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t),\; \mathbf{x}(t_0) = \mathbf{x}_0
+$$
+
+Since $\mathbf{A}$ is continuous, the Picard-Lindelöf theorem ($\ref{theorem-2}$) guarantees the existence of a unique solution $\boldsymbol{\alpha} \in C^1 (I, \R^n)$. By construction $\ell(\boldsymbol{\alpha}) = \boldsymbol{\alpha}(t_0) = \mathbf{x}_0$. Hence $\ell$ is surjective.
+
+**Injectivity:** Suppose $\boldsymbol{\alpha}, \boldsymbol{\beta} \in S_0$ satisfy $\ell(\boldsymbol{\alpha}) = \ell(\boldsymbol{\beta})$. Then $\boldsymbol{\alpha}(t_0) = \boldsymbol{\beta}(t_0)$. Both $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ solve the same initial value problem $\operatorname{IVP}_{\mathbf{x}_0}^{t_0}$. By uniqueness of solutions, it follows that $\boldsymbol{\alpha} = \boldsymbol{\beta}$ on $I$. Thus, $\ell$ is injective.
+
+Since $\ell$ is bijective, it forms a vector space isomorphism $S_0 \cong \R^n$ such that $\dim(S_0) = \dim(R^n) = n$.
+</details>
+</MathBox>
 
 ## Sturm-Liouville theorem
 
