@@ -340,7 +340,7 @@ $$
 
 ### Picard iteration
 
-Let $\mathbf{x}: I\subseteq\R \to\R^n$ be continuously differentiable and consider the initial value problem 
+Let $\mathbf{x}: I\subseteq\R\to\R^n$ be continuously differentiable and consider the initial value problem 
 
 $$
 \begin{equation*}
@@ -1212,6 +1212,131 @@ Since $\ell$ is bijective, it forms a vector space isomorphism $S_0 \cong \R^n$ 
 </MathBox>
 
 ## Picard iteration
+
+<MathBox title="Matrix exponential" boxType="definition">
+Let $\mathbf{A}\in\R^{n\times n}$ be a real $n\times n$ matrix. The matrix exponential associated with $\mathbf{A}$ is defined the power series
+
+$$
+  e^{t\mathbf{A}} := \sum_{k=0}^\infty \frac{t^k}{k!}\mathbf{A}^k,\; t\in\R
+$$
+
+<details>
+<summary>Details</summary>
+
+This series converges absolutely for every $t\in\R$. If $\norm{\cdot}$ is any submultiplicative matrix norm on $\R^{n\times n}$, then
+
+$$
+  \Norm{\frac{t^k}{k!} \mathbf{A}^k} \leq \frac{|t|^k}{k!} \norm{\mathbf{A}}^k
+$$
+
+and therefore
+
+$$
+\begin{align*}
+  \sum_{k=0}^\infty \Norm{\frac{t^k}{k!} \mathbf{A}^k} \leq& \sum_{k=0}^\infty \frac{(|t| \norm{\mathbf{A}})^k}{k!} \\
+  =& e^{|t|\cdot\norm{\mathbf{A}}} < \infty
+\end{align*}
+$$
+
+Hence, the defining series converges absolutely in the finite-dimensional Banach space $\R^{n\times n}$. Moreover, the convergenece is uniform on every compact interval $[a, b] \subseteq\R$. Writing
+
+$$
+  M := \max\set{|a|, |b|}
+$$
+
+we obtain for all $t\in[a,b]$
+
+$$
+  \Nrom{\frac{t^k}{k!}\mathbf{A}^k} \leq \frac{(M \norm{\mathbf{A})^k}{k!}
+$$
+
+Since
+
+$$
+  \sum_{k=0}^\infty \frac{(M\norm{\mathbf{A})^k}{k!} = e^{M\norm{\mathbf{A}}}
+$$
+
+converges, the Weierstrass $M$-test implies that the series defining $e^{t\mathbf{A}}$ converges uniformly on $[a,b]$. Consequently, each matrix entry of $e^{t\mathbf{A}}$ defines a real-analytic function of $t$.
+</details>
+</MathBox>
+
+<MathBox title="Properties of the matrix exponential" boxType="proposition">
+Let $\mathbf{A}, \mathbf{B} \in\R^{n\times n}$. The matrix exponential associated with $\mathbf{A}$ satisfies the following properties
+1. Derivative formula
+$$
+ \frac{\d}{\d t} e^{t\mathbf{A}} = \mathbf{A} e^{t\mathbf{A}}
+$$
+2. **Exponential identity:** If $\mathbf{AB} = \mathbf{BA}$ then $e^\mathbf{A} + \mathbf{B}} = e^\mathbf{A} e^\mathbf{B} = e^\mathbf{B} e^\mathbf{A}$
+3. Inverse:  $\left(e^\mathbf{A} \right) = e^{-\mathbf{A}}
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Using termwise differentiation of the uniformly convergent power series, we have
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} e^{t\mathbf{A}} =& \frac{\d}{\d t} \left(\sum_{k=0} \frac{t^k}{k!} \mathbf{A}^k \right) \\
+  =& \sum_{k=1}^\infty \frac{kt^{k-1}}{k!} \mathbf{A}^k \\
+  =& \sum_{k=1}^\infty \frac{t^{k-1}}{(k-1)!} \mathbf{A}^k
+\end{align*}
+$$
+
+Reindexing with $m = k-1$ yields
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} e^{t\mathbf{A}} =& \sum_{m=0}^\infty \frac{t^m}{m!} \mathbf{A}^{m+1} \\
+  =& \mathbf{A} \sum_{m=0}^\infty \frac{t^m}{m!} \mathbf{A}^m \\
+  =& \mathbf{A} e^{t\mathbf{A}}
+\end{align*}
+$$
+
+Since every power $\mathbf{A}^m$ commutes with $\mathbf{A}$, we also have $\mathbf{A} e^{t\mathbf{A}} = e^{t\mathbf{A}} \mathbf{A}$.
+
+**(2):** Assume $\mathbf{AB} = \mathbf{BA}$. Then $\mathbf{A}$ and $\mathbf{B}$ commute with all their powers, and the binomial theorem is valid for $\mathbf{A} + \mathbf{B}$
+
+$$
+  (\mathbf{A} + \mathbf{B})^k = \sum_{j=0}^k \binom{k}{j} \mathbf{A}^j \mathbf{B}^{k-j}
+$$
+
+Thus
+
+$$
+\begin{align*}
+  e^{\mathbf{A}+\mathbf{B}} =& \sum_{k=0}^\infty \frac{1}{k!} (\mathbf{A} + \mathbf{B})^k \\
+  =& \sum_{k=0}^\infty \sum_{j=0}^k \frac{1}{k!} \binom{k}{j} \mathbf{A}^j \mathbf{B}^{k-j} \\
+  =& \sum_{k=0}^\infty \sum_{j=0}^k \frac{1}{j!(k - j)!} \mathbf{A}^j \mathbf{B}^{k-j}
+\end{align*}
+$$
+
+Setting $m = k - j$ and rearranging the absolutely convergent series gives
+
+$$
+\begin{align*}
+  e^{\mathbf{A}+\mathbf{B}} =& \sum_{j=0}^\infty \sum_{m=0}^\infty \frac{\mathbf{A}^j}{j!} \frac{\mathbf{B}^m}{m!} \\
+  =& \left(\sum_{j=0}^\infty \frac{\mathbf{A}^j}{j!} \right) \left(\sum_{m=0}^\infty \frac{\mathbf{B}^m}{m!} \right) \\
+  =& e^\mathbf{A} e^\mathbf{B}
+\end{align*}
+$$
+
+Since $\mathbf{A}$ and $\mathbf{B}$ commute, it follows that $e^\mathbf{A} e^\mathbf{B} = e^\mathbf{B} e^\mathbf{A}$.
+
+**(3):** Because $\mathbf{A}$ and $-\mathbf{A}$ commute, item **(2)** implies
+
+$$
+  e^\mathbf{A} e^{-\mathbf{A}} = e^{\mathbf{A}-\mathbf{A}} = e^0 = \mathbf{I}_n
+$$
+
+and
+
+$$
+  e^{-\mathbf{A}} e^\mathbf{A} = e^{\mathbf{A} - \mathbf{A}} = e^0 = \mathbf{I}_n
+$$
+
+Hence $(e^{\mathbf{A}})^{-1} = e^{-\mathbf{A}}$.
+</details>
+</MathBoc>
 
 Consider the homogeneous and autonomous linear initial value problem
 
