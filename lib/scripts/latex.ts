@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/math/probability_theory/stochastic_processes/markov_processes.mdx",
+    "./content/notes/math/differential_equations/ordinary_differential_equations.mdx",
   ),
 );
 

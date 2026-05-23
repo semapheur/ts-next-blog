@@ -276,7 +276,7 @@ $$
   F(\alpha(x)) = x - x_0 + F(f_0)
 $$
 
-If $F$ is locally invertible near $f_0$ (which follows from $F'(f_0) \neq 0), then the solution can be expressed implicitly as
+If $F$ is locally invertible near $f_0$ (which follows from $F'(f_0) \neq 0)$, then the solution can be expressed implicitly as
 
 $$
   \alpha(x) = F^{-1} (x - x_0 + F(f_0))
@@ -1050,7 +1050,7 @@ $$
 \end{gather*}
 $$
 
-The system is autonomous if $\mathbf{A} and $\mathbf{g}$ are constant.
+The system is autonomous if $\mathbf{A}$ and $\mathbf{g}$ are constant.
 
 By defining the linear operator $\mathcal{L}[\mathbf{y}] = \left[\frac{\d}{\d t} - A \right]\mathbf{y}$, we can write the system of linear first order ODEs as
 
@@ -1267,7 +1267,7 @@ $$
  \frac{\d}{\d t} e^{t\mathbf{A}} = \mathbf{A} e^{t\mathbf{A}}
 $$
 2. **Exponential identity:** If $\mathbf{AB} = \mathbf{BA}$ then $e^\mathbf{A} + \mathbf{B}} = e^\mathbf{A} e^\mathbf{B} = e^\mathbf{B} e^\mathbf{A}$
-3. Inverse:  $\left(e^\mathbf{A} \right) = e^{-\mathbf{A}}
+3. Inverse:  $\left(e^\mathbf{A} \right) = e^{-\mathbf{A}}$
 
 <details>
 <summary>Proof</summary>
@@ -1336,7 +1336,7 @@ $$
 
 Hence $(e^{\mathbf{A}})^{-1} = e^{-\mathbf{A}}$.
 </details>
-</MathBoc>
+</MathBox>
 
 Consider the homogeneous and autonomous linear initial value problem
 
@@ -1552,6 +1552,155 @@ $$
 
 ## 2D systems of linear ODEs
 
+Consider the homogeneous and autonomous linear system in $\R^2$
+
+$$
+  \mathbf{x}'(t) = \mathbf{A} \mathbf{x}(t),\; \mathbf{A} = \begin{bmatrix} a & b \\ c & d \end{bmatrix} \in\R^{n\times n}
+$$
+
+The the solution space of this system is determined by the spectral properties of $\mathbf{A}$. Since the system is homogeneous and autonomous, every solution is given in terms of the matrix exponential
+
+$$
+  \mathbf{x}(t) = e^{t\mathbf{A}} \mathbf{x}_0,\; \mathbf{x}_0 \in\R^2
+$$
+
+Define $\tau := \operatorname{\tr}(\mathbf{A}) = a + d$ and $\Delta := \det(\mathbf{A}) = ad - bc$. The characteristic polynomial of $\mathbf{A}$ is
+
+$$
+  p(\lambda) = \det(\lambda\mathbf{I} - \mathbf{A}) = \lambda^2 - \tau\lambda + \Delta
+$$
+
+and the eigenvalues are given be the quadratic formula
+
+$$
+  \lambda_{1,2} = \frac{\tau\pm\sqrt{\tau^2 - 4\Delta}}{2}
+$$
+
+The qualitative behaviour of the system is governed by the discriminant $D := \tau^2 - 4\Delta$.
+
+- **Two distinct real eigenvalues ($D > 0$)**
+
+If the eigenvalues are distinct and real, $\lambda_1 \neq \lambda_2 \in\R$, then $\mathbf{A}$ is diagonalizable over $\R$. Let $\mathbf{u}_1, \mathbf{u}_2 \in\R^2$ be the corresponding eigenvectors and define the $2\times 2$ matrix
+
+$$
+  \mathbf{U} = \begin{bmatrix}
+    \shortmid & \shortmid \\
+    \mathbf{u}_1 & \mathbf{u}_2 \\
+    \shortmid & \shortmid
+  \end{bmatrix} \in \R^{2\times 2}
+$$
+
+Since the eigenvectors are linearly indpendent, $\mathbf{U}$ is invertible such that $\mathbf{U}^{-1} \mathbf{AU} = \operatorname{diag}(\lambda_1, \lambda_2)$. Thus
+
+$$
+  e^{t\mathbf{A}} = \mathbf{U} \begin{bmatrix} e^{t\lambda_1} & 0 \\ 0 & e^{t\lambda_2} \end{bmatrix} \mathbf{U}^{-1}
+$$
+
+resulting the in the general solution
+
+$$
+  \mathbf{x}(t) = c_1 e^{\lambda_1 t} \mathbf{u}_1 + c_2 e^{\lambda_2 t} \mathbf{u}_2,\; c_1, c_2 \in\R
+$$
+
+Consequently, the functions $\set{e^{\lambda_1 t} \mathbf{u}_1, e^{\lambda_2 t} \mathbf{u}_2}$ form a basis of the solution space.
+
+- **Complex conjugate eigenvalues ($D < 0$)** 
+
+Assume $\lambda_{1,2} = \alpha \pm i\beta \in \mathbb{C}\setminus \R$ and let $\mathbf{w} = \mathbf{u} + i\mathbf{v}$ be an eigenvector corresponding to $\lambda_1$, where $\mathbf{u}, \mathbf{v} \in\R^2$. Then the real $2\times 2$ matrix
+
+$$
+  \mathbf{U} = \begin{bmatrix}
+      \shortmid & \shortmid \\
+      \mathbf{u} & \mathbf{v} \\
+      \shortmid & \shortmid
+    \end{bmatrix} \in \R^{2\times 2}
+$$
+
+is invertible such that
+
+$$
+  \tilde{\mathbf{U}}^{-1} \mathbf{A} \tilde{\mathbf{U}} = \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix}
+$$
+
+Writing
+
+$$
+\begin{bmatrix}
+  \mathbf{B} =& \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix} \\
+  =& \alpha\mathbf{I}_2 + \beta \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}
+\end{bmatrix}
+$$
+
+we obtain
+
+$$
+  e^{t\mathbf{B}} = e^{\alpha t} \begin{bmatrix} \cos(\beta t) & \sin(\beta t) \\ -\sin(\beta t) & \cos(\beta t) \end{bmatrix}
+$$
+
+Thus, $e^{t\mathbf{A}} = \mathbf{U} e^{t\mathbf{B}} \mathbf{U}^{-1}$ and a real basis of the solution space is given by
+
+$$
+\begin{align*}
+  e^{\alpha t} [\cos(\beta t) \mathbf{u} - \sin(\beta t)\mathbf{v}] \\
+  e^{\alpha t} [\sin(\beta t) \mathbf{u} + \cos(\beta t)\mathbf{v}]
+\end{align*}
+$$
+
+- **Diagonalizable with repeated real eigenvalues ($D = 0$)**
+
+Assume $\lambda_1 = \lambda_2 =: \lambda \in\R$ and suppose that $\mathbf{A}$ posesses two linearly independent eigenvectors $\mathbf{u}_1, \mathbf{u}_2$. Then $\mathbf{A}$ is diagonalizable in terms of $\mathbf{U}$ as $\mathbf{U}^{-1} \mathbf{AU} = \lambda_1 \mathbf{I}_2$. Thus,
+
+$$
+  e^{t\mathbf{A}} = \mathbf{U} e^{\lambda t} \mathbf{I}_2 \mathbf{U}^{-1} = e^{\lambda t} \mathbf{I}_2
+$$
+
+and the general solution is
+
+$$
+  \mathbf{x}(t) = e^{\lambda t} (c_1 \mathbf{u}_1 + c_2 \mathbf{u}_2)
+$$
+
+Such phase potraits are called *star nodes*.
+
+- **Non-diagonalizable with repeated real eigenvalues ($D = 0$)**
+
+Assume $\lambda_1 = \lambda_2 =: \lambda \in\R$, but $\mathbf{A}$ has only one linearly independent eigenvector $\mathbf{u}_1$. Choose a generalized eigenvector $\mathbf{u}_2$ satisfying $(\mathbf{A} - \lambda\mathbf{I}_2)\mathbf{u}_2 = \mathbf{u}_1$. Then $\mathbf{A}$ can be decomposed in Jordan normal form as
+
+$$
+  \mathbf{U}^{-1} \mathbf{AU} = \begin{bmatrix} \lambda & 1 \\ 0 & \lambda \end{bmatrix} = \lambda\mathbf{I}_2 + \mathbf{N}
+$$
+
+where
+
+$$
+  \mathbf{N} = \begin{bmatrix} 0 & 1 \\ 0 & 1 \end{bmatrix},\quad \mathbf{N}^2 = \mathbf{0}_2
+$$
+
+Since $\lambda\mathbf{I}_2$ commutes with $\mathbf{N}$, we obtain
+
+$$
+\begin{align*}
+  e^{t\mathbf{A}} =& \mathbf{U}e^{t(\lambda\mathbf{I} + \mathbf{N})} \mathbf{U}^{-1} \\
+  =& \mathbf{U} e^{\lambda t} e^{t\mathbf{N}} \mathbf{U}^{-1}
+\end{align*}
+$$
+
+Using $\mathbf{N}^2 = \mathbf{0}_2$, we get $e^{t\mathbf{N}} = \mathbf{I}_2 + t\mathbf{N}$. Thus
+
+$$
+  e^{t\mathbf{A}} = \mathbf{U}e^{\lambda t} \begin{bmatrix} 1 & t \\ 0 & 1 \end{bmatrix} \mathbf{U}^{-1}
+$$
+
+and the general solution becomes
+
+$$
+  \mathbf{x}(t) = c_1 e^{\lambda t} \mathbf{u}_1 + c_2 e^{\lambda t} (t\mathbf{u}_1 + \mathbf{u}_2)
+$$
+
+Such phase potraits are called improper nodes or degenerate nodes.
+
+### Qualitative classification of equilibrium point
+
 <LatexFigure width={90} src='/fig/2d_linear_ode_phase_portrait.svg' alt=''
   caption='Phase portaits of 2D systems of linear ODEs.'
 >
@@ -1712,30 +1861,9 @@ $$
 ```
 </LatexFigure>
 
-A general two-dimensional system of linear ODEs is given by
+The qualitative behaviour of the equilibrium point $\mathbf{x} = 0$ is determined by $\tau$ and $\Delta$.
 
-$$
-  \frac{\d\mathbf{y}}{\d t} = A\mathbf{y} \, ,\quad A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}
-$$
-
-The general solution of this system is a linear combination of the eigenvectors to $A$. The eigenvalues can be obtained from the characteristic equation
-
-$$
-\begin{gather*}
-  \lambda^2 - \tau \lambda + \Delta = 0 \\
-  \lambda = \frac{\tau \pm \sqrt{\tau^2 - 4\Delta}}{2}
-\end{gather*}
-$$
-
-where $\tau = \mathrm{trace}(A)$ and $\Delta = \det(A)$. The general solution is
-
-$$
-  \mathbf{y}(t) = c_1 e^{\lambda_1 t}\mathbf{v}_1 + c_2 e^{\lambda_2 t}\mathbf{v}_2 
-$$
-
-The qualitative behaviour of this system depends on $\tau$ and $\Delta$.
-
-**Saddle-point (hyperbolic profile): $\Delta < 0$**
+**Saddle-point (hyperbolic profile):** $\Delta < 0$
 
 In this case $\lambda_1 > 0$ and $\lambda_2 < 0$ since $\Delta < 0 \implies \tau^2 - 4\Delta > \tau^2 > 0$. This gives
 
@@ -1745,23 +1873,39 @@ $$
 
 which grows exponentially. However, if we start on the line characterized by $\mathbf{v}_2$ direction, the solution goes to zero.
 
-**Repelling or unstable point: $0 < \Delta < \frac{\tau^2}{4}\, , \quad \tau > 0$**
+**Attracting or stable node:** $0 < \Delta < \frac{\tau^2}{4},\; \tau < 0$
 
-**Attracting or stable point: $0 < \Delta < \frac{\tau^2}{4}\, , \quad \tau < 0$**
+**Repelling or unstable node:** $0 < \Delta < \frac{\tau^2}{4},\; \tau > 0$
 
-**Centre or elliptic profile: $\Delta > \frac{\tau^2}{4}\, , \quad \tau = 0$**
+**Centre or elliptic profile ($D = 0$ with purely imaginary eigenvalues):** 
 
-**Repelling or unstable spiral: $\Delta > \frac{\tau^2}{4}\, , \quad \tau > 0$**
+If $\Delta > \tau^2 /4$ and $\tau = 0$, the eigenvalues are purely imaginary, $\lambda_{1,2} = \pm i\beta$. In this case, the solutions are periodic and remain bounded. The origin is stable but no asymptotically stable.
 
-**Attracting or stable spiral: $\Delta > \frac{\tau^2}{4}\, , \quad \tau < 0$**
+**Spiral profiles ($D = 0$ with complex conjugate eigenvalues):**
 
-**Line of repelling or unstable fixed points: $\Delta = 0\, , \quad \tau > 0$**
+If $\Delta > \tau^2 / 4$ and $\tau < 0$, the eigenvalues are complex conjuate pairs
 
-**Line of attracting or stable fixed points: $\Delta = 0\, , \quad \tau < 0$**
+$$
+  \lambda_{1,2} = \alpha + i\beta \in\mathbb{C}\setminus\R
+$$
 
-**Repelling and attracting star node: $\tau^2 - 4\Delta = 0$**
+resulting in spiraling phase potraits, whose stability depends on the real part $\alpha$
+- If $\alpha < 0$ the solutions are attractive, spiraling toward the origin
+- If $\alpha > 0$ the solutions are repelling, spiraling away from the orign
 
-**Unstable and stable improper or degenerate node: $\tau^2 - 4\Delta = 0$**
+**Line of equilibria ($\Delta = 0$):**
+
+If $\Delta = 0$, then one eigenvalue equals zero. The system possesses a non-trivial kernel, yielding a line of equilibrium points, whose behaviour depend on $\tau$
+- If the nonzero eigenvalue is negative ($\tau < 0$), trajectories are attracted toward the equilibrium line
+- If the nonzero eigenvalue is positive ($\tau > 0$), trajectories are reppelled away from the equilibrium line
+
+**Repeated eigenvalue ($D = 0$):**
+
+When $\tau^2 - 4\Delta = 0$, the system has a repeated eigenvalue and the behaviour of the phase potraits depend on the diagonalizability of $\mathbf{A}$
+- If $\mathbf{A}$ is diagonalizable, the phase portait is a star node
+- If $\mathbf{A}$ is non-diagonalizable, the phase portrait is an improper (or degenerate) node
+
+The node is stable is $\lambda < 0$ and unstable if $\lambda > 0$.
 
 ## $n$th order linear ODEs
 
