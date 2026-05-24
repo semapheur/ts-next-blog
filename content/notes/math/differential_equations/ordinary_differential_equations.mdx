@@ -906,6 +906,129 @@ Hence every maximal solution is either injective, constant, or periodic.
 
 ## Second order linear ODE
 
+Consider the homogeneous and autonomous second order linear ODE with constant coefficients
+
+$$
+  x''(t) + a_1 x'(t) + a_0 x = 0,\; a_0, a_1 \in\R
+$$
+
+This can be transformed to a first-order linear system by defining the vector-valued function $\mathbf{y}: I\to\R^2$ as
+
+$$
+  \mathbf{y}(t) = \begin{bmatrix} y_1 (t) \\ y_2 (t) \end{bmatrix} := \begin{bmatrix} x(t) \\ x'(t) \end{bmatrix}
+$$
+
+The derivative of the components of $\mathbf{y}$ are therefore $y'_1 (t) = y_2 (t)$ and
+
+$$
+\begin{align*}
+  y'_2 (t) = x''(t) =& -a_1 x'(t) - a_0 x(t) \\
+  =& -a_0 y_1 (t) - a_1 y_2 (t)
+\end{align*}
+$$
+
+Consequently, $\mathbf{y}$ satisfies the first-orderl linear system $\mathbf{y}' = \mathbf{A}\mathbf{y}$, where
+
+$$
+  \mathbf{A} = \begin{bmatrix}
+    0 & 1 \\ -a_0 & -a_1
+  \end{bmatrix} \in \R^{2\times 2}
+$$
+
+The characteristic polynomial of $\mathbf{A}$ is given by $p_\mathbf{A} = \det(\mathbf{A} - \lambda\mathbf{I}_2)$. Computing the determinant yields
+
+$$
+  p_\mathbf{A} (\lambda) =& \det\begin{bmatrix} \lambda & -1 \\ a_0 & \lambda + a_1 \end{bmatrix} \\
+  =& \lambda(\lambda + a_1) + a_0 \\
+  =& \lambda^2 + a_1 \lambda + a_0
+$$
+
+The eigenvalues of $\mathbf{A}$ are therefore the roots of the quadratic equation
+
+$$
+  \lambda^2 + a_1 \lambda + a_0 = 0
+$$
+
+For an eigenvalue $\lambda$, the corresponding eigenvector $\mathbf{w}\in\R^2$ is the nonzero solution of $(\mathbf{A} - \lambda\mathbf{I}_2)\mathbf{w} = \mathbf{0}_0$. Explicitly,
+
+$$
+  \begin{bmatrix} -\lambda & 1 \\ -a_0 & -a_1 - \lambda \end{bmatrix} \cdot \begin{bmatrix} w_1 \\ w_2 \end{bmatrix} = \mathbf{0}_2
+$$
+
+From the first equation $-\lambda w_1 + w_2 = 0$, we find $w_2 = \lambda w_1$. Since an eigenvector is nonzero, we can choose $w_1 = 1$, giving
+
+$$
+  \mathbf{w} = \begin{bmatrix} 1 \\ \lambda \
+$$
+
+Computing $(\mathbf{A} - \lambda\mathbf{I}_2)\mathbf{w} = \mathbf{0}_2$ for this case, yields
+
+$$
+\begin{align*}
+  \begin{bmatrix} -\lambda & 1 \\ -a_0 & -a_1 - \lambda \end{bmatrix} \cdot \begin{bmatrix} 1 \\ \lambda \end{bmatrix} \\
+  =& \begin{bmatrix} -\lambda + \lambda \\ -a_0 - (a_1 + \lambda)\lambda \end{bmatrix} \\
+  =& \begin{bmatrix} 0 \\ -(\lambda^2 + a_1 \lambda + a_0) \end{bmatrix} \\
+  =& \begin{bmatrix} 0 \\ -p_\mathbf{A} (\lambda) \end{bmatrix}
+\end{align*}
+$$
+
+This shows that $\mathbf{w}$ is an eigenvector precisely when $p_\mathbf{A} (\lambda) = 0$.
+
+where the eigenvectors corresponding to the eigenvalues $\lambda$ are nonzero elements of $\operatorname{ker}(\mathbf{A} - \lambda\mathbf{I}_2)$. For eigenvectors, we have
+
+The form of general solution depends on the spectral structure of $\mathbf{A}$, which is determined by the roots of the characteristic polynomial $p_\mathbf{A} (\lambda)$
+
+- **Two distinct real eigenvalues:**
+
+If $\lambda_1 \neq \lambda_2 \in\R$, then $\mathbf{A}$ is diagonalizable over $\R$, and the corresponding solutions are
+
+$$
+  e^{\lambda_1 t} \begin{bmatrix} 1 \\ \lambda_1 \end{bmatrix},\quad e^{\lambda_2 t} \begin{bmatrix} 1 \\ \lambda_2 \end{bmatrix}
+$$
+
+Taking the first component yields the basis for the solution space as $\set{e^{\lambda_1 t}, e^{\lambda_2 t}}$ such that the general solution takes the form
+
+$$
+  x(t) = c_1 e^{\lambda_1 t} + c_2 e^{\lambda_2 t},\; c_1, c_2 \in\R
+$$
+
+- Complex conjugate eigenvalues:
+
+If $\lambda_{1,2} = \alpha \pm i\beta \in\mathbb{C}\setminus\R$, the corresponding eigenvectors are the complex conjugate pair $\mathbf{w}_{1,2} = \mathbf{u} \pm i\mathbf{v}$ and the solution space is spanned by the basis functions
+
+$$
+\begin{align*}
+  e^{\alpha t} [\sin(\beta t)\mathbf{u} - \sin(\beta t)\mathbf{v}], \\
+  e^{\alpha t} [\cos(\beta t)\mathbf{v} + \sin(\beta t)\mathbf{u}]
+\end{align*}
+$$
+
+An eigenvector corresponding to $\lambda = \alpha + i\beta$ can be chosen as
+
+$$
+  \mathbf{w} = \begin{bmatrix} 1 \\ \lambda \end{bmatrix} = \begin{bmatrix} 1 \\ \alpha + i\beta \end{bmatrix}
+$$
+
+Thus
+
+$$
+  \mathbf{u} = \begin{bmatrix} 1 \\ \alpha \end{bmatrix},\quad \mathbf{v} = \begin{bmatrix} 0 \\ \beta \end{bmatrix}
+$$
+
+In particular, taking the first component of the two real vector-valued solution yields the basis $\set{e^{\alpha t} \cos(\beta t), e^{\alpha t} \sin(\beta t)}$ for the solution space. The general real solution is given by
+
+$$
+  x(t) = e^{\alpha t} [c_1 \cos(\beta t) + c_2 \sin(\beta t)]
+$$
+
+- Repeated real eigenvalue
+
+Assume $\lambda_1 = \lambda_2 =: \lambda\in\R$. In this case $\mathbf{A}$ is not diagonalizable because the eigenspace is one-dimensional. A second linearly independent solution is obtained from a generalized eigenvector, giving the basis $\set{e^{\lambda t}, t e^{\lambda t}}$. Thus, the general solution is
+
+$$
+  x(t) = (c_1 + c_2 t) e^{\lambda t},\; c_1, c_2 \in\R
+$$
+
 The homogenous second order linear ODE with constant coefficient is of the form
 
 $$
@@ -1131,85 +1254,36 @@ $$
 
 Transforming back gives the homogenous solution $\mathbf{y}_H = W\mathbf{z}$.
 
-<MathBox title="" boxType="proposition">
-Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+## Wronski determinant (Wronskian)
+
+Let $I\subseteq \R$ be an open interval, and consider the non-homogeneous linear system
 
 $$
 \begin{equation*}
-  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
-\tag{\label{equation-13}}
+  \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x} + \mathbf{b}(t)
+\tag{\label{equation-18}}
 \end{equation*}
 $$
 
-The set of solutions of this system forms a vector space over $\R$. Equivalently, if $\boldsymbol{\alpha}, \boldsymbol{\beta}: \to\R^n$ are solutions and $\lambda, \mu \in\R$ are scalars, then the linear combination $\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)$ is also a solution. Thus, the solution set is closed in under vector addition and scalar multiplication.
+where $\mathbf{A}: I\to\R^{n\times n}$ and $\mathbf{b}: I\to\R^n$ are continuous functions. The solution set takes the form $S = S_0 + \boldsymbol{\gamma}$, where 
+- $S_0$ is the $n$-dimensional solution space of the homogeneous part $\mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t)$
+- $\boldsymbol{\gamma}$ is the particular solution
 
-<details>
-<summary>Proof</summary>
-
-Since differentiation is linear, we have
-
-$$
-  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) = \lambda\boldsymbol{\alpha}'(t) + \mu\boldsymbol{\beta}'(t)
-$$
-
-Because $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ satisfy the differential equation $\eqref{equation-13}$, we obtain
+The homogeneous solution space is spanned by a $n$-dimensional basis $\set{\alpha_j}_{j=1}^n$ where $\alpha_j : I\to\R^n$. We call the map $\mathbf{U}: I \to\R^{n\times n}$ defined by
 
 $$
-\begin{align*}
-  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) =& \lambda\mathbf{A}(t) \boldsymbol{\alpha}(t) + \mu\mathbf{A}(t) \boldsymbol{\beta}(t) \\
-  =& \mathbf{A}(t) [\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)]
-\end{align*}
+  \mathbf{U}(t) = \begin{bmatrix}
+    \shortmid & & \shortmid \\
+    \alpha_1 (t) & \cdots & \alpha_n (t) \\
+    \shortmid & & \shortmid
+  \end{bmatrix}
 $$
 
-Hence $\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}$ is also a solution of $\eqref{equation-13}$.
-</details>
-</MathBox>
-
-<MathBox title="" boxType="proposition">
-Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
-  
-$$
-\begin{equation*}
-  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
-\tag{\label{equation-14}}
-\end{equation*}
-$$
-
-Define the solution set
+a fundamental matrix solution. The Wronski determinant (or Wronskian) is defined as
 
 $$
-  S_0 := \set{\boldsymbol{\alpha}\in C^1 (I,\R^n) : \boldsymbol{\alpha}' (t) = \mathbf{A}(t) \boldsymbol{\alpha}(t),\; \forall t\in I}
+  W(t) = \det(\mathbf{U}(t))
 $$
-
-Then $S_0$ is $n$-dimensional vector space over $\R$.
-
-<details>
-<summary>Proof</summary>
-
-Since the differential equation is linear and homogeneous, the set $S_0$ is closed under addition and scalar multiplication. Thus $S_0$ is a vector subspace of $C^1 (I, \R^n)$. Fix $t_0 \in I$ and define a map $\ell : S_0 \to \R^n$ by $\boldsymbol{\alpha} \mapsto \boldsymbol{\alpha}(t_0)$. The map $\ell$ is linear because evaluation at a point is linear. That is, for $\mathbf{\alpha}, \mathbf{\beta} \in C^1 (I, \R^n)$ and scalars $\lambda, \mu \in\R$
-
-$$
-\begin{align*}
-  \ell(\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}) =& (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})(t_0) \\
-  =& \lambda\boldsymbol{\alpha}(t_0) + \mu\boldsymbol{\beta}(t_0)
-\end{align*}
-$$
-
-We now show that $\ell$ is bijective (surjective and injective).
-
-**Surjectivity:** Let $\mathbf{x}_0 \in\R^n$ Consider the initial value problem
-
-$$
-  \operatorname{IVP}_{\mathbf{x}_0}^{t_0} : \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t),\; \mathbf{x}(t_0) = \mathbf{x}_0
-$$
-
-Since $\mathbf{A}$ is continuous, the Picard-Lindelöf theorem ($\ref{theorem-2}$) guarantees the existence of a unique solution $\boldsymbol{\alpha} \in C^1 (I, \R^n)$. By construction $\ell(\boldsymbol{\alpha}) = \boldsymbol{\alpha}(t_0) = \mathbf{x}_0$. Hence $\ell$ is surjective.
-
-**Injectivity:** Suppose $\boldsymbol{\alpha}, \boldsymbol{\beta} \in S_0$ satisfy $\ell(\boldsymbol{\alpha}) = \ell(\boldsymbol{\beta})$. Then $\boldsymbol{\alpha}(t_0) = \boldsymbol{\beta}(t_0)$. Both $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ solve the same initial value problem $\operatorname{IVP}_{\mathbf{x}_0}^{t_0}$. By uniqueness of solutions, it follows that $\boldsymbol{\alpha} = \boldsymbol{\beta}$ on $I$. Thus, $\ell$ is injective.
-
-Since $\ell$ is bijective, it forms a vector space isomorphism $S_0 \cong \R^n$ such that $\dim(S_0) = \dim(R^n) = n$.
-</details>
-</MathBox>
 
 ## Picard iteration
 
@@ -1266,7 +1340,7 @@ Let $\mathbf{A}, \mathbf{B} \in\R^{n\times n}$. The matrix exponential associate
 $$
  \frac{\d}{\d t} e^{t\mathbf{A}} = \mathbf{A} e^{t\mathbf{A}}
 $$
-2. **Exponential identity:** If $\mathbf{AB} = \mathbf{BA}$ then $e^\mathbf{A} + \mathbf{B}} = e^\mathbf{A} e^\mathbf{B} = e^\mathbf{B} e^\mathbf{A}$
+2. **Exponential identity:** If $\mathbf{AB} = \mathbf{BA}$ then $e^{\mathbf{A} + \mathbf{B}} = e^\mathbf{A} e^\mathbf{B} = e^\mathbf{B} e^\mathbf{A}$
 3. Inverse:  $\left(e^\mathbf{A} \right) = e^{-\mathbf{A}}$
 
 <details>
@@ -1397,28 +1471,270 @@ the solution of the system $\eqref{equation-15}$ can be written complactly as $\
 
 ## Solution set
 
+### Homogeneous systems
+
+<MathBox title="" boxType="proposition">
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+
+$$
+\begin{equation*}
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+The set of solutions of this system forms a vector space over $\R$. Equivalently, if $\boldsymbol{\alpha}, \boldsymbol{\beta}: \to\R^n$ are solutions and $\lambda, \mu \in\R$ are scalars, then the linear combination $\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)$ is also a solution. Thus, the solution set is closed in under vector addition and scalar multiplication.
+
+<details>
+<summary>Proof</summary>
+
+Since differentiation is linear, we have
+
+$$
+  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) = \lambda\boldsymbol{\alpha}'(t) + \mu\boldsymbol{\beta}'(t)
+$$
+
+Because $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ satisfy the differential equation $\eqref{equation-13}$, we obtain
+
+$$
+\begin{align*}
+  (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})'(t) =& \lambda\mathbf{A}(t) \boldsymbol{\alpha}(t) + \mu\mathbf{A}(t) \boldsymbol{\beta}(t) \\
+  =& \mathbf{A}(t) [\lambda\boldsymbol{\alpha}(t) + \mu\boldsymbol{\beta}(t)]
+\end{align*}
+$$
+
+Hence $\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}$ is also a solution of $\eqref{equation-13}$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+  
+$$
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+$$
+
+Define the solution set
+
+$$
+  S_0 := \set{\boldsymbol{\alpha}\in C^1 (I,\R^n) : \boldsymbol{\alpha}' (t) = \mathbf{A}(t) \boldsymbol{\alpha}(t),\; \forall t\in I}
+$$
+
+Then $S_0$ is $n$-dimensional vector space over $\R$.
+
+<details>
+<summary>Proof</summary>
+
+Since the differential equation is linear and homogeneous, the set $S_0$ is closed under addition and scalar multiplication. Thus $S_0$ is a vector subspace of $C^1 (I, \R^n)$. Fix $t_0 \in I$ and define a map $\ell : S_0 \to \R^n$ by $\boldsymbol{\alpha} \mapsto \boldsymbol{\alpha}(t_0)$. The map $\ell$ is linear because evaluation at a point is linear. That is, for $\mathbf{\alpha}, \mathbf{\beta} \in C^1 (I, \R^n)$ and scalars $\lambda, \mu \in\R$
+
+$$
+\begin{align*}
+  \ell(\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta}) =& (\lambda\boldsymbol{\alpha} + \mu\boldsymbol{\beta})(t_0) \\
+  =& \lambda\boldsymbol{\alpha}(t_0) + \mu\boldsymbol{\beta}(t_0)
+\end{align*}
+$$
+
+We now show that $\ell$ is bijective (surjective and injective).
+
+**Surjectivity:** Let $\mathbf{x}_0 \in\R^n$ Consider the initial value problem
+
+$$
+  \operatorname{IVP}_{\mathbf{x}_0}^{t_0} : \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t),\; \mathbf{x}(t_0) = \mathbf{x}_0
+$$
+
+Since $\mathbf{A}$ is continuous, the Picard-Lindelöf theorem ($\ref{theorem-2}$) guarantees the existence of a unique solution $\boldsymbol{\alpha} \in C^1 (I, \R^n)$. By construction $\ell(\boldsymbol{\alpha}) = \boldsymbol{\alpha}(t_0) = \mathbf{x}_0$. Hence $\ell$ is surjective.
+
+**Injectivity:** Suppose $\boldsymbol{\alpha}, \boldsymbol{\beta} \in S_0$ satisfy $\ell(\boldsymbol{\alpha}) = \ell(\boldsymbol{\beta})$. Then $\boldsymbol{\alpha}(t_0) = \boldsymbol{\beta}(t_0)$. Both $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ solve the same initial value problem $\operatorname{IVP}_{\mathbf{x}_0}^{t_0}$. By uniqueness of solutions, it follows that $\boldsymbol{\alpha} = \boldsymbol{\beta}$ on $I$. Thus, $\ell$ is injective.
+
+Since $\ell$ is bijective, it forms a vector space isomorphism $S_0 \cong \R^n$ such that $\dim(S_0) = \dim(R^n) = n$.
+</details>
+</MathBox>
+
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+  
+$$
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+$$
+
+Suppose that $\set{\boldsymbol{\alpha}_j : I\to\R^n}_{j=1}^n$ is basis of the $n$-dimensional homogeneous solution space $S_0 = \operatorname{span}\set{\boldsymbol{\alpha}_j}_{j=1}^n$. Define the matrix-valued function $\mathbf{U}: I \to\R^{n\times n}$ defined by
+
+$$
+  \mathbf{U}(t) = \begin{bmatrix}
+    \shortmid & & \shortmid \\
+    \boldsymbol{\alpha}_1 (t) & \cdots & \boldsymbol{\alpha}_n (t) \\
+    \shortmid & & \shortmid
+  \end{bmatrix}
+$$
+
+where the columns of $\mathbf{U}(t)$ are linearly independent solutions of the homogeneous system. The matrix-valued function $\mathbf{U}$ is called a fundamental matrix solution of the homogeneous system. Since each column vector $\boldsymbol{\alpha}_j$ satisfies the homogeneous equation $\boldsymbol{\alpha}'_j (t) = \mathbf{A}(t) \boldsymbol{\alpha}_j (t)$, it follows columnwise that 
+
+$$
+\begin{equation*}
+  \mathbf{U}'(t) = \mathbf{A}(t) \mathbf{U}(t)
+\tag{\label{equation-14}}
+\end{equation*}
+$$ 
+
+Conversely, any matrix-valued solution $\mathbf{U}: I\to\R^{n\times n}$ of $\eqref{equation-14}$ whose columns are linearly independent constitutes a fundamental matrix solution. Equivalently, $\mathbf{U}$ is a fundamental matrix solution if and only if $\det(\mathbf{U}(t)) \neq 0$ for some (equivalently, every) $t\in I$.
+
+The Wronski determinant (or Wronskian) associated with $\mathbf{U}$ is defined as
+
+$$
+  W(t) := \det(\mathbf{U}(t))
+$$
+
+Assume there exists $t_0 \in I$ with $W(t_0) = 0$. This implies the columns $(\boldsymbol{\alpha}_j (t_0))_{j=1}^n$ of $\mathbf{U}(t_0)$ are linearly dependent in $\R^n$. Thus, there exist scalars $\lambda_j \in\R$, not all zero, such that
+
+$$
+  \sum_{j=1}^n \lambda_j \boldsymbol{\alpha}_j (t_0) = \mathbf{0}
+$$
+
+Define
+
+$$
+  \mathbf{x}(t) := \sum_{j=1}^n \lambda_j \boldsymbol{\alpha}_j (t)
+$$
+
+Since each $\boldsymbol{\alpha}_j$ is a solution of the system $\eqref{equation-13}$, linearity implies that so is $\mathbf{x}(t)$. By the Picard-Lindelöf theorem, the unique solution of $\eqref{equation-13}$ satisfying the initial $\mathbf{x}(t_0) = \mathbf{0}$ is the trivial solution. Thus, $\mathbf{x}(t) \equiv \mathbf{0}$ for all $t\in I$. This shows that $\set{\boldsymbol{\alpha}_j (t)}_{j=1}^n$ are linearly dependent in $C^1 (I, \R^n)$.
+
+<MathBox title="Properties of the Wronskian" boxType="proposition" tag="1">
+Let $I\subseteq\R$ be an interval, and let $\mathbf{A}: I\to \R^{n\times n}$ be a continuous matrix-valued function. Consider the homogeneous linear system
+    
+$$
+  \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t)
+$$
+
+with solutions $\boldsymbol{\alpha}_1, \dots, \boldsymbol{\alpha}_n \in C^1 (I, \R^n)$. Define the matrix-valued function $\mathbf{U}: I\to\R^{n\times n}$ by 
+
+$$
+  \mathbf{U}(t) = \begin{bmatrix}
+    \shortmid & & \shortmid \\
+    \boldsymbol{\alpha}_1 (t) & \cdots & \boldsymbol{\alpha}_n (t) \\
+    \shortmid & & \shortmid
+  \end{bmatrix}
+$$
+
+The associated Wronski determiant is $W(t) := \det(\mathbf{U}(t)$. The the following statements hold:
+1. $W'(t) = \operatorname{tr}(\mathbf{A}(t)) W(t)$
+2. **Liouville's formula:** For every $t, t_0 \in I$,
+$$
+\begin{equation*}
+  W(t) = W(t_0) \exp\left(\int_{t_0}^t \operatorname{tr}(A(s)) \;\d s \right)
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+3. $\mathbf{U}$ is a fundamental matrix solution if and only if there exists $t_0 \in I$ such that $W(t_0) \neq 0$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Since each column of $\mathbf{U}$ is continuously differentiable, Jacobi's formula for the derivative of the determinant yields
+
+$$
+  W'(t) = \sum_{j=1}^n \det\begin{bmatrix}
+    \shortmid & & \shortmid & & \shortmid \\
+    \boldsymbol{\alpha}_1 & \cdots & \boldsymbol{\alpha}'_j (t) & \cdots & \boldsymbol{\alpha}_n (t) \\
+    \shortmid & & \shortmid & & \shortmid \\
+  \end{bmatrix}
+$$
+
+Fix $t\in\R$ and write
+
+$$
+\begin{align*}
+  \mathbf{B} := \mathbf{U}(t) =& [b_{ij}]_{i,j=1}^n \\
+  \mathbf{A}(t) =& [a_{ij}]_{i,j=1}^n
+\end{align*}
+$$
+
+Let $\mathbf{C} = [c_{ij}]_{i,j=1}^n$ denote the cofactor matrix of $\mathbf{B}$. Since each $\boldsymbol{\alpha}_j$ satisfies the differential equation, we have $\boldsymbol{\alpha}'_j (t) = \mathbf{A}(t) \boldsymbol{\alpha}_j (t)$. Thus, for each $k$
+
+$$
+  (\boldsymbol{\alpha}'_j (t))_k = (\mathbf{A}(t) \boldsymbol{\alpha}_j (t))_k = \sum_{m=1}^n a_{km} b_{mj}
+$$
+
+Using the multilinearity of the determinant in the columns Laplace expansion along the $j$th column, we otain
+
+$$
+\begin{align*}
+  W'(t) =& \sum_{j=1}^n \sum_{i=1}^n c_{ij} (\boldsymbol{\alpha}'(t))_i \\
+  =& \sum_{j=1}^n \sum_{i=1}^n c_{ij} \sum_{m=1}^n a_{im} b_{mj} \\
+  =& \sum_{i,m=1}^n a_{im} \left(\sum_{j=1}^n b_{mj} c_{ij} \right)
+\end{align*}
+$$
+
+Since $\mathbf{B}\mathbf{C}^\top = \det(\mathbf{B}) \mathbf{I}_n$, we have
+
+$$
+  \sum_{j=1}^n b_{mj} c_{ij} = \det(\mathbf{B}) \delta_{mi}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  W'(t) =& \sum_{i,m=1}^n a_{im} \det(\mathbf{B}) \delta_{mi} \\
+  =& \det(\mathbf{B}) \sum_{i=1}^n a_{ii} \\
+  =& \operatorname{tr}(\mathbf{A}(t)) W(t)
+\end{align*}
+$$
+
+**(2):** Solving $\ref{proposition-1-1}$ by separating variables and integrating from $t_0$ and $t$ gives
+
+$$
+  \ln|W(t)| - \ln|W(t_0)| = \int_{t_0}^t \operatorname{tr}(\mathbf{A}(s)) \;\d s
+$$
+
+whenever $W(t_0) \neq 0$. Exponentiating yields
+
+$$
+  W(t) = W(t_0) \exp\left(\int_{t_0}^t \operatorname{tr}(\mathbf{A}(s)) \;\d s \right)
+$$
+
+If $W(t_0) = 0$, then the unique solution of $\ref{proposition-1-1}$ is identically zero, so the formula remains valid.
+
+**(3):** Recall that $\mathbf{U}$ is a fundamental matrix solution if and only if its columns are linearly independent in $C^1 (I, \R^n)$. By the criterion for linear independence of vectors in $\R^n$, this is equivalent to $\det(\mathbf{U}(t)) \neq 0$ for som $t\in I$. From Liouville's formula $\eqref{equation-19}$, it follows that either $W(t) \equiv 0$ on $I$ or $W(t) \neq 0$ for every $t\in I$, since the exponential factor is never zero. Consquently, $W(t_0) \neq 0$ for some $t_0 \in I$ if and only $W(t) \neq 0$ for all $t\in I$. Thus $\mathbf{U}$ is a matrix fundemantal solution if and only if there exists $t_0 \in I$ such that $W(t_0) \neq 0$.
+</details>
+</MathBox>
+
+### Non-homogeneous systems
+
+of non-homogeneous systems
+
 Let $I\subseteq \R$ be an open interval, and consider the non-homogeneous linear system
 
 $$
 \begin{equation*}
-  \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x} + \mathbf{b}(t)
+  \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t) + \mathbf{b}(t)
 \tag{\label{equation-16}}
 \end{equation*}
 $$
 
-where $\mathbf{A}: I\to\R^{n\times n}$ and $\mathbf{b}: I\to\R^n$ are continuous functions. Fix $t_0 \in I$ and $\mathbf{x}_0 \in\R^n$, and let $\boldsymbol{\gamma}_{t_0, \mathbf{x}_0} \in C^1 (I, \R^n)$ denote the unique solution of $\eqref{equation-16}$ with initial value $\mathbf{x}(t_0) = \mathbf{x}_0$. Define
+where $\mathbf{A}: I\to\R^{n\times n}$ and $\mathbf{b}: I\to\R^n$ are continuous functions. Fix $t_0 \in I$ and $\mathbf{x}_0 \in\R^n$, and let $\boldsymbol{\gamma}_{t_0, \mathbf{x}_0} \in C^1 (I, \R^n)$ denote the unique solution of $\eqref{equation-16}$ with initial value $\mathbf{x}(t_0) = \mathbf{x}_0$. 
 
-$$
-  S = \set{\mathbf{x} \in C^1 (I, \R^n) : \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t) + \mathbf{b}(t),\;\forall t\in I}
-$$
-
-and let
+Let
 
 $$
   S_0 = \set{\boldsymbol{\alpha}\in C^1 (I,\R^n) : \boldsymbol{\alpha}' (t) = \mathbf{A}(t) \boldsymbol{\alpha}(t),\; \forall t\in I}
 $$
 
-denote the solution space of the associated homogeneous system to $\eqref{equation-16}$. Then
+denote the solution space of the associated homogeneous system
+
+$$
+  \mathbf{x}'(t) = \mathbf{A}(t) \mathbf{x}(t)
+$$
+
+Since 
+
+The solution set of $\eqref{equation-16}$ is defined by
+
+$$
+  S = \set{\mathbf{x} \in C^1 (I, \R^n) : \mathbf{x}'(t) = \mathbf{A}(t)\mathbf{x}(t) + \mathbf{b}(t),\;\forall t\in I}
+$$
+
+Then
+
 $$
   S = S_0 + \boldsymbol{\gamma}_{t_0, \mathbf{x}_0} = \set{\boldsymbol{\alpha} + \gamma_{t_0, \mathbf{x}_0} : \boldsymbol{\alpha}\in S_0}
 $$
@@ -1451,7 +1767,7 @@ $$
 Then $\boldsymbol{\alpha} + \boldsymbol{\gamma}_{t_0, \mathbf{x}_0} \in S$ with
 
 $$
-\begin{align}
+\begin{align*}
   (\boldsymbol{\alpha} + \boldsymbol{\gamma}_{t_0, \mathbf{x}_0})(t_0) =& \boldsymbol{\alpha}(t_0) + \boldsymbol{\gamma}_{t_0, \mathbf{x}_0} (t_0) \\
   =& \tilde{\mathbf{x}}_0 - \mathbf{x}_0 + \mathbf{x}_0 = \tilde{\mathbf{x}}_0
 \end{align*}
