@@ -338,6 +338,74 @@ $$
   \alpha(x) = F^{-1} (G(x) + c)
 $$
 
+### Method of integrating factors
+
+Consider the non-homogeneous first-order linear initial value problem
+
+$$
+  \operatorname{IVP}_{x_0}^{t_0}: x'(t) = a(t) x(t) + b(t),\; x(t_0) = x_0
+$$
+
+where $a, b: I \to\R$ are continuous functions on an open interval $I\subseteq\R$ containing $t_0$. Rewriting the equation in standard linear form gives
+
+$$
+\begin{equation*}
+  x'(t) - a(t)x(t) = b(t)
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+Define the integrating factor
+
+$$
+\begin{equation*}
+  p(t) := \exp\left(\int_{t_0}^t a(s) \;\d s \right),\; p(t_0) = 1
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+Since $p$ is continuously differentiable and satisfies
+
+$$
+  p'(t) = a(t) p(t),\; p(t_0) = 1
+$$
+
+it follows that
+
+$$
+  \frac{\d}{\d t} [p(t)^{-1}] = -a(t) p(t)^{-1}
+$$
+
+Multiplying $\eqref{equation-20}$ by $p(t)^{-1}$ yields
+
+$$
+  p(t)^{-1} x'(t) - a(t)p(t)^{-1} x(t) = p(t)^{-1} b(t)
+$$
+
+Using the product rule, the left-hand side becomes
+
+$$
+  \frac{\d}{\d t}\left(p(t)^{-1} x(t) \right) = p(t)^{-1} b(t)
+$$
+
+Integrating both sides from $t_0$ to $t$ we obtain
+
+$$
+  p(t)^{-1} x(t) - \underbrace{p(t_0)^{-1}}_{=1} x(t_0) = \int_{t_0}^t p(s)^{-1} b(s) \;\d s \\
+$$
+
+Multiplying by $p(t)$, we obtain the unique solution
+
+$$
+  x(t) = p(t) \left(x_0 + \int_{t_0}^t p(s)^{-1} b(s) \;\d s \right)
+$$
+
+Plugging in $\eqref{equation-21}$, this can be explicitly written as
+
+$$
+  x(t) = \exp\left(\int_{t_0}^t a(s) \;\d s \right) \left[x_0 + \int_{t_0}^t \exp\left(-\int_{t_0}^s a(u) \;\d u \right) b(s) \;\d s \right]
+$$
+
 ### Picard iteration
 
 Let $\mathbf{x}: I\subseteq\R\to\R^n$ be continuously differentiable and consider the initial value problem 
@@ -1700,8 +1768,6 @@ If $W(t_0) = 0$, then the unique solution of $\ref{proposition-1-1}$ is identica
 
 ### Non-homogeneous systems
 
-of non-homogeneous systems
-
 Let $I\subseteq \R$ be an open interval, and consider the non-homogeneous linear system
 
 $$
@@ -1794,6 +1860,168 @@ $$
 
 implying $S \subseteq \boldsymbol{\gamma}_{t_0, \mathbf{x}_0} + S_0$. Combining both inclusions gives $S = \boldsymbol{\gamma}_{t_0, \mathbf{x}_0} + S_0$.
 </details>
+
+## Method of integrating factors
+
+<MathBox title="Matrix derivativation rules" boxType="proposition">
+Let $\mathbf{M}, \mathbf{N} : I\subseteq\R \to\R^{n\times n}$ be continuously differentiable matrix-valued functions. Then the following derivation rules hold
+1. **Product rule:**
+$$
+\begin{equation*}
+  \frac{\d}{\d t} (\mathbf{M}(t)\mathbf{N}(t)) = \mathbf{M}'(t) \mathbf{N}(t) + \mathbf{M}(t)\mathbf{N}'(t)
+  \tag{\label{equation-22}}
+\end{equation*}
+$$
+
+2. **Derivative of the inverse:** If $\mathbf{M}(t)$ is invertible for every $t\in I$, then
+$$
+  \frac{\d}{\d t} (\mathbf{M}(t)^{-1}) = -\mathbf{M}(t)^{-1} \mathbf{M}'(t) \mathbf{M}(t)^{-1}
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Write
+
+$$
+\begin{align*}
+  \mathbf{M}(t) =& [m_{ij}(t)]_{i,j=1}^n \\
+  \mathbf{N}(t) =& [n_{ij}(t)]_{i,j=1}^n
+\end{align*}
+$$
+
+Since the entries of $\mathbf{M}$ and $\mathbf{N}$ are continuously differentiable, each entry of the product $\mathbf{M}(t) \mathbf{N}(t)$ is continuously differentiable as well. For each $i, j$
+
+$$
+  (\mathbf{M}(t) \mathbf{N}(t))_{ij} =& \sum_{k=1}^n m_{ik}(t) n_{kj}(t)
+$$
+
+Differentiating term-by-term yields
+
+$$
+  \frac{\d}{\d t} (\mathbf{M}(t) \mathbf{N}(t))_{ij} =& \sum_{k=1}^n \frac{\d}{\d t} m_{ik} (t) n_{kj} (t) \\
+  =& \sum_{k=1}^n [m'_{ik}(t) n_{kj}(t) + m_{ik}(t) n'_{kj}(t)] \\
+  =& (\mathbf{M}'(t) \mathbf{N}(t))_{ij} + (\mathbf{M}(t) \mathbf{N}'(t))_{ij}
+$$
+
+Since this equality holds for every $i, j$, we conclude that
+
+$$
+  \frac{\d}{\d t} (\mathbf{M}(t) \mathbf{N}(t)) = \mathbf{M}'(t) \mathbf{N}(t) + \mathbf{M}(t) \mathbf{N}'(t)
+$$
+
+**(2):** If $\mathbf{M}(t)$ is invertible for all $t\in I$ then $\mathbf{M}(t) M(t)^{-1} = \mathbf{I}_n$. Differentiating both sides and applying the product rule $\eqref{equation-22}$ gives
+
+$$
+  \mathbf{M}'(t) \mathbf{M}(t)^{-1} + \mathbf{M}(t) \frac{\d}{\d t}(\mathbf{M}(t)^{-1}) = \mathbf{0}_n
+$$
+
+Multiplying on the left by $\mathbf{M}(t)^{-1}$ yields
+
+$$
+  \mathbf{M}(t)^{-1} \mathbf{M}'(t) \mathbf{M}^{-1} + \frac{\d}{\d t} (\mathbf{M}(t)^{-1}) = \mathbf{0}_n
+$$
+
+Thus,
+
+$$
+  \frac{\d}{\d t} (\mathbf{M}(t)^{-1}) = -\mathbf{M}(t)^{-1} \mathbf{M}'(t) \mathbf{M}(t)^{-1}
+$$
+</details>
+</MathBox>
+
+Consider the non-homogeneous linear system
+
+$$
+\begin{equation*}
+  \mathbf{x}'(t) =  \mathbf{A}(t) \mathbf{x}(t) + \mathbf{b}(t)
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+where $\mathbf{A}: I\to\R^{n\times n}$ and $\mathbf{b}: I\to\R^n$ are continuous on an open interval $I\subseteq\R$.
+
+Suppose $\set{\boldsymbol{\alpha}_j : I\to\R^n}_{j=1}^n$ are linearly independent solutions of the associated homogeneous equation $\mathbf{x}' = \mathbf{A}\mathbf{x}$, then the fundamental matrix solution
+
+$$
+  \mathbf{U}(t) = \begin{bmatrix}
+    \shotmid & & \shortmid \\
+    \mathbf{A}(t) \boldsymbol{\alpha_1 (t)} & \cdots & \mathbf{A}(t) \boldsymbol{\alpha_n (t)} \\
+    \shotmid & & \shortmid \\
+  \end{bmatrix}
+$$
+
+satisfies the equation 
+
+$$
+\begin{equation*}
+  \mathbf{U}'(t) \mathbf{A}(t) \mathbf{U}(t)
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+Because the columns of $\mathbf{U}$ are linearly independent, $\mathbf{U}(t)$ is invertible for every $t\in I$.
+
+Define the principal matrix solution at $t_0 \in I$ by
+  
+$$
+\begin{equation*}
+ \boldsymbol{\Pi}(t) := \mathbf{U}(t) \mathbf{U}(t_0)^{-1}
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+such that $\boldsymbol{\Pi}(t_0) = \mathbf{I}_n$. Differetiating gives
+
+$$
+\begin{equation*}
+\begin{split}
+  \boldsymbol{\Pi}'(t) =& \mathbf{U}'(t) \mathbf{U}(t_0)^{-1} \\
+  \underbrace{=}_{\eqref{equation-24}}& \mathbf{A}(t) \mathbf{U}(t) \mathbf{U}(t_0)^{-1} \\
+  \underbrace{=}_{\eqref{equation-25}}& \mathbf{A}(t) \boldsymbol{\Pi}(t)
+\end{split}
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+Since $\boldsymbol{\Pi}(t)$ is invertible for all $t\in I$, the derivative of the inverse is
+
+$$
+\begin{align*}
+  \frac{\d}{\d t} (\boldsymbol{\Pi}(t)^{-1}) =& -\boldsymbol{\Pi}(t)^{-1} \boldsymbol{\Pi}'(t) \boldsymbol{\Pi}(t)^{-1} \\
+  \underbrace{=}_{\eqref{equation-26}& -\boldsymbol{\Pi}(t)^{-1} \mathbf{A}(t)
+\end{align*}
+$$
+
+Rwwrite $\eqref{equation-23}$ in standard linear form
+
+$$
+  \mathbf{x}'(t) - \mathbf{A}(t) \mathbf{x}(t) = \mathbf{b}(t)
+$$
+
+and multiplying on the left by $\boldsymbol{\Pi}^{-1}$ we get
+
+$$
+  \boldsymbol{\Pi}(t)^{-1} \mathbf{x}'(t) - \underbrace{\boldsymbol{\Pi}(t)^{-1} \mathbf{A}(t)}_{(\boldsymbol{\Pi}(t)^{-1})'} \mathbf{x}(t) = \boldsymbol{\Pi}(t)^{-1} \mathbf{b}(t)
+$$
+
+Applying the matrix product rule on the left-hand side gives
+
+$$
+  \frac{\d}{\d t} (\boldsymbol{\Pi}(t)^{-1} \mathbf{x}) = \boldsymbol{\Pi^}(t)^{-1} \mathbf{b}(t)
+$$
+
+Integrating from $t_0$ to $t$, we obtain
+
+$$
+  \boldsymbol{\Pi}(t)^{-1} \mathbf{x}(t) - \underbrace{\boldsymbol{\Pi}(t_0)^{-1}}_{\mathbf{I}_n} \mathbf{x}(t_0) = \int_{t_0}^t \boldsymbol{\Pi}(s)^{-1} \mathbf{b}(s) \;\d s
+$$
+
+Multiplying by $\boldsymbol{\Pi}(t)$, we obtain the solution
+
+$$
+  \mathbf{x}(t) = \boldsymbol{\Pi}(t) \left(\mathbf{x}_0 + \int_{t_0}^t \boldsymbol{\Pi}(s)^{-1} \mathbf{b}(s) \;\d s \right)
+$$
 
 ## Sturm-Liouville theorem
 
