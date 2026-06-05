@@ -317,7 +317,16 @@ Obviously, $a\cdot\Z_p b = (ab) \bmod p = b\cdot_{\Z_p} a$, which completes the 
 </MathBox>
 
 <MathBox title='Group order' boxType="definition">
-The *order* $|G|$ of a group $G$ is its cardinality. A finite group whose order is a power of a prime $p$ is called a *p*-group. 
+The *order* of a group $G$ is the cardinality of its underlying set, denoted $\operatorname{ord}(G) = |G|$. If $G$ is finite, then $\operatorname{ord}(G)$ is the number of elements in $G$. Meanwhile if $G$ is infinite, then $\operatorname{ord}(G)$ is an infinite cardinal. Explicitly,
+
+$$
+  \operatorname{ord}(G) = \begin{cases}
+    |G| \in\N,\quad& G \text{ is finite} \\
+    \infty,\quad& G \text{ is not finite}
+  \end{cases}
+$$
+
+A group $G$ is called a $p$-group if there exists a prime number $p$ and an integer $n\geq 0$ such that $\operatorname{ord}(G) = p^n$. Equivalently, a finite group is a $p$-group if its order is a power of the prime $p$.
 </MathBox>
 
 <MathBox title='Group element order' boxType="definition">
@@ -406,6 +415,46 @@ and thus $g^{-1} \in S_G (Q)$, which shows $\eqref{equation-22}$
 </details>
 </MathBox>
 
+<MathBox title="Cancellation property" boxType="proposition" tag="8">
+Let $(G, \cdot)$ be a group and $a,b, x, y\in G$. Then
+1. **Left cancellation property:** $ax = ay \implies x = y$
+2. **Right cancellation property:** $xb = yb \implies x = y$
+
+<details>
+<summary>Proof</summary>
+
+Let $e\in G$ be the identity element of $G$.
+
+**(1):** Assume $ax = ay$. Since $a$ is invertible, we can multiply both sides on the left by $a^{-1}$ and apply associativity to get
+
+$$
+  a^{-1} (ax) = a^{-1} (ay)
+$$
+
+By associativity, this is equivalent with
+
+$$
+  \underbrace{(a^{-1} a)}_{=e} x = \underbrace{(a^{-1} a)}_{=e} y
+$$
+
+Consequently, $ex = ey$ and therefore $x = y$.
+
+**(2):** Assume $xb = yb$. Since $b$ is invertible, we can multiply both sides of the right by $b^{-1}$ and apply associativity to get
+
+$$
+  (xb)b^{-1} = (yb)b^{-1}
+$$
+
+By associativity, this is equivalent with
+
+$$
+  x \underbrace{(bb^{-1})}_{=e} = y \underbrace{(bb^{-1})}_{=e}
+$$
+
+Consequently, $xe = ye$ and therefore $x = y$.
+</details>
+</MathBox>
+
 ## Semigroups
 
 <MathBox title="Semigroup" boxType="definition">
@@ -466,6 +515,133 @@ $$
 Thus, $ea = a$ and $ae = a$ for all $a \in G$ implying that $e$ is a two-sided identity.
 
 In conclusion, every element of $G$ has a two-sided identity, and thus $(G,\circ)$ is a group in the standard sense.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma" tag="4">
+Let $(S, \circ)$ be a semigroup. Then $S$ is a group if and only if for all $a,b\in S$ there exist $x,y \in S$ such that $ax = b$ and $ya = b$. Equivalently, for every $a, b \in S$, the equations $ax = b$ and $ya = b$ are solvable in $S$.
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):** Assume $S$ is a group with identity element $e\in S$ and let $a, b \in S$. Since $a$ has an inverse $a^{-1}$, define
+
+$$
+\begin{align*}
+  x =& a^{-1} b \\
+  y =& b a^{-1}
+\end{align*}
+$$
+
+Then
+
+$$
+\begin{align*}
+  ax =& a(a^{1} b) \\
+  =& \underbrace{(aa^{-1})}_{=e} b \\
+  =& eb = b
+\end{align*}
+$$
+
+and similarly
+
+$$
+\begin{align*}
+  ya =& (ba^{-1})a \\
+  =& b(a^{-1} a) \\
+  =& be = b
+\end{align*}
+$$
+
+Hence both equations $ax = b$ and $ya = b$ have solutions in $S$.
+
+**($\impliedby$):** Assume that for all $a \in S$, there are $x, y \in S$ with $ax = b$ and $ya = b$. We show that $S$ is a group.
+
+**Existence of a left identity:** Fix $x\in S$. Applying the hypothesis with $b = a$, there exists $e\in S$ such that $ea = a$. We claim that $e$ is a left identity for all of $S$.
+
+Let $b\in S$. By hypothesis, there exists $t\in S$ such that $at = b$. Then, using associativity
+
+$$
+\begin{align*}
+  eb =& e(at) = (ea)t \\
+  =& at = b
+\end{align*}
+$$
+
+Thus, $eb = b$ for all $b\in S$, showing that $e$ is a left identity of $S$.
+
+**Every element has a left inverse:** Let $a\in S$. Since $e\in S$ and the equation $ya = e$ is solvable, there exists $u\in S$ such that $ua = e$. Thus every element of $S$ has a left inverse.
+
+**Left cancellation:** Suppose $ax = ay$. Let $u$ be a left inverse of $a$, so that $ua = e$. Then
+
+$$
+\begin{align*}
+  x =& ex = (ua)x \\
+  =& u(ax) = u(ay) \\
+  =& (ua)y = ey = y
+\end{align*}
+$$
+
+Thus $S$ satisfies left cancellation.
+
+**The left identity is a two-sided identity:** Let $a\in S$, and let $u$ be a left inverse of $a$. Since $ua = e$, we have
+
+$$
+  u(ae) = (ua)e = ee = e
+$$
+
+Alse $ua = e$. By left cancellation with respect to $u$, we have $ae = a$. Therefore $e$ is also a right identity, and hence a two-sided identity.
+
+**Left inverses are two-sided inverses:** Let $u$ be a left inverse of $a$, so $ua = e$. Then
+
+$$
+  u(au) = (ua)u = eu = u
+$$
+
+and also $ue = u$. By left cancellation with respect to $u$, we have $au = e$. Thus $u$ is both a left and right inverse of $a$.
+
+Since every element of $S$ has a two-sided inverse $e$ is also a two-sided identity, $S$ is a group.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="proposition">
+Let $(S,\circ)$ be a semigroup with finite order $\operatorname{ord}(S) < \infty$. Then $S$ is a group if and only if it satisfies both the left and right cancellation properties (Proposition $\ref{proposition-8}$).
+
+<details>
+<summary>Proof</summary>
+
+**($\implies$):** The necessity follows immediately from the fact that every group satisfies both cancellation properties (Proposition $\ref{proposition-8}$).
+
+**($\impliedby$):** Assume that $S$ is finite and satisfies both cancellation properties. For each $a\in S$, define the left and right translation maps
+
+$$
+\begin{align*}
+  l_a : S\to S,\quad& l_a (x) = ax \\
+  r_a : S\to S,\quad& r_a (x) = xa
+\end{align*}
+$$
+
+The left cancellation property implies that $l_a$ is injective since
+
+$$
+\begin{align*}
+  & l_a (x) = l_a (y) \\
+  \implies& ax = ay \\
+  \implies& x = y
+\end{align*}
+$$
+
+Similarly, the right cancellation property implies that $r_a$ is injective since
+
+$$
+\begin{align*}
+  & r_a (x) = r_a (y) \\
+  \implies& xa = ya \\
+  \implies& x = y
+\end{align*}
+$$
+
+Since $S$ is finite, every injective self-map of $S$ is surjective. Thus $l_a$ and $r_a$ are bijections for every $a\in S$. Thus, for every $a,b\in S$ there exists elements $x, y \in S$ such that $l_a (x) = b$ and $r_a (y) = b$ or equivalently $ax = b$ and $ya = b$. By Lemma $\ref{lemma-4}$ it follows that $S$ is a group.
 </details>
 </MathBox>
 
