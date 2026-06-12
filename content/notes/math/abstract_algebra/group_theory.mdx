@@ -691,20 +691,20 @@ Since both expression coincide for all $x\in\R$, we conclude that $\eqref{equati
 ## Subgroups
 
 <MathBox title="Subgroup" boxType="definition">
-Let $(G, *)$ be a group. A nonempty subset $H \subseteq G$ is a *subgroup* of $G$, denoted $H \leq G$, if $H$ forms a group under the binary operation $*$ inherited from $G$. If $H \subsetneq G$, then $H$ is a *proper subgroup* of $G$, written $H < G$. A proper subgroup $H < G$ is *maximal* if there is no subgroup $K$ such that $H K < G$ such that $H < K$. Likewise, a nontrivial subgroup $H \leq G$ is *minimal* if there is no subgroup $K$ such that $\set{e} < K < H$, where $e$ is the identity element of $G$.
+Let $(G, *)$ be a group. A nonempty subset $H \subseteq G$ is a *subgroup* of $G$, denoted $H \leq G$, if the pair $(H, *)$ forms a group under the binary operation $*$ inherited from $G$. If $H \subsetneq G$, then $H$ is a *proper subgroup* of $G$, written $H < G$. A proper subgroup $H < G$ is *maximal* if there is no subgroup $K < G$ such that $H < K$. Likewise, a nontrivial subgroup $H \leq G$ is *minimal* if there is no subgroup $K \leq G$ such that $\set{e} < K < H$, where $e$ is the identity element of $G$.
 </MathBox>
 
 <MathBox title='Subgroup criterion' boxType="proposition" tag="2">
-Let $(G, *)$ be a group with identity element $e\in G$. A nonempty subset $H \subseteq G$ is a subgroup of $G$ if and only if for all $a, b \in H$
+Let $(G, *)$ be a group with identity element $e\in G$. A nonempty subset $H \subseteq G$ is a subgroup of $G$ if and only if
 
 $$
 \begin{equation*}
-  a * b^{-1} \in H
+  a, b \in H \implies a * b^{-1} \in H
 \tag{\label{equation-20}}
 \end{equation*}
 $$
 
-meaning that $H$ is closed under the operation $a * b^{-1}$. This is equivalent to the following two conditions:
+meaning that $H$ is closed under the operation $a * b^{-1}$. This one-step subgroup test is equivalent to the following two subgroup criteria (two-step subgroup test):
 1. **Closure under the group operation:**
 $$
 \begin{equation*}
@@ -724,13 +724,15 @@ $$
 <details>
 <summary>Proof</summary>
 
+**One-step subgroup test**
+
 **($\implies$):** Assume $H \leq G$. As a subgroup, $H$ satisfies the group axioms. In particular:
 - $a\in H \implies a^{-1} \in H$
 - $a, b \in H \implies a * b \in H$
 
-Thus, for all $a, b \in H$, since $b^{-1} \in H$, it follows that $a * b^{-1} \in H$.
+Thus, for all $a, b \in H$, we have $b^{-1} \in H$, and closure of $H$ under the group operation implies that $a * b^{-1} \in H$.
 
-**($\impliedby$):** Assume $a * b^{-1} \in H$ for all $a, b\in H$. We show that $H$ satisfies the group axioms.
+**($\impliedby$):** Assume $a * b^{-1} \in H \neq\emptyset$ for all $a, b\in H$. We show that $H$ satisfies the group axioms.
 
 - **Associativity:** The operation $*$ is associative on $G$, and since $H \subseteq G$, it defines a restriction $*|_H : H\times H \to H$ on $H$, which is inherently associative.
 
@@ -739,7 +741,27 @@ Thus, for all $a, b \in H$, since $b^{-1} \in H$, it follows that $a * b^{-1} \i
 - **Existence of inverses:** Since $e \in H$, then for any $h\in H$ we have by assumption $eh^{-1} = h^{-1} \in H$.
 
 - **Closure:** Given $a, b \in H$, then $b^{-1} \in H$. It follows by assumption that $a * b = a * (b^{-1})^{-1} \in H$.
+
+**Two-step subgroup test**
+
+**($\implies$):** Assume $H \leq G$. Since $H$ is a subgroup, it is a group under $*$ inherited from $G$. Thus $*$ is closed in $H$, implying
+
+$$
+  a, b \in H \implies a * b \in H
+$$
+
+Since the identity element of $H$ coincides with the identity element $e\in G$, the inverse of $h \in H$ computed in $H$ is equal, by uniqueness of inverses, to its inverse in $G$. Thus $h\in H \implies h^{-1} \in H$.
+
+**($\impliedby$):** By $\eqref{equation-21}$, the restriction $*|_H : H\times H \to H$ is well-defined. Since associativity of $*$ holds in $G$, it also holds on $H$. This shows that $(H, *)$ is a semigroup. 
+
+Choose $h\in H$. By $\eqref{equation-22}$, we have $h^{-1} \in H$. Applying $\eqref{equation-21}$ yields $h * h^{-1} = e \in H$, showing that $H$ shares the identity element of $G$.
+
+Condition $\eqref{equation-22}$ already guarantees that every element of $H$ has its inverse in $H$. Thus $H$ satisfies the group axioms.
 </details>
+</MathBox>
+
+<MathBox title="Trivial subgroup" boxType="example">
+For any group $(G, *)$ with identity element $e\in G$, the subsets $\set{e}$ and $G$ form trivial subgroups of $G$ under $*$.
 </MathBox>
 
 <MathBox title='Subgroups are preserved under intersection' boxType="proposition" tag="15">
@@ -1719,6 +1741,8 @@ In other words, a group homomorphism preserves the group operation.
 
 The set of all isomorphisms from a group $G_1$ to a group $G_2$ is denoted $\operatorname{Hom}(G_1, G_2)$.
 </MathBox>
+
+Let $(G, *)$ be a group and let $H \leq G$ be a subgroup. The inclusion map $\iota: H\to G$ by $\varphi(h) = h$ is a group homomorphism. Since every group homomorphism preserves identity elements, it follows that $\varphi(e_H) = e_G$. On the other hand, by definition of the inclusion map, $\iota(e_H) = e_H$. Consequently, $e_H = e_G$.
 
 <MathBox title="Exponential function" boxType="example">
 Consider the additive group $(\R, +)$ and the multiplicative group $(\R\setminus\set{0},\cdot)$. Define the map $\varphi: \R\to\R\setminus\set{0}$ by the exponential function $\varphi(x) = e^x$. Then for any $x, y\in\R$
