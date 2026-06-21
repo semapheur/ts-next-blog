@@ -46,6 +46,8 @@ export const rehypePlugins = [
         "\\eqref": "\\href{###1}{(\\text{#1})}",
         "\\ref": "\\href{###1}{\\text{#1}}",
         "\\label": "\\htmlId{#1}{\\text{#1}}",
+        "\\unit": "\\,\\mathrm{#1}",
+        "\\tunit": "\\mathrm{#1}",
       },
     },
   ],

@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/math/differential_equations/ordinary_differential_equations.mdx",
+    "./content/notes/physics/electromagnetics/antenna_theory.mdx",
   ),
 );
 
