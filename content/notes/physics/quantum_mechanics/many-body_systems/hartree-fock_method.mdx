@@ -1,0 +1,720 @@
+---
+title: 'Hartree-Fock Method'
+subject: 'Physics'
+showToc: true
+---
+
+# Atomic units
+
+Atomic units (a.u.) form a system of natural measurement units that simplify physical equations by normalizing the following fundamental constants to $1$
+- the reduced Planck constant $\hbar$
+- elementary charge $e$
+- electron rest mass $m_e$
+- permittivity: $4\pi\epsilon_0$
+
+To see how the atomic unit of length arise naturally let us consider the stationary Schrödinger equation for the hydrogen atom. In SI units we have
+
+$$
+\begin{equation*}
+  \left(-\frac{\hbar^2}{2m_e} \nabla^2 - \frac{e^2}{4\pi\epsilon_0 r} \right) \psi (\mathbf{r}) = E \psi (\mathbf{r})
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+To make this equation dimensionless, we introduce a scaled coordinate $\mathbf{r} \to \lambda\mathbf{r}'$, where $\lambda$ is a characteristic length to be determined. Under this transformation we have
+
+$$
+  \nabla^2 = \lambda^{-2} \nabla'^2,\; r = \lambda r'
+$$
+
+Substituting this into $\eqref{equation-1}$ yields
+
+$$
+  \left(-\frac{\hbar^2}{2m_e \lambda^2} \nabla'^2 - \frac{e^2}{4\pi\epsilon_0 \lambda r} \right) \psi' (\mathbf{r}') = E \psi'  (\mathbf{r}')
+$$
+
+where $\psi' (\mathbf{r}') := \psi(\lambda\mathbf{r}')$. The constants in front of the kinetic and potential energy operators can be factored, provided we choose $\lambda$ such that
+
+$$
+  \frac{\hbar^2}{m_e \lambda^2} = \frac{e^2}{4\pi\epsilon_0 \lambda} = E_a
+$$
+
+where $E_a$ is the atomic unit of energy called the Hartree. Solving for $lambda$ we find
+
+$$
+  \lambda = \frac{4\pi\epsilon_0 \hbar^2}{m_e e^2} = a_0
+$$
+
+showing that $\lambda$ equals the Bohr radius $a_0$, the atomic unit of length. With this choice of $\lambda$, equation $\eqref{equation-1}$ becomes
+
+$$
+  E_a \left(-\frac{1}{2}\nabla'^2 - \frac{1}{r}\right) \psi' = E\psi'
+$$
+
+Finally, defining the dimensionless energy $E' = E/E_a$, we obtain
+
+$$
+  \left(-\frac{1}{2}\nabla'^2 - \frac{1}{r}\right) \psi' = E' \psi'
+$$
+
+which is the Schrödinger equation in atomic units.
+
+<TableFigure caption="Conversion of atomic units to SI units">
+| Physical quantity | Conversion factor | SI value |
+|---|---|---|
+| Length | $a_0$ | $5.2918 \times 10^{-11} \unit{m}$ |
+| Mass | $m_e$ | $9.1095 \times 10^{-31} \unit{kg}$ |
+| Charge | $e$ | $1.6022 \times 10^{-19} \unit{C}$ |
+| Energy | $E_a$ | $4.3598 \times 10^{-18} \unit{J}$ |
+| Angular momentum | $\hbar$ | $1.0546 \times 10^{-34} \unit{Js}$ |
+| Electric dipole moment | $ea_0$ | $8.4784 \times 10^{-30} \unit{Cm}$ |
+| Electric polarizability | $e^2 a_0^2 E_a^{-1}$ | $1.6488 \times 10^{-41} \unit{C^2 m^2 J^{-1}}$ |
+| Electric field | $E_a e^{-1} a_0^{-1}$ | $5.1423 \times 10^11 \unit{Vm^{-1}}$ |
+| Wave function | $a_0^{-3/2}$ | $2.5978 \times 10^15 \unit{m^{-3/2}}$ |
+</TableFigure>
+
+# The Born-Oppenheimer approximation
+
+A molecule composed of $N_n$ nuclei and $N_e$ electrons can be described as a coupled electron-nucleus system. For each nucleus $k=1,\dots, N$, with charge $Z_k e$ and mass $m_k$, we denote its position and momentum operators by $\hat{\mathbf{r}}_k^n$ and $\hat{\mathbf{p}}_k^n$, respectively, relative to the origin of the frame of reference. Similarly, for each electron $j = 1,\dots, N_e$, with mass $m_e$ and charge $-e$, we write $\hat{\mathbf{r}}_j^e$ and $\hat{\mathbf{p}}_k^e$ for its position and momentum operators. In the position representation, the momentum operator is given by
+
+$$
+  \hat{\mathbf{p}} = -i\hbar\nabla_\mathbf{r}
+$$
+
+The total energy of the system is given by the non-relativistic Hamiltonian 
+
+$$
+\begin{align*}
+  \hat{H} =& \hat{T}_n + \hat{V}_n + \hat{H}_e \tag{\label{equation-2}} \\
+  \hat{H} =& \hat{T}_e + \hat{V}_{ne} + \hat{V}_e \tag{\label{equation-3}}
+\end{align*}
+$$
+
+where $\hat{H}_e$ is the electronic Hamiltonian. The kinetic energy of the nuclei $\hat{T}_n$ is given by
+
+$$
+\begin{equation*}
+  \hat{T}_n = \sum_{k = 1}^{N_n} \frac{\left(\hat{\mathbf{p}}_k^n \right)^2}{2 m_k} = -\sum_{k = 1}^{N_n} \frac{\hbar}{2 m_k} \nabla_k^2
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where $\nabla_k := \nabla_{\mathbf{r}_k^n}$. The potential $\hat{V}_n$ represents the repulsion among the nuclei
+
+$$
+\begin{equation*}
+  \hat{V}_n = \sum_{k < l = 1}^{N_n} \frac{Z_k Z_l e^2}{|\mathbf{r}_k^n - \mathbf{r}_l^n|} 
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+which depends only on nuclear positions and acts as a multiplicative potential operator.
+
+
+The kinetic energy of the electrons $\hat{T}_e$ is given by
+
+$$
+\begin{equation*}
+  \hat{T}_e = \sum_{j=1}^{N_e} \frac{\left(\hat{\mathbf{p}}_j^e \right)^2}{2m_e} = - \sum_{j=1}^{N_e} \frac{\hbar}{2m_e} \nabla_{\mathbf{r}_j^e}^2
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+where $\nabla_j := \nabla_{\mathbf{r}_j^e}$. The potential $\hat{V}_{ne}$ describes the interaction between electrons and nuclei
+
+$$
+\begin{equation*}
+  \hat{V}_{ne} = -\sum_{j=1}^{N_e} \sum_{k=1}^{N_n}  \frac{Z_k e^2}{|\mathbf{r}_j^e - \mathbf{r}_k^n|}
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+while the potential $\hat{V}_e$ represents the repulsion among electrons
+
+$$
+\begin{equation*}
+  \hat{V}_e = \sum_{i < j = 1}^{N_e} \frac{e^2}{|\mathbf{r}_i^e - \mathbf{r}_j^e|}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+The Born-Oppenheimer approximation separates the nuclear motion from the electronic one, which relies on the different time scales of the two types of motion. Consequently, we try to solve the molecular problem by first considering a "frozen" configuration of the nuclei, which introduces a certain potential on each electron. Changing the nuclear configuration, we assume that the electrons will rearrange themselves almost instantaneously. Then, we shall look for solutions of the Schrödinger equation
+
+$$
+\begin{equation*}
+  \hat{H} \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n}) = E \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n})
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+where the electronic states are defined in a parametric way relative to a a given distribution of the nuclei. The solution of the general problem is given by the product
+
+$$
+\begin{equation*}
+  \Psi(\set{\mathbf{r}_j^e}; \set{\mathbf{r}_k^n}) = \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+where $\psi(\set{\mathbf{r}_k^n})$ is the nuclear wave function. The electronic wave function $\phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})$ depends parametrically on the parameter set $\set{\mathbf{r}_k^n}$, and may be taken as a solution of the Schrödinger equation
+
+$$
+\begin{equation*}
+  \hat{H}_e \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) = E \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e})
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+for a given nuclear configuration. The left hand side of $\eqref{equation-9}$ can be written
+
+$$
+\begin{equation*}
+\begin{split}
+  \hat{H}_e \Psi(\set{\mathbf{r}_k^n}; \set{\mathbf{r}_j^e}) =& \left[\hat{T}_n + \hat{V}_n (\set{\mathbf{r}_k^n}) + \hat{H}_e \right] \psi(\set{\mathbf{r}_k^n}) \phi_{\mathbf{r}_k^n} (\set{\mathbf{r}_j^e}) \\
+  =& \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n + \hat{H}_e \right] \psi \phi_{\mathbf{r}_k^n} \\
+  =& -\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 \left(\psi \phi_{\mathbf{r}_k^n} \right) + \hat{V}_n \psi \phi_{\mathbf{r}_k^n} + \underbrace{\hat{H}_e \psi \phi_{\mathbf{r}_k^n}}_{E_e \psi \phi_{\mathbf{r}_k^n} } \\
+  =& \left(\hat{V}_n + E_e \right) \psi \phi_{\mathbf{r}_k^n} \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\phi_{\mathbf{r}_k^n} \nabla_k^2 \psi + \psi \nabla_k^2 \phi_{\mathbf{r}_k^n} + 2\nabla_k \psi \nabla_k \phi_{\mathbf{r}_k^n} \right] \\
+  =& \psi \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n + E_e \right] \phi_{\mathbf{r}_k^n}  \\
+  &- \sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \left[\psi \nabla_k^2 \phi_{\mathbf{r}_k^n} + 2\nabla_k \psi \nabla_k \phi_{\mathbf{r}_k^n} \right]
+\end{split}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+The terms involving derivatives of $\phi_{\mathbf{r}_k^n}$ with respect to nuclear coordinates represent nonadiabatic couplings. They couple electronic and nuclear motion and prevent the simple product form $\eqref{equation-10}$.
+
+The term $\nabla_k^2 \phi_{\mathbf{r}_k^n}$ can be estimated by recognizing that $\phi_{\mathbf{r}_k^n}$ depends on relative coordinates $\mathbf{r}_j^e -\mathbf{r}_k^n$. Hence, differentiation with respect to $\mathbf{r}_k^n$ is equivalently up to a sign to differentiate with respect to $\mathbf{r}_j^e$. Consequently, denoting $\nabla_{\mathbf{r}_j^e}^{\prime 2}$ the Laplacian relative to the electronic coordinates, we have
+
+$$
+  \nabla_k^2 \phi_{\mathbf{r}_k^n} \sim \nabla_j^{\prime 2} \phi_{\mathbf{r}_k^n}
+$$
+
+The corresponding kinetic energy distribution therefore scales as
+
+$$
+  \frac{\hbar^2}{2m_k} \nabla_k^2 \phi_{\mathbf{r}_k^n} \sim \frac{m_e}{m_k} \frac{\hbar}{2m_e} \nabla_j^2 \phi_{\mathbf{r}_k^n}
+$$
+
+which is suppressed by the small ratio $m_e / m_k \approx 1/1840$.
+
+For the same reasons, 
+
+$$
+  \nabla_k \phi_{\mathbf{r}_k^n} = -\nabla'_j \phi_{\mathbf{r}_k^n}
+$$
+
+and we also have
+
+$$
+  \hbar \nabla_k \psi \sim \hat{\mathbf{p}}_k^n,\quad \hbar \nabla_k \phi_{\mathbf{r}_k^n} \sim \hat{\mathbf{p}}_j^e
+$$
+
+Consequently, the mixed derivative term scales as
+
+$$
+\begin{equation*}
+  \frac{\hbar^2}{m_k} \nabla_{\mathbf{r}_k^n} \psi \nabla_{\mathbf{r}_k^n} \phi_{\mathbf{r}_k^n} \sim \frac{1}{m_k} \hat{\mathbf{p}}_k^n \hat{\mathbf{p}}_j^e \ll \frac{(\hat{\mathbf{p}}_j^e)^2}{2m_e}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+because the dynamics of the electrons is much faster than that of the nuclei and therefore $p_k^n \ll p_j^e$. The last term of $\eqref{equation-12}$ is of the order of the kinetic energy of one electron, and this finally justifies neglecting those two terms.
+
+With these approximations, we may rewrite $\eqref{equation-9}$ as a Schrödinger equation for the nuclear wave function
+
+$$
+\begin{equation*}
+  \left[-\sum_{k=1}^{N_n} \frac{\hbar^2}{2m_k} \nabla_k^2 + \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e (\set{\mathbf{r}_k^n}) \right] \psi(\set{\mathbf{r}_k^n}) = E \psi (\set{\mathbf{r}_k^n})
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+where $E$ is the total energy, and the electron energy eigenvalue $E_e (\set{\mathbf{r}_k^n})$, may be considered as a correction to the nuclear potential energy $\hat{V}_n (\set{\mathbf{r}_k^n})$, giving rise to the total potential energy
+
+$$
+\begin{equation*}
+  \hat{V}(\set{\mathbf{r}_k^n}) = \hat{V}_n (\set{\mathbf{r}_k^n}) + E_e (\set{\mathbf{r}_k^n})
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+In other word, the electrons with their motion generate a diffuse charge distribution that alters the nuclear Coulomb repulsion term $\hat{V}_n$.
+
+With the Born-Oppenheimer approximation we first solve the electronic Schrödinger equation $\eqref{equation-13}$ for any possible configuration of the nuclei, finding the eigenvalues $E_e$ as a function of the nuclear positions $\set{\mathbf{r}_k^n}$. Then, we use these results in order to solve the Schrödinger equation $\eqref{equation-14}$.
+
+## Diatomic molecule
+
+A diatomic molecule has three types of collective motion:
+1. Translation of the center of mass of the molecule, which practically coincides with the center of mass of the nuclei. This motion gives rise to a continuous spectrum characteristic of the motion of a free particle. This motion can be neglected if we work in a reference system in which the center of mass is at rest.
+2. Rotation of the molecule about an axis passing through the center of mass. The pure rotational motion is obtained if the two nuclei stay at a fixed distance.
+3. Vibration along the axis connecting the two nuclei. If the two nuclei must stay at a fixed distance, the potential energy must have a minimum at $r = r_{ab}$. Under the harmonic approximation, the internuclear distance may oscillate around the equilibrium point $r_{ab}$ giving rise to vibrational energy levels and spectra.
+
+For a diatomic molecule made up of atoms $a$ and $b$, the Schrödinger equation $\eqref{equation-14}$ becomes
+
+$$
+\begin{equation*}
+  \left[-\frac{\hbar^2}{2m_a} \nabla_a^2 - \frac{\hbar^2}{2m_b} \nabla_b^2 + \hat{V}_n (\mathbf{r}_a^n, \mathbf{r}_b^n) + E_e (\mathbf{r}_a^n, \mathbf{r}_b^n) \right] \psi(\mathbf{r}_a^n, \mathbf{r}_b^n) = E \psi (\mathbf{r}_a^n, \mathbf{r}_b^n)
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+Assuming that the nuclei are almost at rest relative to each other, and taking into account $\eqref{equation-16}$, the potential energy will have the form of a central potential
+
+$$
+  \hat{V}(\mathbf{r}_a^n, \mathbf{r}_b^n) = \hat{V}(\mathbf{r}_b^n - \mathbf{r}_a^n) = \hat{V}(r_{ab})
+$$
+
+Defining the position of the center of mass as
+
+$$
+  \mathbf{r}_c = \frac{m_a \mathbf{r}_a^n + m_b \mathbf{r}_b^n}{m_a + m_b}
+$$
+
+we apply the change of variables $\set{\mathbf{r}_a^n, \mathbf{r}_b^n} \to \set{\mathbf{r}_c, \mathbf{r}_{ab}}$ in order to derive the Hamiltonian
+
+$$
+  \hat{H} = -\frac{\hbar^2}{2(m_a + m_b)} \nabla_c^2 - \frac{\hbar^2}{2m} \nabla_0^2 + \hat{V}(r_{ab})
+$$
+
+where $m$ is the reduced mass and $\nabla_0 := \nabla_{\mathbf{r}_{ab}}$. With the transformed Hamiltonian, we have separated the center-of-mass motion from the relative motion of the nuclei. This suggest the ansatz
+
+$$
+  \psi(\mathbf{r}_a^n, \mathbf{r}_b^n) = \zeta(\mathbf{r}_c) \eta(\mathbf{r}_{ab})
+$$
+
+giving rise to the two Schrödinger equations
+
+$$
+\begin{equation*}
+  -\frac{\hbar^2}{2(m_a + m_b)} \nabla_c^2 \zeta((\mathbf{r}_c)) = E_c \zeta(\mathbf{r}_c)
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+and
+
+$$
+\begin{equation*}
+  \left[-\frac{\hbar^2}{2m} \nabla_0^2 + \hat{V}(\mathbf{r}_{ab})\right] \eta(\mathbf{r}_{ab}) = E_0 \eta(\mathbf{r}_{ab})
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+where $E_c$ is the energy eigenvalue of the center-of-mass degree of freedom and $E_0$ is the energy eigenvalue pertaining to the relative motion. Equation $\eqref{equation-17}$ represents a free-particle Schrödinger equation whose solution is a spherical wave of the form
+
+$$
+  \zeta(\mathbf{r}_c) \propto e^{i \mathbf{k} \cdot \mathbf{r}_c}
+$$
+
+describing the translational motion. The corresponding eigenvalues will be given by
+
+$$
+  E_c = \frac{\hbar^2 \mathbf{k}^2}{2(m_a + m_b)}
+$$
+
+The solution of $\eqref{equation-19}$ gives the rotational part of the motion. Since $\hat{V}(r_{ab})$ is a central potential, it is convenient to translate this equation into spherical coordinates, where the angular part of the wave function $\eta(\mathbf{r}_{ab})$ will have have a solution of the form
+
+$$
+  \eta(\mathbf{r}_{ab}) = R(r_{ab}) Y(\phi, \theta)
+$$
+
+where $R(r_{ab})$ is the radial wave function, and the spherical harmonics $Y_j (\phi, \theta)$ have eigenvalues
+
+$$
+  E_j = \frac{\hbar^2}{2I} j(j + 1)
+$$
+
+where $I = m\bar{r}_{ab}^2$ is the moment of inertia of the two nuclei, with $\bar{r}_{ab}$ being the equilibrium distance between them. The eigenvalues of $\hat{j}^2$ and $\hat{j}_z$ are give by $j(j + 1)$ and $m_j$, respectively.
+
+For the solution of the radial wave function $R(r_{ab})$, we first recall that 
+
+$$
+  |r_{ab} - \bar{r}_{ab}| \ll \bar{r}_{ab}
+$$
+
+that is, the two nuclei will oscillate around the equilibrium position. This allows a Taylor series expansion of the total potential energy $\hat{V}(r_{ab})$ about $\bar{r}_{ab}$
+
+$$
+  \hat{V}(r_{ab}) = \sum_{k=0}^\infty \frac{1}{k!} \left. \frac{\partial^k \hat{V}(r_{ab})}{r_{ab}^k} \right|_{r_{ab} = \bar{r}_{ab}} (r_{ab} - \bar{r}_{ab})^k
+$$
+
+where the first-order term is missing because $\bar{r}_{ab}$ is an equilibrium point, i.e.
+
+$$
+  \left. \frac{\partial \hat{V}(r_{ab})}{r_{ab}} \right|_{r_{ab} = \bar{r}_{ab}} = 0
+$$
+
+Up to second order, the solutions will be of the harmonic-oscillator type
+
+$$
+  \hat{V}(r_{ab}) \approx -D + \frac{\kappa}{2}(r_{ab} - \bar{r}_{ab})^2
+$$
+
+where $D = -\hat{V}(\bar{r}_{ab})$ is the dissociation energy, the energy needed to move the two nuclei to an infinite distance from each other. If we neglect the centrifugal term, making use of the rigid-rotator approximation, we can write the radial Schrödinger equation as
+
+$$
+  \left[-\frac{\hbar^2}{2m} \frac{\partial^2}{\partial r_{ab}^2} + \frac{\kappa}{2} (r_{ab} - \bar{r}_{ab})^2 - D \right] \Phi(r_{ab}) = E^\text{vib} \Phi(r_{ab})
+$$
+
+which, apart from the constant $D$, is the harmonic-oscillator equation, whose solutions will be given by the Hermite polynomials with energy levels
+
+$$
+  E_n^\text{vib} = -D + \left(n + \frac{1}{2}) \hbar\omega_0
+$$
+
+where $\omega_0 = \sqrt{\kappa/m}$. Thus, the total energy, relative to the nuclear part, is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  E =& E_c + E_0 = E_c + E_j + E_n^\text{vib} \\
+  =& \frac{\hbar^2 \mathbf{k}^2}{2(m_a + m_b)} + \frac{\hbar^2}{2I} j(j + 1) - D + \left(n + \frac{1}{2} \right) \hbar\omega_0
+\end{split}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+Changing the electronic state will change the form of the potential $\hat{V}(r_{ab})$ and thus the harmonic constant $\kappa$. Consequently, there will be several electronic states, the lowest of which is the ground state. Each electronic state will possess many vibrational levels. In turn, every vibrational level will display rotational bands.
+
+Adding the effects of the anharmonicity of the potential $\hat{V}(r_{ab})$ and the centrifugal-barrier term will only introduce two small additional perturbations in $\eqref{equation-19}$
+
+## Spin degrees of freedom
+
+The electronic Hamiltonian $\eqref{equation-3}$ can be extended by specifying the spin orientation of the electrons, in addition to their spatial coordinates. To this end, we introduce two orthonormal spin functions $\alpha(\omega)$ and $\beta(\omega)$, corresponding to spin up and down, respectively. Here $\omega$ is an abstract spin variable. The spin functions satisfy the orthonormality conditions
+
+$$
+\begin{align*}
+  \braket{\alpha|\alpha} =& \braket{\beta|\beta} = 1 \\
+  \braket{\alpha|\beta} =& \braket{\beta|\alpha} = 0
+\end{align*}
+$$
+
+Thus, the state space for a single electron is the tensor product of spatial and spin spaces, and an electron is specified by both its spatial coordinate $\mathbf{r}$ and its spin coordinate $\omega$. Collectively, we denote this set of variable by $\mathbf{x} = (\mathbf{r}, \omega)$. In this formalism, the electronic wavefunction in $\eqref{equation-10}$ depends on the combined variables of electrons $\phi_{\mathbf{r}_k^n} (\set{x}_j)$.
+
+Because the electronic Hamiltonian $\eqref{equation-3}$ contains no explicit spin-dependent terms, introducing spin coordinates alone does not change its form. However, to obtain a physically meaningful theory, we must impose an additional antisymmetric requirement of the electronic wavefunction
+
+$$
+  \phi_{\mathbf{r}_k^{n}} (\mathbf{x}_1, \dots, \mathbf{x}_i, \dots, \mathbf{x}_j, \dots, \mathbf{x}_{N_e}) = -\phi_{\mathbf{r}_k^n} (\mathbf{x}_1, \dots, \mathbf{x}_j, \dots, \mathbf{x}_i, \dots, \mathbf{x}_{N_e})
+$$
+
+for any pair of electrons $i$ and $j$. This condition states that the electronic wave function $\phi_{\mathbf{r}_k^{n}}$ is antisymmetric under exchange of all coordinates of any two electrons. This antisymmetry requirement os the formal statement of the Pauli exclusion principle: if two electrons occupy the same one-electron state, the wavefunction must vanish. More generally, antisymmetry ensures that electrons cannot simultaneously be in the same quantum state.
+
+# Orbitals
+
+An orbital is a one-particle wave function, describing the quantum state of a single electron. A spatial orbital is a complex-value function $\psi_i: \R^3 \to \mathbb{C}$, of the position vector $\mathbf{r}\in\R^3$. Its squared modulus determines the probability density for the electron's spatial distribution; the probability of finding the electron in an infinitesimal volume element $\d\mathbf{r}$ around $\mathbf{r}$ is $|\psi_i (\mathbf{r})|^2 \;\d\mathbf{r}$.
+
+We typically assume that the spatial molecular orbitals form an orthonormal set in $L^2 (\R^3)$, i.e.
+
+$$
+  \int_{\R^3} \psi_i^* (\mathbf{r}) \psi_j (\mathbf{r}) \;\d\mathbf{r} = \delta_{ij}
+$$
+
+If the set of spatial orbitals $\set{\psi_i}$ were complete in $L^2 (\R^3)$, then any square-integrable function $f(\mathbf{r}) \in L^2 (\R^3)$ could expanded as a convergent series
+
+$$
+\begin{align*}
+  f(\mathbf{r}) = \sum_{i=1}^\infty a_i \psi_i (\mathbf{r}) \\
+  a_i = int_{\R^3} f(\mathbf{r}) \psi^* (\mathbf{r}) \;\d\mathbf{r}
+\end{align*}
+$$
+
+In practice, however, we never work with a truly complete set, but instead with a finite subset $\set{\psi_i}_{i=1}^K$ of $K$ such orbitals. This finite set spans only a $K$-dimensional subspace of $L^2 (\R^3)$ and all approximation are at therefore exact only within that subspace.
+
+To fully describe an electron, we must also specify its spin. The spin degree of freedom is represented by a two dimensional Hilbert space with orthonormal functions $\alpha(\omega)$ and $\beta(\omega)$, corresponding to spin-up and spin-down states, respectively. 
+
+A general spin orbital is a function $\chi: \R^3 \times\Omega \to\mathbb{C}$ of $\mathbf{x} = (\mathbf{r}, \omega)$, which describes both the spatial distribution and the spin orientation of a electron. From a spatial orbital, $\psi(\mathbf{r})$, we can form two different spin orbitals, one corresponding to spin up and the other to spin down, by multiplying the spatial orbital by the $\alpha$ and $\beta$ spin function respectively, i.e.
+
+$$
+  \chi(\mathbf{x}) = \begin{cases}
+    \psi(\mathbf{r})\alpha(\omega) \\
+    \psi(\mathbf{r})\beta(\omega)
+  \end{cases}
+$$
+
+Given a set of $K$ spatial orbitals $\set{\psi_i}_{i=1}^K$, we can thus form a set of $2K$ spin orbitals $\set{\chi_i}_{i=1}^{2K}$ as
+
+$$
+  \begin{rcases}
+    \chi_{2i - 1} (\mathbf{x}) =& \psi_i^\alpha (\mathbf{r}) \alpha(\omega) \\
+    \chi_{2i} =& \psi_i^\beta (\mathbf{r}) \beta(\omega)
+  \end{rcases} i = 1,\dots,k
+$$
+
+The spin orbitals inherit orthonormality from the spatial and spin part. Explicitly, with respect to the product measure $\d\mathbf{x} = \d\mathbf{r} \d\omega$
+
+$$
+  \int \chi_i^* (\mathbf{x}) \chi_j (\mathbf{x}) \;\d\mathbf{x} = \braket{\chi_i | \chi_j} = \delta_{ij}
+$$
+
+## Hartree products
+
+Consider a system of $N$ noninteracting electrons described by Hamiltonian of the form
+
+$$
+\begin{equation*}
+  \hat{H} = \sum_{i=1}^N \hat{h}(i)
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where $\hat{h}(i)$ is a one-electron Hamiltonian acting only on the coordinates of electron $i$. Typically, each $\hat{h}(i)$ can be written
+
+$$
+  \hat{h}(i) = \hat{T}(i) + \hat{V}(i)
+$$
+
+where $\hat{T}(i)$ is the kinetic energy operator and $\hat{V}(i)$ is an external one-electron potential. 
+
+If electron-electron interactions are neglected entirely, then the full electronic Hamiltonian reduces to the form in $\eqref{equation-20}$. More generally, $\hat{h}(i)$ can denote an effective one-electron Hamiltonian in which the Coloumb interaction with the remaining electrons is replaced by an average mean-field potential.
+
+Let the normalized eigenfunctions of the one-electron Hamiltonians $\hat{h}(i)$ be the spin orbitals $\set{\chi_p}_{p=1}^\infty$, satisfying the eigenvalue equation
+
+$$
+  \hat{h}(i) \chi_p (\mathbf{x}_i) = \varepsilon_p \chi_p (\mathbf{x}_i)
+$$
+
+where $\mathbf{x}_i = (\mathbf{r}_i, \omega_i)$ denotes the combined spatial and spin coordinates of electron $i$ and $\varepsilon_p$ is the corresponding one-electron orbital energy.
+
+Since each operator $\hat{h}(i)$ acts only on the coordinates $\mathbf{x}_i$, operators associated with different electrons commute
+
+$$
+  [\hat{h}(i), \hat{h}(j)] = 0,\; i\neq j
+$$
+
+Thus, the operators $\hat{h}(i)$ have a common set of simultaneous eigenfunctions. The tensor-product of one-electron eigenfunctions
+
+$$
+\begin{equation*}
+  \Psi^\text{HP} (\mathbf{x}_1,\dots,\mathbf{x}_N) = \prod_{i=1}^N \chi_{p_i} (\mathbf{x}_i)
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+called a Hartree product, is therefore an eigenfunction of the many-electron Hamiltonian $\hat{H}$. Indeed
+
+$$
+\begin{align*}
+  \hat{H}\Psi^\text{HP}(\mathbf{x}_1,\dots,\mathbf{x}_N) =& \sum_{i=1}^N \hat{h}(i) \prod_{j=1}^N \chi_{p_j} (\mathbf{x}_j) \\
+  =& \sum_{i=1}^N \left(\prod_{j\neq i} \chi_{p_j} (\mathbf{x}_j) \right) \underbrace{\hat{h}(i) \chi_{p_i} (\mathbf{x}_i)}_{= \varepsilon_{p_i} \chi_{p_i} (\mathbf{x}_i)} \\
+  =& \sum_{i=1}^N \varepsilon_{p_i} \left(\prod_{j=1}^N \chi_{p_j} (\mathbf{x}_j) \right) \\
+  =& \left(\sum_{i=1}^N \right) \Psi^\text{HP}(\mathbf{x}_i,\dots,\mathbf{x}_N)
+\end{align*}
+$$
+
+which shows that $\Psi$ is an eigenfunction of $\hat{H}$ with eigenvalue
+
+$$
+  E = \sum_{i=1}^N \varepsilon_{p_i}
+$$
+
+Thus for a system of independent electrons, the many-electron energy is simply the sum of the occupied one-electron energies.
+
+The Hartree product $\eqref{equation-21}$ provides an independent-particle or uncorrelated description of the electronic system. It probability density factorizes as
+
+$$
+  |\Psi^\text{HP} (\mathbf{x}_1,\dots,\mathbf{x}_N)|^2 = \prod_{i=1}^N |\chi_{p_i} (\mathbf{x}_i)|^2
+$$
+
+so that the joint probability of simultaneously finding electron $i$ within the volume element $\d\mathbf{x}_i$ centered at $\mathbf{x}_i$ is
+
+$$
+  |\Psi^\text{HP}|^2 \prod_{i=1}^N \d\mathbf{x}_i = \prod_{i=1}^N |\chi_{p_i} (\mathbf{x}_i)|^2 \;\d\mathbf{x}_i
+$$
+
+Consequently, the position of one electron is statistically independent of the positions of all other electrons. In particular, the conditional probability of finding one electron at a given point is unaffected by the instantaneous locations of the remaining electrons.
+
+In a real electronic system, however, the electrons interact through the Coloum repulsion
+
+$$
+  \sum{i < j} \frac{e^2}{4\pi\varepsilon_0 r_{ij}}
+$$
+
+which couples their motion. As a reuslt, electrons tend to avoid one another, producing electron correlation. The Hartree product cannot describe this instantaneous correlation because it assumes that the many-electron probability distribution factorizes into independent one-electron probabilities.
+
+Beyond its neglect of electron correlation, the Hartree product suffers from a more fundamental deficiency: it is generally incompatible the indistinguishability of identical fermions. By construction, it assigns electron $i$ to spin orbital $\chi_{p_i}$, thereby artificially labeling electrons that are physically indistinguishable.
+
+According to the antisymmetry principle, the wavefunction of a system of identical fermions must be antisymmetric under every permutation $P$ of the electron labels, i.e.
+
+$$
+  \Psi (\mathbf{x}_{P(1)},\dots, \mathbf{x}_{P(N)} = (-1)^P \Psi(\mathbf{x}_1,\dots,\mathbf{x}_N)
+$$
+
+where $(-1)^P$ is the parity of the permutation. In particular, exchangig any pair of electrons changes the sign of the wavefunction
+
+$$
+  \Psi(\dots,\mathbf{x}_i,\dots,\mathbf{x}_j,\dots) = \Psi(\dots,\mathbf{x}_j,\dots,\mathbf{x}_i,\dots)
+$$
+
+A Hartree product does not, in general, satisfy this antisymmetry condition. Although it correctly describes independent particles mathematically, it cannot represent the quantum state of a system of identical electrons.
+
+## Slater determinants
+
+Consider a two-electron system in which the spin orbitals $\chi_{p_1}$ and $\chi_{p_2}$ are occupied. Assigning electron $1$ to $\chi_{p_1}$ and electron $2$ to $\chi_{p_2}$ gives the Hartree product
+
+$$
+  \Psi^\text{HP}_{1,2} (\mathbf{x}_1, \mathbf{x}_2) = \chi_{p_1} (\mathbf{x}_1) \chi_{p_2} (\mathbf{x}_2)
+$$
+
+Alternatively, assigning electron $1$ to $\chi_{p_2}$ and electron $2$ to $\chi_{p_1}$ gives
+
+$$
+  \Psi^\text{HP}_{2,1} (\mathbf{x}_1, \mathbf{x}_2) = \chi_{p_1} (\mathbf{x}_2) \chi_{p_2} (\mathbf{x}_1)
+$$
+
+Each Hartree products assigns a definite orbital to a particular electron lavel and therefore treats the electrons as distinguishable. This contradicts the indistinguishability of identical electrons. To construct a valid fermionic wavefunction, we require antisymmetry under exchange of the electron coordinates, i.e. 
+
+$$
+  \Psi(\mathbf{x}_1, \mathbf{x}_2) = -\Psi(\mathbf{x}_2, \mathbf{x}_1)
+$$
+
+The appropriate antisymmetric linear combination is therefore
+
+$$
+\begin{equation*}
+  \Psi(\mathbf{x}_1, \mathbf{x}_2) = \frac{1}{\sqrt{2}} \left[\chi_{p_1} (\mathbf{x}_1) \chi_{p_2} (\mathbf{x}_2) - \chi_{p_2}(\mathbf{x}_1) \chi_{p_1}(\mathbf{x}_2) \right]
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+The normalization factor $2^{-1/2}$ follows from the orthonormality of the spin orbitals. 
+
+Under exchange of the electron coordinates
+
+$$
+\begin{align*}
+  \Psi(\mathbf{x}_2, \mathbf{x}_1) =& \frac{1}{\sqrt{2}}\left[\chi_{p_1} (\mathbf{x}_1) \chi_{p_2} (\mathbf{x}_1) - \chi_{p_2} (\mathbf{x}_2) \chi_{p_1} (\mathbf{x}_1) \right] \\
+  =& -\Psi(\mathbf{x}_1, \mathbf{x}_2)
+\end{align*}
+$$
+
+so the antisymmetry requirement is satisfied.
+
+If both electrons occupy the same spin orbital, i.e. $\chi_{p_1} = \chi_{p_2}$, then
+
+$$
+  \Psi(\mathbf{x}_1, \mathbf{x}_2) = \frac{1}{\sqrt{2}} \left[\chi_{p_1} (\mathbf{x}_1) \chi_{p_1} (\mathbf{x}_2) - \chi_{p_1} (\mathbf{x}_1) \chi_{p_1} (\mathbf{x}_2) \right] = 0
+$$
+
+Thus, no two electrons can occupy the same spin orbital. This is the Pauli exclusion principle, which follows directly from the antisymmetry of fermionic wavefunctions.
+
+The antisymmetric two-electron wavefunction of $\eqref{equation-22}$ can be expressed as the determinant
+
+$$
+  \Psi(\mathbf{x}_1, \mathbf{x}_2) = 2^{-1/2} \begin{vmatrix}
+    \chi_{p_1} (\mathbf{x}_1) & \chi_{p_2} (\mathbf{x}_1) \\
+    \chi_{p_1} (\mathbf{x}_2) & \chi_{p_2} (\mathbf{x}_2)
+  \end{vmatrix}
+$$
+
+whic is called a Slater determinant. For an $N$-electron system, this generalizes to
+
+$$
+  \Psi(\mathbf{x}_1,\dots,\mathbf{x}_N) = \frac{1}{\sqrt{N!}} \begin{vmatrix}
+    \chi_{p_1} (\mathbf{x}_1) & \chi_{p_2} (\mathbf{x}_1) & \cdots & \chi_{p_N} (\mathbf{x}_1) \\
+    \chi_{p_1} (\mathbf{x}_2) & \chi_{p_2} (\mathbf{x}_2) & \cdots & \chi_{p_N} (\mathbf{x}_2) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \chi_{p_1} (\mathbf{x}_N) & \chi_{p_2} (\mathbf{x}_N) & \cdots & \chi_{p_N} (\mathbf{x}_N) \\
+  \end{vmatrix}
+$$
+
+The factor $(N!)^{-1/2}$ ensures normalization when the occupied spin orbitals are orthonormal. 
+
+A Slater determinant represents $N$ electrons occupying the set of spin orbitals $\set{\chi_{p_1},\dots,\chi_{p_N}}$ without assigning a particular orbital to a particular electron. Exchanging two electron coordinates corresponds to exchaning two rows of the Slater determinant, which changes its sign. Thus, Slater determinants satisfy the antisymmetry principle. Likewise, if two electrons occupy the same spin orbital, two columns of the determinant become identical, making the determinant vanish.
+
+It is convenient to introduce the compact notation for a Slater determinant
+
+$$
+  \Psi(\mathbf{x}_1,\dots,\mathbf{x}_N) = \ket{\chi_{p_1}(\mathbf{x}_1) \cdots \chi_{p_N} (\mathbf{x}_N)}
+$$
+
+where the normalization factor is implicitly included. If we always choose the electron labels to be in the order $\mathbf{x}_1,\dots,\mathbf{x}_N$, then this can be further shortened to
+
+$$
+  \Psi(\mathbf{x}_1,\dots,\mathbf{x}_N) = \ket{\chi_{p_1} \cdots \chi_{p_N}}
+$$
+
+In this notation, the anti-symmetry property of Slater determinants is
+
+$$
+  \ket{\cdots \chi_{p_i} \cdots \chi_{p_j}} = -\ket{\cdots \chi_{p_j} \cdots \chi_{p_i} \cdots}
+$$
+
+Thus, a Slater determinant is uniquely determined, up to an overall sign, by the set of occupied spin orbitals. Slater determinants constructed from different sets of orthonormal spin orbitals are mutually orthogonal.
+
+### Exchange effects
+
+Antisymmetrization introduces exchange effects, which arise purely from the indistinguishability and fermionic symmetry of electrons. However, exchange is not the same as electron correlation. A single Slater determinant contains exchange exactly, but neglects dynamical correlation arising from the instantaneous Coulomb interaction between electrons.
+
+To examine the origin of exchange effects consider the two-electron Slater determinant
+
+$$
+  \Psi(\mathbf{x}_1, \mathbf{x}_2) = \ket{\chi_{p_1} (\mathbf{x}_1) \chi_{p_2} (\mathbf{x}_2)}
+$$
+
+Suppose first that the two electrons have opposite spins and occupy different spatial orbitals
+
+$$
+\begin{align*}
+  \chi_{p_1} (\mathbf{x}_1) =& \psi_1 (\mathbf{r}_1) \alpha(\omega_1) \\
+  \chi_{p_2} (\mathbf{x}_2) =& \psi_2 (\mathbf{r}_2) \beta(\omega_2)
+\end{align*}
+$$
+
+Expanding the determinant yields
+
+$$
+\begin{equation*}
+\begin{split}
+  \Psi = \frac{1}{\sqrt{2}} [&\psi_1 (\mathbf{r}_1) \alpha(\omega_1) \psi_2 (\mathbf{r}_2) \beta(\omega_2) \\
+  &- \psi_2 (\mathbf{r}_1) \beta(\omega_1) \psi_1 (\mathbf{r}_2) \alpha(\omega_2)]
+\end{split}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+The spatial two-electron probability density is obtained by integrating over the spin coordinates
+
+$$
+  \Pr(\mathbf{r}_1, \mathbf{r}_2) = \int |\Psi(\mathbf{x}_1, \mathbf{x}_2)|^2 \;\d\omega_1 \;\d\omega_2
+$$
+
+Because $\braket{\alpha|\beta} = 0$, the exchange cross term vanish, resulting in
+
+$$
+  \Pr(\mathbf{r}_1, \mathbf{r}_2) = \frac{1}{2} \left(& |\psi_1 (\mathbf{r}_1)|^2 |\psi_2 (\mathbf{r}_2)|^2 \right. \\
+  & \left. + |\psi_2 (\mathbf{r}_1)|^2 |\psi(\mathbf{r}_2)|^2 \right)
+$$
+
+Thus, opposite-spin electrons described by a single Slater determinant have no spatial correlation induced by exchange. In particular, if the electrons share the same spatial orbital, $\psi_1 = \psi_2 = \psi$, then
+
+$$
+  \Pr(\mathbf{r}_1, \mathbf{r}_2) = |\psi(\mathbf{r}_1)|^2 |\psi(\mathbf{r}_2)|^2
+$$
+
+which factorizes completely. Consequently, two electrons of opposite spin can occupy the same spatial region with nonzer probability.
+
+Now suppose that the two electrons have the same spin, say $\beta$
+
+$$
+\begin{align*}
+  \chi_{p_1} (\mathbf{x}_1) =& \psi_1 (\mathbf{r}_1) \beta(\omega_1) \\
+  \chi_{p_2} (\mathbf{x}_2) =& \psi_2 (\mathbf{r}_2) \beta(\omega_2)
+\end{align*}
+$$
+
+The resulting spatial probability density becomes
+
+$$
+\begin{align*}
+  \Pr(\mathbf{r}_1, \mathbf{r}_2) = \frac{1}{2} \left(&|\psi_1 (\mathbf{r}_1)|^2 |\psi_2 (\mathbf{r}_2)|^2 + |\psi_1 (\mathbf{r}_2)|^2 |\psi_2 (\mathbf{r}_1)|^2 \right. \\
+  &- \psi_1^* (\mathbf{r}_1) \psi_2 (\mathbf{r}_1) \psi_2^* (\mathbf{r}_2) \psi_1 (\mathbf{r}_2) \\
+  & \left. - \psi_2^* (\mathbf{r}_1) \psi_1 (\mathbf{r}_1) \psi_1^* (\mathbf{r}_2) \psi_2 (\mathbf{r}_2) \right)
+\end{align*}
+$$
+
+The final two terms constitute the exchange term. They arise solely from antisymmetry and produce a correlation between the electrons with parallel spins.
+
+For coincident positions, $\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}$, the spatial probability vanishes, $\Pr(\mathbf{r}, \mathbf{r}) = 0$. Thus, two electrons with identical spin cannot be found at the same point in space. This exclusion region is called the Fermi hole. 
+
+In summary, a single Slater determinant correctly incorporates exchange effects: electrons with parallel spins exhibit exchange-induced spatial correlation, whereas electrons with opposite spins do not. However, the determinant does not describe the full electron correlation arising from Coloumb repulsion. Recovering this missing dynamical correlation requires a correlated many-electron wavefunction.
