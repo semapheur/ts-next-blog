@@ -718,3 +718,135 @@ The final two terms constitute the exchange term. They arise solely from antisym
 For coincident positions, $\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}$, the spatial probability vanishes, $\Pr(\mathbf{r}, \mathbf{r}) = 0$. Thus, two electrons with identical spin cannot be found at the same point in space. This exclusion region is called the Fermi hole. 
 
 In summary, a single Slater determinant correctly incorporates exchange effects: electrons with parallel spins exhibit exchange-induced spatial correlation, whereas electrons with opposite spins do not. However, the determinant does not describe the full electron correlation arising from Coloumb repulsion. Recovering this missing dynamical correlation requires a correlated many-electron wavefunction.
+
+## Minimal basis model of $\ce{H2}$
+
+The hydrogen molecule, $\ce{H2}$, provides the simplest example of the linear combination of atomic orbitals (LCAO) approximation for constructing molecular orbitals. In a minimal basis description, each hydrogen atom contributes a single $1s$ basis function, so the one-electron Hilbert space is approximated by the two-dimensional subsapce spanned by these functions.
+
+Let the nucluei of an $\ce{H2}$ molecule be located at positions $\mathbf{R}_1$ and $\mathbf{R}_2$. We denote the corresponding atomic basis functions by
+
+$$
+\begin{align*}
+  \phi_1 (\mathbf{r}) = \phi(\mathbf{r} - \mathbf{R}_1) \\
+  \phi_2 (\mathbf{r}) = \phi(\mathbf{r} - \mathbf{R}_2)
+\end{align*}
+$$
+
+where $\mathbf{r}$ is the electronic coordinate.
+
+For an isolated hydrogen atom, the exact normalized $1s$ orbital is
+
+$$
+  \phi(\mathbf{r} - \mathbf{R}) = \sqrt{\frac{\zeta^3}{\pi}} e^{-\zeta \norm{\mathbf{r} - \mathbf{R}}}
+$$
+
+where $\zeta$ is the orbital exponent. For hydrogen $\zeta = 1$ in atomic units. This function is an example of a Slater-type orbital (STO).
+
+In practical electronic structure calculations, Gaussian-type orbitals (GTOs) are often used instead because the resulting multicentre integral can be evaluated analytically much more efficiently. The normalized $1s$ Gaussian orbital has the form
+
+$$
+  \phi(\mathbf{r} - \mathbf{R}) = \left(\frac{2\alpha}{\pi}\right)^{3/4} e^{-\alpha\norm{\mathbf{r} - \mathbf{R}}^2}
+$$
+
+where $\alpha > 0$ is the Gaussian orbital exponent.
+
+The atomic basis functions are individually normalized, i.e. $\braket{\phi_i |\phi_i} = 1$, but they are not orthogonal. Their overlap is
+
+$$
+  S_{12} = \braket{\phi_1 |\phi_2} = \int_{\R^3} \phi_1^* (\mathbf{r}) \phi_2 (\mathbf{r}) \;\d\mathbf{r}
+$$
+
+The overlap depends continuously on the internuclear separation $R_{12} = \norm{\mathbf{R}_1 - \mathbf{R}_2}$. For coincident centres, $R_{12} = 0$, the two basis functions are identical and $S_{12} = 1$. On the other hand,
+
+$$
+  \lim_{R_{12} \to\infty} S_{12} = 0
+$$
+
+since the orbitals become spatially disjoint.
+
+### Bonding and antibonding molecular orbitals
+
+Within the two-dimensional space spanned by $\set{\phi_1, \phi_2}$, two orthonormal molecular orbitals are obtained as symmetry-adapted linear combinations. The symmetric (gerade) combination
+
+$$
+\begin{equation*}
+  \psi_1 = \frac{\phi_1 + \phi_2}{\sqrt{2(1 + S_{12})}}
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+is the bonding molecular orbital, while the antisymmetric (ungerade) combination
+
+$$
+\begin{equation*}
+  \psi_2 = \frac{\phi_1 + \phi_2}{\sqrt{2(1 - S_{12})}}
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+is the antibonding molecular orbital.
+
+The normalization constants follow direction from $\braket{\phi_i |\phi_i} = 1$ and $\brake{\phi_1 |\phi_2} = S_{12}$ which give $\braket{\psi_i | \psi_j} = \delta_{ij}$.
+
+The orbital $\psi_1$ is invariant under inversion through the midpoint of the bond and therefore has gerade symmetry, whereas $\psi_2$ changes sign under inversion and therefore has ungerade symmetry.
+
+### LCAO approximation
+
+The above procedure is the simplest example of the general LCAO expansion. Given a finite basis $\set{\phi_\mu}_{\mu=1}^K$, each molecular orbital is approximated as
+
+$$
+  \psi_i (\mathbf{r}) = \sum_{\mu=1}^\K C_{\mu i} \phi_\mu (\mathbf{r})
+$$
+
+where the coefficients $C_{\mu i}$ are determined variationally by solving the Hartree-Fock and Kohn-Sham equations.
+
+In the exact theory, the one-electron Hilbert space is infinite-dimensional, so an exact molecular orbital generally requires an infinite expansion. Restricting the expansion to one basis function per hydrogen atom, $K = 2$, defines the minimal basis approximation for $\ce{H2}$.
+
+Because the hydrogen molecule posesses inversion symmetry, the Hartree-Fock molecular orbitals within this two-dimensional subspace are precisely the normalized symmetric and anitsymmetric combinations given in $\eqref{equation-24}$ and $\eqref{equation-25}$. In a larger basis, additional basis functions would modify these orbitals through further variational optimization.
+
+### Ground state spin orbitals
+
+The spatial molecular orbitals $\psi_1$ and $\psi_2$ generates each two spin orbitals
+
+$$
+\begin{align*}
+  \chi_1 (\mathbf{x}) =& \psi_1 (\mathbf{r}) \alpha(\omega) \\
+  \chi_2 (\mathbf{x}) =& \psi_1 (\mathbf{r}) \beta(\omega) \\
+  \chi_3 (\mathbf{x}) =& \psi_2 (\mathbf{r}) \alpha(\omega) \\
+  \chi_4 (\mathbf{x}) =& \psi_2 (\mathbf{r}) \beta(\omega)
+\end{align*}
+$$
+
+where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes teh combined spatial and spin coordinates.
+
+Since the Hartree-Fock operator is spin independent for a closed-shell system, each spatial orbital gives rise to two degenerate spin orbitals differing only in their spin function. Thus
+
+$$
+  \varepsilon_1 = \varepsilon_2 < \varepsilon_3 = \varepsilon_4
+$$
+
+The lower-energy pari correspnds to the bonding molecular orbital, whiel the higher-energy pair corresponds to the anitbonding molecular orbital.
+
+### Hartree-Fock ground state
+
+Within the minimal-basis approximation, the Hartree-Fock ground state is obtained by occupying the two lowest-energy spin orbitals
+
+$$
+  \ket{\Psi_0} = \ket{\chi_1 \chi_2}
+$$
+
+Since both electrons occupy the bonding spatial orbital with opposite spins, it is common to suppress the explicit functions and denote
+- $\chi_1 \equiv \psi_1$
+- $\chi_2 \equiv \bar{\psi}_1$
+- $\chi_3 \equiv \psi_2$
+- $\chi_4 \equiv \bar{\psi}_2$
+
+where a bar indicates a $\beta$-spin electron and the absence thereof denotes an $\alpha$-spin electron.
+
+In this notation the Hartree-Fock ground state can be written
+
+$$
+  \ket{\Psi_0} = \ket{\psi_1 \bar{\psi_1}} = \ket{1\bar{1}}
+$$
+
+This notation emphasizes that both electrons occupy the bonding molecular orbital while forming a spin-singlet pair. Because the electrons have opposite spin projections, the Pauli exclusion principle is satisfied even though they occupy the same spatial orbital. Within the minimal-basis Hartree-Fock approximation, this single Slater determinant provides the variational ground-state wavefunction of $\ce{H2}$.
