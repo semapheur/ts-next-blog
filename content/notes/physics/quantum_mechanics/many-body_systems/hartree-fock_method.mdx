@@ -865,7 +865,7 @@ These determinants form an orthonormal basis for the $N$-electron antisymmetric 
 
 It is convenient to classify all determinants relative to the Hartree-Fock reference determinant $\ket{\Psi_0}$. To this end, we partition the spin orbitals into
 - occupied spin orbitals, $\set{1, \dots, N}$
-- virtual spin orbitals, $\set{N+1, \dots, 2K}
+- virtual spin orbitals, $\set{N+1, \dots, 2K}$
 
 An excited determinant is obtained by replacing one or more occupied spin orbitals in the reference determinant $\ket{\Psi_0}$ by virtual spin orbitals.
 
@@ -882,3 +882,150 @@ More generally, an $n$-fold excited determinant is written $\ket{\Psi_{a_1 \cdot
 Every determinant in the FCI space can therefore be classified uniquely according to its excitation level relative to the Hartree-Fock reference determinant.
 
 Although these excited determinants are generally not eigenfunctions of the electronic Hamiltonian and therefore should not be identified with exact excited states, they provide a convenient orthonormal basis for the $N$-electron Hilbert space. Consequently, both the exact ground state and the exact excited states can be expanded as linear combinations of these determinants. This expansion forms the basis of the configuration interaction (CI) method.
+
+## Configuration interaction
+
+Excited Slater determinants provide a convenient basis for representing correlated many-electron wavefunctions. Their completeness follows from the completeness of the underlying one-electron basis. Let $\set{\chi_p (\mathbf{x})}_{p=1}^\infty$ be a complete orthonormal basis for the one-electron Hilbert space $L^2 (\R^3 \times \set{\alpha, \beta})$, where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes the combined spatial and spin coordinates. Then every square-integrable one-electron wavefunction can be expanded as
+
+$$
+  \phi(\mathbf{x}_1) = \sum_{p=1}^\infty a_p \chi_p (\mathbf{x}_1)
+$$
+
+with expansion coefficients $a_p = \braket{\chi_p |\phi}$.
+
+A two-electron wavefunction $\phi(\mathbf{x}_1, \mathbf{x}_2) \in L^2 ((\R^3 \times\set{\alpha, \beta})^2)$ can be expanded in an analogous way by fixing $\mathbf{x}_2$
+
+$$
+\begin{equation*}
+  \phi(\mathbf{x}_1, \mathbf{x}_2) = \sum_{p=1}^\infty a_p (\mathbf{x}_2) \chi_p (\mathbf{x}_1)
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+Each coefficient $a_p (\mathbf{x}_2)$ is itself a square-integrable function of one variable that can be expanded as
+
+$$
+  a_p (\mathbf{x}_2) = \sum_{q=1}^\infty b_{pq} \chi_q (\mathbf{x}_2)
+$$
+
+Substituting this into $\eqref{equation-27}$ gives
+
+$$
+  \phi(\mathbf{x}_1, \mathbf{x}_2) = \sum_{p,q} b_{pq} \chi_p (\mathbf{x}_1) \chi_q (\mathbf{x}_2)
+$$
+
+Thus, the products $\chi_p (\mathbf{x}_1) \chi_q (\mathbf{x}_2)$ form a complete basis for the two-electron tensor-product space.
+
+For identical electrons, however, the wavefunction must satisfy the fermionic antisymmetry condition $\phi(\mathbf{x}_1, \mathbf{x}_2) = -\phi(\mathbf{x}_2, \mathbf{x}_1)$, then $b_{pq} = -b_{qp}$ and $b_{pp} = 0$. The expansion therefore becomes
+
+$$
+\begin{align*}
+  \phi(\mathbf{x}_1, \mathbf{x}_2) =& \sum_{p < q} b_{pq} [\chi_p (\mathbf{x}_1) \chi_q (\mathbf{x}_2) - \chi_q (\mathbf{x}_1) \chi_q(\mathbf{x}_2)] \\
+  =& \sum_{p < q} \sqrt{2} b_{pq} \ket{\chi_p \chi_q}
+\end{align*}
+$$
+
+where
+
+$$
+  \ket{\chi_p \chi_q} = \frac{1}{\sqrt{2}} \begin{vmatrix}
+    \chi_p (\mathbf{x}_1) & \chi_q (\mathbf{x}_1) \\
+    \chi_p (\mathbf{x}_2) & \chi_q (\mathbf{x}_2) \\
+  \end{vmatrix}
+$$
+
+is the normalized two-electron Slater determinant.
+
+Thus every antisymmetric two-electron wavefunction can be expandded is a linear combination of Slater determinants constructed from a complete one-electron basis.
+
+This argument extends directly to $N$ electrons. If the one-electron spin orbitals form a complete basis, then the corresponding Slater determinants constitute a complete basis for the antisymmetric $N$-electron Hilbert space. Consequently, every excat electronic eigenstate can be written as a linear combination of Slater determinants.
+
+Using the Hartree-Fock ground state determinant $\ket{\Psi_0}$ as a reference, every determinant can be classified according to its excitation level. The exacct wave function for any state of the system can therefore be expanded as
+
+$$
+\begin{align*}
+  \ket{\Phi} =& c_0 \ket{\Psi_0} + \sum_{ab} c_a^b \ket{\Psi_a^b} + \sum_{\substack{a_1 < a_2 \\ b_1 < b_2}} c_{a_1 a_2}^{b_1 b_2} \ket{\Psi_{a_1 a_2}^{b_1 b_2}} \\
+  &+ \sum_{\substack{a_1 < a_2 < a_3 \\ b_1 < b_2 < b_3}} c_{a_1 a_2 a_3}^{b_1 b_2 b_3} \ket{\Psi_{a_1 a_2 a_3}^{b_1 b_2 b_3}} +\cdots
+$$
+
+where
+- $a_i$ denote occupied Hartree-Fock spin orbitals
+- $b_i$ denote virtual spin orbitals
+
+The coefficients are determined by solving the Schrödinger equation in this determinant basis.
+
+The collection of all Slater determinants generated from a complete one-electron basis forms a complete basis for the exact electronic problem. The matrix representation of the electronic Hamiltonian is given by $H_{ij} = \braket{\Psi_i |\hat{H}|\Psi_j}$. The eigenvalues of this Hamiltonian matrix are the exact nonrelativistic electronic energies within the Born-Oppenheimer approximation, while the corresponding eigenvectors determine the CI expansion coefficients.
+
+Because each determinant is specified by an electronic configuration, that is, by the occupied spin orbitals, the method is known as configuration interaction.
+
+### Correlation energy
+
+The Hartree-Fock energy is the minimum energy obtainable from a single Slater determinant
+
+$$
+  E_\text{HF} = \min_{\Psi\in\mathcal{D}} \braket{\Psi|\hat{H}|\Psi}
+$$
+
+where $\mathcal{D}$ denotes the set of normalized Slater determinants.
+
+The exact ground-state energy satisfies the variational inequality $E_0 \leq E_\text{HF}$ and the difference
+
+$$
+  E_\text{corr} = E_0 - E_\text{HF} \leq 0
+$$
+
+is called the correlation energy. This energy measures the error introduced by restricting the wavefunction to a single determinant. It includes the dynamical correlation arising from the instantaneous Coulomb interaction between electrons, which is absent in Hartree-Fock theory.
+
+### Full configuration interaction
+
+In practice, we always work with a finite one-electron basis $\ket{\chi_p}_{p=1}^{2K}$. The corresponding determinant space is finite-dimensional, containing $\binom{2K}{N}$ Slater determinants. Although this determinant basis is no longer complete for the exact electronic Hilbert space, it spans the antisymmetric subspace generated by the chosen one-electronic basis.
+
+Diagonalizing the Hamiltonian in this dinite determinant basis yields the exact solution within the finite one-electron basis. This procedure is called full configuration interaction (FCI).
+
+As the one-electron basis is enlarged, the FCI energy converges monotonically from above to the exact Born-Oppenheimer energy.
+
+Since the size of the FCI space grows combinatorially, $\dim(\hat{H}_N) = \binom{2K}{N}$, this procedure is computationally infeasible except for relatively small systems. Practical CI methods therefore truncate the expansion, retining only determinants up to a prescribed excitation level.
+
+### Minimal basis $\ce{H2}$ model
+
+In the minimal basis model of $ce{H2}$ with $N=2$ electrons, there are four $(2K = 4)$ spin orbitals $\chi_i$ for $i=1,2,3,4$. We can therefore form $\binom{4}{2} = 6$ Slater determinants. The Hartree-Fock ground state determinant is
+
+$$
+  \ket{\Psi_0} = \ket{\chi_1 \chi_2} = \ket{\psi_1 \bar{\psi}_1} = \ket{1\bar{1}}
+$$
+
+There are four singly excited determinants
+- $\ket{\Psi_1^2} = \ket{2\bar{1}}$
+- $\ket{\Psi_1^{\bar{2}}} = \ket{\bar{2}\bar{1}}$
+- $\ket{\Psi_{\bar{1}}^2} = \ket{12}$
+- $\ket{\Psi_{\bar{1}}^{\bar{2}}} = \ket{1\bar{2}}$
+
+There is only one doubly excited determinant
+
+$$
+  \ket{\Psi_{1\bar{1}}^{2\bar{2}}} = \ket{2\bar{2}} = \ket{\chi_3 \chi_4} = \ket{\Psi_{12}^{34}}
+$$
+
+These six Slater determinants span the complete FCI space associated with the minimal basis.
+
+The Hartree-Fock ground state has gerade ($g$) symmetry because both electrons occupy the gerade bonding molecular orbital. Likewise, the doubly excited determinant has both electrons occupying the ungerade ($u$) antibonding orbital, and sice $u\times u = g$, it also transforms as a gerade state.
+
+In contrast, every singly excited determinant contains one electron in a gerade orbital and one in an ungerade orbital, i.e. $g \times u = u$ and therefore has ungerade symmetry.
+
+Because the electronic Hamiltonian commutes with the inversion operator, determinants belonging to different irreducible representations cannot mix. Consequently, ground state CI expansion contains only determinants of gerade symmetry
+
+$$
+\begin{align*}
+  \ket{\Phi_0} =& c_0 \ket{\Psi_0} + c_{1\bar{1}}^{2\bar{2}} \ket{\Psi_{1\bar{1}}^{2\bar{2}}} \\
+  =& c_0 \ket{\Psi_0} + c_{12}^{34} \ket{\Psi_{12}^{34}}
+\end{align*}
+$$
+
+The exact value of the coefficients, which describe the wavefunction $\ket{\Phi_0}$ and the value of the exact energy $\braket{\Phi_0|\hat{H}|\Phi_0}$, can be found by diagonalizing the full CI matrix, i.e. the $2\times 2$ Hamiltonian matrix in the basis $\ket{\Psi_0}$ and $\ket{\Psi_{1\bar{1}}^{2\bar{2}}}$
+
+$$
+  \mathbf{H} = \begin{bmatrix}
+    \braket{\Psi_0 |\hat{H}|\Psi_0} & \braket{\Psi_0 |\hat{H}|\Psi_{1\bar{1}}^{2\bar{2}}} \\
+    \braket{\Psi_{1\bar{1}}^{2\bar{2}}|\hat{H}|\Psi_0} & \braket{\Psi_{1\bar{1}}^{2\bar{2}}|\hat{H}|\Psi_{1\bar{1}}^{2\bar{2}}}
+  \end{bmatrix}
+$$

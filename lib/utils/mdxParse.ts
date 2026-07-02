@@ -1,4 +1,5 @@
 //import { mystParser } from 'myst-parser'
+import "katex/contrib/mhchem";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeCitation from "rehype-citation";
 import rehypeImgSize from "rehype-img-size";
