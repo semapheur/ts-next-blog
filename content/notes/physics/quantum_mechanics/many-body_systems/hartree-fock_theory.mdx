@@ -1,5 +1,5 @@
 ---
-title: 'Hartree-Fock Method'
+title: 'Hartree-Fock Theory'
 subject: 'Physics'
 showToc: true
 ---
@@ -415,7 +415,7 @@ If the set of spatial orbitals $\set{\psi_i}$ were complete in $L^2 (\R^3)$, the
 $$
 \begin{align*}
   f(\mathbf{r}) = \sum_{i=1}^\infty a_i \psi_i (\mathbf{r}) \\
-  a_i = int_{\R^3} f(\mathbf{r}) \psi^* (\mathbf{r}) \;\d\mathbf{r}
+  a_i = \int_{\R^3} f(\mathbf{r}) \psi^* (\mathbf{r}) \;\d\mathbf{r}
 \end{align*}
 $$
 
@@ -437,7 +437,7 @@ Given a set of $K$ spatial orbitals $\set{\psi_i}_{i=1}^K$, we can thus form a s
 $$
   \begin{rcases}
     \chi_{2i - 1} (\mathbf{x}) =& \psi_i^\alpha (\mathbf{r}) \alpha(\omega) \\
-    \chi_{2i} =& \psi_i^\beta (\mathbf{r}) \beta(\omega)
+    \chi_{2i} (\mathbf{x}) =& \psi_i^\beta (\mathbf{r}) \beta(\omega)
   \end{rcases} i = 1,\dots,k
 $$
 
@@ -1015,17 +1015,195 @@ In contrast, every singly excited determinant contains one electron in a gerade 
 Because the electronic Hamiltonian commutes with the inversion operator, determinants belonging to different irreducible representations cannot mix. Consequently, ground state CI expansion contains only determinants of gerade symmetry
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \ket{\Phi_0} =& c_0 \ket{\Psi_0} + c_{1\bar{1}}^{2\bar{2}} \ket{\Psi_{1\bar{1}}^{2\bar{2}}} \\
   =& c_0 \ket{\Psi_0} + c_{12}^{34} \ket{\Psi_{12}^{34}}
-\end{align*}
+\end{split}
+\tag{\label{equation-29}}
+\end{equation*}
 $$
 
 The exact value of the coefficients, which describe the wavefunction $\ket{\Phi_0}$ and the value of the exact energy $\braket{\Phi_0|\hat{H}|\Phi_0}$, can be found by diagonalizing the full CI matrix, i.e. the $2\times 2$ Hamiltonian matrix in the basis $\ket{\Psi_0}$ and $\ket{\Psi_{1\bar{1}}^{2\bar{2}}}$
 
 $$
+\begin{equation*}
   \mathbf{H} = \begin{bmatrix}
     \braket{\Psi_0 |\hat{H}|\Psi_0} & \braket{\Psi_0 |\hat{H}|\Psi_{1\bar{1}}^{2\bar{2}}} \\
     \braket{\Psi_{1\bar{1}}^{2\bar{2}}|\hat{H}|\Psi_0} & \braket{\Psi_{1\bar{1}}^{2\bar{2}}|\hat{H}|\Psi_{1\bar{1}}^{2\bar{2}}}
   \end{bmatrix}
+\tag{\label{equation-28}}
+\end{equation*}
 $$
+
+# Matrix elements between Slater determinants
+
+Given an operator $\hat{O}$ acting on the $N$-electron Hilber space and two normalized Slater determinants $\ket{K}$ and $\ket{L}$, we wish to evaluate the matrix element $\braket{K|\hat{O}|L}$. 
+
+The goal is to reduce such many-electron matrix elements to integrals involving one-electron spin orbitals from which the determinants are constructed, and ultimately, to integrals over the corresponding spatial orbitals.
+
+## Matrix elements for minimal basis $\ce{H2}$
+
+Within the minimal-basis full configuration interaction (CI) description of $\ce{H2}$, the exact ground state wavefunction is expanded in the two-dimensional gerade subspace $\eqref{equation-29}$. The CI Hamiltonian $\eqref{equation-28}$ therefore consist of four matrix elements. Since the electronic Hamiltonian is Hermitian, we have
+
+$$
+  \braket{\Psi_0 |\hat{H}|\Psi_{1\bar{1}}^{2\bar{2}}} = \braket{\Psi_{1\bar{1}}^{2\bar{2}}|\hat{H}|\Psi_0}^* 
+$$
+
+so only three independent matrix elements must be evaluated.
+
+The Hamiltonian for any two-electron molecule is
+
+$$
+\begin{align*}
+  \hat{H} =& \left(-\frac{1}{2} \nabla_1^2 - \sum_A \frac{Z_A}{r_{1A}} \right) + \left(-\frac{1}{2} \nabla_2^2 - \sum_A \frac{Z_A}{r_{2A}} \right) + \frac{1}{r_{12}} \\
+  =& \hat{h}(1) + \hat{h}(2) + \frac{1}{r_{12}}
+\end{align*}
+$$
+
+where 
+
+$$
+  \hat{h}(i) = -\frac{1}{2} \nabla_i^2 - \sum_A \frac{Z_A}{r_{iA}}
+$$
+
+is the one-electron Hamiltonian. It is convenient to separate the Hamiltonian into its one- and two-electron components
+
+$$
+\begin{align*}
+  \hat{O}_1 =& \hat{h}(1) + \hat{h}(2) \\
+  \hat{O}_2 = \frac{1}{r_{12}}
+\end{align*}
+$$
+
+so that $\eqref{equation-30}$ can be decomposed as $\hat{H} = \hat{O}_1 + \hat{O}_2$.
+
+### One-electron contribution
+
+Consider first the matrix element 
+
+$$
+\begin{equation*}
+  \braket{\Psi_0 |\hat{O}_1 |\Psi_0} = \braket{\Psi_0|\hat{h}(1)|\Psi_0} + \braket{\Psi_0|\hat{h}(2)|\Psi_0}
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+Using the normalized Slater determinant
+
+$$
+\begin{equation*}
+  \Psi_0 (\mathbf{x}_1, \mathbf{x}_2) = \frac{1}{\sqrt{2}}[\chi_1 (\mathbf{x}_1) \chi_2 (\mathbf{x}_2) - \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2)]
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+the first expectation value of $\eqref{equation-31}$ becomes
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{h}(1)|\Psi_0} =& \int \Psi_0^* (\mathbf{x}_1, \mathbf{x}_2) \hat{h}(1) \Psi_0 (\mathbf{x}_1, \mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2 \\
+  =& \frac{1}{2} \int \left[\chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \hat{h}(\mathbf{r}_1) \chi_1 (\mathbf{x}_2) \chi_2 (\mathbf{x}_2) \right. \\
+  & \hphantom{\frac{1}{2}\int} + \chi_2^* (\mathbf{x}_1) \chi_1^* (\mathbf{x}_2) \hat{h}(\mathbf{r}_1) \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2) \\
+  & \hphantom{\frac{1}{2}\int} - \chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \hat{h}(\mathbf{r}_1) \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2) \\
+  & \hphantom{\frac{1}{2}\int} - \left. \chi_2^* (\mathbf{x}_1) \chi_1^* (\mathbf{x}_2) \hat{h}(\mathbf{r}_1) \chi_1 (\mathbf{x}_1) \chi_2 (\mathbf{x}_2) \right] \;\d\mathbf{x}_1 \;\d\mathbf{x}_2
+\end{align*}
+$$
+
+Since $\hat{h}(1)$ only acts on $\mathbf{x}_1$, integration over $\mathbf{x}_2$ yields
+
+$$
+  \int \chi_i^* (\mathbf{x}_2) \chi_j (\mathbf{x}_2) \;\d\mathbf{x}_2 = \braket{\chi_i (\mathbf{x}_2)|\chi_j (\mathbf{x}_j)} = \delta_{ij}
+$$
+
+by orthonormality of the spin orbitals. Consequently, the exchange terms vanish, leaving
+
+$$
+\begin{align*}
+  \braket{\Psi_0 |\hat{h}(1)|\Psi_0} =& \frac{1}{2}\int \chi_1^* (\mathbf{x}_1) \hat{h}(\mathbf{r}_1) \chi_1 (\mathbf{x}_1) \;\d\mathbf{x}_1 \\
+  &+ \frac{1}{2} \int \chi_2^* (\mathbf{x}_1) \hat{h}(\mathbf{r}_1) \chi_2 (\mathbf{x}_1) \;\d\mathbf{x}_1
+\end{align*}
+$$
+
+By symmetry it follows $\braket{\Psi_0|\hat{h}(2)|\Psi_0} = \braket{\Psi_0|\hat{h}(1)|\Psi_0}$ and thus
+
+$$
+\begin{equation*}
+\begin{split}
+  \braket{\Psi_0 |\hat{O}_1|\Psi_0} =& \int \chi_1^* (\mathbf{x}_1) \hat{h}(\mathbf{r}_1) \chi_1 (\mathbf{x}_1) \;\d\mathbf{x}_1 \\
+  &+ \int \chi_2^* (\mathbf{x}_1) \hat{h}(\mathbf{r}_1) \chi_2 (\mathbf{x}_1) \;\d\mathbf{x}_1
+\end{split}
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+Introducing the following notation for one-electron integrals involving spin orbitals
+
+$$
+  \braket{i|\hat{h}|j} = \braket{\chi_i |\hat{h}|\chi_j} = \int \chi_1^* (\mathbf{x}_1) \hat{h}(\mathbf{r}_1) \chi_j (\mathbf{x}_1) \;\d\mathbf{x}_1
+$$
+
+we can express $\eqref{equation-32}$ compactly as
+
+$$
+\begin{equation*}
+  \braket{\Psi_0 |\hat{O}_1|\Psi_0} = \braket{1|\hat{h}|1} + \braket{2|\hat{h}|2}
+\tag{\label{equation-35}}
+\end{equation*}
+$$
+
+### Two-electron contribution
+
+Next consider the matrix element $\braket{\Psi_0|\hat{O}_2|\Psi_0}$. Using $\eqref{equation-33}$, the expectation value becomes
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{O}_2|\Psi_0} =& \int \Psi_0^* (\mathbf{x}_1, \mathbf{x}_2) \frac{1}{r_{12}} \Psi_0 (\mathbf{x}_1, \mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2 \\
+  =& \frac{1}{2} \int \chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_1 (\mathbf{x}_2) \chi_2 (\mathbf{x}_2) \\
+  & \hphantom{\frac{1}{2}\int} + \chi_2^* (\mathbf{x}_1) \chi_1^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2) \\
+  & \hphantom{\frac{1}{2}\int} - \chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2) \\
+  & \hphantom{\frac{1}{2}\int} - \chi_2^* (\mathbf{x}_1) \chi_1^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_1 (\mathbf{x}_1) \chi_2 (\mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2
+\end{align*}
+$$
+
+Since $r_{12} = r_{21}$, interchanging the dummy variables $\mathbf{x}_1$ as $\mathbf{x}_2$ shows that first two terms are identical, as well as the last two. Thus
+
+$$
+\begin{equation*}
+\begin{split}
+  \braket{\Psi_0|\hat{O}_2|\Psi_0} =& \int \chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_1 (\mathbf{x}_1) \chi_2 (\mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2 \\
+  &- \int \chi_1^* (\mathbf{x}_1) \chi_2^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_2 (\mathbf{x}_1) \chi_1 (\mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2
+\end{\split}
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+Introducing the following notation for two-electron integrals involving spin orbitals
+
+$$
+  \braket{ij|kl} = \braket{\chi_i \chi_j | \chi_k \chi_l} = \int \chi_i^* (\mathbf{x}_1) \chi_j^* (\mathbf{x}_1) \fra{1}{r_{12}} \chi_k (\mathbf{x}_1) \chi_l (\mathbf{x}_2)
+$$
+
+we can rewrite $\eqref{equation-34}$ compactly as
+
+$$
+\begin{equation*}
+  \braket{\Psi_0|\hat{O}_2|\Psi_0} = \braket{12|12} - \braket{12|21}
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+where $\braket{12|12}$ is the Coulomb integral and $\braket{12|21}$ is the exchange integral.
+
+### Hartree-Fock energy
+
+Combining the one- and two-electron contributions $\eqref{equation-35}$ and $\eqref{equation-36}$, we obtain
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{H}|\Psi_0} =& \braket{\Psi_0|\hat{O}_1 + \hat{O}_2|\Psi_0} \\
+  =& \braket{1|\hat{h}|1} + \braket{2|\hat{h}|2} + \braket{12|12} - \braket{12|21}
+\end{align*}
+$$
+
+which is the Hartree-Fock energy for a two-electron Slater determinant. The first two terms represent the one-electron kinetic and nuclear-attraction energies, the Coloumb integral $\braket{12|12}$ accounts for the classical electron-electron repulsion, and the exchange integral $\braket{12|21}$ arises solely from the antisymmetry of the wavefunction.
