@@ -610,12 +610,15 @@ $$
 whic is called a Slater determinant. For an $N$-electron system, this generalizes to
 
 $$
+\begin{equation*}
   \Psi(\mathbf{x}_1,\dots,\mathbf{x}_N) = \frac{1}{\sqrt{N!}} \begin{vmatrix}
     \chi_{p_1} (\mathbf{x}_1) & \chi_{p_2} (\mathbf{x}_1) & \cdots & \chi_{p_N} (\mathbf{x}_1) \\
     \chi_{p_1} (\mathbf{x}_2) & \chi_{p_2} (\mathbf{x}_2) & \cdots & \chi_{p_N} (\mathbf{x}_2) \\
     \vdots & \vdots & \ddots & \vdots \\
     \chi_{p_1} (\mathbf{x}_N) & \chi_{p_2} (\mathbf{x}_N) & \cdots & \chi_{p_N} (\mathbf{x}_N) \\
   \end{vmatrix}
+\tag{\label{equation-40}}
+\end{equation*}
 $$
 
 The factor $(N!)^{-1/2}$ ensures normalization when the occupied spin orbitals are orthonormal. 
@@ -1338,7 +1341,11 @@ This shows that the energy of a single Slater determinant decomposes into the su
 
 ### Hartree-Fock grund state
 
-For the Hartree-Fock ground state $\ket{\Psi_0}$, the Slater-Condon rules become as follows.
+Consider the Hartree-Fock ground state $\ket{\Psi_0}$, where
+- occupied spin orbitals are indexed by $a,b,\dots$
+- virtual spin orbital are indexed by $r,s,\dots$
+
+The Slater-Condon rules in terms of the Hartree-Fock ground state become as follows.
 
 **Case 1: Identical determinants**
 
@@ -1387,7 +1394,7 @@ $$
 $$
 \begin{align*}
   \braket{\Psi_0|\hat{O}_2|\Psi_{ab}^{rs}} =& \bra{ab}\ket{rs} \\
-  =& (ar|bs) - (as|bs)
+  =& (ar|bs) - (as|br)
 \end{align*}
 $$
 
@@ -1398,10 +1405,169 @@ Using the Slater-Condon rules, the energy of the Hartree-Fock ground state is
 $$
 \begin{align*}
   E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
-  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N \bra{ab}\ket{ab} \\
-  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N (aa|bb) - (ab|ba)
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} \\
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{b=1}^N (ii|jj) - (ij|ji)
 \end{align*}
 $$
+
+#### Ionization energy
+
+Denote the Hartree-Fock ground state for an $N$-electron system by $\ket{{}^N \Psi_0} = \ket{\chi_1 \cdots \chi_N}$, with energy
+
+$$
+\begin{equation*}
+\begin{split}
+  {}^N E_0 =& \braket{{}^N \Psi_0|\hat{H}|{}^N \Psi_0} \\
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i,j=1}^N \bra{ij}\ket{ij}
+\end{split}
+\tag{\label{equation-39}}
+\end{equation*}
+$$
+
+If we remove the electron occupying spin orbital $\chi_a$, the ionized $(N-1)$-electron determinant is
+
+$$
+  \ket{{}^{N-1} \Psi_a} = \ket{\chi_1 \cdots \chi_{a-1} \chi_{a+1} \cdots \chi_N}
+$$
+
+with energy 
+
+$$
+\begin{align*}
+  {}^{N-1} E_a =& \braket{{}^{N-1} \Psi_a |\hat{H}|{}^{N-1} \Psi_a} \\
+  =& \sum_{\substack{i=1 \\ i \neq a}}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{\substack{i,j=1 \\ i,j\neq a}}^N \bra{ij}\ket{ij}
+\end{align*}
+$$
+
+To compare this energies, we separate all terms involving $a$ in the double sum of $\eqref{equation-39}$
+
+$$
+\begin{align*}
+  \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} =& \sum_{\substack{i\neq a \\ j\neq a}} \bra{ij}\ket{ij} \\
+  &+ \sum_{j\neq a} \bra{aj}\ket{aj} + \sum_{i\neq a} \bra{ia}\ket{ia} \\
+  &+ \bra{aa}\ket{aa}
+\end{align*}
+$$
+
+Since $\bra{aa}\ket{aa} = 0$ and $\bra{aj}\ket{aj} = \bra{ja}\ket{ja}$, it follows that the two-electron energy contributions in $\eqref{equation-39}$ can be decomposed as
+
+$$
+  \frac{1}{2} \sum_{i,j} \bra{ij}\ket{ij} = \frac{1}{2} \sum_{i,j\neq a} \bra{ij}\ket{ij} + \sum_{j\neq a} \bra{aj}\ket{aj}
+$$
+
+The energy required for this ionization process is therefore
+
+$$
+\begin{align*}
+  {}^N E_0 - {}^{N-1} E_a =& \left(\sum_i \braket{i|\hat{h}|i} - \sum_{i\neq a} \braket{i|\hat{h}|i} \right) + \frac{1}{2}\left(\sum_{i,j\neq a} \bra{ij}\ket{ij} + \sum_{j\neq a} \bra{aj}\ket{aj} - \sum_{i,j\neq a} \bra{ij}\ket{ij} \right) \\
+  =& \braket{a|\hat{h}|a} + \sum_{j\neq a}^N \bra{aj}\ket{aj}
+\end{align*}
+$$
+
+### Derivation of Slater-Condon rules
+
+From $\eqref{equation-40}$, an $N$-electron Slater determinant constructed from orthonormal spin orbitals $\set{\chi_i}_{i=1}^N$ can be written as
+
+$$
+\begin{equation*}
+  \ket{\chi_1 \cdots \chi_N} = \frac{1}{\sqrt{N!}} \sum_{P\in S_N} (-1)^P \hat{P} [\chi_1 (1) \cdots \chi_N (N)]
+\tag{\label{equation-41}}
+\end{equation*}
+$$
+
+where 
+- $S_N$ denotes the symmetric group of all permutations of the electron labels $1,\dots,N$
+- $\hat{P}$ is the permutation operator corresponding to the permutation $P$
+- $(-1)^P$ is the parity of the permutation $P$
+
+Here we use the shorthand $\chi_p (i) = \chi_p (\mathbf{x}_i)$.
+
+Let $\ket{K} = \ket{\chi_{p_1} \cdots \chi_{p_N}}$ and $\ket{L} = \ket{\chi_{q_1} \cdots \chi_{q_N}}$ be two Slater determinants. To derive the Slater-Condon rules, we first consider the overlap $\braket{K|L}$ corresponding to the identity operator. Substituting $\eqref{equation-41}$ for both determinants gives
+
+$$
+\begin{align*}
+  \braket{K|L} = \frac{1}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \int& \hat{P} [\chi_{p_1}^* (1) \cdots \chi_{p_N}^* (N)] \\
+  &\times\hat{Q} [\chi_{q_1} (1) \cdots \chi_{q_N} (N)] \;\d\mathbf{x}_1 \cdots \d\mathbf{x}_N
+\end{align*}
+$$
+
+If the determinants do not contain exactly the same set of occupied orbitals, then at least one factor in every product is an overlap between distinct orbitals. By orthonormality of the spin orbitals, that overlap vanishes, implying $\ket{K|L} = =$, whenever the set of occupied spin orbitals differ. Consequently, two Slater determinants constructed from different sets of spin orbitals are orthogonal.
+
+Now suppose that $K$ and $L$ are identical determinants. Then
+
+$$
+\begin{align*}
+  \braket{K|K} = \frac{1}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \int \hat{P} [\chi_1^* (1) \cdots \chi_N^* (N)] \hat{Q} [\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots \d\mathbf{x}_N
+\end{align*}
+$$
+
+Each term is a product of one-electron overlaps. Such a product is nonzero only if every electron occupies the same spin orbital in both permuted products. Since the spin orbitals are orthonormal, this occurs only when the permutations are identical, i.e. $P = Q$. All cross terms therefore vanish, leaving
+
+$$
+  \braket{K|K} = \frac{1}{N!} \sum_{P\in S_N} \int \hat{P} [\chi_1^* (1) \cdots \chi_N^* (N)] \hat{P} [\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots \d\mathbf{x}_N
+$$
+
+Because a permutation only relabels the dummy integration variables, each integral is equal to
+
+$$
+  \prod_{i=1}^N \braket{\chi_i |\chi_i} = 1
+$$
+
+so that
+
+$$
+  \braket{K|K} = \frac{1}(N!) \sum_{P\in S_N} 1 = \frac{N!}{N!} = 1
+$$
+
+Thus every Slater determinant constructed from an orthonormal set of spin orbitals is normalized.
+
+So far, we have established the orthonormality relations for Slater determinants
+- $\braket{K|K} = 1$ (case 1)
+- $\braket{K|L} = 0$ for $K\neq L$ (case 2)
+
+#### One-electron operators
+
+Consider the matrix elements of the one-electron operator
+
+$$
+  \braket{K|\hat{O}_1|L} = \sum_{i=1}^N \braket{K|\hat{h}(i)|L}
+$$
+
+Because the electrons in a determinant are indistinguishable, matrix elements of $\hat{h}(i)$ for each $i$ are all identical, allowing us to write
+
+$$
+  \braket{K|\hat{O}_1|L} = N \braket{K|\hat{h}(1)|L}
+$$
+
+**Case 1: Identical determinants**
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_1|K} = \frac{N}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \int& \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \\
+  &\times \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\end{align*}
+$$
+
+Since the spin orbitals are orthonornal, the integration terms will be zero unless the permutations are identical, i.e. $P = Q$, giving
+
+$$
+  \braket{K|\hat{O}_1|K} = \frac{1}{(N-1)!} \sum_{P\in S_N} \int \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+$$
+
+In the sum over the $N!$ permutations, electron $1$ will occupy each of the spin orbitals $(N-1)!$ times. Integrating over electrons $2,\dots,N$ will always give a factor of $1$ since the spin orbitals are normalized and thus
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_1|K} =& \frac{(N-1)!}{(N-1)!} \sum_{i=1}^N \int \chi_i^* (1) \hat{h}(1) \chi_i (1) \;\d\mathbf{x}_1 \\
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i}
+\end{align*}
+$$
+
+**Case 2: Determinants differing by one spin orbital**
+
+**Case 3: Determinants differing by two spin orbitals**
+
+#### Two-electron operators
 
 ## Matrix elements for minimal basis $\ce{H2}$
 
