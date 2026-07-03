@@ -1038,13 +1038,11 @@ $$
 
 # Matrix elements between Slater determinants
 
-Given an operator $\hat{O}$ acting on the $N$-electron Hilber space and two normalized Slater determinants $\ket{K}$ and $\ket{L}$, we wish to evaluate the matrix element $\braket{K|\hat{O}|L}$. 
+Let $\hat{O}$ be a linear operator acting on the antisymmetric $N$-electron Hilbert space $\bigwedge^N \mathcal{H}$, and let $\ket{K}$ and $\ket{L}$ be normalized Slater determinants constructed from an orthonormal set of spin orbitals $\set{\chi_p}_{p=1}^\infty \subseteq \mathcal{H}$. Each spin orbital $\chi_p (\mathbf{x})$ is a function of the combined spatial and spin coordinate $\mathbf{x} = (\mathbf{r}, \omega)$. 
 
-The goal is to reduce such many-electron matrix elements to integrals involving one-electron spin orbitals from which the determinants are constructed, and ultimately, to integrals over the corresponding spatial orbitals.
+Our objective is to evaluate the many-electron matrix element $\braket{K|\hat{O}|L}$. A direct evaluation of this quantity involves integration over the coordinates of all $N$ electrons and is generally impractical. However, when $\hat{O}$ is a one-electron or two-electron operator, the antisymmetric structure of Slater determinants allws these many-electron matrix elements to be expressed entirely in terms of one- and two-electron integrals over the constituent spin orbitals. Exploiting the separability of the spin coordinate, these spin-orbital integrals can in turn be reduced to integrals over the corresponding spatial orbitals.
 
 ## Notations for one- and two-electron integrals
-
-Let $\set{\chi_p}_{p=1}^\infty$ be an orthonormal basis of one-electron spin orbitals, where each spin orbital is a function of the combined spatial and spin coordinate $\mathbf{x} = (\mathbf{r}, \omega)$.
 
 For a one-electron operator $\hat{h}$, we define the one-electron integrals
 
@@ -1195,6 +1193,215 @@ we define in particular
 - **Exchange integrals:** $K_{ij} := (ij|ji)$
 
 The Coulomb integral $J_{ij}$ is the classical electrostatic interaction energy between the charge distributions $|\psi_i|^2$ and $|\psi_j|^2$, whereas the exchange integral $K_{ij}$ has no classical analogue and arises solely from the antisymmetry of fermionic wavefunctions. It contributes only between electrons of the same spin because of the orthogonality of the spin functions.
+
+## Slater-Condon rules
+
+A general one-electron operator in an $N$-electron Hilbert space takes the form
+
+$$
+  \hat{O}_1 = \sum_{i=1} \hat{h}(i)
+$$
+
+where $\hat{h}(i)$ acts only on the coordinates of electron $i$. These operators represent dynamic variables that depend only on the position or momentum of the electron in question, independent of the position or momentum of other electrons.
+
+A general two-electron operator in an $N$-electron Hilbert space is
+
+$$
+  \hat{O}_2 = \sum_{i=1}^N \sum_{j>i}^N \hat{v}(i,j) = \sum_{i < j} \hat{v}(i,j)
+$$
+
+where $\hat{v}(i,j)$ acts on the coordinates of electrons $i$ and $j$ simultaneously.
+
+Suppose $\hat{O}_n$ is an $n$-electron operator that acts simultaneously on at most $n$ electron coordinates simultaneously. If the Slater determinants $\ket{K}$ and $\ket{L}$ differ in more than $n$ occupied spin orbitals, then $\braket{K|\hat{O}_n|L} = 0$. This follows because an $n$-electron operator can alter the occupations of at most $n$ electrons. Any additional mismatched spin orbitals remain orthogonal between the two determinants, forcing the overlap to vanish. Consequently,
+- a one-electron operator connects only identical or singly excited determinants
+- a two-electron operator connects only identical, singly excited, or doubly excited determinants
+
+Thus, if $\ket{K}$ and $\ket{L}$ differ by three or more spin orbitals, then
+
+$$
+  \braket{K|\hat{O}_1|L} = \braket{K|\hat{O}_2|L} = 0
+$$
+
+This leaves us with three cases for the Slater-Condon rules for evaluating matrix elements $\braket{K|\hat{O}|L}$. 
+
+**Case 1: Identical determinants**
+
+Suppose $\ket{K} = \ket{L}$ and that the occupied spin orbitals are $\set{\chi_m}_{m=1}^N$.
+
+- One-electron operator
+
+$$
+  \braket{K|\hat{O}_1|K} = \sum_{m=1}^N \braket{m|\hat{h}|m}
+$$
+
+- Two-electron operators
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_2|K} =& \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N \bra{mn}\ket{mn} \\
+  =& \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N (mm|nn) - (mn|nm)
+\end{align*}
+$$
+
+**Case 2: Determinants differing by one spin orbital**
+
+Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing the occupied orbital $\chi_m$ with $\chi_p$.
+
+- One-electron operator
+
+$$
+  \braket{K|\hat{O}_1|L} = \braket{m|\hat{h}|p}
+$$
+
+- Two-electron operator
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_2|L} =& \sum_{n=1}^N \bra{mn}\ket{pn} \\
+  =& \sum_{n=1}^N (mp|nn) - (mn|np)
+\end{align*}
+$$
+
+**Case 3: Determinants differing by two spin orbitals**
+
+Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing $\chi_m, \chi_n$ with $\chi_p, \chi_q$, respectively.
+
+- One-electron operator
+
+$$
+  \braket{K|\hat{O}_1|L} = 0
+$$
+
+- Two-electron-operator
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_2|L} =& \bra{mn}\ket{pq} \\
+  =& (mp|nq) - (mq|np)
+\end{align*}
+$$
+
+### Maximum coincidence
+
+Before applying the Slater-Condon rules, the two determinants must first be brought into maximum coincidence. This is achieved by permuting columns so that all common occupied spin orbitals appear in corresponding positions. Each column interchange changes the sign of a slater determinant such that
+
+$$
+  \ket{L} = (-1)^\sigma \ket{L'}
+$$
+
+where $\ket{L'}$ is in maximum coincidence with $\ket{K}$, and $\sigma$ is the parity of the permutation. The Slater-Condon rules are then applied to $\ket{K}$ and $\ket{L'}$, with the overall phase factor $(-1)^\sigma$ included in the final result.
+
+Consider, for example, a matrix element between the Slater determinants $\ket{\Psi_1} = \ket{abcd}$ and $\ket{\Psi_2} = \ket{crds}$. At first glance, it might appear that the two determinants differ in all four columns. However, permuting the spin orbitals of $\ket{\Psi_2}$ yields
+
+$$
+\begin{align*}
+  \ket{\Psi_2} =& \ket{crd} \\
+  =& -\ket{crsd} = \ket{srcd}
+\end{align*}
+$$
+
+The determinants are now in maximum coincidence and differ only by the substitutions $a\to s$ and $b\to r$, giving $\ket{\Psi_1|\hat{O}_2|\Psi_2} = 0$ and $\braket{\Psi_1|\hat{O}_2|\Psi_2} = \bra{ab}\ket{sr}$.
+
+### Energy of a single Slater determinant
+
+For an electronic Hamiltonian of the form $\hat{H} = \hat{O}_1 + \hat{O}_2$, the energy expectation value over a Slater determinant $\ket{K}$ is
+
+$$
+\begin{align*}
+  \braket{K|\hat{H}|K} =& \braket{K|\hat{O}_1 + \hat{O}_2|K} \\
+  =& \sum_{m=1}^N \braket{m|\hat{h}|m} + \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N \bra{mn}\ket{mn}
+\end{align*}
+$$
+
+where
+
+$$
+  \hat{h}(i) = \frac{-1}{2} \nabla_i^2 - \sum_A \frac{Z_A}{r_{iA}}
+$$
+
+Since
+
+$$
+  \bra{mm}\ket{mm} = \bra{nn}\ket{nn} = 0
+$$
+
+and $\bra{mn}\ket{mn} = \bra{nm}\ket{nm}$, the double sum can be restricted to unique pairs, giving
+
+$$
+\begin{align*}
+  \braket{K|\hat{H}|K} =& \sum_{m=1}^N \braket{m|\hat{h}|m} + \sum_{m=1}^N \sum_{n>m}^N \bra{mn}\ket{mn} \\
+  =& \sum_{m=1}^N (m|\hat{h}|m) + \sum_{m=1}^N \sum_{n>m}^N (mm|nn) - (mn|nm)
+\end{align*}
+$$
+
+This shows that the energy of a single Slater determinant decomposes into the sum of the one‑electron contributions from each occupied spin orbital, together with the antisymmetrized electron–electron interaction terms associated with each unique pair of occupied spin orbitals.
+
+### Hartree-Fock grund state
+
+For the Hartree-Fock ground state $\ket{\Psi_0}$, the Slater-Condon rules become as follows.
+
+**Case 1: Identical determinants**
+
+- One-electron operator
+
+$$
+  \braket{\Psi_0|\hat{O}_1|\Psi_0} =& \sum_{a=1}^N \braket{a|\hat{h}|a} \\
+$$
+
+- Two-electron operators
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{O}_2|\Psi_0} =& \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N \bra{ab}\ket{ab} \\
+  =& \frac{1}{2} \sum_{a=1}^N \sum_{a=1}^N (aa|bb) - (ab|ba)
+\end{align*}
+$$
+
+**Case 2: Determinants differing by one spin orbital**
+
+- One-electron operator
+
+$$
+  \braket{\Psi_0|\hat{O}_1|\Psi_a^r} = \braket{a|\hat{h}|r}
+$$
+
+- Two-electron operator
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{O}_2|\Psi_a^r} =& \sum_{b=1}^N \bra{ab}\ket{rb} \\
+  =& \sum_{b=1}^N (ar|bb) - (ab|br)
+\end{align*}
+$$
+
+**Case 3: Determinants differing by two spin orbitals**
+
+- One-electron operator
+
+$$
+  \braket{\Psi_0|\hat{O}_1|\Psi_{ab}^{rs}} = 0
+$$
+
+- Two-electron-operator
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{O}_2|\Psi_{ab}^{rs}} =& \bra{ab}\ket{rs} \\
+  =& (ar|bs) - (as|bs)
+\end{align*}
+$$
+
+---
+
+Using the Slater-Condon rules, the energy of the Hartree-Fock ground state is
+
+$$
+\begin{align*}
+  E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
+  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N \bra{ab}\ket{ab} \\
+  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N (aa|bb) - (ab|ba)
+\end{align*}
+$$
 
 ## Matrix elements for minimal basis $\ce{H2}$
 
