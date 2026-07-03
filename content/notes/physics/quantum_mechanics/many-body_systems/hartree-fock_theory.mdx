@@ -1202,7 +1202,10 @@ The Coulomb integral $J_{ij}$ is the classical electrostatic interaction energy 
 A general one-electron operator in an $N$-electron Hilbert space takes the form
 
 $$
+\begin{equation*}
   \hat{O}_1 = \sum_{i=1} \hat{h}(i)
+\tag{\label{equation-42}}
+\end{equation*}
 $$
 
 where $\hat{h}(i)$ acts only on the coordinates of electron $i$. These operators represent dynamic variables that depend only on the position or momentum of the electron in question, independent of the position or momentum of other electrons.
@@ -1210,7 +1213,10 @@ where $\hat{h}(i)$ acts only on the coordinates of electron $i$. These operators
 A general two-electron operator in an $N$-electron Hilbert space is
 
 $$
+\begin{equation*}
   \hat{O}_2 = \sum_{i=1}^N \sum_{j>i}^N \hat{v}(i,j) = \sum_{i < j} \hat{v}(i,j)
+\tag{\label{equation-43}}
+\end{equation*}
 $$
 
 where $\hat{v}(i,j)$ acts on the coordinates of electrons $i$ and $j$ simultaneously.
@@ -1527,34 +1533,44 @@ So far, we have established the orthonormality relations for Slater determinants
 
 #### One-electron operators
 
-Consider the matrix elements of the one-electron operator
+Consider the matrix elements of the one-electron operator $\eqref{equation-42}$ between two Slater determinants
 
 $$
   \braket{K|\hat{O}_1|L} = \sum_{i=1}^N \braket{K|\hat{h}(i)|L}
 $$
 
-Because the electrons in a determinant are indistinguishable, matrix elements of $\hat{h}(i)$ for each $i$ are all identical, allowing us to write
+Because the determinants are totally antisymmetric under exchange of electron labels and the operator $\hat{h}(i)$ acts identically on every electron, each term in the sum is identical after a relabeling of the dummy integration variables. This implies
 
 $$
+\begin{equation*}
   \braket{K|\hat{O}_1|L} = N \braket{K|\hat{h}(1)|L}
+\tag{\label{equation-44}}
+\end{equation*}
 $$
+
+meaning it is sufficient to evaluate the matrix element of $\hat{h}(1)$.
 
 **Case 1: Identical determinants**
 
+Let $\ket{K} = \ket{L}$. Substituting $\eqref{equation-41}$ for both determinants in $\eqref{equation-44}$ yields
+
 $$
 \begin{align*}
-  \braket{K|\hat{O}_1|K} = \frac{N}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \int& \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \\
-  &\times \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+  \braket{K|\hat{O}_1|K} =& \frac{N}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \\
+  &\times \int \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
 \end{align*}
 $$
 
-Since the spin orbitals are orthonornal, the integration terms will be zero unless the permutations are identical, i.e. $P = Q$, giving
+Since $\hat{h}(1)$ acts only on the coordinate of electron $1$, integration over the remaining coordinates gives products of one-electron overlaps. These overlaps vanish unless every spin orbital associated with electrons $2,\dots,N$ is identical on both sides of the operator. Consequently, only terms with identical permutations, $P = Q$, survive, resulting in
 
 $$
+\begin{equation*}
   \braket{K|\hat{O}_1|K} = \frac{1}{(N-1)!} \sum_{P\in S_N} \int \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\tag{\label{equation-45}}
+\end{equation*}
 $$
 
-In the sum over the $N!$ permutations, electron $1$ will occupy each of the spin orbitals $(N-1)!$ times. Integrating over electrons $2,\dots,N$ will always give a factor of $1$ since the spin orbitals are normalized and thus
+Among the $N!$ permutations, the coordinate of electron $1$ is associated with each occupied spin orbital exactly $(N-1)!$ times. After integrating over the remaining coordinates, each surviving term contributes $\braket{i|\hat{h}|i}$, giving
 
 $$
 \begin{align*}
@@ -1565,7 +1581,42 @@ $$
 
 **Case 2: Determinants differing by one spin orbital**
 
+Suppose $\ket{L} = \ket{K_a^p}$ is obtained from $\ket{K}$ by replacing the occupied orbital $\chi_a$ with $\chi_p$. By the same argument in case $1$ leading to $\eqref{equation-45}$, the matrix element is
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_1|L} =& \frac{1}{(N - 1)!} \sum_{P, Q\in S_N} (-1)^P (-1)^Q \\
+  &\int \hat{P}[\chi_a^* (1) \chi_b^* (2) \cdots] \hat{h}(1) \hat{Q}[\chi_p (1) \chi_b (2) \cdots] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\end{align*}
+$$
+
+All spin orbitals except $\chi_a$ and $\chi_p$ are common to both determinants. For a term to survive, every common spin orbital must be paired with itself after integration. Thus, the only unmatched spin orbitals must occur in the coordinate acted under $\hat{h}(1)$. That is, the coordinate of electron $1$ must carry $\chi_a$ in the bra and $\chi_p$ in the ket.
+
+There are exactly $(N - 1)!$ such permutations, corresponding to all possible permutations of the remaining electron coordinates. Integration over those remaining coordinates produces unity from their normalization, yielding
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_1|L} =& \frac{(N-1)!}{(N-1)!} \int \chi_a^* (1) \hat{h}(1) \chi_p (1) \\
+  =& \braket{a|\hat{h}|p}
+\end{align*}
+$$
+
 **Case 3: Determinants differing by two spin orbitals**
+
+Suppose $\ket{L} = \ket{K_{ab}^{pq}}$ is obtained from $\ket{K}$ by replacing $\chi_a, \chi_b$ with $\chi_p, \chi_q$, respectively. The matrix element is
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_1|L} =& \frac{N}{N!} \sum_{P, Q\in S_N} (-1)^P (-1)^Q \\
+  &\times \int \hat{P}[\chi_a^* (1) \chi_b^* (2) \cdots] \hat{h}(1) \hat{Q}[\chi_p (1) \chi_q (1) \cdots] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\end{align*}
+$$
+
+Since $\hat{h}(1)$ acts on only a single electron coordinate, it can connect at most one pair of distinct spin orbitals. However, the determinants differ by two occupied spin orbitals. After one mismatch is associated with the coordinated acted under $\hat{h}(1)$, the second mismatch necessarily remains in another electron coordinate. Integration over that coordinate yields the overlap of two orthogonal spin orbitals, causing every term in the expansion to vanish. Thus
+
+$$
+  \braket{K|\hat{O}_1|L} = 0
+$$
 
 #### Two-electron operators
 
