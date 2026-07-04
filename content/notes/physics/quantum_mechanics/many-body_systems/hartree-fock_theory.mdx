@@ -1488,7 +1488,7 @@ where
 
 Here we use the shorthand $\chi_p (i) = \chi_p (\mathbf{x}_i)$.
 
-Let $\ket{K} = \ket{\chi_{p_1} \cdots \chi_{p_N}}$ and $\ket{L} = \ket{\chi_{q_1} \cdots \chi_{q_N}}$ be two Slater determinants. To derive the Slater-Condon rules, we first consider the overlap $\braket{K|L}$ corresponding to the identity operator. Substituting $\eqref{equation-41}$ for both determinants gives
+Let $\ket{K} = \ket{\chi_{p_1} \cdots \chi_{p_N}}$ and $\ket{L} = \ket{\chi_{q_1} \cdots \chi_{q_N}}$ be two Slater determinants with maximal coincidence. To derive the Slater-Condon rules, we first consider the overlap $\braket{K|L}$ corresponding to the identity operator. Substituting $\eqref{equation-41}$ for both determinants gives
 
 $$
 \begin{align*}
@@ -1550,81 +1550,92 @@ $$
 
 meaning it is sufficient to evaluate the matrix element of $\hat{h}(1)$.
 
-**Case 1: Identical determinants**
-
-Let $\ket{K} = \ket{L}$. Substituting $\eqref{equation-41}$ for both determinants in $\eqref{equation-44}$ yields
-
-$$
-\begin{align*}
-  \braket{K|\hat{O}_1|K} =& \frac{N}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \\
-  &\times \int \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \hat{Q}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
-\end{align*}
-$$
-
-Since $\hat{h}(1)$ acts only on the coordinate $\mathbf{x}_1$, the integration over $\mathbf{x}_2,\dots,\mathbf{x}_N$ separates, yielding a product of one-electron overlaps
-
-$$
-  \int \prod_{i=2}^N \chi_{P(i)}^* (i) \chi_{Q(i)} (i) \;\d\mathbf{x}_2 \cdots\d\mathbf{x}_N = \prod_{i=2}^N \braket{\chi_{P(i)}|\chi_{Q(i)}}
-$$
-
-Because the occupied spin orbitals are orthonormal, $\braket{\chi_i|\chi_j} = \delta_{ij}$, this product is nonzero only if $P(i) = Q(i)$ for $i=2,\dots,N$. Since $P$ and $Q$ are permutations of the same index set $\set{1,\dots,N}$, agreement over $2,\dots,N$ implies $P(1) = Q(1)$ such that $P = Q$. Thus, every term with $P \neq Q$ vanishes, leaving
+Substituting the Slater determinant expansion $\eqref{equation-41}$ for $\ket{K}$ and $\ket{L}$ into $\eqref{equation-44}$ yields
 
 $$
 \begin{equation*}
-  \braket{K|\hat{O}_1|K} = \frac{1}{(N-1)!} \sum_{P\in S_N} \int \hat{P}[\chi_1^* (1) \cdots \chi_N^* (N)] \hat{h}(1) \hat{P}[\chi_1 (1) \cdots \chi_N (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\begin{split}
+  \braket{K|\hat{O}_1|L} =& \frac{N}{N!} \sum_{P,Q \in S_N} (-1)^P (-1)^Q \\
+  &\times \int \hat{P}[{\chi_1^{(K)}}^* (1) \cdots {\chi_N^{(K)}}^* (N)] \hat{h}(1) \hat{Q}[\chi_1^{(L)} (1) \cdots \chi_N^{(L)} (N)] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+\end{split}
+\tag{\label{equation-46}}
+\end{equation*}
+$$
+
+Since $\hat{h}(1)$ acts only on $\mathbf{x}_1$, the integrand factorizes as
+
+$$
+\begin{equation*}
+  \int {\chi_{P(1)}^{(K)}}^* (1) \hat{h}(1) \chi_{Q(1)}^{(L)} (1) \;\d\mathbf{x}_1 \cdot \prod_{i=2}^N \int {\chi_{P(i)}^{(K)}}^* (i) \chi_{Q(i)}^{(L)} \;\d\mathbf{x}_i
 \tag{\label{equation-45}}
 \end{equation*}
 $$
 
-There are $N!$ permutations in $S_N$. For a fixed permutation $P$, the spin orbital occupying $\mathbf{x}_1$ is $\chi_{P(1)}$. As $P$ ranges over $S_N$, each orbital $\chi_i$ appears in positions $1$ exactly $(N - 1)!$ times, since there are $(N - 1)!$ permutations satisfying $P(1) = i$. For each such permutation, integration over the coordinates $\mathbf{x}_2,\dots,\mathbf{x}_N$ yields
+The integrations over $\mathbf{x}_2,\dots,\mathbf{x}_N$ factors into a product of one-electron overlaps
 
 $$
-  \int \prod_{j=2}^N \chi_{P(j)}^* (j) \chi_{P(k)} (k) \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N = \prod_{i=2}^N \braket{\chi_{P(k)}|\chi_{P(k)}} = 1
+  \int \prod_{i=2}^N {\chi_{P(i)}^{(K)}}^* (i) \chi_{Q(i)}^{(L)} (i) \;\d\mathbf{x}_2 \cdots\d\mathbf{x}_N = \prod_{i=2}^N \braket{\chi_{P(i)}^{(K)}|\chi_{Q(i)}^{(L)}}
 $$
 
-by the orthonormality of the occupied spin orbitals. Thus, each surviving term reduces to a one-electron expectation value of $\hat{h}$, resulting in
+By orthonormality of the spin orbitals, $\braket{\chi_{P(i)}^{(K)}|\chi_{Q(i)^{(L)}}} = \delta_{P(i)Q(i)}$. Thus, the product is nonzero only if $P(i) = Q(i)$ for all $i=2,\dots,N$. This means that only those permutation pairs $(P,Q) \in S_N \times S_N$ that agree on $\set{2,\dots,N}$ contribute to the sum in $\eqref{equation-46}$.
+
+**Case 1: Identical determinants**
+
+Let $\ket{K} = \ket{L}$. In this case, $P$ and $Q$ are permutations of the same index set $\set{1,\dots,N}$. Consequently, agreement on $\set{2,\dots,N}$ forces $P(1) = Q(1)$ and therefore $P = Q$. Thus, every term with $P \neq Q$ vanishes, leaving only the diagonal terms
+
+$$
+  \braket{K|\hat{O}_1|K} = \frac{N}{N!} \sum_{P\in S_N} \int chi_{P(1)}^* (1) \hat{h}(1) \chi_{P(1)} (1) \;\d\mathbf{x}_1
+$$
+
+For fixed $i\in\set{1,\dots,N}$, the number of permutations satisfying $P(1) = i$ is $(N-1)!$. Using $N! = N(N-1)!$ we get
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_1|K} =& \frac{(N-1)!}{(N-1)!} \sum_{i=1}^N \int \chi_i^* (1) \hat{h}(1) \chi_i (1) \;\d\mathbf{x}_1 \\
+  \braket{K|\hat{O}_1|K} =& \frac{N(N-1)!}{N!} \sum_{i=1}^N \int \chi_i^* (1) \hat{h}(1) \chi_i (1) \;\d\mathbf{x}_1 \\
   =& \sum_{i=1}^N \braket{i|\hat{h}|i}
 \end{align*}
 $$
 
 **Case 2: Determinants differing by one spin orbital**
 
-Suppose $\ket{L} = \ket{K_a^p}$ is obtained from $\ket{K}$ by replacing the occupied orbital $\chi_a$ with $\chi_p$. By the same argument in case $1$ leading to $\eqref{equation-45}$, the matrix element is
+Suppose $\ket{L} = \ket{K_a^p}$ is obtained from $\ket{K}$ by replacing the occupied spin orbital $\chi_a$ with $\chi_p$. Without loss of generality, we choose a representation with maximal coincidence
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_1|L} =& \frac{1}{(N - 1)!} \sum_{P, Q\in S_N} (-1)^P (-1)^Q \\
-  &\int \hat{P}[\chi_a^* (1) \chi_b^* (2) \cdots] \hat{h}(1) \hat{Q}[\chi_p (1) \chi_b (2) \cdots] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+  \ket{K} =& \ket{\chi_a (1) \chi_2 (2) \cdots \chi_N (N)} \\
+  \ket{L} =& \ket{\chi_p (1) \chi_2 (2) \cdots \chi_N (N)}
 \end{align*}
 $$
 
-All spin orbitals except $\chi_a$ and $\chi_p$ are common to both determinants. For a term to survive, every common spin orbital must be paired with itself after integration. Thus, the only unmatched spin orbitals must occur in the coordinate acted under $\hat{h}(1)$. That is, the coordinate of electron $1$ must carry $\chi_a$ in the bra and $\chi_p$ in the ket.
+In this case, any contributing permutation pair $(P,Q)$ must satisfy $P|_{\set{2,\dots,N}} \neq Q|_{\set{2,\dots,N}}$, meaning $P$ and $Q$ coincide on the $N-1$ common orbital positions.
 
-There are exactly $(N - 1)!$ such permutations, corresponding to all possible permutations of the remaining electron coordinates. Integration over those remaining coordinates produces unity from their normalization, yielding
+For a nonzero contribution of the one-electron integral in $\eqref{equation-45}$, we also require $P(1) = a$ and $Q(1) = p$. Given a fixed permutation of the remaining indices $\set{2,\dots,N}$, there is exactly one admissible assignment of $P$ and $Q$. The number of of such permutations of the remaining indices is $(N-1)!$. Thus, the sum in $\eqref{equation-46}$ reduces to $(N-1)!$ identical contributions of the same one-electron integral. Using $N! = N(N-1)!$, we obtain
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_1|L} =& \frac{(N-1)!}{(N-1)!} \int \chi_a^* (1) \hat{h}(1) \chi_p (1) \\
+  \braket{K|\hat{O}_1|L} =& \frac{N(N-1)!}{N!} \int \chi_a^* (1) \hat{h}(1) \chi_p (1) \\
   =& \braket{a|\hat{h}|p}
 \end{align*}
 $$
 
 **Case 3: Determinants differing by two spin orbitals**
 
-Suppose $\ket{L} = \ket{K_{ab}^{pq}}$ is obtained from $\ket{K}$ by replacing $\chi_a, \chi_b$ with $\chi_p, \chi_q$, respectively. The matrix element is
+Suppose $\ket{L} = \ket{K_{ab}^{pq}}$ is obtained from $\ket{K}$ by replacing $\chi_a, \chi_b$ with $\chi_p, \chi_q$, respectively. Without loss of generality, we choose a maximally coincident representation
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_1|L} =& \frac{N}{N!} \sum_{P, Q\in S_N} (-1)^P (-1)^Q \\
-  &\times \int \hat{P}[\chi_a^* (1) \chi_b^* (2) \cdots] \hat{h}(1) \hat{Q}[\chi_p (1) \chi_q (1) \cdots] \;\d\mathbf{x}_1 \cdots\d\mathbf{x}_N
+  \ket{K} =& \ket{\chi_a (1) \chi_b (2) \chi_3 (3) \cdots \chi_N (N)} \\
+  \ket{L} =& \ket{\chi_p (1) \chi_q (2) \chi_3 (3) \cdots \chi_N (N)}
 \end{align*}
 $$
 
-Since $\hat{h}(1)$ acts on only a single electron coordinate, it can connect at most one pair of distinct spin orbitals. However, the determinants differ by two occupied spin orbitals. After one mismatch is associated with the coordinated acted under $\hat{h}(1)$, the second mismatch necessarily remains in another electron coordinate. Integration over that coordinate yields the overlap of two orthogonal spin orbitals, causing every term in the expansion to vanish. Thus
+As in case $2$, any contributing permutation pair $(P,Q)$ must satisfy $P|_{\set{2,\dots,N}} \neq Q|_{\set{2,\dots,N}}$, meaning $P$ and $Q$ coincide on the $N-1$ common orbital positions.
+
+However, for the one-electron integral in $\eqref{equation-45}$ to be nonzero, we also require compatibility of the first-slot orbitals $P(1) \in\set{a,b}$ and $Q(1) \in\set{p,q}$, and more precisely, a consistent pairing of orbitals between bra and ket.
+
+Since $P$ and $Q$ agree on all indices $i \geq 2$, the remaining orbitals in the two determinants form identical sets only on those $N-1$ positions. The one-electron operator $\hat{h}(1)$ can therefore act only within one coordinate, leaving a residual mismatch of two spin orbitals distributed over different electron coordinates.
+
+After enforcing $P(i) = Q(i)$ for $i \geq 2$, the integrand still contains at least one factor of the form $\braket{\chi_i|\chi_j} = 0$ for $i \neq j$, arising from the two unmatched orbitals $\set{\chi_a, \chi_b}$ versus $\set{\chi_p, \chi_q}$ that cannot be simultaneously resolved by a one-electron operator. Consequently, every term in the permutation expansion vanishes, and we obtain
 
 $$
   \braket{K|\hat{O}_1|L} = 0
