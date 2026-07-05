@@ -1146,37 +1146,46 @@ $$
 An alternative convention, known as chemists' notation, is defined by
 
 $$
-  (ij|kl) = \iint \chi_i^* (\mathbf{x}_1) \chi_j (\mathbf{x}_1) \hat{v}(1,2) \chi_k^* (\mathbf{x}_2) \chi_l (\mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2
+  [ij|kl] = \iint \chi_i^* (\mathbf{x}_1) \chi_j (\mathbf{x}_1) \hat{v}(1,2) \chi_k^* (\mathbf{x}_2) \chi_l (\mathbf{x}_2) \;\d\mathbf{x}_1 \;\d\mathbf{x}_2
 $$
 
 Here, functions depending on the same electron coordinate are grouped together. The two conventions are related by a permutation of the middle indices
 
 $$
-  (ij|kl) = \braket{ik|jl}
+  [ij|kl] = \braket{ik|jl}
 $$
 
 By symmetry of $\hat{v}(1,2)$, interchanging the dummy integration varaibles gives
 
 $$
-  (ij|kl) = (kl|ij)
+  [ij|kl] = [kl|ij]
 $$
 
 By Hermicity of $\hat{v}(1,2)$ we have
 
 $$
-  (ij|kl) = (ji|lk)^*
+  [ij|kl] = [ji|lk]^*
 $$
 
 For real orbitals, these identities combine to the eight-fold permutation symmetry
 
 $$
 \begin{align*}
-  (ij|kl) =& (ji|lk) = (kl|ij) = (lk|ji) \\
-  =& (ji|kl) = (ij|kl) = (lk|ij) = (kl|ji)
+  [ij|kl] =& [ji|lk] = [kl|ij] = [lk|ji] \\
+  =& [ji|kl] = [ij|kl] = [lk|ij] = [kl|ji]
 \end{align*}
 $$
 
-When only spatial orbitals are involved, the corresponding two-electron integrals in chemists' notation are defined as
+When only spatial orbitals are involved, the corresponding one-electron integral is defined as
+
+$$
+\begin{align*}
+  (i|\hat{h}|j) :=& (\psi_i|\hat{h}|\psi_j) \\
+  =& \int \psi_i (\mathbf{r}_1) \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \;\d\mathbf{r}_1
+\end{align*}
+$$
+
+while the corresponding two-electron integral is defined as
 
 $$
 \begin{align*}
@@ -1185,17 +1194,59 @@ $$
 \end{align*}
 $$
 
+### Coloumb and exchange integral
+
 For the Coulomb interaction
 
 $$
   \hat{v}(1,2) = \frac{1}{r_{12}}
 $$
 
-we define in particular
-- **Coulomb integrals:** $J_{ij} := (ii|jj)$
-- **Exchange integrals:** $K_{ij} := (ij|ji)$
+we define in particular the Coulomb integral
+
+$$
+\begin{equation*}
+\begin{split}
+  J_{ij} :=& (ii|jj) = \braket{ij|ij} \\
+  =& \int |\psi_i (\mathbf{r}_1)|^2 \frac{1}{r_{12}} |\psi_j (\mathbf{r}_2)|^2 \;\d\mathbf{r}_1 \;\d\mathbf{r}_2
+\end{split}
+\tag{\label{equation-57}}
+\end{equation*}
+$$
+
+and the exchange integrals
+
+$$
+\begin{equation*}
+\begin{split}
+  K_{ij} :=& (ij|ji) = \braket{ij|ji} \\
+  =& \int \psi_i^* (\mathbf{r}_1) \psi_j (\mathbf{r}_1) \frac{1}{r_{12}} \psi_j^* (\mathbf{r}_2) \psi_i (\mathbf{r}_2) \;\d\mathbf{r}_1 \;\d\mathbf{r}_2
+\end{split}
+\tag{\label{equation-58}}
+\end{equation*}
+$$
 
 The Coulomb integral $J_{ij}$ is the classical electrostatic interaction energy between the charge distributions $|\psi_i|^2$ and $|\psi_j|^2$, whereas the exchange integral $K_{ij}$ has no classical analogue and arises solely from the antisymmetry of fermionic wavefunctions. It contributes only between electrons of the same spin because of the orthogonality of the spin functions.
+
+The Coulomb and exchange integrals satisfy the following properties
+1. $J_{ii} = K_{ii}$
+2. $J_{ij}^* = J_{ij}$
+3. $J_{ij} = J_{ji}$
+4. $K_{ij}^* = K_{ij}$
+5. $K_{ij} = K_{ji}$
+6. For real spatial orbitals
+$$
+\begin{align*}
+  K_{ij} =& (ij|ij) = (ji|ji) \\
+  =& \braket{ii|jj} = \braket{jj|ii}
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+
+</details>
 
 ## Slater-Condon rules
 
@@ -1409,11 +1460,14 @@ $$
 Using the Slater-Condon rules, the energy of the Hartree-Fock ground state is
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
   =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} \\
   =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{b=1}^N (ii|jj) - (ij|ji)
-\end{align*}
+\end{split}
+\tag{\label{equation-53}}
+\end{equation*}
 $$
 
 #### Ionization energy
@@ -1817,7 +1871,105 @@ $$
 \end{align*}
 $$
 
+## Transition from spin orbitals to spatial orbitals
 
+The Hartree-Fock equations are naturally formulated in terms of spin orbitals, since the electronic wavefunction depends on both the spatial and spin coordinates of each electron. For most computational purposes, however, it is convenient to eliminated the explicit spin dependence so that the resulting equations involve only spatial orbitals and spatial integrals.
+
+Consider a closed-shell system containing an even number $N$ of electrons. In the restricted Hartree-Fock (RHF) approximation, each spatial orbital is doubly occupied by one electron with spin $\alpha$ and one electron with spin $\beta$. The occupied spin orbitals therefore occur in pairs
+
+$$
+\begin{align*}
+  \chi_i (\mathbf{x}) =& \psi_i (\mathbf{r}) \alpha(\omega) \\
+  \bar{\chi}_i (\mathbf{x}) =& \psi_i (\mathbf{r}) \beta(\omega) \\
+\end{align*}
+$$
+
+where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes the combined spatial and spin coordinate. The RHF ground state determinant is
+
+$$
+\begin{align*}
+  \ket{\Psi_0} =& \ket{\chi_1 \chi_2 \chi_3 \chi_4 \cdots \chi_{N-1} \chi_N} \\
+  =& \ket{\psi_1 \bar{\psi}_1 \psi_2 \bar{\psi}_2 \cdots \psi_{N/2} \bar{\psi}_{N/2}}
+\end{align*}
+$$
+
+Since the $\alpha$- and $\beta$-spin electron occupy identical spatial orbitals, the Hartree-Fock energy can be rewritten entirely in terms of the $N/2$ occupied spatial orbitals.
+
+The Hartree-Fock energy expressed in spin orbitals is given by $\eqref{equation-53}$.
+
+**Restricted Hartree-Fock summation rules**
+
+In the closed-shell wavefunction $\eqref{equation-54}$ every occupied spatial orbital appears once with $\alpha$ and once with spin $\beta$. Every sum over occupied spin orbitals can therefore be decomposed as
+
+$$
+  \sum_{i=1}^N \chi_i = \sum_{i=1}^{N/2} \psi_i + \sum_{i=1}^{N/2} \bar{\psi}_i
+$$
+
+For double sums over spin occupied spin orbitals, we have
+
+$$
+\begin{align*}
+  \sum_{i=1}^N \sum_{j=1}^N \chi_i \chi_j =& \sum_{i=1}^{N/2} (\psi_i + \bar{\psi}_i) \sum_{j=1}^{N/2} (\psi_b + \bar{\psi}_b) \\
+  =& \sum_{i=1}^{N/2} \sum_{j=1}^{N/2} \psi_i \psi_j + \psi_i \bar{\psi}_j + \bar{\psi}_i \psi_j + \bar{\psi}_i \bar{\psi}_j
+\end{align*}
+$$
+
+**One-electron contribution**
+
+The one-electron operator $\hat{h}$ acts only on the spatial coordinates and is therefore independent of spin. Consequently, the one-electron integral in $\eqref{equation-53}$ can be decomposed as
+
+$$
+\begin{align*}
+  \sum_{i=1}^N \braket{i|\hat{h}|i} =& \sum_{i=1}^{N/2} \braket{i|\hat{h}|i} + \sum_{i=1}^{N/2} \braket{\bar{i}|\hat{h}|\bar{i}} \\
+  =& 2 \sum_{i=1}^{N/2} (\psi_i|\hat{h}|\psi_i) \label{equation-55}
+\end{align*}
+$$
+
+where $(\psi_i|\hat{h}|\psi_i) = (i|\hat{h}|i)$ denotes the spatial one-electron integral.
+
+**Two-electron contribution**
+
+Using chemists' notation, the two-electron integral in $\eqref{equation-53}$ can be expanded as
+
+$$
+\begin{align*}
+  &\frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N [ii|jj] - [ij|ji] \\
+  =& \frac{1}{2} \left(\sum_{i,j=1}^{N/2} [ii|jj] - [ij|ji] + \sum_{i,j=1}^{N/2} [ii|\bar{j}\bar{j}] - [i\bar{j}|\har{j}a] \right. \\
+  +& \left. \sum_{i,j=1}^{N/2} [\bar{i}\bar{i}|jj] - [\bar{i}j|j\bar{i}] + \sum_{i,j=1}^{N/2} [\bar{i}\bar{i}|\bar{j}\bar{j}] - [\bar{i}\bar{j}|\bar{j}\bar{i}] \right) \\
+  =& \sum_{i=1}^{N/2} \sum_{j=1}^{N/2} 2(\psi_i \psi_i|\psi_j \psi_j) - (\psi_i \psi_j|\psi_j \psi_i) \tag{\label{equation-56}}
+\end{align*}
+$$
+
+Thus each pair of occupied spatial orbitals contributes two Coloumb interactions, but only one exchange interaction.
+
+**Closed-shell Hartree-Fock energy**
+
+Combining $\eqref{equation-55}$ and $\eqref{equation-56}$, the Hartree-Fock energy of a closed-shell ground state is
+
+$$
+\begin{align*}
+  E_0 =& 2 \sum_{i=1}^{N/2} (\psi_i|\hat{h}|\psi_i) \\
+  &+ \sum_{i,j=1}^{N/2} 2(\psi_i \psi_i|\psi_j \psi_j) - (\psi_i \psi_j|\psi_j \psi_i)
+\end{align*}
+$$
+
+Equivalently using physicists' notation
+
+$$
+\begin{align*}
+  E_0 =& 2 \sum_{i=1}^{N/2} \braket{\psi_i|\hat{h}|\psi_i} \\
+  &+ \sum_{i,j=1}^^{N/2} 2\braket{\psi_i \psi_j|\psi_i \psi_j} - \braket{\psi_i \psi_j|\psi_j \psi_i}
+\end{align*}
+$$
+
+In terms of the Coulomb and and exchange integrals, $\eqref{equation-57}$ and $\eqref{equation-58}$, the energy can be rewritten as
+
+$$
+  E_0 = 2 \sum_i (i|\hat{h}|i) + \sum_{i,j} 2J_{ij} - K_{ij}
+$$
+
+
+### Minimal basis $\ce{H2}$ model
 
 ## Matrix elements for minimal basis $\ce{H2}$
 
