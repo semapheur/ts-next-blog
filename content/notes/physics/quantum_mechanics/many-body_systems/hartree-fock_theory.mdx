@@ -1310,45 +1310,45 @@ This leaves us with three cases for the Slater-Condon rules for evaluating matri
 
 **Case 1: Identical determinants**
 
-Suppose $\ket{K} = \ket{L}$ and that the occupied spin orbitals are $\set{\chi_m}_{m=1}^N$.
+Suppose $\ket{K} = \ket{L}$ and that the occupied spin orbitals are $\set{\chi_i}_{i=1}^N$.
 
 - One-electron operator
 
 $$
-  \braket{K|\hat{O}_1|K} = \sum_{m=1}^N \braket{m|\hat{h}|m}
+  \braket{K|\hat{O}_1|K} = \sum_{i=1}^N \braket{i|\hat{h}|i}
 $$
 
 - Two-electron operators
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_2|K} =& \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N \bra{mn}\ket{mn} \\
-  =& \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N (mm|nn) - (mn|nm)
+  \braket{K|\hat{O}_2|K} =& \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} \\
+  =& \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N (ii|jj) - (ij|ji)
 \end{align*}
 $$
 
 **Case 2: Determinants differing by one spin orbital**
 
-Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing the occupied orbital $\chi_m$ with $\chi_p$.
+Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing the occupied orbital $\chi_i$ with $\chi_p$.
 
 - One-electron operator
 
 $$
-  \braket{K|\hat{O}_1|L} = \braket{m|\hat{h}|p}
+  \braket{K|\hat{O}_1|L} = \braket{i|\hat{h}|p}
 $$
 
 - Two-electron operator
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_2|L} =& \sum_{n=1}^N \bra{mn}\ket{pn} \\
-  =& \sum_{n=1}^N (mp|nn) - (mn|np)
+  \braket{K|\hat{O}_2|L} =& \sum_{j=1}^N \bra{ij}\ket{pj} \\
+  =& \sum_{n=1}^N (ip|jj) - (ij|jp)
 \end{align*}
 $$
 
 **Case 3: Determinants differing by two spin orbitals**
 
-Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing $\chi_m, \chi_n$ with $\chi_p, \chi_q$, respectively.
+Assume $\ket{L}$ is obtained from $\ket{K}$ by replacing $\chi_i, \chi_j$ with $\chi_p, \chi_q$, respectively.
 
 - One-electron operator
 
@@ -1360,8 +1360,8 @@ $$
 
 $$
 \begin{align*}
-  \braket{K|\hat{O}_2|L} =& \bra{mn}\ket{pq} \\
-  =& (mp|nq) - (mq|np)
+  \braket{K|\hat{O}_2|L} =& \bra{ij}\ket{pq} \\
+  =& (ip|jq) - (iq|jp)
 \end{align*}
 $$
 
@@ -1393,7 +1393,7 @@ For an electronic Hamiltonian of the form $\hat{H} = \hat{O}_1 + \hat{O}_2$, the
 $$
 \begin{align*}
   \braket{K|\hat{H}|K} =& \braket{K|\hat{O}_1 + \hat{O}_2|K} \\
-  =& \sum_{m=1}^N \braket{m|\hat{h}|m} + \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N \bra{mn}\ket{mn}
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij}
 \end{align*}
 $$
 
@@ -1406,16 +1406,19 @@ $$
 Since
 
 $$
-  \bra{mm}\ket{mm} = \bra{nn}\ket{nn} = 0
+  \bra{ii}\ket{ii} = \bra{jj}\ket{jj} = 0
 $$
 
-and $\bra{mn}\ket{mn} = \bra{nm}\ket{nm}$, the double sum can be restricted to unique pairs, giving
+and $\bra{ij}\ket{ij} = \bra{ji}\ket{ji}$, the double sum can be restricted to unique pairs, giving
 
 $$
-\begin{align*}
-  \braket{K|\hat{H}|K} =& \sum_{m=1}^N \braket{m|\hat{h}|m} + \sum_{m=1}^N \sum_{n>m}^N \bra{mn}\ket{mn} \\
-  =& \sum_{m=1}^N (m|\hat{h}|m) + \sum_{m=1}^N \sum_{n>m}^N (mm|nn) - (mn|nm)
-\end{align*}
+\begin{equation*}
+\begin{split}
+  \braket{K|\hat{H}|K} =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \sum_{i=1}^N \sum_{j>i}^N \bra{ij}\ket{ij} \\
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \sum_{i=1}^N \sum_{j>i}^N [ii|jj] - [ji|ij]
+\end{split}
+\tag{\label{equation-63}}
+\end{equation*}
 $$
 
 This shows that the energy of a single Slater determinant decomposes into the sum of the one‑electron contributions from each occupied spin orbital, together with the antisymmetrized electron–electron interaction terms associated with each unique pair of occupied spin orbitals.
@@ -1433,15 +1436,15 @@ The Slater-Condon rules in terms of the Hartree-Fock ground state become as foll
 - One-electron operator
 
 $$
-  \braket{\Psi_0|\hat{O}_1|\Psi_0} =& \sum_{a=1}^N \braket{a|\hat{h}|a} \\
+  \braket{\Psi_0|\hat{O}_1|\Psi_0} =& \sum_{i=1}^N \braket{i|\hat{h}|i} \\
 $$
 
 - Two-electron operators
 
 $$
 \begin{align*}
-  \braket{\Psi_0|\hat{O}_2|\Psi_0} =& \frac{1}{2} \sum_{a=1}^N \sum_{b=1}^N \bra{ab}\ket{ab} \\
-  =& \frac{1}{2} \sum_{a=1}^N \sum_{a=1}^N (aa|bb) - (ab|ba)
+  \braket{\Psi_0|\hat{O}_2|\Psi_0} =& \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} \\
+  =& \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N [ii|jj] - [ij|ji]
 \end{align*}
 $$
 
@@ -1450,15 +1453,15 @@ $$
 - One-electron operator
 
 $$
-  \braket{\Psi_0|\hat{O}_1|\Psi_a^r} = \braket{a|\hat{h}|r}
+  \braket{\Psi_0|\hat{O}_1|\Psi_i^p} = \braket{i|\hat{h}|p}
 $$
 
 - Two-electron operator
 
 $$
 \begin{align*}
-  \braket{\Psi_0|\hat{O}_2|\Psi_a^r} =& \sum_{b=1}^N \bra{ab}\ket{rb} \\
-  =& \sum_{b=1}^N (ar|bb) - (ab|br)
+  \braket{\Psi_0|\hat{O}_2|\Psi_i^p} =& \sum_{i=1}^N \bra{ij}\ket{pj} \\
+  =& \sum_{b=1}^N [ip|jj] - [ij|jp]
 \end{align*}
 $$
 
@@ -1467,15 +1470,15 @@ $$
 - One-electron operator
 
 $$
-  \braket{\Psi_0|\hat{O}_1|\Psi_{ab}^{rs}} = 0
+  \braket{\Psi_0|\hat{O}_1|\Psi_{ij}^{pq}} = 0
 $$
 
 - Two-electron-operator
 
 $$
 \begin{align*}
-  \braket{\Psi_0|\hat{O}_2|\Psi_{ab}^{rs}} =& \bra{ab}\ket{rs} \\
-  =& (ar|bs) - (as|br)
+  \braket{\Psi_0|\hat{O}_2|\Psi_{ij}^{pq}} =& \bra{ij}\ket{pq} \\
+  =& [ip|jq] - [iq|jp]
 \end{align*}
 $$
 
@@ -1488,7 +1491,7 @@ $$
 \begin{split}
   E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
   =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \bra{ij}\ket{ij} \\
-  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{b=1}^N (ii|jj) - (ij|ji)
+  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i=1}^N \sum_{b=1}^N [ii|jj] - [ij|ji]
 \end{split}
 \tag{\label{equation-53}}
 \end{equation*}
@@ -1993,10 +1996,55 @@ $$
 In terms of the Coulomb and and exchange integrals, $\eqref{equation-57}$ and $\eqref{equation-58}$, the energy can be rewritten as
 
 $$
-  E_0 = 2 \sum_i (i|\hat{h}|i) + \sum_{i,j} 2J_{ij} - K_{ij}
+  E_0 = 2 \sum_i h_{ii} + \sum_{i,j} 2J_{ij} - K_{ij}
 $$
 
-In a system containing two electrons with parallel spin, $\ket{\bar{\psi}_1, \bar{\psi}_2}$, the probability of finding two electrons at the same point in space is zero, whereas in a system containing two electrons with opposite spin, $\ket{\psi_1 \bar{\psi}_2}$, it is not. It is therefore reasonable to expect that the energy of $\ket{\bar{\psi}_1 \bar{\psi}_2}$ is lower than the energy of $\ket{\psi_1 \bar{\psi}_2}$ when the Coulomb repulsion between electrons is taken into account. Using $\eqref{equation-}$, the energy of $\ket{\psi_1 \bar{\psi}_2}$ denoted $E_{\uparrow\downarrow}$ is
+### Pseudo-classical interpretation of Hartree-Fock energies
+
+The Hartree-Fock energy $\eqref{equation-63}$ can be decomposed into one-electron and pairwise contributions. Each occupied spin orbitals $\chi_i$ contributes the one-electron energy $\braket{i|\hat{h}|i} = h_{ii}$. If $\chi_i = \psi_i \alpha$ then
+
+$$
+  \braket{i|\hat{h}|i} = \braket{\psi_i \alpha|\hat{h}|\psi_i \alpha} = (\psi_i|\hat{h}|\psi_i) = h_{ii}
+$$
+
+Similarly, if $\chi_i = \psi_i \beta$, then 
+
+$$
+  \braket{i|\hat{h}|i} = \braket{\psi_i \beta|\hat{h}|\psi_i \beta} = (\psi_i|\hat{h}|\psi_i) = h_{ii}
+$$
+
+Thus, an electron in spatial orbital $\psi_i$ contributes the one-electron energy $h_{ii}$, regardless of its spin.
+
+Each unique pair of electrons in spin orbitals $\chi_i$ and $\chi_j$ contributes the antisymmetrized two-electron integral $\bra{ij}\ket{ij}$. If the two electrons have opposite spins, say $\chi_i = \psi_i \alpha$ and $\chi_j = \psi_j \beta$, then
+
+$$
+  \bra{ij}\ket{ij} = [\psi_i \psi_i|\bar{\psi}_j \bar{\psi}_j] - [\psi_i \bar{\psi}_j|\bar{\psi}_j \psi_i] = J_{ij}
+$$
+
+On the other hand, if the electrons have parallel spins, say $\chi_i = \psi_i \beta$ and $\chi_j = \psi_j \beta$, then
+
+$$
+  \bra{ij}\ket{ij} = [\bar{\psi}_i \bar{\psi}_i|\bar{\psi}_j \bar{\psi}_j] - [\bar{\psi}_i \bar{\psi}_j|\bar{\psi}_j \bar{\psi}_i] = J_{ij} - K_{ij}
+$$
+
+Thus, every pair of electrons contributes the Coulomb interaction energy $J_{ij}$, while each pair of electrons with parallel spins contributes the additional exchange stabilization $-K_{ij}$.
+
+Accordingly, the total energy of an $N$-electron Slater determinant can be interpreted as the sum of
+- the one-electron energies $h_{ii}$ associated with each occupied spatial orbital
+- the Coulomb interaction energies $J_{ij}$ associated with every distinct pair of electrons
+- the exchange contributions $-K_{ij}$ associated with every distinct pair of parallel-spin electrons
+
+This interpretation should be regarded as a convenient decomposiiton of the expectation value of the Hamiltonian rather than as a description of separate physical interactions. The Hamiltonian contains the Coulomb interaction $r_{ij}^{-1}$, which is independent of the electron spins. The exchange contribution does not represent an additional force between electrons. Instead, it arises solely from the anitsymmetry of the fermionic wavefunction and the consequent modification of the spatial probability distributin imposed by the Pauli exclusion principle.
+
+### Exchange correlation
+
+For two electrons occupying spin orbitals with parallel spin, for example $\ket{\bar{\psi}_1 \bar{\psi}_2}$, antisymmetry of the Slater determinant requires the spatial part of the wavefunction to vanish whenever the two electron coordinates coincide, i.e. $\Psi(\mathbf{r}, \mathbf{r}) = 0$. Consequently, the pair probability density satisfies $|\Psi(\mathbf{r}, \mathbf{r})|^2 = 0$ so the electrons cannot be found at the same time in space.
+
+By contrast, for electrons with opposite spin, for example $\ket{\psi_1 \bar{\psi}_2}$, the exchange term vanishes because the spin functions are orthogonal, and the spatial wavefunction is not required to vanish electron coalescence. The corresponding pair density at $\mathbf{r}_1 = \mathbf{r}_2$ is therefore generally nonzero.
+
+Since the Coulomb interaction $r_{12}^{-1}$ is largest when the electrons are closer together, we expect the state with parallel spins to have a energy than the corresponding state with opposte spins.
+
+Using $\eqref{equation-63}$, the energy of $\ket{\psi_1 \bar{\psi}_2}$ denoted $E_{\uparrow\downarrow}$ is
 
 $$
 \begin{align*}
@@ -2016,33 +2064,9 @@ $$
 \end{align*}
 $$
 
-Because $K_{12}$ is positive, $E_{\downarrow\downarrow} \leq E_{\uparrow\downarrow}$. Thus, the appearance of exchange integrals in the energy of a Slater determinant is a manifestation of the fact that, even within the single determinantal approximation of the wavefunction, the motion of electrons with parallel spins is correlated.
+Because $K_{12} \geq 0$ is positive, $E_{\downarrow\downarrow} = \leq E_{\uparrow\downarrow} - K_{12} \leq E_{\uparrow\downarrow}$. Thus, within the single-determinant approximation, a pair of electrons occupying parallel-spin orbitals is energetically stabilized relative to the corresponding opposite-spin configuration by the exchange contribution $-K_{12}$. This stabilization is a direct consequence of the antisymmetry of the Slater determinant. 
 
-### Pseudo-classical interpretation of determinantal energies
-
-From $\eqref{equation-}$, an electron in spin orbital $\chi_i$ contributes the term $\braket{i|\hat{h}|i}$ to the energy. If $\chi_i = \psi_i \alpha$ then
-
-$$
-  \braket{i|\hat{h}|i} = \braket{\psi_i \alpha|\hat{h}|\psi_i \alpha} = (\psi_i|\hat{h}|\psi_i) = h_{ii}
-$$
-
-Similarly, if $\chi_i = \psi_i \beta$, then $\braket{i|\hat{h}i}$. Thus, an electron (irrespective of its spin) in spatial orbital $\psi_i$ contributes the term $h_{ii}$ to the energy.
-
-Each unique pair of electrons in spin orbitals $\chi_i$ and $\chi_j$ contributes the term $\bra{ij}\ket{ij}$ to the energy. A pair of electrons can have either parallel of opposite spins. If they have opposite spins, say $\chi_i = \psi_i \alpha$ and $\chi_j = \psi_j \beta$, then
-
-$$
-  \bra{ij}\ket{ij} = [\psi_i \psi_i|\bar{\psi}_j \bar{\psi}_j] - [\psi_i \bar{\psi}_j|\bar{\psi}_j \psi_i] = J_{ij}
-$$
-
-On the other hand, if they have parallel spins, say $\chi_i = \psi_i \beta$ and $\chi_j = \psi_j \beta$, then
-
-$$
-  \bra{ij}\ket{ij} = [\bar{\psi}_i \bar{\psi}_i|\bar{\psi}_j \bar{\psi}_j] - [\bar{\psi}_i \bar{\psi}_j|\bar{\psi}_j \bar{\psi}_i] = J_{ij} - K_{ij}
-$$
-
-Thus, each unique pair of electrons (irrespective of their spin) in spatial orbitals $\psi_i$ and $\psi_j$ contributes the term $J_{ij}$ to the energy, and each unique pair of electron with parallel spins in spatial orbitals $\psi_i$ and $\psi_j$ contributes the term $-K_{ij}$ to the energy.
-
-Consequently, we can think of the total energy of an $N$-electron system, which is described by a restricted determinant, as a sum of one-electron energies ($h_{ii}$ for an electron in spatial orbital $\psi_i$) plus all unique Coulomb interaction energies ($J_{ij}$ for a pair of electron in spatial orbitals $\psi_i$ and $\psi_j$) plus all unique exchange interaction energies between electrons with parallel spins ($-K_{ij}$ for a pair of electrons with parallel spin in spatial orbitals $\psi_i$ and $\psi_j$). In this language, it must be remembered that exchange interactions between electrons with parallel spin are not real physical interactions but a convenient way of representing the energy of a system described by a single determinant. The physical interaction between two electrons, as described by the Coulomb repulsion term ($1/r_{ij}$) in the Hamiltoninan, does not depend on the spin of electrons.
+Antisymmetry requires the many-electron wavefunction to vanish whenever two electrons with parallel spin occupy the same spatial point, thereby reducing the pair probability density for like-spin electrons close together. This implies that the expectation value of the Coulomb repulsion is reduced. This phenomenon is known as Fermi correlation (or exchange correlation) and is incorporated within a single Slater determinant.
 
 # Minimal basis $\ce{H2}$ model
 
