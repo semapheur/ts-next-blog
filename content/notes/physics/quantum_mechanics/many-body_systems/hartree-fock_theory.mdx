@@ -2402,10 +2402,57 @@ $$
 An $N$-electron Slater determinant is obtained by successively creating electrons in the occupied spin orbitals
 
 $$
-   \ket{p_1 \cdots p_N} = \hat{a}_{p_1}^\dagger \cdots \hat{a}_{p_N}^\dagger \ket{0}
+   \ket{P} = \ket{p_1 \cdots p_N} = \hat{a}_{p_1}^\dagger \cdots \hat{a}_{p_N}^\dagger \ket{0}
 $$
 
 where the orbital indices are canonically ordered $p_1 < \cdots < p_N$.
+
+Consider the matrix element $\braket{P|\hat{a}_i^\dagger \hat{a}_j|P}$. Using the anticommutation relation
+
+$$
+  \hat{a}_i^\dagger \hat{a}_j = \delta_{ij}\hat{I} - \hat{a}_j \hat{a}_i^\dagger
+$$
+
+we obtain
+
+$$
+\begin{align*}
+  \braket{P|\hat{a}_i^\dagger \hat{a}_j|P} =& \braket{P|\delta_{ij}\hat{I} - \hat{a}_j \hat{a}_i^\dagger|P} \\
+  =& \delta_{ij} \underbrace{\braket{P|P}}_{=1} - \braket{\hat{a}_j \hat{a}_i^\dagger|P} \\
+  =& \delta_{ij} - \braket{P|\hat{a}_j \hat{a}_i^\dagger|P}
+\end{align*}
+$$
+
+We distinguish two cases related to the occupation of the spin orbital $\chi_i$
+- If $\chi_i$ is occupied in $\ket{P}$, then $\hat{a}_i^\dagger \ket{P} = 0$ by the Pauli exclusion principle. Thus $\braket{P|\hat{a}_j \hat{a}_i^\dagger|P} = \delta_{ij}$ yielding
+
+$$
+  \braket{P|\hat{a}_i^\dagger \hat{a}_j|P} = \delta_{ij}
+$$
+
+- If $\chi_i$ is unoccupied in $\ket{P}$, then $\delta_{ij} = 0$ whenever $\hat{a}_j \ket{P} \neq 0$, because $j$ must be an occupied orbital. Moreover, if $j = i$, then $\hat{a}_i \ket{P} = 0$. Thus $\hat{a}_i^\dagger \hat{a}_j \ket{P} = 0$ for every $j$, and consequently
+
+$$
+  \braket{P|\hat{a}_i^\dagger \hat{a}_j|P} = 0
+$$
+
+Combining these two cases yields
+
+$$
+\begin{equation*}
+  \braket{P|\hat{a}_i^\dagger \hat{a}_j|P} = \delta_{ij} n_i (P)
+\tag{\label{equation-73}}
+\end{equation*}
+$$
+
+where $n_i (P)$ is the occupation number of the spin orbital $\chi_i$ in $\ket{P}$,
+
+$$
+  n_i (P) = \begin{cases}
+    1,\quad& i \in\operatorname{occ}(P) \\
+    0,\quad& i \notin\operatorname{occ}(P)
+  \end{cases}
+$$
 
 ### Inner products of Slater determinants
 
@@ -2568,7 +2615,7 @@ $$
 \begin{align*}
   \braket{K|\hat{O}_1|L} =& \sum_{i,j} \braket{i|\hat{h}|j} \braket{K|\hat{a}_i^\dagger \hat{a}_j|K} \\
   =& \sum_{i,j} \braket{i|\hat{h}|j} \delta_{ij} n_i (K) \\
-  =& \sum_i \braket{i|\hat{h}|i}
+  =& \sum_{i\in\operatorname{occ}(K)} \braket{i|\hat{h}|i}
 \end{align*}
 $$
 
@@ -2594,8 +2641,8 @@ gives
 $$
 \begin{align*}
   \braket{K|\hat{a}_a^\dagger \hat{a}_p \hat{a}_i^\dagger \hat{a}_j|K} =& \delta_{pi} \braket{K|\underbrace{\hat{a}_a^\dagger \hat{a}_j}_{=\delta_{aj} - \hat{a}_j \hat{a}_a^\dagger}|K} - \braket{K|\hat{a}_a^\dagger \hat{a}_i^\dagger \underbrace{\hat{a}_p \hat{a}_j}_{=-\hat{a}_j \hat{a}_p}|K} \\
-  =& \delta_{pi} \delta_{aj} \braket{K|K} - \delta_{pi} \underbrace{\braket{K|\hat{a}_j \hat{a}_a^\dagger|K}}_{=0} \\
-  &+ \underbrace{\braket{K|\hat{a}_a^\dagger \hat{a}_i^\dagger \hat{a}_j \hat{a}_p|K}}_{=0} \\
+  =& \delta_{pi} \delta_{aj} \braket{K|K} - \delta_{pi} \braket{K|\hat{a}_j \underbrace{\hat{a}_a^\dagger|K}_{=0}} \\
+  &+ \braket{K|\hat{a}_a^\dagger \hat{a}_i^\dagger \hat{a}_j \underbrace{\hat{a}_p|K}_{=0}} \\
   =& \delta_{pi} \delta_{aj}
 \end{align*}
 $$
@@ -2609,13 +2656,41 @@ $$
 \end{align*}
 $$
 
-<details>
-<summary>Proof</summary>
-
-
-</details>
-
 ### Two-electron operators
+
+**Case 1: Identical determinants**
+
+Suppose $\ket{L} = \ket{K}$. Then
+
+$$
+\begin{equation*}
+  \braket{K|\hat{O}_2|K} = \frac{1}{2} \sum_{i,j,k,l} \braket{ij|kl} \braket{K|\hat{a}_i^\dagger \hat{a}_j^\dagger \hat{a}_l \hat{a}_k|K}
+\tag{\label{equation-72}}
+\end{equation*}
+$$
+
+The matrix element $\braket{K|\hat{a}_i^\dagger \hat{a}_j^\dagger \hat{a}_l \hat{a}_k|K}$ is nonzero only if both $k$ and $l$ label occupied spin orbitals of $\ket{K}$. Assume therefore $k, l \in\operatorname{occ}(K)$. After removing the electrons occupying $k$ and $l$, the creation operators must recreate the same determinant. This is possible only if the following two cases
+1. $i = k$, $j = l$ (direct contraction) resulting in $\braket{K|\hat{a}_i^\dagger \hat{a}_j^\dagger \hat{a}_l \hat{a}_k|K} = 1$
+2. $i = l$, $j = k$ (exchange contraction) leading to $\braket{K|\hat{a}_i^\dagger \hat{a}_j^\dagger \hat{a}_l \hat{a}_k|K} = -1$, where the minus sign follows from exchange the order of two creation (or annihilation) operators.
+
+Consequently,
+
+$$
+  \braket{K|\hat{a}_i^\dagger \hat{a}_j^\dagger \hat{a}_l \hat{a}_k|K} = n_k (K) n_l (K) (\delta_{ik} \delta_{jl} - \delta_{il} \delta_{jk})
+$$
+
+Substituting this into $\eqref{equation-70}$ gives
+
+$$
+\begin{align*}
+  \braket{K|\hat{O}_2|K} =& \sum_{i,j,k,l)} \braket{ij|ji} n_k (K) n_l (K) (\delta_{ik} \delta_{jl} - \delta_{il} \delta_{jk}) \\
+  =& \frac{1}{2} \sum_{i,j} n_i (K) n_j (K) [\braket{ij|ij} - \braket{ij|ji}] \\
+  =& \frac{1}{2} \sum_{i,j \in\operatorname{occ}(K)} \braket{ij|ij} - \braket{ij|ji} \\
+  =& \frac{1}{2} \sum_{i,j \in\operatorname{occ}(K)} \bra{ij}\ket{ij}
+\end{align*}
+$$
+
+**Case 2: Determinants differing by one spin orbital**
 
 Suppose $\ket{L} = \ket{K_a^p}$ is obtained from $\ket{K}$ by replacing the occupied spin orbital $\chi_a$ with $\chi_p$. Then
 
