@@ -12,7 +12,7 @@ references:
 Let $\mathbf{x} = (\mathbf{r}, \omega)$ denote combined spatial and spin coordinates. With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
 
 $$
-  \Psi_0 = \frac{1}{\sqrt{N}!} \det[\chi_i (\mathbf{x}_j)]
+  \Psi_0 = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)]
 $$
 
 provides the best approximation to the exact ground-state wavefunction of an $N$-electron system described by the electronic Hamiltonian $\hat{H}$.
@@ -303,7 +303,136 @@ $$
 Recognizing the Fock operator $\eqref{equation-5}$, this equation takes the compact form
 
 $$
+\begin{equation*}
   \hat{f}\ket{\chi_i} = \sum_{j=1}^N \varepsilon_{j=1}^N \varepsilon_{ji} \ket{\chi_i}
+\tag{\label{equation-7}}
+\end{equation*}
 $$
 
-These equations are not yet in the canonical eigenvalue form of $\eqref{equation-6}$ because the occupied orbitals are determined only up to an arbitrary unitary transformation. Replacing the occupied spin orbitals by any unitary lienar combination leaves the Slater determinant unchanged up to an over phase, and therefore leaves the Hartree-Fock energy invariant. Exploiting this unitary freedom, the Hermitian matrix $\boldsymbol{\varepsilon}$ can be diagonalized, resulting in $\eqref{equation-6}€.
+These equations are not yet in the canonical eigenvalue form of $\eqref{equation-6}$ because the occupied orbitals are determined only up to an arbitrary unitary transformation. Replacing the occupied spin orbitals by any unitary lienar combination leaves the Slater determinant unchanged up to an overall phase, and therefore leaves the Hartree-Fock energy invariant. Exploiting this unitary freedom, the Hermitian matrix $\boldsymbol{\varepsilon}$ can be diagonalized, resulting in $\eqref{equation-6}$.
+
+### Canonical Hartree-Fock equations
+
+Let $\mathbf{U} = [U_{ij}]$ be a unitary transformation satisfying 
+
+$$
+  \mathbf{U}^\dagger \mathbf{U} = \mathbf{UU}^\dagger = \mathbf{I}
+$$
+
+Consider a new set of occupied spin orbitals $\set{\chi'_i}_{i=1}^N$ transformed by $\mathbf{U}$ from the original set $\set{\chi_i}$
+
+$$
+\begin{equation*}
+  \chi'_i (\mathbf{x}_j) = \sum_{k=1} \chi_k (\mathbf{x}_j) U_{ki}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+Defining the matrix $\mathbf{A} = [\chi_k (j)]$, this can be written as $\mathbf{A}' = \mathbf{AU}$.
+
+The normalized Slater determinant constructed from the transformed orbitals is
+
+$$
+  \Psi' = \frac{1}{\sqrt{N!}} \det[\chi'_i (\mathbf{x}_j)] = \frac{1}{\sqrt{N!}} \det(\mathbf{AU})
+$$
+
+Using the multiplicative property of determinants
+
+$$
+  \det(\mathbf{AU}) = \det(\mathbf{A})\det(\mathbf{U})
+$$
+
+we obtain
+
+$$
+  \Psi' = \underbrace{\frac{1}{\sqrt{N!}} \det(\mathbf{A})}_{=\Psi}\det(\mathbf{U}) = \det(\mathbf{U}) \Psi
+$$
+
+By unitarity of $\mathbf{U}$, it follows that $|\det{\mathbf{U}}| = 1$ such that $\det(\mathbf{U}) = e^{i\phi}$ for some real phase $\phi\in\R$. Consequently, $\ket{\Psi'} = e^{i\phi} \ket{\Psi}$ showing that the two Slater determinants constructed from occupied spin orbitals related by a unitary transformation differ only by an overall phase. 
+
+Since all expectation values depend on the projector $\ket{\Psi}\bra{\Psi}$, they are invariant under unitary transformations. That is $\braket{\Psi'|\hat{A}|\Psi'} = \braket{\Psi|\hat{A}|\Psi}$ for every observable $\hat{A}$. Consequently, the occupied orbitals that minimize the Hartree-Fock energy are not uniquely determined; only the occupied subspace has physical significance.
+
+---
+
+To obtain the canonical Hartree-Fock equations, we examine how the Fock operator and the matrix of Lagrange multipliers transform under orbital rotations.
+
+The transformed total Coulomb operator under $\mathbf{U}$ is
+
+$$
+\begin{align*}
+  \sum_i \hat{J}'_i (1) =& \sum_i \int {\chi'_i}^* (2) \frac{1}{r_{12}} \chi'_i (2) \;\d\mathbf{x}_2 \\
+  =& \sum_{j,k} \left(\sum_i U_{ji}^* U_{ki} \right) \int \chi_j^* (2) \frac{1}{r_{12}} \chi_k (2) \;\d\mathbf{x}_2
+\end{align*}
+$$
+
+Since
+
+$$
+  \sum_i U_{ji}^* U_{ki} = (\mathbf{U}\mathbf{U}^\dagger)_{kj} = \delta_{kj}
+$$
+
+it follows that
+
+$$
+\begin{align*}
+  \sum_i \hat{J}'_i (1) =& \sum_j \int \chi_j^* (2) \frac{1}{r_{12}} \chi_j (2) \;\d\mathbf{x}_2 \\
+  =& \sum_j \hat{J}_j (1)
+\end{*}
+$$
+
+showing that the total Coulomb operator is invariant under unitary transformations of the occupied spin orbitals. Similarly, for an arbitrary spin orbital $\varphi$, the transformed total exchange operator under $\mathbf{U}$ satisfies
+
+$$
+\begin{align*}
+  \left(\sum_i \hat{K}'_i \right)\varphi =& \sum_i \left(\int {\chi'_i}^* (2) \frac{1}{r_{12}} \varphi(2) \;\d\mathbf{x}_2 \right)\chi'_i (1) \\
+  =& \sum_{j,k} \underbrace{\left(\sum_i U_{ji}^* U_{ki} \right)}_{=\delta_{jk}} \left(\int \chi_j^* (2) \frac{1}{r_{12}} \varphi(2) \;\d\mathbf{x}_2 \right) \chi_k (1) \\
+  =& \sum_j \left(\int \chi_j^* (2) \frac{1}{r_{12}} \varphi(2) \;\d\mathbf{x}_2 \right) \chi_j (1) \\
+  =& \left(\sum_j \hat{K}_j \right) \varphi
+\end{align*}
+$$
+
+Since this holds for every spin orbital $\varphi$, the total exchange operator is invariant under unitary transformations. 
+
+These results implies that the Fock operator is invariant under arbitrary unitary transformations of the spin orbitals, i.e. $f' = f$.
+
+It remains to determine the effect of the unitary transformation on the Lagrange multipliers. Taking the inner product of $\eqref{equation-7}$ with $\ket{\chi_k}$ yields the expectation value
+
+$$
+\begin{align*}
+  \braket{\chi_k|\hat{f}|\chi_i} =& \sum_{j=1}^N \varepsilon_{ji} \braket{\chi_k|\chi_j} \\
+  =& \varepsilon_{ki}
+\end{align*} 
+$$
+
+so that the matrix of Lagrange multipliers is simply the representation of the Fock operator in the occupied orbital basis. The transformed Lagrange multipliers under $\mathbf{U}$ become
+
+$$
+\begin{align*}
+  \varepsilon'_{ij} =& \int {\chi'_i}^*(1) \hat{f}(1) \chi'_j (1) \;\d\mathbf{x}_1 \\
+  =& \sum_{k,l} U_{ki}^* U_{kj} \int \chi_k^* (1) \hat{f}(1) \chi_k (1) \;\d\mathbf{x}_1 \\
+  =& \sum_{k,l} U_{ki}^* \varepsilon_{kl} U_{lj}
+\end{align*}
+$$
+
+or in matrix form 
+
+$$
+\begin{equation*}
+  \boldsymbol{\varepsilon}' = \mathbf{U}^\dagger \boldsymbol{\varepsilon} \mathbf{U}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+Since $\boldsymbol{\varepsilon}$ is a Hermitian matrix, the spectral theorem guarantees the existence of a unitary matrix $\mathbf{U}$ for which
+
+$$
+  \mathbf{U}^\dagger \boldsymbol{\varepsilon} \mathbf{U} = \operatorname{diag}(\varepsilon_1,\dots,\varepsilon_N)
+$$
+
+Choosing the occupied orbitals to be the corresponding transformed orbitals under $\mathbf{U}$ therefore diagonalizes the matrix of Lagrange multiplies, reducing the Hartree-Fock equations to the canonical form
+
+$$
+  \hat{f}\ket{\chi'_i} = \varepsilon'_i \ket{\chi'_i}
+$$
+
+The resulting orbitals from these equations are called the canonical Hartree-Fock orbitals. For non-degenerate orbital energies they are unique up to individual phase factors, whereas degenerate canonical orbitals may still be mixed by arbitrary unitary transformations within each degenerate subspace. More generally, any unitary transformation among the occupied orbitals leaves the Hartree-Fock wavefunction and energy unchanged. We can therefore replace the canonical orbitals by alternative sets satisfying additional criteria, such as maximal spatial localization, without altering any physical observable computed from the Hartree-Fock determinant.
