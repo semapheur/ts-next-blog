@@ -98,3 +98,92 @@ $$
 Although the Hartree-Fock equations resemble a one-electron eigenvalue problem, they do not constitute a linear eigenvalue problem in the usual sense. The Fock operator depends functionally on the occupied orbitals through the Coulomb and exchange operators, i.e. $\hat{f} = \hat{f}[\set{\chi_i}]$, so the orbitals sought determine the operator itself. The Hartree-Fock equations therefore define a nonlinear, self-consisten eigenvalue problem.
 
 Except for atoms and highly symmetric systems, the Hartree-Fock equations cannot be solved analytically. Instead, each spin orbital is expanded in a finite basis set, resulting the Roothan-Hall or Pople-Nesbet matrix equations, which are solved interatively until self-consistency is achieved. As the basis set approaches completeness, the resulting orbitals converge to the Hartree-Fock limint, providing the exact solution within the space of all single Slater determinants.
+
+## Derivation of the Hartree-Fock equations
+
+### Functional variation
+
+Let $\tilde{\Phi}$ be a trial wavefunction in the domain of the electronic Hamiltonian $\hat{H}$. The corresponding energy is define by the Rayleigh quotient
+
+$$
+  E[\tilde{\Phi}] =& \frac{\braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}}}{\braket{\tilde{\Phi}|\tilde{\Phi}}}
+$$
+
+Thus, $E[\tilde{\Phi}]$ is a functional: its value depends on the entire function $\tilde{\Phi}$, rather than on the value of an independent variable. If the trial wavefunction is normalized, $\braket{\tilde{\Phi}|\tilde{\Phi}}$, the energy functional reduces to
+
+$$
+  E[\tilde{\Phi}] = \braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}}
+$$
+
+Suppose $\tilde{\Phi}$ is subjected to an arbitrary infinitesimal variation
+
+$$
+  \tilde{\Phi} \to \tilde{\Phi} + \delta\tilde{\Phi}
+$$
+
+where $\delta\tilde{\Phi}$ is an arbitrary admissible variation. Expanding the energy functional to first order gives
+
+$$
+\begin{align*}
+  E[\tilde{\Phi} + \delta\tilde{\Phi}] =& \braket{\tilde{\Phi} + \delta\tilde{\Phi}|\hat{H}|\tilde{\Phi} + \delta{\Phi}} + O(\delta\tilde{\Phi}^2) \\
+  =& E[\tilde{\Phi}] + \braket{\delta\tilde{\Phi}|\hat{H}|\tilde{\Phi}} + \braket{\tilde{\Phi}|\hat{H}|\delta\tilde{\Phi}} + O(\delta\tilde{\Phi}^2) \\
+\end{align*}
+$$
+
+The first-order term, $\delta E = \braket{\delta\tilde{\Phi}|\hat{H}|\tilde{\Phi}} + \braket{\tilde{\Phi}|\hat{H}|\delta\tilde{\Phi}}$, is called the first variation of the energy functional.
+
+The variational principle states that the optimal trial wavefunction is obtained by requiring the energy functional to be stationary with respect to all admissible variations, $\delta E = 0$. This condition is neccessary for an extremum of the functional. For the ground state of a Hamiltonian bounded from below, the variational principle guarantees that this stationary point is in fact the global minimum.
+
+Consider the linear variational ansatz
+
+$$
+  \ket{\tilde{\Phi}} = \sum_{i=1}^N c_i \ket{\Psi_i}
+$$
+
+where the basis functions $\set{\ket{\Psi_i}}$ are linearly independent but not necessarily orthonormal. The normalization condition is
+
+$$
+  \braket{\tilde{\Phi}|\tilde{\Phi}} = \sum_{i,j} c_i^* S_{ij} c_j = 1
+$$
+
+where $S_{ij} = \braket{\Psi_i|\Psi_j}$ is the overlap matrix. Similarly,
+
+$$
+  \braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}} = \sum_{i,j} c_i^* H_{ij} c_j
+$$
+
+where $H_{ij} = \braket{\Psi_i|\hat{H}|\Psi_i}$ are the Hamiltonian matrix elements.
+
+To impose the normalization constraint, we introduce the Lagrangian
+
+$$
+\begin{align*}
+  L =& \braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}} - E(\braket{\tilde{\Phi}} - 1) \\
+  =& \sum_{i,j} c_i^* H_{ij} c_j - E\left(\sum_{i,j} c_î^* c_j S_{ij} - 1 \right)
+\end{align*}
+$$
+
+where the Lagrangian multiplier $E$ is identified with the variational energy
+
+The coefficients $c_i$ and $c_i^*$ are treated as independent variable. Taking the first variation of $L$ with respect to $c_i^*$ gives
+
+$$
+\begin{align*}
+  \delta L =& \sum_{i,j} \delta c_i^* H_{ij} c_j - E \sum_{i,j} \delta c_i^* S_{ij} c_j \\
+  &+ \sum_{i,j} c_i^* H_{ij} \delta c_j - E \sum_{i,j} c_i^* S_{ij} \delta c_i
+\end{align*}
+$$
+
+Since $E$ is real, after collecting terms and interchanging indices, we get
+
+$$
+  \delta L = \sum_i \delta c_i^* \left[\sum_j H_{ij} c_j - E \sum_j S_{ij} c_j \right] + \text{c.c.}
+$$
+
+Since the variations $\set{\delta c_i^*}$ are arbitrary, stationarity requires
+
+$$
+  \sum_{j} H_{ij} c_j = E \sum_j S_{ij} c_j
+$$
+
+or in matrix form $\mathbf{Hc} = E\mathbf{Sc}$, which is the generalized Hermitian eigenvalue problem arising in the linear variation method. If the basis is orthonormal, then $\mathbf{S} = \mathbf{I}$, and the equation reduces to the ordinary eigenvalue problem $\mathbf{Hc} = E\mathbf{c}$. The smallest eigenvalue of the generalized eigenvalue problem provides the best approximation to the ground-state energy within the span of the chosen basis functions, while the corresponding eigenvector determines the optimal linear combination of basis functions.
