@@ -101,7 +101,16 @@ $$
   \hat{v}_\text{HF} = \sum_{j=1}^N (\hat{J}_j - \hat{K}_j)
 $$
 
-is known as the Hartree-Fock potential, so that $\hat{f} = \hat{h} + \hat{v}_\text{HF}$. The exchange operator can also be expressed using the electron-permutation operator $\hat{p}_{12}$, defined by $\hat{p}_{12} v(1,2) = v(2,1)$. With this notation
+is known as the Hartree-Fock potential, so that 
+
+$$
+\begin{equation*}
+  \hat{f} = \hat{h} + \hat{v}_\text{HF}
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+The exchange operator can also be expressed using the electron-permutation operator $\hat{p}_{12}$, defined by $\hat{p}_{12} v(1,2) = v(2,1)$. With this notation
 
 $$
   \hat{f}(1) = \hat{h}(1) + \sum_{j=1}^N \int \chi_j^* (2) \frac{1 - \hat{p}_{12}}{r_{12}} \chi_j (2) \;\d\mathbf{x}_2
@@ -743,23 +752,89 @@ $$
 
 since these have in general $\braket{\Psi_0|\hat{H}|\Psi_{ab}^{pq}} \neq 0$. This does not, however, imply that singly excited determinants are absent from the exact ground-state wavefunction. Although they do not couple directly to the Hartree-Fock reference determinant, they may acquire nonzero amplitudes through indirect coupling to higher excitations. For example, the Hamiltonian matrix elements $\braket{\Psi_0|\hat{H}|\Psi_{ab}^{pq}}$ and $\braket{\Psi_{ab}^{pq}|\hat{H}|\Psi_a^p}$ allow singly excited determinants to mix with the Hartree-Fock reference $\ket{\Psi_0}$ determinant through doubly excited configurations. Consequently, the exact full configuration-interaction ground state generally contains contributions from determinants of all excitation ranks, even though the first-order correction to the Hartree-Fock wavefunction contains no singly excited determinants.
 
+## Møller-Plesset Hamiltonian
+
+Let $\set{\chi_i}_{i=1}^\infty$ be a complete orthonormal basis of spin orbitals satisfying th Hartree-Fock equation $\eqref{equation-6}$. From these orbitals we define the Møller-Plesset zeroth-order Hamiltonian
+
+$$
+  \hat{H}_0 = \sum_{i=1}^N \hat{f}(i)
+$$
+
+where $\hat{f}(i)$ is Fock operator for the $i$th electron. Since each $\hat{f}(i)$ is a one-electron operators, it commutes with every permutation operator
+
+$$
+  [\hat{f}(i), \hat{P}] = 0,\; P \in S_N
+$$
+
+and therefore so does $\hat{H}_0$. Letting $\hat{H}_0$ act on the Hartree-Fock Slater determinant
+
+$$
+  \jet{\Psi_0} = \frac{1}{\sqrt{N!}} \sum_{P\in S_N} (-1)^P \hat{P} [\chi_1 (1) \cdots \chi_N (N)]
+$$
+
+we obtain
+
+$$
+\begin{align*}
+  \hat{H}_0 \ket{\Psi_0} =& \frac{1}{\sqrt{N!}} \sum_{P\in S_N} (-1)^P \hat{P} \left(\sum_{i=1}^N \hat{f}(i) \right) [\chi_1 \cdots \chi_N (N)] \\
+  =& \frac{1}{\sqrt{N!}} \sum_{P\in S_N} (-1)^P \hat{P} \left(\sum_{i=1}^N \varepsilon_i \right) [\chi_1 \cdots \chi_N (N)] \\
+  =& \left(\sum_{i=1}^N \varepsilon_i \right) \ket{\Psi_0}
+\end{align*}
+$$
 
 
-Since the spin orbitals satisfying the 
+The the Hartree-Fock reference determinant is an eigenstate of the zero-order Hamiltonian with eigenvalue
 
+$$
+  E_0^{(0)} = \sum_{i=1}^N \varepsilon_i
+$$
 
-of spin orbitals. The Slater determinant $\ket{\Psi_0}$ formed from the $N$ spin orbitals $\chi_a$ with the lowest orbital energies, is the Hartree-Fock approximation to the ground state. There are however, many other determinants that can be formed from the set $\set{\chi_i}$. A particular subset consits a singly excited determinant $\ket{\Psi_a^p}$ obtained from $\ket{\Psi_0}$ be a isngle replacement of $\chi_a$ with $\chi_p$. In a multideterminantal representation of the exact ground state $\ket{\Phi_0}$, it is these determinants which we expect, a priori, to give the leading correction to the Hatree-Fock ground state $\ket{\Psi_0}$
+More generally, every Slater determinant constructed from the canonical Hartree-Fock spin orbitals is an eigenstate of $\hat{H}_0$ with eigenvalue equal to the sum of the orbital energies of the occupied spin orbitals in that determinant. Conequently, the determinants generated from the Hartree-Fock orbital basis form a complete orthonormal eigenbasis of $\hat{H}_0$, making $\hat{H}_0$ a natural choice for the unperturbed Hamiltonian in Rayleigh-Schrödinger perturbation theory.
 
+The exact Hamiltonian can be decomposed as $\hat{H} = \hat{H}_0 + \hat{V}$, where $\hat{H}_0$ is an unperturbed Hamiltonian, and $\hat{V}$ is a perturbation operator given by
 
-If we consider only the singly excited determinants as corrections, then the coefficients $c_a^p$ are determined from the variational principle by diagonalizing the Hamiltonian matrix in the basises of the states $\set{\Psi_0, \set{\Psi_a^p}}$. Consider for a moment the matrix eigenvalue problem involving one singly excited state
+$$
+\begin{align*}
+  \hat{V} =& \hat{H} - \hat{H}_0 \\
+  =& \sum_{i=1}^N \hat{h}(i) + \sum_{i=1}^N \sum_{j>i}^N \frac{1}{r_{ij}} - \sum_{i=1}^N \hat{f}(i) \\
+  \underbrace{=}_{\eqref{equation-16}& \sum_{i=1}^N \sum_{j>i}^N \frac{1}{r_{ij}} - \sum_{i=1}^N \hat{v}^\text{HF} (i)
+\end{align*}
+$$
 
+Thus, the perturbation is simply the difference between the Coulomb interaction and the Hartree-Fock mean field potential.
 
-The mixing of the two states depends on the off-diagonal element $\braket{\Psi_0|\hat{H}|\Psi_a^p}$. By the Slater-Condon rules, this matrix element is given by
+The exact ground-state energy is expanded as a Rayleigh-Schrödinger perturbation series
 
+$$
+  E_0 = \sum_{i=1}^\infty E_0^{(i)}
+$$
 
-which coincides with the off-diagonal elemnt of the matrix representation of the Fock operator $\hat{f}$. By definition, solving the Hartree-Fock eigenvalue problem requires the off-diagonal elements to vanish, i.e. $\braket{\chi_i|\hat{f}|\chi_j} = 0$. Solving the Hartree-Fock eigenvalue equation is therefore equivalent to ensuring that $\ket{\Psi_0}$ will not mix with any singly excited determinants. The lowest solution to $\eqref{equation-15}$ becomes
+where the first-order correction is $E_0^{(1)} = \braket{\Psi_0|\hat{H}|\Psi_0}$. Using the Hartree-Fock reference determinant as the zeroth-order wavefunction
 
+$$
+\begin{align*}
+  E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
+  =& \braket{\Psi_0|\hat{H}|\Psi_0} + \braket{\Psi_0|\hat{V}|\Psi_0} \\
+  =& \sum_i \varepsilon_i + \braket{\Psi_0|\hat{V}|\Psi_0} \\
+  =& E_0^{(0)} + E_0^{(1)}
+\end{align*}
+$$
 
-The Hartree-Fock ground state is in this sense "stable" since it cannot be improved by mixing it with singly excited determinants. We then expect doubly excited determinants $\ket{\Psi_{ab}^{pq}}$ to provide the leading corrections to $\ket{\Psi_0}$. This does not mean that there are no singly excited determinants $\ket{\Psi_a^p}$ in an exact ground state $\ket{\Phi_0}$. They can mix indirectly with $\ket{\Psi_0}$ through the doubly excited determinants by way of the matrix elements $\braket{\Psi_a^p|\hat{H}|\Psi_{ab}^{pq}}$ and $\braket{\Psi_{ab}^{pq}|\hat{H}|\Psi_0}$.
+The first-order perturbed ground-state energy is 
+
+$$
+  \braket{\Psi_0|\hat{V}|\Psi_0} = -\frac{1}{2} \sum_a \sum_b \bra{ab}\ket{ab}
+$$
+
+so that
+
+$$
+\begin{align*}
+  E_0 =& \sum_{a=1}^N \varepsilon_a - \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab} \\
+  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab}
+\end{align*}
+$$
+
+which is precisely the Hartree-Fock energy. The first-order correction therefore removes the double counting of the electron-electron interaction contained in the sum of the orbital energies.
 
 # Restriced closed-shell Hartree-Fock
