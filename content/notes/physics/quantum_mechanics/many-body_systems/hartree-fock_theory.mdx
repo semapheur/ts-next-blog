@@ -782,14 +782,13 @@ $$
 \end{align*}
 $$
 
-
 The the Hartree-Fock reference determinant is an eigenstate of the zero-order Hamiltonian with eigenvalue
 
 $$
   E_0^{(0)} = \sum_{i=1}^N \varepsilon_i
 $$
 
-More generally, every Slater determinant constructed from the canonical Hartree-Fock spin orbitals is an eigenstate of $\hat{H}_0$ with eigenvalue equal to the sum of the orbital energies of the occupied spin orbitals in that determinant. Conequently, the determinants generated from the Hartree-Fock orbital basis form a complete orthonormal eigenbasis of $\hat{H}_0$, making $\hat{H}_0$ a natural choice for the unperturbed Hamiltonian in Rayleigh-Schrödinger perturbation theory.
+More generally, every Slater determinant constructed from the canonical Hartree-Fock spin orbitals is an eigenstate of $\hat{H}_0$ with eigenvalue equal to the sum of the orbital energies of its occupied spin orbitals. Since these determinants form a complete orthonormal basis of the antisymmetric $N$-electron Hilbert space, they constitute a complete eigenbasis of $\hat{H}_0$. This makes $\hat{H}_0$ a natural choice for the unperturbed Hamiltonian in Rayleigh-Schrödinger perturbation theory.
 
 The exact Hamiltonian can be decomposed as $\hat{H} = \hat{H}_0 + \hat{V}$, where $\hat{H}_0$ is an unperturbed Hamiltonian, and $\hat{V}$ is a perturbation operator given by
 
@@ -797,44 +796,86 @@ $$
 \begin{align*}
   \hat{V} =& \hat{H} - \hat{H}_0 \\
   =& \sum_{i=1}^N \hat{h}(i) + \sum_{i=1}^N \sum_{j>i}^N \frac{1}{r_{ij}} - \sum_{i=1}^N \hat{f}(i) \\
-  \underbrace{=}_{\eqref{equation-16}& \sum_{i=1}^N \sum_{j>i}^N \frac{1}{r_{ij}} - \sum_{i=1}^N \hat{v}^\text{HF} (i)
+  \underbrace{=}_{\eqref{equation-16}}& \sum_{i=1}^N \sum_{j>i}^N \frac{1}{r_{ij}} - \sum_{i=1}^N \hat{v}^\text{HF} (i)
 \end{align*}
 $$
 
-Thus, the perturbation is simply the difference between the Coulomb interaction and the Hartree-Fock mean field potential.
+Thus, the perturbation is simply the difference between the Coulomb interaction and the Hartree-Fock mean-field potential.
 
-The exact ground-state energy is expanded as a Rayleigh-Schrödinger perturbation series
+The expectation value of $\hat{H}$ with respect to the Hartree-Fock reference determinant is
 
 $$
-  E_0 = \sum_{i=1}^\infty E_0^{(i)}
+\begin{equation*}
+\begin{split}
+  \braket{\Psi_0|\hat{H}|\Psi_0} =& \braket{\Psi_0|\hat{H}_0|\Psi_0} + \braket{\Psi_0|\hat{V}|\Psi_0} \\
+  =& \sum_{a=1}^N \varepsilon_a + \braket{\Psi_0|\hat{V}|\Psi_0}
+\end{split}
+\tag{\label{equation-17}}
+\end{equation*}
 $$
 
-where the first-order correction is $E_0^{(1)} = \braket{\Psi_0|\hat{H}|\Psi_0}$. Using the Hartree-Fock reference determinant as the zeroth-order wavefunction
+The expectation value of the perturbation is
+
+$$
+  \braket{\Psi_0|\hat{V}|\Psi_0} = \Braket{\Psi_0| \sum_{i < j}\frac{1}{r_{ij}}|\Psi_0} - \Braket{\Psi_0|\sum_{i=1}^N \hat{v}^\text{HF} |\Psi_0} \\
+$$
+
+Using the Slater-Condon rules, the first term is
+
+$$
+  \Braket{\Psi_0| \sum_{i < j}\frac{1}{r_{ij}}|\Psi_0} = \frac{1}{2} \sum_{a,b}^N \bra{ab}\ket{ab}
+$$
+
+while the second term is
 
 $$
 \begin{align*}
-  E_0 =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
-  =& \braket{\Psi_0|\hat{H}|\Psi_0} + \braket{\Psi_0|\hat{V}|\Psi_0} \\
-  =& \sum_i \varepsilon_i + \braket{\Psi_0|\hat{V}|\Psi_0} \\
-  =& E_0^{(0)} + E_0^{(1)}
+  \Braket{\Psi_0|\sum_{i=1}^N \hat{v}^\text{HF}|\Psi_0} =& \sum_{a=1}^N \Braket{a|\sum_{b=1}^N (\hat{J}_j - \hat{K}_j)|a} \\
+  =& \sum_{a,b=1}^N \bra{ab}\ket{ab}
 \end{align*}
 $$
 
-The first-order perturbed ground-state energy is 
-
-$$
-  \braket{\Psi_0|\hat{V}|\Psi_0} = -\frac{1}{2} \sum_a \sum_b \bra{ab}\ket{ab}
-$$
-
-so that
+Combining the terms gives
 
 $$
 \begin{align*}
-  E_0 =& \sum_{a=1}^N \varepsilon_a - \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab} \\
-  =& \sum_{a=1}^N \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab}
+  \braket{\Psi_0|\hat{V}|\Psi_0} =& \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab} - \sum_{a,b=1}^N \bra{ab}\ket{ab} \\
+  =& -\frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab}
 \end{align*}
 $$
 
-which is precisely the Hartree-Fock energy. The first-order correction therefore removes the double counting of the electron-electron interaction contained in the sum of the orbital energies.
+Substituting this into $\eqref{equation-17}$, we obtain
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{H}|\Psi_0} =& \sum_{a=1}^N \varepsilon_a - \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab} \\
+  =& \sum_{a=1} \braket{a|\hat{h}|a} + \frac{1}{2} \sum_{a,b=1}^N \bra{ab}\ket{ab}
+\end{align*}
+$$
+
+which is precisely the Hartree-Fock ground state energy $E_0^\text{HF} = \braket{\Psi_0|\hat{H}|\Psi_0}$. Within Rayleigh-Schrödinger perturbation theory
+
+$$
+\begin{align*}
+  E_0^{(0)} :=& \braket{\Psi_0|\hat{H}_0|\Psi_0} \\
+  E_0^{(1)} :=& \braket{\Psi_0|\hat{V}|\Psi_0}
+$$
+
+so that the Hartree-Fock energy is decomposed as
+
+$$
+  E_0^\text{HF} = E_0^{(0)} + E_0^{(1)}
+$$
+
+The exact ground-state energy admits the perturbation expansion
+
+$$
+\begin{align*}
+  E_0 =& E_0^{(0)} + E_0^{(1)} + E_0^{(2)} \cdots = E_0^\text{HF} + \sum_{n=2}^\infty E_0^{(n)}
+  =& E_0^\text{HF} + E_0^{(2)} + \cdots
+\end{align*}
+$$
+
+The second- and higher-order corrections arise from the perturbative corrections to the wavefunction and account for the electron correlation missing from the Hartree--Fock approximation.
 
 # Restriced closed-shell Hartree-Fock
