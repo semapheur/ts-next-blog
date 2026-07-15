@@ -883,16 +883,18 @@ The second- and higher-order corrections arise from the perturbative corrections
 
 # Restriced closed-shell Hartree-Fock
 
-A restricted set of spin orbitals has the form
+A restricted Hartree-Fock (RHF) wavefunction is constructed from spin orbitals that have the form
 
 $$
   \chi_i (\mathbf{x}) = \begin{cases}
     \psi_j (\mathbf{r}) \alpha(\omega) \\
     \psi_j (\mathbf{r}) \beta(\omega)
-  \end{cases}
+  \end{cases},\quad a = 1,\dots,N/2
 $$
 
-and the closed-sheel restricted ground state is written
+where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes the combined spatial and spin coordinate.
+
+In the closed-shell restricted Hartree-Fock ground state, every occupied spatial orbital is doubly occupied by one $\alpha$-spin and one $\beta$-spin electron
 
 $$
 \begin{align*}
@@ -901,24 +903,42 @@ $$
 \end{align*}
 $$
 
-We seek to convert the general spin orbital Hartree-Fock equation
+where $\psi_a := \psi_a \alpha$ and $\bar{\psi}_a = \psi_a \beta$ denotes spin orbitals with $\alpha$ and $\beta$ spin functions, respectively.
+
+Our goal is to reduce the closed-shell Hartree-Fock equation
 
 $$
+\begin{equation*}
   \hat{f}(\mathbf{x}_1) \chi_i (\mathbf{x}_1) = \varepsilon_i \chi_i (\mathbf{x}_1)
+\tag{\label{equation-19}}
+\end{equation*}
 $$
 
-to spatial eigenvalue equation where each of the occupied spatial molecular orbitals $\set{\psi_a}_{a=1}^{N/2}$ is doubly occupied.
+to an eigenvalue involving only the spatial orbitals.
 
-Assume the spin orbital $\chi_i (\mathbf{x}_1)$ has the $\alpha$ spin function; the case for $\beta$ is analogous. In this case the Hartree-Fock equations become
-
-$$
-  \hat{f}(\mathbf{x}_1) \psi_j (\mathbf{r}_1) \alpha(\omega_1) = \varepsilon_j \psi_j (\mathbf{r}_1) \alpha(\omega_1)
-$$
-
-where $\varepsilon_j$, the energy of the spatial orbital $\psi_j$ is identical with $\varepsilon_i$, the energy of the spin orbital $\chi_i$. Multiplying on the left by $\alpha^* (\omega_1)$ and integrating over spin gives
+Suppose $\chi_i$ and an $\alpha$-spin orbital (the derivation for a $\beta$-spin orbital is identical)
 
 $$
-  \left(\int \d\omega_1 \alpha^* (\omega_1) \hat{f}(\mathbf{x}_1) \alpha(\omega_1) \right)\psi_j (\mathbf{r}_1) = \varepsilon_j \psi_j (\mathbf{r}_1)
+  \chi_i (\mathbf{x}_1) = \psi_j (\mathbf{r}) \alpha(\omega)
+$$ 
+
+In this case, the Hartree-Fock equation $\eqref{equation-19}$ become
+
+$$
+  \hat{f}(\mathbf{x}_1) \psi_i (\mathbf{r}_1) \alpha(\omega_1) = \varepsilon_i \psi_i (\mathbf{r}_1) \alpha(\omega_1)
+$$
+
+Since the two spin orbitals associated with the same spatial orbital are degenerate, the corresponidng spatial orbital has the same orbital energy, i.e. $\varepsilon_{\psi_i} = \varepsilon_{\bar{\psi}_i}$.
+
+The spatial orbital energy $\varepsilon_j$ is identical to the spin orbital energy, because the two spin orbitals associated with the same spatial orbital are degenerate.
+
+Multiplying on the left by $\alpha^* (\omega_1)$ and integrating over the spin coordinate yields
+
+$$
+\begin{align*}
+  \left(\int \d\omega_1 \alpha^* (\omega_1) \hat{f}(\mathbf{x}_1) \alpha(\omega_1) \right)\psi_j (\mathbf{r}_1) =& \varepsilon_j \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 \alpha^* (\omega_1) \alpha (\omega_1)}_{=\braket{\alpha|\alpha} = 1} \\
+  =& \varepsilon_j \psi_j (\mathbf{r}_1)
+\end{align*}
 $$
 
 Using the form $\eqref{equation-18}$ for the Fock operator, the left-hand side becomes
@@ -929,6 +949,15 @@ $$
   =& \left(\int \d\omega_1 \alpha^* (\omega_1) \hat{h}(\mathbf{x}_1) \alpha(\omega_1) \right)\psi_j (\mathbf{r}_1) \\
   &+ \left(\sum_c \int \d\omega_1 \;\d\mathbf{x}_2  \alpha^* (\omega_1) \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} (1 - \hat{p}_{12}) \chi_c (\mathbf{x}_2) \alpha(\omega_1) \right) \psi_j (\mathbf{r}_j) \\
   =& \varepsilon_j \psi_j (\mathbf{r}_1)
+\end{align*}
+$$
+
+Since the one-electron operator $\hat{h}(\mathbf{r}_1)$ is independent of spin, the first integral term is
+
+$$
+\begin{align*}
+  \int \d\omega_1 \alpha^* (\omega_1) \hat{h}(\mathbf{r}_1) \alpha(\omega_1) =& \hat{h}(\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \\
+  =& \hat{h}(\mathbf{r}_1)
 \end{align*}
 $$
 
@@ -949,27 +978,21 @@ $$
 \end{align*}
 $$
 
-where we have used that
+In a closed-shell determinant, every occupied spatial orbital contributes one $\alpha$- and one $\beta$-spin electron, so that that the sum over spin is partitioned unto
 
 $$
-  \int \d\omega_1 \alpha^* (\omega_1) \hat{h}(\mathbf{r}_1) \alpha(\omega_1) = \hat{h}(\mathbf{r}_1)
+  \sum_c^N \chi_c = \sum_c^{N/2} \psi_c \alpha + \sum_c^{N/2} \psi_c \beta
 $$
 
-In a closed-shell configuration, the sum over occupied spin orbitals includes an equal sum over those with the $\alpha$ spin function and those with the $\beta$ spin function
-
-$$
-  \sum_c^N \to \sum_c^{N/2} + \sum_c^{N/2}
-$$
-
-and therefore
+Using orthonormality of the spin functions, we get
 
 $$
 \begin{align*}
   \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \\
-  &+ \sum_c^{N/2} \int \d\omega_1 \;\d\omega_2 \;\d\mathbf{r}_2 \alpha^* (\omega_1) \psi_c^* (\mathbf{r}_2) \alpha^* (\oemga_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \alpha(\omega_2) \alpha(\omega_1) \psi_j (\mathbf{r}_1) \\
-  &+ \sum_c^{N/2} \int \d\omega_1 \;\d\omega_2 \;\d\mathbf{r}_2 \alpha^* (\omega_1) \psi_c^* (\mathbf{r}_2) \beta^* (\oemga_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \beta(\omega_2) \alpha(\omega_1) \psi_j (\mathbf{r}_1) \\
-  &- \sum_c^{N/2} \int \d\omega_1 \;\d\omega_2 \;\d\mathbf{r}_2 \alpha^* (\omega_1) \psi_c^* (\mathbf{r}_2) \alpha^* (\oemga_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \alpha(\omega_1) \alpha(\omega_2) \psi_j (\mathbf{r}_1) \\
-  &- \sum_c^{N/2} \int \d\omega_1 \;\d\omega_2 \;\d\mathbf{r}_2 \alpha^* (\omega_1) \psi_c^* (\mathbf{r}_2) \beta^* (\oemga_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \beta(\omega_1) \alpha(\omega_2) \psi_j (\mathbf{r}_1) \\
+  &+ \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\alpha(\omega_2)|^2}_{=1} \\
+  &+ \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\beta(\omega_2)|^2}_{=1} \\
+  &- \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\alpha(\omega_2)|^2}_{=1}\\
+  &- \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 \alpha^* (\omega_1) \beta(\omega_1)}_{=0} \underbrace{\int \d\omega_2 \beta^*(\omega_2) \alpha(\omega_2)}_{=0}\\
   =& \varepsilon_j \psi_j (\mathbf{r}_1)
 \end{align*}
 $$

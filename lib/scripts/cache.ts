@@ -246,6 +246,7 @@ async function indexNotes() {
     }
   }
 
+  walkDir(notesDir);
   return result;
 }
 (async () => {
