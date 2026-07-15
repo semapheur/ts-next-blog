@@ -9,7 +9,7 @@ references:
 
 # The Hartree-Fock equations
 
-Let $\mathbf{x} = (\mathbf{r}, \omega)$ denote combined spatial and spin coordinates. With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
+Let $\mathbf{x} = (\mathbf{r}, \omega)$ denote combined spatial and spin coordinates. With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^N$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
 
 $$
   \Psi_0 = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)]
@@ -130,7 +130,7 @@ Except for atoms and highly symmetric systems, the Hartree-Fock equations cannot
 Let $\tilde{\Phi}$ be a trial wavefunction in the domain of the electronic Hamiltonian $\hat{H}$. The corresponding energy is define by the Rayleigh quotient
 
 $$
-  E[\tilde{\Phi}] =& \frac{\braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}}}{\braket{\tilde{\Phi}|\tilde{\Phi}}}
+  E[\tilde{\Phi}] = \frac{\braket{\tilde{\Phi}|\hat{H}|\tilde{\Phi}}}{\braket{\tilde{\Phi}|\tilde{\Phi}}}
 $$
 
 Thus, $E[\tilde{\Phi}]$ is a functional: its value depends on the entire function $\tilde{\Phi}$, rather than on the value of an independent variable. If the trial wavefunction is normalized, $\braket{\tilde{\Phi}|\tilde{\Phi}}$, the energy functional reduces to
@@ -242,8 +242,10 @@ Because $L$ is real-valued and $\braket{i|j} = \braket{j|i}^*$, the matrix of La
 Minimization of $E_0$, subject to the orthonormality constraints, is thus obtained by solving $\delta L = 0$. Treating the spin orbitals and their complex conjugates as independent variables, we consider arbitrary infinitesimal variations
 
 $$
+\begin{align*}
   \chi_i \to& \chi_i + \delta\chi_i \\
   \chi_i^* \to& \chi_i^* + \delta\chi_i^*
+\end{align*}
 $$
 
 Taking the first variation of $\eqref{equation-2}$, we impose
@@ -300,10 +302,10 @@ $$
 Using definitions $\eqref{equation-3}$ and $\eqref{equation-4}$ for the Coulomb and exchange operators, respectively, we can write this variation in the form
 
 $$
-\begin{equation*}
+\begin{align*}
   \delta L =& \sum_{j=1}^N \int \delta\chi_i^* (1) \left(\hat{h}(1) + \sum_{j=1}^N [\hat{J}_j (1) - \hat{K}_j (1)] \right) \;\d\mathbf{x}_1 \\
   &- \sum_{i,j=1}^N \varepsilon_{ji} \int \delta\chi_i^* (1) \chi_j (1) \;\d\mathbf{x}_1 + \text{c.c} = 0
-\end{equation*}
+\end{align*}
 $$
 
 Since the variations $\delta\chi_i^* (1)$ are arbitrary, the fundamental lemma of variational calculus implies that
@@ -389,7 +391,7 @@ $$
 \begin{align*}
   \sum_i \hat{J}'_i (1) =& \sum_j \int \chi_j^* (2) \frac{1}{r_{12}} \chi_j (2) \;\d\mathbf{x}_2 \\
   =& \sum_j \hat{J}_j (1)
-\end{*}
+\end{align*}
 $$
 
 showing that the total Coulomb operator is invariant under unitary transformations of the occupied spin orbitals. Similarly, for an arbitrary spin orbital $\varphi$, the transformed total exchange operator under $\mathbf{U}$ satisfies
@@ -997,7 +999,7 @@ $$
 \end{align*}
 $$
 
-We can now perform the integrations over $\d\omega_1$ and $\d\omega_2$. The last term disappears because of spin orthogonality. This reflects the fact that there is only an exchange interaction between electrons of parallel spin. The two Coulomb terms are equal and thus we obtain
+We can now perform the integrations over $\d\omega_1$ and $\d\omega_2$. The last term disappears because of spin orthogonality, $\braket{\alpha|\beta} = 0$. This reflects the fact that there is only an exchange interaction between electrons of parallel spin. The two Coulomb terms are equal and thus we obtain
 
 $$
 \begin{align*}
@@ -1008,7 +1010,7 @@ $$
 \end{align*}
 $$
 
-The closed-shell Fock operator thus has the form
+The closed-shell Fock operator therefore has the form
 
 $$
   \hat{f}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1) + \sum_a^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) (2 - \hat{p}_{12}) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2)
@@ -1029,7 +1031,7 @@ $$
 \end{align*}
 $$
 
-The closed-shell Hartree-Fock energy $E_0^\text{HF} = \braket{\Psi_0|\hat{H}|\Psi_0}$ is given by
+By the Slater-Condon rules for spatial orbitals, the closed-shell Hartree-Fock energy $E_0^\text{HF} = \braket{\Psi_0|\hat{H}|\Psi_0}$ is given by
 
 $$
 \begin{align*}
@@ -1047,5 +1049,88 @@ $$
 \end{align*}
 $$
 
+## Roothan equations
+
+By introducing a finite set of known spatial basis functinos, the spatial Hartree-Fock equations
+
+$$
+\begin{equation*}
+  \hat{f}(\mathbf{r}_1) \psi_i (\mathbf{r}_1) = \varepsilon_i \psi_i (\mathbf{r}_i)
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+can be converted into a finite-dimensional matrix eigenvalue problem. Let $\set{\phi_\mu (\mathbf{r})}_{\mu=1}^K$ be a finite set of linearly independent basis functions spanning a $K$-dimensional subspace of the one-electron Hilbert space. Each molecular orbital is approximated by the linear combination
+
+$$
+\begin{equation*}
+  \psi_i = \sum_{\mu=1}^K C_{\mu i} \phi_i,\, i=1,\dots,K
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where the coefficients $C_{\mu i}$ are unknown.
+
+If the basis were complete $(K\to\infty)$, this expansion could represent any square-integrable orbital exactly. In practice, however, only a finite basis can be used, so the expansion is restricted to the subspace spanned by $\set{\phi_\mu}$. Thus, the Hartree-Fock orbitals obtained from $\eqref{equation-20}$ are the best approximation within this subspace. In complete basis set limit, the approximate molecular orbitals converge to the exact Hartree-Fock orbitals.
+
+We can obtain a matrix equation for $C_{\mu i}$ by substituting the linear expansion $\eqref{equation-20}$ in to the Hartree-Fock equation $\eqref{equation-21}$
+
+$$
+  \hat{f}(1) \sum_{\nu=1}^K C_{\nu,i} \phi_\nu (1) = \varepsilon_i \sum_{\nu=1}^K C_{\nu i} \phi_\nu (1)
+$$
+
+By multiplying by $\phi_\mu^* (1)$ on the left and integrating, we turn the integro-differential equation into a matrix equation
+
+$$
+\begin{equation*}
+  \sum_{\nu=1}^K C_{\nu i} \int \d\mathbf{r}_1 \; \phi_\mu^* (1) \hat{f}(1) \phi_\nu (1) = \varepsilon_i \sum_{\nu=1}^K C_{\nu,i} \int \d\mathbf{r}_1 \; \phi_\nu^* (1) \phi_\nu (1)
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+To simplify the notation, we define two matrices:
+1. The overlap matrix $\mathbf{S} \in\mathcal{M}_K (\mathbb{C})}$ has elements
+$$
+\begin{equation*}
+  S_{\mu\nu} = \braket{\phi_\mu|\phi_\nu} = \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \phi_\nu (\mathbf{r})
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+and is Hermitian, satisfying $S_{\mu\nu} = S_{\nu\mu}^*$. Provided the basis functions are linearly independent, it is positive definite. If the basis functions are individually normalized, the diagonal elements satisfy $S_{\mu\mu} = 1$, while the off-diagonal elements satisfy $|S_{\mu\nu}| < 1$ for $\mu\neq\nu$.
+
+Near-linear dependence among the basis functions is reflected by one or more eigenvalues of $\mathbf{S}$ approaching zero. Since $\mathbf{S}$ defines the inner product in the finite basis representation, it is often referred to as the metric matrix.
+
+2. The Fock matrix $\mathbf{F} \in\mathcal{M}_K (\mathbb{C})$ has elements
+$$
+\begin{equation*}
+  F_{\mu\nu} = \braket{\phi_\mu|\hat{f}|\phi_\nu} = \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \hat{f}(\mathbf{r}) \phi_\mu (\mathbf{r})
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+and is simply the matrix representation of the Fock operator in the chosen basis. Because $\hat{f}$ is Hermition, it follows that $\mathbf{F}$ is Hermitian, i.e. $F_{\mu\nu} = F_{\nu\mu}^*$.
+
+With the matrix definitions $\eqref{equation-23}$ and $\eqref{equation-24}$ the integrated Hatree-Fock equation $\eqref{equation-22}$ takes the form
+
+$$
+  \sum_{\nu=1}^N F_{\mu\nu} C_{\mu i} = \varepsilon_i \sum_{\nu=1}^N S_{\mu\nu} C_{\nu i},\, i=1,\dots,K
+$$
+
+These are the Roothan equations, which can be written more compactly as the single matrix equation
+
+$$
+  \mathbf{FC} = \mathbf{SC}\boldsymbol{\varepsilon}
+$$
+
+where $\mathbf{C}$ is a $K\times K$ square matrix of the expansion coefficients $C_{\mu i}$ and $\boldsymbol{\varepsilon} = \operatorname{diag}(\varepsilon_1,\dots,\varepsilon_K)$ is a diagonal matrix of the orbital energies.
+
+This is a generalized Hermitian eigenvalue problem because the basis functions are generally nonorthogonal, i.e. $\mathbf{S} \neq \mathbf{I}_K$. If the basis is orthonormal, $\mathbf{S} = \mathbf{I}_K$, the equations reduce to the ordinary eigenvalue problem
+
+$$
+  \mathbf{FC} = \mathbf{C}\boldsymbol{\varepsilon}
+$$
+
+## Charge density
 
 # Unrestricted open-shell Hartree-Fock
