@@ -1133,7 +1133,15 @@ $$
 
 ## Charge density
 
-Consider an electron described by a spatial wavefunction $\psi_a (\mathbf{r})$. The probability of finding that electron within a volume element $\d\mathbf{r}$ is $|\psi_a (\mathbf{r})|^2 \;\d\mathbf{r}$ such that the charge density is $|\psi_a (\mathbf{r})|^2$. In a closed-shell molecule described by a Slater determinant with each occupied spatial orbital $\psi_a$ contains two electrons, the total charge density is
+Consider a single electron occupying a normalized spatial orbital $\psi_a (\mathbf{r})$. The probability of finding the electron within the infinitesimal volume element $\d\mathbf{r}$ centered at $\mathbf{r}$ is $|\psi_a (\mathbf{r})|^2 \;\d\mathbf{r}$ where
+
+$$
+  \int |\psi_a (\mathbf{r})|^2 \;\d\mathbf{r} = 1
+$$
+
+The quantity $|\psi_a (\mathbf{r})|^2$ is therefore the probability denisty associated with the orbital $\psi_a$.
+
+For a closed Hartree-Fock determinant, every occupied spatial orbital contains two electrons of opposite spin. The total electron density is therefore
 
 $$
 \begin{equation*}
@@ -1142,7 +1150,27 @@ $$
 \end{equation*}
 $$
 
-such that $\rho(\mathbf{r})\;\d\mathbf{r}$ is the probability of finding an electron in $\d\mathbf{r}$ at $\mathbf{r}$. The integral of this charge density is just the total number of electrons
+where $N$ is the total number of electrons,
+
+<details>
+<summary>Proof</summary>
+
+Define the density operator
+
+$$
+  \hat{\rho}(\mathbf{r}) = \sum_{i=1}^N \delta(\mathbf{r}_i - \mathbf{r})
+$$
+
+The charge density is given by the expectation value
+
+$$
+\begin{align*}
+  \hat{\rho}(\mathbf{r}) = \braket{\Psi_0|\hat{\rho}(\mathbf{r})|\Psi_0}
+\end{align*}
+$$
+</details>
+
+Consequently, $\rho(\mathbf{r}) \;\d\mathbf{r}$ is the expected number of electrons contained in the volume element $\d\mathbf{r}$. Unlike a probability density, the electron density integrates to the total number of electrons
 
 $$
 \begin{align*}
@@ -1151,26 +1179,33 @@ $$
 \end{align*}
 $$
 
-For a single determinant, these equations show that the total charge density is just a sum of cherge densities for each of the electrons.
+For a single Slater determinant, the total electron density is simply the sum of the densitites associated with the occupied molecular orbitals.
 
 Substituting the molecular orbital expansion $\eqref{equation-20}$ into $\eqref{equation-25}$, we get
 
 $$
 \begin{align*}
   \rho(\mathbf{r}) =& 2\sum_{a=1}^{N/2} \psi_a^* (\mathbf{r}) \psi_a (\mathbf{r}) \\
-  =& 2 \sum_{a=1}^{N/2} \sum_{\nu=1}^{N/2} C_{\nu a}^* \phi_\nu^* (\mathbf{r}) \sum_{\mu=1}^{N/2} C_{\mu a} \phi_\mu (\mathbf{r}) \\
-  =& \sum_{\mu,\nu=1}^{N/2} \left(2 \sum_{a=1}^{N/2} C_{\mu a} C_{\nu a}^* \right) \phi_\mu (\mathbf{r}) \phi_\nu^* (\mathbf{r}) \\
-  =& \sum_{\mu,\nu=1}^{N/2} P_{\mu\nu} \phi_\mu (\mathbf{r}) \phi_\nu^* (\mathbf{r})
+  =& 2 \sum_{a=1}^{N/2} \sum_{\mu=1}^K C_{\mu a}^* \phi_\mu^* (\mathbf{r}) \sum_{\nu=1}^K C_{\nu a} \phi_\nu (\mathbf{r}) \\
+  =& \sum_{\mu,\nu=1}^K \left(2 \sum_{a=1}^{N/2} C_{\mu a} C_{\nu a}^* \right) \phi_\mu^* (\mathbf{r}) \phi_\nu (\mathbf{r}) \\
 \end{align*}
 $$
 
-where we have defined a density matrix, also called charge-density bond-order matrix, $\mathbf{P}$ with elements
+This motivates the definition of the closed-shell density matrix, also called charge-density bond-order matrix, $\mathbf{P}$ with elements
 
 $$
+\begin{align*}
   P_{\mu\nu} = 2 \sum_{a=1}^{N/2} C_{\mu a} C_{\nu a}^*
+\end{align*}
 $$
 
-Given a set of known basis functions $\set{\phi_\mu}$, the matrix $\mathbf{P}$ specifies completely the charge density $\rho(\mathbf{r})$. It is direcltl related to the expansion coefficients $\mathbf{C}$ and we can characterized the results of closed-shell Hartree-Fock calculations by either $\mathbf{C}$ or $\mathbf{P}$.
+so that
+
+$$
+  \rho(\mathbf{r}) = \sum_{\mu,\nu=1}^K P_{\mu\nu} \phi_\mu^* (\mathbf{r}) \phi_\nu (\mathbf{r})
+$$
+
+Since $P_{\mu\nu} = P_{\nu\mu}^*$, the density matrix $\mathbf{P}$ is Hermitian. It is the matrix representation of the one-particle reduced density operator in the atomic-orbital basis and completely determines the electron density within the finite basis. A closed-shell Hartree-Fock wavefunction can therefore be represented equivalently by the molecular-orbital coefficient matrix $\mathbf{C}$ or by the density matrix $\mathbf{P}$, since $\mathbf{P} = 2\mathbf{C}_\text{occ} \mathbf{C}_\text{occ}^\dagger$ from $\eqref{equation-26}$
 
 In terms of $\mathbf{P}$, the Fock operator can be expressed as
 
