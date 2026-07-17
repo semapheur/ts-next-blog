@@ -238,7 +238,7 @@ async function indexNotes() {
         const tokens = tokenize(content);
         const xor8 = XorFilter.create([...new Set(tokens)]);
         result.push({
-          slug: `${relativePath}/${item.name.replace(".mdx", "")}`,
+          slug: relativePath.replace(".mdx", ""),
           title: metaData.title,
           filter: xor8.saveAsJSON(),
         });
