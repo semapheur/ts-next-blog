@@ -1131,7 +1131,7 @@ $$
   \mathbf{FC} = \mathbf{C}\boldsymbol{\varepsilon}
 $$
 
-## Charge density
+## Electron density
 
 Consider a single electron occupying a normalized spatial orbital $\psi_a (\mathbf{r})$. The probability of finding the electron within the infinitesimal volume element $\d\mathbf{r}$ centered at $\mathbf{r}$ is $|\psi_a (\mathbf{r})|^2 \;\d\mathbf{r}$ where
 
@@ -1153,20 +1153,73 @@ $$
 where $N$ is the total number of electrons,
 
 <details>
-<summary>Proof</summary>
+<summary>Details</summary>
 
-Define the density operator
+For an $N$-electron system, define the one-electron density operator
 
 $$
   \hat{\rho}(\mathbf{r}) = \sum_{i=1}^N \delta(\mathbf{r}_i - \mathbf{r})
 $$
 
-The charge density is given by the expectation value
+where $\delta(\mathbf{r} - \mathbf{r}_i)$ is the Dirac delta distribution acting on the spatial coordinate of $i$th electron.
+
+The electron density is given by the expectation value of $\hat{\rho}$ with respect to the closed-shell Hartree-Fock ground state $\ket{\Psi_0} = \ket{\chi_1 \cdots \chi_N}$
 
 $$
 \begin{align*}
-  \hat{\rho}(\mathbf{r}) = \braket{\Psi_0|\hat{\rho}(\mathbf{r})|\Psi_0}
+  \hat{\rho}(\mathbf{r}) =& \braket{\Psi_0|\hat{\rho}(\mathbf{r})|\Psi_0} = \Braket{\Psi_0|\sum_{i=1}^N \delta(\mathbf{r}_i - \mathbf{r})|\Psi_0} \\
+  =& \sum_{i=1}^N \braket{\Psi_0|\delta(\mathbf{r}_i - \mathbf{r})|\Psi_0}
 \end{align*}
+$$
+
+Applying the Slater-Condon rule for a one-electron operator gives
+
+$$
+\begin{align*}
+  \rho(\mathbf{r}) =& \sum_{i=1}^N \braket{\Psi_0|\delta(\mathbf{r}_i - \mathbf{r})|\Psi_0} \\
+  =& \sum_{p=1}^N \braket{\chi_p|\delta(\unitvec{r} - \mathbf{r})|\chi_p} 
+\end{align*}
+$$
+
+In a closed-shell determinant, each occupied spatial orbital $\psi_a$ contributes one $\alpha$-spin and one $\beta$-spin electron
+
+$$
+  \set{\chi_p}_{p=1}^N = \set{\psi_a \alpha, \psi_a \beta}_{a=1}^{N/2}
+$$
+
+so that
+
+$$
+\begin{align*}
+  \rho(\mathbf{r}) = \sum_{p=1}^N \braket{\chi_p|\delta(\unitvec{r} - \mathbf{r})|\chi_p}
+  =& \sum_{a=1^}^{N/2} \braket{\psi_a \alpha|\delta(\unitvec{r} - \mathbf{r})|\psi_a \alpha} \\
+  &+ \sum_{a=1^}^{N/2} \braket{\psi_a \beta|\delta(\unitvec{r} - \mathbf{r})|\psi_a \beta}
+\end{align*}
+$$
+
+Since the position operator acs only on the spatial orbitals and the spin functions are orthonormal
+
+$$
+  \braket{\alpha|\alpha} = \braket{\beta|\beta} = 1
+$$
+
+both sums are identical, resulting in
+
+$$
+  \rho(\mathbf{r}) = 2\sum_{a=1}^{N/2} \braket{\psi_a |\delta(\unitvec{r} - \mathbf{r})|\psi_a}
+$$
+
+By the defining property of the Dirac delta function
+
+$$
+  \braket{\psi_a |\delta(\unitvec{r} - \mathbf{r})|\psi_a} =& \int \d\mathbf{r}' \; \psi_a^* (\mathbf{r}') \delta(\mathbf{r}' - \mathbf{r}) \psi_a (\mathbf{r}') \\
+  =& |\psi_a (\mathbf{r})|^2
+$$
+
+leading to
+
+$$
+  \rho(\mathbf{r}) = 2\sum_{a=1}^{N/2} |\psi_a (\mathbf{r})|^2
 $$
 </details>
 
