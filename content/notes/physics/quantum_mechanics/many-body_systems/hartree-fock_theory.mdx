@@ -407,7 +407,7 @@ $$
 
 Since this holds for every spin orbital $\varphi$, the total exchange operator is invariant under unitary transformations. 
 
-These results implies that the Fock operator is invariant under arbitrary unitary transformations of the spin orbitals, i.e. $f' = f$.
+These results implies that the Fock operator is invariant under arbitrary unitary transformations of the spin orbitals, i.e. $\hat{f}' = \hat{f}$.
 
 It remains to determine the effect of the unitary transformation on the Lagrange multipliers. Taking the inner product of $\eqref{equation-7}$ with $\ket{\chi_k}$ yields the expectation value
 
@@ -1625,5 +1625,130 @@ $$
 Typical values such as $\delta_P = 10^{-4}$ produce total electronic energies converged to approximately $10^{-6}$ Hartree.
 
 ## Expectation values and population analysis
+
+The eigenvalues of the orthonormalized Fock matrix $\mathbf{F}'$ are the Hartree-Fock orbital energies collected in the diagonal matrix $\boldsymbol{\varepsilon}$. By Koopmans' theorem, the occupied orbital energies $\varepsilon_a$ provide estimates for ionization potentials, while the virtual orbital energies $\varepsilon_p$ provide estimates for electron affinities. The values of $-\varepsilon_a$ often gives a reasonable approximation to the observed ionization potentials. In contrast, $-\varepsilon_p$ generally do not give reliable estimates of electron affinities, even at a qualitative level.
+
+The Hartree-Fock electronic energy is the expectation value $E_0 = \braket{\Psi_0|\hat{H}|\Psi_0}$, which for a restricted closed-shell determinant is given in the molecular orbital basis as
+
+$$
+  E_0 = 2 \sum_{a=1}^{N/2} h_{aa} + \sum_{a,b=1}^{N/2} 2J_{ab} - K_{ab}
+$$
+
+With definition $\eqref{equation-28}$ of the Fock operator, we have
+
+$$
+  \varepsilon_a = f_{aa} = h_{aa} + \sum_{b=1}^{N/2} 2J_{ab} K_{ab}
+$$
+
+so that the energy can be written as
+
+$$
+\begin{align*}
+  E_0 =& \sum_{a=1}^{N/2} h_{aa} + f_{aa} \\
+  =& \sum_{a=1}^{N/2} h_{aa} + \varepsilon_a
+\end{align*}
+$$
+
+Substituting the molecular orbital expansion $\eqref{equation-20}$ into this expression, we obtain a formula for the energy
+
+$$
+  E_0 = \frac{1}{2} \sum_{\mu, \nu} P_{\mu\nu} (h_{\mu\nu} + F_{\mu\nu})
+$$
+
+Since this expression depends only the electron density $\mathbf{P}$ and Fock matrix $\mathbf{F}$, it can be evaluated at every stage of the SCF iteration.
+
+If the Hartree-Fock energy $E_0$ is calculated using the same electron density matrix $\mathbf{P}$ as was used to form the Fock matrix $\mathbf{F}$, then $E_0$ will be an upper bound to the true ground state energy. Thus, the converged SCF solution is the lowest-energy stationary point of the Hartree-Fock energy functional in that basis. However, strict monotonic convergence is not guaranteed during SCF iterations without additional convergence control techniques. 
+
+Adding the classical nuclear-nuclear repulsion to the electronic energy $E_0$, we obtain the total Born-Oppenheimer energy
+
+$$
+  E_\text{BO} = E_0 + \sum_A \sum_{B > A} \frac{Z_A Z_B}{|\mathbf{R}_A - \mathbf{R}_B|}
+$$
+
+This quantity defines the Born-Oppenheimer potential energy surface and is often the primary quantity of interes in electronic structure calculations. In particular, equilibrium molecular geometries correspond to stationary points, typically minima, of $E_\text{BO}$ with respect to the nuclear coordinates.
+
+Many molecular observables, including dipole moment, quadrupole moment, electric field gradients at nuclei, and diamagnetic susceptibility, are represented by one-electron operators of the general form
+
+$$
+  O_1 = \sum_{i=1}^N \hat{q}(i)
+$$
+
+where $\hat{q}(i)$ acts on the coordines of the $i$th electron.
+
+By the Slater-Condon rules, the expectation value of any one-electron operator with repsect to a restricted closed-shell Hartree-Fock determinant $\Psi_0$ is
+
+$$
+  \braket{\Psi_0|\hat{O}_1|\Psi_0} = 2 \sum_{a=1}^{N/2} (\psi_a|\hat{q}|\psi_a)
+$$
+
+Substituting the molecular orbital expansion $\eqref{equation-20}$, the expectation value takes the form
+
+$$
+\begin{align*}
+  \braket{\Psi_0|\hat{O}_1|\Psi_0} =& 2 \sum_{a=1}^{N/2} \left(\sum_{\mu,\nu=1}^K C_{\mu a} C_{a \nu}^* \right) \braket{\phi_\mu|\hat{q}|\phi_\nu} \\
+  =& \sum_{\mu,\nu} P_{\mu\nu} (\phi_\nu|\hat{q}|\phi_\mu)
+\end{align*}
+$$
+
+Once the density matrix $\mathbf{P}$ has been determined, the evaluation of any one-electron expectation value reduces to the computation of the matrix elements $q_{\mu\nu} = (\phi_\mu|\hat{q}|\phi_\nu)$ and a contraction with $\mathbf{P}$.
+
+The electron density
+
+$$
+  \rho(\mathbf{r}) = \sum_{\mu,\nu} P_{\mu\nu} \phi_\mu (\mathbf{r}) \phi_\nu^* (\mathbf{r})
+$$
+
+describes the spatial distribution of the electronic charge and is typically visualized through contour plots or isosurfaces. Although there is no unique way of partitioning the electron density among the atoms in a molecule, several population analyses have been proposed. Since
+
+$$
+  N = 2 \sum_{a=1}^{N/2} \underbrace{\braket{\psi_a|\psi_a}}_{=1}
+$$
+
+partitions the total number of electrons into two electrons per molecular orbital, by substituting the basis expansion $\eqref{equation-20}$ of $\psi_a$, we obtain
+
+$$
+\begin{align*}
+  N =& 2 \sum_{a=1}^{N/2} \left(\sum_{\mu,\nu=1}^K C_{\mu a} C_{a \nu}^* \right) \braket{\phi_\mu|\phi_\nu} \\
+  =& \sum_{\mu,\nu} P_{\mu\nu} S_{\nu\mu} \\
+  =& \sum_\mu (\mathbf{PS})_{\mu\mu} = \operatorname{tr}(\mathbf{PS})
+\end{align*}
+$$
+
+where $S_{\mu\nu} = \mathbf{S}$ is the overlap matrix. Mulliken population analysis interprets the diagonal element $(\mathbf{PS})_{\mu\mu}$ as the electronic populations associated with the basis functions, i.e. the number of electrons to be associated with $\phi_\mu$. The gross atomic population of atom $A$ is obtained by summing over all basis functions centered on that atom
+
+$$
+  N_A = \sum_{\mu\in A} (\mathbf{PS})_{\mu\mu}
+$$
+
+giving the Mulliken atomic charge $q_A = Z_A - N_A$.
+
+Since the trace is invariant under cyclic permutations, $\operatorname{tr}(\mathbf{AB}) = \operatorname{tr}(\mathbf{BA})$, it follows more generally that
+
+$$
+  N = \sum_\mu (\mathbf{S}^\alpha \mathbf{PS}^{1-\alpha})_{\mu\mu},\, \alpha\in\R
+$$
+
+With $\alpha = 1/2$, we have
+
+$$
+  N = \sum_\mu (\mathbf{S}^{1/2} \mathbf{PS}^{1/2})_{\mu\mu} = \sum_\mu \mathbf{P}'_{\mu\mu}
+$$
+
+where $\mathbf{P}'$ is the density matrix in terms of a symmetrically orthogonal basis set
+
+$$
+\begin{align*}
+  \rho(\mathbf{r}) =& \sum_{\mu,\nu} P'_{\mu\nu} \phi'_\mu (\mathbf{r}) {\phi'_\nu}^* (\mathbf{r}) \\
+  \phi'_\mu (\mathbf{r}) =& \sum_\nu (\mathbf{S}^{-1/2})_{\nu\mu} \phi_\nu (\mathbf{r})
+\end{align*}
+$$
+
+The diagonal elements of $\mathbf{P}'$ define the Löwdin population analysis
+
+$$
+  q_A = Z_A - \sum_{\mu\in A} (\mathbf{S}^{1/2} \mathbf{PS}^{1/2})_{\mu\mu}
+$$
+
+Neither Mulliken nor Löwdin populations correspond to uniquely defined physical observables; both depend on the chosen basis set. Nevertheless, when the same balanced basis set is employed across a series of related molecules, these analyses often provide a useful qualitative insight into trends in charge distributions. Their basis dependence can be illustrated by the extreme example of describing $\ce{H2O}$ with all basis functions centered on the oxygen atom. In such a basis, the Mulliken and Löwdin populations would assign essentially all of the electron density to oxygen, yield formal charges of approximately $+1$ on both hydrogen atoms despite the absence of any physically meaningful charge transfer. This example underscores that population analyses should be interpreted with appropriate caution.
 
 # Unrestricted open-shell Hartree-Fock
