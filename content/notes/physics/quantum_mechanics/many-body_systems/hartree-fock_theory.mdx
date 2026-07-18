@@ -121,7 +121,7 @@ $$
 
 Although the Hartree-Fock equations resemble a one-electron eigenvalue problem, they do not constitute a linear eigenvalue problem in the usual sense. The Fock operator depends functionally on the occupied orbitals through the Coulomb and exchange operators, i.e. $\hat{f} = \hat{f}[\set{\chi_i}]$, so the orbitals sought determine the operator itself. The Hartree-Fock equations therefore define a nonlinear, self-consisten eigenvalue problem.
 
-Except for atoms and highly symmetric systems, the Hartree-Fock equations cannot be solved analytically. Instead, each spin orbital is expanded in a finite basis set, resulting the Roothan-Hall or Pople-Nesbet matrix equations, which are solved interatively until self-consistency is achieved. As the basis set approaches completeness, the resulting orbitals converge to the Hartree-Fock limint, providing the exact solution within the space of all single Slater determinants.
+Except for atoms and highly symmetric systems, the Hartree-Fock equations cannot be solved analytically. Instead, each spin orbital is expanded in a finite basis set, resulting the Roothaan-Hall or Pople-Nesbet matrix equations, which are solved interatively until self-consistency is achieved. As the basis set approaches completeness, the resulting orbitals converge to the Hartree-Fock limint, providing the exact solution within the space of all single Slater determinants.
 
 ## Derivation of the Hartree-Fock equations
 
@@ -1055,7 +1055,7 @@ $$
 \end{align*}
 $$
 
-## Roothan-Hall equations
+## Roothaan-Hall equations
 
 By introducing a finite set of known spatial basis functinos, the spatial Hartree-Fock equations
 
@@ -1123,7 +1123,7 @@ $$
   \sum_{\nu=1}^N F_{\mu\nu} C_{\mu i} = \varepsilon_i \sum_{\nu=1}^N S_{\mu\nu} C_{\nu i},\, i=1,\dots,K
 $$
 
-These are the Roothan equations, which can be written more compactly as the single matrix equation
+These are the Roothaan equations, which can be written more compactly as the single matrix equation
 
 $$
 \begin{equation*}
@@ -1352,15 +1352,47 @@ $$
 
 The matrix $\mathbf{G}$ depends on the density matrix $\mathbf{P}$, or, equivalently, the molecular-orbital coefficient matrix $\mathbf{C}$, whereas the core Hamiltonian $\mathbf{h}$ is independent of the molecular orbitals. Consequently, the Fock matrix depends nonlinearly on the molecular-orbital coefficients, making the Hartree-Fock equations a nonlinear eigenvalue problem that must be solved iteratively until self-consistency is achieved.
 
+Because of their large number, the evaluation and contraction of the two-electron integrals in $\mathbf{G}$ constitutes the principal computational bottleneck in Hartree-Fock calculations.
+
+Since $(\mu\nu|\lambda\sigma) = (\nu\mu|\lambda\sigma)$ the ordered pair $(\mu,\nu)$ may be regarded as an unordered pair. There are $K$ diagonal pairs with $\mu = \nu$ and
+
+$$
+  \binom{K}{2} = \frac{K(K-1)}{2}
+$$
+
+off-diagonal pairs with $\mu\neq\nu$. Thus, the total of unique unordered pairs is
+
+$$
+  N_p = K + \binom{K}{2} = \frac{K(K+1)}{2}
+$$
+
+Each two-electron integral can therefore be regarded as indexed by two unordered pairs $(\mu\nu|\lambda\sigma) \equiv (P|Q)$, where $P$ and $Q$ denoted unordered pairs of basis functions. The additional symmetry $(P|Q) = (Q|P)$ implies that the pair $(P,Q)$ is itself unordered. 
+
+The number of distinct two-electron integrals is precisely the number of unordered pairs, with repetation, that can be formed from the $N_p$ orbital pairs
+
+$$
+\begin{align*}
+  N_\text{TEI} =& \frac{N_p (N_p + 1)}{2} \\
+  =& \frac{1}{2} \left(\frac{K(K+1)}{2}\right)\left(\frac{K(K+1)}{2} + 1 \right) \\
+  =& \frac{1}{8}K^4 + \frac{1}{4}K^3 + \frac{3}{8}K^2 + \frac{1}{4}K
+\end{align*}
+$$
+
+Assymptotically, the number of two-electron intgrals scales as 
+
+$$
+  N_\text{TEI} = \frac{1}{8} K^4 + O(K^4)
+$$
+
 ## Orthogonalization of atomic orbital basis
 
-Let $\set{\phi_\mu}_{\mu=1}^K$ be an atomic orbital basis. The Roothan equations $\eqref{equation-35}$ take the form of a generalized matrix eigenvalue problem, meaning that $\set{\phi_\mu}$ is generally not orthonormal. Although the individual basis functions are usually normalized, $\braket{\phi_\mu|\phi_\mu} = 1$, they are not mutually orthogonal. Their overlaps are described by the overlap matrix $\mathbf{S}$ with elements
+Let $\set{\phi_\mu}_{\mu=1}^K$ be an atomic orbital basis. The Roothaan equations $\eqref{equation-35}$ take the form of a generalized matrix eigenvalue problem, meaning that $\set{\phi_\mu}$ is generally not orthonormal. Although the individual basis functions are usually normalized, $\braket{\phi_\mu|\phi_\mu} = 1$, they are not mutually orthogonal. Their overlaps are described by the overlap matrix $\mathbf{S}$ with elements
 
 $$
   S_{\mu\nu} = \braket{\phi_\mu|\phi_\nu}
 $$
 
-To transform the Roothan equations into a standard eigenvalue problem, it is convenient to construct an orthonormal basis from the original nonorthogonal basis.
+To transform the Roothaan equations into a standard eigenvalue problem, it is convenient to construct an orthonormal basis from the original nonorthogonal basis.
 
 Assume that the basis functions $\set{\phi_\mu}$ are linearly independent, so that $\mathbf{S}$ is Hermitian and positive definite. Then there exists an invertible (generally nonunitary) matrix $\mathbf{X} \in \operatorname{GL}_K (\mathbf{C})$ such that the transformed basis functions
 
@@ -1483,9 +1515,9 @@ $$
 
 If the discarded eigenvalues are exactly zero, the retained functions span precisely the same subspace as the original basis. In practice, however, very small but nonzero eigenvalues are removed to improved numerical stability, resulting in a slightly reduction of the variational space.
 
-### Transformed Roothan equations
+### Transformed Roothaan equations
 
-When solving the Roothan equations, it is computationally more efficient to transform the coefficient matrix $\mathbf{C}$ rather than explicitly transforming all one- and two-electron integrals into the orthonormal basis. Define a transformed coefficient matrix $\mathbf{C}'$ via
+When solving the Roothaan equations, it is computationally more efficient to transform the coefficient matrix $\mathbf{C}$ rather than explicitly transforming all one- and two-electron integrals into the orthonormal basis. Define a transformed coefficient matrix $\mathbf{C}'$ via
 
 $$
 \begin{equation*}
@@ -1502,7 +1534,7 @@ $$
 
 assuming that $\mathbf{X}$ is nonsingular. This will be the case if we have eliminated linear dependencies.
 
-Substituting $\mathbf{C} = \mathbf{X}\mathbf{C}'$ into the Roothan equations $\eqref{equation-35}$ gives
+Substituting $\mathbf{C} = \mathbf{X}\mathbf{C}'$ into the Roothaan equations $\eqref{equation-35}$ gives
 
 $$
   \mathbf{FX}\mathbf{C}' = \mathbf{SX}\mathbf{C}' \boldsymbol{\varepsilon}
@@ -1514,7 +1546,7 @@ $$
   (\mathbf{X}^\dagger \mathbf{FX})\mathbf{C}' = (\mathbf{X}^\dagger \mathbf{SX})\mathbf{C}' \boldsymbol{\varepsilon}
 $$
 
-Defining the transformed Fock matrix $\mathbf{F}' = \mathbf{X}^\dagger \mathbf{FX}$ and applying $\eqref{equation-32}$, then the Roothan equations reduce the standard Hermitian eigenvalue problem
+Defining the transformed Fock matrix $\mathbf{F}' = \mathbf{X}^\dagger \mathbf{FX}$ and applying $\eqref{equation-32}$, then the Roothaan equations reduce the standard Hermitian eigenvalue problem
 
 $$
   \mathbf{F}' \mathbf{C}' = \mathbf{C}' \boldsymbol{\varepsilon}
@@ -1523,5 +1555,75 @@ $$
 which can be solved for $\mathbf{C}'$ by diagonalizing $\mathbf{F}'$. The molecular orbital coefficients in the origonal basis are finally recovered from $\eqref{equation-36}$.
 
 ## The self-consistent field (SCF) procedure
+
+The computational procedure for obtaining a restricted closed-shell Hartree-Fock wavefunctions for a molecule, called the self-consistent field (SCF) procedure, is as follows:
+1. **Specify the molecular system:** Define the molecular geometry by the set of nuclear coordinates $\set{\mathbf{R}_A}$, nuclear charges $\set{Z_a}$, the total number of electrons $N$, and a finite atomic orbital basis $\set{\phi_\mu}_{\mu=1}^K$
+2. **Evaluate the required molecular integrals:** Compute the overlap matrix $S_{\mu\nu} = \brake{\phi_\mu|\phi_\nu}$, core Hamiltonian matrix $h_{\mu\nu} = \braket{\phi_\mu|\hat{h}|\phi_\nu}$, where $\hat{h}$ is the one-electron core Hamiltonian, and the two-electron repulsion integrals $(\mu\nu|\lambda\sigma)$
+3. **Construct an orthonormal atomic orbital basis:** Determine a matrix $\mathbf{X}$ satisfying $\mathbf{X}^\dagger \mathbf{XS} = \mathbf{I}$
+4. **Generate an initial density matrix:** Construct an initial guess $\mathbf{P}^{(0)}$ for the density matrix using an appropriate intialization procedure (e.g. core Hamiltonian diagonalization or superposition of atomic densities)
+5. **Construct the two-electron contribution:** Given the current density matrix $\mathbf{P}$, evaluate the matrix
+$$
+  G_{\mu\nu} = \sum_{\lambda,\sigma} P_{\lambda\sigma} \left[(\mu\nu|\lambda\sigma) - \frac{1}{2} (\mu\lambda|\nu|\sigma) \right]
+$$
+
+which contains the Coulomb and exchange distributions.
+
+6. **Form the Fock matrix:** Compute the Fock matrix $\mathbf{F} = \mathbf{h} + \mathbf{G}$
+7. **Transform the Fock matrix to the orthonormal basis:** Evaluate $\mathbf{F}' = \mathbf{X}^\dagger \mathbf{FX}$
+8. **Solve the Roothaan-Hall eigenvalue problem:** Diagonalize the transformed Fock matrix $\mathbf{F}' \mathbf{C}' = \mathbf{C}' \boldsymbol{\varepsilon}$ to obtain the molecular orbital coefficients in the orthonormal basis, $\mathbf{C}'$, and the diagonal matrix of orbital energies $\boldsymbol{\varepsilon}$
+9. **Recover the atomic orbital coefficients:** Transform back to the original atomic orbital basis according to $\mathbf{C} = \mathbf{X}\mathbf{C}'$
+10. **Update the density matrix:** Form the new density matrix from the occupied molecular orbals $\mathbf{C}$
+$$
+  P_{\mu\nu} = 2 \sum_{i=1}^{N/2} C_{\mu i} C_{\nu i}
+$$
+
+11. **Test for self-consistency:** Determine whether the procedure has converged by comparing the updated density matrix with that from the previous iteration. If the prescribed convergence criterion is not satisfied, replace the old density matrix with the updated one, $\mathbf{P}^{(n)} \leftarrow \mathbf{P}^{(n+1)}$, and return to Step $5$. Otherwise the fixed-point iteration has converged and the resulting molecular orbitals satisfy the Roothaan-Hall equations self-consistently.
+12. **Evaluate molecular properties:** Use the converged molecular orbitals, and Fock matrix to compute molecular properties of interest.
+
+Within the Born-Oppenheimer approximation, the self-constistency field procedure determines the electronic ground-state wavefunction $\Psi_0 (\mathbf{r}_1,\dots,\mathbf{r}, \set{\mathbf{R}_A})$, together with the corresponding electronic energy $E_\text{e} (\set{\mathbf{R}_A})$ for $N$ electrons moving in the external Coulomb field generated by $M$ fixed nuclei. The associated Born-Oppenheimer potential energy is obtained by adding the classical nuclear-nuclear repulsion energy
+
+$$
+  E_\text{BO} (\set{\mathbf{R}})= E_\text{e} (\set{\mathbf{R}_A}) + \sum_{A < B} \frac{Z_A Z_B}{|\mathbf{R}_A - \mathbf{R}_B|}
+$$
+
+Repeating the SCF calculation for different nuclear geometries samples the Born-Oppenheimer potential energy surface. In particular, minimizing $E_\text{BO}$ with respect to the nuclear coordinates yields the equilibrium molecular geometry. Likewise, calculations involving several molecular fragments, called supermolecule calculations, permit the investigation of intermolecular interactions by evaluating the total energy as a function of the relative positions of the fragments.
+
+---
+
+For a fixed nuclear geometry, the Hartree-Fock approximation is completely determined by the choice of atomic orbital basis. Thus, Hartree-Fock theory is an ab initio electronic structure method: the electronic Hamiltonian is treated without empirical parametrization, and the only approximation beyond the Hartree-Fock mean-field approximation is the finite expansion of the molecular orbitals in a chosen basis set. In practice, computational considerations restrict the basis to a finite number of functions. Modern calculations employ either Slater-type orbitals (STOs) or Gaussian-type orbitals (GTOs). Although STOs more faithfully reproduce the exact atomic cusp and asymptotic decay, Gaussian basis functions permit the analytical evaluation of molecular integrals through Gaussian product theorems, making the overwhelmingly preferable for calculations on polyatomic molecules.
+
+---
+
+Once the basis has been specified, the required one- and two-electron integrals must be evaluated. While the overlap and one-electron integrals scale as $O(K^2)$, the number of distinct electron-repulsion integrals scales as $O(K^4)$, with approximately $K^4 /8$ unique integrals after exploiting permutation symmetry. Even for moderately sized basis sets, this number can reach many millions. Fortunately, many integrals are negligibly small because of the locality of the basis functions, and molecular symmetry may eliminate additional integrals. Nevertheless, the storage and manipulation of electron-repulsion integrals constitute one of the principal computational bottlenecks in Hartree-Fock calculations. Consequently, nonzero integrals are commonly stored together with their associated index labels and retrieved as required during the construction of the Fock matrix.
+
+---
+
+The simplest initial approximation to the density matrix is the zero matrix $\mathbf{P}^{(0)} = \mathbf{0}$, which corresponds to replacing the initial Fock matrix by the core Hamiltonian, $\mathbf{F}^{(0)} = \mathbf{h}$, thereby neglecting electron-electron interactions during the first iteration. Since the resulting molecular orbitals generally differ substantially from those of the fully interacting system, this choice frequently leads to slow convergence or even divergence of the SCF iteration. More reliable intital guesses are therefore obtained from methods such as the extended Hückel approximation or the superposition of atomic densities, both of which typically produce orbitals much closer to the self-consistent solution.
+
+---
+
+The computationally dominant step in each SCF iteration is the construction of the matrix $\mathbf{G}$, which requires contracting the density matrix with the electron-repulsion integrals. This operation scales as $O(K^4)$, whereas the diagonalization of the Fock matrix scales as $O(K^3)$. For sufficiently large basis sets, the evaluation of $\mathbf{G}$ therefore dominates the computational cost of Hartree-Fock calculations.
+
+---
+
+Sicne the Roothaan-Hall equations constitute a nonlinear eigenvalue problem, $\mathbf{F}(\mathbf{P})\mathbf{C} = \mathbf{SC}\boldsymbol{\varepsilon}$, the SCF procedure is fundamentally a nonlinear fixed-point interation. Simple fixed-point iteration need not converge and may instead oscillate or diverge, particularly when the initial density matrix is poor. Daming schemes, level shifting, and Pulay's direct inversion in the iterative subsspace (DIIS) are now standard techiques for accelerating convergence and improving numerical stability.
+
+---
+
+A convergence criterion is required to terminate the iterative procedure. One common choice is to require the change in the total electronic energy between successive iterations to satisfy
+
+$$
+  |E^{(n)} - E^{(n-1)}| < \delta_E
+$$
+
+Alternatively, convergence may be assessed directly from the density matrix by requiring
+
+$$
+  \left(\frac{1}{K^2} \sum_{\mu, \nu} [P_{\mu\nu}^{(i)} - P_{\mu\nu}^{(i-1)}]^2 \right)^{1/2} < \delta_P
+$$
+
+Typical values such as $\delta_P = 10^{-4}$ produce total electronic energies converged to approximately $10^{-6}$ Hartree.
+
+## Expectation values and population analysis
 
 # Unrestricted open-shell Hartree-Fock
