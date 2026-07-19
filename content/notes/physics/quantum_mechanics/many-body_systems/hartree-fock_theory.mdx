@@ -9,10 +9,10 @@ references:
 
 # The Hartree-Fock equations
 
-Let $\mathbf{x} = (\mathbf{r}, \omega)$ denote combined spatial and spin coordinates. With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^N$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
+With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^N$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
 
 $$
-  \Psi_0 = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)]
+  \Psi_0 = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)],\, \mathbf{x} = (\mathbf{r}, \omega)
 $$
 
 provides the best approximation to the exact ground-state wavefunction of an $N$-electron system described by the electronic Hamiltonian $\hat{H}$.
@@ -77,7 +77,7 @@ $$
 
 **Fock operator**
 
-Since $(\hat{J}_i - \hat{K}_i)\chi_i = 0$, the self-interaction terms cancel identically. The summation in $\eqref{equation-1}$ can therefore be taken over all occupied orbital, allowing the introduction of the Fock operator
+Since $(\hat{J}_i - \hat{K}_i)\chi_i = 0$, the self-interaction terms cancel identically. The summation in $\eqref{equation-1}$ can therefore be taken over all occupied orbitals, allowing the introduction of the Fock operator
 
 $$
 \begin{equation*}
@@ -897,8 +897,6 @@ $$
 \end{equation*}
 $$
 
-where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes the combined spatial and spin coordinate.
-
 In the closed-shell restricted Hartree-Fock ground state, the number of electrons is even, $N = 2n$, and every occupied spatial orbital is doubly occupied by one $\alpha$-spin and one $\beta$-spin electron. The Hartree-Fock reference deterimnant can therefore be written as
 
 $$
@@ -912,7 +910,7 @@ where $\psi_a := \psi_a (\mathbf{r}) \alpha(\omega)$ and $\bar{\psi}_a := \psi_a
 
 ---
 
-The derive the restricted Hartree-Fock equations defining the spatial orbitals $\set{\psi_a}$, we insert $\eqref{equation-41}$ into the canonical Hartree-Fock equation $\eqref{equation-6}$. For the spin orbital
+To derive the restricted Hartree-Fock equations defining the spatial orbitals $\set{\psi_a}$, we insert $\eqref{equation-41}$ into the canonical Hartree-Fock equation $\eqref{equation-6}$. For the spin orbital
 
 $$
   \chi_i (\mathbf{x}_1) = \psi_j (\mathbf{r}) \sigma(\omega),\, \sigma\in\set{\alpha,\beta}
@@ -929,102 +927,114 @@ Since the Fock operator is independent of spin, the two spin orbitals associated
 Projecting onto $\sigma(\omega_1)$ and integrating over the spin coordinate yields
 
 $$
-  \underbrace{\int \d\omega_1 \sigma^* (\omega_1) \hat{f}(\mathbf{x}_1) \sigma(\omega_1)}_{=\braket{\alpha|\hat{f}|\alpha}} \psi_j (\mathbf{r}_1) = \varepsilon_j \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 \sigma^* (\omega_1) \sigma (\omega_1)}_{=\braket{\sigma|\sigma} = 1}
+  \underbrace{\int \d\omega_1 \sigma^* (\omega_1) \hat{f}(\mathbf{x}_1) \sigma(\omega_1)}_{=\braket{\sigma|\hat{f}|\sigma}} \psi_j (\mathbf{r}_1) = \varepsilon_j \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 \sigma^* (\omega_1) \sigma (\omega_1)}_{=\braket{\sigma|\sigma} = 1}
 $$
 
-Defining the spatial Fock operator $\hat{f}(\mathbf{r}_1) = \braket{\sigma|\hat{f}(\mathbf{x}_1)|\sigma}$, we get
+Defining the closed-shell Fock operator $\hat{f}(\mathbf{r}_1) = \braket{\sigma|\hat{f}(\mathbf{x}_1)|\sigma}$, we get
 
 $$
   \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) = \varepsilon_j \psi_j (\mathbf{r}_1)
 $$
 
-Using the form $\eqref{equation-18}$ for the Fock operator $\hat{f}(\mathbf{x}_1)$, we get
+To derive an explicit expression for the closed-shell Fock operator we evaluate the expectation value $\braket{\sigma|\hat{f}(\mathbf{x}_1)|\sigma}$ using $\eqref{equation-5}$
 
 $$
 \begin{align*}
-  \hat{f}(\mathbf{r}_1) =& \braket{\sigma|\hat{f}(\mathbf{x}_1)|\sigma} \\
-  =& \int \d\omega_1 \; \alpha^* (\omega_1) \hat{h}(\mathbf{x}_1) \alpha(\omega_1) \\
-  &+ \left(\sum_c \int \d\omega_1 \;\d\mathbf{x}_2 \; \alpha^* (\omega_1) \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} (1 - \hat{p}_{12}) \chi_c (\mathbf{x}_2) \alpha(\omega_1) \right) \psi_j (\mathbf{r}_j) \\
-  =& \varepsilon_j \psi_j (\mathbf{r}_1)
+  \hat{f}(\mathbf{r}_1) =& \Braket{\sigma|\hat{h}(\mathbf{x}_1) + \sum_{c=1}^N \hat{J}_c (\mathbf{x}_1) - \hat{K}_c (\mathbf{x}_1)|\sigma} \\
+  =& \braket{\sigma|\hat{h}(\mathbf{x}_1)|\sigma} + \sum_{c=1}^N (\braket{\sigma|\hat{J}_c (\mathbf{x}_1)|\sigma} - \braket{\sigma|\hat{K}_c (\mathbf{x}_1)|\sigma})
 \end{align*}
 $$
 
-Since the one-electron operator $\hat{h}(\mathbf{r}_1)$ is independent of spin, the first integral term is
+Since the one-electron operator $\hat{h}(\mathbf{x}) = \hat{h}(\mathbf{r})$ depends only on spatial coordinates, the first term is
+
+$$
+  \braket{\sigma|\hat{h}(\mathbf{x}_1)|\sigma} = \hat{h}(\mathbf{r}_1) \underbrace{\braket{\sigma|\sigma}}_{=1} = \hat{h}(\mathbf{r}_1)
+$$
+
+To derive the two-electron contributions, note that in a closed-shell determinant, the occupied spin orbitals can be partitioned as
+
+$$
+  \set{\chi_c}_{c=1}^N = \set{\psi_a \alpha}_{a=1}^{N/2} \cup \set{\psi_a \beta}_{a=1}^{N/2}
+$$
+
+Consequently, the sum over $N$ occupied spin orbitals can be written as
+
+$$
+  \sum_{c=1}^N = \sum_{a=1}^{N/2} \sum_{\sigma\in\set{\alpha,\beta}}
+$$
+
+The Coulomb operator $\eqref{equation-3}$ generated by the occupied spin orbital $\chi_{a\sigma} (\mathbf{x}) = \psi_a (\mathbf{r}) \sigma(\omega)$ is
 
 $$
 \begin{align*}
-  \int \d\omega_1 \sigma^* (\omega_1) \hat{h}(\mathbf{r}_1) \sigma(\omega_1) =& \hat{h}(\mathbf{r}_1) \underbrace{\int \d\omega_1 |\sigma(\omega_1)|^2}_{=1} \\
-  =& \hat{h}(\mathbf{r}_1)
+  (\hat{J}_{a\sigma} \phi)(\mathbf{x}_1) =& \left(\int \d\mathbf{r}_2 \; \frac{|\psi_a (\mathbf{r}_2)|^2}{r_{12}} \right) \underbrace{\left(\int \d\omega_2 \; |\sigma (\omega_2)|^2 \right)}_{=\braket{\sigma|\sigma}=1} \phi(\mathbf{x}_1) \\
+  =& \left(\int \d\mathbf{r}_2 \; \frac{|\psi_a (\mathbf{r}_2)|^2}{r_{12}} \right) \phi(\mathbf{x}_1) \\
 \end{align*}
 $$
 
-such that
+Thus the Coulomb operator is independent of the spin label, $\hat{J}_{a\alpha} = \hat{J}_{a\beta} = \hat{J}_a$, so that each occupied spatial orbital contributes twice through both spin functions
 
 $$
 \begin{align*}
-  \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \\
-  &+ \sum_c \int \d\omega_1 \;\d\mathbf{x}_2 \alpha^* (\omega_1) \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_c (\mathbf{x}_2) \alpha(\omega_1) \psi_j (\mathbf{r}_1) \\
-  &- \sum_c \int \d\omega_1 \;\d\mathbf{x}_2 \alpha^* (\omega_1) \chi_c^* (\mathbf{x}_2) \frac{1}{r_{12}} \chi_c (\mathbf{x}_1) \alpha(\omega_2) \psi_j (\mathbf{r}_2) \\
-  =& \varepsilon_j \psi_j (\mathbf{r}_1)
+  \sum_{c=1}^N \hat{J}_c =& \sum_{a=1}^{N/2} \hat{J}_{a\alpha} + \hat{J}_{a\beta} \\
+  =& 2 \sum_{a=1}^{N/2} \hat{J}_a
 \end{align*}
 $$
 
-In a closed-shell determinant, every occupied spatial orbital contributes one $\alpha$- and one $\beta$-spin electron, so that that the sum over spin is partitioned into
+The exchange operator $\eqref{equation-4}$ generated by $\chi_{a\sigma}$ is
 
 $$
-  \sum_c^N \chi_c = \sum_c^{N/2} \psi_c \alpha + \sum_c^{N/2} \psi_c \beta
+  (\hat{K}_{a\sigma} \phi)(\mathbf{x}_1) = \chi_{a\sigma} (\mathbf{x}_1) \int \d\mathbf{x}_2 \; \frac{\chi_{a\sigma}^* (\mathbf{x}_2) \phi(\mathbf{x}_2)}{r_{12}}
 $$
 
-Using orthonormality of the spin functions, we get
+Suppose the reference electron has spin $\tau$, i.e. $\phi(\mathbf{x}) = \psi_i (\mathbf{r}) \sigma(\omega)$, so that
 
 $$
 \begin{align*}
-  \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \\
-  &+ \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\alpha(\omega_2)|^2}_{=1} \\
-  &+ \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\beta(\omega_2)|^2}_{=1} \\
-  &- \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 |\alpha(\omega_1)|^2}_{=1} \underbrace{\int \d\omega_2 |\alpha(\omega_2)|^2}_{=1}\\
-  &- \sum_c^{N/2} \int \;\d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \psi_j (\mathbf{r}_1) \underbrace{\int \d\omega_1 \alpha^* (\omega_1) \beta(\omega_1)}_{=0} \underbrace{\int \d\omega_2 \beta^*(\omega_2) \alpha(\omega_2)}_{=0}\\
-  =& \varepsilon_j \psi_j (\mathbf{r}_1)
+  (\hat{K}_{a\sigma} \phi)(\mathbf{x}_1) =& \psi_a (\mathbf{r}_1) \sigma(\omega_1) \int \d\mathbf{r}_2 \; \frac{\psi_a^* (\mathbf{r}_2) \psi_i (\mathbf{r}_2)}{r_{12}} \\
+  &\times \underbrace{\int \d\omega_2 \; \sigma^* (\omega_2) \tau(\omega_2)}_{=\braket{\sigma|\tau} = \delta_{\sigma\tau}} \\
+  =& \delta_{\sigma\tau} (\hat{K}_a \phi)(\mathbf{x}_1)
 \end{align*}
 $$
 
-We can now perform the integrations over $\d\omega_1$ and $\d\omega_2$. The last term disappears because of spin orthogonality, $\braket{\alpha|\beta} = 0$. This reflects the fact that there is only an exchange interaction between electrons of parallel spin. The two Coulomb terms are equal and thus we obtain
+It follows that only occupied orbitals having the same spin as the reference electron contributes to the exchange operator
 
 $$
 \begin{align*}
-  \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \\
-  &+ \left(2 \sum_{c}^{N/2} \int \d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \right) \psi_j (\mathbf{r}_1) \\
-  &+ \left(\sum_{c}^{N/2} \int \d\mathbf{r}_2 \psi_c^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_c (\mathbf{r}_2) \right) \psi_c (\mathbf{r}_1) \\
-  =& \varepsilon_j \psi_j (\mathbf{r}_1)
+  \sum_{c=1}^N \hat{K}_c =& \sum_{a=1}^{N/2} \sum_{\sigma\in\set{\alpha,\beta}} \delta_{\sigma\tau} \hat{K}_a \\
+  =& \sum_{a=1}^{N/2} \hat{K}_a
 \end{align*}
 $$
 
-The closed-shell Fock operator therefore has the form
+Collecting the terms, the closed-shell Fock operator takes the form
+
+$$
+  \hat{f}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1) + \sum_{a=1}^{N/2} 2J_a (\mathbf{r}_1) - K_a (\mathbf{r}_1)
+$$
+
+Equivalently, $\hat{f}(\mathbf{r}_{12})$ can be expressed in terms of the permutation operator $\hat{p}_{12}$ as
 
 $$
 \begin{equation*}
-  \hat{f}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1) + \sum_a^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) (2 - \hat{p}_{12}) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2)
+  \hat{f}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1) + \sum_{a=1}^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) (2 - \hat{p}_{12}) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2)
 \tag{\label{equation-27}}
 \end{equation*}
 $$
 
-or, equivalently
+<details>
+<summary>Details</summary>
 
-$$
-\begin{equation*}
-  \hat{f}(\mathbf{r}_1) = \hat{h}(\mathbf{r}_1) + \sum_a^{N/2} 2J_a (\mathbf{r}_1) - K_a (\mathbf{r}_1)
-\tag{\label{equation-28}}
-\end{equation*}
-$$
-
-where the closed-shell Coulomb and exchange operators are defined by
+Applying $\hat{f}(\mathbf{r}_1)$ to a spatial orbital $\psi_j$ and expanding the two-electron contributions yield
 
 $$
 \begin{align*}
-  \hat{J}_a (\mathbf{r}_1) =& \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2) \\
-  K_a (\mathbf{r}_1) \psi_i (\mathbf{r}_1) =& \left(\int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_i (\mathbf{r}_2) \right) \psi_a (\mathbf{r}_1)
+  \hat{f}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) \\
+  &+ \left(2 \sum_{a=1}^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2) \right) \psi_j (\mathbf{r}_1) \\
+  &- \left(\sum_{a=1}^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) \frac{1}{r_{12}} \psi_j (\mathbf{r}_2) \right) \psi_a (\mathbf{r}_1) \\
+  =& \hat{h}(\mathbf{r}_1) \psi_j (\mathbf{r}_1) + \sum_{a=1}^{N/2} \int \d\mathbf{r}_2 \psi_a^* (\mathbf{r}_2) (2 - \hat{p}_{12}) \frac{1}{r_{12}} \psi_a (\mathbf{r}_2) \psi_j (\mathbf{r}_1)
 \end{align*}
 $$
+</details>
 
 By the Slater-Condon rules for spatial orbitals, the closed-shell Hartree-Fock energy $E_0^\text{HF} = \braket{\Psi_0|\hat{H}|\Psi_0}$ is given by
 
