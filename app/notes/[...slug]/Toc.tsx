@@ -110,7 +110,7 @@ export default function Toc({ headings }: Props) {
   return (
     <>
       <Toggle />
-      <aside className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 hidden h-min max-h-[80%] min-h-0 flex-col rounded-md bg-primary/50 p-2 shadow-md backdrop-blur-xs peer-checked:flex lg:static lg:m-2 lg:flex lg:max-h-[calc(100%-16px)] lg:min-w-min lg:translate-x-0 lg:translate-y-0 dark:shadow-black/50">
+      <aside className="z-2 -translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 hidden h-min max-h-[80%] min-h-0 flex-col rounded-md bg-primary/50 p-2 shadow-md backdrop-blur-xs peer-checked:flex lg:static lg:m-2 lg:flex lg:max-h-[calc(100%-16px)] lg:min-w-min lg:translate-x-0 lg:translate-y-0 dark:shadow-black/50">
         <div
           key="div.toc"
           className="flex justify-start gap-x-1 border-b border-b-secondary"
