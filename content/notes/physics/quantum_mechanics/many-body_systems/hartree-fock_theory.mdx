@@ -9,37 +9,59 @@ references:
 
 # The Hartree-Fock equations
 
-Let $\mathcal{H}_N = \bigwedge^N \mathcal{H}_\text{1e}$ denote the antisymmetric $N$-electron Hilbert space, where
+Let $\mathcal{H}_\text{1e} = L^2 (\R^3) \otimes \mathbb{C}^2$ denote the one-electron Hilbert space, encompassing both spatial and spin degrees of freedom. The Hilbert space for a system of $N$ indistinguishable fermions is the $N$-fold antisymmetric tensor product Hilber space
 
 $$
-  \mathcal{H}_\text{1e} = L^2 (\R^3) \otimes \mathbb{C}^2
+  \mathcal{H}_N = \bigwedge^N \mathcal{H}_\text{1e} \subseteq \bigotimes^N \mathcal{H}_\text{1e}
 $$
 
-is the one-electron Hilbert space.
+be its $N$-fold antisymmetric tensor product, which describes the Hilbert space of $N$ indistinguishable electrons.
 
 The Hartree-Fock approximation restricts the admissible $N$-electron wavefunctions to normalized Slater determinants constructed from an orthonormal set of one-electron spin orbitals $\set{\ket{\chi}_i}_{i=1}^N \subseteq \mathcal{H}_\text{1e}$, satisfying $\braket{\chi_i|\chi_j} = \delta_{ij}$.
 
 The corresponding $N$-electron state is the antisymmetrized tensor product
 
 $$
-  \ket{\Psi_0} = \frac{1}{\sqrt{N!}} \hat{A} \left(\bigotimes_{i=1}^N \ket{\chi_i} \right)
+  \ket{\Psi_0} = \sqrt{N!} \hat{A} \left(\bigotimes_{i=1}^N \ket{\chi_i} \right)
 $$
 
-where $\hat{A}$ denotes the antisymmetrization operator on $\mathcal{H}_\text{e}^{\otimes N}$. In coordinate representation, the corresponding wavefunction is given by the Slater determinant
+where the antisymmetrization projection operator $\hat{A}: \mathcal{H}_{1e}^{\otimes N} \to \mathcal{H}_N$ is defined by
+
+$$
+  \hat{A} = \frac{1}{N!} \sum_{\pi\in S_N} \operatorname{sgn}(\pi) \hat{P}_\pi
+$$
+
+Here $\hat{P}_\pi$ denotes the permutation operator associated with the permutation $\pi$ in the symmetric group $S_N$, and $\operatorname{sgn}(\pi) \in \set{-1,1}$ is the parity of the permutation.
+
+In coordinate representation, the corresponding wavefunction is given by the Slater determinant
 
 $$
   \Psi_0 (\mathbf{x}_1,\dots,\mathbf{x}_N) = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)],\, \mathbf{x} = (\mathbf{r}, \omega)
 $$
 
-The Hartree-Fock method employs the variational principle to find the occupied spin orbitals that minimize the expectation value of the electronic Hamiltonian $E[\set{\chi_i}] = \braket{\Psi_0|\hat{H}|\Psi_0}$ subject to the orthonormality constraints $\braket{\chi_i|\chi_j} = \delta_{ij}$. Here $E[\set{\chi_i}]$ defines a functional since its value depends on the entire function, rather than on the value of an independent variable.
+The Hartree-Fock method employs the Rayleigh-Ritz variational principle to determine the occupied spin orbitals that minimize the energy functional $E[\set{\chi_i}] = \braket{\Psi_0|\hat{H}|\Psi_0}$ subject to the orthonormality constraints $\braket{\chi_i|\chi_j} = \delta_{ij}$.
 
-Using the Slater-Condon rules, the energy functional for the electronic Hamiltonian
+Under the Born-Oppenheimer approximation, the nonrelativistic electronic Hamiltonian is
 
 $$
-  \hat{H} = \sum_{i=1}^N \hat{h}(i) + \sum_{i < j} \frac{1}{r_{12}}
+  \hat{H} = \sum_{i=1}^N \hat{h}(i) + \sum_{i < j} \frac{1}{\hat{r}_{ij}}
 $$
 
-is given by
+where
+
+$$
+  \hat{h} = -\frac{1}{2} \nabla_i^2 + \sum_A \frac{Z_A}{r_{iA}}
+$$
+
+is the core one-electron Hamiltonian, and 
+
+$$
+  \frac{1}{\hat{r}_{12}} := \frac{1}{|\unitvec{r}_i - \unitvec{r}_j|}
+$$
+
+is the electron-electron Coulomb repulsion.
+
+Using the Slater-Condon rules, the energy functional for the electronic Hamiltonian is given by
 
 $$
   E[\set{\chi_i}] = \sum_{i=1}^N \braket{\chi_i|\hat{H}|\chi_i} + \frac{1}{2} \sum_{i,j=1}^N (J_{ij} - K_{ij})
@@ -47,7 +69,7 @@ $$
 
 where $J_{ij} = [ii|jj]$ is the Coulomb integral and $K_{ij} = [ij|ji]$ is the exchange integral.
 
-Introducing Lagrange multipliers to enforce orthonormality yields the Hartree-Fock equations
+Introducing Lagrange multipliers to enforce orthonormality yields the canonical Hartree-Fock equations
 
 $$
 \begin{equation*}
@@ -56,7 +78,7 @@ $$
 \end{equation*}
 $$
 
-where 
+where $\varepsilon_i$ the orbital energy associated with spin orbital $\ket{\chi_i}$ and
 
 $$
 \begin{equation*}
@@ -65,48 +87,32 @@ $$
 \end{equation*}
 $$
 
-is the Fock operator.
-
-With the Hartree-Fock method, we seek a set of orthonormal spin orbitals $\set{\chi_i}_{i=1}^N$ with $\braket{\chi_i|\chi_j} = \delta_{ij}$, such that the corresponding Slater determinant
-
-$$
-  \Psi_0 = \frac{1}{\sqrt{N!}} \det[\chi_i (\mathbf{x}_j)],\, \mathbf{x} = (\mathbf{r}, \omega)
-$$
-
-provides the best approximation to the exact ground-state wavefunction of an $N$-electron system described by the electronic Hamiltonian $\hat{H}$.
-
-According to the variational principle, the optimal spin orbitals minimize the Hartree-Fock energy functional
-
-$$
-\begin{align*}
-  E[\set{\chi_i}] =& \braket{\Psi_0|\hat{H}|\Psi_0} \\
-  =& \sum_{i=1}^N \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{i,j=1}^N \bra{ij}\ket{ij}
-\end{align*}
-$$
-
-subject to the orthonormality constraints on the spin orbitals. Using Lagrange multipliers, minimization of the energy functional under the orthonormality constraints gives the Hartree-Fock equation
-
-$$
-\begin{equation*}
-  \hat{h}(1) \chi_i(1) + \sum_{j=1}^N [\hat{J}_j (1) - \hat{K}_j (1)] \chi_i (1) = \varepsilon_i \chi_i (1)
-\tag{\label{equation-1}}
-\end{equation*}
-$$
-
-where $\varepsilon_i$ is the Lagrange multiplier, called the orbital energy, associated with spin orbital $\chi_i$.
+is the Fock operator, which describes the interelectronic interactions via mean-field operators, derived by taking the partial trace of the Coulomb repulsion operator over the state of a secondary electron.
 
 **Coulomb operator**
 
-The Coulomb operator associated with the occupied spin orbital $\chi_j$ is defined by
+The Coulomb operator $\hat{K}_j :\mathcal{H}_\text{1e} \to \mathcal{H}_\text{1e}$ associated with the occupied spin orbital $\ket{\chi_j}$ is defined by
+
+$$
+  \hat{J}_j = {}_2 \Braket{\chi_j |\frac{1}{\hat{r}_{12}}|\chi_j}_2
+$$
+
+Its action on a spin orbital $\ket{\phi}\in\mathcal{H}_\text{1e}$ is given by
+
+$$
+  \hat{J}_j \ket{\phi} = (\bra{\chi_j} \otimes \hat{I}) \frac{1}{\hat{r}_{12}} (\ket{\chi_j} \otimes\ket{\phi})
+$$
+
+or, equivalently, in coordinate representation
 
 $$
 \begin{equation*}
-  (\hat{J}_j \phi)(1) = \left[\int \frac{|\chi_j (2)|^2}{r_{12}} \;\d\mathbf{x}_2 \right] \phi(1)
+  (\hat{J}_j \phi)(1) = \braket{\mathbf{x}_1|\hat{J}_j|\phi} = \left[\int \frac{|\chi_j (2)|^2}{\hat{r}_{12}} \;\d\mathbf{x}_2 \right] \phi(1)
 \tag{\label{equation-3}}
 \end{equation*}
 $$
 
-for an arbitrary spin orbital $\phi$. Thus, $\hat{J}_j$ is a local multiplicative operator whose value at $\mathbf{x}_1$ depends only on the electron density associated with orbital $\chi_j$. It represents the average electrostatic potential generated by the probability density $|\chi_j|^2$ of electron $2$. Summing over all occupied orbitals therefore gives the mean electrostatic potential experience by an electron occupying orbital $\chi_i$.
+for an arbitrary spin orbital $\phi \in \mathcal{H}_\text{1e}$. Thus, $\hat{J}_j$ is a local multiplicative operator whose value at $\mathbf{x}_1$ depends only on the electron density associated with orbital $\chi_j$. It represents the average electrostatic potential generated by the probability density $|\chi_j|^2$ of electron $2$. Summing over all occupied orbitals therefore gives the mean electrostatic potential experienced by an electron occupying orbital $\chi_i$.
 
 The expectation value of $\hat{J}_j$ is given by the Coulomb integral
 
@@ -116,11 +122,23 @@ $$
 
 **Exchange operator**
 
-The exchange operator associated with the occupied spin orbital $\chi_j$ is defined by
+The exchange operator $\hat{K}_j :\mathcal{H}_\text{1e} \to \mathcal{H}_\text{1e}$ associated with the occupied spin orbital $\ket{\chi_j}$ is defined by
+
+$$
+  \hat{K}_j = {}_2 \Braket{\chi_j| \frac{\hat{P}_{12}}{\hat{r}_{12}}|\chi_j}_2
+$$
+
+Its action on a spin orbital $\ket{\phi}\in\mathcal{H}_\text{1e}$ is given by
+
+$$
+  \hat{K}_j \ket{\phi} = (\bra{\chi_j} \otimes\hat{I}) \frac{1}{\hat{r}_{12}} (\ket{\phi} \otimes\ket{\chi_j})
+$$
+
+or, equivalently, in coordinate representation
 
 $$
 \begin{equation*}
-  (\hat{K}_j \phi)(1) = \left[\int \chi_j^* (2) \frac{1}{r_{12}} \phi(2) \;\d\mathbf{x}_2 \right] \chi_j (1)
+  (\hat{K}_j \phi)(1) = \left[\int \chi_j^* (2) \frac{1}{\hat{r}_{12}} \phi(2) \;\d\mathbf{x}_2 \right] \chi_j (1)
 \tag{\label{equation-4}}
 \end{equation*}
 $$
@@ -148,7 +166,7 @@ which depends parametrically on the occupied spin orbitals. In terms of the Fock
 
 $$
 \begin{equation*}
-  \hat{f} \chi_i = \varepsilon_i \chi_i
+  \hat{f} \ket{\chi_i} = \varepsilon_i {\chi_i}
 \tag{\label{equation-6}}
 \end{equation*}
 $$
