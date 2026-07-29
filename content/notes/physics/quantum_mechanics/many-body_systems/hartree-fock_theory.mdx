@@ -1374,16 +1374,16 @@ The matrix representation $\mathbf{F}$ of the Fock operator $\eqref{equation-28}
 
 $$
 \begin{align*}
-  F_{\mu\nu} =& \braket{\phi_\mu|\hat{f}(1)|\phi_\nu} \\
+  F_{\mu\nu} =& \braket{\phi_\mu|\hat{f}_{L^2}|\phi_\nu} \\
   =& (\phi_\mu|\hat{h}|\phi_\nu) + \sum_{a=1}^{N/2} 2\braket{\phi_\mu |\hat{J}_a|\phi_\nu} - \braket{\phi_\mu |\hat{K}_a| \phi_\nu} \\
   =& h_{\mu\nu} + \sum_{a=1}^{N/2} 2(\mu\nu|aa) - (\mu a|a\nu)
 \end{align*}
 $$
 
-where $h_{\mu\nu} = \braket{\phi_\mu|\hat{h}|\phi_\ni}$ are the matrix elements of the core Hamiltonian
+where $h_{\mu\nu} = \braket{\phi_\mu|\hat{h}|\phi_\nu}$ are the matrix elements of the core Hamiltonian
 
 $$
-  \hat{h}(1) = -\frac{1}{2} \nabla_1^2 - \sum_A \frac{Z_A}{|\mathbf{r}_1 - \mathbf{R}_A|}
+  \hat{h} = -\frac{1}{2} \nabla^2 - \sum_A \frac{Z_A}{|\unitvec{r} - \mathbf{R}_A|}
 $$
 
 The core Hamiltonian matrix can be decomposed into kinetic-energy and nuclear attraction contributions
@@ -1401,7 +1401,7 @@ $$
 and
 
 $$
-  V_{\mu\nu} = -\sum_A Z_A \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_A} \phi_\nu (\mathbf{r})
+  V_{\mu\nu} = -\sum_A Z_A \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_A|} \phi_\nu (\mathbf{r})
 $$
 
 Unlike the Fock matrix, the core Hamiltonian depends only on the molecular geometry and remains constant throughout the self-consistent field procedure. It therefore only needs to be evaluated once.
@@ -1409,16 +1409,19 @@ Unlike the Fock matrix, the core Hamiltonian depends only on the molecular geome
 From $\eqref{equation-20}$ and $\eqref{equation-29}$, the Fock matrix elements can be written
 
 $$
-\begin{align*}
-  F_{\mu\nu} =& h_{\mu\nu} + \sum_{\lambda,\sigma=1}^K \sum_{a=1}^{N/2} C_{\lambda a} C_{\sigma a}^* [2(\mu\nu|\sigma\lambda) - \mu\lambda|\sigma\nu] \\
-  =& h_{\mu\nu} + \sum_{\lambda,\sigma=1}^K P_{\lambda\sigma} \left[(\mu\nu|\sigma\lambda) - \frac{1}{2} (\mu\lambda|\sigma\nu) \right]
-\end{align*}
+\begin{equation*}
+\begin{split}
+  F_{\mu\nu} =& h_{\mu\nu} + \sum_{\lambda,\kappa=1}^K \sum_{a=1}^{N/2} C_{\lambda a} C_{\kappa a}^* [2(\mu\nu|\kappa\lambda) - \mu\lambda|\kappa\nu] \\
+  =& h_{\mu\nu} + \sum_{\lambda,\kappa=1}^K P_{\lambda\kappa} \left[(\mu\nu|\kappa\lambda) - \frac{1}{2} (\mu\lambda|\kappa\nu) \right]
+\end{split}
+\tag{\label{equation-52}}
+\end{equation*}
 $$
 
 It is convenient to define the two-electron contribution $\mathbf{G}$ to the Fock matrix
 
 $$
-  G_{\mu\nu} = \sum_{\lambda,\sigma=1} P{\lambda\sigma} \left[(\mu\nu|\sigma\lambda) - \frac{1}{2} (\mu\lambda|\sigma\nu) \right]
+  G_{\mu\nu} = \sum_{\lambda,\kappa=1} P{\lambda\kappa} \left[(\mu\nu|\kappa\lambda) - \frac{1}{2} (\mu\lambda|\kappa\nu) \right]
 $$
 
 such that the Fock matrix assumes the compact form
@@ -1431,7 +1434,7 @@ The matrix $\mathbf{G}$ depends on the density matrix $\mathbf{P}$, or, equivale
 
 Because of their large number, the evaluation and contraction of the two-electron integrals in $\mathbf{G}$ constitutes the principal computational bottleneck in Hartree-Fock calculations.
 
-Since $(\mu\nu|\lambda\sigma) = (\nu\mu|\lambda\sigma)$ the ordered pair $(\mu,\nu)$ may be regarded as an unordered pair. There are $K$ diagonal pairs with $\mu = \nu$ and
+Since $(\mu\nu|\lambda\kappa) = (\nu\mu|\lambda\kappa)$ the ordered pair $(\mu,\nu)$ may be regarded as an unordered pair. There are $K$ diagonal pairs with $\mu = \nu$ and
 
 $$
   \binom{K}{2} = \frac{K(K-1)}{2}
@@ -1443,7 +1446,7 @@ $$
   N_p = K + \binom{K}{2} = \frac{K(K+1)}{2}
 $$
 
-Each two-electron integral can therefore be regarded as indexed by two unordered pairs $(\mu\nu|\lambda\sigma) \equiv (P|Q)$, where $P$ and $Q$ denoted unordered pairs of basis functions. The additional symmetry $(P|Q) = (Q|P)$ implies that the pair $(P,Q)$ is itself unordered. 
+Each two-electron integral can therefore be regarded as indexed by two unordered pairs $(\mu\nu|\lambda\kappa) \equiv (P|Q)$, where $P$ and $Q$ denoted unordered pairs of basis functions. The additional symmetry $(P|Q) = (Q|P)$ implies that the pair $(P,Q)$ is itself unordered. 
 
 The number of distinct two-electron integrals is precisely the number of unordered pairs, with repetation, that can be formed from the $N_p$ orbital pairs
 
@@ -2112,3 +2115,168 @@ $$
 Consequently, the two matrix equations are nonlinearly coupled and must be solved simultaneously within the self-consistent field procedure.
 
 ## Electron density
+
+The one-particle density associated with the spin sector $\sigma\in\set{\alpha,\beta}$ is the diagonal of the corresponding one-particle density operator
+
+$$
+\begin{equation*}
+  \rho_\sigma (\mathbf{r}) = \sum_{a=1}^{N_\sigma} \braket{\psi_a^\sigma |\delta(\unitvec{r} - \mathbf{r})|\psi_a^\sigma} = \sum_{a=1}^{N_\sigma} |\psi_a^{(\sigma)} (\mathbf{r})|^2
+\tag{\label{equation-51}}
+\end{equation*}
+$$
+
+The total electron density is obtained by summing the contributions from both spin sectors
+
+$$
+  \rho(\mathbf{r}) = \rho_\alpha (\mathbf{r}) + \rho_\beta (\mathbf{r})
+$$
+
+Since the occupied orbitals are orthonormal, the one-particle density integrates to
+
+$$
+  \int_{\R^3} \rho_\sigma \;\d\mathbf{r} = \sum_{a=1}^{N_\sigma} \underbrace{\int_{\R^3} |\psi_a^{(\sigma)}(\mathbf{r})|^2 \;\d\mathbf{r}}_{=1} = N_\sigma
+$$
+
+so that
+
+$$
+  \int_{\R^3} \rho (\mathbf{r}) \;\d\mathbf{r} = N_\alpha + N_\beta = N
+$$
+
+For an unrestricted Hartree-Fock wavefunction, the spatial distribution of $\alpha$- and $\beta$-spin electron are generally different, $\rho_\alpha \neq \rho_\beta$, which motivates the definition of the spin density 
+
+$$
+  \rho_\text{s} (\mathbf{r}) = \rho_\alpha (\mathbf{r}) - \rho_\beta (\mathbf{r})
+$$
+
+The spin density measures the local excess of $\alpha$-spin over $\beta$-spin electrons. Thus $\rho_\text{s} (\mathbf{r}) > 0$ indicates a predominance of $\alpha$-spin electrons near $\mathbf{r}$, whereas $\rho_\text{s} < 0$ indicates a predominance of $\beta$-spin electrons. For closed-shell systems, $\rho_\text{s} \equiv 0$.
+
+Integrating the spin density gives
+
+$$
+  \int_{\R^3} \rho_\text{s} (\mathbf{r}) \;\d\mathbf{r} = N_\alpha - N_\beta
+$$
+
+Since the total spin component operator $\hat{S}_z$ has expectation value
+
+$$
+  \braket{\hat{S}_z} = \frac{1}{2} (N_\alpha - N_\beta)
+$$
+
+it follows that
+
+$$
+  \int_{\R^3} \rho_\text{s} (\mathbf{r}) \;\d\mathbf{r} = 2\braket{\hat{S}_z}
+$$
+
+Substituting the expansion $\eqref{equation-50}$ into $\eqref{equation-51}$ gives
+
+$$
+\begin{align*}
+  \rho_\sigma (\mathbf{r}) =& \sum_{a=1}^{N_\sigma} \left|\sum_{\mu=1}^K C_{\mu a}^{(\sigma)} \phi_\mu (\mathbf{r}) \right|^2 \\
+  =& \sum_{\mu,\nu=1}^K P_{\mu\nu}^{(\sigma)} \phi_\mu (\mathbf{r}) \phi_\nu^* (\mathbf{r})
+\end{align*}
+$$
+
+where the density matrix $\mathbf{P}^{(\sigma)}$ is defined with elements
+
+$$
+  P_{\mu\nu}^{(\sigma)} = \sum_{a=1}^{N_\sigma} C_{\mu a}^{(\sigma)} (C_{\nu a}^{(\sigma)})^*
+$$
+
+The total and spin density matrices are defined by
+
+$$
+  \mathbf{P} = \mathbf{P}^{(\alpha)} + \mathbf{P}^{(\beta)}
+$$
+
+and
+
+$$
+  \mathbf{P}_\text{s} = \mathbf{P}^{(\alpha)} - \mathbf{P}^{(\beta)}
+$$
+
+respectively.
+
+---
+
+For a spin-independent one-electron operator $\hat{O} = \hat{o} \otimes \hat{I}_2$, its expectation value with respect to the unrestricted Hartree-Fock determinant depends only on the total density matrix
+
+$$
+  \braket{\hat{O}_1} = \sum_{\mu,\nu=1}^K P_{\mu\nu} \braket{\phi_\nu|\hat{h}|\phi_\nu)
+$$
+
+---
+
+The spin density itself is the expectation value of the spin-dependent one-electron operator
+
+$$
+  \hat{\rho}_\text{s} = 2 \sum_{i=1}^N \delta(\unitvec{r}_i - \mathbf{R}) \otimes \hat{s}_z (i)
+$$
+
+where the factor $2$ compensates for the eigenvalues $\pm 1/2$ of $\hat{s}_z$. Since
+
+$$
+  \hat{\rho}_\text{s} (\mathbf{R}) = \delta(\unitvec{r} - \mathbf{R}) \otimes (\ket{\alpha}\bra{\alpha} - \ket{\beta}\bra{\beta})
+$$
+
+its expectation value is precisely the spin density $\braket{\hat{\rho}_\text{s} (\mathbf{R})} = \rho_\text{s} (\mathbf{R})$, or, in the finite basis
+
+$$
+  \braket{\hat{\rho}_\text{s}} = \rho_\text{s} (\mathbf{R}) = \tr [\mathbf{P}_\text{s} \mathbf{A}(\mathbf{R})]
+$$
+
+where
+
+$$
+  A_{\mu\nu} (\mathbf{R}) = \phi_\mu^* (\mathbf{R}) \phi_\nu (\mathbf{R})
+$$
+
+## Fock matrix elements
+
+The matrix elements of the $\alpha$-spin Fock operator are given by
+
+$$
+\begin{align*}
+  F_{\mu\nu}^{(\alpha)} =& \braket{\phi_\mu|\hat{f}_{L^2}^{(\alpha)}|\phi_\nu} \\
+  =& H_{\mu\nu} + \sum_{a=1}^{N_\alpha} \left(\braket{\phi_\mu \phi_\nu | \psi_a^\alpha \psi_a^\alpha} - \braket{\phi_\mu \psi_a^\alpha |\psi_a^\alpha \phi_\nu} \right) \\
+  &+ \sum_{a=1}^{N_\beta} \braket{\phi_\mu \phi_\nu | \psi_a^\beta \psi_a^\beta}
+\end{align*}
+$$
+
+Applying the basis expansion $\eqref{equation-50}$ for $\ket{\psi_a^\alpha}$ and $\ket{\psi_a^\beta}$
+
+$$
+\begin{align*}
+  F_{\mu\nu} =& H_{\mu\nu} + \sum_{\lambda,\kappa=1}^K \sum_{a=1}^{N_\alpha} C_{\lambda a}^{(\alpha)} (C_{\kappa a}^{(\alpha)})^* [(\mu\nu|\kappa\lambda) - (\mu\lambda|\kappa\nu)] \\
+  &+ \sum_{\lambda,\kappa=1}^K \sum_{a=1}^{N_\beta} C_{\lambda a}^{(\beta)} (C_{\kappa a}^{(\beta)})^* \\
+  =& H_{\mu\nu} + \sum_{\lambda,\kappa=1}^K P_{\lambda\kappa}^{(\alpha)} [(\mu\nu|\kappa\lambda) - (\mu\lambda|\kappa\nu)] \\
+  &+ \sum_{\lambda,\kappa=1}^K P_{\lambda\kappa}^{(\beta)} (\mu\nu|\kappa\lambda) \\
+  =& H_{\mu\nu} + \sum_{\lambda,\kappa=1}^K P_{\lambda\kappa} (\mu\nu|\kappa\lambda) - P_{\lambda\kappa}^{(\alpha)} (\mu\lambda|\kappa\nu)
+\end{align*}
+$$
+
+By symmetry, the matrix elements of the $\beta$-spin Fock operator are
+
+$$
+  F_{\mu\nu}^{(\beta)} = H_{\mu\nu} + \sum_{\lambda,\kappa=1}^K P_{\lambda\kappa} (\mu\nu|\kappa\lambda) - P_{\lambda\kappa}^{(\beta)} (\mu\lambda|\kappa\nu)
+$$
+
+Comparing these expression with the corresponding restricted closed-shell expression $\eqref{equation-52}$, the Coulomb term is unchanged: it depends only on the total density matrix $\mathbf{P}$, and therefore includes contributions from both spin sectors. The exchange contribution, however, depends only on the density matrix of the corresponding spin sector. In the restricted closed-shell case
+
+$$
+  P_{\mu\nu}^{(\alpha)} = P_{\mu\nu}^{(\beta)} = \frac{1}{2} P_{\mu\nu}
+$$
+
+so the two Fock matrices coincide, $\mathbf{F}^{(\alpha)} = \mathbf{F}^{(\beta)}$, recovering the Roothaan-Hall equations. In the unrestricted case, the two Fock matrices are nonlinearly decoupled through the common Coulomb term since
+
+$$
+\begin{align*}
+  \mathbf{F}^{(\alpha)} =& \mathbf{F}^{(\alpha)} (\mathbf{P}^{(\alpha)}, \mathbf{P}^{(\beta)}) \\
+  \mathbf{F}^{(\beta)} =& \mathbf{F}^{(\beta)} (\mathbf{P}^{(\alpha)}, \mathbf{P}^{(\beta)}) \\
+\end{align*}
+$$
+
+This makes explicit that the $\alpha$- and $\beta$-spin generalized eigenvalue problems must be solved simultaneously whithin the self-consisten field procedure.
+
+## Solutions of the unrestricted self-consistent field equations
