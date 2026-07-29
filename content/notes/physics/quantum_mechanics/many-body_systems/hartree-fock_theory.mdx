@@ -995,7 +995,7 @@ with the shorthand $\ket{\psi_a} := \ket{\psi_a} \otimes \ket{\alpha}$ and $\ket
 
 ---
 
-To derive the restricted Hartree-Fock equations we apply the Fock operator $\eqref{equation-5}$ to $\ket{\chi_{a\sigma}}$ giving
+To derive the restricted Hartree-Fock equations, we apply the Fock operator $\eqref{equation-5}$ to $\ket{\chi_{a\sigma}}$ giving
 
 $$
   \hat{f} \ket{\chi_{a\sigma}} = \left(\hat{h} + \sum_{c=1}^N \hat{J}_c - \hat{K}_c \right)(\ket{\psi_a} \otimes\ket{\sigma})
@@ -1004,13 +1004,13 @@ $$
 Since the core Hamiltonian operator is independent of spin, it factorizes as $\hat{h} = \hat{h}_{L^2} \otimes\hat{I}_2$ acting trivially on the spin component
 
 $$
-  (\hat{h}_{L^2} \otimes \hat{I}_2)(\ket{\psi_a} \otimes \ket{\sigma}) = \hat{h}_{L^2} \ket{\psi_a} \otimes \ket{\sigma}
+  (\hat{h}_{L^2} \otimes \hat{I}_2)(\ket{\psi_a} \otimes \ket{\sigma}) = (\hat{h}_{L^2} \ket{\psi_a}) \otimes \ket{\sigma}
 $$
 
 To analyze the two-electron contributions, note that in a closed-shell determinant, the occupied spin orbitals can be partitioned as
 
 $$
-  \set{\ket{\chi_c}}_{c=1}^N = \set{\ket{\psi_a \alpha}}_{a=1}^{N/2} \cup \set{\ket{\psi_a \beta}}_{a=1}^{N/2}
+  \set{\ket{\chi_c}}_{c=1}^N = \set{\ket{\psi_a \alpha}}_{a=1}^{N/2} \sqcup \set{\ket{\psi_a \beta}}_{a=1}^{N/2}
 $$
 
 Consequently, the sum over $N$ occupied spin orbitals decomposes as
@@ -1048,7 +1048,7 @@ $$
   \hat{J}_b := \braket{\psi_b |\frac{1}{r_{12}}| \psi_b}
 $$
 
-denotes the spatial Coulomb operator. It follows that the Coulomb operator is inpendent of spin, $\hat{J}_{b\alpha} = \hat{J}_{b\beta} := \hat{J}_b \otimes \hat{I}_2$, so that each occupied spatial orbital contributes twice through both spin functions
+denotes the spatial Coulomb operator associated with $\ket{\psi_b}$. It follows that the Coulomb operator is inpendent of spin, $\hat{J}_{b\alpha} = \hat{J}_{b\beta} := \hat{J}_b \otimes \hat{I}_2$, so that each occupied spatial orbital contributes twice through both spin functions
 
 $$
   \sum_{c=1}^N \hat{J}_c \ket{\chi_{a\sigma}} = 2 \sum_{b=1}^n (\hat{J}_b \ket{\psi_a}) \otimes \ket{\sigma}
@@ -1864,21 +1864,92 @@ Neither Mulliken nor Löwdin populations correspond to uniquely defined physical
 
 # Unrestricted open-shell Hartree-Fock
 
-An unrestricted Hartree-Fock (UHF) wavefunction is constructed from spin orbitals that have the form
+In the unrestricted Hartree-Fock (UHF) formalism, the spatial orbital associated with $\alpha$- and $\beta$-spin electrons are allowed to differ. For a system with $N = N_\alpha + N_\beta$ electrons, the occupied spin orbitals $\ket{\chi_i} \in \mathcal{H}_\text{1e} = L^2 (\R^3) \otimes \mathbb{C}^2$ take the form
 
 $$
 \begin{equation*}
-  \chi_i (\mathbf{x}) = \begin{cases}
-    \psi_i^\alpha (\mathbf{r}) \alpha(\omega) \\
-    \psi_i^\beta (\mathbf{r}) \beta(\omega)
-  \end{cases}
+  \ket{\chi_i^\sigma} = \ket{\psi_i^\sigma \sigma} := \ket{\psi_i^\sigma} \otimes \ket{\sigma},\, \sigma\in\set{\alpha,\beta}
 \tag{\label{equation-37}}
 \end{equation*}
 $$
 
-where $\mathbf{x} = (\mathbf{r}, \omega)$ denotes the combined spatial and spin coordinate. For an unrestricted open system containing $N = N_\alpha + N_\beta$ electrons, the $N_\alpha$ electrons with spin $\alpha$ occupy the spatial orbitals $\set{\psi_i^{(\alpha)}}_{i=1}^{N_\alpha}$, while $N_\beta$ electrons with spin $\beta$ occupy the independent set $\set{\psi_i^{(\beta)}}_{i=1}^{N_\beta}$. The restricted Hartree-Fock (RHF) formalism is recovered as the special case of a closed-shell system for which $N_\alpha = N_\beta = N/2$ and $\psi_i^{(\alpha)} = \psi_i^{(\beta)}$ for all $i=1,\dots,N/2$. In this case, each occupied spatial orbital is doubly occupied by one electron of each spin.
+Equivalently, the occupied spin orbitals decompose into the disjoint union
 
-To derive the unrestricted Hartree-Fock equations defining $\set{\psi_j^\alpha}$ and $\set{\psi_j^\beta}$, we insert $\eqref{equation-37}$ into the canonical Hartree-Fock equations $\eqref{equation-6}$. For an $\sigma$-spin orbital $\chi_i (\mathbf{x}) = \psi_a^{(\sigma)} (\mathbf{r}) \sigma(\omega)$, with $\sigma\in\set{\alpha,\beta}$ we obtain
+$$
+  \set{\ket{\chi_i}}_{i=1} = \Set{\ket{\psi_i^\alpha \alpha}}_{i=N_\alpha} \sqcup \Set{\ket{\psi_j^\beta \beta}}_{j=1}^{N_\beta}
+$$
+
+The spatial orbitals within each spin sector are chosen to be orthonormal
+
+$$
+  \braket{\psi_i^\sigma | \psi_j^\sigma} = \delta_{ij},\, \sigma\in\set{\alpha,\beta}
+$$
+
+while no relation is imposed between $\ket{\psi_i^\alpha}$ and $\ket{\psi_i^\beta}$; they need not vanish because the corresponding spin orbitals are already orthogonal through the spin factor
+
+$$
+  \braket{\chi_i^\alpha |\chi_j^\beta} = \braket{\psi_a^\alpha |\psi_j^\beta} \underbrace{\braket{\alpha|\beta}}_{=0} = 0
+$$
+
+The restricted Hartree-Fock (RHF) formalism is recovered as the special case of a closed-shell system for which $N_\alpha = N_\beta = N/2$ and $\ket{\psi_i^\alpha} = \ket{\psi_i^\beta} := \ket{\psi_i}$ for all $i=1,\dots,N/2$. In this case, each occupied spatial orbital is doubly occupied by one electron of each spin.
+
+---
+
+To derive the unrestricted Hartree-Fock equations, we apply the Fock operator $\eqref{equation-5}$ to $\ket{\chi_a^\sigma} = \ket{\psi_a^\sigma \sigma}$ giving
+
+$$
+  \hat{f}\ket{\chi_a^\sigma} = \left(\hat{h} + \sum_{j=1}^N \hat{J}_j - \hat{K}_j \right) (\ket{\psi_a^\sigma} \otimes \ket{\sigma})
+$$
+
+Since the core Hamiltonian operator $\hat{h} = \hat{h}_{L^2} \otimes \hat{I}_2$ is independent of spin, the one-electron contribution is
+
+$$
+  (\hat{h}_{L^2} \otimes \hat{I}_2)(\ket{\psi_a^\sigma} \otimes\ket{\sigma}) = (\hat{h}_{L^2} \ket{\psi_a^\sigma}) \otimes \ket{\sigma}
+$$
+
+To analyze the two-electron contributions, note that the sum over all occupied spin orbitals decomposes as
+
+$$
+  \sum_{c=1}^N = \sum_{\tau\in\set{\alpha,\beta}} \sum_{b=1}^{N_\tau}
+$$
+
+The Coloumb operator generated by the occupied spin orbital $\ket{\chi_c^\tau} = \ket{\psi_c^\tau \tau}$ acts as
+
+$$
+\begin{align*}
+  \hat{J}_b^{(\tau)} \ket{\psi_a^\sigma \sigma} \underbrace{=}_{\eqref{equation-44}}& (\bra{\psi_b^\tau \tau} \otimes \hat{I}) \hat{g} (\ket{\psi_b^\tau \tau} \otimes\ket{\psi_a^\sigma \sigma}) \\
+  =& \left(\braket{\psi_b^\tau |\frac{1}{\hat{r}_{12}} |\psi_b^\tau} \ket{\psi_a^\sigma} \right) \otimes \underbrace{\braket{\tau|\tau}}={=1} \ket{\sigma} \\
+  =& (\hat{J}_b^{(\tau)} \ket{\psi_a^\sigma}) \otimes \ket{\sigma}
+\end{align*}
+$$
+
+where
+
+$$
+  \hat{J}_b^{(\tau)} = \braket{\psi_b^\tau |\frac{1}{\hat{r}_{12}} |\psi_b^\tau}
+$$
+
+denotes the spatial Coulomb operator associated with the occupied orbital $\ket{\psi_b^\tau}$. Summing over all occupied spin orbitals yields
+
+$$
+\begin{align*}
+  \sum_{c=1}^N \hat{J}_c \ket{\chi_a^\sigma} =& \sum_{\tau\in\set{\alpha,\beta}}\sum_{b=1}^{N_\tau} \hat{J}_b^{(\tau)} \\
+  =& \left( \sum_{b=1}^{N_\alpha} \hat{J}_b^{(\alpha)} + \sum_{b=1}^{N_\beta} \hat{J}_b^{(\beta)}\right) \ket{\psi_i^\alpha} \otimes \ket{\sigma}
+\end{align*}
+$$
+
+The exchange operator generated by the spin orbital $\ket{\chi_b^\tau}$ acts as
+
+$$
+\begin{align*}
+  \hat{K}_b^{(\tau)} \ket{\psi_a^\sigma \sigma} \underbrace{=}_{\eqref{equation-45}}& (\bra{\psi_b^\tau \tau} \otimes\hat{I}) \hat{g} (\ket{\psi_a^\sigma \sigma} \otimes\ket{\psi_b^\tau \tau}) \\
+  =& \left(\braket{\psi_b^\tau |\frac{1}{\hat{r}_{12}}|\psi_a^\sigma} \ket{\psi_b^\tau} \right) \otimes \underbrace{\braket{\tau|\sigma}}_{\delta_{\tau\sigma}} \ket{\tau} \\
+  =& \delta_{\tau\sigma} (\hat{K}_b^{(\tau)} \ket{\psi_a}) \otimes \ket{\sigma}
+\end{align*}
+$$
+
+
+defining $\set{\psi_j^\alpha}$ and $\set{\psi_j^\beta}$, we insert $\eqref{equation-37}$ into the canonical Hartree-Fock equations $\eqref{equation-6}$. For an $\sigma$-spin orbital $\chi_i (\mathbf{x}) = \psi_a^{(\sigma)} (\mathbf{r}) \sigma(\omega)$, with $\sigma\in\set{\alpha,\beta}$ we obtain
 
 $$
 \begin{equation*}
@@ -1917,8 +1988,6 @@ Since the one-electron Hamiltonian $\hat{h}(\mathbf{x}) = \hat{h}(\mathbf{r})$ d
 $$
   \braket{\sigma|\hat{h}(\mathbf{x}_1)|\sigma} = \hat{h}(\mathbf{r}_1) \underbrace{\braket{\sigma|\sigma}}_{=1} = \hat{h}(\mathbf{r}_1)
 $$
-
-
 
 The operator $\hat{f}^\alpha (1)$ is the kinetic energy, nuclear attraction, and effective potential of an electron of $\alpha$ spin. The effective interactions of an electron of $\alpha$ spin include a Coulomb and exchange interaction will other electrons of $\alpha$ spin plus only a Coulomb interaction with electrons of $\beta$ spin. Thus
 
@@ -1970,7 +2039,7 @@ The Coulomb interaction of an electron in $\psi_i^\alpha$ with one in $\psi_j^\b
 
 $$
 \begin{align*}
-  J_{ij}^\{\alpha\beta} =& J_{ji}^\{\beta\alpha} = (\psi_i^\alpha|\hat{J}_j^\beta|\psi_i^\alpha) = (\psi_j^\beta|\hat{J}_i^\alpha|\psi_j^\beta) \\
+  J_{ij}^{\alpha\beta} =& J_{ji}^{\beta\alpha} = (\psi_i^\alpha|\hat{J}_j^\beta|\psi_i^\alpha) = (\psi_j^\beta|\hat{J}_i^\alpha|\psi_j^\beta) \\
   =& (\psi_i^\alpha \psi_i^\alpha|\psi_j^\beta \psi_j^\beta)
 \end{align*}
 $$
@@ -1979,7 +2048,7 @@ The corresponding Coulomb interactions between electrons of the same spin are
 
 $$
 \begin{align*}
-  J_{ij}^\{\alpha\alpha} =& (\psi_i^\alpha|\hat{J}_j^\alpha|\psi_i^\alpha) = (\psi_j^\alpha|\hat{J}_i^\alpha|\psi_j^\alpha) \\
+  J_{ij}^{\alpha\alpha} =& (\psi_i^\alpha|\hat{J}_j^\alpha|\psi_i^\alpha) = (\psi_j^\alpha|\hat{J}_i^\alpha|\psi_j^\alpha) \\
   =& (\psi_i^\alpha \psi_i^\alpha|\psi_j^\alpha \psi_j^\alpha)
 \end{align*}
 $$
@@ -1988,7 +2057,7 @@ and
 
 $$
 \begin{align*}
-  J_{ij}^\{\beta\beta} =& (\psi_i^\beta|\hat{J}_j^\beta|\psi_i^\beta) = (\psi_j^\beta|\hat{J}_i^\beta|\psi_j^\beta) \\
+  J_{ij}^{\beta\beta} =& (\psi_i^\beta|\hat{J}_j^\beta|\psi_i^\beta) = (\psi_j^\beta|\hat{J}_i^\beta|\psi_j^\beta) \\
   =& (\psi_i^\beta \psi_i^\beta|\psi_j^\beta \psi_j^\beta)
 \end{align*}
 $$
@@ -1997,7 +2066,7 @@ The exchange interactions between electrons of parallel spin are
 
 $$
 \begin{align*}
-  K_{ij}^\{\alpha\alpha} =& (\psi_i^\alpha|\hat{K}_j^\alpha|\psi_i^\alpha) = (\psi_j^\alpha|\hat{K}_i^\alpha|\psi_j^\alpha) \\
+  K_{ij}^{\alpha\alpha} =& (\psi_i^\alpha|\hat{K}_j^\alpha|\psi_i^\alpha) = (\psi_j^\alpha|\hat{K}_i^\alpha|\psi_j^\alpha) \\
   =& (\psi_i^\alpha \psi_i^\alpha|\psi_j^\alpha \psi_j^\alpha)
 \end{align*}
 $$
@@ -2006,7 +2075,7 @@ and
 
 $$
 \begin{align*}
-  K_{ij}^\{\beta\beta} =& (\psi_i^\beta|\hat{K}_j^\beta|\psi_i^\beta) = (\psi_j^\beta|\hat{K}_i^\beta|\psi_j^\beta) \\
+  K_{ij}^{\beta\beta} =& (\psi_i^\beta|\hat{K}_j^\beta|\psi_i^\beta) = (\psi_j^\beta|\hat{K}_i^\beta|\psi_j^\beta) \\
   =& (\psi_i^\beta \psi_i^\beta|\psi_j^\beta \psi_j^\beta)
 \end{align*}
 $$
