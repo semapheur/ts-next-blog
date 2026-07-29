@@ -276,7 +276,7 @@ $$
 
 where the Lagrangian multiplier $E$ is identified with the variational energy
 
-The coefficients $c_i$ and $c_i^*$ are treated as independent variable. Taking the first variation of $L$ with respect to $c_i^*$ gives
+The coefficients $c_i$ and $c_i^*$ are treated as independent variables. Taking the first variation of $L$ with respect to $c_i^*$ gives
 
 $$
 \begin{align*}
@@ -1144,7 +1144,10 @@ $$
 Thus the restricted Hartree-Fock equations separates to eigenvalue equations for spatial orbitals
 
 $$
+\begin{equation*}
   \hat{f}_{L^2} \ket{\psi_a} = \varepsilon_a \ket{\psi_a}
+\tag{\label{equation-49}}
+\end{equation*}
 $$
 
 where $\varepsilon_{a\alpha} = \varepsilon_{a\beta} =: \varepsilon_a$ since both spin orbitals associated with the same spatial orbital $\ket{\psi_a}$ are degenerate.
@@ -1169,82 +1172,44 @@ $$
 
 ## Roothaan-Hall equations
 
-By introducing a finite set of known spatial basis functinos, the spatial Hartree-Fock equations
+By introducing a finite set of known spatial basis functions, the spatial Hartree-Fock equations $\eqref{equation-49}$ can be converted into a finite-dimensional matrix eigenvalue problem. Let $\set{\ket{\phi_\mu}}_{\mu=1}^K \subset L^2 (\R^2)$ be a finite set of linearly independent basis states spanning a $K$-dimensional subspace of the one-electron Hilbert space. Each spatial orbital is approximated by the linear combination
 
 $$
 \begin{equation*}
-  \hat{f}(\mathbf{r}_1) \psi_i (\mathbf{r}_1) = \varepsilon_i \psi_i (\mathbf{r}_i)
-\tag{\label{equation-21}}
-\end{equation*}
-$$
-
-can be converted into a finite-dimensional matrix eigenvalue problem. Let $\set{\phi_\mu (\mathbf{r})}_{\mu=1}^K$ be a finite set of linearly independent basis functions spanning a $K$-dimensional subspace of the one-electron Hilbert space. Each molecular orbital is approximated by the linear combination
-
-$$
-\begin{equation*}
-  \psi_i = \sum_{\mu=1}^K C_{\mu i} \phi_i,\, i=1,\dots,K
+  \ket{\psi_a} = \sum_{\mu=1}^K C_{\mu a} \ket{\phi_\mu},\, a=1,\dots,K
 \tag{\label{equation-20}}
 \end{equation*}
 $$
 
-where the coefficients $C_{\mu i}$ are unknown.
-
-If the basis were complete $(K\to\infty)$, this expansion could represent any square-integrable orbital exactly. In practice, however, only a finite basis can be used, so the expansion is restricted to the subspace spanned by $\set{\phi_\mu}$. Thus, the Hartree-Fock orbitals obtained from $\eqref{equation-20}$ are the best approximation within this subspace. In complete basis set limit, the approximate molecular orbitals converge to the exact Hartree-Fock orbitals.
-
-We can obtain a matrix equation for $C_{\mu i}$ by substituting the linear expansion $\eqref{equation-20}$ in to the Hartree-Fock equation $\eqref{equation-21}$
+where the coefficients $C_{\mu a}$ are unknown. Substituting the expansion into $\eqref{equation-49}$ gives
 
 $$
-  \hat{f}(1) \sum_{\nu=1}^K C_{\nu,i} \phi_\nu (1) = \varepsilon_i \sum_{\nu=1}^K C_{\nu i} \phi_\nu (1)
+  \sum_{\nu=1}^K C_{\nu a} \hat{f}_{L^2} \ket{\phi_\nu} = \varepsilon_a \sum_{\nu=1}^K C_{\nu a} \ket{\phi_\nu}
 $$
 
-By multiplying by $\phi_\mu^* (1)$ on the left and integrating, we turn the integro-differential equation into a matrix equation
+Projecting onto the basis function $\bra{\phi_\mu}$ yields
 
 $$
-\begin{equation*}
-  \sum_{\nu=1}^K C_{\nu i} \int \d\mathbf{r}_1 \; \phi_\mu^* (1) \hat{f}(1) \phi_\nu (1) = \varepsilon_i \sum_{\nu=1}^K C_{\nu,i} \int \d\mathbf{r}_1 \; \phi_\nu^* (1) \phi_\nu (1)
-\tag{\label{equation-22}}
-\end{equation*}
+  \sum_{\nu=1}^K \braket{\phi_\mu |\hat{f}_{L^2}|\phi_\nu} C_{\nu a} = \varepsilon_a \sum_{\nu=1}^K \braket{\phi_\mu|\phi_\nu} C_{\nu a}
 $$
 
-To simplify the notation, we define two matrices:
-1. The overlap matrix $\mathbf{S} \in\mathcal{M}_K (\mathbb{C})}$ has elements
+Introducing the overlap matrix $S_{\mu\nu} := \braket{\phi_\mu|\phi_\nu}$ and the restricted Fock matrix $F_{\mu\nu} := \braket{\phi_\mu|\hat{f}_{L^2}|\phi_\nu}$, the projected equations become
+
 $$
-\begin{equation*}
-  S_{\mu\nu} = \braket{\phi_\mu|\phi_\nu} = \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \phi_\nu (\mathbf{r})
-\tag{\label{equation-23}}
-\end{equation*}
+  \sum_{\nu=1}^K F_{\mu\nu} C_{\nu a} = \varepsilon_a \sum_{\nu=1}^K S_{\mu\nu} C_{\nu a}
 $$
 
-and is Hermitian, satisfying $S_{\mu\nu} = S_{\nu\mu}^*$. Provided the basis functions are linearly independent, it is positive definite. If the basis functions are individually normalized, the diagonal elements satisfy $S_{\mu\mu} = 1$, while the off-diagonal elements satisfy $|S_{\mu\nu}| < 1$ for $\mu\neq\nu$.
+Writing the molecular-orbital coefficients as the matrix $\mathbf{C} = [C_{\mu a}] \in \mathbb{C}^{K\times K}$ and the orbital energies as the diagonal matrix $\boldsymbol{\varepsilon} = \operatorname{diag}(\varepsilon_1,\dots, \varepsilon_K)$, the equations assume the generalized matrix eigenvalue form
+
+$$
+  \mathbf{F} \mathbf{C} = \mathbf{SC}\boldsymbol{\varepsilon}
+$$
+
+which are the Roothan-Hall equations.
+
+The overlap matrix $\mathbf{S} \in \mathbb{C}^{K\times K}$ and is Hermitian, satisfying $S_{\mu\nu} = S_{\nu\mu}^*$. Provided the basis functions are linearly independent, it is positive definite. If the basis functions are individually normalized, the diagonal elements satisfy $S_{\mu\mu} = 1$, while the off-diagonal elements satisfy $|S_{\mu\nu}| < 1$ for $\mu\neq\nu$.
 
 Near-linear dependence among the basis functions is reflected by one or more eigenvalues of $\mathbf{S}$ approaching zero. Since $\mathbf{S}$ defines the inner product in the finite basis representation, it is often referred to as the metric matrix.
-
-2. The Fock matrix $\mathbf{F} \in\mathcal{M}_K (\mathbb{C})$ has elements
-$$
-\begin{equation*}
-  F_{\mu\nu} = \braket{\phi_\mu|\hat{f}|\phi_\nu} = \int \d\mathbf{r} \; \phi_\mu^* (\mathbf{r}) \hat{f}(\mathbf{r}) \phi_\mu (\mathbf{r})
-\tag{\label{equation-24}}
-\end{equation*}
-$$
-
-and is simply the matrix representation of the Fock operator in the chosen basis. Because $\hat{f}$ is Hermition, it follows that $\mathbf{F}$ is Hermitian, i.e. $F_{\mu\nu} = F_{\nu\mu}^*$.
-
-With the matrix definitions $\eqref{equation-23}$ and $\eqref{equation-24}$ the integrated Hatree-Fock equation $\eqref{equation-22}$ takes the form
-
-$$
-  \sum_{\nu=1}^N F_{\mu\nu} C_{\mu i} = \varepsilon_i \sum_{\nu=1}^N S_{\mu\nu} C_{\nu i},\, i=1,\dots,K
-$$
-
-These are the Roothaan equations, which can be written more compactly as the single matrix equation
-
-$$
-\begin{equation*}
-  \mathbf{FC} = \mathbf{SC}\boldsymbol{\varepsilon}
-\tag{\label{equation-35}}
-\end{equation*}
-$$
-
-where $\mathbf{C}$ is a $K\times K$ square matrix of the expansion coefficients $C_{\mu i}$ and $\boldsymbol{\varepsilon} = \operatorname{diag}(\varepsilon_1,\dots,\varepsilon_K)$ is a diagonal matrix of the orbital energies.
 
 This is a generalized Hermitian eigenvalue problem because the basis functions are generally nonorthogonal, i.e. $\mathbf{S} \neq \mathbf{I}_K$. If the basis is orthonormal, $\mathbf{S} = \mathbf{I}_K$, the equations reduce to the ordinary eigenvalue problem
 
@@ -1670,7 +1635,7 @@ which can be solved for $\mathbf{C}'$ by diagonalizing $\mathbf{F}'$. The molecu
 
 The computational procedure for obtaining a restricted closed-shell Hartree-Fock wavefunctions for a molecule, called the self-consistent field (SCF) procedure, is as follows:
 1. **Specify the molecular system:** Define the molecular geometry by the set of nuclear coordinates $\set{\mathbf{R}_A}$, nuclear charges $\set{Z_a}$, the total number of electrons $N$, and a finite atomic orbital basis $\set{\phi_\mu}_{\mu=1}^K$
-2. **Evaluate the required molecular integrals:** Compute the overlap matrix $S_{\mu\nu} = \brake{\phi_\mu|\phi_\nu}$, core Hamiltonian matrix $h_{\mu\nu} = \braket{\phi_\mu|\hat{h}|\phi_\nu}$, where $\hat{h}$ is the one-electron core Hamiltonian, and the two-electron repulsion integrals $(\mu\nu|\lambda\sigma)$
+2. **Evaluate the required molecular integrals:** Compute the overlap matrix $S_{\mu\nu} = \braket{\phi_\mu|\phi_\nu}$, core Hamiltonian matrix $h_{\mu\nu} = \braket{\phi_\mu|\hat{h}|\phi_\nu}$, where $\hat{h}$ is the one-electron core Hamiltonian, and the two-electron repulsion integrals $(\mu\nu|\lambda\sigma)$
 3. **Construct an orthonormal atomic orbital basis:** Determine a matrix $\mathbf{X}$ satisfying $\mathbf{X}^\dagger \mathbf{XS} = \mathbf{I}$
 4. **Generate an initial density matrix:** Construct an initial guess $\mathbf{P}^{(0)}$ for the density matrix using an appropriate intialization procedure (e.g. core Hamiltonian diagonalization or superposition of atomic densities)
 5. **Construct the two-electron contribution:** Given the current density matrix $\mathbf{P}$, evaluate the matrix
@@ -2099,3 +2064,51 @@ $$
 
 
 ## Pople-Nesbet equations
+
+By introducing a finite set of known spatial basis functions, the spatial Hartree-Fock equations $\eqref{equation-48}$ can be converted into a finite-dimensional matrix eigenvalue problem. Let $\set{\ket{\phi_\mu}}_{\mu=1}^K \subset L^2 (\R^2)$ be a finite set of linearly independent basis states spanning a $K$-dimensional subspace of the one-electron Hilbert space. Each spatial orbital is approximated by the linear combination
+
+$$
+\begin{equation*}
+  \ket{\psi_a^\sigma} = \sum_{\mu=1}^K C_{\mu a}^{(\sigma)} \ket{\phi_\mu},\, a=1,\dots,K
+\tag{\label{equation-50}}
+\end{equation*}
+$$
+
+where the coefficients $C_{\mu a}^{(\sigma)}$ are unknown. Substituting the expansion into $\eqref{equation-48}$ gives
+
+$$
+  \sum_{\nu=1}^K C_{\nu a}^{(\sigma)} \hat{f}_{L^2}^{(\sigma)} \ket{\phi_\nu} = \varepsilon_a^{(\alpha)} \sum_{\nu=1}^K C_{\nu a}^{(\sigma)} \ket{\phi_\nu}
+$$
+
+Projecting onto the basis function $\bra{\phi_\mu}$ yields
+
+$$
+  \sum_{\nu=1}^K \braket{\phi_\mu |\hat{f}_{L^2}^{(\sigma)}|\phi_\nu} C_{\nu a}^{(\sigma)} = \varepsilon_a^{(\sigma)} \sum_{\nu=1}^K \braket{\phi_\mu|\phi_\nu} C_{\nu a}^{(\sigma)}
+$$
+
+Introducing the overlap matrix $S_{\mu\nu} := \braket{\phi_\mu|\phi_\nu}$ and the unrestricted Fock matrix $F_{\mu\nu}^{(\sigma)} := \braket{\phi_\mu|\hat{f}_{L^2}^{(\sigma)}|\phi_\nu}$, the projected equations become
+
+$$
+  \sum_{\nu=1}^K F_{\mu\nu}^{(\sigma)} C_{\nu a}^{(\sigma)} = \varepsilon_a^{(\sigma)} \sum_{\nu=1}^K S_{\mu\nu} C_{\nu a}^{(\sigma)}
+$$
+
+Writing the molecular-orbital coefficients as the matrix $\mathbf{C}^{(\sigma)} = [C_{\mu a}^{(\sigma)}] \in \mathbb{C}^{K\times K}$ and the orbital energies as the diagonal matrix $\boldsymbol{\varepsilon}^{(\sigma)} = \operatorname{diag}(\varepsilon_1^{(\sigma)},\dots, \varepsilon_K^{(\sigma)})$, the equatinos assume the generalized matrix eigenvalue form
+
+$$
+  \mathbf{F}^{(\sigma)} \mathbf{C}^{(\sigma)} = \mathbf{SC}^{(\sigma)}\boldsymbol{\varepsilon}^{(\sigma)}
+$$
+
+which are the Pople-Nesbet equations.
+
+Unlike the restricted Hatree-Fock case, there are two coupled generalized eigenvalue problems, one for each spin sector. Although each equation has the form of an independent generalized eigenvalue problem, the Fock matrices satisfy
+
+$$
+\begin{align*}
+  \mathbf{F}^{(\alpha)} =& \mathbf{F}^{(\alpha)} (\mathbf{C}^{(\alpha)}, \mathbf{C}^{(\beta)} \\
+  \mathbf{F}^{(\beta)} =& \mathbf{F}^{(\beta)} (\mathbf{C}^{(\alpha)}, \mathbf{C}^{(\beta)}
+\end{align*}
+$$
+
+Consequently, the two matrix equations are nonlinearly coupled and must be solved simultaneously within the self-consistent field procedure.
+
+## Electron density
