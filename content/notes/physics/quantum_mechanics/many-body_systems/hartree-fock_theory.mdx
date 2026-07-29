@@ -2271,12 +2271,67 @@ $$
 so the two Fock matrices coincide, $\mathbf{F}^{(\alpha)} = \mathbf{F}^{(\beta)}$, recovering the Roothaan-Hall equations. In the unrestricted case, the two Fock matrices are nonlinearly decoupled through the common Coulomb term since
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \mathbf{F}^{(\alpha)} =& \mathbf{F}^{(\alpha)} (\mathbf{P}^{(\alpha)}, \mathbf{P}^{(\beta)}) \\
   \mathbf{F}^{(\beta)} =& \mathbf{F}^{(\beta)} (\mathbf{P}^{(\alpha)}, \mathbf{P}^{(\beta)}) \\
-\end{align*}
+\end{split}
+\tag{\label{equation-53}}
+\end{equation*}
 $$
 
 This makes explicit that the $\alpha$- and $\beta$-spin generalized eigenvalue problems must be solved simultaneously whithin the self-consisten field procedure.
 
+In terms of the density and Fock matrices, the unrestricted Hartree-Fock ground state energy is given by
+
+$$
+  E_0 = \frac{1}{2} \sum_{\mu,\nu=1}^K (P_{\mu\nu} H_{\mu\nu} + P_{\nu\mu}^{(\alpha)} F_{\mu\nu}^{(\alpha)} + P_{\nu\mu}^{(\beta)} F_{\mu\nu}^{(\beta)})
+$$
+
 ## Solutions of the unrestricted self-consistent field equations
+
+The self-consistent field (SCF) procedure for solving the unrestricted Pople-Nesbet equations is closely analogous to that used for the restricted Roothaan-Hall equations. The principal difference is that two coupled density matrices must be determined simultaneously. 
+
+An initial guess is first chosen for the spin-resolved density matrices $\mathbf{P}^{(\alpha)}$ and $\mathbf{P}^{(\beta)}$, from which the total density matrix $\mathbf{P} = \mathbf{P}^{(\alpha)} + \mathbf{P}^{(\beta)}$ is constructed. A simple choice is $\mathbf{P}^{(\alpha)} = \mathbf{P}^{(\beta)} = \mathbf{0}$, for which the initial Fock matrices reduce to the core Hamiltonian, $\mathbf{F}^{(\alpha)} = \mathbf{F}^{(\beta)} = \mathbf{H}$. The first iteration therefore produces identical spatial orbitals for the two spin sectors. If $N_\alpha \neq N_\beta$, however, the occupations of the resulting molecular orbitals differ, so that the updated density matrices satisy $\mathbf{P}^{(\alpha)} \neq \mathbf{P}^{(\beta)}$, and subsequent iterations proceed within the unrestricted Hartree-Fock formalism.
+
+Given approximations to $\mathbf{P}^{(\alpha)}$ and $\mathbf{P}^{(\beta)}$, each SCF iteration consists of the following steps
+1. Construct the Fock matrices $\mathbf{F}^{(\alpha)}$ and $\mathbf{F}^{(\beta)}$
+2. Solve the coupled generalized eigenvalue problems
+$$
+  \mathbf{F}^{(\sigma)} \mathbf{C}^{(\sigma)} = \mathbf{SC}^{(\sigma)} \boldsymbol{\varepsilon}^{(\sigma)},\, \sigma\in\set{\alpha, \beta}
+$$
+
+to obtain updated molecular orbital coefficients $\mathbf{C}^{(\alpha)}$ and $\mathbf{C}^{(\beta)}$.
+
+3. Form new density matrices $\mathbf{P}^{(\alpha)}$ and $\mathbf{P}^{(\beta)}$
+4. Repeat the process until the density matrices (or equivalently the total energy) satisfy the prescribed convergence criterion.
+
+Although the generalized eigenvalue problems for the $\alpha$- and $\beta$-spin orbitals are independent once the Fock matrices have been constructed, the two problems are coupled through the density dependence of the Fock operators $\eqref{equation-53}$. Consequently, neither spin sector can be made self-consistent independently of the other, and both density matrices converge simultaneously.
+
+As in the restricted closed-shell case, the generalized eigenvalue problems are transformed to an orthonormal basis using a matrix $\mathbf{X}$, satisfying $\mathbf{X}^\dagger \mathbf{SX} = \mathbf{I}$. For each spin sector
+
+$$
+  {\mathbf{F}^{(\sigma)}}' = \mathbf{X}^\dagger \mathbf{F}^{(\sigma)} \mathbf{X},\, \sigma\in\ket{\alpha,\beta}
+$$
+
+is diagonalized to obtain ${\mathbf{C}^{(\sigma)}}'$, after which the molecular orbital coefficients in the original basis are recovered as
+
+$$
+  \mathbf{C}^{(\sigma)} = \mathbf{X}{\mathbf{C}^{(\sigma)}}'
+$$
+
+The remainder of the SCF procedure is identical to the that of the restricted Hartree-Fock method.
+
+---
+
+In the special case $N_\alpha = N_\beta$, the Pople-Nesbet equations always admit the restricted Hartree-Fock solution. If the spin-resolved density matrices satisfy
+
+$$
+  \mathbf{P}^{(\alpha)} = \mathbf{P}^{(\beta)} = \frac{1}{2} \mathbf{P}
+$$
+
+then the two Fock matrices are identical, $\mathbf{F}^{(\alpha)} = \mathbf{F}^{(\beta)} = \mathbf{F}$, and the  coupled Pople-Nesbet equations reduce exactly to the Roothaan-Hall equations. Thus, every restricted Hartree-Fock solution is also a solution of the unrestricted Hartree-Fock equations.
+
+The unrestricted formalism, however, admits a larger variational space. For certain closed-shell systems, the constraint $\mathbf{P}^{(\alpha)} = \mathbf{P}^{(\beta)}$ prevents the Hartree-Fock determinant from attaining the lowest possible energy. Relaxing this constraint may yield a second self-consistent solution satisfying $\mathbf{P}^{(\alpha)} \neq \mathbf{P}^{(\beta)}$, whose energy is lower than that of the restricted solution. Such solutions are referred to as symmetry-broken or spin-polarized unrestricted Hartree-Fock solutions.
+
+The solution obtained by the SCF iteration depends strongly on the initial guess. If the initial density matrices satisfy $\mathbf{P}^{(\alpha)} = \mathbf{P}^{(\beta)}$, the iterations preserve this equality and converge to the restricted solution. To obtain a genuinely unrestricted solution, the initial guess must therefore break the spin symmetry by choosing $\mathbf{P}^{(\alpha)} \neq \mathbf{P}^{(\beta)}$. Even with such an initial guess, the SCF procedure may still converge to the restricted solution if it lies within its basis of attraction. When both restricted and unrestricted solutions exist, the convergence behaviour is therefore determined largely by the choice of the initial density matrices.
