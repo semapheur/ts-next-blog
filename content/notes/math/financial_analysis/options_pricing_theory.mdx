@@ -1,0 +1,301 @@
+---
+title: 'Options pricing theory'
+subject: 'Mathematics/Financial Analysis'
+showToc: true
+references:
+  - book_chan_etal_2024
+---
+
+# Options
+
+An option is a financial derivative that gives its holder an asymmetrical exposure to the performance of an underlying asset (the underlier). Specifically, an option is contract that grants its holder the right, but not the obligation, to trade the underlier at a predetermined *strike price* $K$. For a European-style option, this right may by exercised only at the expiration time $T$, whereas for an American-style option, it may be exercised at any time up to and including $T$. In exchange for this right, the option holder pays the seller (or writer) a premium.
+
+There are many types of options, but call and put options are the fundamental ones. A call option gives its holder the right, but not the obligation to buy the underlier at the strike price $K$. At expiration $T$, its payoff is
+
+$$
+  \Pi_T^\text{call} N \max\set{S_T - K, 0}
+$$
+
+where $S_T$ denotes the price of the underlier at $T$, and $N$ denotes the number of units of the underlier covered by the option.
+
+Similarly, a put option gives it holder the right, but not the obligation to sell the underlier at the strike price $K$. Its payoff at expiration $T$
+
+$$
+  \Pi_T^\text{put} = N \max\set{K - S_T, 0}
+$$
+
+<LatexFigure width={50} src='/fig/option_payoff.svg' alt=''
+  caption="Payoff at expiration time $T$ for long and short positions in call and put options, as a function of the underlying price $S_T$, with strike price $K$."
+>
+```latex
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+\begin{tikzpicture}[font=\small]
+
+  \pgfmathsetmacro{\K}{2}
+
+  \begin{groupplot}[
+    group style={
+      group size=2 by 2,
+      horizontal sep=1cm,
+      vertical sep=1cm,
+    },
+    width=6cm, height=5cm,
+    axis lines=middle,
+    axis line style={-latex},
+    xmin=0, xmax=4.5,
+    ymin=-3, ymax=3,
+    xtick=\empty, ytick=\empty,
+    domain=0:4,
+    samples=100,
+    every axis plot/.style={blue, very thick, no marks},
+    xlabel={$S_T$},
+    xlabel style={at={(axis description cs:1,0.5)}, anchor=west},
+    title style={
+      at={(axis description cs:0.5,1)},
+      yshift=0.3cm,
+      anchor=south,
+    },
+    clip=false,
+  ]
+
+    % Long Call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Long Call},
+    ]
+    \addplot {max(x-\K,0)};
+    \draw (axis cs:\K,0) node[below] {$K$};
+
+    % Long Put
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{put}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Long Put},
+    ]
+    \addplot {max(\K-x,0)};
+    \draw (axis cs:\K,0) node[below] {$K$};
+
+    % Short Call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Short Call},
+    ]
+    \addplot {-max(x-\K,0)};
+    \draw (axis cs:\K,0) node[above] {$K$};
+
+    % Short Put
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{put}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Short Put},
+    ]
+    \addplot {-max(\K-x,0)};
+    \draw (axis cs:\K,0) node[above] {$K$};
+
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
+
+Options have a wide range of applications, including:
+- **Hedging:** Options can be used to protect existing exposures in the underlier. For example, an investor with a long position in the underlier can purchase a put option to establish a floor on the value of that position. Conversely, a short position in the underlier can be hedged by purchasing a call option, which limits the loss that can arise from an increase in the underlier's price.
+- **Leverage:** A call option can provide exposure to increases in the underlier's price while requiring an initial cash outlay that is typically smaller than the cost of purchasing the underlier outright. For example, rather than investing $N S_0$ to acquire $N$ units of an asset, an investor may purchase a call on $N$ units by paying a premium that may be substantially smaller than $N S_0$. This creates leveraged exposure, but the two investments are not equivalent: the call has a nonlinea
+- **Directional exposure with limited downside:** Suppose an investor has a bearish view on the underlier over a given horizon. A short position in the underlier or a short forward position generates a payoff that decreases as $S_T$ increases and therefore carries potentially substantial losses if the market moves against the position. By contrast, purchasing a put option provides bearish exposure while limiting the holder's maximum loss to the premium paid (ignoring financing and transaction costs). The put therefore combines directional exposure with explicit downside protection.
+- **Expressing specific market view:** Because options have nonlinear payoffs, combinations of calls, puts, and positions in the underlier can be constructed to express particular views about the direction, magnitude, or distribution of future price movements. Such combinations, commonly referred to as option strategies or option spreads, allow an investor to tailor the payoff profile to a specific market scenario and investment horizon.
+
+## Option value
+
+Let $S_t$ denote the price of the underlier at time $t$. An the market-to-market (MtM) value of an option, or simply option price, is the current market value at which the option can be bought or sold prior to its expiration. At inception, the option's market price is called the option premium. 
+
+For a standard vanilla option, its market price can be conceptually decomposed into two components
+
+$$
+  \text{option price} = \text{intrinsic value} + \text{time value}
+$$
+
+**Intrinsic value**
+The intrinsic value of an option at time $t$ is the value that would be obtained by exercising the option immediately, assuming immediate exercise is permitted. For a call and put, respectively, the intrinsic value is given by
+
+$$
+\begin{align*}
+  I_t^\text{call} =& \max\set{S_t - K, 0} \\
+  I_t^\text{put} =& \max\set{K - S_t, 0}
+\end{align*}
+$$
+
+For a European-style option, which cannot be exercised before its expiration, intrinsic value should be interpreted as the immediate-exercise value rather than as an amount that can actually be realized at time $t$.
+
+**Time value**
+The time value (or extrinsic value) of an option is the portion of its market price that exceeds its intrinsic value. Denoting the market price of the optiona at time $t$ by $V_t$, its time value is
+
+$$
+  \mathrm{TV}_t = V_t - I_t
+$$
+
+Time value reflects, among other factors, the possibility that the option may become more valuable before expiration as the underlier price, volatility, interest rates, or other relevant market variables evolve. For a standard option in a frictionless setting with no arbitrage, the time value vanishes at expiration, so that
+
+$$
+\begin{align*}
+  V_T^\text{call} =& \max\set{S_T - K, 0} \\
+  V_T^\text{pu} =& \max\set{K - S_T, 0}
+\end{align*}
+$$
+
+<LatexFigure width={50} src='/fig/option_price_long_call.svg' alt=''
+  caption="Option price decomposition for a long call option with value $C(S_t, t)$ and payoff $\Pi_T^\text{call}$ realized at expiration time $T$."
+>
+```latex
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+  \pgfmathsetmacro{\K}{1}        % strike price
+  \pgfmathsetmacro{\RefPt}{1.5}  % reference point used to size the hyperbola's gap
+  \pgfmathsetmacro{\Gap}{0.05}   % desired vertical gap (time value) AT the reference point
+  \pgfmathsetmacro{\C}{\Gap*(\Gap+abs(\RefPt-\K))}
+  \begin{axis}[
+      width=11cm, height=7cm,
+      axis x line=bottom,
+      axis y line=left,
+      axis line style={-latex},
+      xmin=0, xmax=2.2,
+      ymin=0, ymax=1,
+      xtick=\empty, ytick=\empty,
+      domain=0:2,
+      samples=200,
+      clip=false,
+      xlabel={$S_t$},
+      xlabel style={at={(axis description cs:1,0)}, anchor=west},
+      ylabel={Call price},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title style={
+          at={(axis description cs:0.5,1)},
+          yshift=0.3cm,
+          anchor=south,
+        },
+      title={Long Call},
+      legend style={at={(axis description cs:0.1,1)}, anchor=north west},
+    ]
+
+    % invisible named paths (needed by fillbetween) 
+    \addplot[name path=payoff, draw=none, forget plot] {max(x-\K,0)}; \addlegendentry{$\Pi_T^\mathrm{call}$}
+    \addplot[name path=priceline, draw=none, forget plot] {(  (x-\K) + sqrt((x-\K)^2 + 4*\C)  )/2}; \addlegendentry{$C(S_t, t)$}
+    \addplot[name path=xaxis, draw=none, forget plot] {0};
+
+    % shaded areas 
+    \addplot[blue!15, forget plot] fill between[of=payoff and xaxis];      % intrinsic value
+    \addplot[orange!30, forget plot] fill between[of=priceline and payoff]; % time value
+
+    % redraw the visible curves on top of the fills 
+    \addplot[dashed, thick] {max(x-\K,0)};
+    \addplot[solid, thick] {(  (x-\K) + sqrt((x-\K)^2 + 4*\C)  )/2};
+
+    \node[below] at (axis cs:\K,0) {$K$};
+
+    % region labels 
+    \node[align=center] at (axis cs:1.6,0.25) {Intrinsic\\value};
+
+    \node[align=center] at (axis cs:0.6,0.35) {Time value};
+    \draw[-latex, shorten >=1.5pt] (axis cs:0.75,0.30) -- (axis cs:0.96,0.075);
+
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
+
+### Option sensitivities
+
+The dynamics of an option's value can be described either in terms of calendar time $t$ or time to maturity $\tau = T - t$, where $T$ is the expiration time. Since $T$ is fixed, time to maturity decreases one-for-one with the passage of calendar time, i.e. $\d\tau = -\d t$.
+
+The delta of an option measures the sensitivity of its value to changes in the price of the underlier. Let $V(S, t)$ denote the value of an option as a function of the underlier price $S$ and calendar time $t$. The delta at time $t$ is defined as 
+
+$$
+  \Delta_t = \frac{\partial V}{\partial S} (S_t, t)
+$$
+
+Thus, for a sufficiently small change $\Delta S$ in the underlier price, and all other model inputs fixed, the corresponding first-order change in the option value is $\Delta V \approx \Delta_t \Delta S$.
+
+The theta of an option measures the sensitivity of its value to the passage of time, holding the other model inputs fixed. Let $V(S,\tau)$ denoted the value of an option as a function of the underlier price $S$ and time to maturity $\tau$. The sensitivity to time maturity is given by
+
+$$
+  \frac{\partial V}{\partial\tau} (S_t, \tau_t)
+$$
+
+Because $\d\tau = -\d t$, the corresponding sensitivity to calendar time is
+
+$$
+  \frac{\partial V}{\partial\tau} (S_t, \tau_t) = -\frac{\partial V}{\partial t} (S_t, t)
+$$
+
+If we define theta with respect to calendar time as
+
+$$
+  \theta_t = \frac{\partial V}{\partial t} (S_t, t) = -\frac{\partial V}{\partial\tau} (S_t, \tau_t)
+$$
+
+then a small increment $\Delta t$ in calendar time produces the first-order change $\Delta V \approx \Theta_t \Delta t$, provided all other model inputs are held fixed.
+
+An alternative convention is to define theta in terms of time to maturity
+
+$$
+  \theta_t = \frac{\partial V}{\partial \tau} (S_t, \tau_t) = -\frac{\partial V}{\partial t} (S_t, t)
+$$
+
+which differ only by a minus sign.
+
+### Moneyness
+
+The moneyness of an options is classified as follows
+- **In-the-money (ITM):** The option has strictly positive intrinsic value, i.e. $S_t > K$ for a call and $S_t < K$ for a put.
+- **At-the-money (ATM):** The option has zero intrinsic value and the underlier price equals the strike, $K = S_t$.
+- **Out-of-the-money (OTM):** The option has zero intrinsic value and is not AMT, i.e. $S_t < K$ for a call and $S_t > K$ for a put.
+
+Moneyness is therefore time-dependent: an option can move between ITM, ATM and OTM as the priceof the underlier changes.
+
+At inception, it is also common to classify the strike relative to a reference price. Two commonly used conventions are at-the-money spot (ATMS) and at-the-money forward (ATMF).
+- an option is ATMS if $K = S_0$
+- an option is ATMF if $K = F_{0,T}$, where $F_{0,T}$ denotes the forward price of the underlier for maturity $T$, observed at inception
+
+In general $F_{0,T} \neq S_0$, because the forward price incorporates relevant financing, carry, income, and other market-specific effects of the period from $0$ to $T$. Consequently, an option may be ATMF without being ATMS, and vice versa.
+
+The terms ITM and OTM can also be used to describe the option's moneyness at inception. Specifically, an option is ITM at inception if 
+- $K < S_0$ for a call
+- $K > S_0$ for a put
+
+and OTM at inception if
+- $K > S_0$ for a call
+- $K < S_0$ for a put
+
+When $K = S_0$, the option is ATM spot at inception.
+
+### Notional amount
+
+The notional amount of an option determines the scale of its payoff. The precise convention depends on the type of option and the market in which it is traded.
+
+A common convention is to specify the notional amount as a number of units of the underlier. If $N$ denotes the number of units, the terminal payoff is
+
+$$
+\begin{align*}
+  \Pi_T^\text{call} =& N \max\set{S_T - K, 0} \\
+  \Pi_T^\text{put} =& N \max\set{K - S_T, 0} \\
+\end{align*}
+$$
+
+Alternatively, particularly in structured products, the notional may be specified as a monetary amount. In this convention, the payoff is often expressed in terms of the return of the underlier rather than in units of the underlying asset. For example, a monetary notional $N$ applied to an ATMS call may give the terminal payoff
+
+$$
+  N\max\Set{\frac{S_T}{S_0} - 1, 0}
+$$
+
+Here, $N$ has units of currency, whereas in the first convention $N$ represents a number of units of the underlier. The two conventions therefore generate different monetary payoffs unless the respective notionals are appropriately related.
