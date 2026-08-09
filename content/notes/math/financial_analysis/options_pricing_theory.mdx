@@ -13,7 +13,7 @@ An option is a financial derivative that gives its holder an asymmetrical exposu
 There are many types of options, but call and put options are the fundamental ones. A call option gives its holder the right, but not the obligation to buy the underlier at the strike price $K$. At expiration $T$, its payoff is
 
 $$
-  \Pi_T^\text{call} N \max\set{S_T - K, 0}
+  \Pi_T^\text{call} = N (S_T - K)^+
 $$
 
 where $S_T$ denotes the price of the underlier at $T$, and $N$ denotes the number of units of the underlier covered by the option.
@@ -21,10 +21,12 @@ where $S_T$ denotes the price of the underlier at $T$, and $N$ denotes the numbe
 Similarly, a put option gives it holder the right, but not the obligation to sell the underlier at the strike price $K$. Its payoff at expiration $T$
 
 $$
-  \Pi_T^\text{put} = N \max\set{K - S_T, 0}
+  \Pi_T^\text{put} = N (K - S_T)^+
 $$
 
-<LatexFigure width={50} src='/fig/option_payoff.svg' alt=''
+A general distinction goes between vanilla and exotic options. Vanilla options are standard option contracts with conventional payoff structures. The fundamental vanilla options are calls and puts. Options with non-standard or more complex payoff structures are called exotic options.
+
+<LatexFigure width={100} src='/fig/option_payoff.svg' alt=''
   caption="Payoff at expiration time $T$ for long and short positions in call and put options, as a function of the underlying price $S_T$, with strike price $K$."
 >
 ```latex
@@ -126,8 +128,8 @@ The intrinsic value of an option at time $t$ is the value that would be obtained
 
 $$
 \begin{align*}
-  I_t^\text{call} =& \max\set{S_t - K, 0} \\
-  I_t^\text{put} =& \max\set{K - S_t, 0}
+  I_t^\text{call} =& (S_t - K)^+ \\
+  I_t^\text{put} =& (K - S_t)^+
 \end{align*}
 $$
 
@@ -144,12 +146,12 @@ Time value reflects, among other factors, the possibility that the option may be
 
 $$
 \begin{align*}
-  V_T^\text{call} =& \max\set{S_T - K, 0} \\
-  V_T^\text{pu} =& \max\set{K - S_T, 0}
+  V_T^\text{call} =& (S_T - K)^+ \\
+  V_T^\text{pu} =& (K - S_T)^+
 \end{align*}
 $$
 
-<LatexFigure width={50} src='/fig/option_price_long_call.svg' alt=''
+<LatexFigure width={100} src='/fig/option_price_long_call.svg' alt=''
   caption="Option price decomposition for a long call option with value $C(S_t, t)$ and payoff $\Pi_T^\text{call}$ realized at expiration time $T$."
 >
 ```latex
@@ -287,15 +289,147 @@ A common convention is to specify the notional amount as a number of units of th
 
 $$
 \begin{align*}
-  \Pi_T^\text{call} =& N \max\set{S_T - K, 0} \\
-  \Pi_T^\text{put} =& N \max\set{K - S_T, 0} \\
+  \Pi_T^\text{call} =& N (S_T - K)^+ \\
+  \Pi_T^\text{put} =& N (K - S_T)^+ \\
 \end{align*}
 $$
 
 Alternatively, particularly in structured products, the notional may be specified as a monetary amount. In this convention, the payoff is often expressed in terms of the return of the underlier rather than in units of the underlying asset. For example, a monetary notional $N$ applied to an ATMS call may give the terminal payoff
 
 $$
-  N\max\Set{\frac{S_T}{S_0} - 1, 0}
+  \Pi_T^\text{call} = N \left(\frac{S_T}{S_0} - 1 \right)^+
 $$
 
 Here, $N$ has units of currency, whereas in the first convention $N$ represents a number of units of the underlier. The two conventions therefore generate different monetary payoffs unless the respective notionals are appropriately related.
+
+## Vanilla options
+
+Vanilla options are standard, relatively simple option contracts with conventional payoff structures. The fundamental vanilla options are calls and puts, typically written on equities, equity indices, FX rates, commodities, or interest rates. The term vanilla is not, however, a strict synonym for liquid: an option may have a standard payoff structure without being particularly liquid.
+
+For many actively traded vanilla options, market prices or implied volatilities are quoted using conventions based on a standard pricing framework. In the case of equity and some other asset classes, the Black–Scholes–Merton model provides the classical reference framework. In practice, however, market-standard pricing models and volatility conventions differ across asset classes; for example, FX and interest-rate options commonly use conventions and models adapted to their respective markets.
+
+### Equity options
+
+Vanilla equity options are call and put options of either European or American style written on a single stock or an equity index. Equity index options are actively traded on many exchanges and generally have substantial trading volumes. Single-stock options are also exchange-listed in several market, although trading activity varies considerably across stocks and regions.
+
+Settlement conventions depend on the particular contract. For example, many exchange-listed single-stock options in the United Stated are American-style and physically settled, meaning that exercise results in the delivery of the underlying shares. Equity index optoins are typically cash-settled, since an index itself cannot be physically delivered. The precise exercise and settlement conventions are contract-specific.
+
+### Foreign exchange (FX) options
+
+A vanilla foreign exchange option is a call or put option on an exchange rate. Let $X_t$ denote the number of units of currency $2$ ($\text{ccy}2$) per unit of currency $1$ ($\text{ccy}1$), so that the FX quotation is expressed as 
+
+$$
+\begin{equation*}
+  X_t = \frac{\text{ccy}1}{\text{ccy}2}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+A call on $\text{ccy}1$ gives the holder the right to buy currency $1$ and pay for it in currency $2$ at the strike exchange rate $K$. If the option has a notional $N$ units of currency $1$, its terminal payoff, expressed in currency $2$, is
+
+$$
+  \Pi_T^\text{call, ccy1} = N (X_T - K)^+
+$$
+
+Similarly, a put on currency $1$ gives the holder the right to sell $N$ units of currency $1$ in exchange for currency $2$ at strike $K$, with terminal payoff
+
+$$
+  \Pi_T^\text{put, ccy2} = N (K - X_T)^+
+$$
+
+**FX option duality**
+
+FX options exhibit a quotation duality arising from the fact that an exchange rate can be quoted in either direction. The inverse exchange rate of $\eqref{equation-1}$ is
+
+$$
+\begin{equation*}
+  Y_t = \frac{1}{X_t} = \frac{\text{ccy}1}{\text{ccy}2}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+Consider an $N$-unit call on $\text{ccy}1$, with strike $K$ in units of $\text{ccy}2$ per unit of $\text{ccy}1$. Its payoff in currency $2$ is $N ( X_T - K)^+$. Using $\eqref{equation-2}$, the terminal payoff can be expressed as
+
+$$
+  N (X_T - K)^+ = N K X_T \left(\frac{1}{K} - Y_T \right)
+$$
+
+so, after accounting for the appropriate currency conversion, the same economic exposure can be represented as a put on the inverse FX rate with strike $1/K$. Specifically, the corresponding option is a put on $\text{ccy}2$, with notional $KN$ in currency $2$ and strike $1/K$ in units of $\text{ccy}1$ per unit of $\text{ccy}2$.
+
+Thus, an option to buy $N$ units of $\text{ccy}1$ against $KN$ units of $\text{ccy}2$ at exchange rate $K$ can equivalently be described, under the inverse quotation, as an option to sell $KN$ units of $\text{ccy}2$ against $N$ units of $\text{ccy}1$ at exchange rate $1/K$.
+
+### Commodity options
+
+Depending on the commodity and market convention, a vanilla commodity option may be written directly on the spot price of the commodity or, more commonly in exchange-traded markets, on a futures contract. The precise underlying, exercise style, and settlement mechanism are contract-specific.
+
+For an option written with notional $N$ on a futures price $F_t$, the terminal payoff for strike $K$ is
+
+$$
+  \Pi_T^\text{call} = N (F_T - K)^+
+$$
+
+### Interes rate options
+
+Two fundamental classes of vanilla interest-rate options are caps/floors and swaptions.
+
+#### Caps and floors
+
+Consider an accrual period $(T_{i-1}, T_i)$ with year fraction $\tau_i$ and a reference interest rate $R_i$ applying to that period. A caplet is a call option on the reference interest rate. With notional $N$ and strike $K$, its payoff, typically paid at $T_i$ is
+
+$$
+  \Pi_{T_i}^\text{caplet} = N\tau_i (R_i - K)^+
+$$
+
+Thus, the caplet holder receives a payment when the reference rate exceeds the strike $K$. The exact definition of $R_i$, its fixing date, and the payment date depend on the underlying rate and market convention.
+
+An interest-rate cap is a portfolio of caplets covering a sequence of accrual periods. If all caplets have the same strike $K$, its cash flow in period $i$ is
+
+$$
+  \Pi_{T_i}^\text{cap} = N\tau_i (R_i - K)
+$$
+
+and the collection cash flows is given by
+
+$$
+  \Pi^\text{cap} = N \sum_{i=1}^m \tau_i (R_i - K)^+
+$$
+
+Similarly, a floorlet is a put option on the reference interest rate. It payoff at $T_i$ is
+
+$$
+  \Pi_{T_i}^\text{floorlet} = N \tau_i (K - R_i)^+
+$$
+
+An interest-rate floor is a portfolio of floorlets with cash flow at $T_i$ given by
+
+$$
+  \Pi_{T_i}^\text{floor} = N \tau_i (K - R_i)^+
+$$
+
+The colloction of cash flows is the sum
+
+$$
+  \Pi^\text{floor} = N \sum_{i=1}^m \tau_i (K - R_i)^+
+$$
+
+Hence, the cap and floor can be viewed as collections of individual options on the relevant reference rates, each associated with a particular accrual period.
+
+#### Swaption
+
+A swaption is an option that gives the holder the right, but not the obligation to enter into and interest-rate swap (IRS) at a specified future date. Consider a swaption expiring at $T$, where the underlying interest-rate swap begins at $T$ and matures at $T_m$. The holder has the right to enter into this swap at the predermined fixed rate $K$.
+
+Let $s(T, T_m)$ denote the par swap rate at the option epiration date $T$, and let $A(T, T_m)$ denote the present value at $T$ of one unit of the fixed-leg annuity of the underlying swap. For a payer swaption, the value at expiration is
+
+$$
+  \Pi_T^\text{payer} = N A(T, T_m) (s(T, T_m) - K)^+
+$$
+
+For a receiver swaption, the corresponding payoff is
+
+$$
+  \Pi_T^\text{receiver} = N A(T, T_m) (K - s(T, T_m))^+
+$$
+
+The factor $A(T, T_m)$ converts the difference between the market swap rate and the strike into the present value, at $T$, of the corresponding stream of fixed-versus-floating interest payments.
+
+Here $N$ is the notional of the underlying interest-rate swap. The option tenor is the period from inception to the expiration date $T$, while the underlying swap tenor is the period from $T$ to $T_m$. Thus, it is useful to distinguish the swaptions' option maturity from the maturity of the underlying swap.
