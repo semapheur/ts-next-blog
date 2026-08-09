@@ -528,3 +528,547 @@ $$
 and $d_2 = d_1 - \sigma\sqrt{T}$. Thus, in the BSM framework, the option value depends on the spot price $S_0$, strike $K$, time to maturity $T$, interest rate $r$, and volatility $\sigma$, together with any relevant carry such as a dividend yield $q$.
 
 Among these parameters, volatility is particularly important for option traders and risk managers, because it is not directly observable in the same way as spot or interest rates and has a substantial effect on option values. For fixed $S_0$, $K$, $T$, and $r$, the price of a standard European call or put is a strictly increasing function of volatility. Consequently, there is a one-to-one relationship between the option price and its implied volatility. The implied volatility is the value of $\sigma$ that, when substituted into the relevant pricing model, reproduces the observed market price.
+
+### Implied volatility
+
+Implied volatility is the value of the volatility parameters $\sigma$ that, with all other relevant model inputs held fixed, makes a pricing model reproduce the observed market price of an option. In the Black-Scholes-Merton framework, the implied volatility $\sigma_\text{i}$ is defined implicitly by
+
+$$
+  V^\text{BSM} (S_0, K, T, r, \sigma_\text{i}) = V^\text{market}
+$$
+
+where $V^\text{market}$ is the observed market price.
+
+It is important to distinguish realized volatility, which describes the historical or future variability of the underlier, from implied volatility, which is a model-dependent quantity inferred from option prices.
+
+In the basic BSM model, a single constant volatility parameter $\sigma$ is assumed for a given underlier. Consequently, the model would imply the same volatility for all strikes and maturities. In observed markets, however, the implied volatility inferred from option prices generally varies with both strike and maturity. Thus, implied volatility should more generally be viewed as a function $\sigma_\text{i} (K, T)$.
+
+For a fixed maturity, the dependence of implied volatility on strike is known as the volatility smile or, more generally, the volatility skew/smile. Across maturities, the corresponding dependence is referred to as the volatility term structure.
+
+#### Volatility smile 
+
+There are several complementary explanations for the observed strike dependence of implied volatility
+
+- **Limitations of the BSM model.** The BSM model assumes that the underlier follows a geometric Brownian motion with constant volatility. Under this assumption, the terminal price is lognormally distributed. Empirical equity-return distributions, however, typically exhibit features that are inconsistent with this assumption, including heavier tails and, in many cases, significant skewness. A single constant volatility therefore cannot simultaneously reproduce market prices across all strikes. By allowing volatility to vary with strike, practitioners can reproduce a broader cross-section of observed option prices.
+
+  This adjustment should not be interpreted as implying that the resulting volatility parameter represents the true future volatility of the underlier. Rather, it is a model-implied parameter that summarizes the market prices of options with different strikes. In particular, simply replacing the constant BSM volatility by a strike-dependent implied volatility does not, by itself, define a complete stochastic model for the dynamics of the underlier or its volatility. Consequently, such a procedure is generally insufficient for consistently pricing path-dependent derivatives. More sophisticated models, such as local-volatility or stochastic-volatility models, are typically required when the dynamics of the entire implied-volatility surface are relevant.
+
+- **Supply and demand.** Option prices also reflect the balance of supply and demand across strikes. For example, institutional investors with substantial long equity exposure may demand OTM put options to protect against large downward moves in equity markets. Strong demand for such protection can increase the prices of OTM puts and therefore their implied volatilities. This mechanism is one contributing factor to the typically higher implied volatility observed for lower-strike equity index puts.
+
+The shape of the smile is not universal, however. Single-stock options can exhibit different patterns from broad equity-index options, and the skew can vary substantially across stocks, maturities, and market conditions. In some markets or for some individual securities, implied volatility can even increase with strike over part of the relevant range.
+
+#### Dynamics of the volatility smile
+
+The dynamics of the implied-volatility surface describe how implied volatility changes as the underlier price and other market variables evolve. Two simplified descriptions are commonly used to characterize the movement of the smile when the underlier price changes while the overall level of expected volatility is assumed to remain approximately stable.
+- **Sticky strike.** The implied volatility associated with each fixed strike remains approximately unchanged as the underlier price moves. In other words,
+
+$$
+  \sigma_\text{i} (K, S_t) \approx \sigma_\text{i} (K, S_0)
+$$
+
+for fixed $K$. The smile is therefore anchored to absolute strike levels. This assumption can be a useful approximation in certain market conditions, although it is not a fundamental property of option prices.
+
+- **Sticky delta.** The implied volatility associated with a given option delta remains approximately unchanged as the underlier price moves. In this case, the smile effectively moves with the underlier, since the strike corresponding to a given delta changes as the spot or forward price changes. This convention is particularly natural in markets such as FX, where volatility surfaces are frequently quoted in delta space.
+
+Neither assumption is universally correct. They are simplified rules for describing smile dynamics, and the actual evolution of the volatility surface is an empirical property of the market.
+
+#### Forward volatility and variance additivity
+
+Suppose $0 = t_0 < t_1 < t_2$. If $\sigma_1$ and $\sigma_2$ denote the corresponding constant-equivalent implied volatilities for maturities $t_1$ and $t_2$, then, under the assumption that total variance is additive across non-overlapping time intervals
+
+$$
+  \sigma_2^2 t_2 = \sigma_1^2 t_1 + \sigma^2 (t_1, t_2) (t_2 - t_1)
+$$
+
+where $\sigma(t_1, t_2)$ is the forward volatility associated with the interval $[t_1, t_2]$. Hence
+
+$$
+\begin{equation*}
+  \sigma^2 (t_1, t_2) = \frac{\sigma_2^2 t_2 - \sigma_1^2 t_1}{t_2 - t_1}
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+The key object being interpolated or extrapolated here is total variance, not volatility itself. This follows from the fact that, under the usual constant-volatility diffusion framework, variance accumulates linearly with time.
+
+Forward volatility is useful, for example, in pricing forward-starting options, whose strike or moneyness is determined at a future date.
+
+If $t_1 < t < t_2$, a simple piecewise-constant-forward-volatility interpolation assumes that the forward volatility over $[t_1, t]$ is equal to the forward volatility over the entire interval $[t_1, t_2]$. The total variance accumulated up to $t$ is then
+
+$$
+  \sigma^2 (t) t = \sigma_1^2 t_1 + \sigma^2 (t_1, t_2) (t - t_1)
+$$
+
+Substituting in $\eqref{equation-5}$ gives
+
+$$
+  \sigma^2 (t) t = \sigma_1^2 t_1 + \frac{t - t_1}{t_2 - t_1} (\sigma_2^2 t_2 - \sigma_1^2 t_1)
+$$
+
+Equivalently,
+
+$$
+  \sigma^2 (t) t = [1 - w(t)] \sigma_1^2 t_1 + w(t) \sigma_2^2 t_2
+$$
+
+where
+
+$$
+  w(t) = \frac{t - t_1}{t_2 - t_1}
+$$
+
+Thus, this interpolation scheme performs a linear interpolation of total variance between two maturities. The resulting implied volatility is then recovered as
+
+$$
+  \sigma(t) = \sqrt{\frac{[1 - w(t)] \sigma_1^2 t_1 + w(t) \sigma_2^2 t_2}{t}}
+$$
+
+This is only one possible interpolation method. In practice, volatility surfaces are typically interpolated using conventions designed to preserve desirable properties such as smoothness and, where required, absence of static arbitrage.
+
+derived (with other parameters fixed) from an option price quoted in the market. For a given underlier, although its volatility has a unique value in the BSM model, its implied volatility may be different for different tenors and option strikes. For a given tenor, the implied volatilities from the options with different strike prices show a pattern known as volatility smile.
+
+#### FX volatility quotations
+
+In the FX options market, volatility is commonly quoted using delta-based conventions rather than directly specifying strikes. For a given maturity, a typical quotation includes the at-the-money-forward (ATMF) volatility together with risk reversals and butterflies.
+
+The ATMF volatility, denoted $\sigma_\text{ATMF}$, corresponds to a strike equal to the forward ATM strike, subject to the relevant FX market convention.
+
+A 25-delta risk reversal is defined as
+
+$$
+  25\Delta\text{RR} = \sigma_{25\Delta\text{call}} - \sigma_{25\Delta\text{put}}
+$$
+
+It measures the assymmetry of implied volatility between the 25-delta call and put.
+
+A 25-delta butterfly (or 25-delta strangle) is defined by
+
+$$
+  25\Delta\text{BF} = \frac{1}{2} (\sigma_{25\Delta\text{call}} + \sigma_{25\Delta\text{put}}) - \sigma_\text{ATMF}
+$$
+
+Given these three market quotes, the two wing volatilities can be recovered as
+
+$$
+\begin{align*}
+  \sigma_{25\Delta\text{call}} =& \sigma_\text{ATMF} + 25\Delta\text{BF} + \frac{1}{2} 25\Delta\text{RR} \\
+  \sigma_{25\Delta\text{put}} =& \sigma_\text{ATMF} + 25\Delta\text{BF} - \frac{1}{2} 25\Delta\text{RR}
+\end{align*}
+$$
+
+The corresponding implied volatilities at other delta levels can then be obtained by interpolation according to the market's specified volatility-surface convention.
+
+For fixed spot, forward, maturity, interest rates, and other model inputs, there is a one-to-one relationship between an option's strike and its delta under the standard Black-type pricing framework. Consequently, a volatility quoted as a function of delta can be transformed into an implied-volatility representation as a function of strike.
+
+### Put-call parity
+
+Let $c_t (T, K)$ and $p_t (T-K)$ denote, respectively, the time-$t$ prices of a European call and put with common strike $K$ and maturity $T$. Assume that the two options have identical contractual terms other than the right to buy or sell the underlier.
+
+In the case of a zero dividend underlier, the put-call parity states that
+
+$$
+  c_t (T, K) - p_t (T, K) = S_t^\text{fwd} (T) - Ke^{-r(T - t)}
+$$
+
+where $S_t^\text{fwd} (T)$ denotes the relevant forward price of the underlier for maturity $T$. Equivalently, if $F_t (T)$ denotes the forward price
+
+$$
+  c_t (T, K) - p_t (T, K) = e^{-r(T - t)} (F_t(T) - K)
+$$
+
+More generally, it is useful to define the value of a foward contract with delivery price $K$ by
+
+$$
+  f_t (T, K) = e^{-r(T - t)} (F_t (T) - K)
+$$
+
+Then put-call parity can be written compactly as
+
+$$
+  c_t (T, K) - p_t (T, K) = f_t (T, K),\, t \leq T
+$$
+
+<details>
+<summary>Proof</summary>
+
+The result follows directly from the terminal payoff. At maturity, we have
+
+$$
+\begin{equation*}
+  (S_T - K)^+ - (K - S_T)^+ = S_T - K,\, \forall T > 0
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+Thus, a long call combined with a short put has exactly the same terminal payoff as a forward contract to buy the underlier for $K$ at $T$. By the no-arbitrage principle, two portfolios with identical cash flows must have the same value at every earlier time $t$.
+</details>
+
+If put-call parity were violated, we could construct an arbitrage by taking a long position in the cheaper portfolio and a short position in the more expensive portfolio, with the initial cash flows offsetting and the terminal cash flows cancelling exactly.
+
+For a non-dividend-paying stock, if the relevant repo or financing carry is zero, the forward price is $F_t = S_t - e^{-r(T-t)} K$, so that $f_t (T, K) = S_t - Ke^{-r(T - t)}$. In this case, the put-call parity becomes
+
+$$
+  c_t (T, K) - p_t (T, K) = S_t - K e^{-r(T - t)}
+$$
+
+or, equivalently
+
+$$
+  c_t (T, K) + Ke^{-r(T - t)} = p_t (T, K) + S_t
+$$
+
+This latter form has a direct replication interpretation: a call combined with a zero-coupn bond paying $K$ at $T$ has the same payoff as a put combined with one unit of the underlier. If the underlier pays a continuous dividend yield $q$, the corresponding relation becomes
+
+$$
+\begin{equation*}
+  c_t - p_t = S_t e^{-q(T-t)} - Ke^{-r(T-t)}
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+More generally, the appropriate carry and discounting conventions depend on the asset class.
+
+<LatexFigure width={100} src='/fig/put_call_parity.svg' alt=''
+  caption="Put-call parity for a long call and short put with strike $K$"
+>
+```latex
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+  \pgfmathsetmacro{\K}{1}        % strike price
+  \begin{axis}[
+      width=7cm, height=7cm,
+      axis x line=middle,
+      axis y line=left,
+      axis line style={-latex},
+      xmin=0, xmax=2.2,
+      ymin=-1, ymax=1,
+      xtick=\empty, ytick=\empty,
+      domain=0:2,
+      samples=200,
+      clip=false,
+      xlabel={$S_t$},
+      xlabel style={at={(axis description cs:1,0.5)}, anchor=west},
+      ylabel={Payoff},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title style={
+          at={(axis description cs:0.5,1)},
+          yshift=0.3cm,
+          anchor=south,
+        },
+      title={Put-Call Parity},
+      legend style={at={(axis description cs:1,0)}, anchor=south east},
+    ]
+
+    \addplot[blue, solid, thick] {max(x-\K,0)}; \addlegendentry{Long call}
+    \addplot[red, solid, thick] {-max(\K-x,0)}; \addlegendentry{Short put}
+
+    \node[below] at (axis cs:\K,0) {$K$};
+
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
+
+**Implication for implied volatility**
+
+Put–call parity imposes a strong consistency condition on the implied volatilities of European calls and puts. Under a given arbitrage-free pricing model, if a call and put have the same strike $K$, maturity $T$, and underlying, and are priced using the same market inputs for rates and carry, then they must have the same implied volatility. Indeed, the difference between their prices $\eqref{equation-6}$ contains no volatility-dependent component.
+
+This also implies that the vega of the call and put must be identical. For example, in the Black-Scholes-Merton model with continuous dividend yield $q$ the call and put vega are
+
+$$
+\begin{align*}
+  \text{Vega}_\text{call} =& \frac{\partial c}{\partial\sigma} = S_t e^{-q(T - t)} \phi(d_1) (T - t)^{1/2} \\
+  \text{Vega}_\text{put} =& \frac{\partial p}{\partial\sigma} = S_t e^{-q(T - t)} \phi(d_1) (T - t)^{1/2}
+\end{align*}
+$$
+
+so that $\text{Vega}_\text{call} = \text{Vega}_\text{put}$.
+
+Put–call parity therefore provides a particularly clear example of option decomposition: although a call and a put are individually nonlinear contingent claims, their difference eliminates the optionality,
+
+$$
+  \text{call} - \text{put} = \text{forward}
+$$
+
+because their nonlinear payoff components cancel as shown in $\eqref{equation-7}$.
+
+For interest-rate derivatives, the analogous relationship is given by
+
+$$
+  \text{cap} - \text{floor} = \text{payer swap}
+$$
+
+provided the cap and floor have matching notionals, accrual periods, strikes, and reference rates. More precisely, this is an equality of the corresponding streams of cash flows: each caplet minus the corresponding floorlet produces the cash flow of a payer swap for that accrual period
+
+$$
+  N\tau_i (R_i - K)^+ - N \tau_i (K - R_i)^+ = N\tau_i (R_i - K)
+$$
+
+Summing across all periods gives the cash flows of the corresponding payer interest-rate swap.
+
+### European option strategies
+
+European options can be used to express specific views on the future price of an underlier. More generally any sufficiently regular European payoff at a fixed maturity can be represented, or approximated arbitrarily well, using a portfolio of vanilla calls, puts, and a position in the underlier and/or a risk-free asset.
+
+The basic building blocks in option strategies are call and put payoffs. For a unit notional $N = 1$, their terminal payoffs are
+
+$$
+  \Pi_T^\text{call} = (S_T - K)^+,\quad \Pi_T^\text{put} = (K - S_T)^+
+$$
+
+As functions of $S_T$, these are piecewise-linear functions with slopes $\pm 1$ on their respective in-the-money regions and slope $0$ elsewhere. By combining options with different strikes and notionals, we can construct a wide range of piecewise-linear payoff profiles. In the limit, sufficiently regular nonlinear payoff can be represented using a continuum of vanilla options. This observation underlies the static replication of European contingent claims.
+
+Below are some of the most common vanilla option strategies
+
+#### Call spread
+
+A call spread, or vertical bull call spread, consists of
+- long one call with strike $K_1$
+- short one call with strike $K_2$ 
+
+with $K_1 < K_2$. Its payoff is
+
+$$
+  \Pi_T = (S_T - K_1)^+ - (S_T - K_2)^2
+$$
+
+Equivalently,
+
+$$
+  \Pi_T = \begin{cases}
+    0,\quad& S_T \leq K_1 \\
+    S_T - K_1,\quad& K_1 < S_T < K_2 \\
+    K_2 - K_1,\quad& S_T \geq K_2
+  \end{cases}
+$$
+
+The strategy provides a bullish exposure over the interval $[K_1, K_2]$, while limiting both its maximum profit and its cost relative to a standalone long call. When the two strikes are close, the value of the spread is particularly sensitive to the relative implied volatilities at the two strikes, and therefore to the local shape of the volatility smile or skew, rather than simply to the overall volatility level.
+
+#### Put spread
+
+A put spread, or vertical bear put spread, consists of
+- long one put with strike $K_1$
+- short one put with strike $K_2$
+
+with $K_1 > K_2$. Its payoff is
+
+$$
+  \Pi_T = (K_1 - S_T)^+ - (K_2 - S_T)^+
+$$
+
+The position provides bearish exposure over the interval $[K_2, K_1]$, while limiting the maximum profit and reducing the premium relative to purchasing the $K_1$ put outright
+
+#### Risk reversal
+
+A risk reversal combines options with opposite directions and typically different strikes. A common structure is
+- long one OTM call with strike $K_\text{call}$
+- short one OTM put with strke $K_\text{put}$
+
+with $K_\text{put} < S_0 < K_\text{call}$. The strikes are often selected so that the initial new premium is approximately zero. The resulting position provides asymmetric directional exposure: it benefits from a sufficiently large upward move and loses value if the underlier falls sufficiently far.
+
+#### Butterfly
+
+A standard call butterfly consists of
+- long one call at $K_1$
+- short two calls at $K_2$
+- long one call at $K_3$
+
+where $K_1 < K_2 < K_3$ and
+
+$$
+  K_2 = \frac{K_1 + K_3}{2}
+$$
+
+Its payoff is
+
+$$
+  \Pi_T = (S_T - K_1)^+ - 2(S_T - K_2)^+ + (S_T - K_3)^+
+$$
+
+The payoff is maximized when $S_T = K_2$ and vanishes when $S_T \leq K_1$ or $S_T \geq K_3$. Thus, a long butterfly profits when the underlier finishes near the middle strike $K_2$, relative to the initial cost of the strategy.
+
+#### Collar
+
+A collar typically consists of 
+- a long position in the underlier
+- a long OTM put
+- a short ITM call
+
+with the put strike below the current underlier price and the call strike above it. The put establishes a downside floor, while the short call limits the upside beyond the call strike. The premium received from selling the call can partially or fully offset the cost of the protective put.
+
+#### Straddle
+
+A long straddle consists of
+- one long call
+- one long put
+
+with the same strike $K$ and maturity $T$. The strike is typically chosen close to the ATM level. Its payoff is
+
+$$
+\begin{align*}
+  \Pi_T =& (S_T - K)^+ + (K - S_T)^+ \\
+  =& |S_T - K|
+\end{align*}
+$$
+
+The strategy therefore benefits from a sufficiently large move in either direction and is primarily an expression of a view that the realized movement of the underlier will exceed that implied by the option premiums.
+
+#### Strangle
+
+A long strangle consists of
+- one long OTM call
+- one long OTM pu
+
+with the same maturity, but different strikes $K_\text{put} < S_0 < K_\text{call}$. Its payoff is
+
+$$
+  \Pi_T = (K_\text{put} - S_T)^+ + (S_T - K_\text{call})^+
+$$
+
+#### Call ratio spread
+
+A call ratio spread combines calls in unequal quantities. A common $1\times 2$ structure consists of
+- long one call at $K_1$
+- short two calls at $K_2$
+
+with $K_1 < K_2$. Its payoff is
+
+$$
+  \Pi_T = (S_T - K_1)^+ - 2(S_T - K_2)^+
+$$
+
+Unlike a standard call spread, the short-call notional exceeds the long-call notional. Consequently, the strategy can have unlimited downside for sufficiently large increases in the underlier price. This feature is important when assessing the risk of ratio spreads.
+
+#### Covered call
+
+A covered call, or buy/write, consists of
+- a long position in the underlier
+- a short call on the same underlier, typically with an OTM strike
+
+The strategy generates premium income from selling the call in exchange for giving up some of the upside beyond the call strike. It is commonly used when the investor has a neutral to moderately bullish view and is willing to cap the upside in exchange for option premium.
+
+The short call is economically covered by the long underlier position: if the call is exercised, the investor can deliver the underlying asset. This reduces the need for additional collateral relative to an uncovered short call, although the precise collateral and margin treatment depends on the market and counterparty arrangement.
+
+#### Calendar spread
+
+A calendar spread, or horizontal spread, consists of otherwise similar options with different expiration dates. For example, a call calendar spread may involve
+- buying a longer-dated call
+- selling a shorter-dated call
+
+typically with the same strike. Because the two options have different maturities, the position is particularly sensitive to the term structure of implied volatility and to the evolution of volatility over time. Calendar spreads can therefore be used to express views on the relative pricing of different maturities and, in appropriate settings, on forward volatility.
+
+The term horizontal comes from representing maturity on the horizontal axis of a diagram, in contrast to a vertical spread, where the maturity is fixed and the strikes differ.
+
+#### Directional trading with options
+
+Market participants, including hedge funds, may use slightly OTM calls or puts to obtain directional exposure to an underlier. Relative to an ATM option, an OTM option generally requires a lower upfront premium, although this does not necessarily mean that it provides “cheaper” directional exposure in an economically equivalent sense. Its delta, gamma, probability of finishing ITM, and sensitivity to volatility and time decay are all different.
+
+In many trading strategies, the option position is intended to express a view over a finite horizon rather than to be held until expiration. The position may therefore be unwound, rolled, or otherwise offset before maturity. For this reason, liquidity and transaction costs are important considerations when selecting an option. Highly liquid standardized options are generally easier to enter and exit at competitive prices than bespoke OTC or exotic options, whose secondary-market liquidity can be limited.
+
+Thus, the choice between a vanilla and an exotic option is not determined solely by the desired terminal payoff. It also depends on the liquidity, hedging requirements, transaction costs, model risk, and expected holding period of the position.
+
+### American options
+
+An American option may be exercised by its holder at any time to and including its expiration date $T$. If the option can be exercised only at a specified finite set of dates (e.g., every month), it is called a Bermudan option. However, in some market contexts, options with discrete exercise opportunities are sometimes informally called American options.
+
+For an American option, the holder must determine the optimal exercise time. At any exercise opportunity t, immediate exercise is optimal when the exercise value is at least as large as the value of retaining the option. More formally, if $E_t$ denotes the immediate exercise value and $V_t$ the value of continuing to hold the options, exercise is optimal whenever $E_t \geq V_t^\text{cont}$, where $V_t^\text{cont}$ denotes the value conditional on not exercising at $t$.
+
+**American versus European options**
+
+Let $c_t$ and $p_t$ denote the time-$t$ price of the European call option and put option with strike $K$ and maturity $T$, while $C_t$ and $P_t$ denote the corresponding American option prices. Due to its exercise right at the discretion of option holder, an American option's price should be at least the price of its counterpart European options, i.e.
+
+$$
+\begin{equation*}
+  C_t \geq c_t,\quad P_t \geq p_t
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+The inequality follows directly from the fact that the holder of the American option can always choose to exercise only at $T$. Thus, the set of admissible exercise strategies for the American option contains the European exercise strategy as a special case.
+
+**Early exercise of an American call**
+
+The price of an American call is equal to the price of the corresponding European call under the following conditions:
+- dividend and repo rate are all zero for the underlier during the tenor of the option
+- the continuously compounded risk-free interes rate $r$ is non-negative.
+
+Under these conditions early exercise of the call is never optimal and therefore
+
+$$
+  C_t = c_t
+$$
+
+<details>
+<summary>Proof</summary>
+
+We first show that the European call prices has the lower bound
+
+$$
+  c_t \geq (S_t - K e^{-r(T-t)})^+,\, \forall t < T
+$$
+
+Define two portfolios at time $t < T$
+- Portfolio $A$: Long one European call $c_t$ together with a zero-coupon bond with the value $Ke^{-r(T-t)}$, so that the bond pays $K$ at $T$
+- Portfolio $B$: Long one share $S_t$ with zero dividend yield
+
+At maturity $T$, the porfolio payoffs are
+- Portfolio $A$: $(S_T - K)^+ + K = \max\set{S_T, K}$
+- Portfolio $B$: $S_T$
+
+Since $\max\set{S_T, K} \geq S_T$, Portfolio $A$ dominates Portfolio $B$ at maturity. By the no-arbitrage principle
+
+$$
+  c_t + K e^{-r(T-t)} \geq S_t
+$$
+
+or, because $c_t \geq 0$
+
+$$
+\begin{equation*}
+  c_t \geq (S_t - Ke^{-r(T-t)})^+
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+Because $r \geq 0$, it follows that $e^{-r(T-t)} \leq 1$ and therefore
+
+$$
+  S_T - Ke^{-r(T-t)} \geq S_t - K
+$$
+
+Taking positive parts gives
+
+$$
+  (S_T - Ke^{-r(T-t)})^+ \geq (S_t - K)^+
+$$
+
+From the inequalities $\eqref{equation-8}$ and $\eqref{equation-9}$
+
+$$
+  C_t \geq c_t \geq (S_t - Ke^{-r(T-t)})^+ \geq (S_t - K)^+
+$$
+
+Because the early exercise value of the American call is $(S_t - K)^+$, exercising the call before maturity cannot be optimal. Since early exercise provides no additional value, the American and European calls have the same value, i.e.
+
+$$
+  C_t = c_t,\, \forall t < T
+$$
+</details>
+
+The economic intuition is straightforward. Exercising the call early requires paying the strike $K$ before maturity and gives up the remaining optionality. If the stock pays no dividends, there is no benefit from owning the stock earlier. Moreover, when $r \geq 0$, postponing the payment of $K$ has non-negative financing value. If the holder wishes to monetize an appreciated call position before maturity, selling the option is therefore preferable to exercising it: selling preserves the remaining time value, whereas exercise destroys it.
+
+For a given underlying, strike, and maturity, an American option provides at least as much value to its holder as the corresponding European option because it offers a larger set of exercise opportunities. Consequently,
+
+$$
+  V_t^\text{American} \geq V_t^\text{European}
+$$
+
+However, this does not imply that an American option is always economically preferable at the same quoted premium. In a frictionless market, the premium should reflect the additional value associated with the early-exercise right. Moreover, the possibility of terminating a European option before maturity should not generally be described as an “unwind” at a value below intrinsic value: the market value of a European option is itself constrained by no-arbitrage bounds and, under standard assumptions, is at least its intrinsic value. An OTC unwind may involve transaction costs, bid–ask spreads, funding costs, or other contractual adjustments, but these are separate from the fundamental distinction between American and European exercise rights.
+
+Thus, the essential advantage of an American option is not that it guarantees a higher liquidation value at any time, but that it gives the holder additional exercise rights. The economic value of those rights is reflected in the American option's price relative to the corresponding European option.
+
+## Exotic options
