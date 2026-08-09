@@ -223,7 +223,10 @@ The dynamics of an option's value can be described either in terms of calendar t
 The delta of an option measures the sensitivity of its value to changes in the price of the underlier. Let $V(S, t)$ denote the value of an option as a function of the underlier price $S$ and calendar time $t$. The delta at time $t$ is defined as 
 
 $$
+\begin{equation*}
   \Delta_t = \frac{\partial V}{\partial S} (S_t, t)
+\tag{\label{equation-3}}
+\end{equation*}
 $$
 
 Thus, for a sufficiently small change $\Delta S$ in the underlier price, and all other model inputs fixed, the corresponding first-order change in the option value is $\Delta V \approx \Delta_t \Delta S$.
@@ -314,6 +317,8 @@ Vanilla equity options are call and put options of either European or American s
 
 Settlement conventions depend on the particular contract. For example, many exchange-listed single-stock options in the United Stated are American-style and physically settled, meaning that exercise results in the delivery of the underlying shares. Equity index optoins are typically cash-settled, since an index itself cannot be physically delivered. The precise exercise and settlement conventions are contract-specific.
 
+Equity options are generally quoted by specifying the strike and expiration. Depending on the market convention, the strike may be expressed in absolute price terms or relative to a reference level. For index options and structured equity products, it is also common to describe strikes in terms of their moneyness, for example as a percentage of the spot or forward level.
+
 ### Foreign exchange (FX) options
 
 A vanilla foreign exchange option is a call or put option on an exchange rate. Let $X_t$ denote the number of units of currency $2$ ($\text{ccy}2$) per unit of currency $1$ ($\text{ccy}1$), so that the FX quotation is expressed as 
@@ -357,6 +362,16 @@ $$
 so, after accounting for the appropriate currency conversion, the same economic exposure can be represented as a put on the inverse FX rate with strike $1/K$. Specifically, the corresponding option is a put on $\text{ccy}2$, with notional $KN$ in currency $2$ and strike $1/K$ in units of $\text{ccy}1$ per unit of $\text{ccy}2$.
 
 Thus, an option to buy $N$ units of $\text{ccy}1$ against $KN$ units of $\text{ccy}2$ at exchange rate $K$ can equivalently be described, under the inverse quotation, as an option to sell $KN$ units of $\text{ccy}2$ against $N$ units of $\text{ccy}1$ at exchange rate $1/K$.
+
+**FX option quotation**
+
+In the FX options market, vanilla options are commonly quoted in terms of delta rather than directly by strike. Delta is calculated using the relevant FX option pricing convention, typically based on a Black–Scholes/Garman–Kohlhagen framework. Standard market quotations often include:
+
+- ATMF (at-the-money forward);
+- $25\%$-delta options; and
+- $10\%$-delta options.
+
+The precise definition of FX delta—such as spot delta, forward delta, or premium-adjusted delta—is market- and currency-pair-dependent, so the quotation convention must be specified when interpreting an FX volatility quote.
 
 ### Commodity options
 
@@ -412,7 +427,7 @@ $$
   \Pi^\text{floor} = N \sum_{i=1}^m \tau_i (K - R_i)^+
 $$
 
-Hence, the cap and floor can be viewed as collections of individual options on the relevant reference rates, each associated with a particular accrual period.
+Hence, the cap and floor can be viewed as collections of individual options on the relevant reference rates, each associated with a particular accrual period. Market quotations for caps and floors are commonly expressed in terms of strike and maturity, although conventions can vary by currency and reference rate.
 
 #### Swaption
 
@@ -433,3 +448,83 @@ $$
 The factor $A(T, T_m)$ converts the difference between the market swap rate and the strike into the present value, at $T$, of the corresponding stream of fixed-versus-floating interest payments.
 
 Here $N$ is the notional of the underlying interest-rate swap. The option tenor is the period from inception to the expiration date $T$, while the underlying swap tenor is the period from $T$ to $T_m$. Thus, it is useful to distinguish the swaptions' option maturity from the maturity of the underlying swap.
+
+Swaptions are typically quoted by specifying the option expiry, the underlying swap tenor, and the relevant strike or volatility measure. For example, a quotation may refer to a swaption with a 5-year option expiry into a 10-year underlying swap. The precise quotation convention—strike, premium, or implied volatility—depends on the market and currency.
+
+### Option pricing and hedging
+
+**Option hedging**
+
+In an idealized complete, frictionless market, the no-arbitrage value of a contingent claim can be interpreted as the cost of dynamically replicating its payoff. Thus, the option's price is equal to the initial cost of a self-financing trading strategy that reproduces the option's terminal payoff.
+
+A delta-hedging strategy dynamically adjusts the position in the underlier according to the option's delta $\eqref{equation-3}$. For example, if the option has delta $\Delta_t$, a position of $-\Delta_t$ units of the underlier, together with the appropriate position in the risk-free asset, locally offsets the option's first-order exposure to movement in the underlier price.
+
+It is important to distinguish the option price from its hedging cost in a general market. The equality between the two is a consequence of the no-arbitrage and completeness assumptions underlying the replication argument; in real markets, transaction costs, discrete rebalancing, liquidity constraints, model risk, and imperfect hedging mean that an option's market price need not equal the realized cost of hedging it ex post.
+
+**Vanilla option pricing**
+
+The Black-Scholes-Merton (BSM) model is the classical framework for the pricing and delta hedging of European options. Under this model, the underlier price follows a geometric Browian motion 
+
+$$
+  \frac{d S_t}{S_t} = \mu \d t + \sigma \d W_t
+$$
+
+where $\mu$ is the drift of the underlier under the chosen probability measure, $\sigma > 0$ is its constant volatility, and $W_t$ is a standard Wiener process. Under the risk-neutral measure used for pricing, and in the absence of dividends, the drift becomes the continuously compounded risk-free rate $r$
+
+$$
+  \frac{d S_t}{S_t} = r \d t + \sigma \d W_t^\mathbb{Q}
+$$
+
+The BSM model applies to vanilla equity options, but has been adapted to other asset classes. In particular, the Garman-Kohlhagen model is the standard extension for FX options, while the Black model is widely used for options on forwards and futures, including many interest-rate derivatives.
+
+For a European vanilla, the classical Black-Scholes (BS) formulas give the no-arbitrage call and put prices under the assumptions of the BSM model. For a dividend-free underlier, with current spot price $S_0$, strike $K$ and time to maturity $T$, the call and put prices are
+
+$$
+\begin{equation*}
+\begin{split}
+  c =& S_0 N(d_1) - K e^{-rT} N(d_2) \\
+  p =& K e^{-rT} N (-d_2) - S_0 N(-d_1)
+\end{split}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where
+
+$$
+  d_1 = \frac{\ln(S_0/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}
+$$
+
+and
+
+$$
+  d_2 = d_1 - \sigma\sqrt{T} = \frac{\ln(S_0/K) + (r - \sigma^2/2)T}{\sigma\sqrt{T}}
+$$
+
+Here $N(\cdot)$ denotes the cumulative distribution function of the standard normal distribution
+
+$$
+  N(z) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^z \exp\left(-\frac{x^2}{2} \right) \;\d x
+$$
+
+The formulas $\eqref{equation-4}$ assumes zero dividends or other carry on the underlier. If the underlier pays a continuous dividend yield $q$, the corresponding formulas become
+
+$$
+\begin{equation*}
+\begin{split}
+  c =& S_0 e^{-qT} N(d_1) - K e^{-rT} N(d_2) \\
+  p =& K e^{-rT} N (-d_2) - S_0 e^{-qT} N(-d_1)
+\end{split}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+with 
+
+$$
+  d_1 = \frac{\ln(S_0/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}
+$$
+
+and $d_2 = d_1 - \sigma\sqrt{T}$. Thus, in the BSM framework, the option value depends on the spot price $S_0$, strike $K$, time to maturity $T$, interest rate $r$, and volatility $\sigma$, together with any relevant carry such as a dividend yield $q$.
+
+Among these parameters, volatility is particularly important for option traders and risk managers, because it is not directly observable in the same way as spot or interest rates and has a substantial effect on option values. For fixed $S_0$, $K$, $T$, and $r$, the price of a standard European call or put is a strictly increasing function of volatility. Consequently, there is a one-to-one relationship between the option price and its implied volatility. The implied volatility is the value of $\sigma$ that, when substituted into the relevant pricing model, reproduces the observed market price.
