@@ -1072,3 +1072,524 @@ However, this does not imply that an American option is always economically pref
 Thus, the essential advantage of an American option is not that it guarantees a higher liquidation value at any time, but that it gives the holder additional exercise rights. The economic value of those rights is reflected in the American option's price relative to the corresponding European option.
 
 ## Exotic options
+
+Any option that is not a vanilla option is an exotic option. Each exotic option offers specific exposure to the performance of the underlier. If a payoff is determined by more than one price of a single underlier over time, the option is called path-dependent. Actually, the proliferation of structured products and the advances in pricing techniques made it unnecessary to name each new product with an exotic and fancy name. However, well-studied exotic options named in the old days are often used for comparing/understanding a financial product’s features, risks, and pricing/hedging issues.
+
+### Barrier options
+
+A barrier option is a type of call or put option whose value depends not only on the underlier price at expiration, but also on whether the underlier reaches a specified barrier level during a prescribed monitoring period. Barrier options are commonly classified as
+- **Knock-in:** the option becomes active only if the barrier is reached or breached during the monitoring period
+- **Knock-out:** the option is terminated if the barrier is reached or breached during the monitoring period
+
+The terms down-and-in, down-and-out, up-and-in, and up-and-out specify the direction of the barrier and the type of activation function
+- **down:** the relevant event occurs when the underlier falls to or below a lower barrier $L$
+- **up:** the relevant event occurs when the underlier rises to or above and upper barrier $H$
+- **in:** the option is activated when the barrier is hit
+- **out:** the option is extinguished when the barrier is hit
+
+| Type | Barrier event | Payoff condition |
+| --- | --- | --- |
+| Down-and-in | $\min_{t\in[0,T]} S_t \leq L$ | Barrier must be hit |
+| Down-and-out | $\min_{t\in[0,T]} S_t > L$ | Barrier must not be hit |
+| Up-and-in | $\max_{t\in[0,T]} S_t \geq H$ | Barrier must be hit |
+| Up-and-out | $\max_{t\in[0,T]} S_t < H$ | Barrier must not be hit |
+
+<LatexFigure width={100} src='/fig/barrier_call_option_payoff.svg' alt=''
+  caption="Payoffs for barrier call options with strike $K$ at expiration $T$. Dashed lines indicate payoffs that become active only if the barrier is breached before maturity."
+>
+```latex
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+\begin{tikzpicture}[font=\small]
+
+  \pgfmathsetmacro{\K}{2}
+  \pgfmathsetmacro{\L}{1}
+  \pgfmathsetmacro{\H}{3}
+
+  \begin{groupplot}[
+      group style={
+          group size=2 by 2,
+          horizontal sep=1cm,
+          vertical sep=1cm,
+        },
+      width=6cm, height=5cm,
+      axis lines=middle,
+      axis line style={-latex},
+      xmin=0, xmax=4.5,
+      ymin=-2, ymax=2,
+      xtick=\empty, ytick=\empty,
+      domain=0:4,
+      samples=100,
+      every axis plot/.style={blue, very thick, no marks},
+      xlabel={$S_T$},
+      xlabel style={at={(axis description cs:1,0.5)}, anchor=west},
+      title style={
+          at={(axis description cs:0.5,1)},
+          yshift=0.3cm,
+          anchor=south,
+        },
+      clip=false,
+    ]
+
+    % up-and-in call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{ui,call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Up-and-in Call},
+    ]
+    \addplot[domain=0:\H] {0};
+    \addplot[domain=\H:4, dashed] {max(x-\K,0)};
+    \draw (axis cs:\K,0) node[below] {$K$};
+    \draw[dashed, gray] (axis cs:\H, -1.5) -- (axis cs:\H, 1.5);
+    \draw (axis cs:\H,0) node[anchor=north west] {$H$};
+
+    % up-and-out call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{uo,call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Up-and-out Call},
+    ]
+    \addplot[domain=0:\H] {max(x-\K,0)};
+    \addplot[domain=\H:4, dashed] {0};
+    \draw (axis cs:\K,0) node[below] {$K$};
+    \draw[dashed, gray] (axis cs:\H, -1.5) -- (axis cs:\H, 1.5);
+    \draw (axis cs:\H,0) node[anchor=north west] {$H$};
+
+    % down-and-in call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{di,call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Down-and-in Call},
+    ]
+    \addplot[domain=0:4] {0};
+    \addplot[domain=\K:4, dashed] {max(x-\K,0)};
+    \draw (axis cs:\K,0) node[below] {$K$};
+    \draw[dashed, gray] (axis cs:\L, -1.5) -- (axis cs:\L, 1.5);
+    \draw (axis cs:\L,0) node[anchor=north east] {$L$};
+
+    % down-and-out call
+    \nextgroupplot[
+      ylabel={$\Pi_T^\mathrm{do,call}$},
+      ylabel style={at={(axis description cs:0,1)}, anchor=south},
+      title={Down-and-out Call},
+    ]
+    \addplot {max(x-\K,0)};
+    \addplot[domain=\K:4, dashed] {0};
+    \draw (axis cs:\K,0) node[below] {$K$};
+    \draw[dashed, gray] (axis cs:\L, -1.5) -- (axis cs:\L, 1.5);
+    \draw (axis cs:\L,0) node[anchor=north east] {$L$};
+
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
+
+**Down-and-in options**
+
+A down-and-in option is activated if the underlier reaches or falls below the lower barrier $L$ at some point during the monitoring period. Its terminal payoff is therefore
+
+$$
+\begin{align*}
+  \Pi_T^\text{DI,call} =& (S_T - K)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t \leq L} \\
+  \Pi_T^\text{DI,put} =& (K - S_T)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t \leq L}
+\end{align*}
+$$
+
+Thus, the option pays the corresponding vanilla payoff at $T$ if and only if the underlier has reached or breached $L$ during the monitoring period.
+
+**Down-and-out options**
+
+A down-and-out option is extinguished if the underlier reaches or falls below $L$. Its terminal payoff is
+
+$$
+\begin{align*}
+  \Pi_T^\text{DO, call} =& (S_T - K)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t > L} \\
+  \Pi_T^\text{DO, put} =& (K - S_T)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t > L}
+\end{align*}
+$$
+
+Thus, the option pays the corresponding vanilla payoff only if the underlier remains strictly above $L$ throughout the monitoring period.
+
+**Up-and-in options**
+
+An up-and-in option is activated if the underlier reaches or exceeds the upper barrier $H$. Its terminal payoff is
+
+$$
+\begin{align*}
+  \Pi_T^\text{UI, call} =& (S_T - K)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t \geq H} \\
+  \Pi_T^\text{UI, put} =& (K - S_T)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t \geq H}
+\end{align*}
+$$
+
+Thus, the option pays the corresponding vanilla payoff at $T$ if and only if the underlier has reached or breached $H$ during the monitoring period.
+
+**Up-and-out options**
+
+An up-and-out option is extinguished if the underlier reaches or exceeds $H$. Its terminal payoff is
+
+$$
+\begin{align*}
+  \Pi_T^\text{UO, call} =& (S_T - K)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t < H} \\
+  \Pi_T^\text{UO, put} =& (K - S_T)^+ \mathbf{1}_\set{\min_{t\in[0,T]} S_t < H}
+\end{align*}
+$$
+
+Thus, the option pays the corresponding vanilla payoff only if the underlier remains strictly below $H$ throughout the monitoring period.
+
+#### In-out parity
+
+A barrier option generally has a lower price than the corresponding vanilla option when the barrier condition restricts the set of states in which the option pays. For example, an up-and-out call satisfies
+
+$$
+\begin{align*}
+  0 \leq& (S_T - K)^+ \mathbf{1}_\set{\max_{t\in[0,T]} S_t < H} \\
+  \leq& (S_T - K)^+
+\end{align*}
+$$
+
+so, under an abritrage-free pricing measure
+
+$$
+  V_t^\text{UO,call} \leq V_t^\text{vanilla call}
+$$
+
+The same intuition applies to knock-in options: a knock-in option pays only when an additional barrier event occurs, so its value is generally below that of the corresponding vanilla option. In fact, under matching contractual specifications and continuous monitoring, in–out parity gives
+
+$$
+  V_t^\text{KI} + V_t^\text{KO} = V_t^\text{vanilla}
+$$ 
+
+This follows because exactly one of the knock-in and knock-out conditions is satisfied for a given path, subject to the precise treatment of barrier touching.
+
+The additional barrier condition therefore generally makes barrier options less expensive than their vanilla counterparts, while allowing investors to obtain more targeted exposures at a lower upfront premium. This combination of lower premium and path-dependent risk makes barrier options particularly common in OTC markets. However, the lower premium comes at the cost of additional path dependence: the option's value depends not only on the terminal price $S_T$, but also on the path followed by the underlier before expiration.
+
+#### Barrier option pricing
+
+Barrier options are classified as
+- up-and-in call, $c_\text{ui}$
+- up-and-out call, $c_\text{uo} = c - c_\text{ui}$ by in-out parity
+- down-and-in call, $c_\text{di}$
+- down-and-out call, $c_\text{do} = c - c_\text{di}$ by in-out-parity
+- up-and-in put, $p_\text{ui}$
+- up-and-out put, $p_\text{uo} = p - p_\text{ui}$ by in-out parity
+- down-and-in put, $p_\text{di}$
+- down-and-out put, $p_\text{do} = p - p_\text{di}$ by in-out-parity
+
+Under the Black-Scholes-Merton model, the barrier option prices are given by
+
+$$
+\begin{align*}
+  c_\text{ui} =& S_0 e^{-qT} N(x_1) - Ke^{-rT} N(x_1 - \sigma\sqrt{T}) \\
+  &- S_0 e^{-qT} \left(\frac{H}{S_0}\right)^{2\lambda} [N(-y) - N(-y)] \\
+  &+ Ke^{-rT} (H/S_0)^{2\lambda - 2} [N(-y + \sigma\sqrt{T}) - N(-y_1 + \sigma\sqrt{T})] \\
+  c_\text{di} =& S_0 e^{-qT} \left(\frac{H}{S_0}\right)^{2\lambda} N(y) - Ke^{-rT} \left(\frac{H}{S_0}\right)^{2\lambda - 2} N(y - \sigma\sqrt{T}) \\
+  p_\text{ui} =& -S_0 e^{-qT} \left(\frac{H}{S_0}\right)^{2\lambda} N(-y) + Ke^{-rT} \left(\frac{H}{S_0} \right)^{2\lambda - 2} N(-y + \sigma\sqrt{T}) \\
+  p_\text{di} =& -S_0 e^{-qT} N(-x_1) + Ke^{-rT} N(-x_1 + \sigma\sqrt{T}) \\
+  &+ S_0 e^{-qT} \left(\frac{H}{S_0}\right)^{2\lambda} [N(y) - N(y_1)] \\
+  &- Ke^{-rT} \left(\frac{H}{S_0} \right)^{2\lambda - 2} [N(y - \sigma\sqrt{T}) - N(y_1 - \sigma\sqrt{T})]
+\end{align*}
+$$
+
+where $c$ and $p$ are the closed-form vanilla call and put prices, respectively, and
+
+$$
+\begin{align*}
+  \lambda =& \frac{r - q + \sigma^2 /2}{\sigma^2} \\
+  y =& \frac{\ln(H^2/S_0 K)}{\sigma\sqrt{T}} + \lambda\sigma\sqrt{T} \\
+  x_1 =& \frac{\ln(S_0/H)}{\sigma\sqrt{T}} + \lambda\sigma\sqrt{T} \\
+  y_1 =& \frac{\ln(H/S_0)}{\sigma\sqrt{T}} + \lambda\sigma\sqrt{T}
+\end{align*}
+$$
+
+### Binary options
+
+A binary option is a contingent claim whose payoff is a fixed amount, either in cash or in an underlying asset, conditional on the occurrence of a specified event $A$. A cash-or-nothing binary has payoff $\Pi_T = N \mathbf{1}_A$, where $N$ is the predetermined cash amount. An asset-or-nothing binary has payoff $\Pi_T = S_T \mathbf{1}_A$ if one unit of the underlier is delivered up occurrence of $A$.
+
+Binary options are commonly classified according to whether the event is determined by the terminal value of the underlier or by its path over a monitoring period.
+
+#### European binary options
+
+A European binary option has a payoff determined solely by the underlier's value at the expiration date $T$. For example, a cash-or-nothing binary call with threshold $H$ pays
+
+$$
+  \Pi_T^\text{BC} = N \mathbf{1}_\set{S_T \geq H}
+$$
+
+while a cash-or-nothing binary put with threshold $L$ pays
+
+$$
+  \Pi_T^\text{BP} = N\mathbf{1}_\set{S_T \leq L}
+$$
+
+Thus, the binary call pays $N$ if the terminal underlier price is at or above $H$, and zero otherwise. Similarly, the binary put pays $N$ if the terminal price is at or below $L$.
+
+#### American binary options and touch options
+
+An American binary option is path-dependent: its payoff depends on whether a specified event occurs at any time during a monitoring interval, rather than only on the terminal value $S_T$. Such options are also called touch options.
+
+For example, a one-touch paying a fixed cash amount $N$ when the underlier reaches an upper barrier $H$ during $[0,T]$ has payoff
+
+$$
+  \Pi_T^\text{OT} = N \mathbf{1}_\set{\max_{t\in [0,T]} S_t \geq H}
+$$
+
+assuming $S_0 < H$.
+
+A double-no-touch (DNT) pays a fixed amount provided that neither of two barriers is touched during the monitoring period. For lower barrier $L$ and upper barrier $H$, with $L < S_0 < H$, its payoff is
+
+$$
+  \Pi_T^\text{DNT} = N \mathbf{1}_\set{\min_{t\in[0,T]} S_t \geq L \cap \max_{t\in[0,T]} S_t \leq H}
+$$
+
+Touch and binary options are particularly important in the FX options market, where one-touch, no-touch, and double-no-touch structures are actively traded, especially for major currency pairs. They are often regarded as relatively standard products in that market, although they are path-dependent and therefore are not vanilla options in the strict sense.
+
+#### Barrier options with rebates
+
+A barrier option may include a rebate, which is a predetermined payment made when the barrier event occurs. For example, consider an up-and-out call with strike $K$, upper barrier $H$, and cash rebate $c$. If the option is knocked out when
+
+$$
+  \max_{t\in[0,T]} S_t \geq H
+$$
+
+then its terminal payoff, assuming the rebate is paid at maturity for simplicity, is
+
+$$
+\begin{align*}
+  \Pi_T =& (S_T - K)^+ \mathbf{1}_\set{\max_{t\in[0,T]} S_t < H} + c \mathbf{1}_\set{\max_{t\in[0,T]} S_t \geq H} \\
+  =& \Pi_T^\text{UO,call} + \Pi_T^\text{UI,bin} (c)
+\end{align*}
+$$
+
+Thus, by no-arbitrage
+
+$$
+  V_t^\text{UO,call,rebate} = V_t^\text{UO,call} + V_t^\text{UI,bin} (c)
+$$
+
+with the understanding that if the rebate is paid immediately upon the barrier being hit, its valuation must account for the payment time rather than treating it as a payment at $T$.
+
+### Asian option
+
+An Asian option is a path-dependent option whose payoff depends on an average of the underlier price over a specified observation period, rather than solely on the underlier price at maturity. Depending on the contract specification, the averaging can be applied to the underlier used in the payoff, to the strike, or to both.
+
+Let $t_1 < \cdots < t_m = T$ denote the observation dates, and define the arithmetic average of the underlier over these dates by
+
+$$
+  \bar{S}= \frac{1}{m} \sum_{i=1}^m S_{t_i}
+$$
+
+More generally, the average may be weighted
+
+$$
+  \bar{S} = \frac{i=1}^m w_i S_{t_i},\, w_i \geq 0
+$$
+
+with
+
+$$
+  \sum_{i=1}^m w_i = 1
+$$
+
+The weighting scheme and observation dates are contractual features of the Asian option.
+
+#### Assian average-price option
+
+When the average underlier price replaces the terminal spot price in the payoff while the strike remains fixed, the option is commonly called an Asian average-price option.
+
+The payoff for Asian average-price options with strike $K$ are
+
+$$
+\begin{align*}
+  \Pi_T =& (\bar{S} - K)^+ \\
+  \Pi_T =& (K - \bar{S})^+
+\end{align*}
+$$
+
+When the averaging takes place over a period immediately preceding maturity, the option is sometimes described as an Asian tail or Asian-out option.
+
+#### Asian average-strike option
+
+Alternatively, the average underlier price can determine the strike while the terminal underlier price remains in the payoff. Such an option is commonly called an Asian average-strike option.
+
+The payoff for Asian average-strike options are
+
+$$
+\begin{align*}
+  \Pi_T =& (\bar{S} - S_T)^+ \\
+  \Pi_T =& (S_T - \bar{S})^+
+\end{align*}
+$$
+
+#### Economic intuition
+
+A principal feature of an Asian option is that averaging makes the payoff less sensitive to any single observation of the underlier. In particular, an average-price option depends on the entire set of observations rather than only on $S_T$, as in a European vanilla option. Consequently, Asian options generally have lower sensitivity to short-lived price fluctuations near a particular observation date than otherwise comparable European options.
+
+This averaging feature can be useful for managing fixing risk and timing risk. In particular, a company that buys or sells an underlying asset progressively over a period may be exposed to the risk that a single spot price at a contractual fixing or expiration date is unfavorable. An Asian option can instead reference an average price over the relevant period, making the hedge more closely aligned with the company's effective average purchase or sale price.
+
+### Lockback option
+
+A lookback option is a path-dependent option whose payoff depends on the maximum or minimum value of the underlier observed over a specified monitoring period. The extremum can enter the payoff in one of two ways: it can determine the effective strike price, or it can determine the effective terminal underlier price.
+
+Lookback options generally command a higher premium than comparable vanilla options because the path-dependent feature gives the holder the benefit of selecting the most favorable observed price within the specified range. The precise value depends strongly on the monitoring convention: continuous monitoring and discrete monitoring can produce materially different prices, since the observed maximum or minimum can differ between the two conventions.
+
+Let $t_1 < \cdots < t_m$ denote the relevant observation dates. The exact set of observation dates, and whether the monitoring is continuous or discrete, are contractual features of the option.
+
+#### Lookback strike option
+
+In a lookback strike option, the maximum or minimum observed underlier price determines the effective strike.
+
+For example, consider a lookback strike call whose effective strike is the minimum observed underlier price,
+
+$$
+  S_0^* = \min_{1 \leq i \leq m} S_{t_i}
+$$
+
+If the observation period ends no later tthan the option maturity, $t_m \leq T$, a normalized payoff can be written as
+
+$$
+  \Pi_T = N \left(\frac{S_T}{S_0^*} - 1 \right)^+
+$$
+
+The minimum observed price therefore acts as the strike reference. Economically, the holder benefits from being able to compare the terminal price with the most favorable low price observed during the lookback period.
+
+#### Lookback spot option
+
+In a lookback spot option, the terminal underlier price in the payoff is replaced by an extremum observed during the monitoring period.
+
+For example, a lookback spot call based on the maximum observed price has
+
+$$
+  S_T^* = \max_{n-m+1 \leq i \leq n} S_{t_i},\, T_n = T
+$$
+
+and payoff
+
+$$
+  \Pi_T = \left(\frac{S_T^*}{S_0} - 1 \right)^+
+$$
+
+Here, $S_0$ is the initial price, while the maximum observed price $S_T^*$ replaces the terminal spot $S_T$. Thus, the holder effectively benefits from the highest underlier price achieved during the loockback period rather than being exposed solely to the price at maturity.
+
+### Quanto option and composite option
+
+When the currency in which an option payoff is settled differs from the currency in which the underlier is denominated, the option must specify how the foreign-currency performance of the underlier is translated into the payoff currency. Two important structures are quanto options and composite options.
+
+
+| | Quanto | Composite |
+| --- | --- | --- |
+| Underlier               | Foreign-currency asset        | Foreign-currency asset                   |
+| Payoff currency         | Different currency            | Different currency                       |
+| FX rate in payoff       | Fixed/contractual             | Realized (X_T)                           |
+| Investor's FX exposure  | Hedged/eliminated from payoff | Explicitly retained                      |
+| Performance measured on | Foreign-currency underlier    | Underlier converted into payoff currency |
+
+#### Quanto options
+
+A quanto option is an option whose payoff is determined by the performance of the underlier measured in its domestic currency, while the payoff is settled in a different currency at a pre-specified or contractually fixed exchange rate. Thus, the payoff does not depend on the realized FX rate at maturity.
+
+The term quanto is commonly understood as referring to a quantity-adjusted structure: the foreign underlier's return is preserved, while the currency conversion is effectively fixed.
+
+For example, suppose a stock is denominated in EUR, with price $S_t^€$, and consider a USD-settled quanto call with notional $N$. If the option is specified in terms of the normalized stock performance, its payoff takes the form
+
+$$
+  \Pi_T^\text{quanto} = N \left(\frac{S_T^€}{S_^€} - K \right)^+
+$$
+
+where $K$ is the strike expressed in terms of the stock's return or normalized price.
+
+More generally, if the option is based on a monetary payoff in the underlier's domestic currency and converted at a fixed exchange rate $X^\text{fix}$, the corresponding payoff would be $\Pi_T^\text{quanto} = X^\text{fix} \Phi(S_T^€)$ for an appropriate domestic-currency payoff function $\Phi$.
+
+The key feature is that the realized FX rate $X_T$ does not enter the payoff. Consequently, an investor whose investment currency is USD can obtain exposure to the EUR-denominated stock without taking direct exposure to movements in the EUR/USD exchange rate.
+
+Quanto options are therefore useful when the investor wants exposure to the performance of a foreign underlier while eliminating the FX risk from the payoff. They are particularly natural for investors who have a view on the underlier but do not wish to take a view on the associated exchange rate.
+
+It is worth noting, however, that eliminating FX exposure from the payoff does not mean that the FX market is irrelevant for pricing. In a no-arbitrage pricing framework, the valuation of a quanto derivative generally depends on the relationship between the underlier, the FX rate, and the relevant interest rates, including a quanto adjustment reflecting the correlation between the underlier and the exchange rate.
+
+#### Composition options 
+
+A composite option, or compo, also has a payoff in a currency different from the denomination currency of the underlier. Unlike a quanto option, however, the underlier's performance is measured after converting its price into the payoff currency using the realized FX rate.
+
+Let $X_t$ denote the EUR/USD exchange rates, expressed as USD per EUR. The stock price expressed in USD is then $S_t^\$ = S_t^€ X_t$. A USD-settled composite call therefore has payoff
+
+$$
+  \Pi_T^\text{compo} = N \left(\frac{S_T^\$}{S_0^\$} - K \right)^+ = N \left(\frac{S_T^€ C_T}{S_0^€ X_0} - K \right)^+
+$$
+
+Thus, unlike the quanto payoff, the composite payoff depends on both the performance of the underlying stock in EUR and the EUR/USD exchange rate. Consequently, a quanto investor is primarily exposed to the foreign underlier, whereas a composite investor is exposed to the combined performance of the underlier and the exchange rate.
+
+From another perspective, $S_t^€ X_t$ can be regarded as the price of a synthetic or "composite" asset denominated in USRD. The option is therefore written on the USD value of the foreign asset rather than on its EUR-denominated price alon.
+
+Composite options are generally less intuitive for an investor who wants a pure view on the foreign underlier, because the payoff depends on two sources of uncertainty, $S_T^€$ and $X_T$. They can nevertheless be useful when the investor naturally has exposure to the foreign asset after currency conversion, or when hedging the domestic-currency interest-rate and funding risks associated with the foreign underlier is difficult or expensive. This consideration can be particularly relevant in markets where local-currency funding or interest-rate hedging instruments are relatively illiquid.
+
+### Basket, worst-of, best-of and rainbow options
+
+Let $S_t^i$ denote the price of the underlier $i$ at time $t$, for $i=1,\dots,n$. It is often convenient to work with the normalized performance
+
+$$
+  R_t^i = \frac{S_T^i}{S_0^i}
+$$
+
+where $S_0^i$ is the initial reference price of underlier $i$.
+
+#### Basket options
+
+A basket option is an option whose payoff depends on a weighted combination of the performances of several underliers. For a basket with weights $w_i$, satisfying
+
+$$
+  \sum_{i=1}^n w_i = 1
+$$
+
+a normalized basket call can be written as
+
+$$
+  \Pi_T^\text{basket,call} = \left(\sum_{i=1}^n w_i \frac{S_T^i}{S_0^i} - K \right)^+
+$$
+
+the equally weighted case corresponds to $w_i = 1/n$.
+
+Because the basket aggregates the performance of several underliers, idiosyncratic fluctuations in individual underliers tend to partially offset one another. Consequently, a basket payoff is generally smoother than the corresponding payoff on an individual underlier.
+
+From a risk perspective, a basket option has exposure to the forward levels, volatilities, and correlations of its constituent underliers. For a long basket call, an increase in the relevant forward levels generally increases the option's value. The option also has positive exposure to the volatility of the basket. The effect of correlation, however, requires some care: for a standard call on a positively weighted basket, increasing the pairwise correlations generally increases the variance of the basket and therefore increases the option value, all else being equal. Thus, a long basket call is typically long correlation.
+
+#### Worst-of options
+
+A worst-of option bases its payoff on the poorest-performing underlier in a basket. For normalized performances $R_T^i$, worst-of call has payoff
+
+$$
+  \Pi_T^\text{worst-of,call} = \left(\min_{1\leq i\leq n} \set{R_T^i - K \right)^+
+$$
+
+Unlike a basket option, which averages the performances of the underliers, a worst-of option is determined entirely by the weakest constituent at maturity.
+
+For a long worst-of call, the position is typically described as long forward and short correlation. The latter reflects the fact that increasing correlation makes it more likely that the underliers move together. This reduces the diversification benefit that would otherwise make it less likely for one constituent to substantially underperform the others, thereby reducing the value of the minimum.
+
+Consequently, all else equal, a worst-of option tends to become less valuable as the correlation between its constituents increases.
+
+#### Best-of options
+
+A best-of option bases its payoff on the best-performing underlier in the basket. A best-of call has payoff
+
+$$
+  \Pi_T^\text{best-of,call} = \left(\max_{i\leq 1\leq n} \set{R_T^i - K \right)^+
+$$
+
+The best-of option has the opposite correlation exposure to a worst-of option. For a long best-of call, increasing correlation generally reduces the value of the option because greater correlation makes the constituents more likely to perform similarly and therefore reduces the benefit of having the right to select the best performer. Hence, a long best-of option is typically described as long dispersion or short correlation.
+
+Best-of options can command relatively high premiums because the holder benefits from an implicit selection mechanism: among several underliers, the option can effectively select whichever performs best. This makes them less attractive for cost-sensitive structured products.
+
+#### Rainbow options
+
+A rainbow option generalizes the worst-of and best-of structures by assigning different weights to the ranked performances of the underliers.
+
+For example, suppose the performances are ranked as $R_T^{(1)} \leq \cdots \leq R_T^{(n)}$, where $R_T^{(1)}$ is the worst-performing underlier and $R_T^{(n)}$ is the best-performing underlier. The payoff of a rainbow call takes the form
+
+$$
+  \Pi_T^\text{rainbow,call} = \left(\sum_{i=1}^n a_i R_T^{(i)} - K \right)^+
+$$
+
+where the weights $a_j$ are specified contractually. Worst-of and best-of options can be viewed as limiting cases of rainbow structures.
