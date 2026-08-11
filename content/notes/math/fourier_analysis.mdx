@@ -267,7 +267,7 @@ This shows that $\braket{ f,g} = 0$ for $f,g\in\mathcal{U}$ with $f\neq g$.
 Let $\mathcal{F}_{2\pi} (\R,\mathbb{C})$ be equipped with the inner product
 
 $$
-	\braket{ f, g} := \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)}g(x)\;\d x,\; f,g\in\mathcal{F}_{2\pi}
+	\braket{f, g} := \frac{1}{2\pi} \int_{-\pi}^\pi \overline{f(x)}g(x)\;\d x,\; f,g\in\mathcal{F}_{2\pi}
 $$
 
 The set of $2\pi$-periodic functions $\mathcal{E}\subseteq\mathcal{F}_{2\pi} (\R,\mathbb{C})$ given by
@@ -1399,7 +1399,10 @@ $$
 The Fourier transform of an integrable function $f\in L^1 (\R^n, \mathbb{C})$, is a function $\hat{f}:\R^n \to\mathbb{C}$ defined by
 
 $$
+\begin{equation*}
   \hat{f}(\boldsymbol{\omega}) := \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} f(\mathbf{x})\;\d\mathbf{x}
+\tag{\label{equation-9}}
+\end{equation*}
 $$
 </MathBox>
 
@@ -1450,12 +1453,13 @@ $$
 <details>
 <summary>Proof</summary>
 
-Assume first that $f \in C_c^\infty (\R^n, \mathbb{C})$ is a smooth function with compact support. Since $f$ has compact support, there exists $R > 0$ such that $\operatorname{supp}(f) \subseteq \mathcal{B}_R (\mathbf{0})$. It follows that each partial derivative $\partial_j f \in C_^\infty (\R^n, \mathbb{C})$ also has compact support. Taking the Fourier transform of $\partial_j f$ and integrating by parts over $B_{R+1} (\mathbf{0})$ yields
+Assume first that $f \in C_c^\infty (\R^n, \mathbb{C})$ is a smooth function with compact support. Since $f$ has compact support, there exists $R > 0$ such that $\operatorname{supp}(f) \subseteq \mathcal{B}_R (\mathbf{0})$. It follows that each partial derivative $\partial_j f \in C_c^\infty (\R^n, \mathbb{C})$ also has compact support. Taking the Fourier transform of $\partial_j f$ and integrating by parts over $B_{R+1} (\mathbf{0})$ yields
 
 $$
 \begin{align*}
   \widehat{\frac{\partial f}{\partial x_j}}(p) =& \frac{1}{(2\pi)^{n/2}} \int_{\mathcal{B}_{R+1} (\mathbf{0})} e^{-i \mathbf{p}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j}(\mathbf{x}) \;\d\mathbf{x} \\
-  =& \underbrace{\int_{\partial \mathcal{B}_{R+1} (\mathbf{0})} e^{-i\mathbf{p}\cdot\mathbf{x}} f(\mathbf{x}) n_j (\mathbf{x}) \;\d S(\mathbf{x})}_{=0} - \frac{1}{(2\pi)^{n/2}} \int_{B_{R+1}(\mathbf{0})} \frac{\partial}{\partial x_j} e^{-i\mathbf{p}\cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& \underbrace{\int_{\partial \mathcal{B}_{R+1} (\mathbf{0})} e^{-i\mathbf{p}\cdot\mathbf{x}} f(\mathbf{x}) n_j (\mathbf{x}) \;\d S(\mathbf{x})}_{=0} \\
+  &- \frac{1}{(2\pi)^{n/2}} \int_{B_{R+1}(\mathbf{0})} \frac{\partial}{\partial x_j} e^{-i\mathbf{p}\cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
   =& -\frac{1}{(2\pi)^{n/2}} \int_{B_{R+1}(\mathbf{0})} (-i p_j) e^{-i\mathbf{p}\cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
   =& i p_j \hat{f}(p)
 \end{align*}
@@ -1467,7 +1471,7 @@ Thus, by the triangle inequality for integrals
 
 $$
 \begin{align*}
-  |p_j| \cdot |\hat{f}(\mathbf{p})| = | \widehat{\partial_j f} | \\
+  |p_j| \cdot |\hat{f}(\mathbf{p})| =& | \widehat{\partial_j f} | \\
   \leq& \frac{1}{(2\pi)^{n/2}} \norm{\partial_i f}_{L^1} =: C_j
 \end{align*}
 $$
@@ -1528,9 +1532,65 @@ $$
 </details>
 </MathBox>
 
+The Lebesgue-Riemann lemma implies that the Fourier transform defines a linear map $\mathcal{F}: L^1 (\R^n, \mathbb{C}) \to C_0 (\R^n, \mathbb{C})$.
+
+<MathBox title="Schwartz space" boxType="definition">
+The Schwartz space on $\R^n$, denoted $\mathcal{S}(\R^n, \mathbb{C})$ is the space of all infinitely differentiable functions whose derivatives decay faster than any inverse polynomial at infinity. It is defined by
+
+$$
+	\mathcal{S}\left(\R^n, \mathbb{C}\right) := \Set{ f\in C^\infty (\R^n, \mathbb{C}) : \sup_{\mathbf{x}\in\R^n} \left| \mathbf{x}^\beta D^\alpha f(\mathbf{x}) \right| < \infty,\, \forall \alpha,\beta \in\N_0^n}
+$$
+
+where, for multi-indices $\alpha = (\alpha_1,\dots,\alpha_n)$ and $\beta = (\beta_1,\dots,\beta_n)$, we write $\mathbf{x}^\beta = x_1^{\beta_1} \cdots x_n^{\beta_n}$ and
+
+$$
+  D^\alpha = \frac{\partial^{|\alpha|}}{\partial x_1^{\alpha_1} \cdots \partial x_n^{\alpha_n}}
+$$
+
+with $|\alpha| = \alpha_1 + \cdots + \alpha_n$.
+
+Equivalently, using the Euclidean norm $\norm{\mathbf{x}}$
+
+$$
+	\mathcal{S}\left(\R^n, \mathbb{C}\right) := \Set{ f\in C^\infty (\R^n, \mathbb{C}) : \sup_{\mathbf{x}\in\R^n} \left| \norm{\mathbf{x}}^{2N} \mathcal{D}^\alpha f(\mathbf{x}) \right| < \infty,\, \forall \alpha\in\N_0^n, N\in\N_0}
+$$
+
+Thus, for every multi-index $\alpha$ and every $N \geq 0$
+
+$$
+  D^\alpha f(\mathbf{x}) = O(\norm{\mathbf{x}}^{-N}),\, \norm{\mathbf{x}} \to \infty
+$$
+
+In other words, every derivative of a Schwartz function decays faster than any prescribed inverse power of $\norm{\mathbf{x}}$. In particular, $f$ itself is rapidly decreasing. 
+
+Because Schwartz functions have arbitrarily high polynomial decay, they belong to every $L^p$ space, $\mathcal{S}(\R^n, \mathbb{C}) \subsetneq L^p (\R^n, \mathbb{C})$ for $1\leq p \leq\infty$.
+
+The Fourier transform defines an automorphism on Schwartz spaces, i.e. $f\in\mathcal{S}\left(\R^n, \mathbb{C}\right) \implies \hat{f}\in \mathcal{S}\left(\R^n, \mathbb{C}\right)$
+</MathBox>
+
+Compactly supported functions form a subsspace of the Schwartz space, i.e. $C_c^\infty (\R^n, \mathbb{C}) \subseteq \mathcal{S}(\R^n, \mathbb{C})$. Let $f\in C_c^\infty (\R^n, \mathbb{C})$. Since $\operatorname{supp}(f)$ is compact, there exists $R > 0$ such that
+
+$$
+  \operatorname{supp}(f) \subseteq \overline{B_R (0)} = \set{\mathbf{x}\in\R^n : \norm{\mathbf{x}} \leq R}
+$$
+
+Because $f$ is identically zero outside its support, all of its derivatives also vanish in this region. Thus, for every pair of multi-indices $\alpha,\beta \in\N_0^n$
+
+$$
+  \mathbf{x}^\beta D^\alpha f(\mathbf{x}) = 0,\, \mathbf{x} \notin \operatorname{supp}(f)
+$$
+
+On the compact set $\operatorname{supp}(f)$, the function $\mathbf{x}^\beta D^\alpha f(\mathbf{x})$ is continuous and therefore bounded. Consequently,
+
+$$
+  \sup_{\mathbf{x}\in\R^n} |\mathbf{x}^\beta D^\alpha f(\mathbf{x})| < \infty,\, \forall \alpha, \beta \in\N_0^n
+$$
+
+This is precisely the defining condition for $f$ to belong to the Schwartz space.
+
 ## Properties
 
-<MathBox title='Linearity of Fourier transforms' boxType="proposition">
+<MathBox title="Linearity of Fourier transforms" boxType="proposition">
 The Fourier transform is a linear operator, so that for $f, g\in L^1 (\R^n, \mathbb{C})$ and $\alpha, \beta\in\mathbb{C}$, we have
 
 $$
@@ -1541,44 +1601,166 @@ $$
 $$
 </MathBox>
 
-<MathBox title='Shifting property' boxType="proposition">
-Let $f, \hat{f} \in L^1\left(\R\right)$ be integrable functions. The Fourier transform of a translation in $f$ is given by
+<MathBox title="Fourier shifting property" boxType="proposition">
+Let $f \in L^1 (\R^n, \mathbb{C})$ be an integrable function. For $\mathbf{a}\in\R^n$, define the translation and modulation operators respectively by
 
 $$
-	\mathcal{F}\left[ f(x - x_0) \right] = e^{-i2\pi x_0 \xi}\hat{f}(\xi)
+  (T_\mathbf{a} f)(\mathbf{x}) := f(\mathbf{x} - \mathbf{a})
 $$
 
-The inverse Fourier transform of a modulation in $\hat{f}$ is given by
+and 
 
 $$
-	\mathcal{F}^{-1}\left[ \hat{f}(\xi - \xi_0) \right] = f(x)e^{-i2\pi\xi_0 x}
-$$
-</MathBox>
-
-<MathBox title='Fourier transform of derivatives' boxType="proposition">
-Let $f:\R\to\mathbb{C}$ be an absolutely continuous differentiable function, and suppose $f, f' \in L^1(\R)$ are integrable. The Fourier transform of the derivative $f'$ is given by
-
-$$
-	\hat{f}'(\xi) = \mathcal{F}\left[ \frac{\d}{\d x} f(x) \right] = i2\pi\xi \hat{f}(\xi)
+  (M_\mathbf{a} f)(\mathbf{x}) := e^{-i\mathbf{x}\cdot\mathbf{a}} f(\mathbf{x})
 $$
 
-The Fourier transform for the $n$th derivative $f^{(n)}$ is given by
+The Fourier transform $\mathcal{F}: L^1 (\R^n, \mathbb{C}) \to C_0 (\mathbf{R}^n, \mathbb{C})$ satisfies the following properties concerning translations and modulations.
+
+1. **Translation in physical space:** 
+
+Translation of $f$ by $\mathbf{a}\in\R^n$ corresponds to modulation of its Fourier transform
 
 $$
-	\hat{f}^{(n)}(\xi) = \mathcal{F}\left[ \frac{\d^n}{\d x^n} f(x) \right] = (i2\pi\xi)^n \hat{f}(\xi)
+  \mathcal{F}[T_\mathbf{a} f](\boldsymbol{\omega}) = e^{-i\boldsymbol{\omega}\cdot\mathbf{a}} \hat{f}(\boldsymbol{\omega}) = (M_a \hat{f})(\boldsymbol{\omega})
+$$
+
+In particular
+
+$$
+  |\mathcal{F}[T_\mathbf{a}](\boldsymbol{\omega})| = |\hat{f}(\boldsymbol{\omega})|
+$$
+
+2. **Modulation in physical space:**
+
+Modulation of $f$ by $-\mathbf{b}$ corresponds to translation of its Fourier transform in the opposite direction
+
+$$
+  \mathcal{F}[M_\mathbf{b} f](\boldsymbol{\omega}) = \hat{f}(\boldsymbol{\omega} + \mathbf{b}) = T_{-\mathbf{b}} \hat{f}(\boldsymbol{\omega})
 $$
 
 <details>
 <summary>Proof</summary>
 
-Integrating by parts gives
+**(1):** By definition $\eqref{equation-9}$, we have
+
+$$
+  \mathcal{F}\left[ f(\mathbf{x} - \mathbf{a}) \right] = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\operatorname{\omega} \cdot \mathbf{x}} f(\mathbf{x} - \mathbf{a}) \;\d\mathbf{x}
+$$
+
+Changing variables $\mathbf{y} = \mathbf{x} - \mathbf{a}$ with $\d\mathbf{x} = \d\mathbf{y}$, we obtain
+
+$$
+  \mathcal{F}\left[ f(\mathbf{x} - \mathbf{a}) \right] =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\operatorname{\omega} \cdot (\mathbf{y} + \mathbf{a})} f(\mathbf{y}) \;\d\mathbf{y} \\
+  =& \frac{1}{(2\pi)^{n/2}} e^{-i\boldsymbol{\omega} \cdot\mathbf{a}} \int_{\R^n} e^{-i\mathbf{p}\cdot\mathbf{y}} f(\mathbf{y}) \d\mathbf{y} \\
+  \underbrace{=}_{\eqref{equation-9}}& e^{-i\boldsymbol{\omega}\cdot\mathbf{a}}
+$$
+
+Similarly, 
 
 $$
 \begin{align*}
-	\mathcal{F}\left[ \frac{\d}{\d x} f(x) \right] &= \int_{-\infty}^\infty \overbrace{f'(x)}^{\d v}e^{-i2\pi\xi x}\;\d x \\
-	&= \underbrace{f(x)e^{-i2\pi\xi x}}_{uv}|_{-\infty}^\infty - \int_{-\infty}^\infty \underbrace{f(x)}_{u} \left(-i2\pi\xi e^{-i2\pi\xi x}\right)\;\d x \\
-	&= i2\pi\xi \int_{-\infty}^\infty f(x)e^{-i2\pi\xi x}\;\d x \\
-	&= i2\pi\xi\mathcal{F}\left[ f(x) \right]
+  \mathcal{F}[e^{-i \mathbf{b})\cdot \mathbf{x}} f(\mathbf{x})] =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} e^{-i\mathbf{b}\cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i(\boldsymbol{\omega} + \mathbf{b}) \cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  \underbrace{=}_{\eqref{equation-9}}& \hat{f}(\boldsymbol{\omega} + \mathbf{b})
+\end{align*}
+$$
+</details>
+</MathBox>
+
+<MathBox title="Fourier differentiation property" boxType="proposition">
+Let $f \in\mathcal{S}(\R^n, \mathbb{C})$ be a Schwartz function. For $j = 1,\dots,n$, define the shorthand $\partial_j := \frac{\partial}{\partial x_j}$ and the component multiplication operator $(M_j f)(\mathbf{x}) = x_j f(\mathbf{x})$. The Fourier transform $\mathcal{F}: \mathcal{S}(\R^n, \mathbb{C}) \to S(\R^n, \mathbb{C})$ satisfies the following differentiation properties
+
+1.
+$$
+ \mathcal{F}[\partial_j f] = i M_j \hat{f}
+$$
+
+2.
+$$
+  \partial_j \mathcal{F} [f] = \mathcal{F}(-iM_j f)
+$$
+
+<details>
+<summary>Proof</summary>
+
+**(1):** Using $\eqref{equation-9}$
+
+$$
+  \mathcal{F}[\partial_j f](\boldsymbol{\omega}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j} (\mathbf{x}) \;\d\mathbf{x} 
+$$
+
+Since $f$ is a Schwartz function, it follows that $\partial_j f \in L^1 (\R^n, \mathbb{C}^n)$, so that
+
+$$
+\begin{equation*}
+  \int_{\R^n} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j} (\mathbf{x}) \;\d\mathbf{x} = \frac{1}{(2\pi)^{n/2}} \lim_{R\to\infty} \int_{\mathcal{B}_R (0)} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j} (\mathbf{x}) \;\d\mathbf{x}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+For fixed $R$, integration by parts on $B_R (0)$ gives
+
+ $$
+\begin{align*}
+  \int_{\mathcal{B}_R (0)} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j} (\mathbf{x}) \;\d\mathbf{x} =& \int_{\partial B_R (0)} e^{-i\operatorname{\omega}\cdot\mathbf{x}} f(\mathbf{x}) \nu_j (\mathbf{x}) \;\d\sigma(\mathbf{x}) \\
+  -& \int_{B_R (0)} \frac{\partial e^{-i\boldsymbol{\omega}\cdot\mathbf{x}}}{\partial x_j} f(\mathbf{x}) \;\d\mathbf{x}
+\end{align*}
+$$
+
+where $\boldsymbol{\nu}$ denotes the outward unit normal to $\partial B_R$ and $\sigma(\mathbf{x})$ is the surface element at $\mathbf{x}$.
+
+Applying the triangle inequality for integrals on the boundary term
+
+$$
+\begin{align*}
+  \left| \int_{\partial B_R (0)} e^{-i\operatorname{\omega}\cdot\mathbf{x}} f(\mathbf{x}) \unitvec{n}_j (\mathbf{x}) \;\d\sigma(\mathbf{x}) \right| \leq& \int_{\partial B_R (0)} \underbrace{|e^{-i\boldsymbol{\omega}\cdot\mathbf{x}}|}_{=1} \cdot |f(\mathbf{x})| \cdot \underbrace{|\unitvec{n}_j (\mathbf{x})|}_{\leq 1} \;\d\sigma(\mathbf{x}) \\
+  =& \int_{\partial B_R (0)} |f(\mathbf{x})| \;\d\sigma(\mathbf{x})
+\end{align*}
+$$
+
+Because $f \in S(\R^n)$, for every $N > 0$, there exists $C_N > 0$ such that
+
+$$
+  |f(\mathbf{x})| \leq \frac{C_N}{(1 + |\mathbf{x}|)^N}
+$$
+
+On $\partial B_R$, we have $|\mathbf{x}| = R$, and therefore
+
+$$
+  \int_{\partial B_R (0)} |f(\mathbf{x})| \;\d\sigma(\mathbf{x}) \leq \frac{C_N}{(1 + R)^N} |\mathbb{S}^{n-1}| R^{n-1}
+$$
+
+Choosing $N > n - 1$, we obtain
+
+$$
+  \lim_{R\to\infty} \frac{R^{n-1}}{(1 + R)^N} = 0
+$$
+
+Thus, in the limit $R\to\infty$, the boundary term vanishes and the integral $\eqref{equation-10}$ reduces to
+
+$$
+\begin{align}
+  \int_{\mathcal{B}_R (0)} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} \frac{\partial f}{\partial x_j} (\mathbf{x}) \;\d\mathbf{x} =& - \int_{B_R (0)} \underbrace{\frac{\partial e^{-i\boldsymbol{\omega}\cdot\mathbf{x}}}{\partial x_j}}_{= (-i \omega_j) e^{-i\boldsymbol{\omega}\cdot\mathbf{x}}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& i \omega_j \int_{B_R (0)} e^{-i\boldsymbol{\omega}\cdot\mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x}
+\end{align*}
+$$
+
+Multiplying by the normalization factor $(2\pi)^{-n/2}$ leads to
+
+$$
+\begin{align*}
+  \mathcal{F}[\partial_j f](\boldsymbol{\omega}) =& \frac{i\omega_j}{(2\pi)^{n/2}} \lim_{R\to\infty} \int_{B_R (0)} e^{-i\boldsymbol{\omega}\cdot \mathbf{x}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& i\omega_j \hat{f}(\boldsymbol{\omega}) = i M_j f
+\end{align*}
+$$
+
+**(2):** Because $f$ is a Schwartz function, $x_j f(\mathbf{x}) \in L^1 (\R^n, \mathbb{C})$, so that integration under the integral sign i justified. Thus, from $\eqref{equation-9}$
+
+$$
+\begin{align*}
+  \frac{\partial}{\partial \omega_j} \mathcal{F}[f](\boldsymbol{\omega}) =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \underbrace{\frac{\partial}{\partial \omega_j} \left(e^{-i\boldsymbol{\omega}_j \cdot \mathbf{x}}\right)}_{=-ix_j e^{-i\boldsymbol{\omega}\cdot\mathbf{x}}} f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\omega\cdot\mathbf{x}} (-ix_j f(\mathbf{x}) \;\d\mathbf{x} \\
+  =& \mathcal{F}[-ix_j f](\boldsymbol{\omega}) = \mathcal{F}[-iM_j f](\boldsymbol{\omega})
 \end{align*}
 $$
 </details>
@@ -1615,7 +1797,7 @@ $$
 </details>
 </MathBox>
 
-<MathBox title='Parseval-Plancherel theorem' boxType="theorem">
+<MathBox title="Parseval-Plancherel theorem" boxType="theorem">
 Let $f, g \in L^1(\R)\cap L^2(\R)$, then the following identity holds (Parseval's theorem)
 
 $$
@@ -1631,20 +1813,7 @@ $$
 
 ## Uncertainty principle
 
-<MathBox title='Schwartz space' boxType="definition">
-The Schwartz space on $\R^n$ is the space of all smooth functions whose derivatives are rapidly decreasing
-
-$$
-\begin{align*}
-	\mathcal{S}\left(\R^n, \mathbb{C}\right) &:= \Set{ f\in C^\infty (\R^n, \mathbb{C}) | \forall \alpha, \beta \in \N^n \;: \norm{ f}_{\alpha, \beta} < \infty } \subset L^1\left(\R^n, \mathbb{C}\right) \\
-	\norm{ f}_{\alpha, \beta} &:= \sup_{\mathbf{x}\in\R^n} \left| \mathbf{x}^\alpha \left(D^\beta f \right)(\mathbf{x}) \right|
-\end{align*}
-$$
-
-The Fourier transform defines an automorphism on Schwartz spaces, i.e. $f\in\mathcal{S}\left(\R^n, \mathbb{C}\right) \implies \hat{f}\in \mathcal{S}\left(\R^n, \mathbb{C}\right)$
-</MathBox>
-
-<MathBox title='Uncertainty principle' boxType="theorem">
+<MathBox title="Uncertainty principle" boxType="theorem">
 For any Schwartz function $f\in\mathcal{S}(\R)$ and any $x_0, \xi_0 \in\R$, the following inequality holds
 
 $$
