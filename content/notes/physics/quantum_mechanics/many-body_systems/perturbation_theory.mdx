@@ -8,7 +8,7 @@ references:
   - book_szabo_ostlund_1996
 ---
 
-# Rayleigh-Schrödinger perturbation theory
+# Time-independent perturbation theory
 
 To derive Rayleigh-Schrödinger perturbation theory we decompose the Hamiltonian $\hat{H}$ into an exactly solvable reference Hamiltonian $\hat{H}_0$ and a perturbation $\hat{V}$
 
@@ -58,10 +58,13 @@ $$
 We define the quantum state and energy corrections by
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \ket{\chi_n} =& \ket{\Psi_n} - \ket{\Phi}_n \\
   \Delta E_n =& E_n - E_n^{(0)}
-\end{align*}
+\end{split}
+\tag{\label{equation-8}}
+\end{equation*}
 $$
 
 Substituting $\ket{\Psi_n} = \ket{\Phi_n} + \ket{\chi_n}$ into the exact Schrödinger equation $\eqref{equation-3}$ gives
@@ -229,5 +232,301 @@ $$
 $$
 
 whenever $\ket{\Phi_I}$ differs from the reference determinant by more than two spin orbitals. Thus, the projected energy depends only on the reference coefficient together with the coefficients of the singly and doubly excited determinants. Although the exact FCI wavefunction contains excitations of all orders, the coefficients of triple and higher excitations do not contribute directly to the projected energy: their influence is only indirect through coupling to the lower-excitation coefficients.
+
+## Order-by-order expansion
+
+Expanding the eigenstate $\ket{\Psi_n}$ and eigenvalue $E_n$ in powers of the pertubation parameter $\lambda$ gives
+
+$$
+\begin{align*}
+  \ket{\Psi_n} =& \ket{\Phi_n} + \chi_n = \sum_{j=1}^\infty \lambda^j \ket{\Psi_n^{(j)}} \\
+  E_n =& E_n^{(0)} + \Delta E_n = \sum_{j=1}^\infty \lambda^j E_n^{(j)} \\
+\end{align*}
+$$
+
+Substituting these expansions into the Schrödinger equation $(\hat{H} - E_n) \ket{\Psi_n} = 0$ with $\hat{H} = \hat{H}_0 + \lambda\hat{V}$, we get
+
+$$
+  \left(\hat{H}_0 + \lambda\hat{V} - \sum_{j=1}^\infty \lambda^j E_n^{(j)} \right) \left( \sum_{k=1}^n \lambda^k \ket{\Psi_n^{(k)}} \right) = 0
+$$
+
+Equating coefficients of powers of $\lambda$ for $m\geq 1$ yields
+
+$$
+  (\hat{H}_0 - E_n^{(0)}) \ket{\Psi_n^{(m)}} = (E_n^{(1)} - \hat{V}) \ket{\Psi_n^{(m-1)}} + \sum_{l=0}^{m-2} E_n^{(m-l)} \ket{\Psi_n^{(l)}}
+$$
+
+Separating the term with $l = m$ and rearranging yields the $m$th order perturbation equation
+
+$$
+\begin{equation*}
+  (E_n^{(0)} - \hat{H}_0) \ket{\Psi_n^{(m)}} = \hat{V} \ket{\Psi_n^{(m-1)}} - \sum_{l=0}^{m-1} E_n^{(m-l)} \ket{\Psi_n^{(l)}}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+In order to get the $m$th order energy correction $E_n^{(m)}$, we project this equation onto the unperturbed state $\bra{\Phi_n}$ to each equation and integrate
+
+$$
+  \underbrace{\braket{\Phi_n |E_n^{(0)} - \hat{H}_0 | \Psi_n^{(m)}}}_{=0} = \braket{\Phi_n |\hat{V}|\Psi_n^{(m-1)}} - \sum_{l=0}^{m-1} E_n^{(m-l)} \underbrace{\Phi_n |\Psi_n^{(l)}}_{\delta_{l0}}
+$$
+
+giving
+
+$$
+\begin{equation*}
+  E_n^{(m)} = \braket{\Phi_n |\hat{V} |\Psi_n^{(m-1)}}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+## Expansion in zero-order functions
+
+The inhomogeneous differential equations for the higher-order corrections $\ket{\Psi_n^{(m)}}$ are generally difficult to solve directly, although they are more tractable than the original eigenvale problem. A convenient approach is to expand each correction in the complete set of eigenstates $\set{\ket{\Phi_k}}_{k=1}^\infty$ of the unperturbed Hamiltonian $\hat{H}_0$
+
+$$
+  \ket{\Psi_n^{(m)}} =& \sum_k a_{kn}^{(m)} \braket{\Phi_k|\Psi_n^{(m)}}
+$$
+
+where the expansion coefficients area $a_{kn}^{(m)} = \braket{\Phi_k |\Psi_n^{(m)}}$. Projecting the $m$-th order equation $\eqref{equation-9}$ onto $\ket{\Phi_k}$ and integrating
+
+$$
+\begin{align*}
+  \braket{\underbrace{\Phi_k |E_n^{(0)} - \hat{H}_0 |}_{=(E_n^{(0)} - E_k^{(0)}\bra{\Phi_k}} \Psi_n^{(m)}} =& \underbrace{\braket{\Phi_k |\hat{V}| \Psi_n^{(m-1)}}}_{\sum_j \braket{\Phi_k |\hat{V}| \Psi_j}\braket{\Phi_j |\Psi_n^{(m-1)}}} \\
+  &- \sum_{l=0}^{m-1} E_n^{(m-l)} \underbrace{\braket{\Phi_k |\Psi_n^{(l)}}}_{a_{kn}^{(l)}}
+\end{align*}
+$$
+
+Thus, the recursion relation for the expansion coefficients is
+
+$$
+\begin{equation*}
+  (E_n^{(0)} - E_k^{(0)}) a_{kn}^{(m)} = \sum_j V_{kj} a_{jn}^{(m-1)} - \sum_{l=0}^{m-1} E_n^{(m-l)} a_{kn}^{(l)}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+where we introduce the matrix elements $V_{kj} := \braket{\Phi_k |\hat{V}|\Phi_j}$.
+
+For $m=0$, the unperturbed state is $\ket{\Psi_n^{(0)} = \ket{\Phi_n}$, so 
+
+$$
+  a_{kn}^{(0)} = \braket{\Phi_k |\Phi_n} = \delta_{kn}
+$$
+
+An important feature of $\eqref{equation-10}$ is that, for $k = n$, its left-hand side vanishes
+
+$$
+  (E_^{(0)} - E_n^{(0)}) a_{nn}^{(m)} = 0
+$$
+
+Thus, the projected equation does not determine $a_{nn}^{(m)}$. This reflects the fact that the inhomogeneous equatin for $\ket{\Psi_n^{(m)}}$ determines the correction only up to addition of an arbitrary multiple of the homogeneous solution $\ket{\Phi_n}$. This freedom can be fixed by imposing intermediate normalization
+
+$$
+\begin{align*}
+  \braket{\Phi_n |\Psi_n^{(0)}} =& 1 \\
+  \braket{\Phi_n |\Psi_n^{(m)}} =& 0,\, m > 0
+\end{align*}
+$$
+
+so that $a_{nn}^{(m)} = \delta_{m0}$. 
+
+### First-order eigenstate
+
+For $m=1}$ the recursion relation $\eqref{equation-9}$ becomes
+
+$$
+  (E_n^{(0)} - E_k^{(0)}) a_{kn}^{(1)} =& \sum_j V_{kj} a_{jn}^{(0)} - E_n^{(1)} a_{kn}^{(0)}
+$$
+
+Since $a_{kn}^{(0)} = \delta_{kn}$, this equation reduces to
+
+$$
+  (E_n^{(0)} - E_k^{(0)}) a_{kn}^{(1)} =& V_{kn} - E_n^{(1)} a_{kn}^{(0)}
+$$
+
+For $n\neq k$, the second term vanishes, giving
+
+$$
+\begin{equation*}
+  a_{kn}^{(1)} = \frac{V_{kn}}{E_n^{(0)} - E_k^{(0)}}
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+Together with $a_{nn}^{(0)}$, the first-order correction to the eigenstate is therefore
+
+$$
+  \ket{\Psi_n^{(1)}} = \sum'_k \frac{V_{kn}}{E_n^{(0)} - E_k^{(0)}} \ket{\Phi_k}
+$$
+
+where $\sum'_k := \sum_{k, k\neq n}$. Using $\eqref{equation-11}$, we get the second-order energy
+
+$$
+\begin{align*}
+  E_n^{(2)} =& \braket{\Phi_n |\hat{V}|\Psi_n^{(1)}} = \sum_k a_{kn}^{(1)} V_{nk} \\
+  =& \sum'_k \frac{V_{nk} V_{kn}}{E_n^{(0)} - E_k^{(0)}}
+\end{align*}
+$$
+
+Since $\hat{V}$ is Hermitian, $V_{nk} = V_{kn}^*$ and $V_{nk} V_{kn} = |V_{kn}|^2$, resulting in
+
+$$
+  E_n^{(2)} = \sum'_k \frac{|V_{kn}|^2}{E_n^{(0)} - E_k^{(0)}}
+$$
+
+### Second-order wavefunction
+
+For $m=2$, the recursion relation $\eqref{equation-2}$ becomes
+
+$$
+  (E_n^{(0)} - E_k^{(0)}) a_{kn}^{(2)} = \sum'_j V_{kj} a_{jn}^{(1)} - E_n^{(1)} a_{kn}^{(1)} - E_n^{(2)} a_{kn}^{(0)}
+$$
+
+For $k \neq n$, we have $a_{kn}^{(0)} = 0$, and therefore
+
+$$
+\begin{equation*}
+  a_{kn}^{(2)} =& \frac{E_n^{(0)} - E_k^{(0)}} \left[ \sum'_j V_{kj} a_{jn}^{(1)} - E_n^{(1)} a_{kn}^{(1)} \right] \\
+  \underbrace{=}_{\eqref{equation-13}}& \sum'_j \frac{V_{kj} V_{jn}}{(E_n^{(0)} - E_k^{(0)}) (E_n^{(0)} - E_j^{(0)})} - \frac{V_{kn} V_{nn}}{(E_n^{(0)} - E_k^{(0)})^2}
+\end{equation*}
+$$
+ 
+where we have used the first-order energy correction $E_n^{(1)} = V_{nn}$.
+
+## Wigner's $2n + 1$ rule
+
+Wigner's rule says that knowledge of eigenstate corrections $\ket{\Psi_n^{(l)}}$ for $l=1,\dots,m$ allows us to deterine directly the energy corrections $E_n^{(l)}$ for $l = 1,\dots, 2m + 1$. This result can be obtained by a series of transformations of the $m$th order energy contribution $\eqref{equation-11}$, using the differential equations for $\ket{\Psi_n^{(l)}}$, to raise the order of the bra part while lowering the order of the ket part, repeatedly until the two orders are equal (if $m$ is odd) or differ by unity (if $m$ is even).
+
+We shall work out one step of this repetitive sequence explicitly, using the firs-order equation $\eqref{equation-9}$ in the form
+
+$$
+  \hat{V} \Phi_n = (E_n^{(0)} - \hat{H}_0) \ket{\Psi_n^{(1)}} + E_n^{(1)} \ket{\Phi_n}
+$$
+
+and then the $(m-1)$th order equation
+
+$$
+\begin{align*}
+  E_n^{(m)} =& \braket{\Phi_n |\hat{V}|\Psi_n^{(m-1)}} \\
+  =& \braket{\hat{V}\Phi_n |\Psi_n^{(m-1)}} \\
+  =& \braket{(E_n^{(0)} - \hat{H}_0) \Psi_n^{(1)} |\Psi_n^{(m-1)}} + E_n^{(1)} \braket{\Phi_n |\Psi_n^{(m-1)}} \\
+  =& \braket{\Psi_n^{(1)} |E_n^{(0)} - \hat{H}_0 |\Psi_n^{(m-1)}} + 0 \
+  =& \braket{\Psi_n^{(1)} |\hat{V}|\Psi_n^{(m-2)}} - \sum_{l=1}^{m-2} E_n^{(m-l-1)} \braket{\Psi_n^{(1)}|\Psi_n^{(l)}} \\
+  =& \braket{\Psi_n^{(1)}|\hat{V}|\Psi_n^{(m-2)}} - \sum_{l=1}^{m-2} E_n^{(m-l-1)} \braket{\Psi_n^{(1)}|\Psi_n^{(l)}}
+\end{align*}
+$$
+
+If this is repeated $k$ times, we get
+
+$$
+  E_n^{(m)} = \braket{\Psi_n^{(k)}|\hat{V}|\Psi_n^{(m-k-l)}} - \sum_{j=1}^k \sum_{l=1}^{m-k-1} E_n^{(m-j-l)} \braket{\Psi_n^{(j)}|\Psi_n^{(l)}}
+$$
+
+Taking the cases in which $m$ is replaced by $2m$ or $2m+1$ and $k$ by $m-1$ or $m$, respectively, we get Wigner's result
+
+$$
+\begin{align*}
+  E_n^{(2m)} =& \braket{\Psi_n^{(m-1)}|\hat{V}|\Psi_n^{(m)}} - \sum_{j=1}^{m-1} \sum_{l=1}^m E_n^{(2m-j-l)} \braket{\Psi_n^{(j)}|\Psi_n^{(l)}} \\
+  E_n^{(2m+1)} =& \braket{\Psi_n^{(m)}|\hat{V}|\Psi_n^{(m)}} - \sum_{j=1}^m \sum_{l=1}^m E_n^{(2m-j-l+1)} \braket{\Psi_n^{(j)}|\Psi_n^{(l)}}
+\end{align*}
+$$
+
+## The Hylleraas variation principle
+
+Instead of expanding $\ket{\Psi_n^{(1)}}$ in the zero-order functions $\ket{\Phi_k}$, the first-order wave function and the second-order energy can also be obtained by a variational method due to Hylleraas. We begin by projecting the first-order equation $\eqref{equation-9}$ onto $\bra{\Psi_n^{(1)}}$, giving
+
+$$
+  \braket{\Psi_n^{(1)}|\hat{H}_0 - E_n^{(0)}|\Psi_n^{(1)}} = \braket{\Psi_n^{(1)}|E_n^{(1)} - \hat{V}|\Phi_n}
+$$
+
+or
+
+$$
+  0 = \braket{\Psi_n^{(1)}|\hat{V} - E_n^{(1)}|\Phi_n} + \braket{\Psi_n^{(1)}|\hat{H}_0 - E_n^{(0)}|\Psi_n^{(1)}}
+$$
+
+Adding the equation equation for the second-order energy
+
+$$
+  E_n^{(2)} = \braket{\Phi_n |\hat{V} - E_n^{(1)}|\Psi_n^{(1)}}
+$$
+
+gives
+
+$$
+\begin{align*}
+  E_n^{(2)} =& \braket{\Psi_n^{(1)}|\hat{V} - E_n^{(1)}|\Phi_n} \\
+  &+ \braket{\Phi_n |\hat{V} - E_n^{(1)}|\Psi_n^{(1)}} \\
+  &+ \braket{\Psi_n^{(1)}|\hat{H}_0 - E_n^{(0)}|\Psi_n^{(1)}} \\
+  =& 2\Re \brekt{\Psi_1^{(1)}|\hat{V} - E_n^{(1)}|\Phi_n} \\
+  &+ \braket{\Phi_n^{(1)}|\hat{H}_0 - E_n^{(0)}|\Psi_n^{(1)}}
+\end{align*}
+$$
+
+If we define a functional
+
+$$
+  J_2 [\Psi] = 2\Re \braket{\Psi|\hat{V} - E_n^{(1)}|\Phi_n} + \braket{\Psi|\hat{H}_0 - E_n^{(0)}|\Psi}
+$$
+
+then obviously $J_2 [\Psi_n^{(1)}] = E_n^{(2)}$. Then the variational functional is
+
+$$
+\begin{align*}
+  \delta J_2 [\Psi] =& E_n^{(2)}
+\end{align*}
+$$
+
+The variation of this functional is
+
+$$
+\begin{align*}
+  \delta J_2 [\Psi] =& \braket{\delta\Psi|\hat{V} - E_n^{(1)}|\Phi_n} + \braket{\Phi_n |\hat{V} - E_n^{(1)}|\delta\Psi} \\
+  &+ \braket{\delta\Psi|\hat{H}_0 - E_n^{(0)}|\Psi} + \braket{\Psi|\hat{H}_0 - E_n^{(0)}|\delta\Psi}
+\end{align*}
+$$
+
+Requiring that $\delta J_2 [\Psi] = 0$ for any $\delta\Psi$ (including $\delta\Psi^*$) results in
+
+$$
+  (\hat{V} - E_n^{(1)})\ket{\Phi_n} + (\hat{H}_0 - E_n^{(0)}) \ket{\Psi} = 0
+$$
+
+for which $\ket{\Psi} = \ket{\Psi_n^{(1)}}$ is a solution, because the above relation is equivalent to the first-order equation. Thus, $\Psi_n^{(1)}$ and $E_n^{(2)}$ can be obtained by making $J_2 [\Psi]$ stationary. It is easily verified that
+
+$$
+  J_2 [\Psi + c\Phi_n] = J_2 [\Psi]
+$$
+
+for any constant $c$, and this degree of freedom can be used to enforce $\braket{\Psi|\Phi_n} = 0$. If the function $\ket{\Psi}$ is constrained at the outset to be orthogonal to $\ket{\Phi_n}$, then $J_2 [\Psi]$ can be written in the form
+
+$$
+  J_2 [\Psi] = 2\Re \braket{\Psi|\hat{V}|\Phi_n} + \braket{\Psi|\hat{H}_0 - E_n^{(0)}|\Psi}
+$$
+
+Next, we show that if $E_n^{(0)}$ is the lowest eigenvalue of $\hat{H}_0$ then $J_2 [\Psi]$ is an upper bound for $E_n^{(2)}$. We write $\ket{\Psi}$ in the form $\ket{\Psi} = \ket{\Psi_n^{(1)}} + \ket{\chi}$. Then
+
+$$
+\begin{align*}
+  J_2 [\Psi] =& J_2 [\Psi_n^{(1)}] + 2\Re \braket{\chi|\hat{V} - E_n^{(1)}|\Phi_n} \\
+  &+ 2\Re \braket{\chi|\hat{H}_0 - E_n^{(0)}|\Psi_n^{(1)}} + \braket{\chi|\hat{H}_0 - E_n^{(0)}|\chi}
+\end{align*}
+$$
+
+Using the first-order equation, we find that the third term can be written as the negative of the second term, canceling it, so that we have
+
+$$
+  J_2 [\Psi] = E_n^{(2)} + \braket{\chi\hat{H}_0 - E_n^{(0)}|\chi}
+$$
+
+If $E_n^{(0)}$ is the lowest eigenvalue of $\hat{H}_0$ then the integral $\braket{\chi|\hat{H}_0 - E_n^{(0)}|\chi}$ is nonnegative and is zero if, and only if, $\ket{\chi}$ is the corresponding eigenfunction. Thus
+
+$$
+  J_2 [\Psi] \geq E_n^{(2)}
+$$
+
+Thus, $J_2 [\Psi]$, with an arbitrary trial function $\ket{\Psi}$ containing adjustable parameters, can be used in a variational approach for finding approximations to the first-order wavefunction and second-order energy, and this provides an upper bound to $E_n^{(2)}$ in the case of a state having the lowest zero-order energy (provided that $\ket{\Phi_0}$ is an exact eigenfunction of $\hat{H}_0$).
+
 
 ## Brillouin-Wigner perturbation theory
