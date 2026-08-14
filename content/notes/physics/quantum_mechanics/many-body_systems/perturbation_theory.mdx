@@ -554,4 +554,211 @@ $$
 
 Thus, $J_2 [\Psi]$, with an arbitrary trial function $\ket{\Psi}$ containing adjustable parameters, can be used in a variational approach for finding approximations to the first-order wavefunction and second-order energy, and this provides an upper bound to $E_n^{(2)}$ in the case of a state having the lowest zero-order energy (provided that $\ket{\Phi_0}$ is an exact eigenfunction of $\hat{H}_0$).
 
+# Projection operators
+
+Let $\mathcal{H}$ be a Hilbert space and let $\set{\ket{\Phi}_i}$ denote an orthonormal complete eigenbasis of the unperturbed Hamiltonian
+
+$$
+\begin{equation*}
+  \hat{H}_0 \ket{\Phi_i} = E_i^{(0)} \ket{\Phi_i},\, \braket{\Phi_i|\Phi_j} = \delta_{ij}
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+We single out the reference state $\ket{\Phi_0}$ and define the projection operators 
+
+$$
+  \hat{P} = \ket{\Phi_0} \bra{\Phi_0}
+$$
+
+and
+
+$$
+  \hat{Q} = \hat{I} - \hat{P} = \sum_{i\neq 0} \ket{\Phi_i} \bra{\Phi_i}
+$$
+
+We introduce primed summation to denote omission of the $i=0$ term, i.e. $\sum'_i := \sum_{i\neq 0}$. 
+
+These projection operators are linear, Hermitian and idempotent. For $\hat{P}$
+
+$$
+  \hat{P}^2 = \ket{\Phi_0} \braket{\Phi_0|\Phi_0} \bra{\Phi_0} = \ket{\Phi_0} \bra{\Phi_0} = \hat{P}
+$$
+
+whereas
+
+$$
+  \hat{P}^\dagger = (\ket{\Phi_0} \bra{\Phi_0})^\dagger = \ket{\Phi_0}\bra{\Phi_0} = \hat{P}
+$$
+
+For $\hat{Q}$
+
+$$
+  \hat{Q}^2 = (\hat{I} - \hat{P})^2 = \hat{I} - \hat{P} - \hat{P} + \hat{P}^2 = \hat{I} - \hat{P} = \hat{Q}
+$$
+
+Moreover,
+
+$$
+  \hat{P}\hat{Q} = \hat{P}(\hat{I} - \hat{P}) = \hat{P} - \hat{P}^2 = 0
+$$
+
+and
+ 
+$$
+  \hat{Q}\hat{P} = (\hat{I} - \hat{P})\hat{P} = \hat{P} - \hat{P}^2 = 0
+$$
+
+Thus, $\hat{P}$ and $\hat{Q}$ are complementary orthogonal projection operators satisfying
+
+$$
+\begin{align*}
+  \hat{P}^2 =& \hat{P} \\
+  \hat{Q}^2 =& \hat{Q} \\
+  \hat{P}\hat{Q} = \hat{Q}\hat{P}
+\end{align*}
+$$
+
+The property $\hat{P} + \hat{Q} = \hat{I}$ is called the resolution of the identity associated with the decomposition $\mathcal{H} = \operatorname{ran}(\hat{P}) \oplus \operatorname{ran}(\hat{Q})$.
+
+## Projection operators for a nonorthogonal basis
+
+The orthonormality of the eigenbasis $\set{\ket{\Phi_i}}$ is not required to construct a projector onto a subspace. Suppose instead that $\set{\ket{\Phi_i}}_{i\neq 0}$ is a linearly independent, generally nonorthogonal set spanning a subspace $Q$, while $\ket{\Phi_0}$ is orthogonal to that subspace. Then the projector onto the reference state is
+
+$$
+  \hat{P} = \ket{\Phi_0} \frac{1}{\braket{\Phi_0|\Phi_0}} \bra{\Phi_0}
+$$
+  
+To express the projector onto the complementary subspace, introduce the column vetor of basis kets
+
+$$
+  \ket{\boldsymbol{Phi}} = \begin{bmatrix} \ket{\Phi_1} \\ \ket{\Phi_2} \\ \vdots \end{bmatrix}
+$$
+
+with corresponding row vector
+
+$$
+  \bra{\boldsymbol{\Phi}} = \begin{bmatrix} \ket{\Phi_1} & \ket{\Phi_2} & \cdots \end{bmatrix}
+$$
+
+The overlap matrix is 
+
+$$
+  S_{ij} = \braket{\Phi_i|\Phi_j},\, i, j \neq 0
+$$
+
+Provided the basis functions are linearly independent, $\mathbf{S}$ is invertible, and the projector onto their span is
+
+$$
+  \hat{Q} =& \sum_{i,j \neq 0} \ket{\Phi_i} (S^{-1})_{ij} \bra{\Phi_j} = \ket{\boldsymbol{\Phi}} \mathbf{S}^{-1} \bra{\boldsymbol{\Phi}}
+$$
+
+We can verify idempotency directly
+
+$$
+\begin{align*}
+  \hat{Q}^2 =& \sum_{i,j,k,l} \ket{\Phi_i} (S^{-1})_{ij} \braket{\Phi_j|\Phi_k} (S^{-1})_{kl} \bra{\Phi_l} \\
+  =& \sum_{i,l} \ket{\Phi_i} (S^{-1} SS^{-1})_{il} \bra{\Phi_l} \\
+  =& \hat{Q}
+\end{align*}
+$$
+
+## Projector actions
+
+Consider a state $\ket{\Psi} \in\mathcal{H}$ expanded in the orthonormal eigenbasis as
+
+$$
+  \ket{\Psi} = \sum_i a_i \ket{\Phi_i}
+$$
+
+Applying $\hat{P}$ gives
+
+$$
+\begin{align*}
+  \hat{P}\ket{\Psi} =& \sum_i a_i \bra{\Phi_0} \braket{\Phi_0|\Phi_i} \\
+  =& \sum_i a_i \ket{\Phi_0} \delta_{0i} = a_0 \ket{\Phi_0}
+\end{align*}
+$$
+
+showing that $\hat{P}$ extracts the component of $\ket{\Psi}$ along $\ket{\Phi_0}$. Similarly,
+
+$$
+\begin{align*}
+  \hat{Q}\ket{\Psi} =& (\hat{I} - \hat{P})\ket{\Psi} \\
+  =& \ket{\Psi} - a_0 \ket{\Phi_0} = \sum'_i a_i \ket{\Phi_i}
+\end{align*}
+$$
+
+showing that $\hat{Q}$ removes the component of $\ket{\Psi}$ parallel to $\ket{\Phi_0}$ and projects it onto the orthogonal complement of the reference state.
+
+Using the resolution of the identity, every state can be decomposed uniquely as
+
+$$
+\begin{align*}
+  \ket{\Psi} =& \hat{I} \ket{\Psi} = (\hat{P} + \hat{Q})\ket{\Psi} \\
+  =& \hat{P}\ket{\Psi} + \hat{Q}\ket{\Psi}
+\end{align*}
+$$
+
+## Decomposition of an operator
+
+Similarly, the resolution of the identity allows any operator on $\mathcal{H}$ to be resolved into four components
+
+$$
+\begin{align*}
+  \hat{A} =& (\hat{P} + \hat{Q}) \hat{A} (\hat{P} + \hat{Q}) \\
+  =& \underbrace{\hat{P}\hat{A}\hat{P} + \hat{Q}\hat{A}\hat{Q}}_{\hat{A}_\text{D}} + \underbrace{\hat{P}\hat{A}\hat{Q} + \hat{Q}\hat{A}\hat{Q} + \hat{Q}\hat{A}\hat{P}}_{\hat{A}_\text{X}}
+\end{align*}
+$$
+
+where $\hat{A}_\text{D} = \hat{P}\hat{A}\hat{P} + \hat{Q}\hat{A}\hat{Q}$ is the block-diagonal, or even, part of $\hat{A}$ and $\hat{A}_\text{X} = \hat{P}\hat{A}\hat{Q} + \hat{Q}\hat{A}\hat{P}$ is the off-diagonal, cross, or odd part.
+
+If $\hat{A} = \hat{A}_\text{D} + \hat{A}_\text{X}$ and $\hat{B} = \hat{B}_\text{D} + \hat{B}_\text{X}$, then
+
+$$
+\begin{align*}
+  (\hat{A}\hat{B})_\text{D} =& \hat{A}_\text{D} \hat{B}_\text{D} + \hat{A}_\text{X} \hat{B}_\text{X} \\
+  (\hat{A}\hat{B})_\text{X} =& \hat{A}_\text{D} \hat{B}_\text{X} + \hat{A}_\text{X} \hat{B}_\text{D}
+\end{align*}
+$$
+
+## Commutation with the unperturbed Hamiltonian
+
+The projection operators $\hat{P}$ and $\hat{Q}$ commute with $\hat{H}_0$. To see this, not that since $\ket{\Phi_0}$ is an eigenstate of $\hat{H}_0$ satisfying $\eqref{equation-15}$, we have
+
+$$
+\begin{align*}
+  \hat{H}_0 \hat{P} =& \hat{H}_0 \ket{\Phi_0} \bra{\Phi_0} \\
+  =& E_0^{(0)} \ket{\Phi_0} \bra{\Phi_0} \\
+  =& E_0^{(0)} \hat{P}
+\end{align*}
+$$
+
+Likewise
+
+$$
+\begin{align*}
+  \hat{P}\hat{H}_0 =& \ket{\Phi_0} \bra{\Phi_0} \hat{H}_0 \\
+  =& E_0^{(0)} \ket{\Phi_0} \bra{\Phi_0} \\
+  =& E_0^{(0)} \hat{P}
+\end{align*}
+$$
+
+where we have used the Hermiticity of $\hat{H}_0$
+
+$$
+  \bra{\Psi_0} \hat{H}_0 = E_0^{(0)} \bra{\Psi_0}
+$$
+
+Thus, $[\hat{P}, \hat{H}_0] = 0$. Since $\hat{Q} = \hat{I} - \hat{P}$ it follows immediately that 
+
+$$
+\begin{align*}
+  [\hat{Q}, \hat{H}_0] =& [\hat{I} - \hat{P}, \hat{H}_0] \\
+  =& -[\hat{P}, \hat{H}_0] = 0
+\end{align*}
+$$
+
+Hence, $[\hat{P}, \hat{H}_0] = [\hat{Q}, \hat{H}_0] = 0$.
+
 ## Brillouin-Wigner perturbation theory
