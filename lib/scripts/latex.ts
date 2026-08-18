@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/physics/quantum_mechanics/many-body_systems/hartree-fock_method.mdx",
+    "./content/notes/physics/quantum_mechanics/many-body_systems/perturbation_theory.mdx",
   ),
 );
 
