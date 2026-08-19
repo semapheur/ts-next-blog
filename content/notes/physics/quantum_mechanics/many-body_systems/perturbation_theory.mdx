@@ -976,12 +976,12 @@ which is an implicit nonlinear equation for the exact energy $E = E_0^{(0)} + \D
 
 ### Brillouin-Wigner perturbation theory
 
-Chosing $\zeta = E$ produces Brillouin-Wigner perturbation theory, which simplifies $\eqref{equation-23}$ and $\eqref{equation-24}$ to
+Choosing $\zeta = E$ produces Brillouin-Wigner perturbation theory, which simplifies $\eqref{equation-23}$ and $\eqref{equation-24}$ to
 
 $$
 \begin{align*}
   \ket{\Psi} =& \sum_{m=0}^\infty \left[\hat{R}_0 (E) \hat{V} \right]^m \ket{\Phi_0} \\
-  \Delta E =& \sum_{m=0}^\infty \Braket{\Phi_0 |\hat{V} \left[\hat{R}_0 (E) \hat{V} \right]^m | \Phi_0}
+  \Delta E =& \sum_{m=0}^\infty \Braket{\Phi_0 |\hat{V} \left[\hat{R}_0 (E) \hat{V} \right]^m | \Phi_0} \tag{\label{equation-25}}
 \end{align*}
 $$
 
@@ -990,20 +990,53 @@ In the eigenbasis of $\hat{H}_0$, the resolvent becomes
 $$
 \begin{align*}
   \hat{R}_0 (E) =& \frac{\hat{Q}}{E - \hat{H}_0} \\
-  =& \sum'_i \ket{\Phi_i} \frac{1}{E - E_i^{(0)}} \bra{\Phi_i}
+  =& \sum'_i \ket{\Phi_i} \frac{1}{E - E_i^{(0)}} \bra{\Phi_i} \tag{\label{equation-24}}
 \end{align*}
 $$
 
-and the second-order energy becomes
+This expression is well defined provided $E$ lies in the resolvent set of $\hat{H}_0$, restricted to $Q$-space. In the purely discrete case, this requires $E \neq E_i^{(0)}$ for all $i \neq 0$.
+
+Using $\eqref{equation-24}$ in $\eqref{equation-25}$, the second-order energy correction becomes
 
 $$
 \begin{align*}
-  E^{(2)} =& \braket{\Phi_0 |\hat{V} \hat{R}_0 (E) \hat{V}|\Phi_0} \\
+  E_\text{BW}^{(2)} =& \braket{\Phi_0 |\hat{V} \hat{R}_0 (E) \hat{V}|\Phi_0} \\
   =& \sum'_i \braket{\Phi_0 |\hat{V}|\Phi_i} (E - E_i^{(0)})^{-1} \braket{\Phi_i |\hat{V}|\Phi_0} \\
-  =& \sum'_i \frac{V_{0i} V_{0i}}{E - E_i^{(0)}}
 \end{align*}
 $$
 
-which is similar to the Rayleigh-Schrödinger perturbation theory except for the presence of $E$ rather than $E_0^{(0)}$ in the denominator.
+Defining $V_{ij} := \braket{\Phi_i |\hat{V}|\Phi_j}$ and assuming $\hat{V}$ is Hermitian such that $V_{0i} V_{i0} = |V_{i0}|^2$ leads to
 
-The form of these equation is simpler than that of the Rayleigh-Schrödinger pertubation theory (ignoring the problem of the unknown $E$ in the denominators), because the absence of the so-called renormalization terms, the additional sums $\sum_{l=0}^{m-1}$ involving the lower-order energies in Rayleight-Schrödinger perturbation theory. However, it does not provide a true order-by-order expansion for the energy (because of the presence of the infinite-order $E$), and realted to this is a very fundamental problem with BWPT, its lack of extensivity when stopped at any finite order. In fact, BWPT resembles CI in many respects, and successive order of the BWPT calculations are closely related to the successive iteration used to solve the matrix eigenvalue problem in some CI procedures.
+$$
+  E_\text{BW}^{(2)} = \sum'_i \frac{V_{0i} V_{0i}}{E - E_i^{(0)}}
+$$
+
+which is similar to the second-order energy correction from Rayleigh-Schrödinger perturbation theory 
+
+$$
+  E_\text{RS}^{(2)} = \sum'_i \frac{|V_{i0}|^2}{E_0^{(0)} - E_i^{(0)}}
+$$
+
+except for the presence of $E$ rather than $E_0^{(0)}$ in the denominator. Despite their structural similarity, their mathematical interpretation is different: the Brillouin-Wigner (BW) expression is energy dependent and therefore implicit, whereas the Rayleigh-Schrödinger (RS) expression is an explicit coefficient in an order-by-order expansion.
+
+The BW formulation is algebraically more compact than the RS formulation. In particular, the recursive RS equations contain terms involving lower-order energy corrections, called renormalization terms. Higher-order RS wavefunction coefficients involve contributions of the form
+
+$$
+  -\sum'_l E^{(m-l)} \ket{\Psi^{(l)}}
+$$
+
+whereas the corresponding BW iteration has the much simpler structure 
+
+$$
+  \hat{R}_0 (E) \hat{V} \hat{R}_0 (E) \hat{V} \dots
+$$
+
+However, because the exact energy $E$ occurs in the resolvent
+
+$$
+  \hat{R}_0 (E) = \frac{\hat{Q}}{E - \hat{H}_0}
+$$
+
+the BW series is not an order-by-order perturbation expansion of the energy in the same sense as Rayleigh-Schrödinger perturbation theory. Consequently, a finite-order BW approximation retains an implicit dependence on the energy through its denominators and is therefore generally not size-extensive. The energy dependence of the BW denominators couples contributions in a way that does not, in general, preserve the additive separation of the energies of noninteracting subsystems after truncation.
+
+There is a close structural realtionship between BWPT and configuration-interaction (CI) methods. In both approaches, we separate the Hilbert space into a reference $P$-space and a complementary $Q$-space and determines the $Q$-space components through an energy-dependent recursive equation. We should nevertheless distinguish the two approaches: full CI is a variational solution of the projected Hamiltonian eigenvalue problem in a chosen configuration space, whereas BWPT is an energy-dependent perturbative expansion generated by repeated application of the $Q$-space resolvent. The resemblance is therefore structural rather than an exact equivalence.
