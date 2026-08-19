@@ -1951,31 +1951,123 @@ $$
 ## Inverse Fourier transform
 
 <MathBox title="" boxType="proposition">
-Let $f\in S(\R^n, \mathbb{C})$ be a Schwartz function. Then the Fourier transform is also a Schwartz function $\mathcal{F}(f) \in S(\R^n, \mathbb{C})$.
+Let $f\in S(\R^n, \mathbb{C})$ be a Schwartz function. Then its Fourier transform $\hat{f} = \mathcal{F}(f)$ is also a Schwartz function, i.e. $\mathcal{F}(f) \in S(\R^n, \mathbb{C})$.
 
 <details>
 <summary>Proof</summary>
 
-From $\eqref{equation-11}$, we have $\partial_j \mathcal{F}(f) = \mathcal{F}(-iM_j f)$. Since $f$ is a Schwartz function, so is $-iM_j f$. Applying this recursively, it follows that $D^\alpha \hat{f}$ exists for all multi-indices $\alpha\in\N_0^n$.
-
-We need to show
+From $\eqref{equation-11}$, we have $\partial_j \hat{f} = \mathcal{F}(-i x_j f)$, and from $\eqref{equation-12}$ we get $p_j \hat{f} = \mathcal{F}(-\partial_j f)$. Since $f$ is a Schwartz function, multiplication by $x_j$ and partial differentiation with respect to $x_j$ both preserve the Schwartz space. Thus, for every multi-index $\alpha \in\N_0^n$
 
 $$
-  \sup_{\mathbf{p} \in\R^n} \left| \norm{\mathbf{p}}^{2N} \cdot D^\alpha \hat{f} (\mathbf{p}) \right| < \infty
+  D^\alpha \hat{f} = \mathcal{F}\left((-i)^{|\alpha|} \mathbf{x}^{\alpha} f \right)
+$$
+
+In particular, $D^\alpha \hat{f}$ exists and is continuous for every $\alpha$.
+
+It remains to show that all the Schwartz seminorms are finite. That is, we need to prove that every pair of multi-indices, $\alpha, \beta \in\N_0^n$
+
+$$
+\begin{equation*}
+  \sup_{\mathbf{p} \in\R^n} \left| \norm{\mathbf{p}}^\beta D^\alpha \hat{f} (\mathbf{p}) \right| < \infty
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+Applying $\eqref{equation-12}$ repeatedly, we obtain
+
+$$
+\begin{equation*}
+  \mathbf{p}^\beta D^\alpha \hat{f} = (-i)^{|\alpha| + |\beta|} \mathcal{F}(D^\beta (\mathbf{x}^\alpha f)
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Because $f \in S(\R^n, \mathbb{C})$, we have $\mathbf{x}^\alpha f \in S(\R^n, \mathcal{C})$, and therefore $D^\beta (\mathbf{x}^\alpha f) \in S(\R^n, \mathbb{C})$. Every Schwartz function is integrable, so
+
+$$
+  D^\beta (\mathbf{x}^\alpha f) \in L^1 (\R^n, \mathbb{C})
+$$
+
+For any $h \in L^1 (\R^n, \mathbb{C})$, its Fourier transform is bounded, with
+
+$$
+  \norm{\hat{h}}_\infty \leq \frac{1}{(2\pi)^{n/2}} \norm{h}_{L^1}
+$$
+
+Applying this to $\eqref{equation-16}$, we get
+
+$$
+\begin{align*}
+  \sup_{\mathbf{p}^\beta D^\alpha \hat{f}(\mathbf{p})} \leq& \frac{1}{(2\pi)^{n/2}} \norm{D^\beta (\mathbf{x}^\alpha f)}_{L^1} \\
+  \leq& \infty
+\end{align*}
+$$
+
+This implies that $\eqref{equation-17}$ holds for every pair of multi-indices $\alpha, \beta$. Thus, all Schwartz seminorms of $\hat{f}$ are finite, and it follows that $\hat{f} \in S(\R^n, \mathbb{C})$. Hence, the Fourier transform maps the Schwartz space into itself $\mathcal{F}: S(\R^n, \mathbb{C}) \to S(\R^n, \mathbb{C})$.
+</details>
+</MathBox>
+
+<MathBox title="Fourier inversion theorem" boxType="theorem">
+For a Schwartz function $f \in S(\R^n, \mathbb{C})$, then
+
+$$
+  f(\mathbf{x}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot\mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p} = \mathcal{F}(\mathcal{F}(f))(-\mathbf{x})
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define the normalized Gaussian
+
+$$
+  \Phi(\mathbf{x}) := \frac{1}{(2\pi)^{n/2}} e^{-\norm{\mathbf{x}}^2 /2}
+$$
+
+For $k\in\N$, define a Dirac sequence $\delta_k (\mathbf{x}) := k^n \Phi(k\mathbf{x})$, with three properties
+1. $\delta_k (\mathbf{x}) \geq 0$ for all $k\in\N$, for all $\mathbf{x}\in\R^n$
+2. $\int_{\R^n} \delta_k (\mathbf{x}) \;\d\mathbf{x} = 1$ for all $k\in\N$
+3. For all $\epsilon > 0$, the ball $B_\epsilon (\mathbf{0}) := \set{\mathbf{y}\in \R^n : \norm{\mathbf{y}} < \epsilon}$ satifies
+
+$$
+  \lim_{k\to\infty} \int_{\R^n \setminus \mathcal{B}_\epsilon (\mathbf{0})} \delta_k (\mathbf{x}) \;\d \mathbf{x} = 0
+$$
+
+By the approximation theorem for bounded continuous functions $\delta_k * f \xrightarrow{k\to\infty} f$ uniformly on compact sets (includes pointwise convergence). By property of the Gaussian function
+
+$$
+\begin{align*}
+  \delta_k (\mathbf{y}) =& k^n \hat{\Phi} (-k\mathbf{y}) \\
+  =& \frac{k^n}{(2\pi)^{n/2}} \int_{\R^n} e^{-i(-k\mathbf{y}) \cdot \mathbf{x}} \Phi (\mathbf{x}) \;\d\mathbf{x}
+\end{align*}
+$$
+
+Substituting $\mathbf{x} = \mathbf{z}/k$, we get
+
+$$
+  \delta_k (\mathbf{y}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} \Phi\left(\frac{\mathbf{z}}{k} \right) \;\d\mathbf{z}
 $$
 
 Thus
 
 $$
-  MD \mathcal{F}(f) = \mathcal{F}(\tilde{D} \tilde{M} f) \in C_b
+\begin{align*}
+  f(\mathbf{x}) =& \lim_{k\to\infty} (\delta_k * f)(\mathbf{x}) \\
+  =& \lim_{k\to\infty} \int_{\R^n} \delta_k (\mathbf{y}) f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \\
+  =& \lim_{k\to\infty} \int_{\R^n} \frac{1}{(2\pi)^{n/2}} \left( \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} \Phi\left( \frac{\mathbf{z}}{k} \right) \;\d\mathbf{z} \right) f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \\
+  =& \lim_{k\to\infty} \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) \left(\int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \right) \;\d\mathbf{z}
+\end{align*}
 $$
 
-is bounded since $\tilde{D} \tilde{M} f$ is a Schwartz function.
+Substituting $\mathbf{u} = \mathbf{x} - \mathbf{y}$ gives
+
+$$
+\begin{align*}
+  f(\mathbf{x}) =& \lim_{k\to\infty} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) \left(e^{i\mathbf{x}\cdot\mathbf{z}} \frac{1}{(2\pi)} \int_{\R^n} e^{-i\mathbf{u}\cdot\mathbf{z}} f(\mathbf{u}) \;\d\mathbf{u} \right) \;\d\mathbf{z} \\
+  =& \int_{\R^n} \underbrace{\lim_{k\to\infty} \Phi\left(\frac{\mathbf{z}}{k} \right)}_{=\Phi(0) = (2\pi)^{-n/2}} e^{i\mathbf{x}\cdot\mathbf{z}} \hat{f}(\mathbf{z}) \;\d\mathbf{z} \\
+  =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot \mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p}
+\end{align*}
+$$
 </details>
-</MathBox>
-
-<MathBox title="Fourier inversion theorem" boxType="theorem">
-
 </MathBox>
 
 ## Uncertainty principle
