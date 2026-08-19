@@ -1672,12 +1672,18 @@ Let $f \in\mathcal{S}(\R^n, \mathbb{C})$ be a Schwartz function. For $j = 1,\dot
 
 1.
 $$
+\begin{equation*}
  \mathcal{F}[\partial_j f] = i M_j \hat{f}
+\tag{\label{equation-11}}
+\end{equation*}
 $$
 
 2.
 $$
+\begin{equation*}
   \partial_j \mathcal{F} [f] = \mathcal{F}(-iM_j f)
+\tag{\label{equation-12}}
+\end{equation*}
 $$
 
 <details>
@@ -1809,6 +1815,167 @@ In the special case $g = f$, this identity reduces to (Plancherel's theorem)
 $$
 	\norm{ f}_{L^2}^2 = \int_{-\infty}^\infty |f(x)|^2\;\d x = \int_{-\infty}^\infty \left|\hat{f}(\xi)\right|^2\;\d\xi
 $$
+</MathBox>
+
+### Fixed point of the Fourier transform
+
+<MathBox title="Gaussian function is a fixed point of the Fourier transform" boxType="proposition">
+The Gaussian function $f: \R^n \to\mathbb{C}$ given by $f(\mathbf{x}) = \exp(-\norm{\mathbf{x}}^2 /2)$ is a fixed point of the Fourier transform, i.e. $\hat{f}(\mathbf{p}) = \exp(-\norm{\mathbf{p}}^2 /2)$
+
+<details>
+<summary>Proof</summary>
+
+**The one-dimensional case**
+
+Consider first the one-dimensional Gaussian $g:\R\to\mathbb{C}$ given by $g(x) = e^{-x^2 /2}$. This function satisfies the ordinary differential equation
+
+$$
+\begin{equation*}
+  g'(x) = -xg(x)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+Applying the Fourier differentiation property $\eqref{equation-11}$, we have 
+
+$$
+\begin{equation*}
+  \hat{g}' (p) = ip \hat{g}(p)
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+Applying $\eqref{equation-12}$ gives
+
+$$
+\begin{equation*}
+  \widehat{xg}(p) = i \hat{g}'(p)
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+Taking the Fourier transform of $\eqref{equation-13}$ using $\eqref{equation-14}$ and $\eqref{equation-15}$ yields
+
+$$
+  ip\hat{g}(p) = -i\hat{g}'(p)
+$$
+
+or
+
+$$
+  \hat{g}'(p) + p\hat{g}(p) = 0
+$$
+
+which coincides with $\eqref{equation-13}$. Multiplying with the integrating factor $e^{p^2 /2}$, we obtain
+
+$$
+  e^{p^2 /2} \hat{g}' (p) + p e^{p^2 /2} \hat{g} (p) = 0
+$$
+
+By the product rule
+
+$$
+  \frac{\d}{\d p} \left(e^{p^2 /2} \hat{g}(p) \right) = 0
+$$
+
+Integrating both sides results in
+
+$$
+  e^{p/2} \hat{g} (p) = C
+$$
+
+or
+
+$$
+  \hat{g}(p) = Ce^{-p^2 /2}
+$$
+
+for some scalar $C \in\mathbb{C}$.
+
+It remains to determine $C$. Setting $p = 0$, we have
+
+$$
+  C = \hat{g} = \frac{1}{\sqrt{2\pi}} \int_\R \underbrace{e^{-i0\cdot x}}_{=1} e^{-x^2 /2} \;\d x
+$$
+
+Using the standard Gaussian integral
+
+$$
+  \int_\R e^{-x^2 /2} \;\d x = \sqrt{2\pi}
+$$
+
+we find that $C = 1$. Thus $\hat{g}(p) = e^{-p^2 /2}$.
+
+**The $n$-dimensional case**
+
+Now consider $f(\mathbf{x}) = e^{-\norm{\mathbf{x}}^2 /2}$. Since
+
+$$
+  \norm{\mathbf{x}}^2 = \sum_{j=1}^n x_j^2
+$$
+
+we can write
+
+$$
+  f(\mathbf{x}) = \prod_{j=1}^n e^{-x_j^2 /2}
+$$
+
+Consequently
+
+$$
+\begin{align*}
+  \hat{f}(\mathbf{p}) =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-i\mathbf{p} \cdot \mathbf{x}} e^{-\norm{\mathbf{x}}^2 /2} \;\d\mathbf{x} \\
+  =& \frac{1}{(2\pi)^{n/2}} \prod_{j=1}^n \int_\R e^{-ip_j x_j} e^{x_j^2 /2} \;\d x_j \\
+  =& \prod_{j=1}^n \left( \frac{1}{\sqrt{2\pi}} \int_\R e^{-ip_j x_j} e^{-x_j^2 /2} \;\d x_j \right)
+\end{align*}
+$$
+
+From the one-dimensional result
+
+$$
+  \frac{1}{\sqrt{2\pi}} \int_\R e^{-ip_j x_j} e^{-x_j^2 /2} \;\d x_j = e^{-p_j^2 /2}
+$$
+
+Thus
+
+$$
+\begin{align*}
+  \hat{f}(\mathbf{p}) =& \prod_{j=1}^n e^{-p_j^2 /2} \\
+  =& \exp\left(-\frac{1}{2} \sum_{j=1}^n p_j^2 \right) \\
+  =& e^{-\norm{\mathbf{p}}^2 /2}
+\end{align*}
+$$
+</details>
+</MathBox>
+
+## Inverse Fourier transform
+
+<MathBox title="" boxType="proposition">
+Let $f\in S(\R^n, \mathbb{C})$ be a Schwartz function. Then the Fourier transform is also a Schwartz function $\mathcal{F}(f) \in S(\R^n, \mathbb{C})$.
+
+<details>
+<summary>Proof</summary>
+
+From $\eqref{equation-11}$, we have $\partial_j \mathcal{F}(f) = \mathcal{F}(-iM_j f)$. Since $f$ is a Schwartz function, so is $-iM_j f$. Applying this recursively, it follows that $D^\alpha \hat{f}$ exists for all multi-indices $\alpha\in\N_0^n$.
+
+We need to show
+
+$$
+  \sup_{\mathbf{p} \in\R^n} \left| \norm{\mathbf{p}}^{2N} \cdot D^\alpha \hat{f} (\mathbf{p}) \right| < \infty
+$$
+
+Thus
+
+$$
+  MD \mathcal{F}(f) = \mathcal{F}(\tilde{D} \tilde{M} f) \in C_b
+$$
+
+is bounded since $\tilde{D} \tilde{M} f$ is a Schwartz function.
+</details>
+</MathBox>
+
+<MathBox title="Fourier inversion theorem" boxType="theorem">
+
 </MathBox>
 
 ## Uncertainty principle
