@@ -1819,7 +1819,7 @@ $$
 
 ### Fixed point of the Fourier transform
 
-<MathBox title="Gaussian function is a fixed point of the Fourier transform" boxType="proposition">
+<MathBox title="Gaussian function is a fixed point of the Fourier transform" boxType="proposition" tag="5">
 The Gaussian function $f: \R^n \to\mathbb{C}$ given by $f(\mathbf{x}) = \exp(-\norm{\mathbf{x}}^2 /2)$ is a fixed point of the Fourier transform, i.e. $\hat{f}(\mathbf{p}) = \exp(-\norm{\mathbf{p}}^2 /2)$
 
 <details>
@@ -1950,7 +1950,7 @@ $$
 
 ## Inverse Fourier transform
 
-<MathBox title="" boxType="proposition">
+<MathBox title="" boxType="proposition" tag="6">
 Let $f\in S(\R^n, \mathbb{C})$ be a Schwartz function. Then its Fourier transform $\hat{f} = \mathcal{F}(f)$ is also a Schwartz function, i.e. $\mathcal{F}(f) \in S(\R^n, \mathbb{C})$.
 
 <details>
@@ -2011,7 +2011,13 @@ This implies that $\eqref{equation-17}$ holds for every pair of multi-indices $\
 For a Schwartz function $f \in S(\R^n, \mathbb{C})$, then
 
 $$
-  f(\mathbf{x}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot\mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p} = \mathcal{F}(\mathcal{F}(f))(-\mathbf{x})
+  f(\mathbf{x}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot\mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p}
+$$
+
+or
+
+$$
+  \mathcal{F}^2 f(\mathbf{x}) = f(-\mathbf{x})
 $$
 
 <details>
@@ -2023,16 +2029,38 @@ $$
   \Phi(\mathbf{x}) := \frac{1}{(2\pi)^{n/2}} e^{-\norm{\mathbf{x}}^2 /2}
 $$
 
-For $k\in\N$, define a Dirac sequence $\delta_k (\mathbf{x}) := k^n \Phi(k\mathbf{x})$, with three properties
-1. $\delta_k (\mathbf{x}) \geq 0$ for all $k\in\N$, for all $\mathbf{x}\in\R^n$
-2. $\int_{\R^n} \delta_k (\mathbf{x}) \;\d\mathbf{x} = 1$ for all $k\in\N$
-3. For all $\epsilon > 0$, the ball $B_\epsilon (\mathbf{0}) := \set{\mathbf{y}\in \R^n : \norm{\mathbf{y}} < \epsilon}$ satifies
+with satisfies the properties:
+1. $\Phi(\mathbf{x}) \geq 0$ for all $\mathbf{x} \in\R^n$
+2. $\hat{\Phi} = \Phi$ (Proposition $\ref{proposition-5}$)
+3. $\int_{\R^n} \Phi(\mathbf{x}) \;\d\mathbf{x} = 1$
+
+For $k\in\N$, define a Dirac sequence $\delta_k (\mathbf{x}) := k^n \Phi(k\mathbf{x})$. The functions $\delta_k$ form an approximate identity, satisfying $\delta_k (\mathbf{x}) \geq 0$ for all $k\in\N$ and $\mathbf{x}\in\R^n$. After a change of variables $\mathbf{u} = k\mathbf{x}$, we have
+
+$$
+  \int_{\R^n} \delta_k (\mathbf{x}) \;\d\mathbf{x} = \int_{\R^n} \Phi(\mathbf{u}) \;\d\mathbf{u} = 1
+$$
+
+Furthermore, for all $\epsilon > 0$, the ball $B_\epsilon (\mathbf{0}) := \set{\mathbf{y}\in \R^n : \norm{\mathbf{y}} < \epsilon}$ satifies
 
 $$
   \lim_{k\to\infty} \int_{\R^n \setminus \mathcal{B}_\epsilon (\mathbf{0})} \delta_k (\mathbf{x}) \;\d \mathbf{x} = 0
 $$
 
-By the approximation theorem for bounded continuous functions $\delta_k * f \xrightarrow{k\to\infty} f$ uniformly on compact sets (includes pointwise convergence). By property of the Gaussian function
+because $\Phi\in L^1 (\R^n, \mathbb{C})$.
+
+Since $f$ is a Schwartz function, it is bounded and continuous. Thus, the approximate identity property gives
+
+$$
+\begin{equation*}
+\begin{split}
+  \lim_{k\to\infty} (\delta_k * f)(\mathbf{x}) =& \lim_{k\to\infty} \int_{\R^n} \delta_k (\mathbf{y}) f(\mathbf{x} - \mathbf{y})\;\d\mathbf{y} \\
+  =& f(\mathbf{x}),\, \forall \mathbf{x} \in\R^n
+\end{split}
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+Since $\hat{\Phi} = \Phi$ by Proposition $\ref{proposition-5}$, we can express $\delta_k$ as
 
 $$
 \begin{align*}
@@ -2041,31 +2069,81 @@ $$
 \end{align*}
 $$
 
-Substituting $\mathbf{x} = \mathbf{z}/k$, we get
+Making the change of variables $\mathbf{z} = k\mathbf{x}$, with $\d\mathbf{x} = k^{-n} \d\mathbf{z}$, we get
 
 $$
+\begin{equation*}
   \delta_k (\mathbf{y}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} \Phi\left(\frac{\mathbf{z}}{k} \right) \;\d\mathbf{z}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+Substituting $\eqref{equation-19}$ into the integral limit of $\eqref{equation-18}$, we obtain
+
+$$
+  f(\mathbf{x}) = \lim_{k\to\infty} \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} \Phi\left(\frac{\mathbf{z}}{k} \right) f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{z} \;\d\mathbf{y}
+$$
+
+Since $f$ and $\Phi$ are rapidly decreasing, the integrals are absolutely convergent. Thus, by Fubini's theorem we can interchange the order of integration
+
+$$
+  f(\mathbf{x}) = \lim_{k\to\infty} \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) \left(\int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \right) \;\d\mathbf{z}
+$$
+
+Now set $\mathbf{u} = \mathbf{x} - \mathbf{y}$, or $\mathbf{y} = \mathbf{x} - \mathbf{u}$, so
+
+$$
+\begin{align*}
+  \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{x}} f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} =& \int_{\R^n} e^{i(\mathbf{x} - \mathbf{u})\cdot\mathbf{z}} f(\mathbf{u}) \;\d\mathbf{u} \\
+  =& e^{i\mathbf{x}\cdot\mathbf{z}} \int_{\R^n} e^{-i\mathbf{u}\cdot\mathbf{z}} f(\mathbf{u}) \;\d\mathbf{u}
+\end{align*}
+$$
+
+By the definition of the Fourier transform
+
+$$
+  \int_{\R^n} e^{-i\mathbf{u}\cdot\mathbf{z}} f(\mathbf{u}) \;\d\mathbf{u} = (2\pi)^{n/2} \hat{f}(\mathbf{z})
 $$
 
 Thus
 
 $$
+\begin{equation*}
+  f(\mathbf{x}) = \lim_{k\to\infty} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) e^{i\mathbf{x}\cdot\mathbf{z}} \hat{f}(\mathbf{z}) \;\d\mathbf{z}
+\end{equation*}
+$$
+
+For each fixed $\mathbf{z}$, we have
+
+$$
+  \lim_{k\to\infty} \Phi\left(\frac{\mathbf{z}}{k} \right) = \Phi(\mathbf{0}) = \frac{1}{(2\pi)^{n/2}}
+$$
+
+Moreover, since $\Phi$ attains it maximum at $\mathbf{0}$
+
+$$
+  0 \leq \Phi\left(\frac{\mathbf{z}}{k} \right) \leq \frac{1}{(2\pi)^{n/2}}
+$$
+
+so that
+
+$$
+  \left| \Phi\left(\frac{\mathbf{z}}{k} e^{i\mathbf{x}\cdot\mathbf{z}} \hat{f}(\mathbf{z}) \right) \right| \leq \frac{1}{(2\pi)^{n/2}} |\hat{f}(\mathbf{z})|
+$$
+
+Since $\hat{f}$ is also a Schwartz function by Proposition $\ref{proposition-6}$, it follows that $\hat{f} \in L^1 (\R^n)$ is integrable. Thus, the integrand in $\eqref{equation-20}$ is dominated by the integrable function $|\hat{f}(\mathbf{z})|$. The dominated convergence theorem therefore gives
+ 
+$$
 \begin{align*}
-  f(\mathbf{x}) =& \lim_{k\to\infty} (\delta_k * f)(\mathbf{x}) \\
-  =& \lim_{k\to\infty} \int_{\R^n} \delta_k (\mathbf{y}) f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \\
-  =& \lim_{k\to\infty} \int_{\R^n} \frac{1}{(2\pi)^{n/2}} \left( \int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} \Phi\left( \frac{\mathbf{z}}{k} \right) \;\d\mathbf{z} \right) f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \\
-  =& \lim_{k\to\infty} \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) \left(\int_{\R^n} e^{i\mathbf{y}\cdot\mathbf{z}} f(\mathbf{x} - \mathbf{y}) \;\d\mathbf{y} \right) \;\d\mathbf{z}
+  f(\mathbf{x}) =& \int_{\R^n} \underbrace{\lim_{k\to\infty} \Phi\left(\frac{\mathbf{z}}{k} \right)}_{=\Phi(0) = (2\pi)^{-n/2}} e^{i\mathbf{x}\cdot\mathbf{z}} \hat{f}(\mathbf{z}) \;\d\mathbf{z} \\
+  =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{x}\cdot \mathbf{z}} \hat{f}(\mathbf{z}) \;\d\mathbf{z}
 \end{align*}
 $$
 
-Substituting $\mathbf{u} = \mathbf{x} - \mathbf{y}$ gives
+Relabelling $\mathbf{z}$ as $\mathbf{p}$, we obtain the Fourier inversion formula
 
 $$
-\begin{align*}
-  f(\mathbf{x}) =& \lim_{k\to\infty} \int_{\R^n} \Phi\left(\frac{\mathbf{z}}{k} \right) \left(e^{i\mathbf{x}\cdot\mathbf{z}} \frac{1}{(2\pi)} \int_{\R^n} e^{-i\mathbf{u}\cdot\mathbf{z}} f(\mathbf{u}) \;\d\mathbf{u} \right) \;\d\mathbf{z} \\
-  =& \int_{\R^n} \underbrace{\lim_{k\to\infty} \Phi\left(\frac{\mathbf{z}}{k} \right)}_{=\Phi(0) = (2\pi)^{-n/2}} e^{i\mathbf{x}\cdot\mathbf{z}} \hat{f}(\mathbf{z}) \;\d\mathbf{z} \\
-  =& \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot \mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p}
-\end{align*}
+  f(\mathbf{x}) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{i\mathbf{p}\cdot\mathbf{x}} \hat{f}(\mathbf{p}) \;\d\mathbf{p}
 $$
 </details>
 </MathBox>
