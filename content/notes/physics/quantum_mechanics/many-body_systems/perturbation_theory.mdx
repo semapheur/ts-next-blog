@@ -1183,7 +1183,7 @@ $$
 
 **Using the exact energy in the denominator**
 
-Since $E_0^{(0)} = N\varepsilon_0$, the exact energy shift
+Since $E_0^{(0)} = N\varepsilon_0$, the exact energy shift is
 
 $$
   \Delta E = E - E_0^{(0)} = N(\varepsilon - \varepsilon_0)
@@ -1273,13 +1273,16 @@ $$
 Substituting the peturbation expansion for $\Delta E$ gives
 
 $$
-\begin{align*}
+\begin{equation*}
+\begin{split}
   \Delta E =& \braket{\Phi_0|\hat{V}|\Phi_0} + \braket{\Phi_0|\hat{V}\hat{R}_0\hat{V}|\Phi_0} + \braket{\Phi_0|\hat{V} \hat{R}_0 \hat{V} \hat{R}_0 \hat{V}|\Phi_0} \\
   &- \braket{\Phi_0|\hat{V}\hat{R}_0 \braket{\Phi_0|\hat{V}|\Phi_0}\hat{R}_0 \hat{V}|\Phi_0} - \braket{\Phi_0|\hat{V}\hat{R}_0\braket{\Phi_0|\hat{V}\hat{R}_0\hat{V}|\Phi_0}\hat{R}_0 \hat{V}|\Phi_0} -\cdots \\
   &+ \braket{\Phi_0|\hat{V}\hat{R}_0 \hat{V}\hat{R}_0 \hat{V}\hat{R}_0 \hat{V}|\Phi_0} \\
   &- \braket{\Phi_0|\hat{V}\hat{R}_0 \hat{V}\hat{R}_0 \braket{\Phi_0|\hat{V}|\Phi_0} \hat{R}_0 \hat{V}|\Phi_0} - \braket{\Phi_0|\hat{V}\hat{R}_0 \braket{\Phi_0|\hat{V}|\Phi_0}\hat{R}_0 \hat{V}\hat{R}_0 \hat{V}|\Phi_0} \\
   +& \braket{\Phi_0|\hat{V}\hat{R}_0 \braket{\Phi_0|\hat{V}|\Phi_0} \hat{R}_0 \braket{\Phi_0|\hat{V}|\Phi_0} \hat{R}_0 \hat{V}|\Phi_0} +\cdots
-\end{align*}
+\end{split}
+\tag{\label{equation-32}}
+\end{equation*}
 $$
 
 Collecting terms of equal order of $\hat{V}$ gives
@@ -1395,13 +1398,19 @@ That is, the first-order energy vanishes, $W_{00} = 0$. Higher orders remain unc
 
 ### Non-diagonal case
 
-In the general case, in which the representation of $\hat{H}_0$ is non-diagonal, the resolvent $\hat{R}_0 (E_0^{(0)})$ is not given explicitly in terms of the zero-order energies $E_i^{(0)}$, but it can be obtained by inversion of the matrix representation of $\hat{Q}(E_0^{(0)} - \hat{H}_0)\hat{Q}$. However, explicit inversion of that matrix is not actually required since the quantities needed are matrix elements of $\hat{R}_0 \hat{W}$. If we write $\hat{X} = \hat{R}_0 \hat{W}$ then
+In the general case, the zero-order Hamiltonian $\hat{H}_0$ need not be diagonal in the chosen basis. The reduced resolvent $\hat{R}_0 (E_0^{(0)}) = \hat{Q} (E_0^{(0)} - \hat{H}_0)^{-1} \hat{Q}$ therefore cannot, in general, be obtained by taking the reciprocal of the energy differences $E_0^{(0)} - E_i^{(0)}$. Instead, it is obtained by inverting the matrix representation of $\hat{Q}(E_0^{(0)} - \hat{H}_0)\hat{Q}$ on the $Q$-space. However, explicit inversion of that matrix is not actually required since the quantities needed are matrix elements of $\hat{R}_0 \hat{W}$. If we write $\hat{X} = \hat{R}_0 \hat{W}$ then
 
 $$
   \hat{Q} (E_0^{(0)} - \hat{H}_0) \hat{Q} \hat{X} = \hat{Q} \hat{W}
 $$
 
-and the matrix representation $\mathbf{X}$ of $\hat{X}$ can be obtained by the solution of the system of linear equations
+Since $\hat{R}_0$ acts entirely in the $Q$-space, $\hat{Q}\hat{X} = \hat{X}$ and therefore
+
+$$
+  \hat{Q} (E_0^{(0)} - \hat{H}_0) \hat{Q}\hat{X} = \hat{Q}\hat{W}
+$$
+
+Thus, $\hat{X}$ can be determined without explicitly constructing $\hat{H}_0$. Let $\mathbf{H}_0$, $\mathbf{W}$ and $\mathbf{X}$ denote the matrix representations of $\hat{H}_0$, $\hat{W}$ and $\hat{X}$, respectively, restricted to the $Q$-space. Then
 
 $$
   (E_0^{(0)} \mathbf{I} - \mathbf{H}_0)\mathbf{X} = \mathbf{W}
@@ -1410,12 +1419,27 @@ $$
 or, explicitly
 
 $$
+\begin{equation*}
   \sum'_j (E_0^{(0)} \delta_{ij} - (\hat{H}_0)_{ij}) X_{jk} = W_{ik}
+\tag{\label{equation-31}}
+\end{equation*}
 $$
 
-If the matrix representation of $\hat{H}_0$, the iterative solution of the linear equation system is relatively easy. Note that only the $k = 0$ column of $\mathbf{X}$ is required for $\hat{R}_0 \hat{V} \ket{\Phi}$, in which case we have $W_{i0} = V_{i0}$ for $i\neq 0$.
+This is a linear system rather than a matrix-inversion problem. If $\hat{H}_0$ is sparse, we can use an appropriate sparse direct or iterative linear solver without ever constructing the full reduced resolvent.
 
-Once $\mathbf{X}$ has been obtained, the energy corrections can be determined from
+For the first-order wavefunction corrections $\ket{\Psi^{(1)}} = \hat{R}_0 \hat{V} \ket{\Phi_0}$, only he action of the resolvent on $\hat{V}\ket{\Phi_0}$ is required. Consequently, only the column of $\hat{X}$ corresponding to the reference state is needed. Moreover, for $i \neq 0$
+
+$$
+  \hat{W}_{i0} = V_{i0} - E^{(1)} \delta_{i0} = V_{i0}
+$$
+
+Thus, the required column can be equivalently be obtained by solving
+
+$$
+  (E_0^{(0)} \mathbf{I} - \mathbf{H}_0) \mathbf{x} = \mathbf{v}_0
+$$
+
+where $(\mathbf{v}_0)_i = V_{i0}$ for $i \neq 0$, and $\mathbf{x}$ represents $\hat{R}_0 \hat{V}\ket{\Phi_0}$. Once the required action of $\hat{R}_0$ has been obtained, the perturbation corrections can be evaluated without explicitly forming the resolvent. In particular
 
 $$
 \begin{align*}
@@ -1427,10 +1451,125 @@ $$
 
 with similar equations for the wavefunction corrections.
 
-Obviously, in the diagonal case
+The diagonal result follows immediately as a special case, if $(H_0)_{ij} = E_i^{(0)} \delta_{ij}$ the linear system $\eqref{equation-31}$ becomes
+
+$$
+  (E_0^{(0)} - E_i^{(0)}) X_{ij} = W_{ij}
+$$
+
+and hence
 
 $$
   X_{ij} = \frac{W_{ij}}{E_0^{(0)} - E_i^{(0)}} = \frac{W_{ij}}{D_{0i}}
 $$
 
 ### Bracketing procedure
+
+The terms in the perturbation expansion $\eqref{equation-32}$ for $\Delta E$ follow systematic recursive pattern. Before algebraic simplification, the number of distinct bracket structures generated in the $n$th-order energy correction is given by a Catalan number. 
+
+Let $T_n$ denoted the number of admissible bracket structures before algebraic simplification at order $n$. A valid structure can be decomposed into two smaller structures of orders $k$ and $n - k$, for some $1 \leq k \leq n - 1$. That is
+
+$$
+  T_1 = 1,\quad T_n = \sum_{k=1}^{n-1} T_k T_{n-k}
+$$
+
+This is the standard Catalan recurrence. Thus, $T_n = C_{n-1}$, where
+
+$$
+  C_m = \frac{1}{m+1} \binom{2m}{m}
+$$
+
+is the $m$th Catalan number. Setting $m = n - 1$ gives
+
+$$
+\begin{align*}
+  T_n =& C_{n-1} = \frac{1}{n} \binom{2n - 1}{n-1} \\
+  =& \frac{(2n - 2)!}{n!(n - 1)!}
+\end{align*}
+$$
+
+For convenience, introduce the shorthand
+
+$$
+  \braket{A} := \braket{\Phi_0 |\hat{A}\Phi_0}
+$$
+
+The principal, or unbracketed, contribution to the $m$th-order energy correction $E^{(m)}$ has the form
+
+$$
+  \braket{\hat{V} \hat{R}_0 \hat{V} \hat{R}_0 \cdots \hat{R}_0 \hat{V}}
+$$
+
+containing $m$ factors of $\hat{V}$ and $m-1$ factors of $\hat{R}_0$. The remaining terms arise from the occurrences of lower-order energy corrections in the recursive expansion. These energy corrections themselves contain bracketed expression, so that, before simplification, we obtain all admissible ways of inserting nested or disjoint brackets into the principal expression. The sign of a bracket structure is $(-1)^r$ were $r$ is the number of inserted energy-correction brackets. Thus, each addition bracket arising from a factor of $-\Delta E$ contributes one additional minus sign.
+
+The fourth-order energy correction contains $T_4 = 5$ bracket structures
+
+$$
+\begin{align*}
+  E^{(4)} =& \braket{\hat{V}\hat{R}_0 \hat{V} \hat{R}_0 \hat{V} \hat{R}_0 \hat{V}} \\
+  &- \braket{\hat{V}\hat{R}_0 \braket{\hat{V}} \hat{R}_0 \hat{V} \hat{R}_0 \hat{V}} - \braket{\hat{V}\hat{R}_0 \hat{V} \hat{R}_0 \braket{\hat{V}} \hat{R}_0 \hat{V}} \\
+  &+ \braket{\hat{V}\hat{R}_0 \braket{\hat{V}} \hat{R}_0 \braket{\hat{V}} \hat{R}_0 \hat{V}} - \braket{\hat{V} \hat{R}_0 \braket{\hat{V} \hat{R}_0 \hat{V}} \hat{R}_0 \hat{V}}
+\end{align*}
+$$
+
+The number of explicit terms can be reduced considerably by noting that 
+
+$$
+  \braket{\hat{W}} = \braket{\hat{V}} - \underbrace{E^{(1)}}_{=\braket{\hat{V}}} = 0
+$$
+
+Moreover, because the resolvent satisfies
+
+$$
+  \hat{R}_0 \ket{\Phi_0} = \bra{\Phi_0} \hat{R}_0 = 0
+$$
+
+an occurence of $\hat{W}$ at an endpoint of a matrix element can be replaced by $\hat{V}$, i.e.
+
+$$
+\begin{align*}
+  \braket{\hat{W}\hat{R}_0 \cdots} =& \braket{\hat{V}\hat{R}_0 \cdots} \\
+  \braket{\cdots\hat{R}_0 \hat{W}} =& \braket{\cdots \hat{R}_0 \hat{V}}
+\end{align*}
+$$
+
+For example, for the fifth order contribution to the energy we get
+
+$$
+\begin{align*}
+  E^{(5)} =& \braket{\hat{V}\hat{R}_0 \hat{W}\hat{R}_0 \hat{W} \hat{R}_0 \hat{W} \hat{R}_0 \hat{V}} - \braket{\hat{V}\hat{R}_0 \braket{\hat{V}\hat{R}_0 \hat{V}} \hat{R}_0 \hat{W} \hat{R}_0 \hat{V}} \\
+  &- \braket{\hat{V}\hat{R}_0 \hat{W}\hat{R}_0 \braket{\hat{V} \hat{R}_0 \hat{V}} \hat{R}_0 \hat{V}} - \braket{\hat{V}\hat{R}_0 \braket{\hat{V}\hat{R}_0 \hat{V} \hat{R}_0 \hat{V}} \hat{R}_0 \hat{V}} \\
+  =& \braket{\hat{V}\hat{R}_0 \hat{W}\hat{R}_0 \hat{W} \hat{R}_0 \hat{W} \hat{R}_0 \hat{V}} - \braket{\hat{V}\hat{R}_0 \hat{V}} \braket{\hat{V} \hat{R}_0 (\hat{R}_0 \hat{W} + \hat{W}\hat{R}_0) \hat{R}_0 \hat{V}} \\
+  &- \braket{\hat{V}\hat{R}_0 \hat{W} \hat{R}_0 \hat{V}}\braket{\hat{V}\hat{R}_0^2 \hat{V}} \\
+  =& \braket{\hat{V}\hat{R}_0 \hat{W}\hat{R}_0 \hat{W} \hat{R}_0 \hat{W} \hat{R}_0 \hat{V}} - E^{(2)} \left[\braket{\Psi^{(1)}|\Psi^{(1)}} + \braket{\Psi^{(2)}|\Psi^{(2)}} \right] \\
+  &- E^{(3)} \braket{\Psi^{(1)}|\Psi^{(1)}}
+\end{align*}
+$$
+
+### Extensivity
+
+Rayleigh-Schrödinger perturbation theory is extensive order by order because it is formulated as an expension in powers of the perturbation parameter. For two noninteracting subsystems $A$ and $B$ with zero-order Hamiltonian $\hat{H} = \hat{H}_A + \hat{H}_B$ and perturbation $\hat{V} = \hat{V}_A + \hat{V}_B$, the exact energy is additive
+
+$$
+  E(A + B) = E(A) + E(B)
+$$
+
+Since the Rayleigh-Schrödinger expansion is an order-by-order expansion, this additivity must hold at every order
+
+$$
+  E^{(n)} (A + B) = E^{(n)} (A) + E^{(n)} (B)
+$$
+
+Consequently, the $n$th-order energy correction must scale linearly with the number of mutually noninteracting identical subsystems. In particular, for $N$ identical noninteracting atoms
+
+$$
+  E^{(n)} (N) = N E^{(n)} (1)
+$$
+
+Consider a system of $N$ noninteracting $\ce{He}$ atoms. Replacing the BWPT denominator in the second-order energy correction $\eqref{equation-28}$ by the corresponding RSPT denominator $E_0^{(0)} - E_i^{(0)} = \varepsilon_0 - \alpha$, the second-order energy correction becomes
+
+$$
+  E^{(2)} = \frac{N|\beta|^2}{\varepsilon_0 - \alpha}
+$$
+
+which is proportional to $N$.
