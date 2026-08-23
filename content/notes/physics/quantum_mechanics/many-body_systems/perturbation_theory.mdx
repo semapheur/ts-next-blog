@@ -1573,3 +1573,132 @@ $$
 $$
 
 which is proportional to $N$.
+
+## Similarity transformation
+
+Finding the eigenvalues and eigenstates of an operator $\hat{H}$ is equivalent to finding a basis $\set{\ket{\Psi_i}}$ in which $\hat{H}$ is diagonal. That is
+
+$$
+  \braket{\Psi_i|\hat{H}|\Psi_j} = E_i \delta_{ij}
+$$
+
+where the $\ket{\Psi_i}$ are eigenstates of $\hat{H}$
+
+$$
+  \hat{H}\ket{\Psi_i} = E_i \ket{\Psi_i}
+$$
+
+Suppose instead that the matrix representation of $\hat{H}$ is known in some orthonormal basis $\set{\ket{\Phi_i}}$
+
+$$
+  H_{ij} = \braket{\Phi_i|\hat{H}|\Phi_j}
+$$
+
+The problem is then to find an invertible operator $\hat{U}$ that transforms the known basis $\set{\ket{\Phi_i}}$ into the eigenbasis $\set{\ket{\Phi_i}}$
+
+$$
+\begin{align*}
+  \ket{\Psi_i} =& \hat{U}\ket{\Phi_i} \\
+  =& \sum_j \ket{\Phi_j} \braket{\Phi_j|\hat{U}|\Phi_i} = \sum_j \ket{\Phi_j} U_{ji}
+\end{align*}
+$$
+
+The inverse transformation is $\ket{\Phi_i} = \hat{U}^{-1} \ket{\Psi_i}$, so that 
+
+$$
+\begin{align*}
+  \braket{\Phi_i|\hat{U}^{-1} \hat{H} \hat{U}|\Phi_j} =& \braket{\Phi_i|\hat{U}^{-1}\hat{H}|\Psi_j} \\
+  =& \braket{\Phi_i|\hat{U}^{-1}|\Psi_j} E_j \\
+  =& \braket{\Phi_i|\Phi_j} E_j = \delta_{ij} E_j
+\end{align*}
+$$
+
+Thus, the effective operator 
+
+$$
+  \hat{H}^\text{eff} = \hat{U}^{-1} \hat{H} \hat{U}
+$$
+
+is diagonal in the known orthogonal basis $\set{\ket{\Phi_i}}$ basis, with diagonal elements equal to the eigenvalues of $\hat{H}$. This is a similarity transformation of $\hat{H}$. 
+
+If both $\set{\ket{\Phi_i}}$ and $\set{\ket{\Psi_i}}$ are orthonormal bases, then the transformation $\hat{U}$ is unitary, $\hat{U}^\dagger = \hat{U}^{-1}$. In this case, the diagonalized representation of $\hat{H}$ can be written in the form
+
+$$
+\begin{align*}
+  E_i \delta_{ij} =& \braket{\Psi_i|\hat{H}|\Psi_j} \\
+  =& \braket{\hat{U}\Phi_i|\hat{H}|\hat{U}\Phi_j} = \braket{\Phi_i|\hat{U}^\dagger \hat{H} \hat{U}|\Phi_j}
+\end{align*}
+$$
+
+so that the effective Hamiltonian can be expressed as $\hat{H}^\text{eff} = \hat{U}^\dagger \hat{H}\hat{U}$.
+
+If we are only interested in one particular eigensolution $E_0$, $\ket{\Psi_0}$, it is sufficient to find a transformation $\hat{U}$ that block-diagonalizes $\hat{H}^\text{eff}$ with respect to the subspace containing the reference state.
+
+To achieve this, define the projection operators
+
+$$
+\begin{align*}
+  \hat{P} =& \ket{\Phi_0}\bra{\Phi_0} \\
+  \hat{Q} =& \hat{I} - \hat{P} = \sum'_i \ket{\Phi_i} \bra{\Phi_i}
+\end{align*}
+$$
+
+such that $\hat{P}$ projects onto the one-dimensional reference space and $\hat{Q}$ projects onto its ortogonal complement. We seek an invertible $\hat{U}$ such that $\hat{H}^\text{eff} = \hat{U}^{-1} \hat{H} \hat{U}$ has no coupling between the $P$- and $Q$-spaces
+
+$$
+\begin{align*}
+  \hat{P}\hat{H}^\text{eff} \hat{Q} =& 0 \\
+  \hat{Q}\hat{H}^\text{eff} \hat{P} =& 0
+\end{align*}
+$$
+
+In terms of matrix elements, this condition is
+
+$$
+  \braket{\Phi_0|\hat{U}^{-1} \hat{H}\hat{U}|\Phi_i} = \braket{\Phi_i|\hat{U}^{-1} \hat{H}\hat{U}|\Phi_0} = 0,\, i\neq 0
+$$
+
+The remaining $P$-space matrix element is then the desired eigenvalue
+
+$$
+  \braket{\Phi_0|\hat{U}^{-1} \hat{H}\hat{U}|\Phi_0} = E_0
+$$
+
+The transformation $\hat{U}$ can be decomposed into its $P$- and $Q$-space block
+
+$$
+  \hat{U} = \hat{P}\hat{U}\hat{P} + \hat{P}\hat{U}\hat{Q} + \hat{Q}\hat{U}\hat{P} + \hat{Q}\hat{U}\hat{Q}
+$$
+
+Since $\hat{P}$ is one-dimensional
+
+$$
+  \hat{P}\hat{U}\hat{P} = \ket{\Phi_0} U_{00}
+$$
+
+where $U_{00} = \braket{\Phi_0|\hat{U}|\Phi_0}$.
+
+The blocks acting entirely within the $P$- and $Q$-spaces are not uniquely determined by the requirement of $P$-$Q$ block diagonalization. In particular, transformations within the $Q$-space merely changes the representation of the states orthogonal to the target state. There is therefore considerable freedom in the choice of $\hat{U}$.
+
+A particularly convenient convention is to leave the $P$- and $Q$-space components unchanged and use $\hat{U}$ only to introduce the $P$-$Q$ mixing required for block diagonalization. Thus we impose
+- $\hat{P}\hat{U}\hat{P} = \hat{P}$, i.e. $U_{00} = 1$
+- $\hat{Q}\hat{U}\hat{Q} = \hat{Q}$
+
+Since $\hat{P} + \hat{Q} = \hat{I}$, this gives
+
+$$
+  \hat{U} = \hat{I} + \hat{P}\hat{U}\hat{Q} + \hat{Q}\hat{U}\hat{P}
+$$
+
+This choice is closely related to the intermediate-normalization convention. Acting on the reference state gives
+
+$$
+\begin{align*}
+  \ket{\Psi_0} =& \hat{U}\ket{\Phi_0} \\
+  =& \hat{U}\hat{P}\ket{\Phi_0} \\
+  =& (\hat{P} + \hat{Q}\hat{U}\hat{P})\ket{\Phi_0} \\
+  =& \ket{\Phi_0} + \hat{Q}\hat{U}\hat{P} \ket{\Phi_0}
+\end{align*}
+$$
+
+where $\hat{Q}\hat{U}\hat{P}\ket{\Phi_0}$ is the perturbative correction to $\ket{\Phi_0}$. Because $\hat{P}\ket{\Psi_0} = \ket{\Phi_0}$, this choice satisfies $\braket{\Phi_0|\Psi_0} = 1$, which is precisely the intermediate normalization condition.
