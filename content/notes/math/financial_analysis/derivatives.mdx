@@ -1,0 +1,1031 @@
+---
+title: 'Derivatives'
+subject: 'Mathematics'
+showToc: true
+references:
+  - book_elliott_kopp_1998
+  - book_cvitanic_zapatero_2004
+---
+
+# Derivative securities
+
+A *derivative security* is a financial asset whose value is determined by the price of one or more underlying variables, typically other securities. The underlying asset is often referred to simply as the *underlying*. A *contingent claim* represents the total liability in a derivative security.
+
+## Forward contract
+
+A *forward contract* is simply an agreement between two parties to buy or sell a specified asset $S$ at a certain future time $T$ for a price $K$ that is specified now (which we take to be time $0$). Such contracts are not normally traded on exchanges, but rather transacted *over-the-counter* (OTC), meaning they are negotiated privately under less regulatory oversight. 
+
+The purpose of forward contracts is to share risk: one party assumes a *long position* by agreeing to buy an assets, and the other takes a *short position* by agreeing to sell the asset for the *delivery price* $K$ at the delivery date $T$. Initially, neither party incurs any costs into entering into the contract, and the *forward price* of the contract at time $t\in[0,T]$ is the delivery price that would give the contract zero value. Thus, at time $0$, the forward price is $K$, but at later times movement in the market value of the underlying commodity will suggest different values. The *payoff* to the holder of the long position at time $T$ is simply $S_T - K$, and for the short position it is $K - S_T$. Thus, since both parties are obliged to honour the contract, in general one will lose and the other gain the same amount.
+
+To derive the forward price under the assumption of no riskless arbitrage, consider an efficient market in which the underlying asset pays no dividends or other income. Let $S_t$ be the *spot price* of the underlying asset $S$, the forward price $F(t, T)$ at that time is simply the value at the time $T$ of a riskless investment of $S_t$ made at time $t$ whose value increases at a constant riskless interest rate $r > 0$. Under continuous compounding at this rate, an amount of money $M_s$ in the bank will grad exponentially according to
+
+$$
+  \frac{\d M_s}{M_s} = r\;\d s,\; s\in[t, T]
+$$
+
+To repay the loan $S_t$ taken out at $t$, we thus need $M_T = S_t e^{r(T -t)}$ by time $T$. We therefore claim that
+
+$$
+  F(t, T) = S_t e^{r(T - t)},\; t\in[0,T]
+$$
+
+## Futures contracts
+
+Like forward contracts, a futures contract is an agreement to buy or sell an asset at a at specified future date for a predermined price. However, unlike forwards, futures are standardized contracts traded on exchanges and are subject to regulatory oversight. Because the two parties to a futures contracts need not know each other, the exchange acts as an intermediary and assumes the counterparty risk by guaranteeing the performance of both sides. To manage this risk, future contracts incorporate standardized terms, including fixed contract sizes, delivery dates, and asset quality specifications. One key feature are daily settlement arrangements known as *marking to market*, in which gains and losses are realized and settled at the end of each trading day based on the current market price. 
+
+When entering into a futures contracts, the investor must deposit an initial amount known as the *initial margin*, which serves as a collateral. This margin is adjusted daily to reflect gains and losses, ensuring that both parties maintain sufficient funds to cover potential obligations. The *futures price* is determined in real time at the exchange according to demand and supply. Effectively, the total payment is made over the life of the contract in a series of instalments, rather than a single lump sum at maturity. This mechanism allows the exchange to balance long and short positions while minimizing the risk of default.
+
+Futures contracts often involve commodities whose quality cannot be determined with certainty in advance. The delivery price therefore has reference points that guarantee that the assets quality falls between agreed limits, as well as specifying contract size.
+
+## Swaps
+
+A swap contract is a financial agreement in which two parties agree to exchange a series of future cashflows according to agreed prior critera, typically based on the values of certain underlying assets. Swaps are often interpreted as porfolios of forward contracts. Under standard assumptions, both the intial and final value of a swap contract is zero.
+
+The cash flows exchanged exchanged in a swap can depend on various market quantities, mot commonly interest rates. In the simplest example (a plain vanilla interest rate swap), one party agrees to pay the other a series of fixed-rate interest on  a notational principle amount at predetermined dates. The other party agrees to pay floating-rate interest on the same notional principal and in the same currency. This arrangement effectively allows on party to convert a floating-rate liability into a fixed-rate liability, and vice versa, thereby managing interest rate risk. The floating rate is typically referenced to a market benchmark such as
+- SOFR (Secured Overnight Financing Rate) in the US
+- SONIA (Sterling Overnight Index Average) in the UK
+- LIBOR (the London Interbank Offer Rate)
+
+## Options
+
+An option on a stock is a financial contract granting the holder the right, but not the obligation, to trade a given number of shares of a common stock at a predetermined *strike price* $K$ on or before a specified expiration date $T$. A *call* option gives the holder the right to buy stocks, while a *put* option gives the right to sell it. , at the fixed *strike price* K. The option is *European* if it can only be exercised at the fixed expiry date $T$. The option is *American* if the owener can exercise his right to trade at any time up to the expiry date. Every option contract involves two parties: the *buyer* (holder) and the seller, who is more commonly referred to as the *writer* of the option.
+
+In the case of a European call option on a stock $(S_t)_{t\in \mathcal{T}}$ with strike price $K$ and expiration time $T$, the payoff equals $S_T - K$ if $S_T > K$ and $0$ otherwise, i.e. $P = \max(S_T - K, 0)$. It the option expires in the money, i.e. $S_T > K$, the holder profits by purchasing the stock below market value. If $S_T \leq K$, the option expires worthless. The writer of the call option has the obligation to sell the stock at the strike price if the option is exercised. Thus, the writer's payoff is the negative of the holder's; it should equal $K - S_T$ if $S_T < K$ and $0$ otherwise, i.e. $P = \min(K - S_T, 0)$. This reflects that the writer incurs a loss if the stock price exceeds the strike price at expiration, but otherwise retains any premium received when the option was sold.
+
+# Bonds and term structure
+
+## Market dynamics
+
+Suppose $(\Omega,\mathcal{F},\mathbb{P})$ is a probability space, $(B_t)_{0\leq t \leq T}$ is a Brownian motion, and $(\mathcal{F}_t)$ is the (complete, right-continuous) filtration generated by $B$.
+
+Consider the case of a bond $S^0$ and a single risky asset $S^1$. We suppose
+
+$$
+\begin{align*}
+  S_t^0 =& \exp\left(\int_0^t r_u \d u \right) \\
+  S_t^1 =& S_0^1 + \int_0^t \mu(u) S_u^1 \d u + \int_0^1 \sigma(u) S_u^1 \;\d B_u
+\end{align*}
+$$
+
+where $r$, $\mu$ and $\sigma$ are adapted (random) processes. In particular, $r$ is a stochastic interest rate in general. Consider a self-financing strategy $(H^0, H^1)$. The corresponding wealth process is
+
+$$
+  X_t = H_t^0 S_t^0 + H_t^1 S_t^1
+$$
+
+and
+
+$$
+\begin{align*}
+  \d X_t =& r H_t^0 S_t^0 \;\d t + H_t^1 \;\d S_t^1 \\
+  =& r(X_t - H_t^1 S_t^1) \;\d t + H_t^1 \;\d S_t^1
+\end{align*}
+$$
+
+With $\theta_t = \frac{\mu(t) - r_t}{\sigma(t)}$, the process $W^\theta$, where
+
+$$
+  \d W_t^\theta = \theta_t \;\d t + \d B_t
+$$
+
+is a Brownian motion under the measure $\mathbb{P}^\theta$. Consequently, under $\mathbb{P}^\t$ the discounted wealth process is $X_t/S_t^0$, and
+
+$$
+  \d\left(\frac{X_t}{S_t^0}\right) = H_t^1 \sigma(t) \frac{S_t^1}{S_t^0} \d W_t^\theta
+$$
+
+That is, for any self-financing strategy, the discounted wealth process $(X_t/S_t^0)$ is a martingale under the martingale measure $\mathbb{P}^\theta$. Consider a contingent claim $h \in \mathcal{L}^2 (\Omega, \mathcal{F}_T$. Then
+
+$$
+  M_t = \mathcal{E}^\theta \left(\frac{h}{S_t^0}|\mathcal{F}\right)
+$$
+
+is a martingale. Using the martingale representation theorem yields
+
+$$
+  M_t = M_0 + \int_0^t \phi_u \;\d W_u^\theta
+$$
+
+If we take
+
+$$
+  H_t^1 = \frac{S_t^0 \phi_t}{\sigma(t)S_t^1},\quad X_0 = M_0 = \mathbb{E}^\theta \left(\frac{h}{S_t^0} \right)
+$$
+
+and write
+
+$$
+  M_t = \frac{X_t}{S_t^0} = X_0 + \int_0^t H_u^1 \sigma(t) \frac{S_u^t}{S_u^0} \;\d W_t^\theta
+$$
+
+then, with
+
+$$
+  H_t^0 = \frac{X_t}{S_t^0} - H_t^1 \frac{S_t^1}{S_t^0}
+$$
+
+the pair $(H^0, H^1)$ is a self-financing strategy that hedges the claim $h$, i.e.
+
+$$
+  X_T = H_T^0 S_t^0 + H_T^1 S_T^1 = h
+$$
+
+The fair price for the claim at time $\mathbb{E}\left(\frac{h}{S_t^0}\right)$. The price at time $t\in[0,T]$ is $X_h (t) = X_t$, and this equals
+
+$$
+  S_t^0 \mathbb{E}^\theta \left(\frac{h}{S_t^0}|\mathcal{F}_t\right) = S_t^0 \mathbb{E}^\theta \left(\frac{X_t}{S_T^0}|\mathcal{F}_t \right)
+$$
+
+because $(X_t / S_t^0$ is a martingale under $\mathbb{P}^\theta$.
+
+Suppose we have a market with several risky assets $S_t^0,\dots,S_t^N$ with dynamics
+
+$$
+\begin{align*}
+  \d S_t^0 =& r_t S_t^0 \;\d t,\; S_0^0 = 1 \\
+  \d S_t^i =& S_t^i \left(\mu_i (t) \;\d t + \sum_{j=1}^m \sigma_{ij}\;\d W_j (t) \right),\; S_0^i = s_i, i=1,\dots,n
+\end{align*}
+$$
+
+Here $(\mathbb{W}_t) = (W_1 (t),\dots, W_m (t))$ is an $m$-dimensional Brownian motion on $(\Omega,\mathcal{F},\mathbb{P})$. The risk-neutral pricing formula holds as long as there is a unique risk-neutral measure $\mathbb{P}^\theta$. In such an exmple, the price at time $t\leq T$ of a claim $h\in\mathcal{L}^2 (\mathcal{F}_T)$ is
+
+$$
+  X_t = S_t^0 \mathbb{E}^\theta \left(h (S_T^0)^{-1}\middle|\mathcal{F}_t \right)
+$$
+
+From the pricing formula, the value at time $t\in[0,T]$ of a zero coupon bond maturing at time $T$ is
+
+$$
+\begin{align*}
+  B(t, T) =& S_t^0 \mathbb{E}^\theta \left(\frac{1}{S_T^0} \right)
+  =& \mathbb{E}^\theta \left(\exp\left(-\int_t^T r_u \;\d u \right)\middle|\mathcal{F}_t \right)
+\end{align*}
+$$
+
+and
+
+$$
+  \d B(t,T) = r_t B(t, T) \;\d t
+$$
+
+## Term structure models
+
+A term structure model describes the price $B(t,T)$ of a zero coupon bond maturing at time $T$ for $t\in[0,T]$. The yield 
+
+$$
+  R(t,T) = \frac{\ln[B(t,T)]}\frac{T-t}
+$$
+
+represents the average return of bonds after eliminating the distorting effects of maturity. We expect different yields at different maturitites, reflecting market beliefs about changes in interest rates. While greater uncertainty about interest rates in the distant future will tend to lead to increases in yield with maturity, high current rates (which may be expected to fall) can produce "inverted" yield curves, in which long bonds will have a lower yield than short ones. A satisfactory term structure model should be able to handle both situation.
+
+Since $B(t,T)$ is a positive process, its dynamics can be expressed in a log normal form
+
+$$
+  \d B(t, T) = \mu(t, T) B(t, T) \;\d t + \sigma(t, T) B(t, T) \;\d W,\; t\in[0,T]
+$$
+
+Consequently
+
+$$
+  \d\left(\frac{B(t,T)}{S_t^0} \right) = (\mu(t, T) - r_t) \frac{B(t,T)}{S_t^0} \;\d t + \sigma(t, T)\frac{B(t,T)}{S_t^0}\;\d W_t
+$$
+
+showing that $(B(t,T)/S_t^0)$ is a martingale under $\mathbb{P}^\theta$ if and only if $\mu(t,T) = r_t$.
+
+The statement that
+
+$$
+  B(t,T) = \mathbb{E}^\theta \left[\exp\left(-\int_t^T r_u \;\d u \right)\middle| \mathcal{F}_t \right]
+$$
+
+is sometimes called the *local expectations hypothesis.*
+
+The assumption that holding a discount bond to maturity gives the same return as rolling over a series of single-period bonds is called the *return to maturity expectations hypothesis*. In continuous time, it would state that, under some probability measure $\mathbb{P}'$
+
+$$
+  \frac{1}{B(t,T)} = \mathbb{E}_{\mathbb{P}'} \left[\exp\left(\int_t^T r_u \;\d u \right)\middle| \mathcal{F}_t \right]
+$$
+
+The *yield to maturity expectations hypthesis* states that the yield from holding a bond equals the yield from rolling over a series of single-period bonds. In continuous time, this would imply
+
+$$
+  B(t, T) = \exp\left[-\mathbb{E}_{\mathbb{P}'} \left(\int_t^T r_u \;\d u \middle| \mathcal{F}_t \right)\right]
+$$
+
+for some probability measure $\mathbb{P}'$.
+
+### Vasicek's model
+
+Vasicek proposed a mean-reverting version of the Ornstein-Uhlenbeck process for the short term rate $r$. Specifically, under the risk-neutral measure $\mathbb{P}$, $r$ is given by
+
+$$
+  \d r = a(b - r_t) \;\d t + \sigma \;\d W_t
+$$
+
+for $r_0 > 0$, $a > 0$, $b > 0$, and $\sigma > 0$. Then
+
+$$
+  r_t = e^{-at} \left(r_0 + b(e^{at} - 1) + \sigma \int_0^t e^{au} \;\d W_u \right)
+$$
+
+Consequently, $r_t$ is a normal random variable with mean
+
+$$
+  \mathbb{E}(r_t) = e^{-at} (r_0 + b(e^{at} - 1))
+$$
+
+and variance
+
+$$
+  \operatorname{Var}(r_t) = \sigma^2 \left(\frac{1 - e^{-2at}}{2a} \right)
+$$
+
+Since a normal random variable can be negative with positive probability, so this model for $r$ is not realistic (unless the probability of being negative is small).
+
+As $t\to\infty$, we see that $r_t$ converges in law to a Gaussian random variable with mean $b$ and variance $b^2 /2a$. The price of a zero coupon bond in the Vasicek model is therefore
+
+
+$$
+\begin{align*}
+  B(t, T) =& \mathbb{E}\left[\exp\left(-\int_t^T r_u \;\d u\right)\middle|\mathcal{F}_t \right] \\
+  =& e^{-b(T - t)} \mathbb{E}\left[\exp\left(-\int_t^T X_u \;\d u\right)\middle|\mathcal{F}_t \right]
+\end{align*}
+$$
+
+where $X_u = r_u - b$. Now $X$ is the solution of the classical Ornstein-Uhlenbeck equation
+
+$$
+  \d X_t = -a X_t \;\d t + \sigma\;\d W_t
+$$
+
+
+with $X_0 = r_0 - b$. Write
+
+$$
+  Z(t, x) = \mathbb{E}\left[\exp\left(-\int_0^t X(u,x) \;\d u \right)\right]
+$$
+
+where $X(u,x)$ is the solution of $\eqref{equation-}$ with $X(0,x) = x$. Now
+
+$$
+  X(u,x) = e^{-au}\left(x + \int_0^u \sigma e^{as} \;\d W_s \right)
+$$
+
+so $X(u,x)$ is a Gaussian process with continuous sample paths. Consequently, $\left(\int_0^t X(u,x) \;\d u \right)$ is a Gaussian process. This can be established by considering moment-generating functions $\exp\left(u_1 X(t_1) +\cdots+ u_n X)t_n) \right)$.
+
+If $Y$ is a Gaussian random variable with $\mathbb{E}(Y) = m$ and $\operatorname{Var}(Y) = \gamma^2$, we know that
+
+$$
+  \mathbb{E}(e^Y) = e^{-m + \gamma^2 /2}
+$$
+
+Now
+
+$$
+\begin{align*}
+  \mathbb{E}[X(u,x)] =& xe^{-au} \\
+  \mathbb{E}\left(\int_0^t X(u,x) \;\d u \right) =& \frac{x}{a}(1 - e^{-at})
+\end{align*}
+$$
+
+and
+
+$$
+\begin{align*}
+  \operatorname{Cov}[X(t,u), X(t,u)] =& \sigma^2 e^{-a(u + t)} \mathbb{E}\left(\int_0^t e^{as} \;\d W_s \int_0^u e^{as} \;\d W_s \right) \\
+  =& \sigma^2 e^{-a(u + t)} \int_0^{u\lor t} e^{2as} \;\d s
+  =& \frac{\sigma^2}{2a} e^{-a(u+t)} \left(e^{2a(u\lor t)} - 1 \right)
+\end{align*}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  \operatorname{Var}\left(\int_0^t X(u,x) \;\d u \right) =& \operatorname{Cov}\left(\int_0^t X(u,x) \;\d u, \int_0^t X(s, x) \;\d s \right) \\
+  =& \int_0^t \int_0^t \operatorname{Cov}\left[X(u,x), X(s,x)\right] \;\d u \;\d s \\
+  =& \int_0^t \int_0^t \frac{\sigma^2}{2a} e^{-a(u+t)} \left(e^{2a(u\lor t)} - 1 \right) \;\d \;\d s \\
+  =& \frac{\sigma^2}{2a^3} (2at - 3 + 4e^{-at} - e^{-2at})
+\end{align*}
+$$
+
+Consequently,
+
+$$
+\begin{align*}
+  Z(t,x) =& \mathbb{E}\left(-\int_0^t X(u,x) \;\d u \right) \\
+  =& \exp\left[-\frac{x}{a} (1 - e^{-at}) + \frac{1}{4}\frac{\sigma^2}{a^3} (2at - 3 + 4e^{-at} - e^{-2at} \right]
+\end{align*}
+$$
+
+Using the homogeneity of the $X$ process,
+
+$$
+  B(t,T) = e^{-b(T - t)} Z(T - t, r_t - b)
+$$
+
+This can be written as
+
+$$
+  B(t, T) = \exp\left[-(T - t) R(T - t, r_t) \right]
+$$
+
+where $R(T - t, r_t)$ can be interpreted as the interest rate between times $t$ and $T$. With $R_\infty = b - \sigma^2 /2a^2$, we can write
+
+$$
+  R(t, t) = R_\infty - \frac{1}{at}\left((R_\infty - r)(1 - e^{-at}) - \frac{\sigma^2}{4a^2} (1 - e^{-at})^2 \right)
+$$
+
+Note that $R_\infty = \lim_{t\to\infty} R(t, r)$, so $R_\infty$ can be interpreted as the long term interest rate. However, $R_\infty$ does not depend on the instantaneous rate $r_t$, which is considered a weakness of the Vasicek model.
+
+### The Hull-White model
+
+The Hull-White one-factor model is a generalization of the Vasciek model. The one-factor model describes the short term rate with the stochastic differential equation
+
+$$
+\begin{equation*}
+  \d r_t = (\alpha(t) - \beta(t) r_t)\;\d t + \sigma(t) \;\d W_t,\; r_0 > 0
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+where $\alpha$, $\beta$, and $\sigma$ are deteministic functions of $t$.
+
+Write $b(t) = \int_0^t \beta(u) \;\d u$, so $b$ is also non-random. Solving $\eqref{equation-33}$ by variation of constants yields
+
+$$
+  r_t = e^{-b(t)}\left(r_0 + \int_0^t e^{b(u)} \alpha(u) \;\d u + \int_0^t e^{b(u)} \sigma(u) \;\d W_u \right)
+$$
+
+Consequently, $r_t$ is a Gaussian Markov process with mean
+
+$$
+  \mathbb{E}(r_t) = m(t) = e^{-b(t)} \left(r_0 + \int_0^t e^{b(u)} \alpha(u) \;\d u \right)
+$$
+
+and convariance
+
+$$
+  \operatorname{Cov}(r_t, r_s) = e^{-b(s) - b(t)} \int_0^{s\lor t} e^{2b(u)} \sigma^2 (u) \;\d u
+$$
+
+The process $\int_0^T r_t \;\d t$ is normal, with mean
+
+$$
+  \mathbb{E}\left(\int_0^T r_t \;\d t \right) = \int_0^T e^{-b(t)}\left(r_0 + \int_0^t e^{b(u)} \alpha(u) \;\d u \right) \;\d t
+$$
+
+and variance
+
+$$
+  \operatorname{Var}\left(\int_0^T r_t \;\d t \right) = \int_0^T e^{2b(u)} \sigma^2 (u) \left(\int_u^T e^{-b(s)} \;\d s \right)^2 \;\d u
+$$
+
+The price of a zero coupon bond for this model is
+
+$$
+  B(0, T) = \mathbb{E}\left[\exp\left(-\int_0^T r_t \;\d t \right)\right]
+$$
+
+The quantity in the exponential is Gaussian, so that
+
+$$
+\begin{align*}
+  B(0,T) =& \exp\left[-\mathbb{E} \left(\int_0^T r_t \;\d t \right) + \frac{1}{2} \operatorname{Var} \left(\int_0^T r_t \;\d t \right) \right] \\
+  =& \exp\left[-r_0 \int_0^T e^{-b(t)} \;\d t - \int_0^T \int_0^t e^{-b(t) + b(u)} \alpha(u) \;\d u \;\d t \right.
+  &+ \left. \frac{1}{2} \int_0^T e^{2b(u)} \sigma^2 (u) \left(\int_u^T e^{-b(s)} \;\d s \right)^2 \;\d u \right]
+  =& \exp\left[-r_0 C(0,T) - A(0,T) \right]
+\end{align*}
+$$
+
+where
+
+$$
+  C(0,T) = \int_0^T e^{-b(t)} \;\d t
+$$
+
+and
+
+$$
+\begin{align*}
+  A(0,T) =& \int_0^T \int_0^t e^{-b(t) + b(u)} \;\d u \;\d t \\
+  &- \frac{1}{2} \int_0^T e^{2b(u)} \sigma^2 (u) \left(\int_u^T e^{-b(s)} \;\d s \right)^2 \;\d u
+\end{align*}
+$$
+
+Using Fubinis theorem, the first term in $A$ can be written as
+
+$$
+  \int_0^T \int_u^T e^{-b(t) + b(u)} \alpha(u) \;\d \;\d t = \int_0^T e^{b(u)} \alpha(u) \left(e^{-b(s)} \;\d s \right) \;\d u
+$$
+
+Thus
+
+$$
+  A(0,T) = \int_0^T \left(e^{b(u)} \alpha(u) \gamma(u) - \frac{1}{2} e^{2b(u)} \sigma^2 (u) \gamma^2 (u) \right) \;\d u
+$$
+
+where
+
+$$
+  \gamma(u) = \int_u^T e^{-b(s)} \;\d s
+$$
+
+The price at time $t$ of a zero coupon bond is
+
+$$
+\begin{align*}
+  B(t, T) =& \mathbb{E}\left[\exp\left(-\int_t^T r_u \;\d u \right)\middle| \mathcal{F}_t \right] \\
+  =& \mathbb{E}\left[\exp\left(-\int_t^T r_u \;\d u\right)\middle| r_t \right]
+\end{align*}
+$$
+
+where the last step follows because $r$ is Markov. Write
+
+$$
+  C(t, T) = e^{b(t)} \int_t^T e^{-b(u)} \;\d u = e^{b(t)} \gamma(t)
+$$
+
+and
+
+$$
+  A(t, T) = \int_t^T \left(e^{b(u)} \alpha(u) \gamma(u) - \frac{1}{2} e^{2b(u)} \sigma^2 (u) \gamma^2 (u) \right) \;\d u
+$$
+
+It can be shown that
+
+$$
+\begin{equation*}
+  B(t, T) = \exp\left[-r_t C(t,T) - A(t, T) \right]
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+Since $\alpha$, $\beta$, and $\gamma$ are deterministic functions of time $t$, it follows that $C(t,T)$ and $A(t,T)$ are also functions only of $t$. From $\eqref{equation-34}$ we have
+
+$$
+\begin{equation*}
+\begin{split}
+  \d B(t, T) =& B(t, T) \left[-C(t, T) (\alpha(t) - \beta(t) r_t) \;\d t \right. \\
+  &- \left. C(t,T) \sigma(t) \;\d W_t - \frac{1}{2} C^2 (t, T) \sigma^2 (t) \;\d t - r_t C_t (t, T) \;\d - A_t (t, T)\;\d t
+\end{split}
+\tag{\label{equation-35}}
+\end{equation*}
+$$
+
+where $C_t = \partial C / \partial t$ and $A_t = \partial A / \partial t$. We are working under the risk-neutral meausre, so
+
+$$
+\begin{equation*}
+  \d B(t, T) = r_t B(t, T) \;\d t + \Delta(t) \;\d W_t
+\tag{\label{equation-36}}
+\end{equation*}
+$$
+
+where $\Delta$ is some coefficient function. Comparing $\eqref{equation-35}$ and $\eqref{equation-36}$, we see that we must have
+
+$$
+  r_t = -C(t, t) (\alpha(t) - \beta(t) r_t ) - \frac{1}{2} C^2 (t, T) \sigma^2 (t) - r_t C_t (t, T) - A(t, T)
+$$
+
+Consequently,
+
+$$
+  \d B(t, T) = r_t B(t, T) \;\d t - B(t, T) \sigma(t) C(t, T) \;\d W_t
+$$
+
+The volatility of the zero coupon bond is $\sigma(t) C(t, T)$.
+
+## The Cox-Ingersoll-Ross (CIR) model
+
+Unlike the Vasicek and Hull-White models, which permit negative short term rates $r_t$, the Cox-Ingersoll-Ross (CIR) model ensures that $r_t$ remains non-negative for all $t$. To describe CIR process, recall the Ornstein-Uhlenbeck equation
+
+$$
+  \d X_t = -aX_t \d t + \sigma\d W_t
+$$
+
+with solution
+
+$$
+  X(t, x) = e^{-at}\left(x + \int_0^t \sigma e^{as} \;\d W_s \right)
+$$
+
+where $W$ is a standard Brownian motion on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$. Suppose we have $n$ independent Brownian motions $W_1 ,\dots, W_n$ on $(\Omega, \mathcal{F}, \mathbb{P})$ and $n$ Ornstein-Uhlenbeck processes $X_1, \dots, X_n$ given by equations
+
+$$
+  \d X_i (t) = -\frac{1}{2} aX_i (t) \;\d t + \frac{1}{2} \sigma \;\d W_i (t)
+$$
+
+so that
+
+$$
+  X_i (t) = e^{-\alpha t/2} \left(X_i (0) + \frac{1}{2} \sigma\int_0^t e^{\beta s/2} \d W_i (s) \right)
+$$
+
+Consider the process $r_t = \sum_{i=1}^n X_i^2 (t)$. From Itô's differential rule
+
+$$
+  \d r_t =& \sum_{i=1}^n 2X_i (t) \left(-\frac{1}{2} \alpha X_i (t) \;\d t + \frac{1}{2} \sigma \;\d W_i (t) \right) + \sigma_{i=1}^n \frac{1}{4} \sigma^2 \;\d t \\
+  =& -\alpha r_t \;\d t + \sigma\left(\sigma_{i=1}^n X_i (t) \;\d W_i (t) \right) + \frac{n\sigma^2}{4} \;\d t \\
+  =& \left(\frac{n\sigma^2}{4} - \alpha r_t \right) \;\d t + \sigma\sqrt{r_t} \sum_{i=1}^n \frac{X_i (t)}{\sqrt{r_t}} \;\d W_i (t)
+$$
+
+Consider the process
+
+$$
+  W_t = \sum_{i=1}^n \int_0^t \frac{X_i (u)}{\sqrt{r_u}} \;\d W_i (u)
+$$
+
+Then $W$ is a continuous martingale and
+
+$$
+\begin{align*}
+  W_t^2 = 2\int_0^t W_u \;\d W_u + \sum_{i=1}^n \int_0^t \frac{X_i^2}{r_u} \;\d u \\
+  =& 2\int_0^t W_u \;\d W
+\end{align*}
+$$
+
+so $W_t^2 - t$ is a martingale. From Lévy's characterization, therefore, $W$ is a standard Brownian motion and we can write
+
+$$
+  \d r_t = \left(\frac{n\sigma^2}{4} - \alpha r_t \right) \d t + \sigma\sqrt{r_t} \;\d W_t
+$$
+
+If $n = 1$, then $\mathbb{P}(r_t > 0) = 1$ but
+
+$$
+  \mathbb{P}(\text{there are infinitely many times } t > 0 \text{ for which } r_t = 0) = 1
+$$
+
+However, if $n \geq 2$, then
+
+$$
+  \mathbb{P}(\text{there are at least one time } t > 0 \text{ for which } r_t = 0) = 0
+$$
+
+<MathBox title='Cox-Ingersoll-Ross process' boxType="definition">
+A Cox-Ingersoll-Ross process is described by an equation of the form
+
+$$
+\begin{equation*}
+  \d r_t = (a - br_t) \d t + \sigm\sqrt{r_t} \d W_t
+\tag{\label{equation-37}}
+\end{equation*}
+$$
+
+where $a, b, \sigma > 0$ are constant.
+</MathBox>
+
+With $n = 4a/\sigma^2$, we can interpret $r_t$ as $\sigma_{i=2}^n X_i^2 (t)$ for Ornstein-Uhlenbeck process $X_i$ as above. However, $\eqref{equation-37}$ makes sense whether or not $n$ is an integer.
+
+If $a < \sigma^2 /2$, so $n < 2$, then
+
+$$
+  \mathbb{P}(\text{there are infinitely many times } t > 0 \text{ for which } r_t = 0) = 1
+$$
+
+Consequently, this range for $a$ is not too useful. If $a \geq $\sigma^2 /2$, so $n\geq 2$, then
+
+$$
+  \mathbb{P}(\text{there is at least one time } t > 0 \text{ for which } r_t = 0) = 0
+$$
+
+<MathBox title='' boxType="theorem">
+For any $\lambda > 0$ and $\mu > 0$ we have
+
+$$
+  \mathbb{E}\left[\exp\left(-\lambda r_{0,t} (x) - mu\int_0^t r_{0,u} \;\d u) \right] = e^{-a\phi_{\lambda,\mu} (t)} e^{-x\psi_{\lambda, \mu} (t)}
+$$
+
+where
+
+$$
+\begin{align*}
+  \phi_{\lambda, u} (t) = -\frac{2}{\sigma^2} \ln\left(\frac{2\gamma e^{t(b + \gamma)/2}}{\sigma^2 \lambda (e^{\gamma t} - 1) + \gamma - b + e^{\gamma t} (\gamma + b)}\right) \\
+  =& \psi_{\lambda, u} (t) = \frac{\lambda(\gamma + b) + e^{-\gamma t} (\gamma - b) + 2\mu(e^{\gamma t} - 1)}{\sigma^2 \lambda (e^{\gamma t} - 1) + \gamma - b + e^{\gamma t} (\gamma + b)}
+\end{align*}
+$$
+
+and $\gamma = \sqrt{b^2 + 2\sigma^2 \mu}$.
+
+<details>
+<summary>Proof</summary>
+
+Suppose $0 \leq t \leq T$. From the uniqueness of solutions of $\eqref{equation-37}$, we have the following flow property
+
+$$
+  r_{0, T} (x) = r_{t, T} (r_{0, t} (x))
+$$
+
+Consider the expectation
+
+$$
+  \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (r_{0, T} (x)) - \mu \int_t^T r_{0,u} (x) \;\d\mu \right)\middle| \mathcal{F}_t \right]
+$$
+
+From the Markov property, this is the same as conditioning on $r_{0,t} (x)$, so write
+
+$$
+  V(t, r_{0,t} (x)) = \mathbb{E}\left[\exp\left(-\lambda r_{0, T} (x) - \mu \int_t^T r_{0,u} (x) \;\d u \right) \right]
+$$
+
+Now
+
+$$
+  \exp(-\mu\int_0^t r_{0,u} (x)\;\d u) V(t, r_{0,t} (x)) = \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (r_{0, T} (x)) - \mu \int_t^T r_{0,u} (x) \;\d\mu \right)\middle| \mathcal{F}_t \right]
+$$
+
+and so is a martingale. However, applying the Itô differentiation rule, we obtain
+
+$$
+\begin{align*}
+  & \exp(-\mu\int_0^t r_{0,u} (x)\;\d u) V(t, r_{0,t} (x)) \\
+  =& V(0,x) + \int_0^t \left(\frac{\partial V}{\partial u}(u, r_{0,u}) (x) - \mu r_{0,u} (x) V(u, r_{0,u} (x)) \right. \\
+  &+ \frac{\partial V}{\partial\xi} (u, r_{0,u} (x))(a - br_{0,u} (x)) \\
+  &+ \left. \frac{1}{2}\frac{\partial^2 V}{\partial\xi^2} (u, r_{0,u} (x)) \sigma^2 r_{0,u} (x) \right) \exp\left(-\mu\int_0^u r_{0,s} (x) \;\d s \right) \;\d u \\
+  &+ \int_0^t \exp\left(-\mu\int_0^u r_{0,s} (x) \;\d s \right) \frac{\partial V}{\partial\xi} (u, r_{0,u} (x)) \sigma\sqrt{r_{0,u} (x)} \;\d W_u
+\end{align*}
+$$
+
+As the left-hand side is a martingale and the right-hand side is an Itô prcess, the du integral must be the zero process. Thus,
+ 
+$$
+  \frac{\partial V}{\partial t}(t, y) - \mu y V(t, y) + \frac{\partial V}{\partial y} (t, y) (a - by) + \frac{1}{2}\frac{\partial^2 V}{\partial y^2} (t, y)\sigma^2 y = 0
+$$
+
+with
+
+$$
+  V(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{t, T} (y) - \mu\int_t^T r_{t, u} (y) \;\d u \right)\right]
+$$
+
+Since the the coefficients of $\eqref{equation-37}$ are independent of $t$, its solution is stationary and we can write
+
+$$
+  V(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{0, T - t} (y) - \mu\int_0^{T - t} r_{0, u} (y) \;\d u \right)\right]
+$$
+
+Define
+
+$$
+  F(t, y) = \mathbb{E}\left[\exp\left(-\lambda r_{0, t} (y) - \mu\int_0^t r_{0, u} (y) \;\d u \right)\right]
+$$
+
+so that $V(t,y) = F(T - t, y)$ and $F$ satisfies
+
+$$
+\begin{equation*}
+  \frac{\partial F}{\partial t} = \frac{\partial F}{\partial y} (a - by) - \mu y F + \frac{1}{2} \sigma^2  y\frac{\partial^2 F}{\partial y^2}
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+with $F(0,y) = e^{-\lambda y}$.
+
+We look for a solution of $\eqref{equation-38}$ of the form
+
+$$
+  F(t, y) = e^{-a\phi(t) - x\psi(t)}
+$$
+
+This is the case if $\phi(0) = 0$ and $\psi(0) = \lambda$ with
+
+$$
+  \phi' (t) = \psi(t),\quad -\psi' (t) = \frac{\sigma^2}{2} \psi^2 (t) + b\psi(t) - \mu
+$$
+
+Solving these equations gives the expression for $\phi$ and $\psi$.
+</details>
+</MathBox>
+
+Taking $\mu = 0$, we obtain the Laplace transform of $r_t (x)$
+
+$$
+  \mathbb{E} \left(e^{\lambda r_t (x)}\right) = (2\lambda K + 1)^{-2a/\sigma^2} \exp\left(\frac{-\lambda K z}{2\lambda K + 1}\right)
+$$
+
+where
+
+$$
+  K = \frac{\sigma^2}{4b} (1 - e^{-bt}),\quad z = \frac{4bx}{\sigma^2 (e^{bt} - 1)}
+$$
+
+Consequently, the Laplace transform of $r_t (x) / K$ is given given by $g_{4g/\sigma^2, z}$, where
+
+$$
+  g_{\delta, z} = \frac{1}{(2\lambda + 1)^{\delta/2}} \exp\left(-\frac{\lambda}{2\lambda + 1}\right)
+$$
+
+However, consider the chi-square density $f_{\delta, z}$, having $\delta$ degress of freedom and decentral parameter $z$, given by
+
+$$
+  f_{\delta, z} (x) = \frac{e^{-z/2}}{2z^{\delta/4 - 1/2}} e^{-x/2} x^{\delta/4 - 1/2} I_{\delta/2 - 1} (\sqrt{xz}),\; x > 0
+$$
+
+Here $I_\nu$ is the modified Bessel function of order $\nu$, given by
+
+$$
+  I_\nu (x) = \left(\frac{x}{2}\right)^\nu \sum_{n=0}^\infty \frac{\left(\frac{x}{2} \right)^{2n}}{n! \Gamma(\nu + n + 1)}
+$$
+
+Then it can be shown that $g_{\delta, z}$ is the Laplace transform of the law of a random variable having density $f_{\delta, z} (x)$. Consequently, $r_t (x)/K$ is a random variable having a chi-square density with $\delta$ degrees of freedom.
+
+Under a risk-neutral measure $\mathbb{P}$, the price of a zero coupon bond at time $t = 0$ is
+
+$$
+\begin{align*}
+  B(0,T) =& \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right)\right] \\
+  =& e^{-a\phi_{0,1} (0,T) - r_0 (x) \psi_{0,1} (0,T)}
+\end{align*}
+$$
+
+where
+
+$$
+\begin{align*}
+  \phi_{0,1} (T) =& -\frac{2}{\sigma^2} \ln\left(\frac{2\gamma e^{T(\gamma + b)/2}}{\gamma - b + e^{\gamma T}(\gamma + b)} \right) \\
+  \psi_{0,1} (T) =& \frac{2(e^{\gamma T} - 1)}{\gamma - b + e^{\gamma T} (\gamma + b)}
+\end{align*}
+$$
+
+with $\gamma = \sqrt{b^2 + 2\sigma^2}$. The price of a zero coupon bond at time $t$ is similarly, because of stationarity
+
+$$
+  B(t, T) = e^{-a \phi_{0,1} (T - t) - r_t (x) \psi_{0,1} (T - t)}
+$$
+
+Suppose $0 \leq T \leq T^*$. Consider a European call option with expiration time $T$ and strike price $K$ on the zero coupon bond $B(t, T)^*$. At time $0$, this a price
+
+$$
+\begin{align*}
+  V_0 =& \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) (B(T,T^*) - K)^+ \right] \\
+  =& \mathbb{E}\left(\mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) (B(T,T)^* - K)^+ \middle| \mathcal{F}_t \right]\right) \\
+  =& \mathbb{E}\left[\exp\left(-\inf_0^T r_u (x) \;\d x \right) \left(e^{-a\phi_{0,1} (T^* - T) - r_T (x) \psi_{0,1} (T^* - T)} - K \right)^+ \right]
+\end{align*}
+$$
+
+Write
+
+$$
+  r^* = \frac{-a\phi_{0,1} (T^* - T) + \ln(K)}{\psi_{0,1} (T^* - T)}
+$$
+
+Then
+
+$$
+\begin{align*}
+  V_0 =& \mathbb{E}\left[ \exp\left(-\int_0^T r_u (x) \;\d u \right) B(T,T^*) \mathbf{1}_{r_T (x) < r^*} \right] \\
+  &- K\mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) \mathbf{1}_{r_T (x) < r^*}\right]
+\end{align*}
+$$
+
+Now
+
+$$
+\begin{align*}
+  \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) B(T, T^*) \right] =& B(0,T^*) \\
+  \mathbb{E}\left[\exp\left(-\int_0^T r_u (x) \;\d u \right) \right] =& B(0, T)
+\end{align*}
+$$
+
+Define two new probability measures $\mathbb{P}_1$ and $\mathbb{P}_2$ by setting
+
+$$
+\begin{align*}
+  \left.\frac{\d\mathbb{P}_1}{\d P}\right|_{\mathcal{F}_T} =& \frac{\exp\left(-\int_0^T r_u (x) \;\d u \right) B(T, T^*)}{B(0,T^*)}
+  \left.\frac{\d\mathbb{P}_2}{\d P}\right|_{\mathcal{F}_T} =& \frac{\exp\left(-\int_0^T r_u (x) \;\d u \right)}{B(0,T)}
+\end{align*}
+$$
+
+Then
+
+$$
+  V_0 = B(0,T^*) \mathbb{P}_1 (r_T (x) < r^*) - K B(0,T) \mathbb{P}_2 (r_T (x) < r^*)
+$$
+
+Write
+
+$$
+\begin{align*}
+  K_1 =& \frac{\delta^2}{2} \frac{e^{\gamma_T} - 1}{\gamma (e^{\gamma_T} + 1) + (\sigma^2 \psi_{0,1} (T^* - T) + b)(e^{\gamma_T} - 1)} \\
+  K_2 =& \frac{\sigma^2}{2} \frac{e^{\gamma_T} - 1}{\gamma (e^{\gamma_T} + 1) + b(e^{\gamma_T} - 1)}
+\end{align*}
+$$
+
+Then it can be shown that the law of $r_T (x)/K_1$ under $\mathbb{P}_1$ (respectively, the law of $r_T (x)/K_2$ under $\mathbb{P}_2$) is a decentral chi-square with $4a/\sigma^2$ degrees of freedom and decentral parameter $\xi_1$ (respectively, $\xi_2$), where
+
+$$
+\begin{align*}
+  \xi_1 =& \frac{8r_0 (x) \gamma^2 e^{\gamma_T}}{\sigma^2 (e^{\gamma_T} - 1)(\gamma (e^{\gamma_T} + 1)) + (\sigma^2 \psi_{0,1} (T^* - T) + b)(e^{\gamma_T} - 1)} \\
+  \xi_2 =& \frac{8r_0 (x) \gamma^2 e^{\gamma_T}}{\sigma^2 (e^{\gamma_T} - 1)(\gamma(e^{\gamma_T} + 1) + b(e^{\gamma_T} - 1))}
+\end{align*}
+$$
+
+Consequently, if $F_{\delta, z}$ is the probability distribution function for a chi-square random variable with $\delta$ degrees of freedom and decentral parameter $z$, then
+
+$$
+  V_0 = B(0,T^*) F_{4a/\sigma^2, \xi_1} \left(\frac{r^*}{K_1}\right) - KB(0,T) F_{4a/\sigma^2, \xi_2} \left(\frac{r^*}{K_2}\right)
+$$
+
+# Structured products
+
+A direct investment in an asset offers linear and symmetric exposure to the performance of the asset. However, an investor’s view on the market may be more complex than a directional perspective, e.g., performance cycles, relative performance between assets, view on volatilities and correlations, etc. Risk appetite and tolerance are also different according to investors’ profiles.
+
+Structured products are pre-packaged investment strategies to achieve specified risk-return objectives linked to the performance of the underliers that are investable assets, instruments or financial references (e.g., equity index, reference rate). They are used as an alternative to direct investments for getting exposure to specific market views and risk profiles under the constraints of financial budget and regulations.
+
+The investment targets of structured products may be classified as follows:
+- Participation: exposure to the performance of the underlier, implemented with tracking/market access structures;
+- Income: enhanced yield with fixed, variable coupons or capped performance of the underlier(s);
+- Protection: prudent investment with zero or limited potential loss;
+- Leverage: leveraged exposure to the performance of the underlier.
+
+A structured product is composed of three building blocks:
+- Wrapper or Instrument: the legal form/carrier for the product. The most common wrappers include certificate/note, structured deposit and total return swap;
+- Underlier: the specified investable asset, instrument, financial index or reference, which constitutes the performance engine;
+- Payoff: the return/risk of the product based on the performance of the underlier. 
+
+The return or payoff of a structured product is linked to the performance of the underliers pre-defined in the contract. Price returns measured from the product inception are used in the payoff calculation in general. Structured products offer a wide variety of payoffs to meet different purposes.
+
+## Principal-protected products
+
+Principal protection is an important feature for risk averse investors. It may be achieved by two types of techniques:
+- Option based structures, which is also known as OBPI (Option Based Portfolio Insurance). Most of the structured products belong to this category;
+- Dynamic asset allocation based structures, i.e., CPPI (Constant Proportion Portfolio Insurance), that dynamically adjust the investment exposure based on gap risk
+
+### Option-based principal-protected note
+
+The simplest option-based principal protected structure combines a zero-coupon bond, which finances the repayment of the protected principal at maturity, with a call option on the underlying, which provides upside participation.
+Consider a note issued at face value $N$ that provides $100\%$ principal protecion at maturity. Suppose its maturity payoff is
+
+$$
+  \Pi_T = N + PR \cdot N \times \max\Set{0, \frac{S_T}{S_0} - 1}
+$$
+
+where
+- $N$: protected principal
+- $S_0$: initial level of the underlying
+- $S_T$: level of the underlying at maturity
+- $PR$: participation rate
+
+The payoff consists of two components
+1. Protected principal: $N$, which is paid at maturity regardless of the performance of the underlying, subject to the creditworthiness of the issuer or guarantor and the terms of the protection
+2. Upside participation: $PR$ times the positive return of the underlying
+
+Let 
+- $P_\text{ZCB}$ denote the current cost of a zero-coupon bond that pays $N$ at maturity
+- $F$ denote the total product-related consts, including issuance, structuring, and distribution costs
+- $B_\text{opt}$ denote the amount available to purchase the option strategy
+
+Since the note is issued at $N$, the initial funding constraint is
+
+$$
+  N = P_\text{ZCB} + F + B_\text{opt}
+$$
+
+or
+
+$$
+  B_\text{opt} = N - P_\text{ZCB} - F
+$$
+
+For principal protection to be feasible using this construction, the available option budget must satisfy $B_\text{opt} \geq 0$.
+
+If one unit of the option strategy costs $C$, the corresponding option notional is
+
+$$
+  Q = \frac{B_\text{opt}}{C}
+$$
+
+When the option notional is expressed as a fraction of the principal, $PR = Q/N$, the participation rate is
+
+$$
+  PR = \frac{N - P_\text{ZCB} - F}{CN}
+$$
+
+Thus, the participation rate is determined by the residual budget after financing principal protection and product costs, divided by the market cost of the desired option exposure.
+
+## Nonprincipal-protected product
+
+In a non-principal-protected structured product, the investor accepts exposure to one or more market risks in exchange for a higher expected return. Unlike principal-protected products, the repayment of the invested capital is contingent on the performance of the underlying and is therefore not guaranteed.
+
+The additional return offered by such products is the compensation for assuming specific financial risks. The most common risk exposure for a bullish investor is the implicit sale of a put option on the underlying asset. The premium received from selling the put is embedded in the product and is used to enhance the investor's yield.
+
+The downside risk depends on the embedded derivative strategy. For example:
+
+| Embedded position | Maximum loss | 
+|---|---|
+| Long note / certificate | Limited to the invested principal |
+| Long option | Limited to the option premium |
+| Short put | Limited, but potentially as large as the invested principal |
+| Short call (uncovered) | Theoretically unlimited |
+| Certain FX or swap structures | Potentially unlimited |
+
+### Equity-linked notes (ELNs)
+
+An Equity-Linked Note (ELN) is one of the most widely used structured products in private wealth management. It is designed to enhance yield by exchanging downside protection for option premium. Economically, an ELN is equivalent to holding a risk-free investment while selling a put option on the underlying equity.
+
+ELNs are typically short-term instruments with maturities ranging from one to six months and are commonly issued at a discount to their face value.
+
+Let
+- $N$: face value (principal) of the note
+- $S_0$: initial stock price
+- $S_T$: stock price at maturity
+- $K \in (0,1]$: strike level expressed as a fraction of the initial stock price, so that the strike price is $KS_0$
+
+At maturity, the redemption depends on the performance of the underlying stock:
+- If $S_T \geq KS_0$, the investor receives the full principal $N$
+- If $S_T < KS_0$, the investor receives a predermined number of shares, corresponding to a purchase price equal to the strike price $KS_0$. In practice, physical settlement may be replaced by an equivalent cash settlement.
+
+Because conversion into shares occurs after the stock has fallen, the product is also known as a Reverse Convertible Note, in contrast to a traditional convertible bond.
+
+A standard short put with strike $KS_0$ and notional $N$ has payoff
+
+$$
+  N - N \max\Set{0, K - \frac{S_T}{S_0}}
+$$
+
+In an ELN, however, the embedded short put has a larger effective option notional. Specifically, the put exposure is multiplied by a gearing factor $G = 1/K$. The ELN payoff therefore becomes
+
+$$
+\begin{equation*}
+  \Pi_T = N - N \cdot \frac{1}{K} \max\Set{0, K - \frac{S_T}{S_0}}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Define the events
+
+$$
+\begin{align*}
+  A =& \Set{\frac{S_T}{S_0} \geq K} \\
+  A^c =& \Set{\frac{S_T}{S_0} < K}
+\end{align*}
+$$
+
+and let $\mathsf{1}_A$ denote the indicator function of the event $A$.
+
+The payoff may first be written as
+
+$$
+  \Pi_T = N \mathsf{1}_A + \frac{N}{K S_0} S_T \mathsf{1}_{A^c}
+$$
+
+Using $\mathsf{1}_A + \mathsf{1}_{A^c} = 1$, we obtain
+
+$$
+\begin{align*}
+  \Pi_T =& N \mathsf{1}_A + N \frac{S_T}{K S_0} \mathsf{1}_{A^c}
+  =& N \left[1 - 1 \left(1 - \frac{S_T}{KS_0} \right) \mathsf{1}_{A^c} \right] \\
+  =& N \left[1 - \frac{1}{K} \left(K - \frac{S_T}{S_0} \right) \mathsf{1}_{A^c} \right] \\
+\end{align*}
+$$
+
+Since
+
+$$
+  \left(K - \frac{S_T}{S_0} \right) \mathsf{1}_{A^c} = \max\Set{0, K - \frac{S_T}{S_0}} \right)
+$$
+
+we recover the payoff expression $\eqref{equation-1}$.
+</details>
+
+From an option-pricing perspective, an ELN is economically equivalent to holding a risk-free bond and selling a geared put option on the underlying. Consequently, the investor is typically:
+- short volatility: a higher implied volatility increases the value of the embedded put, reducing the value (or issue price) of the ELN;
+- long the equity forward: the payoff benefits from higher forward prices, which are supported by higher interest rates and reduced by higher dividends or repo rates.
+
+Accordingly:
+- higher implied volatility generally reduces the issue price or increases the yield offered by the ELN;
+- a lower forward price (for example, due to lower interest rates or higher expected dividends) also reduces the product's value.
+
+A common variation is the Knock-Out (KO) ELN, which introduces an up-and-out barrier at level $B > S_0$. The barrier is typically observed on a daily basis. Upon a knock-out event, where the underlying price reaches or exceeds the barrier, the investor typically receives par redemption, i.e $\Pi_\tau = N$, wehere $\tau$ denotes the knock-out date.
+
+## Quanto feature in structured products
+
+Quanto structure is a common feature in structured product in which the underlying assets and the product are denominated in different currencies. It is particularly relevant for products with physical settlement, because the foreign-exchange rate affects the number of units of the underlying that must be delivered.
+
+Consider an ELN whose note currency is $f$ and whose underlying stock is denominated in currency $d$. Let $X_T$ denote the foreign exchange rate at maturity $T$, defined as the number of units of currency $d$ per unit of currency $f$.
+
+Suppose the ELN has face value $N^f$, where the strike is defined as a fraction $K$ of the initial stock price $K S_0^d$ for $K \in (0,1]$. At maturity, the investor receives
+- Cash redemption of $N^f$ if $S_T^d \geq K S_0^d$
+- Physical delivery of the underlying stock if $S_T^d < KS_0^d$
+
+In the physical-settlement case, the number of shares delivered is determined by the face value of the note converted into the stock's currency at the maturity FX rate and divided by the strike price
+
+$$
+  n = \frac{N^f X_T}{K S_0^d}
+$$
+
+The market value of the $n$ shares at maturity is $n S_T^d$ in currency $d$, which is equivalent to 
+
+$$
+  n \frac{S_T^d}{X_T} = N^f \left[1 - \frac{1}{K} \left(K - \frac{S_T^d}{S_0^d} \right) \right]
+$$
+
+in currency $f$. Combining the two cases of maturity payoff, we can conclude that the implied put option in the ELN is a geared quanto option in such a circumstance, i.e.
+
+$$
+  N^f \frac{1}{K} \max\Set{0, K - \frac{S_T^d}{S_0^d}}
+$$
