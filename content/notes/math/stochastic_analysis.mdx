@@ -234,7 +234,7 @@ where $\Set{T_n}_{n\in\N}$ reduces $M$. Finally, **(8)** is a direct consequence
 </MathBox>
 
 <MathBox title='Indistinguishability of local martingales' boxType="theorem">
-Let $M$ be a local martingale beginning at 0$. If $M$ is a finite variation process, then $M$ is indistinguishable from $0$.
+Let $M$ be a local martingale beginning at $0$. If $M$ is a finite variation process, then $M$ is indistinguishable from $0$.
 
 <details>
 <summary>Proof</summary>
@@ -251,7 +251,7 @@ $$
 \begin{align*}
   \mathbb{E}[(M_t^{T_n})^2] =& \sum_{k=1}^n \mathbb{E}[(M_{t_k}^{T_n})^2 - (M_{t_{k-1}}^{T_n})^2] \\
   =& \sum_{k=1}^p \mathbb{E}[(M_{t_k}^{T_n} - M_{t_{k-1}}^{T_n})^2] \\
-  \leq& \mathbb{E}\left( \max{\ell}\left|M_{t_\ell}^{T_n} - M_{t_{\ell - 1}}^{T_n} \right| \sum_{k=1}^ns |M_{t_k}^{T_n} - M_{t_{k-1}}^{T_}| \right) \\
+  \leq& \mathbb{E}\left( \max{\ell}\left|M_{t_\ell}^{T_n} - M_{t_{\ell - 1}}^{T_n} \right| \sum_{k=1}^ns |M_{t_k}^{T_n} - M_{t_{k-1}}^{T_n}| \right) \\
   \leq& n\mathbb{E}\left( \max_{\ell} |M_{t_\ell}^{T_n} - M_{t_{\ell - 1}}^{T_n} | \right)
 \end{align*}
 $$
@@ -511,7 +511,7 @@ $$
   X = X_0 + M + A
 $$
 
-where $X_0 \in\mathcal{F}_0$, $M$ is a locale martingale beginning at $0$, and $A$ is a finite variation process.
+where $X_0 \in\mathcal{F}_0$, $M$ is a local martingale beginning at $0$, and $A$ is a finite variation process.
 </MathBox>
 
 Note that the decomposition of a semimartingale process is unique up to indistinguishability. As a consequence, we can define without ambiguity the bracket of $X = X_0 + M + A$ and $\tilde{X} = \tilde{X}_0 + \tilde{M} + \tilde{A}$ as
@@ -629,7 +629,7 @@ in the sense that $\norm{ H }_{L^2(M)} = 0$ if and only if $\nu$-almost surely $
 </MathBox>
 
 <MathBox title='' boxType="definition">
-The vector subspace of $L^2 (M)$ consisting of step processes is noted $\mathcal{E}$. Specifically, $H\in\mathcal{E}$ is there some $p\geq 1$ and $0 = t_0 < \cdots < t_p$ such that
+The vector subspace of $L^2 (M)$ consisting of step processes is denoted $\mathcal{E}$. Specifically, $H\in\mathcal{E}$ is there some $p\geq 1$ and $0 = t_0 < \cdots < t_p$ such that
 
 $$
   H_s (\omega) = \sum_{k=0}^{p-1} H_k (\omega) \mathbb{1}_{(t_k, t_{k+1}]} (s)
@@ -871,7 +871,7 @@ The stochastic integral of a locally bounded progressively measurable process wi
 1. The map $(H,X)\mapsto H\cdot X$ is bilinear.
 2. If $G$ and $H$ are locally bounded, $G\cdot (H\cdot X) = (GH)\cdot X$
 3. If $\tau$ is a stopping time, $(\mathbf{1}_{(0,\tau]} H)\cdot X = (H\cdot X)^\tau = H\cdot X^\tau$
-4. If $X$ is a locale martingale, so is $H\cdot X$
+4. If $X$ is a local martingale, so is $H\cdot X$
 5. If $X$ is a finite variation process, so is $H\cdot X$
 6. If $H$ is a step process, $H_s = \sum_{k=0}^{p-1} H_k \mathbf{1}_{(t_k, t_{k+1}]} (s)$, then
 $$
@@ -906,6 +906,215 @@ $$
 Since $H$ is left-continuous, this last term converges to $0$ as $n\to\infty$ by dominated convergence. Hence $(H^n \cdot M)_t^{\tau_m}$ converges in $L^2$ to $(H\cdot M)_t^{\tau_m}$. Because $\mathbb{P}(\tau_m > t) \xrightarrow{m\to\infty} 1$, we conclude that $(H^n \cdot M)_t$ converges in probability to $(H\cdot M)_t$.
 </details>
 </MathBox>
+
+## Itô integral
+
+<MathBox title="Itô integral" boxType="definition">
+Let $P = \set{0 = t_0 < t_1 < \cdots c t_n = T}$ be a partition of the interval $[0, T]$, and let 
+
+$$
+  \norm{P} = \max_{0\leq i < n} (t_{i+1} - t_i)
+$$
+
+denote the mesh of the partition. Suppose that $W = (W_t)_{t\geq 0}$ is a Brownian motion and that $F = (F_t)_{0\leq t \leq T}$ is a left-continuous, adapted process (and hence predictable) satisfying
+
+$$
+  \mathbb{E}\left(\int_0^T F_t^2 \;\d t \right) < \infty
+$$
+
+For the partition $P$, consider the stochastic Riemann sum
+
+$$
+  S_P = \sum_{i=0}^{n-1} F_{t_i} (W_{t_{i+1}} - W_{t_i})
+$$
+
+The Itô integral of $F$ with respect to $W$ is defined as the limit of these sums as the mesh of the partition tends to zero
+
+$$
+  \int_0^T F_t \;\d W_t = \lim_{\norm{P}\to 0} \sum_{i=0}^{n-1} F_{t_i} (W_{t_{i+1}} - W_{t_i})
+$$
+
+where the limit is understood in the mean-square send, i.e. in $L^2 (\Omega)$. Explicitly
+
+$$
+  \lim_{\norm{P}\to 0} \mathbb{E}\left(\left| \int_0^T F_t \;\d W_t - \sum_{i=0}^{n-1} F_{t_i} (W_{t_{i+1}} - W_{t_i}) \right|^2 \right)
+$$
+</MathBox>
+
+<MathBox title="Properties of Itô integrals" boxType="proposition">
+Let $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t\geq 0}, \mathbb{P})$ be a filtered probability space satisfying the usual conditions, and let $W = (W_t)_{\geq 0}$ be an $(\mathcal{F}_t)$-adapted Brownian motion. Suppose that $F = (F_t)_{0\leq t \leq T}$ is predictable and satisfies
+
+$$
+  \mathbb{E}\left(\int_0^T F_s^2 \;\d s \right) < \infty
+$$
+
+Define the Itô integral
+
+$$
+  I_t = \int_0^t F_s \;\d W_s,\, 0 \leq t \leq T
+$$
+
+Then $I = (I_t)_{0\leq t\leq T}$ is a continuous square-integrable $(\mathcal{F}_t)$-martingale, and it satisfies
+1. **Martingale property:** 
+$$
+  \mathbb{E}[I_t |\mathcal{F}_s] = I_s,\, 0 \leq s \leq t \leq T
+$$
+
+2. **Itô isometry:**
+$$
+  \mathbb{E}(I_t^2) = \mathbb{E}\left(\int_0^t F_s^2 \;\d s \right)
+$$
+
+3. **Quadratic variation:** 
+
+$$
+  [I]_t = \braket{I}_t = \int_0^t F_s^2 \;\d s,\, 0 \leq t \leq T
+$$
+
+where $[I]$ denotes the quadratic variation and $\braket{I}$ denotes the predictable quadratic variation.
+
+<details>
+<summary>Proof</summary>
+
+**(1):** For $0 \leq s \leq t \leq T$, we have
+
+$$
+  I_t = I_s + \int_0^t F_u \;\d W_u
+$$
+
+Thus,
+
+$$
+  \mathbb{E}(I_t |\mathcal{F}_s) = I_s + \mathbb{E}\left(\int_s^t F_u \;\d W_u | \mathcal{F}_s \right)
+$$
+
+Since $F$ is predictable and square-integrable, the Itô integral is well-defined. Moreover, the stochastic integral over $[s,t]$ has conditional expectation zero given $\mathcal{F}_s$. Thus,
+
+$$
+  \mathbb{E}(I_t |\mathcal{F}_s) = I_s
+$$
+
+Thus, $I$ is an $(\mathcal{F}_t)$-martingale. From **(2)**, the Itô isometry also gives
+
+$$
+  \mathbb{E}[I_t^2] < \infty
+$$
+
+implying that $I$ is a square-integrable martingale.
+
+**(2):** First consider a simple predictable process
+
+$$
+  F_u = \sum_{i=0}^{n-1} F_{t_i} \mathbf{1}_{(t_i, t_{i+1}]} (u)
+$$
+
+where $F_{t_i}$ is $\mathcal{F}_{t_i}$-measurable. Then
+
+$$
+  \int_0^T F_u \;\d W_u = \sum_{i=0}^{n-1} F_{t_i} \Delta W_i
+$$
+
+where $\Delta W_i := W_{t_i} - W_{t_i}$. Consequently,
+
+$$
+  \mathbb{E}\left[\left(\sum_{i=0}^{n-1} F_{t_i} \Delta W_i \right)^2 \right] = \sum_{i,j=0}^{n-1} \mathbb{E}[F_{t_i} F_{t_j} \Delta W_i \Delta W_j]
+$$
+
+For $i < j$, we have $F_{t_i}$, $\Delta W_i$, $F_{t_j} \Delta W_i$ measurable with respect to $\mathcal{F}_{t_j}$, while $\Delta W_j$ is independent of $\mathcal{F}_{t_j}$ and has mean zero. Thus
+
+$$
+\begin{align*}
+  \mathbb{E}[F_{t_i} F_{t_j} \Delta W_i \Delta W_j] =& \mathbb{E}[F_{t_i} F_{t_j} \Delta W_i \mathbb{E}(\Delta W_j | \mathcal{F}_{t_j})] \\
+  =& 0
+\end{align*}
+$$
+
+The terms with $i > j$ vanish similarly.
+
+For terms with $i = j$, using the conditional second moment of a Brownian increment
+
+$$
+  \mathbb{E}[(\Delta W_i)^2 |\mathcal{F}_{t_i}] = t_{i+1} - t_i
+$$
+
+we obtain
+
+$$
+\begin{align*}
+  \mathbb{E}[F_{t_i}^2 \Delta W_{t_i}^2] =& \mathbb{E}[F_{t_i}^2 \mathbb{E}(\Delta W_{t_i}^2 | \mathcal{F}_{t_i})] \\
+  =& \mathbb{E}(F_{t_i}^2) (t_{i+1} - t_i)
+\end{align*}
+$$
+
+Thus,
+
+$$
+\begin{align*}
+  \mathbb{E}\left[\left(\int_0^T F_t \;\d W_t \right)^2 \right] = \sum_{i=1}^{n-1} \mathbb{E}(F_{t_i}^2) (t_{i+1} - t_i) \\
+  =& \mathbb{E} \left(\int_0^T F_u^2 \;\d u \right)
+\end{align*}
+$$
+
+The general result follows by approximating an arbitrary predictable $F$ satisfying
+
+$$
+  \mathbb{E}\left(\int_0^T F_u^2 \;\d u \right) < \infty
+$$
+
+by simple predictable processes in $L^2 (\Omega \times [0,T])$. Thus
+
+$$
+  \mathbb{E}\left[\left(\int_0^t F_s \;\d W_s \right)^2 \right] = \mathbb{E}\left[\int_0^t F_s^2 \;\d s \right]
+$$
+
+**(3):** The process $I$ is a continuous local martingale. For simple predictable integrand
+
+$$
+  I_t = \sum_i F_{t_i} (W_{t_{i+1} \wedge t} - W_{t_i \wedge t})
+$$
+
+and its quadratic variation satisfies
+
+$$
+  [I]_t = \sum_i F_{t_i}^2 [I]_{(t_i, t_{i+1}] \cap [0,t]}
+$$
+
+Since Brownian motiona has quadratic variation $[W]_t = t$, we obtain
+
+$$
+\begin{align*}
+  [I]_t =& \sum_i F_{t_i}^2 (t_{i+1} \wedge t - t_i \wedge t) \\
+  =& \int_0^t F_s^2 \;\d s
+\end{align*}
+$$
+
+For a general predictable square-integrable $F$, this identity follows by approximation with simple predictable processes and the continuity of the stochastic integral in $L^2$. Hence
+
+$$
+  [I]_t = \int_0^t F_s^2 \;\d t
+$$
+
+Since the right-hand side is continuous and predictable, is also the predictable quadratic variation, i.e. $\braket{I}_t = [I]_t$.
+</details>
+</MathBox>
+
+A stochastic process $X_t$ is called an Itô process if it follows
+
+$$
+  X_t = X_0 + \int_0^t \theta_s \;\d s + \int_0^t \phi_s \;\d W_s
+$$
+
+where $W_s$ is an $\mathcal{F}_t$-Brownian motion and $\theta_s$ and $\phi_s$ are $\mathcal{F}_t$-adapted processes. In differential form
+
+$$
+  \d X_t = \theta_t \;\d t + \phi_t \;d W_t
+$$
+
+where $\theta_t$ is known as the drift of $X_t$. It is easily seen that $X_t$ is a martingale if its drift is zero for all $t$. Given predictable processes $f_t$, $g_t$ and Itô processes $X_t$, $Y_t$, we have the calculation rule
+
+$$
+  \d\braket{f_t X_t, g_t Y_t} = f_t g_t \;\d\brake{X_t, Y_t}
+$$
 
 ## Itô's formula
 
