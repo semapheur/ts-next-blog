@@ -1,0 +1,804 @@
+<MathBox title="Radon-Nikodym theorem" boxType="theorem" tag="1">
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. There exists a unique $Z > 0$, with $\mathbb{E}_\mathbb{P} (Z) \aseq 1$, such that a new probability measure $\mathbb{Q}$
+
+$$
+  \mathbb{Q}(A) = \int_A Z(\omega) \;\d\mathbb{P}(\omega),\, \forall A \in\mathcal{F}
+$$
+
+Furthermore
+
+$$
+  \mathbb{E}_\mathbb{Q} (X) = \mathbb{E}(ZX)
+$$
+
+and
+
+$$
+  \mathbb{E}_\mathbb{P} \left(\frac{X}{Z} \right) = \mathbb{E}(X)
+$$
+
+Here $Z$ is called the Radon-Nikodym derivative of $\mathbb{Q}$ with respect to $\mathbb{P}$. We often denote it as
+
+$$
+  Z = \frac{\d\mathbb{Q}}{\d\mathbb{P}}
+$$
+
+Furthermore, $\mathbb{Q}$ is equivalent to $\mathbb{P}$, denoted $\mathbb{Q}\sim\mathbb{P}$, meaning they agree on the probability zero sets.
+</MathBox>
+
+<MathBox title="Radon-Nikodym derivative process" boxType="lemma" tag="1">
+Let $Z$ be the Radon-Nikodym derivative of $\mathbb{Q}$ with respect to $\mathbb{P}$. Defining $Z_t = \mathbb{E}(Z|\mathcal{F}_t)$, then $Z_t$ is a $\mathbb{P}$-martingale and
+
+$$
+  \mathbb{E}_\mathbb{Q} (Y) = \mathbb{E}(YZ_t)
+$$
+
+where $Y$ is an $\mathcal{F}_t$-measurable random variable for any $t$.
+
+<details>
+<summary>Proof</summary>
+
+For any $s < t$, the following arguments show that $Z_t$ is a martingale
+
+$$
+\begin{align*}
+  \mathbb{E}(Z_t|\mathcal{F}_s) =& \mathbb{E}(\mathbb{E}(Z|\mathcal{F}_t)|\mathcal{F}_s) \\
+  =& \mathbb{E}(Z|\mathcal{F}_s) = Z
+\end{align*}
+$$
+
+For the expectation under $\mathbb{Q}$, the Radon-Nikodym theorem (Theorem $\ref{theorem-1}$) leads to
+
+$$
+\begin{align*}
+  \mathbb{E}_\mathbb{Q} =& \mathbb{E}(YZ}) \\
+  =& \mathbb{E}(\mathbb{E}(YZ|\mathcal{F}_t)) \\
+  =& \mathbb{E}(Y\mathbb{E}(Z|\mathcal{F}_t)) \\
+  =& \mathbb{E}(YZ_t)
+\end{align*}
+$$
+</details>
+</MathBox>
+
+Obviously, $\mathbb{E}(Z_t) = 1$, and $Z_t$ is called a Radon-Nikodym derivative process and is denoted as
+
+$$
+  \left. \frac{\d\mathbb{Q}}{\d\mathbb{P}} \right|_{\mathcal{F}_t}
+$$
+
+As $\mathbb{E}(Z_t |\mathcal{F}_s) = Z_s$ implies
+
+$$
+  \mathbb{E}\left(\frac{Z_t}{Z_s} |\mathcal{F}_s \right) = 1
+$$
+
+it is natural to question the equivalence between $\mathbb{E}_\mathbb{Q} (Y|\mathcal{F}_s)$ and
+
+$$
+  \mathbb{E}\left(Y \frac{Z_t}{Z_s} | \mathcal{F}_s \right) = \frac{1}{Z_s} \mathbb{E}(YZ_t |\mathcal{F}_s)
+$$
+
+that seems to be the "conditioned verion" of the Radon-Nikodym theorem.
+
+<MathBox title="Bayes' formula" boxType="theorem" tag="2">
+Let $0 \leq s \leq t$, and $Y$ be an $\mathcal{F}_t$-measurable random variable, $Z_t = \left. \frac{\d\mathbb{Q}}{\d\mathbb{P}} \right|_{\mathcal{F}_t}$ be a Radon-Nikodym derivative process, then
+
+$$
+  \mathbb{E}_\mathbb{Q} (Y|\mathcal{F}_s) = \frac{1}{Z_s} \mathbb{E}(YZ_t |\mathcal{F}_s)
+$$
+
+<details>
+<summary>Proof</summary>
+
+We only need to check the partial averaging property of conditional expectation. For any $A \in\mathcal{F}_s$
+
+$$
+\begin{align*}
+  \mathbb{Q}\left[\mathsf{1}_A \left(\frac{1}{Z_s} \mathbb{E}[YZ_t |\mathcal{F}_s] \right) \right] =& \mathbb{E}[\mathsf{1}_A \mathbb{E}(YZ_t |\mathsf{F}_s)] \\
+  =& \mathbb{E}[\mathbb{E}(\mathsf{1}_A YZ_t |\mathcal{F}_s)] \\
+  =& \mathbb{E}(\mathsf{1}_A YZ_t) = \mathbb{E}_\mathbb{Q} (\mathsf{1}_A Y)
+\end{align*}
+$$
+
+Where the first and last equalities follow from Lemma $\ref{lemma-1}$.
+</details>
+</MathBox>
+
+<MathBox title="Exponential martingale" boxType="proposition">
+Let $\lambda_t$ be an $\mathcal{F}_t$-adapted process satisfying Novikov's condition
+
+$$
+  \mathbb{E}\left[\exp\left(\frac{1}{2} \int_0^t |\lambda_s|^2 \;\d s \right) \right] < \infty
+$$
+
+The stochastic process
+
+$$
+  Z_t = \exp\left(\int_0^t \lambda_s \;\d W_s - \frac{1}{2} \int_0^t \lambda_s^2 \;\d s \right)
+$$
+
+is an $\mathcal{F}_t$-martingale and $\mathbb{E}(Z_t) = Z_0 = 1$.
+
+<details>
+<summary>Proof</summary>
+
+Let $f(x) = e^x$ and 
+
+$$
+  X_t = \int_0^t \lambda_s \;\d W_s - \frac{1}{2} \int_0^t \lambda_s^2 \;\d s
+$$
+
+which implies
+
+$$
+  \d X_t = \lambda_t \;\d W_t - \frac{1}{2} \lambda_t^2 \;\d t
+$$
+
+By the Itô-Doeblin formula, we have
+
+$$
+\begin{align*}
+  \d Z_t =& \d f(X_t) = f'(X_t) \;\d X_t + \frac{1}{2} f''(X_t) \;\d X_t \;\d X_t \\
+  =& e^{X_t} \left(\lambda_t \;\d W_t - \frac{1}{2} \lambda_t^2 \;\d t \right) + \frac{1}{2} e^{X_t} \lambda_t^2 \;\d t \\
+  =& \lambda_t Z_t \;\d W_t
+\end{align*}
+$$
+
+Thus, $Z_t$ is an $\mathcal{F}_t$-martingale and $\mathbb{E}(Z_t) = Z_0 = 1$.
+</details>
+</MathBox>
+
+<MathBox title="" boxType="lemma">
+Suppose $\tilde{\mathbb{P}} \sim \mathbb{P}$ with Radon-Nikodym derivative process
+
+$$
+  Z_t = \left. \frac{\d\tilde{\mathbb{P}}}{\d\mathbb{P}} \right|_{\mathcal{F}_t}
+$$
+
+Then, $\tilde{X}_t$ is a $\tilde{\mathbb{P}}$-martingale if and only if $\tilde{X}_t Z_t$ is a $\mathbb{P}$-martingale.
+
+<details>
+<summary>Proof</summary>
+
+Let $\tilde{X}_t$ be $\tilde{\mathbb{P}}$-martingale. From Bayes' formula ($\ref{theorem-2}$), have
+
+$$
+\begin{align*}
+  \tilde{X}_s =& \tilde{\mathbb{E}}[\tilde{X_t}|\mathcal{F}_t] \\
+  =& \frac{1}{Z_s} \mathbb{E}(\tilde{X}_t Z_t |\mathcal{F}_s),\; \forall 0 < s < t
+\end{align*}
+$$
+
+i.e. $\tilde{X}_s Z_s = \mathbb{E}(\tilde{X}_t Z_t | \mathcal{F}_s)$. Conversely, let $\tilde{X}_t Z_t$ be a $\mathbb{P}$-martingale, then we have $\tilde{X}_s Z_s = \mathbb{E}(\tilde{X}_t Z_t | \mathcal{F}_s)$, i.e.
+
+$$
+\begin{align*}
+  \tilde{X}_s =& \frac{1}{Z_s} \mathbb{E}(\tilde{X}_t Z_t) \\
+  =& \tilde{\mathbb{E}} (\tilde{X}_t |\mathcal{F}_s)
+\end{align*}
+$$
+
+by Bayes' formula again.
+</details>
+</MathBox>
+
+<MathBox title="Girsanov-Meyer theorem" boxType="theorem" tag="3">
+Suppose $\tilde{\mathbb{P}} \sim\mathbb{P}$ with a continuous Radon-Nikodym derivative process
+
+$$
+  Z_t = \left. \frac{\d\tilde{\mathbb{P}}}{\d\mathbb{P}} \right|_{\mathcal{F}_t}
+$$
+
+Moreover, $X_t$ is a continuous $\mathbb{P}$-martingale. Define $\tilde{X}_t$ by
+
+$$
+  \d\tilde{X}_t = \d X_t - \frac{1}{Z_t} \;\d\braket{X, Z}_t
+$$
+
+Then $\tilde{X}_t$ is a continuous $\tilde{\mathbb{P}}$-martingale.
+
+<details>
+<summary>Proof</summary>
+
+As $X_t$ and $Z_t$ are continuous $\mathbb{P}$-martingales, they can be represented by Brownian motions by martingale representation theorem. Hence, $\d\braket{X, Z}_t$ is of the form $[\cdots] \;\d t$ and $\d\braket{\braket{X, Z}, Z}_t = 0$. Thus
+
+$$
+\begin{align*}
+  \d\braket{\tilde{X}, Z}_t =& \left(\d X_t - \frac{1}{Z_t} \d\braket{X, Z}_t \right) \;d Z_t \\
+  =& \d\braket{X, Z}_t - \frac{1}{Z_t} \d\braket{\braket{X, Z}, Z}_t \\
+  =& \d\braket{X, Z}
+\end{align*}
+$$
+
+According to Lemma $\ref{lemma-1}$, it is enough to check that $\tilde{X}_t Z_t$ is a $\mathbb{P}$-martingale. Note that
+
+$$
+\begin{align*}
+  \d (\tilde{X}_t Z_t) =& Z_t \;\d\tilde{X}_t + \tilde{X}_t \;\d Z_t + d\braket{\tilde{X}, Z}_t \\
+  =& Z_t \;\d \tilde{X}_t + \tilde{X}_t \;\d Z_t + \d\braket{X, Z}_t \\
+  =& \Z_t \;\d X_t - \d\braket{X, Z}_t + \tilde{X}_t \;\d Z_t + \d\braket{X, Z}_t \\
+  =& Z_t \;\d X_t + \tilde{X}_t \;\d Z_t
+\end{align*}
+$$
+
+Thus, $\tilde{X}_t Z_t$ is a $\mathbb{P}$-martingale.
+</details>
+</MathBox>
+
+<MathBox title="Girsanov theorem" boxType="theorem" tag="4">
+Let $W_t$ be a Brownian motion on $(\Omega, \mathcal{F}, \mathbb{P})$ and $\theta_t$ be an adapted process. Taking the exponential $\mathbb{P}$-martingale
+
+$$
+  Z_t = \exp\left(-\frac{1}{2} \int_0^t \theta_s^2 \d s - \int_0^t \theta_s \;\d W_s \right)
+$$
+
+or, equivalently, $\d Z_t = -\theta_t Z_t \;\d W_t$ with $Z_0 = 1$, as Radon-Nikodym derivative process $\left. \frac{\d\tilde{\mathbb{P}}}{\d\mathbb{P}} \right|_{\mathcal{F}_t}$ and define
+
+$$
+  \tilde{W}_t = W_t + \int_0^t \theta_s \;\d s
+$$
+
+then $\tilde{W}_t$ is a Brownian motion under the probability measure $\tilde{\mathbb{P}}$, assuming that
+
+$$
+  \mathbb{E}\left( \int_0^t \theta_s^2 Z_s^2 \;\d s \right) < \infty
+$$
+
+Under a similar condition, but taking
+
+$$
+  \d Z_t = -\sum_{i=1}^n \theta_t^{(i)} Z_t W_t^{(i)}
+$$
+
+where $W_t^{(i)}$ and $W_t^{(j)}$ are independent for all $i\neq j$. Or equivalently
+
+$$
+  Z_t = \exp\left(\frac{1}{2} \int_0^t \norm{\boldsymbol{\theta}_s}^2 \;\d s - \sum_{i=1}^n \int_0^t \theta_s^{(i)} \;\d W_s^{(i)} \right)
+$$
+
+with $\norm{\boldsymbol{\theta}_s}^2 = \sum_{i=1}^n (\theta_s^{(i)})^2, as Radon-Nikodym derivative process, we get the multidimensional case by which
+
+$$
+  \tilde{W}_t^{(i)} = W_t^{(i)} + \int_0^t \theta_s^{(i)} \;\d s
+$$
+
+<details>
+<summary>Proof</summary>
+
+This follows by a direct application of the Girsanov-Meyer theorem $\ref{theorem-3}$.
+</details>
+</MathBox>
+
+To get an intuition of the Girsanov theorem, let's take $\theta_t$, $W_t = \sqrt{t}\epsilon$ where $\epsilon\sim\mathcal{N}(0,1)$, $\tilde{W}_t = W_t + \theta t$ and $\tilde{W}_t = \sqrt{t}\tilde{\epsilon}$, i.e. $\tilde{\epsilon} = \epsilon + \theta\sqrt{t}$. Then, we can check that
+
+$$
+\begin{align*}
+  \frac{1}{\sqrt{2\pi}} e^{-\tilde{\epsilon}/2} =& \frac{1}{\sqrt{2\pi}} e^{-\epsilon^2 /2} \left(e^{-\frac{1}{2}\theta^2 t - \theta W_t} \right) \\
+  =& \frac{1}{\sqrt{2\pi}} e^{-\epsilon^2 /2} Z_t
+\end{align*}
+$$
+
+Due to the appearance of a drift term $\int_0^t \theta \;\d s$, it follows that $\tilde{W}_t$ is not a martingale under the original probability measure $\mathbb{P}$ in general. However, the Girsanov theorem states that $\tilde{W}_t$ becomes a martingale under $\tilde{P}$. As a result, $\tilde{W}_t$, enjoys all the Brownian motion properties under $\tilde{P}$, for instance, $\tilde{E}(\tilde{W}_t) = 0$. Note that $\mathbb{E}(\tilde{W}_t) \neq 0$.
+
+# Predictable martingale representation
+
+As $\mathcal{F}_t$-adapted process is predictable if it is left continuous. For a continuous martingale $X_t$, it is tempting to believe that we may find a process $\phi_t$ such that the variance of $\d X_t / \phi_t$ if $\d t$ for all $t \geq 0$, and therefore $X_t / \phi_t$ is a Brownian motion by Levy's theorem. In otther terms, $\d X_t$ can be represented by $\phi_t \d W_t$.
+
+<MathBox title="Predictable martingale representation theorem" boxType="theorem" tag="5">
+Let $W_t$ be a Brownian motion with $\mathcal{F}_t$ as its natural filtration and $X_t$ be an $\mathcal{F}_t$-measurable continuous martingale, then there is a unique predictable process $\phi_s$, such that
+
+$$
+  X_T = X_t + \int_t^T \phi_s \;\d W_s
+$$
+
+where $X_t = \mathbb{E}(X_t)$ for all $T > t$.
+</MathBox>
+
+Intuitively $\phi_s$ in Theorem $\ref{theorem-5}$ is the parameter to make $\phi_s \;\d W_s$ behave like $\d X_s$. The following illustrations may help to understand the theorem
+
+- if $\braket{X, X}_t = t$ for all $t$, then $X_T = X_0 + \int_0^T \;\d W_s$
+- if $\braket{X, X}_t = ct$ for all $t$, then $X_T = X_0 + \int_0^T \sqrt{c}d W_s$
+- if $\frac{\d\braket{X, X}_t}{\d t} = \lambda_t$ exists for all $t$, then $X_T = X_0 + \int_0^T \sqrt{\lambda_s} \;\d W_s$
+
+Theorem $\ref{theorem-5}$ can be extended to multi-dimensional martingale representations beyond Brownian motions. Let $\mathcal{F}_t^\mathbf{Y}$ be the natural filtration of a martingale set $\mathbf{Y}$. The necessary and sufficient condition for $X_T$ to admit the predictable representation with the integral of $\mathbf{Y}$, i.e. $X_T = X_0 + \int_0^T \boldsymbol{\phi}_s \cdot\d\mathbf{Y}_s$, is that there is a unique probability measure $\mathbb{P}$ under which $X_t$ is an $\mathcal{F}_t^\mathbf{Y}$-martingale. It can be shown that $\mathbb{P}$ is unique if $\mathbf{Y}$ is a multi-dimensional Brownian motion.
+
+The martingale representation theorem plays a fundamental role in the hedging process of option derivatives. For any continuous $\mathbb{P}$-martingale $X_t = X_0 + \int_0^t \phi_s \;\d W_s$ with $\phi_s \asneq 0$ for all $s\geq 0$, we have $\d W_s \aseq \d X_s / \phi_s$. Thus, any continuous $\mathbb{P}$-martingale $Z_t$ can be represented by $X_t$ ($\mathbb{P}$-a.s.). Under the risk neutral probability $\mathbb{Q}$, the discounted option price $e^{-rt} V_t$ can be represented by discounted underlier prices $e^{-rt} S_t$, which describes a self-financing hedging process.
+
+# Stochastic differential equations (SDEs)
+
+<MathBox title="Existence of uniqueness theorem for one-dimensional SDE" boxType="theorem" tag="6">
+Consider Itô processes of the form
+
+$$
+\begin{equation*}
+  \d X_t = b(t, X_t) \d t + \phi(t, X_t) \;\d W_t
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+where $b(t, x)$ is the drift and $\phi(t, x)$ the diffusion coefficient. Let $b$ and $\phi$ be continuous functions such that there exists $K < \infty$ and
+1. $|b(t,x) - b(t,y)| + |\phi(t,x) - \phi(t,y)| \leq K|x-y|$
+2. $|b(t,x)| + |\phi(t,x)| \leq K|1 + x|$
+
+for all $t \leq T$ and $x,y\in\R$. Suppose $X_t = z$ is the initial condition at time $t \geq 0$ for $x\in\R$. Then the solution of $\eqref{equation-}$ is a stochastic process $X_T$ for $T > t$ such that
+
+$$
+\begin{align*}
+  X_t =& z \\
+  X_T = X_t + \int_t^T b(s, X_s) \;\d s + \int_t^T \phi(s, X_s) \;\d W_s
+\end{align*}
+$$
+
+Then $\eqref{equation-1}$ this admits a unique solution.
+</MathBox>
+
+<MathBox title="Markov property of SDE solutions" boxType="proposition">
+Let $X_s, s \geq 0$ be a solution to an SDE with initial condition given at time $0$. Then for any function $h$
+
+$$
+  \mathbb{E}[h(X_t) |\mathcal{F}_t] = \mathbb{E}^{t, X_t} [h(X_t)]
+$$
+
+where $\mathbb{E}^{t, X_t} [\cdot]$ denotes the expectation evaluated with initial value $X_t$ at time $t$.
+</MathBox>
+
+<MathBox title="Feynman-Kac theorem" boxType="theorem">
+Let $X_t$ follow the SDE
+
+$$
+  \d X_t = b(t, X_t) \;\d t + \phi(t, X_t) \;\d W_t
+$$
+
+Assume that $h$ satisfies $\mathbb{E}^{t, x} [|h(X_t)|] < \infty$. For any $x\in\R$ and $t < T$, let
+
+$$
+  g(t, x) = \mathbb{E}^{t, x} [h(X_t)]
+$$
+
+Then, $g(t, x)$ satisfies the below PDE
+
+$$
+\begin{equation*}
+  \frac{\partial g}{\partial t} (t, x) + b(t, x) \frac{\partial g}{\partial x}(t, x) + \frac{1}{2} \phi^2 (t, x) \frac{\partial^2 g}{\partial x^2} (t, x) = 0
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+and terminal condition $g(T, x) = h(x).
+
+<details>
+<summary>Proof</summary>
+
+We apply Itô's formula and obtain
+
+$$
+\begin{align*}
+  \d g(t, X_t) =& \frac{\partial g}{\partial t} \;\d t + b\frac{\partial g}{\partial x} \d t + \phi\frac{\partial g}{\partial x} \;\d W_t + \frac{1}{2} \phi^2 \frac{\partial^2 g}{\partial x^2} \;\d t \\
+  =& \left(\frac{\partial g}{\partial t} + b \frac{\partial g}{\partial x} + \frac{1}{2} \phi^2 \frac{\partial^2 g}{\partial x^2} \right) \;\d t + \phi\frac{\partial g}{\partial x} \;\d W_t
+\end{align*}
+$$
+
+As $g(t, X_t)$ is a martingale, the term $\d t$ should be zero. We therefore obtain
+
+$$
+  \frac{\partial g}{\partial t} (x , X_t) + b(t, X_t) \frac{\partial g}{\partial x} + \frac{1}{2} \phi^2 (t, X_t) \frac{\partial^2 g}{\partial x^2} (t, X_t) = 0
+$$
+
+along every path of $X$. Thus
+
+$$
+  \frac{\partial g}{\partial t} (x , x) + b(t, x) \frac{\partial g}{\partial x} + \frac{1}{2} \phi^2 (t, x) \frac{\partial^2 g}{\partial x^2} (t, x) = 0
+$$
+
+at every point $(t, x)$ that can be reached by $(t, X_t)$.
+</details>
+</MathBox>
+
+## Squared Bessel process
+
+The squared Bessel process is a generalization of the process followed by the squared norm of a multi-dimensional Brownian motion. Denote $Z_t = \norm{\mathbf{B}_t}$, where $\mathbf{B}_t$ is a $k$-dimensional Brownian motion and
+
+$$
+  Z_t^2 = \sum_{i=1}^k (B_t^{(i)})^2 
+$$
+
+By the Itô-Doeblin formula, we obtain
+
+$$
+  \d Z_t^2 =& \sum_{i=1}^k 2 B_t^{(i)} \;\d B_t^{(i)} \\
+  =& 2 Z_t \sum_{i=1}^k \frac{B_t^{(i)}}{\norm{\mathbf{B}_t}} + k\;\d t \\
+  =& 2 Z_t \;\d W_t + k\;\d t
+$$
+
+where we use the fact that
+
+$$
+  W_t = \sum_{i=1}^k \int_0^t \frac{B_s^{(i)}}{\norm{\mathbf{B}_s}} \;\d B_s^{(i)}
+$$
+
+is a one-dimensional Brownian motion that can be verified with Levy's theorem.
+
+The squared Bessel process is defined as the generalization of the process followed by $Z_t^2$ with $k\in\R$ extended to non-integer values
+
+$$
+  \d X_t = 2\sqrt{X_t} \;\d W_t + k\;\d t
+$$
+
+The process $X_t$ follows a Chi-squared distribution extended to non-integer degrees of freedom. The following conditions apply for $X_t$ reaching zero
+1. $k > 2: $X_t$ will never reach $0$ and $X_t \to\infty$ as $t\to\infty$
+2. $k = 2$: $X_t$ will never reach $0$ and $X_t$ is recurrent, meaning that the probability for $X_t$ to get infinitely close to any non-negative value in any finite time is strictly positive
+3. $0 < k < 2$: $X_t$ reaches $0$ in finite time. However, it leaves $0$ instantaneously
+4. $k = 0$: $X_t$ reaches $0$ in finite time and will stay at $0$ afterward
+
+In the one-dimensional case $k=1$, then $\sqrt{X_t}$ is a standard Brownian motion. For $0 \leq k < 1$, the process can be written as the sum of a squared Bessel process with dimension $1$ and a strictly decreasing term
+
+$$
+  \d X_t = (2\sqrt{X_t} \;\d W_t + 1\;\d t) + (k - 1) \;\d t
+$$
+
+Thus, $X_t$ reaches $0$ for $0 \leq k < 1$. Similarly, for $k > 2$ with
+
+$$
+  \d X_t = (2\sqrt{X_t} \;\d W_t + 2\;\d t) + (k - 2)\;\d t
+$$
+
+then $X_t$ will never reach $0$ is if it never reaches $0$ for $k = 2$. Whenever $0$ is reached, the staying time should be $0$ (i.e. it leaves $0$ instantaneously). Otherwise, the SDE can not hold because in such a case, the $k\;\d t$ term is strictly positive, but all the other terms are zero for the time period that $X_t$ stayed at zero.
+
+## Arithmetic Brownian motion
+
+The following SDE is used in the Bachelier model
+
+$$
+  \d S_t = \mu\;\d t + \sigma\;\d W_t
+$$
+
+which gives normally distributed
+
+$$
+  S_T = z + \mu (T - t) + \sigma(W_T - W_t)
+$$
+
+with $S_t = z$.
+
+## Geometric Brownian motion
+
+Consider the following SDE used in the Black-Scholes-Merton model
+
+$$
+  \d S_t = \mu S_t \;\d t + \sigma S_t \;d W_t
+$$
+
+where $\mu$ and $\sigma > 0$ are constants. Here $b(t, x) = \mu x$ and $\phi(x, t) = \sigma x$. With $S_t = z$, the unique solution is the lognormally distributed geometric Brownian motion
+
+$$
+  S_T = z \exp\left[\left(\mu - \frac{1}{2} \sigma^2 \right) (T - t) + \sigma (W_T - W_t) \right]
+$$
+
+## Ornstein-Uhlenbeck (OU) process
+
+The Ornstein-Uhlenbeck process is the unique solution of
+
+$$
+  \d X_t = -\kappa X_t \;\d t + \sigma \;\d W_t,\; X_0 = z, \kappa > 0
+$$
+
+which is a mean reverting Gaussian process drifting towards its mean function over time, $\kappa$ is known as the mean-reversion speed. Let $Y_t = X_t e^{\kappa t}$ and apply Itô's product rule to it, we get $\d Y_t = \sigma e^{\kappa t} \;\d W_t$. Thus, we have
+
+$$
+  X_t = ze^{-\kappa t} + \sigma \int_0^t e^{-\kappa (t - s)} \;\d W_s
+$$
+
+where $e^{-\kappa (t - s)}$ is helpful to control the impact of the random term over time. We have $\mathbb{E}(X_t) = ze^{-\kappa t}$. Using Itô isometry
+
+$$
+\begin{align*}
+  \operatorname{var}(X_t) =& \mathbb{E}[(X_t - \mathbb{E}[X_t])^2] \\
+  =& \sigma^2 e^{-2\kappa t} \mathbb{E}\left[\left(\int_0^t e^{\kappa s} \;\d W_s \right)^2 \right] \\
+  =& \sigma^2 e^{-2\kappa t} \mathbb{E}\left[\int_0^t e^{2\kappa s} \;\d s \right] \\
+  =& \sigma^2 \frac{1 - e^{-2\kappa t}}{2\kappa}
+\end{align*}
+$$
+
+A more general form of the OU process is
+
+$$
+  \d X_t = \kappa (\theta - X_t) \;\d t + \sigma\;\d W_t
+$$
+
+where $\theta$ is constant and $\mathbb{E}(X_t) = ze^{-\kappa t} + \theta(1 - ze^{-\kappa t})$.
+
+## Cox-Ingersoll-Ross (CIR) square root process
+
+The Cox-Ingersoll-Ross process is the unique solution of
+
+$$
+  \d X_t = (a - bX_t) \;\d t + \sigma\sqrt{X_t} \;\d W_t
+$$
+
+where $X_t \in [0,\infty)$ and $X_0 = x > 0$, $a > 0$, $b > 0$. It is a positive process with mean reversion behaviour, which means that $X_t$ tends to rise when $X_t < a/b$ and tends to fall when $X_t > a/b$. The parameter $b$ characterizes the speed of mean reversion.
+
+Let $\tau_0 = \inf\set{t \geq 0|X_t = 0}$ be the first time of hitting $0$. The properties of CIR are
+- if $a \geq \sigma^2 /2$, then $\mathbb{P}\set{\tau_0 = \infty} = 1$
+- if $0 \leq a < \sigma^2 /2$, then $\mathbb{P}\set{\tau < \infty} = 1$
+
+It is also known that given the current value, the future values of a CIR process follows a non-central Chi-squared distribution extended to non-integer degrees of freedom can be calculated in closed form.
+
+### Representation with squared Bessel process
+
+Consider the CIR process, which follows the SDE under the assumption that $b > 0$, $r_0 > 0$, $\sigma > 0$ and $a \in\R$
+
+$$
+  \d r_t = (a - br_t) \;\d t 0 \sigma\sqrt{r_t} \;\d W_t
+$$
+
+First, we try to remove $r_t$ in the drift. Applying Itô's product rule to $Y_t = e^{bt} r_t$ we have
+
+$$
+\begin{align*}
+  \d Y_t =& e^{bt} \;\d r_t + br_t e^{bt} \;\d t \\
+  =& e^{bt} (a\;\d t + \sigma\sqrt{r_t} \;\d W_t) \\
+  =& ae^{bt} \;\d t + \sigma\sqrt{e^{bt}} \sqrt{Y_t} \;\d W_t
+\end{align*}
+$$
+
+Denote $\tau(t)$ such that
+
+$$
+  t = \frac{\sigma^2}{4} \int_0^{\tau(t)} e^{bs} \;\d s
+$$
+
+for any given time $t$. The function $\tau(t)$ exists because 
+
+$$
+  f(x) = \frac{\sigma^2}{4} \int_0^x e^{bs} \;\d s
+$$
+
+is an increasing continuous function with $f(0) = 0$ and $f(\infty) = \infty$. Thus, integration from $0$ to $\tau(t)$ gives
+
+$$
+  Y_{\tau(t)} = r_0 + a\int_0^{\tau(t)} e^{bs} \;\d s + \int_0^{\tau(t)} \frac{\sigma}{2} \sqrt{e^{bs}} \sqrt{Y_s} \;\d W_s
+$$
+
+The first integral is equivalent to the following, which is straightforward from the defintiion of $\tau(t)$
+
+$$
+  a \int_0^{\tau(t)} e^{bs} \;\d s = \frac{4a}{\sigma^2} t
+$$
+
+For the second integral, we apply the so-called time-change. For any continuous martingale $M_t$, it is known that $M_t = W_{\braket{M_t, M_t}}$, which implies
+
+$$
+  \int_0^T \beta_t \;\d M_t =& \int_0^{\braket{M_T, M_T}} \beta_{u(t)} \;d M_{u(t)} \\
+  =& \int_0^{\braket{M_T, M_T}} \beta_{u(t)} \;\d W_t
+$$
+
+where $u(t)$ is the value such that $\braket{M_{u(t)}, M_{u(t)}} = t$.
+
+Now, for our case, denote
+
+$$
+  M_t = \int_0^t \frac{\sigma}{2} \sqrt{e^{bs}} \;\d W_s
+$$
+
+Then $M_t$ is a continuous martingale and 
+
+$$
+  \braket{M_{\tau(t)}, M_{\tau(t)}} = \frac{\sigma^2}{4} \int_0^{\tau(t)} e^{bs} \;\d s = t
+$$
+
+Applying time-chaing, we have for the second integral
+
+$$
+\begin{align*}
+  \int_0^{\tau(t)} \frac{\sigma}{2} \sqrt{e^{bs}} \sqrt{Y_s} \;\d W_s =& \int_0^{\tau(t)} \sqrt{Y_t} \;\d M_s \\
+  =& \int_0^t \sqrt{Y_{\tau(s)}} \;\d W_s
+\end{align*}
+$$
+
+And all together
+
+$$
+  Y_{\tau(t)} = r_0 + \frac{4a}{\sigma^2}t + 2 \int_0^t \sqrt{Y_{\tau(s)}} \;\d W_s
+$$
+
+Setting $X_t = Y_{\tau(t)}$, $X_0 = r_0$ and $k = 4a/\sigma^2$, we obtain the representation of the CIR process as a squared Bessel process
+
+$$
+  X_t = r_0 + kt + 2 \int_0^t \sqrt{X_s} \;\d W_s
+$$
+
+From the properties of a squared Bessel process, we have
+- if $a \geq \sigma^2 /2$, i.e. $k \geq 2$, then $r_t$ will never reach zero
+- if $0 < a < \sigma^2 /2$, i.e. $0 < k < 2$, then $r_t$ has a non-zero probability to touch $0$ in any interval but $r_t$ will leave $0$ instantenously if it does.
+
+# Kolmogorov equations
+
+Consider the general diffusion process
+
+$$
+  \d X_s = \theta (s, X_s) \;\d s + \phi(s, X_s)\;\d W_s
+$$
+
+Let $p(t, x; T, y)$ for $0\leq t \leq T$ be the transition probability density of $X_s$. The Kolmogorov forward equation assumes $t$ and $x$ are fixed with $X_t = x$ and $p(t, x; T, y)$ is the probability density function with state variable $y$ and a future time $T$. Conversely, the Kolmogorov backward equation assumes $T$ and $y$ are fixed with $X_T = y$ and shows the behaviour of $p(t, x; T, y)$ backwards in time $t$ with state variable $x$.
+
+The Kolmogorov forward equation, also known as the Fokker-Planck equation, governs the forward transition probability with $t$ and $x$ fixed.
+
+<MathBox title="Kolmogorov forward equation" boxType="theorem">
+Consider the general diffusion process
+    
+$$
+  \d X_s = \theta (s, X_s) \;\d s + \phi(s, X_s)\;\d W_s
+$$
+    
+Let $p(t, x; T, y)$ for $0\leq t \leq T$ be the transition probability density of $X_s$. Assume $t$ and $x$ are fixed with $X_t = x$ and that $p(t, x; T, y)$ is the probability density function with state variable $y$ and a future time $T$. Then
+
+$$
+\begin{equation*}
+  \frac{\partial}{\partial T} p(t, x; T, y) + \frac{\partial}{\partial y} (\theta(T, y) p(t, x; T, y)) - \frac{1}{2} \frac{\partial^2}{\partial y^2} (\phi^2 (T, y)p(t, x; T, y)) = 0
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $h(y)$ be any $C^2$ function with compact support. From the Itô-Doeblin formula
+
+$$
+\begin{align*}
+  h(X_T) =& h(X_t) + \int_t^T \phi(s, X_s) h'(X_s) \;\d s + \int_t^T \phi(s, X_s) h'(X_s) \;\d W_s \\
+  &+ \frac{1}{2} \int_t^T \phi^2 (s, X_s) h''(X_s) \;\d s
+\end{align*}
+$$
+
+Taking the expectation with initial condition $X_t = x$, we have
+
+$$
+\begin{equation*}
+\begin{split}
+  \mathbb{E}^{t,x} [h(X_t)] =& h(x) \\
+  &+ \int_t^T \mathbb{E}^{t, x} \left[\phi(x, X_s) h'(X_s) + \frac{1}{2} \phi^2 (s, X_s) h''(X_s) \right] \;\d s
+\end{split}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+On the other hand, the transition probability is the density that gives
+
+$$
+\begin{equation*}
+  \mathbb{E}^{t, x} [h(X_T)] = \int_{-\infty}^\infty h(y) p(t, x; T, y) \;\d y
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+Equating $\eqref{equation-2}$ and $\eqref{equation-3}$ leads to
+
+$$
+\begin{align*}
+  \int_{-\infty}^\infty h(y) p(t, x; T, y) \;\d y =& h(x) \\
+  &+ \int_t^T \left[\int_{-\infty}^\infty \left(\theta(s, y) h'(y) + \frac{1}{2} \phi^2 (s, y) h''(y) \right) p(t, x; s, y) \;\d y \right] \;\d s
+\end{align*}
+$$
+
+Integrating by parts and using the fact that $h$ and $h'$ vanish at $\infty$
+
+$$
+\begin{align*}
+  \int_{-\infty}^\infty h(y) p(t, x; T, y) \;\d y =& h(x) - \int_t^T \left[\int_{-\infty}^\infty h(y) \frac{\partial}{\partial y} [\theta(s, y) p(t, x; s, y)]\;\d y \right] \;\d s \\
+  &+ \frac{1}{2} \int_t^T \left[\int_{-\infty}^\infty h(y) \frac{\partial^2}{\partial y^2} [\phi^2 (s, y) p(t, x; s, y)]\;\d y \right] \;\d s
+\end{align*}
+$$
+
+Differentiating with respect to $T$, we obtain
+
+$$
+\begin{align*}
+  \int_{-\infty}^\infty h(y) & \left[\frac{\partial}{\partial T} p(t, x; T, y) + \frac{\partial}{\partial y} [\theta(T, y) p(t, x; T, y)] \right. \\
+  &\left. -\frac{1}{2} \frac{\partial^2}{\partial y^2} [\phi^2 (T, y) p(t, x; T, y)]\right] \;\d y = 0
+\end{align*}
+$$
+
+Since $h(y)$ is arbitrary, the square bracket must vanish, resulting in $\eqref{equation-4}$.
+</details>
+</MathBox>
+
+<MathBox title="Kolmogorov backward equation" boxType="theorem">
+Consider the general diffusion process
+    
+$$
+  \d X_s = \theta (s, X_s) \;\d s + \phi(s, X_s)\;\d W_s
+$$
+    
+Let $p(t, x; T, y)$ for $0\leq t \leq T$ be the transition probability density of $X_s$. Assume $T$ and $y$ are fixed with $X_T = y$ and that $p(t, x; T, y)$ is the probability density function with state variable $x$ and a past time $t$. Then
+
+$$
+\begin{equation*}
+  \frac{\partial}{\partial T} p(t, x; T, y) + \theta(t, x) \frac{\partial}{\partial x} p(t, x; T, y) - \frac{1}{2} \phi^2 (t, x) \frac{\partial^2}{\partial x^2} p(t, x; T, y) = 0
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+Let $h(y)$ be any $C^2$ function with compact support. From the Feynman-Kac formula $\eqref{equation-6}$, the transition function 
+
+$$
+  g(t, x) = \mathbb{E}^{t, x}^{t, x} [h(X_t)] = \int_{-\infty}^\infty h(y) p(t, x; T, y) \;\d y
+$$
+
+satifies
+
+$$
+  \frac{\partial g}{\partial t} (t, x) + \theta(t, x) \frac{\partial g}{\partial x} (t, x) + \frac{1}{2} \phi^2 (t, x) \frac{\partial^2 g}{\partial x^2} = 0
+$$
+
+and thus
+
+$$
+\begin{align*}
+  \int_{-\infty}^\infty h(y) &\left[\frac{\partial p}{\partial t} (t, x; T, y) + \theta(t, x) \frac{\partial p}{\partial x} (t, x; T, y) \right. \\
+  & \left. + \frac{1}{2} \phi^2 (t, x) \frac{\partial^2 p}{\partial x^2} (t, x; T, y) \right]
+\end{align*}
+$$
+
+Since $h(y)$ is arbitrary, the square bracket must vanish, resulting in $\eqref{equation-5}$.
+</details>
+</MathBox>
+
+# Breeden-Litzenberger formulas
+
+<MathBox title="Breeden-Litzenberger formulas" boxType="theorem">
+Let $c(T, K)$ be the European call price with strike $K$ and maturity $T$, and $f(T,K)$ be the forward transition probability density, i.e. $f(t, x) = p(0, S_0; t, x)$. Then
+
+$$
+\begin{align*}
+  f(T, K) =& e^{rT} \frac{\partial^2 c}{\partial K^2} (T, K) \\
+  \tilde{\mathbb{E}}[e^{-rT} \mathsf{1}_{\set{S_T > k}}] =& -\frac{\partial c}{\partial K} (T, K) \\
+  \tilde{\mathbb{E}}[e^{-rT} \delta(S_T - K)] =& \frac{\partial^2 c}{\partial K^2} (T, K)
+\end{align*}
+$$
+
+<details>
+<summary>Proof</summary>
+
+From the risk-neutral representation of call option price
+
+$$
+  c(T, K) = e^{-rT} \int_0^\infty (x - K)^+ f(T, x) \;\d x
+$$
+
+and thus
+
+$$
+\begin{align*}
+  c(T, K) =& e^{-rT} \int_0^\infty (x - K)^+ f(T, x) \;\d x \\
+  =& e^{-rT} \int_K^\infty (x - K) f(T, x) \;\d x \\
+  =& e^{-rT} \int_K^\infty f(T, x) \int_K^x \d y \;\d x \\
+  =& e^{-rT} \int_K^\infty \int_y^\infty f(T, x) \;\d x \;\d y
+\end{align*}
+$$
+
+Differentiating with respect to $K$ gives
+
+$$
+\begin{align*}
+  \frac{\partial c}{\partial K} (T, K) =& -e^{-rT} \int_K^\infty f(T, x) \;\d x \\
+  =& -\tilde{\mathbb{E}}[e^{-rT} \mathsf{1}_{\set{S_T > K}}]
+\end{align*} 
+$$
+
+and differentiating again leads to
+
+$$
+  \frac{\partial^2 c}{\partial K^2} (T, K) = e^{-rT} f(T, K)
+$$
+
+and
+
+$$
+  \frac{\partial^2 c}{\partial K^2} (T, K) = \tilde{\mathbb{E}}[e^{-rT} \delta(S_T - K)]
+$$
+</details>
+</MathBox>
