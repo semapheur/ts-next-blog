@@ -1,0 +1,186 @@
+---
+title: 'Synthetic Aperture Radar'
+subject: 'Physics/Electromagnetics'
+showToc: true
+references:
+  - book_wang_2024
+---
+
+Synthetic Aperture Radar (SAR) is an active microwave remote-sensing system that exploits the relative motion between the radar platform and the observed scene to synthesize a large effective aperture. As the platform moves, a given target is observed from a sequence of spatially separated antenna positions. The corresponding wideband complex echoes are coherently processed using their amplitude and phase histories to form a two-dimensional image, typically resolved in the range (along-track) and azimuth (across-track) directions.
+
+In the range direction, SAR commonly employs linear frequency-modulated (LFM) waveforms with a large time-bandwidth product. Pulse compression permits a relatively long transmitted pulse, and hence a higher pulse energy, while providing the range resolution associated with a much shorter compressed pulse. This principle is fundamentally the same as that used in conventional pulse-compression radar.
+
+In the azimuth direction, SAR exploits the motion of the radar platform to synthesize an aperture much larger than the physical antenna. The changing radar-to-target geometry produces a characteristic phase history, or equivalently a Doppler history, in the received signal. By coherently processing the echoes acquired over the target's synthetic-aperture interval, SAR achieves an azimuth resolution substantially finer than the real-aperture beamwidth would permit.
+
+# Resolution
+
+## Range resolution
+
+The resolution in the range direction of the radar (on the ground) is defined as the minimum distance between two distinguishable points that the system can resolve. Consider two point targets located at different slant ranges from the radar. If the transmitted pulse has duration $\tau_p$, the minimum separation between two targets that can be distinguished in slant range is determined by the round-trip propagation time of the pulse.
+
+Because the radar signal travels from the radar to the target and back, the slant-range resolution is
+
+$$
+  \Delta R_s = \frac{c\tau_p}{2}
+$$
+
+where $c$ is the speed of light.
+
+Let $\theta_i$ denote the incidence angle, measured with respect to the local ground normal. For a locally flat surface, a small displacement in ground range $\Delta R_g$, corresponds to a slant-range displacement
+
+$$
+  \Delta R_s = \Delta R_g \sin(\tehta_i)
+$$
+
+Thus, the ground-range resolution is
+
+$$
+  \Delta R_g = \frac{\Delta R_s}{\sin(\theta)} = \frac{c\tau_p}{2\sin(\theta)}
+$$
+
+This expression assumes that the incidence angle remains approximately constant over the resolution cell.
+
+### Pulse compression
+
+To achieve the desired range resolution, it is necessary to have a very short pulse duration $\tau_p$, which leads to a very low duty cycle and average transmit power, making it difficult to satisfy the target observation requirement in terms of system signal-to-noise ratio. Thus, SAR systems employ pulse compression waveforms, such as linear frequency-modulated (LFM) chirps, to achieve both high resolution (with longer pulses) and high signal-to-noise ratio. 
+
+A long-duration chirp can provide high transmitted pulse energy while its large bandwidth provides fine range resolution after matched filtering. For a signal with bandwidth $B_r$, the effective compressed-pulse duration is approximately
+
+$$
+  \tau_\text{eff} \approx \frac{1}{B_r}
+$$
+
+Consequently, the slant-range resolution becomes approximately
+
+$$
+  \Delta R_s \approx \frac{c}{2B_r}
+$$
+
+and the corresponding ground-range resolution is
+
+$$
+  \Delta R_g \approx \frac{c}{2B_r \sin(\theta_i)}
+$$
+
+Thus, after pulse compression, the range resolution is determined primarily by the transmitted bandwidth rather than by the total pulse duration.
+
+## Azimuth resolution
+
+In SAR systems, high resolution in the azimuth direction (parallel to the platform flight direction) is achieved through synthetic aperture techniques, which is the fundamental difference between SAR systems and other radar systems. SAR systems utilize the motion of the radar antenna to form a virtual antenna array, sequentially acquiring and storing the echo signals during platform motion.
+
+Let
+- $D_\text{az}$ be the physical antenna dimension in the azimuth direction
+- $\lambda$ be the radar wavelength
+- $R$ be the slant range from the radar to the target
+
+For a real-aperture antenna, the azimuth beamwidth can be approximated as
+
+$$
+  \beta_\text{az} \approx K_\beta \frac{\lambda}{D_\text{az}}
+$$
+
+where $K_\beta$ depends on the antenna illumination and on the definition of beamwidth. A commonly used value is $K_\beta \approx 0.886$. The target therefore remains within the antenna beam over an approximate along-track distance $L_\text{sa} \approx R \beta_\text{az}$. Thus
+
+$$
+\begin{equation*}
+  L_\text{sa} \approx K_\beta \frac{\lambda R}{D_\text{az}}
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+where $L_\text{sa}$ is the physical synthetic-aperture length associated with the target. 
+
+It is important to distinguish this quantity from the physical antenna length. The radar antenna itself does not become physically longer. Rather, the motion of the platform allows the radar to collect coherent observations from many different positions, effectively synthesizing a much larger aperture.
+
+If the platform velocity is $v$, the corresponding synthetic-aperture time is approximately
+
+$$
+  T_\text{sa} = \frac{L_\text{sa}}{v}
+$$
+
+### Target phase history
+
+The mechanism that enables SAR focusing is the changing radar-to-target distance as the platform moves.
+
+Let $\eta$ denote slow time, measured relatively to the point of closest approach to the target. Assuming a straight flight path and a stationary target, the instantaneous slant range is
+
+$$
+  R(\eta) = \sqrt{R_0^2 + (v\eta)^2}
+$$
+
+where $R_0$ is the minimum slant range.
+
+For $v|\eta| \ll R_0$, a second-order Taylor expansion gives
+
+$$
+\begin{equation*}
+  R(\eta) = R_0 + \frac{v^2 \eta^2}{2 R_0} + O(\eta^3)
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+The phase $\phi$ of the received signal is determined by the two-way propagation path
+
+$$
+  \phi(\eta) = -\frac{4\pi}{\lambda} R(\eta)
+$$
+
+Substituting $\eqref{equation-1}$ gives
+
+$$
+  \phi(\eta) = -\frac{4\pi R_0}{\lambda} - \frac{2\pi v^2}{\lambda R_0} \eta^2
+$$
+
+During signal processing, the phase introduced by the changing distance between the radar and the target is compensated, and the multiple echo signals from the same target are coherently added to achieve high azimuth resolution.
+
+### Azimuth resolution for stripmap SAR
+
+For a physical synthetic-aperture length $L_{sa}$, the effective angular resolution can be approximated as
+
+$$
+\begin{equation*}
+  \beta_\text{SAR} \approx K_\beta \frac{\lambda}{2L_\text{sa}}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+where the factor of $2$ follows from the two-way propagation phase of the radar signal. The corresponding azimuth resolution is therefore
+
+$$
+  \Delta R_\text{az} \approx R\beta_\text{SAR}
+$$
+
+Substituting $\eqref{equation-2}$ gives
+
+$$
+  \Delta R_\text{az} \approx K_\beta \frac{\lambda R}{2 L_\text{sa}}
+$$
+
+Inserting the real-aperture beamwidth $\eqref{equation-3}$ results in
+
+$$
+\begin{align*}
+  \Delta R_\text{az} \approx K_\beta \frac{\lambda R}{2K_\beta \lambda R / D_\text{az}} \\
+  =& \frac{D_\text{az}}{2}
+\end{align*}
+$$
+
+which shows that the azimuth resolution of conventional stripmap SAR with is approximately independent of the radar-to-target range. This differs from real-aperture radar, where the azimuth resolution becomes poorer as the target moves farther away because the antenna beam covers a larger physical area.
+
+SAR compensates for this effect through the synthetic aperture; the synthetic-aperture length increases approximately linearly with range, $L_\text{sa} \propto R$. At greater range, the target subtends a smaller angular extent at the antenna, but the target remains illuminated over a proportionally longer distance along the flight path. Consequently
+
+$$
+  \Delta R_\text{az} \propto \frac{R}{L_\text{sa}} \propto \frac{R}{R}
+$$
+
+The range dependence therefore cancels, leaving the approximate result
+
+$$
+  \Delta R_\text{az} \approx \frac{D_\text{az}}{2}
+$$
+
+# Continuous-wave regime SAR
+
+Frequency-modulated continuous-wave (FMCW)
+
+# Pulse-regime SAR
