@@ -4,6 +4,8 @@ subject: 'Physics/Electromagnetics'
 showToc: true
 references:
   - book_wang_2024
+  - book_cheney_2009
+  - book_richards_2009
 ---
 
 Synthetic Aperture Radar (SAR) is an active microwave remote-sensing system that exploits the relative motion between the radar platform and the observed scene to synthesize a large effective aperture. As the platform moves, a given target is observed from a sequence of spatially separated antenna positions. The corresponding wideband complex echoes are coherently processed using their amplitude and phase histories to form a two-dimensional image, typically resolved in the range (along-track) and azimuth (across-track) directions.
@@ -29,7 +31,7 @@ where $c$ is the speed of light.
 Let $\theta_i$ denote the incidence angle, measured with respect to the local ground normal. For a locally flat surface, a small displacement in ground range $\Delta R_g$, corresponds to a slant-range displacement
 
 $$
-  \Delta R_s = \Delta R_g \sin(\tehta_i)
+  \Delta R_s = \Delta R_g \sin(\theta_i)
 $$
 
 Thus, the ground-range resolution is
@@ -41,7 +43,7 @@ $$
 This expression assumes that the incidence angle remains approximately constant over the resolution cell.
 
 <LatexFigure width={75} src='/fig/sar_range_resolution.svg' alt=''
-  caption="SAR range resolution"
+  caption="SAR range resolution geometry"
 >
 ```latex
 \documentclass[tikz]{standalone}
@@ -191,7 +193,10 @@ $$
 Consequently, the slant-range resolution becomes approximately
 
 $$
+\begin{equation*}
   \Delta R_s \approx \frac{c}{2B_r}
+\tag{\label{equation-6}}
+\end{equation*}
 $$
 
 and the corresponding ground-range resolution is
@@ -298,7 +303,7 @@ Inserting the real-aperture beamwidth $\eqref{equation-3}$ results in
 
 $$
 \begin{align*}
-  \Delta R_\text{az} \approx K_\beta \frac{\lambda R}{2K_\beta \lambda R / D_\text{az}} \\
+  \Delta R_\text{az} \approx& K_\beta \frac{\lambda R}{2K_\beta \lambda R / D_\text{az}} \\
   =& \frac{D_\text{az}}{2}
 \end{align*}
 $$
@@ -314,11 +319,201 @@ $$
 The range dependence therefore cancels, leaving the approximate result
 
 $$
+\begin{equation*}
   \Delta R_\text{az} \approx \frac{D_\text{az}}{2}
+\tag{\label{equation-5}}
+\end{equation*}
 $$
 
-# Continuous-wave regime SAR
+# Signal-to-noise ratio
 
-Frequency-modulated continuous-wave (FMCW)
+The received signal-to-noise ratio (SNR) is a fundamental parameter in SAR system design because it determines whether the backscattered signal from the observed scene can be detected and coherently processed with sufficient quality. For a distributed target and under the assumptions of a monostatic SAR system, the SNR after range compression and coherent integration over the synthetic aperture can be expressed in the form
 
-# Pulse-regime SAR
+$$
+\begin{equation*}
+  \mathrm{SNR} = \frac{P_t G_t G_r \lambda^3 f_\text{PRF} T_p c \sigma_0}{4 (4\pi)^3 R^3 v_s \sin(\eta) F k T B_r}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+where 
+- $P_t$ is the peak power of the system transmit signal
+- $T_p$ is the pulse duration
+- $G_t$ and $G_r$ are the transmit and receive antenna gains
+- $\sigma_0$ is the normalized radar cross section, or backscattering coefficient, of the detection target
+- $R$ is the range of the detection target
+- $F$ is the noise factor
+- $k = \scinot{1.38}{-23} \unit{J/K}$ is the Boltzmann constant
+- $T$ is the system ambient temperatur
+- $B_r$ is the signal bandwidth
+- $f_\text{PRF}$ is the pulse repetition frequency
+- $\eta$ is the incidence angle
+
+Ignoring parameters that are fixed for a given system and operating geometry, the SNR $\eqref{equation-4}$ has the approximate dependence
+
+$$
+  \mathrm{SNR} \propto \frac{P_t G_t G_r \lambda^3 f_\text{PRF} T_p}{R^3 v_s \sin(\eta) F T B_r}
+$$
+
+Several conclusions can be drawn from this relationship.
+
+## Transmit power
+
+Increasing the peak transmit power $P_t$ increases the received SNR approximately linearly, 
+
+$$
+  \mathrm{SNR} \propto P_t
+$$
+
+However, increasing the peak power places greater demands on the transmitter, including the power amplifier, high-voltage supply, thermal management, and radio frequency components. These requirements can increase system size, mass, power consumption, cost, and design complexity, while potentially reducing reliability.
+
+## Antenna gain
+
+Increasing the transmit and receive antenna gains also improves SNR, 
+
+$$
+  \mathrm{SNR} \propto G_t G_r
+$$
+
+For a monostatic system with the same antenna used for transmission and reception, $G_t = G_r = G$ such that $\mathrm{SNR} \propto G^2$. However, antenna size also affects other SAR performance parameters. In particular, increasing the physical antenna dimension in the azimuth direction generally reduces the real-aperture beamwidth and, for conventional stripmap SAR, increases the achievable azimuth resolution according to $\eqref{equation-5}$. Thus, increasing the antenna size does not generally reduce SAR resolution. In the azimuth direction, a larger antenna can actually provide finer resolution. Nevertheless, increasing antenna size introduces practical constraints involving antenna mass, mechanical structure, beamwidth, swath width, and system integration.
+
+## Signal bandwidth
+
+The SNR expression contains an inverse dependence on the processed range bandwidth,
+
+$$
+  \mathrm{SNR} \propto \frac{1}{B_r}
+$$
+
+For fixed transmitted pulse energy and all other parameters unchanged, reducing the receiver noise bandwidth reduces the integrated thermal noise power and therefore increases the SNR. However, reducing the transmitted bandwidth directly degrades range resolution. For a conventional pulse-compression SAR system, the range resolution $\eqref{equation-6}$ is inversely proportional to the bandwidth. Thus, increasing $B_r$ improves range resolution but generally increases the noise bandwidth and consequently places a greater SNR requirement on the system. This represents an important fundamental trade-off between range resolution and SNR.
+
+## Pulse duration and transmitted energy
+
+The energy contained in transmitted pulse, $E_p$, is the time integral of the intantaneous transmit power
+
+$$
+  E_p = \int_0^{T_p} P_t (t) \;\d t
+$$
+
+For a rectangular pulse with constant peak power $P_t$ and duration $T_p$, the transmitted energy per pulse reduces to $E_p = P_t T_p$.
+
+From the SAR SNR expression $\eqref{equation-4}$, the SNR scales with the product of peak transmit power and pulse duration, $\mathrm{SNR} \propto P_t T_p$. This implies that. for a fixed radar configuration, the received SNR is fundamentally related to the transmitted pulse energy
+
+$$
+  \mathrm{SNR} \propto E_p
+$$
+
+For a fixed peak transmit power $P_t$, increasing the pulse duration $T_p$ increases the transmitted pulse energy linearly. This is one of the principal motivations for pulse compression in SAR. A long-duration linearly frequency-modulated (LFM) pulse can transmit substantially more energy than a short pulse at the same peak power, while its large bandwidth allows the received signal to be compressed to achieve fine range resolution.
+
+For example, an LFM pulse can have a duration $T_p$ that is much longer than the inverse of its bandwidth, $B_r T_p \gg 1$, while still providing a compressed-pulse width on the order of
+
+$$
+  \tau_\text{comp} \sim \frac{1}{B_r}
+$$
+
+Thus, $T_p$ and $B_r$ play fundamentally different roles: $T_p$ primarily determines the amount of energy transmitted for a given peak power, while $B_r$ primarily determines the achievable range resolution via $\eqref{equation-6}$. This separation is not completely independent in a practical system, since waveform design, transmitter limitations, sampling requirements, sidelobes, and processing constraints impose additional relationships between these parameters.
+
+### Peak transmit power versus pulse duration
+
+The relationship $E_p = P_t T_p$ establishes a direct trade-off between peak transmit power and pulse duration for a fixed pulse energy. Suppose the pulse duration is increased by a factor $K > 1$,
+
+$$
+  T'_p = KT_p
+$$
+
+To maintain the same pulse energy, the peak transmit power can be reduced by the same factor
+
+$$
+  P'_t = \frac{P_t}{K}
+$$
+
+The resuling pulse energy is
+
+$$
+\begin{align*}
+  E'_p =& P'_t T'_p = \frac{P_t}{K} (KT_p) \\
+  =& P_t T_p = E_p
+\end{align*}
+$$
+
+and, under otherwise identical conditions, then SNR is preserved. This result illustrates an important SAR system-design principle: for a fixed required pulse energy, peak transmit power and pulse duration can, within practical limits, be traded against each other.
+
+Rather than achieving the required SNR through a very high peak transmit power, the radar can transmit a longer waveform at a lower peak power while maintaining approximately the same pulse energy and, consequently, approximately the same SNR.
+
+However, the trade-off is subject to practical constraints. The pulse duration cannot be increased indefinitely because it affects the SAR timing architecture, duty cycle, minimum and unambiguous range, range ambiguities, transmitter–receiver isolation, and other waveform and system-level constraints. Therefore, a longer pulse should be viewed not as a universally lossless improvement, but as a means of redistributing the required transmitted energy from peak power toward pulse duration, with the achievable benefit determined by the overall SAR architecture.
+
+## Pulse-repetition frequency and average transmit power
+
+The average transmit power $\bar{P}_t$ of a pulsed SAR transmitter is determined by the energy transmitted per pulse $E_p$ and the pulse-repetition frequency $f_\text{PRF}$. For a rectangular pulse with peak transmit power $P_t$ and pulse duration $T_p$, the energy transmitted per pulse is $E_p = P_t T_p$. The average transmit power is therefore
+
+$$
+\begin{equation*}
+  \bar{P}_t = E_p f_\text{PRF} = P_t T_p f_\text{PRF}
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+It is useful to introduce the pulse-repetition interval (PRI)
+
+$$
+  T_\text{PRI} = \frac{1}{f_\text{PRF}}
+$$
+
+The transmit duty cycle $D$ is defined as the fraction of each PRI during which the transmitter is actively transmitting. For a non-overlapping pulsed waveform with $T_p \leq T_\text{PRI}$, the duty cycle is
+
+$$
+  D = \frac{T_p}{T_\text{PRI}} = T_p f_\text{PRF} \in (0, 1]
+$$
+
+Consequently, the average transmit power can also be written $\bar{P}_t = P_t D$.
+
+For a low-duty-cycle pulsed SAR, $T_p \ll T_\text{PRI}$, and thus $D \ll 1$. The peak transmit power can therefore be substantially higher than the average transmit power
+
+$$
+  P_t = \frac{\bar{P}_t}{D}
+$$
+
+This distinction is important for transmitter design. A pulsed SAR may require a high peak power to generate sufficient pulse energy, even though its average electrical power consumption associated with RF transmission is considerably lower.
+
+### Relationship between SNR and average transmit power
+
+In the SAR SNR expression $\eqref{equation-4}$, the relevant dependence on transmit power, pulse duration and pulse-repetition frequency is $\mathrm{SNR} \propto P_t T_p f_\text{PRF}$. Using $\eqref{equation-7}$, this can be expressed as
+
+$$
+  \mathrm{SNR} \propto \bar{P}_t = P_t D = E_p f_\text{PRF}
+$$
+
+For a fixed average transmit power, the same radio frequency energy can be distributed between a higher peak power with a lower duty cycle or a lower peak power with a higher duty cycle. 
+
+For example, if the duty cycle is increased by a factor $K$, while the average transmit power is held constant, the required peak power decreases by the same factor $D' = KD$, and thus
+
+$$
+  P'_t = \frac{\bar{P}_t}{D'} = \frac{P_t D}{K D} = \frac{P_t}{K}
+$$
+
+The corresponding pulse energy becomes $E'_p = P'_t T'_p$. If the pulse duration is also increased by the same factor, $T_p'=KT_p$, then
+
+then
+
+$$
+  E_p' = \frac{P_t}{K}(KT_p) = P_t T_p = E_p
+$$
+
+Thus, the pulse energy remains unchanged while the peak transmit power is reduced.
+
+In practice, however, the pulse duration and duty cycle cannot be increased arbitrarily. They are constrained by the required PRF, unambiguous range, range ambiguities, minimum range, transmitter/receiver switching, thermal considerations, and the SAR acquisition geometry.
+
+### Frequency-modulated continuous wave SAR
+
+Frequency-modulated continuous-wave (FMCW) SAR provides an alternative waveform architecture. Instead of transmitting isolated high-power pulses with a low duty cycle, an FMCW SAR continuously transmits a frequency-modulated waveform, typically with a duty cycle approaching unity, $D \approx 1$. For an FMCW waveform with approximately continuous transmission, the peak transmit power and average transmit power are approximately equal, $\bar{P} = P_t$.
+
+For a given average transmitted power, an FMCW SAR can therefore operate with a substantially lower peak transmit power than a conventional pulsed SAR. This can relax the requirements on the power amplifier, power supply, thermal management, and other radio frequency components.
+
+The range resolution of an FMCW SAR is still primarily determined by the signal bandwidth given by $\eqref{equation-6}$.
+
+# Continuous-wave SAR
+
+FMCW SAR uses a dechirp reception method, and the bandwidth of the mixed signal depends on the modulation frequency of the transmit signal and the mapping bandwidth, which is usually much smaller than the transmit signal bandwidth, which greatly reduces the acquisition pressure of the receiver and has a limited impact on the range-oriented resolution.
+
+
+# Pulsed SAR

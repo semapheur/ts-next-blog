@@ -49,6 +49,7 @@ export const rehypePlugins = [
         "\\label": "\\htmlId{#1}{\\text{#1}}",
         "\\unit": "\\,\\mathrm{#1}",
         "\\tunit": "\\mathrm{#1}",
+        "\\scinot": "#1 \\times 10^{#2}",
       },
     },
   ],
