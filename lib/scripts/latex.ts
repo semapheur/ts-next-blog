@@ -392,11 +392,7 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e);
   });
 }
-console.log(
-  findLatexIssues(
-    "./content/notes/physics/quantum_mechanics/many-body_systems/perturbation_theory.mdx",
-  ),
-);
+console.log(findLatexIssues("./content/notes/physics/optics.mdx"));
 
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {
