@@ -2,6 +2,8 @@
 title: 'Optics'
 subject: 'Physics'
 showToc: true
+references:
+  - book_masud_2009
 ---
 
 # Polarization
@@ -262,7 +264,7 @@ This shows that linear polarization along $x$ consists of equal-amplitude left- 
 In its general form, the Jones vector represents elliptical polarization. In this sense, linear and circular polarization can be considered special cases of elliptical polarization. Elliptically polarizared waves travelling in the $z$-directions make a spiral motion and trace out an ellipse in the $xy$-plane with a minor or major axis at angle
 
 $$
-  \alpha = \frac{1}{2}\atan\left( \frac{2AB\cos(\delta)}{A^2 - B^2} \right)
+  \alpha = \frac{1}{2}\arctan\left( \frac{2AB\cos(\delta)}{A^2 - B^2} \right)
 $$
 
 with respect to the $x$-axis. To determine whether this axis corresponds to the minor or major axis, we can compare the strength of the electric field for $\alpha$ and $\alpha \pm \frac{\pi}{2}$
@@ -381,8 +383,181 @@ $$
 
 A desired phase shift can obtained by adjusting the thickness of the wave plate. The most common types of wave plates are the quarter-wave and half-wave plates. The quarter-wave plate induces a phase shift $\frac{\pi}{2} + 2\pi m$ for $m\in \N$ and has a form factor $\xi = e^{i\frac{\pi}{2}} = i$. The half-wave plate induces a phase shift $\pi + 2\pi m$ and has form factor $\xi = e^{i\pi} = -1$.
 
-## Stokes parameters
+## Partial polarization
 
+Consider a polychromatic beam of light propagating along the $z$-axis, with electric field components polarized along both the $x$- and $y$-direction
+
+$$
+\begin{equation*}
+\begin{split}
+  E_x (z, t) = \sum_n A_n \sqrt{\Delta f} \exp\left\{i \left[ 2\pi f_n \left(t - \frac{z}{c} \right) + \phi_n \right] \right) \\
+  E_z (z, t) = \sum_n B_n \sqrt{\Delta f} \exp\left\{i \left[ 2\pi f_n \left(t - \frac{z}{c} \right) + \psi_n \right] \right) \\
+\end{split}
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+This beam's spectrum consists of individual frequencies $f_n = (N_0 + n) \Delta f$ within a finite bandwith around the central frequency $f_0 = N_0 \Delta f$. For each frequency $f_n$, here $A_n$ and $B_n$ are the amplitudes of the $x$- and $y$-polarized components, respectively, while $\phi_n$ and $\psi_n$ are their corresponding phases. Here $\sqrt{\Delta f}$ is a normalization factor for the discrete spectral representation.
+
+Each frequency component in $\eqref{equation-9}$ is a fully polarized monochromatic plane wave. In general, it is elliptically polarized, with its polarization state determined by the amplitude ratio $A_n /B_n$ and the relative phase $\delta_n = \phi_n - \phi_n$. Although every individual spectral component is fully polarized, the beam as a whole can only be partially polarized. This occurs because different frequency components may have different polarization states. When the field is averaged over time, these different polarization states combine to produce a partially polarized beam.
+
+### Ideal phase retarder and polarizer
+
+To determine the degree of polarization of the beam described by $\eqref{equation-9}$, consider an ideal phase retarder followed by an ideal linear polarizer. Both optical elements are assumed to be perpendicular to the propagation direction.
+
+The retarder introduces a relative phase shift $\chi \in [-\pi, \pi]$ between $E_x$ and $E_y$. A crucial assumption is that this phase shift is independent of optical frequency over the bandwidth of interest. Thus, every spectral component experiences the same phase shift $E_j \to e^{i\chi} E_j$. A frequency-independent phase shift changes the relative phase between $E_x$ and $E_y$, but does not introduce a temporal displacement between them. Consequently, it does not destroy their mutual coherence. It can, however, modify the cross-correlation function by changing the relative phase between the two polarization components.
+
+A time delay $\tau$, by contrast, produces a frequency-dependenct phase shift $\chi(f) = 2\pi f\tau$. Such a frequency-dependent phase shift can reduce the observed mutual coherence after temporal averaging. A frequency-independent phase shift $\chi$, on the other hand, leaves the mutual coherence intact.
+
+The beam emerging from the retarder is then passed through a linear polarizer whose transmission axis makes an angle $\theta$ with the $x$-axis. The polarizer is rotated about the $z$-axis until the transmitted optical power is minimized. The retardation $\chi$ is then varied, and the polarizer orientation is adjusted accordingly, until the absolute minimum of the transmitted power is obtained.
+
+The values $\chi_0, \theta_0$ at which this minimum occurs characterize the fully polarized component of the beam. The corresponding minimum transmitted power provides a measure of the unpolarized component.
+
+At $z = 0$, the amplitude of the light emerging from the polarizer can be expressed as
+
+$$
+\begin{align*}
+  E(t; \chi, \theta) =& \sum_n \left[A_n \cos(\theta) e^{i(2\pi f_n t + \phi_n)} \right. \\
+  &+ \left. B_n \sin(\theta) e^{i(2\pi f_n t + \psi_n + \chi)} \right] \sqrt{\Delta f}
+\end{align*}
+$$
+
+Because all frequencies have the form $f_n = (N_0 + n) \Delta f$, their differences are integer multiples of $\Delta f$
+
+$$
+  f_n - f_m = (n - m) \Delta f
+$$
+
+Thus, the transmitted amplitude $E(z=0, t)$ is periodic with period $T = 1/\Delta f$. The time-averaged transmitted intensity as a function of $\chi$ and $\theta$ is therefore given by
+
+$$
+  I(\chi, \theta) = \frac{1}[T} \int_0^T \Re[E (t;\chi, \theta)]^2 \;\d t
+$$
+
+All terms involving different frequencies vanish, because
+
+$$
+  \frac{1}{T} \int_0^T e^{i2\pi (f_n - f_m)t} \;\d t = \delta_{nm}
+$$
+
+Thus, only terms associated with the same spectral frequency survive, resulting in
+
+$$
+\begin{equation*}
+  I(\chi, \theta) = \frac{\Delta f}{2} \left[A_n^2 \cos^2 (\theta) + B_n^2 \sin^2 (\theta) + A_n B_n \sin(2\theta) \cos(\phi_n - \psi_n - \chi) \right]
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+The factor $1/2$ arises from averaging the square of the real electric field over a complete period. This shows that there are no interference terms between different frequencies in the time-averaged intensity. The surviving terms is only between the $x$- and $y$-polarized components belonging to the same frequency $f_n$.
+ 
+### Stokes parameters
+
+The transmitted intensity $\eqref{equation-10}$ can be expressed conveniently in terms of the Stokes parameters of associated with each spectral component. For the component at frequency $f_n$, define
+
+$$
+\begin{align*}
+  S_{0, n} =& A_n^2 + B_n^2 \\
+  S_{1, n} =& A_n^2 - B_n^2 \\
+  S_{2, n} =& 2A_n B_n \cos(\phi_n - \psi_n) \\
+  S_{3, n} =& 2A_n B_n \sin(\phi_n - \psi_n)
+\end{align*}
+$$
+
+The Stokes parameters of the complete polychromatic beam are obtained by summing over all spectral components. Defining the total Stokes parameters
+
+$$
+  S_j = \Delta f \sum_n S_{j,n},\, j = 0,1,2,3
+$$
+
+the intensity $\eqref{equation-10}$ can be written as
+
+$$
+\begin{equation*}
+  I(\chi, \theta) = \frac{\Delta f}{4} \sum_n [S_{0, n} + S_{1, n} \cos(2\theta) + (S_{2,n} \cos(\chi) + S_{3,n} \sin(\chi)) \sin(2\theta)]
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+This form makes the role of the retarder particularly transparent. The frequency-independent retarder leaves $S_0$ and  $S_1$ unchanged, while rotating the $S_2$ and $S_3$ components through the retardation angle $\chi$.
+
+To find the absolute minimum of the transmitted intensity, we first minimize with respect to $\chi$. The quantity in $\eqref{equation-11}$ that depends on $\chi$ is $S_2 \cos(\chi) + S_3 \sin(\chi)$. Introducing $R = \sqrt{S_2^2 + S_3^2}$, this expression can be written as
+
+$$
+\begin{equation*}
+  S_2 \cos(\chi) + S_3 \sin(\chi) = R \cos(\chi - \chi_c)
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+where $\chi_c = \operatorname{atan2}(S_3, S_2)$. The minimum value of $\eqref{equation-12}$ is $-R$. Thus, the retardation corresponding to the minimum is
+
+$$
+  \chi_0 = \operatorname{atan2} (S_3, S_2) + \pi \pmod 2\pi
+$$
+
+Equivalently,
+
+$$
+\begin{align*}
+  \cos(\chi_0) =& -\frac{S_2}{R} \\
+  \sin(\chi_0) =& -\frac{S_3}{R}
+\end{align*}
+$$
+
+At this value of the retardation, the intensity becomes
+
+$$
+  I(\chi_0, \theta) = \frac{1}{4} [S_0 + S_1 \cos(2\theta) - R\sin(2\theta)]
+$$
+
+We can now minimize this expression with respect to the polarizer angle $\theta$. Since the two terms depending on $\theta$ form the projection of a two-dimensional vector, their minimum is $-\sqrt{S_1^2 + R^2}$. Using $R^2 = S_2^2 + S_3^2$, we obtain
+
+$$
+\begin{equation*}
+  I_\text{min} = \frac{1}{4} \left(S_0 - \sqrt{S_1^2 + S_2^2 + S_3^2} \right)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+The corresponding polarizer angle can be specified by
+
+$$
+\begin{align*}
+  \cos(2\theta_0) =& -\frac{S_1}{\sqrt{S_1^2 + S_2^2 + S_3^2}} \\
+  \sin(2\theta_0) =& \frac{\sqrt{S_2^2 + S_3^2}}{\sqrt{S_1^2 + S_2^2 + S_3^2}}
+\end{align*}
+$$
+
+The orthogonal polarizer orientation $\theta_0 + \pi/2$, gives the maximum transmitted intensity for the same retardation
+
+$$
+\begin{equation*}
+  I_\text{max} = \frac{1}{4} \left(S_0 + \sqrt{S_1^2 + S_2^2 + S_3^2} \right)
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+The sum of $\eqref{equation-13}$ and $\eqref{equation-14}$ becomes
+
+$$
+  I_\text{min} + I_\text{max} = \frac{S_0}{2}
+$$
+
+while the difference becomes
+
+$$
+  I_\text{max} - I_\text{min} = \frac{1}{2} \sqrt{S_1^2 + S_2^2 + S_3^2}
+$$
+
+The minimum transmitted intensity $I_\text{min}$, being the part of the beam which cannot be extinguished with a retarder and a polarizer, represents the depolarized content of the beam. This is only half the total amount of depolarized light, because the same amount must also be contained in $I_\text{max}$. The total amount of depolarized light is therefore $2I_\text{min}$, while the remaining part $I_\text{max} - I_\text{min}$ is fully polarized. The degree of polarization $P$ of the beam can therefore be defined as
+
+$$
+\begin{align*}
+  P =& \frac{I_\text{max} - I_\text{min}}{I_\text{max} + I_\text{min}} \\
+  =& \frac{\sqrt{S_1^2 + S_2^2 + S_3^2}}{S_0}
+\end{align*}
+$$
 
 # Diffraction
 
