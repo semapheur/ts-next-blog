@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import dynamic from "next/dynamic"
+import dynamic from "next/dynamic";
 
-const BlochSphere = dynamic(() => import("lib/components/BlochSphere"), {
+const BlochSphereApp = dynamic(() => import("lib/components/BlochSphereApp"), {
   ssr: false,
-})
+});
 
 export default function Page() {
-  return <BlochSphere />
+  return <BlochSphereApp />;
 }
