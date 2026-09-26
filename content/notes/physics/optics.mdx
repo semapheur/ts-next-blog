@@ -545,7 +545,7 @@ In this case $\theta$ coincides with the eccentricity $\varepsilon$. This requir
 | Diagonal (linearly polarized along $\unitvec{e}_1 + \unitvec{e}_2$)  | $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ | $\ket{D} = \frac{1}{\sqrt{2}}(\ket{H} + \ket{V})$ |
 | Anti-diagonal (linearly polarized along $\unitvec{e}_1 - \unitvec{e}_2$)  | $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ -1 \end{bmatrix}$ | $\ket{A} = \frac{1}{\sqrt{2}}(\ket{H} - \ket{V})$ |
 | Right-hand circular (RCP) | $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ -i \end{bmatrix}$ | $\ket{R} = \frac{1}{\sqrt{2}}(\ket{H} - i\ket{V})$ |
-| Left-hand circular (LCP) | $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ i \end{bmatrix}$ | $\ket{R} = \frac{1}{\sqrt{2}}(\ket{H} + i\ket{V})$ |
+| Left-hand circular (LCP) | $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ i \end{bmatrix}$ | $\ket{L} = \frac{1}{\sqrt{2}}(\ket{H} + i\ket{V})$ |
 
 ## Linear polarizers and wave plates
 
@@ -623,7 +623,7 @@ $$
   \end{bmatrix}
 $$
 
-In terms of rotation matrix $\mathbf{R}(\tau) \in \mathrm{SO}_2$
+In terms of rotation matrix $\mathbf{R}(\tau) \in \mathrm{SO}(2)$
 
 $$
   \mathbf{R}(\tau) = \begin{bmatrix} \cos(\tau) & -\sin(\tau) \\ \sin(\tau) & \cos(\tau) \end{bmatrix}
@@ -926,50 +926,128 @@ Thus, $P$ determines the radial position of $\mathbf{S}_p$ within the Poincaré 
 - partially polarized states with $0 < P < 1$ has $0 < S_p < S_0$ lie inside the Poincaré sphere
 - the fully unpolarized state with $P = 0$ has $S_p = 0$ and is represented by the origin 
 
-For the polarized component, let $\eta$ denote the ellipticity angle and $\rho$ the orientation angle of the major axis of the polarization ellipse, measured with respect to the $x$-axis. The standard relationship between these angles and the Stokes parameters are
+For the polarized component, let $\varepsilon$ denote the ellipticity angle and $\tau$ the orientation angle of the major axis of the polarization ellipse, measured with respect to the $x$-axis. The standard relationship between these angles and the Stokes parameters are
 
 $$
 \begin{align*}
-  \sin(2\eta) =& \frac{S_3}{\sqrt{S_1^2 + S_2^2 + S_3^2}} \tag{\label{equation-20}} \\
-  2\rho = \operatorname{atan2}(S_1, S_1)
+  \sin(2\varepsilon) =& \frac{S_3}{\sqrt{S_1^2 + S_2^2 + S_3^2}} \tag{\label{equation-20}} \\
+  2\tau = \operatorname{atan2}(S_1, S_2)
 \end{align*}
 $$
 
 Using $\eqref{equation-19}$, the relation $\eqref{equation-20}$ gives
 
 $$
-  S_3 = S_p \sin(2\eta)
+  S_3 = S_p \sin(2\varepsilon)
 $$
 
 Substituting these identities into $\eqref{eqution-18}$ yields
 
 $$
-  S_0^2 = S_1^2 + S_1^2 \tan^2 (2\rho) + S_0^2 \sin^2 (2\eta)
+  S_0^2 = S_1^2 + S_1^2 \tan^2 (2\tau) + S_0^2 \sin^2 (2\varepsilon)
 $$
 
 Factorizing gives
 
 $$
-  S_0^2 (1 - \sin^2 (2\eta)) = S_1^2 (1 + \tan^2 (2\rho))
+  S_0^2 [1 - \sin^2 (2\varepsilon)] = S_1^2 (1 + \tan^2 (2\tau))
 $$
 
 or
 
 $$
-  S_0^2 \cos^2 (2\eta) = \frac{S_1^2}{\cos^2 (2\rho)}
+  S_0^2 \cos^2 (2\varepsilon) = \frac{S_1^2}{\cos^2 (2\tau)}
 $$
 
 Thus, the three Stokes parameters of the polarized component are given by
 
 $$
 \begin{align*}
-  S_1 =& S_p \cos(2\eta) \cos(2\rho) \\
-  S_2 =& S_p \cos(2\eta) \sin(2\rho) \\
-  S_3 =& S_p \sin(2\eta)
+  S_1 =& S_p \cos(2\varepsilon) \cos(2\tau) \\
+  S_2 =& S_p \cos(2\varepsilon) \sin(2\tau) \\
+  S_3 =& S_p \sin(2\varepsilon)
 \end{align*}
 $$
 
-The factor of two in the angles is a characteristic feature of the Poincaré-sphere representation: a physical rotation of the polarization ellipse by $\rho$ corresponds to an azimuthal rotation of $2\rho$ on the sphere, while the ellipticity angel $\eta$ corresponds to a latitude $2\eta$.
+The factor of two in the angles is a characteristic feature of the Poincaré-sphere representation: a physical rotation of the polarization ellipse by $\tau$ corresponds to an azimuthal rotation of $2\tau$ on the sphere, while the ellipticity angel $\varepsilon$ corresponds to a latitude $2\varepsilon$.
+
+<LatexFigure width={75} src='/fig/poincare_sphere.svg' alt=''
+  caption="The Poincaré sphere"
+>
+```latex
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage{braket}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{3d}
+
+% Set 3D plot view angle
+\tdplotsetmaincoords{70}{130}
+
+\def\rvec{3}
+\def\thetavec{40}
+\def\phivec{60}
+
+\pgfmathsetmacro{\Py}{sin(\thetavec)*sin(\phivec)}
+\pgfmathsetmacro{\Pz}{cos(\thetavec)}
+\pgfmathsetmacro{\deltaangle}{atan2(\Pz,\Py)}
+\pgfmathsetmacro{\alphaangle}{acos(sin(\thetavec)*cos(\phivec))}
+
+\begin{document}
+
+\begin{tikzpicture}[tdplot_main_coords]
+  \coordinate (O) at (0,0,0);
+
+  % Shaded ball (not working in svg)
+  %\shade[ball color=lightgray, opacity=0.5] (0,0,0) circle (\rvec cm);
+  \fill[lightgray!40] (0,0,0) circle (\rvec cm);
+
+  % Axes
+  \draw[] (0,0,0) -- (\rvec,0,0);
+  \draw[] (0,0,0) -- (0,\rvec,0);
+  \draw[] (0,0,0) -- (0,0,\rvec);
+
+  % Great circles
+  \draw[canvas is xy plane at z=0, red, dashed] (0,0) circle (\rvec);
+  \draw[canvas is zx plane at y=0, green, dashed] (0,0) circle (\rvec);
+  
+  % s0-s1 great circle
+  \tdplotsetrotatedcoords{90}{-\deltaangle}{-90};
+  \draw[tdplot_rotated_coords, canvas is xy plane at z=0, orange, dashed] (0,0) circle (\rvec);
+  \tdplotdrawarc[tdplot_rotated_coords]{(O)}{0.3*\rvec}{0}{\alphaangle}{anchor=south east, xshift=0.1cm}{\scriptsize $2\alpha$};
+
+  % Eigenstates
+  \draw plot [mark=*, mark size=1] (0, 0, \rvec) node[anchor=south, shift=({-0.3,0})] {\scriptsize $\ket{L}$};
+  \draw plot [mark=*, mark size=1] (0, 0, -\rvec) node[anchor=north, shift=({0.3,0})] {\scriptsize $\ket{R}$};
+
+  \draw plot [mark=*, mark size=1] (0, \rvec, 0) node[anchor=west, shift=({0,0.2})] {\scriptsize $\ket{D}$};
+  \draw plot [mark=*, mark size=1] (0, -\rvec, 0) node[anchor=east, shift=({0,-0.2})] {\scriptsize $\ket{A}$};
+
+  \draw plot [mark=*, mark size=1] (\rvec, 0, 0) node[anchor=north east] {\scriptsize $\ket{H}$};
+  \draw plot [mark=*, mark size=1] (-\rvec, 0, 0) node[anchor=south west, shift=({-0.2,0.2})] {\scriptsize $\ket{V}$};
+
+  % Qubit
+  \tdplotsetcoord{P}{\rvec}{\thetavec}{\phivec};
+  \draw[thick,->,color=blue] (0,0,0) -- (P) node[above] {\scriptsize $s_0$};
+  \draw[dashed, color=blue] (O) -- (Pxy);
+  \draw[dashed, color=blue] (P) -- (Pxy);
+  \draw[dashed, color=blue] (Pxy) -- (Px) node[left, yshift=0.1cm] {\scriptsize $s_1$};
+  \draw[dashed, color=blue] (Pxy) -- (Py) node[above, xshift=0.1cm, yshift=-0.1cm] {\scriptsize $s_2$};
+  \draw[dashed, color=blue] (P) -- (Pz) node[left] {\scriptsize $s_3$};
+
+  \tdplotdrawarc{(O)}{0.3*\rvec}{0}{\phivec}{anchor=north}{\scriptsize $2\tau$};
+
+  \tdplotsetthetaplanecoords{\phivec};
+  \tdplotdrawarc[tdplot_rotated_coords]{(O)}{0.3*\rvec}{\thetavec}{90}{anchor=south west, xshift=-0.1cm}{\scriptsize $2\varepsilon$};
+
+  \tdplotsetrotatedcoords{0}{90}{90}
+  \tdplotdrawarc[tdplot_rotated_coords]{(0, 0, \rvec - 0.1)}{0.3*\rvec}{0}{\deltaangle}{anchor=north west}{\scriptsize $\delta$};
+
+\end{tikzpicture}
+\end{document}
+```
+</LatexFigure>
 
 # Diffraction
 
