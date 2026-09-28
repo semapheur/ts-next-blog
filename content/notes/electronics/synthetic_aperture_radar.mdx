@@ -18,20 +18,24 @@ In the azimuth direction, SAR exploits the motion of the radar platform to synth
 
 ## Range resolution
 
-The resolution in the range direction of the radar (on the ground) is defined as the minimum distance between two distinguishable points that the system can resolve. Consider two point targets located at different slant ranges from the radar. If the transmitted pulse has duration $\tau_p$, the minimum separation between two targets that can be distinguished in slant range is determined by the round-trip propagation time of the pulse.
+The range resolution of a radar is the minimum separation between two point targets in the range diraction for which their echoes can be distinguished as two separate responses. It is useful to distinguish between slant-range resolution, measured along the radar line of sight, and ground-range resolution, measured along the ground surface.
 
-Because the radar signal travels from the radar to the target and back, the slant-range resolution is
+Consider two point targets located at different slant ranges from the radar, with a slant range separation of $\Delta R_s$. The difference in round-trip propagation time between the two targets is
+
+$$
+  \Delta t = \frac{2\Delta R_s}{c}
+$$
+
+For a transmitted pulse of duration $\tau_p$, the temporal separation between the two received echoes must be sufficiently large for the echoes to be distinguished. The two echoes can be separated in time only if the they do not overlap, i.e. if $\Delta t \geq \tau_p$ implying
 
 $$
   \Delta R_s = \frac{c\tau_p}{2}
 $$
 
-where $c$ is the speed of light.
-
-Let $\theta_i$ denote the incidence angle, measured with respect to the local ground normal. For a locally flat surface, a small displacement in ground range $\Delta R_g$, corresponds to a slant-range displacement
+Let $\theta$ denote the incidence angle, measured with respect to the local ground normal. For a locally flat surface, a small displacement in ground range $\Delta R_g$, corresponds to a slant-range displacement
 
 $$
-  \Delta R_s = \Delta R_g \sin(\theta_i)
+  \Delta R_s = \Delta R_g \sin(\theta)
 $$
 
 Thus, the ground-range resolution is
@@ -40,7 +44,10 @@ $$
   \Delta R_g = \frac{\Delta R_s}{\sin(\theta)} = \frac{c\tau_p}{2\sin(\theta)}
 $$
 
-This expression assumes that the incidence angle remains approximately constant over the resolution cell.
+This expression assumes that the incidence angle remains approximately constant over the resolution cell. Several important implications can be drawn from this result:
+1. **Loss of range resolution at nadir:** As $\theta \to 0$, $\sin(\theta) \to 0$ and $\Delta R_g \to\infty$, in which case the flat surface approximation breaks down. The reason is that iso-range contours (circles about the sensor) are tangent to the ground at nadir, so points on either side of the nadir at equal distance are indistinguishable in range. This is why imaging radars must be side-looking, with $\theta > 0$.
+
+3. **Variation across the swath:** Since $\sin(\theta)$ increases monotonically with $\theta$ on $(0, \pi/2]$, then $\delta R_g$ decreases with increasing incidence angle. Ground-range resolution is therefore coarsest in the near range (small $\theta_i$) and finest in the far range (large $\theta_i$). This is the opposite of a nadir-viewing optical sensor, whose ground sample distance is finest at nadir and degrades off-nadir.
 
 <LatexFigure width={75} src='/fig/sar_range_resolution.svg' alt=''
   caption="SAR range resolution geometry"
@@ -515,5 +522,45 @@ The range resolution of an FMCW SAR is still primarily determined by the signal 
 
 FMCW SAR uses a dechirp reception method, and the bandwidth of the mixed signal depends on the modulation frequency of the transmit signal and the mapping bandwidth, which is usually much smaller than the transmit signal bandwidth, which greatly reduces the acquisition pressure of the receiver and has a limited impact on the range-oriented resolution.
 
+# The Doppler effect
 
-# Pulsed SAR
+Consider a transmitter moving with velocity $v$ approaching and passing a stationary receiver at a distance $y_0$. The distance between the transmitter and receiver at time $t$ is
+
+$$
+\begin{equation*}
+  x(t) = \sqrt{y_0^2 + (vt)^2}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+The received sinusoid arrives with a phase delay $\phi(t)$ given by $2\pi$ times at the distance expressed as a fraction a wavelength
+
+$$
+  \phi(t) = 2\pi \frac{x(t)}{\lambda}
+$$
+
+The Doppler frequency component is the time derivative of the phase delay
+
+$$
+\begin{align*}
+  \omega_d = \frac{\d\phi(t)}{\d t} = \frac{2\pi}{\lambda} \frac{\d x(t)}{\d t}
+\end{align*}
+$$
+
+so that from $\eqref{equation-8}$
+
+$$
+  f_d = \frac{1}{\lambda} \frac{\d x(t)}{\d t} = \frac{v^2}{\lambda} [y_0^2 + (vt)^2]^{-1/2} t
+$$
+
+Suppose $vt \ll y_0$, i.e. the transmitter is close to passing the receiver. In this case
+
+$$
+  x(t) = y_0 + \frac{v^2}{2y_0} t^2
+$$
+
+so that the Doppler frequency shift is
+
+$$
+  f_d = \frac{1}{\lambda} \frac{\d x(t)}{\d t} = \frac{v^2}{\lambda y_0} t
+$$
