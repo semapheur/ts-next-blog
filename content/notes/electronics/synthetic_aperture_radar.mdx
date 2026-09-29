@@ -189,62 +189,91 @@ Pulse compression provides a way to overcome this trade-off. A radar can transmi
 
 #### Linear modulated chirp
 
-An LFM chirp can be respresented as
+An LFM chirp can be represented as
 
 $$
-  c(t) = p(t) \cos(\pi f_0 t + \pi K t^2)
+\begin{equation*}
+  s(t) = p(t) \exp\left[i2\pi\left(f_0 t + \frac{k}{2}t^2 \right)\right]
+\tag{\label{equation-11}}
+\end{equation*}
 $$
 
 where $p(t)$ is the pulse envelope
 
 $$
-  p(t) = \begin{cases}
+  p(t) = \operatorname{rect}\left(\frac{t}{\tau_p} \right) = \begin{cases}
     1,\quad& |t| \leq \frac{\tau_p}{2} \\
     0, \quad& |t| > \frac{\tau_p}{2}
   \end{cases}
 $$
 
-Here $f_0$ is the carrier frequency, $\tau_p$ is the transmitted pulse duration, and $K$ is the chirp rate, with unit $\tunit{Hz/s}$. The instantaneous phase of the waveform is $\phi(t) = 2\pi f_0 t + \pi K t^2$. The corresponding instantaneous frequency is
+Here $f_0$ is the carrier frequency, $\tau_p$ is the transmitted pulse duration, and $k$ is the chirp rate, with unit $\tunit{Hz/s}$. The instantaneous phase of the waveform is $\phi(t) = 2\pi f_0 t + \pi k t^2$. The instantaneous frequency $f(t)$ is given by
 
 $$
-  f_i (t) = \frac{1}{2\pi} \frac{\d\phi(t)}{\d t} = f_0 + Kt
+  f(t) = \frac{1}{2\pi} \frac{\d\phi(t)}{\d t} = f_0 + kt
 $$
 
-which varies linearly with time. At the centre of the pulse, $t = 0$, the instantaneous frequency equals the carrier frequency $f_i (0) = f_0$. For a pulse extending from $-\tau_p /2$ to $\tau_p /2$, the chirp bandwidth is
+which varies linearly with time. At the centre of the pulse, $t = 0$, the instantaneous frequency equals the carrier frequency $f (0) = f_0$. For a pulse extending from $-\tau_p /2$ to $\tau_p /2$, the chirp bandwidth is
 
 $$
-  B = |K| \tau_p = f_\text{max} - f_\text{min}
+  B = \left| f\left(\frac{\tau_p}{2} \right) - f\left(-\frac{\tau_p}{2} \right) \right| = |K| \tau_p
 $$
 
-If angular frequency is used instead, the chirp can be written as
+In terms of angular frequency, the chirp can be written as
 
 $$
-  c(t) = p(t) \cos(\omega_0 t + \gamma t^2 /2)
+  c(t) = p(t) \exp\left[i \left(\omega_0 t + \frac{\gamma t^2}{2} \right)\right]
 $$
 
-where $\gamma$ is the angular-frequency chirp rate, with units of $\tunit{rad/s^2}$. The corresponding frequency-domain chirp rate is $K = \gamma/(2\pi)$.
+where $\omega_0 = 2\pi f_0$ and $\gamma = \d\omega(t) /\d t$ is the angular-frequency chirp rate, with units of $\tunit{rad/s^2}$. The instantaneous angular frequency is
+
+$$
+  \omega(t) = \frac{\d}{\d t} \left(\omega_0 t + \frac{\gamma}{2} t^2 \right) = \omega_0 + \gamma t
+$$
+
+The two chirp-rate conventions are related by $\gamma = 2\pi k$.
 
 #### Matched filtering
 
-After reception, the radar correlates the received signal with a replica of the transmitted chirp. This is achieved using a matched filter whose impulse response is proportional to the time-reversed complex conjugate of the transmitted waveform.
-
-Ignoring propagation losses, noise, Doppler effects, and target scattering variations, the output of the matched filter is proportional to the autocorrelation function of the transmitted waveform.
-
-For an ideal rectangular-envelope LFM pulse, the magnitude of this response has a narrow main lobe whose characteristic temporal width is approximately
+After reception, the radar correlates the received signal with a replica of the transmitted chirp using a matched filter. For a known transmitted waveform, the matched filter provides the optimum linear filter for detecting the waveform in additive white Gaussian noise. Its impulse response is proportional to the time-reversed complex conjugate of the transmitted signal:
 
 $$
-  \delta t_c \sim \frac{1}{B}
+  h(t) = C s^* (-t)
 $$
 
-A simplified representation of the compressed response is therefore
+where $C$ is a constant that determines the filter gain. For the LFM in $\eqref{equation-11}$
 
 $$
-  z(t) \propto \sinc(\pi Bt) = \frac{\sin(\pi Bt)}{\pi B t}
+  s^* (-t) = p(-t) \exp\left[-i2\pi \left(-f_0 t + \frac{k}{2}t^2 \right)\right]
 $$
 
-The carrier term can normally be removed through coherent demodulation, so it is generally more useful to consider the envelope or magnitude of the compressed response rather than explicitly include the carrier oscillation. The characteristic width of the compressed pulse is determined by the chirp bandwidth $B$ rather than by the original pulse duration $\tau_p$. 
+Since the rectangular pulse envelope is even, $p(-t) = p(t)$, the matched-filter impulse response can be written as
 
-For the ideal sinc response, the first zeroes occurs at $t = \pm 1/B $, so the null-to-null main-lobe width is $\Delta t_{NN} = 2/B$. Other definitions of pulse width, such as the 3-dB width, have different numerical coefficients.
+$$
+  h(t) = C p(t) \exp\left[i2\pi \left(f_0 t - \frac{k}{2} t^2 \right)\right]
+$$
+
+Suppose a target produces an echeo with propagation delay $t_0$ and Doppler frequency $f_d$. Ignoring amplitude attenuation and an arbitrary constant phase, the received complex signal can be modeled as
+
+$$
+  r(t) = p(t - t_0) \exp\left[i2\pi \left(f_0 (t - t_0) + \frac{k}{2}(t - t_0)^2 + f_d t \right) \right]
+$$
+
+The matched-filter output is the convolution of the received signal with the filter impulse response
+
+$$
+\begin{align*}
+  g(t_0, \omega_d) =& (r * h)(t) \\
+  =& K \int_{-\tau/2}^{\tau/2} \cos\left[(\omega_0 + \omega_d)t + \frac{1}{2} k(2\pi)t^2 \right] \cos[\omega_0 (t_0 - t)] + \frac{1}{2}k(2\pi) (t_0 - t)^2 \;\d t \\
+  =& G \cos\left[\left(\omega_0 + \frac{\omega_d}{2} \right) t_0 \right] \frac{\sin\left[\frac{\omega_d + 2\pi k t_0}{2} (\tau - |t_0|) \right]}{\frac{\omega_d + 2\pi kt_0}{2}}
+\end{align*}
+$$
+
+The return echo from the target is down converted by shifting the spectrum of return signal according to the reference signal carrier frequency and filtering the result to recover only the frequency band centred about baseband frequency with bandwidth $B$. Both in-phase and quadrature-phase components of the signal can be extracted and this operation is known as “I, Q detection”. The output of the filtering process can be written as,
+
+$$
+  g(t - t_0) = E_0^2 B \sin[c\pi] B(t_t_0)
+$$
 
 ##### Range resolution after pulse compression
 
