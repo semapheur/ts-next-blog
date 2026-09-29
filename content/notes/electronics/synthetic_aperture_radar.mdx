@@ -29,7 +29,10 @@ $$
 For a transmitted pulse of duration $\tau_p$, the temporal separation between the two received echoes must be sufficiently large for the echoes to be distinguished. The two echoes can be separated in time only if the they do not overlap, i.e. if $\Delta t \geq \tau_p$ implying
 
 $$
+\begin{equation*}
   \Delta R_s = \frac{c\tau_p}{2}
+\tag{\label{equation-9}}
+\end{equation*}
 $$
 
 Let $\theta$ denote the incidence angle, measured with respect to the local ground normal. For a locally flat surface, a small displacement in ground range $\Delta R_g$, corresponds to a slant-range displacement
@@ -41,13 +44,16 @@ $$
 Thus, the ground-range resolution is
 
 $$
+\begin{equation*}
   \Delta R_g = \frac{\Delta R_s}{\sin(\theta)} = \frac{c\tau_p}{2\sin(\theta)}
+\tag{\label{equation-10}}
+\end{equation*}
 $$
 
 This expression assumes that the incidence angle remains approximately constant over the resolution cell. Several important implications can be drawn from this result:
 1. **Loss of range resolution at nadir:** As $\theta \to 0$, $\sin(\theta) \to 0$ and $\Delta R_g \to\infty$, in which case the flat surface approximation breaks down. The reason is that iso-range contours (circles about the sensor) are tangent to the ground at nadir, so points on either side of the nadir at equal distance are indistinguishable in range. This is why imaging radars must be side-looking, with $\theta > 0$.
 
-3. **Variation across the swath:** Since $\sin(\theta)$ increases monotonically with $\theta$ on $(0, \pi/2]$, then $\delta R_g$ decreases with increasing incidence angle. Ground-range resolution is therefore coarsest in the near range (small $\theta_i$) and finest in the far range (large $\theta_i$). This is the opposite of a nadir-viewing optical sensor, whose ground sample distance is finest at nadir and degrades off-nadir.
+3. **Variation across the swath:** Since $\sin(\theta)$ increases monotonically with $\theta$ on $(0, \pi/2]$, then $\delta R_g$ decreases with increasing incidence angle. Ground-range resolution is therefore coarsest in the near range (small $\theta$) and finest in the far range (large $\theta$). This is the opposite of a nadir-viewing optical sensor, whose ground sample distance is finest at nadir and degrades off-nadir.
 
 <LatexFigure width={75} src='/fig/sar_range_resolution.svg' alt=''
   caption="SAR range resolution geometry"
@@ -139,10 +145,7 @@ This expression assumes that the incidence angle remains approximately constant 
   ] node[xshift=5pt, yshift=5pt] {$\theta$};
 
 % First pulse arc
-\draw[
-  very thick,
-  blue
-]
+\draw[very thick, blue]
   (R) ++({\edgeNear}:\pulseOne)
   arc[
     start angle=\edgeNear,
@@ -151,10 +154,7 @@ This expression assumes that the incidence angle remains approximately constant 
   ];
 
 % Second pulse arc
-\draw[
-  very thick,
-  blue
-]
+\draw[very thick, blue]
   (R) ++({\edgeNear}:\pulseTwo)
   arc[
     start angle=\edgeNear,
@@ -163,10 +163,7 @@ This expression assumes that the incidence angle remains approximately constant 
   ];
 
 % Label for range resolution between pulse fronts
-\draw[
-  <->,
-  red
-]
+\draw[<->, red]
   ($(R)+({\lookAbsAngle+\beamWidth/2 + 1}:\pulseOne)$) --
   node[xshift=10pt, yshift=5pt] {$\Delta R_s$}
   ($(R)+({\lookAbsAngle+\beamWidth/2 + 1}:\pulseTwo)$);
@@ -174,10 +171,7 @@ This expression assumes that the incidence angle remains approximately constant 
 \draw[dashed] (I1) -- (G1);
 \draw[dashed] (I2) -- (G2);
 
-\draw[
-  <->,
-  red
-]
+\draw[<->, red]
   (\groundPulseOne, -0.1) --
   node[below] {$\Delta R_g$}
   (\groundPulseTwo, -0.1);
@@ -189,30 +183,86 @@ This expression assumes that the incidence angle remains approximately constant 
 
 ### Pulse compression
 
-To achieve the desired range resolution, it is necessary to have a very short pulse duration $\tau_p$, which leads to a very low duty cycle and average transmit power, making it difficult to satisfy the target observation requirement in terms of system signal-to-noise ratio. Thus, SAR systems employ pulse compression waveforms, such as linear frequency-modulated (LFM) chirps, to achieve both high resolution (with longer pulses) and high signal-to-noise ratio. 
+By $\eqref{equation-9}$, achieving a fine range resolution with an unmodulated radar pulse requires a very short pulse duration. However, for a given peak transmit power, reducing the pulse duration also reduces the energy transmitted in each pulse. This can reduce the received signal-to-noise ratio (SNR), particularly when observing weak targets or operating at long ranges.
 
-A long-duration chirp can provide high transmitted pulse energy while its large bandwidth provides fine range resolution after matched filtering. For a signal with bandwidth $B_r$, the effective compressed-pulse duration is approximately
+Pulse compression provides a way to overcome this trade-off. A radar can transmit a relatively long-duration waveform, thereby transmitting more energy, while modulating the waveform so that it can be compressed to a much shorter effective duration after reception. Linear frequency-modulated (LFM) waveforms, commonly called chirps, are widely used for this purpose.
 
-$$
-  \tau_\text{eff} \approx \frac{1}{B_r}
-$$
+#### Linear modulated chirp
 
-Consequently, the slant-range resolution becomes approximately
+An LFM chirp can be respresented as
 
 $$
-\begin{equation*}
-  \Delta R_s \approx \frac{c}{2B_r}
-\tag{\label{equation-6}}
-\end{equation*}
+  c(t) = p(t) \cos(\pi f_0 t + \pi K t^2)
 $$
 
-and the corresponding ground-range resolution is
+where $p(t)$ is the pulse envelope
 
 $$
-  \Delta R_g \approx \frac{c}{2B_r \sin(\theta_i)}
+  p(t) = \begin{cases}
+    1,\quad& |t| \leq \frac{\tau_p}{2} \\
+    0, \quad& |t| > \frac{\tau_p}{2}
+  \end{cases}
 $$
 
-Thus, after pulse compression, the range resolution is determined primarily by the transmitted bandwidth rather than by the total pulse duration.
+Here $f_0$ is the carrier frequency, $\tau_p$ is the transmitted pulse duration, and $K$ is the chirp rate, with unit $\tunit{Hz/s}$. The instantaneous phase of the waveform is $\phi(t) = 2\pi f_0 t + \pi K t^2$. The corresponding instantaneous frequency is
+
+$$
+  f_i (t) = \frac{1}{2\pi} \frac{\d\phi(t)}{\d t} = f_0 + Kt
+$$
+
+which varies linearly with time. At the centre of the pulse, $t = 0$, the instantaneous frequency equals the carrier frequency $f_i (0) = f_0$. For a pulse extending from $-\tau_p /2$ to $\tau_p /2$, the chirp bandwidth is
+
+$$
+  B = |K| \tau_p = f_\text{max} - f_\text{min}
+$$
+
+If angular frequency is used instead, the chirp can be written as
+
+$$
+  c(t) = p(t) \cos(\omega_0 t + \gamma t^2 /2)
+$$
+
+where $\gamma$ is the angular-frequency chirp rate, with units of $\tunit{rad/s^2}$. The corresponding frequency-domain chirp rate is $K = \gamma/(2\pi)$.
+
+#### Matched filtering
+
+After reception, the radar correlates the received signal with a replica of the transmitted chirp. This is achieved using a matched filter whose impulse response is proportional to the time-reversed complex conjugate of the transmitted waveform.
+
+Ignoring propagation losses, noise, Doppler effects, and target scattering variations, the output of the matched filter is proportional to the autocorrelation function of the transmitted waveform.
+
+For an ideal rectangular-envelope LFM pulse, the magnitude of this response has a narrow main lobe whose characteristic temporal width is approximately
+
+$$
+  \delta t_c \sim \frac{1}{B}
+$$
+
+A simplified representation of the compressed response is therefore
+
+$$
+  z(t) \propto \sinc(\pi Bt) = \frac{\sin(\pi Bt)}{\pi B t}
+$$
+
+The carrier term can normally be removed through coherent demodulation, so it is generally more useful to consider the envelope or magnitude of the compressed response rather than explicitly include the carrier oscillation. The characteristic width of the compressed pulse is determined by the chirp bandwidth $B$ rather than by the original pulse duration $\tau_p$. 
+
+For the ideal sinc response, the first zeroes occurs at $t = \pm 1/B $, so the null-to-null main-lobe width is $\Delta t_{NN} = 2/B$. Other definitions of pulse width, such as the 3-dB width, have different numerical coefficients.
+
+##### Range resolution after pulse compression
+
+Since the characteristic duration of the LFM compressed pulse is of order $1/B$, the corresponding slant-range resolution is approximately
+
+$$
+  \Delta R_s \approx \frac{c}{2B} = \frac{c}{2|K|\tau_p}
+$$
+
+while the ground-range resolution is
+
+$$
+  \Delta R_s \approx \frac{c}{2B \sin(\theta)}
+$$
+
+The transmitted pulse duration and waveform bandwidth play different roles:
+- The pulse duration $\tau_p$ largely determines the amount of energy that can be transmitted in each pulse for a given peak power.
+- The bandwidth $B$ primarily determines the achievable range resolution.
 
 ## Azimuth resolution
 
