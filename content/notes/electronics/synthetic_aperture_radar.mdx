@@ -597,6 +597,344 @@ For a given average transmitted power, an FMCW SAR can therefore operate with a 
 
 The range resolution of an FMCW SAR is still primarily determined by the signal bandwidth given by $\eqref{equation-6}$.
 
+# Point target analysis
+
+Because a SAR imaging system is, to a good approximation, a linear system, its performance can be characterized by its impulse response. The impulse response is obtained by measuring the system response to an isolated point-like scatterer on the ground, such as a corner reflector. Such a discrete scatterer is commonly referred to as a point target. Many important SAR image-quality parameters can be estimated from the measured point-target response. Because a SAR image is two-dimensional, several of these parameters must be evaluated independently in the two image-coordinate directions, typically the range and azimuth directions.
+
+In a processed complex SAR image, the response to a point target has a sinc-like main lobe and sidelobe structure, rather than being a pure sine function. Two of the most important image-quality parameters derived from the point-target response are the impulse-response width (IRW), which characterizes spatial resolution, and the peak sidelobe ratio (PSLR) and integrated sidelobe ratio (ISLR), which characterize different aspects of image contrast and energy spreading.
+
+Because the processed image is sampled, the peak of a point-target response will generally fall between image samples. Consequently, the sampled peak and its local structure cannot, in general, be characterized accurately without interpolation. A common procedure is therefore to extract a two-dimensional window, or chip, centered approximately on the point-target peak, typically containing between $16\times16$ and $64\times64$ samples. The chip is then interpolated or expanded by a factor of approximately 8 or 16. A Fourier-domain interpolator, implemented by taking the discrete Fourier transform (DFT), zero-padding the spectrum, and applying an inverse DFT (IDFT), provides an effective sinc-like interpolation of the sampled data.
+
+More specifically, if the sampled point-target response is represented by $p[m,n]$, its two-dimensional DFT is computed and the resulting spectrum is embedded in a larger array by zero padding, with the spectral samples positioned consistently with the desired interpolation convention. Applying the inverse two-dimensional DFT then produces a more densely sampled representation of the same band-limited response. The procedure does not add information to the original data; it provides a more finely sampled representation from which the peak, nulls, sidelobes, and phase behavior can be estimated more accurately.
+
+The expanded impulse response can be analyzed both as a two-dimensional surface and through one-dimensional profiles taken through the peak. For example, horizontal and vertical profiles of magnitude and phase can be extracted.
+
+## Impulse-response width (IRW)
+
+The impulse-response width (IRW) is the width of the main lobe measured at a specified amplitude or power level. A common convention is the 3-dB width, defined as the distance between the two points at which the impulse-response magnitude falls to $1/\sqrt{2}$ of its peak value.
+
+Let $p(t)$ denote the impulse response as a function of a spatial coordinate $t$, and lets is peak magnitude be
+
+$$
+  A_\text{peak} = \max_t |p(t)|
+$$
+
+The two 3-dB points $t_-$ and $t_+$ are defined by
+
+$$
+  20\log_{10} \left(\frac{|p(t_\pm)|}{A_\text{peak}}\right) = -3.0103 \unit{dB},
+$$
+
+or, equivalently,
+
+$$
+  |p(t_\pm)| = \frac{A_\text{peak}}{\sqrt{2}}.
+$$
+
+The 3-dB impulse-response width is then
+
+$$
+  \mathrm{IRW}_{3 \unit{dB}} = t_+ - t_-
+$$
+
+where $t_-$ and $t_+$ denote the crossings on either side of the main-lobe peak. The exact 3-dB level corresponds to a power ratio of $1/2$, or an amplitude ratio of $1/\sqrt{2}$. Then value $-3 \unit{dB}$ is rounded from $-3.0103 \unit{dB}$.
+
+For a two-dimensional synthetic aperture radar (SAR) image, the IRW is generally measured independently along the range and azimuth directions, yielding $\mathrm{IRW}_r$ and $\mathrm{IRW}_a$, respectively, or along the corresponding image-coordinate axes $\mathrm{IRW}_x$ and $\mathrm{IRW}_y$. These measurements characterize the width of the focused response in each direction and are commonly used as indicators of spatial resolution.
+
+The IRW may be reported in image samples or pixels. For physical interpretation, however, it is preferable to express it in units of distance, such as metres, using the appropriate spatial sampling interval or a georeferenced coordinate system. For a locally uniform sampling interval $\Delta x$, for example, an IRW measured as $N_x$ samples corresponds approximately to
+
+$$
+  \mathrm{IRW}_\text{x,phys}$ = N_x \Delta x
+$$
+
+provided that the sample spacing adequately represents the spatial coordinate in question. Where the image geometry is nonuniform or the image is projected onto the ground, the relevant ground-projected distances should be used instead.
+
+## Peak sidelobe ratio (PSLR)
+
+The peak sidelobe ratio (PSLR) is the ratio of the largest sidelobe magnitude to the peak magnitude of the main lobe. Define
+
+$$
+  A_\text{peak} = \max_t |p(t)|
+$$
+
+If $\mathcal{S}$ denotes the region containing the sidelobes, excluding the main-lobe region, the maximum sidelobe magnitude is
+
+$$
+  A_\text{SL,max} = \max_{t\in\mathcal{S}} |p(t)|
+$$
+
+The PLSR is then defined as
+
+$$
+  \mathrm{PSLR} = 20\log_{10} \left(\frac{A_\text{SL,max}}{A_\text{peak}}\right) \unit{dB}
+$$
+
+Because $A_\mathrm{SL,max} < A_\text{peak}$ for a conventional impulse response, the PSLR is negative. Thus, more negative PLSR values indicate lower sidelobe levels relative to the main-lobe peak.
+
+PSLR is particularly important when targets of substantially different radar cross sections are spatially close. The sidelobes generated by a strong point target can extend into the response of a nearby weaker target, potentially masking it or biasing its measured amplitude. Thus, PSLR provides a quantitative measure of the peak sidelobe contamination associated with a point-target response.
+
+### Rectangular spectral weighting
+
+For an ideal rectangular spectral weighting, the corresponding one-dimensional impulse response is a sinc function,
+
+$$
+  p(t)\propto \sinc(\pi Bt) = \frac{\sin(\pi Bt)}{\pi Bt}
+$$
+
+where $B$ is the processed signal bandwidth. The first sidelobe occurs at the first local maximum of the sinc function outside the main lobe. If $x_1$ denotes the positive solutions of
+
+$$
+  \tan(x) = x,\, x_1 \in (\pi, 2\pi)
+$$
+
+then the first-sidelobe-to-peak amplitude ratio is
+
+$$
+  \frac{A_\text{SL,1}}{A_\text{peak}} = |\sinc(x_1)| \approx 0.21712
+$$
+
+Consequently
+
+$$
+  \mathrm{PSLR} = 20 \log_{10} \left(A_\text{SL,1}}{A_\text{peak} \right) \approx -13.26 \unit{dB}
+$$
+
+The value is independent of $B$: changing the bandwidth changes the scale of the main lobe, and hence the resolution, but not the normalized sidelobe level of the ideal sinc response.
+
+### Spectral tapering
+
+Applying a tapered spectral weighting suppresses sidelobes relative to the rectangular case. In general, this introduces a trade-off: stronger tapering produces lower sidelobe levels but broadens the main lobe, thereby reducing spatial resolution.
+
+Consequently, PSLR and impulse-response width (IRW) should generally be considered together. A more negative PSLR indicates greater suppression of the strongest isolated sidelobe, whereas a smaller IRW indicates a narrower impulse response and hence finer spatial resolution. Improving one characteristic through spectral weighting can therefore come at the expense of the other.
+
+A value around $-20 \unit{dB}$ is a commonly encountered design target, although the appropriate requirement depends on the SAR system and application.
+
+## Isolated sidelobe ratio (ISLR)
+
+### One dimension
+
+Although a SAR impulse response is intrinsically two-dimensional, its sidelobe performance is often characterized first along the range and azimuth dimensions separately. The integrated sidelobe ratio (ISLR) quantifies the total sidelobe energy relative to the energy contained in the main lobe.
+
+Let $\mathcal{W}$ be the finite analysis interval over which the response is evaluated. Define the main-lobe region as $\mathcal{M} \subsetneq \mathcal{W}$. The integrated main-lobe power is
+
+$$
+  P_\text{main} = \int_\mathcal{M} |p(t)|^2 \;\d t
+$$
+
+while the total power within the analysis window is
+
+$$
+  P_\text{main} = \int_\mathcal{W} |p(t)|^2,dt
+$$
+
+The sidelobe power is therefore 
+
+$$
+\begin{align*}
+  P_\text{SL} =& P_\text{total} - P_\text{main} \\
+  \int_{\mathcal{W}\setminus\mathcal{M}} |p(t)|^2 \;\d t
+\end{align*}
+$$
+
+The one-dimensional ISLR is defined as
+
+$$
+  \text{ISLR} = 10\log_{10} \left(\frac{P_\mathrm{total}-P_\mathrm{main}}{P_\mathrm{main}}\right) \unit{dB}
+$$
+
+where the factor of $10$, rather than $20$, is used because the ratio is formed from integrated power (energy) rather than amplitude.
+
+Unlike PSLR, which depends only on the largest sidelobe, ISLR characterizes the total sidelobe energy. It therefore provides a measure of the cumulative sidelobe contamination produced by a strong target or illuminated region and can be particularly relevant when assessing the extent to which sidelobe energy contributes to surrounding weak or dark regions.
+
+The numerical value of ISLR depends on the definition of the main-lobe region $\mathcal{M}$. A common convention is to define the main-lobe interval as a specified multiple of the IRW, centered on the peak:
+
+$$
+  \mathbb{M} = \left[t_0 - \frac{\alpha \cdot \mathrm{IRW}}{2}, t_0 + \frac{\alpha \cdot \mathrm{IRW}}{2}\right]
+$$
+
+where $t_0$ is the location of the main-lobe peak and $\alpha$ is a prescribed dimensionless factor. If the IRW is the 3-dB width, for example, this definition explicitly specifies the extent of the integration region in terms of that measured width. Values of $\alpha$ in the approximate range $2$-$2.5$ are sometimes used, but there is no universal value.
+
+An alternative, and often more physically intrinsic, convention is to define the main lobe as the interval between its first nulls:
+
+$$ 
+  \mathcal{M} = [t_{-1}, t_{+1}]
+$$
+
+where $t_{-1}$ and $t_{+1}$ are the nearest zeros of the impulse response on either side of the main-lobe peak. Under this convention, the sidelobe region consists of the portions of the analysis window outside the first-null-to-first-null interval. Because these definitions integrate over different regions, ISLR values obtained using different main-lobe conventions are not directly interchangeable. An ISLR specification should therefore state both the main-lobe definition and the analysis window $\mathcal{W}$ used for the calculation
+
+For an ideal sinc-like response with rectangular spectral weighting, a one-dimensional ISLR of approximately
+
+$$
+  \mathrm{ISLR }\approx -17.0\ \mathrm{dB}
+$$
+
+is obtained when the main lobe is defined by its first nulls.
+
+### Two dimensions
+
+The two-dimensional ISLR extends the preceding definition to the full point-target response. Let $\mathcal{M}_\text{2D}$ denote the two-dimensional main-lobe region, for example a rectangle centered on the peak and defined by specified multiples of the IRW in the two image-coordinate directions:
+
+$$
+\begin{align*}
+  \mathcal{M}_\text{2D} =& \left[t_{1,0} - \frac{\alpha_x \mathrm{IRW}_x}{2}, t{1,0} + \frac{\alpha_x\mathrm{IRW}_x}{2}\right]
+  &\times \left[t{2,0} - \frac{\alpha_y \mathrm{IRW}y}{ 2 }, t{2,0} + \frac{\alpha_y \mathrm{IRW}_y}{2}\right]
+\end{align*}
+$$
+
+where $\alpha_x$ and $\alpha_y$ specify the chosen main-lobe extents. Other definitions, such as a region bounded by the first nulls in each direction, are also possible.
+
+The main-lobe power is
+
+$$
+  P_\text{main,2D} = \iint_{\mathcal{M}_\text{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2
+$$
+
+and the total power is evaluated over the specified two-dimensional analysis region $\mathcal{W}_\text{2D}$:
+
+$$
+  \iint_{\mathcal{W}_{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2.
+$$
+
+The two-dimensional ISLR is consequently
+
+$$
+  10\log_{10} \left(\frac{P_\mathrm{total,2D} - P_\mathrm{main,2D}}{P_\mathrm{main,2D}}\right)
+$$
+
+An approximate relationship between the two-dimensional and one-dimensional ISLRs can be obtained under the assumption that the impulse response is separable:
+
+$$
+  p_1(t_1;B_1),p_2(t_2;B_2)
+$$
+
+where $p_1$ and $p_2$ are the one-dimensional impulse responses in the two image-coordinate directions. For an unweighted rectangular spectrum, for example,
+
+$$
+  p_i(t_i;B_i) \propto \sinc(\pi B_i t_i)
+$$
+
+Assume further that the main-lobe region is the Cartesian product of the corresponding one-dimensional main-lobe regions. Define the linear, rather than decibel, one-dimensional ISLRs by
+
+$$
+  \frac{P_{\mathrm{SL},y}}{P_{\mathrm{main},y}}
+$$
+
+For a separable response, the two-dimensional total-to-main power ratio satisfies
+
+$$
+  (1+r_x)(1+r_y).
+$$
+
+Hence,
+
+$$
+  (1 + r_x)(1 + r_y) - 1 = r_x + r_y + r_x r_y.
+$$
+
+If the two one-dimensional ISLRs are equal, $r_x = r_y = r$, then
+
+$$
+  10\log_{10}(2r + r^2)
+$$
+
+When the sidelobe energy is small compared with the main-lobe energy, $r\ll 1$, the $r^2$ term can be neglected, giving
+
+$$
+  \mathrm{ISLR}{1D} + 10\log{10}2.
+$$
+
+Thus,
+
+$$
+  \mathrm{ISLR}_{2D} \approx \mathrm{ISLR}_{1D} + 3.01 \unit{dB}
+$$
+
+when the two one-dimensional ISLRs are equal and sufficiently small. This approximation relies on separability and on the particular definition of the two-dimensional main-lobe region; it should therefore not be treated as a general identity.
+
+## Peak position
+
+The peak position is the location of the maximum of the two-dimensional point-target response:
+
+$$
+  \underset{t_1,t_2}{\operatorname{arg,max}}, |p(t_1,t_2)|
+$$
+
+In sampled data, interpolation is normally required because the continuous peak generally does not coincide with a sample location.
+
+Peak-position measurements are important for geometric calibration, including the determination of absolute and relative geometric accuracy. A processed SAR image is normally associated with geolocation information, such as latitude and longitude. Absolute geometric accuracy can be assessed by comparing identifiable image features or calibrated point targets with independently surveyed ground coordinates or a suitably accurate reference map.
+
+Relative geometric accuracy concerns the spatial relationships between points within the image. A constant translational bias, for example, may have little effect on relative accuracy even though it affects absolute geolocation. Similarly, geometric distortions such as scale errors, nonorthogonality, or spatially varying distortions can affect the relative positions and dimensions of objects. Ideally, geometric relationships measured in the SAR image should agree with the corresponding relationships on the ground, within the specified accuracy.
+
+## Signal Peak Magnitude
+
+The signal peak magnitude is the magnitude of the complex point-target response at its peak,
+
+$$
+  \max_{t_1,t_2}|p(t_1,t_2)|
+$$
+
+This quantity is important for radiometric calibration, for example when estimating the radar cross section (RCS) of a calibrated target. Depending on the calibration procedure and system characteristics, an integrated target response may be preferred to the peak response. When an integrated quantity is used, it should be defined consistently in terms of power or an appropriately calibrated intensity measure; peak amplitude, integrated amplitude, and integrated power are not interchangeable quantities.
+
+## Phase
+
+The phase response of a point target is important in applications such as interferometry and polarimetry. A SAR processor must therefore preserve the phase information contained in the received complex data. Phase information is also used internally by several SAR processing algorithms, including Doppler-centroid estimation and autofocus.
+
+The phase behavior of a compressed point target can differ between the two image-coordinate directions. In a conventional matched-filter formulation, the compressed response can contain a residual phase variation, or phase ramp, across the impulse response. The slope of this phase variation is related to the center frequency and to the particular basebanding and processing conventions used in that direction. Consequently, the phase profiles in range and azimuth should generally be examined separately.
+
+The regularity of the phase profile through the point-target peak provides an indication of the quality of the compression and of the presence of residual phase errors. A phase profile that deviates from the expected behavior may indicate processing errors, residual uncompensated motion, incorrect focusing, or other system imperfections.
+
+The phase evaluated exactly at the two-dimensional peak provides a single phase measurement, modulo $2\pi$. Its absolute value depends on the target's position and on the phase reference adopted by the processing chain. Therefore, the phase at the peak should not be interpreted independently of the processor's phase convention and reference geometry.
+
+## Sampling requirements
+
+Correct point-target analysis requires that the complex SAR data be adequately sampled in both image-coordinate directions. During normal SAR processing, the sampling rates are generally selected to satisfy the required bandwidth constraints. However, additional considerations arise if the data are detected before point-target analysis.
+
+Detection converts complex data into a magnitude- or power-related quantity and is a nonlinear operation. Consequently, the spectral content of the detected signal can extend beyond that of the original complex signal, and insufficient sampling can introduce aliasing and distort the measured point-target response.
+
+A conservative approach is therefore to ensure that the complex data are sufficiently oversampled before detection so that the detected signal remains adequately sampled. An oversampling factor of approximately two in each dimension provides a robust margin against aliasing in many practical situations. In some SAR processing chains, however, the actual spectral occupancy and roll-off of the processed data permit a smaller factor. An oversampling factor of approximately (1.4) in each dimension is sometimes sufficient to represent point-target properties accurately in detected data, provided that the bandwidth, spectral support, and processing conventions have been explicitly accounted for.
+
+The appropriate sampling factor should therefore be determined from the actual signal bandwidth and spectral support rather than treated as a universal constant. In particular, the sampling requirement for detected data should be verified from the bandwidth of the nonlinear detected signal and the desired accuracy of the point-target measurements.
+
+**IRW:** The impulse response width is defined as the width of the main lobe of the impulse response, measured 3 dB below the peak value. In SAR processing, this is referred to as the image resolution (see Chapter 3). The counterpart in optical images is the instantaneous field of view (IFOV). The units of the IRW are samples, although it can also be expressed in the units of the system, such as meters.
+
+**PSLR:** The peak sidelobe ratio is the ratio between the height of the largest sidelobe and the height of the main lobe, expressed in decibels (dB). For a sine function resulting from the Fourier transform of a uniform spectrum, the ratio is - 13 dB. In SAR systems, the PSLR should be smaller than this, so that small targets are not masked by adjacent strong targets. A commonly acceptable level of PSLR is approximately - 20 dB . This level can be achieved by using a tapered window in the processing.
+
+**One-dimensional ISLR:** Even though the signal is two-dimensional, it is often useful to start by analyzing the sidelobe power in one dimension. The integrated sidelobe ratio can be obtained by integrating the power (magnitude squared) of the impulse response over suitable regions. If the "main lobe" power is $P_\text{main}$ and the total power $P_\text{total}$, the one-dimensional ISLR is then
+
+$$
+  \operatorname{ISLR} = 10 \log_{10} \left(\frac{P_\text{total} - P_\text{main}}{P_\text{main}} \right)
+$$
+
+where the numerator is the total power of the sidelobes. It remains to define the main lobe width, which can be taken as a times the IRW, centered around the peak, where a is a predefined constant, usually between 2 and 2.5. Sometimes, the null-to-null definition is used.
+
+The one-dimensional ISLR should be kept small, so that dark areas in the image are not filled in by spillover from adjacent strong areas. A typical one-dimensional ISLR is - 17 dB, with the main lobe defined as being within the null-to-null limits.
+
+**Two-dimensional ISLR:** The two-dimensional ISLR is similar to the one-dimensional ISLR, with the main lobe defined within a rectangle $\alpha$ times the respective IRWs in each direction. The sidelobe power is then the power of the entire two-dimensional image chip minus the main lobe power. Instead of measuring this parameter in the above manner, it can be approximated from the two one-dimensional ISLRs, by assuming the two-dimensional impulse response to be separable in the two directions, that is,
+
+$$
+  p(t_1, t_2) = p_1 (t_1, B_1) p_2 (t_2, B_2)
+$$
+
+where $p_i (t_i, B_i)$ for $i = 1,2$ is a sinc-like function with bandwidth $B$. For example, if there is no weighting, $p_i (t, B) = \sinc(\pi B t)$ for a baseband signal. In addition, if it is assumed that $\operatorname{ISLR}_x = \operatorname{ISLR}_y$ and the $x$ and $y$ dimensions have little correlation, then it can be shown that
+
+$$
+  \operatorname{ISLR}_{2d} \approx \operatorname{ISLR}_x + 3
+$$
+
+where all $\operatorname{ISLR}$ are in decibels.
+
+**Peak position:** This is the position of the peak of the impulse response in the two-dimensional sample space. The measurement is used for geometric calibration, (i.e., to determine the geometric registration accuracy of the image, either absolute or relative) . The final processed image is usually tagged with geolocation tick marks, such as latitude and longitude. To measure absolute accuracy, identifiable image points must be compared against a map or surveyed locations.
+
+Relative accuracy concerns the distance between points within a scene, and the existence of a constant bias and/or rotation of the image is of no concern. In other words, a square on the ground should appear as a square in the image regardless of its orientation in the image, and the measured size should agree with that on the map.
+
+**Signal peak magnitude:** This is the magnitude of the target response at its peak. It is used for radiometric calibration purposes, (e.g., to measure the radar cross section of a target). Sometimes, integrated magnitude is preferred over peak magnitude for this measurement.
+
+**Phase:** The phase is an important parameter in applications such as interferometry and polarimetry. Therefore, it is important that a SAR processor preserve the phase information that is contained in the received data. The phase can also be utilized in some steps of SAR processing, such as Doppler centroid estimation and autofocus. The phase characteristics of a point target measured in one direction can differ from the characteristics in the other direction. This is because the compressed target has a phase ramp across the peak of the impulse response, whose slope is proportional to the center frequency of the data in that direction. In each direction, the regularity of the phase is an indicator of how well the data are compressed.
+
+The phase at the peak of the compressed target is a single-valued parameter, as it is measured at t hemaximum point of the two-dimensional impulse response. The phase is dependent upon the target position.
+
+In order to perform point target analysis correctly, the data must be properly sampled in both directions. Usually, the complex data are adequately sampled during the various processing stages. However, if the image is detected before the point targets are analyzed, errors may occur as a result of undersampling, because the detection operation widens the signal bandwidth. To keep the detected data from being aliased, the data should be oversampled by a factor of two in each direction before the detection operation. However, because of oversampling of the data and spectral rolloff at higher frequencies, upsampling by a factor of 1.4 in each direction is usually sufficient to represent the point target properties adequately in detected data.
+
 # Continuous-wave SAR
 
 FMCW SAR uses a dechirp reception method, and the bandwidth of the mixed signal depends on the modulation frequency of the transmit signal and the mapping bandwidth, which is usually much smaller than the transmit signal bandwidth, which greatly reduces the acquisition pressure of the receiver and has a limited impact on the range-oriented resolution.
