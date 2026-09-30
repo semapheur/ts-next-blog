@@ -718,7 +718,10 @@ Although a SAR impulse response is intrinsically two-dimensional, its sidelobe p
 Let $\mathcal{W}$ be the finite analysis interval over which the response is evaluated. Define the main-lobe region as $\mathcal{M} \subsetneq \mathcal{W}$. The integrated main-lobe power is
 
 $$
+\begin{equation*}
   P_\text{main} = \int_\mathcal{M} |p(t)|^2 \;\d t
+\tag{\label{equation-12}}
+\end{equation*}
 $$
 
 while the total power within the analysis window is
@@ -792,64 +795,96 @@ $$
 and the total power is evaluated over the specified two-dimensional analysis region $\mathcal{W}_\text{2D}$:
 
 $$
-  \iint_{\mathcal{W}_{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2.
+  P_\text{total,2D} = \iint_{\mathcal{W}_{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2.
 $$
 
 The two-dimensional ISLR is consequently
 
 $$
-  10\log_{10} \left(\frac{P_\mathrm{total,2D} - P_\mathrm{main,2D}}{P_\mathrm{main,2D}}\right)
+  \mathrm{ISLR}_\text{2D} = 10\log_{10} \left(\frac{P_\mathrm{total,2D} - P_\mathrm{main,2D}}{P_\mathrm{main,2D}}\right) \unit{dB}
 $$
 
 An approximate relationship between the two-dimensional and one-dimensional ISLRs can be obtained under the assumption that the impulse response is separable:
 
 $$
-  p_1(t_1;B_1),p_2(t_2;B_2)
+  p_1(t_1, t_2) = C p_x (t_1) p_y (t_2)
 $$
 
-where $p_1$ and $p_2$ are the one-dimensional impulse responses in the two image-coordinate directions. For an unweighted rectangular spectrum, for example,
+where $C$ is a constant and $p_x$ and $p_y$ are the corresponding one-dimensional impulse responses.
+
+Suppose, in addition, that both the main-lobe region and analysis regions are Cartesian products of their one-dimensional counterparts
 
 $$
-  p_i(t_i;B_i) \propto \sinc(\pi B_i t_i)
+\begin{align*}
+  \mathcal{M}_\text{2D} =& \mathcal{M}_x \times \mathcal{M}_y \\
+  \mathcal{W}_\text{2D} =& \mathcal{W}_x \times \mathcal{W}_y
+\end{align*}
 $$
 
-Assume further that the main-lobe region is the Cartesian product of the corresponding one-dimensional main-lobe regions. Define the linear, rather than decibel, one-dimensional ISLRs by
+Because
 
 $$
-  \frac{P_{\mathrm{SL},y}}{P_{\mathrm{main},y}}
+  |p(t_1, t_2)|^2 = |C|^2 |p_x (t_1)|^2 |p_y (t_2)|^2
 $$
 
-For a separable response, the two-dimensional total-to-main power ratio satisfies
+the two-dimensional integrals factor into products of one-dimensional integrals. Using the one-dimensional main-lobe power $\eqref{equation-12}$, we define the linear ISRL
 
 $$
-  (1+r_x)(1+r_y).
+  r_i 0 \frac{P_\text{SL,i}}{P_\text{main,i}},\, i = x, y
 $$
 
-Hence,
+Thus, the one-dimensional total-to-min power ratios are
 
 $$
-  (1 + r_x)(1 + r_y) - 1 = r_x + r_y + r_x r_y.
+  \frac{P_\text{total,x}}{P_\text{total,y}} = 1 + r_i,\, i = x, y
 $$
 
-If the two one-dimensional ISLRs are equal, $r_x = r_y = r$, then
+Under the separability assumptions, the corresponding two-dimensional total-to-main ratio is therefore
 
 $$
-  10\log_{10}(2r + r^2)
+  \frac{P_\text{total,2D}}{P_\text{main,2D}} = (1 + r_x)(1 + r_y)
 $$
 
-When the sidelobe energy is small compared with the main-lobe energy, $r\ll 1$, the $r^2$ term can be neglected, giving
+Consequently, the two-dimensional linear sidelobe-to-main ratio is
 
 $$
-  \mathrm{ISLR}{1D} + 10\log{10}2.
+\begin{align*}
+  r_\text{2D} =& \frac{P_\text{SL,2D}}{P_\text{main,2D}} \\
+  =& (1 + r_x)(1 + r_y) - 1 = r_x + r_y + r_x r_y
+\end{align*}
 $$
 
-Thus,
+The exact relationship between the corresponding decibel ISLRs is therefore
 
 $$
-  \mathrm{ISLR}_{2D} \approx \mathrm{ISLR}_{1D} + 3.01 \unit{dB}
+  \mathrm{ISLR}_\text{2D} = 10 \log_{10} (r_x + r_y + r_x r_y)
 $$
 
-when the two one-dimensional ISLRs are equal and sufficiently small. This approximation relies on separability and on the particular definition of the two-dimensional main-lobe region; it should therefore not be treated as a general identity.
+If the two one-dimensional ISLRs are equal, $r_x = r_y = r$, then $r_\text{2D} = 2r + r^2$ and
+
+$$
+  \mathrm{ISLR}_\text{2D} = 10\log_{10} (2r + r^2)
+$$
+
+When the sidelobe energy is small compared with the main-lobe energy, $r\ll 1$, the quadratic $r^2$ term is negligible compare with $2r$, giving
+
+$$
+  \mathrm{ISLR}_{2D} \approx 10\log{10} (2r)
+$$
+
+Since
+
+$$
+  10 \log_{10} (2r) = 10 \log_{10} (r) + 10 \log_{10} (2)
+$$
+
+and $10 \log_{10} (2) \approx 3.0103 \unit{dB}$, we obtain
+
+$$
+  \mathrm{ISLR}_{2D} \approx \mathrm{ISLR}_{1D} + 3.0103 \unit{dB}
+$$
+
+This approximation relies on separability and on the particular definition of the two-dimensional main-lobe region; it should therefore not be treated as a general identity.
 
 ## Peak position
 
