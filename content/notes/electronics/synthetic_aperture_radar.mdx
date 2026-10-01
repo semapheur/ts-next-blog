@@ -607,7 +607,22 @@ Because the processed image is sampled, the peak of a point-target response will
 
 More specifically, if the sampled point-target response is represented by $p[m,n]$, its two-dimensional DFT is computed and the resulting spectrum is embedded in a larger array by zero padding, with the spectral samples positioned consistently with the desired interpolation convention. Applying the inverse two-dimensional DFT then produces a more densely sampled representation of the same band-limited response. The procedure does not add information to the original data; it provides a more finely sampled representation from which the peak, nulls, sidelobes, and phase behavior can be estimated more accurately.
 
-The expanded impulse response can be analyzed both as a two-dimensional surface and through one-dimensional profiles taken through the peak. For example, horizontal and vertical profiles of magnitude and phase can be extracted.
+The expanded impulse response can be analyzed both as a two-dimensional surface and through one-dimensional profiles taken through the peak.
+
+In the following discussion, let 
+
+$$
+\begin{equation*}
+  p(t_1, t_2) = |p(t_1, t_2)| e^{i\phi(t_1, t_2)}
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+denote the complex point-target response. The phase is then
+
+$$
+  \phi (t_1, t_2) = \operatorname{arg}[p(t_1, t_2)] \pmod{2\pi}
+$$
 
 ## Impulse-response width (IRW)
 
@@ -888,87 +903,230 @@ This approximation relies on separability and on the particular definition of th
 
 ## Peak position
 
-The peak position is the location of the maximum of the two-dimensional point-target response:
+The peak position is the image-coordinate location at which the magnitude of the impulse response attains its maximum. The continuous peak position is defined by
 
 $$
-  \underset{t_1,t_2}{\operatorname{arg,max}}, |p(t_1,t_2)|
+  (t_{1,\text{max}}, t_{2,\text{max}}) = \argmax_{(t_1, t_2) |p(t_1, t_2)|
 $$
 
-In sampled data, interpolation is normally required because the continuous peak generally does not coincide with a sample location.
+For sampled SAR data, the maximum generally occurs between pixel centers. The discrete estimate
 
-Peak-position measurements are important for geometric calibration, including the determination of absolute and relative geometric accuracy. A processed SAR image is normally associated with geolocation information, such as latitude and longitude. Absolute geometric accuracy can be assessed by comparing identifiable image features or calibrated point targets with independently surveyed ground coordinates or a suitably accurate reference map.
+$$
+  (\hat{t}_{1,\text{max}}, \hat{t}_{2,\text{max}}) = \argmax_{(m, n) |p[m,n]|
+$$
 
-Relative geometric accuracy concerns the spatial relationships between points within the image. A constant translational bias, for example, may have little effect on relative accuracy even though it affects absolute geolocation. Similarly, geometric distortions such as scale errors, nonorthogonality, or spatially varying distortions can affect the relative positions and dimensions of objects. Ideally, geometric relationships measured in the SAR image should agree with the corresponding relationships on the ground, within the specified accuracy.
+therefore provides only a quantized estimate of the continuous peak position. Subpixel interpolation or parametric fitting is normally used when higher positional accuracy is required.
+
+### Geometric interpretation
+
+Peak-position measurements are important for assessing SAR geometric accuracy, because the estimated image position of a known point target can be compared with its independently known ground position. A SAR image is typically associated with a geolocation model that maps image coordinates to geographic coordinates, such as latitude, longitude, and height:
+
+$$
+  (t_1, t_2) \to (\varphi, \lambda, h)
+$$
+
+where $\varphi$ denotes latitude, $\lambda$ longitude, and $h$ elevation. The precise coordinate representation depends on the image product and geolocation model.
+
+Absolute geometric accuracy characterizes the discrepancy between the geolocated position of an image feature or calibrated point target and an independently determined reference position. For a point target with reference ground coordinates $\mathbf{x}_\text{ref}$ and estimated image-derived coordinates $\unitvec{x}$, a positional error can be expressed as
+
+$$
+  \Delta\mathbf{x} = \unitvec{x} - \mathbf{x}_\text{ref}
+$$
+
+with an appropriate metric used to report the magnitude of the error, for example
+
+$$
+  e = \norm{\Delta x}
+$$
+
+Relative geometric accuracy, in contrast, concerns the preservation of spatial relationships within the image rather than the absolute position of the image as a whole. For two points $A$ and $B$, for example, one can compare the image-derived displacement
+
+$$
+  \Delta \mathbf{x}_{AB} = \unitvec{x}_B - \unitvec{x}_A
+$$
+
+with the corresponding reference displacement
+
+$$
+  \Delta \mathbf{x}_{AB,\text{ref}} = \mathbf{x}_{B,\text{ref}} - \mathbf{x}_{A,\text{ref}}
+$$
+
+The relative displacement error is then
+
+$$
+  e_{AB} = \Delta \mathbf{x}_{AB} - \Delta \mathbf{x}_{AB,\text{ref}}
+$$
+
+This distinction is important because a constant translational bias
+
+$$
+  \unitvec{x} = \mathbf{x} + \mathbf{b}
+$$
+
+changes the absolute positions by the same offset $\mathbf{b}$, but leaves pairwise separations unchanged
+
+$$
+  \unitvec{x}_B - \unitvec{x}_A = \mathbf{x}_B - \mathbf{x}_A
+$$
+
+Thus, a product can exhibit a systematic absolute geolocation offset while retaining good relative geometric fidelity.
+
+Conversely, distortions that vary spatially can affect relative geometry. Examples include scale errors, axis nonorthogonality (skew), rotation errors, and higher-order or spatially varying distortions. A general local affine model, for example, can be written as
+
+$$ 
+  \unitvec{x} = \mathbf{A}\mathbf{x} + \mathbf{b}
+$$
+
+where $\mathbf b$ represents a translational bias and the matrix $\mathbf A$ describes changes in scale, rotation, and axis geometry. The translational component affects absolute positioning, whereas departures of $\mathbf A$ from the identity matrix can alter relative distances and angles.
 
 ## Signal Peak Magnitude
 
-The signal peak magnitude is the magnitude of the complex point-target response at its peak,
+The signal peak magnitude is the maximum magnitude of the complex point-target impulse response. The peak magnitude is defined as
 
 $$
-  \max_{t_1,t_2}|p(t_1,t_2)|
+  A_\text{peak} = \max_{(t_1,t_2)} |p(t_1,t_2)|
 $$
 
-This quantity is important for radiometric calibration, for example when estimating the radar cross section (RCS) of a calibrated target. Depending on the calibration procedure and system characteristics, an integrated target response may be preferred to the peak response. When an integrated quantity is used, it should be defined consistently in terms of power or an appropriately calibrated intensity measure; peak amplitude, integrated amplitude, and integrated power are not interchangeable quantities.
+The quantity $A_\text{peak}$ is an amplitude-domain measure of the strength of the point-target response. In sampled imagery, the maximum sample generally provides only a discrete estime of the continuous peak
+
+$$
+  A_\text{peak} = \max_{(m, n)} |p[m, n]|
+$$
+
+Subpixel interpolation or local model fitting is used when the peak magnitude is intended as a calibrated measurement.
+
+Peak response measurements are commonly used in the characterization and calibration of SAR point targets. For a calibrated target with known radar cross section (RCS), $\sigma$, the measured response can be related to the target's RCS through an appropriate radiometric calibration model.
+
+A peak-response measurement is not necessarily the only, or always the preferred, radiometric observable. In some calibration procedures, an integrated target response is used instead, because integrating over the point-target response can reduce sensitivity to sampling of the peak and to small differences in the impulse-response shape.
+
+The distinction between these quantities is important. For example, the integrated power over a region $\mathcal{W}$ is
+
+$$
+  P_\mathcal{W} = \iint_\mathcal{W} |p(t_1, t_2)|^2 \;\d t_1 \;\d t_2
+$$
+
+whereas an integrated amplitude is
+
+$$
+  A_\mathcal{W} = \iint_\mathcal{W} |p(t_1, t_2)| \;\d t_1 \;\d t_2
+$$
+
+These quantities have different dimensions and different physical meanings. In general
+
+$$
+  \max |p| \neq A_\mathcal{W} \neq P_\mathcal{W}
+$$
 
 ## Phase
 
-The phase response of a point target is important in applications such as interferometry and polarimetry. A SAR processor must therefore preserve the phase information contained in the received complex data. Phase information is also used internally by several SAR processing algorithms, including Doppler-centroid estimation and autofocus.
+The phase response of a SAR point target characterizes the phase of its complex-valued impulse response $\eqref{equation-13}$ and is an important quality metric for applications that rely on coherent information, including interferometry and polarimetry. Phase information is also exploited internally by several processing algorithms, including Doppler-centroid estimation, motion compensation, and autofocus.
 
-The phase behavior of a compressed point target can differ between the two image-coordinate directions. In a conventional matched-filter formulation, the compressed response can contain a residual phase variation, or phase ramp, across the impulse response. The slope of this phase variation is related to the center frequency and to the particular basebanding and processing conventions used in that direction. Consequently, the phase profiles in range and azimuth should generally be examined separately.
+The phase behavior of a compressed point target can differ between the two image-coordinate directions. Accordingly, the phase should generally be examined using separate one-dimensional cuts through the point-target response, for example,
 
-The regularity of the phase profile through the point-target peak provides an indication of the quality of the compression and of the presence of residual phase errors. A phase profile that deviates from the expected behavior may indicate processing errors, residual uncompensated motion, incorrect focusing, or other system imperfections.
+$$
+  \phi_x (t_1) = \arg p(t_1, t_{2,0})
+$$
 
-The phase evaluated exactly at the two-dimensional peak provides a single phase measurement, modulo $2\pi$. Its absolute value depends on the target's position and on the phase reference adopted by the processing chain. Therefore, the phase at the peak should not be interpreted independently of the processor's phase convention and reference geometry.
+and
+
+$$
+  \phi_y (t_2) = \arg p(t_{1,0}, t_2)
+$$
+
+where $(t_{1,0}, t_{2,0})$ denotes the estimated peak position.
+
+For an ideal focused response, the expected phase behavior depends on the signal representation and processing convention. In a matched-filter formulation, the compressed response can contain a residual phase variation across the impulse response. Over a limited interval, this variation may be approximately linear,
+
+$$
+  \phi_i (t_i) \approx \phi_{i,0} + k_i (t_i - t_{i,0})
+$$
+
+where $k_i$ is the phase slope in direction $i$. The corresponding complex response contains a phase factor of the form $e^{i k_i (t_i - t_{i, 0})}$. The numerical value and even the presence of such a phase ramp depend on the choice of carrier or center frequency, basebanding convention, demodulation reference, coordinate definition, and matched-filter implementation. Consequently, a nonzero phase slope is not by itself evidence of a processing error; it must be evaluated against the phase behavior expected for the particular processing chain.
+
+### Phase regularity
+
+The regularity of the phase profile across the compressed point-target response provides a useful diagnostic of focusing and residual phase errors. After removal of any known or expected phase trend, a well-focused response should exhibit a phase behavior consistent with the adopted signal and processing model.
+
+For example, if the expected phase is represented by $\phi_\text{ref}(t_i)$, a residual phase error can be defined, after appropriate phase unwrapping, as
+
+$$
+  \Delta\phi_i(t_i) = \operatorname{unwrap}\left[\phi_i(t_i)\right] - \phi_\text{ref}(t_i)
+$$
+
+The magnitude and structure of $\Delta\phi_i(t_i)$ can then be used to identify departures from the expected response. Significant residual phase errors may be associated with incorrect or incomplete focusing, uncompensated platform motion, timing or synchronization errors, or other imperfections in the acquisition and processing chain. The physical cause cannot, however, generally be inferred from the phase profile alone.
+
+Because phase is inherently wrapped, phase-profile analysis should distinguish between the wrapped phase $\phi(t)\in(-\pi,\pi]$ and an unwrapped phase representation used to estimate trends or slopes. Apparent discontinuities of approximately $2\pi$ in a wrapped phase profile do not necessarily represent physical phase discontinuities.
+
+### Phase at peak position
+
+A single-valued peak-phase measurement can be defined from the estimated peak position $(t_{1,\text{peak}},t_{2,\text{peak}})$ as
+
+$$
+  \phi_\text{peak} = \arg p(t_{1,\text{peak}},t_{2,\text{peak}}) \pmod{2\pi}. }
+$$
+
+For sampled data, this should be evaluated at the estimated continuous peak if an interpolated complex response is available; otherwise, the phase of the maximum-magnitude sample provides the discrete estimate.
+
+The peak phase is a wrapped phase quantity, so
+
+$$
+  \phi_\text{peak} \equiv \phi_\text{peak} + 2\pi n,\, n\in\mathbb{Z}
+$$
+
+Its absolute numerical value is therefore meaningful only relative to a specified phase reference. In addition, the phase of a point target can depend on its position through the propagation phase and on the reference adopted by the SAR processing chain. Consequently, the measured peak phase should not generally be interpreted as an intrinsic property of the target independent of geometry.
+
+For interferometric or other coherent applications, what is often more physically meaningful is a phase difference between measurements made with a common or explicitly defined reference. For two complex responses $p_1$ and $p_2$, for example, the interferometric phase can be expressed as
+
+$$
+  \Delta \phi = \arg (p_1 p_2^*) \pmod{2\pi}
+$$
 
 ## Sampling requirements
 
-Correct point-target analysis requires that the complex SAR data be adequately sampled in both image-coordinate directions. During normal SAR processing, the sampling rates are generally selected to satisfy the required bandwidth constraints. However, additional considerations arise if the data are detected before point-target analysis.
+Accurate point-target analysis requires adequate sampling of the complex SAR data in both image-coordinate directions to represent the relevant spatial-frequency content without significant aliasing. For complex SAR data, the sampling intervals are normally selected during image formation to accommodate the processed signal bandwidth and the desired image sampling density. Additional care is required, however, when point-target analysis is performed on detected rather than complex data.
 
-Detection converts complex data into a magnitude- or power-related quantity and is a nonlinear operation. Consequently, the spectral content of the detected signal can extend beyond that of the original complex signal, and insufficient sampling can introduce aliasing and distort the measured point-target response.
-
-A conservative approach is therefore to ensure that the complex data are sufficiently oversampled before detection so that the detected signal remains adequately sampled. An oversampling factor of approximately two in each dimension provides a robust margin against aliasing in many practical situations. In some SAR processing chains, however, the actual spectral occupancy and roll-off of the processed data permit a smaller factor. An oversampling factor of approximately (1.4) in each dimension is sometimes sufficient to represent point-target properties accurately in detected data, provided that the bandwidth, spectral support, and processing conventions have been explicitly accounted for.
-
-The appropriate sampling factor should therefore be determined from the actual signal bandwidth and spectral support rather than treated as a universal constant. In particular, the sampling requirement for detected data should be verified from the bandwidth of the nonlinear detected signal and the desired accuracy of the point-target measurements.
-
-**IRW:** The impulse response width is defined as the width of the main lobe of the impulse response, measured 3 dB below the peak value. In SAR processing, this is referred to as the image resolution (see Chapter 3). The counterpart in optical images is the instantaneous field of view (IFOV). The units of the IRW are samples, although it can also be expressed in the units of the system, such as meters.
-
-**PSLR:** The peak sidelobe ratio is the ratio between the height of the largest sidelobe and the height of the main lobe, expressed in decibels (dB). For a sine function resulting from the Fourier transform of a uniform spectrum, the ratio is - 13 dB. In SAR systems, the PSLR should be smaller than this, so that small targets are not masked by adjacent strong targets. A commonly acceptable level of PSLR is approximately - 20 dB . This level can be achieved by using a tapered window in the processing.
-
-**One-dimensional ISLR:** Even though the signal is two-dimensional, it is often useful to start by analyzing the sidelobe power in one dimension. The integrated sidelobe ratio can be obtained by integrating the power (magnitude squared) of the impulse response over suitable regions. If the "main lobe" power is $P_\text{main}$ and the total power $P_\text{total}$, the one-dimensional ISLR is then
+Detection is a nonlinear operation. For complex data $s(t)$, magnitude detection produces $a(t) = |s(t)|$, while power detection produces
 
 $$
-  \operatorname{ISLR} = 10 \log_{10} \left(\frac{P_\text{total} - P_\text{main}}{P_\text{main}} \right)
+  I(t) = |s(t)|^2 = s(t) s^*(t)
 $$
 
-where the numerator is the total power of the sidelobes. It remains to define the main lobe width, which can be taken as a times the IRW, centered around the peak, where a is a predefined constant, usually between 2 and 2.5. Sometimes, the null-to-null definition is used.
+Neither operation preserves the spectrum of $s(t)$. In particular, the nonlinear transformation generates new spectral components through frequency mixing. Consequently, a sampling rate that is adequate for the original complex signal is not necessarily sufficient to represent the detected signal without aliasing.
 
-The one-dimensional ISLR should be kept small, so that dark areas in the image are not filled in by spillover from adjacent strong areas. A typical one-dimensional ISLR is - 17 dB, with the main lobe defined as being within the null-to-null limits.
-
-**Two-dimensional ISLR:** The two-dimensional ISLR is similar to the one-dimensional ISLR, with the main lobe defined within a rectangle $\alpha$ times the respective IRWs in each direction. The sidelobe power is then the power of the entire two-dimensional image chip minus the main lobe power. Instead of measuring this parameter in the above manner, it can be approximated from the two one-dimensional ISLRs, by assuming the two-dimensional impulse response to be separable in the two directions, that is,
+For power detection, this can be seen explicitly from the Fourier-domain relation
 
 $$
-  p(t_1, t_2) = p_1 (t_1, B_1) p_2 (t_2, B_2)
+  F{|s(t)|^2} = S(f) * S^* (−f)
 $$
 
-where $p_i (t_i, B_i)$ for $i = 1,2$ is a sinc-like function with bandwidth $B$. For example, if there is no weighting, $p_i (t, B) = \sinc(\pi B t)$ for a baseband signal. In addition, if it is assumed that $\operatorname{ISLR}_x = \operatorname{ISLR}_y$ and the $x$ and $y$ dimensions have little correlation, then it can be shown that
+where $S(f) = F{s(t)}$. Thus, if the complex signal occupies a bandwidth \(B\), the support of the power-detected signal can, in the worst case, extend to approximately twice that bandwidth. Magnitude detection is also nonlinear and can generate additional spectral content, although its exact spectral support depends on the signal and its amplitude distribution.
+
+Sampling below the Nyquist rate of the relevant detected signal can therefore introduce aliasing. Once aliased, these spectral components cannot in general be removed by subsequent processing and may distort quantities derived from the point-target response.
+
+Generally, if the relevant detected signal has effective two-sided bandwidth $B_\text{det}}$, a sampling frequency $f_s$ should satisfy the appropriate Nyquist condition
 
 $$
-  \operatorname{ISLR}_{2d} \approx \operatorname{ISLR}_x + 3
+  f_s > 2B_\text{det}
 $$
 
-where all $\operatorname{ISLR}$ are in decibels.
+with additional margin where required by the desired measurement accuracy and by nonideal filtering. Equivalently, an oversampling factor can be defined as
 
-**Peak position:** This is the position of the peak of the impulse response in the two-dimensional sample space. The measurement is used for geometric calibration, (i.e., to determine the geometric registration accuracy of the image, either absolute or relative) . The final processed image is usually tagged with geolocation tick marks, such as latitude and longitude. To measure absolute accuracy, identifiable image points must be compared against a map or surveyed locations.
+$$
+  \eta = \frac{f_s}{2B_\text{det}}
+$$
 
-Relative accuracy concerns the distance between points within a scene, and the existence of a constant bias and/or rotation of the image is of no concern. In other words, a square on the ground should appear as a square in the image regardless of its orientation in the image, and the measured size should agree with that on the map.
+so that $\eta > 1$ represents sampling above the nominal Nyquist rate.
 
-**Signal peak magnitude:** This is the magnitude of the target response at its peak. It is used for radiometric calibration purposes, (e.g., to measure the radar cross section of a target). Sometimes, integrated magnitude is preferred over peak magnitude for this measurement.
+For two-dimensional SAR data, this consideration applies independently in the two image-coordinate directions. If the detected signal has effective bandwidths \(B_{\mathrm{det},x}\) and \(B_{\mathrm{det},y}\), then the corresponding sampling frequencies should satisfy
 
-**Phase:** The phase is an important parameter in applications such as interferometry and polarimetry. Therefore, it is important that a SAR processor preserve the phase information that is contained in the received data. The phase can also be utilized in some steps of SAR processing, such as Doppler centroid estimation and autofocus. The phase characteristics of a point target measured in one direction can differ from the characteristics in the other direction. This is because the compressed target has a phase ramp across the peak of the impulse response, whose slope is proportional to the center frequency of the data in that direction. In each direction, the regularity of the phase is an indicator of how well the data are compressed.
+$$
+\begin{align*}
+  f_{s,x} >& 2 B_{\text{det},x} \\
+  f_{s,y} >& 2 B_{\text{det},y}
+\end{align*}
+$$
 
-The phase at the peak of the compressed target is a single-valued parameter, as it is measured at t hemaximum point of the two-dimensional impulse response. The phase is dependent upon the target position.
-
-In order to perform point target analysis correctly, the data must be properly sampled in both directions. Usually, the complex data are adequately sampled during the various processing stages. However, if the image is detected before the point targets are analyzed, errors may occur as a result of undersampling, because the detection operation widens the signal bandwidth. To keep the detected data from being aliased, the data should be oversampled by a factor of two in each direction before the detection operation. However, because of oversampling of the data and spectral rolloff at higher frequencies, upsampling by a factor of 1.4 in each direction is usually sufficient to represent the point target properties adequately in detected data.
+subject to the actual two-dimensional spectral support and any coupling between the coordinates.
 
 # Continuous-wave SAR
 
