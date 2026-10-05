@@ -1,0 +1,103 @@
+---
+title: 'Signal Processing'
+subject: 'Remote Sensing'
+showToc: true
+---
+
+# Sampling
+
+Digital signal processing only works accurately and efficiently if the signal has been sampled correctly. This means that the sampling rate should be high enough to preserve signal fidelity, but not so high as to be inefficient. Aliasing occurs if the signal is not sampled fast enough. The sampling requirements depend on the signal type, for example, real versus complex signals, baseband versus nonbaseband signals.
+
+## Spectrum of sampled signals
+
+In DSP operations, it is important to consider the signal spectrum, to examine whether the signal contains the expected information, before and after the operation. Indeed, some signal processing operations are applied directly to the signal spectrum. The spectrum of a discrete-time signal is different from that of a continuous-time signal. There are four cases to consider, depending on whether the signal is continuous or sampled, and whether it has an infinite or finite duration.
+
+It is assumed that the infinite-duration, continuous-time signal under consideration is bandlimited, which means that the energy is confined to a limited region, $\pm f_b$, of the frequency axis.
+
+When an $N$-point DFT is performed on a sampled signal, the first sample of the output array represents zero frequency, and the last sample represents frequency 
+
+$$
+  \frac{(N - 1)f_s}{N} \approx f_s
+$$
+
+For analytical and illustrative purposes, the left and right halves of the DFT output array are often interchanged. After this shift, the first sample in the array corresponds to frequency $-f_s /2$ and the last sample to frequency $(N - 2) f_s /2(N) \approx f_s /2$. For a real signal, only the first half of the DFT output array is adequate to describe the signal, as the second half is redundant.
+
+## Real versus complex signals
+
+In the physical world, all signals are real; for example, the voltage measured at an electrical terminal. However, within the digital signal processor, it is convenient, and often more efficient, to operate on complex signals. An example is provided by the DFT, which inherently operates on complex sequences. In practice, a real-valued signal is converted to a complex-valued signal that contains the same information, using a complex demodulation process (also called quadrature demodulation). In this operation, the signal is mixed (multiplied) with a cosine wave of the appropriate frequency, and the result, after filtering the higher frequency component, is called the "real channel." In parallel, the signal is mixed with a sine wave of the same frequency, and the result is called the "imaginary channel." These two signals are then sampled with synchronous samplers to obtain one complex sample. Alternately, the real signal can be sampled and the demodulation performed in the discrete-time domain. The conversion to a complex signal can be performed using a Hilbert transformation, which generates a signal that is phase shifted by $\pi/2$.
+
+## Signal bandwidth
+
+It is important to know the bandwidth of a signal to determine its sampling requirements. For real signals, only
+the positive frequencies are considered. If $f_2$ is the frequency of the highest-frequency signal component, and $f_1$ is the frequency of the lowest (positive) frequency signal component, the bandwidth is $B = f_2 - f_1$.
+
+For complex signals, negative as well as positive frequencies are considered. In this case, $f_1$ is the frequency of the lowest-frequency signal component, taking negative frequencies into account.
+
+In theory, a finite-length signal cannot be bandlimited. To circumvent the problem, it can be said that energy below a certain level can be ignored, so that a finite-length signal can be effectively bandlimited. Hence, only energy above a "significant" level is considered. This level is often considered to be 3 dB below the peak energy, although 10 dB is also used in some applications. In practice, an analog signal often has some unwanted high frequency components, such as white noise. In order to keep the sampling rate as low as possible, an antialiasing filter is used before the sampler, to restrict the bandwidth to the areas of the spectrum that are of interest in the application.
+
+## Fundamental frequency range
+
+For a certain sampling rate, the fundamental range is said to be the lowest set of frequencies that can hold unambiguous information of the signal. If $f_s$ is the sampling frequency, the fundamental range is from zero to $f_s /2$ for real signals. For complex signals, the fundamental range is from  $-f_s /2$ to $f_s /2$, although it can also be considered to be between zero and $f_s$.
+
+## Baseband versus nonbaseband signals
+
+For real signals, a baseband signal is defined as one in which the lowest positive-frequency component is small compared to the bandwidth. The energy can extend down to zero frequency, for example, when a white noise signal is passed through a lowpass filter. In this case, the sampling rate is selected so that the significant energy of the continuous-time signal lies within the fundamental range.
+
+If there is a significant gap between zero frequency and the lowest positive frequency component in the signal, it is said to be a nonbaseband signal. Nonbaseband signals are common in communications systems, when an information signal is modulated on a high-frequency carrier.
+
+For complex signals, a baseband signal is defined to be one in which the significant energy of the continuous-time signal lies entirely within the fundamental range for a given sampling rate. Conversely, a nonbaseband complex signal is one in which the significant energy does not all lie within the fundamental range.
+
+## Nyquist sampling rate and aliasing
+
+The sampling requirements differ between real and complex signals, primarily because each complex sample has twice the information content as one real sample.
+
+### Real signals
+
+The Nyquist sampling theorem states that a real, bandlimited, baseband, continuous-time signal must be sampled at a rate greater than twice its highest frequency component, in order for the samples to correctly represent the information in the continuous signal. This minimum sampling rate is called the Nyquist sampling rate. Another way of expressing the sampling theorem for real signals is that more than two samples per cycle must be taken of any sine wave present in the signal.
+
+This change in observed frequency is called aliasing, whereby the frequency of the original signal has apparently been misrepresented by the sampling process.
+
+#### Nonbaseband
+
+For a real signal that is offset from baseband (called a nonbaseband or bandpass signal), the bandwidth rather than the highest frequency component can be used to define the sampling requirements. In this case, the Nyquist sampling theorem states that the sampling rate must be greater than twice the bandwidth of the real, nonbaseband signal. However, this only works correctly when the spectrum of the continuous-time signal lies wholly within an aliasing boundary.
+
+If the rule that the signal energy must lie wholly within a pair of aliasing boundaries is obeyed, the sampled signal retains all the information content of the continuous signal. In practice, the nonbaseband signal is often bandshifted to baseband before it is sampled, to avoid the problem of spectral distortion when the signal does not lie within the aliasing boundaries.
+
+### Complex signals
+
+For a complex signal, the Nyquist sampling rate is equal to the bandwidth of the signal. This is compatible with the rule for real signals, when one considers that each complex sample (a real/imaginary pair) carries twice the amount of information as one real sample.
+
+### Window
+
+resolution as fine as possible. This involves a tradeoff, as lowering the sidelobes is accompanied by a widening of the resolution. The Kaiser window is often used, as it has a parameter that can adjust the degree of weighting, and thereby the sidelobe/resolution tradeoff.
+
+When used in the time domain, with length $T$, the Kaiser window is defined by
+
+$$
+  w_k (t, T) = \frac{I_0 (\beta \sqrt{1 - (2t/T)^2}}{I_0 (\beta)},\, t\leq \left|\frac{T}{2} \right|
+$$
+
+where $\beta$ is the adjustable roll-of or smoothing coefficient and $I_0 (\cdot)$ is the zeroth-order Bessel function. Similarly, a Kaiser window of length $F$ in the frequency domain is defined by
+
+$$
+  W_k (f, F) = \frac{I_0 (\beta \sqrt{1 - (2f/F)^2}}{I_0 (\beta)},\, t\leq \left|\frac{F}{2} \right|
+$$
+
+The Fourier transform or inverse Fourier transform of a Kaiser window gives a sine-like function. When $\beta =
+0$, the window reduces to a rectangular one. When $\beta > 0$, the tapering at the ends broadens the 3-dB width of the transformed function, and at the same time lowers the peak sidelobe ratio. The broadening is defined as the ratio of the 3-dB width with windowing to that without windowing.
+
+Two other common windows are t he Hanning and Hamming windows. In the time and frequency domains, they can be represented by
+
+$$
+  w_h (t, T) = \alpha - (1 - \alpha) \cos\left(\frac{2\pi t}{T}\right), t \leq \left|\frac{T}{2}\right|
+$$
+
+and
+
+$$
+  W_h (f, F) = \alpha - (1 - \alpha) \cos\left(\frac{2\pi f}{T}\right), t \leq \left|\frac{F}{2}\right|
+$$
+
+For a Hanning window, $\alpha = 1/2$, which gives a cosine squared window. For a Hamming window, $a = 0.54$, and the window is a raised cosine squared. The window is also called the general cosine window, and the $\alpha$ parameter can be used to control the level of smoothing. The general cosine window has the convenient property that its inverse Fourier transform can be obtained in a closed form. However, these windows do not have quite as good a resolution/sidelobe tradeoff as the Kaiser window, so the Kaiser window is preferred for many DSP applications.
+
+# Interpolation

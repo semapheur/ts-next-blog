@@ -1,0 +1,449 @@
+---
+title: 'Pulse Compression'
+subject: 'Remote Sensing'
+showToc: true
+---
+
+Pulse compression is a type of spread spectrum method, designed to minimize peak power, maximize signal-to-noise ratio, and obtain fine resolution of the sensed object (e.g., to achieve sensitive target detection or good image quality).
+
+# Linear frequency-modulated signals
+
+## Time-domain representation
+
+In the time domain, an ideal frequency-modulated signal or pulse has a duration $T$ seconds with a constant amplitude, a center frequency $f_0$, and a characteristic phase component $\phi(t)$, which varies with time in a specific manner. For linear frequeny modulation, the phase is a quadratic function of time. When $f_0$ is set to zero, the complex form of the signal is
+
+$$
+\begin{equation*}
+  s(t) = \operatorname{rect}\left(\frac{t}{T} \right) e^{i\pi K t^2}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+where $t$ is the time variable in seconds, and $K$ is the linear frequency-modulation rate in $\tunit{Hs/s}$. The phase of the pulse is given by the argument of the exponential, $\phi(t) = \pi K t^2$. The instantaneous frequency is the derivative with respect to time
+
+$$
+  f(t) = \frac{1}{2\pi} \frac{\d\phi(t)}{\d t} = Kt
+$$
+
+This means that the frequency is a linear function of time $t$, with the slope $K$. When the slope is positive, the signal is called an up chirp. Similarly, when the slope is negative, the signal is called a down chirp.
+
+The bandwidth is defined as the range of frequencies spanned by the significant energy of the chirp, or the frequency excursion of the signal
+
+$$
+  B = |K|T
+$$
+
+Another important signal parameter is the time bandwidth product (TBP) defined by
+
+$$
+  B_\text{TBP} = BT = |K|T^2
+$$
+
+The TBP of the baseband linear frequency-modulated signal in $\eqref{equation-14}$ can be measured by counting the number of zero crossings of the real or imaginary part of the time-domain signla. When $f_0 = 0$, the number of zero crossings in the signal is approximately equal to one-half of the TBP, or the number of complete cyclese is approximately equal to $B_\text{TBP}^2$. If the center frequency of the signal is not zero, the number of zero crossings is greater than $B_\text{TBP} /2$.
+
+## Spectrum
+
+A convenient approximate expression of a linear frequency-modulated signal can be obtained by the principle of stationary phase (POSP). Let $g(t)$ be a frequency-modulated signal, whose modulation is either linear, like $\eqref{equation-14}$, or approximately linear
+
+$$
+  g(t) = w(t) e^{j\phi(t)}
+$$
+
+where $w(t)$ is the real-valued envelope and $\phi(t)$ is the phase describing the signal modulation. The spectrum of this signal is given by the Fourier transform of $g(t)$
+
+$$
+\begin{align*}
+  G(f) =& \int_{-\infty}^\infty g(t) e^{-i2\pi ft} \;\d t \\
+  =& \int_{-\infty}^\infty w(t) e^{-i[\phi(t) - 2\pi ft]} \;\d t \\
+  =& \int_{-\infty}^\infty w(t) e^{i\theta(t)} \;\d t \tag{\label{equation-15}}
+\end{align*}
+$$
+
+where the phase due to the Fourier transform, $-2\pi ft$, has been absorbed into a single phase term 
+
+$$
+\begin{equation*}
+  \theta(t) = \phi(t) - 2\pi f t
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+The phase in the integrand contains quadratic and possibly higher order terms. Even for the simple case of a linear FM signal, in which the phase is quadratic, an analytical form of the integral is quite difficult to derive by conventional means.
+
+The POSP can be briefly explained as follows. The phase $\phi(t)$ of the signal is stationary at some time $t_s$, when the derivative, $\d\phi(t)/\d t$, is zero. In this case, the stationary point occurs at $t = 0$. Around the neighbourhood of this point, the phase is slowly varying, as are the amplitudes of the real and imaginary parts. At other times, the phase varies quite rapidly. A similar observation holds for the phase $\theta(t)$, but now the stationary point varies with $f$.
+
+Assuming that $w(t)$ is slowly varying, compared to the phase function, the integral $\eqref{equation-15}$ has the following property. Where the phase $\theta(t)$ is rapidly varying, the envelope $w(t)$ is almost constant over one complete phase cycle. Over this interval, the contribution to the integral (both real and imaginary parts) is almost zero, because the positive and negative parts of the phase cycle cancel each other. Thus, the contribution to the integral lies mainly around the station phase point. A Taylor series expansion can be used on the integrand about this point, resulting in an approximate analytical solution of $G(f)$ in $\eqref{equation-15}$.
+
+It can be shown that the spectrum of the signal is approximated by
+
+$$
+\begin{equation*}
+  G(f) \approx C_1 W(f) e^{j[\Theta(f) \pm \pi/4]}
+\tag{\label{equation-17}}
+\end{equation*}
+$$
+
+where
+- $C_1$ is a constant
+$$
+  C_1 = \sqrt{\frac{2\pi}{|\phi''(t_s)|}}
+$$
+
+which is usually ignored. Note that $\phi''(t_s) = \theta''(t_s)$.
+
+- $W(f) = w[t(f)]$ is the frequency domain envelope, which is a scaled version of the time-domain envelope $w(t)$.
+- $\Theta(f) = \theta[t(f)]$ is the frequency domain phase, which is a scaled version of the time-domain phase $\theta(t)$
+
+The expression $t(f)$ is given by the time versus frequency relationship of the signal. This relationship can be derived by finding the derivative of the complete integrand phase $\eqref{equation-16}$ at the stationary point
+
+$$
+  \frac{\d\theta(t)}{\d t} = 0
+$$
+
+The sign of $\pi/4$ in $\eqref{equation-17}$ is given by the sign of $\phi''(t_s)$. As in the case of $C_1$, this constant phase component can be ignored without affecting most analyses.
+
+Using the linear frequency-modulated signal of $\eqref{equation-14}$, the spectrum is given by
+
+$$
+\begin{equation*}
+  G(f) = \int_{-\infty}^\infty \operatorname{rect}\left(\frac{t}{T}\right) e^{i\pi Kt^2} e^{-i2\pi ft} \;\d t
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+where the envelope $w(t)$ is the rect function and the integrand phase is $\thet(t) = \pi Kt^2 - 2\pi ft$. Solving $\d\theta(t)/\d t = 0$, leads to the frequency versus time relationship $f = Kt$ and $t = f/K$. The phase in the frequency domain is
+
+$$
+\begin{align*}
+  \Theta(f) =& \theta\left(t = \frac{f}{K}\right) \\
+  =& \pi K \left(\frac{f}{K} \right)^2 - 2\pi f \left(\frac{f}{K}\right) \\
+  =& -\pi \frac{f^2}{K} \tag{\label{equation-18}}
+\end{align*}
+$$
+
+The envelope in the frequency domain is
+
+$$
+\begin{equation*}
+  W(f) = w\left(t = \frac{f}{K} \right) = \operatorname{rect}\left(\frac{f}{|K|t} \right)
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+where the rect function defines the center frequency to be zero. Substituting $\eqref{equation-18}$ and $\eqref{equation-19}$ into $\eqref{equation-17}$, and ignoring the constant $C_1$ and the phase $\pm\pi/4$, the integral $\eqref{equation-20}$ for the spectrum of the linear frequency-modulated signal becomes
+
+$$
+  G(f) = \operatorname{rect}\left(\frac{f}{KT}\right) e^{-i\pi f^2 /K}
+$$
+
+The POSP is only an approximation. However, it is sufficiently accurate for analysis purposes if the FM signal exhibits enough cycles. The number of cycles in the signal is given by $B_\text{TBP} /4$, and the POSP is reasonably accurate if the $B_\text{TBP}$ is greater than $100$.
+
+## Sampling
+
+For complex linear FM signals, the Nyquist sampling theorem states that the sampling rate must be greater than the bandwidth of the signal.
+
+For a complex, linear FM signal at baseband, the highest frequency is $|K|T/2$, which is one-half the bandwidth. Thus, the minimum complex sampling rate $f_s$ must be greater than the bandwidt $|K|T$. Another way to examine the adequacy of the sampling rate is to look for a gap in the spectrum of the sampled signal. If there is no gap, the sampling rate is too small. If the gap is greater than 20% of the sampling rate, the sampling rate is larger than optimum for efficiency. Another point of view is that the large gap represents unused space in the spectrum
+
+To measure the relative size of the energy gap, it is useful to define the oversampling factor or ratio as
+
+$$
+\begin{equation*}
+  \alpha_\text{os} = \frac{f_s}{|K|T}
+\tag{\label{equation-11}}
+\end{equation*}
+$$
+
+While, strictly speaking, no aliasing should occur in the case when the gap disappear for the lowest possible $\alpha_\text{so}$, a small amount of aliasing does occur because of the leakage of frequencies beyond the nominal bandwidth limits.
+
+## Frequency and time discontinuities
+
+he DFT treats time and frequency domain arrays as periodic and circular. The end of each array is assumed to be "connected" to its beginning. However, it is sometimes important to know where the real end of the array lies (e.g. , where to place the zeros when zero padding).
+
+In the case of the time domain array, the "ends" are at the first and last sample of the input to the DFT, as the input has been obtained by truncating a longer signal array. While the DFT assumes the input signal is periodic with a period N, it is usually not periodic, and a "discontinuity" exists at these end points of the truncated array. If zeros are to be added to the time array in order to obtain a convenient transform length, to equalize the signal and filter array lengths, or to increase the sample spacing in the spectrum, then the zeros must be added at one of the two ends of the array. Note that the phase of the spectrum will depend upon which end is chosen.
+
+In the case of the frequency domain array, the "ends" of the spectrum are defined by gaps. If the frequency array is to be interpreted (and processed) as one contiguous spectrum, the left and right halves of the array can be interchanged when the gap is near the center of the DFT output array. After the interchange, the gap is divided between both ends.
+
+When the time signal is real-valued, the gap in the spectrum is always centered on the midpoint of the DFT output array, corresponding to frequency $f_s /2$. The spectrum is conjugate symmetric about zero frequency, the first sample in the DFT output array. However, if the time sequence is complex, the spectrum is not necessarily symmetric, and the gap may lie anywhere in the spectrum.
+
+If signal processing operations are to be performed on the spectrum, the spectral samples must be considered as continuous, starting from the end of the gap, proceeding across the end of the DFT array (if needed), and ending at the beginning of the gap.
+
+Returning to the time domain, it was stated that the time discontinuities are at either end of the array. But this is true for the input data only. This may not be true if the data are processed in the frequency domain, and an inverse Fourier transform is performed to bring the data back to the time domain. In this case, the time axis is circular in the final array. The problem is then how to determine the point of time discontinuity.
+
+# Pulse compression
+
+In "probing" systems, a pulse of energy is used to measure parameters such as distance, speed, shape, or reflectivity of a remote object. The received pulse must be strong enough and have a fine enough resolution for the measurement to be useful. If the transmitted pulse has a duration of $T$ , the "resolving power" before compression is simply $\rho' = T$ since each target occupies a time interval of $T$ in the echo data. Two targets separated by this time in the echo will not be exposed by the same pulse at any instant in time. Therefore, to obtain a fine resolution, a short pulse must be used, or at least obtained by signal processing.
+
+However, the SNR of the received signal must be high enough to obtain the required object parameters accurately, a quality often in conflict with resolution. The SNR can be increased by raising the average transmitted power. This can be done either by raising the peak power, or by increasing the length or duration of the transmit event. As physical limitations often constrain the peak power, it is common to increase the length of the transmitted signal, frequently to a length much greater than the length of a pulse having the desired resolution. This is done by transmitting an "expanded" pulse and later compressing it to the desired resolution in the signal processor. This technique is known as pulse compression.
+
+There is an interesting analogy between pulse compression in radar systems and spread spectrum in communications systems. The objective of pulse compression is to obtain a fine resolution in time from the received data, thus giving a well-focused radar image, while the objective of spread spectrum in communications is to transmit a message in a noisy environment. In pulse compression, the signal is expanded and compressed in the time domain, and the transmitted signal has a longer duration than t he ultimate resolution. In spread spectrum, the signal is spread and despread in the frequency domain, and the transmitted signal has a wider bandwidth than the information in the message. Pulse compression can be conveniently achieved with linear FM signals. To see how this is achieved, consider the following points.
+1. The shortest physically realizable signal has a TBP of approximately unity. In other words, its duration is the inverse of the bandwidth. To synthesize a short duration (fine resolution) pulse, a large bandwidth must be transmitted, received, and processed.
+2. The shortest pulse of a given bandwidth is approximated by a sinc function. It has a very compact distribution of energy in the time domain.
+3. A sinc function is obtained by the inverse Fourier transform of a rectangular function. The phase of the rectangular function must correspond to that of a sine wave (i.e., it must have a linear phase), and the frequency of the sine wave dictates the time position of the sinc function.
+
+Thus, to achieve good pulse compression, the received signal should be processed into a signal with a spectrum whose magnitude is reasonably flat, and whose phase has constant and linear terms only. A linear FM signal has a nearly flat spectrum. It is about as near to being flat as can be obtained with a finite length signal. Its flatness is obtained by a uniform sweep of frequencies, from the beginning to the end of the signal band.
+
+The uniform sweep of frequencies is obtained in the linear FM signal by having a quadratic component in its time domain phase. The spectrum of the linear FM signal, as derived by the POSP, has a quadratic phase as well. To give the spectrum a flat shape with a linear phase in this case, the spectrum can be multiplied by a signal with a similar spectrum, but with a phase given by the conjugate of the quadratic component of the signals phase. The resulting signal phase is then linear. The inverse Fourier transform will then give the desired sinc function.
+
+This is the essence of pulse compression, as applied in the frequency domain. The spectrum of the signal is multiplied by a frequency domain filter that has the conjugate quadratic phase property. Pulse compression is also known as "matched filtering". This terminology arises from the fact that the filter is "matched" to the expected phase of the received signal.
+
+Another way of looking at matched filtering is rooted in communications practice. If a desired signal is buried in noise within a received signal vector, its presence and the time of its occurrence can be found by cross-correlating the received signal with a conjugate replica of the desired signal. A spike in the form of a sinc function appears in the output whenever the signal is found in the received data. In this context, the correlation "filter" is "matched", to the expected phase properties of the signal. In general, if $s_r (t)$ is the received signal $g(t)$ is the signal replica, the matched filtering operation can be implemented by a correlation
+
+$$
+  s_\text{out} (t) = \int_{-\infty}^\infty s_r (u) g^* (u - t) \;\d u
+$$
+
+If the filter is applied with a convolution rather than a correlation, the filter kernel is the time-reversed complex conjugate of the replica $h(t) = g^* (-t)$ and the convolution is written
+
+$$
+\begin{equation*}
+  s_\text{out} (t) = s_r (t) * h(t) = \int_{-\infty}^\infty s_r (u) h(t - u) \;\d u
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+## Time domain compression
+
+A quantitative measure of the degree of pulse compression is the compression ratio. It is the length of the original signal divided by the 3-dB width of the compressed pulse, and is approximately equal to the TBP of the uncompressed pulse. A compression ratio, in the order of hundreds or even thousands, can be achieved using a linear FM pulse.
+
+### Baseband signals
+
+Consider a transmitted signal given by $\eqref{equation-14}$. If the echo is received a time $t_0$ later, the target's echo can be expressed as
+
+$$
+\begin{equation*}
+  s_r (t) = \operatorname{rect}\left(\frac{t - t_0}{T} \right) e^{i\pi K(t - t_0)^2}
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+The matched filter is the time-reversed, complex conjugate of $s(t)$, with $t_0$ set to zero
+
+$$
+\begin{align*}
+  h(t) =& \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi K(-t)^2} \\
+  =& \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi Kt^2}
+\end{align*}
+$$
+
+and the matched filter output is given by the convolution $\eqref{equation-1}$. The compressed output is approximately given by the sinc function
+
+$$
+\begin{equation*}
+  s_\text{out} (t) \approx T \sinc[KT(t - t_0)]
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+where the approximation is accurate for a large TBP. The signal and the matched filter are assumed to have the same duration $T$. If not, there is an additional but usually negligible quadratic phase term in the impulse response.
+
+Note that $\eqref{equation-2}$ is a real function with a phase of either $0$ or $\pi$, because the matched filter has been explicitly designed for this signal. In practice, however, every target will have a different phase, and the compressed pulse will be complex.
+
+### Pulse resolution
+
+T he resolution is defined as the spread between the two -3-dB points of the compressed signal. It is the width of the pulse measured a factor of $0.707$ below the peak magnitude. The 3-dB resolution, expressed in time units, is given by
+
+$$
+\begin{equation*}
+  \rho = \frac{0.886}{B} \approx \frac{1}{B}
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+as an approximation, the $0.886$ factor is sometimes ignored, especially when a broadening factor cause by a smoothing window is included. Since $B = |K|T$ is the chirp bandwidth, the resolution is the reciprocal of the bandwidth. A wider bandwidth gives a finer resolution. The resolution is also called the impulse response width (IRW) since $\eqref{equation-1}$ represents the response to a point taret after matched filtering.
+
+Ignoring the $0.886$ factor, the compression ratio is
+
+$$
+  C_r = \frac{\rho'}{\rho} = \frac{T}{1/(|K|T)} = |K|T^2
+$$
+
+which is equal to the TBP of the uncompressed signal. To express the compression concept in another way, we can view the expansion/compression operation as synthesizing a transmitted pulse with an extremely short duration of $1/B$.
+
+### Effect of noise
+
+In the present example, the phase across the main lobe and every second sidelobe is zero, since the real part is positive and the imaginary part of the compressed pulse is zero. This effect occurs because the signal is noise-free, and the matched filter has the conjugate phase of the signal. The phase across the odd sidelobes is $\pi$ radians, since the real part there is negative, while the imaginary part is still zero (round-off errors may exist in the imaginary part to disrupt this ideal phase pattern).
+
+In practical situations, noise is always present in the received signal. To illustrate the effects of received noise, Gaussian random noise is added to both the real and imaginary parts of the received signal of $\eqref{equation-3}$. This noise immunity is obtained because the filter is only matched to the signal, not to the noise-it is uncorrelated with the noise. The matched filter "collects" most of the signal components into a single peak, but leaves the noise components randomly distributed in the output array. In the presence of Gaussian additive noise, it is known that the optimum receiver in terms of maximizing the SNR at the peak of the compressed pulse is the matched filter receiver.
+
+The quality of the compression operation and, in particular, how well the phase of the matched filter matches that of the signal, can be observed in the regularity of the sidelobes and the phase pattern.
+
+### Nonbaseband signals
+
+In the time domain, a nonbaseband signal can be viewed as one in which the time of zero frequency is offset from the pulse center. Let $t_c$ be the time offset referenced to $t = 0$ at the pulse cneter. Then the transmitted signal is given by
+
+$$
+  s(t) = \operatorname{rect}\left(\frac{t}{T}\right) e^{i\pi K(t - t_c)^2}
+$$
+
+The analysis of pulse compression is very similar to that for a baseband signal. If the echo is received a time $t_0$ later, the target's echo can be expressed as
+
+$$
+\begin{equation*}
+  s_r (t) = \operatorname{rect}\left(\frac{t - t_0}{T} \right) e^{i\pi K(t - t_0 - t_c)^2}
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+The matched filter is
+
+$$
+  h(t) = s^* (-t) = \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi K(t + t_c)^2}
+$$
+
+and the compressed signal is
+
+$$
+  s_\text{out} (t) = T e^{-i 2\pi K t_c (t - t_0)} \sinc [KT(t - t_0)]
+$$
+
+Comparing this with $\eqref{equation-2}$, the pulse is still compressed to time $t_0$, which is the center of the pulse, but there is now a linear phase ramp of $-2\pi K t_c t$ through the peak of the pulse. The factor $-Kt_c$ is the center frequency of demodulated received data, or the offset frequency of the compressed pulse. It is negative because the center of the pulse is to the let of the zero frequency position in this up chirp example.
+
+## Frequency domain matched filter
+
+The time domain matched filter can also be applied with a frequency domain fast convolution, giving the same results. In addition to being applied in the frequency domain, the matched filter can also be designed directly in the frequency domain, with little loss of accuracy.
+
+### Baseband signals
+
+Applying the POSP to $\eqref{equation-3}$, the signal spectrum is approximately given by
+
+$$
+\begin{equation*}
+  S_r (f) = \operatorname{rect}\left(\frac{f}{|K|T} \right) e^{-i\pi f^2 /K} e^{-i 2\pi f t_0}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+The additional linear phase term in the last exponential is due to the offset of the target $t_0$ from time $0$, following from the Fourier transform shift property.
+
+The matched filter is designed to cancel the quadratic phase term in $\eqref{equation-4}$, which is done by setting
+
+$$
+\begin{equation*}
+  H(f) = \operatorname{rect}\left(\frac{f}{|K|T}\right) e^{i\pi f^2 /K}
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+Note that the quadratic phase term is independent of the target position $t_0$, which allows the cancellation. The spectrum of the signale, after the matched filter is applied, is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  S_\text{out} (f) =& S_r (f) H(f) \\
+  =& \operatorname{rect}\left(\frac{f}{|K|T}\right) e^{-i2\pi ft_0}
+\end{split}
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+as the quadratic phase terms in $\eqref{equation-4}$ and $\eqref{equation-5}$, leaving the linear registration term. The compressed signal is given by the inverse Fourier transform of $S_\text{out} (f)$
+
+$$
+\begin{equation*}
+  s_\text{out} (t) = |K|T \sinc[KT(t - t_0)]
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+This is the same as that found in the time domain $\eqref{equation-2}$, except for the additional gain $|K|$. This gain arises in the frequency domain derviation because one of the constants that is ignored in the POSP equals $1/\sqrt{|K|}$. This constant should appear in the signal spectrum $\eqref{equation-4}$, and could be included in the matched filter $\eqref{equation-5}$ to remove the $|K|$ factor. However, this constant is often ignored, because other normalization criteria are used in practive to set the matched filter gain.
+
+### Nonbaseband signals
+
+For a nonbaseband signal, the spectrum is rotated, and the signal's center frequency is no longer zero. According to the Fourier transform properties, this spectral shift introduces a linear phase in the time domain, which passes through zero at the compressed target peak. 
+
+Applying POSP to the received nonbaseband signal $\eqref{equation-6}$, the received signal spectrum is
+
+$$
+  S_r (f) = \operatorname{rect}\left(\frac{f + K t_c}{|K|T}\right) e^{-i\pi f^2 /K} e^{-i 2\pi f(t_0 + t_c)}
+$$
+
+From $\eqref{equation-4}$, the frequency domain filter is
+
+$$
+  H(f) = \operatorname{rect}\left(\frac{f + K t_c}{|K|T}\right) e^{i\pi f^2 /K}
+$$
+
+and, from $\eqref{equation-7}$, the spectrum after the matched filter multiplication is
+
+$$
+  S_\text{out} (f) = \operatorname{rect}\left(\frac{f + Kt_c}{|K|T}\right) e^{-i 2\pi f(t_0 + t_c)}
+$$
+
+The compressed signal is the inverse Fourier transform
+
+$$
+\begin{equation*}
+\begin{split}
+  s_\text{out} (t) =& \int_{-|K|T/2 - Kt_c}^{|K|T/2 - Kt_c} e^{i 2\pi f(t - t_0 - t_c)} \;\d f \\
+  =& |K|T e^{-i 2\pi Kt_c (t - t_0 - t_c)} \sinc[KT(t - t_0 - t_c)]
+\end{split}
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+The compressed target is registered to $t_0 + t_c$ in the presence of a spectral shift in the received signal, that is, the target is registered to where its zero frequency occurs in the received singal. This property holds, even if zero frequency is outside the signal's bandwidth. Only the slope of the phase ramp through the compressed target is affected by a spectral shift in the received signal.
+
+Sometimes, it is desired to register the target to the time of reception of the beginning (or the middle) of the received signal. To achieve this, the filter in $\eqref{equation-5}$ can be multiplied by a linear phase modulation $e^{-i 2\pi \Delta t f}$, where $\Delta t$ represents the time difference between the zero frequency time and the desired registration time.
+
+## The effect of windows
+
+Too high PSLR cause masking out nearby weak targets. On way to reduce the PSLR is to apply a smoothing window to the matched filter in the frequency domain, in order to reduce the leakage of energy from the main lobe to the sidelobes.
+
+A window is a symmetrical real function that applies weights to the signal spectrum. The weight is maximum in the middle (the peak) of the signal spectrum, and rolls off toward the edges of the spectrum. Due to the spectrum gap, the window must be rotated so that the peak of the window is aligned with the peak of the spectrum, which is assumed to be one-half the sampling rate away from the middle of the gap.
+
+The window has the effect of "smoothing" the spectrum, that is, reducing the discontinuity at the edges of the spectrum. This reduces the leakage of energy in the main lobe of the resulting compressed pulse, but at the expense of degraded resolution. The resolution is degraded because the window reduces the effective signal bandwidth used in the compression.
+
+Examples of windows are Taylor, Chebyshev, Hanning, Hamming, and Kaiser. In this section, attention will be given to the Kaiser window, because it has the following desirable properties:
+1. The Kaiser window is nearly optimal in the sense of creating a compressed pulse with the largest energy in
+the main lobe for a given ISLR. This property comes from the prolate spheroidal wave functions, of
+which the Kaiser window is an approximation.
+2. The Kaiser window has an adjustable parameter $\beta$, which allows a trade-off between resolution and sidelobe
+levels to suit different applications.
+
+With the Kaiser weighting, the frequency domain matched filter of $\eqref{equation-5}$ becomes
+
+$$
+  H(f) = W_k (f, |K|T) e^{i\pi f^2 /K}
+$$
+
+Because of the one-to-one correspondence between time and frequency for linear FM signals, the window can also be applied in the time domain. The matched filter also can be designed in the time domain without windowing, and application of the window can be deferred until the data is processed in the frequency domain. The matched filter designed in the time domain $\eqref{equation-}$ with windowing becomes
+
+$$
+  h(t) = w_k (t, T) e^{-i\pi Kt^2}
+$$
+
+As in $\eqref{equation-}$, the signal spectrum after the weighting and matched filter are applied is
+
+$$
+\begin{align*}
+  S_\text{out} (f) =& S_r (f) H(f) \\
+  =& W_k (f, |K|T) e^{-i 2\pi ft_0}
+\end{align*}
+$$
+
+The impulse repsonse of the compressed pulse is then given by the inverse Fourier transform of the window $s_\text{out} (t) = p(t - t_0)$. It is a sinc-like function centered at $t_0$, but with a broader main lobe and lower sidelobes than the actual sinc function. For a rectangular window, the impulse response is given by $\eqref{equation-9}$, ignoring a multiplicative complex amplitude. Let $\gamma_w$ be the IRW broadening factor due to window weighting. The resolution in $\eqref{equation-8}$ can be written as
+
+$$
+\begin{equation*}
+  \rho = \frac{0.886 \gamma_w}{|K|T}
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+In specifying system performance, restrictions are placed on both the ffiW and PSLR. Therefore, a tradeoff has to be performed when selecting the parameters of a window.
+
+### Oversampling
+
+T he oversampling ratio in $\eqref{equation-11}$ is defined as the ratio of the sampling rate to the signal bandwidth. It can also be defined as the ratio of the resolution to the sample spacing, as shown below.
+
+Let $\Delta t$ be the sample spacing measured in time units, $1/f_s$. Combining this with $\eqref{equation-11}$ and $\eqref{equation-12}$, the following ratio is obtained
+
+$$
+  \frac{\rho}{\Delta t} = 0.886 \gamma_w \alpha_\text{os} \approx \alpha_\text{os}
+$$
+
+The approximation follows because $\gamma_w \approx 1 / 0.886$.
+
+# Matched filter implementation
+
+# Frequency modulation rate mismatch
