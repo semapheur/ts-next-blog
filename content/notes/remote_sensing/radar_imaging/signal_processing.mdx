@@ -101,3 +101,87 @@ $$
 For a Hanning window, $\alpha = 1/2$, which gives a cosine squared window. For a Hamming window, $a = 0.54$, and the window is a raised cosine squared. The window is also called the general cosine window, and the $\alpha$ parameter can be used to control the level of smoothing. The general cosine window has the convenient property that its inverse Fourier transform can be obtained in a closed form. However, these windows do not have quite as good a resolution/sidelobe tradeoff as the Kaiser window, so the Kaiser window is preferred for many DSP applications.
 
 # Interpolation
+
+Consider a signal $g(x)$ that is sampled at discrete positions $x = i$, where $x\in\R$ is a continuous independent variable and $i\in\Z$ is an integer (the sample number). The independent variable $x = t f_s$ is used instead of time $t$, since spatial coodinates are often used in practical applications. Alose, let $g_d (i)$ be the sampled signal such that $g_d (i) = g(x)$ when $x = i$. Using interpolation, we can resample $g_d (i)$ to evaluate it at some other noninteger values $x \neq i$.
+
+The value of $g(x)$ for noninteger values of $x$ can be obtained by applying the DFT shifting/modulation property, or by zero padding the spectrum. However, these methods are not flexible enough for the general use, because the former gives pixels that are shifted by the same amount from the original signal, and the latter gives pixels that are separated by $1/M$ subsamples, where $M$ is the expansion factor (which must be an integer).
+
+An interpolation can be implemented via a convolution
+
+$$
+  g(x) = \sum_i g_d (i) h(x - i)
+$$
+
+where $h(x)$ is called the interpolator or interpolation kernel. In practice, the kernel is an even function of $x$, so that $h(i - x) = h(x - i)$. A sample point at $i$ is then weighted by the kernel weight $h(i - x)$. The interpolated value $g(x)$, at the interpolation point $x$ is the sum of the products of the kernel weights and the samples in $g_d (i)$ under the kernel, or a weighted sum of the samples in the neighbourhood of $x$.
+
+## Sinc interpolation
+
+A sinc interpolator uses a kernel based on a sinc function, which follows from Shannon's sampling theorem.
+
+If a signal $g(x)$ is sampled at discrete and evenly spaced intervals, the sampling theorem states that $g(x)$ can by reconstructed without error, if both of the following conditions are satisfied:
+- The signal is bandlimited; that is, its highest frequency is finite. Measurements made of any physical system are indeed bandlimited.
+- The sampling satisfies the Nyquist sampling rate. For a real signal, the sampling rate must be more than twice per cycle of the signal's highest frequency component. For a complex signal, the sampling rate must be higher than the signal's bandwidth.
+
+### Reconstruction equation
+
+The sampling theorem states that the original signal, with the above two conditions satisfied, can be reconstructed by a convolution. For a baseband signal, the interpolation kernel is a sine function
+
+$$
+\begin{equation*}
+  h(x) = \sinc(x) = \frac{\sin(\pi x)}{\pi x}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+Then the interpolation is
+
+$$
+  g(x) = \sum_i g_d (i) \sinc(x - i)
+$$
+
+with the summation over all input samples.
+
+The result in $\eqref{equation-1}$ can be understood via the frequency domain. The spectrum $G_d (f)$ of the sampled signal $g_d (i)$ is that of $g(x)$ but repeated at the sampling frequency. To form the signal $g(x)$ only one period of the spectrum is required (e.g. the one at baseband). Thus, an ideal lowpass filter, int the form of a rectangular function in the frequency domain, is needed to extract the baseband spectrum. The ideal filter is then a sinc function in the time domain. Since multiplication in the frequency domain is equivalent to convolution in the time domain, the interpolation can be performed by a convolution with the sinc function.
+
+An infinite number of points is required in the kernel to obtain one particular point, $g(x)$, exactly. In practice, an infinite number of points is not available; besides, an interpolation that uses a large number of points would be very costly. Fortunately, the kernel weight decreases with distance away from the interpolation point $x$ suggesting that the kernel can be truncated without much loss in accuracy.
+
+## Kernel normalization
+
+Once the kernel is truncated, normalization is needed to unify the gain of the interpolator. If unnormalized, the sum of weights on the samples is no longer equal to one, and differs between interpolation points $x$. It is best to keep this sum constant, equal to one in this case, for all interpolation points. Assuming a uniform magnitude signal with the magnitude equal to $M_u$, the interpolated value is then equal to the product of $M_u$ and the sum of the weights. By normalizing the sum to one, then the interpolated value is also $M_u$, which is the desired result since the interpolation should keep the uniform magnitude unchanged. A normalization procedure is applied to modify the interpolated result to give
+
+$$
+\begin{equation*}
+  g'(x) = \frac{g(x)}{S}
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+where $S$ is the sum of the kernel weights at a particular interpolation point
+
+$$
+  S = \sum_i \sinc(x - i)
+$$
+
+where $i$ is now limited to the kernel size. Sometimes, it is desirable to keep the signal power constant. In this case, the normalization constant is
+
+$$
+  S_2 = \sqrt{\sum_i \sinc^2 (x - i)}
+$$
+
+As the kernel length increases, the normalization constant in either case becomes closer to one, and the distinction between these two forms of normalization reduces.
+
+The procedure in $\eqref{equation-2}$ is equivalent to normalizing the interpolation kernel by dividing each weight $h(x - i)$ by $S$, so that the sum of the normalized weights is one.
+
+### Windows sinc function
+
+When a function with sharp edges is interpolated, using a truncated sine kernel, the results exhibit a "ringing" called the Gibb's phenomenon. To reduce this ringing, the interpolation kernel is weighted by a tapering window, such as the Kaiser window. The kernel normalization also takes this window into account.
+
+For implementation efficiency, the interpolation kernel is generated at fine subsample intervals and stored in a table. In this way, the sine function, window, and normalization do not have to be performed at each interpolation point; only the appropriate coefficients need to be extracted from the table, using the table entries nearest to the interpolation shift. Accuracy is affected by both the kernel length and the number of subsamples in the table. Limiting the table size introduces a geometric error of, at most, one-half the subsample interval.
+
+## Spectra of interpolation kernels
+
+Special test signals can be defined to examine the interpolation accuracy, but another way is to examine the spectra of the interpolation kernels.
+
+There are two methods to perform the interpolation on nonbaseband signals, and the choice is application-dependent:
+- Translate the signal to baseband. This means shifting the signal to the left by $\Delta f$, the frequency offset from baseband. By the Fourier transform shift property, the signal in the time domain is multiplied by a linear phase term $e^{-i 2\pi\Delta f t}$. If desired, the data spectrum can be bandshifted back to its original center frequency after interpolation.
+- Translate the baseband filter to the signal's center frequency. By the Fourier transform shift property, the interpolation kernel in the time domain filter is multiplied by a linear phase term $e^{i2\pi\Delta f}$, which makes the interpolator coefficiens complex.
