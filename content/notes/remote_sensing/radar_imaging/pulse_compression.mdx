@@ -36,7 +36,10 @@ $$
 Another important signal parameter is the time bandwidth product (TBP) defined by
 
 $$
+\begin{equation*}
   B_\text{TBP} = BT = |K|T^2
+\tag{\label{equation-27}}
+\end{equation*}
 $$
 
 The TBP of the baseband linear frequency-modulated signal in $\eqref{equation-14}$ can be measured by counting the number of zero crossings of the real or imaginary part of the time-domain signla. When $f_0 = 0$, the number of zero crossings in the signal is approximately equal to one-half of the TBP, or the number of complete cyclese is approximately equal to $B_\text{TBP}^2$. If the center frequency of the signal is not zero, the number of zero crossings is greater than $B_\text{TBP} /2$.
@@ -219,10 +222,10 @@ $$
 The matched filter is the time-reversed, complex conjugate of $s(t)$, with $t_0$ set to zero
 
 $$
-\begin{align*}
-  h(t) =& \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi K(-t)^2} \\
-  =& \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi Kt^2}
-\end{align*}
+\begin{equation*}
+  h(t) = \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi Kt^2}
+\tag{\label{equation-21}}
+\end{equation*}
 $$
 
 and the matched filter output is given by the convolution $\eqref{equation-1}$. The compressed output is approximately given by the sinc function
@@ -354,7 +357,10 @@ For a nonbaseband signal, the spectrum is rotated, and the signal's center frequ
 Applying POSP to the received nonbaseband signal $\eqref{equation-6}$, the received signal spectrum is
 
 $$
+\begin{equation*}
   S_r (f) = \operatorname{rect}\left(\frac{f + K t_c}{|K|T}\right) e^{-i\pi f^2 /K} e^{-i 2\pi f(t_0 + t_c)}
+\tag{\label{equation-26}}
+\end{equation*}
 $$
 
 From $\eqref{equation-4}$, the frequency domain filter is
@@ -406,13 +412,16 @@ $$
   H(f) = W_k (f, |K|T) e^{i\pi f^2 /K}
 $$
 
-Because of the one-to-one correspondence between time and frequency for linear FM signals, the window can also be applied in the time domain. The matched filter also can be designed in the time domain without windowing, and application of the window can be deferred until the data is processed in the frequency domain. The matched filter designed in the time domain $\eqref{equation-}$ with windowing becomes
+Because of the one-to-one correspondence between time and frequency for linear FM signals, the window can also be applied in the time domain. The matched filter also can be designed in the time domain without windowing, and application of the window can be deferred until the data is processed in the frequency domain. The matched filter designed in the time domain $\eqref{equation-21}$ with windowing becomes
 
 $$
+\begin{equation*}
   h(t) = w_k (t, T) e^{-i\pi Kt^2}
+\tag{\label{equation-22}}
+\end{equation*}
 $$
 
-As in $\eqref{equation-}$, the signal spectrum after the weighting and matched filter are applied is
+As in $\eqref{equation-7}$, the signal spectrum after the weighting and matched filter are applied is
 
 $$
 \begin{align*}
@@ -446,4 +455,162 @@ The approximation follows because $\gamma_w \approx 1 / 0.886$.
 
 # Matched filter implementation
 
+The matched filter $\eqref{equation-21}$ can can be applied in the time domain, using a linear convolution. However, as the matched filter is usually very long in SAR applications, the matched filter is normally applied in the frequency domain.
+
+T here are three options to generate the frequency domain matched filter:
+- **Option 1:** Take the DFT of the zero padded, complex conjugate of the time-reversed pulse replica, which is a copy of the transmitted pulse.
+- **Option 2:** Take the complex conjugate of the DFT of t he zero padded pulse replica (not time-reversed).
+- **Option 3:** Generate the matched filter directly in the frequency domain, using assumed linear FM characteristics.
+
+In Options 1 and 2, the replica has to be zero padded to the selected FFT length before the FFT is taken. Because the throwaway region is equal to the replica length (minus one), the FFT length should be a few times longer than the replica length to obtain efficient processing.
+
+## Location of throwaway regions
+
+The location of the filter throwaway region is different in each design. If the zero padding is done at the end of t he replica array, t he circular convolution throwaway region is at t he start of the IDFT output array in Option 1 and at the end of the IDFT output array in Option 2. It is convenient if the matched filter throwaway is at the end of the IDFT output array, which is why Option 2 is sometimes preferred. In Option 3, the throwaway region is split between the two ends of the IDFT output array.
+
+Options 1 and 2 have the additional advantage that the pulse does not need to be exactly linear FM, because the processor simply uses the pulse chirp replica in the received auxiliary data. Option 1 will not be discussed any further since its properties are similar to those of Option 2.
+
+## Option 2
+
+In Option 2, the time domain pulse replica, $s(t)$, can be generated from a mathematical expression if known, or can be obtained from the radar system itself. A tapering window, $w(t, T)$ , is then applied, which gives the weighted replica
+
+$$
+  h'(t) = w(t, T) e^{i\pi Kt^2},\, t < \left|\frac{T_r}{2} \right|
+$$
+
+In this case, the time-reversed complex conjugate of $h'(t)$ is the time domain matched filter, as given in $\eqref{equation-22}$. On the other hand, the frequency domain matched filter is the complex conjugate of the OFT of $h'(t)$, with no axis reversal.
+
+The time domain filter is transformed into the frequency domain by a DFT
+
+$$
+  H_2 (f) = \operatorname{fft}[h'(t), N_\text{fft}]^*
+$$
+
+This notation indicates that the time domain array $h'(t)$ is zero padded at its end to an FFT length of $N_\text{fft}$.
+
+## Option 3
+
+In Option 3, the matched filter is generated directly in the frequency domain, assuming linear FM characteristics of the pulse. This version of the filter, $H_3 (f)$, is given in $\eqref{equation-}$.
+
+To implement this filter, the frequency variable, $f$, must be specified. Its range of values should span the sampling frequency over the filter array. As the variable $f$ is defined circularly within the array, a discontinuity inevitably exists. This discontinuity introduces a phase discontinuity within the array. The phase discontinuity should be placed at the null point of the spectrum of the filter array. Letting $f_s$ be the sampling rate, this point corresponds to $\pm f_s /2 \unit{Hz}$. This choice is due to the fact that the pulse replica is at baseband and, in the frequency domain, the first sample corresponds to zero frequency.
+
+## Target registration and matched filter throwaway
+
+When Option 3 is used, each target in the output array is registered to its zero frequency position in the input array. In this case, the throwaway regions are split between each end of the output array. If the target is centered on zero frequency, the throwaway regions are split equally on either end of the output array, with \mathrm{TA}_L = \mathrm{TA}_R = (N-1)/2.
+
+When the zero frequency point of the target is shifted by $N_z$ samples to the right of the center of the exposure, the left end throwaway region is $\mathrm{TA}_L = (N - 1)/2 + N_\text{ZD}$ samples long, while at the right end, the throwaway region is $\mathrm{TA}_R = (N - 1)/2 - N_\text{ZD}$ samples.
+
+It is often preferred to register each target to its zero frequency position, which Option 3 does. If desired, a phase ramp can be applied to the matched filter in the frequency domain, to place the whole throwaway region at the end of the output array.
+
+An intuitive way of remembering the location of the throwaway region is as follows. If the first sample of the exposure of Target A is located at the first sample of the input array, the throwaway region ends at the sample to the left of the peak sample of that target. Similarly, if the last sample of the exposure of Target C is placed in the last sample of the input array, the throwaway region begins one sample to the right of the peak of that target. This rule applies to both Options 2 and 3, when the samples in the inverse FFT (IFFT) output array are addressed in a circular fashion.
+
 # Frequency modulation rate mismatch
+
+Sometimes the matched filter used in the compression operation is not accurate. Three parameters are required to define the matched filter for a linear FM signal, duration, center frequency, and FM rate. The parameter that tends to cause the most serious errors is the FM rate. In this section, the effects of FM rate errors on four important image quality parameters (IRW, PSLR, registration, and phase) are examined. The effects of the FM rate error are somewhat different for baseband and nonbaseband signals.
+
+Because of the jwnps in the PSLR curve, the ISLR is a more meaningful measurement to quantify the energy that leaks into the sidelobes. The sidelobe behavior discussed above also affects the ISLR measurement, but a simple way of making the measurement more consistent is to define the edges of the main lobe as a fixed fraction of the ideal resolution, independent of FM rate error.
+
+The choice of the integration limits is arbitrary. It is seen that the ISLR rises by about $3.3 \unit{dB}$ for an FM error rate that causes the IRW to broaden by $10\%$.
+
+
+## Impulse response variation
+
+The matched filtering process in the presence of an FM rate error can be analyred in both the time and frequency domains. The time domain derivation is considered first, with the received signal given by $\eqref{equation-3}$. The matched filter is defined by $\eqref{equation-21}$, with $K$ replaced by its wrong value $K + \Delta K$
+
+$$
+  h(t) = \operatorname{rect}\left(\frac{t}{T}\right) e^{-i\pi(K + \Delta K)t^2}
+$$
+
+The resulting matched filter output is
+
+$$
+\begin{equation*}
+\begin{split}
+  s_\text{out}(t) =& s_r (t) * h(t) \\
+  =& \int_{-T/2}^{T/2} e^{-i\pi\Delta K u^2} e^{-i2\pi K(t - t_0) u} \;\d u
+\end{split}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+In using the frequency domain approach, the spectrum of the signal in $\eqref{equation-4}$ is
+
+$$
+  S_r (f) = \operatorname{rect}\left(\frac{f}{|K|T} \right) e^{-i\pi f^2 /K} e^{-i2\pi ft_0}
+$$
+
+and from $\eqref{equation-5}$, the matched filter is
+
+$$
+\begin{align*}
+  H(f) =& \operatorname{rect}\left(\frac{f}{|K + \Delta K|T} \right) \exp\left(i\pi \frac{f^2}{K + \Delta K} \right) \\
+  \approx& \operatorname{rect}\left(\frac{f}{|K|T}\right) e^{i\pi f^2 /K} e^{-i\pi \Delta K f^2 /K^2}
+\end{align*}
+$$
+
+The last step is obtained by recogmzmg that the rectangular envelopes of the signal and the filter are approximately equal, and $1/(K + \Delta K) \approx 1/K - \Delta K/K^2$ when $|\Delta K| \ll |K|$. Then the matched filter output in the frequency domain is approximately
+
+$$
+\begin{align*}
+  S_\text{out} (f) =& S_r (f) H(f) \\
+  =& \operatorname{rect}\left(\frac{f}{|K|T}\right) e^{-i\pi \Delta K f^2/K^2} e^{-i2\pi ft_0}
+\end{align*}
+$$
+
+The matched filter output is then transformed into the time domain by an inverse Fourier transform
+
+$$
+\begin{equation*}
+  s_\text{out} (t) = \int_{-|K|T/2}^{|K|T/2} e^{-i\pi \Delta K f^2 /K^2} e^{i2\pi f(t - t_0)} \;\d f
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+By substituting $f = Ku$ for a linear FM signal, where $u$ is a dummy time variable, and recognizing that the Fourier transform of an even function is proportional to its inver Fourier transform, the $s_\text{out} (t)$ obtained in $\eqref{equation-24}$ is the same as that given by $\eqref{equation-23}$.
+
+The presence of a QPE alone, caused by $\Delta K$, will not change the compressed peak position for a baseband signal, hence the compressed peak is still centered at $t = t_0$. Only a linear phase component will change the peak position.
+
+In some applications, phase accuracy is also important. It can be shown that the phase error at the peak of the compressed target, due to a $\Delta K$ error, is one-third of the QPE. Thus, a QPE magnitude of $\pi/2$ introduces a phase error of $\pi/6$ at the target peak. This may be too large for some applications because, even though a broadening of 10% of the magnitude response may be acceptable, a phase error this large may not be acceptable.
+
+## Effect of mismatch in a nonbaseband signal
+
+Consider a nonbaseband signal $\eqref{equation-6}$ and its spectrum $\eqref{equation-4}$. Let the FM rate error in the matched filter be $\Delta K$. Using the frequency domain approach, the output signal is
+
+$$
+  s_\text{out} (t) = \int_{-|K|T/2 - Kt_c}^{|K|T/2 - Kt_c} e^{-i\pi\Delta K f^2 /K^2} e^{i2\pi f(t - t_0 - t_c)} \;\d f
+$$
+
+By substituting $u = f + Kt_c$, collecting terms that are independent of $u$, and simplifyin, the output signal is
+
+$$
+\begin{equation*}
+\begin{split}
+  s_\text{out} (t) =& \exp\left(i\pi \left[-\Delta K t_c^2 - 2\pi Kt_c (t - t_0 - t_c) \right]\right) \\
+  &\times \int_{-|K|T/2}^{|K|T/2} e^{-i\pi\Delta Ku^2}{K^2} \\
+  &\quad \times e^{i2\pi u(t - t_0 + t_c + \Delta Kt_c /K)} \;\d u
+\end{split}
+\tag{\label{equation-25}}
+\end{equation*}
+$$
+
+The target is compressed to time $t = t_0 + t_c - \Delta K t_c /K$. At this time, the phase given by the first exponential term is $\pi\Delta Kt_c^2$. Including the QPE, the total phase is then
+
+$$
+  \Delta\phi = \pi\Delta Kt_c^2 - \frac{\pi\Delta K}{3} \left(\frac{T}{2}\right)^2
+$$
+
+where the last term is one-third of the QPE.
+
+Comparing $\eqref{equation-25}$ with the case of noe phase error $\eqref{equation-10}$, the former has an additional time shift of $\Delta Kt_c /K$ and an additional phase of $\pi\Delta Kt_c^2$. This time shift can also be derived from the frequency versus time-relationship $t = f/K$ for a linear FM signal, by differentiating $t$ with respect to $K$. This shift will not affect the IRW broadening adnt eh sidelobe effects, compared to a baseband signal. In other word, the IRW broadening and PSLR effects for a baseband signal, are still applicable to a nonbaseband signal. A similar result would be obtain using the time domain approach.
+
+## Time bandwidth product
+
+Using the phase error relation $\eqref{equation-}$ for linear FM signals and the resulting IRW broading, a rule of thumb can be established to relate the allowable FM rate error to the TBP of the signal $\eqref{equation-27}$. If the allowable QPE is the to $Q\pi$, the relative FM rate error criterion can be expressed as
+
+$$
+  \left|\frac{\Delta K}{K}\right| \leq \frac{4Q}{B_\text{TBP}}
+$$
+
+This means that signals with longer durations or higher bandwidths are more sensitive to FM rate errors, and care must be taken to use accurate parameters in the compression process.
+
+Using $Q = 0.5$ as an intermediate value (giving a broadening of 8%), a simple rule of thumb is that the FM rate error should be limited to  $|\Delta K/K| \leq 2 B_\text{TBP}$ for moderate focusing accuracy. For high focusing accuracy (IRW broadening less then 2%), the rule that $|\Delta K/K|$ should be less than $1/B_\text{TBP}$ can be used.
