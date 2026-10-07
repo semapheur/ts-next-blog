@@ -392,7 +392,11 @@ function relabelLatexEquations(mdxFile: string) {
     if (e) console.log(e);
   });
 }
-console.log(findLatexIssues("./content/notes/physics/optics.mdx"));
+console.log(
+  findLatexIssues(
+    "./content/notes/remote_sensing/radar_imaging/synthetic_aperture_radar.mdx",
+  ),
+);
 
 //relabelLatexEquations("./content/notes/math/differential_geometry.mdx")
 //;(async () => {

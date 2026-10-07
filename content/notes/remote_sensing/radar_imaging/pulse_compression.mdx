@@ -241,9 +241,61 @@ where the approximation is accurate for a large TBP. The signal and the matched 
 
 Note that $\eqref{equation-2}$ is a real function with a phase of either $0$ or $\pi$, because the matched filter has been explicitly designed for this signal. In practice, however, every target will have a different phase, and the compressed pulse will be complex.
 
+### Matched filter output
+
+#### Signal and matched filter of equal length
+
+Based on the signal $\eqref{equation-3}$ and impulse response $\eqref{equation-21}$, the matched filter output is given by
+
+$$
+\begin{align*}
+  s_\text{out} (t) = s_r (t) * h(t) \\
+  =& \int_{-\infty}^\infty \operatorname{rect}\left(\frac{u}{T}\right) \operatorname{rect}\left(\frac{t - u}{T} \right) e^{i\pi Ku^2} e^{-i\pi K(t - u)^2} \;\d u \\
+  =& e^{-i\pi Kt^2} \int_{-\infty}^\infty \operatorname{rect}\left(\frac{u}{T}\right) \operatorname{rect}\left(\frac{t - u}{T} \right) e^{i2\pi Ktu} \;\d u
+\end{align*}
+$$
+
+This integral only has a contribution when the two rect functions overlap. The integral can be evaluated by separating it into two parts, one part where the signal is to the left of the matched filter, and the other part where it is to the right, corresponding to two cases of overlap. Changing the integration limits accordingly, the integral becomes
+
+$$
+\begin{align*}
+  s_\text{out} (t) = e^{-i\pi Kt^2} \left[& \operatorname{rect}\left(\frac{t + T/2}{T}\right) \int_{-T/2}^{t + T/2} e^{i2\pi Ktu} \;\d u \right. \\
+  &\left. \operatorname{rect}\left(\frac{t - T/2}{T}\right) \int_{t - T/2}^{T/2} e^{i2\pi Ktu} \;\d u \right]
+\end{align*}
+$$
+
+The matched filter output becomes
+
+$$
+  s_\text{out}(t) =& (t + T) \operatorname{rect}\left(\frac{t + T/2}{T} \right) \sinc[Kt(t + T)] \\
+  &+ (T - t) \operatorname{rect}\left(\frac{t - T/2}{T}\right) \sinc[Kt(T - t)]
+$$
+
+The output $s_\text{out}(t)$ is a real function, and can be written in a more compact form
+
+$$
+  s_\text{out}(t) = (T - |t|) \operatorname{rect}\left(\frac{t}{2T} \right) \sinc[Kt(T - |t|)]
+$$
+
+This function can be viewed as having a slowly varying part or envelope $(T - |t|) \operatorname{rect}[t/(2T)]$, and a rapidly varying part arising from the sinc function. The envelope is a triangular function. The triangular shape of the envelope arises from the fact that the fraction of the two functions $s_r (t)$ and $h(t)$, that overlap one another, decreases linearly from the middle, as the uniform-magnitude functions are shifted in relation to one another.
+
+The rapidly varying part can be approximately represented by three sinc function, which peak at times $t = -T, 0, T$. The effective duration of each sinc function is much smaller than $T$, assuming that the signal has a larger TBP.
+
+The contributions of the sinc functions that peak at $-T$ and $T$ are negligible, since the triangular functions is close zero in the vicinity of these points. For values of TBP less than $100$, the outer sinc functions start becoming noticeable. In addition, the envelope is nearly equal to $T$ in the vicinity of the sinc function that peaks at $t = 0$, where $|t| \ll T$. Under these conditions of $B_\text{TBP} \geq 100$, the compressed output can be approximated by
+
+$$
+  s_\text{out} (t) \approx  T \sinc(KT t)
+$$
+
+#### Signal and matched filter of unequal length
+
+Consider the case where the rect functions of $\eqref{equation-3}$ and $\eqref{equation-21}$ have different lengths. Then the partition of the convolution integral is no longer necessary, and it is simpler to evaluate.
+
+The convolution integral is obtained by removing the rectangular window in one of the functions. For example, the rectangular function can be removed from $s_r (t)$ in $\eqref{equation-}$, which is equivalent to assuming that the direction of the signal $s_r (t)$ is longer than the duration of the filter $h(t)$. Letting $t_0 = 0$, the matched filter output is
+
 ### Pulse resolution
 
-T he resolution is defined as the spread between the two -3-dB points of the compressed signal. It is the width of the pulse measured a factor of $0.707$ below the peak magnitude. The 3-dB resolution, expressed in time units, is given by
+The resolution is defined as the spread between the two -3-dB points of the compressed signal. It is the width of the pulse measured a factor of $0.707$ below the peak magnitude. The 3-dB resolution, expressed in time units, is given by
 
 $$
 \begin{equation*}
@@ -496,7 +548,7 @@ To implement this filter, the frequency variable, $f$, must be specified. Its ra
 
 ## Target registration and matched filter throwaway
 
-When Option 3 is used, each target in the output array is registered to its zero frequency position in the input array. In this case, the throwaway regions are split between each end of the output array. If the target is centered on zero frequency, the throwaway regions are split equally on either end of the output array, with \mathrm{TA}_L = \mathrm{TA}_R = (N-1)/2.
+When Option 3 is used, each target in the output array is registered to its zero frequency position in the input array. In this case, the throwaway regions are split between each end of the output array. If the target is centered on zero frequency, the throwaway regions are split equally on either end of the output array, with $\mathrm{TA}_L = \mathrm{TA}_R = (N-1)/2$.
 
 When the zero frequency point of the target is shifted by $N_z$ samples to the right of the center of the exposure, the left end throwaway region is $\mathrm{TA}_L = (N - 1)/2 + N_\text{ZD}$ samples long, while at the right end, the throwaway region is $\mathrm{TA}_R = (N - 1)/2 - N_\text{ZD}$ samples.
 
@@ -600,6 +652,19 @@ $$
 $$
 
 where the last term is one-third of the QPE.
+
+<details>
+<summary>Proof</summary>
+
+$$
+\begin{align*}
+  \Delta\phi =& -\frac{Q}{3} - \frac{Q^3}{105} - \frac{1}{3}\left(-\frac{Q}{3} - \frac{Q^3}{105} + \cdots \right)^3 + \cdots \\
+  \approx& -\frac{Q}{3}
+\end{align*}
+$$
+
+Thus, a QPE magnitude of $\pi/2$ would introduce an absolute phase error of approximatelt $\pi/6$ at the target peak.
+</details>
 
 Comparing $\eqref{equation-25}$ with the case of noe phase error $\eqref{equation-10}$, the former has an additional time shift of $\Delta Kt_c /K$ and an additional phase of $\pi\Delta Kt_c^2$. This time shift can also be derived from the frequency versus time-relationship $t = f/K$ for a linear FM signal, by differentiating $t$ with respect to $K$. This shift will not affect the IRW broadening adnt eh sidelobe effects, compared to a baseband signal. In other word, the IRW broadening and PSLR effects for a baseband signal, are still applicable to a nonbaseband signal. A similar result would be obtain using the time domain approach.
 
