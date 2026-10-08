@@ -6,25 +6,229 @@ showToc: true
 
 # Sampling
 
-Digital signal processing only works accurately and efficiently if the signal has been sampled correctly. This means that the sampling rate should be high enough to preserve signal fidelity, but not so high as to be inefficient. Aliasing occurs if the signal is not sampled fast enough. The sampling requirements depend on the signal type, for example, real versus complex signals, baseband versus nonbaseband signals.
+Digital signal processing (DPS) relies on an accurate and sufficiently efficient representation of continuous-time signals in discrete time. This requires the sampling rate to be high enough to preserve signal fidelity, but not so high as to be inefficient. If the sampling rate is too low relative to the signal bandwidth, spectral overlap occurs after sampling, producing aliasing and making the original signal, in general, impossible to reconstruct uniquely from its samples.
+
+The appropriate sampling requirement depends on the nature of the signal and its spectral support. In particular, the relevant conditions differ for real-valued and complex-valued signals and for baseband and bandpass signals.
 
 ## Spectrum of sampled signals
 
-In DSP operations, it is important to consider the signal spectrum, to examine whether the signal contains the expected information, before and after the operation. Indeed, some signal processing operations are applied directly to the signal spectrum. The spectrum of a discrete-time signal is different from that of a continuous-time signal. There are four cases to consider, depending on whether the signal is continuous or sampled, and whether it has an infinite or finite duration.
+An essential part of DSP is to examine the signal frequency spectrum before and after a processing operation. This makes it possible to verify that the expected spectral components are present and to determine how an operation has modified them. Some signal-processing operations can also be formulated directly in the frequency domain.
 
-It is assumed that the infinite-duration, continuous-time signal under consideration is bandlimited, which means that the energy is confined to a limited region, $\pm f_b$, of the frequency axis.
+The spectrum of a discrete-time signal is different from that of a continuous-time signal. There are four cases to consider, depending on whether the signal is continuous-time or discrete-time, and whether its duration is finite or infinite.
 
-When an $N$-point DFT is performed on a sampled signal, the first sample of the output array represents zero frequency, and the last sample represents frequency 
+Consider first an infinite-duration, continuous-time signal $x(t)$, with Fourier transform $X(f)$. Assume that the signal is bandlimited to $f_b$, meaning that $X(f) = 0$ for $|f| > f_b$. If the signal is sampled uniformly with sampling period $T_s$, the sampling frequency is
 
 $$
-  \frac{(N - 1)f_s}{N} \approx f_s
+  f_s = \frac{1}{T_s}
 $$
 
-For analytical and illustrative purposes, the left and right halves of the DFT output array are often interchanged. After this shift, the first sample in the array corresponds to frequency $-f_s /2$ and the last sample to frequency $(N - 2) f_s /2(N) \approx f_s /2$. For a real signal, only the first half of the DFT output array is adequate to describe the signal, as the second half is redundant.
+and the resulting discrete-time sequence is $x[n] = x(nT_s)$. Ideal sampling produces periodic replicas of the original continuous-time spectrum. The spectrum of the sampled signal can be written as
 
-## Real versus complex signals
+$$
+  X_s (f) = \frac{1}{T_s} \sum_{m=-\infty}^\infty X(f - mf_s)
+$$
 
-In the physical world, all signals are real; for example, the voltage measured at an electrical terminal. However, within the digital signal processor, it is convenient, and often more efficient, to operate on complex signals. An example is provided by the DFT, which inherently operates on complex sequences. In practice, a real-valued signal is converted to a complex-valued signal that contains the same information, using a complex demodulation process (also called quadrature demodulation). In this operation, the signal is mixed (multiplied) with a cosine wave of the appropriate frequency, and the result, after filtering the higher frequency component, is called the "real channel." In parallel, the signal is mixed with a sine wave of the same frequency, and the result is called the "imaginary channel." These two signals are then sampled with synchronous samplers to obtain one complex sample. Alternately, the real signal can be sampled and the demodulation performed in the discrete-time domain. The conversion to a complex signal can be performed using a Hilbert transformation, which generates a signal that is phase shifted by $\pi/2$.
+Thus, the spectrum is repeated at integer multiples of the sampling frequency $f_s$.
+
+For a real-valued baseband signal whose spectrum is confined to $|f| \leq f_b$, the spectral replicas do not overlap provided that $f_s > 2f_b$. This is the Nyquist sampling condition for a real-valued, low-pass, bandlimited signal. If the replicas overlap, spectral components become indistinguishable in the sampled signal, producing aliasing.
+
+The condition $f_s > 2f_b$, however, should not be regarded as a universal sampling rule. The minimum sampling rate depends on the spectral support of the particular signal and on whether the signal is real or complex and baseband or bandpass.
+
+### The spectrum of an $N$-point DFT
+
+Suppose $N$ samples of a signal are taken at sampling frequency $f_s$, and an $N$-point discrete Fourier transform (DFT) is computed:
+
+$$
+  X[k] = \sum_{n=0}^{N-1} x[n] e^{-i2\pi kn/N},\, k=0,\dots,N-1
+$$
+
+The DFT contains $N$ equally spaced frequency samples. The frequency spacing, or frequency resolution, is
+
+$$
+  \Delta f = \frac{f_s}{N}
+$$
+
+Using the conventional ordering of the DFT output, bin $k$ corresponds to
+
+$$
+  f_k = k \frac{f_s}{N},\, k=0,\dots,N-1
+$$
+
+Consequently, the frequency associated with the last DFT bin is
+
+$$
+  f_{N-1} = \frac{(N - 1) f_s}{N} = f_s - \frac{f_s}{N} \leq f_s
+$$
+
+There is an important subtlety here. A discrete-time spectrum is periodic with period $f_s$. Hence, frequencies that differ by an integer multiple of $f_s$ are equivalent. The frequency
+
+$$
+  f_s - \frac{f_s}{N}
+$$
+
+can therefore be interpreted as the negative frequency $-f_s /N$. This is why the upper portion of the conventional DFT output is normally interpreted as representing negative frequencies.
+
+### Centered or shifted DFT spectrum
+
+For analysis and visualization, it is often more convenient to reorder the DFT coefficients so that zero frequency appears at the center. This operation is commonly called an FFT shift.
+
+For even $N$, the resulting frequency axis can be written as
+
+$$
+  f_k = \left(k - \frac{N}{2}\right) \frac{f_s}{N},\, k=0,\dots,N-1
+$$
+
+Thus, the shifter spectrum is naturally interpreted over one Nyquist interval
+
+$$
+  \left[-\frac{f_s}{2}, \frac{f_s}{2}\right)
+$$
+
+The endpoints require some care: $+f_s /2$ and $-f_s /2$ represent the same discrete-timee frequency because they differ by $f_s$. Consequently, both enpoints are not included simultaneously.
+
+### Real-valued signals
+
+For a real-valued sequence $x[n]$, the DFT satisfies conjugate symmetry
+
+$$
+  X[N - k] = X^* [k],\, k=1,\dots,N - 1
+$$
+
+Thus, the negative-frequency portion of the DFT contains no additional independent information; it is completely determined by the positive-frequency portion.
+
+For even $N$, the independent frequency bins can consequently be taken as $k=0,\dots,N/2$ correspondning to frequencies
+
+$$
+  0 \leq f_k \leq \frac{f_s}{2}
+$$
+
+The remaining DFT coefficients are determined by conjugate symmetry.
+
+This redundancy is a consequence of the signal being real-valued. It does not generally hold for complex-valued signals, for which the positive- and negative-frequency components can contain independent information.
+
+## Quadrature modulation of real-valued signals
+
+In physical measurement, signals are real-valued quantities. Within a digital signal processor, however, it is often advantageous to represent such signals using complex-valued sequences. Complex representations can simplify modulation and demodulation, frequency translation, filtering, and spectral analysis. The DFT is a familiar example: although it can be applied to real-valued input sequences, its output is generally complex-valued.
+
+A real-valued signal can be represented by a complex-valued signal using quadrature demodulation (or complex demodulation). The essential idea is to translate a selected frequency band to baseband and represent its two orthogonal components as the real and imaginary parts of a complex signal.
+
+Suppose the real-valued input is $x(t)$, and let the desired center frequency be $f_c$, with angular frequency $\omega_c = 2\pi f_c$. Then signal can be mixed with two orthogonal local oscillators $\cos(\omega_c t)$ and $\sin(\omega_c t)$. After low-pass filtering to remove the unwanted high-frequency components, the resulting signals form the in-phase and quadrature components. With an appropriate sign convention, they can be written as
+
+$$
+\begin{align*}
+  I(t) =& \operatorname{LPF}[2x(t) \cos(\omega_c t)] \\
+  Q(t) =& \operatorname{LPF}[-2x(t) \sin(\omega_c t)]
+\end{align*}
+$$
+
+The corresponding complex baseband signal is
+
+$$
+  z(t) = I(t) + iQ(t)
+$$
+
+The factor of $2$ is a normalization convenction that compensates for the factor $1/2$ introduced by multiplication by a sinuisoid. Depending on the convention used for the quadrature oscillator and the definition of $Q(t)$, the sign of the imaginary component may instead be reversed. What matters is that the two components are in quadrature, meaning that they differ in phase by $\pi/2$ radians.
+
+The reason this produces a complex baseband representation can be seen from Euler's identity
+
+$$
+  e^{-i\omega_c t} = \cos(\omega_c t) + i\sin(\omega_c t)
+$$
+
+Thus, an equivalent conceptual description of complex demodulation is to multiply the real signal by a complex local oscillator
+
+$$
+  z_\text{mix} (t) = 2x (t) e^{-i\omega_c t}
+$$
+
+and then low-pass filter the result
+
+$$
+  z(t) = \operatorname{LPF}[2x(t) e^{-i\omega_c t}]
+$$
+
+The complex signal $z(t)$ therefore contains two real-valued channels: the in-phase component $I(t)$ and the quadrature component $Q(t)$. The same operation can be performed in discrete time. The real signal may first be sampled, $x[n] = x(nT_s)$, after which digital oscillators and digital filters can be used to perform the frequency translation
+
+$$
+  z[n] = \operatorname{LPF}(2x[n] e^{-i\omega_c t)
+$$
+
+where $\omega_c$ is not the corresponding discrete-time angular frequency, measured in radians per sample. Equivalently, the real and imaginary components can be generated separately using cosine and sine sequences.
+
+### Hilbert transform
+
+An alternative method for constructing a complex representation is based on the Hilbert transform. If $x(t)$ is a real-valued signal and $\hat{x}(t)$ denote its Hilbert transform, then the associated analytic signal is
+
+$$
+  x_a (t) = x(t) + i\hat{x}(t)
+$$
+
+If $X(f)$ denotes the Fourier transfomr of $x(t)$, the Hilbert transform is characterized in the frequency domain by
+
+$$
+  \hat{X}(f) = -i \operatorname{sgn}(f) X(f)
+$$
+
+where
+
+$$
+  \operatorname{sgn}(f) = \begin{cases}
+    1,\quad& f > 0 \\
+    0,\quad& f = 0 \\
+    -1,\quad& f < 0
+  \end{cases}
+$$
+
+Consequently, positive-frequency components undergo a phase shift of $-\pi/2$, while negative-frequency components undergo a phase shift of $+\pi/2$. The Hilbert transform therefore generates a component in quadrature with the original signal, although the phase shift is frequency-dependent in sign rather than being a uniform $90^\circ$ shift over both positive and negative frequencies.
+
+The Fourier transform of the analytic signal is
+
+$$
+  X_a (f) = X(f) + i\hat{X}(f)
+$$
+
+which, using the Hilbert-transform relation, becomes
+
+$$
+  X_a (f) = [1 + \operatorname{sgn}(f)] X(f)
+$$
+
+Thus,
+
+$$
+  X_a (f) = \begin{cases}
+    2X(f),\quad& f > 0,
+    X(0),\quad& f = 0,
+    0,\quad& f < 0
+  \end{cases}
+$$
+
+Thus, the analytic signal contains no negative-frequency components, $X_a(f) = 0$ for $f < 0$. The positive-frequency components are doubled, while the direct current (DC) component is retained with its original amplitude rather than doubled. This convention ensures that the real part of the analytic signal is exactly the original signal:
+
+$$
+  \Re[x_a (t)] = x(t)
+$$
+
+For a discrete-time signal, the same principle applies, but the periodicity of the discrete-time spectrum requires additional care. For an even-length $N$-point DFT, the positive-frequency components are retained and doubled except at the DC bin and the Nyquist bin. The DC component corresponds to $f = 0$, while the Nyquist component corresponds to
+
+$$
+  f = \frac{f_s}{2}
+$$
+
+which is equivalent to $-f_s /2$ because discrete-time frequencies are periodic with period $f_s$. Consequently, when constructing an analytic discrete-time signal using av even-length DFT, the spectral coefficients are modified according to
+
+$$
+  X_a [k] = \begin{cases}
+    X[k],\quad& k = 0 \\
+    2X[k],\quad& 1 \leq k < N/2 \\
+    X[k],\quad& k = N/2 \\
+    0,\quad& N/2 < k \leq N - 1
+  \end{cases}
+$$
+
+The Nyquist component is therefore retained rather than doubled, just as the DC component is retained. For off $N$, there is no bin exactly at the Nyquist frequency, so the corresponding weighting differs slightly.
+
+This suppression of negative-frequency content makes analytic signals particularly useful for complex-envelope representations, modulation and demodulation, instantaneous-amplitude and instantaneous-phase analysis, and instantaneous-frequency estimation.
 
 ## Signal bandwidth
 
