@@ -232,24 +232,89 @@ This suppression of negative-frequency content makes analytic signals particular
 
 ## Signal bandwidth
 
-It is important to know the bandwidth of a signal to determine its sampling requirements. For real signals, only
-the positive frequencies are considered. If $f_2$ is the frequency of the highest-frequency signal component, and $f_1$ is the frequency of the lowest (positive) frequency signal component, the bandwidth is $B = f_2 - f_1$.
+The sampling requirements of a signal is dependent on its bandwidth. Let $X(f)$ denote the Fourier transform of a continuous-time signal $x(t)$.
 
-For complex signals, negative as well as positive frequencies are considered. In this case, $f_1$ is the frequency of the lowest-frequency signal component, taking negative frequencies into account.
+For a real-valued signal, the spectrum satisfies the conjugate-symmetry property $X(-f) = X^* (f)$, so the negative frequency spectrum contains no additional independent information. Thus, bandwidth is conventionall specified using the positive-frequency spectrum. If $f_1$ and $f_2$ are the lowest and highest frequencies, respectively, containing significant spectral energy, with $0 \leq f_1 \leq f_2$, then the occupied bandwidth is $B = f_2 - f_1$.
 
-In theory, a finite-length signal cannot be bandlimited. To circumvent the problem, it can be said that energy below a certain level can be ignored, so that a finite-length signal can be effectively bandlimited. Hence, only energy above a "significant" level is considered. This level is often considered to be 3 dB below the peak energy, although 10 dB is also used in some applications. In practice, an analog signal often has some unwanted high frequency components, such as white noise. In order to keep the sampling rate as low as possible, an antialiasing filter is used before the sampler, to restrict the bandwidth to the areas of the spectrum that are of interest in the application.
+For a complex-valued signal, positive and negative frequencies are not generally relative by conjugate symmetry, so both must be considered. If the significant spectral content extends from $f_\text{min}$ to $f_\text{max}$, where $f_\text{min}$ may be negative, the occupied bandwidth is $B = f_\text{max} - f_\text{min}$. Thus, for a complex signal, bandwidth is the width of the smallest frequency interval containing the relevant spectral content. It is not necessarily the difference between the largest and smallest positive frequency components.
+
+### Effective bandwidth
+
+Strictly speaking, a nonzero signal cannot be both time-limited and bandlimited. In particular, a signal of finite duration cannot have a Fourier transform with exactly finite support. In practical applications, this limitation is addressed by defining an effective bandwidth or occupied bandwidth: spectral components whose energy or power is sufficiently small relative to a specified reference level are neglected.
+
+The choice of threshold is application-dependent. For example, a $-3 \unit{dB}$ criterion is sometimes used to define an effective bandwidth, while more stringent criteria, such as $-10 \unit{dB}$, may be appropriate in other applications.
+
+Practical analog signals may also contain unwanted out-of-band components, including broadband noise. An antialiasing filter is therefore commonly placed before the sampler to attenuate spectral components outside the frequency range of interest. This permits the sampling frequency to be selected according to the desired signal bandwidth while sufficiently suppressing components that could otherwise alias into the retained frequency range.
 
 ## Fundamental frequency range
 
-For a certain sampling rate, the fundamental range is said to be the lowest set of frequencies that can hold unambiguous information of the signal. If $f_s$ is the sampling frequency, the fundamental range is from zero to $f_s /2$ for real signals. For complex signals, the fundamental range is from  $-f_s /2$ to $f_s /2$, although it can also be considered to be between zero and $f_s$.
+For a sampling frequency $f_s$, the spectrum of the resulting discrete-time signal is periodic with period $f_s$. Consequently, continuous-time frequencies that differ by an integer multiple of $f_s$ are indistinguishable after sampling:
+
+$$
+  f \sim f + kf_s,\, k\in\Z
+$$
+
+A fundamental frequency interval is an interval of width $f_s$ containing one representative from each equivalence class of frequencies modulo $f_s$.
+
+For real-valued signals, a commonly used one-sided representation is
+
+$$
+  0 \leq f \leq \frac{f_s}{2}
+$$
+
+Because of conjugate symmetry, this interval contains all independent spectral information.
+
+For complex-valued signals, a commonly used centered fundamental interval is
+
+$$
+  -\frac{f_s}{2} \leq f < \frac{f_s}{2}
+$$
+
+An equivalent choice is $0 \leq f < f_s$
+
+These intervals contain the same discrete-time frequency information; they differ only in the choice of frequency origin.
+
+The frequency $f_s/2$ is the Nyquist frequency and is the upper limit of the conventional one-sided fundamental interval for real-valued sampling.
 
 ## Baseband versus nonbaseband signals
 
-For real signals, a baseband signal is defined as one in which the lowest positive-frequency component is small compared to the bandwidth. The energy can extend down to zero frequency, for example, when a white noise signal is passed through a lowpass filter. In this case, the sampling rate is selected so that the significant energy of the continuous-time signal lies within the fundamental range.
+### Real-valued signals
 
-If there is a significant gap between zero frequency and the lowest positive frequency component in the signal, it is said to be a nonbaseband signal. Nonbaseband signals are common in communications systems, when an information signal is modulated on a high-frequency carrier.
+For a real-valued signal, a baseband signal is one whose significant spectral content extends to, or sufficiently close to, zero frequency. If $f_1$ denotes the lowest positive frequency containing significant spectral energy, then a signal may be regarded as baseband when $f_1 \ll B$.
 
-For complex signals, a baseband signal is defined to be one in which the significant energy of the continuous-time signal lies entirely within the fundamental range for a given sampling rate. Conversely, a nonbaseband complex signal is one in which the significant energy does not all lie within the fundamental range.
+An ideal lowpass signal is the limiting case in which the significant spectrum begins at zero frequency.
+
+For example, white noise passed through a lowpass filter can have significant spectral energy extending continuously down to zero frequency. In this case, the sampling frequency must be chosen so that the relevant positive-frequency content lies within the fundamental interval
+
+$$
+  0 \leq f \leq \frac{f_s}{2}
+$$
+
+with sufficient margin to accommodate the transition band of the practical antialiasing filter.
+
+If there is a substantial spectral gap between zero frequency and the lowest frequency containing significant spectral energy, the signal is commonly described as nonbaseband or bandpass. For example, a real signal whose significant spectrum occupies approximately
+
+$$ 
+  f_1 \leq |f| \leq f_2,\, 0 < f_1 < f_2
+$$
+
+is a bandpass signal. Such signals are common in communication systems, where an information-bearing signal is modulated onto a high-frequency carrier.
+
+### Complex-valued signals
+
+For a complex-valued signal, the baseband/nonbaseband distinction is most naturally defined relative to the chosen fundamental frequency interval.
+
+A complex signal is baseband, for a given sampling frequency $f_s$, if its significant spectral support can be represented entirely within the centered fundamental interval
+
+$$
+  -\frac{f_s}{2} \leq f < \frac{f_s}{2}
+$$
+
+Equivalently, if the significant spectral support occupies a frequency interval of width no greater than \(f_s\), it can, in principle, be placed within a single fundamental interval without spectral overlap, subject to practical filtering requirements.
+
+Conversely, a complex signal is nonbaseband with respect to a particular sampling frequency if its significant spectral content is not contained within the selected fundamental interval.
+
+A nonbaseband signal can nevertheless be sampled without loss using bandpass sampling, provided the sampling frequency is chosen so that the resulting spectral replicas do not overlap. Thus, whether a signal is described as baseband or nonbaseband depends not only on the signal's spectrum but also on its position relative to the sampling frequency.
 
 ## Nyquist sampling rate and aliasing
 
