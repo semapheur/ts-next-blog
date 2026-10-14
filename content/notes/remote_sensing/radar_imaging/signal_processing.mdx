@@ -320,7 +320,7 @@ A nonbaseband signal can nevertheless be sampled without loss using bandpass sam
 
 The sampling requirements differ between real and complex signals, primarily because each complex sample has twice the information content as one real sample.
 
-<MathBox title="Nyquist-Shannon sampling theorem" boxType="theorem">
+<MathBox title="Nyquist-Shannon sampling theorem" boxType="theorem" tag="1">
 Let $x: \R\to\mathbb{F}^n$ be a continuous-time signal whose Fourier transform $X(f)$ satisfies
 
 $$
@@ -474,10 +474,11 @@ $$
   w_G (t; T, \alpha) = \alpha - (1 - \alpha) \cos\left(\frac{2\pi t}{T}\right), t \leq \left|\frac{T}{2}\right|
 $$
 
-The $\alpha$ parameter determines the relative weights of the constant and cosine terms. It can be used to control the level of smoothing.
+The $\alpha$ parameter determines the relative weights of the constant and cosine terms. It can be used to control the level of smoothing. Two important special cases of general cosine windows are
+- The Hann (or Hanning) window with $\alpha = 1/2$
+- The Hamming window with $\alpha = 0.54$
 
-
-For the Hann window (historically called the Hanning window), $\alpha = 1/2$, which gives a cosine squared window. 
+The Hann window gives a cosine squared window
 
 $$
 \begin{align*}
@@ -486,7 +487,7 @@ $$
 \end{align*}
 $$
 
-For a Hamming window, $a = 0.54$, and the window is a raised cosine squared. 
+The Hamming window gives s a raised cosine squared
 
 $$
   w_\text{Hamming} (t; T) = 0.54 + 0.46 \cos\left(\frac{2\pi t}{T} \right),\, |t| \leq \fract{T}{2}
@@ -504,29 +505,59 @@ The inverse Fourier transform of this compactly supported frequency-domain windo
 
 # Interpolation
 
-Consider a signal $g(x)$ that is sampled at discrete positions $x = i$, where $x\in\R$ is a continuous independent variable and $i\in\Z$ is an integer (the sample number). The independent variable $x = t f_s$ is used instead of time $t$, since spatial coodinates are often used in practical applications. Alose, let $g_d (i)$ be the sampled signal such that $g_d (i) = g(x)$ when $x = i$. Using interpolation, we can resample $g_d (i)$ to evaluate it at some other noninteger values $x \neq i$.
+Consider a continuous signal $g: \R\to\mathbb{F}$ sampled at discrete positions $x = i$, where $x\in\R$ is a continuous independent variable and $i\in\Z$ is the integer sample index. For a temporal signal, we can introduce the normalized coordinate $x = t f_s$, where $f_s$ is the sampling frequency.
 
-The value of $g(x)$ for noninteger values of $x$ can be obtained by applying the DFT shifting/modulation property, or by zero padding the spectrum. However, these methods are not flexible enough for the general use, because the former gives pixels that are shifted by the same amount from the original signal, and the latter gives pixels that are separated by $1/M$ subsamples, where $M$ is the expansion factor (which must be an integer).
-
-An interpolation can be implemented via a convolution
-
+The corresponding discrte signal is defined by
+  
 $$
-  g(x) = \sum_i g_d (i) h(x - i)
+  g_d [i] := g(i),\, i\in\Z
 $$
 
-where $h(x)$ is called the interpolator or interpolation kernel. In practice, the kernel is an even function of $x$, so that $h(i - x) = h(x - i)$. A sample point at $i$ is then weighted by the kernel weight $h(i - x)$. The interpolated value $g(x)$, at the interpolation point $x$ is the sum of the products of the kernel weights and the samples in $g_d (i)$ under the kernel, or a weighted sum of the samples in the neighbourhood of $x$.
+Given the samples $g_d [i]$, interpolation provides an estimate of the underlying continuous signal for arbitrary $x\in\R$, including noninteger locations $x\notin\Z$.
+
+For a finite uniformly sampled signal, noninteger shifts or resampling can be performed using the DFT shift/modulation property or by zero-padding its DFT. These approaches, however, impose particular constraints on the locations at which the signal can be evaluated. The DFT shift property produces a uniform translation of the entire sampled signal, whereas zero-padding the spectrum increases the sampling density on a fixed, uniformly spaced grid. In particular, if the DFT is expanded by an integer factor $M$, the resulting samples are separated by $1/M$ in the normalized coordinate $x$. Although these techniques are useful for particular resampling operations, they do not provide a general mechanism for evaluating the signal at an arbitrary set of noninteger locations.
+
+A general interpolation scheme can be implemented via a convolution
+
+$$
+  g(x) = \sum_{i\in\Z} g_d [i] h(x - i)
+$$
+
+where $h: \R\to\mathbb{F}$ is the interpolator or interpolation kernel. The notation $\hat{g}(x)$ emphasizes that this expression defines an interpolant of the discrete samples. In general, $\hat{g}(x)$ is an estimate of the original continuous signal $g(x)$.
+
+For $h$ to be an interpolating kernel, it must reproduce the original samples exactly, i.e. $h(k) = \delta[k]$ for $k\in\Z$, where $\delta[k]$ is the Kronecker delta. It then follows that, at every integer sample position $j$
+
+$$
+  \hat{g}(j) = \sum_{i\in\Z} g_d [i] h(j - i) = g_d [j]
+$$
+
+The, the interpolant passes exactly through all the original samples. In many practical interpolation schemes, the kernel is chosen to be an even function, satisfying $h(-u) = h(u)$ or $h(i - x) = h(x - i)$. For a particular interpolation location $x$, the sample $g_d [i]$ is therefore assigned the weight $w_i (x) = h(x - i)$, which depends on the distance between the sample location $i$ and the interpolation loction $x$. The interpolated value is consequently a weighted sum of the samples
+
+$$
+  \hat{g}(x) = \sum_{i\in\Z} w_i (x) g_d [i]
+$$
+
+If the interpolation kernel has compact support, only a finite number of samples contribute to the interpolation. In that case, $\hat{g}(x)$ is simply a weighted sum of the samples in a neighbourhood of $x$, with the kernel determining how strongly each neighbouring sample contributes.
 
 ## Sinc interpolation
 
-A sinc interpolator uses a kernel based on a sinc function, which follows from Shannon's sampling theorem.
+A sinc interpolator uses a kernel based on the normalized sinc function and arises directly the Nyquist-Shannon sampling theorem. Suppose that a continuous-time or continuous-space signal $g(x)$ is sampled at uniformly spaced locations with sampling interval $T$. The samples are $g_d [i] = g(iT)$ for $i\in\Z$. For simplicity, it is often convenient to work in normalized coordinates, with $T = 1$, so that the sample locations are $x = i$.
 
-If a signal $g(x)$ is sampled at discrete and evenly spaced intervals, the sampling theorem states that $g(x)$ can by reconstructed without error, if both of the following conditions are satisfied:
-- The signal is bandlimited; that is, its highest frequency is finite. Measurements made of any physical system are indeed bandlimited.
-- The sampling satisfies the Nyquist sampling rate. For a real signal, the sampling rate must be more than twice per cycle of the signal's highest frequency component. For a complex signal, the sampling rate must be higher than the signal's bandwidth.
+The sampling theorem $\ref{\theorem-1}$ states that a bandlimited signal can be reconstructed exactly from its uniformly spaced samples provided that the sampling frequency is sufficiently high relative to the signal bandwidth. This requires the following conditions to be satisfied
+- **Bandlimited signal:** The Fourier transform $G(f)$ of $g(x)$ must have finite suppoert. That is, there must exist a finite $B > 0$ such that $G(f) = 0$ for $|f| > B$. 
+- **Sufficient sampling rate:** If the signal is sampled at frequency $f_s=1/T$, then $f_s > 2B$ for a real-valued baseband signal whose highest positive frequency is $B$. Equivalently, the sampling must satisfy.
+
+$$
+  T < \frac{1}{2B}
+$$
+
+The boundary case $f_s = 2B$ is the Nyquist-rate limit. In practice, sampling is normally performed above this limit to provide a transition band for the antialiasing filter. For a complex-valued signal, the relevant condition is more naturally expressed in terms of its occupied spectral bandwidth and the location of that bandwidth relative to the sampling frequency; the simple $f_s > 2B$ statement applies directly to a baseband spectrum supported on $[-B,B]$.
+
+It is worth noting that physical measurements are not necessarily strictly bandlimited. Rather, physical systems often have finite effective bandwidth, and the strict bandlimited assumption is an idealization underlying exact sinc reconstruction.
 
 ### Reconstruction equation
 
-The sampling theorem states that the original signal, with the above two conditions satisfied, can be reconstructed by a convolution. For a baseband signal, the interpolation kernel is a sine function
+Under the bandlimited and appropriate sampling assumptions, the continuous signal can be reconstructed exactly from its samples using sinc interpolation. In normalized coordinates, the interpolation kernel is the normalized sinc function
 
 $$
 \begin{equation*}
@@ -535,55 +566,292 @@ $$
 \end{equation*}
 $$
 
-Then the interpolation is
+The reconstructed signal is therefore
 
 $$
-  g(x) = \sum_i g_d (i) \sinc(x - i)
+  g(x) = \sum_{i\in\Z} g_d (i) \sinc(x - i)
 $$
 
-with the summation over all input samples.
+For a samplng interval $T$ in physical coordinates, the equivalent expression is
 
-The result in $\eqref{equation-1}$ can be understood via the frequency domain. The spectrum $G_d (f)$ of the sampled signal $g_d (i)$ is that of $g(x)$ but repeated at the sampling frequency. To form the signal $g(x)$ only one period of the spectrum is required (e.g. the one at baseband). Thus, an ideal lowpass filter, int the form of a rectangular function in the frequency domain, is needed to extract the baseband spectrum. The ideal filter is then a sinc function in the time domain. Since multiplication in the frequency domain is equivalent to convolution in the time domain, the interpolation can be performed by a convolution with the sinc function.
+$$
+  g(x) = \sum_{i\in\Z} g(iT) \sinc\left(\frac{x - iT}{T}\right)
+$$
 
-An infinite number of points is required in the kernel to obtain one particular point, $g(x)$, exactly. In practice, an infinite number of points is not available; besides, an interpolation that uses a large number of points would be very costly. Fortunately, the kernel weight decreases with distance away from the interpolation point $x$ suggesting that the kernel can be truncated without much loss in accuracy.
+### Frequency-domain interpretation
+
+The origin of the sinc kernel becomes clear in the frequency domain. Uniform sampling replicates the spectrum of the original signal periodically at integer multiples of the sampling frequency. If $g_d [i] = g(iT)$, then in the idealized frequency-domain description, the spectrum associated with the sampled signal consists of shifted replicas of the original spectrum separated by $f_s = 1/T$.
+
+Provided that the sampling rate is sufficiently high to prevent spectral overlap, the original spectrum can be recovered by retaining one spectral replica—for example, the baseband replica—and suppressing all the others. This operation corresponds to an ideal low-pass filter whose frequency response is rectangular, $H(f) = \operatorname{rect}(B)$. The inverse Fourier transform of an ideal rectangular low-pass response is proportional to a sinc function. With the appropriate normalization associated with the sampling interval, this gives the sinc interpolation kernel.
+
+Equivalently, because multiplication in the frequency domain corresponds to convolution in the spatial or temporal domain, applying the ideal low-pass filter to the sampled signal corresponds to convolving the samples with its sinc impulse response.
+
+### Practical truncation
+
+An important limitation of sinc interpolation is that the ideal sinc kernel has infinite support. In principle, evaluating the reconstructed signal at a single noninteger location $x$ therefore requires contributions from every sample:
+
+$$
+  g(x) = \sum_{i\in\Z} g_d [i] \operatorname{sinc}(x - i)
+$$
+
+Although $|\sinc(x - 1)|$ decays approximately as $1/|x - 1|$, it does not become exactly zero as the distance from $x$ increases. Consequently, truncating the kernel introduces an approximate error.
+
+n practice, the infinite-support kernel is therefore replaced by a finite-support approximation. For example, one may retain only samples satisfying $|x-i| \leq L$, giving the truncated interpolant
+
+$$
+  \hat{g}_L (x) = \sum_{\substack{i\in\Z} \\ |x-i| \leq L} g_d [i] \sinc(x - i)
+$$
+
+The truncation substantially reduces the computational cost, since only a finite number of neighbouring samples contribute to each interpolated value. However, truncation means that the reconstruction is no longer mathematically identical to ideal sinc interpolation; the choice of kernel support represents a trade-off between computational cost and interpolation accuracy.
+
+In practice, simply truncating the sinc function can also produce undesirable artifacts because of the abrupt cutoff. For this reason, practical high-quality interpolators often window the sinc kernel, replacing it with a windowed-sinc function whose finite support and spectral characteristics can be controlled.
 
 ## Kernel normalization
 
-Once the kernel is truncated, normalization is needed to unify the gain of the interpolator. If unnormalized, the sum of weights on the samples is no longer equal to one, and differs between interpolation points $x$. It is best to keep this sum constant, equal to one in this case, for all interpolation points. Assuming a uniform magnitude signal with the magnitude equal to $M_u$, the interpolated value is then equal to the product of $M_u$ and the sum of the weights. By normalizing the sum to one, then the interpolated value is also $M_u$, which is the desired result since the interpolation should keep the uniform magnitude unchanged. A normalization procedure is applied to modify the interpolated result to give
+When the sinc kernel is truncated to a finite support, the resulting interpolation weights no longer have the same normalization as the ideal, infinite-support sinc kernel. In particular, the sum of the truncated weights generally depends on the interpolation position $x$. Without normalization, this position-dependent sum introduces a spatially varying gain into the interpolator.
+
+Consider the truncated interpolation
+
+$$
+  g(x) = \sum_{i\in I(x)} g_d [i] \sinc(x - i)
+$$
+
+where $I(x) \subsetneq \Z$ denotes the set of samples included within the finite kernel support. Define the local sum of the interpolation weights as
+
+$$
+  S_1 (x) \sum_{i\in I(x)} \sinc(x - i)
+$$
+
+In general, $S_1 (x) \neq 1$, and $S_1 (x)$ varies with $x$. This variation produces a position-dependent gain. To see this. consider a constant signal $g_d [i] = M_u$ for all $i\in\Z$, where $M_u$ is a constant magnitude. The unnormalized interpolation value is then
+
+$$
+\begin{align*}
+  g(x) =& \sum_{i\in I(x)} M_u \sinc(x - i) \\
+  =& M_u S_1 (x)
+\end{align*}
+$$
+
+Thus, unless $S_1(x) = 1$, the interpolated value of a constant signal is not constant. The interpolation operation would therefore introduce an artificial gain or attenuation that depends on the interpolation position.
+
+A natural normalization is therefore to enforce unity DC gain, i.e., to require that the interpolation weights sum to one. The normalized interpolant is
 
 $$
 \begin{equation*}
-  g'(x) = \frac{g(x)}{S}
+  g'(x) = \frac{g(x)}{S_1 (x)}
 \tag{\label{equation-2}}
 \end{equation*}
 $$
 
-where $S$ is the sum of the kernel weights at a particular interpolation point
+or equivalently
 
 $$
-  S = \sum_i \sinc(x - i)
+  g'(x) = \sum_{i\in I(x)} g_d [i] \frac{\sinc(x - i)}{S_1 (x)}
 $$
 
-where $i$ is now limited to the kernel size. Sometimes, it is desirable to keep the signal power constant. In this case, the normalization constant is
+The normalized weights are thus
 
 $$
-  S_2 = \sqrt{\sum_i \sinc^2 (x - i)}
+  w_i (x) = \frac{\sinc(x - i)}{\sum_{j\in I(x)} \sinc(x - j)}
 $$
 
-As the kernel length increases, the normalization constant in either case becomes closer to one, and the distinction between these two forms of normalization reduces.
+and satisfy
 
-The procedure in $\eqref{equation-2}$ is equivalent to normalizing the interpolation kernel by dividing each weight $h(x - i)$ by $S$, so that the sum of the normalized weights is one.
+$$
+\begin{equation*}
+  \sum_{i\in I(x)} w_i (x) = 1
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+Consequently, for a constant input $g_d [i] = M_u$,
+
+$$
+  g'(x) = M_u \sum_{i\in I(x)} w_i (x) = M_u
+$$
+
+Thus, this normalization preserves a constant signal exactly, which is the desired behaviour for an interpolator with unity DC gain.
+
+### Power or energy normalization
+
+In some applications, preserving the sum of the interpolation weights is not the desired criterion. Instead, one may wish to normalize the $\ell_2$-norm of the weight vector, which is related to the response to white noise and to certain notions of energy or power preservation.
+
+For the truncated sinc kernel, define
+
+$$
+  S_2 (x) = \left(\sum_{i\in I(x)} \sinc^2 (x - i) \right)^{1/2}
+$$
+
+The corresponding $\ell_2$-normalized interpolant is
+
+$$
+  g'(x) = \frac{g(x)}{S_2}
+$$
+
+with normalized weights
+
+$$
+  w_i (x) = \frac{\sinc(x - i)}{S_2 (x)}
+$$
+
+These weights satisfy
+
+$$
+\begin{equation*}
+  \sum_{i\in I(x)} w_i^2 (x) = 1
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+This normalization should not, however, be described simply as preserving the power of an arbitrary deterministic signal. Rather, it preserves the squared $\ell_2$-norm of the interpolation-weight vector and can therefore be useful when controlling the gain applied to uncorrelated noise or when a unit-energy interpolation operation is desired.
+
+### Dependence on kernel length
+
+As the support of the truncated sinc kernel is increased, the finite-support approximation approaches the ideal infinite-support sinc interpolator. Accordingly, the position-dependent normalization factors become less significant. For the ideal sinc interpolator, the cardinal-sinc identities imply
+
+$$
+  \sum_{i\in\Z} \sinc(x - i) = 1
+$$
+
+and
+
+$$
+  \sum_{i\in\Z} \sinc^2 (x - i) = 1
+$$
+
+Thus, if $I_L (x) \subsetneq \Z$ denotes the set of sample indices included by a truncated kernel of increasing support $L$, the corresponding normalization factors
+
+$$
+  S_1^{(L)} (x) = \sum_{i\in I_L (x)} \sinc(x - i)
+$$
+
+and
+
+$$
+  S_2^{(L)} (x) = \left(\sum_{i\in I_L (x)} \sinc^2 (x - i) \right)^{1/2}
+$$
+
+converge to unity as the support expands, provided the truncation sets exhaust $\Z$
+
+$$
+\begin{align*}
+  \lim_{L \to\infty} S_1^{(L)} (x) =& 1 \\
+  \lim_{L \to\infty} S_2^{(L)} (x) =& 1
+\end{align*}
+$$
+
+Thus, for a sufficiently long kernel, the distinction between the two normalization schemes becomes small, although they enforce different mathematical constraints $\eqref{equation-4}$ and $\eqref{equation-5}$. The first provides unity DC gain and exact reproduction of constant signals, whereas the second provides unit $\ell_2$-norm of the interpolation weights.
+
+Finally, the normalization in the first case can be viewed equivalently as normalizing the kernel locally at each interpolation position. That is, instead of first computing the unnormalized interpolation and subsequently dividing by $S_1(x)$, one may define
+
+$$
+  h_\text{norm} (x - i) = \frac{h(x - i)}{\sum_{j\in I(x)} h(x - j)}
+$$
+
+so that
+
+$$
+  \sum_{i\in I(x)} h_\text{norm} (x - i) = 1
+$$
+
+The two procedures are mathematically identical; the latter interpretation makes explicit that the normalization is applied directly to the interpolation weights.
 
 ### Windows sinc function
 
-When a function with sharp edges is interpolated, using a truncated sine kernel, the results exhibit a "ringing" called the Gibb's phenomenon. To reduce this ringing, the interpolation kernel is weighted by a tapering window, such as the Kaiser window. The kernel normalization also takes this window into account.
+When a signal containing sharp transitions is interpolated using a truncated sinc kernel, the reconstructed signal may exhibit oscillatory overshoots and undershoots near discontinuities. This behaviour is commonly associated with the Gibbs phenomenon, which refers to the persistent overshoot that occurs when approximating a discontinuity using a sequence of increasingly accurate bandlimited approximations. In practical interpolation, truncating the sinc kernel can produce related ringing artifacts.
 
-For implementation efficiency, the interpolation kernel is generated at fine subsample intervals and stored in a table. In this way, the sine function, window, and normalization do not have to be performed at each interpolation point; only the appropriate coefficients need to be extracted from the table, using the table entries nearest to the interpolation shift. Accuracy is affected by both the kernel length and the number of subsamples in the table. Limiting the table size introduces a geometric error of, at most, one-half the subsample interval.
+To reduce these artifacts, the truncated sinc kernel is commonly multiplied by a tapering window, such as a Kaiser window. The window attenuates the kernel near the boundaries of its finite support, reducing the abrupt truncation that contributes to ringing. This generally trades reduced oscillation for a broader effective transition region and potentially lower interpolation accuracy in other respects.
+
+Let the windowed interpolation kernel be defined as $h_L (u) = \sinc(u) w_L (u)$, where $w_L (u)$ is a finite support window, such as a Kaiser window, and $L$ characterizes the kernel support. The interpolated signal is then
+
+$$
+  \hat{g}(x) = \sum_{i\in I_L (x)} g_d [i] h_L (x - i)
+$$
+
+If unity dC gain is required, the windowed kernel must also be normalized. The position-dependent normalization factor is
+
+$$
+  S_L (x) = \sum_{i\in I_L (x)} h_L (x - i)
+$$
+
+giving the normalized interpolant
+
+$$
+  \hat{g}(x) = \frac{\sum_{i\in I_L (x)} g_d [i] h_L (x - i)}{\sum_{i\in I_L (x)} h_L (x - i)}
+$$
+
+provided that the denominator is nonzero. This normalization accounts for the window as wel as the trunction and ensures exact reproduction of constant signals wherever the normalized interpolation is defined.
+
+For computational efficiency, the windowed and normalized interpolation kernel can be precomputed at a fine set of fractional sample offsets and stored in a lookup table. This avoids repeatedly evaluating the sinc function, the window function, and the normalization factor for every interpolation point. At runtime, the fractional part of the desired interpolation coordinate is used to select the corresponding kernel coefficients from the table.
+
+For example, let the table contain $Q$ uniformly spaced fractional offsets over one sample interval
+
+$$
+  \Delta = \frac{1}{Q}
+$$
+
+For an interpolation location $x$, write $x = n + \mu$, with $n = \lfloor x \rfloor$ and $0 \leq\mu < 1$. The fractional offset $\mu$ is quantized to the neareast table entry
+
+$$
+  \mu_q = \frac{\operatorname{round}(Q\mu)}{Q}
+$$
+
+with appropriate handling of the interval boundary at $\mu = 1$. The maximum fractional-offset quantization error is then
+
+$$
+  |\mu - \mu_q| \leq \frac{1}{2Q}
+$$
+
+Thus, increasing the table density reduces the error associated with approximating the desired fractional offset. This bound describes the geometric error in the interpolation coordinate, not the error in the reconstructed signal amplitude. The latter also depends on the kernel's variation with offset, its support length, the input signal, and the coefficient-quantization or interpolation method used to access the table.
 
 ## Spectra of interpolation kernels
 
-Special test signals can be defined to examine the interpolation accuracy, but another way is to examine the spectra of the interpolation kernels.
+Interpolation accuracy can be evaluated using specially designed test signals, such as impulses, constant signals, sinusoids, and signals containing sharp transitions. These tests assess different properties of an interpolator, including sample reproduction, gain consistency, frequency response, and ringing. An alternative approach is to examine the frequency response of the interpolation kernel, which characterizes how the interpolator modifies different frequency components.
 
-There are two methods to perform the interpolation on nonbaseband signals, and the choice is application-dependent:
-- Translate the signal to baseband. This means shifting the signal to the left by $\Delta f$, the frequency offset from baseband. By the Fourier transform shift property, the signal in the time domain is multiplied by a linear phase term $e^{-i 2\pi\Delta f t}$. If desired, the data spectrum can be bandshifted back to its original center frequency after interpolation.
-- Translate the baseband filter to the signal's center frequency. By the Fourier transform shift property, the interpolation kernel in the time domain filter is multiplied by a linear phase term $e^{i2\pi\Delta f}$, which makes the interpolator coefficiens complex.
+For signals whose spectra are not centered at baseband, interpolation can be performed using either of two approaches. The appropriate choice depends on the signal representation, the required frequency range, and the computational constraints of the application.
+
+**1. Translate the signal to baseband before interpolation**
+
+Suppose the signal has a spectral center frequency $f_c = \Delta f$. It can be translated to baseband by multiplying the signal by a complex exponential:
+
+$$
+  g_{\mathrm{bb}}(t) = g(t)e^{-i2\pi\Delta f t}
+$$
+
+By the Fourier transform frequency-shift property, this multiplication shifts the spectrum by $-\Delta f$:
+
+$$
+  G_{\mathrm{bb}}(f) = G(f+\Delta f)
+$$
+
+Interpolation is then performed on the baseband signal using the desired interpolation kernel. If required, the interpolated signal can subsequently be translated back to its original center frequency by multiplying it by $e^{i2\pi\Delta f t}$.
+This approach allows a baseband interpolator to be reused for signals with different center frequencies, provided that their bandwidths and other relevant characteristics are compatible with the interpolator.
+
+**2. Translate the interpolation kernel to the signal's center frequency**
+
+Alternatively, the signal can remain at its original center frequency while the interpolation kernel is modified to accommodate the frequency offset.
+
+Let $h_{\mathrm{bb}}(t)$ denote a baseband interpolation kernel. To shift its frequency response by $\Delta f$, define the modulated kernel
+
+$$
+  h_{\Delta f}(t) = h_{\mathrm{bb}}(t)e^{i2\pi\Delta f t}
+$$
+
+The Fourier transform shift property gives
+
+$$
+  H_{\Delta f}(f) = H_{\mathrm{bb}}(f - \Delta f)
+$$
+
+The interpolation can then be expressed as
+
+$$
+  \hat{g(t)} = \sum_{i\in\mathbb Z} g_d[i]\,h_{\Delta f}(t-iT)
+$$
+
+where $T$ is the sampling interval and $g_d[i]=g(iT)$. Substituting the modulated kernel yields
+
+$$
+  \hat{g(t)} = \sum_{i\in\mathbb Z} g_d[i] h_{\mathrm{bb}}(t-iT) e^{i2\pi\Delta f(t-iT)}
+$$
+
+Because the modulation factor is complex in general, the resulting interpolation coefficients are also generally complex, even if the original baseband kernel is real-valued. This approach can avoid explicitly translating the input signal to baseband, but it requires frequency-dependent interpolation coefficients.
