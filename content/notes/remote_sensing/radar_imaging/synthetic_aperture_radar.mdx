@@ -14,6 +14,999 @@ In the range direction, SAR commonly employs linear frequency-modulated (LFM) wa
 
 In the azimuth direction, SAR exploits the motion of the radar platform to synthesize an aperture much larger than the physical antenna. The changing radar-to-target geometry produces a characteristic phase history, or equivalently a Doppler history, in the received signal. By coherently processing the echoes acquired over the target's synthetic-aperture interval, SAR achieves an azimuth resolution substantially finer than the real-aperture beamwidth would permit.
 
+# Synthetic aperture concepts
+
+SAR violates two commonsense principles:
+- **Resolution versus range:** In general, the closer a sensor is to a target, the more the target details are revealed. But in SAR, the azimuth bandwidth, and hence the resolution, is independent of range, and this
+can be explained as follows. The exposure time is proportional to range, but the azimuth FM rate is inversely proportional to range; hence, the signal bandwidth, being the product of the exposure time and FM rate, is independent of range. Note, however, that the SNR decreases with $R^3$ , and under power-limiting conditions, this SNR loss obscures target details at longer ranges.
+- **Sensor size:** In general, a larger sensor can "see" more details than a smaller sensor (as in a telescope or microscope). This is true for a real aperture radar, but the opposite is true if the received data are processed in SAR mode. The beamwidth increases with a smaller antenna and, in turn, the exposure time and signal bandwidth increase, leading to a finer resolution. However, ambiguities and SNR place a lower limit on the antenna size.
+
+## SAR geometry
+
+- **Target:** This is a hypothetical point on the Earth's surface that the SAR system is imaging. The SAR system actually images an area on the ground, but to develop the SAR equations, a single representative point on the ground is considered. This point is called a "point target" or "point scatterer," or simply "target" or "scatterer."
+- **Beam footprint:** As the platform advances, pulses of electromagnetic energy are transmitted at regular intervals
+towards the ground. During the transmission of a particular pulse, the radar antenna projects a beam onto an area of the ground referred to as the beam "footprint." The position and shape of the footprint is
+dictated by the antenna beam pattern and the sensor /Earth geometry. This footprint is said to be "illuminated" by the radar beam.
+- **Nadir:** The nadir is the point on the Earth's surface directly below the sensor, so that the "normal" to the Earth's surface at the nadir passes through the sensor. For a spherical Earth model, the vector from the
+sensor to the Earth's center intersects the Earth's surface at the nadir. This is not true for an ellipsoidal model.
+- **Radar track:** As the nadir point moves along the Earth's surface, it traces out the radar track.
+- **Velocities:** There are two system velocities to consider
+- **Platform velocity:** This is the velocity, denoted by $V_s$, of the platform along the flight path.
+- **Beam velocity:** This is the velocity, denoted by $V_g$ , with which the zero Doppler line sweeps along the ground.
+
+For the satellite case, $V_s$ is the orbital velocity, which can be expressed in either Earth centered inertial (ECI) coordinates or Earth centered rotating (ECR) coordinates. The set of ECI axes does not move with Earth rotation, while the set of ECR axes does. For a circular orbit with a constant angular velocity, $V_s$ is a constant in ECI coordinates, but varies in ECR coordinates, due to the difference in Earth tangential speeds at different latitudes.
+
+The beam velocity, $V_g$, is the speed of the zero Doppler line along the Earth's surface. Assuming the satellite attitude is controlled so that the beam center is approximately steered to zero Doppler (or other
+suitable reference), $V_g$ can be considered to be the velocity of the beam sweeping along the surface. For a satellite with an altitude of $800 \unit{km}$, $V_g$ is about $12\%$ less than $V_s$, because the orbit "circumference" is greater than the track circumference. In addition, $V_g$ varies around the orbit as the Earth's radius and tangential speed change.
+
+For the aircraft case, $V_s$ is the nominal aircraft speed relative to the Earth. It can be assumed that $V_g = V_s$ for the aircraft case, because the Earth's curvature is small compared to the SAR geometry. The true
+aircraft speed varies, but is compensated by changing the PRF to make the "pulses" evenly spaced on the ground.
+
+- **Azimuth:** In the context of SAR processing, this is a direction aligned with the relative platform velocity vector (or sensor velocity vector in ECR coordinates). It can be considered as a vector parallel to the net sensor
+motion, or as a vector in the slant range plane.
+- **Zero Doppler plane:** This is the plane containing the sensor that is perpendicular to the platform velocity vector (in ECR coordinates). It is approximately perpendicular to the azimuth axis, where the approximation comes from the fact that the platform may be climbing or descending. The intersection of this plane with the ground is called the zero Doppler line. When this line crosses the target, the relative radial velocity of the sensor, with respect to the target, is zero.
+- **Range of closest approach:** The distance from the radar to the target varies with time as the platform moves. When the range is a minimum (when the zero Doppler line crosses the target), it is called the range of closest approach.
+- **Position of closest approach:** The position of closest approach is the position of the radar when it is closest to the target. Note that the target may not be illuminated when the sensor is at this point, because of beam squint.
+- **Zero Doppler time:** This is the time of closest approach, measured relative to an arbitrary time origin. Most SAR processing algorithms, register targets to positions corresponding to their zero Doppler times, referred to as "compression to zero Doppler."
+- **Beamwidth:** The radar beam can be viewed as a cone, and the footprint viewed as the intersection of the cone with the ground. The beam has two significant dimensions: its angular width in the azimuth and elevation planes, respectively. In each plane, the half-power beamwidth, or simply beamwidth, is defined by the angle subtended by the beam "edges," in which the beam edge is defined when the radiation strength is $3 \unit{dB}$ below the maximum.
+
+In azimuth, with a uniformly driven aperture, the beamwidth is approximately the wavelength divided by the antenna length in this direction. In elevation, the beamwidth governs the width of the imaged "range swath." Its formula is more complicated, since the elevation radiation pattern is usually shaped with a nonuniform aperture.
+
+The radar beamwidth is not affected by Earth curvature or rotation, but it is shown later that the exposure time, the azimuth bandwidth, and the resolution are affected.
+
+- **Target trajectory:** The range from the radar to a target changes during the time that the target is illuminated by the radar beam. When drawn on a two-dimensional plot versus range and azimuth, the locus of received target energy is curved, and is referred to as the target trajectory in signal space.
+- **Beam center crossing time:** This is the difference between the time when the zero Doppler line crosses the target, and the time when the beam centerline crosses the target. It is positive when the beam points backwards relative to the zero Doppler line; in other words, when the beam center crosses the target after the zero Doppler line crosses the target. It is sometimes referred to as the beam center offset time.
+- **Signal space and image space:** There are two two-dimensional spaces used for the SAR data in the signal processor. The signal space contains the received SAR data, and the image space contains the processed data. If the data in the signal are displayed, features imaged by the radar are not recognizable. The features will emerge only after extensive processing is performed on the input data. The processed data are defined in the image space, since the data now form a meaningful image.
+
+- **Range:** The generic term "range" can mean slant range or ground range. The former is measured along the radar line-of-sight, while the latter is measured along the ground. Because all SAR processing operations use the slant range definition, the usual convention is that "range" defaults to "slant range" when not specified. Second, there are two cases to consider in the definition of range: signal space and image space. In signal space, range is a distance measured from the radar antenna to the target on the ground. It is not orthogonal to the azimuth axis unless the squint angle, is zero. This range direction is called the radar "line-of-sight" - it is approximately along the beam centerline
+or boresight, but the direction varies with the location of the target within the beam. After the SAR processing, the image is registered to the azimuth position of closest approach, and to the range of closest
+approach. At this point, the range axis is perpendicular to the azimuth axis.
+
+the target trajectories are located according to their range (horizontally) and their beam center crossing time (vertically). In this memory, the range $R'$ is relative to the first sample, as controlled by the range gate delay, RGD
+
+$$
+\begin{equation*}
+  R = R' + RGD c/2 ( 4.1)
+\tag{\label{equation-20}}
+\end{equation*}
+$$
+
+The RGD is the difference in time between the transmission of the pulse and the recording of the first sample of the associated echo, and $c$ is the speed of light.
+
+The zero Doppler time is independent of the antenna squint angle, so the target positions in t he final image do not depend upon the squint angle.
+Similar to the signal space, the range variable $R_0$ is relative to the first processed sample, and for a given target, its slant
+range of closest approach is $R_0 = R_0 + RGD c/2$.
+
+- **Slant range plane:** This is the plane containing the relative (ECR) sensor velocity vector and the slant range vector for a given target. The orientation of this plane, relative to the local vertical, changes with targets at different ranges, $R_0$.
+- **Ground range:** This is the projection of slant range onto the ground. If the image is to be presented in a maplike format, the slant range variable is converted to ground range. Assuming that the data is registered to zero Doppler, ground range is the direction orthogonal to the azimuth axis and parallel to the Earth's surface, with its origin at the nadir point.
+- **Squint angle:** This is the angle, $\theta_\text{squint}$, that the slant range vector makes with the zero Doppler plane, and is an important component in the description of the beam pointing direction. It is measured in the slant range plane. If viewed from above (i.e., projected to the ground plane), it coincides with the beam yaw angle. The squint angle depends upon the target range, $R_0$, for a given beam pointing direction.
+
+Note that the zero Doppler time of a target is independent of the squint angle, but the beam center crossing time does depend upon the squint angle. Since the zero Doppler plane in ECR coordinates (from which $\theta_\text{sq}$ is measured) accounts for Earth curvature and rotation, $\theta_\text{squint}$ is not the squint angle in inertial space.
+- **Cross range:** This is a direction orthogonal to the radar's line-of-sight. Unless the squint angle is zero, the cross range and azimuth axes are not parallel. Theoretically, "azimuth" resolution is developed along the cross range axis instead of the azimuth axis. But in stripmap SAR, the cross range resolution does not differ significantly from the azimuth resolution, because the squint angle is usually small.
+
+### Satellite ground range geometry
+
+The SAR image formation steps produce an image in slant range and azimuth coordinates. It is often desirable to resample the image to coordinates corresponding to those of a map or an optical sensor,
+where the range and azimuth axes have equal scales. In this postprocessing step, the concept of ground range arises, which is a distance measured along the surface of the Earth, approximately perpendicular to the azimuth direction. The conversion from slant range to ground range provides a geometrically realistic image, approximately
+aligned with the radar track.
+
+For the case of zero squint and a locally circular Earth, let the line joining the radar and the Earth's center intersect the Earth at point $E$. Ground range $G$ is the arc length along the Earth's surface from $E$ to the target. The angle subtended by $G$ at the Earth's center is denoted $\beta_e$, while $R_e$ is the local radius of the Earth, taken at the scene center. Let $h$ be the altitude of the platform with respect to $E$, $\theta_n$ the off-nadir angle, and $\theta_i$ the incidence angle. For the locally circular Earth approximation, the geometric variables are related by the law of sines and cosines
+
+$$
+\begin{gather*}
+  \frac{R_e}{\sin(\theta_e)} = \frac{R_e + h}{\sin(\theta_i)} = \frac{R_0}{\sin(\beta_e)} \\
+  \cos(\beta_e) = \frac{R_e^2 + (R_e + h)^2 - R_0^2}{2R_e (R_e + h)}
+\end{gather*}
+$$
+
+and by $G = R_e \beta_e$. The incidence angle $\theta_i$ is larger than the off-nadir angle $\theta_n$, by the angle $\beta_e$. The difference is negligible in the aircraft case.
+
+The length $\Delta R$ represents the distance between two slant range samples, and the dotter line is the local variable. Then $\Delta G$ is the distance along the ground represented by the range sample.
+
+For a given radar mode, the slant range sample spacing $\Delta R$, is a constant, and the ground sample spacing $\Delta G$, varies with the local indcidence angle
+
+$$
+\begin{equation*}
+  \Delta G = \frac{\Delta R}{\sin(\theta_i)}
+\tag{\label{equation-1}}
+\end{equation*}
+$$
+
+The quantities $\Delta R$ and $\Delta G$ can be though of one resolution cell, and $\sin(\theta_i)$ gives the ground range resolution as a factor of the slant range resolution. Equation $\eqref{equation-1}$ shows how the ground range resolution degrades with a decreasing off-nadir angle, with the worst case occuring when $\theta_i$ is zero. This is unlike optical sensors, which enjoy the best resolution when looking straight down.
+
+### Satellite orbit geometry
+
+The choice of the orbit parameters for remote-sensing SARs involves a number of complicated tradeoffs, and a few considerations are mentioned here. The orbit altitude above the Earth's surface is often around $800 \unit{km}$, being a compromise between power requirements and atmospheric drag. The orbit eccentricity is close to zero, so that the altitude is nearly constant around the orbit. If the orbit is circular, the square of the orbit period, $P$, is related to the cube of the orbit radius, $R_s$, by
+
+$$
+  P^2 = \frac{4\pi2 R_e^3}{\mu_e}
+$$
+
+where $\mu_e = 3.9860 \times 10^{14} \unit{m^3 /s^2}$ is the gravitational constant of the Earth. This corresponds to a satellite angular velocity of
+
+$$
+  \omega_s = \frac{2\pi}{P} = \sqrt{\frac{\mu_e}{R_s3}}
+$$
+
+and to a satellite inertial velocity of
+
+$$
+  V_s = R_s \omega_s = \sqrt{\frac{\mu_e}{R_s}}
+$$
+
+The orbit inclination is usually set to approximately $98^\deg$, so that the orbit is Sun-synchronous. With this inclination, the Earth's oblateness causes the orbit plane to precess once per year, so that it has a fixed angle with respect to the Sun. This simplifies the power collection strategy of the solar panels, an important issue, since the radar coverage and SNR are directly proportional to the available power. An inclination greater than $90^\deg$ indicates that the satellite is orbiting the Earth in a westerly direction. As a point on the Earth's surface is moving eastward, the average relative target velocity and the average beam velocity is higher than if the satellite were moving eastward. This gives a slightly higher coverage rate over the Earth's surface.
+
+## The range equation
+
+The single most important parameter in SAR processing is the slant range from the sensor to the target. This range varies with azimuth time, and is defined by the s<rcalled range equation. As the sensor approaches the target through the motion of the radar platform, the range decreases with every pulse. After the sensor passes the target, the range increases with every pulse.
+
+This change in range has two important implications. It causes a phase modulation from pulse to pulse, which is necessary to obtain fine azimuth resolution in the SAR processor. However, it also causes the received data to be skewed in computer memory, an effect called range cell migration (RCM). As shown later, this range/azimuth coupling must be taken into account in the SAR processing.
+
+To get the exact range equation, one must be able to model the sensor motion, plus the motion of the target or surface, if any. This results in a hyperbolic form of the range equation, which allows the signal properties in various domains to be represented conveniently and the processing
+equations to be derived easily.
+
+### Hyperbolic form of the range equation
+
+To develop the hyperbolic form of the range equation, a simplified form of the geometry is considered. In this case, the flight path is assumed to be locally straight, and the Eath is assumed to be locally flat and not rotating. This is a good model for the aircraft case, where the distance are much shorter than the satellite case, and the aircraft follows the Earth's atmosphere as it rotates.
+
+Assuming a velocity, $V_r$, pertaining to the simplified case, the distance $X$ equals $V_r \eta$, where $\eta$ is the azimuth time referenced to the time of closest approach. Then, using the Pythagorean theorem, the range to the target, $R (\eta)$, is given by the hyperbolic equation
+
+$$
+\begin{equation*}
+  R^2 (\eta) = R_0^2 + V_r^2 \eta^2
+\tag{\label{equation-2}}
+\end{equation*}
+$$
+
+where $R_0$ is the slant range when the radar is closest to the target, that is, $R_0$ is the range of closest approach.
+
+For the aircraft case, the beam is assumed to be stationary with respect to the flight direction, so that the geometry remains stable for a given radar scene. The variable $V_r$ is the nominal aircraft speed, and also equals the speed of the beam footprint along the surface. However, in the satellite case, the geometry is more complicated, as the orbit is curved, the Earth's surface is curved, and the Earth is rotating independently of the satellite orbit.
+
+When an accurate, curved-geometry model is used, it turns out that the range equation is still very close to a hyperbola, within the limits of the target exposure time. Thus, the parameter $V_r$. can still be used as a type of "velocity" in the satellite case, provided it is interpreted in a special way. Specifically, when $R^2 (\eta)$ is expressed as a power series in $\eta$, the cubic and higher terms are very small for typical remote sensing SARs, particularly the C-band and higher frequency SARs. Then, $V_r^2$ is the quadratic coefficient of $\eqref{equation-2}$, and can be calculated from a geometry model as one-half the second derivative of $R^2 (\eta)$.
+
+With this assumption, the hyperbolic range equation $\eqref{equation-2}$ holds for a satellite, except that $V_r$ is not a physical velocity, but a pseudovelocity, selected so that the hyperbola $\eqref{equation-2}$ models the actual range equation. The parameter $V_r$ has been called the "radar velocity," "effective velocity," or "speed parameter" by several authors. A better term may be "effective radar velocity," although some authors prefer not to call it a velocity at all.
+
+Important differences from the aircraft case include the fact that $V_r$ varies with range, and varies slowly with azimuth as the satellite orbit and the Earth rotation component changes. Its numerical value lies between the satellite platform velocity $V_s$ and the lower speed $V_g$ with which the beam moves along the ground. The hyperbolic model is adequate over the duration of the target exposure time, which is typically on the order of a second.
+
+To see how the effective radar velocity $V_r$ relates to the physical velocities of the satellite and the beam, it is useful to consider two geometry models showin the radar/beam geometry in the slant range plane, assuming a curved orbit and a curved Earth. The satellite moves with tangential velocity $V_s$and the beam footprint moves along the surface with a velocity $V_g$. Assume that the beam centerline $CB$ makes a squint angle $\theta_\text{squint}$, with respect to the zero Doppler line $CA$ and illuminates a point $B$ on the ground.
+
+A rectilinear geometry can be formed out of the curved geometry if tangential lines are drawn through points $C$ and $A$, and the angle $\theta_\text{squint}$ is increased by swinging the vector $CB$ outwards, until it meets the tangential line through $A$ (keeping its length $R$ the same). Using the primed notation for the rectilinear geometry, the vectors $C'$, $A'$ and $C' B'$ are the same length as their associated vectors in the curved geometry, but the distance $X_r$ is larger than $X_g$ because the angle $ACB$ has increased. The new angle $A' C' B'$ is used in SAR processing, and it is called $\theta_r$. Distances and angles have been distorted in the rectilinear geometry, but time is unaltered, that is, the time taken for the satellite to move from $C$ to $D$ is the same as that from $C'$ to $D'$, and is the same as it takes the beam centerline to go from $A$ to $B$ and from $A'$ to $B'$.
+
+By comparing the two geometries, it can be seen that $A' B' > AB$, and that $C' D' < CD$, so that the effective radar velocity, $V_r > V_g$ and $V_r < V_s$. Note that $V_g < V_s$ models the property that the satellite
+attitude changes by $2\pi$ radians every orbit. An approximation for $V_r$ is
+
+$$
+\begin{equation*}
+  V_r \approx\sqrt{V_s V_g}
+\tag{\label{equation-3}}
+\end{equation*}
+$$
+
+Note that $V_s$ and $V_g$ vary with orbit position and range, because the magnitude of the Earth's tangential velocity with latitude, as well as its direction relative to the satellite velocity vector. In this way, $V_r$ changes with time and range, and must be updated around the orbit. The main approximation in $\eqref{equation-3}$ comes from the fact that the orbit is not circular. While the approximation is not accurate enough for calculating the azimuth matched filter coefficients in precision SAR processing, it is adequate for analysis purposes, such as finding the exposure time and Doppler bandwidth. For precision SAR processing, the velocity, $V_r$, must be calculated from a refined geometric model.
+
+Note that $V_r$ and $V_g$ vary with range. They are calculated at the zero Doppler point of the target, so they are a function of $R_0$, and do not vary along hte target exposure. That mean $V_r$ is a constant for a particular target, an important fact to note in a point target simulator.
+
+Which velocity is to be used depends on the application. As shown later, $V_r$ is the velocity used to obtain the RCM and the azimuth frequency modulation rage in the azimuth SAR processing, and $V_s$ is used to obtain the Doppler bandwidth. When ground resolution and ground distances are concerned, $V_g$ is used.
+
+### Relationships between velocities and angles
+
+To help understand the physical meaning of the various velocities, distances and angles, it is useful to examine the relationship between
+- $V_s$, $X_s$ and $\theta_\text{squint}$ in curved Earth geometry along the orbit
+- $V_g$, $X_g$ and $\theta_g$ in curved Earth geometry on the ground
+- $V_r$, $X_r$ and $\theta_r$ in rectilinear geometry
+
+Using small angle approximation in the curved Earth geometry, the squint angle $\theta_\text{squint}$ is defined as
+
+$$
+\begin{equation*}
+  \sin(\theta_\text{squint}) = \frac{X_g}{R(\eta)} = -\frac{V_g \eta}{R(\eta)}
+\tag{\label{equation-4}}
+\end{equation*}
+$$
+
+and a new angle $\theta_g$ is defined as
+
+$$
+\begin{equation*}
+  \sin(\theta_g) = \frac{X_s}{R(\eta)} = -\frac{V_s \eta}{R(\eta)}
+\tag{\label{equation-5}}
+\end{equation*}
+$$
+
+The negative signs are due to the fact that for a positive $\theta_\text{squint)}$ and $\theta_g$, the radar look ahead, and hence the position of closest approach, where $\eta$ is defined to be zero, has not been reached yet. In other words, $\eta$ is negative for positive squint angles. Note that $\theta_g$ is not the radar incidence angle, because the geometry is projected in the slant range plane.
+
+In the rectilinear geometry, a new squint angle $\theta_r$ can be defined tha tis useful for analysis and, sometimes, for data processing. The new squint angle is defined in the equivalent rectilinear geometry using
+
+$$
+\begin{equation*}
+  \sin(\theta_r) = \frac{X_r}{R(\eta)} = -\frac{V_r \eta}{R(\eta)}
+\tag{\label{equation-6}}
+\end{equation*}
+$$
+
+Similar to the variable $V_r$, the angle $\theta_r$ is not a physical angle, but serves a useful purpose in SAR signal analysis. Since this is the angle often used in SAR system analysis instead of the physical squint angle, it is called the "squint angle" for brevity. Combining $\eqref{equation-4}$ and $\eqref{equation-6}$, and using small angle approximations, the following ratios are equal
+
+$$
+\begin{equation*}
+  \theta_\text{squint} : \theta_r : \theta_g = V_g : V_r : V_s = X_g : X_r : X_s
+\tag{\label{equation-7}}
+\end{equation*}
+$$
+
+From $\eqref{equation-3}$ and $\eqref{equation-7}$, it is found that the squint angle $\theta_r$, is a scaled version of the physical squint angle $\theta_\text{squint}$
+
+$$
+\begin{equation*}
+  \theta_r = \frac{V_r}{V_g} \theta_\text{squint} = \frac{V_s}{V_r} \theta_\text{squint}
+\tag{\label{equation-14}}
+\end{equation*}
+$$
+
+For a typical satellite case, $\theta_r$ is about $6\%$ larger than $\theta_\text{squint}$, but the cosines of these two angles differ by less than $0.08 \%$ for a squint angle as large as $6^\deg$. However, it is important to distinguish between these angles when their sines or tangents are invoked.
+
+The following formulas are also useful. Using $\eqref{equation-6}$, then $\cos(\theta_r)$ can be written
+
+$$
+  \cos(\theta_r) = \sqrt{1 - \left(\frac{V_r \eta}{R(\eta)}\right)^2}
+$$
+
+and it is seen that
+
+$$
+\begin{equation*}
+  R_0 = R(\eta) \cos(\theta_r)
+\tag{\label{equation-8}}
+\end{equation*}
+$$
+
+Since the hyperbolic equation assuming rectilinear geometry is used in the processing, the angle $\theta_r$ is relevant, but the angles $\theta_s$ and $\theta_g$ are rarely used. For example, the cross track direction is at an angle $\theta_r$ with respect to azimuth, hence the effective velocity and ground velocity components in the cross range directions are $V_r \cos(\theta_r)$ and $V_g \cos(\theta_r)$, respectively, and the latter velocity component is used to derive the (cross range) resolution. Equation $\eqref{equation-8}$ can also  be obtained by rearranging the range equation $\eqref{equation-2}$ as
+
+$$
+\begin{align*}
+  R_0 =& \sqrt{R^2 (\eta) - V_r^2 \eta^2} \\
+  =& R(\eta) \sqrt{1 - \left(\frac{V_r \eta}{R(\eta)} \right)^2}
+\end{align*}
+$$
+
+## SAR signal in the range direction
+
+### Transmitted pule
+
+In the range direction, the radar sends out a frequency modulated pulse given by
+
+$$
+\begin{equation*}
+  s_\text{tx} (\eta) = w_r (\tau) \cos\left(2\pi \sum_{n=0}^N P_n \tau^2 \right)
+\tag{\label{equation-12}}
+\end{equation*}
+$$
+
+where $\tau$ is the range time, and $P_n$ are the phase coefficients, when the signal phase is expressed as a power series. The pulse envelope is usually approximated by a rectangular function
+
+$$
+  w_r (\tau) = \operatorname{rect}\left(\frac{\tau}{T_r}\right)
+$$
+
+where $T_r$ is the pulse duration. Even if the pulse envelope is not quite rectangular, it is usually safe to assume a rectangular envelope when defining the matched filter for the processing. In early radar systems, the pulse was generated by an analog surface acoustic wave (SAW) device, but now it is generated by a digital synthesizer. The most commonly used pulse has a linear frequency modulation characteristic
+
+$$
+\begin{equation*}
+  s_\text{tx} (\tau) = w_r (\tau) \cos(2\pi f_0 \tau + \pi K_r \tau^2)
+\tag{\label{equation-9}}
+\end{equation*}
+$$
+
+where $K_r$ is the frequency modulation rate of the range pulse. The, $\tau$ is referenced to the center of the pulse for convenience. In this form, the phase coefficients are $P_0 = 0$, $P_1 = f_0$, $P_2 = K_r /2$ and $P_n = 0$ for n > 2$.
+
+The instantaneous frequency of the signal $s_\text{tx} (\tau)$ varies with fast time $\tau$. For a linear frequency modulated pulse, given by $\eqref{equation-9}$, the instantaneous frequency is $f_i = f_0 + K_r \tau$. As the radar wavelength is $c / f_i$, the wavelength also varies within the pulse. However, after demodulation, the variation of wavelength is not apparent, and the variation is not used in any of the processing equations.
+
+The choice of the sign of the frequency modulation rate is up to the system designer (the sign is embedded in the parameter $K_r$). When the sign is positive, the pulse is an "up chirp" because the pulse frequency increases with time. Similarly, when the sign i negative, the pulse is said to by a "down chirp". The direction of the chirp neither affects the structure of the SAR processing nor the quality of the processed image.
+
+The signal bandwidth is a very important parameter, since it governs the range resolution and the sampling requirements. The signal or pulse bandwidth is given by $B = |K_r| T_r$. Then the demodulated, received signal is sampled, the complex sampling rate, $F_r$, must be higher than the bandwidth to prevent aliasing. The range oversampling ratio $\alpha_{\text{os}, r}$ is the sampling rate divided by the signal bandwidth, and, in practice, is usually
+
+$$
+  F_r = \alpha_{\text{os}, r} B
+$$
+
+From $\eqref{equation-}$, the range resolution, expressed in distance units, is
+
+$$
+\begin{align*}
+  \rho_r =& \frac{c}{2} \frac{0.886 \gamma_{\omega, r}}{B} \\
+  \approx& \frac{c}{2} \frac{1}{B}
+\end{align*}
+$$
+
+where $\gamma_{\omega, r}$ is the IRW broadening factor due to a processing window, and the factor of two in the denominator accounts for the two-way path taken by the radar signal. The pulse compression ratio is approximately the time bandwidth product $C_{t, \tau} \approx |K_r| T_r^2$.
+
+### Data acquisition
+
+The radar beam has a certain 3-dB width in the elevation pane, called the "elevation beamwidth". The beam illuminates a section of the ground, lying between "near range" and "far range". At a given instant in time, the pulse has a finite extent.
+
+The pulse expands outward in concentric spheres expanding at the speed of light. Assume that the leading edge of pulse reaches the near range at time $t_1$, while the trailing edge reaches far range at time $t_2$.  Each point on the ground between the near and far ranges is illuminated by the beam for a duration of $T_r$. Note that at any instant, only a portion of the beam footprint is illuminated by the pulse, and this portion sweeps outwards at the speed of light divided by $\sin(\theta_i)$, where $\theta_i$ is the local beam incidence angle. The reflected energy at any illumination instant is a convolution of the pulse waveform and the ground reflectivity $g_r$ within the illuminated path
+
+$$
+\begin{equation*}
+  s_\text{rx} (\tau) = g_r (\tau) * s_\text{tx} (\tau)
+\tag{\label{equation-10}}
+\end{equation*}
+$$
+
+This energy arrives back at the receiving antenna between times $2t_1$ and $2t_2$. The receiver stats sampling a few microseconds before $2t_1$ and finishes a few microseconds after $2t_2$, thereby recording the ground reflections between near and far ranges. If the elevation beam is too wide in relation to the interpulse period, range ambiguities may occur, which result from the mixing of reflected energy from consecutive pulses at the receiver.
+
+Consider at point target at a distance $R_a$ away from the radar, with a magnitude $A'_0$, which models the backscatter coefficient $\sigma_0$. This means that $g_r (\tau) = A'_0 \delta(\tau - 2R_a /c)$, where $2R_a /c$ is the delay time of the signal for that reflector. Using $\eqref{equation-9}$ and $\eqref{equation-10}$, the signal received from the point is
+
+$$
+\begin{align*}
+  s_r (\tau) =& A'_0 s_\text{tx} (\tau - 2R_a /c) \\
+  =& A'_0 w_r (\tau - 2R_a /c) \\
+  &\times \cos\left[2\pi f_0 (\tau - 2R_a /c) + \pi K_r (\tau - 2R_a /c)^2 + \psi \right] \tag{\label{equation-11}}
+\end{align*}
+$$
+
+The scattering process may cause a phase change in the radar signal upon reflection from the surface, which is accounted for by the variable $\psi$ in the equation. The present analysis is unaffected, as long as the phase change is constant for a given reflector within the radar illumination time.
+
+The echo $s_\text{rx} (\tau)$ contains a high frequency component $\cos(2\pi f_0 \tau)$, which is the radar carrier frequency, and a low frequency component consisting of the rest of the terms in $\eqref{equation-11}$. The high frequency component can be removed by a quadrature demodulation process, so that the maximum signal frequency is on the order of the transmitted signal bandwidth.
+
+The data often has a radiometric variation in the range direction caused by several factors. First, the echo power is inversely proportional to the fourth power of the slant range. Second, the elevation beam pattern is not uniformly weighted. The antenna gain at the upper elevation angle is sometimes designed to be higher than that at lower angles, to compensate for the $1/ R^4$ law. Third, the reflectiv.ity of the ground is a
+function of the beam incidence angle $\theta_i$. Finally, there is a geometrical term, $1/ sin(\theta_i)$, which arises when the ground area is converted to an equivalent area, perpendicular to the radar beam. These effects, if uncorrected, will cause a variation of intensities across the range swath in the processed image. The correction can be performed in the processor, assuming a knowledge of the above factors.
+
+## SAR signal in the azimuth direction
+
+As the sensor advances along its path, subsequent pulses are transmitted and received by the radar. The pulses are transmitted every $1/ f_\text{PR}$ of a second, where $f_\text{PR}$ is the pulse repetition frequency (PRF).
+
+### Doppler frequency in the SAR context
+
+Consider a radar that transmits a pure tone, which is generated by a local oscillator. The signal is transmitted through the antenna, and the resulting electromagnetic (EM) wave travels to the ground where it hits an object and is reflected (scattered). The reflected EM wave travels back to the antenna, where it is converted into a voltage. The received signal has the same waveform as the transmitted signal, but is much weaker and has a frequency shift governed by the relative speed of the sensor (antenna) and the scatterer. If the distance from the antenna to the scatterer is decreasing, the frequency of the received signal increases. On the contrary, if the distance to the scatterer is increasing, the frequency of the received signal decreases. The situation is analogous to
+a high (low) frequency heard from the siren on an approaching (receding) ambulance.
+
+It is this frequency, governed by the relative speed of the sensor and the target, which is called the SAR Doppler frequency, in analogy with the well-known effect in physics. This discussion has taken a few shortcuts,
+but does give an intuitive description of the Doppler effect in coherent radars. The radar is "coherent" if the consistent timing of the local oscillator allows one to observe the change in phase and frequency of the received signal very accurately.
+
+The following points are omitted from the above discussion:
+1. The radar system generates and transmits a finite-duration pulse, rather than a pure tone.
+2. The radar electronics upconverts the pulse to a very high frequency (the radar carrier frequency), and  subsequently downconverts the received signal to the original frequency (or even lower, to baseband).
+3. The pulse has a linear FM waveform rather than a tone, and, after reception and downconversion, it is converted ( compressed) to a sharp impulse that has the approximate shape of a sine function.
+4. The Doppler frequency is a function of the carrier frequency rather than the original baseband pulse frequency.
+5. The pulses are repeated at a precisely controlled time interval, called the pulse repetition interval (PRI). The inverse of this interval is the PRF.
+
+Despite these simplifications in the analogy, the concept of Doppler frequency is still valid in the modulated, pulsed radar. The effect of the pulses is to sample the waveform representing the Doppler-shifted, received signal, with the sampling frequency being the PRF.
+
+The sampling of the continuous signal creates an aliasing effect when the Doppler frequency exceeds the sampling frequency (the samples are complex, so the aliasing rules, including the folding or Nyquist frequency,
+follow the rules for complex signals). It is the sampling that profoundly affects how the Doppler frequency is observed and how it is estimated.
+
+### Coherent pulses
+
+The transmitted pulses are evenly spaced, with each pulse represented by $\eqref{equation-12}$ or $\eqref{equation-9}$. "Coherent" means that the start time and phase of each pulse is carefully controlled. The receiver and demodulator must also maintain high timing accuracy. This coherency is an important property, necessary to obtain high azimuth resolution in the SAR system.
+
+When the radar is not transmitting, it can receive echoes reflected back from objects and surfaces on the ground. In an airborne case, each
+echo is received directly after the transmitted pulse, before another pulse is transmitted. In a spaceborne case, the echo from a specific pulse is received after 6 to 10 intervening pulses have been transmitted, because of the much longer ranges involved. The number of intervening pulses can be determined from the sensing geometry.
+
+For a satellite SAR with a PRF of $1700 \unit{Hz}$ and a pulse duration of $34 \unit{\mu s}$, the time available to receive the echo is $554 \unit{\mu s}$, although a few microseconds are needed at either end of the receive window to switch the signal path. This time allows a slant range swath width of up to $80 \unit{km}$, although other constraints usually keep it smaller, such as a varying satellite altitude that requires the receive window to be moved.
+
+Between successive pulses, the radar platform advances in the azimuth direction by a small amount. The separation between the footprints of each pulse, also known as azimuth sample spacing in the input data, is the footprint velocity divided by the PRF. For an aircraft, the footprint velocity equals the platform velocity, but for a satellite, the footprint velocity is about $12\%$ less than the satellite velocity. The separation of footprints is generally about $40\%$ of the SAR antenna length, although it can be smaller than $40\%$ in aircraft cases (because aircraft SARs do not come close to hitting the range and azimuth ambiguity limitations).
+
+### Choice of pulse repetition frequency
+
+The azimuth sampling rate or PRF is selected by considering the following parameters and criteria:
+- **Nyquist sampling rate:** The PRF should be larger than the significant azimuth signal bandwidth, as it corresponds to a complex sampler. The azimuth oversampling factor $\alpha_{\text{os}, r}$, is usually about $1.1$ to $1.4$. If the PRF is too low, azimuth ambiguities caused by aliasing will be troublesome. The azimuth oversampling ratio
+is usually higher than the range oversampling ratio because the azimuth spectrum rolls off more slowly than the range spectrum.
+- **Range swath width:** The sampling window can be up to $1/ f_\text{PR} - T_r$ seconds long, corresponding to a slant  range interval of $(1/f_\text{PR} - T_r) c/2$ meters. The PRF should be low enough so that most or all of the near range to far range interval illuminated by the beam (the swath width) falls within the receive window. If the PRF is too large in relation to the echo duration, range ambiguities occur because of echoes from different pulses overlapping in the receive window. If the range ambiguities are too large and the PRF cannot be lowered, the antenna's elevation beamwidth can be reduced by making the antenna wider or by adjusting the antenna weighting.
+- **Receive window timing:** The significant energy from the ground must arrive at the receiving antenna between the pulse times. Unlike the previous criterion, which concerns the length of the receive window, this concerns the start time of the window. The start time is particularly affected by the PRF in the satellite case when a given transmitted pulse is not received until several pulse intervals have elapsed.
+- **Nadir return:** Sometimes a significant amount of energy arises from ground reflections at the nadir point, and causes a bright streak in the image. This nadir return is bright because, when the incident angle is small, each range cell covers a large area and specular reflections occur. This energy is unwanted in satellite SARs, since it is range ambiguous, and it is usually possible to choose a PRF for which the nadir return does not fall within the receive window (or at least not within the main part of the imaged swath).
+
+Each of these criteria is in conflict with some or all of the other criteria, so a compromise is needed, especially in the satellite case. The tradeoff involves many of the SAR system parameters, notably the platform
+height and velocity, operating range, radar wavelength, antenna length, and swath width. The tradeoff is mainly between range ambiguity levels, azimuth ambiguity levels, and swath width, and results in a lower limit for the antenna area. However, there have been systems built that accept more compromises, and that use an antenna area smaller than this lower limit.
+
+In the aircraft case, these restrictions are usually not a limiting factor, because the platform velocity is lower, and the beam geometry restricts the swath width to well below the ambiguity limit. This means that the PRF can be made higher than that needed to support the azimuth bandwidth. A higher PRF allows the transmission of a higher average power, without raising the peak power or the pulse length, thereby improving the SNR. When this occurs, the azimuth signal can be filtered and the sampling rate reduced, to increase the efficiency of ubsequent processing steps. This filtering and sample rate reduction is called "presumming," which lowers the PRF, resulting in more efficient SAR processing.
+
+### Azimuth signal strength and Doppler history
+
+As the platform advances, a target on the ground is illuminated by many hundreds of pulses. For each pulse, the strength of the signal varies, primarily because of the azimuth beam pattern. The azimuth beam pattern for a zero squint case is shown in the top part of Figure $\ref{figure-}$ for three positions of the sensor, as seen in the slant
+range plane. At sensor position $A$, the target is just entering the main lobe of the beam. The received signal strength is shown in the middle part of the figure. The signal strength increases until the target lies in the center of the beam, as shown at position $B$.
+
+After the beam center crossing time, the signal strength decreases until the target lies in the first null of the beam pattern, when the sensor is at position $C$. From then on, a small amount of energy will be received from sidelobes of the beam pattern. The energy in the outer edges of the main lobe, as well as the energy in the sidelobes, contribute to the azimuth ambiguities in the processed image. Doppler centroid estimation errors aggravate these ambiguities.
+
+The bottom part of the figure shows the Doppler frequency history of the target. The Doppler frequency is proportional to the target's radial velocity with respect to the sensor. When the target is approaching the radar, the Doppler frequency is positive, and it is negative when the target is receding. Thus the frequency versus time curve has a negative slope.
+
+The received signal strength is governed by the azimuth beam pattern. As most SAR antennas are unweighted in the azimuth plane, the one-way beam pattern is approximately a sinc function
+
+$$
+\begin{equation*}
+  p_a (\theta) \approx \sinc\left(\frac{0.886 \theta}{\beta_\text{bw}} \right)
+\tag{\label{equation-13}}
+\end{equation*}
+$$
+
+where $\theta$ is the angle measured from boresight in the slant range plane, $\beta_\text{bw}$ is the azimuth bandwidth, $0.886\lambda /L_a$, and $L_a$ is the antenna length along the azimuth direction. The received signal strength is given by the square of $p_a (\theta)$, because of the two-way propagation of the radar energy, and is usually expressed as a function of azimuth time $\eta$
+
+$$
+  w_a (\eta) = p_a^2 [\theta(\eta)]
+$$
+
+Equation $\eqref{equation-4}$ shows how $\theta_\text{squint}$ is related to the azimuth time $\eta$.
+
+The beam center crosses the target when the radar is at point $B$ in Figure $\ref{figure-}$. The received signal strength is greatest at that time, and in the case drawn, the beam center has zero squint. However, this is usually not the case, as a certain amount of beam squint is inevitable, due to such causes as platform or antenna attitude, beam alignment, Earth curvature, Earth rotation, and, in the aircraft case, side winds.
+
+In the general nonzero squint case, the target is illuminated by the beam center at a "beam center crossing time» $\eta_c$, referenced to the time of zero Doppler. When the beam squints forward, $\eta_c$ is negative, following the previous convention. Conversely, when the antenna squints backward, $\eta_c$ is positive. The time $\eta_c$ is given by
+
+$$
+\begin{align*}
+  \eta_c =& -\frac{R_0 \tan(\theta_{\text{sq}, c})}{V_g} \\
+  =& -\frac{R(\eta_c) \sin(\theta_{\text{sq}, c})}{V_g}
+\end{align*}
+$$
+
+where $R(\eta_c)$ is the slant range to the target at the time it is illuminated by the beam center, and $\theta_{\text{sq}, c}$ is the value of $\theta_\text{squint}$ at this time. In a rectilinear geometry, $\eta_c$ can be expressed as
+
+$$
+\begin{align*}
+\eta_c =& -\frac{R_0 \tan(\theta_{r, c})}{V_r} \\
+=& -\frac{R(\eta_c) \sin(\theta_{r, c})}{V_r}
+\end{align*}
+$$
+
+where $\theta_{r, c}$ is the calue of $\theta_r$ at the beam center crossing time.
+
+In the squinted case, the angle $\theta$ measured from boresight in $\eqref{equation-13}$ equals $\theta_\text{squint} - \theta_{\text{sq}, c}$. Using small angle approximations, the two-way beam pattern becomes
+
+$$
+  \sinc2 \left(\frac{0.886 (\theta_\text{sq} - \theta_{\text{sq}, c})}{\beta_\text{bw}} \right) \approx p_a2 \left[\arctan\left(\frac{V_g (\eta - \eta_c)}{R_0} \right) \right]
+$$
+
+which is the expression for $w_a (\eta - \eta_c)$ in $\eqref{equation-}$.
+
+Following this discussion, it is seen that the term $R_a$ in $\eqref{equation-11}$ changes with slow time $\eta$, and is denoted by $R(\eta)$. The signal received form the target is then
+
+$$
+\begin{equation*}
+\begin{split}
+  s_\text{rx} (\tau, \eta) =& A_0 w_r (\tau - 2R(\eta)/c) w_a (\eta - \eta_c) \\
+  &\times \cos[2\pi f_0 (\tau - 2R(\eta) /c) + \pi K_r (\tau - 2R(\eta) /c)^2 + \psi]
+\end{split}
+\tag{\label{equation-27}}
+\end{equation*}
+$$
+
+This is the real-valued signal received from a point target, have $R_0$ as its range of closest approach, and a range $R(\eta)$, defined by the range equation $\eqref{equation-2}$
+
+Very often, the SAR data are manipulated in the azimuth frequency domain, where the beam center crossing time is transformed into an equivalent Doppler centroid frequency.
+
+### Azimuth parameters
+
+Other azimuth parameters derived in this section include the exposure time, frequency modulation rate, and Doppler bandwidth. These parameters depend on the antenna squint, and are evaluated at the beam center, when $\eta = \eta_c$. Hence, the squint angle at the beam center $\theta_{r,c}$ is used instead of the general variable $\theta_r$, for these calculations.
+
+#### Doppler centroid
+
+The Doppler centroid frequency at $\eta = \eta_c$ is proportional to the rate of change of $R(\eta)$ in $\eqref{equation-2}$
+
+$$
+\begin{align*}
+  f_{\eta_c} =& -\frac{2}{\lambda} \left. \frac{\d R(\eta)}{\d\eta} \right|_{\eta = \eta_c} \\
+  =& -\frac{2}{\lambda} \frac{V_r^2 \eta_c}{\lambda R(\eta_c)} \\
+  =& \frac{2V_r \sin(\theta_{r,c})}{\lambda} \tag{\label{equation-15}}
+\end{align*}
+$$
+
+where $\eqref{equation-6}$ was used to obtain the final equality. It is possible to express the Doppler frequency in terms of the physical satellite velocity $V_s$ and the physical squint angle $\theta_{\text{sq}, c}$. Using $\eqref{equation-14}$, then $f_{\eta_c}$ can be written as
+
+$$
+  f_{\eta_c} = \frac{2V_s \sin(\theta_{\text{sq}, c})}{\lambda}
+$$
+
+This expression can be visualized from the fact that $V_s \sin(\theta_{\text{sq}, c})$ is the only radial velocity of the radar along the line-of-sigt to the target, and $V_s$ is in ECR coordinates.
+
+#### Doppler bandwidth
+
+From $\eqref{equation-15}$, the azimuth bandwidth of the target can be derived as
+
+$$
+\begin{align*}
+  \Delta f_d =& \left| \frac{2V_r \cos(\theta_{r,c})}{\lambda} \frac{V_s}{V_r} \theta_\text{bw} \right| \\
+  =& \frac{2V_s \cos(\theta_{r,c})}{\lambda} \theta_\text{bw}
+\end{align*}
+$$
+
+in which the scaling factor $V_s /V_r$ is due to the rectilinear geometry assumption. This equation uses the fact that the bandwidth is the frequenct excursion experienced by the target during the time in which that target is illuminated by the 3-dB width of the radar beam $\theta_\text{bw} = 0.886 \lambda/L_a$. Thus, the Doppler bandwidth is
+
+$$
+\begin{equation*}
+  \Delta f_d = 0.886 \frac{2V_s \cos(\theta_{r,c})}{L_a}
+\tag{\label{equation-15}}
+\end{equation*}
+$$
+
+This bandwidth governs the sampling requirements, that is, it defines the lower limit of the PRF. However, the signal strength is only down by $6 \unit{dB}$ at the beam edges defined by $\theta_\text{bw}$, and the azimuth spectrum rolls off slowly. An oversamping factor of $1.1$ to $1.4$ is usually used to reduce azimuth ambiguity power, that is, the PRF is set to the oversampling factor multiplied by $\Delta f_d$.
+
+#### Target exposure time
+
+The exposure time, as defined by how long the target stays in the 3-dB beam limits, is given by
+
+$$
+\begin{equation*}
+  T_a = 0.886 \frac{\lambda R(\eta_c)}{L_a V_g \cos(\theta_{r,c})}
+\tag{\label{equation-16}}
+\end{equation*}
+$$
+
+Here $0.886 \lambda/L_a$ is the azimuth beamwidth, so therefore $0.886 R(\eta_c) \lambda/L_a$ is the projection of this beamwidth on the ground. This projection is lengthened in the azimuth by the factor $1/\cos(\theta_{r,c})$ for a nonzero squint angle. Note that the use of the velocity $V_g$ takes into account the satellite attitude drift through which the sensor nadir remains point at the local vertical as it proceeds around its orbit. This attitude drift has the effect of lengthening the exposure time.
+
+#### Azimuth frequency modulation rate
+
+The azimuth frequency modulation rate is the rate of change of azimuth or Doppler frequency
+
+$$
+\begin{align*}
+  K_a =& \frac{2}{\lambda} \left. \right|_{\eta = \eta_c} \\
+  =& \frac{2V_r^2 \cos^2 (\theta_{r,c})}{\lambda R(\eta_c)} \\
+  =& \frac{2V_r^2 \cos^3 (\theta_{r,c})}{\lambda R_0} \tag{\label{equation-17}}
+\end{align*}
+$$
+
+where the azimuth frequency is $2/\lambda$ times the first derivative of range. Assuming the velocity approximation $\eqref{equation-3}$, and alternate derivation of the Doppler bandwidth of $\eqref{equation-15}$ is obtained by multiplying $\eqref{equation-16}$ and $\eqref{equation-17}$.
+
+## The two-dimensional signal
+
+### Data arrangement in signal memory
+
+In a simple sense, the received radar signal is one-dimensional in the form of a voltage as a function of time. The waveform of the received signal consist of segments of ground echo received during one pulse cycle. The gaps between each segment represent the time when the receiver is turned off, which includes the pulse transmission time, plus an allowance for switching of the signal paths.
+
+To see how this signal can be considered as a two-dimensional signal, it is useful to re-examine the SAR data collection scenario. For simplicity, assume that the radar beamwidth is finite in azimuth. When the sensor is at point $A$, a target is just entering the radar beam. The received signal from the target, which is part of the echo from a given transmitted pulse, is written into one row of SAR signal memory. While this memory may actually be on tape or in downlink memory for the time being, it can be considered as being in the memory at the input to the SAR signal processor.
+
+Then, as the sensor advances, more pulses are transmitted, and the associated echoes are written into successive rows in the signal memory. When the sensor is at point $B$, the target leaves the beam, and the last received energy of that target is written into SAR signal memory. Naturally, the signal memory contains data from many targets, not just the one shown in the figure. The azimuth beamwidth is not finite in practice, which means that energy received from the azimuth sidelobes from each target is also recorded before $A$ and after $B$.
+
+Going back to the "one-dimensional" signal, we can also think of this format as two-dimensional, where the received signal is sampled and written into a computer memory. The data from each segment or pulse are written into a new row in memory. The beginning of each row occurs
+at a fixed time delay with respect to the pulse transmission time, referred to as the range gate delay in $\eqref{equation-20}$. In this way, the horizontal axis represents the travel time, $\tau$, or "range" from the sensor to the ground. From another viewpoint, one can consider a single column, in which each sample corresponds to the same range from the sensor. A column is sometimes called a range gate, and a row called a
+range line.
+
+Now consider the vertical axis of the two-dimensional memory. While each sample in a given column is at the same range, the sensor has moved a small amount in the azimuth direction from one sample to
+the next, so this vertical axis can be labeled "azimuth," or azimuth time $\eta$. Data have now been recorded, corresponding to two near-orthogonal directions on the Earth's surface, which is appropriate, as the objective is to make a two-dimensional image of the Earth's surface.
+
+In this way, one can see how a two-dimensional signal is obtained from the radar system, with the coordinates being range time and azimuth time. The range time is also called "fast time" and the azimuth time
+is called "slow time," because the range distance is related to range time by the speed of light, and the azimuth distance is related to azimuth time by the much slower forward motion of the beam footprint.
+
+Another view of the two-dimensional memory is given in Figure $\ref{figure-}$, where the locus of energy from a single point target is outlined. Items to note are the extent of the echo in the range dimension (the transmitted pulse duration), the extent of the echo in the azimuth direction (the exposure time or the synthetic aperture length), and the range migration. The sketch is not to scale, as the range and azimuth extents of the energy are usually many hundreds of samples. However, the range migration may only be a few cells.
+
+To summarize, the radar samples originate from the sampling of a continuous-time analog signal (i.e., the echo received from a transmitted pulse), and these samples are written along the horizontal range axis. In the azimuth direction, the signal is inherently in discrete-time from the outset, owing to the discrete nature of the transmitted pulse events. The azimuth samples are written along the vertical azimuth axis in the two-dimensional signal memory.
+
+### Demodulated baseband signal
+
+The received signal $s_\text{rx}$, contains the radar carrier $cos(2\pi f_0 \tau)$, which is removed before the sampling by a quadrature demodulation process. The demodulated baseband signal from a single
+point target can be represented by the complex signal
+
+$$
+\begin{equation*}
+\begin{split}
+  s_0 (\tau, \eta) =& A_0 w_r [\tau - 2R(\eta)/c)] w_a (\eta - \eta_c \\
+  &\times \exp[-i4\pi f_0 R(\eta) /c] \exp[i\pi K_r (\tau - 2R(\eta) /c)^2]
+\end{split}
+\tag{\label{equation-18}}
+\end{equation*}
+$$
+
+where the coefficient $A_0$ is now a complex constant $A_0 = A'_0 \exp(j\psi)$ and $A'_0 \in\R$ is the real coefficient in $\eqref{equation-11}$.
+
+The signal can now be sampled in range. Since it has a range bandwidth of $|K_r| T_r$ and is complet, the complex sampling rate should be $F_r > |K_r|T_r$ to satisfy the Nyquist sampling criterion.
+
+Equation $\eqref{equation-18}$ represents the demodulated baseband SAR signal received from a point target with coefficient $A_0$. It is the signal that is usually recorded or downlinked in SAR system, and is referred to as the "SAR phase history". The signal is at baseband in the range direction only, as the azimuth signal often has a nonzero center frequency.
+
+### The SAR impulse response
+
+If $A_0$ is ignored, $\eqref{equation-18}$ is the impulse response of a point target having unity amplitude. Thus, the SAR sensor impulse response is given by
+
+$$
+\begin{equation*}
+\begin{split}
+  h_\text{IR} (\tau, \eta) =& w_r [\tau - 2R(\eta)/c)] w_a (\eta - \eta_c \\
+  &\times \exp[-i4\pi f_0 R(\eta) /c] \exp[i\pi K_r (\tau - 2R(\eta) /c)^2]
+\end{split}
+\tag{\label{equation-19}}
+\end{equation*}
+$$
+
+To model the signal received from a general ground surface, the ground reflectivity is convolved with this impulse response in two dimensions to give the baseband SAR signal data
+
+$$
+  s_\text{bb} (\tau, \eta) = g(\tau, \eta) * h_\text{IR} (\tau, \eta) + n(\tau, \eta)
+$$
+
+where $n(\tau, \eta)$ is an additional noise component that is present in all practical systems. The noise originates mainly from the front end receiver electronics, and can be modeled as a Gaussian white noise.
+
+SAR processing is assumed to start with this demodulated baseband signal. SAR processing algorithms attempt to solve for $g(\tau, \eta)$, which is a deconvolution process. The difficulty, and the challenge, lies in the fact that the impulse response is both range and azimuth dependent, and contains a range-varying RCM.
+
+## SAR resolution and synthetic aperture
+
+### Resolution derived from bandwidth
+
+In the range direction, the received signal has frequency modulation characteristics, inherited from the transmitted pulse. A high resolution can be obtained by matched filtering. The resolution is governed by the pulse bandwidth, as shown in $\eqref{equation-}$. In time units (seconds), it is 0.886 times the reciprocal of the range bandwidth in hertz. Multiplying further by $c/2$ gives the resolution in slant range units (meters).
+
+In the azimuth direction, the beamwidth is given by $0.886 \lambda /L_a$. Without SAR processing, the azimuth resolution is the projection of the beamwidth onto the ground
+
+$$
+  \rho'_a = R(\eta_c) \theta_\text{bw} = \frac{0.886 R(\eta_c) \lambda}{L_a}
+$$
+
+This is called the resolution of a real aperture radar. It is on the order of several hundrer of meters in an airborne case, and several kilometers in a satellite case.
+
+The signal in the azimuth direction is also frequency modulated by virtue of motion of the platform. Hence, as in the range direction, one would expect to obtain a high resolution by matched filtering. The azimuth resolution that can be obtained (in time units) is $0.886$ times the reciprocal of the bandwidth $\eqref{equation-15}$. In distance units, the obtainable resolution is
+
+$$
+\begin{equation*}
+\begin{split}
+  \rho_a =& \frac{0.886 V_g \cos(\theta_{r, c})}{\Delta f_d} \gamma_{\omega, a} \\
+  =& \frac{L_a}{2} \frac{V_g}{V_s} \gamma_{\omega, a}
+\end{split}
+\tag{\label{equation-21}}
+\end{equation*}
+$$
+
+where $\gamma_{\omega, a}$ is the IRW broadening factor due to a processing window.
+
+The azimuth resolution normally quoted is $\rho_a = L_a /2$, which ignores the $\gamma_{\omega, a} V_g /V_s \approx 1$ factor in the satellite case. This means that the inherent azimuth resolution is approximately one-half the antenna length and is independent of range, velocity, or wavelength. Equation $\eqref{equation-21}$ represents the cross range resolution, as $\cos(\theta_{r, c})$ is used for projecting the resolution in that direction. If the squint angle is small, $\eqref{equation-21}$ effectively gives the achievable resolution.
+
+The above result is an approximation because it has been assumed that the antenna pattern in the azimuth frequency is a rectangular window, spanning the 6-dB (two-way) bandwidth. In practice, the beam pattern is not flat (it is usually a sinc-squared function), and it has significant energy beyond the 6-dB points. The actual resolution is a function of how much of the bandwidth is processed, and the combined shape of the beam pattern and the weigthing function. Thus, processing the entire spectrum would give a slightly better rsolution than just processing the 6-dB bandwidth. However, because of the roll-off, processing extra bandwidth does not have a large effect on the resolution, so the effective obtainable azimuth resolution is quite close to $\eqref{equation-21}$. The actual resolution can be derived numerically or experimentally, for a given PRF, antenna pattern, processed bandwidth, and weighting function.
+
+Sometimes, the resolution is expressed in terms of the synthetic angle, $\theta_\text{syn}$. This angle is the change in the viewing angle of the target between the instants when the target enters and exits from the beam. For an airborne case, the synthetic angle is equal to the beamwidth. For a satellite case, the synthetic angle is a little larger than the beamwidth, because the antenna rotates slowly as the nadir remains
+pointed towards the Earth's center. In the satellite case, examining $\theta_\text{sq}$ and $\theta_g$ and using $\eqref{equation-7}$, the synthetic angle is
+
+$$
+\begin{equation*}
+  \theta_\text{syn} = \frac{V_s}{V_g} \theta_\text{bw}
+\tag{\label{equation-22}}
+\end{equation*}
+$$
+
+Substituting this angle into $\eqref{equation-14}$, the Doppler bandwidth $\Delta f_d$ can be expressed in terms of $\theta_\text{syn}$ as
+
+$$
+\begin{equation*}
+  \Delta f_d = \frac{2V_g \cos(\theta_{r,c})}{\lambda} \theta_\text{syn}
+\tag{\label{equation-23}}
+\end{equation*}
+$$
+
+By combining the first part of $\eqref{equation-21}$ and $\eqref{equation-23}$, the desired result is obtained, showing that the resolution is
+
+$$
+\begin{equation*}
+  \rho_a = \frac{0.886\lambda}{2\theta_\text{syn}}
+\tag{\label{equation-24}}
+\end{equation*}
+$$
+
+The resolution is now independent of the squint angle. Substituting $\eqref{equation-22}$ into $\eqref{equation-24}$, the azimuth resolution in $\eqref{equation-21}$ can be obtained, except for the broadening factor $\gamma_{\omega, a}$. The broadening is not represented in $\eqref{equation-24}$, because the Doppler spectrum is assumed flat in this derivation; the broadening is introduced once the data is processed with a tapering window. This form of the resolution equation is used more frequently in spotlight SAR an inverse SAR, than in stripmap SAR.
+
+### Synthetic aperture
+
+The azimuth resolution of a conventional radar, or a SAR before processing, is given by the azimuth beamwidth. The beamwidth is determined by the radar wavelength $\lambda$ and the antenna length or aperture, $L_a$. Both these parameters are fixed for a given radar system. To improve the resolution, it would be desirable to reduce the effective beamwidth.
+
+Similar to creating (synthesizing) a narrow pulse in range, the trick is to use signal processing to synthesize a narrow beamwidth in azimuth. Since the beamwidth is inversely proportional to the antenna aperture,
+synthesizing a narrow beamwidth is equivalent to synthesizing a large aperture. In practice, the synthesized aperture can be several hundred meters long in the airborne case, and several thousand meters long in the
+spaceborne case, whereas the antenna's real aperture $L_a$, is only on the order of $1$ to $15 \unit{m}$ in length.
+
+The synthetic aperture is the length of the sensor path during the time that a target stays within the radar beam. This length governs the amount of data that is available for processing from a given target. The synthetic aperture $L_s$ is given by
+
+$$
+\begin{align*}
+  L_s =& \frac{R_0 \theta_\text{bw}}{\cos(\theta_{r,c})} \frac{V_s}{V_g} \\
+  =& \frac{0.886 R_0 \lambda}{L_a \cos(\theta_{r,c})} \frac{V_s}{V_g} \\
+  =& \frac{0.886 R(\eta_c) \lambda}{L_a} \frac{V_s}{V_g} \tag{\label{equation-25}}
+\end{align*}
+$$
+
+where $\theta_\text{bw} = 0.886 \lambda/ L_a$, and the ratio $V_s / V_g$ is due to the difference between the beamwidth $\theta_\text{bw}$, and the synthetic angle $\theta_\text{syn}$.
+
+This definition of synthetic aperture gives a null-to-null beamwidth of $\lambda/ L_s$. From the sinc function, the synthesized half-power beamwidth is
+
+$$
+\begin{equation*}
+  \phi_s = \frac{0.886\lambda}{2L_s}
+\tag{\label{equation-26}}
+\end{equation*}
+$$
+
+where the factor of two accounts for the two-way path of the radar signal. Assuming and antenna having a beamwidth $\phi_s$, the azimuth resolution is then $R(\eta_c) \phi_s$. Then, using $\eqref{equation-25}$ and $\eqref{equation-26}$, the azimuth resolution in $\eqref{equation-21}$ can be obtained, except for the broadening factor $\gamma_{\omega, a}$. There is no broadening represented in $\eqref{equation-}$, because the aperture illumination is assumed to be uniform in this derivation.
+
+### Compression ratio
+
+The attainable azimuth compression ratio is $C_{r, a} \approx K_a T_a^2$. The total compression ratio is then
+
+$$
+\begin{align*}
+  C_{r,t} =& C_{r,r} C_{r,a} \\
+  \approx& |K_r| T_r^2 K_a T_a^2
+\end{align*}
+$$
+
+## Derivation of the approximate radar velocity
+
+Equation $\eqref{equation-}$ states that the effective radar velocity $V_r$ is approximately the geometric mean of the satellite velocity $V_s$, and the beam velocity over the ground $V_g$ . The relationship is accurate for zero Doppler pointing and a satellite orbit that can be assumed to be circular within the target exposure time. It should be emphasized that the approximation is adequate for simple geometric analyses, but is not sufficiently accurate for precision focusing of the SAR data.
+
+Let $C$ be a target on the Earth's surface under consideration, and $A$ be the satellite position when the target at $C$ is at zero Doppler. The relative orbit time at $A$ is set to zero. Let the satellite, travelling with angular velocity $\omega_s$, advance from position $A$ to $B$ at time $\eta$. All velocities, including $V_s$, are in ECR coordinates, in which Earth rotation is not a factor.
+
+Assume a right-handed, Earth-centered coordinate system, in which the $z$-axis points from the center of the Earth to point $A$, the $y$-axis points in the direction of the satellite ECR velocity vector at point $A$, and the $x$-axis points to the right to complete the orthogonal system. At $\eta = 0$, the satellite position is $[0 0 H]^\top$ . Then,  the position of the satellite at time $\eta$ is at $B$, given by
+
+$$
+  \mathbf{P}_B = \begin{bmatrix} 0 \\ H \sin(\omega_s \eta) \\ H \cos(\omega_s \eta) \end{bmatrix}
+$$
+
+and the target position $C$ is
+
+$$
+  \mathbf{P}_C = \begin{bmatrix} R_e \sin(\beta_e) \\ 0 \\ R_e \cos(\beta_e) \end{bmatrix}
+$$
+
+wgere $H$ is the local orbit radius, $R_e$ is the local Earth radius at the target, and $\beta_s$ is the angle between $OC$ and the orbit plane.
+
+The range to the target at $\eta = 0$ is $R_0$, and the range at time $\eta$ is
+
+$$
+  R(\eta) =& |\mathbf{P}_C - \mathbf{P}_B| \\
+  =& \sqrt{(R_e \sin(\beta_e))^2 + (H \sin(\omega_s \eta))^2 + (H \cos(\omega_s \eta) - R_e \cos(\beta_e))^2}
+$$
+
+Using the small angle approximation, $\sin(\omega_s \eta) \approx \omega_s \eta$ and $\cos(\omega_s \eta) \approx 1 - \omega_s^2 \eta^2 /2$, the range can be expressed as
+
+$$
+\begin{align*}
+  R(\eta) =& \sqrt{H^2 + R_e^2 - 2HR_e \cos(\beta_e) + (H\omega_s) (R_e \omega_s \cos(\beta_e)) \eta^2} \\
+  =& \sqrt{R_0^2 + (H\omega_s)(R_e \omega_s \cos(\beta_e)) \eta^2}
+\end{align*}
+$$
+
+where the last equality uses the triangle relationship $R_0^2 = H^2 + R_e^2 - 2HR_e \cos(\beta_e)$. Here $H\omega_s = V_s$, arising from the locally circular orbit assumption, and $R_e \omega_s \cos(\beta_e) = V_g$. This value of $V_s$ assumes that the Earth is locally spherical in the vicinity of $C$, so that $V_g$ is measured parallel to $V_s$. Thus, the final result is
+
+$$
+  R^2 (\eta) = R_0^2 + V_s V_g \eta^2
+$$
+
+which shows that the effective radar velocity $V_r$ in $\eqref{equation-1}$ is equal to $\sqrt{V_s V_g}$ under the condition of a locally circular orbit and an antenna centered on zero Doppler.
+
+## Quadrature demodulation
+
+The pulses transmitted and received by the radar system are real signals. However, the received signal can be bandshifted to obtain a complex baseband signal by a quadrature demodulation process. This process removed the high frequency carrier, but may create some signal errors.
+
+Let a general real-valued signal having a high frequency carrier and a low frequency modulation, be represented by
+
+$$
+  x(\tau) = \cos(2\pi f_0 \tau + \phi(\tau)
+$$
+
+where the frequency of the carrier $f_0$ is several orders of magnitude higher than the bandwidth of the modulation $\phi(\tau)$.
+
+The quadrature demodulation process produces two channels that represent a complex-valued output. First, consider the upper channel, where the signal is multiplied by $\co(2\pi f_0 \taU)$. Using the cosine product rule
+
+$$
+  \cos(\theta_1) \cos(\theta_2) = \frac{1}{2} \cos(\theta_1 - \theta_2) + \frac{1}{2} \cos(\theta_1 + \theta_2)
+$$
+
+we obtain
+
+$$
+  x_\text{c1} (\tau) = \frac{1}{2} \cos[\phi(\tau)] + \frac{1}{2} \cos[4\pi f_0 \tau + \phi(\tau)]
+$$
+
+The first cosine term has an upper frequency governed by the bandwidth $\phi(\tau)$, while the second cosine term has a much higher frequency centered around $2f_0$. Thus, the second term can be removed by a lowpass filter, resulting in
+
+$$
+  x_{c1} (\tau) = \frac{1}{2} \cos[\theta(\tau)]
+$$
+
+Similarly, the lower channel is multiplied by $-\sin(2\pi f_0 \tau)$, and using the sine product rule
+
+$$
+  \sin(\theta_1) \sin(\theta_2) = \frac{1}{2} \sin(\theta_1 - \theta_2)  + \frac{1}{2} \ins(\theta_1 + \theta_2
+$$
+
+we obtain
+
+$$
+  x_{s1} = \frac{1}{2} \sin(\phi(\tau)) + \frac{1}{2} \sin[4\pi f_0 \tau + \phi(\tau)]
+$$
+
+After lowpass filtering, the signal $x_{c2} (\tau)$ is
+
+$$
+  x_{s2} (\tau) = \frac{1}{2} \sin[phi(\tau)]
+$$
+
+The signals $x_{c2} (\tau)$ and $x_{s2} (\tau)$ are then sampled by the analog-to-digital converters (ADC), at a rate at least equal to the bandwidth $\phi(\tau)$. Because of the cosine and sine multiplication, the two signals are in phase quadrature, and represent a complex signal
+
+$$
+  x_3 (\tau) = x_2 (\tau ) x_{ca} + i x_{s2} (\tau) = \frac{1}{2} \exp(i \phi(\tau))
+$$
+
+The two individual signals are called the quadrature wmponents of the complex signal, or the $I$ and $Q$ channels for in-phase and quadrature. The signal $x3(\tau)$ is the required baseband signal, which is used in the processing of the SAR signals.
+
+When demodulation is applied to the real SAR echo data from a point target $\eqref{equation-27}$ to obtain the complex baseband signal, the phase term $\phi(\tau)$ is
+
+$$
+  \phi(\tau) = -\frac{4\pi f_0 R(\eta)}{c} + \pi K_r \left(\tau - \frac{2R(\eta)}{c}\right)^2 + \psi
+$$
+
+### Errors and corrections
+
+The following errors can occur in the demodulation process:
+
+- **Frequency mixing:** The input signal in analog form goes through two channels. One channel is multiplied by $\cos(2\pi f_0 \tau)$, and the other channel by $-\sin[2\pi f_0  (\tau + \Delta\theta) ]$. A constant phase error can be introduced in the multiplier in each channel, caused by the electronics. The phase difference between these two paths, rather than the absolute phase angles, is of importance for the SAR processing. Let this phase difference be $\Delta\theta$. The frequency beating can then be viewed as follows. The upper channel is multiplied by $\cos(2\pi f_0)$, and the lower channel by $-\sin (2\pi (\tau + \Delta\theta)]$. The additional phase $\Delta\theta$, is an error. In other words, the
+signals in the two channels are no longer orthogonal.
+- **Lowpass filter:** Ideally, the gains of the lowpass filters in the two channels are equal. Because of imbalance in the electronics, this may not always be the case. When this imbalance occurs, the signal powers after
+filtering are not equal. The ratio of the two gains, rather than the absolute values of the gains, are of importance. Similarly, each channel has a DC bias, and the two biases can be different.
+- **Analog-to-digital conversion:** In the ADCs, the gains of the two channels may not be balanced, and there may be a timing error between the two channels.
+
+The corrections for gain, DC bias, and phase should be performed in the following order: bias removal in both channels, power balancing between the channels, and phase correction in one channel. The first two
+corrections can be performed quite easily:
+1. Determine the DC bias in each channel from the data.
+2. Correct the DC bias for each channel.
+3. Determine the relative gain of the channels, after the bias removal.
+4. Select a channel and correct for the gain.
+
+### Correcting the phase
+
+The phase correction is not as straightforward. One method is described below, assuming that bias removal and power balancing have been performed. Let $\hat{I}$ and $\hat{Q}$ denote the pixel intensity in the $\hat{I}$ and $\hat{Q}$ channels, $A$ the magnitude and $\theta$ the phase, where the symbol $^$ denotes a random variable. Then the channel intensities can be written
+
+$$
+\begin{align*}
+  \hat{I} =& \haŧ{A} \cos(\hat{\theta}) \tag{\label{equation-28}} \\
+  \hat{Q} =& \hat{A} \sin(\hat{\theta} + \Delta\theta) \tag{\label{equation-29}}
+\end{align*}
+$$
+
+where the phase error $\Delta\theta$ has been included. The probability distribution of $A$ is immaterial in the subsequent analysis. The angle $\hat{\theta}$ has a uniform distribution between $-\pi$ and $\pi$. The two random variables, $\hat{A}$ and $\hat{\theta}$, are statistically independent. The random variables $\hat{I}$ and $\hat{Q}$, each have zero mean, because of the cosine and sine factors.
+
+For perfect orthogonality, the cross channel covariance must be zero. Hence, any nonorthogonality can be detected from the off-diagonal terms of the covariance matrix, and the angle $\Delta\theta$, can be determined. Let the covariance be $C$, which can be expressed by
+
+$$
+\begin{equation*}
+  C = \mathbb{E}[\hat{I}\hat{Q}]
+\tag{\label{equation-30}}
+\end{equation*}
+$$
+
+where $\mathbf{E}$ is the expectation over the received data set. Substituting $\eqref{equation-28}$ and $\eqref{equation-29}$ into $\eqref{equation-30}$, and recognizing the fact that $\hat{A}$ and $\hat{\theta}$ are statistically independent, the coveriance is
+
+$$
+\begin{align*}
+  C =& \mathbb{E}[\hat{A}^2 \cos(\hat{\theta}) \sin(\hat{\theta} + \Delta\theta)] \\
+  =& \mathbb{E}(\hat{A}^2) \mathbb{E}[\cos(\hat{\theta}) \sin(\hat{\theta} + \Delta\theta)] \\
+  =& \frac{1}{2} \mathbb{E}(\hat{A}^2) \mathbb{E}[\sin(2\hat{\theta} +\Delta\theta) + \sin(\Delta\theta)]
+\end{align*}
+$$
+
+Recognizing that $\mathbb{E}(\sin(2\hat{\theta} + \Delta\theta)] = 0$ and $\mathbb{E}[\sin(\Deta\theta)] = \sin(\Delta\theta)$, the covariance is
+
+$$
+\begin{equation*}
+  C = \frac{1}{2} \mathbb{E}(\hat{A}^2) \sin(\Delta\theta)
+\tag{\label{equation-31}}
+\end{equation*}
+$$
+
+Noting that $\mathbb{E}[\cos^2 (\theta)] = \mathbb{E}[\sin^2 (\theta)] = 1/2$, the value of $\mathbb{E}(\hat{A})$ can be obtained from $\eqref{equation-28}$ or $\eqref{equation-29}$
+
+$$
+\begin{equation*}
+  \mathbb{E}(\hat{A}^2) = 2\mathbb{E}(\hat{I}^2) = 2\mathbb{E} (\hat{Q}^2)
+\tag{\label{equation-32}}
+\end{equation*}
+$$
+
+Thus, the required phase correction $\Delta\theta$ can be determined by combining $\eqref{equation-30}$, $\eqref{equation-31}$ and $\eqref{equation-32}$
+
+$$
+  \sin(\Delta\theta) = \frac{\mathbb{E}(\hat{I}\hat{Q})}{\mathbb{E}(\hat{I}^2)} = \frac{\mathbb{E}(\hat{I}\hat{Q})}{\mathbb{E}(\hat{Q})}
+$$
+
+The phase correction needs to be applied to one channel only, for example, the $Q$ channel. Using $\Delta\theta$ of $\eqref{equation-}$, the phase error for this channel can be expressed using
+
+$$
+\begin{equation*}
+  Q = A \sin(\theta + \Delta\theta)
+\tag{\label{equation-33}}
+\end{equation*}
+$$
+
+where the $^$ has been dropped because the equation now refers to each particular pixed. The desired result is $Q' = A\sin(\theta)$, where $\Delta\theta$ has been compensated. Now $Q'$ has to be expressed in terms of the the known variables $I$, $Q$ and $\Delta\theta$. Equation $\eqref{equation-}$ can be rewritten as
+
+$$
+\begin{equation*}
+  Q = A\sin(\theta)\cos(\Delta\theta) + A\cos(\theta) \sin(\Delta\theta)
+\tag{\label{equation-34}}
+\end{equation*}
+$$
+
+Combining $\eqref{equation-28}$, $\eqref{equation-33}$ and $\eqref{equation-34}$, the phase-corrected channel is
+
+$$
+  Q' = \frac{Q - I\sin(\Delta\theta)}{\cos(\Delta\theta)}
+$$
+
+The data, $I$ and $Q'$, now form an orthogonal set. It is seen that if $\Delta\theta = 0$ to start with, then $Q' = Q$, and no correction is needed.
+
+## Concepts of synthetic aperture
+
+### Antenna beamwidth
+
+Cnsider a radar antenna consisting of a linear array of identical radiating elements. The length of the antenna $L_a$ is called the real aperture (or simply the aperture) of the antenna. This is in analogy with the aperture or diameter of a lens, and is the "opening" through which the sensor views the imaged terrain.
+
+Consider the far-field radiation pattern of the antenna beam as it strikes the Earth's surface. The main lobe of the pattern illuminates a patch of the ground at any instant, and, in a simple sense, this patch is what is
+"observed" at that time. Consequently, the azimuth extent of this patch defines the resolving power of the antenna in the azimuth direction. More specifically, the 3-dB width of the radiation pattern is usually taken as
+the resolution of the unprocessed received signal.
+
+Suppose it is desired to measure the far-field strength of the radiated energy at a point on the ground, using a field strength meter. Consider a line from the field strength meter to the center of the antenna that makes an angle $\theta$ with the normal to the surface of the antenna. The far-field assumption states that the rays from each element to the field strength meter can be considered to be parallel. The distance from each element to the field strength meter is $R_0 + x\theta$, assuming that the angle $\theta$ is small. Assuming that the radiation from each element is of equal amplitude at the field strength meter, and neglecting
+the constant phase due to the range $R_0$, the net voltage is given by the sum of the radiation from all of the radiating elements
+
+$$
+\begin{equation*}
+  p_a (\theta) = \sum_n \exp\left(-i2\pi \frac{x(n) \theta}{\lambda} \right)
+\tag{\label{equation-35}}
+\end{equation*}
+$$
+
+where $n$ is the element number.
+
+This sum can be recognized as the DFT of a rectangular function. As the number of radiating elements  and the elements become closer together, this sum converges to the familiar Fourier integral that gives one-way beam pattern
+
+$$
+\begin{align*}
+  p_a (\theta) =& \int_{-L_a /2}^{L_a /2} \exp\left(-i2\pi \frac{x\theta}{\lambda} \right) \;\d x \\
+  =& L_a \sinc\left(\frac{L_a \theta}{\lambda} \right) \tag{\labe{equation-36}}
+\end{align*}
+$$
+
+This field strength on the ground has a maximum at the boresight direction, $\theta = 0$, and the limits of the main lobe are defined by the width of the two zero crossings adjacent to the peak. The angular width between these two zero crossings can be deduced to be $2\lambda /L_a$, By comparing $\eqref{equation-13}$ and $\eqref{equation-36}}$, the half-power width is $0.886\lambda / L_a$.
+
+The width between the zero crossings can be interpreted as the resolvability of the radar beam, although the 3-dB width, which is about one-half the zero crossing width, is normally considered to be the "resolution" in radar terminology. At range $R_0$, the 3-dB resolution is $0.886 \lambda R_0/ L_a$.
+
+An intuitive way of finding the width between the two zero crossings is to find the smallest value of $\theta$ that makes the sum in $\eqref{equation-35}$ go to zero. Note that the contribution of each radiating element to the field strength is a phasor, $e^{-i 2\pi x \theta/\lambda}$, with constant amplitude and a phase angle proportional to $\theta$. The sum in $\eqref{equation-35}$ is zero when the $n$ phasors form a circle.
+
+It can be seen that the vector sum is zero (i.e., the circle is completed) if the phasors from the first and last radiating elements are aligned in almost the same direction. Beginning from the antenna boresight and moving outwards, the circle is first completed when the path difference, $L_a \theta$ for small $\theta$, between the two ends of the aperture to the field strength meter, is one wavelength. This occurs at the beam angle of $\theta = \lambda/L_a$, so, from symmetry, the beamwidth between the nulls adjacent to the main lobe is $2\lambda/ L_a$. This agrees with the previous result.
+
+### Synthetic aperture
+
+In the SAR system, there are two main differences with respect to the antenna model described in the preceding section. First, the location of the radiating elements in the SAR case is given by the location of the sensor when the pulses are transmitted and received. Thus, the antenna phase center location at each pulse epoch is analogous to each element in Figure $\ref{figure-}$, as each pulse is acting as one contribution to the received signal in the SAR system.
+
+Second, the signal strength is being observed at the receiver, rather than on the ground. This means that the ranges in the analysis of the preceding section must be doubled. Then, in order to complete the analogy with the previous section, the field strength meter is replaced by an ideal reflector (corner reflector), and the field strength meter is replaced by a voltmeter in the SAR receiver.
+
+This analogy is expressed in Figure $\ref{figure-}$, where the synthetic array length is given by the distance that the sensor travels while the corner reflector is illuminated by the radar beam. The length $0.886\lambda R_0/ L_a$. is used, which corresponds to the length where the received signal strength is within $6 \unit{dB}$ of its maximum.
+
+The corner reflector is located a distance $X$ away from the central axis of the synthetic array. The perpendicular distance from the corner reflector to the array is $R_0$. The distances from the corner reflector to
+either end of the synthetic array are $R_1$ and $R_2$ . Then, for large range distances, the total path length difference is
+
+$$
+  2(R_2 - R_1) \approx \frac{2L_a X}{R_0}
+$$
+
+The first null occurs when the corner reflector is at
+
+$$
+  X_\text{null} = \frac{R_0 \lambda}{2 L_a}
+$$
+
+and the null-to-null separation of two corner reflectors located symmetrically about the central axis is $2X_\text{null}$. Thus, taking the resolytion as $0.886$ times one-half the null-to-null fistance, the azimuth resolution of the processed SAR data is
+
+$$
+\begin{align*}
+  p_a =& 0.886 X_\text{null} \\
+  =& 0.886 \frac{R_0 \lambda}{2L_a} \\
+  =& 0.886 \frac{R_0 \lambda}{2} \frac{L_a}{0.886 R_0 \lambda} \\
+  =& \frac{L_a}{2}
+\end{align*}
+$$
+
+An alternate way to arrive at the resolution is to follow the development leading to $\eqref{equation-36}$, in which $L_a$ is replaced by $L_s$, and the phase inside the exponent is increased by a factor of two due to the two-way path. Then the synthesized rarliation pattern is
+
+$$
+\begin{align*}
+  p_a (\theta) =& p_a^2 (\theta) \int_{-L_a /2}^{L_a /2} \exp\left(-i 4\pi \frac{x\theta}{\lambda} \right) \\
+  \approx& L_s \sinc\left(\frac{2L_s \theta}{\lambda} \theta \right)
+\end{align*}
+$$
+
+The element position, and the integral is the Fourier transform of a rectangular function, resulting in a sinc function. The width of $p_a^2 (\theta)$ is much wider than that of the sinc function, because the former is the beamwidth of the original real aperture, while the latter is of the synthesized beamwidth. The factor $p_a^2 (\theta)$, can then be ignored; hence, an approximation sign is used in the last step.
+
+Drawing a further analogy between the synthetic aperture $L_s$, and a real aperture antenna, it would take a conventional antenna of length $2L_s$ to obtain a resolution of $L_a /2$ without SAR processing. The synthetic array is only one-half this length, because the SAR system benefits from the two-way radar path length. 
+
 # Resolution
 
 ## Range resolution
@@ -596,539 +1589,6 @@ Frequency-modulated continuous-wave (FMCW) SAR provides an alternative waveform 
 For a given average transmitted power, an FMCW SAR can therefore operate with a substantially lower peak transmit power than a conventional pulsed SAR. This can relax the requirements on the power amplifier, power supply, thermal management, and other radio frequency components.
 
 The range resolution of an FMCW SAR is still primarily determined by the signal bandwidth given by $\eqref{equation-6}$.
-
-# Point target analysis
-
-Because a SAR imaging system is, to a good approximation, a linear system, its performance can be characterized by its impulse response. The impulse response is obtained by measuring the system response to an isolated point-like scatterer on the ground, such as a corner reflector. Such a discrete scatterer is commonly referred to as a point target. Many important SAR image-quality parameters can be estimated from the measured point-target response. Because a SAR image is two-dimensional, several of these parameters must be evaluated independently in the two image-coordinate directions, typically the range and azimuth directions.
-
-In a processed complex SAR image, the response to a point target has a sinc-like main lobe and sidelobe structure, rather than being a pure sine function. Two of the most important image-quality parameters derived from the point-target response are the impulse-response width (IRW), which characterizes spatial resolution, and the peak sidelobe ratio (PSLR) and integrated sidelobe ratio (ISLR), which characterize different aspects of image contrast and energy spreading.
-
-Because the processed image is sampled, the peak of a point-target response will generally fall between image samples. Consequently, the sampled peak and its local structure cannot, in general, be characterized accurately without interpolation. A common procedure is therefore to extract a two-dimensional window, or chip, centered approximately on the point-target peak, typically containing between $16\times16$ and $64\times64$ samples. The chip is then interpolated or expanded by a factor of approximately 8 or 16. A Fourier-domain interpolator, implemented by taking the discrete Fourier transform (DFT), zero-padding the spectrum, and applying an inverse DFT (IDFT), provides an effective sinc-like interpolation of the sampled data.
-
-More specifically, if the sampled point-target response is represented by $p[m,n]$, its two-dimensional DFT is computed and the resulting spectrum is embedded in a larger array by zero padding, with the spectral samples positioned consistently with the desired interpolation convention. Applying the inverse two-dimensional DFT then produces a more densely sampled representation of the same band-limited response. The procedure does not add information to the original data; it provides a more finely sampled representation from which the peak, nulls, sidelobes, and phase behavior can be estimated more accurately.
-
-The expanded impulse response can be analyzed both as a two-dimensional surface and through one-dimensional profiles taken through the peak.
-
-In the following discussion, let 
-
-$$
-\begin{equation*}
-  p(t_1, t_2) = |p(t_1, t_2)| e^{i\phi(t_1, t_2)}
-\tag{\label{equation-13}}
-\end{equation*}
-$$
-
-denote the complex point-target response. The phase is then
-
-$$
-  \phi (t_1, t_2) = \operatorname{arg}[p(t_1, t_2)] \pmod{2\pi}
-$$
-
-## Impulse-response width (IRW)
-
-The impulse-response width (IRW) is the width of the main lobe measured at a specified amplitude or power level. A common convention is the 3-dB width, defined as the distance between the two points at which the impulse-response magnitude falls to $1/\sqrt{2}$ of its peak value.
-
-Let $p(t)$ denote the impulse response as a function of a spatial coordinate $t$, and lets is peak magnitude be
-
-$$
-  A_\text{peak} = \max_t |p(t)|
-$$
-
-The two 3-dB points $t_-$ and $t_+$ are defined by
-
-$$
-  20\log_{10} \left(\frac{|p(t_\pm)|}{A_\text{peak}}\right) = -3.0103 \unit{dB},
-$$
-
-or, equivalently,
-
-$$
-  |p(t_\pm)| = \frac{A_\text{peak}}{\sqrt{2}}.
-$$
-
-The 3-dB impulse-response width is then
-
-$$
-  \mathrm{IRW}_{3 \unit{dB}} = t_+ - t_-
-$$
-
-where $t_-$ and $t_+$ denote the crossings on either side of the main-lobe peak. The exact 3-dB level corresponds to a power ratio of $1/2$, or an amplitude ratio of $1/\sqrt{2}$. Then value $-3 \unit{dB}$ is rounded from $-3.0103 \unit{dB}$.
-
-For a two-dimensional synthetic aperture radar (SAR) image, the IRW is generally measured independently along the range and azimuth directions, yielding $\mathrm{IRW}_r$ and $\mathrm{IRW}_a$, respectively, or along the corresponding image-coordinate axes $\mathrm{IRW}_x$ and $\mathrm{IRW}_y$. These measurements characterize the width of the focused response in each direction and are commonly used as indicators of spatial resolution.
-
-The IRW may be reported in image samples or pixels. For physical interpretation, however, it is preferable to express it in units of distance, such as metres, using the appropriate spatial sampling interval or a georeferenced coordinate system. For a locally uniform sampling interval $\Delta x$, for example, an IRW measured as $N_x$ samples corresponds approximately to
-
-$$
-  \mathrm{IRW}_\text{x,phys}$ = N_x \Delta x
-$$
-
-provided that the sample spacing adequately represents the spatial coordinate in question. Where the image geometry is nonuniform or the image is projected onto the ground, the relevant ground-projected distances should be used instead.
-
-## Peak sidelobe ratio (PSLR)
-
-The peak sidelobe ratio (PSLR) is the ratio of the largest sidelobe magnitude to the peak magnitude of the main lobe. Define
-
-$$
-  A_\text{peak} = \max_t |p(t)|
-$$
-
-If $\mathcal{S}$ denotes the region containing the sidelobes, excluding the main-lobe region, the maximum sidelobe magnitude is
-
-$$
-  A_\text{SL,max} = \max_{t\in\mathcal{S}} |p(t)|
-$$
-
-The PLSR is then defined as
-
-$$
-  \mathrm{PSLR} = 20\log_{10} \left(\frac{A_\text{SL,max}}{A_\text{peak}}\right) \unit{dB}
-$$
-
-Because $A_\mathrm{SL,max} < A_\text{peak}$ for a conventional impulse response, the PSLR is negative. Thus, more negative PLSR values indicate lower sidelobe levels relative to the main-lobe peak.
-
-PSLR is particularly important when targets of substantially different radar cross sections are spatially close. The sidelobes generated by a strong point target can extend into the response of a nearby weaker target, potentially masking it or biasing its measured amplitude. Thus, PSLR provides a quantitative measure of the peak sidelobe contamination associated with a point-target response.
-
-### Rectangular spectral weighting
-
-For an ideal rectangular spectral weighting, the corresponding one-dimensional impulse response is a sinc function,
-
-$$
-  p(t)\propto \sinc(\pi Bt) = \frac{\sin(\pi Bt)}{\pi Bt}
-$$
-
-where $B$ is the processed signal bandwidth. The first sidelobe occurs at the first local maximum of the sinc function outside the main lobe. If $x_1$ denotes the positive solutions of
-
-$$
-  \tan(x) = x,\, x_1 \in (\pi, 2\pi)
-$$
-
-then the first-sidelobe-to-peak amplitude ratio is
-
-$$
-  \frac{A_\text{SL,1}}{A_\text{peak}} = |\sinc(x_1)| \approx 0.21712
-$$
-
-Consequently
-
-$$
-  \mathrm{PSLR} = 20 \log_{10} \left(A_\text{SL,1}}{A_\text{peak} \right) \approx -13.26 \unit{dB}
-$$
-
-The value is independent of $B$: changing the bandwidth changes the scale of the main lobe, and hence the resolution, but not the normalized sidelobe level of the ideal sinc response.
-
-### Spectral tapering
-
-Applying a tapered spectral weighting suppresses sidelobes relative to the rectangular case. In general, this introduces a trade-off: stronger tapering produces lower sidelobe levels but broadens the main lobe, thereby reducing spatial resolution.
-
-Consequently, PSLR and impulse-response width (IRW) should generally be considered together. A more negative PSLR indicates greater suppression of the strongest isolated sidelobe, whereas a smaller IRW indicates a narrower impulse response and hence finer spatial resolution. Improving one characteristic through spectral weighting can therefore come at the expense of the other.
-
-A value around $-20 \unit{dB}$ is a commonly encountered design target, although the appropriate requirement depends on the SAR system and application.
-
-## Isolated sidelobe ratio (ISLR)
-
-### One dimension
-
-Although a SAR impulse response is intrinsically two-dimensional, its sidelobe performance is often characterized first along the range and azimuth dimensions separately. The integrated sidelobe ratio (ISLR) quantifies the total sidelobe energy relative to the energy contained in the main lobe.
-
-Let $\mathcal{W}$ be the finite analysis interval over which the response is evaluated. Define the main-lobe region as $\mathcal{M} \subsetneq \mathcal{W}$. The integrated main-lobe power is
-
-$$
-\begin{equation*}
-  P_\text{main} = \int_\mathcal{M} |p(t)|^2 \;\d t
-\tag{\label{equation-12}}
-\end{equation*}
-$$
-
-while the total power within the analysis window is
-
-$$
-  P_\text{main} = \int_\mathcal{W} |p(t)|^2,dt
-$$
-
-The sidelobe power is therefore 
-
-$$
-\begin{align*}
-  P_\text{SL} =& P_\text{total} - P_\text{main} \\
-  \int_{\mathcal{W}\setminus\mathcal{M}} |p(t)|^2 \;\d t
-\end{align*}
-$$
-
-The one-dimensional ISLR is defined as
-
-$$
-  \text{ISLR} = 10\log_{10} \left(\frac{P_\mathrm{total}-P_\mathrm{main}}{P_\mathrm{main}}\right) \unit{dB}
-$$
-
-where the factor of $10$, rather than $20$, is used because the ratio is formed from integrated power (energy) rather than amplitude.
-
-Unlike PSLR, which depends only on the largest sidelobe, ISLR characterizes the total sidelobe energy. It therefore provides a measure of the cumulative sidelobe contamination produced by a strong target or illuminated region and can be particularly relevant when assessing the extent to which sidelobe energy contributes to surrounding weak or dark regions.
-
-The numerical value of ISLR depends on the definition of the main-lobe region $\mathcal{M}$. A common convention is to define the main-lobe interval as a specified multiple of the IRW, centered on the peak:
-
-$$
-  \mathbb{M} = \left[t_0 - \frac{\alpha \cdot \mathrm{IRW}}{2}, t_0 + \frac{\alpha \cdot \mathrm{IRW}}{2}\right]
-$$
-
-where $t_0$ is the location of the main-lobe peak and $\alpha$ is a prescribed dimensionless factor. If the IRW is the 3-dB width, for example, this definition explicitly specifies the extent of the integration region in terms of that measured width. Values of $\alpha$ in the approximate range $2$-$2.5$ are sometimes used, but there is no universal value.
-
-An alternative, and often more physically intrinsic, convention is to define the main lobe as the interval between its first nulls:
-
-$$ 
-  \mathcal{M} = [t_{-1}, t_{+1}]
-$$
-
-where $t_{-1}$ and $t_{+1}$ are the nearest zeros of the impulse response on either side of the main-lobe peak. Under this convention, the sidelobe region consists of the portions of the analysis window outside the first-null-to-first-null interval. Because these definitions integrate over different regions, ISLR values obtained using different main-lobe conventions are not directly interchangeable. An ISLR specification should therefore state both the main-lobe definition and the analysis window $\mathcal{W}$ used for the calculation
-
-For an ideal sinc-like response with rectangular spectral weighting, a one-dimensional ISLR of approximately
-
-$$
-  \mathrm{ISLR }\approx -17.0\ \mathrm{dB}
-$$
-
-is obtained when the main lobe is defined by its first nulls.
-
-### Two dimensions
-
-The two-dimensional ISLR extends the preceding definition to the full point-target response. Let $\mathcal{M}_\text{2D}$ denote the two-dimensional main-lobe region, for example a rectangle centered on the peak and defined by specified multiples of the IRW in the two image-coordinate directions:
-
-$$
-\begin{align*}
-  \mathcal{M}_\text{2D} =& \left[t_{1,0} - \frac{\alpha_x \mathrm{IRW}_x}{2}, t{1,0} + \frac{\alpha_x\mathrm{IRW}_x}{2}\right]
-  &\times \left[t{2,0} - \frac{\alpha_y \mathrm{IRW}y}{ 2 }, t{2,0} + \frac{\alpha_y \mathrm{IRW}_y}{2}\right]
-\end{align*}
-$$
-
-where $\alpha_x$ and $\alpha_y$ specify the chosen main-lobe extents. Other definitions, such as a region bounded by the first nulls in each direction, are also possible.
-
-The main-lobe power is
-
-$$
-  P_\text{main,2D} = \iint_{\mathcal{M}_\text{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2
-$$
-
-and the total power is evaluated over the specified two-dimensional analysis region $\mathcal{W}_\text{2D}$:
-
-$$
-  P_\text{total,2D} = \iint_{\mathcal{W}_{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2.
-$$
-
-The two-dimensional ISLR is consequently
-
-$$
-  \mathrm{ISLR}_\text{2D} = 10\log_{10} \left(\frac{P_\mathrm{total,2D} - P_\mathrm{main,2D}}{P_\mathrm{main,2D}}\right) \unit{dB}
-$$
-
-An approximate relationship between the two-dimensional and one-dimensional ISLRs can be obtained under the assumption that the impulse response is separable:
-
-$$
-  p_1(t_1, t_2) = C p_x (t_1) p_y (t_2)
-$$
-
-where $C$ is a constant and $p_x$ and $p_y$ are the corresponding one-dimensional impulse responses.
-
-Suppose, in addition, that both the main-lobe region and analysis regions are Cartesian products of their one-dimensional counterparts
-
-$$
-\begin{align*}
-  \mathcal{M}_\text{2D} =& \mathcal{M}_x \times \mathcal{M}_y \\
-  \mathcal{W}_\text{2D} =& \mathcal{W}_x \times \mathcal{W}_y
-\end{align*}
-$$
-
-Because
-
-$$
-  |p(t_1, t_2)|^2 = |C|^2 |p_x (t_1)|^2 |p_y (t_2)|^2
-$$
-
-the two-dimensional integrals factor into products of one-dimensional integrals. Using the one-dimensional main-lobe power $\eqref{equation-12}$, we define the linear ISRL
-
-$$
-  r_i 0 \frac{P_\text{SL,i}}{P_\text{main,i}},\, i = x, y
-$$
-
-Thus, the one-dimensional total-to-min power ratios are
-
-$$
-  \frac{P_\text{total,x}}{P_\text{total,y}} = 1 + r_i,\, i = x, y
-$$
-
-Under the separability assumptions, the corresponding two-dimensional total-to-main ratio is therefore
-
-$$
-  \frac{P_\text{total,2D}}{P_\text{main,2D}} = (1 + r_x)(1 + r_y)
-$$
-
-Consequently, the two-dimensional linear sidelobe-to-main ratio is
-
-$$
-\begin{align*}
-  r_\text{2D} =& \frac{P_\text{SL,2D}}{P_\text{main,2D}} \\
-  =& (1 + r_x)(1 + r_y) - 1 = r_x + r_y + r_x r_y
-\end{align*}
-$$
-
-The exact relationship between the corresponding decibel ISLRs is therefore
-
-$$
-  \mathrm{ISLR}_\text{2D} = 10 \log_{10} (r_x + r_y + r_x r_y)
-$$
-
-If the two one-dimensional ISLRs are equal, $r_x = r_y = r$, then $r_\text{2D} = 2r + r^2$ and
-
-$$
-  \mathrm{ISLR}_\text{2D} = 10\log_{10} (2r + r^2)
-$$
-
-When the sidelobe energy is small compared with the main-lobe energy, $r\ll 1$, the quadratic $r^2$ term is negligible compare with $2r$, giving
-
-$$
-  \mathrm{ISLR}_{2D} \approx 10\log{10} (2r)
-$$
-
-Since
-
-$$
-  10 \log_{10} (2r) = 10 \log_{10} (r) + 10 \log_{10} (2)
-$$
-
-and $10 \log_{10} (2) \approx 3.0103 \unit{dB}$, we obtain
-
-$$
-  \mathrm{ISLR}_{2D} \approx \mathrm{ISLR}_{1D} + 3.0103 \unit{dB}
-$$
-
-This approximation relies on separability and on the particular definition of the two-dimensional main-lobe region; it should therefore not be treated as a general identity.
-
-## Peak position
-
-The peak position is the image-coordinate location at which the magnitude of the impulse response attains its maximum. The continuous peak position is defined by
-
-$$
-  (t_{1,\text{max}}, t_{2,\text{max}}) = \argmax_{(t_1, t_2) |p(t_1, t_2)|
-$$
-
-For sampled SAR data, the maximum generally occurs between pixel centers. The discrete estimate
-
-$$
-  (\hat{t}_{1,\text{max}}, \hat{t}_{2,\text{max}}) = \argmax_{(m, n) |p[m,n]|
-$$
-
-therefore provides only a quantized estimate of the continuous peak position. Subpixel interpolation or parametric fitting is normally used when higher positional accuracy is required.
-
-### Geometric interpretation
-
-Peak-position measurements are important for assessing SAR geometric accuracy, because the estimated image position of a known point target can be compared with its independently known ground position. A SAR image is typically associated with a geolocation model that maps image coordinates to geographic coordinates, such as latitude, longitude, and height:
-
-$$
-  (t_1, t_2) \to (\varphi, \lambda, h)
-$$
-
-where $\varphi$ denotes latitude, $\lambda$ longitude, and $h$ elevation. The precise coordinate representation depends on the image product and geolocation model.
-
-Absolute geometric accuracy characterizes the discrepancy between the geolocated position of an image feature or calibrated point target and an independently determined reference position. For a point target with reference ground coordinates $\mathbf{x}_\text{ref}$ and estimated image-derived coordinates $\unitvec{x}$, a positional error can be expressed as
-
-$$
-  \Delta\mathbf{x} = \unitvec{x} - \mathbf{x}_\text{ref}
-$$
-
-with an appropriate metric used to report the magnitude of the error, for example
-
-$$
-  e = \norm{\Delta x}
-$$
-
-Relative geometric accuracy, in contrast, concerns the preservation of spatial relationships within the image rather than the absolute position of the image as a whole. For two points $A$ and $B$, for example, one can compare the image-derived displacement
-
-$$
-  \Delta \mathbf{x}_{AB} = \unitvec{x}_B - \unitvec{x}_A
-$$
-
-with the corresponding reference displacement
-
-$$
-  \Delta \mathbf{x}_{AB,\text{ref}} = \mathbf{x}_{B,\text{ref}} - \mathbf{x}_{A,\text{ref}}
-$$
-
-The relative displacement error is then
-
-$$
-  e_{AB} = \Delta \mathbf{x}_{AB} - \Delta \mathbf{x}_{AB,\text{ref}}
-$$
-
-This distinction is important because a constant translational bias
-
-$$
-  \unitvec{x} = \mathbf{x} + \mathbf{b}
-$$
-
-changes the absolute positions by the same offset $\mathbf{b}$, but leaves pairwise separations unchanged
-
-$$
-  \unitvec{x}_B - \unitvec{x}_A = \mathbf{x}_B - \mathbf{x}_A
-$$
-
-Thus, a product can exhibit a systematic absolute geolocation offset while retaining good relative geometric fidelity.
-
-Conversely, distortions that vary spatially can affect relative geometry. Examples include scale errors, axis nonorthogonality (skew), rotation errors, and higher-order or spatially varying distortions. A general local affine model, for example, can be written as
-
-$$ 
-  \unitvec{x} = \mathbf{A}\mathbf{x} + \mathbf{b}
-$$
-
-where $\mathbf b$ represents a translational bias and the matrix $\mathbf A$ describes changes in scale, rotation, and axis geometry. The translational component affects absolute positioning, whereas departures of $\mathbf A$ from the identity matrix can alter relative distances and angles.
-
-## Signal Peak Magnitude
-
-The signal peak magnitude is the maximum magnitude of the complex point-target impulse response. The peak magnitude is defined as
-
-$$
-  A_\text{peak} = \max_{(t_1,t_2)} |p(t_1,t_2)|
-$$
-
-The quantity $A_\text{peak}$ is an amplitude-domain measure of the strength of the point-target response. In sampled imagery, the maximum sample generally provides only a discrete estime of the continuous peak
-
-$$
-  A_\text{peak} = \max_{(m, n)} |p[m, n]|
-$$
-
-Subpixel interpolation or local model fitting is used when the peak magnitude is intended as a calibrated measurement.
-
-Peak response measurements are commonly used in the characterization and calibration of SAR point targets. For a calibrated target with known radar cross section (RCS), $\sigma$, the measured response can be related to the target's RCS through an appropriate radiometric calibration model.
-
-A peak-response measurement is not necessarily the only, or always the preferred, radiometric observable. In some calibration procedures, an integrated target response is used instead, because integrating over the point-target response can reduce sensitivity to sampling of the peak and to small differences in the impulse-response shape.
-
-The distinction between these quantities is important. For example, the integrated power over a region $\mathcal{W}$ is
-
-$$
-  P_\mathcal{W} = \iint_\mathcal{W} |p(t_1, t_2)|^2 \;\d t_1 \;\d t_2
-$$
-
-whereas an integrated amplitude is
-
-$$
-  A_\mathcal{W} = \iint_\mathcal{W} |p(t_1, t_2)| \;\d t_1 \;\d t_2
-$$
-
-These quantities have different dimensions and different physical meanings. In general
-
-$$
-  \max |p| \neq A_\mathcal{W} \neq P_\mathcal{W}
-$$
-
-## Phase
-
-The phase response of a SAR point target characterizes the phase of its complex-valued impulse response $\eqref{equation-13}$ and is an important quality metric for applications that rely on coherent information, including interferometry and polarimetry. Phase information is also exploited internally by several processing algorithms, including Doppler-centroid estimation, motion compensation, and autofocus.
-
-The phase behavior of a compressed point target can differ between the two image-coordinate directions. Accordingly, the phase should generally be examined using separate one-dimensional cuts through the point-target response, for example,
-
-$$
-  \phi_x (t_1) = \arg p(t_1, t_{2,0})
-$$
-
-and
-
-$$
-  \phi_y (t_2) = \arg p(t_{1,0}, t_2)
-$$
-
-where $(t_{1,0}, t_{2,0})$ denotes the estimated peak position.
-
-For an ideal focused response, the expected phase behavior depends on the signal representation and processing convention. In a matched-filter formulation, the compressed response can contain a residual phase variation across the impulse response. Over a limited interval, this variation may be approximately linear,
-
-$$
-  \phi_i (t_i) \approx \phi_{i,0} + k_i (t_i - t_{i,0})
-$$
-
-where $k_i$ is the phase slope in direction $i$. The corresponding complex response contains a phase factor of the form $e^{i k_i (t_i - t_{i, 0})}$. The numerical value and even the presence of such a phase ramp depend on the choice of carrier or center frequency, basebanding convention, demodulation reference, coordinate definition, and matched-filter implementation. Consequently, a nonzero phase slope is not by itself evidence of a processing error; it must be evaluated against the phase behavior expected for the particular processing chain.
-
-### Phase regularity
-
-The regularity of the phase profile across the compressed point-target response provides a useful diagnostic of focusing and residual phase errors. After removal of any known or expected phase trend, a well-focused response should exhibit a phase behavior consistent with the adopted signal and processing model.
-
-For example, if the expected phase is represented by $\phi_\text{ref}(t_i)$, a residual phase error can be defined, after appropriate phase unwrapping, as
-
-$$
-  \Delta\phi_i(t_i) = \operatorname{unwrap}\left[\phi_i(t_i)\right] - \phi_\text{ref}(t_i)
-$$
-
-The magnitude and structure of $\Delta\phi_i(t_i)$ can then be used to identify departures from the expected response. Significant residual phase errors may be associated with incorrect or incomplete focusing, uncompensated platform motion, timing or synchronization errors, or other imperfections in the acquisition and processing chain. The physical cause cannot, however, generally be inferred from the phase profile alone.
-
-Because phase is inherently wrapped, phase-profile analysis should distinguish between the wrapped phase $\phi(t)\in(-\pi,\pi]$ and an unwrapped phase representation used to estimate trends or slopes. Apparent discontinuities of approximately $2\pi$ in a wrapped phase profile do not necessarily represent physical phase discontinuities.
-
-### Phase at peak position
-
-A single-valued peak-phase measurement can be defined from the estimated peak position $(t_{1,\text{peak}},t_{2,\text{peak}})$ as
-
-$$
-  \phi_\text{peak} = \arg p(t_{1,\text{peak}},t_{2,\text{peak}}) \pmod{2\pi}. }
-$$
-
-For sampled data, this should be evaluated at the estimated continuous peak if an interpolated complex response is available; otherwise, the phase of the maximum-magnitude sample provides the discrete estimate.
-
-The peak phase is a wrapped phase quantity, so
-
-$$
-  \phi_\text{peak} \equiv \phi_\text{peak} + 2\pi n,\, n\in\mathbb{Z}
-$$
-
-Its absolute numerical value is therefore meaningful only relative to a specified phase reference. In addition, the phase of a point target can depend on its position through the propagation phase and on the reference adopted by the SAR processing chain. Consequently, the measured peak phase should not generally be interpreted as an intrinsic property of the target independent of geometry.
-
-For interferometric or other coherent applications, what is often more physically meaningful is a phase difference between measurements made with a common or explicitly defined reference. For two complex responses $p_1$ and $p_2$, for example, the interferometric phase can be expressed as
-
-$$
-  \Delta \phi = \arg (p_1 p_2^*) \pmod{2\pi}
-$$
-
-## Sampling requirements
-
-Accurate point-target analysis requires adequate sampling of the complex SAR data in both image-coordinate directions to represent the relevant spatial-frequency content without significant aliasing. For complex SAR data, the sampling intervals are normally selected during image formation to accommodate the processed signal bandwidth and the desired image sampling density. Additional care is required, however, when point-target analysis is performed on detected rather than complex data.
-
-Detection is a nonlinear operation. For complex data $s(t)$, magnitude detection produces $a(t) = |s(t)|$, while power detection produces
-
-$$
-  I(t) = |s(t)|^2 = s(t) s^*(t)
-$$
-
-Neither operation preserves the spectrum of $s(t)$. In particular, the nonlinear transformation generates new spectral components through frequency mixing. Consequently, a sampling rate that is adequate for the original complex signal is not necessarily sufficient to represent the detected signal without aliasing.
-
-For power detection, this can be seen explicitly from the Fourier-domain relation
-
-$$
-  F{|s(t)|^2} = S(f) * S^* (−f)
-$$
-
-where $S(f) = F{s(t)}$. Thus, if the complex signal occupies a bandwidth \(B\), the support of the power-detected signal can, in the worst case, extend to approximately twice that bandwidth. Magnitude detection is also nonlinear and can generate additional spectral content, although its exact spectral support depends on the signal and its amplitude distribution.
-
-Sampling below the Nyquist rate of the relevant detected signal can therefore introduce aliasing. Once aliased, these spectral components cannot in general be removed by subsequent processing and may distort quantities derived from the point-target response.
-
-Generally, if the relevant detected signal has effective two-sided bandwidth $B_\text{det}}$, a sampling frequency $f_s$ should satisfy the appropriate Nyquist condition
-
-$$
-  f_s > 2B_\text{det}
-$$
-
-with additional margin where required by the desired measurement accuracy and by nonideal filtering. Equivalently, an oversampling factor can be defined as
-
-$$
-  \eta = \frac{f_s}{2B_\text{det}}
-$$
-
-so that $\eta > 1$ represents sampling above the nominal Nyquist rate.
-
-For two-dimensional SAR data, this consideration applies independently in the two image-coordinate directions. If the detected signal has effective bandwidths $B_{\mathrm{det},x}$ and $B_{\mathrm{det},y}$, then the corresponding sampling frequencies should satisfy
-
-$$
-\begin{align*}
-  f_{s,x} >& 2 B_{\text{det},x} \\
-  f_{s,y} >& 2 B_{\text{det},y}
-\end{align*}
-$$
-
-subject to the actual two-dimensional spectral support and any coupling between the coordinates.
-
-
 
 # Continuous-wave SAR
 
