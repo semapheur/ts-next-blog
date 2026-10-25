@@ -138,7 +138,7 @@ The orbit inclination is usually set to approximately $98^\deg$, so that the orb
 
 ## The range equation
 
-The single most important parameter in SAR processing is the slant range from the sensor to the target. This range varies with azimuth time, and is defined by the s<rcalled range equation. As the sensor approaches the target through the motion of the radar platform, the range decreases with every pulse. After the sensor passes the target, the range increases with every pulse.
+The single most important parameter in SAR processing is the slant range from the sensor to the target. This range varies with azimuth time, and is defined by the so-called range equation. As the sensor approaches the target through the motion of the radar platform, the range decreases with every pulse. After the sensor passes the target, the range increases with every pulse.
 
 This change in range has two important implications. It causes a phase modulation from pulse to pulse, which is necessary to obtain fine azimuth resolution in the SAR processor. However, it also causes the received data to be skewed in computer memory, an effect called range cell migration (RCM). As shown later, this range/azimuth coupling must be taken into account in the SAR processing.
 
@@ -296,7 +296,7 @@ $$
 \end{equation*}
 $$
 
-where $K_r$ is the frequency modulation rate of the range pulse. The, $\tau$ is referenced to the center of the pulse for convenience. In this form, the phase coefficients are $P_0 = 0$, $P_1 = f_0$, $P_2 = K_r /2$ and $P_n = 0$ for n > 2$.
+where $K_r$ is the frequency modulation rate of the range pulse. The, $\tau$ is referenced to the center of the pulse for convenience. In this form, the phase coefficients are $P_0 = 0$, $P_1 = f_0$, $P_2 = K_r /2$ and $P_n = 0$ for $n > 2$.
 
 The instantaneous frequency of the signal $s_\text{tx} (\tau)$ varies with fast time $\tau$. For a linear frequency modulated pulse, given by $\eqref{equation-9}$, the instantaneous frequency is $f_i = f_0 + K_r \tau$. As the radar wavelength is $c / f_i$, the wavelength also varies within the pulse. However, after demodulation, the variation of wavelength is not apparent, and the variation is not used in any of the processing equations.
 
@@ -774,7 +774,7 @@ $$
 
 where the frequency of the carrier $f_0$ is several orders of magnitude higher than the bandwidth of the modulation $\phi(\tau)$.
 
-The quadrature demodulation process produces two channels that represent a complex-valued output. First, consider the upper channel, where the signal is multiplied by $\co(2\pi f_0 \taU)$. Using the cosine product rule
+The quadrature demodulation process produces two channels that represent a complex-valued output. First, consider the upper channel, where the signal is multiplied by $\cos(2\pi f_0 \tau)$. Using the cosine product rule
 
 $$
   \cos(\theta_1) \cos(\theta_2) = \frac{1}{2} \cos(\theta_1 - \theta_2) + \frac{1}{2} \cos(\theta_1 + \theta_2)
@@ -873,7 +873,7 @@ $$
 \end{align*}
 $$
 
-Recognizing that $\mathbb{E}(\sin(2\hat{\theta} + \Delta\theta)] = 0$ and $\mathbb{E}[\sin(\Deta\theta)] = \sin(\Delta\theta)$, the covariance is
+Recognizing that $\mathbb{E}(\sin(2\hat{\theta} + \Delta\theta)] = 0$ and $\mathbb{E}[\sin(\Delta\theta)] = \sin(\Delta\theta)$, the covariance is
 
 $$
 \begin{equation*}
@@ -950,7 +950,7 @@ This sum can be recognized as the DFT of a rectangular function. As the number o
 $$
 \begin{align*}
   p_a (\theta) =& \int_{-L_a /2}^{L_a /2} \exp\left(-i2\pi \frac{x\theta}{\lambda} \right) \;\d x \\
-  =& L_a \sinc\left(\frac{L_a \theta}{\lambda} \right) \tag{\labe{equation-36}}
+  =& L_a \sinc\left(\frac{L_a \theta}{\lambda} \right) \tag{\label{equation-36}}
 \end{align*}
 $$
 
@@ -1006,6 +1006,906 @@ $$
 The element position, and the integral is the Fourier transform of a rectangular function, resulting in a sinc function. The width of $p_a^2 (\theta)$ is much wider than that of the sinc function, because the former is the beamwidth of the original real aperture, while the latter is of the synthesized beamwidth. The factor $p_a^2 (\theta)$, can then be ignored; hence, an approximation sign is used in the last step.
 
 Drawing a further analogy between the synthetic aperture $L_s$, and a real aperture antenna, it would take a conventional antenna of length $2L_s$ to obtain a resolution of $L_a /2$ without SAR processing. The synthetic array is only one-half this length, because the SAR system benefits from the two-way radar path length. 
+
+# SAR signal properties
+
+## Signal spectrum in the low-squint case
+
+Most SAR processing algorithms work in the frequency domain for reasons of efficiency. The most important of these is matched filtering convolution efficiency, but there is also range cell migration correction (RCMC) efficiency. When the data are in the azimuth frequency domain, targets having the same slant range of closest approach share the same migration trajectory, making RCMC simpler to apply in this domain. Thus, it is useful to derive the spectrum of the SAR signal in the range time, Doppler frequency domain, and in the two-dimensional frequency domain.
+
+When the first satellite SAR processing was done digitally in the late 1970s, a small squint angle was assumed. With this assumption, the signal properties, and consequently the matched filters, take on a relatively simple form and can easily be derived. The derived spectrum can be useful in a first order analysis of a SAR processor.
+
+Starting from the hyperbolic form of the range equation $\eqref{equation-}$, it is useful to make the parabolic approximation
+
+$$
+\begin{align*}
+  R(\eta) =& \sqrt{R_0^2 + V_r^2 \eta^2} \\
+  \approx& R_0 + \frac{V_r^2 \eta^2}{2R_0} \tag{\label{equation-37}}
+\end{align*}
+$$
+
+This approximation is valid for a low squint and moderated aperture length, since the terms higher than the second order in the series expansion are very small. Then, the baseband received signal $\eqref{equation-}$ can be approximated by
+
+$$
+\begin{equation*}
+\begin{split}
+  s_0 (\tau, eta) \approx& A_0 w_r \left(\tau - \frac{2R(\eta)}{c} \right) w_a (\eta - \eta_c) \exp\left(-i\frac{4\pi R_0}{\lambda} \right) \\
+  &\times \exp\left(-i\pi K_a \eta^2 \right) \exp\left(i\pi K_r \left[\tau - \frac{2R(\eta)}{c} \right]^2 \right)
+\end{split}
+\tag{\label{equation-38}}
+\end{equation*}
+$$
+
+where the azimuth frequency modulation rate $K_a$ is given by
+
+$$
+\begin{equation*}
+  K_a \approx \frac{2V_r^2}{\lambda R_0} = \frac{2V_r^2 f_0}{c R_0}
+\tag{\label{equation-39}}
+\end{equation*}
+$$
+
+as in $\eqref{equation-}$ but with $\theta_{\tau, c} = 0$. The azimuth frequency modulation is linear, like the range modulation, although they have different time scales.
+
+### Spectrum in the range Doppler domain
+
+The range Doppler spectrum can be obtained by applying the principle of stationary phase (POSP) directly to $\eqref{equation-38}$. This results in the familiar relationship between frequency and time
+
+$$
+\begin{equation*}
+  f_n \approx -K_a \eta
+\tag{\label{equation-40}}
+\end{equation*}
+$$
+
+This means that the Doppler centroid frequency and the Doppler centroid time are related by
+
+$$
+  f_{\eta_c} \approx -K_a \eta_c
+$$
+
+The azimuth phase in the range Doppler domain then takes on a very simple form
+
+$$
+  \theta_\text{rd} \approx \frac{\pi f_\eta^2}{K_a} + \pi K_r \left(\tau - \frac{2 R_\text{rd} (f_\eta)}{c} \right)^2 - \frac{4\pi R_0}{\lambda}
+$$
+
+Ignoring a multiplicative constant, the range Doppler domain signal is
+
+$$
+\begin{equation*}
+  S_\text{rd} (\tau, f_\eta) \approx w_r \left(\tau - \frac{2R_\text{rd} (f_\eta)}{c} \right) W_a (f_\eta - f_{\eta_c}) e^{i\theta_\text{rd}}
+\tag{\label{equation-41}}
+\end{equation*}
+$$
+
+where $R_\text{rd}$ is the range cell migration (RCM) in this domain. The RCM is now obtained by combining $\eqref{equation-37}$, $\eqref{equation-39}$ and $\eqref{equation-40}$, resulting in
+
+$$
+\begin{equation*}
+  R_\text{rd} (f_\eta) \approx R_0 \frac{\lambda^2 R_0}{8V_r^2} f_\eta^2
+\tag{\label{equation-67}}
+\end{equation*}
+$$
+
+which is parabolic in $f_\eta$. The parabolic range equation $\eqref{equation-37}$ in $\eta$ is transformed into a parabolic range equation in $f_\eta$.
+
+### Two-dimensional spectrum
+
+Finally, the two-dimensional frequency spectrum can be derived by taking a range Fourier transform of the range Doppler signal, once again applying POSP to $\eqref{equation-41}$. The resulting phase function in this two-dimensional frequency domain is
+
+$$
+\begin{equation*}
+  \theta_\text{2df} \approx \frac{\pi f_\eta^2}{K'_a} - \frac{\pi f_\tau^2}{K_r} - \frac{4\pi (f_0 + f_\tau) R_0}{c}
+\tag{\label{equation-42}}
+\end{equation*}
+$$
+
+where $K'_a$ is the azimuth frequency modulation rate in this domain. By assuming $f_0 \gg |f_\tau|$, it is given by
+
+$$
+  K'_a = \frac{2V_r^2 (f_0 + f_\tau)}{cR_0}
+$$
+
+where $-F_r /2 \leq f_\tau < F_r/2$ and $F_r$ is the range sampling rate. Note that the range frequency variable $f_0$ in $\eqref{equation-39}$ has been replaced by $f_0 + f_\tau$. This is done because each range frequency sample in the two-dimensional frequency domain is represented by its appropriate frequency value $f_\tau$ and $f_0$ is added to retain its original absolute frequency.
+
+Ignoring a multiplicative constant, the signal in the two-dimensional frequency domain is
+
+$$
+  S_\text{2df} (f_\tau, f_\eta) = W_r (f_r) W_a (f_\eta - f_{\eta_c}) e^{i2\theta_\text{2df}}
+$$
+
+Note that the migration of the target trajectory is not represented in the range frequency envelope $W_r$, which is only a function of $f_\tau$, but not of $f_\eta$. The migration is embedded in the phase $\theta_\text{2df}$, given by $\eqref{equation-42}$.
+
+## Signal spectrum in the general case
+
+When the beam squint is higher, or the aperture is very wide, a more complicated form of cross coupling between the range and azimuth domains must be recognized. To derive the signal spectrum analytically in the range Doppler domain, one is tempted to use a direct azimuth Fourier transform. The difficulty encountered with this operation is the presence of cross coupling between the range and azimuth in the raw signal domain.
+
+The cross coupling can be best illustrated using the raw signal of a point target. When a particular range gate is examined, for example, the one shown by the vertical dashed line, a phase change between azimuth samples can be seen. The phase change is due to the RCM, and becomes bigger as the  amount of RCM increases. This phase change is in addition to the normal azimuth phase encoding that results from the demodulation process. In other words, the cross coupling caused by the RCM creates an additional azimuth phase term, which affects the azimuth frequency modulation rate.
+
+To arrive at an accurate analytical form of the azimuth Fourier transformed signal, the following operations can be used:
+1. A range Fourier transform
+2. An azimuth Fourier transform
+3. A range inverse Fourier transform
+
+After the first two steps, the two-dimensional spectrum is obtained. The final step gives the range Doppler representation of the signal.
+
+In the derivation, the purpose of the initial range Fourier transform is to "expand" the range signal, so that the spread of energy in the range direction is independent of azimuth. The "skewness" of the signal data is removed by the range Fourier transform, regardless of whether the data have been range compressed or not. Consequently, each range frequency cell contains the full azimuth exposure, which allows the application of the POSP in the subsequent azimuth Fourier transform.
+
+### Range Fourier transform
+
+The range Fourier transform is given by
+
+$$
+\begin{equation*}
+  S_0 (f_\tau, \eta) = \int_{-\infty}^\infty s_0 (\tau, \eta) e^{-i2\pi f_\tau \tau} \;\d\tau
+\tag{\label{equation-43}}
+\end{equation*}
+$$
+
+Using $\eqref{equation-}$ for $s_0 (\tau, \eta)$, the phase of the integrand is
+
+$$
+\begin{equation*}
+  \theta(\tau) = -\frac{4\pi f_0 R(\eta)}{c} + \pi K_r \left(\tau - \frac{2R(\eta)}{c} \right)^2 - 2\pi f_\tau \tau
+\tag{\label{equation-69}}
+\end{equation*}
+$$
+
+The derivative of $\theta(\tau)$, with respect to $\tau$, is given by
+
+$$
+\begin{equation*}
+  \frac{\d\theta(\tau)}{\d\tau} = 2\pi K_r \left(\tau - \frac{2R(\eta)}{c} \right) - 2\pi f_\tau
+\tag{\label{equation-44}}
+\end{equation*}
+$$
+
+There $R(\eta)$ is a function of effective velocity $V_r$. The parameter $V_r$ is range variant, but remains constant for the duration of the pulse. For this reason, $R(\eta)$ is not a function of $\tau$ in the derivative of $\eqref{equation-44}$. To apply the POSP, we must find the range time when the derivative is zero
+
+$$
+  \tau = \frac{f_\tau}{K_r} + \frac{2R(\eta)}{c}
+$$
+
+Using this expression for $\tau$, the solution to the integral in $\eqref{equation-43}$ can be written as
+
+$$
+\begin{equation*}
+\begin{split}
+  S_0 (f_\tau, \eta) =& A_0 A_1 W_r (f_\tau) w_a (\eta - \eta_c) \\
+  &\times \exp\left(-i\frac{4\pi (f_0 + f_\tau) R(\eta)} \right) \exp\left(-i\frac{\pi f_\tau^2}{K_r} \right)
+\end{split}
+\tag{\label{equation-45}}
+\end{equation*}
+$$
+
+where $A_1$ is a constant, and $W_r (f_\tau) = w_r (f_\tau /K_r)$ is the envolope of the range frequency spectrum. The constant $A_1$, contains a phase term of $\pm\pi/4$, which is not important in the following analysis.
+
+### Azimuth Fourier transform
+
+Equation $\eqref{equation-45}$ represents the signal after the range Fourier transform. The azimuth Fourier transform is given by
+
+$$
+\begin{equation*}
+  S_\text{2df} (f_\tau, f_\eta) = \int_{-\infty}^\infty S_0 (f_\tau, \eta) e^{-i 2\pi f_\eta \eta} \;\d\eta
+\tag{\label{equation-46}}
+\end{equation*}
+$$
+
+Using the phase of $S_0$ from $\eqref{equation-45}$, the phase of the Fourier integrand is
+
+$$
+\begin{equation*}
+  \theta(\eta) = -\frac{4\pi (f_0 + f_\tau) R(\eta)}{c} - \frac{\pi f_\tau^2}{K_r} - 2\pi f_\eta \eta
+\tag{\label{equation-47}}
+\end{equation*}
+$$
+
+Substituting the instantaneous slant range $\eqref{equation-}$ into $\eqref{equation-47}$, the derivative of $\theta(\eta)$ with respect to $\eta$ can be obtained
+
+$$
+  \frac{\d\theta(\eta)}{\d\eta} = -\frac{4\pi(f_0 + f_\tau) V_r^2 \eta}{c\sqrt{R_0^2 + V_r^2 \eta^2}} - 2\pi f_\eta
+$$
+
+which is zero when
+
+$$
+\begin{equation*}
+  f_\eta = -\frac{2V_r^2 (f_0 + f_\tau) \eta}{c\sqrt{R_0^2 + V_r^2 \eta^2}}
+\tag{\label{equation-49}}
+\end{equation*}
+$$
+
+or
+
+$$
+\begin{equation*}
+  \eta = -\frac{cR_0 f_\eta}{2(f_0 + f_\tau) V_r^2 \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 (f_0 + f_\tau)^2}}}
+\tag{\label{equation-48}}
+\end{equation*}
+$$
+
+These two equations give the one-to-one correspondence between time and azimuth frequency in the two-dimensional frequency domain, and show that the relationship is dependent upon range frequency $f_\tau$.
+
+Finally, the solution to $\eqref{equation-46}$ can be expressed as
+
+$$
+\begin{equation*}
+  S_\text{2df} (f_\tau, f_\eta) = A_0 A_1 A_2 W_r (f_\tau) W_a (f_\eta - f_{eta_c}) e^{i\theta_a (f_\tau, f_\eta)}
+\tag{\label{equation-52}}
+\end{equation*}
+$$
+
+where $A_2$ is a constant, $W_a (f_\eta - f_{\eta_c})$ is the envelope of the azimuth frequency spectrum centered at the Doppler centroind frequency $f_{\eta_c}$, and $\theta_a (f_\tau, f_\eta)$ is the phase angle after the Fourier transform. The constant $A_2$ has an unimportant phase of $\pm\pi/4$. The envelope $W_a (f_\eta)$ is given by substituting $\eta$ from $\eqref{equation-48}$ into $w(\eta)$
+
+$$
+  W_a (f_\eta) = w_a \left(\frac{-cR_0 f_\eta}{2 (f_0 + f_\tau) V_r^2 \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 (f_0 + f_\tau)^2}}} \right)
+$$
+
+Similarly, the phase angle $\theta_a (f_\tau, f_\eta)$ of the azimuth Fourier transform is obtained by combining $\eqref{equation-48}$, $\eqref{equation-}$ and $\eqref{equation-47}$
+
+$$
+\begin{align*}
+  \theta_a (f_\tau, f_\eta) =& -\frac{4\pi R_0 (f_0 + f_\tau)}{c\sqrt{1 - \frac{c^2 f_\eta^2}{4 V_r^2 (f_0 + f_\tau)^2}}} + \frac{\pi c R_0 f_\eta^2}{(f_0 + f_\tau) V_r^2 \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 (f_0 + f_\tau)^2}}} \\
+  &- \frac{\pi f_\tau^2}{K_r} \\
+  =&  -\frac{4\pi R_0 (f_0 + f_\tau)}{c} \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 (f_0 + f_\tau)^2}}  - \frac{\pi f_\tau^2}{K_r} \tag{\label{equation-51}}
+\end{align*}
+$$
+
+Let $D_\text{2df} (f_\tau, f_\eta, V_r)$ denote the square root factor
+
+$$
+\begin{equation*}
+  D_\text{2df} (f_\tau, f_\eta, V_r) = \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 (f_0 + f_\tau)^2}}
+\tag{\label{equation-50}}
+\end{equation*}
+$$
+
+It is instructive to examine the geometric interpretation of this factor. Substituting $\eqref{equation-22}$ into $\eqref{equation-50}$ and simplifying, $D_\text{2df}$ becomes
+
+$$
+  D_\text{2df} (f_\tau, f_\eta, V_r) = \sqrt{1 - \frac{V_r^2 \eta^2}{R^2 (\eta)}}
+$$
+
+From $\eqref{equation-}$, it follows that the $D_\text{2df} (f_\tau, f_\eta, V_r)$ is simply the cosine of the squint angle $\theta_r$ at azimuth time $\eta$ for rectilinear geometry. Since the range migration can be represented by $R_0 /\cos(\theta_r)$, then $D_\text{2df} (f_\tau, f_\eta, V_r)$ is called the migration factor in the two-dimensional frequency domain.
+
+Equation $\eqref{equation-51}$ shows that the phase in the two-dimensional frequency domein is proportioanl to $R_0 D_\text{2df} (f_\tau, f_\eta, V_r)$. Unlike the range equation, the factor $D_\text{2df}$, the cosine of the squint angle, appears in the numerator here. The phase term given by $\eqref{equation-51}$ from which the phase coupling is derived, has a geometric interpretation: when data are acquired at a nonzero squint angle, the effective wavelength in the two-dimensional frequency domain or range Doppler domain is altered from the original wavelength.
+
+The range frequency envelope $W_r (f_\tau)$ in $\eqref{equation-52}$ does not exhibit a shift due to RCM. The phase $\theta_a (f_\tau, f_\eta)$ in $\eqref{equation-51}$ contains the azimuth modulation, the RCM, as well as the coupling between range and azimuth (this coupling is addressed by secondary range compression). To highlight the different phase terms, the phase $\theta(f_\tau, f_\eta)$ of $\eqref{equation-51$ can be rewritten as
+
+$$
+\begin{equation*}
+  \theta_a (f_\tau, f_\eta) = -\frac{4\pi R_0 f_0}{c} D^2 (f_\eta, V_r) + \frac{2f_\tau}{f_0} + \frac{f_\tau^2}{f_0^2} - \frac{\pi f_\tau^2}{K_r}
+\tag{\label{equation-53}}
+\end{equation*}
+$$
+
+where
+
+$$
+\begin{equation*}
+  D(f_\eta, V_r) = \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}}
+\tag{\label{equation-68}}
+\end{equation*}
+$$
+
+Equation $\eqref{equation-52}$, with $\eqref{equation-51}$ or $\eqref{equation-53}$, represents the two-dimensional signal spectrum. It is an important expression when processing is performed in the two-dimensional frequency domain, such as in the omega-K alogrithm. In the above derivation, no approximations related to the squint angle have been made. Thus, the equation is an accurate representation of the signal spectrum, regardless of the squint, as long as the range locus can be represented by a hyperbola. The availability of this expression allows us to derive matched filters directly in the two-dimensional frequency domain.
+
+In the digital processor implementation, it does not matter whether the range Fourier transform or the azimuth Fourier transform is performed first. In either case, the two dimensional signal spectrum can be accurately represented by the above equations.
+
+### Range inverse Fourier transform
+
+To arrive at the signal representation in the range Doppler domain, a range inverse Fourier transform is performed on $S_\text{2df}{f_\tau, f_\eta)$
+
+$$
+\begin{equation*}
+  S_\text{rd} (\tau, f_\eta) = \int_{-\infty}^\infty S_\texŧ{2df} (f_\tau, f_\eta) e^{i2\pi f_\tau \tau} \;\d f_\tau
+\tag{\label{equation-55}}
+\end{equation*}
+$$
+
+The analytical solution can be obtained by the POPS. However, a direct application of this method results in a quartic equation in $f_\tau$. Although a closed form solution of quartic equation exists, the algebra is tedious. To circumvent the detailed algebraic manipulations, an approximation can be made to the phase term $\theta_a (f_\tau, f_\eta)$ in the integrand.
+
+By expanding the square root term of $\eqref{equation-52}$ in a power series of $f_\tau$, and keeping terms up to $f_\tau^2$, then $\theta_a (f_\tau f_eta)$ becomes
+
+$$
+\begin{equation*}
+\begin{split}
+  \theta_a (f_\tau, f_\eta) =& -\frac{4\pi R_0 f_0}{c} \left(D(f_\eta, V_r) + \frac{f_\tau}{f_0 D(f_\eta, V_r)} \right. \\
+  &- \left.\frac{f_\tau^2}{2 f_0^2 D^3 (f_\eta, V_r)} \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}  \right) - \frac{\pi f_\tau^2}{K_r}
+\end{split}
+\tag{\label{equation-54}}
+\end{equation*}
+$$
+
+The higher order terms missing can be ignored when
+
+$$
+\begin{equation*}
+  D^2 (f_\eta, V_r) = 1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2} \gg \left|\frac{2f_\tau}{f_0} + \frac{f_\tau^2}{f_0^2} \right|
+\tag{\label{equation-59}}
+\end{equation*}
+$$
+
+This assumption, the only used so far in the derivations, fails for high squint angles as $f_\eta$ increases.
+
+The first term inside the square brackets in $\eqref{equation-54}$ is due to the azimuth modulation, the second term due to the RCM, and the last term is due to the cross coupling between range and azimuth. The cross coupling is particularly important to the target focusing when the squint is high
+
+$$
+\begin{equation*}
+  \theta_{cc} = \frac{\pi}{2} \frac{c R_0 f_\eta^2 f_\tau^2}{V_r^2 f_0^3 D^3 (f_\eta, V_r)}
+\tag{\label{equation-68}}
+\end{equation*}
+$$
+
+This phase represents and additional range modulation due to the squint, which appears after the azimuth Fourier transform.
+
+Using $\eqref{equation-54}$, the phase in the integrand in $\eqref{equation-55}$ is
+
+$$
+\begin{align*}
+  \theta(f_r) =& -\frac{4\pi R_0 f_0}{c} \left[D(f_\eta, V_r) + \frac{f_\tau}{f_0 D(f_n, V_r)} - \frac{f_\tau^2}{2 f_0^2 D^3 (f_\eta, V_r)}\frac{c^2 f_\eta^2}{4V_r^2 f_0^2} \right] \\
+  &- \frac{\pi f_\tau^2}{K_r} + 2\pi f_\tau \tau
+\end{align*}
+$$
+
+Now, the POSP can be applied with ease. The derivative of $\theta(f_\tau)$ with respect to $f_\tau$ is given by
+
+$$
+\begin{equation*}
+  \frac{\d\theta(f_\tau)}{\d f_\tau} = -\frac{4\pi R_0}{c D(f_\eta, V_r)} + 2\pi Z f_\tau - \frac{2\pi f_r}{K_r} + 2\pi\tau
+\tag{\label{equation-56}}
+\end{equation*}
+$$
+
+where
+
+$$
+  Z(R_0, f_\eta) = \frac{c R_0 f^2}{2V_r^2 f_0^3 D^3 (f_n,  V_r)}
+$$
+
+The derivative of $\eqref{equation-56}$ is zero when
+
+$$
+\begin{equation*}
+  f_\tau = \frac{K_r}{1 - K_r Z} \left(\tau - \frac{2R_0}{cD(f_\eta, V_r)} \right)
+\tag{\label{equation-60}}
+\end{equation*}
+$$
+
+Substituting this expression into $\eqref{equation-54}$ and manipulating the terms, the solution to the range Fourier transform $\eqref{equation-55}$ can be expressed as
+
+$$
+\begin{equation*}
+\begin{split}
+  S_\text{rd}} (\tau, f_\eta) =& A_0 A_1 A_2 A_3 w_r \left(\frac{1}{1 - K_r Z} \left[\tau - \frac{2R_0}{cD(f_\eta, V_r)} \right] \right) W_a (f_\eta - f_{\eta_c}) \\
+  &\times \exp\left(-i\frac{4\pi R_0 D(f_\eta, V_r) f_0}{c} \right) \exp\left(i\pi K_m \left[\tau - \frac{2R_0}{cD(f_\eta, V_r)} \right]^2 \right)
+\end{split}
+\tag{\label{equation-57}}
+\end{equation*}
+$$
+
+where $A_3$ is a constant having an unimportant phase of $\pm\pi/4$, and the new range frequency modulation rate is
+
+$$
+\begin{equation*}
+  K_m = \frac{K_r}{1 - K_r Z}
+\tag{\label{equation-58}}
+\end{equation*}
+$$
+
+Equation $\eqref{equation-57}$ represents the target spectrum in the range Doppler domain. The same result would have been obtained if an azimuth Fourier transform had been applied directly to the raw data $s_0 (\tau, \eta)$, but the mathematical development is difficult.
+
+The terms inside the square bracket in the range envelope $w_r$ represents the RCM shift. The first exponential term represents the azimuth modulation, $-4\pi R_0 D(f_\eta, V_r)  f_0 /c$, caused by the range migration. The second exponential term represents the range modulation. Note that the range phase in the second exponential term is zero along the target trajectory, i.e. at $\tau = 2R_0 / [cD(f_\eta, V_r)]$.
+
+### Properties of the range Doppler spectrum
+
+The following points should be noted about the range Doppler spectrum.
+- Typically, $1/Z \ll |K_r|$, so that $|K_r Z| \ll 1$. From $\eqref{equation-58}$, it can be seen that $K_m$ is only slightly different from $K_r$. However, the difference may be large enough to cause misfocusing.
+- The length of the pulse envelope is altered by a factor $1/(1 - K_r Z)$. Since $|K_r Z| \ll 1$, the change in length is not significant.
+- The frequency modulation rate of the radar pulse is altered by the same factor $1/(1 - K_r Z)$. This change in FM rate is caused by the coupling between range and azimuth. The change is range dependent through the $R_0$ term in $Z$. The factor $1/Z$ is called the secondary range compression (SRC) filter among the SAR community. The new FM rate, $K_m$, can be viewed as the combined FM rate of the radar pulse and the SRC filter.
+- It should be emphasized that the range Doppler spectrum, $S_\text{rd} (\tau, f_\eta)$, given in $\eqref{equation-57}$, is not exact. It has made use of the approximation in $\eqref{equation-59}$. This equation is the starting point of some processing algorithms, such as the range Doppler and chirp scaling. For very high squints, the approximation may not hold, and the validity of the approximation should be analyzed in each case.
+
+### Relationship between time and frequency
+
+The azimuth frequency versus time relationship in the range Doppler domain can be obtained by substituting $\eqref{equation-60}$ into $\eqref{equation-49}$ and $\eqref{equation-48}$, but the algebraic manipulations are tedious. A shortcut is as follows. The term $\tau - 2 R_0/[cD(f_\eta , V_r)]$ in $\eqref{equation-57}$ represents the RCM. After range compression, the energy is focused at the range position, $\tau = 2 R_0/[(c D(f_\eta , V_r)]$, that is, at the range position where $f_\eta = 0$, according to $\eqref{equation-60}$. Another way to visualize this effect is to recall that range compression serves to remove the quadratic phase modulation, so that a radar transmitting a very narrow pulse is emulated with a center frequency of $f_0$.
+
+Setting $f_\tau = 0$ in $\eqref{equation-49}$ and $\eqref{equation-48}$, azimuth frequency and time are then related by
+
+$$
+\begin{align*}
+  f_\eta =& -\frac{2V_r^2 f_0 \eta}{c\sqrt{R_0^2 + V_r^2 \eta^2}} \tag{\label{equation-61}} \\
+  \eta =& -\frac{cR_0 f_\eta}{2f_0 V_r^2 \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}}} \tag{\label{equation-62}}
+\end{align*}
+$$
+
+The first equation can also be derived by differential with the range equation
+
+$$
+\begin{equation*}
+  f_\eta = -\frac{2}{\lambda} \frac{\d R(\eta)}{\d\eta}
+\tag{\label{equation-63}}
+\end{equation*}
+$$
+
+with $R(\eta)$ given by the hyperbolic form in $\eqref{equation-}$.
+
+Equations $\eqref{equation-61}$ and $\eqref{equation-62}$ represent the one-to-one correspondence between azimuth frequency and azimuth
+time measured from the range of closest approach. If the range equation is a parabola, the correspondence is linear, so the slope of the frequency/time curve is constant along the exposure. However, when the hyperbolic range equation is used, the slope changes along the exposure.
+
+The Doppler centroid frequency is given by $\eqref{equation-63}$, evaluated at the beam center crossing time $\eta_c$. It can be expressed as
+
+$$
+  f_{\eta_c} = -K_{a,\text{dop}} \eta_c
+$$
+
+where $K_{a,\text{dop}}$ is a special frequency modulation rate just to express this aximuth time to frequency relationship. It is given by
+
+$$
+  K_{a, \text{dop}} = \frac{2V_r^2 f_0}{cR(\eta_c)}
+$$
+
+and is a slowly varying function of $\eta_c$. In fact, if the range equation is a parabola, $R(\eta_c)$ in the denominator is replaced by $R_0$, and then $K_{a,\text{dop}}$ equals $K_a$ in $\eqref{equation-40}$ and is independent of $\eta_c$.
+
+It can be seen that his FM rate is related to the signal FM rate $K_a$ in $\eqref{equation-}$ by
+
+$$
+  K_a = K_{a,\text{dop}} \cos^2 (\theta_{\tau, c})
+$$
+
+### Range cell migration
+
+The RCM in the range Doppler domain can now be found. From the term inside the square brackets in $\eqref{equation-57}$, the RCM in this domain is
+
+$$
+\begin{align*}
+  R_\text{rd} (f_\eta) =& \frac{R_0}{\sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}}} \\
+  =& \frac{R_0}{D(f_\eta, V_r)} \tag{\label{equation-64}}
+\end{align*}
+$$
+
+The last equality in $\eqref{equation-64}$ is obtained by virtue of the definition of $D(f_\eta, V_r)$, given in $\eqref{equation-66}$. From $\eqref{equation-64}$, it is seen that $D(f_\eta , V_r)$ should be the cosine of the instantaneous squint angle. This is indeed true, as can be derived by substituting $\eqref{equation-61}$ into $\eqref{equation-64}$, as is done in the two-dimensional case with $D_\text{2drf} (f_\tau, f_\eta, V_r)$. For the above reason, $D(f_\eta, V_r)$ is called the migration factor in the range Doppler domain.
+
+## Azimuth aliasing and the Doppler centroid
+
+The received signal experiences a Doppler shift because of the relative motion of the sensor and the target. This Doppler shift exists in the received, demodulated signal, but it is hardly noticeable because the shift is very small compared to the radar's pulse bandwidth. However, when observed in the azimuth direction, this Doppler shift is very noticeable, and is fundamental to the azimuth phase encoding and azimuth processing. An important parameter of the Doppler shift is the average Doppler shift, called the Doppler centroid.
+
+As a result of the PRF sampling of the radar data, the Doppler centroid can be aliased, so that its apparent value may be different from the absolute one.
+
+### Origin of azimuth aliasing and ambiguities
+
+The range signal is originally received in continuous time, whereas the azimuth signal is a discrete-time signal from the outset. The range signal is quadrature demodulated to baseband and then sampled by the analog to digital converter (ADC). The range signal is bandlimited by the pulse generation process, and a sampling rate can be selected so that the amount of aliasing is negligible.
+
+In contrast to the range signal, the azimuth signal is not bandlirnited because the azimuth beam pattern extends well beyond the main lobe. The azimuth sampling rate, the PRF, is often limited by constraints, such as the range swath. This means that components of the azimuth signal are aliased in an ambiguous manner,
+
+| Parameter | Range | Azimuth |
+|---|---|---|
+| Center frequency | $f_0$ | $f_{\eta_c}$ |
+| Bandwidth | limited | unlimited |
+| Sampling rate | controllable | limited by range swath |
+
+This azimuth aliasing has a number of interesting properties, and implications for the signal processor. The frequency used to derive the azimuth spectrum is the absolute azimuth frequency, which is what the frequency would be had there been no aliasing. However, the radar system and signal processor only observe azimuth frequencies in the range $(-F_a /2, F_a/2]$ (or the range $(0, F_a]$, depending upon the interpretation of the digital frequency space).
+
+The "PRF time" is defined to be the time that it takes for the azimuth chirp to cover one PRF of the frequency band. The PRF time is introduced to emphasize the aliasing effect caused by the "PRF sampling" of the radar system. This time, denoted by $\Delta_{\eta, \text{PRF}}$, can be obtained from $\eqref{equation-}$
+
+$$
+\begin{align*}
+  \Delta_{\eta, \text{PRF}} \approx& F_a \left| \frac{\d\eta}{\d f_\eta} \right|_{\eta = \eta_c} \\
+  =& \frac{cR(\eta_c)}{2f_0 V_r^2 \cos^2 (\theta_{r, c})} F_a
+\end{align*}
+$$
+
+Recognizing the frequency modulation rate in $\eqref{equation-}$, the PRF time can be rewritten as
+
+$$
+  \Delta_{\eta, \text{PRF}} =  \frac{F_a}{K_a}
+$$
+
+In terms of azimuth samples, the PRF is $F_a^2 /K_a$.
+
+Because the antenna pattern has azimuth sidelobes that extend well beyond the width of the main beam, there is always a certain degree of aliasing in practical situations as a result of the PRF constraints. The aliasing causes "ghost targets" to appear in the compressed data, because the matched filter perceives the phase pattern of each of the aliased parts of the signal to be identical.
+
+The weaker group of targets are aliases of the main target, and are sometimes referred to as ghost targets. The ghost targets are azimuth ambiguities and are separated by the PRF time. As most of the received signal energy is confined within one PRF time, the ambiguity power will be small.
+
+### Doppler centroid
+
+In practice, only one PRF time of the received signal from a target has significant energy. The signal has an amplitude modulation corresponding to the azimuth beam profile. The modulation has a
+peak at a certain frequency, and -6-dB (two-way) levels extending somewhat less than one-half a PRF time on either side of the peak.
+
+As the beam has its maximum gain along its central axis or boresight, the peak modulation occurs at the time that the beam center crosses the target. The Doppler frequency at this time is the azimuth center frequency of the data, and is referred to as the "Doppler centroid." It is assumed that the azimuth beam pattern is symmetrical about its centerline, so that the peak frequency is also the average frequency, or the "center of gravity" of the spectral energy.
+
+Note that when the beam is squinted forward, the Doppler centroid frequency is positive, which is in agreement with $\eqref{equation-}$.
+
+There are several main points of interest about the Doppler centroid:
+- **Doppler ambiguity:** Because of the possibility of azimuth aliasing, the Doppler centroid, as observed in the azimuth spectrum, is not unique. An ambiguity exists because the true center frequency may not lie within the fundamental frequency range observed in the spectra, which is in the range $(-F_a /2, F_a /2]$.
+- **Fractional and integer PRF parts:** Because of this ambiguity, it is convenient to express the unaliased centroid in units of PRFs, and consider two components, the fractional PRF part and the integer PRFmpart.
+- **Processing requirements:** Some functions in the signal processing chain (e.g., basic azimuth compression) require that only the fractional part of the centroid be known. Other functions (e.g., RCMC and SRC) require that both parts of the centroid be known.
+- **Discontinuity in spectra:** The azimuth spectrum has a minimum at a certain frequency. Because of symmetry, the minimum lies at $\pm f_\texŧ{PR} /2$ away from the frequency of maximum energy, or Doppler centroid. In order to process the main part of the azimuth energy over one contiguous frequency band, the spectra must be separated into two parts at its minimum point, and the two parts swapped left to right, so that the spectra has a continuous horizontal frequency axis when used in the signal processor.
+- **Estimation:** The Doppler centroid can be found from a geometry model using the satellite's orbit and attitude data. However, this estimate is usually not accurate enough, which means that the centroid must be estimated from the received radar data. Different algorithms are needed to estimate the fractional and integer parts of the centroid.
+
+When the aliased spectra is observed, one cannot tell which is the true stationary point. It is the function of the Doppler ambiguity resolver to find which is the correct ambiguity.
+
+### The Doppler ambiguity
+
+Because of the PRF sampling of the signal, the spectrum is aliased. The spectrum at "baseband" is the only part that is visible in the received data. The Doppler centroid frequency, estimated from the location of the peak in the observed spectrum, lies with $\pm  F_a /2$, where $F_a$ is the PRF. This observed Doppler centroid frequency is called the fractional PRF part of the Doppler centroid, because its possible range is one PRF. Using a prime to distinguish it from the absolute centroid, it is denoted by $f'_{\eta_c}$.
+
+Because of the aliasing, the observed spectrum looks identical when the absolute or unaliased Doppler centroid frequency $f_\eta$ is changed by an integer multiple of the PRF. The frequency difference between $f'_\eta$ and $f_{\eta_c}$ is an integer multiple of the PRF. This integer multiple, denoted by $M_\text{amb}$, is called the Doppler
+ambiguity. In other words, the unaliased Doppler centroid is given by
+
+$$
+  f_{\eta_c} = f'_{\eta_c} + M_\text{amb} F_a
+$$
+
+where $M_\text{amb} \in\Z$ is a small integer defined by
+
+$$
+  M_\text{amb} = \operatorname{round}\left(\frac{f_{\eta_c}}{F_a} \right)
+$$
+
+Note that the ambiguity number indicates the position along the frequency axis of the absolute Doppler centroid. The spectral energy of the received data usually spans more than one ambiguity number.
+
+The ambiguity number is a function of platform/Earth geometry, and the radar beam's attitude angles. In some sensors, such as the European Earth remote sensing satellites, ERS and ENVISAT, the beam is steered in the yaw coordinate as a function of latitude to compensate for the effect of Earth rotation. This yaw steering has the effect of making the Doppler ambiguity number equal to zero most of the time. In ERS, yaw steering is done to align the beams of other sensors, but it has the secondary and beneficial effect of making the unaliased Doppler centroid near zero. This reduces the range and azimuth coupling in the signal spectrum and simplifies the SAR processing.
+
+In some satellite sensors, such as RADARSAT-1 (or ERS in "roll/tilt" mode), the beam is not steered to zero Doppler, but is controlled to point perpendicular to the satellite heading. In this case, Earth rotation creates an effective yaw of up to $4\deg$, and the Doppler ambiguity number varies in a regular fashion around the orbit. The ambiguity number is near zero at the extreme latitudes, and is at a maximum at the equator. In RADARSAT,the ambiguity number typically varies between $\pm 9$.
+
+In SAR processing, the absolute or unaliased Doppler centroid frequency is required for some operations. In summary, the role of the Doppler centroid estimator is to enable each frequency cell to be labeled with the unambiguous or absolute frequency value.
+
+### Doppler centroid variation with range
+
+In processing algorithms operating in the range frequency domain, the Doppler centroid should not vary much over a processing range swath. If it does, and the PRF is not high enough, the energies at the beginning and
+end of the azimuth spectra will get mixed, and the azimuth ambiguity level will rise. However, the amount of centroid variation with range is beyond the control of the processing algorithm; it is strictly a property of the SAR data collection geometry.
+
+#### Overlapping target spectra
+
+Consider the two-dimensional spectra of two targets, one at near range and one at far range. The far range target is assumed to have a different Doppler centroid than the near range target, as illustrated in Figure $\ref{figure-}$. Each panel represents a typical spectrum in the presence of squint. The gap in the azimuth spectrum has a slope, owing to the fact that the Doppler centroid frequency $\eqref{equation-}$ is a function of wavelength $(f_0 + f_\tau)/c$ in this domain. The gaps in the spectra are important to the processing algorithm, as these gaps are needed to keep
+the energy from the end of the exposure from wrapping around into the beginning of the exposure. If wrapping does occur, the phase history of the signal becomes confused, and azimuth ambiguities will be noticed.
+
+In Figure $\ref{figure-}$, it is seen that the gaps in the azimuth spectra of the two targets do not coincide. When the two targets are processed in the same data block, the two-dimensional spectra is the sum of the two spectra, by the superposition principle. When these two spectra are summed, the azimuth spectral gap disappears because the centroids are too far apart. Hence, it is not always possible to identify a common gap in the azimuth spectrum when processing a large range swath.
+
+#### Antenna yaw
+
+To see how antenna attitude affects the Doppler centroid as a function of range, consider first the case of pure
+
+#### Antenna pitch
+
+In contrast, if squint is obtained by pitching the antenna, the beam center offset time, as shown by the time to traverse $X_g$ in Figure $\ref{figure-}$, is
+
+$$
+\begin{equation*}
+  \eta_c = -\frac{X_g}{V_g} = -\frac{(h + d) \tan(\theta_\text{pitch})}{V_g}
+\tag{\label{equation-65}}
+\end{equation*}
+$$
+
+wher $h$ is the platform altitude, $\theta_\text{pitch}$ is the pitch angle, and $V_g$ is the footprint velocity on the ground.
+
+The beam center offset time in $\eqref{equation-65}$ is approximately constant with range, because the beam centerline is nearly parallel with the zero Doppler line. The Doppler centroid frequency is then obtained by substituting $\eqref{equation-}$ into $\eqref{equation-65}$ and then using $\eqref{equation-}$
+
+$$
+\begin{align*}
+  f_{\eta_c} =& \frac{2V_r^2}{\lambda R(\eta_c)} \left(-\frac{(h + d) \tan(\theta_\text{pitch})}{V_g} \right) \\
+  =& \frac{2V_g (h + d) \tan(\theta_\text{pitch})}{\lambda R(\eta_c)}
+\end{align*}
+$$
+
+which exhibits a small decrease with slant range.
+
+#### Attitude compensation
+
+Because of the different effects of yaw and pitch, the satellite attitude can be controlled to achieve certain effects, such as making the Doppler centroid constant with range, or setting it to an arbitrary value. In ERS, the attitude is ''yaw steered" to make the Doppler centroid approximately zero, so that the front and rear beams of the scatterometer are aligned. This also has the effect of simplifying the SAR processing, as the coupling between range and azimuth is largely eliminated, and RCM is quite small.
+
+## Range cell migration (RCM)
+
+The instantaneous slant range $R(\eta)$, changes with azimuth time $\eta$ according to $\eqref{equation-}$, in which $R(\eta)$ is expressed
+as a hyperbolic function of $\eta$. The equation represents the target trajectory, in distance units, as a function of azimuth time. The separation between range samples is $c/(2F_r)$, where $F_r$ is the range sampling rate. This means that in signal memory, the trajectory migrates through range cells during the exposure time of the target, hence the name *range cell migration* (RCM).
+
+This migration complicates the processing, but, ironically, it is an essential feature of SAR. It is this variation of slant range with time that imposes a frequency modulation characteristic on the signal in the azimuth direction.
+
+### RCM components
+
+The hyperbolic form of the slant range equation can be expanded in a power series, resulting in a linear RCM component, a quadratic RCM component, and higher order terms. The first generation of satellite SAR processors used the power series expansion of the range equation in the
+time domain and the range Doppler domain. Later, it was discovered that the hyperbolic form could be kept in all domains, thereby improving the processing accuracy, even for wide aperture systems. However, the power series expansion is sometimes useful for analysis purposes.
+
+Compared to $\eqref{equation-37}$, where the expansion was taken around time $\eta = 0$, more accuracy can be retained by expanding about the beam center time $\eta_c$. Expanding $\eqref{equation-}$ about $\eta_c$ and using $\eqref{equation-}$, then $R(\eta)$ can be expressed as
+
+$$
+\begin{align*}
+  R(\eta) =& R(\eta_c) + \frac{V_r^2 \eta_c}{R(\eta_c)} (\eta - \eta_c) + \frac{1}{2} \frac{V_r^2 \cos^2 (\theta_{r, c})}{R(\eta_c)} (\eta - \eta_c)^2 + \dots \\
+  =& R(\eta_c) - V_r \sin(\theta_{r, c}) (\eta - \eta_c) + \frac{1}{2} \frac{V_r^2 \cos^2 (\theta_{r, c})}{R(\eta_c)} (\eta - \eta_c)^2 + \dots \tag{\label{equation-66}}
+\end{align*}
+$$
+
+in which the higher order terms can usually be ignored, if the exposure time is moderate. Note that, while the higher order terms can be ignored in RCM equations because they are very small compared to the range cell
+size, they usually cannot be ignored in azimuth phase equations (e.g., through the range dependent azimuth frequency modulation rate $K_a$).
+
+The linear component is tangent to the RCM trajectory at the beam center offset time $\eta_c$, and is represented by the $(\eta - \eta_c)$ term in $\eqref{equation-66}$. The quadratic component is approximately given by the difference between the target trajectory and the linear component, and is represented by the $(\eta - \eta_c)^2$ term in $\eqref{equation-66}$.
+
+It is necessary to find the total RCM within the target exposure $T_a$ to understand the magnitude of the correction problem. For the low-squint case, where cos $\theta_{r,c} \approx 1$ and the zero Doppler point lies within the exposure (i.e., $I\eta_c < T_a /2)$, the total RCM is given by
+
+$$
+\begin{align*}
+  \Delta R_\text{tot} =& R(|\eta_c| + T_a /2) - R(0) \\
+  =& \frac{V_r^2}{2R_0} \left(|\eta_c| + T_a /2 \right)^2
+\end{align*}
+$$
+
+In this case, the total RCM is dominated by the quadratic component. In the higher squint case, the total RCM in range cells is given by
+
+$$
+\begin{align*}
+  \Delta R_\text{tot} =& R(|\eta_c| + T_a /2) - R(|\eta_c| - T_a /2) \\
+  =& \frac{V_r^2}{R_0} T_a |\eta_c|
+\end{align*}
+$$
+
+which is the size of the linear component.
+
+When processing radar data, the smaller quadratic RCM can sometimes be ignored. To see if this is justified, the maximum quadratic RCM in meters is
+
+$$
+  \Delta R_\text{quad} = \frac{1}{2} \frac{V_r^2 \cos^2 (\theta_{r, c})}{R(\eta_c)} \left(\frac{T_a}{2} \right)^2
+$$
+
+Substituting for $T_a$ from $\eqref{equation-}$ and simplifying, the quadratic component of RCM is
+
+$$
+\begin{align*}
+  \Delta R_\text{quad} =& \frac{0.886 \lambda^2 R(\eta_c)}{8 L_a^2} \frac{V_r^2}{V_g^2} \\
+  \approx& \frac{\lambda^2 R(\eta_c)}{8L_a^2}
+\end{align*}
+$$
+
+where $L_a$ is the antenna length in the azimuth direction. Unlike the linear component of RCM, the quadratic component is independent of squint for a given slant range $R(\eta_c)$, and is independent of platform velocity.
+
+In some cases where the wavelength is short, as at X-band, it may be possible to ignore the quadratic RCM. By considering only the linear RCM, the processing can be made simpler. However, careful analysis must be performed before discarding the quadratic part.
+
+The slant range equation in the range Doppler domain is given by $\eqref{equation-64}$, in which $R_\text{rd} (f_\eta)$ versus $f_\eta$ is
+approximately hyperbolic. The difference between the range hyperbola in the azimuth time domain and azimuth frequency domain is that the curvature of the hyperbola decreases with range in the time domain but increases with range in the frequency domain. The above can be observed by power series expansions of $R(\eta)$ and $R_\text{rd}(f_\eta)$, as shown in $\eqref{equation-37}$ and $\eqref{equation-67}$, respectively. In the time domain, the range variable $R_0$ is in the denominator; therefore the hyperbola opens up with increasing $R_0$. In the range Doppler domain, the reverse is true since the variable $R_0$ is in the numerator. Note also that the exposure time increases with range in the time domain, and the azimuth bandwidth is a constant in the azimuth frequency domain.
+
+### Multiple targets at the same range
+
+The RCMs of multiple targets manifest themselves in a particularly simple way in the range Doppler domain, so that processing can be done efficiently in this domain. This is the principal of the range Doppler algorithm.
+
+Consider the case of several targets having the same slant range $R_0$ of closest approach, but separated in azimuth time. These targets all have the same Doppler history, since they have the same $R_0$. The
+only difference is that each target experiences that history at a different azimuth time. This aspect of the Doppler history can be conveniently examined in "frequency/time" diagrams.
+
+To transform the data to the range Doppler domain, an azimuth Fourier transform is performed. By virtue of the Fourier transform shift theorem, the energy of all these targets will be positioned exactly in the same
+frequency samples. The only difference is that each target will have a
+different linear phase component, $\exp(i2\pi f_\eta \eta_k)$, where $\eta_k$ is the time shift of the $k$th target.
+
+The azimuth time delay of each target means an extra linear phase term has to be included in the azimuth spectra of $\eqref{equation-52}$ and $\eqref{equation-57}$. Then, by the superposition principle, the total signal spectrum is simply the sum of the individual spectra, each of which have the same region of support )the region with significant energy) in the
+range Doppler or two-dimensional frequency domains.
+
+To summarize, all targets having the same range of closest approach collapse into one trajectory in the azimuth frequency domain; for example, the range Doppler domain. This important property is exploited in some SAR processing algorithms to gain computing efficiency.
+
+### Target trajectory wraparound
+
+The target trajectory in the range Doppler domain wraps around the azimuth frequency axis, as a result of the aliasing caused by the PRF sampling of the data.
+
+The left side of Figure $\ref{figure-}$ shows how the target trajectory would appear in the range Doppler domain after range compression, if there were no PRF sampling. The target trajectory as a continuous function of azimuth frequency is given in $\eqref{equation-64}$. The Doppler centroid is $500 \unit{Hz}$, and the width of the curve indicates how the signal strength drops off away from the beam center. In this example, the Doppler bandwidth is assumed to be $2500 \unit{Hz}$, which is chosen to be larger than normal for illustration purposes.
+
+The right side of the figure shows the effect of the azimuth sampling, when the PRF is $1000 \unit{Hz}$. The segment of the energy within $\pm f_\text{PR} /2$ of the Doppler centroid represents the main part of the Doppler energy, and is labeled as Segment 1. This spans the frequencies from $0$ to $1000 \unit{Hz}$, which are taken as the fundamental frequency range in this example. Then, Segments 0 and 2 of the original trajectory are aliased into the same fundamental frequency range.
+
+The important thing to note in Figure $\ref{figure-}$ is that the ambiguous parts of the target energy, Segments 0 and 2, have a different RCM as a function of measured $f_\eta$, compared to the main segment. As the RCM correction processing cannot distinguish between the different segments or ambiguities, the RCM correction curve must be selected to correct or focus the energy of the main part but not the other two parts, which are azimuth ambiguities.
+
+In the processed image, the ambiguities corresponding to Segments 0 and 2 of the received data will appear as ghost images. They may be out of focus in range and in azimuth. They will be displaced in range by a few cells, but will be displaced in azimuth by one "PRF time". The ambiguity power decreases with an increase in the PRF, and is kept below $-20 \unit{dB}$ in practice.
+
+## Prelude to SAR processing algorithms
+
+The purpose of SAR processing is to solve the convolution equation $\eqref{equation-}$, which is rewritten here without the noise term
+
+$$
+  S_\text{bb} (\tau, \eta) = g(\tau, \eta) * h_\text{IR} (\tau, \eta)
+$$
+
+where the baseband signal $S_\text{bb}$ is the recorded data, $h_\text{IR}$ is the impulse response $\eqref{equation-}$ of a unity amplitude point target at specific coordinates $(\tau, \eta)$, and the ground reflectivity $g(\tau, \eta)$ is to be determined. In general, accuracy and efficiency in obtaining the solution are important characteristics of any SAR processor.
+
+### Time domain matched filtering
+
+A straightforward way to compress the SAR data is by processing with a two-dimensional matched filter in the time domain. The filter is the time reversed, complex conjugate of the SAR system impulse response function $h_\text{IR} (\tau, \eta)$, given by $\eqref{equation-}$. The advantage of this method is that if the filter is changed for each output pixel, each target in the image will be compressed as accurately as possible, including the correct compensation of the range/azimuth coupling. However, the efficiency is very low because advantage cannot be taken of fast convolution. This is because $h_\text{IR} (\tau, \eta)$ is range dependent, and possibly azimuth dependent as well, so a new matched filter has to be generated for each output point.
+
+Two possible improvements can be made to increase efficiency. The first one is to use range invariance regions, in which the filter is held constant over a certain number of range cells. The second improvement is to perform range compression first, using fast convolution. However, because of the RCM, the azimuth matched filter is still two-dimensional, even though its length in the range direction is much reduced. This means that the two-dimensional matched filter cannot be directly decomposed into two one-dimensional matched filters, a feature that would improve efficiency.
+
+When range invariance regions for the azimuth matched filter are used, the region size can be computed by limiting the phase error between the signal and the matched filter to a certain value. Even if the invariance region size may be large, the two-dimensional matched filtering problem still has to be overcome. The computational requirement for a time domain processor is simply not efficient enough in practice, and commercial processors do not use them.
+
+Another algorithm, called the rectangular algorithm, ignores the RCM completely, and applies the range matched filter and azimuth matched filter one after the other (can be in any order). This algorithm does not yield the full resolution in range because of the trajectory misalignment to the azimuth axis, or in azimuth because of the reduction in azimuth bandwidth captured by the azimuth matched filter. 
+
+A natural question from the above discussion is whether the data can be skewed so that the trajectories are aligned with the vertical axis. Unfortunately, the RCM is not linear; it also has a quadratic component and possibly higher order components as well, which may be significant. The best that can be done is to remove the linear component in the time domain, since the RCM cannot be removed completely and simultaneously for all targets without an excessive amount of computation.
+
+The disadvantages of this method are:
+- For each target, a residual quadratic RCM exists, which may not be negligible.
+- Because of the skew, when the data are accessed down a column in the azimuth direction, the range of each sample changes. Since the coefficients of the azimuth matched filter are range dependent, the filter eventually becomes mismatched. In the skewed space, the matched filter should be both range and azimuth dependent. 
+- The linear RCM is range dependent, complicating the implementation.
+
+The method of correcting for the linear RCM component may not be suitable for high resolution processing.
+
+The foregoing analysis shows that the matched filter cannot be decomposed into a range filter and an azimuth filter directly. In the range Doppler algorithm, the decomposition can be performed by correcting the RCM as an intermediate step.
+
+### Unfocused SAR
+
+Another simple approach to forming a low-resolution image from SAR data is to apply a finite-length averaging (boxcar) filter in the azimuth direction. Although this procedure provides a limited degree of focusing, the resulting data are conventionally referred to as unfocused SAR. The method is particularly simple and computationally inexpensive. When the data have already been range-compressed, the filtering is performed only in the azimuth direction.
+
+Let $s(\eta)$ denote the range-compressed SAR signal as a function of azimuth time $\eta$. Applying a normalized azimuthal boxcar filter of duration $T$ gives
+
+$$
+  y(\eta) = \frac{1}{T} \int_{\eta-T/2}^{\eta+T/2} s(\tau) \d\tau
+$$
+
+or, in discrete form, an average over $N$ azimuth samples,
+
+$$
+  y[n] = \frac{1}{N} \sum_{k=-\lfloor N/2\rfloor}^{\lfloor N/2\rfloor} s[n+k]
+$$
+
+The boxcar filter therefore performs a local integration (or averaging) of the azimuth signal. For a point target, the azimuth signal is oscillatory, with its maximum coherent contribution occurring at the zero-Doppler, or stationary, point corresponding to closest approach. When the integration interval is centered on this point, the contributions from the signal add constructively, producing a peak in the filtered response.
+
+The effective azimuth resolution is determined primarily by the integration interval. Increasing the filter length initially improves the resolution because a larger portion of the target's coherent azimuth response contributes to the integrated signal. However, this improvement does not continue indefinitely. Once the integration interval becomes sufficiently long to include multiple oscillations of the azimuth signal, contributions with different phases begin to cancel. Consequently, increasing the filter length beyond this point no longer produces a corresponding improvement in focusing and can instead reduce the peak response and degrade the resulting image.
+
+Thus, unfocused SAR can be interpreted as a limited form of azimuthal coherent integration: the boxcar filter exploits the concentration of the Doppler history around the zero-Doppler point, but without the phase-matched weighting or full azimuth compression used in a conventional focused SAR processor.
+
+For the conventional stripmap geometry, the characteristic azimuth resolution of unfocused SAR is approximated by
+
+$$
+  \rho_a \approx \frac{\sqrt{\lambda R}}{2}
+$$
+
+where $R$ is the slant range to the target. Thus, the resolution worsens with range and is generally inferior to proper SAR processing. However, the number of computations are relatively small, requiring only four adds for each output point.
+
+### Moving on to better processing algorithms
+
+A two-dimensional, time-domain, matched filtering yields high resolution but lacks efficiency. On the other hand, the unfocused SAR and rectangular algorithm offer high efficiency, but the resolution is poor. Thus, other algorithms should be sought that offer both accuracy and efficiency. In these algorithms, data are processed in domains other than the two-dimensional time domain.
+
+One suitable domain is the range Doppler domain (range time versus azimuth frequency). In this domain, all targets having the same slant range of closest approach are collapsed into one single trajectory. Therefore, correcting the migration of a single trajectory in this domain has the effect of correcting a whole family of trajectories. Furthermore, the correction can accommodate the range dependence of RCM, since the data is processed in the range time domain. The algorithm operating in this domain is named the range Doppler algorithm (RDA). Its main advantage is its ability to produce high resolution imagery accurately and efficiently, as long as the aperture is not too wide or the squint not too large. It is accurate because it can accommodate range varying parameters, such as Doppler centroid, azimuth FM rate, and RCM. At the same time, it is efficient because it allows the two dimensions to be processed separately. The RDA seems to be the most widely used algorithm for high precision processing of remote sensing satellite SAR data. In the presence of a moderate amount of squint, the RDA requires an SRC step.
+
+There are algorithms that process the data using more than one domain, and one example is the chirp scaling algorithm (CSA). The RDA requires interpolation in the RCMC step. The CSA eliminates the interpolation step, and processes the data partly in the range Doppler domain and partly in the two-dimensional frequency domain. In the two-dimensional frequency domain, the algorithm performs "bulk" operations that are assumed to be range independent. The range dependent residual corrections are then performed in the range Doppler domain.
+
+Another domain that can provide efficient and accurate processing is the two-dimensional frequency domain. The omega-K algorithm ($\omega\text{KA}$) processes the data in this domain. Its advantage lies in its ability to handle very high squint and wide apertures. But the disadvantage lies in the fact that targets at different ranges are mixed in this domain; hence, the algorithm holds some processing parameters to be range invariant, even if they are not.
+
+The RDA, CSA, and $\omega\text{KA}$ algorithms are designed for high resolution processing. For medium to low resolution processing, an algorithm named "SPECAN" is more efficient. It relies on a time domain linear RCMC, an "azimuth deramp" and FFTs of short segments of the deramped signal. The azimuth deramp operation is a simple phase multiply, using a chirp with an opposite slope to the transmitted chirp. The efficiency is gained because only a single set of short FFTs are needed. The deramping effectively transforms the data into the frequency domain, and hence only one FFT is needed for each segment, instead of the usual FFT/IFFT combination.
+
+## Range/azimuth coupling
+
+The phase of the two-dimensional SAR signal for a point target, given in $\eqref{equation-68}$, can be derived directly from a signal processing perspective. The derivation invokes the skew property of the two-dimensional Fourier transform, which provides a convenient way of interpreting the range-azimuth coupling introduced by range cell migration.
+
+There are two steps in the derivation. First, a target without any RCM is assumed, so that its energy lies within one range cell, but the range modulation still follows the hyperbolic range equation. The two-dimensional spectrum of this hypothetical signal can be obtained easily by the POSP. Second, the RCM is reintroduced using only its linear component. The above-mentioned Fourier transform property can then be utilized to formulate the skewed spectrum.
+
+For simplicity, the derivation uses range-compressed data. Equations $\eqref{equation-69}$ and $\eqref{equation-51}$ describe the relevant range-time and two-dimensional frequency-domain phase terms, respectively. The key idea is to isolate the effect of linear RCM on the spectrum without repeating the full stationary-phase derivation.
+
+Let $s_1 (\tau, \eta)$ denote the signal after linear RCM has been reintroduced, and let $S_0 (f_\tau, f_\eta)$ denote the two-dimensional spectribum of the hypothetical signal withouth RCM. 
+
+The two-dimensional Fourier transform of $s_1 (\tau, \eta)$ is a skewed version of $S_0 (f_\tau, f_\eta)$ in the azimuth frequency direction
+
+$$
+\begin{equation*}
+  s_1 (\tau, \eta) \leftrightarrow S_1 (f_\tau, f_\eta) = S_0 (f_\tau, f_\eta + \alpha f_\tau)
+\tag{\label{equation-70}}
+\end{equation*}
+$$
+
+where $\alpha$ is the slope of the linear range-delay migration model.
+
+We can observe that a range frequency slice, contains a phase modulation caused by the azimuth frequency skew. This extra modulation is the elusive phase coupling term, which can be removed by "Secondary Range Compression". The phase coupling depends upon the azimuth FM rate. Then, because the azimuth FM rate is range dependent, the phase coupling is also range dependent.
+
+The equations $\eqref{equation-70}$ are combined to obtain
+
+$$
+  S_1 (f_\tau, f_\eta) = W_r (f_\tau) W_a (f_\eta - f_{\eta_c} + \alpha f_\tau) e^{i\pi\theta_1 (f_\tau, f_\eta)}
+$$
+
+where the phase $\theta_1$ is given by
+
+$$
+\begin{align*}
+  \theta_1 (f_\tau, f_\eta) =& \theta_0 (f_\tau, f_\eta + \alpha f_\tau) \\
+  =& -\frac{4\pi R_0 f_0}{c} \sqrt{1 - \frac{c^2 (f_\eta + \alpha f_\tau)^2}{4V_r^2 f_0^2}} \tag{\label{equation-71}}
+\end{align*}
+$$
+
+Letting
+
+$$
+\begin{equation*}
+  D = \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}}
+\tag{\label{equation-74}}
+\end{equation*}
+$$
+
+the phase in $\eqref{equation-71}$ can be written as
+
+$$
+  \theta_1 (f_\tau, f_\eta) = -\frac{4\pi R_0 f_0}{c} \sqrt{D^2 - \frac{c^2}{4V_r^2} (2f_\tau f_\eta \alpha + f_\tau^2 \alpha^2)}
+$$
+
+Expanding the square root as a power series in $f_\tau$ up to the second order, the phase becomes
+
+$$
+\begin{equation*}
+  \theta_1 (f_\tau, f_\eta) = -\frac{4\pi R_0 f_0}{c} \left(D - \frac{c^2 f_\eta \alpha}{4V_r^2 f_0^2 D} f_\tau - \frac{c^2 \alpha^2}{8V_r^2 f_0^2 D^3} f_\tau^2 \right)
+\tag{\label{equation-72}}
+\end{equation*}
+$$
+
+Substituting $\eqref{equation-}$ into $\eqref{equation-72}$ and simplifying, the phase becomes
+
+$$
+\begin{equation*}
+\begin{split}
+  \theta_1 (f_\tau, f_\eta) =& -\frac{4\pi R_0 f_0 D}{c} - 2\pi \frac{cR_0 f_\eta f_{\eta_c}}{2V_r^2 f_0^2 D} f_\tau \\
+  &+ \pi \frac{cR_0 f_{\eta_c}^2}{2V_r^2 f_0^3 D^3} f_\tau^2
+\end{split}
+\tag{\label{equation-73}}
+\end{equation*}
+$$
+
+Comparing with $\eqref{equation-68}$, the third term in $\eqref{equation-73}$ is the range/azimuth cross coupling. The only difference between the two equations is that the variable $f_\eta$ is replaed by the constant Doppler centroid frequency $f_{\eta_c}$ in $\eqref{equation-73}$. The discrepancy is due to the linear RCM approximation used to derive $\eqref{equation-73}$. The factor $D$ is actually the cosine of the squint angle $\theta_r$, and is weakly dependent on $f_\eta$ for the squints under consideration. If $f_\eta = f_{\eta_c}$ is used for the factor $D$ in $\eqref{equation-74}$, then the phase coupling  becomes independent of azimuth frequency.
+
+The coefficient in $\eqref{equation-73}$ is the RCM
+
+$$
+\begin{equation*}
+  \mathrm{RCM} = -\frac{cR_0 f_\eta f_{\eta_c}}{2V_r^2 f_0^2 D}
+\tag{\label{equation-75}}
+\end{equation*}
+$$
+
+Combining $\eqref{equation-74}$, $\eqref{equation-75}$, and finally using $\eqref{equation-61}$, the anticipated result follows
+
+$$
+  \mathrm{RCM} = -\frac{2V_r \sin(\theta_{r, c})}{c} \eta = \alpha\eta
+$$
+
+The RCM is linear and has a slope $\alpha$, which agrees with the stated assumptions.
+
+This derivation does not show the nonlinear nature of the RCM; the phase coupling is an approximation resulting from the linear RCM assumption. Nevertheless, the derivation gives an illustration of the origin of the coupling from the signal processing viewpoint, by using a powerful Fourier transform property.
+
+## Azimuth frequency modulation rate
+
+Two definitions of azimuth frequency modulation rate are commonly used in SAR processing. Although they coincide under a parabolic range-history approximation, they describe different quantities and are not generally interchangeable when the range history is hyperbolic, particularly at larger squint angles.
+
+The azimuth FM rate of the signal from a point target is given by its frequency rate at the time the beam center crosses the target. It is found from the second derivative of range
+
+$$
+  K_a = \frac{2}{\lambda} \left. \frac{\d^2 R(\eta)}{\d\eta^2} \right|_{\eta=\eta_c} = \frac{2V_r^2 \cos^2 (\theta_{r,c})}{\lambda R(\eta_c)}
+$$
+
+where the target has a range of $R(\eta_c)$ at the beam center crossing time $\eta_c$.
+
+Another definition of the frequency modulational rate relates the Doppler frequency at the beam center $f_{\eta_c}$ to the beam center crossing time $f_{\eta_c} = -K_{a,\text{dop}} \eta_c$, where
+
+$$
+  K_{a,\text{dop}} = \frac{2V_r^2}{\lambda R(\eta_c)}
+$$
+
+as derived in $\eqref{equation-}$.
+
+If the signal is accurately represented by a parabolic range equation, these two FM rates are equal. There is a difference between these two FM rates when the range equation deviates from the simple parabolic form $\eqref{equation-37}$, which it does when the squint angle increases.
+
+### Geometric interpretation from slopes
+
+The signal's Dopper frequency is found from the first derivative of the hyperbolic range equation $\eqref{equation-2}$
+
+$$
+\begin{align*}
+  f_\eta =& -\frac{2}{\lambda} \frac{\d R(\eta)}{\d\eta} = -\frac{2}{\lambda} \frac{V_r^2}{R(\eta)} \eta \\
+  =& -\frac{2}{\lambda} \frac{V_r^2}{\sqrt{R_0^2 + V_r^2 \eta^2}} \eta
+\end{align*}
+$$
+
+The slope $-K_\alpha$ is the most important one, and must always be used when generating or analyzing the matched filter phase. The slope $-K_{a,\text{dop}}$ is not used very often. It is used only to fined the beam center offset time $\eta_c$ when the Doppler centroid frequency is known. An accurate estimate of $f_{\eta_c}$ can be found in practice, but there is no practical way of finding $\eta_c$ accurately, except trhough $-K_{a,\text{dop}}$.
+
+The difference between the two frequency modulation rates is given by the cosine squared of the squint angle, and is it usually small. However, this difference is important when considering the matched filter phase.
+
+### Approximate signal representation
+
+Even though the signal represented by the curved frequency/time history has a hyperbolic range equation, a segment of it can often be represented accurately by a parabola. An example is when the processed aperture is only a small fraction of the beam offset, so only a small segment of the curve is needed for the matched filter. The hyperbolic equation is needed for the whole curve, but the local parabolic approximation may be adequate to obtain the signal phase over the processed aperture.
+
+When the signal is approximated by such a local parabola, the signal frequency is approximated by a local linear ramp as shown by the dotted line. This ramp has a slope $K_a$ . For analytical purposes (such as the quadratic phase error), for simulations, and sometimes even for azimuth matched filter generation, the signal is then modeled using the quadratic phase component only
+
+$$
+  s(\eta) = e^{-i\pi K_a (\eta - \eta_c)^2}
+$$
+
+Besides the higher order terms, this form ignores the constant phase term and the linear phase term in $R(\eta)$ of $\eqref{equation-66}$. These two terms are not important to obtaining a well-focused image in the IRW sense, but they may be important in some applications for the image registration and absolute phase.
 
 # Resolution
 

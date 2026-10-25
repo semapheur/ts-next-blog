@@ -394,7 +394,7 @@ function relabelLatexEquations(mdxFile: string) {
 }
 console.log(
   findLatexIssues(
-    "./content/notes/remote_sensing/radar_imaging/signal_processing.mdx",
+    "./content/notes/remote_sensing/radar_imaging/synthetic_aperture_radar.mdx",
   ),
 );
 
