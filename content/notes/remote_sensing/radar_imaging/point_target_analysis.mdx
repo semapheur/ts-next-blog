@@ -1,5 +1,5 @@
 ---
-title: 'Synthetic Aperture Radar'
+title: 'Point Target Analysis'
 subject: 'Remote Sensing/Radar Imaging'
 showToc: true
 references:
@@ -67,7 +67,7 @@ For a two-dimensional synthetic aperture radar (SAR) image, the IRW is generally
 The IRW may be reported in image samples or pixels. For physical interpretation, however, it is preferable to express it in units of distance, such as metres, using the appropriate spatial sampling interval or a georeferenced coordinate system. For a locally uniform sampling interval $\Delta x$, for example, an IRW measured as $N_x$ samples corresponds approximately to
 
 $$
-  \mathrm{IRW}_\text{x,phys}$ = N_x \Delta x
+  \mathrm{IRW}_\text{x,phys} = N_x \Delta x
 $$
 
 provided that the sample spacing adequately represents the spatial coordinate in question. Where the image geometry is nonuniform or the image is projected onto the ground, the relevant ground-projected distances should be used instead.
@@ -119,7 +119,7 @@ $$
 Consequently
 
 $$
-  \mathrm{PSLR} = 20 \log_{10} \left(A_\text{SL,1}}{A_\text{peak} \right) \approx -13.26 \unit{dB}
+  \mathrm{PSLR} = 20 \log_{10} \left(\frac{A_\text{SL,1}}{A_\text{peak}} \right) \approx -13.26 \unit{dB}
 $$
 
 The value is independent of $B$: changing the bandwidth changes the scale of the main lobe, and hence the resolution, but not the normalized sidelobe level of the ideal sinc response.
@@ -158,7 +158,7 @@ The sidelobe power is therefore
 $$
 \begin{align*}
   P_\text{SL} =& P_\text{total} - P_\text{main} \\
-  \int_{\mathcal{W}\setminus\mathcal{M}} |p(t)|^2 \;\d t
+  =& \int_{\mathcal{W}\setminus\mathcal{M}} |p(t)|^2 \;\d t
 \end{align*}
 $$
 
@@ -202,7 +202,7 @@ The two-dimensional ISLR extends the preceding definition to the full point-targ
 
 $$
 \begin{align*}
-  \mathcal{M}_\text{2D} =& \left[t_{1,0} - \frac{\alpha_x \mathrm{IRW}_x}{2}, t{1,0} + \frac{\alpha_x\mathrm{IRW}_x}{2}\right]
+  \mathcal{M}_\text{2D} =& \left[t_{1,0} - \frac{\alpha_x \mathrm{IRW}_x}{2}, t{1,0} + \frac{\alpha_x\mathrm{IRW}_x}{2}\right] \\
   &\times \left[t{2,0} - \frac{\alpha_y \mathrm{IRW}y}{ 2 }, t{2,0} + \frac{\alpha_y \mathrm{IRW}_y}{2}\right]
 \end{align*}
 $$
@@ -221,7 +221,7 @@ $$
   P_\text{total,2D} = \iint_{\mathcal{W}_{2D}} |p(t_1,t_2)|^2 \;\d t_1 \;\d t_2.
 $$
 
-The two-dimensional ISLR is consequently
+The two-dimensional ISLR is therefore
 
 $$
   \mathrm{ISLR}_\text{2D} = 10\log_{10} \left(\frac{P_\mathrm{total,2D} - P_\mathrm{main,2D}}{P_\mathrm{main,2D}}\right) \unit{dB}
@@ -273,7 +273,8 @@ Consequently, the two-dimensional linear sidelobe-to-main ratio is
 $$
 \begin{align*}
   r_\text{2D} =& \frac{P_\text{SL,2D}}{P_\text{main,2D}} \\
-  =& (1 + r_x)(1 + r_y) - 1 = r_x + r_y + r_x r_y
+  =& (1 + r_x)(1 + r_y) - 1 \\
+  =& r_x + r_y + r_x r_y
 \end{align*}
 $$
 
@@ -314,13 +315,13 @@ This approximation relies on separability and on the particular definition of th
 The peak position is the image-coordinate location at which the magnitude of the impulse response attains its maximum. The continuous peak position is defined by
 
 $$
-  (t_{1,\text{max}}, t_{2,\text{max}}) = \argmax_{(t_1, t_2) |p(t_1, t_2)|
+  (t_{1,\text{max}}, t_{2,\text{max}}) = \argmax_{(t_1, t_2)} |p(t_1, t_2)|
 $$
 
 For sampled SAR data, the maximum generally occurs between pixel centers. The discrete estimate
 
 $$
-  (\hat{t}_{1,\text{max}}, \hat{t}_{2,\text{max}}) = \argmax_{(m, n) |p[m,n]|
+  (\hat{t}_{1,\text{max}}, \hat{t}_{2,\text{max}}) = \argmax_{(m, n)} |p[m,n]|
 $$
 
 therefore provides only a quantized estimate of the continuous peak position. Subpixel interpolation or parametric fitting is normally used when higher positional accuracy is required.
@@ -470,7 +471,7 @@ Because phase is inherently wrapped, phase-profile analysis should distinguish b
 A single-valued peak-phase measurement can be defined from the estimated peak position $(t_{1,\text{peak}},t_{2,\text{peak}})$ as
 
 $$
-  \phi_\text{peak} = \arg p(t_{1,\text{peak}},t_{2,\text{peak}}) \pmod{2\pi}. }
+  \phi_\text{peak} = \arg [p(t_{1,\text{peak}},t_{2,\text{peak}})] \pmod{2\pi}
 $$
 
 For sampled data, this should be evaluated at the estimated continuous peak if an interpolated complex response is available; otherwise, the phase of the maximum-magnitude sample provides the discrete estimate.
@@ -511,7 +512,7 @@ where $S(f) = F{s(t)}$. Thus, if the complex signal occupies a bandwidth \(B\), 
 
 Sampling below the Nyquist rate of the relevant detected signal can therefore introduce aliasing. Once aliased, these spectral components cannot in general be removed by subsequent processing and may distort quantities derived from the point-target response.
 
-Generally, if the relevant detected signal has effective two-sided bandwidth $B_\text{det}}$, a sampling frequency $f_s$ should satisfy the appropriate Nyquist condition
+Generally, if the relevant detected signal has effective two-sided bandwidth $B_\text{det}$, a sampling frequency $f_s$ should satisfy the appropriate Nyquist condition
 
 $$
   f_s > 2B_\text{det}
