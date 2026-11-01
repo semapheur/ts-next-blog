@@ -21,6 +21,30 @@ SAR violates two commonsense principles:
 can be explained as follows. The exposure time is proportional to range, but the azimuth FM rate is inversely proportional to range; hence, the signal bandwidth, being the product of the exposure time and FM rate, is independent of range. Note, however, that the SNR decreases with $R^3$ , and under power-limiting conditions, this SNR loss obscures target details at longer ranges.
 - **Sensor size:** In general, a larger sensor can "see" more details than a smaller sensor (as in a telescope or microscope). This is true for a real aperture radar, but the opposite is true if the received data are processed in SAR mode. The beamwidth increases with a smaller antenna and, in turn, the exposure time and signal bandwidth increase, leading to a finer resolution. However, ambiguities and SNR place a lower limit on the antenna size.
 
+<TableFigure caption="Summary of key synthethic aperture equations">
+| Parameter | Symbol | Expression | Units |
+|---|---|---|---|
+| Range bandwidth | | $\lvert K_r \rvert T_r$ | $\tunit{Hz}$ |
+| Range resolution | $\rho_r$ | $0.886 \gamma_{\omega, r} / (\lvert K_r \rvert T_r)$ | $\tunit{m}$ |
+| Slant range | $R(\eta)$ | $\sqrt{R_0^2 + V_r^2 \eta^2}$ | $\tunit{m}$ |
+| Impulse response | $h_\text{imp} (\tau, \eta)$ | $$\begin{align*} & w_r [\tau - 2R(\eta)/c] w_a (\eta - \eta_c) \\ &\quad \exp\left(-i4\pi f_0 R(\eta)/c\right) \\ &\quad\quad \exp\left(i\pi K_r [\tau - 2R(\eta)/c]^2 \right) \end{align*}$$ | |
+| Azimuth beamwidth | $\theta_\text{bw}$ | $0.886\lambda /L_a$ | $\tunit{rad}$ |
+| Azimuth beam footprint | $\rho'_a$ | $0.886 R(\eta_c) \lambda /L_a$ | $\tunit{m}$ |
+| Synthetic aperture | $L_s$ | $[0.886 R(\eta_c) \lambda /L_a](V_s /V_g)$ | $\tunit{m}$ |
+| Synthetic angle | $\theta_\text{syn}$ | $(V_s /V_g) \theta_\text{bw}$ | $\tunit{rad}$ |
+| Doppler frequency at $\eta = \eta_c$ | $f_{\eta_c}$ | $2V_r \sin(\theta_{r,c})/\lambda = 2V_s \sin(\theta_{\text{sq}, c} / \lambda$ | $\tunit{Hz}$ |
+| Beam center crossing time | $\eta_c$ | $-R_0 \tan(\theta_{r,c}) /V_r = -R_0 \tan(\theta_{\text{sq}, c}) /\lambda$ | $\tunit{s}$ |
+| Doppler bandwidth | $\Delta f_\text{dop}$ | $0.886 (2 V_s \cos(\theta_{r,c})/ L_a)$ | $\tunit{Hz}$ |
+| Exposure time | $T_a$ | $0.886 R(\eta_c) \lambda /(L_a V_g \cos(\theta_{r,c})$ | $\tunit{s}$ |
+| Azimuth FM rate | $K_a$ | $2V_r^2 \cos^2 (\theta_{r,c}) / [\lambda R(\eta_c)]$ | $\tunit{Hz/s}$ |
+| Azimuth resolution | $\rho_a$ | $(0.886 V_g \cos(\theta_{r,c}) / \Delta f_text{dop}) \gamma_{\omega, a}$ | $\tunit{m}$ |
+| Azimuth resolution | $\rho_a$ | $(L_a /2) (V_g /V_s) \gamma_{\omega, c} \approx L_a /2$ | $\tunit{m}$ |
+| Azimuth resolution | $\rho_a$ | $[0.886 \lambda /(2\theta_\text{syn})] \gamma_{w, a}$ | $\tunit{m}$ |
+| Range compression ratio | $C_{r,r}$ | $\lvert K_r \rvert T_r^2$ | |
+| Azimuth compression ratio | $C_{r,a}$ | $K_a T_a^2$ | |
+| Total compression ratio | $C_{r,t}$ | $\lvert K_r \rvert T_r^2 K_a T_a^2$ | |
+</TableFigure>
+
 ## SAR geometry
 
 - **Target:** This is a hypothetical point on the Earth's surface that the SAR system is imaging. The SAR system actually images an area on the ground, but to develop the SAR equations, a single representative point on the ground is considered. This point is called a "point target" or "point scatterer," or simply "target" or "scatterer."
@@ -1010,6 +1034,28 @@ The element position, and the integral is the Fourier transform of a rectangular
 Drawing a further analogy between the synthetic aperture $L_s$, and a real aperture antenna, it would take a conventional antenna of length $2L_s$ to obtain a resolution of $L_a /2$ without SAR processing. The synthetic array is only one-half this length, because the SAR system benefits from the two-way radar path length. 
 
 # SAR signal properties
+
+<TableFigure caption="Summary of signal properties in the time domain">
+| Parameter | Negligible squint | Nonnegligible squint |
+|---|---|---|
+| Slant range | $R(\eta) = R_0 + \frac{V_r^2\eta^2}{2R_0}$ | $R(\eta) = \sqrt{R_0}^2 + V_r^2 \eta^2$ |
+| Linear RCM | $-V_r \sin(\theta_{r,c}) (\eta - \eta_c)$ | $-V_r \sin(\theta_{r, c}) (\eta - \eta_c)$ |
+| Quadratic RCM | $\frac{V_r^2}{2R_0} (\eta - \eta_c)^2$ | $\frac{V_r^2 \cos^2 (\theta_{r,c})}{2R(\eta_c)} (\eta - \eta_c)^2$ |
+| Range FM rate | $K_r$ | $K_m = \frac{K_r}{1 - K_r Z}$ |
+| Azimuth FM rate | $K_a \approx \frac{2V_r^2}{\lambda R_0}$ | $K_a = \frac{2V_r^2 \cos^2 (\theta_{r,c})}{\lambda R(\eta_c)}$ |
+| Azimuth phase | $-\frac{4\pi R_0}{\lambda} - \frac{2\pi V_r^2}{\lambda R_0} \eta^2$ | $-\frac{4\pi R(\eta)}{\lambda}$ |
+</TableFigure>
+
+<TableFigure caption="Summary of signal properties in the range Doppler domain">
+| Parameter | Negligible squint | Nonnegligible squint |
+|---|---|---|
+| Migration factor | $D \approx 1 - \frac{c^2 f_\eta^2}{8V_r^2 f_0^2}$ | $D = \sqrt{1 - \frac{c^2 f_\eta^2}{4V_r^2 f_0^2}}$ |
+| Slant range | $R_\text{rd} \approx \frac{\lambda^2 R_0 f_n^2}{8V_r^2}$ | $R_\text{rd} = \frac{R_0}{D(f_\eta, V_r)}$ |
+| Range FM rate | $K_r$ | $K_m = \frac{K_r}{1 - K_r Z}$ |
+| Azimuth FM rate | $K_a \approx \frac{2V_r^2}{\lambda R_0}$ | $K_a = \frac{2V_r^2 \cos^2 (\theta_{r,c})}{\lambda R(\eta_c)}$ |
+| Azimuth phase | $-\frac{4\pi R_0}{\lambda} - \frac{\pi \lambda R_0}{2 V_r^2} f_\eta^2$ | $-\frac{4\pi R_0}{\lambda} D(f_\eta, V_r)$ |
+| Azimuth frequency versus time | $f_\eta = -K_a \eta$ <br /> $\eta = -f_\eta /K_a$ | $f_\eta = -\frac{2V_r^2 \eta f_0}{c\sqrt{R_0^2 + V_r^2 \eta^2}}$ <br/> $\eta = \frac{-c R_0 f_\eta}{2f_0 V_r^2 D(f_\eta, V_r)}$ |
+</TableFigure>
 
 ## Signal spectrum in the low-squint case
 
